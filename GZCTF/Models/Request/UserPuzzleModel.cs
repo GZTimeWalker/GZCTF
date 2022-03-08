@@ -3,7 +3,7 @@
 /// <summary>
 /// 用户端题目
 /// </summary>
-public class UserPuzzleModel
+public class UserChallengesModel
 {
     /// <summary>
     /// 题目标题

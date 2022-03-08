@@ -67,8 +67,8 @@ builder.Services.AddOpenApiDocument(settings =>
 {
     settings.DocumentName = "v1";
     settings.Version = "v0.1";
-    settings.Title = "MSC Puzzle API";
-    settings.Description = "MSC Puzzle 接口文档";
+    settings.Title = "MSC Challenges API";
+    settings.Description = "MSC Challenges 接口文档";
     settings.UseControllerSummaryAsTagDescription = true;
     settings.SerializerSettings = SystemTextJsonUtilities.ConvertJsonOptionsToNewtonsoftSettings(new JsonSerializerOptions
     {
@@ -128,7 +128,7 @@ builder.Services.AddTransient<IMailSender, MailSender>();
 
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IRankRepository, RankRepository>();
-builder.Services.AddScoped<IPuzzleRepository, PuzzleRepository>();
+builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 
@@ -171,7 +171,7 @@ else
             document.Servers.Clear();
             document.Servers.Add(new OpenApiServer
             {
-                Url = "https://puzzle.sysums.club"
+                Url = "https://Challenges.sysums.club"
             });
         };
     });

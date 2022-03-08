@@ -183,7 +183,6 @@ public class AccountController : ControllerBase
         {
             UpdateTimeUTC = DateTimeOffset.UtcNow,
         };
-        user.IsSYSU = Codec.Base64.Decode(model.Email).EndsWith("@mail2.sysu.edu.cn");
 
         result = await userManager.UpdateAsync(user);
 
@@ -370,7 +369,6 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(new RequestResponse("无效邮箱。"));
 
-        user.IsSYSU = Codec.Base64.Decode(model.Email).EndsWith("@mail2.sysu.edu.cn");
         result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
@@ -401,7 +399,6 @@ public class AccountController : ControllerBase
                 Description = user.Description,
                 Email = user.Email, 
                 UserName = user.UserName,
-                IsSYSU = user.IsSYSU,
                 PhoneNumber = user.PhoneNumber,
                 RealName = user.RealName,
                 StudentId = user.StudentId,

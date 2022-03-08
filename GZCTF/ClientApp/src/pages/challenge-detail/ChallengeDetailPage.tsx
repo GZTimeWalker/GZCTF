@@ -12,18 +12,18 @@ import {
 import React, { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { LoadingMask } from 'src/common/components/LoadingMask';
 import { resolveMessageForRateLimit } from 'src/common/utils';
-import { PUZZLE_API } from 'src/redux/puzzle.api';
+import { Challenges_API } from 'src/redux/challenge.api';
 import marked from 'marked';
 import '../../common/utils/marked.css';
 
-export interface PuzzleDetailPageProps {
+export interface ChallengesDetailPageProps {
   id: number;
 }
 
-export const PuzzleDetailPage: FC<PuzzleDetailPageProps> = ({ id }) => {
-  const { isLoading, error, data } = PUZZLE_API.useGetPuzzleQuery(id, { skip: Object.is(NaN, id) });
+export const ChallengesDetailPage: FC<ChallengesDetailPageProps> = ({ id }) => {
+  const { isLoading, error, data } = Challenges_API.useGetChallengesQuery(id, { skip: Object.is(NaN, id) });
   const [submit, { isLoading: isAnswering, error: answerError, isSuccess: isAnswerSuccess }] =
-    PUZZLE_API.useAnswerPuzzleMutation();
+    Challenges_API.useAnswerChallengesMutation();
   const [answer, setAnswer] = useState('');
   const toast = useToast();
 
@@ -45,7 +45,7 @@ export const PuzzleDetailPage: FC<PuzzleDetailPageProps> = ({ id }) => {
         status: 'success',
         duration: 3000
       });
-      setTimeout(() => {window.location.href = '/puzzle'}, 3000);
+      setTimeout(() => {window.location.href = '/Challenges'}, 3000);
     }
   }, [isAnswerSuccess, toast]);
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
 
-public class PuzzleBase
+public class ChallengeBase
 {
     /// <summary>
     /// 谜题名称

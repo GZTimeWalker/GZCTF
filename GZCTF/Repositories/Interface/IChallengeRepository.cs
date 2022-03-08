@@ -4,15 +4,15 @@ using CTFServer.Utils;
 
 namespace CTFServer.Repositories.Interface;
 
-public interface IPuzzleRepository
+public interface IChallengeRepository
 {
     /// <summary>
     /// 添加一个题目对象
     /// </summary>
-    /// <param name="newPuzzle">待添加的题目</param>
+    /// <param name="newChallenge">待添加的题目</param>
     /// <param name="token">操作取消token</param>
     /// <returns></returns>
-    public Task<Puzzle> AddPuzzle(PuzzleBase newPuzzle, CancellationToken token);
+    public Task<Challenge> AddChallenge(ChallengeBase newChallenge, CancellationToken token);
 
     /// <summary>
     /// 获取用户题目数据
@@ -21,16 +21,16 @@ public interface IPuzzleRepository
     /// <param name="accessLevel">用户访问权限</param>
     /// <param name="token">操作取消token</param>
     /// <returns>用户题目</returns>
-    public Task<UserPuzzleModel?> GetUserPuzzle(int id, int accessLevel, CancellationToken token);
+    public Task<UserChallengesModel?> GetUserChallenges(int id, int accessLevel, CancellationToken token);
 
     /// <summary>
     /// 更新一个题目对象
     /// </summary>
     /// <param name="id">题目Id</param>
-    /// <param name="newPuzzle">更新的题目数据</param>
+    /// <param name="newChallenge">更新的题目数据</param>
     /// <param name="token">操作取消token</param>
     /// <returns></returns>
-    public Task<Puzzle?> UpdatePuzzle(int id, PuzzleBase newPuzzle, CancellationToken token);
+    public Task<Challenge?> UpdateChallenges(int id, ChallengeBase newChallenge, CancellationToken token);
 
     /// <summary>
     /// 删除题目
@@ -38,7 +38,7 @@ public interface IPuzzleRepository
     /// <param name="id">题目Id</param>
     /// <param name="token">操作取消token</param>
     /// <returns></returns>
-    public Task<(bool result, string title)> DeletePuzzle(int id, CancellationToken token);
+    public Task<(bool result, string title)> DeleteChallenges(int id, CancellationToken token);
 
     /// <summary>
     /// 验证答案
@@ -57,7 +57,7 @@ public interface IPuzzleRepository
     /// <param name="accessLevel">用户访问权限</param>
     /// <param name="token">操作取消token</param>
     /// <returns></returns>
-    public Task<List<PuzzleItem>> GetAccessiblePuzzles(int accessLevel, CancellationToken token);
+    public Task<List<ChallengesItem>> GetAccessibleChallengess(int accessLevel, CancellationToken token);
 
     /// <summary>
     /// 获取最高访问权限

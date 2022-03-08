@@ -6,9 +6,9 @@ import { LoginPage } from './pages/login/LoginPage';
 import { NotFoundPage } from './pages/not-found/NotFoundPage';
 import { WithNavBar } from './common/components/WithNavBar';
 import { PortalPage } from './pages/portal/PortalPage';
-import { PuzzlePage } from './pages/puzzle/PuzzlePage';
+import { ChallengesPage } from './pages/challenge/ChallengePage';
 import { LeaderBoardPage } from './pages/leaderboard/LeaderBoardPage';
-import { PuzzleDetailPage } from './pages/puzzle-detail/PuzzleDetailPage';
+import { ChallengesDetailPage } from './pages/challenge-detail/ChallengesDetailPage';
 import { ResetPasswordPage } from './pages/reset/ResetPasswordPage';
 import { VerifyEmailPage } from './pages/verify/VerifyEmailPage';
 import { AccountManagePage } from './pages/account-manage/AccountManagePage';
@@ -53,16 +53,16 @@ export const App: FC = () => {
           <LoginPage />
         </Route>
         <AuthRoute
-          path="/puzzle/:id"
+          path="/Challenges/:id"
           render={({ match }) => (
             <WithNavBar>
-              <PuzzleDetailPage id={Number(match.params.id)} />
+              <ChallengesDetailPage id={Number(match.params.id)} />
             </WithNavBar>
           )}
         />
-        <AuthRoute path="/puzzle">
+        <AuthRoute path="/Challenges">
           <WithNavBar>
-            <PuzzlePage />
+            <ChallengesPage />
           </WithNavBar>
         </AuthRoute>
         <AuthRoute path="/leaderboard">

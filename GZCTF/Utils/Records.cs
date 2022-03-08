@@ -8,6 +8,6 @@ public record VerifyResult(AnswerResult Result = AnswerResult.WrongAnswer, int S
 #region 请求响应
 
 public record RequestResponse(string Title, int Status = 400);
-public record PuzzleResponse(int Id, int Status = 200);
+public record ChallengesResponse(int Id, int Status = 200);
 
 #endregion 请求响应

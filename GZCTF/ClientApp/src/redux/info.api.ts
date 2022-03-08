@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export interface PuzzleScoreBoard {
+export interface ChallengesScoreBoard {
   updateTime: string;
   rank: {
     score: number;
@@ -32,7 +32,7 @@ export const INFO_API = createApi({
   refetchOnReconnect: true,
   refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
-    getScoreBoard: builder.query<PuzzleScoreBoard, void>({
+    getScoreBoard: builder.query<ChallengesScoreBoard, void>({
       query: () => 'scoreboard'
     }),
     getAnnouncements: builder.query<Announcement[], void>({

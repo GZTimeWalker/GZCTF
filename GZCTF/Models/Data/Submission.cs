@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models;
 
-[Index(nameof(UserId), nameof(PuzzleId))]
+[Index(nameof(UserId), nameof(challengesId))]
 public class Submission
 {
     [Key]
@@ -55,13 +55,13 @@ public class Submission
     /// <summary>
     /// 谜题数据库Id
     /// </summary>
-    public int PuzzleId { get; set; }
+    public int challengesId { get; set; }
 
     /// <summary>
     /// 谜题
     /// </summary>
     [JsonIgnore]
-    public Puzzle? Puzzle { get; set; }
+    public Challenge? Challenges { get; set; }
 
     #endregion 数据库关系
 }

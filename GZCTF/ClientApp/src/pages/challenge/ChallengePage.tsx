@@ -14,9 +14,9 @@ import {
 import React, { FC, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { LoadingMask } from 'src/common/components/LoadingMask';
-import { PUZZLE_API } from 'src/redux/puzzle.api';
+import { Challenges_API } from 'src/redux/challenge.api';
 
-interface PuzzleCardProps {
+interface ChallengesCardProps {
   id: number;
   isSolved: boolean;
   acceptedCount: number;
@@ -25,7 +25,7 @@ interface PuzzleCardProps {
   title: string;
 }
 
-const PuzzleCard: FC<PuzzleCardProps> = ({
+const ChallengesCard: FC<ChallengesCardProps> = ({
   id,
   isSolved,
   acceptedCount,
@@ -33,7 +33,7 @@ const PuzzleCard: FC<PuzzleCardProps> = ({
   score,
   title
 }) => (
-  <Link to={`puzzle/${id}`}>
+  <Link to={`Challenges/${id}`}>
     <Box
       rounded="lg"
       bg="gray.700"
@@ -79,14 +79,14 @@ const PuzzleCard: FC<PuzzleCardProps> = ({
   </Link>
 );
 
-export const PuzzlePage: FC = () => {
-  const { isLoading, data, error } = PUZZLE_API.useGetPuzzleListQuery();
+export const ChallengesPage: FC = () => {
+  const { isLoading, data, error } = Challenges_API.useGetChallengesListQuery();
   const fadeAnimation = `${keyframes`
   0% {opacity:0;scale:0.9;}
   100% {opacity:1;scale:1;}
   `} 0.3s linear`;
 
-  const props = useMemo<PuzzleCardProps[]>(() => {
+  const props = useMemo<ChallengesCardProps[]>(() => {
     if (!data) {
       return [];
     }
@@ -112,7 +112,7 @@ export const PuzzlePage: FC = () => {
       <Wrap spacing="45px" justify="center">
         {props.map((p) => (
           <WrapItem key={p.id} animation={fadeAnimation}>
-            <PuzzleCard {...p} />
+            <ChallengesCard {...p} />
           </WrapItem>
         ))}
       </Wrap>

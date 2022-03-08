@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export interface Submission {
-  puzzleId: number;
+  challengesId: number;
   answer: string;
   solved: boolean;
   score: number;

@@ -7,7 +7,7 @@
     "HttpStatusCode": 429,
     "GeneralRules": [
       {
-        "Endpoint": "*:/api/puzzle/submit/*",
+        "Endpoint": "*:/api/Challenges/submit/*",
         "Period": "60s",
         "Limit": 3
       },

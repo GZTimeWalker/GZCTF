@@ -21,32 +21,32 @@ namespace CTFServer.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
-public class PuzzleController : ControllerBase
+public class ChallengesController : ControllerBase
 {
     private readonly int MAX_ACCESS_LEVEL = 0;
-    private static readonly Logger logger = LogManager.GetLogger("PuzzleController");
+    private static readonly Logger logger = LogManager.GetLogger("ChallengesController");
     private readonly UserManager<UserInfo> userManager;
     private readonly IRankRepository rankRepository;
     private readonly ISubmissionRepository submissionRepository;
-    private readonly IPuzzleRepository puzzleRepository;
+    private readonly IChallengeRepository ChallengesRepository;
     private readonly IMemoryCache cache;
 
-    public PuzzleController(
+    public ChallengesController(
         IMemoryCache memoryCache,
         UserManager<UserInfo> _userManager,
-        IPuzzleRepository _puzzleRepository,
+        IChallengeRepository _ChallengesRepository,
         ISubmissionRepository _submissionRepository,
         IRankRepository _rankRepository)
     {
         cache = memoryCache;
         userManager = _userManager;
         rankRepository = _rankRepository;
-        puzzleRepository = _puzzleRepository;
+        ChallengesRepository = _ChallengesRepository;
         submissionRepository = _submissionRepository;
 
         if (!cache.TryGetValue(CacheKey.MaxAccessLevel, out MAX_ACCESS_LEVEL))
         {
-            MAX_ACCESS_LEVEL = puzzleRepository.GetMaxAccessLevel();
+            MAX_ACCESS_LEVEL = ChallengesRepository.GetMaxAccessLevel();
             LogHelper.SystemLog(logger, $"题目最高访问等级：{MAX_ACCESS_LEVEL}");
             cache.Set(CacheKey.MaxAccessLevel, MAX_ACCESS_LEVEL, TimeSpan.FromDays(7));
         }
@@ -66,21 +66,21 @@ public class PuzzleController : ControllerBase
     /// <response code="403">无权访问</response>
     [HttpPost("New")]
     [RequireAdmin]
-    [ProducesResponseType(typeof(PuzzleResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ChallengesResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> New([FromBody] PuzzleBase model, CancellationToken token)
+    public async Task<IActionResult> New([FromBody] ChallengeBase model, CancellationToken token)
     {
-        var puzzle = await puzzleRepository.AddPuzzle(model, token);
+        var Challenges = await ChallengesRepository.AddChallenge(model, token);
 
-        if (puzzle is null)
+        if (Challenges is null)
             return BadRequest(new RequestResponse("无效的题目"));
 
         for (int i = model.AccessLevel; i <= MAX_ACCESS_LEVEL; ++i)
-            cache.Remove(CacheKey.AccessiblePuzzles(i));
+            cache.Remove(CacheKey.AccessibleChallengess(i));
 
         cache.Remove(CacheKey.MaxAccessLevel);
 
-        return Ok(new PuzzleResponse(puzzle.Id));
+        return Ok(new ChallengesResponse(Challenges.Id));
     }
 
     /// <summary>
@@ -98,21 +98,21 @@ public class PuzzleController : ControllerBase
     /// <response code="403">无权访问</response>
     [HttpPut("{id:int}")]
     [RequireAdmin]
-    [ProducesResponseType(typeof(PuzzleResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ChallengesResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update(int id, [FromBody] PuzzleBase model, CancellationToken token)
+    public async Task<IActionResult> Update(int id, [FromBody] ChallengeBase model, CancellationToken token)
     {
-        var puzzle = await puzzleRepository.UpdatePuzzle(id, model, token);
+        var Challenges = await ChallengesRepository.UpdateChallenges(id, model, token);
 
-        if (puzzle is null)
+        if (Challenges is null)
             return BadRequest(new RequestResponse("未找到题目"));
 
         for (int i = model.AccessLevel; i <= MAX_ACCESS_LEVEL; ++i)
-            cache.Remove(CacheKey.AccessiblePuzzles(i));
+            cache.Remove(CacheKey.AccessibleChallengess(i));
 
         cache.Remove(CacheKey.MaxAccessLevel);
 
-        return Ok(new PuzzleResponse(puzzle.Id));
+        return Ok(new ChallengesResponse(Challenges.Id));
     }
 
     /// <summary>
@@ -129,15 +129,15 @@ public class PuzzleController : ControllerBase
     [HttpGet("{id:int}")]
     [TimeCheck]
     [RequireSignedIn]
-    [ProducesResponseType(typeof(UserPuzzleModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UserChallengesModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Get(int id, CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
-        var puzzle = await puzzleRepository.GetUserPuzzle(id, user.AccessLevel, token);
+        var Challenges = await ChallengesRepository.GetUserChallenges(id, user.AccessLevel, token);
 
-        if (puzzle is null)
+        if (Challenges is null)
         {
             LogHelper.Log(logger, $"试图获取未授权题目#{id}", user, TaskStatus.Denied);
             return new JsonResult(new RequestResponse("无权访问或题目无效", 403))
@@ -146,7 +146,7 @@ public class PuzzleController : ControllerBase
             };
         }
 
-        return Ok(puzzle);
+        return Ok(Challenges);
     }
 
     /// <summary>
@@ -167,13 +167,13 @@ public class PuzzleController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(int id, CancellationToken token)
     {
-        var (res, title) = await puzzleRepository.DeletePuzzle(id, token);
+        var (res, title) = await ChallengesRepository.DeleteChallenges(id, token);
 
         if (!res)
             return BadRequest(new RequestResponse("题目删除失败"));
 
         for (int i = 0; i <= MAX_ACCESS_LEVEL; ++i)
-            cache.Remove(CacheKey.AccessiblePuzzles(i));
+            cache.Remove(CacheKey.AccessibleChallengess(i));
 
         cache.Remove(CacheKey.MaxAccessLevel);
 
@@ -197,26 +197,26 @@ public class PuzzleController : ControllerBase
     [HttpGet("List")]
     [TimeCheck]
     [RequireSignedIn]
-    [ProducesResponseType(typeof(PuzzleListModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPuzzleList(CancellationToken token)
+    [ProducesResponseType(typeof(ChallengesListModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetChallengesList(CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
         int accessLevel = user.AccessLevel;
 
-        if (!cache.TryGetValue(CacheKey.AccessiblePuzzles(accessLevel), out List<PuzzleItem> accessible))
+        if (!cache.TryGetValue(CacheKey.AccessibleChallengess(accessLevel), out List<ChallengesItem> accessible))
         {
-            accessible = await puzzleRepository.GetAccessiblePuzzles(accessLevel, token);
-            // LogHelper.SystemLog(logger, $"重构缓存：AccessiblePuzzles#{accessLevel}");
-            cache.Set(CacheKey.AccessiblePuzzles(accessLevel), accessible, TimeSpan.FromMinutes(10));
+            accessible = await ChallengesRepository.GetAccessibleChallengess(accessLevel, token);
+            // LogHelper.SystemLog(logger, $"重构缓存：AccessibleChallengess#{accessLevel}");
+            cache.Set(CacheKey.AccessibleChallengess(accessLevel), accessible, TimeSpan.FromMinutes(10));
         }
 
-        PuzzleListModel puzzleList = new()
+        ChallengesListModel ChallengesList = new()
         {
             Accessible = accessible,
-            Solved = await submissionRepository.GetSolvedPuzzles(user.Id, token)
+            Solved = await submissionRepository.GetSolvedChallengess(user.Id, token)
         };
 
-        return Ok(puzzleList);
+        return Ok(ChallengesList);
     }
 
     /// <summary>
@@ -244,12 +244,12 @@ public class PuzzleController : ControllerBase
 
         var hasSolved = await submissionRepository.HasSubmitted(id, user.Id, token);
 
-        var result = await puzzleRepository.VerifyAnswer(id, model.Answer, user, hasSolved, token);
+        var result = await ChallengesRepository.VerifyAnswer(id, model.Answer, user, hasSolved, token);
 
         Submission sub = new()
         {
             UserId = user.Id,
-            PuzzleId = id,
+            challengesId = id,
             Answer = model.Answer,
             Solved = result.Result == AnswerResult.Accepted,
             Score = hasSolved ? 0 : result.Score,
@@ -267,7 +267,7 @@ public class PuzzleController : ControllerBase
 
         if(user.Privilege == Privilege.User)
             for (int i = 0; i <= MAX_ACCESS_LEVEL; ++i)
-                cache.Remove(CacheKey.AccessiblePuzzles(i));
+                cache.Remove(CacheKey.AccessibleChallengess(i));
 
         if (result.Result == AnswerResult.WrongAnswer)
         {

@@ -103,5 +103,5 @@ public static class CacheKey
     /// </summary>
     /// <param name="accessLevel">访问等级</param>
     /// <returns></returns>
-    public static string AccessiblePuzzles(int accessLevel) => $"_AccessiblePuzzle_{accessLevel}";
+    public static string AccessibleChallengess(int accessLevel) => $"_AccessibleChallenges_{accessLevel}";
 }

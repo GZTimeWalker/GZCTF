@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CTFServer.Models;
 
 [Index(nameof(AccessLevel))]
-public class Puzzle : PuzzleBase
+public class Challenge : ChallengeBase
 {
     [Key]
     public int Id { get; set; }
@@ -33,15 +33,15 @@ public class Puzzle : PuzzleBase
 
     #endregion 数据库关系
 
-    public void Update(PuzzleBase puzzle)
+    public void Update(ChallengeBase Challenges)
     {
-        foreach (var item in typeof(PuzzleBase).GetProperties())
-            item.SetValue(this, item.GetValue(puzzle));
+        foreach (var item in typeof(ChallengeBase).GetProperties())
+            item.SetValue(this, item.GetValue(Challenges));
     }
 
-    public Puzzle() : base()
+    public Challenge() : base()
     {
     }
 
-    public Puzzle(PuzzleBase puzzle) : base() => Update(puzzle);
+    public Challenge(ChallengeBase Challenges) : base() => Update(Challenges);
 }

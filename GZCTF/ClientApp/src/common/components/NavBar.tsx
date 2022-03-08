@@ -31,7 +31,7 @@ export const NavBar: FC = () => {
           matchExactly={true}
           icon={<HomeIcon width="24px" height="24px" />}
         />
-        <RouterButton route="/puzzle" icon={<RoadMapIcon width="24px" height="24px" />} />
+        <RouterButton route="/Challenges" icon={<RoadMapIcon width="24px" height="24px" />} />
         <RouterButton route="/leaderboard" icon={<LeaderBoardIcon width="24px" height="24px" />} />
       </VStack>
       <Spacer />

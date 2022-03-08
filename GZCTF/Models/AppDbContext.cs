@@ -12,7 +12,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<LogModel> Logs { get; set; } = default!;
     public DbSet<Submission> Submissions { get; set; } = default!;
     public DbSet<Rank> Ranks { get; set; } = default!;
-    public DbSet<Puzzle> Puzzles { get; set; } = default!;
+    public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Announcement> Announcements { get; set; } = default!;
 
 
@@ -36,11 +36,11 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
-        builder.Entity<Puzzle>(entity =>
+        builder.Entity<Challenge>(entity =>
         {
             entity.HasMany(e => e.Submissions)
-                .WithOne(e => e.Puzzle)
-                .HasForeignKey(e => e.PuzzleId)
+                .WithOne(e => e.Challenges)
+                .HasForeignKey(e => e.challengesId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

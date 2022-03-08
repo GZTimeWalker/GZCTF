@@ -11,7 +11,7 @@ public class TimeLineModel
     /// 解出的题目Id
     /// </summary>
     [JsonIgnore]
-    public int PuzzleId { get; set; }
+    public int challengesId { get; set; }
 
     /// <summary>
     /// 时间

@@ -17,13 +17,13 @@ public interface ISubmissionRepository
     /// <summary>
     /// 根据题目Id获取提交记录
     /// </summary>
-    /// <param name="puzzleId">题目Id</param>
+    /// <param name="challengesId">题目Id</param>
     /// <param name="userId">用户Id</param>
     /// <param name="skip">跳过数量</param>
     /// <param name="count">获取数量</param>
     /// <param name="token">操作取消token</param>
     /// <returns></returns>
-    public Task<List<Submission>> GetSubmissions(CancellationToken token, int skip = 0, int count = 50, int puzzleId = 0, string userId = "All");
+    public Task<List<Submission>> GetSubmissions(CancellationToken token, int skip = 0, int count = 50, int challengesId = 0, string userId = "All");
 
     /// <summary>
     /// 获取用户时间线
@@ -36,11 +36,11 @@ public interface ISubmissionRepository
     /// <summary>
     /// 是否已经提交
     /// </summary>
-    /// <param name="puzzleId">题目Id</param>
+    /// <param name="challengesId">题目Id</param>
     /// <param name="userId">用户Id</param>
     /// <param name="token">操作取消Token</param>
     /// <returns></returns>
-    public Task<bool> HasSubmitted(int puzzleId, string userId, CancellationToken token);
+    public Task<bool> HasSubmitted(int challengesId, string userId, CancellationToken token);
     
     /// <summary>
     /// 获取已解出的题目列表
@@ -48,5 +48,5 @@ public interface ISubmissionRepository
     /// <param name="userId">用户Id</param>
     /// <param name="token">操作取消Token</param>
     /// <returns></returns>
-    public Task<HashSet<int>> GetSolvedPuzzles(string userId, CancellationToken token);
+    public Task<HashSet<int>> GetSolvedChallengess(string userId, CancellationToken token);
 }

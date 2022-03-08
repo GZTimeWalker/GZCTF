@@ -24,14 +24,14 @@ public class RankRepository : RepositoryBase, IRankRepository
         foreach (UserInfo user in users)
         {
             int currentScore = 0;
-            HashSet<int> puzzleIds = new();
+            HashSet<int> challengesIds = new();
 
             foreach (var sub in user.Submissions.OrderByDescending(s => s.Score))
             {
-                if (!puzzleIds.Contains(sub.PuzzleId))
+                if (!challengesIds.Contains(sub.challengesId))
                 {
                     currentScore += sub.Score;
-                    puzzleIds.Add(sub.PuzzleId);
+                    challengesIds.Add(sub.challengesId);
                 }
             }
 
@@ -56,8 +56,7 @@ public class RankRepository : RepositoryBase, IRankRepository
                 UserName = rank.User!.UserName,
                 Descr = rank.User.Description,
                 UserId = rank.UserId,
-                User = rank.User,
-                IsSYSU = rank.User!.IsSYSU
+                User = rank.User
             }).ToListAsync(token);
 
     public async Task UpdateRank(Rank rank, int score, CancellationToken token)

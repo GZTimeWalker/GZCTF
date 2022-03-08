@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { ADMIN_API, PuzzleLog } from '../../redux/admin.api';
+import { ADMIN_API, ChallengesLog } from '../../redux/admin.api';
 import { LoadingMask } from '../../common/components/LoadingMask';
 import {
   Button,
@@ -52,7 +52,7 @@ export const LogsPage: FC = () => {
     skip: (page - 1) * ITEM_COUNT_PER_PAGE
   });
   const [, update] = useState(new Date());
-  const newLogs = useRef<PuzzleLog[]>([]);
+  const newLogs = useRef<ChallengesLog[]>([]);
   const pageInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
   const fadeAnimation = `${keyframes`
@@ -69,7 +69,7 @@ export const LogsPage: FC = () => {
 
     connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 24;
 
-    connection.on('ReceivedLog', (message: PuzzleLog) => {
+    connection.on('ReceivedLog', (message: ChallengesLog) => {
       console.log(message);
       newLogs.current = [message, ...newLogs.current];
       update(new Date(message.time));

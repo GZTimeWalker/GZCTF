@@ -4,13 +4,13 @@ namespace CTFServer.Models.Request;
 /// <summary>
 /// 题目列表对象
 /// </summary>
-public class PuzzleListModel
+public class ChallengesListModel
 {
 
     /// <summary>
     /// 可访问的题目
     /// </summary>
-    public List<PuzzleItem> Accessible { get; set; } = new();
+    public List<ChallengesItem> Accessible { get; set; } = new();
     /// <summary>
     /// 已经解决的题目序号列表
     /// </summary>
@@ -20,7 +20,7 @@ public class PuzzleListModel
 /// <summary>
 /// 题目
 /// </summary>
-public class PuzzleItem
+public class ChallengesItem
 {
     /// <summary>
     /// 题目Id

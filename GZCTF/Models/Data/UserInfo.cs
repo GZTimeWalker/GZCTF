@@ -49,11 +49,6 @@ public class UserInfo : IdentityUser
     /// </summary>
     public string RealName { get; set; } = string.Empty;
 
-    /// <summary>
-    /// 是否为中山大学学生
-    /// </summary>
-    public bool IsSYSU { get; set; } = false;
-
     #region 数据库关系
 
     public int RankId { get; set; }

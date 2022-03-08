@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export interface PuzzleDto {
+export interface ChallengesDto {
   title: string;
   content: string;
   clientJS: string;
@@ -14,7 +14,7 @@ export interface PuzzleDto {
   upgradeAccessLevel: number;
 }
 
-export interface PuzzleList {
+export interface ChallengesList {
   solved: number[];
   accessible: {
     id: number;
@@ -25,43 +25,43 @@ export interface PuzzleList {
   }[];
 }
 
-export interface AnswerPuzzleDto {
+export interface AnswerChallengesDto {
   answer: string;
 }
 
-export const PUZZLE_API = createApi({
-  reducerPath: 'puzzleApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'api/puzzle' }),
+export const Challenges_API = createApi({
+  reducerPath: 'ChallengesApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'api/Challenges' }),
   refetchOnFocus: true,
   refetchOnReconnect: true,
   refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
-    createPuzzle: builder.query<void, PuzzleDto>({
+    createChallenges: builder.query<void, ChallengesDto>({
       query: () => ({
         url: 'new',
         method: 'POST'
       })
     }),
-    getPuzzle: builder.query<PuzzleDto, number>({
+    getChallenges: builder.query<ChallengesDto, number>({
       query: (id) => `${id}`
     }),
-    updatePuzzle: builder.query<void, [PuzzleDto, number]>({
+    updateChallenges: builder.query<void, [ChallengesDto, number]>({
       query: ([dto, id]) => ({
         url: `${id}`,
         method: 'PUT',
         body: dto
       })
     }),
-    deletePuzzle: builder.query<void, number>({
+    deleteChallenges: builder.query<void, number>({
       query: (id) => ({
         url: `${id}`,
         method: 'DELETE'
       })
     }),
-    getPuzzleList: builder.query<PuzzleList, void>({
+    getChallengesList: builder.query<ChallengesList, void>({
       query: () => 'list'
     }),
-    answerPuzzle: builder.mutation<void, [AnswerPuzzleDto, number]>({
+    answerChallenges: builder.mutation<void, [AnswerChallengesDto, number]>({
       query: ([dto, id]) => ({
         url: `submit/${id}`,
         method: 'POST',
