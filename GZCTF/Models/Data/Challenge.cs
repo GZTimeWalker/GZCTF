@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CTFServer.Models;
@@ -39,9 +38,7 @@ public class Challenge : ChallengeBase
             item.SetValue(this, item.GetValue(Challenges));
     }
 
-    public Challenge() : base()
-    {
-    }
+    public Challenge() : base() { }
 
     public Challenge(ChallengeBase Challenges) : base() => Update(Challenges);
 }

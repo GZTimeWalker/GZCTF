@@ -270,8 +270,6 @@ public class AccountController : ControllerBase
         user.UserName = model.UserName ?? user.UserName;
         user.Description = model.Descr ?? user.Description;
         user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
-        user.StudentId = model.StudentId ?? user.StudentId;
-        user.RealName = model.RealName ?? user.RealName;
 
         var result = await userManager.UpdateAsync(user);
 
@@ -399,9 +397,7 @@ public class AccountController : ControllerBase
                 Description = user.Description,
                 Email = user.Email, 
                 UserName = user.UserName,
-                PhoneNumber = user.PhoneNumber,
-                RealName = user.RealName,
-                StudentId = user.StudentId,
+                PhoneNumber = user.PhoneNumber
         });
     }
 

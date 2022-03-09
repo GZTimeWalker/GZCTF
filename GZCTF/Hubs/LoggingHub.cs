@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using CTFServer.Hubs.Interface;
+using CTFServer.Hubs.Client;
 using CTFServer.Services;
 using CTFServer.Utils;
 
@@ -7,13 +7,7 @@ namespace CTFServer.Hubs;
 
 public class LoggingHub : Hub<ILoggingClient>
 {
-    private readonly SignalRLoggingService loggingEmitter;
-
-    // This is the way to init LoggingEmitter.
-    public LoggingHub(SignalRLoggingService emitter)
-    {
-        loggingEmitter = emitter;
-    }
+    public LoggingHub(SignalRLoggingService emitter) { _ = emitter; }
 
     public override async Task OnConnectedAsync()
     {

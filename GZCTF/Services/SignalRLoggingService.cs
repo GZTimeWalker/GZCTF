@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
-using CTFServer.Hubs.Interface;
+using CTFServer.Hubs.Client;
 using CTFServer.Models;
 using NLog;
 

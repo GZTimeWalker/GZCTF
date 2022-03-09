@@ -39,16 +39,6 @@ public class UserInfo : IdentityUser
     /// </summary>
     public int AccessLevel { get; set; } = 0;
 
-    /// <summary>
-    /// 学号
-    /// </summary>
-    public string StudentId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 真实姓名
-    /// </summary>
-    public string RealName { get; set; } = string.Empty;
-
     #region 数据库关系
 
     public int RankId { get; set; }

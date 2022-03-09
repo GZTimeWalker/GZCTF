@@ -20,17 +20,7 @@ public class ProfileUpdateModel
     public string? Descr { get; set; }
 
     /// <summary>
-    /// 学号
-    /// </summary>
-    public string? StudentId { get; set; } = string.Empty;
-
-    /// <summary>
     /// 手机号
     /// </summary>
     public string? PhoneNumber { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 真实姓名
-    /// </summary>
-    public string? RealName { get; set; } = string.Empty;
 }

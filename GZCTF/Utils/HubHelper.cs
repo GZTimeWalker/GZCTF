@@ -7,8 +7,6 @@ namespace CTFServer.Utils;
 
 public class HubHelper
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
     /// <summary>
     /// 当前请求是否具有权限
     /// </summary>

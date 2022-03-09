@@ -1,6 +1,6 @@
 ﻿using CTFServer.Models;
 
-namespace CTFServer.Hubs.Interface;
+namespace CTFServer.Hubs.Client;
 
 public interface ILoggingClient
 {
