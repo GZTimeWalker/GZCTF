@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
@@ -22,8 +23,22 @@ public class Team
     public string Bio { get; set; } = string.Empty;
 
     /// <summary>
+    /// 头像URL
+    /// </summary>
+    [NotMapped]
+    [JsonPropertyName("avatar")]
+    public string AvatarUrl { get; set; } = string.Empty;
+
+    #region Db Relationship
+    /// <summary>
     /// 头像ID
     /// </summary>
     [JsonIgnore]
     public string AvatarId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 头像对象
+    /// </summary>
+    public LocalFile? Avatar { get; set; } = null;
+    #endregion Db Relationship
 }

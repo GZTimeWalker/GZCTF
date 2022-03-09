@@ -26,10 +26,10 @@ public class Challenge : ChallengeBase
         }
     }
 
-    #region 数据库关系
-    public List<Submission> Submissions { get; set; } = new();
+    #region Db Relationship
+    public List<FlagContext> Flags { get; set; } = new();
 
-    #endregion 数据库关系
+    #endregion Db Relationship
 
     public void Update(ChallengeBase Challenges)
     {

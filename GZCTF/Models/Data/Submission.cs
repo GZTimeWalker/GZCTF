@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models;
 
-[Index(nameof(UserId), nameof(ChallengeId))]
+[Index(nameof(UserId))]
 public class Submission
 {
     [Key]
@@ -18,14 +18,9 @@ public class Submission
     public string Answer { get; set; } = string.Empty;
 
     /// <summary>
-    /// 提交的答案是否正确
+    /// 提交的答案状态
     /// </summary>
-    public bool Solved { get; set; } = false;
-
-    /// <summary>
-    /// 提交的得分
-    /// </summary>
-    public int Score { get; set; } = 0;
+    public AnswerResult Status { get; set; } = AnswerResult.Accepted;
 
     /// <summary>
     /// 答案提交的时间
@@ -33,12 +28,8 @@ public class Submission
     [JsonPropertyName("time")]
     public DateTimeOffset SubmitTimeUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
 
-    /// <summary>
-    /// 用户名
-    /// </summary>
-    public string UserName { get; set; } = "Anonymous";
 
-    #region 数据库关系
+    #region Db Relationship
 
     /// <summary>
     /// 用户数据库Id
@@ -53,15 +44,28 @@ public class Submission
     public UserInfo? User { get; set; }
 
     /// <summary>
-    /// 题目数据库Id
-    /// </summary>
-    public int ChallengeId { get; set; }
-
-    /// <summary>
-    /// 题目
+    /// 参与队伍
     /// </summary>
     [JsonIgnore]
-    public Challenge? Challenge { get; set; }
+    public int ParticipationId { get; set; }
 
-    #endregion 数据库关系
+    /// <summary>
+    /// 队伍
+    /// </summary>
+    [JsonIgnore]
+    public Participation? Team { get; set; }
+
+    /// <summary>
+    /// 比赛Id
+    /// </summary>
+    [JsonIgnore]
+    public int GameId { get; set; }
+
+    /// <summary>
+    /// 比赛
+    /// </summary>
+    [JsonIgnore]
+    public Game? Game { get; set; }
+
+    #endregion Db Relationship
 }

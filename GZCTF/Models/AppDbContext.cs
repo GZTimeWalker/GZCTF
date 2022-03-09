@@ -12,7 +12,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Notice> Notices { get; set; } = default!;
     public DbSet<GameNotice> GameNotices { get; set; } = default!;
-    public DbSet<CTFFile> Files { get; set; } = default!;
+    public DbSet<LocalFile> Files { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,14 +27,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
-        });
-
-        builder.Entity<Challenge>(entity =>
-        {
-            entity.HasMany(e => e.Submissions)
-                .WithOne(e => e.Challenge)
-                .HasForeignKey(e => e.ChallengeId)
-                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

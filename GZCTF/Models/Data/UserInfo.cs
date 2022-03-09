@@ -32,16 +32,19 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 个性签名
     /// </summary>
-    public string Description { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 访问权限
-    /// </summary>
-    public int AccessLevel { get; set; } = 0;
+    public string Bio { get; set; } = string.Empty;
 
     #region 数据库关系
 
-    public int RankId { get; set; }
+    /// <summary>
+    /// 头像文件 Id
+    /// </summary>
+    public string AvatarId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 头像
+    /// </summary>
+    public LocalFile? Avatar { get; set; }
 
     public List<Submission> Submissions { get; set; } = new();
 
