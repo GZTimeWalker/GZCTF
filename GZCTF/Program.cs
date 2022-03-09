@@ -14,11 +14,12 @@ using NJsonSchema.Generation;
 using NLog;
 using NLog.Web;
 using NLog.Targets;
-using NSwag;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,8 +68,8 @@ builder.Services.AddOpenApiDocument(settings =>
 {
     settings.DocumentName = "v1";
     settings.Version = "v0.1";
-    settings.Title = "MSC Challenges API";
-    settings.Description = "MSC Challenges 接口文档";
+    settings.Title = "GZCTF Server API";
+    settings.Description = "GZCTF Server 接口文档";
     settings.UseControllerSummaryAsTagDescription = true;
     settings.SerializerSettings = SystemTextJsonUtilities.ConvertJsonOptionsToNewtonsoftSettings(new JsonSerializerOptions
     {
@@ -153,6 +154,13 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -164,17 +172,6 @@ else
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
-    app.UseOpenApi(options =>
-    {
-        options.PostProcess += (document, _) =>
-        {
-            document.Servers.Clear();
-            document.Servers.Add(new OpenApiServer
-            {
-                Url = "https://Challenges.sysums.club"
-            });
-        };
-    });
 }
 
 app.UseSwaggerUi3();
@@ -190,6 +187,13 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions {
+    FileProvider = new PhysicalFileProvider(
+        builder.Configuration.GetSection("UploadFolder").Value ??
+        Path.Combine(builder.Environment.ContentRootPath, "upload")),
+    RequestPath = "/assets"
+});
 
 app.UseEndpoints(endpoints =>
 {

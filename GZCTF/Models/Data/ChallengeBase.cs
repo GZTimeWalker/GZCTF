@@ -32,6 +32,11 @@ public class ChallengeBase
     public string Answer { get; set; } = string.Empty;
 
     /// <summary>
+    /// 题目标签
+    /// </summary>
+    public string Tag { get; set; } = string.Empty;
+
+    /// <summary>
     /// 访问等级
     /// </summary>
     [Required]

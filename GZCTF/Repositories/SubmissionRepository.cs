@@ -25,14 +25,14 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 
     public async Task<HashSet<int>> GetSolvedChallengess(string userId, CancellationToken token)
         => (await (from sub in context.Submissions.Where(s => s.Solved && s.UserId == userId)
-                    select sub.challengesId).ToListAsync(token)).ToHashSet();
+                    select sub.ChallengeId).ToListAsync(token)).ToHashSet();
 
     public Task<List<Submission>> GetSubmissions(CancellationToken token, int skip = 0, int count = 50, int challengesId = 0, string userId = "All")
     {
         IQueryable<Submission> result = context.Submissions;
 
         if (challengesId > 0)
-            result = result.Where(s => s.challengesId == challengesId);
+            result = result.Where(s => s.ChallengeId == challengesId);
 
         if (userId != "All")
             result = result.Where(s => s.UserId == userId);
@@ -60,16 +60,16 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 
         foreach (var sub in user.Submissions.OrderBy(s => s.SubmitTimeUTC))
         {
-            if (!challengesIds.Contains(sub.challengesId) && sub.Score != 0)
+            if (!challengesIds.Contains(sub.ChallengeId) && sub.Score != 0)
             {
                 currentScore += sub.Score;
                 result.Add(new TimeLineModel()
                 {
-                    challengesId = sub.challengesId,
+                    challengesId = sub.ChallengeId,
                     Time = sub.SubmitTimeUTC,
                     TotalScore = currentScore
                 });
-                challengesIds.Add(sub.challengesId);
+                challengesIds.Add(sub.ChallengeId);
             }
         }
 
@@ -77,5 +77,5 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
     }
 
     public Task<bool> HasSubmitted(int challengesId, string userId, CancellationToken token)
-        => context.Submissions.AnyAsync(s => s.challengesId == challengesId && s.UserId == userId && s.Solved, token);
+        => context.Submissions.AnyAsync(s => s.ChallengeId == challengesId && s.UserId == userId && s.Solved, token);
 }

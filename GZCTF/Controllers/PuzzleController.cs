@@ -249,7 +249,7 @@ public class ChallengesController : ControllerBase
         Submission sub = new()
         {
             UserId = user.Id,
-            challengesId = id,
+            ChallengeId = id,
             Answer = model.Answer,
             Solved = result.Result == AnswerResult.Accepted,
             Score = hasSolved ? 0 : result.Score,

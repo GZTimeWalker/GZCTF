@@ -28,10 +28,10 @@ public class RankRepository : RepositoryBase, IRankRepository
 
             foreach (var sub in user.Submissions.OrderByDescending(s => s.Score))
             {
-                if (!challengesIds.Contains(sub.challengesId))
+                if (!challengesIds.Contains(sub.ChallengeId))
                 {
                     currentScore += sub.Score;
-                    challengesIds.Add(sub.challengesId);
+                    challengesIds.Add(sub.ChallengeId);
                 }
             }
 

@@ -14,6 +14,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Rank> Ranks { get; set; } = default!;
     public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Announcement> Announcements { get; set; } = default!;
+    public DbSet<ChallengeFile> ChallengeFiles { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -39,8 +40,13 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         builder.Entity<Challenge>(entity =>
         {
             entity.HasMany(e => e.Submissions)
-                .WithOne(e => e.Challenges)
-                .HasForeignKey(e => e.challengesId)
+                .WithOne(e => e.Challenge)
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(e => e.Files)
+                .WithOne(e => e.Challenge)
+                .HasForeignKey(e => e.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

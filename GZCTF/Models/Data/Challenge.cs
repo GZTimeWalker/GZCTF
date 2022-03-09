@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CTFServer.Models;
 
-[Index(nameof(AccessLevel))]
 public class Challenge : ChallengeBase
 {
     [Key]
@@ -30,6 +29,7 @@ public class Challenge : ChallengeBase
 
     #region 数据库关系
     public List<Submission> Submissions { get; set; } = new();
+    public List<ChallengeFile> Files { get; set; } = new();
 
     #endregion 数据库关系
 
