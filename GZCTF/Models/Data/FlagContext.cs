@@ -21,5 +21,15 @@ public class FlagContext
     /// <summary>
     /// Flag 对应附件
     /// </summary>
-    public LocalFile? Attachment { get; set; } = null;
+    public LocalFile? Attachment { get; set; }
+
+    /// <summary>
+    /// 赛题
+    /// </summary>
+    public Challenge? Challenge { get; set; }
+
+    /// <summary>
+    /// 赛题Id
+    /// </summary>
+    public int ChallengeId { get; set; }
 }

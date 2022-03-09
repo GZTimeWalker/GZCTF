@@ -24,15 +24,17 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
     }
 
     public async Task<HashSet<int>> GetSolvedChallengess(string userId, CancellationToken token)
-        => (await (from sub in context.Submissions.Where(s => s.Solved && s.UserId == userId)
-                    select sub.ChallengeId).ToListAsync(token)).ToHashSet();
+        // => (await (from sub in context.Submissions.Where(s => s.Solved && s.UserId == userId)
+        //            select sub.ChallengeId).ToListAsync(token)).ToHashSet();
+        => throw new NotImplementedException();
 
     public Task<List<Submission>> GetSubmissions(CancellationToken token, int skip = 0, int count = 50, int challengesId = 0, string userId = "All")
     {
         IQueryable<Submission> result = context.Submissions;
 
-        if (challengesId > 0)
-            result = result.Where(s => s.ChallengeId == challengesId);
+        //if (challengesId > 0)
+        //    result = result.Where(s => s.ChallengeId == challengesId);
+        throw new NotImplementedException();
 
         if (userId != "All")
             result = result.Where(s => s.UserId == userId);
@@ -58,7 +60,9 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
             challengesId = -1,
         });
 
-        foreach (var sub in user.Submissions.OrderBy(s => s.SubmitTimeUTC))
+        throw new NotImplementedException();
+
+        /*foreach (var sub in user.Submissions.OrderBy(s => s.SubmitTimeUTC))
         {
             if (!challengesIds.Contains(sub.ChallengeId) && sub.Score != 0)
             {
@@ -71,11 +75,12 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
                 });
                 challengesIds.Add(sub.ChallengeId);
             }
-        }
+        }*/
 
         return result;
     }
 
     public Task<bool> HasSubmitted(int challengesId, string userId, CancellationToken token)
-        => context.Submissions.AnyAsync(s => s.ChallengeId == challengesId && s.UserId == userId && s.Solved, token);
+       // => context.Submissions.AnyAsync(s => s.ChallengeId == challengesId && s.UserId == userId && s.Solved, token);
+        => throw new NotImplementedException();
 }

@@ -30,15 +30,20 @@ public class Team
     public string AvatarUrl { get; set; } = string.Empty;
 
     #region Db Relationship
-    /// <summary>
-    /// 头像ID
-    /// </summary>
-    [JsonIgnore]
-    public string AvatarId { get; set; } = string.Empty;
 
     /// <summary>
     /// 头像对象
     /// </summary>
     public LocalFile? Avatar { get; set; } = null;
+
+    /// <summary>
+    /// 比赛
+    /// </summary>
+    public List<Participation> Games { get; set; } = new();
+
+    /// <summary>
+    /// 队员
+    /// </summary>
+    public List<UserInfo> Members { get; set; } = new();
     #endregion Db Relationship
 }

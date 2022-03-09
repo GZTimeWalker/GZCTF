@@ -26,7 +26,6 @@ public class ChallengesController : ControllerBase
     private readonly int MAX_ACCESS_LEVEL = 0;
     private static readonly Logger logger = LogManager.GetLogger("ChallengesController");
     private readonly UserManager<UserInfo> userManager;
-    private readonly IRankRepository rankRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IChallengeRepository ChallengesRepository;
     private readonly IMemoryCache cache;
@@ -35,21 +34,12 @@ public class ChallengesController : ControllerBase
         IMemoryCache memoryCache,
         UserManager<UserInfo> _userManager,
         IChallengeRepository _ChallengesRepository,
-        ISubmissionRepository _submissionRepository,
-        IRankRepository _rankRepository)
+        ISubmissionRepository _submissionRepository)
     {
         cache = memoryCache;
         userManager = _userManager;
-        rankRepository = _rankRepository;
         ChallengesRepository = _ChallengesRepository;
         submissionRepository = _submissionRepository;
-
-        if (!cache.TryGetValue(CacheKey.MaxAccessLevel, out MAX_ACCESS_LEVEL))
-        {
-            MAX_ACCESS_LEVEL = ChallengesRepository.GetMaxAccessLevel();
-            LogHelper.SystemLog(logger, $"题目最高访问等级：{MAX_ACCESS_LEVEL}");
-            cache.Set(CacheKey.MaxAccessLevel, MAX_ACCESS_LEVEL, TimeSpan.FromDays(7));
-        }
     }
 
     /// <summary>
@@ -74,9 +64,6 @@ public class ChallengesController : ControllerBase
 
         if (Challenges is null)
             return BadRequest(new RequestResponse("无效的题目"));
-
-        for (int i = model.AccessLevel; i <= MAX_ACCESS_LEVEL; ++i)
-            cache.Remove(CacheKey.AccessibleChallengess(i));
 
         cache.Remove(CacheKey.MaxAccessLevel);
 
@@ -107,9 +94,6 @@ public class ChallengesController : ControllerBase
         if (Challenges is null)
             return BadRequest(new RequestResponse("未找到题目"));
 
-        for (int i = model.AccessLevel; i <= MAX_ACCESS_LEVEL; ++i)
-            cache.Remove(CacheKey.AccessibleChallengess(i));
-
         cache.Remove(CacheKey.MaxAccessLevel);
 
         return Ok(new ChallengesResponse(Challenges.Id));
@@ -135,7 +119,9 @@ public class ChallengesController : ControllerBase
     public async Task<IActionResult> Get(int id, CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
-        var Challenges = await ChallengesRepository.GetUserChallenges(id, user.AccessLevel, token);
+        throw new NotImplementedException();
+
+        var Challenges = await ChallengesRepository.GetUserChallenges(id, 0, token);
 
         if (Challenges is null)
         {
@@ -201,7 +187,9 @@ public class ChallengesController : ControllerBase
     public async Task<IActionResult> GetChallengesList(CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
-        int accessLevel = user.AccessLevel;
+        int accessLevel = 0;
+
+        throw new NotImplementedException();
 
         if (!cache.TryGetValue(CacheKey.AccessibleChallengess(accessLevel), out List<ChallengesItem> accessible))
         {
@@ -239,7 +227,7 @@ public class ChallengesController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Submit(int id, [FromBody] AnswerSubmitModel model, CancellationToken token)
     {
-        var user = await userManager.Users.Include(u => u.Rank)
+        /*var user = await userManager.Users.Include(u => u.Rank)
             .SingleAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier), cancellationToken: token);
 
         var hasSolved = await submissionRepository.HasSubmitted(id, user.Id, token);
@@ -255,8 +243,9 @@ public class ChallengesController : ControllerBase
             Score = hasSolved ? 0 : result.Score,
             SubmitTimeUTC = DateTimeOffset.UtcNow,
             UserName = user.UserName
-        };
+        };*/
 
+        /*
         await submissionRepository.AddSubmission(sub, token);
 
         if (result.Result == AnswerResult.Unauthorized)
@@ -292,6 +281,8 @@ public class ChallengesController : ControllerBase
 
         LogHelper.Log(logger, "答案正确：" + model.Answer, user, TaskStatus.Success);
 
-        return Ok();
+        return Ok();*/
+        throw new NotImplementedException();
+
     }
 }

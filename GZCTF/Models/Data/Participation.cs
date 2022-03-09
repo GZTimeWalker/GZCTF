@@ -33,5 +33,15 @@ public class Participation
     /// </summary>
     public List<Submission> Submissions { get; set; } = new();
 
+    [Required]
+    public int GameId { get; set; }
+
+    public Game? Game { get; set; }
+
+    [Required]
+    public int TeamId { get; set; }
+
+    public Team? Team { get; set; }
+
     #endregion Db Relationship
 }

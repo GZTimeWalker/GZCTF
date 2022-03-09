@@ -21,7 +21,6 @@ namespace CTFServer.Controllers;
 public class InfoController : ControllerBase
 {
     private static readonly Logger logger = LogManager.GetLogger("InfoController");
-    private readonly IRankRepository rankRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IMemoryCache cache;
     private readonly INoticeRepository announcementRepository;
@@ -29,11 +28,9 @@ public class InfoController : ControllerBase
     public InfoController(
         IMemoryCache memoryCache,
         ISubmissionRepository _submissionRepository,
-        INoticeRepository _announcementRepository,
-        IRankRepository _rankRepository)
+        INoticeRepository _announcementRepository)
     {
         cache = memoryCache;
-        rankRepository = _rankRepository;
         submissionRepository = _submissionRepository;
         announcementRepository = _announcementRepository;
     }
@@ -56,7 +53,7 @@ public class InfoController : ControllerBase
 
         result = new();
         result.TopDetail = new();
-        result.Rank = await rankRepository.GetRank(token);
+        //result.Rank = await rankRepository.GetRank(token);
 
         if (result.Rank is null)
             return Ok(result);

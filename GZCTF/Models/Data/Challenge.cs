@@ -29,6 +29,7 @@ public class Challenge : ChallengeBase
     #region Db Relationship
     public List<FlagContext> Flags { get; set; } = new();
 
+    public List<Game> Games { get; set; } = new();
     #endregion Db Relationship
 
     public void Update(ChallengeBase Challenges)

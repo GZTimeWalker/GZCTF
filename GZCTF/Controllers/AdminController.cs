@@ -23,19 +23,16 @@ public class AdminController : ControllerBase
 {
     private static readonly Logger logger = LogManager.GetLogger("AdminController");
     private readonly ILogRepository logRepository;
-    private readonly IRankRepository rankRepository;
     private readonly IMemoryCache cache;
     private readonly INoticeRepository announcementRepository;
 
     public AdminController(ILogRepository _logRepository,
         IMemoryCache memoryCache,
-        INoticeRepository _announcementRepository,
-        IRankRepository _rankRepository)
+        INoticeRepository _announcementRepository)
     {
         cache = memoryCache;
         announcementRepository = _announcementRepository;
         logRepository = _logRepository;
-        rankRepository = _rankRepository;
     }
 
     /// <summary>
@@ -69,8 +66,9 @@ public class AdminController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CheckRankScore(CancellationToken token)
     {
-        await rankRepository.CheckRankScore(token);
-        cache.Remove(CacheKey.ScoreBoard);
+        //await rankRepository.CheckRankScore(token);
+        //cache.Remove(CacheKey.ScoreBoard);
+        throw new NotImplementedException();
         return Ok();
     }
 

@@ -49,5 +49,10 @@ public class Instance
     /// 赛题对象
     /// </summary>
     public Challenge Challenge { get; set; } = default!;
+
+    [Required]
+    public int GameId { get; set; }
+
+    public Game? Game { get; set; }
     #endregion Db Relationship
 }

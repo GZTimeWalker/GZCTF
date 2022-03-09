@@ -179,10 +179,10 @@ public class AccountController : ControllerBase
         user.LastSignedInUTC = DateTimeOffset.UtcNow;
         user.LastVisitedUTC = DateTimeOffset.UtcNow;
         user.RegisterTimeUTC = DateTimeOffset.UtcNow;
-        user.Rank = new()
-        {
-            UpdateTimeUTC = DateTimeOffset.UtcNow,
-        };
+        //user.Rank = new()
+        //{
+        //    UpdateTimeUTC = DateTimeOffset.UtcNow,
+        //};
 
         result = await userManager.UpdateAsync(user);
 
@@ -268,7 +268,7 @@ public class AccountController : ControllerBase
         var oname = user.UserName;
 
         user.UserName = model.UserName ?? user.UserName;
-        user.Description = model.Descr ?? user.Description;
+        user.Bio = model.Descr ?? user.Bio;
         user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
 
         var result = await userManager.UpdateAsync(user);
@@ -394,7 +394,7 @@ public class AccountController : ControllerBase
         var user = await userManager.GetUserAsync(User);
         return Ok(new ClientUserInfoModel()
         {
-                Description = user.Description,
+                Description = user.Bio,
                 Email = user.Email, 
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber

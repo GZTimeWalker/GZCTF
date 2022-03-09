@@ -40,6 +40,12 @@ public class ChallengeBase
     public string Hints { get; set; } = string.Empty;
 
     /// <summary>
+    /// 镜像名称
+    /// </summary>
+    [JsonIgnore]
+    public string Image { get; set; } = string.Empty;
+
+    /// <summary>
     /// 解决题目人数
     /// </summary>
     [Required]

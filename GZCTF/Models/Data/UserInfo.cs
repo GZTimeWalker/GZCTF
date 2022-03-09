@@ -35,18 +35,17 @@ public class UserInfo : IdentityUser
     public string Bio { get; set; } = string.Empty;
 
     #region 数据库关系
-
-    /// <summary>
-    /// 头像文件 Id
-    /// </summary>
-    public string AvatarId { get; set; } = string.Empty;
-
     /// <summary>
     /// 头像
     /// </summary>
     public LocalFile? Avatar { get; set; }
 
     public List<Submission> Submissions { get; set; } = new();
+
+    /// <summary>
+    /// 所属队伍
+    /// </summary>
+    public Team? Team { get; set; } 
 
     #endregion 数据库关系
 
