@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
-public class Announcement
+public class Notice
 {
     [Key]
     [JsonIgnore]

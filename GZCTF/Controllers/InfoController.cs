@@ -24,12 +24,12 @@ public class InfoController : ControllerBase
     private readonly IRankRepository rankRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IMemoryCache cache;
-    private readonly IAnnouncementRepository announcementRepository;
+    private readonly INoticeRepository announcementRepository;
 
     public InfoController(
         IMemoryCache memoryCache,
         ISubmissionRepository _submissionRepository,
-        IAnnouncementRepository _announcementRepository,
+        INoticeRepository _announcementRepository,
         IRankRepository _rankRepository)
     {
         cache = memoryCache;
@@ -90,13 +90,13 @@ public class InfoController : ControllerBase
     /// <response code="200">成功获取公告</response>
     /// <response code="401">无权访问</response>
     [HttpGet]
-    [ProducesResponseType(typeof(List<Announcement>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<Notice>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Announcements(CancellationToken token)
     {
-        if (cache.TryGetValue(CacheKey.Announcements, out List<Announcement> result))
+        if (cache.TryGetValue(CacheKey.Announcements, out List<Notice> result))
             return Ok(result);
 
-        result = await announcementRepository.GetAnnouncements(0, 3, token);
+        result = await announcementRepository.GetNotices(0, 3, token);
 
         cache.Set(CacheKey.Announcements, result, TimeSpan.FromHours(10));
 

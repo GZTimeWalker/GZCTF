@@ -25,11 +25,11 @@ public class AdminController : ControllerBase
     private readonly ILogRepository logRepository;
     private readonly IRankRepository rankRepository;
     private readonly IMemoryCache cache;
-    private readonly IAnnouncementRepository announcementRepository;
+    private readonly INoticeRepository announcementRepository;
 
     public AdminController(ILogRepository _logRepository,
         IMemoryCache memoryCache,
-        IAnnouncementRepository _announcementRepository,
+        INoticeRepository _announcementRepository,
         IRankRepository _rankRepository)
     {
         cache = memoryCache;
@@ -87,12 +87,12 @@ public class AdminController : ControllerBase
     /// <response code="400">公告无效</response>
     /// <response code="200">成功完成操作</response>
     [HttpPost("{Id:int?}")]
-    [ProducesResponseType(typeof(Announcement), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Notice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Notice(int? Id, [FromBody] UpdateAnnouncementModel model, CancellationToken token)
     {
-        Announcement? announcement;
+        Notice? announcement;
 
         if (Id is null)
         {
@@ -109,7 +109,7 @@ public class AdminController : ControllerBase
         }
         else
         {
-            announcement = await announcementRepository.GetAnnouncementById((int)Id, token);
+            announcement = await announcementRepository.GetNoticeById((int)Id, token);
 
             if (announcement is null)
                 return NotFound(new RequestResponse("公告未找到", 404));
@@ -120,7 +120,7 @@ public class AdminController : ControllerBase
             announcement.PublishTimeUTC = DateTimeOffset.UtcNow;
         }
 
-        announcement = await announcementRepository.AddOrUpdateAnnouncement(announcement, token);
+        announcement = await announcementRepository.AddOrUpdateNotice(announcement, token);
 
         LogHelper.SystemLog(logger, $"成功更新公告#{announcement.Id}");
 

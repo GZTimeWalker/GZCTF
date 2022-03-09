@@ -11,7 +11,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Submission> Submissions { get; set; } = default!;
     public DbSet<Rank> Ranks { get; set; } = default!;
     public DbSet<Challenge> Challenges { get; set; } = default!;
-    public DbSet<Announcement> Announcements { get; set; } = default!;
+    public DbSet<Notice> Notices { get; set; } = default!;
     public DbSet<ChallengeFile> ChallengeFiles { get; set; } = default!;
 
 
