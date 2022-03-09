@@ -139,7 +139,6 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 builder.Services.AddTransient<IMailSender, MailSender>();
 
 builder.Services.AddScoped<ILogRepository, LogRepository>();
-builder.Services.AddScoped<IRankRepository, RankRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<INoticeRepository, NoticeRepository>();

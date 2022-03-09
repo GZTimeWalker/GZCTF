@@ -9,11 +9,10 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
     public DbSet<LogModel> Logs { get; set; } = default!;
     public DbSet<Submission> Submissions { get; set; } = default!;
-    public DbSet<Rank> Ranks { get; set; } = default!;
     public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Notice> Notices { get; set; } = default!;
-    public DbSet<ChallengeFile> ChallengeFiles { get; set; } = default!;
-
+    public DbSet<GameNotice> GameNotices { get; set; } = default!;
+    public DbSet<CTFFile> Files { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -24,11 +23,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.Property(e => e.Privilege)
                 .HasConversion<int>();
 
-            entity.HasOne(e => e.Rank)
-                .WithOne(e => e.User)
-                .HasForeignKey<Rank>(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
@@ -38,11 +32,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         builder.Entity<Challenge>(entity =>
         {
             entity.HasMany(e => e.Submissions)
-                .WithOne(e => e.Challenge)
-                .HasForeignKey(e => e.ChallengeId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasMany(e => e.Files)
                 .WithOne(e => e.Challenge)
                 .HasForeignKey(e => e.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade);

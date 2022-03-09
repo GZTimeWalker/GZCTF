@@ -2,7 +2,7 @@
 
 namespace CTFServer.Models;
 
-public class FileBase
+public class CTFFile
 {
     [Key]
     public string Id { get; set; } = Guid.NewGuid().ToString();
@@ -18,5 +18,19 @@ public class FileBase
     /// </summary>
     [Required]
     public string Location { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 文件哈希
+    /// </summary>
+    [Required]
+    [MaxLength(64)]
+    [MinLength(32)]
+    public string Hash { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 获取文件Url
+    /// </summary>
+    /// <returns>文件Url</returns>
+    public string GetUrl() => throw new NotImplementedException();
 }
 

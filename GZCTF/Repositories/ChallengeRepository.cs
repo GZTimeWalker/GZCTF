@@ -46,7 +46,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     }
 
     public Task<List<ChallengesItem>> GetAccessibleChallengess(int accessLevel, CancellationToken token)
-        => (from p in context.Challenges.Where(p => p.AccessLevel <= accessLevel).OrderBy(p => p.AccessLevel)
+        => (from p in context.Challenges
                 select new ChallengesItem()
                 {
                     Id = p.Id,
@@ -56,18 +56,11 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
                     Score = p.CurrentScore
                 }).ToListAsync(token);
 
-    public int GetMaxAccessLevel()
-        => context.Challenges.Any() switch
-        {
-            true => context.Challenges.Max(p => p.UpgradeAccessLevel),
-            false => 0
-        };
-
     public async Task<UserChallengesModel?> GetUserChallenges(int id, int accessLevel, CancellationToken token)
     {
         Challenge? challenge = await context.Challenges.FirstOrDefaultAsync(x => x.Id == id, token);
 
-        if (challenge is null || challenge.AccessLevel > accessLevel)
+        if (challenge is null)
         {
             LogHelper.SystemLog(logger, $"未找到满足要求的题目", TaskStatus.Fail);
             return null;
@@ -117,19 +110,19 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             return new VerifyResult(AnswerResult.Unauthorized);
         }
 
-        if(challenge.AccessLevel > user.AccessLevel)
+        /*if(challenge.AccessLevel > user.AccessLevel)
         {
             LogHelper.SystemLog(logger, $"未授权的题目访问#{id}", TaskStatus.Denied);
             return new VerifyResult(AnswerResult.Unauthorized);
-        }
+        }*/
 
-        bool check = string.Equals(challenge.Answer, answer);
+        /*bool check = string.Equals(challenge.Answer, answer);
 
-        var result = check ? new VerifyResult(AnswerResult.Accepted, challenge.CurrentScore, challenge.UpgradeAccessLevel)
-                : new VerifyResult(AnswerResult.WrongAnswer);
+        //var result = check ? new VerifyResult(AnswerResult.Accepted, challenge.CurrentScore, challenge.UpgradeAccessLevel)
+        //        : new VerifyResult(AnswerResult.WrongAnswer);
 
         if (user.Privilege != Privilege.User)
-            return result;
+            return AnswerResult.WrongAnswer;
 
         ++challenge.SubmissionCount;
 
@@ -143,6 +136,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
         await context.SaveChangesAsync(token);
 
-        return result;
+        return AnswerResult.Accepted;*/
+        throw new NotImplementedException();
     }
 }

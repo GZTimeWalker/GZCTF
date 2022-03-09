@@ -28,7 +28,6 @@ public class Challenge : ChallengeBase
 
     #region 数据库关系
     public List<Submission> Submissions { get; set; } = new();
-    public List<ChallengeFile> Files { get; set; } = new();
 
     #endregion 数据库关系
 

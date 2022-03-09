@@ -58,10 +58,4 @@ public interface IChallengeRepository
     /// <param name="token">操作取消token</param>
     /// <returns></returns>
     public Task<List<ChallengesItem>> GetAccessibleChallengess(int accessLevel, CancellationToken token);
-
-    /// <summary>
-    /// 获取最高访问权限
-    /// </summary>
-    /// <returns></returns>
-    public int GetMaxAccessLevel();
 }

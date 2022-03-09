@@ -43,8 +43,6 @@ public class UserInfo : IdentityUser
 
     public int RankId { get; set; }
 
-    public Rank? Rank { get; set; }
-
     public List<Submission> Submissions { get; set; } = new();
 
     #endregion 数据库关系

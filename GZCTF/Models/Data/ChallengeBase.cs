@@ -27,8 +27,6 @@ public class ChallengeBase
     /// 题目答案
     /// </summary>
     [Required(ErrorMessage = "答案是必需的")]
-    [MinLength(6, ErrorMessage = "答案过短")]
-    [MaxLength(50, ErrorMessage = "答案过长")]
     public string Answer { get; set; } = string.Empty;
 
     /// <summary>
@@ -37,10 +35,9 @@ public class ChallengeBase
     public string Tag { get; set; } = string.Empty;
 
     /// <summary>
-    /// 访问等级
+    /// 题目提示，用";"分隔
     /// </summary>
-    [Required]
-    public int AccessLevel { get; set; } = 0;
+    public string Hints { get; set; } = string.Empty;
 
     /// <summary>
     /// 解决题目人数
@@ -86,10 +83,4 @@ public class ChallengeBase
     /// </summary>
     [Required]
     public int AwardCount { get; set; } = 10;
-
-    /// <summary>
-    /// 升级访问权限（为0则不变）
-    /// </summary>
-    [Required]
-    public int UpgradeAccessLevel { get; set; } = 0;
 }

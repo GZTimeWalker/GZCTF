@@ -58,6 +58,42 @@ public enum TaskStatus
 }
 
 /// <summary>
+/// 比赛公告类型
+/// </summary>
+public enum NoticeType
+{
+    /// <summary>
+    /// 常规公告
+    /// </summary>
+    Normal = 0,
+
+    /// <summary>
+    /// 一血
+    /// </summary>
+    FirstBlood = 1,
+
+    /// <summary>
+    /// 二血
+    /// </summary>
+    SecondBlood = 2,
+
+    /// <summary>
+    /// 三血
+    /// </summary>
+    ThirdBlood = 3,
+
+    /// <summary>
+    /// 发布新的提示
+    /// </summary>
+    NewHint = 4,
+
+    /// <summary>
+    /// 修复错误
+    /// </summary>
+    ErrorFix = 5
+}
+
+/// <summary>
 /// 判定结果
 /// </summary>
 public enum AnswerResult
@@ -76,6 +112,11 @@ public enum AnswerResult
     /// 提交未授权
     /// </summary>
     Unauthorized = 3,
+
+    /// <summary>
+    /// 检测到抄袭
+    /// </summary>
+    CheatDetected = 4
 }
 
 /// <summary>
