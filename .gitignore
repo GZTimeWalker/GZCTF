@@ -237,3 +237,4 @@ appsettings.*.json
 /.VSCodeCounter/*
 */db/*
 **/CTFServer.xml
+.vscode/**
