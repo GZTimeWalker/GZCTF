@@ -8,7 +8,7 @@ import { WithNavBar } from './common/components/WithNavBar';
 import { PortalPage } from './pages/portal/PortalPage';
 import { ChallengesPage } from './pages/challenge/ChallengePage';
 import { LeaderBoardPage } from './pages/leaderboard/LeaderBoardPage';
-import { ChallengesDetailPage } from './pages/challenge-detail/ChallengesDetailPage';
+import { ChallengesDetailPage } from './pages/challenge-detail/ChallengeDetailPage';
 import { ResetPasswordPage } from './pages/reset/ResetPasswordPage';
 import { VerifyEmailPage } from './pages/verify/VerifyEmailPage';
 import { AccountManagePage } from './pages/account-manage/AccountManagePage';

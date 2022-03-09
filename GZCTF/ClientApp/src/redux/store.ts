@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { ADMIN_API } from './admin.api';
 import { INFO_API } from './info.api';
-import { Challenges_API } from './Challenges.api';
+import { Challenges_API } from './challenge.api';
 import { SUBMISSION_API } from './submission.api';
 import { USER_API } from './user.api';
 
