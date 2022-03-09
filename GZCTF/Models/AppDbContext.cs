@@ -95,7 +95,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         builder.Entity<Challenge>(entity =>
         {
             entity.HasMany(e => e.Flags)
-               .WithOne()
+               .WithOne(e => e.Challenge)
                .HasForeignKey(e => e.ChallengeId);
         });
 
