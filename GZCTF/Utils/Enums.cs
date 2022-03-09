@@ -99,7 +99,7 @@ public static class CacheKey
     public const string Announcements = "_Announcements";
 
     /// <summary>
-    /// 可访问的谜题列表
+    /// 可访问的题目列表
     /// </summary>
     /// <param name="accessLevel">访问等级</param>
     /// <returns></returns>

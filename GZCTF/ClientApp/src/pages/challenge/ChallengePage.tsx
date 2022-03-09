@@ -107,7 +107,7 @@ export const ChallengesPage: FC = () => {
   return (
     <Container maxWidth="80ch" minH="100vh" py="48px">
       <Center mb="24px">
-        <Heading size="md">你的谜题</Heading>
+        <Heading size="md">你的题目</Heading>
       </Center>
       <Wrap spacing="45px" justify="center">
         {props.map((p) => (

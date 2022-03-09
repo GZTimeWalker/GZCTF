@@ -6,14 +6,14 @@ namespace CTFServer.Models;
 public class ChallengeBase
 {
     /// <summary>
-    /// 谜题名称
+    /// 题目名称
     /// </summary>
     [Required(ErrorMessage = "标题是必需的")]
     [MinLength(1, ErrorMessage = "标题过短")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 谜题内容
+    /// 题目内容
     /// </summary>
     [Required(ErrorMessage = "题目内容是必需的")]
     public string Content { get; set; } = string.Empty;
@@ -24,12 +24,11 @@ public class ChallengeBase
     public string ClientJS { get; set; } = string.Empty;
 
     /// <summary>
-    /// 谜题答案
+    /// 题目答案
     /// </summary>
     [Required(ErrorMessage = "答案是必需的")]
     [MinLength(6, ErrorMessage = "答案过短")]
     [MaxLength(50, ErrorMessage = "答案过长")]
-    [RegularExpression("^msc{[a-zA-Z0-9_-]+}$", ErrorMessage = "答案格式错误")]
     public string Answer { get; set; } = string.Empty;
 
     /// <summary>
@@ -39,7 +38,7 @@ public class ChallengeBase
     public int AccessLevel { get; set; } = 0;
 
     /// <summary>
-    /// 解决谜题人数
+    /// 解决题目人数
     /// </summary>
     [Required]
     [JsonIgnore]

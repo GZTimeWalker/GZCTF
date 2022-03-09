@@ -41,7 +41,7 @@ export const ChallengesDetailPage: FC<ChallengesDetailPageProps> = ({ id }) => {
     if (isAnswerSuccess) {
       toast({
         title: '回答正确',
-        description: '恭喜你找到了这道谜题的答案！',
+        description: '恭喜你找到了这道题目的答案！',
         status: 'success',
         duration: 3000
       });
@@ -72,7 +72,7 @@ export const ChallengesDetailPage: FC<ChallengesDetailPageProps> = ({ id }) => {
   if (Object.is(NaN, id)) {
     return (
       <Center h="100%">
-        <Text>无效的谜题 ID</Text>
+        <Text>无效的题目 ID</Text>
       </Center>
     );
   }

@@ -53,12 +53,12 @@ public class Submission
     public UserInfo? User { get; set; }
 
     /// <summary>
-    /// 谜题数据库Id
+    /// 题目数据库Id
     /// </summary>
     public int challengesId { get; set; }
 
     /// <summary>
-    /// 谜题
+    /// 题目
     /// </summary>
     [JsonIgnore]
     public Challenge? Challenges { get; set; }
