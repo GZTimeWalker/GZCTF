@@ -4,8 +4,12 @@ namespace CTFServer.Models;
 
 public class LocalFile
 {
+    /// <summary>
+    /// 文件哈希
+    /// </summary>
     [Key]
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    [MaxLength(64)]
+    public string Hash { get; set; } = string.Empty;
 
     /// <summary>
     /// 文件名
@@ -18,14 +22,6 @@ public class LocalFile
     /// </summary>
     [Required]
     public string Location { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 文件哈希
-    /// </summary>
-    [Required]
-    [MaxLength(64)]
-    [MinLength(32)]
-    public string Hash { get; set; } = string.Empty;
 
     /// <summary>
     /// 获取文件Url

@@ -5,9 +5,9 @@ namespace CTFServer.Models;
 public class UserInfo : IdentityUser
 {
     /// <summary>
-    /// 用户权限
+    /// 用户角色
     /// </summary>
-    public Privilege Privilege { get; set; } = Privilege.User;
+    public Role Role { get; set; } = Role.User;
 
     /// <summary>
     /// 用户最近访问IP
@@ -40,12 +40,30 @@ public class UserInfo : IdentityUser
     /// </summary>
     public LocalFile? Avatar { get; set; }
 
+    /// <summary>
+    /// 头像 Id
+    /// </summary>
+    public string AcatarId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 个人提交记录
+    /// </summary>
     public List<Submission> Submissions { get; set; } = new();
 
     /// <summary>
-    /// 所属队伍
+    /// 当前激活队伍
     /// </summary>
-    public Team? Team { get; set; } 
+    public Team? ActiveTeam { get; set; } 
+
+    /// <summary>
+    /// 当前激活队伍 Id
+    /// </summary>
+    public int ActiveTeamId { get; set; }
+
+    /// <summary>
+    /// 参与的队伍
+    /// </summary>
+    public List<Team> Teams { get; set; } = new();
 
     #endregion 数据库关系
 

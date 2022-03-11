@@ -90,12 +90,12 @@ public class InfoController : ControllerBase
     [ProducesResponseType(typeof(List<Notice>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Announcements(CancellationToken token)
     {
-        if (cache.TryGetValue(CacheKey.Announcements, out List<Notice> result))
+        if (cache.TryGetValue(CacheKey.Notices, out List<Notice> result))
             return Ok(result);
 
         result = await announcementRepository.GetNotices(0, 3, token);
 
-        cache.Set(CacheKey.Announcements, result, TimeSpan.FromHours(10));
+        cache.Set(CacheKey.Notices, result, TimeSpan.FromHours(10));
 
         return Ok(result);
     }

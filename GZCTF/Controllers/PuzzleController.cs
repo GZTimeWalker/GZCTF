@@ -65,7 +65,7 @@ public class ChallengesController : ControllerBase
         if (Challenges is null)
             return BadRequest(new RequestResponse("无效的题目"));
 
-        cache.Remove(CacheKey.MaxAccessLevel);
+        //cache.Remove(CacheKey.MaxAccessLevel);
 
         return Ok(new ChallengesResponse(Challenges.Id));
     }
@@ -94,7 +94,7 @@ public class ChallengesController : ControllerBase
         if (Challenges is null)
             return BadRequest(new RequestResponse("未找到题目"));
 
-        cache.Remove(CacheKey.MaxAccessLevel);
+        //cache.Remove(CacheKey.MaxAccessLevel);
 
         return Ok(new ChallengesResponse(Challenges.Id));
     }
@@ -158,10 +158,10 @@ public class ChallengesController : ControllerBase
         if (!res)
             return BadRequest(new RequestResponse("题目删除失败"));
 
-        for (int i = 0; i <= MAX_ACCESS_LEVEL; ++i)
+        /*for (int i = 0; i <= MAX_ACCESS_LEVEL; ++i)
             cache.Remove(CacheKey.AccessibleChallengess(i));
 
-        cache.Remove(CacheKey.MaxAccessLevel);
+        cache.Remove(CacheKey.MaxAccessLevel);*/
 
         var user = await userManager.GetUserAsync(User);
 
@@ -191,20 +191,21 @@ public class ChallengesController : ControllerBase
 
         throw new NotImplementedException();
 
-        if (!cache.TryGetValue(CacheKey.AccessibleChallengess(accessLevel), out List<ChallengesItem> accessible))
+        /*if (!cache.TryGetValue(CacheKey.AccessibleChallengess(accessLevel), out List<ChallengesItem> accessible))
         {
             accessible = await ChallengesRepository.GetAccessibleChallengess(accessLevel, token);
             // LogHelper.SystemLog(logger, $"重构缓存：AccessibleChallengess#{accessLevel}");
             cache.Set(CacheKey.AccessibleChallengess(accessLevel), accessible, TimeSpan.FromMinutes(10));
-        }
+        }*/
 
-        ChallengesListModel ChallengesList = new()
+        /*ChallengesListModel ChallengesList = new()
         {
             Accessible = accessible,
             Solved = await submissionRepository.GetSolvedChallengess(user.Id, token)
         };
 
-        return Ok(ChallengesList);
+        return Ok(ChallengesList);*/
+        throw new NotImplementedException();
     }
 
     /// <summary>

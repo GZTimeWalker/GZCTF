@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Models;
@@ -25,7 +26,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<UserInfo>(entity =>
         {
-            entity.Property(e => e.Privilege)
+            entity.Property(e => e.Role)
                 .HasConversion<int>();
 
             entity.HasMany(e => e.Submissions)
@@ -33,7 +34,15 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            entity.HasOne(e => e.Avatar);
+            entity.HasOne(e => e.Avatar)
+                .WithMany()
+                .HasForeignKey(e => e.AcatarId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.ActiveTeam)
+                .WithMany()
+                .HasForeignKey(e => e.ActiveTeamId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         builder.Entity<Game>(entity =>
@@ -68,7 +77,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(e => e.Members)
-                .WithOne(e => e.Team);
+                .WithMany(e => e.Teams);
         });
 
         builder.Entity<Participation>(entity =>
@@ -104,6 +113,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.User)
                .WithMany()
                .HasForeignKey(e => e.UserId);
+
+            entity.Property(e => e.Status)
+                .HasConversion<string>();
         });
 
         builder.Entity<FlagContext>(entity =>

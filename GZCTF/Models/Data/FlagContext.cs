@@ -19,6 +19,12 @@ public class FlagContext
     public string FileId { get; set; } = string.Empty;
 
     /// <summary>
+    /// 附件类型
+    /// </summary>
+    [Required]
+    public FileType AttachmentType { get; set; } = FileType.Local;
+
+    /// <summary>
     /// Flag 对应附件
     /// </summary>
     public LocalFile? Attachment { get; set; }

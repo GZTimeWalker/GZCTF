@@ -3,7 +3,7 @@
 /// <summary>
 /// 用户权限枚举
 /// </summary>
-public enum Privilege
+public enum Role: byte
 {
     /// <summary>
     /// 小黑屋用户权限
@@ -29,7 +29,7 @@ public enum Privilege
 /// <summary>
 /// 任务执行状态
 /// </summary>
-public enum TaskStatus
+public enum TaskStatus: sbyte
 {
     /// <summary>
     /// 任务正在进行
@@ -57,10 +57,22 @@ public enum TaskStatus
     Denied = 3,
 }
 
+public enum FileType: byte
+{
+    /// <summary>
+    /// 本地文件
+    /// </summary>
+    Local = 0,
+    /// <summary>
+    /// 远程文件
+    /// </summary>
+    Remote = 1
+}
+
 /// <summary>
 /// 比赛公告类型
 /// </summary>
-public enum NoticeType
+public enum NoticeType: byte
 {
     /// <summary>
     /// 常规公告
@@ -96,7 +108,7 @@ public enum NoticeType
 /// <summary>
 /// 判定结果
 /// </summary>
-public enum AnswerResult
+public enum AnswerResult: byte
 {
     /// <summary>
     /// 答案正确
@@ -125,11 +137,6 @@ public enum AnswerResult
 public static class CacheKey
 {
     /// <summary>
-    /// 最高访问等级
-    /// </summary>
-    public const string MaxAccessLevel = "_MaxAccessLevel";
-
-    /// <summary>
     /// 积分榜缓存
     /// </summary>
     public const string ScoreBoard = "_ScoreBoard";
@@ -137,12 +144,5 @@ public static class CacheKey
     /// <summary>
     /// 公告
     /// </summary>
-    public const string Announcements = "_Announcements";
-
-    /// <summary>
-    /// 可访问的题目列表
-    /// </summary>
-    /// <param name="accessLevel">访问等级</param>
-    /// <returns></returns>
-    public static string AccessibleChallengess(int accessLevel) => $"_AccessibleChallenges_{accessLevel}";
+    public const string Notices = "_Notices";
 }

@@ -55,7 +55,7 @@ public class AccountController : ControllerBase
         {
             UserName = model.UserName,
             Email = model.Email,
-            Privilege = Privilege.User,
+            Role = Role.User,
         };
 
         user.UpdateByHttpContext(HttpContext);
@@ -410,13 +410,13 @@ public class AccountController : ControllerBase
     /// <param name="Id">用户Id</param>
     /// <response code="200">用户成功被删除</response>
     /// <response code="400">删除失败</response>
-    [HttpDelete("{Id:guid}")]
+    [HttpDelete("{Id:int}")]
     [RequireAdmin]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Remove(string Id)
+    public async Task<IActionResult> Remove(int Id)
     {
-        var user = await userManager.GetUserAsync(User);
+        /*var user = await userManager.GetUserAsync(User);
 
         if(Id == user.Id)
             return BadRequest(new RequestResponse("正尝试删除自己的账号。"));
@@ -430,6 +430,7 @@ public class AccountController : ControllerBase
         if(!result.Succeeded)
             return BadRequest(new RequestResponse("删除失败。"));
 
-        return Ok();
+        return Ok();*/
+        throw new NotImplementedException();
     }
 }

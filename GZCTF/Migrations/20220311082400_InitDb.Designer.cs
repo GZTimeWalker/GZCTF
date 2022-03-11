@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220309150726_Init")]
-    partial class Init
+    [Migration("20220311082400_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -109,12 +109,15 @@ namespace CTFServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<byte>("AttachmentType")
+                        .HasColumnType("smallint");
+
                     b.Property<int>("ChallengeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("FileId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Flag")
                         .IsRequired()
@@ -170,8 +173,8 @@ namespace CTFServer.Migrations
                     b.Property<DateTimeOffset>("PublishTimeUTC")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint");
 
                     b.HasKey("Id");
 
@@ -233,11 +236,7 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.LocalFile", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
                     b.Property<string>("Hash")
-                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
@@ -249,7 +248,7 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("Hash");
 
                     b.ToTable("Files");
                 });
@@ -375,8 +374,9 @@ namespace CTFServer.Migrations
                     b.Property<int>("ParticipationId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("SubmitTimeUTC")
                         .HasColumnType("timestamp with time zone");
@@ -408,8 +408,8 @@ namespace CTFServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AvatarId")
-                        .HasColumnType("text");
+                    b.Property<string>("AvatarHash")
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Bio")
                         .IsRequired()
@@ -421,7 +421,7 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AvatarId");
+                    b.HasIndex("AvatarHash");
 
                     b.ToTable("Teams");
                 });
@@ -431,11 +431,15 @@ namespace CTFServer.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<string>("AcatarId")
+                        .IsRequired()
+                        .HasColumnType("character varying(64)");
+
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("AvatarId")
-                        .HasColumnType("text");
+                    b.Property<int>("ActiveTeamId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Bio")
                         .IsRequired()
@@ -485,17 +489,14 @@ namespace CTFServer.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Privilege")
-                        .HasColumnType("integer");
-
                     b.Property<DateTimeOffset>("RegisterTimeUTC")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
-
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("integer");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
@@ -506,7 +507,9 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AvatarId");
+                    b.HasIndex("AcatarId");
+
+                    b.HasIndex("ActiveTeamId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -514,8 +517,6 @@ namespace CTFServer.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
-
-                    b.HasIndex("TeamId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -652,6 +653,21 @@ namespace CTFServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TeamUserInfo", b =>
+                {
+                    b.Property<string>("MembersId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("MembersId", "TeamsId");
+
+                    b.HasIndex("TeamsId");
+
+                    b.ToTable("TeamUserInfo");
+                });
+
             modelBuilder.Entity("ChallengeGame", b =>
                 {
                     b.HasOne("CTFServer.Models.Challenge", null)
@@ -777,7 +793,7 @@ namespace CTFServer.Migrations
                 {
                     b.HasOne("CTFServer.Models.LocalFile", "Avatar")
                         .WithMany()
-                        .HasForeignKey("AvatarId");
+                        .HasForeignKey("AvatarHash");
 
                     b.Navigation("Avatar");
                 });
@@ -786,15 +802,19 @@ namespace CTFServer.Migrations
                 {
                     b.HasOne("CTFServer.Models.LocalFile", "Avatar")
                         .WithMany()
-                        .HasForeignKey("AvatarId");
+                        .HasForeignKey("AcatarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CTFServer.Models.Team", "Team")
-                        .WithMany("Members")
-                        .HasForeignKey("TeamId");
+                    b.HasOne("CTFServer.Models.Team", "ActiveTeam")
+                        .WithMany()
+                        .HasForeignKey("ActiveTeamId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ActiveTeam");
 
                     b.Navigation("Avatar");
-
-                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -848,6 +868,21 @@ namespace CTFServer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TeamUserInfo", b =>
+                {
+                    b.HasOne("CTFServer.Models.UserInfo", null)
+                        .WithMany()
+                        .HasForeignKey("MembersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CTFServer.Models.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CTFServer.Models.Challenge", b =>
                 {
                     b.Navigation("Flags");
@@ -874,8 +909,6 @@ namespace CTFServer.Migrations
             modelBuilder.Entity("CTFServer.Models.Team", b =>
                 {
                     b.Navigation("Games");
-
-                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("CTFServer.Models.UserInfo", b =>

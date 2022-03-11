@@ -18,11 +18,11 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
     /// <summary>
     /// 所需权限
     /// </summary>
-    private readonly Privilege RequiredPrivilege;
+    private readonly Role RequiredPrivilege;
 
     private static readonly Logger logger = LogManager.GetLogger("Authorization");
 
-    public RequirePrivilegeAttribute(Privilege privilege)
+    public RequirePrivilegeAttribute(Role privilege)
         => RequiredPrivilege = privilege;
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
@@ -43,7 +43,7 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
         user.UpdateByHttpContext(context.HttpContext);
         await userManager.UpdateAsync(user);
 
-        if (user.Privilege < RequiredPrivilege)
+        if (user.Role < RequiredPrivilege)
         {
             LogHelper.Log(logger, $"尝试访问未经授权的接口 {context.HttpContext.Request.Path}", user, TaskStatus.Denied);
             var result = new JsonResult(new RequestResponse("无权访问", 403))
@@ -60,7 +60,7 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
 /// </summary>
 public class RequireSignedInAttribute : RequirePrivilegeAttribute
 {
-    public RequireSignedInAttribute() : base(Privilege.User)
+    public RequireSignedInAttribute() : base(Role.User)
     {
     }
 }
@@ -70,7 +70,7 @@ public class RequireSignedInAttribute : RequirePrivilegeAttribute
 /// </summary>
 public class RequireMonitorAttribute : RequirePrivilegeAttribute
 {
-    public RequireMonitorAttribute() : base(Privilege.Monitor)
+    public RequireMonitorAttribute() : base(Role.Monitor)
     {
     }
 }
@@ -80,7 +80,7 @@ public class RequireMonitorAttribute : RequirePrivilegeAttribute
 /// </summary>
 public class RequireAdminAttribute : RequirePrivilegeAttribute
 {
-    public RequireAdminAttribute() : base(Privilege.Admin)
+    public RequireAdminAttribute() : base(Role.Admin)
     {
     }
 }

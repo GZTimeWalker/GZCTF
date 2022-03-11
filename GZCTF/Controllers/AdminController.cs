@@ -122,7 +122,7 @@ public class AdminController : ControllerBase
 
         LogHelper.SystemLog(logger, $"成功更新公告#{announcement.Id}");
 
-        cache.Remove(CacheKey.Announcements);
+        cache.Remove(CacheKey.Notices);
 
         return Ok(announcement);
     }
