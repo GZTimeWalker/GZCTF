@@ -137,10 +137,6 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 builder.Services.AddTransient<IMailSender, MailSender>();
 
 builder.Services.AddScoped<ILogRepository, LogRepository>();
-builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
-builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
-builder.Services.AddScoped<INoticeRepository, NoticeRepository>();
-
 #endregion Services and Repositories
 
 builder.Services.AddResponseCompression(options =>
