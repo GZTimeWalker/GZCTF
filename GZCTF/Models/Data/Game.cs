@@ -55,5 +55,10 @@ public class Game
     /// </summary>
     public List<Participation> Teams { get; set; } = new();
 
+    /// <summary>
+    /// 题目信息
+    /// </summary>
+    public List<Rank> Ranks { get; set; } = new();
+
     #endregion Db Relationship
 }
