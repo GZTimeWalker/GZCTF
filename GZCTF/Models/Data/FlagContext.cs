@@ -25,7 +25,12 @@ public class FlagContext
     public FileType AttachmentType { get; set; } = FileType.Local;
 
     /// <summary>
-    /// Flag 对应附件
+    /// Flag 对应附件 (远程文件）
+    /// </summary>
+    public string Url { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Flag 对应附件 (本地文件）
     /// </summary>
     public LocalFile? Attachment { get; set; }
 

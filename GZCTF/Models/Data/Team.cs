@@ -17,7 +17,7 @@ public class Team
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// 队伍口号
+    /// 队伍 Bio
     /// </summary>
     [Required]
     public string Bio { get; set; } = string.Empty;

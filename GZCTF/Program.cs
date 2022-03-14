@@ -32,8 +32,6 @@ var uploadPath = Path.Combine(builder.Environment.ContentRootPath,
 
 if (!Directory.Exists(uploadPath))
     Directory.CreateDirectory(uploadPath);
-
-
 #endregion
 
 #region Configuration
@@ -198,10 +196,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles(new StaticFileOptions {
+// do not use this, implement this by self
+/*app.UseStaticFiles(new StaticFileOptions {
     FileProvider = new PhysicalFileProvider(uploadPath),
     RequestPath = "/assets"
-});
+});*/
 
 app.UseEndpoints(endpoints =>
 {

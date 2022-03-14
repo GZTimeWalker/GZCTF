@@ -105,6 +105,30 @@ public enum NoticeType: byte
     ErrorFix = 5
 }
 
+public enum ChallengeType: byte
+{
+    /// <summary>
+    /// 静态题目
+    /// 所有队伍使用统一附件、统一 flag
+    /// </summary>
+    StaticAttachment  = 0b00,
+    /// <summary>
+    /// 容器静态题目
+    /// 所有队伍使用统一 docker，统一 flag
+    /// </summary>
+    StaticDocker      = 0b01,
+    /// <summary>
+    /// 动态附件题目
+    /// 随机分发附件，随附件实现 flag 特异性
+    /// </summary>
+    DynamicAttachment = 0b10,
+    /// <summary>
+    /// 容器动态题目
+    /// 随机分发容器，动态 flag 随环境变量传入
+    /// </summary>
+    DynamicDocker     = 0b11
+}
+
 /// <summary>
 /// 判定结果
 /// </summary>

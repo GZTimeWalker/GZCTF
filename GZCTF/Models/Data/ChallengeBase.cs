@@ -19,11 +19,6 @@ public class ChallengeBase
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 客户端 js
-    /// </summary>
-    public string ClientJS { get; set; } = string.Empty;
-
-    /// <summary>
     /// 题目答案
     /// </summary>
     [Required(ErrorMessage = "答案是必需的")]
@@ -40,7 +35,7 @@ public class ChallengeBase
     public string Hints { get; set; } = string.Empty;
 
     /// <summary>
-    /// 镜像名称
+    /// 镜像名称与标签
     /// </summary>
     [JsonIgnore]
     public string Image { get; set; } = string.Empty;
@@ -89,4 +84,10 @@ public class ChallengeBase
     /// </summary>
     [Required]
     public int AwardCount { get; set; } = 10;
+
+    /// <summary>
+    /// 题目类型
+    /// </summary>
+    [Required]
+    public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 }

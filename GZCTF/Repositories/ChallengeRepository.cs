@@ -70,7 +70,6 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         {
             Title = challenge.Title,
             Content = challenge.Content,
-            ClientJS = challenge.ClientJS,
             AcceptedCount = challenge.AcceptedUserCount,
             SubmissionCount = challenge.SubmissionCount
         };
