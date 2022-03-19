@@ -28,11 +28,11 @@ public class FileRepository : RepositoryBase, IFileRepository
 
         if(localFile is null)
         {
-            localFile = new() { Hash = fileHash, Name = file.Name };
+            localFile = new() { Hash = fileHash, Name = file.FileName };
             await context.AddAsync(localFile, token);
         }
         else
-            localFile.Name = file.Name;
+            localFile.Name = file.FileName;
 
         var path = Path.Combine(basepath, localFile.Location);
 
