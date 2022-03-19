@@ -239,7 +239,7 @@ public class AccountController : ControllerBase
     /// <response code="200">用户已登出</response>
     /// <response code="401">无权访问</response>
     [HttpPost]
-    [RequireSignedIn]
+    [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> LogOut()
     {
@@ -259,7 +259,7 @@ public class AccountController : ControllerBase
     /// <response code="400">校验失败或用户数据更新失败</response>
     /// <response code="401">无权访问</response>
     [HttpPut]
-    [RequireSignedIn]
+    [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
@@ -296,7 +296,7 @@ public class AccountController : ControllerBase
     /// <response code="400">校验失败或用户密码更新失败</response>
     /// <response code="401">无权访问</response>
     [HttpPut]
-    [RequireSignedIn]
+    [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
@@ -323,7 +323,7 @@ public class AccountController : ControllerBase
     /// <response code="400">校验失败或邮箱已经被占用</response>
     /// <response code="401">无权访问</response>
     [HttpPut]
-    [RequireSignedIn]
+    [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -355,7 +355,7 @@ public class AccountController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
     [HttpPost]
-    [RequireSignedIn]
+    [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -386,7 +386,7 @@ public class AccountController : ControllerBase
     /// <response code="200">用户成功获取信息</response>
     /// <response code="401">未授权用户</response>
     [HttpPost]
-    [RequireSignedIn]
+    [RequireUser]
     //[ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Me()

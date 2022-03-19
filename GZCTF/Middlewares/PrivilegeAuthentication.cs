@@ -58,9 +58,9 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
 /// <summary>
 /// 需要已登录用户权限
 /// </summary>
-public class RequireSignedInAttribute : RequirePrivilegeAttribute
+public class RequireUserAttribute : RequirePrivilegeAttribute
 {
-    public RequireSignedInAttribute() : base(Role.User)
+    public RequireUserAttribute() : base(Role.User)
     {
     }
 }

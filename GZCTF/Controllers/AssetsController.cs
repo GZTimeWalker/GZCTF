@@ -66,6 +66,7 @@ public class AssetsController : ControllerBase
     /// <response code="400">上传文件失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
+    [RequireAdmin]
     [HttpPost("api/[controller]")]
     [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -103,6 +104,7 @@ public class AssetsController : ControllerBase
     /// <response code="400">上传文件失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
+    [RequireAdmin]
     [HttpDelete("api/[controller]/{hash}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
