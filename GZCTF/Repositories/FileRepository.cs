@@ -37,11 +37,12 @@ public class FileRepository : RepositoryBase, IFileRepository
         else
         {
             localFile.Name = file.FileName;
+            context.Update(localFile);
         }
 
         var path = Path.Combine(basepath, localFile.Location);
 
-        if (!Directory.Exists(Path.GetDirectoryName(path)))
+        if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
 
         using (var fileStream = File.Create(Path.Combine(path, localFile.Hash)))
