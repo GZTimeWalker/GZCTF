@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CTFServer.Models;
+namespace CTFServer.Models.Request.Admin;
 
 /// <summary>
 /// 日志信息

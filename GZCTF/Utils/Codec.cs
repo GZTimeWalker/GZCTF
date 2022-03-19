@@ -11,8 +11,6 @@ public class Codec
     /// </summary>
     public static class Base64
     {
-        private static readonly Logger logger = LogManager.GetLogger("Base64Convertor");
-
         public static string Decode(string? str, string type = "utf-8")
         {
             if (str is null)

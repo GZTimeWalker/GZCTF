@@ -1,4 +1,4 @@
-﻿using CTFServer.Models;
+﻿using CTFServer.Models.Request.Admin;
 
 namespace CTFServer.Hubs.Client;
 

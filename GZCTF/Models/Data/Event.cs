@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
-public class GameNotice
+public class Event
 {
     [Key]
     [JsonIgnore]

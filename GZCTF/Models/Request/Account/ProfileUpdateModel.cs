@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request;
+namespace CTFServer.Models.Request.Account;
 
 /// <summary>
 /// 个人信息更改

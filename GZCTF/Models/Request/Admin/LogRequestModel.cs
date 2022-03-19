@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request;
+namespace CTFServer.Models.Request.Admin;
 
 /// <summary>
 /// 日志请求

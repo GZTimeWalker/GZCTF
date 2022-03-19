@@ -22,21 +22,6 @@ namespace CTFServer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ChallengeGame", b =>
-                {
-                    b.Property<int>("ChallengesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GamesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ChallengesId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("ChallengeGame");
-                });
-
             modelBuilder.Entity("CTFServer.Models.Challenge", b =>
                 {
                     b.Property<int>("Id")
@@ -58,6 +43,10 @@ namespace CTFServer.Migrations
                     b.Property<int>("AwardCount")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ContainerImage")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
@@ -65,11 +54,10 @@ namespace CTFServer.Migrations
                     b.Property<int>("ExpectMaxCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Hints")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("GameId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("Hints")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -95,7 +83,37 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GameId");
+
                     b.ToTable("Challenges");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("GameId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("PublishTimeUTC")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("CTFServer.Models.FlagContext", b =>
@@ -156,34 +174,6 @@ namespace CTFServer.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("CTFServer.Models.GameNotice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("GameId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("PublishTimeUTC")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<byte>("Type")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("GameNotices");
-                });
-
             modelBuilder.Entity("CTFServer.Models.Instance", b =>
                 {
                     b.Property<int>("Id")
@@ -217,6 +207,9 @@ namespace CTFServer.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("ParticipationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Ranking")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("StartTime")
@@ -716,19 +709,22 @@ namespace CTFServer.Migrations
                     b.ToTable("TeamUserInfo");
                 });
 
-            modelBuilder.Entity("ChallengeGame", b =>
+            modelBuilder.Entity("CTFServer.Models.Challenge", b =>
                 {
-                    b.HasOne("CTFServer.Models.Challenge", null)
-                        .WithMany()
-                        .HasForeignKey("ChallengesId")
+                    b.HasOne("CTFServer.Models.Game", "Game")
+                        .WithMany("Challenges")
+                        .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.Event", b =>
+                {
                     b.HasOne("CTFServer.Models.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Notices")
+                        .HasForeignKey("GameId");
                 });
 
             modelBuilder.Entity("CTFServer.Models.FlagContext", b =>
@@ -748,13 +744,6 @@ namespace CTFServer.Migrations
                     b.Navigation("Attachment");
 
                     b.Navigation("Challenge");
-                });
-
-            modelBuilder.Entity("CTFServer.Models.GameNotice", b =>
-                {
-                    b.HasOne("CTFServer.Models.Game", null)
-                        .WithMany("Notices")
-                        .HasForeignKey("GameId");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Instance", b =>
@@ -969,6 +958,8 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.Game", b =>
                 {
+                    b.Navigation("Challenges");
+
                     b.Navigation("Instances");
 
                     b.Navigation("Notices");

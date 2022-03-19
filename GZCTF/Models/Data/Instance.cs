@@ -33,6 +33,11 @@ public class Instance
     /// </summary>
     public int ContainerPort { get; set; } = 0;
 
+    /// <summary>
+    /// 题目实例排名
+    /// </summary>
+    public int Ranking { get; set; } = 0;
+
     #region Db Relationship
     [Required]
     public int FlagId { get; set; }

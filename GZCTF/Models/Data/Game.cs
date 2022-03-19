@@ -33,7 +33,7 @@ public class Game
     /// <summary>
     /// 比赛通知
     /// </summary>
-    public List<GameNotice> Notices { get; set; } = new();
+    public List<Event> Notices { get; set; } = new();
 
     /// <summary>
     /// 比赛题目

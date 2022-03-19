@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using CTFServer.Middlewares;
 using CTFServer.Models;
-using CTFServer.Models.Request;
+using CTFServer.Models.Request.Account;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using NLog;
@@ -387,18 +387,19 @@ public class AccountController : ControllerBase
     /// <response code="401">未授权用户</response>
     [HttpPost]
     [RequireSignedIn]
-    [ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Me()
     {
         var user = await userManager.GetUserAsync(User);
-        return Ok(new ClientUserInfoModel()
+        throw new NotImplementedException();
+        /*return Ok(new ClientUserInfoModel()
         {
                 Description = user.Bio,
                 Email = user.Email, 
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber
-        });
+        });*/
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CTFServer.Models;
+using CTFServer.Models.Request.Admin;
 using CTFServer.Repositories.Interface;
 
 namespace CTFServer.Repositories;

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request;
+namespace CTFServer.Models.Request.Account;
+
 
 /// <summary>
 /// 邮箱更改
