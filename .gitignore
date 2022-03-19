@@ -238,4 +238,4 @@ appsettings.*.json
 */db/*
 **/CTFServer.xml
 .vscode/**
-**/files/**
+**/uploads/**
