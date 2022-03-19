@@ -9,6 +9,7 @@ namespace CTFServer.Repositories;
 
 public class FileRepository : RepositoryBase, IFileRepository
 {
+    private static readonly Logger logger = LogManager.GetLogger("FileRepository");
     private readonly IConfiguration configuration;
     public FileRepository(AppDbContext context, IConfiguration _configuration) : base(context)
     {
@@ -19,10 +20,12 @@ public class FileRepository : RepositoryBase, IFileRepository
     {
         MemoryStream tmp = new();
         await file.CopyToAsync(tmp, token);
+
+        tmp.Position = 0;
         var hash = await SHA256.Create().ComputeHashAsync(tmp, token);
+        var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
-        var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
         var localFile = await GetFileByHash(fileHash, token);
 
@@ -32,7 +35,9 @@ public class FileRepository : RepositoryBase, IFileRepository
             await context.AddAsync(localFile, token);
         }
         else
+        {
             localFile.Name = file.FileName;
+        }
 
         var path = Path.Combine(basepath, localFile.Location);
 
@@ -41,10 +46,9 @@ public class FileRepository : RepositoryBase, IFileRepository
 
         using (var fileStream = File.Create(Path.Combine(path, localFile.Hash)))
         {
-            tmp.Seek(0, SeekOrigin.Begin);
+            tmp.Position = 0;
             await tmp.CopyToAsync(fileStream, token);
         }
-
 
         await context.SaveChangesAsync(token);
 

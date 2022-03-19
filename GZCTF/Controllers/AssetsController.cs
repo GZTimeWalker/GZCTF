@@ -12,7 +12,6 @@ namespace CTFServer.Controllers;
 /// 文件交互接口
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AssetsController : ControllerBase
@@ -35,16 +34,15 @@ public class AssetsController : ControllerBase
     /// </remarks>
     /// <param name="hash">文件哈希</param>
     /// <param name="filename">下载文件名</param>
-    /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     /// <response code="404">文件未找到</response>
-    [HttpGet("{hash}/{filename}")]
+    [HttpGet("[controller]/{hash}/{filename}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetFile(string hash, string filename, CancellationToken token)
+    public IActionResult GetFile(string hash, string filename)
     {
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
-        var basepath = configuration.GetSection("UploadFolder").Value ?? "files";
+        var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         path = Path.GetFullPath(Path.Combine(basepath, path));
 
         if (!System.IO.File.Exists(path))
@@ -68,24 +66,29 @@ public class AssetsController : ControllerBase
     /// <response code="400">上传文件失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
-    [HttpPost("")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPost("api/[controller]")]
+    [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Upload(List<IFormFile> files, CancellationToken token)
     {
         try
         {
+            List<string> results = new();
             foreach (var file in files)
+            {
                 if (file.Length > 0)
-                    await fileRepository.CreateOrUpdateFile(file, token);
+                {
+                    var res = await fileRepository.CreateOrUpdateFile(file, token);
+                    LogHelper.SystemLog(logger, $"保存文件 [{res[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, NLog.LogLevel.Info); 
+                }
+            }
+            return Ok(results);
         }
         catch (Exception ex)
         {
             logger.Error(ex);
             return BadRequest(new RequestResponse("遇到IO错误"));
         }
-
-        return Ok();
     }
 
     /// <summary>
@@ -100,7 +103,7 @@ public class AssetsController : ControllerBase
     /// <response code="400">上传文件失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
-    [HttpDelete("{hash}")]
+    [HttpDelete("api/[controller]/{hash}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
