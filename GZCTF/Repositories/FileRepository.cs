@@ -59,7 +59,7 @@ public class FileRepository : RepositoryBase, IFileRepository
             return TaskStatus.NotFound;
 
         var basepath = configuration.GetSection("UploadFolder").Value ?? "files";
-        var path = Path.Combine(basepath, file.Location);
+        var path = Path.Combine(basepath, file.Location, file.Hash);
 
         if (File.Exists(path))
         {

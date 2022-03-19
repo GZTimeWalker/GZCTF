@@ -73,17 +73,17 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Upload(List<IFormFile> files, CancellationToken token)
     {
-        //try
-        //{
+        try
+        {
             foreach (var file in files)
                 if (file.Length > 0)
                     await fileRepository.CreateOrUpdateFile(file, token);
-        //}
-        //catch (Exception ex)
-        //{
-        //    logger.Error(ex);
-        //    return BadRequest(new RequestResponse("遇到IO错误"));
-        //}
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex);
+            return BadRequest(new RequestResponse("遇到IO错误"));
+        }
 
         return Ok();
     }
