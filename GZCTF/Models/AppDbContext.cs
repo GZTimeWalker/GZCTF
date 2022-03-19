@@ -34,11 +34,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            entity.HasOne(e => e.Avatar)
-                .WithMany()
-                .HasForeignKey(e => e.AcatarId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             entity.HasOne(e => e.ActiveTeam)
                 .WithMany()
                 .HasForeignKey(e => e.ActiveTeamId)
@@ -73,8 +68,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<Team>(entity =>
         {
-            entity.HasOne(e => e.Avatar);
-
             entity.HasMany(e => e.Games)
                 .WithOne(e => e.Team)
                 .HasForeignKey(e => e.TeamId)

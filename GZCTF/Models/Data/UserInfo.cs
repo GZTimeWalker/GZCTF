@@ -34,11 +34,12 @@ public class UserInfo : IdentityUser
     /// </summary>
     public string Bio { get; set; } = string.Empty;
 
-    #region 数据库关系
     /// <summary>
-    /// 头像
+    /// 头像对象
     /// </summary>
-    public LocalFile? Avatar { get; set; }
+    public string? Avatar { get; set; } = string.Empty;
+
+    #region 数据库关系
 
     /// <summary>
     /// 头像 Id

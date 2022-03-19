@@ -7,9 +7,7 @@ namespace CTFServer.Repositories;
 
 public class LogRepository : RepositoryBase, ILogRepository
 {
-    public LogRepository(AppDbContext context) : base(context)
-    {
-    }
+    public LogRepository(AppDbContext context) : base(context) { }
 
     public Task<List<LogMessageModel>> GetLogs(int skip, int count, string level, CancellationToken token)
     {

@@ -2,7 +2,7 @@
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Hubs.Client;
-using CTFServer.Models;
+using CTFServer.Models.Request.Admin;
 using NLog;
 
 namespace CTFServer.Services;

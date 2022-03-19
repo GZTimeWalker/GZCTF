@@ -29,13 +29,12 @@ public class Team
     [JsonPropertyName("avatar")]
     public string AvatarUrl { get; set; } = string.Empty;
 
-    #region Db Relationship
-
     /// <summary>
     /// 头像对象
     /// </summary>
-    public LocalFile? Avatar { get; set; } = null;
+    public string? Avatar { get; set; } = string.Empty;
 
+    #region Db Relationship
     /// <summary>
     /// 比赛
     /// </summary>

@@ -27,8 +27,7 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 #region Directory
 
-var uploadPath = Path.Combine(builder.Environment.ContentRootPath,
-        builder.Configuration.GetSection("UploadFolder").Value ?? "files/upload");
+var uploadPath = Path.Combine(builder.Configuration.GetSection("UploadFolder").Value ?? "files");
 
 if (!Directory.Exists(uploadPath))
     Directory.CreateDirectory(uploadPath);
@@ -137,6 +136,8 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 builder.Services.AddTransient<IMailSender, MailSender>();
 
 builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+
 #endregion Services and Repositories
 
 builder.Services.AddResponseCompression(options =>
@@ -156,13 +157,6 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
             StatusCode = 400
         };
     };
-});
-
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
 });
 
 var app = builder.Build();

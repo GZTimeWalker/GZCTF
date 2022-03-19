@@ -55,6 +55,11 @@ public enum TaskStatus: sbyte
     /// 任务处理被拒绝
     /// </summary>
     Denied = 3,
+
+    /// <summary>
+    /// 任务请求未找到
+    /// </summary>
+    NotFound = 4,
 }
 
 public enum FileType: byte

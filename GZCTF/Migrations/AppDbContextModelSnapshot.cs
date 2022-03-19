@@ -130,9 +130,12 @@ namespace CTFServer.Migrations
                     b.Property<int>("ChallengeId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("FileId")
+                    b.Property<string>("FileHash")
                         .IsRequired()
-                        .HasColumnType("character varying(64)");
+                        .HasColumnType("text");
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Flag")
                         .IsRequired()
@@ -230,19 +233,22 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.LocalFile", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Hash")
+                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Hash");
+                    b.HasKey("Id");
 
                     b.ToTable("Files");
                 });
@@ -449,8 +455,8 @@ namespace CTFServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AvatarHash")
-                        .HasColumnType("character varying(64)");
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
 
                     b.Property<string>("Bio")
                         .IsRequired()
@@ -462,8 +468,6 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AvatarHash");
-
                     b.ToTable("Teams");
                 });
 
@@ -474,13 +478,16 @@ namespace CTFServer.Migrations
 
                     b.Property<string>("AcatarId")
                         .IsRequired()
-                        .HasColumnType("character varying(64)");
+                        .HasColumnType("text");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
                     b.Property<int>("ActiveTeamId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
 
                     b.Property<string>("Bio")
                         .IsRequired()
@@ -547,8 +554,6 @@ namespace CTFServer.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AcatarId");
 
                     b.HasIndex("ActiveTeamId");
 
@@ -857,23 +862,8 @@ namespace CTFServer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CTFServer.Models.Team", b =>
-                {
-                    b.HasOne("CTFServer.Models.LocalFile", "Avatar")
-                        .WithMany()
-                        .HasForeignKey("AvatarHash");
-
-                    b.Navigation("Avatar");
-                });
-
             modelBuilder.Entity("CTFServer.Models.UserInfo", b =>
                 {
-                    b.HasOne("CTFServer.Models.LocalFile", "Avatar")
-                        .WithMany()
-                        .HasForeignKey("AcatarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CTFServer.Models.Team", "ActiveTeam")
                         .WithMany()
                         .HasForeignKey("ActiveTeamId")
@@ -881,8 +871,6 @@ namespace CTFServer.Migrations
                         .IsRequired();
 
                     b.Navigation("ActiveTeam");
-
-                    b.Navigation("Avatar");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

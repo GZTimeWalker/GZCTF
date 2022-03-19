@@ -28,13 +28,14 @@ namespace CTFServer.Migrations
                 name: "Files",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Hash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Location = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Files", x => x.Hash);
+                    table.PrimaryKey("PK_Files", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +90,21 @@ namespace CTFServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Bio = table.Column<string>(type: "text", nullable: false),
+                    Avatar = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -107,26 +123,6 @@ namespace CTFServer.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Teams",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Bio = table.Column<string>(type: "text", nullable: false),
-                    AvatarHash = table.Column<string>(type: "character varying(64)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Teams", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Teams_Files_AvatarHash",
-                        column: x => x.AvatarHash,
-                        principalTable: "Files",
-                        principalColumn: "Hash");
                 });
 
             migrationBuilder.CreateTable(
@@ -194,7 +190,8 @@ namespace CTFServer.Migrations
                     LastVisitedUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     RegisterTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Bio = table.Column<string>(type: "text", nullable: false),
-                    AcatarId = table.Column<string>(type: "character varying(64)", nullable: false),
+                    Avatar = table.Column<string>(type: "text", nullable: true),
+                    AcatarId = table.Column<string>(type: "text", nullable: false),
                     ActiveTeamId = table.Column<int>(type: "integer", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -214,12 +211,6 @@ namespace CTFServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Files_AcatarId",
-                        column: x => x.AcatarId,
-                        principalTable: "Files",
-                        principalColumn: "Hash",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUsers_Teams_ActiveTeamId",
                         column: x => x.ActiveTeamId,
@@ -262,7 +253,8 @@ namespace CTFServer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Flag = table.Column<string>(type: "text", nullable: false),
-                    FileId = table.Column<string>(type: "character varying(64)", nullable: false),
+                    FileId = table.Column<int>(type: "integer", nullable: false),
+                    FileHash = table.Column<string>(type: "text", nullable: false),
                     AttachmentType = table.Column<byte>(type: "smallint", nullable: false),
                     Url = table.Column<string>(type: "text", nullable: false),
                     ChallengeId = table.Column<int>(type: "integer", nullable: false)
@@ -280,7 +272,7 @@ namespace CTFServer.Migrations
                         name: "FK_FlagContexts_Files_FileId",
                         column: x => x.FileId,
                         principalTable: "Files",
-                        principalColumn: "Hash",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -557,11 +549,6 @@ namespace CTFServer.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_AcatarId",
-                table: "AspNetUsers",
-                column: "AcatarId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_ActiveTeamId",
                 table: "AspNetUsers",
                 column: "ActiveTeamId");
@@ -668,11 +655,6 @@ namespace CTFServer.Migrations
                 column: "UserInfoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Teams_AvatarHash",
-                table: "Teams",
-                column: "AvatarHash");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TeamUserInfo_TeamsId",
                 table: "TeamUserInfo",
                 column: "TeamsId");
@@ -732,13 +714,13 @@ namespace CTFServer.Migrations
                 name: "Challenges");
 
             migrationBuilder.DropTable(
+                name: "Files");
+
+            migrationBuilder.DropTable(
                 name: "Teams");
 
             migrationBuilder.DropTable(
                 name: "Games");
-
-            migrationBuilder.DropTable(
-                name: "Files");
         }
     }
 }

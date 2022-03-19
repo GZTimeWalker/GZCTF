@@ -16,7 +16,13 @@ public class FlagContext
     /// <summary>
     /// Flag 对应附件 Id
     /// </summary>
-    public string FileId { get; set; } = string.Empty;
+    public int FileId { get; set; }
+
+    /// <summary>
+    /// 文件哈希
+    /// </summary>
+    public string FileHash { get; set; } = string.Empty;
+
 
     /// <summary>
     /// 附件类型
