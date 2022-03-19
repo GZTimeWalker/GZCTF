@@ -39,14 +39,22 @@ public class AssetsController : ControllerBase
     [HttpGet("[controller]/{hash}/{filename}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public IActionResult GetFile(string hash, string filename)
     {
+        if(hash.Length != 64 || filename.Length == 0)
+        {
+            return BadRequest(new RequestResponse("请求非法"));
+        }
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         path = Path.GetFullPath(Path.Combine(basepath, path));
 
         if (!System.IO.File.Exists(path))
+        {
+            LogHelper.Log(logger, $"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, NLog.LogLevel.Warn);
             return NotFound();
+        }
 
         return new PhysicalFileResult(path, MediaTypeNames.Application.Octet)
         {
@@ -80,7 +88,8 @@ public class AssetsController : ControllerBase
                 if (file.Length > 0)
                 {
                     var res = await fileRepository.CreateOrUpdateFile(file, token);
-                    LogHelper.SystemLog(logger, $"保存文件 [{res[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, NLog.LogLevel.Info); 
+                    LogHelper.SystemLog(logger, $"更新文件 [{res[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, NLog.LogLevel.Info); 
+                    results.Add(res);
                 }
             }
             return Ok(results);
@@ -93,14 +102,14 @@ public class AssetsController : ControllerBase
     }
 
     /// <summary>
-    /// 上传文件接口
+    /// 删除文件接口
     /// </summary>
     /// <remarks>
     /// 按照文件哈希删除文件
     /// </remarks>
     /// <param name="hash"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功上传文件</response>
+    /// <response code="200">成功删除文件</response>
     /// <response code="400">上传文件失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
@@ -112,6 +121,8 @@ public class AssetsController : ControllerBase
     public async Task<IActionResult> Delete(string hash, CancellationToken token)
     {
         var result = await fileRepository.DeleteFileByHash(hash, token);
+
+        LogHelper.SystemLog(logger, $"正在删除文件 [{hash[..8]}]...", result, NLog.LogLevel.Info);
 
         return result switch
         {
