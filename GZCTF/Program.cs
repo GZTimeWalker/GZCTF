@@ -27,7 +27,7 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 #region Directory
 
-var uploadPath = Path.Combine(builder.Configuration.GetSection("UploadFolder").Value ?? "files");
+var uploadPath = Path.Combine(builder.Configuration.GetSection("UploadFolder").Value ?? "uploads");
 
 if (!Directory.Exists(uploadPath))
     Directory.CreateDirectory(uploadPath);

@@ -21,7 +21,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         await file.CopyToAsync(tmp, token);
         var hash = await SHA256.Create().ComputeHashAsync(tmp, token);
 
-        var basepath = configuration.GetSection("UploadFolder").Value ?? "files";
+        var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
         var localFile = await GetFileByHash(fileHash, token);
@@ -58,7 +58,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         if (file is null)
             return TaskStatus.NotFound;
 
-        var basepath = configuration.GetSection("UploadFolder").Value ?? "files";
+        var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         var path = Path.Combine(basepath, file.Location, file.Hash);
 
         if (File.Exists(path))
