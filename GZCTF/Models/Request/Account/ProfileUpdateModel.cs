@@ -17,10 +17,10 @@ public class ProfileUpdateModel
     /// <summary>
     /// 描述
     /// </summary>
-    public string? Descr { get; set; }
+    public string? Bio { get; set; }
 
     /// <summary>
     /// 手机号
     /// </summary>
-    public string? PhoneNumber { get; set; } = string.Empty;
+    public string? Phone { get; set; }
 }

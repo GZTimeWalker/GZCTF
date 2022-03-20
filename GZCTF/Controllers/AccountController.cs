@@ -5,6 +5,7 @@ using CTFServer.Middlewares;
 using CTFServer.Models;
 using CTFServer.Models.Request.Account;
 using CTFServer.Services.Interface;
+using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using NLog;
 using System.Net.Mime;
@@ -24,10 +25,12 @@ public class AccountController : ControllerBase
     private readonly UserManager<UserInfo> userManager;
     private readonly SignInManager<UserInfo> signInManager;
     private readonly IMemoryCache cache;
+    private readonly IFileRepository fileRepository;
 
     public AccountController(
         IMailSender _mailSender,
         IMemoryCache memoryCache,
+        IFileRepository _fileRepository,
         UserManager<UserInfo> _userManager,
         SignInManager<UserInfo> _signInManager)
     {
@@ -35,6 +38,7 @@ public class AccountController : ControllerBase
         mailSender = _mailSender;
         userManager = _userManager;
         signInManager = _signInManager;
+        fileRepository = _fileRepository;
     }
 
     /// <summary>
@@ -55,7 +59,7 @@ public class AccountController : ControllerBase
         {
             UserName = model.UserName,
             Email = model.Email,
-            Role = Role.User,
+            Role = Role.User
         };
 
         user.UpdateByHttpContext(HttpContext);
@@ -179,10 +183,6 @@ public class AccountController : ControllerBase
         user.LastSignedInUTC = DateTimeOffset.UtcNow;
         user.LastVisitedUTC = DateTimeOffset.UtcNow;
         user.RegisterTimeUTC = DateTimeOffset.UtcNow;
-        //user.Rank = new()
-        //{
-        //    UpdateTimeUTC = DateTimeOffset.UtcNow,
-        //};
 
         result = await userManager.UpdateAsync(user);
 
@@ -268,12 +268,12 @@ public class AccountController : ControllerBase
         var oname = user.UserName;
 
         user.UserName = model.UserName ?? user.UserName;
-        user.Bio = model.Descr ?? user.Bio;
-        user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
+        user.Bio = model.Bio ?? user.Bio;
+        user.PhoneNumber = model.Phone ?? user.PhoneNumber;
 
         var result = await userManager.UpdateAsync(user);
 
-        if(model.Descr is not null)
+        if(model.Bio is not null)
             cache.Remove(CacheKey.ScoreBoard);
 
         if (!result.Succeeded)
@@ -387,51 +387,61 @@ public class AccountController : ControllerBase
     /// <response code="401">未授权用户</response>
     [HttpPost]
     [RequireUser]
-    //[ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Me()
+    public async Task<IActionResult> Profile()
     {
         var user = await userManager.GetUserAsync(User);
-        throw new NotImplementedException();
-        /*return Ok(new ClientUserInfoModel()
+
+        return Ok(new ClientUserInfoModel()
         {
-                Description = user.Bio,
+                Bio = user.Bio,
                 Email = user.Email, 
                 UserName = user.UserName,
-                PhoneNumber = user.PhoneNumber
-        });*/
+                Phone = user.PhoneNumber,
+                Avatar = user.AvatarUrl,
+                ActiveTeamId = user.ActiveTeamId
+        });
     }
 
     /// <summary>
-    /// 删除一个用户
+    /// 更新用户头像接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口删除用户，需要Admin权限，不可删除自己
+    /// 使用此接口更新用户头像，需要SignedIn权限
     /// </remarks>
-    /// <param name="Id">用户Id</param>
-    /// <response code="200">用户成功被删除</response>
-    /// <response code="400">删除失败</response>
-    [HttpDelete("{Id:int}")]
-    [RequireAdmin]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    /// <response code="200">用户成功获取信息</response>
+    /// <response code="401">未授权用户</response>
+    [HttpPut]
+    [RequireUser]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Remove(int Id)
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Avatar(IFormFile file,CancellationToken token)
     {
-        /*var user = await userManager.GetUserAsync(User);
+        if (file.Length == 0)
+            return BadRequest(new RequestResponse("文件非法"));
 
-        if(Id == user.Id)
-            return BadRequest(new RequestResponse("正尝试删除自己的账号。"));
+        if (file.Length > 10 * 1024 * 1024)
+            return BadRequest(new RequestResponse("文件过大"));
 
-        user = await userManager.FindByIdAsync(Id);
+        var user = await userManager.GetUserAsync(User);
 
-        if(user is null)
-            return BadRequest(new RequestResponse("未找到对应用户。"));
+        var avatar = await fileRepository.CreateOrUpdateFile(file, "avatar", token);
 
-        var result = await userManager.DeleteAsync(user);
-        if(!result.Succeeded)
-            return BadRequest(new RequestResponse("删除失败。"));
+        if (avatar is null)
+            return BadRequest(new RequestResponse("未知错误"));
 
-        return Ok();*/
-        throw new NotImplementedException();
+        user.AvatarUrl = avatar.Url;
+        var result = await userManager.UpdateAsync(user);
+
+        if(result == IdentityResult.Success)
+        {
+            LogHelper.Log(logger, $"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
+
+            return Ok(avatar.Url);
+        }
+
+        return BadRequest(new RequestResponse("未知错误"));
     }
 }

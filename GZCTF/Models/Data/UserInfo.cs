@@ -34,17 +34,12 @@ public class UserInfo : IdentityUser
     /// </summary>
     public string Bio { get; set; } = string.Empty;
 
-    /// <summary>
-    /// 头像对象
-    /// </summary>
-    public string? Avatar { get; set; } = string.Empty;
-
     #region 数据库关系
 
     /// <summary>
-    /// 头像 Id
+    /// 头像 Url
     /// </summary>
-    public string AcatarId { get; set; } = string.Empty;
+    public string? AvatarUrl { get; set; }
 
     /// <summary>
     /// 个人提交记录
@@ -54,7 +49,7 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 当前激活队伍
     /// </summary>
-    public Team? ActiveTeam { get; set; } 
+    public Team? ActiveTeam { get; set; }
 
     /// <summary>
     /// 当前激活队伍 Id
@@ -81,10 +76,6 @@ public class UserInfo : IdentityUser
         if (remoteAddress is null)
             return;
 
-        if (remoteAddress.IsIPv4MappedToIPv6)
-            IP = remoteAddress.MapToIPv4().ToString();
-        else
-            IP = remoteAddress.MapToIPv6().ToString().Replace("::ffff:", "");
-
+        IP = remoteAddress.ToString();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
 
@@ -8,6 +9,7 @@ namespace CTFServer.Models;
 public class LocalFile
 {
     [Key]
+    [JsonIgnore]
     public int Id { get; set; }
 
     /// <summary>
@@ -26,12 +28,14 @@ public class LocalFile
     /// 文件存储位置
     /// </summary>
     [NotMapped]
+    [JsonIgnore]
     public string Location => $"{Hash[..2]}/{Hash[2..4]}";
 
     /// <summary>
     /// 获取文件Url
     /// </summary>
-    /// <returns>文件Url</returns>
-    public string GetUrl() => throw new NotImplementedException();
+    [NotMapped]
+    [JsonIgnore]
+    public string Url => $"/assets/{Hash}/{Name}";
 }
 

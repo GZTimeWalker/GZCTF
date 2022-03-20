@@ -5,6 +5,7 @@ using System.Net.Mime;
 using CTFServer.Repositories.Interface;
 using CTFServer.Middlewares;
 using System.Net.Http.Headers;
+using CTFServer.Models;
 
 namespace CTFServer.Controllers;
 
@@ -82,13 +83,13 @@ public class AssetsController : ControllerBase
     {
         try
         {
-            List<string> results = new();
+            List<LocalFile> results = new();
             foreach (var file in files)
             {
                 if (file.Length > 0)
                 {
-                    var res = await fileRepository.CreateOrUpdateFile(file, token);
-                    LogHelper.SystemLog(logger, $"更新文件 [{res[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, NLog.LogLevel.Info); 
+                    var res = await fileRepository.CreateOrUpdateFile(file, null, token);
+                    LogHelper.SystemLog(logger, $"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, NLog.LogLevel.Info); 
                     results.Add(res);
                 }
             }
@@ -122,7 +123,7 @@ public class AssetsController : ControllerBase
     {
         var result = await fileRepository.DeleteFileByHash(hash, token);
 
-        LogHelper.SystemLog(logger, $"正在删除文件 [{hash[..8]}]...", result, NLog.LogLevel.Info);
+        LogHelper.SystemLog(logger, $"删除文件 [{hash[..8]}]...", result, NLog.LogLevel.Info);
 
         return result switch
         {

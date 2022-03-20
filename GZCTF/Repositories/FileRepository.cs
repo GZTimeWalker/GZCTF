@@ -16,7 +16,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         configuration = _configuration;
     }
 
-    public async Task<string> CreateOrUpdateFile(IFormFile file, CancellationToken token)
+    public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
     {
         MemoryStream tmp = new();
         await file.CopyToAsync(tmp, token);
@@ -31,12 +31,12 @@ public class FileRepository : RepositoryBase, IFileRepository
 
         if(localFile is null)
         {
-            localFile = new() { Hash = fileHash, Name = file.FileName };
+            localFile = new() { Hash = fileHash, Name = fileName ?? file.FileName };
             await context.AddAsync(localFile, token);
         }
         else
         {
-            localFile.Name = file.FileName;
+            localFile.Name = fileName ?? file.FileName;
             context.Update(localFile);
         }
 
@@ -53,10 +53,10 @@ public class FileRepository : RepositoryBase, IFileRepository
 
         await context.SaveChangesAsync(token);
 
-        return localFile.Hash;
+        return localFile;
     }
 
-    public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token)
+    public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token =  default)
     {
         var file = await context.Files.Where(f => f.Hash == fileHash).FirstOrDefaultAsync(token);
 
@@ -66,22 +66,31 @@ public class FileRepository : RepositoryBase, IFileRepository
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         var path = Path.Combine(basepath, file.Location, file.Hash);
 
+        LogHelper.SystemLog(logger, $"正在删除文件 [{file.Hash[..8]}] {file.Name}...", TaskStatus.Pending, NLog.LogLevel.Info);
+
         if (File.Exists(path))
         {
             File.Delete(path);
-
             context.Files.Remove(file);
             await context.SaveChangesAsync(token);
 
             return TaskStatus.Success;
         }
         else
+        {
+            context.Files.Remove(file);
+            await context.SaveChangesAsync(token);
+
             return TaskStatus.NotFound;
+        }
     }
 
-    public Task<LocalFile?> GetFileByHash(string fileHash, CancellationToken token)
+    public Task<LocalFile?> GetFileByHash(string fileHash, CancellationToken token =  default)
         => context.Files.Where(f => f.Hash == fileHash).FirstOrDefaultAsync(token);
 
-    public Task<List<LocalFile>> GetFilesByName(string fileName, CancellationToken token)
+    public Task<LocalFile?> GetFilesById(int fileId, CancellationToken token =  default)
+        => context.Files.Where(f => f.Id == fileId).FirstOrDefaultAsync(token);
+
+    public Task<List<LocalFile>> GetFilesByName(string fileName, CancellationToken token =  default)
         => context.Files.Where(f => f.Name == fileName).ToListAsync(token);
 }
