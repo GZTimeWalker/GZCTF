@@ -44,9 +44,8 @@ public class AssetsController : ControllerBase
     public IActionResult GetFile(string hash, string filename)
     {
         if(hash.Length != 64 || filename.Length == 0)
-        {
             return BadRequest(new RequestResponse("请求非法"));
-        }
+
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         path = Path.GetFullPath(Path.Combine(basepath, path));

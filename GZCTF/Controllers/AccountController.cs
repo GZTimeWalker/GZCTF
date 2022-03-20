@@ -399,7 +399,7 @@ public class AccountController : ControllerBase
                 Email = user.Email, 
                 UserName = user.UserName,
                 Phone = user.PhoneNumber,
-                Avatar = user.AvatarUrl,
+                Avatar = $"/assets/{user.AvatarHash}/avatar",
                 ActiveTeamId = user.ActiveTeamId
         });
     }
@@ -411,6 +411,7 @@ public class AccountController : ControllerBase
     /// 使用此接口更新用户头像，需要SignedIn权限
     /// </remarks>
     /// <response code="200">用户成功获取信息</response>
+    /// <response code="400">非法请求</response>
     /// <response code="401">未授权用户</response>
     [HttpPut]
     [RequireUser]
@@ -427,12 +428,15 @@ public class AccountController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
+        if (user.AvatarHash is not null)
+            _ = await fileRepository.DeleteFileByHash(user.AvatarHash, token);
+
         var avatar = await fileRepository.CreateOrUpdateFile(file, "avatar", token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("未知错误"));
 
-        user.AvatarUrl = avatar.Url;
+        user.AvatarHash = avatar.Hash;
         var result = await userManager.UpdateAsync(user);
 
         if(result == IdentityResult.Success)

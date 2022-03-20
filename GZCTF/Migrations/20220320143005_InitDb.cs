@@ -190,8 +190,7 @@ namespace CTFServer.Migrations
                     LastVisitedUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     RegisterTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Bio = table.Column<string>(type: "text", nullable: false),
-                    Avatar = table.Column<string>(type: "text", nullable: true),
-                    AcatarId = table.Column<string>(type: "text", nullable: false),
+                    AvatarHash = table.Column<string>(type: "text", nullable: true),
                     ActiveTeamId = table.Column<int>(type: "integer", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -568,6 +567,11 @@ namespace CTFServer.Migrations
                 name: "IX_Events_GameId",
                 table: "Events",
                 column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_Hash",
+                table: "Files",
+                column: "Hash");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FlagContexts_ChallengeId",

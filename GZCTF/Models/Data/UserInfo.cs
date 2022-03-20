@@ -39,7 +39,7 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 头像 Url
     /// </summary>
-    public string? AvatarUrl { get; set; }
+    public string? AvatarHash { get; set; }
 
     /// <summary>
     /// 个人提交记录

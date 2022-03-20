@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220319171912_AddIndex")]
-    partial class AddIndex
+    [Migration("20220320143005_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -480,17 +480,13 @@ namespace CTFServer.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("AcatarId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
                     b.Property<int>("ActiveTeamId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Avatar")
+                    b.Property<string>("AvatarHash")
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")

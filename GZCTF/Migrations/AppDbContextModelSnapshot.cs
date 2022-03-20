@@ -478,17 +478,13 @@ namespace CTFServer.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("AcatarId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
                     b.Property<int>("ActiveTeamId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Avatar")
+                    b.Property<string>("AvatarHash")
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")
