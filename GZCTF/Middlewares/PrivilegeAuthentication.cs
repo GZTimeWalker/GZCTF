@@ -27,7 +27,7 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        /*var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<UserInfo>>();
+        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<UserInfo>>();
         var user = await userManager.GetUserAsync(context.HttpContext.User);
 
         if (user is null)
@@ -51,7 +51,7 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
                 StatusCode = 403
             };
             context.Result = result;
-        }*/
+        }
     }
 }
 
