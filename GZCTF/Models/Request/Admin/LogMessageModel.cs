@@ -19,6 +19,9 @@ public class LogMessageModel
     [JsonPropertyName("name")]
     public string? UserName { get; set; }
 
+    [JsonPropertyName("level")]
+    public string? Level { get; set; }
+
     /// <summary>
     /// IP地址
     /// </summary>
@@ -41,6 +44,7 @@ public class LogMessageModel
         => new()
         {
             Time = logInfo.TimeUTC,
+            Level = logInfo.Level,
             UserName = logInfo.UserName,
             IP = logInfo.RemoteIP,
             Msg = logInfo.Message,

@@ -37,15 +37,12 @@ public class AssetsController : ControllerBase
     /// <param name="filename">下载文件名</param>
     /// <response code="200">成功获取文件</response>
     /// <response code="404">文件未找到</response>
-    [HttpGet("[controller]/{hash}/{filename}")]
+    [HttpGet("[controller]/{hash:length(64)}/{filename:minlength(1)}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public IActionResult GetFile(string hash, string filename)
     {
-        if(hash.Length != 64 || filename.Length == 0)
-            return BadRequest(new RequestResponse("请求非法"));
-
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         path = Path.GetFullPath(Path.Combine(basepath, path));
@@ -114,7 +111,7 @@ public class AssetsController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
     [RequireAdmin]
-    [HttpDelete("api/[controller]/{hash}")]
+    [HttpDelete("api/[controller]/{hash:length(64)}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]

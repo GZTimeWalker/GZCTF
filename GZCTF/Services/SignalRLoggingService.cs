@@ -49,6 +49,7 @@ public class SignalRLoggingService : IDisposable
                 {
                     Time = logInfo.TimeStamp,
                     UserName = "System",
+                    Level = logInfo.Level.ToString(),
                     IP = "-",
                     Msg = logInfo.Message,
                     Status = status
@@ -60,6 +61,7 @@ public class SignalRLoggingService : IDisposable
                 new LogMessageModel
                 {
                     Time = logInfo.TimeStamp,
+                    Level = logInfo.Level.ToString(),
                     UserName = (string)logInfo.Properties["uname"],
                     IP = (string)logInfo.Properties["ip"],
                     Msg = logInfo.Message,

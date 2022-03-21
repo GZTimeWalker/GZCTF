@@ -13,11 +13,11 @@ export const store = configureStore({
     [ADMIN_API.reducerPath]: ADMIN_API.reducer,
     [INFO_API.reducerPath]: INFO_API.reducer,
     [SUBMISSION_API.reducerPath]: SUBMISSION_API.reducer
-  },
+  }/*,
   middleware: (getDefaultMiddleware) =>
     [USER_API, Challenges_API, ADMIN_API, INFO_API, SUBMISSION_API]
       .map((api) => api.middleware)
-      .reduce((prev, curr) => prev.concat(curr), getDefaultMiddleware())
+      .reduce((prev, curr) => prev.concat(curr), getDefaultMiddleware())*/
 });
 
 setupListeners(store.dispatch);
