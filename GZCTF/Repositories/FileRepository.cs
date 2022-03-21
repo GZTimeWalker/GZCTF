@@ -92,7 +92,10 @@ public class FileRepository : RepositoryBase, IFileRepository
     public Task<LocalFile?> GetFileByHash(string fileHash, CancellationToken token =  default)
         => context.Files.Where(f => f.Hash == fileHash).FirstOrDefaultAsync(token);
 
-    public Task<LocalFile?> GetFilesById(int fileId, CancellationToken token =  default)
+    public Task<List<LocalFile>> GetFiles(int count, int skip, CancellationToken token = default)
+        => context.Files.Skip(skip).Take(count).ToListAsync(token);
+
+    public Task<LocalFile?> GetFileById(int fileId, CancellationToken token =  default)
         => context.Files.Where(f => f.Id == fileId).FirstOrDefaultAsync(token);
 
     public Task<List<LocalFile>> GetFilesByName(string fileName, CancellationToken token =  default)

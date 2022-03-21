@@ -9,10 +9,10 @@ public class LogRepository : RepositoryBase, ILogRepository
 {
     public LogRepository(AppDbContext context) : base(context) { }
 
-    public Task<List<LogMessageModel>> GetLogs(int skip, int count, string level, CancellationToken token)
+    public Task<List<LogMessageModel>> GetLogs(int skip, int count, string? level, CancellationToken token)
     {
         IQueryable<LogModel> data = context.Logs;
-        if (level != "All")
+        if (level is not null && level != "All")
             data = data.Where(x => x.Level == level);
         data = data.OrderByDescending(x => x.TimeUTC).Skip(skip).Take(count);
 

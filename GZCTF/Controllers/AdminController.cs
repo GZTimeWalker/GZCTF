@@ -27,11 +27,15 @@ public class AdminController : ControllerBase
     private static readonly Logger logger = LogManager.GetLogger("AdminController");
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
+    private readonly IFileRepository fileRepository;
 
-    public AdminController(UserManager<UserInfo> _userManager, ILogRepository _logRepository)
+    public AdminController(UserManager<UserInfo> _userManager, 
+        ILogRepository _logRepository,
+        IFileRepository _fileRepository)
     {
         userManager = _userManager;
         logRepository = _logRepository;
+        fileRepository = _fileRepository;
     }
 
     /// <summary>
@@ -62,6 +66,20 @@ public class AdminController : ControllerBase
     /// <response code="403">禁止访问</response>
     [HttpGet("Logs/{level:alpha=All}")]
     [ProducesResponseType(typeof(List<ClientUserInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Logs([FromRoute] string level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
+    public async Task<IActionResult> Logs([FromRoute] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await logRepository.GetLogs(skip, count, level, token));
+
+    /// <summary>
+    /// 获取全部文件
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口获取全部日志，需要Admin权限
+    /// </remarks>
+    /// <response code="200">日志列表</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpGet("Files")]
+    [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
+        => Ok(await fileRepository.GetFiles(skip, count, token));
 }

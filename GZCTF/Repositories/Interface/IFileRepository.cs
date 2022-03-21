@@ -43,5 +43,14 @@ public interface IFileRepository
     /// <param name="fileId">文件名称</param>
     /// <param name="token">取消Token</param>
     /// <returns>文件对象列表</returns>
-    public Task<LocalFile?> GetFilesById(int fileId, CancellationToken token = default);
+    public Task<LocalFile?> GetFileById(int fileId, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取全部文件
+    /// </summary>
+    /// <param name="count">数量</param>
+    /// <param name="skip">跳过</param>
+    /// <param name="token">取消Token</param>
+    /// <returns>文件对象列表</returns>
+    public Task<List<LocalFile>> GetFiles(int count, int skip, CancellationToken token = default);
 }
