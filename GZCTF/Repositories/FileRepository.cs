@@ -18,7 +18,10 @@ public class FileRepository : RepositoryBase, IFileRepository
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
     {
-        MemoryStream tmp = new();
+        using Stream tmp = file.Length <= 16 * 1024 * 1024 ? 
+                new MemoryStream() :
+                File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
+
         await file.CopyToAsync(tmp, token);
 
         tmp.Position = 0;
