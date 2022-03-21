@@ -18,8 +18,7 @@ public class FileRepository : RepositoryBase, IFileRepository
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
     {
-        using Stream tmp = file.Length <= 16 * 1024 * 1024 ? 
-                new MemoryStream() :
+        using Stream tmp = file.Length <= 16 * 1024 * 1024 ? new MemoryStream() :
                 File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
 
         LogHelper.SystemLog(logger, $"缓存位置：{tmp.GetType()}");

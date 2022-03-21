@@ -397,15 +397,7 @@ public class AccountController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        return Ok(new ClientUserInfoModel()
-        {
-                Bio = user.Bio,
-                Email = user.Email, 
-                UserName = user.UserName,
-                Phone = user.PhoneNumber,
-                Avatar = $"/assets/{user.AvatarHash}/avatar",
-                ActiveTeamId = user.ActiveTeamId
-        });
+        return Ok(ClientUserInfoModel.FromUserInfo(user));
     }
 
     /// <summary>
@@ -414,7 +406,7 @@ public class AccountController : ControllerBase
     /// <remarks>
     /// 使用此接口更新用户头像，需要SignedIn权限
     /// </remarks>
-    /// <response code="200">用户成功获取信息</response>
+    /// <response code="200">用户头像URL</response>
     /// <response code="400">非法请求</response>
     /// <response code="401">未授权用户</response>
     [HttpPut]

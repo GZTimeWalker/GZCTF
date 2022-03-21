@@ -36,4 +36,14 @@ public class LogMessageModel
     /// </summary>
     [JsonPropertyName("status")]
     public string? Status { get; set; }
+
+    public static LogMessageModel FromLogModel(LogModel logInfo)
+        => new()
+        {
+            Time = logInfo.TimeUTC,
+            UserName = logInfo.UserName,
+            IP = logInfo.RemoteIP,
+            Msg = logInfo.Message,
+            Status = logInfo.Status
+        };
 }

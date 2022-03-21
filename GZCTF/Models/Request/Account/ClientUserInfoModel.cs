@@ -5,6 +5,11 @@ namespace CTFServer.Models.Request.Account;
 public class ClientUserInfoModel
 {
     /// <summary>
+    /// 用户ID
+    /// </summary>
+    public string UserId { get; set; }
+
+    /// <summary>
     /// 用户名
     /// </summary>
     public string? UserName { get; set; }
@@ -33,4 +38,16 @@ public class ClientUserInfoModel
     /// 当前队伍
     /// </summary>
     public int ActiveTeamId { get; set; }
+
+    public static ClientUserInfoModel FromUserInfo(UserInfo user)
+        => new()
+        {
+            UserId = user.Id,
+            Bio = user.Bio,
+            Email = user.Email,
+            UserName = user.UserName,
+            Phone = user.PhoneNumber,
+            Avatar = $"/assets/{user.AvatarHash}/avatar",
+            ActiveTeamId = user.ActiveTeamId
+        };
 }

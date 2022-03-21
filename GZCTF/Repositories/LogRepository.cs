@@ -16,14 +16,6 @@ public class LogRepository : RepositoryBase, ILogRepository
             data = data.Where(x => x.Level == level);
         data = data.OrderByDescending(x => x.TimeUTC).Skip(skip).Take(count);
 
-        return (from log in data
-                select new LogMessageModel
-                {
-                    Time = log.TimeUTC,
-                    IP = log.RemoteIP,
-                    Msg = log.Message,
-                    Status = log.Status,
-                    UserName = log.UserName
-                }).ToListAsync(token);
+        return (from log in data select LogMessageModel.FromLogModel(log)).ToListAsync(token);
     }
 }
