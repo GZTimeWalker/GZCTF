@@ -81,5 +81,5 @@ public class AdminController : ControllerBase
     [HttpGet("Files")]
     [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await fileRepository.GetFiles(skip, count, token));
+        => Ok(await fileRepository.GetFiles(count, skip, token));
 }
