@@ -24,7 +24,6 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AdminController : ControllerBase
 {
-    private static readonly Logger logger = LogManager.GetLogger("AdminController");
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileRepository;
