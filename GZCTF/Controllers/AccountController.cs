@@ -9,6 +9,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using NLog;
 using System.Net.Mime;
+using CTFServer.Extensions;
 
 namespace CTFServer.Controllers;
 
@@ -26,15 +27,18 @@ public class AccountController : ControllerBase
     private readonly SignInManager<UserInfo> signInManager;
     private readonly IMemoryCache cache;
     private readonly IFileRepository fileRepository;
+    private readonly IRecaptchaExtension recaptcha;
 
     public AccountController(
         IMailSender _mailSender,
         IMemoryCache memoryCache,
         IFileRepository _fileRepository,
+        IRecaptchaExtension _recaptcha,
         UserManager<UserInfo> _userManager,
         SignInManager<UserInfo> _signInManager)
     {
         cache = memoryCache;
+        recaptcha = _recaptcha;
         mailSender = _mailSender;
         userManager = _userManager;
         signInManager = _signInManager;
@@ -55,6 +59,10 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
+        //if (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
+        //    !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString()))
+        //    return BadRequest(new RequestResponse("校验失败"));
+
         var user = new UserInfo
         {
             UserName = model.UserName,
@@ -208,6 +216,10 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> LogIn([FromBody] LoginModel model)
     {
+        //if (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
+        //    !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString()))
+        //    return BadRequest(new RequestResponse("校验失败"));
+
         var user = await userManager.FindByNameAsync(model.UserName);
         if (user is null)
             user = await userManager.FindByEmailAsync(model.UserName);
@@ -272,9 +284,6 @@ public class AccountController : ControllerBase
         user.PhoneNumber = model.Phone ?? user.PhoneNumber;
 
         var result = await userManager.UpdateAsync(user);
-
-        if(model.Bio is not null)
-            cache.Remove(CacheKey.ScoreBoard);
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
@@ -366,11 +375,6 @@ public class AccountController : ControllerBase
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse("无效邮箱。"));
-
-        result = await userManager.UpdateAsync(user);
-
-        if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
 
         LogHelper.Log(logger, "更改邮箱成功。", user, TaskStatus.Success);
 

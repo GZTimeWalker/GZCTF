@@ -19,4 +19,10 @@ public class LoginModel
     [Required]
     [MinLength(6, ErrorMessage = "密码过短")]
     public string? Password { get; set; }
+
+    /// <summary>
+    /// Google Recaptcha Token
+    /// </summary>
+    [Required]
+    public string? GToken { get; set; }
 }

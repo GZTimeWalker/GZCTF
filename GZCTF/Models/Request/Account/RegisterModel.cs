@@ -27,4 +27,10 @@ public class RegisterModel
     [Required(ErrorMessage = "邮箱是必需的")]
     [EmailAddress(ErrorMessage = "邮箱地址无效")]
     public string? Email { get; set; }
+
+    /// <summary>
+    /// Google Recaptcha Token
+    /// </summary>
+    [Required]
+    public string? GToken { get; set; }
 }
