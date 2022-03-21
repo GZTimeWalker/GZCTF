@@ -39,7 +39,7 @@ public class AssetsController : ControllerBase
     /// <response code="404">文件未找到</response>
     [HttpGet("[controller]/{hash}/{filename}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public IActionResult GetFile(string hash, string filename)
     {
@@ -53,7 +53,7 @@ public class AssetsController : ControllerBase
         if (!System.IO.File.Exists(path))
         {
             LogHelper.Log(logger, $"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, NLog.LogLevel.Warn);
-            return NotFound();
+            return NotFound(new RequestResponse("文件不存在", 404));
         }
 
         return new PhysicalFileResult(path, MediaTypeNames.Application.Octet)
@@ -74,9 +74,9 @@ public class AssetsController : ControllerBase
     /// <response code="400">上传文件失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
-    //[RequireAdmin]
+    [RequireAdmin]
     [HttpPost("api/[controller]")]
-    [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Upload(List<IFormFile> files, CancellationToken token)
     {
@@ -113,7 +113,7 @@ public class AssetsController : ControllerBase
     /// <response code="400">上传文件失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">无权访问</response>
-    //[RequireAdmin]
+    [RequireAdmin]
     [HttpDelete("api/[controller]/{hash}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

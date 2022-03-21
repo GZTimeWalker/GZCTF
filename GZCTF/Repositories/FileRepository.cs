@@ -22,6 +22,8 @@ public class FileRepository : RepositoryBase, IFileRepository
                 new MemoryStream() :
                 File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
 
+        LogHelper.SystemLog(logger, $"缓存位置：{tmp.GetType()}");
+
         await file.CopyToAsync(tmp, token);
 
         tmp.Position = 0;

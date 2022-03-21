@@ -75,7 +75,7 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.AddOpenApiDocument(settings =>
 {
     settings.DocumentName = "v1";
-    settings.Version = "v0.1";
+    settings.Version = "v1";
     settings.Title = "GZCTF Server API";
     settings.Description = "GZCTF Server 接口文档";
     settings.UseControllerSummaryAsTagDescription = true;
@@ -185,12 +185,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-// do not use this, implement this by self
-/*app.UseStaticFiles(new StaticFileOptions {
-    FileProvider = new PhysicalFileProvider(uploadPath),
-    RequestPath = "/assets"
-});*/
 
 app.UseEndpoints(endpoints =>
 {
