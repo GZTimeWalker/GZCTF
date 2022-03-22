@@ -75,6 +75,11 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Members)
                 .WithMany(e => e.Teams);
+
+            entity.HasOne(e => e.Captain)
+                .WithMany()
+                .HasForeignKey(e => e.CaptainId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         builder.Entity<Participation>(entity =>

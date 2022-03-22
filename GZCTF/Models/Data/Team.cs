@@ -33,6 +33,18 @@ public class Team
     public string InviteToken { get; set; } = Guid.NewGuid().ToString("N");
 
     #region Db Relationship
+
+    /// <summary>
+    /// 队长用户ID
+    /// </summary>
+    [Required]
+    public string CaptainId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 队长
+    /// </summary>
+    public UserInfo? Captain { get; set; }
+
     /// <summary>
     /// 比赛
     /// </summary>
