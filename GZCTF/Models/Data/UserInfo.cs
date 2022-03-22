@@ -37,7 +37,7 @@ public class UserInfo : IdentityUser
     #region 数据库关系
 
     /// <summary>
-    /// 头像 Url
+    /// 头像哈希
     /// </summary>
     public string? AvatarHash { get; set; }
 

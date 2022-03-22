@@ -23,16 +23,14 @@ public class Team
     public string Bio { get; set; } = string.Empty;
 
     /// <summary>
-    /// 头像URL
+    /// 头像哈希
     /// </summary>
-    [NotMapped]
-    [JsonPropertyName("avatar")]
-    public string AvatarUrl { get; set; } = string.Empty;
+    public string? AvatarHash { get; set; }
 
     /// <summary>
-    /// 头像对象
+    /// 邀请链接
     /// </summary>
-    public string? Avatar { get; set; } = string.Empty;
+    public string InviteToken { get; set; } = Guid.NewGuid().ToString("N");
 
     #region Db Relationship
     /// <summary>
