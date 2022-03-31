@@ -24,6 +24,12 @@ public class TeamRepository : RepositoryBase, ITeamRepository
         return team;
     }
 
+    public Task<int> DeleteTeam(Team team, CancellationToken token = default)
+    {
+        context.Remove(team);
+        return context.SaveChangesAsync(token);
+    }
+
     public Task<Team?> GetTeamById(int id, CancellationToken token = default)
         => context.Teams.Include(e => e.Members).FirstOrDefaultAsync(t => t.Id == id, token);
 

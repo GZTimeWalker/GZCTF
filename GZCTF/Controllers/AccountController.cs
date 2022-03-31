@@ -249,7 +249,7 @@ public class AccountController : ControllerBase
     /// 用户登出接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口登出账户，需要SignedIn权限
+    /// 使用此接口登出账户，需要User权限
     /// </remarks>
     /// <response code="200">用户已登出</response>
     /// <response code="401">无权访问</response>
@@ -267,7 +267,7 @@ public class AccountController : ControllerBase
     /// 用户数据更新接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口更新用户用户名和描述，需要SignedIn权限
+    /// 使用此接口更新用户用户名和描述，需要User权限
     /// </remarks>
     /// <param name="model"></param>
     /// <response code="200">用户数据成功更新</response>
@@ -302,7 +302,7 @@ public class AccountController : ControllerBase
     /// 用户密码更改接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口更新用户密码，需要SignedIn权限
+    /// 使用此接口更新用户密码，需要User权限
     /// </remarks>
     /// <param name="model"></param>
     /// <response code="200">用户成功更新密码</response>
@@ -329,7 +329,7 @@ public class AccountController : ControllerBase
     /// 用户邮箱更改接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口更改用户邮箱，需要SignedIn权限，邮件URL：/confirm
+    /// 使用此接口更改用户邮箱，需要User权限，邮件URL：/confirm
     /// </remarks>
     /// <param name="model"></param>
     /// <response code="200">成功发送用户邮箱更改邮件</response>
@@ -360,7 +360,7 @@ public class AccountController : ControllerBase
     /// 用户邮箱更改确认接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口确认更改用户邮箱，需要邮箱验证码，需要SignedIn权限
+    /// 使用此接口确认更改用户邮箱，需要邮箱验证码，需要User权限
     /// </remarks>
     /// <param name="model"></param>
     /// <response code="200">用户成功更改邮箱</response>
@@ -389,7 +389,7 @@ public class AccountController : ControllerBase
     /// 获取用户信息接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口获取用户信息，需要SignedIn权限
+    /// 使用此接口获取用户信息，需要User权限
     /// </remarks>
     /// <response code="200">用户成功获取信息</response>
     /// <response code="401">未授权用户</response>
@@ -408,7 +408,7 @@ public class AccountController : ControllerBase
     /// 更新用户头像接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口更新用户头像，需要SignedIn权限
+    /// 使用此接口更新用户头像，需要User权限
     /// </remarks>
     /// <response code="200">用户头像URL</response>
     /// <response code="400">非法请求</response>

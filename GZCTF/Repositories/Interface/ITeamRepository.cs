@@ -38,4 +38,13 @@ public interface ITeamRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> VeifyToken(int id, string inviteToken, CancellationToken token = default);
+
+    /// <summary>
+    /// 删除队伍
+    /// </summary>
+    /// <param name="team">删除队伍</param>
+    /// <param name="token"></param>
+    /// <returns>队伍对象</returns>
+    public Task<int> DeleteTeam(Team team, CancellationToken token = default);
+
 }
