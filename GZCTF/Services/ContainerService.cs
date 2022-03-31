@@ -4,6 +4,7 @@ using Docker.DotNet.Models;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using NLog;
+using CTFServer.Models.Internal;
 
 namespace CTFServer.Services;
 
@@ -27,17 +28,21 @@ public class ContainerService : IContainerService
         dockerClient = cfg.CreateClient();
     }
 
-    public Task<Container?> CreateContainer(string image, int port, string flag, CancellationToken token = default)
+    public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
     {
         var parameters = new CreateContainerParameters()
         {
-            Image = image,
-            Name = $"{image.Split("/").LastOrDefault()}-{Codec.StrMD5(flag)[..16]}",
-            Env = { $"GZCTF_FLAG={flag}" },
+            Image = config.Image,
+            Name = $"{config.Image.Split("/").LastOrDefault()}-{Codec.StrMD5(config.Flag)[..16]}",
+            Env = { $"GZCTF_FLAG={config.Flag}" },
             // TODO: Add Health Check
-            ExposedPorts = { { port.ToString(), default } },
-            HostConfig = new() { PublishAllPorts = true },
-            StopTimeout = TimeSpan.FromHours(2)
+            ExposedPorts = { { config.Port.ToString(), default } },
+            HostConfig = new() { 
+                PublishAllPorts = true,
+                Memory = config.MemoryLimit,
+                CPUCount = 1
+            },
+            StopTimeout = TimeSpan.FromHours(2),
         };
 
         return CreateContainer(parameters, token);

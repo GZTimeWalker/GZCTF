@@ -1,5 +1,6 @@
 ﻿using CTFServer.Models;
 using Docker.DotNet.Models;
+using CTFServer.Models.Internal;
 
 namespace CTFServer.Services.Interface;
 
@@ -8,12 +9,10 @@ public interface IContainerService
     /// <summary>
     /// 创建容器
     /// </summary>
-    /// <param name="image">镜像名</param>
-    /// <param name="port">需要暴露的端口</param>
-    /// <param name="flag">Flag 内容</param>
+    /// <param name="config">容器配置</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Container?> CreateContainer(string image, int port, string flag, CancellationToken token = default);
+    public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default);
 
     /// <summary>
     /// 创建容器

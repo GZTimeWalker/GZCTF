@@ -21,7 +21,8 @@ public class ContainerServiceTest
     {
         LogManager.GlobalThreshold = LogLevel.Off;
 
-        var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+        var builder = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
         service = new ContainerService(builder.Build());
         output = _output;
     }

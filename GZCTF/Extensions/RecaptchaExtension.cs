@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using CTFServer.Models.Request.Internal;
+using CTFServer.Models.Internal;
 
 namespace CTFServer.Extensions;
 
@@ -10,20 +10,20 @@ public interface IRecaptchaExtension
 
 public class RecaptchaExtension : IRecaptchaExtension
 {
-    private IConfiguration _configuration { get; }
+    private IConfiguration configuration { get; }
     private static string GoogleSecretKey { get; set; } = string.Empty;
     private static string GoogleRecaptchaVerifyApi { get; set; } = string.Empty;
     private static decimal RecaptchaThreshold { get; set; } = 1;
     public RecaptchaExtension()
     {
-        _configuration = new ConfigurationBuilder()
+        configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                             .Build();
 
-        GoogleRecaptchaVerifyApi = _configuration.GetSection("GoogleRecaptcha").GetSection("VefiyAPIAddress").Value ?? "";
-        GoogleSecretKey = _configuration.GetSection("GoogleRecaptcha").GetSection("Secretkey").Value ?? "";
+        GoogleRecaptchaVerifyApi = configuration.GetSection("GoogleRecaptcha").GetSection("VefiyAPIAddress").Value ?? "";
+        GoogleSecretKey = configuration.GetSection("GoogleRecaptcha").GetSection("Secretkey").Value ?? "";
 
-        var hasThresholdValue = decimal.TryParse(_configuration.GetSection("RecaptchaThreshold").Value ?? "", out var threshold);
+        var hasThresholdValue = decimal.TryParse(configuration.GetSection("RecaptchaThreshold").Value ?? "", out var threshold);
         if (hasThresholdValue)
             RecaptchaThreshold = threshold;
     }

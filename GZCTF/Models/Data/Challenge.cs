@@ -45,6 +45,18 @@ public class Challenge
     public string ContainerImage { get; set; } = string.Empty;
 
     /// <summary>
+    /// 运行内存限制 (MB)
+    /// </summary>
+    [JsonIgnore]
+    public int MemoryLimit { get; set; } = 256;
+
+    /// <summary>
+    /// CPU 运行数量限制
+    /// </summary>
+    [JsonIgnore]
+    public int CPUCount { get; set; } = 1;
+
+    /// <summary>
     /// 镜像暴露端口
     /// </summary>
     [JsonIgnore]
