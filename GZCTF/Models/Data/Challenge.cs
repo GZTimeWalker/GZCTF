@@ -45,6 +45,12 @@ public class Challenge
     public string ContainerImage { get; set; } = string.Empty;
 
     /// <summary>
+    /// 镜像暴露端口
+    /// </summary>
+    [JsonIgnore]
+    public int ContainerExposePort { get; set; } = 80;
+
+    /// <summary>
     /// 解决题目人数
     /// </summary>
     [Required]

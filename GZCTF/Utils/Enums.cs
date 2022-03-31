@@ -74,6 +74,22 @@ public enum FileType: byte
     Remote = 1
 }
 
+public enum ContainerStatus : byte
+{
+    /// <summary>
+    /// 正在启动
+    /// </summary>
+    Pending = 0,
+    /// <summary>
+    /// 正在运行
+    /// </summary>
+    Running = 1,
+    /// <summary>
+    /// 已停止
+    /// </summary>
+    Stop = 2
+}
+
 /// <summary>
 /// 比赛公告类型
 /// </summary>

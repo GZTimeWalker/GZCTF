@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using CTFServer.Models;
+using CTFServer.Models.Request.Internal;
 
 namespace CTFServer.Extensions;
 

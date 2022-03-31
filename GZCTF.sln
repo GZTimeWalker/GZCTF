@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CTFServer", "GZCTF\CTFServer.csproj", "{9AAEFC0F-73F3-44F0-B8AC-140640792603}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTFServer.Test", "GZCTF.Test\CTFServer.Test.csproj", "{A2B5B2F3-0861-4503-9AE4-2152701726DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models;
+using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +9,12 @@ public class TeamRepository : RepositoryBase, ITeamRepository
 {
     public TeamRepository(AppDbContext context) : base(context) { }
 
-    public async Task<Team?> CreateTeam(string name, UserInfo user, CancellationToken token = default)
+    public async Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
     {
-        Team team = new() { Name = name, Captain = user };
+        if (model.Name is null)
+            return null;
+
+        Team team = new() { Name = model.Name, Captain = user, Bio = model.Bio };
 
         team.Members.Add(user);
 
@@ -21,14 +25,17 @@ public class TeamRepository : RepositoryBase, ITeamRepository
     }
 
     public Task<Team?> GetTeamById(int id, CancellationToken token = default)
-        => context.Teams.FirstOrDefaultAsync(t => t.Id == id, token);
-
-    public Task<List<Team>> GetTeamsByUser(UserInfo user, CancellationToken token = default)
-        => context.Teams.Where(e => e.Members.Any(u => u.Id == user.Id)).ToListAsync(token);
+        => context.Teams.Include(e => e.Members).FirstOrDefaultAsync(t => t.Id == id, token);
 
     public Task<int> UpdateAsync(Team team, CancellationToken token = default)
     {
         context.Update(team);
         return context.SaveChangesAsync(token);
+    }
+
+    public async Task<bool> VeifyToken(int id, string inviteToken, CancellationToken token = default)
+    {
+        var team = await context.Teams.FirstOrDefaultAsync(t => t.Id == id, token);
+        return team is not null && team.InviteToken == inviteToken;
     }
 }

@@ -135,6 +135,7 @@ builder.Services.AddTransient<IMailSender, MailSender>();
 
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
 #endregion Services and Repositories
 

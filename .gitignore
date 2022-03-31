@@ -231,9 +231,9 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 
-appsettings.json
-appsettings.*.json
-!appsettings.Template.json
+**/appsettings.json
+**/appsettings.*.json
+!**/appsettings.Template.json
 /.VSCodeCounter/*
 */db/*
 **/CTFServer.xml

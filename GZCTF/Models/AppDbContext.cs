@@ -19,6 +19,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Team> Teams { get; set; } = default!;
     public DbSet<FlagContext> FlagContexts { get; set; } = default!;
     public DbSet<Rank> Ranks { get; set; } = default!;
+    public DbSet<Container> Containers { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -32,12 +33,17 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(e => e.ActiveTeam)
                 .WithMany()
                 .HasForeignKey(e => e.ActiveTeamId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(e => e.OwnTeam)
+                .WithMany()
+                .HasForeignKey(e => e.OwnTeamId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         builder.Entity<Game>(entity =>
@@ -101,6 +107,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.Flag)
                 .WithMany()
                 .HasForeignKey(e => e.FlagId);
+
+            entity.HasOne(e => e.Container)
+                .WithOne(e => e.Instance);
         });
 
         builder.Entity<Challenge>(entity =>

@@ -7,7 +7,7 @@ public class ClientUserInfoModel
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     /// <summary>
     /// 用户名
@@ -37,7 +37,7 @@ public class ClientUserInfoModel
     /// <summary>
     /// 当前队伍
     /// </summary>
-    public int ActiveTeamId { get; set; }
+    public int? ActiveTeamId { get; set; }
 
     public static ClientUserInfoModel FromUserInfo(UserInfo user)
         => new()

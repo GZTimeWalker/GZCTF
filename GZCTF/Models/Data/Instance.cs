@@ -58,6 +58,17 @@ public class Instance
     [Required]
     public int GameId { get; set; }
 
+    /// <summary>
+    /// 比赛对象
+    /// </summary>
     public Game? Game { get; set; }
+
+    public int ContainerId { get; set; }
+
+    /// <summary>
+    /// 容器对象
+    /// </summary>
+    public Container? Container { get; set; }
+
     #endregion Db Relationship
 }

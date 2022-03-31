@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CTFServer.Models.Request.Teams;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -7,20 +8,19 @@ namespace CTFServer.Models;
 public class Team
 {
     [Key]
-    [JsonIgnore]
     public int Id { get; set; }
 
     /// <summary>
     /// 队伍名称
     /// </summary>
     [Required]
+    [MaxLength(32)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// 队伍 Bio
     /// </summary>
-    [Required]
-    public string Bio { get; set; } = string.Empty;
+    public string? Bio { get; set; } = string.Empty;
 
     /// <summary>
     /// 头像哈希
@@ -55,4 +55,12 @@ public class Team
     /// </summary>
     public List<UserInfo> Members { get; set; } = new();
     #endregion Db Relationship
+
+    public void UpdateInviteToken() => InviteToken = Guid.NewGuid().ToString("N");
+
+    public void UpdateInfo(TeamUpdateModel model)
+    {
+        Name = model.Name ?? Name;
+        Bio = model.Bio;
+    }
 }
