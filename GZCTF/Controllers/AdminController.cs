@@ -47,13 +47,91 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Users")]
-    [ProducesResponseType(typeof(List<ClientUserInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0)
+    [ProducesResponseType(typeof(List<BasicUserInfoModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await (
             from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
-            select ClientUserInfoModel.FromUserInfo(user)
-           ).ToListAsync());
+            select BasicUserInfoModel.FromUserInfo(user)
+           ).ToListAsync(token));
 
+    /// <summary>
+    /// 修改用户信息
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口修改用户信息，需要Admin权限
+    /// </remarks>
+    /// <response code="200">成功更新</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">用户未找到</response>
+    [HttpPut("Users/{userid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateUserInfo(string userid, [FromBody] UpdateUserInfoModel model, CancellationToken token)
+    {
+        var user = await userManager.FindByIdAsync(userid);
+
+        if (user is null)
+            return NotFound(new RequestResponse("用户未找到", 404));
+
+        user.UserName = model.UserName ?? user.UserName;
+        user.Email = model.Email ?? user.Email;
+        user.Bio = model.Bio ?? user.Bio;
+        user.Role = model.Role ?? user.Role;
+        user.RealName = model.RealName ?? user.RealName;
+        user.PhoneNumber = model.Phone ?? user.PhoneNumber;
+
+        await userManager.UpdateAsync(user);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// 获取用户信息
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口获取用户信息，需要Admin权限
+    /// </remarks>
+    /// <response code="200">用户对象</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpGet("Users/{userid}")]
+    [ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UserInfo(string userid)
+    {
+        var user = await userManager.FindByIdAsync(userid);
+
+        if (user is null)
+            return NotFound(new RequestResponse("用户未找到", 404));
+
+        return Ok(ClientUserInfoModel.FromUserInfo(user));
+    }
+
+    /// <summary>
+    /// 删除用户
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口删除用户，需要Admin权限
+    /// </remarks>
+    /// <response code="200">用户对象</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpDelete("Users/{userid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUser(string userid)
+    {
+        var user = await userManager.FindByIdAsync(userid);
+
+        if (user is null)
+            return NotFound(new RequestResponse("用户未找到", 404));
+
+        await userManager.DeleteAsync(user);
+
+        return Ok();
+    }
+    
     /// <summary>
     /// 获取全部日志
     /// </summary>

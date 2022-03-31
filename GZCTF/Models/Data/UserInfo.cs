@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CTFServer.Models;
 
@@ -94,4 +95,7 @@ public class UserInfo : IdentityUser
 
         IP = remoteAddress.ToString();
     }
+
+    [NotMapped]
+    public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
 }

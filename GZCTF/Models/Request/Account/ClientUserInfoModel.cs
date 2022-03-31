@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Account;
 
@@ -44,6 +44,12 @@ public class ClientUserInfoModel
     /// </summary>
     public int? ActiveTeamId { get; set; }
 
+    /// <summary>
+    /// 用户角色
+    /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public Role? Role { get; set; }
+
     public static ClientUserInfoModel FromUserInfo(UserInfo user)
         => new()
         {
@@ -53,7 +59,8 @@ public class ClientUserInfoModel
             UserName = user.UserName,
             RealName = user.RealName,
             Phone = user.PhoneNumber,
-            Avatar = user.AvatarHash is null ? null : $"/assets/{user.AvatarHash}/avatar",
-            ActiveTeamId = user.ActiveTeamId
+            Avatar = user.AvatarUrl,
+            ActiveTeamId = user.ActiveTeamId,
+            Role = user.Role
         };
 }

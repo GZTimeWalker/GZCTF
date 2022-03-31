@@ -56,6 +56,9 @@ public class Team
     public HashSet<UserInfo> Members { get; set; } = new();
     #endregion Db Relationship
 
+    [NotMapped]
+    public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
+    
     public void UpdateInviteToken() => InviteToken = Guid.NewGuid().ToString("N");
 
     public void UpdateInfo(TeamUpdateModel model)
