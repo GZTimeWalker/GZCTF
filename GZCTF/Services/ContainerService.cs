@@ -39,7 +39,7 @@ public class ContainerService : IContainerService
             ExposedPorts = { { config.Port.ToString(), default } },
             HostConfig = new() { 
                 PublishAllPorts = true,
-                Memory = config.MemoryLimit,
+                Memory = config.MemoryLimit * 1024 * 1024,
                 CPUCount = 1
             },
             StopTimeout = TimeSpan.FromHours(2),

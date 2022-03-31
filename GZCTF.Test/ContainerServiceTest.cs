@@ -63,7 +63,12 @@ public class ContainerServiceTest
             Name = $"test_{Guid.NewGuid().ToString("N")[..6]}",
             ExposedPorts = new Dictionary<string, EmptyStruct> { { "80/tcp", default } },
             Entrypoint = new List<string> { "/bin/busybox", "sleep", "360000" },
-            HostConfig = new() { PublishAllPorts = true }
+            HostConfig = new()
+            {
+                PublishAllPorts = true,
+                Memory = 64 * 1024 * 1024,
+                CPUCount = 1
+            },
         };
 
         var container = await service.CreateContainer(parameters);
