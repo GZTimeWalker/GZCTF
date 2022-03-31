@@ -63,7 +63,7 @@ public class Instance
     /// </summary>
     public Game? Game { get; set; }
 
-    public int ContainerId { get; set; }
+    public string? ContainerId { get; set; }
 
     /// <summary>
     /// 容器对象

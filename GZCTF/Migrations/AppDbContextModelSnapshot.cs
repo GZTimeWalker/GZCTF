@@ -43,6 +43,12 @@ namespace CTFServer.Migrations
                     b.Property<int>("AwardCount")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CPUCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContainerExposePort")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ContainerImage")
                         .IsRequired()
                         .HasColumnType("text");
@@ -60,6 +66,9 @@ namespace CTFServer.Migrations
                     b.Property<string>("Hints")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("MemoryLimit")
+                        .HasColumnType("integer");
 
                     b.Property<int>("MinScore")
                         .HasColumnType("integer");
@@ -86,6 +95,50 @@ namespace CTFServer.Migrations
                     b.HasIndex("GameId");
 
                     b.ToTable("Challenges");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.Container", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContainerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("IP")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("InstanceId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsProxy")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Port")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PublicIP")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PublicPort")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Containers");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Event", b =>
@@ -193,6 +246,9 @@ namespace CTFServer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("ContainerId")
+                        .HasColumnType("text");
+
                     b.Property<string>("ContainerName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -221,6 +277,9 @@ namespace CTFServer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChallengeId");
+
+                    b.HasIndex("ContainerId")
+                        .IsUnique();
 
                     b.HasIndex("FlagId");
 
@@ -461,7 +520,6 @@ namespace CTFServer.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("CaptainId")
@@ -474,7 +532,8 @@ namespace CTFServer.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.HasKey("Id");
 
@@ -491,7 +550,7 @@ namespace CTFServer.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ActiveTeamId")
+                    b.Property<int?>("ActiveTeamId")
                         .HasColumnType("integer");
 
                     b.Property<string>("AvatarHash")
@@ -536,6 +595,9 @@ namespace CTFServer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<int?>("OwnTeamId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
@@ -571,6 +633,8 @@ namespace CTFServer.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("OwnTeamId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -767,6 +831,10 @@ namespace CTFServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CTFServer.Models.Container", "Container")
+                        .WithOne("Instance")
+                        .HasForeignKey("CTFServer.Models.Instance", "ContainerId");
+
                     b.HasOne("CTFServer.Models.FlagContext", "Flag")
                         .WithMany()
                         .HasForeignKey("FlagId")
@@ -784,6 +852,8 @@ namespace CTFServer.Migrations
                         .HasForeignKey("ParticipationId");
 
                     b.Navigation("Challenge");
+
+                    b.Navigation("Container");
 
                     b.Navigation("Flag");
 
@@ -857,7 +927,7 @@ namespace CTFServer.Migrations
                     b.HasOne("CTFServer.Models.UserInfo", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("CTFServer.Models.UserInfo", null)
                         .WithMany("Submissions")
@@ -886,10 +956,16 @@ namespace CTFServer.Migrations
                     b.HasOne("CTFServer.Models.Team", "ActiveTeam")
                         .WithMany()
                         .HasForeignKey("ActiveTeamId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("CTFServer.Models.Team", "OwnTeam")
+                        .WithMany()
+                        .HasForeignKey("OwnTeamId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ActiveTeam");
+
+                    b.Navigation("OwnTeam");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -961,6 +1037,11 @@ namespace CTFServer.Migrations
             modelBuilder.Entity("CTFServer.Models.Challenge", b =>
                 {
                     b.Navigation("Flags");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.Container", b =>
+                {
+                    b.Navigation("Instance");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Game", b =>

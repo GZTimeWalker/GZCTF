@@ -67,5 +67,10 @@ public class Container
     /// 比赛题目实例对象
     /// </summary>
     public Instance? Instance { get; set; }
+
+    /// <summary>
+    /// 实例对象ID
+    /// </summary>
+    public int InstanceId { get; set; }
     #endregion Db Relationship
 }

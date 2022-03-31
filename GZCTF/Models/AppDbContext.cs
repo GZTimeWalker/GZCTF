@@ -109,7 +109,15 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.FlagId);
 
             entity.HasOne(e => e.Container)
-                .WithOne(e => e.Instance);
+                .WithOne(e => e.Instance)
+                .HasForeignKey<Container>(e => e.InstanceId);
+        });
+
+        builder.Entity<Container>(entity =>
+        {
+            entity.HasOne(e => e.Instance)
+                .WithOne(e => e.Container)
+                .HasForeignKey<Instance>(e => e.ContainerId);
         });
 
         builder.Entity<Challenge>(entity =>
