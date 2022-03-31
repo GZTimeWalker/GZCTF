@@ -28,7 +28,7 @@ public class ContainerServiceTest
     }
 
     [Fact]
-    public async void InfoTest()
+    public async void BasicInfo()
     {
         (var ver, var info) = await service.GetHostInfo();
 
@@ -55,7 +55,7 @@ public class ContainerServiceTest
     }
 
     [Fact]
-    public async void CreateThenDestoryTest()
+    public async void CreateThenDestory()
     {
         var parameters = new CreateContainerParameters()
         {

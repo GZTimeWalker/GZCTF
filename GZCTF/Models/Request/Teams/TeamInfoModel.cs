@@ -33,13 +33,13 @@ public class TeamInfoModel
             Id = team.Id,
             Name = team.Name,
             Bio = team.Bio,
-            Avatar = $"assets/{team.AvatarHash}/avatar",
+            Avatar = team.AvatarHash is null ? null : $"assets/{team.AvatarHash}/avatar",
             Members = (from m in team.Members select new BasicUserInfoModel()
                        {
                            Id = m.Id,
                            Bio = m.Bio,
                            UserName = m.UserName,
-                           Avatar = $"/assets/{m.AvatarHash}/avatar",
+                           Avatar = m.AvatarHash is null ? null : $"/assets/{m.AvatarHash}/avatar",
                            Captain = m.Id == team.CaptainId
                        }).ToList()
         };

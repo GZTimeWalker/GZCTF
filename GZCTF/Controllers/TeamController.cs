@@ -91,6 +91,7 @@ public class TeamController : ControllerBase
             return BadRequest(new RequestResponse("队伍创建失败"));
 
         user.OwnTeam = team;
+        user.ActiveTeam = team;
         await userManager.UpdateAsync(user);
 
         return Ok(TeamInfoModel.FromTeam(team));

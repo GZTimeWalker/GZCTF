@@ -28,11 +28,13 @@ public class AccountController : ControllerBase
     private readonly IMemoryCache cache;
     private readonly IFileRepository fileRepository;
     private readonly IRecaptchaExtension recaptcha;
+    private readonly IHostEnvironment environment;
 
     public AccountController(
         IMailSender _mailSender,
         IMemoryCache memoryCache,
         IFileRepository _fileRepository,
+        IHostEnvironment _environment,
         IRecaptchaExtension _recaptcha,
         UserManager<UserInfo> _userManager,
         SignInManager<UserInfo> _signInManager)
@@ -40,6 +42,7 @@ public class AccountController : ControllerBase
         cache = memoryCache;
         recaptcha = _recaptcha;
         mailSender = _mailSender;
+        environment = _environment;
         userManager = _userManager;
         signInManager = _signInManager;
         fileRepository = _fileRepository;
@@ -59,9 +62,9 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        //if (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
-        //    !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString()))
-        //    return BadRequest(new RequestResponse("校验失败"));
+        if (!environment.IsDevelopment() && (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
+            !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())))
+            return BadRequest(new RequestResponse("校验失败"));
 
         var user = new UserInfo
         {
@@ -216,9 +219,9 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> LogIn([FromBody] LoginModel model)
     {
-        //if (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
-        //    !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString()))
-        //    return BadRequest(new RequestResponse("校验失败"));
+        if (!environment.IsDevelopment() && (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
+            !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())))
+            return BadRequest(new RequestResponse("校验失败"));
 
         var user = await userManager.FindByNameAsync(model.UserName);
         if (user is null)
@@ -288,8 +291,8 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
 
-        if (oname != model.UserName)
-            LogHelper.Log(logger, "用户更新：" + oname + "=>" + model.UserName, user, TaskStatus.Success);
+        if (oname != user.UserName)
+            LogHelper.Log(logger, "用户更新：" + oname + " => " + model.UserName, user, TaskStatus.Success);
 
         return Ok();
     }

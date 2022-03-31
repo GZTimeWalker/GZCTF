@@ -47,7 +47,7 @@ public class ClientUserInfoModel
             Email = user.Email,
             UserName = user.UserName,
             Phone = user.PhoneNumber,
-            Avatar = $"/assets/{user.AvatarHash}/avatar",
+            Avatar = user.AvatarHash is null ? null : $"/assets/{user.AvatarHash}/avatar",
             ActiveTeamId = user.ActiveTeamId
         };
 }

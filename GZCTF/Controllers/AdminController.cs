@@ -50,7 +50,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(List<ClientUserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0)
         => Ok(await (
-            from user in userManager.Users.Skip(skip).Take(count)
+            from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
             select ClientUserInfoModel.FromUserInfo(user)
            ).ToListAsync());
 

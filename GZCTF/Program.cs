@@ -132,6 +132,8 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 #region Services and Repositories
 
 builder.Services.AddTransient<IMailSender, MailSender>();
+builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>();
+builder.Services.AddSingleton<IContainerService, ContainerService>();
 
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
@@ -159,6 +161,11 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 });
 
 var app = builder.Build();
+
+using (var serviceScope = app.Services.GetService<IServiceScopeFactory>()?.CreateScope())
+{
+    serviceScope?.ServiceProvider.GetService<AppDbContext>()?.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
