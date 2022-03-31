@@ -30,6 +30,11 @@ public class ClientUserInfoModel
     public string? Phone { get; set; }
 
     /// <summary>
+    /// 真实姓名
+    /// </summary>
+    public string? RealName { get; set; }
+
+    /// <summary>
     /// 头像链接
     /// </summary>
     public string? Avatar { get; set; }
@@ -46,6 +51,7 @@ public class ClientUserInfoModel
             Bio = user.Bio,
             Email = user.Email,
             UserName = user.UserName,
+            RealName = user.RealName,
             Phone = user.PhoneNumber,
             Avatar = user.AvatarHash is null ? null : $"/assets/{user.AvatarHash}/avatar",
             ActiveTeamId = user.ActiveTeamId

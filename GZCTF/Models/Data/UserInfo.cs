@@ -34,6 +34,11 @@ public class UserInfo : IdentityUser
     /// </summary>
     public string Bio { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 真实姓名
+    /// </summary>
+    public string RealName { get; set; } = string.Empty;
+
     #region 数据库关系
 
     /// <summary>

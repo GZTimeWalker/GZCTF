@@ -285,6 +285,7 @@ public class AccountController : ControllerBase
         user.UserName = model.UserName ?? user.UserName;
         user.Bio = model.Bio ?? user.Bio;
         user.PhoneNumber = model.Phone ?? user.PhoneNumber;
+        user.RealName = model.RealName ?? user.RealName;
 
         var result = await userManager.UpdateAsync(user);
 

@@ -23,4 +23,9 @@ public class ProfileUpdateModel
     /// 手机号
     /// </summary>
     public string? Phone { get; set; }
+
+    /// <summary>
+    /// 真实姓名
+    /// </summary>
+    public string? RealName { get; set; }
 }

@@ -20,6 +20,7 @@ namespace CTFServer.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class TeamController : ControllerBase
 {
+    private static readonly Logger logger = LogManager.GetLogger("TeamController");
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileRepository;
@@ -209,7 +210,7 @@ public class TeamController : ControllerBase
     /// 接受邀请
     /// </summary>
     /// <remarks>
-    /// 接受邀请的接口
+    /// 接受邀请的接口，需要SignedIn权限，且不在队伍中
     /// </remarks>
     /// <param name="id">队伍Id</param>
     /// <param name="token"></param>
@@ -235,10 +236,62 @@ public class TeamController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
+        if (team.Members.Any(m => m.Id == user.Id))
+            return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
+
         team.Members.Add(user);
 
         await teamRepository.UpdateAsync(team, cancelToken);
 
         return Ok();
+    }
+
+    /// <summary>
+    /// 更新队伍头像接口
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口更新队伍头像，需要SignedIn权限，且为队伍成员
+    /// </remarks>
+    /// <response code="200">用户头像URL</response>
+    /// <response code="400">非法请求</response>
+    /// <response code="401">未授权用户</response>
+    [HttpPut("{id}/Avatar")]
+    [RequireUser]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> Avatar([FromRoute] int id,[FromBody] IFormFile file, CancellationToken token)
+    {
+        var team = await teamRepository.GetTeamById(id, token);
+
+        if (team is null)
+            return BadRequest(new RequestResponse("队伍未找到"));
+
+        var user = await userManager.GetUserAsync(User);
+
+        if (!team.Members.Any(m => m.Id == user.Id))
+            return new JsonResult(new RequestResponse("无权操作", 403)) { StatusCode = 403 };
+
+        if (file.Length == 0)
+            return BadRequest(new RequestResponse("文件非法"));
+
+        if (file.Length > 5 * 1024 * 1024)
+            return BadRequest(new RequestResponse("文件过大"));
+
+        if (user.AvatarHash is not null)
+            _ = await fileRepository.DeleteFileByHash(user.AvatarHash, token);
+
+        var avatar = await fileRepository.CreateOrUpdateFile(file, "avatar", token);
+
+        if (avatar is null)
+            return BadRequest(new RequestResponse("未知错误"));
+
+        team.AvatarHash = avatar.Hash;
+        await teamRepository.UpdateAsync(team, token);
+
+        LogHelper.Log(logger, $"队伍 {team.Name} 更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
+
+        return Ok(avatar.Url);
     }
 }

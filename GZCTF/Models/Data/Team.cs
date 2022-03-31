@@ -53,7 +53,7 @@ public class Team
     /// <summary>
     /// 队员
     /// </summary>
-    public List<UserInfo> Members { get; set; } = new();
+    public HashSet<UserInfo> Members { get; set; } = new();
     #endregion Db Relationship
 
     public void UpdateInviteToken() => InviteToken = Guid.NewGuid().ToString("N");
