@@ -32,6 +32,12 @@ public class Container
     public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.Now;
 
     /// <summary>
+    /// 容器期望终止时间
+    /// </summary>
+    [Required]
+    public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.Now + TimeSpan.FromHours(2);
+
+    /// <summary>
     /// 是否具备反向代理
     /// </summary>
     [Required]

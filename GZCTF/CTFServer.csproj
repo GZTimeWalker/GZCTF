@@ -34,6 +34,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.15.10" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +50,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Services\Assets\URLEmailTemplate.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Request\Game\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

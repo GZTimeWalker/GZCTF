@@ -41,8 +41,7 @@ public class ContainerService : IContainerService
                 PublishAllPorts = true,
                 Memory = config.MemoryLimit * 1024 * 1024,
                 CPUCount = 1
-            },
-            StopTimeout = TimeSpan.FromHours(2),
+            }
         };
 
         return CreateContainer(parameters, token);
@@ -87,6 +86,7 @@ public class ContainerService : IContainerService
         }
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
+        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(1);
         container.Port = int.Parse(info.NetworkSettings.Ports[parameters.ExposedPorts.First().Key].First().HostPort);
 
         return container;
