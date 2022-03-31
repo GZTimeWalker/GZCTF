@@ -18,7 +18,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Participation> Participations { get; set; } = default!;
     public DbSet<Team> Teams { get; set; } = default!;
     public DbSet<FlagContext> FlagContexts { get; set; } = default!;
-    public DbSet<Rank> Ranks { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -67,9 +66,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithOne(e => e.Game)
                 .HasForeignKey(e => e.GameId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasMany(e => e.Ranks)
-                .WithOne();
         });
 
         builder.Entity<Team>(entity =>
@@ -125,6 +121,15 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasMany(e => e.Flags)
                .WithOne(e => e.Challenge)
                .HasForeignKey(e => e.ChallengeId);
+
+            entity.HasOne(e => e.First)
+                .WithMany();
+
+            entity.HasOne(e => e.Second)
+                .WithMany();
+
+            entity.HasOne(e => e.Third)
+                .WithMany();
         });
 
         builder.Entity<Submission>(entity =>
@@ -135,21 +140,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.Property(e => e.Status)
                 .HasConversion<string>();
-        });
-
-        builder.Entity<Rank>(entity =>
-        {
-            entity.HasOne(e => e.First)
-                .WithMany();
-
-            entity.HasOne(e => e.Second)
-                .WithMany();
-
-            entity.HasOne(e => e.Third)
-                .WithMany();
-
-            entity.HasOne(e => e.Challenge)
-                .WithMany();
         });
     }
 }

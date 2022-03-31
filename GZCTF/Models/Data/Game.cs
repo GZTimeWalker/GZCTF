@@ -69,12 +69,5 @@ public class Game
     /// </summary>
     [JsonIgnore]
     public List<Participation> Teams { get; set; } = new();
-
-    /// <summary>
-    /// 题目信息
-    /// </summary>
-    [JsonIgnore]
-    public List<Rank> Ranks { get; set; } = new();
-
     #endregion Db Relationship
 }

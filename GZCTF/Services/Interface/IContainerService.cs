@@ -18,6 +18,7 @@ public interface IContainerService
     /// 创建容器
     /// </summary>
     /// <param name="parameters">容器</param>
+    /// <param name="token"></param>
     /// <returns></returns>
     public Task<Container?> CreateContainer(CreateContainerParameters parameters, CancellationToken token = default);
 
