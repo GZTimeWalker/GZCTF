@@ -20,10 +20,9 @@ public class HubHelper
         if (dbContext is null || userId is null)
             return false;
 
-        //var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
+        var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
 
-        //return currentUser is not null && currentUser.Privilege >= privilege;
-        throw new NotImplementedException();
+        return currentUser is not null && currentUser.Role >= privilege;
     }
 
     /// <summary>

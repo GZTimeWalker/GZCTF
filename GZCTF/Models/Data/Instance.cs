@@ -8,11 +8,6 @@ public class Instance
     public int Id { get; set; }
 
     /// <summary>
-    /// 容器名称
-    /// </summary>
-    public string ContainerName { get; set; } = string.Empty;
-
-    /// <summary>
     /// 开始时间
     /// </summary>
     public DateTimeOffset StartTime { get; set; } = DateTimeOffset.Now;
@@ -23,15 +18,9 @@ public class Instance
     public DateTimeOffset EndTime { get; set; } = DateTimeOffset.Now;
 
     /// <summary>
-    /// 容器地址
+    /// 题目是否已经解决
     /// </summary>
-    [MaxLength(100)]
-    public string ContainerHostname { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 容器端口
-    /// </summary>
-    public int ContainerPort { get; set; } = 0;
+    public bool IsSolved { get; set; } = false;
 
     /// <summary>
     /// 题目实例排名

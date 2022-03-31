@@ -85,10 +85,10 @@ public class ContainerServiceTest
             output.WriteLine($"{item.Name,-20}: {val}");
         }
 
-        var status = await service.DestoryContainer(container);
+        await service.DestoryContainer(container);
 
-        Assert.Equal(TaskStatus.Success, status);
         Assert.Equal(ContainerStatus.Stop, container.Status);
+
         output.WriteLine($"[{DateTime.Now.ToString("u")}] Container Destoryed.");
     }
 }

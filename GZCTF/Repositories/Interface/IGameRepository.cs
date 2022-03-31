@@ -1,5 +1,4 @@
 ﻿using CTFServer.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories.Interface;
 
@@ -28,15 +27,7 @@ public interface IGameRepository
     /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskStatus> CreateGame(Game game, CancellationToken token = default);
-
-    /// <summary>
-    /// 加入比赛
-    /// </summary>
-    /// <param name="team">队伍对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Participation> JoinGame(Team team, CancellationToken token = default);
+    public Task<Game?> CreateGame(Game game, CancellationToken token = default);
 
     /// <summary>
     /// 更新比赛信息
@@ -45,9 +36,4 @@ public interface IGameRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<int> UpdateGame(Game game, CancellationToken token = default);
-
-    /// <summary>
-    /// 原始比赛表对象
-    /// </summary>
-    public DbSet<Game> Games { get; }
 }

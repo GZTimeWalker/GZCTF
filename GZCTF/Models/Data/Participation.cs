@@ -10,12 +10,6 @@ public class Participation
     public int Id { get; set; }
 
     /// <summary>
-    /// 比赛 Token
-    /// </summary>
-    [Required]
-    public string Token { get; set; } = string.Empty;
-
-    /// <summary>
     /// 当前分数
     /// </summary>
     [Required]

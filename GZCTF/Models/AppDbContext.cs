@@ -137,13 +137,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasConversion<string>();
         });
 
-        builder.Entity<FlagContext>(entity =>
-        {
-            entity.HasOne(e => e.Attachment)
-               .WithMany()
-               .HasForeignKey(e => e.FileId);
-        });
-
         builder.Entity<Rank>(entity =>
         {
             entity.HasOne(e => e.First)

@@ -13,7 +13,7 @@ public class ContainerConfig
     /// <summary>
     /// Flag文本
     /// </summary>
-    public string Flag { get; set; } = string.Empty;
+    public string? Flag { get; set; } = string.Empty;
     /// <summary>
     /// 内存限制（MB）
     /// </summary>

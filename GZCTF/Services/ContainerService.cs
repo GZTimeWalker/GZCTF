@@ -12,7 +12,7 @@ public class ContainerService : IContainerService
 {
     private static readonly Logger logger = LogManager.GetLogger("ContainerService");
     private readonly IConfigurationSection? config;
-    private DockerClient dockerClient;
+    private readonly DockerClient dockerClient;
 
     public ContainerService(IConfiguration _configuration)
     {
@@ -33,8 +33,8 @@ public class ContainerService : IContainerService
         var parameters = new CreateContainerParameters()
         {
             Image = config.Image,
-            Name = $"{config.Image.Split("/").LastOrDefault()}-{Codec.StrMD5(config.Flag)[..16]}",
-            Env = { $"GZCTF_FLAG={config.Flag}" },
+            Name = $"{config.Image.Split("/").LastOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
+            Env = config.Flag is null ? new() : new List<string>{ $"GZCTF_FLAG={config.Flag}" },
             // TODO: Add Health Check
             ExposedPorts = { { config.Port.ToString(), default } },
             HostConfig = new() { 
@@ -92,13 +92,11 @@ public class ContainerService : IContainerService
         return container;
     }
 
-    public async Task<TaskStatus> DestoryContainer(Container container, CancellationToken token = default)
+    public async Task DestoryContainer(Container container, CancellationToken token = default)
     {
         await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
 
         container.Status = ContainerStatus.Stop;
-
-        return TaskStatus.Success;
     }
 
     public Task<IList<ContainerListResponse>> GetContainers(CancellationToken token = default)

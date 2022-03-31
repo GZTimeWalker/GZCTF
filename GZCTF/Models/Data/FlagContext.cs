@@ -14,17 +14,6 @@ public class FlagContext
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>
-    /// Flag 对应附件 Id
-    /// </summary>
-    public int FileId { get; set; }
-
-    /// <summary>
-    /// 文件哈希
-    /// </summary>
-    public string FileHash { get; set; } = string.Empty;
-
-
-    /// <summary>
     /// 附件类型
     /// </summary>
     [Required]
@@ -36,9 +25,9 @@ public class FlagContext
     public string Url { get; set; } = string.Empty;
 
     /// <summary>
-    /// Flag 对应附件 (本地文件）
+    /// Flag 对应文件（本地文件）
     /// </summary>
-    public LocalFile? Attachment { get; set; }
+    public LocalFile? LocalFile { get; set; } = default;
 
     /// <summary>
     /// 赛题

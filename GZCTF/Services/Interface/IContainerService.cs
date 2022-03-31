@@ -28,7 +28,7 @@ public interface IContainerService
     /// <param name="container">容器对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskStatus> DestoryContainer(Container container, CancellationToken token = default);
+    public Task DestoryContainer(Container container, CancellationToken token = default);
 
     /// <summary>
     /// 获取容器主机信息
