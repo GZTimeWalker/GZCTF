@@ -127,6 +127,11 @@ public class AdminController : ControllerBase
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
 
+        var self = await userManager.GetUserAsync(User);
+
+        if (self.Id == userid)
+            return BadRequest(new RequestResponse("不能删除自己"));
+
         await userManager.DeleteAsync(user);
 
         return Ok();

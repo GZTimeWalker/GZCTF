@@ -48,7 +48,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<Game>(entity =>
         {
-            entity.HasMany(e => e.Notices)
+            entity.HasMany(e => e.Events)
                 .WithOne();
 
             entity.HasMany(e => e.Challenges)

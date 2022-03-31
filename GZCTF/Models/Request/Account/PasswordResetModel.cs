@@ -10,8 +10,8 @@ public class PasswordResetModel
     /// <summary>
     /// 密码
     /// </summary>
-    [Required(ErrorMessage = "密码是必需的")]
     [MinLength(6, ErrorMessage = "密码过短")]
+    [Required(ErrorMessage = "密码是必需的")]
     public string? Password { get; set; }
 
     /// <summary>
