@@ -131,6 +131,8 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 
 #region Services and Repositories
 
+builder.Services.AddHostedService<ContainerChecker>();
+
 builder.Services.AddTransient<IMailSender, MailSender>();
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>();
 builder.Services.AddSingleton<IContainerService, ContainerService>();
@@ -138,6 +140,7 @@ builder.Services.AddSingleton<IContainerService, ContainerService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 
 #endregion Services and Repositories
 

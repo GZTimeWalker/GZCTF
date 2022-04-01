@@ -29,13 +29,13 @@ public class Container
     /// 容器创建时间
     /// </summary>
     [Required]
-    public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// 容器期望终止时间
     /// </summary>
     [Required]
-    public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.Now + TimeSpan.FromHours(2);
+    public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
     /// 是否具备反向代理
