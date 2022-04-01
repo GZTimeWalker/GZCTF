@@ -137,10 +137,17 @@ builder.Services.AddTransient<IMailSender, MailSender>();
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>();
 builder.Services.AddSingleton<IContainerService, ContainerService>();
 
-builder.Services.AddScoped<ILogRepository, LogRepository>();
-builder.Services.AddScoped<IFileRepository, FileRepository>();
-builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
+builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<INoticeRepository, NoticeRepository>();
+builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
+builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
 #endregion Services and Repositories
 

@@ -132,6 +132,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                .WithOne(e => e.Challenge)
                .HasForeignKey(e => e.ChallengeId);
 
+            entity.HasMany(e => e.Submissions)
+                .WithOne();
+
             entity.HasOne(e => e.First)
                 .WithMany();
 

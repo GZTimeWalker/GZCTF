@@ -152,6 +152,11 @@ public class Challenge
     public List<FlagContext> Flags { get; set; } = new();
 
     /// <summary>
+    /// 提交
+    /// </summary>
+    public List<Submission> Submissions { get; set; } = new();
+
+    /// <summary>
     /// 比赛对象
     /// </summary>
     public Game Game { get; set; } = default!;
