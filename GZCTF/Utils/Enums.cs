@@ -65,13 +65,17 @@ public enum TaskStatus: sbyte
 public enum FileType: byte
 {
     /// <summary>
+    /// 无附件
+    /// </summary>
+    None = 0,
+    /// <summary>
     /// 本地文件
     /// </summary>
-    Local = 0,
+    Local = 1,
     /// <summary>
     /// 远程文件
     /// </summary>
-    Remote = 1
+    Remote = 2,
 }
 
 public enum ContainerStatus : byte

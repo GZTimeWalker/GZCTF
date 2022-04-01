@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CTFServer.Models.Request.Edit;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -42,25 +43,25 @@ public class Challenge
     /// 镜像名称与标签
     /// </summary>
     [JsonIgnore]
-    public string ContainerImage { get; set; } = string.Empty;
+    public string? ContainerImage { get; set; } = string.Empty;
 
     /// <summary>
     /// 运行内存限制 (MB)
     /// </summary>
     [JsonIgnore]
-    public int MemoryLimit { get; set; } = 256;
+    public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
     /// CPU 运行数量限制
     /// </summary>
     [JsonIgnore]
-    public int CPUCount { get; set; } = 1;
+    public int? CPUCount { get; set; } = 1;
 
     /// <summary>
     /// 镜像暴露端口
     /// </summary>
     [JsonIgnore]
-    public int ContainerExposePort { get; set; } = 80;
+    public int? ContainerExposePort { get; set; } = 80;
 
     /// <summary>
     /// 解决题目人数
@@ -123,6 +124,11 @@ public class Challenge
     /// </summary>
     [Required]
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
+
+    /// <summary>
+    /// 下载文件名称
+    /// </summary>
+    public string FileName { get; set; } = string.Empty;
 
     /// <summary>
     /// 当前题目分值

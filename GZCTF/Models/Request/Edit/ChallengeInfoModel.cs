@@ -49,7 +49,7 @@ public class ChallengeInfoModel
     /// <summary>
     /// 运行内存限制 (MB)
     /// </summary>
-    public int? MemoryLimit { get; set; } = 256;
+    public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
     /// CPU 运行数量限制

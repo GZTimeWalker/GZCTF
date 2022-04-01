@@ -17,18 +17,23 @@ public class FlagContext
     /// 附件类型
     /// </summary>
     [Required]
-    public FileType AttachmentType { get; set; } = FileType.Local;
+    public FileType AttachmentType { get; set; } = FileType.None;
 
     /// <summary>
     /// Flag 对应附件 (远程文件）
     /// </summary>
-    public string Url { get; set; } = string.Empty;
+    public string? Url { get; set; } = string.Empty;
 
     /// <summary>
     /// Flag 对应文件（本地文件）
     /// </summary>
     public LocalFile? LocalFile { get; set; } = default;
-
+    
+    /// <summary>
+    /// 是否已被占用
+    /// </summary>
+    public bool Occupied { get; set; } = false;
+         
     /// <summary>
     /// 赛题
     /// </summary>
