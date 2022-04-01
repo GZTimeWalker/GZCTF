@@ -291,10 +291,10 @@ namespace CTFServer.Migrations
                     Answer = table.Column<string>(type: "text", nullable: false),
                     Tag = table.Column<string>(type: "text", nullable: false),
                     Hints = table.Column<string>(type: "text", nullable: false),
-                    ContainerImage = table.Column<string>(type: "text", nullable: false),
-                    MemoryLimit = table.Column<int>(type: "integer", nullable: false),
-                    CPUCount = table.Column<int>(type: "integer", nullable: false),
-                    ContainerExposePort = table.Column<int>(type: "integer", nullable: false),
+                    ContainerImage = table.Column<string>(type: "text", nullable: true),
+                    MemoryLimit = table.Column<int>(type: "integer", nullable: true),
+                    CPUCount = table.Column<int>(type: "integer", nullable: true),
+                    ContainerExposePort = table.Column<int>(type: "integer", nullable: true),
                     AcceptedUserCount = table.Column<int>(type: "integer", nullable: false),
                     FirstId = table.Column<int>(type: "integer", nullable: true),
                     FirstTeamName = table.Column<string>(type: "text", nullable: true),
@@ -308,6 +308,7 @@ namespace CTFServer.Migrations
                     ExpectMaxCount = table.Column<int>(type: "integer", nullable: false),
                     AwardCount = table.Column<int>(type: "integer", nullable: false),
                     Type = table.Column<byte>(type: "smallint", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -395,8 +396,9 @@ namespace CTFServer.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Flag = table.Column<string>(type: "text", nullable: false),
                     AttachmentType = table.Column<byte>(type: "smallint", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: true),
                     LocalFileId = table.Column<int>(type: "integer", nullable: true),
+                    IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
                     ChallengeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -470,7 +472,7 @@ namespace CTFServer.Migrations
                     ChallengeId = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),
                     ContainerId = table.Column<string>(type: "text", nullable: true),
-                    ParticipationId = table.Column<int>(type: "integer", nullable: true)
+                    TeamId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -499,10 +501,11 @@ namespace CTFServer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Instances_Participations_ParticipationId",
-                        column: x => x.ParticipationId,
+                        name: "FK_Instances_Participations_TeamId",
+                        column: x => x.TeamId,
                         principalTable: "Participations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -614,9 +617,9 @@ namespace CTFServer.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Instances_ParticipationId",
+                name: "IX_Instances_TeamId",
                 table: "Instances",
-                column: "ParticipationId");
+                column: "TeamId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Participations_GameId",

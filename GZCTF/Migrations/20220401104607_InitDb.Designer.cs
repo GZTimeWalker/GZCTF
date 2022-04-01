@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220401011313_InitDb")]
+    [Migration("20220401104607_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,14 +42,13 @@ namespace CTFServer.Migrations
                     b.Property<int>("AwardCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CPUCount")
+                    b.Property<int?>("CPUCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ContainerExposePort")
+                    b.Property<int?>("ContainerExposePort")
                         .HasColumnType("integer");
 
                     b.Property<string>("ContainerImage")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Content")
@@ -58,6 +57,10 @@ namespace CTFServer.Migrations
 
                     b.Property<int>("ExpectMaxCount")
                         .HasColumnType("integer");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int?>("FirstId")
                         .HasColumnType("integer");
@@ -72,7 +75,7 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("MemoryLimit")
+                    b.Property<int?>("MemoryLimit")
                         .HasColumnType("integer");
 
                     b.Property<int>("MinScore")
@@ -213,11 +216,13 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsOccupied")
+                        .HasColumnType("boolean");
+
                     b.Property<int?>("LocalFileId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -277,23 +282,25 @@ namespace CTFServer.Migrations
                     b.Property<DateTimeOffset>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("FlagId")
+                    b.Property<int?>("FlagId")
+                        .IsRequired()
                         .HasColumnType("integer");
 
-                    b.Property<int>("GameId")
+                    b.Property<int?>("GameId")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsSolved")
                         .HasColumnType("boolean");
-
-                    b.Property<int?>("ParticipationId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Ranking")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -306,7 +313,7 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ParticipationId");
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Instances");
                 });
@@ -838,9 +845,11 @@ namespace CTFServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CTFServer.Models.Participation", null)
+                    b.HasOne("CTFServer.Models.Participation", "Team")
                         .WithMany("Instances")
-                        .HasForeignKey("ParticipationId");
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Challenge");
 
@@ -849,6 +858,8 @@ namespace CTFServer.Migrations
                     b.Navigation("Flag");
 
                     b.Navigation("Game");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Participation", b =>
