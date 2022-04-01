@@ -32,7 +32,7 @@ public class FlagContext
     /// <summary>
     /// 是否已被占用
     /// </summary>
-    public bool Occupied { get; set; } = false;
+    public bool IsOccupied { get; set; } = false;
          
     /// <summary>
     /// 赛题

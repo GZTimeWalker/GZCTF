@@ -30,7 +30,7 @@ public class Participation
     [Required]
     public int GameId { get; set; }
 
-    public Game? Game { get; set; }
+    public Game Game { get; set; } = default!;
 
     [Required]
     public int TeamId { get; set; }

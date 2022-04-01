@@ -20,15 +20,15 @@ public interface IInstanceRepository
     /// <param name="challenge">题目对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Instance> GetInstance(Participation team, Challenge challenge, CancellationToken token = default);
+    public Task<Instance?> GetInstance(Participation team, Challenge challenge, CancellationToken token = default);
 
     /// <summary>
-    /// 获取或创建容器实例
+    /// 创建容器实例
     /// </summary>
     /// <param name="instance">实例对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> GetOrCreateContainer(Instance instance, CancellationToken token = default);
+    public Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default);
 
     /// <summary>
     /// 销毁容器实例
@@ -45,5 +45,5 @@ public interface IInstanceRepository
     /// <param name="time">延长时间</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> ProlongContainer(Container container, TimeSpan time, CancellationToken token = default);
+    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default);
 }

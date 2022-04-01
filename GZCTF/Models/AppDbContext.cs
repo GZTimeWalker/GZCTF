@@ -109,6 +109,11 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey<Container>(e => e.InstanceId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            entity.HasOne(e => e.Team)
+                .WithMany(e => e.Instances)
+                .HasForeignKey(e => e.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
         });

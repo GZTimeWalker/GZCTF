@@ -11,7 +11,7 @@ public class FileRepository : RepositoryBase, IFileRepository
 {
     private static readonly Logger logger = LogManager.GetLogger("FileRepository");
     private readonly IConfiguration configuration;
-    public FileRepository(AppDbContext context, IConfiguration _configuration) : base(context)
+    public FileRepository(AppDbContext _context, IConfiguration _configuration) : base(_context)
     {
         configuration = _configuration;
     }

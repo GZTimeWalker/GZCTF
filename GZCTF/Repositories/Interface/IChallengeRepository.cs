@@ -32,14 +32,6 @@ public interface IChallengeRepository
     public Task<List<Challenge>> GetChallenges(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 随机获取未占用的题目 Flag 上下文
-    /// </summary>
-    /// <param name="challenge">题目对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<FlagContext?> GetChallengeRandomFlag(Challenge challenge, CancellationToken token = default);
-
-    /// <summary>
     /// 验证静态 Flag（可能多个答案）
     /// </summary>
     /// <param name="challenge">题目对象</param>

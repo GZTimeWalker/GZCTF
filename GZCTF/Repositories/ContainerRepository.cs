@@ -6,7 +6,7 @@ namespace CTFServer.Repositories;
 
 public class ContainerRepository : RepositoryBase, IContainerRepository
 {
-    public ContainerRepository(AppDbContext context) : base(context) { }
+    public ContainerRepository(AppDbContext _context) : base(_context) { }
 
     public Task<List<Container>> GetContainers(CancellationToken token = default)
         => context.Containers.ToListAsync(token);

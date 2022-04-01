@@ -7,7 +7,7 @@ namespace CTFServer.Repositories;
 
 public class TeamRepository : RepositoryBase, ITeamRepository
 {
-    public TeamRepository(AppDbContext context) : base(context) { }
+    public TeamRepository(AppDbContext _context) : base(_context) { }
 
     public async Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
     {

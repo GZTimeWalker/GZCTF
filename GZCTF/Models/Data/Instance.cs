@@ -29,12 +29,12 @@ public class Instance
 
     #region Db Relationship
     [Required]
-    public int FlagId { get; set; }
+    public int? FlagId { get; set; }
 
     /// <summary>
     /// Flag 对象
     /// </summary>
-    public FlagContext Flag { get; set; } = default!;
+    public FlagContext? Flag { get; set; } = default!;
 
     [Required]
     public int ChallengeId { get; set; }
@@ -45,7 +45,7 @@ public class Instance
     public Challenge Challenge { get; set; } = default!;
 
     [Required]
-    public int GameId { get; set; }
+    public int? GameId { get; set; }
 
     /// <summary>
     /// 比赛对象
@@ -58,6 +58,14 @@ public class Instance
     /// 容器对象
     /// </summary>
     public Container? Container { get; set; }
+
+    [Required]
+    public int TeamId { get; set; }
+
+    /// <summary>
+    /// 参与队伍对象
+    /// </summary>
+    public Participation Team { get; set; } = default!;
 
     #endregion Db Relationship
 }
