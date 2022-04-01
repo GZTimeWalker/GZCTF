@@ -87,7 +87,7 @@ public class ContainerServiceTest
 
         await service.DestoryContainer(container);
 
-        Assert.Equal(ContainerStatus.Stop, container.Status);
+        Assert.Equal(ContainerStatus.Destoryed, container.Status);
 
         output.WriteLine($"[{DateTime.Now.ToString("u")}] Container Destoryed.");
     }

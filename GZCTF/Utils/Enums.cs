@@ -85,9 +85,9 @@ public enum ContainerStatus : byte
     /// </summary>
     Running = 1,
     /// <summary>
-    /// 已停止
+    /// 已销毁
     /// </summary>
-    Stop = 2
+    Destoryed = 2
 }
 
 /// <summary>

@@ -106,14 +106,16 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasOne(e => e.Container)
                 .WithOne(e => e.Instance)
-                .HasForeignKey<Container>(e => e.InstanceId);
+                .HasForeignKey<Instance>(e => e.ContainerId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         builder.Entity<Container>(entity =>
         {
             entity.HasOne(e => e.Instance)
                 .WithOne(e => e.Container)
-                .HasForeignKey<Instance>(e => e.ContainerId);
+                .HasForeignKey<Container>(e => e.InstanceId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         builder.Entity<Challenge>(entity =>

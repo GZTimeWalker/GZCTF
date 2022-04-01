@@ -76,7 +76,7 @@ public class ContainerService : IContainerService
 
         var info = await dockerClient.Containers.InspectContainerAsync(container.ContainerId, token);
 
-        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Stop :
+        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Destoryed :
                 info.State.Running ? ContainerStatus.Running : ContainerStatus.Pending;
 
         if (container.Status != ContainerStatus.Running)
@@ -96,7 +96,7 @@ public class ContainerService : IContainerService
     {
         await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
 
-        container.Status = ContainerStatus.Stop;
+        container.Status = ContainerStatus.Destoryed;
     }
 
     public Task<IList<ContainerListResponse>> GetContainers(CancellationToken token = default)
