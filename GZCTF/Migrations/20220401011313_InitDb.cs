@@ -33,6 +33,7 @@ namespace CTFServer.Migrations
                     ContainerId = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<byte>(type: "smallint", nullable: false),
                     StartedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ExpectStopAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsProxy = table.Column<bool>(type: "boolean", nullable: false),
                     IP = table.Column<string>(type: "text", nullable: false),
                     Port = table.Column<int>(type: "integer", nullable: false),

@@ -9,10 +9,10 @@ public class ContainerChecker : IHostedService, IDisposable
 {
     private static readonly Logger logger = LogManager.GetLogger("ContainerChecker");
 
-    private readonly IServiceProvider serviceProvider;
+    private readonly IServiceScopeFactory serviceProvider;
     private Timer? timer;
 
-    public ContainerChecker(IServiceProvider provider)
+    public ContainerChecker(IServiceScopeFactory provider)
     {
         serviceProvider = provider;
     }

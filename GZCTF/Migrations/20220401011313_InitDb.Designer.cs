@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220331223019_InitDb")]
+    [Migration("20220401011313_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,9 @@ namespace CTFServer.Migrations
                     b.Property<string>("ContainerId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("ExpectStopAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("IP")
                         .IsRequired()
@@ -820,7 +823,8 @@ namespace CTFServer.Migrations
 
                     b.HasOne("CTFServer.Models.Container", "Container")
                         .WithOne("Instance")
-                        .HasForeignKey("CTFServer.Models.Instance", "ContainerId");
+                        .HasForeignKey("CTFServer.Models.Instance", "ContainerId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("CTFServer.Models.FlagContext", "Flag")
                         .WithMany()

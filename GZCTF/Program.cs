@@ -18,7 +18,6 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
-using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -149,7 +148,7 @@ builder.Services.AddResponseCompression(options =>
                     new[] { "application/json" });
 });
 
-builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
 {
     options.InvalidModelStateResponseFactory = context =>
     {

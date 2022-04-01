@@ -127,6 +127,9 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset>("ExpectStopAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("IP")
                         .IsRequired()
                         .HasColumnType("text");
@@ -818,7 +821,8 @@ namespace CTFServer.Migrations
 
                     b.HasOne("CTFServer.Models.Container", "Container")
                         .WithOne("Instance")
-                        .HasForeignKey("CTFServer.Models.Instance", "ContainerId");
+                        .HasForeignKey("CTFServer.Models.Instance", "ContainerId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("CTFServer.Models.FlagContext", "Flag")
                         .WithMany()
