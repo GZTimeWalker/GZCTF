@@ -21,7 +21,7 @@ public class Game
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
-    /// 比赛介绍
+    /// 比赛详细介绍
     /// </summary>
     public string Content { get; set; } = string.Empty;
 

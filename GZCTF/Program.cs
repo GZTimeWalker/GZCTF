@@ -135,7 +135,7 @@ builder.Services.AddHostedService<ContainerChecker>();
 
 builder.Services.AddTransient<IMailSender, MailSender>();
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>();
-builder.Services.AddSingleton<IContainerService, ContainerService>();
+builder.Services.AddSingleton<IContainerService, DockerService>();
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();

@@ -14,4 +14,3 @@ public record TaskResult<TResult>(TaskStatus Status = TaskStatus.Success, TResul
 /// <param name="Title">响应信息</param>
 /// <param name="Status">状态码</param>
 public record RequestResponse(string Title, int Status = 400);
-

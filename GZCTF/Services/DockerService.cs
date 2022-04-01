@@ -8,13 +8,12 @@ using CTFServer.Models.Internal;
 
 namespace CTFServer.Services;
 
-public class ContainerService : IContainerService
+public class DockerService : IContainerService
 {
     private static readonly Logger logger = LogManager.GetLogger("ContainerService");
     private readonly IConfigurationSection? config;
     private readonly DockerClient dockerClient;
-
-    public ContainerService(IConfiguration _configuration)
+    public DockerService(IConfiguration _configuration)
     {
         config = _configuration.GetSection("DockerConfig") ?? throw new ArgumentException("Docker config required!");
 

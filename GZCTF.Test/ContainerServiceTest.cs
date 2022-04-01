@@ -23,7 +23,7 @@ public class ContainerServiceTest
 
         var builder = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-        service = new ContainerService(builder.Build());
+        service = new DockerService(builder.Build());
         output = _output;
     }
 
