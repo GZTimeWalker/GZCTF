@@ -286,7 +286,7 @@ public class AccountController : ControllerBase
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
 
         if (oname != user.UserName)
-            LogHelper.Log(logger, "用户更新：" + oname + " => " + model.UserName, user, TaskStatus.Success);
+            LogHelper.Log(logger, $"用户更新：{oname} => {model.UserName}", user, TaskStatus.Success);
 
         return Ok();
     }

@@ -39,10 +39,10 @@ public interface IGameRepository : IRepository
     public Task<int> UpdateGame(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 刷新排行榜、实例及题目分数
+    /// 刷新排行榜
     /// </summary>
     /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Scoreboard> FlushScoreboard(Game game, CancellationToken token = default);
+    public Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default);
 }

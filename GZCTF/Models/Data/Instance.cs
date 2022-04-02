@@ -55,12 +55,12 @@ public class Instance
     public Container? Container { get; set; }
 
     [Required]
-    public int TeamId { get; set; }
+    public int ParticipationId { get; set; }
 
     /// <summary>
     /// 参与队伍对象
     /// </summary>
-    public Participation Team { get; set; } = default!;
+    public Participation Participation { get; set; } = default!;
 
     #endregion Db Relationship
 }

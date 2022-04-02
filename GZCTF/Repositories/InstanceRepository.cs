@@ -37,7 +37,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             {
                 Challenge = challenge,
                 Game = team.Game,
-                Team = team
+                Participation = team
             };
 
             if(challenge.Type.IsStatic())
@@ -85,7 +85,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     }
 
     public Task<Instance?> GetInstance(Participation team, Challenge challenge, CancellationToken token = default)
-        => context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == challenge.Id && i.TeamId == team.Id, token);
+        => context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == challenge.Id && i.ParticipationId == team.Id, token);
 
     public async Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default)
     {

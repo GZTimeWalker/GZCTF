@@ -22,11 +22,92 @@ public class GameRepository : RepositoryBase, IGameRepository
         return game;
     }
 
-    public async Task<Scoreboard> FlushScoreboard(Game game, CancellationToken token = default)
+    // By xfoxfu, 2022/04/03
+    public async Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default)
     {
-        await context.Attach(game).Collection(g => g.Submissions).LoadAsync(token);
+        var submissions = await context.Instances
+            .Where(i => i.Game == game)
+            .Include(i => i.Challenge)
+            .Include(i => i.Participation)
+                .ThenInclude(t => t.Team)
+            .GroupJoin(
+                context.Submissions.Where(s => s.Status == AnswerResult.Accepted),
+                i => new { i.ChallengeId, i.ParticipationId },
+                s => new { s.ChallengeId, s.ParticipationId },
+                (i, s) => new { Instance = i, Submissions = s }
+            ).SelectMany(j => j.Submissions.DefaultIfEmpty(), (j, s) => new { j.Instance, Submission = s })
+            .ToListAsync(token);
+        
+        var bloods = submissions.GroupBy(j => j.Instance.Challenge)
+            .Select(g => new
+            {
+                Key = g.Key,
+                Value = g.Select(a => a.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).OrderBy(t => t).Take(3).ToArray(),
+            })
+            .ToDictionary(a => a.Key, a => a.Value);
+        
+        var items = submissions
+            .GroupBy(j => j.Instance.Participation)
+            .Select(j =>
+            {
+                var team = j.Key;
+                return new
+                {
+                    Item = new ScoreboardItem
+                    {
+                        Id = team.Id,
+                        Name = team.Team.Name,
+                        Score = j.Sum(s => s.Submission is null ? 0 : s.Instance.Challenge.CurrentScore),
+                        Rank = 0,
+                        SolvedCount = j.Count(s => s.Submission is not null),
+                        Challenges = j.Select(s =>
+                        {
+                            SubmissionType status = SubmissionType.Normal;
 
-        throw new NotImplementedException();
+                            if (s.Submission is null)
+                                status = SubmissionType.Unaccepted;
+                            else if (s.Submission.SubmitTimeUTC <= bloods[s.Instance.Challenge][0])
+                                status = SubmissionType.FirstBlood;
+                            else if (s.Submission.SubmitTimeUTC <= bloods[s.Instance.Challenge][1])
+                                status = SubmissionType.SecondBlood;
+                            else if (s.Submission.SubmitTimeUTC <= bloods[s.Instance.Challenge][2])
+                                status = SubmissionType.ThirdBlood;
+                            
+                            return new ChallengeItem
+                            {
+                                Id = s.Instance.Challenge.Id,
+                                Type = status,
+                            };
+                        })
+                        .ToList(),
+                    },
+                    LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow),
+                };
+            })
+            .OrderBy(j => (-j.Item.Score, j.LastSubmissionTime)) //成绩倒序，最后提交时间正序
+            .Select((j, i) =>
+            {
+                j.Item.Rank = i + 1;
+                return j.Item;
+            })
+            .ToArray();
+        
+        var challenges = submissions.GroupBy(g => g.Instance.Challenge)
+            .Select(c => new ChallengeInfo
+            {
+                Id = c.Key.Id,
+                Title = c.Key.Title,
+                Tag = c.Key.Tag,
+                Score = c.Key.CurrentScore,
+            })
+            .GroupBy(c => c.Tag)
+            .ToDictionary(c => c.Key.ToString(), c => c.AsEnumerable());
+        
+        return new Scoreboard
+        {
+            Items = items,
+            Challenges = challenges,
+        };
     }
     
     public Task<Game?> GetGameById(int id, CancellationToken token = default)

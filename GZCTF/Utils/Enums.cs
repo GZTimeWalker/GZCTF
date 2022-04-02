@@ -105,6 +105,44 @@ public enum NoticeType: byte
     Normal = 0,
 
     /// <summary>
+    /// 一血公告
+    /// </summary>
+    FirstBlood = 1,
+
+    /// <summary>
+    /// 二血公告
+    /// </summary>
+    SecondBlood = 2,
+
+    /// <summary>
+    /// 三血公告
+    /// </summary>
+    ThirdBlood = 3,
+
+    /// <summary>
+    /// 发布新的提示
+    /// </summary>
+    NewHint = 4,
+
+    /// <summary>
+    /// 发布新的题目
+    /// </summary>
+    NewChallenge = 5,
+
+    /// <summary>
+    /// 修复错误
+    /// </summary>
+    ErrorFix = 6
+}
+
+public enum SubmissionType: byte
+{
+    /// <summary>
+    /// 未解出
+    /// </summary>
+    Unaccepted = 0,
+
+    /// <summary>
     /// 一血
     /// </summary>
     FirstBlood = 1,
@@ -120,37 +158,9 @@ public enum NoticeType: byte
     ThirdBlood = 3,
 
     /// <summary>
-    /// 发布新的提示
+    /// 解出
     /// </summary>
-    NewHint = 4,
-
-    /// <summary>
-    /// 修复错误
-    /// </summary>
-    ErrorFix = 5
-}
-
-public enum SubmissionType: byte
-{
-    /// <summary>
-    /// 常规公告
-    /// </summary>
-    Normal = 0,
-
-    /// <summary>
-    /// 一血
-    /// </summary>
-    FirstBlood = 1,
-
-    /// <summary>
-    /// 二血
-    /// </summary>
-    SecondBlood = 2,
-
-    /// <summary>
-    /// 三血
-    /// </summary>
-    ThirdBlood = 3
+    Normal = 4,
 }
 
 public enum ChallengeType: byte

@@ -35,7 +35,7 @@ public class Participation
     [Required]
     public int TeamId { get; set; }
 
-    public Team? Team { get; set; }
+    public Team Team { get; set; } = default!;
 
     #endregion Db Relationship
 }

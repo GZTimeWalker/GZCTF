@@ -151,7 +151,7 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到"));
         
         var result = await cache.GetOrCreateAsync(CacheKey.ScoreBoard(id),
-            entry => gameRepository.FlushScoreboard(game, token));
+            entry => gameRepository.GenScoreboard(game, token));
         return Ok(result);
     }
 }
