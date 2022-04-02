@@ -69,6 +69,7 @@ namespace CTFServer.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Summary = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
+                    TeamMemberLimitCount = table.Column<int>(type: "integer", nullable: false),
                     StartTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     EndTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
@@ -266,6 +267,7 @@ namespace CTFServer.Migrations
                     Name = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     Bio = table.Column<string>(type: "text", nullable: true),
                     AvatarHash = table.Column<string>(type: "text", nullable: true),
+                    Locked = table.Column<bool>(type: "boolean", nullable: false),
                     InviteToken = table.Column<string>(type: "text", nullable: false),
                     CaptainId = table.Column<string>(type: "text", nullable: false)
                 },
@@ -289,7 +291,7 @@ namespace CTFServer.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     Answer = table.Column<string>(type: "text", nullable: false),
-                    Tag = table.Column<string>(type: "text", nullable: false),
+                    Tag = table.Column<byte>(type: "smallint", nullable: false),
                     Hints = table.Column<string>(type: "text", nullable: false),
                     ContainerImage = table.Column<string>(type: "text", nullable: true),
                     MemoryLimit = table.Column<int>(type: "integer", nullable: true),
@@ -429,6 +431,7 @@ namespace CTFServer.Migrations
                     UserId = table.Column<string>(type: "text", nullable: true),
                     ParticipationId = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),
+                    ChallengeId = table.Column<int>(type: "integer", nullable: true),
                     UserInfoId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -443,6 +446,11 @@ namespace CTFServer.Migrations
                         name: "FK_Submissions_AspNetUsers_UserInfoId",
                         column: x => x.UserInfoId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Submissions_Challenges_ChallengeId",
+                        column: x => x.ChallengeId,
+                        principalTable: "Challenges",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Submissions_Games_GameId",
@@ -630,6 +638,11 @@ namespace CTFServer.Migrations
                 name: "IX_Participations_TeamId",
                 table: "Participations",
                 column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Submissions_ChallengeId",
+                table: "Submissions",
+                column: "ChallengeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Submissions_GameId",

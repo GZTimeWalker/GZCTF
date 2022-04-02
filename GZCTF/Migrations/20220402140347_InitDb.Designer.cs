@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220401104607_InitDb")]
+    [Migration("20220402140347_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,9 +93,8 @@ namespace CTFServer.Migrations
                     b.Property<int>("SubmissionCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<byte>("Tag")
+                        .HasColumnType("smallint");
 
                     b.Property<int?>("ThirdId")
                         .HasColumnType("integer");
@@ -255,6 +254,9 @@ namespace CTFServer.Migrations
                     b.Property<string>("Summary")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("TeamMemberLimitCount")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -453,6 +455,9 @@ namespace CTFServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<int?>("ChallengeId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
@@ -473,6 +478,8 @@ namespace CTFServer.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChallengeId");
 
                     b.HasIndex("GameId");
 
@@ -506,6 +513,9 @@ namespace CTFServer.Migrations
                     b.Property<string>("InviteToken")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("Locked")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -883,6 +893,10 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.Submission", b =>
                 {
+                    b.HasOne("CTFServer.Models.Challenge", null)
+                        .WithMany("Submissions")
+                        .HasForeignKey("ChallengeId");
+
                     b.HasOne("CTFServer.Models.Game", "Game")
                         .WithMany("Submissions")
                         .HasForeignKey("GameId")
@@ -1008,6 +1022,8 @@ namespace CTFServer.Migrations
             modelBuilder.Entity("CTFServer.Models.Challenge", b =>
                 {
                     b.Navigation("Flags");
+
+                    b.Navigation("Submissions");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Container", b =>
