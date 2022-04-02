@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220402231224_InitDb")]
+    [Migration("20220402235642_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,12 +62,6 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("FirstId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FirstTeamName")
-                        .HasColumnType("text");
-
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
@@ -84,23 +78,11 @@ namespace CTFServer.Migrations
                     b.Property<int>("OriginalScore")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SecondId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SecondTeamName")
-                        .HasColumnType("text");
-
                     b.Property<int>("SubmissionCount")
                         .HasColumnType("integer");
 
                     b.Property<byte>("Tag")
                         .HasColumnType("smallint");
-
-                    b.Property<int?>("ThirdId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ThirdTeamName")
-                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -111,13 +93,7 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FirstId");
-
                     b.HasIndex("GameId");
-
-                    b.HasIndex("SecondId");
-
-                    b.HasIndex("ThirdId");
 
                     b.ToTable("Challenges");
                 });
@@ -770,31 +746,13 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.Challenge", b =>
                 {
-                    b.HasOne("CTFServer.Models.Team", "First")
-                        .WithMany()
-                        .HasForeignKey("FirstId");
-
                     b.HasOne("CTFServer.Models.Game", "Game")
                         .WithMany("Challenges")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CTFServer.Models.Team", "Second")
-                        .WithMany()
-                        .HasForeignKey("SecondId");
-
-                    b.HasOne("CTFServer.Models.Team", "Third")
-                        .WithMany()
-                        .HasForeignKey("ThirdId");
-
-                    b.Navigation("First");
-
                     b.Navigation("Game");
-
-                    b.Navigation("Second");
-
-                    b.Navigation("Third");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Event", b =>
