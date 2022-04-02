@@ -29,7 +29,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         await context.Entry(team.Game).Collection(e => e.Challenges).LoadAsync(token);
 
         if (team.Instances.Count > 0)
-            LogHelper.SystemLog(logger, $"当前队伍实例列表不为空，即将添加更多实例，这可能造成非预期的行为！", TaskStatus.Pending, NLog.LogLevel.Warn);
+            LogHelper.SystemLog(logger, "当前队伍实例列表不为空，即将添加更多实例，这可能造成非预期的行为！", TaskStatus.Pending, NLog.LogLevel.Warn);
 
         foreach(var challenge in team.Game.Challenges)
         {

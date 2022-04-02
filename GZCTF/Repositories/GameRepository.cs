@@ -22,11 +22,13 @@ public class GameRepository : RepositoryBase, IGameRepository
         return game;
     }
 
-    public Task<Scoreboard> FlushScoreboard(int id, CancellationToken token = default)
+    public async Task<Scoreboard> FlushScoreboard(Game game, CancellationToken token = default)
     {
+        await context.Attach(game).Collection(g => g.Submissions).LoadAsync(token);
+
         throw new NotImplementedException();
     }
-
+    
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 

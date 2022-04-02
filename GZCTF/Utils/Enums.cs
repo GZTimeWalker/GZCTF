@@ -250,7 +250,7 @@ public static class CacheKey
     /// <summary>
     /// 积分榜缓存
     /// </summary>
-    public const string ScoreBoard = "_ScoreBoard";
+    public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
 
     /// <summary>
     /// 公告

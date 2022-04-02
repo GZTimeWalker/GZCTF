@@ -22,11 +22,6 @@ public class Instance
     /// </summary>
     public bool IsSolved { get; set; } = false;
 
-    /// <summary>
-    /// 题目实例排名
-    /// </summary>
-    public int Ranking { get; set; } = 0;
-
     #region Db Relationship
     [Required]
     public int? FlagId { get; set; }

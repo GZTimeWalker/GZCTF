@@ -136,8 +136,13 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(Scoreboard), StatusCodes.Status200OK)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
     {
-        var result = await cache.GetOrCreateAsync(CacheKey.ScoreBoard,
-            entry => gameRepository.FlushScoreboard(id, token));
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到"));
+        
+        var result = await cache.GetOrCreateAsync(CacheKey.ScoreBoard(id),
+            entry => gameRepository.FlushScoreboard(game, token));
         return Ok(result);
     }
 }        

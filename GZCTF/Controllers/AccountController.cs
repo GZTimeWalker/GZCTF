@@ -49,7 +49,7 @@ public class AccountController : ControllerBase
     /// 用户注册接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口注册新用户，邮件URL：/verify
+    /// 使用此接口注册新用户，Dev环境下不校验 GToken，邮件URL：/verify
     /// </remarks>
     /// <param name="model"></param>
     /// <response code="200">注册成功</response>
@@ -204,7 +204,7 @@ public class AccountController : ControllerBase
     /// 用户登录接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口登录账户
+    /// 使用此接口登录账户，Dev环境下不校验 GToken
     /// </remarks>
     /// <param name="model"></param>
     /// <response code="200">用户成功登录</response>

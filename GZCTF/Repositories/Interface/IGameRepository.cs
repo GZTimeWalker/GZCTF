@@ -41,8 +41,8 @@ public interface IGameRepository
     /// <summary>
     /// 刷新排行榜、实例及题目分数
     /// </summary>
-    /// <param name="id">比赛Id</param>
+    /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Scoreboard> FlushScoreboard(int id, CancellationToken token = default);
+    public Task<Scoreboard> FlushScoreboard(Game game, CancellationToken token = default);
 }
