@@ -41,18 +41,19 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     private record Data(Instance Instance, Submission? Submission);
 
+    // By xfoxfu & GZTimeWalker @ 2022/04/03
     private async Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default)
     {
         var data = await FetchData(game, token);
+        var items = GenScoreboardItems(data);
         return new()
         {
             Challenges = GenChallenges(data),
-            Items = GenScoreboardItems(data),
-            TimeLine = GenTopTimeLines(data)
+            Items = items,
+            TimeLine = GenTopTimeLines(items)
         };
     }
 
-    // By xfoxfu & GZTimeWalker @ 2022/04/03
     private Task<Data[]> FetchData(Game game, CancellationToken token = default)
         => context.Instances
             .Where(i => i.Game == game)
@@ -114,6 +115,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                         {
                             Id = s.Instance.Challenge.Id,
                             Type = status,
+                            SubmitTimeUTC = s.Submission?.SubmitTimeUTC,
                             Score = status switch
                             {
                                 SubmissionType.Unaccepted => 0,
@@ -124,8 +126,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                                 _ => throw new ArgumentException(nameof(status))
                             }
                         };
-                    })
-                        .ToList()
+                    }).ToList()
                 },
                 LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow),
             }).OrderBy(j => (-j.Item.Score, j.LastSubmissionTime)) //成绩倒序，最后提交时间正序
@@ -136,26 +137,25 @@ public class GameRepository : RepositoryBase, IGameRepository
             }).ToArray();
     }
 
-    private static IEnumerable<TopTimeLine> GenTopTimeLines(Data[] data)
-        => data.GroupBy(g => g.Instance.Participation)
-            .Select(c => new TopTimeLine
-            {
-                 Id = c.Key.Team.Id,
-                 Name = c.Key.Team.Name,
-                 Items = GetTimeLine(c)
-            }).ToArray();
+    private static IEnumerable<TopTimeLine> GenTopTimeLines(IEnumerable<ScoreboardItem> items)
+        => items.Select(team => new TopTimeLine
+        {
+            Id = team.Id,
+            Name = team.Name,
+            Items = GenTimeLine(team.Challenges)
+        }).ToArray();
 
-    private static IEnumerable<TimeLine> GetTimeLine(IEnumerable<Data> data)
+    private static IEnumerable<TimeLine> GenTimeLine(IEnumerable<ChallengeItem> items)
     {
         var score = 0;
         List<TimeLine> timeline = new();
-        foreach(var item in data.OrderBy(s => s.Submission!.SubmitTimeUTC))
+        foreach(var item in items.Where(i => i.SubmitTimeUTC is not null).OrderBy(i => i.SubmitTimeUTC))
         {
-            score += item.Instance.Challenge.CurrentScore;
+            score += item.Score;
             timeline.Add(new()
             {
-                Time = item.Submission!.SubmitTimeUTC,
-                Score = score
+                Score = score,
+                Time = item.SubmitTimeUTC ?? DateTimeOffset.UtcNow // 此处不为 null
             });
         }
         return timeline.ToArray();
