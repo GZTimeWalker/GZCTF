@@ -31,7 +31,7 @@ public class ScoreboardItem
     /// <summary>
     /// 分数
     /// </summary>
-    public int Score { get; set; }
+    public int Score => Challenges.Sum(c => c.Score);
     /// <summary>
     /// 排名
     /// </summary>
@@ -52,6 +52,10 @@ public class ChallengeItem
     /// 题目 Id
     /// </summary>
     public int Id { get; set; }
+    /// <summary>
+    /// 题目分值
+    /// </summary>
+    public int Score { get; set; }
     /// <summary>
     /// 未解出、一血、二血、三血或者其他
     /// </summary>

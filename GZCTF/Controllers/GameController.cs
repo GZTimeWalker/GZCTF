@@ -24,7 +24,6 @@ public class GameController : ControllerBase
 {
     private static readonly Logger logger = LogManager.GetLogger("GameController");
 
-    private readonly IMemoryCache cache;
     private readonly UserManager<UserInfo> userManager;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
@@ -39,7 +38,6 @@ public class GameController : ControllerBase
         ISubmissionRepository _submissionRepository,
         IParticipationRepository _participationRepository)
     {
-        cache = memoryCache;
         userManager = _userManager;
         gameRepository = _gameRepository;
         teamRepository = _teamRepository;
@@ -150,8 +148,7 @@ public class GameController : ControllerBase
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到"));
         
-        var result = await cache.GetOrCreateAsync(CacheKey.ScoreBoard(id),
-            entry => gameRepository.GenScoreboard(game, token));
+        var result = await ;
         return Ok(result);
     }
 }

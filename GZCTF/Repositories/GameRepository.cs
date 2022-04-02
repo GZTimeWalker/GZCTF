@@ -22,8 +22,8 @@ public class GameRepository : RepositoryBase, IGameRepository
         return game;
     }
 
-    // By xfoxfu, 2022/04/03
-    public async Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default)
+    // By xfoxfu & GZTimeWalker @ 2022/04/03
+    private async Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default)
     {
         var submissions = await context.Instances
             .Where(i => i.Game == game)
@@ -51,13 +51,13 @@ public class GameRepository : RepositoryBase, IGameRepository
             .Select(j =>
             {
                 var team = j.Key;
+                
                 return new
                 {
                     Item = new ScoreboardItem
                     {
                         Id = team.Id,
                         Name = team.Team.Name,
-                        Score = j.Sum(s => s.Submission is null ? 0 : s.Instance.Challenge.CurrentScore),
                         Rank = 0,
                         SolvedCount = j.Count(s => s.Submission is not null),
                         Challenges = j.Select(s =>
@@ -72,14 +72,23 @@ public class GameRepository : RepositoryBase, IGameRepository
                                 status = SubmissionType.SecondBlood;
                             else if (s.Submission.SubmitTimeUTC <= bloods[s.Instance.Challenge][2])
                                 status = SubmissionType.ThirdBlood;
-                            
+
                             return new ChallengeItem
                             {
                                 Id = s.Instance.Challenge.Id,
                                 Type = status,
+                                Score = status switch
+                                {
+                                    SubmissionType.Unaccepted => 0,
+                                    SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.05),
+                                    SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.03),
+                                    SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.01),
+                                    SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
+                                    _ => throw new ArgumentException(nameof(status))
+                                }
                             };
                         })
-                        .ToList(),
+                        .ToList()
                     },
                     LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow),
                 };
@@ -115,6 +124,9 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     public Task<List<Game>> GetGames(int count = 10, int skip = 0, CancellationToken token = default)
         => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToListAsync(token);
+
+    public Task<Scoreboard> GetScoreboard(Game game, CancellationToken token = default)
+        => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry => GenScoreboard(game, token));
 
     public Task<int> UpdateGame(Game game, CancellationToken token = default)
     {
