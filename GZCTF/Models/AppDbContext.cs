@@ -138,9 +138,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasMany(e => e.Submissions)
-                .WithOne();
-
             entity.HasOne(e => e.First)
                 .WithMany();
 

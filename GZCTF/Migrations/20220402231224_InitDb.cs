@@ -431,8 +431,7 @@ namespace CTFServer.Migrations
                     UserId = table.Column<string>(type: "text", nullable: true),
                     ParticipationId = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),
-                    ChallengeId = table.Column<int>(type: "integer", nullable: true),
-                    UserInfoId = table.Column<string>(type: "text", nullable: true)
+                    ChallengeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -443,15 +442,11 @@ namespace CTFServer.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Submissions_AspNetUsers_UserInfoId",
-                        column: x => x.UserInfoId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Submissions_Challenges_ChallengeId",
                         column: x => x.ChallengeId,
                         principalTable: "Challenges",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Submissions_Games_GameId",
                         column: x => x.GameId,
@@ -479,7 +474,7 @@ namespace CTFServer.Migrations
                     ChallengeId = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),
                     ContainerId = table.Column<string>(type: "text", nullable: true),
-                    TeamId = table.Column<int>(type: "integer", nullable: false)
+                    ParticipationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -508,8 +503,8 @@ namespace CTFServer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Instances_Participations_TeamId",
-                        column: x => x.TeamId,
+                        name: "FK_Instances_Participations_ParticipationId",
+                        column: x => x.ParticipationId,
                         principalTable: "Participations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -624,9 +619,9 @@ namespace CTFServer.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Instances_TeamId",
+                name: "IX_Instances_ParticipationId",
                 table: "Instances",
-                column: "TeamId");
+                column: "ParticipationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Participations_GameId",
@@ -657,11 +652,6 @@ namespace CTFServer.Migrations
                 name: "IX_Submissions_UserId",
                 table: "Submissions",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Submissions_UserInfoId",
-                table: "Submissions",
-                column: "UserInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Teams_CaptainId",
