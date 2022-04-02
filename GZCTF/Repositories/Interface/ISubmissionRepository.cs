@@ -2,7 +2,7 @@
 
 namespace CTFServer.Repositories.Interface;
 
-public interface ISubmissionRepository
+public interface ISubmissionRepository : IRepository
 {
     /// <summary>
     /// 获取提交，按时间降序

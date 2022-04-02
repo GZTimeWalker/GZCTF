@@ -170,9 +170,9 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 
 var app = builder.Build();
 
-using (var serviceScope = app.Services.GetService<IServiceScopeFactory>()?.CreateScope())
+using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
-    serviceScope?.ServiceProvider.GetService<AppDbContext>()?.Database.Migrate();
+    await serviceScope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
 }
 
 if (app.Environment.IsDevelopment())

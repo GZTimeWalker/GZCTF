@@ -3,7 +3,7 @@ using CTFServer.Models.Request.Game;
 
 namespace CTFServer.Repositories.Interface;
 
-public interface IGameRepository
+public interface IGameRepository : IRepository
 {
     /// <summary>
     /// 获取指定数量的比赛对象

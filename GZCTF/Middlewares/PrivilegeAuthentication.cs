@@ -27,9 +27,9 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var env = context.HttpContext.RequestServices.GetService<IHostEnvironment>();
+        var env = context.HttpContext.RequestServices.GetRequiredService<IHostEnvironment>();
 
-        if (env is not null && env.IsDevelopment())
+        if (env.IsDevelopment())
             return;
 
         var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<UserInfo>>();

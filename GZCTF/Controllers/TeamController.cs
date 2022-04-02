@@ -87,7 +87,7 @@ public class TeamController : ControllerBase
 
         var team = await teamRepository.CreateTeam(model, user, token);
 
-        if(team is null)
+        if (team is null)
             return BadRequest(new RequestResponse("队伍创建失败"));
 
         user.OwnTeam = team;
@@ -269,27 +269,37 @@ public class TeamController : ControllerBase
         if (user.OwnTeamId != id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
-        var team = await teamRepository.GetTeamById(id, token);
+        var trans = await teamRepository.BeginTransactionAsync(token);
 
-        if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+        try
+        {
+            var team = await teamRepository.GetTeamById(id, token);
 
-        if (!team.Members.Any(m => m.Id == userid))
-            return BadRequest(new RequestResponse("用户不在队伍中"));
+            if (team is null)
+                return BadRequest(new RequestResponse("队伍未找到"));
 
-        var kickUser = team.Members.FirstOrDefault(m => m.Id == userid);
+            if (!team.Members.Any(m => m.Id == userid))
+                return BadRequest(new RequestResponse("用户不在队伍中"));
 
-        if (kickUser!.ActiveTeamId == id)
-            kickUser.ActiveTeamId = null;
+            var kickUser = team.Members.FirstOrDefault(m => m.Id == userid);
 
-        team.Members.RemoveWhere(m => m.Id == userid);
+            if (kickUser!.ActiveTeamId == id)
+                kickUser.ActiveTeamId = null;
 
-        await userManager.UpdateAsync(kickUser);
-        await teamRepository.UpdateAsync(team, token);
+            team.Members.RemoveWhere(m => m.Id == userid);
 
-        LogHelper.Log(logger, $"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
+            await userManager.UpdateAsync(kickUser);
+            await teamRepository.UpdateAsync(team, token);
+            await trans.CommitAsync(token);
 
-        return Ok(team.InviteToken);
+            LogHelper.Log(logger, $"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
+            return Ok(team.InviteToken);
+        }
+        catch
+        {
+            await trans.RollbackAsync(token);
+            throw;
+        }
     }
 
     /// <summary>
@@ -313,26 +323,36 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Accept([FromRoute] int id, [FromQuery] string token, CancellationToken cancelToken)
     {
-        var team = await teamRepository.GetTeamById(id, cancelToken);
+        var trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
-        if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+        try
+        {
+            var team = await teamRepository.GetTeamById(id, cancelToken);
 
-        if(team.InviteToken != token)
-            return BadRequest(new RequestResponse("邀请无效"));
+            if (team is null)
+                return BadRequest(new RequestResponse("队伍未找到"));
 
-        var user = await userManager.GetUserAsync(User);
+            if (team.InviteToken != token)
+                return BadRequest(new RequestResponse("邀请无效"));
 
-        if (team.Members.Any(m => m.Id == user.Id))
-            return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
+            var user = await userManager.GetUserAsync(User);
 
-        team.Members.Add(user);
+            if (team.Members.Any(m => m.Id == user.Id))
+                return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
 
-        await teamRepository.UpdateAsync(team, cancelToken);
+            team.Members.Add(user);
 
-        LogHelper.Log(logger, $"加入队伍 {team.Name}", user, TaskStatus.Success);
+            await teamRepository.UpdateAsync(team, cancelToken);
+            await trans.CommitAsync(cancelToken);
 
-        return Ok();
+            LogHelper.Log(logger, $"加入队伍 {team.Name}", user, TaskStatus.Success);
+            return Ok();
+        }
+        catch
+        {
+            await trans.RollbackAsync(cancelToken);
+            throw;
+        }
     }
 
     /// <summary>
@@ -355,27 +375,37 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Leave([FromRoute] int id, CancellationToken token)
     {
-        var team = await teamRepository.GetTeamById(id, token);
+        var trans = await teamRepository.BeginTransactionAsync(token);
 
-        if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+        try
+        {
+            var team = await teamRepository.GetTeamById(id, token);
 
-        var user = await userManager.GetUserAsync(User);
+            if (team is null)
+                return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (!team.Members.Any(m => m.Id == user.Id))
-            return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
+            var user = await userManager.GetUserAsync(User);
 
-        if (user.ActiveTeamId == team.Id)
-            user.ActiveTeamId = null;
+            if (!team.Members.Any(m => m.Id == user.Id))
+                return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
 
-        team.Members.Remove(user);
+            if (user.ActiveTeamId == team.Id)
+                user.ActiveTeamId = null;
 
-        await userManager.UpdateAsync(user);
-        await teamRepository.UpdateAsync(team, token);
+            team.Members.Remove(user);
 
-        LogHelper.Log(logger, $"离开队伍 {team.Name}", user, TaskStatus.Success);
+            await userManager.UpdateAsync(user);
+            await teamRepository.UpdateAsync(team, token);
+            await trans.CommitAsync(token);
 
-        return Ok();
+            LogHelper.Log(logger, $"离开队伍 {team.Name}", user, TaskStatus.Success);
+            return Ok();
+        }
+        catch
+        {
+            await trans.RollbackAsync(token);
+            throw;
+        }
     }
 
     /// <summary>
@@ -393,7 +423,7 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Avatar([FromRoute] int id,[FromBody] IFormFile file, CancellationToken token)
+    public async Task<IActionResult> Avatar([FromRoute] int id, [FromBody] IFormFile file, CancellationToken token)
     {
         var team = await teamRepository.GetTeamById(id, token);
 

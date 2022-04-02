@@ -2,7 +2,7 @@
 
 namespace CTFServer.Repositories.Interface;
 
-public interface IContainerRepository
+public interface IContainerRepository : IRepository
 {
     /// <summary>
     /// 获取全部容器信息

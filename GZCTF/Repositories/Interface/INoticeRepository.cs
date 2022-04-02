@@ -2,7 +2,7 @@
 
 namespace CTFServer.Repositories.Interface;
 
-public interface INoticeRepository
+public interface INoticeRepository : IRepository
 {
     /// <summary>
     /// 添加公告

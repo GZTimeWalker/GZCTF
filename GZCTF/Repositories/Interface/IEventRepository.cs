@@ -2,7 +2,7 @@
 
 namespace CTFServer.Repositories.Interface;
 
-public interface IEventRepository
+public interface IEventRepository : IRepository
 {
     /// <summary>
     /// 添加一个事件

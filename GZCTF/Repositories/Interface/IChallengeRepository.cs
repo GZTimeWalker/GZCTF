@@ -3,7 +3,7 @@ using CTFServer.Models.Request.Edit;
 
 namespace CTFServer.Repositories.Interface;
 
-public interface IChallengeRepository
+public interface IChallengeRepository : IRepository
 {
     /// <summary>
     /// 创建题目对象
