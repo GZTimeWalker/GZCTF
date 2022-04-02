@@ -49,7 +49,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         var items = GenScoreboardItems(data, bloods);
         return new()
         {
-            Challenges = GenChallenges(data),
+            Challenges = GenChallenges(data, bloods),
             Items = items,
             TimeLine = GenTopTimeLines(items)
         };
@@ -83,7 +83,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
             }).ToDictionary(a => a.Key.Id, a => a.Value);
 
-    private static IDictionary<string, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data)
+    private static IDictionary<string, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(g => g.Instance.Challenge)
             .Select(c => new ChallengeInfo
             {
@@ -91,6 +91,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 Title = c.Key.Title,
                 Tag = c.Key.Tag,
                 Score = c.Key.CurrentScore,
+                Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
             .ToDictionary(c => c.Key.ToString(), c => c.AsEnumerable());
 
@@ -127,9 +128,9 @@ public class GameRepository : RepositoryBase, IGameRepository
                             Score = status switch
                             {
                                 SubmissionType.Unaccepted => 0,
-                                SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.05),
-                                SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.03),
-                                SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.01),
+                                SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.05f),
+                                SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.03f),
+                                SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.01f),
                                 SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
                                 _ => throw new ArgumentException(nameof(status))
                             }

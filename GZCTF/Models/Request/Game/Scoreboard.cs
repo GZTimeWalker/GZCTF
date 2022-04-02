@@ -126,7 +126,7 @@ public class ChallengeInfo
     /// 题目三血
     /// </summary>
     [JsonIgnore]
-    public IEnumerable<Blood> Bloods { get; set; } = default!;
+    public Blood?[] Bloods { get; set; } = default!;
 }
 
 public class Blood
