@@ -35,14 +35,14 @@ public class Game
     /// </summary>
     [Required]
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset StartTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [Required]
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     #region Db Relationship
     /// <summary>

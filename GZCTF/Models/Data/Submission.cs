@@ -26,7 +26,7 @@ public class Submission
     /// 答案提交的时间
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset SubmitTimeUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset SubmitTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
 
     #region Db Relationship

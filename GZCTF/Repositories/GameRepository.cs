@@ -45,7 +45,8 @@ public class GameRepository : RepositoryBase, IGameRepository
     private async Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default)
     {
         var data = await FetchData(game, token);
-        var items = GenScoreboardItems(data);
+        var bloods = GenBloods(data);
+        var items = GenScoreboardItems(data, bloods);
         return new()
         {
             Challenges = GenChallenges(data),
@@ -69,6 +70,19 @@ public class GameRepository : RepositoryBase, IGameRepository
                 (j, s) => new Data(j.Instance, s)
             ).ToArrayAsync(token);
 
+    private static IDictionary<int, Blood?[]> GenBloods(Data[] data)
+        => data.GroupBy(j => j.Instance.Challenge).Select(g => new
+            {
+                g.Key,
+                Value = g.Select(c => c.Submission is null ? null : new Blood
+                {
+                     Id = c.Instance.Participation.TeamId,
+                     Avatar = c.Instance.Participation.Team.AvatarUrl,
+                     Name = c.Instance.Participation.Team.Name,
+                     SubmitTimeUTC = c.Submission.SubmitTimeUTC
+                }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
+            }).ToDictionary(a => a.Key.Id, a => a.Value);
+
     private static IDictionary<string, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data)
         => data.GroupBy(g => g.Instance.Challenge)
             .Select(c => new ChallengeInfo
@@ -80,35 +94,29 @@ public class GameRepository : RepositoryBase, IGameRepository
             }).GroupBy(c => c.Tag)
             .ToDictionary(c => c.Key.ToString(), c => c.AsEnumerable());
 
-    private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data)
-    {
-        var bloods = data.GroupBy(j => j.Instance.Challenge)
-            .Select(g => new
-            {
-                Key = g.Key,
-                Value = g.Select(a => a.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).OrderBy(t => t).Take(3).ToArray(),
-            }).ToDictionary(a => a.Key, a => a.Value);
-
-        return data.GroupBy(j => j.Instance.Participation)
+    private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
+        => data.GroupBy(j => j.Instance.Participation)
             .Select(j => new 
             {
                 Item = new ScoreboardItem
                 {
                     Id = j.Key.Team.Id,
                     Name = j.Key.Team.Name,
+                    Avatar = j.Key.Team.AvatarUrl,
                     Rank = 0,
                     SolvedCount = j.Count(s => s.Submission is not null),
                     Challenges = j.Select(s =>
                     {
+                        var cid = s.Instance.ChallengeId;
                         SubmissionType status = SubmissionType.Normal;
 
                         if (s.Submission is null)
                             status = SubmissionType.Unaccepted;
-                        else if (s.Submission.SubmitTimeUTC <= bloods[s.Instance.Challenge][0])
+                        else if (bloods[cid][0] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][0]!.SubmitTimeUTC)
                             status = SubmissionType.FirstBlood;
-                        else if (s.Submission.SubmitTimeUTC <= bloods[s.Instance.Challenge][1])
+                        else if (bloods[cid][1] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][1]!.SubmitTimeUTC)
                             status = SubmissionType.SecondBlood;
-                        else if (s.Submission.SubmitTimeUTC <= bloods[s.Instance.Challenge][2])
+                        else if (bloods[cid][2] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][2]!.SubmitTimeUTC)
                             status = SubmissionType.ThirdBlood;
 
                         return new ChallengeItem
@@ -135,7 +143,6 @@ public class GameRepository : RepositoryBase, IGameRepository
                 j.Item.Rank = i + 1;
                 return j.Item;
             }).ToArray();
-    }
 
     private static IEnumerable<TopTimeLine> GenTopTimeLines(IEnumerable<ScoreboardItem> items)
         => items.Select(team => new TopTimeLine

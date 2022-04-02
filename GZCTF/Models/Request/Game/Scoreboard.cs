@@ -61,6 +61,10 @@ public class ScoreboardItem
     /// </summary>
     public string Name { get; set; } = string.Empty;
     /// <summary>
+    /// 队伍头像
+    /// </summary>
+    public string? Avatar { get; set; } = string.Empty;
+    /// <summary>
     /// 分数
     /// </summary>
     public int Score => Challenges.Sum(c => c.Score);
@@ -89,15 +93,15 @@ public class ChallengeItem
     /// </summary>
     public int Score { get; set; }
     /// <summary>
-    /// 题目提交的时间，为了计算时间线
-    /// </summary>
-    [JsonIgnore]
-    public DateTimeOffset? SubmitTimeUTC { get; set; }
-    /// <summary>
     /// 未解出、一血、二血、三血或者其他
     /// </summary>
     [JsonPropertyName("rank")]
     public SubmissionType Type { get; set; }
+    /// <summary>
+    /// 题目提交的时间，为了计算时间线
+    /// </summary>
+    [JsonIgnore]
+    public DateTimeOffset? SubmitTimeUTC { get; set; }
 }
 
 public class ChallengeInfo
@@ -118,4 +122,29 @@ public class ChallengeInfo
     /// 题目分值
     /// </summary>
     public int Score { get; set; }
+    /// <summary>
+    /// 题目三血
+    /// </summary>
+    [JsonIgnore]
+    public IEnumerable<Blood> Bloods { get; set; } = default!;
+}
+
+public class Blood
+{
+    /// <summary>
+    /// 队伍Id
+    /// </summary>
+    public int Id { get; set; }
+    /// <summary>
+    /// 队伍名称
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+    /// <summary>
+    /// 队伍头像
+    /// </summary>
+    public string? Avatar { get; set; } = string.Empty;
+    /// <summary>
+    /// 获得此血的时间
+    /// </summary>
+    public DateTimeOffset? SubmitTimeUTC { get; set; }
 }
