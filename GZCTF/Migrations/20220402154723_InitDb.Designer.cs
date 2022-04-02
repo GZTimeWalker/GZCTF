@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220402140347_InitDb")]
+    [Migration("20220402154723_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -294,9 +294,6 @@ namespace CTFServer.Migrations
 
                     b.Property<bool>("IsSolved")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("Ranking")
-                        .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("timestamp with time zone");

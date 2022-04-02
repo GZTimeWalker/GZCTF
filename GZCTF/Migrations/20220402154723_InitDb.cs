@@ -475,7 +475,6 @@ namespace CTFServer.Migrations
                     StartTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     EndTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsSolved = table.Column<bool>(type: "boolean", nullable: false),
-                    Ranking = table.Column<int>(type: "integer", nullable: false),
                     FlagId = table.Column<int>(type: "integer", nullable: false),
                     ChallengeId = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),

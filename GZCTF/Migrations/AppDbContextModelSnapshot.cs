@@ -293,9 +293,6 @@ namespace CTFServer.Migrations
                     b.Property<bool>("IsSolved")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Ranking")
-                        .HasColumnType("integer");
-
                     b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("timestamp with time zone");
 
