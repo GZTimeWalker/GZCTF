@@ -3,6 +3,7 @@ using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using System.Linq;
 
 namespace CTFServer.Repositories;
 
@@ -21,11 +22,39 @@ public class GameRepository : RepositoryBase, IGameRepository
         await context.SaveChangesAsync(token);
         return game;
     }
+    
+    public Task<Game?> GetGameById(int id, CancellationToken token = default)
+        => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
-    // By xfoxfu & GZTimeWalker @ 2022/04/03
+    public Task<List<Game>> GetGames(int count = 10, int skip = 0, CancellationToken token = default)
+        => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToListAsync(token);
+
+    public Task<Scoreboard> GetScoreboard(Game game, CancellationToken token = default)
+        => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry => GenScoreboard(game, token));
+
+    public Task<int> UpdateGame(Game game, CancellationToken token = default)
+    {
+        context.Update(game);
+        return context.SaveChangesAsync(token);
+    }
+    
+
+    private record Data(Instance Instance, Submission? Submission);
+
     private async Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default)
     {
-        var submissions = await context.Instances
+        var data = await FetchData(game, token);
+        return new()
+        {
+            Challenges = GenChallenges(data),
+            Items = GenScoreboardItems(data),
+            TimeLine = GenTopTimeLines(data)
+        };
+    }
+
+    // By xfoxfu & GZTimeWalker @ 2022/04/03
+    private Task<Data[]> FetchData(Game game, CancellationToken token = default)
+        => context.Instances
             .Where(i => i.Game == game)
             .Include(i => i.Challenge)
             .Include(i => i.Participation)
@@ -34,29 +63,41 @@ public class GameRepository : RepositoryBase, IGameRepository
                 context.Submissions.Where(s => s.Status == AnswerResult.Accepted),
                 i => new { i.ChallengeId, i.ParticipationId },
                 s => new { s.ChallengeId, s.ParticipationId },
-                (i, s) => new { Instance = i, Submissions = s }
-            ).SelectMany(j => j.Submissions.DefaultIfEmpty(), (j, s) => new { j.Instance, Submission = s })
-            .ToListAsync(token);
-        
-        var bloods = submissions.GroupBy(j => j.Instance.Challenge)
+                (i, s) => new { Instance = i, Submissions = s}
+            ).SelectMany(j => j.Submissions.DefaultIfEmpty(), 
+                (j, s) => new Data(j.Instance, s)
+            ).ToArrayAsync(token);
+
+    private static IDictionary<string, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data)
+        => data.GroupBy(g => g.Instance.Challenge)
+            .Select(c => new ChallengeInfo
+            {
+                Id = c.Key.Id,
+                Title = c.Key.Title,
+                Tag = c.Key.Tag,
+                Score = c.Key.CurrentScore,
+            }).GroupBy(c => c.Tag)
+            .ToDictionary(c => c.Key.ToString(), c => c.AsEnumerable());
+
+    private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data)
+    {
+        var bloods = data.GroupBy(j => j.Instance.Challenge)
             .Select(g => new
             {
                 Key = g.Key,
                 Value = g.Select(a => a.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).OrderBy(t => t).Take(3).ToArray(),
-            })
-            .ToDictionary(a => a.Key, a => a.Value);
-        
-        var items = submissions
-            .GroupBy(j => j.Instance.Participation)
+            }).ToDictionary(a => a.Key, a => a.Value);
+
+        return data.GroupBy(j => j.Instance.Participation)
             .Select(j =>
             {
                 var team = j.Key;
-                
+
                 return new
                 {
                     Item = new ScoreboardItem
                     {
-                        Id = team.Id,
+                        Id = team.Team.Id,
                         Name = team.Team.Name,
                         Rank = 0,
                         SolvedCount = j.Count(s => s.Submission is not null),
@@ -92,45 +133,36 @@ public class GameRepository : RepositoryBase, IGameRepository
                     },
                     LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow),
                 };
-            })
-            .OrderBy(j => (-j.Item.Score, j.LastSubmissionTime)) //成绩倒序，最后提交时间正序
+            }).OrderBy(j => (-j.Item.Score, j.LastSubmissionTime)) //成绩倒序，最后提交时间正序
             .Select((j, i) =>
             {
                 j.Item.Rank = i + 1;
                 return j.Item;
-            })
-            .ToArray();
-        
-        var challenges = submissions.GroupBy(g => g.Instance.Challenge)
-            .Select(c => new ChallengeInfo
-            {
-                Id = c.Key.Id,
-                Title = c.Key.Title,
-                Tag = c.Key.Tag,
-                Score = c.Key.CurrentScore,
-            })
-            .GroupBy(c => c.Tag)
-            .ToDictionary(c => c.Key.ToString(), c => c.AsEnumerable());
-        
-        return new Scoreboard
-        {
-            Items = items,
-            Challenges = challenges,
-        };
+            }).ToArray();
     }
-    
-    public Task<Game?> GetGameById(int id, CancellationToken token = default)
-        => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
-    public Task<List<Game>> GetGames(int count = 10, int skip = 0, CancellationToken token = default)
-        => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToListAsync(token);
+    private static IEnumerable<TopTimeLine> GenTopTimeLines(Data[] data)
+        => data.GroupBy(g => g.Instance.Participation)
+            .Select(c => new TopTimeLine
+            {
+                 Id = c.Key.Team.Id,
+                 Name = c.Key.Team.Name,
+                 Items = GetTimeLine(c)
+            }).ToArray();
 
-    public Task<Scoreboard> GetScoreboard(Game game, CancellationToken token = default)
-        => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry => GenScoreboard(game, token));
-
-    public Task<int> UpdateGame(Game game, CancellationToken token = default)
+    private static IEnumerable<TimeLine> GetTimeLine(IEnumerable<Data> data)
     {
-        context.Update(game);
-        return context.SaveChangesAsync(token);
+        var score = 0;
+        List<TimeLine> timeline = new();
+        foreach(var item in data.OrderBy(s => s.Submission!.SubmitTimeUTC))
+        {
+            score += item.Instance.Challenge.CurrentScore;
+            timeline.Add(new()
+            {
+                Time = item.Submission!.SubmitTimeUTC,
+                Score = score
+            });
+        }
+        return timeline.ToArray();
     }
 }

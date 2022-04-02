@@ -9,6 +9,10 @@ public class Scoreboard
     /// </summary>
     public DateTimeOffset UpdateTimeUTC = DateTimeOffset.UtcNow;
     /// <summary>
+    /// 前十名的时间线
+    /// </summary>
+    public IEnumerable<TopTimeLine> TimeLine { get; set; } = default!;
+    /// <summary>
     /// 队伍信息
     /// </summary>
     public IEnumerable<ScoreboardItem> Items { get; set; } = default!;
@@ -16,6 +20,34 @@ public class Scoreboard
     /// 题目信息
     /// </summary>
     public IDictionary<string, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
+}
+
+public class TopTimeLine
+{
+    /// <summary>
+    /// 队伍Id
+    /// </summary>
+    public int Id { get; set; }
+    /// <summary>
+    /// 队伍名称
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+    /// <summary>
+    /// 时间线
+    /// </summary>
+    public IEnumerable<TimeLine> Items { get; set; } = default!;
+}
+
+public class TimeLine
+{
+    /// <summary>
+    /// 时间
+    /// </summary>
+    public DateTimeOffset Time { get; set; }
+    /// <summary>
+    /// 得分
+    /// </summary>
+    public int Score { get; set; }
 }
 
 public class ScoreboardItem

@@ -148,7 +148,6 @@ public class GameController : ControllerBase
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到"));
         
-        var result = await ;
-        return Ok(result);
+        return Ok(await gameRepository.GetScoreboard(game, token));
     }
 }
