@@ -3,7 +3,7 @@ using CTFServer.Models.Request.Teams;
 
 namespace CTFServer.Repositories.Interface;
 
-public interface ITeamRepository
+public interface ITeamRepository : IRepository
 {
     /// <summary>
     /// 创建队伍

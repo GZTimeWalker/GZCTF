@@ -3,7 +3,7 @@ using CTFServer.Utils;
 
 namespace CTFServer.Repositories.Interface;
 
-public interface IInstanceRepository
+public interface IInstanceRepository : IRepository
 {
     /// <summary>
     /// 创建队伍的题目实例

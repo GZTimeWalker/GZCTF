@@ -2,7 +2,7 @@
 
 namespace CTFServer.Repositories.Interface;
 
-public interface ILogRepository
+public interface ILogRepository : IRepository
 {
     /// <summary>
     /// 获取指定数量和等级的日志

@@ -2,7 +2,7 @@
 
 namespace CTFServer.Repositories.Interface;
 
-public interface IParticipationRepository
+public interface IParticipationRepository : IRepository
 {
     /// <summary>
     /// 创建比赛对象

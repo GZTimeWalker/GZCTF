@@ -23,14 +23,14 @@ namespace CTFServer.Controllers;
 public class GameController : ControllerBase
 {
     private static readonly Logger logger = LogManager.GetLogger("GameController");
-    
+
     private readonly IMemoryCache cache;
     private readonly UserManager<UserInfo> userManager;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
-    
+
     public GameController(
         IMemoryCache memoryCache,
         UserManager<UserInfo> _userManager,
@@ -112,24 +112,33 @@ public class GameController : ControllerBase
                 StatusCode = 403
             };
 
-        var team = await teamRepository.GetActiveTeamWithMembers(user, token);
+        using var trans = await teamRepository.BeginTransactionAsync(token);
 
-        if (team is null)
-            return BadRequest(new RequestResponse("请激活一个队伍以参赛"));
+        try
+        {
+            var team = await teamRepository.GetActiveTeamWithMembers(user, token);
 
-        if(game.TeamMemberLimitCount > 0 && game.TeamMemberLimitCount > team.Members.Count)
-            return BadRequest(new RequestResponse("参赛队伍不符合人数限制"));
+            if (team is null)
+                return BadRequest(new RequestResponse("请激活一个队伍以参赛"));
 
-        if (game.StartTimeUTC < DateTimeOffset.UtcNow)
-            return BadRequest(new RequestResponse("比赛已经开始，不能加入"));
+            if (game.TeamMemberLimitCount > 0 && game.TeamMemberLimitCount > team.Members.Count)
+                return BadRequest(new RequestResponse("参赛队伍不符合人数限制"));
 
-        await participationRepository.CreateParticipation(team, game, token);
-        team.Locked = true;
-        await teamRepository.UpdateAsync(team, token);
+            if (game.StartTimeUTC < DateTimeOffset.UtcNow)
+                return BadRequest(new RequestResponse("比赛已经开始，不能加入"));
 
-        LogHelper.Log(logger, $"{team.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
-
-        return Ok();
+            await participationRepository.CreateParticipation(team, game, token);
+            team.Locked = true;
+            await teamRepository.UpdateAsync(team, token);
+            await trans.CommitAsync(token);
+            LogHelper.Log(logger, $"{team.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
+            return Ok();
+        }
+        catch
+        {
+            await trans.RollbackAsync(token);
+            throw;
+        }
     }
 
     [HttpGet("{id}/Scoreboard")]
@@ -140,4 +149,4 @@ public class GameController : ControllerBase
             entry => gameRepository.FlushScoreboard(id, token));
         return Ok(result);
     }
-}        
+}
