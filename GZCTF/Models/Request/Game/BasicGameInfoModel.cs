@@ -19,6 +19,12 @@ public class BasicGameInfoModel
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
+    /// 队员数量限制
+    /// </summary>
+    [JsonPropertyName("limit")]
+    public int TeamMemberLimitCount { get; set; } = 0;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [JsonPropertyName("start")]
@@ -37,6 +43,7 @@ public class BasicGameInfoModel
             Title = game.Title,
             Summary = game.Summary,
             StartTimeUTC = game.StartTimeUTC,
-            EndTimeUTC = game.EndTimeUTC
+            EndTimeUTC = game.EndTimeUTC,
+            TeamMemberLimitCount = game.TeamMemberLimitCount
         };
 }

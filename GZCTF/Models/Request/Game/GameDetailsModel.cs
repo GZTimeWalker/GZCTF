@@ -24,6 +24,12 @@ public class GameDetailsModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 队员数量限制
+    /// </summary>
+    [JsonPropertyName("limit")]
+    public int TeamMemberLimitCount { get; set; } = 0;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [JsonPropertyName("start")]
@@ -43,6 +49,7 @@ public class GameDetailsModel
             Summary = game.Summary,
             Content = game.Content,
             StartTimeUTC = game.StartTimeUTC,
-            EndTimeUTC = game.EndTimeUTC
+            EndTimeUTC = game.EndTimeUTC,
+            TeamMemberLimitCount = game.TeamMemberLimitCount
         };
 }

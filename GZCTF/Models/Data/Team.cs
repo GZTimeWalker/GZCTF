@@ -28,6 +28,11 @@ public class Team
     public string? AvatarHash { get; set; }
 
     /// <summary>
+    /// 队伍是否为锁定状态
+    /// </summary>
+    public bool Locked { get; set; } = false;
+
+    /// <summary>
     /// 邀请链接
     /// </summary>
     public string InviteToken { get; set; } = Guid.NewGuid().ToString("N");

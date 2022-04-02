@@ -153,9 +153,7 @@ builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
 builder.Services.AddResponseCompression(options =>
 {
-    options.MimeTypes =
-                ResponseCompressionDefaults.MimeTypes.Concat(
-                    new[] { "application/json" });
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat( new[] { "application/json" });
 });
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>

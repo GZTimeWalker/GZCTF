@@ -23,6 +23,11 @@ public class TeamInfoModel
     public string? Avatar { get; set; }
 
     /// <summary>
+    /// 是否锁定
+    /// </summary>
+    public bool Locked { get; set; }
+
+    /// <summary>
     /// 队伍成员
     /// </summary>
     public List<BasicUserInfoModel> Members { get; set; } = new();
@@ -34,7 +39,8 @@ public class TeamInfoModel
             Name = team.Name,
             Bio = team.Bio,
             Avatar = team.AvatarUrl,
-            Members = (from m in team.Members select new BasicUserInfoModel()
+            Locked = team.Locked,
+            Members = team.Members.Select(m => new BasicUserInfoModel()
                        {
                            Id = m.Id,
                            Bio = m.Bio,

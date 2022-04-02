@@ -23,6 +23,14 @@ public interface ITeamRepository
     public Task<Team?> GetTeamById(int id, CancellationToken token = default);
 
     /// <summary>
+    /// 获取当前用户激活的队伍及队员
+    /// </summary>
+    /// <param name="user">用户对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Team?> GetActiveTeamWithMembers(UserInfo user, CancellationToken token = default);
+
+    /// <summary>
     /// 更新队伍信息
     /// </summary>
     /// <param name="team">队伍对象</param>

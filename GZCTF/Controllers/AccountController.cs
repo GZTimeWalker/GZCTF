@@ -25,21 +25,18 @@ public class AccountController : ControllerBase
     private readonly IMailSender mailSender;
     private readonly UserManager<UserInfo> userManager;
     private readonly SignInManager<UserInfo> signInManager;
-    private readonly IMemoryCache cache;
     private readonly IFileRepository fileRepository;
     private readonly IRecaptchaExtension recaptcha;
     private readonly IHostEnvironment environment;
 
     public AccountController(
         IMailSender _mailSender,
-        IMemoryCache memoryCache,
         IFileRepository _fileRepository,
         IHostEnvironment _environment,
         IRecaptchaExtension _recaptcha,
         UserManager<UserInfo> _userManager,
         SignInManager<UserInfo> _signInManager)
     {
-        cache = memoryCache;
         recaptcha = _recaptcha;
         mailSender = _mailSender;
         environment = _environment;

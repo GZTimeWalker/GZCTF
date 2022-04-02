@@ -30,6 +30,17 @@ public class TeamRepository : RepositoryBase, ITeamRepository
         return context.SaveChangesAsync(token);
     }
 
+    public async Task<Team?> GetActiveTeamWithMembers(UserInfo user, CancellationToken token = default)
+    {
+        if (user.ActiveTeamId is null)
+            return null;
+
+        await context.Entry(user).Reference(u => u.ActiveTeam).LoadAsync(token);
+        await context.Entry(user.ActiveTeam!).Collection(u => u.Members).LoadAsync(token);
+
+        return user.ActiveTeam;
+    }
+
     public Task<Team?> GetTeamById(int id, CancellationToken token = default)
         => context.Teams.Include(e => e.Members).FirstOrDefaultAsync(t => t.Id == id, token);
 

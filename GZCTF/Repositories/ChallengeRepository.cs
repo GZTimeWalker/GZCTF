@@ -32,8 +32,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
         await context.AddAsync(challenge, token);
 
-        challenge.Flags = (from item in model.Flags
-            select new FlagContext()
+        challenge.Flags = model.Flags.Select(item => new FlagContext()
             {
                 Flag = item.Flag,
                 AttachmentType = !string.IsNullOrEmpty(item.FileHash) ? FileType.Local :

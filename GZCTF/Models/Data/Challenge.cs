@@ -32,7 +32,7 @@ public class Challenge
     /// <summary>
     /// 题目标签
     /// </summary>
-    public string Tag { get; set; } = string.Empty;
+    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
 
     /// <summary>
     /// 题目提示，用";"分隔

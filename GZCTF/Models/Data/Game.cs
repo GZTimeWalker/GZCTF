@@ -26,6 +26,11 @@ public class Game
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 队员数量限制
+    /// </summary>
+    public int TeamMemberLimitCount { get; set; } = 0;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [Required]

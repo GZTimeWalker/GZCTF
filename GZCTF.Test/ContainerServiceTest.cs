@@ -74,7 +74,7 @@ public class ContainerServiceTest
         var container = await service.CreateContainer(parameters);
 
         Assert.NotNull(container);
-        output.WriteLine($"[{DateTime.Now.ToString("u")}] Container Created.");
+        output.WriteLine($"[{DateTime.Now:u}] Container Created.");
 
         output.WriteLine("[[ Container Info ]]");
         foreach (var item in container!.GetType().GetProperties())
@@ -89,6 +89,6 @@ public class ContainerServiceTest
 
         Assert.Equal(ContainerStatus.Destoryed, container.Status);
 
-        output.WriteLine($"[{DateTime.Now.ToString("u")}] Container Destoryed.");
+        output.WriteLine($"[{DateTime.Now:u}] Container Destoryed.");
     }
 }

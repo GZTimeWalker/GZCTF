@@ -130,6 +130,29 @@ public enum NoticeType: byte
     ErrorFix = 5
 }
 
+public enum SubmissionType: byte
+{
+    /// <summary>
+    /// 常规公告
+    /// </summary>
+    Normal = 0,
+
+    /// <summary>
+    /// 一血
+    /// </summary>
+    FirstBlood = 1,
+
+    /// <summary>
+    /// 二血
+    /// </summary>
+    SecondBlood = 2,
+
+    /// <summary>
+    /// 三血
+    /// </summary>
+    ThirdBlood = 3
+}
+
 public enum ChallengeType: byte
 {
     /// <summary>
@@ -152,6 +175,22 @@ public enum ChallengeType: byte
     /// 随机分发容器，动态 flag 随环境变量传入
     /// </summary>
     DynamicContainer  = 0b11
+}
+
+/// <summary>
+/// 题目标签
+/// </summary>
+public enum ChallengeTag : byte
+{
+    Misc = 0,
+    Crypto = 1,
+    Pwn = 2,
+    Web = 3,
+    Reverse = 4,
+    Blockchain = 5,
+    Forensics = 6,
+    Hardware = 7,
+    Mobile = 8
 }
 
 public static class ChallengeTypeExtensions
