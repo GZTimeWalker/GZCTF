@@ -27,7 +27,8 @@ public class ChallengeInfoModel
     /// <summary>
     /// 题目标签
     /// </summary>
-    public string Tag { get; set; } = string.Empty;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
 
     /// <summary>
     /// 题目提示，用";"分隔
