@@ -20,7 +20,6 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class GameController : ControllerBase
 {
-    private readonly IMemoryCache cache;
     private readonly UserManager<UserInfo> userManager;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
@@ -37,7 +36,6 @@ public class GameController : ControllerBase
         IParticipationRepository _participationRepository,
         ILogger<GameController> _logger)
     {
-        cache = memoryCache;
         userManager = _userManager;
         gameRepository = _gameRepository;
         teamRepository = _teamRepository;
@@ -140,6 +138,15 @@ public class GameController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 获取积分榜
+    /// </summary>
+    /// <remarks>
+    /// 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
+    /// </remarks>
+    /// <param name="id">比赛id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛信息</response>
     [HttpGet("{id}/Scoreboard")]
     [ProducesResponseType(typeof(Scoreboard), StatusCodes.Status200OK)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
@@ -149,8 +156,6 @@ public class GameController : ControllerBase
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到"));
         
-        var result = await cache.GetOrCreateAsync(CacheKey.ScoreBoard(id),
-            entry => gameRepository.FlushScoreboard(game, token));
-        return Ok(result);
+        return Ok(await gameRepository.GetScoreboard(game, token));
     }
 }

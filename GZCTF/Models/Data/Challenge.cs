@@ -70,24 +70,6 @@ public class Challenge
     [JsonIgnore]
     public int AcceptedUserCount { get; set; } = 0;
 
-    [JsonIgnore]
-    public Team? First { get; set; }
-
-    [JsonPropertyName("first")]
-    public string? FirstTeamName { get; set; }
-
-    [JsonIgnore]
-    public Team? Second { get; set; }
-
-    [JsonPropertyName("second")]
-    public string? SecondTeamName { get; set; }
-
-    [JsonIgnore]
-    public Team? Third { get; set; }
-
-    [JsonPropertyName("third")]
-    public string? ThirdTeamName { get; set; }
-
     /// <summary>
     /// 提交答案的数量
     /// </summary>

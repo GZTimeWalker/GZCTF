@@ -56,7 +56,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Game)
-                .HasForeignKey(e => e.GameId);
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(e => e.Instances)
                 .WithOne(e => e.Game)
@@ -89,7 +90,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasMany(e => e.Instances).WithOne();
 
             entity.HasMany(e => e.Submissions)
-                .WithOne(e => e.Team)
+                .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
@@ -109,9 +110,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey<Container>(e => e.InstanceId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            entity.HasOne(e => e.Team)
+            entity.HasOne(e => e.Participation)
                 .WithMany(e => e.Instances)
-                .HasForeignKey(e => e.TeamId)
+                .HasForeignKey(e => e.ParticipationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.Navigation(e => e.Container).AutoInclude();
@@ -133,28 +134,13 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                .HasForeignKey(e => e.ChallengeId);
 
             entity.HasMany(e => e.Submissions)
-                .WithOne();
-
-            entity.HasOne(e => e.First)
-                .WithMany();
-
-            entity.HasOne(e => e.Second)
-                .WithMany();
-
-            entity.HasOne(e => e.Third)
-                .WithMany();
-
-            entity.Navigation(e => e.First).AutoInclude();
-            entity.Navigation(e => e.Second).AutoInclude();
-            entity.Navigation(e => e.Third).AutoInclude();
+                .WithOne(e => e.Challenge)
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<Submission>(entity =>
         {
-            entity.HasOne(e => e.User)
-               .WithMany()
-               .HasForeignKey(e => e.UserId);
-
             entity.Property(e => e.Status)
                 .HasConversion<string>();
         });

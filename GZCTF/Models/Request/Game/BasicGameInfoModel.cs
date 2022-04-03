@@ -28,13 +28,13 @@ public class BasicGameInfoModel
     /// 开始时间
     /// </summary>
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset StartTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     public static BasicGameInfoModel FromGame(Models.Game game)
         => new()

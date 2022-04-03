@@ -136,6 +136,42 @@ namespace CTFServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Challenges",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    Answer = table.Column<string>(type: "text", nullable: false),
+                    Tag = table.Column<byte>(type: "smallint", nullable: false),
+                    Hints = table.Column<string>(type: "text", nullable: false),
+                    ContainerImage = table.Column<string>(type: "text", nullable: true),
+                    MemoryLimit = table.Column<int>(type: "integer", nullable: true),
+                    CPUCount = table.Column<int>(type: "integer", nullable: true),
+                    ContainerExposePort = table.Column<int>(type: "integer", nullable: true),
+                    AcceptedUserCount = table.Column<int>(type: "integer", nullable: false),
+                    SubmissionCount = table.Column<int>(type: "integer", nullable: false),
+                    OriginalScore = table.Column<int>(type: "integer", nullable: false),
+                    MinScore = table.Column<int>(type: "integer", nullable: false),
+                    ExpectMaxCount = table.Column<int>(type: "integer", nullable: false),
+                    AwardCount = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<byte>(type: "smallint", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    GameId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Challenges", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Challenges_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Events",
                 columns: table => new
                 {
@@ -153,6 +189,35 @@ namespace CTFServer.Migrations
                         name: "FK_Events_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FlagContexts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Flag = table.Column<string>(type: "text", nullable: false),
+                    AttachmentType = table.Column<byte>(type: "smallint", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: true),
+                    LocalFileId = table.Column<int>(type: "integer", nullable: true),
+                    IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
+                    ChallengeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FlagContexts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FlagContexts_Challenges_ChallengeId",
+                        column: x => x.ChallengeId,
+                        principalTable: "Challenges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FlagContexts_Files_LocalFileId",
+                        column: x => x.LocalFileId,
+                        principalTable: "Files",
                         principalColumn: "Id");
                 });
 
@@ -283,63 +348,6 @@ namespace CTFServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Challenges",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    Answer = table.Column<string>(type: "text", nullable: false),
-                    Tag = table.Column<byte>(type: "smallint", nullable: false),
-                    Hints = table.Column<string>(type: "text", nullable: false),
-                    ContainerImage = table.Column<string>(type: "text", nullable: true),
-                    MemoryLimit = table.Column<int>(type: "integer", nullable: true),
-                    CPUCount = table.Column<int>(type: "integer", nullable: true),
-                    ContainerExposePort = table.Column<int>(type: "integer", nullable: true),
-                    AcceptedUserCount = table.Column<int>(type: "integer", nullable: false),
-                    FirstId = table.Column<int>(type: "integer", nullable: true),
-                    FirstTeamName = table.Column<string>(type: "text", nullable: true),
-                    SecondId = table.Column<int>(type: "integer", nullable: true),
-                    SecondTeamName = table.Column<string>(type: "text", nullable: true),
-                    ThirdId = table.Column<int>(type: "integer", nullable: true),
-                    ThirdTeamName = table.Column<string>(type: "text", nullable: true),
-                    SubmissionCount = table.Column<int>(type: "integer", nullable: false),
-                    OriginalScore = table.Column<int>(type: "integer", nullable: false),
-                    MinScore = table.Column<int>(type: "integer", nullable: false),
-                    ExpectMaxCount = table.Column<int>(type: "integer", nullable: false),
-                    AwardCount = table.Column<int>(type: "integer", nullable: false),
-                    Type = table.Column<byte>(type: "smallint", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Challenges", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Challenges_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Challenges_Teams_FirstId",
-                        column: x => x.FirstId,
-                        principalTable: "Teams",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Challenges_Teams_SecondId",
-                        column: x => x.SecondId,
-                        principalTable: "Teams",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Challenges_Teams_ThirdId",
-                        column: x => x.ThirdId,
-                        principalTable: "Teams",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Participations",
                 columns: table => new
                 {
@@ -391,82 +399,6 @@ namespace CTFServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FlagContexts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Flag = table.Column<string>(type: "text", nullable: false),
-                    AttachmentType = table.Column<byte>(type: "smallint", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: true),
-                    LocalFileId = table.Column<int>(type: "integer", nullable: true),
-                    IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
-                    ChallengeId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FlagContexts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FlagContexts_Challenges_ChallengeId",
-                        column: x => x.ChallengeId,
-                        principalTable: "Challenges",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FlagContexts_Files_LocalFileId",
-                        column: x => x.LocalFileId,
-                        principalTable: "Files",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Submissions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Answer = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    SubmitTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
-                    ParticipationId = table.Column<int>(type: "integer", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false),
-                    ChallengeId = table.Column<int>(type: "integer", nullable: true),
-                    UserInfoId = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Submissions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Submissions_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Submissions_AspNetUsers_UserInfoId",
-                        column: x => x.UserInfoId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Submissions_Challenges_ChallengeId",
-                        column: x => x.ChallengeId,
-                        principalTable: "Challenges",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Submissions_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Submissions_Participations_ParticipationId",
-                        column: x => x.ParticipationId,
-                        principalTable: "Participations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Instances",
                 columns: table => new
                 {
@@ -479,7 +411,7 @@ namespace CTFServer.Migrations
                     ChallengeId = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),
                     ContainerId = table.Column<string>(type: "text", nullable: true),
-                    TeamId = table.Column<int>(type: "integer", nullable: false)
+                    ParticipationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -508,8 +440,50 @@ namespace CTFServer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Instances_Participations_TeamId",
-                        column: x => x.TeamId,
+                        name: "FK_Instances_Participations_ParticipationId",
+                        column: x => x.ParticipationId,
+                        principalTable: "Participations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Submissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Answer = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    SubmitTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    ParticipationId = table.Column<int>(type: "integer", nullable: false),
+                    GameId = table.Column<int>(type: "integer", nullable: false),
+                    ChallengeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Submissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Submissions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Submissions_Challenges_ChallengeId",
+                        column: x => x.ChallengeId,
+                        principalTable: "Challenges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Submissions_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Submissions_Participations_ParticipationId",
+                        column: x => x.ParticipationId,
                         principalTable: "Participations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -563,24 +537,9 @@ namespace CTFServer.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Challenges_FirstId",
-                table: "Challenges",
-                column: "FirstId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Challenges_GameId",
                 table: "Challenges",
                 column: "GameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Challenges_SecondId",
-                table: "Challenges",
-                column: "SecondId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Challenges_ThirdId",
-                table: "Challenges",
-                column: "ThirdId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_GameId",
@@ -624,9 +583,9 @@ namespace CTFServer.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Instances_TeamId",
+                name: "IX_Instances_ParticipationId",
                 table: "Instances",
-                column: "TeamId");
+                column: "ParticipationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Participations_GameId",
@@ -657,11 +616,6 @@ namespace CTFServer.Migrations
                 name: "IX_Submissions_UserId",
                 table: "Submissions",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Submissions_UserInfoId",
-                table: "Submissions",
-                column: "UserInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Teams_CaptainId",

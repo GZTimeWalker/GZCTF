@@ -40,12 +40,12 @@ public class Instance
     public Challenge Challenge { get; set; } = default!;
 
     [Required]
-    public int? GameId { get; set; }
+    public int GameId { get; set; }
 
     /// <summary>
     /// 比赛对象
     /// </summary>
-    public Game? Game { get; set; }
+    public Game Game { get; set; } = default!;
 
     public string? ContainerId { get; set; }
 
@@ -55,12 +55,12 @@ public class Instance
     public Container? Container { get; set; }
 
     [Required]
-    public int TeamId { get; set; }
+    public int ParticipationId { get; set; }
 
     /// <summary>
     /// 参与队伍对象
     /// </summary>
-    public Participation Team { get; set; } = default!;
+    public Participation Participation { get; set; } = default!;
 
     #endregion Db Relationship
 }

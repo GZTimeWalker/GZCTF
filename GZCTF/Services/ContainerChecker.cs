@@ -7,20 +7,20 @@ namespace CTFServer.Services;
 
 public class ContainerChecker : IHostedService, IDisposable
 {
-    private static readonly Logger logger = LogManager.GetLogger("ContainerChecker");
-
+    private readonly ILogger<ContainerChecker> logger;
     private readonly IServiceScopeFactory serviceProvider;
     private Timer? timer;
 
-    public ContainerChecker(IServiceScopeFactory provider)
+    public ContainerChecker(IServiceScopeFactory provider, ILogger<ContainerChecker> logger)
     {
         serviceProvider = provider;
+        this.logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
-        LogHelper.SystemLog(logger, "容器生命周期检查已启动");
+        logger.SystemLog("容器生命周期检查已启动");
         return Task.CompletedTask;
     }
 
@@ -33,7 +33,7 @@ public class ContainerChecker : IHostedService, IDisposable
 
         foreach (var container in await containerRepo.GetDyingContainers())
         {
-            LogHelper.SystemLog(logger, $"移除到期容器 [{container.ContainerId[..12]}]");
+            logger.SystemLog($"移除到期容器 [{container.ContainerId[..12]}]");
             await containerService.DestoryContainer(container);
             await containerRepo.RemoveContainer(container);
         }
@@ -42,7 +42,7 @@ public class ContainerChecker : IHostedService, IDisposable
     public Task StopAsync(CancellationToken cancellationToken)
     {
         timer?.Change(Timeout.Infinite, 0);
-        LogHelper.SystemLog(logger, "容器生命周期检查已停止");
+        logger.SystemLog("容器生命周期检查已停止");
         return Task.CompletedTask;
     }
 

@@ -1,7 +1,6 @@
 ﻿using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.Extensions.Options;
-using NLog;
 using System.Net;
 using System.Net.Mail;
 using System.Reflection;
@@ -53,7 +52,7 @@ public class MailSender : IMailSender
 
             isSuccess = true;
 
-            LogHelper.SystemLog(logger, "发送邮件：" + to, TaskStatus.Success, NLog.LogLevel.Info);
+            logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
         }
         catch (Exception e)
         {

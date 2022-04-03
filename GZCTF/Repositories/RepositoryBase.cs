@@ -12,7 +12,5 @@ public class RepositoryBase : IRepository
         => context = _context;
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        return context.Database.BeginTransactionAsync(cancellationToken);
-    }
+        => context.Database.BeginTransactionAsync(cancellationToken);
 }

@@ -3,7 +3,6 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using NLog;
 using CTFServer.Models.Internal;
 using Microsoft.Extensions.Options;
 
@@ -13,12 +12,13 @@ public record DockerOptions(string Uri);
 
 public class DockerService : IContainerService
 {
-    private static readonly Logger logger = LogManager.GetLogger("ContainerService");
+    private readonly ILogger<DockerService> logger;
     private readonly DockerOptions options;
     private readonly DockerClient dockerClient;
-    public DockerService(IOptions<DockerOptions> options)
+    public DockerService(IOptions<DockerOptions> options, ILogger<DockerService> logger)
     {
         this.options = options.Value;
+        this.logger = logger;
         DockerClientConfiguration cfg = string.IsNullOrEmpty(this.options.Uri) ? new() : new(new Uri(this.options.Uri));
 
         // TODO: Docker Auth Required
@@ -66,7 +66,7 @@ public class DockerService : IContainerService
             retry++;
             if (retry == 3)
             {
-                LogHelper.SystemLog(logger, $"启动容器实例 {container.Id[..12]} ({parameters.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, NLog.LogLevel.Warn);
+                logger.SystemLog($"启动容器实例 {container.Id[..12]} ({parameters.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
                 return null;
             }
             if (!started)
@@ -80,7 +80,7 @@ public class DockerService : IContainerService
 
         if (container.Status != ContainerStatus.Running)
         {
-            LogHelper.SystemLog(logger, $"创建 {parameters.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Fail, NLog.LogLevel.Warn);
+            logger.SystemLog($"创建 {parameters.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Fail, LogLevel.Warning);
             return null;
         }
 

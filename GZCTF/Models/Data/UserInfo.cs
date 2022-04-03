@@ -18,17 +18,17 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 用户最近登录时间
     /// </summary>
-    public DateTimeOffset LastSignedInUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset LastSignedInUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 用户最近访问时间
     /// </summary>
-    public DateTimeOffset LastVisitedUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset LastVisitedUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 用户注册时间
     /// </summary>
-    public DateTimeOffset RegisterTimeUTC { get; set; } = DateTimeOffset.Parse("1970-01-01T00:00:00Z");
+    public DateTimeOffset RegisterTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 个性签名
