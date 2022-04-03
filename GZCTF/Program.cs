@@ -48,11 +48,9 @@ builder.Services.AddSingleton<SignalRLoggingService>();
 
 #region Logging
 
-builder.Host.ConfigureLogging(logging =>
-{
-    logging.ClearProviders();
-    logging.SetMinimumLevel(LogLevel.Trace);
-}).UseNLog(new() { RemoveLoggerFactoryFilter = true });
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
+builder.Host.UseNLog(new() { RemoveLoggerFactoryFilter = true });
 
 Target.Register<SignalRTarget>("SignalR");
 NLog.LogManager.Configuration.Variables["connectionString"] = builder.Configuration.GetConnectionString("DefaultConnection");

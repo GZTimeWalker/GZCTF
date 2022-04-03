@@ -27,7 +27,6 @@ public static class LogHelper
     public static void Log<T>(this ILogger<T> _logger, string msg, UserInfo user, TaskStatus status, LogLevel? level = null)
         => Log(_logger, msg, user.UserName, user.IP, status, level);
 
-
     /// <summary>
     /// 登记一条 Log 记录
     /// </summary>
@@ -39,13 +38,11 @@ public static class LogHelper
     /// <param name="level">Log 级别</param>
     public static void Log<T>(this ILogger<T> _logger, string msg, string username, HttpContext context, TaskStatus status, LogLevel? level = null)
     {
-        var remoteAddress = context.Connection.RemoteIpAddress;
-
-        if (remoteAddress is null)
+        var ip = context.Connection.RemoteIpAddress?.ToString();
+        
+        if (ip is null)
             return;
-
-        string ip = remoteAddress.ToString();
-
+        
         Log(_logger, msg, username, ip, status, level);
     }
 
