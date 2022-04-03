@@ -133,9 +133,12 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 
 builder.Services.AddHostedService<ContainerChecker>();
 
-builder.Services.AddTransient<IMailSender, MailSender>();
-builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>();
-builder.Services.AddSingleton<IContainerService, DockerService>();
+builder.Services.AddTransient<IMailSender, MailSender>()
+    .Configure<EmailOptions>(options => builder.Configuration.GetSection("EmailConfig").Bind(options));
+builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
+    .Configure<RecaptchaOptions>(options => builder.Configuration.GetSection("GoogleRecaptcha").Bind(options));
+builder.Services.AddSingleton<IContainerService, DockerService>()
+    .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
@@ -207,16 +210,17 @@ app.UseEndpoints(endpoints =>
     endpoints.MapFallbackToFile("index.html");
 });
 
-var logger = LogManager.GetLogger("Main");
+await using var scope = app.Services.CreateAsyncScope();
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    LogHelper.SystemLog(logger, "服务器初始化。");
+    logger.SystemLog("服务器初始化。");
     await app.RunAsync();
 }
 catch (Exception exception)
 {
-    logger.Error(exception, "因异常，应用程序意外停止。");
+    logger.LogError(exception, "因异常，应用程序意外停止。");
     throw;
 }
 finally

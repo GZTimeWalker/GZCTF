@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using CTFServer.Models.Internal;
+using Microsoft.Extensions.Options;
 
 namespace CTFServer.Extensions;
 
@@ -8,24 +9,15 @@ public interface IRecaptchaExtension
     Task<bool> VerifyAsync(string token, string ip);
 }
 
+public record RecaptchaOptions(string Secretkey, string VefiyAPIAddress, float RecaptchaThreshold = 1);
+
 public class RecaptchaExtension : IRecaptchaExtension
 {
-    private IConfiguration configuration { get; }
-    private static string GoogleSecretKey { get; set; } = string.Empty;
-    private static string GoogleRecaptchaVerifyApi { get; set; } = string.Empty;
-    private static decimal RecaptchaThreshold { get; set; } = 1;
-    public RecaptchaExtension()
+    private readonly RecaptchaOptions options;
+
+    public RecaptchaExtension(IOptions<RecaptchaOptions> options)
     {
-        configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                            .Build();
-
-        GoogleRecaptchaVerifyApi = configuration.GetSection("GoogleRecaptcha").GetSection("VefiyAPIAddress").Value ?? "";
-        GoogleSecretKey = configuration.GetSection("GoogleRecaptcha").GetSection("Secretkey").Value ?? "";
-
-        var hasThresholdValue = decimal.TryParse(configuration.GetSection("RecaptchaThreshold").Value ?? "", out var threshold);
-        if (hasThresholdValue)
-            RecaptchaThreshold = threshold;
+        this.options = options.Value;
     }
     public async Task<bool> VerifyAsync(string token, string ip)
     {
@@ -33,9 +25,9 @@ public class RecaptchaExtension : IRecaptchaExtension
             return false;
         using (var client = new HttpClient())
         {
-            var response = await client.GetStringAsync($"{GoogleRecaptchaVerifyApi}?secret={GoogleSecretKey}&response={token}&remoteip={ip}");
-            var tokenResponse = JsonSerializer.Deserialize<TokenResponseModel>(response);
-            if (tokenResponse is null || !tokenResponse.Success || tokenResponse.Score < RecaptchaThreshold)
+            var response = await client.GetStreamAsync($"{options.VefiyAPIAddress}?secret={options.Secretkey}&response={token}&remoteip={ip}");
+            var tokenResponse = await JsonSerializer.DeserializeAsync<TokenResponseModel>(response);
+            if (tokenResponse is null || !tokenResponse.Success || tokenResponse.Score < options.RecaptchaThreshold)
                 return false;
         }
         return true;

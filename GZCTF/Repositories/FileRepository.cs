@@ -3,17 +3,17 @@ using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using CTFServer.Utils;
-using NLog;
 
 namespace CTFServer.Repositories;
 
 public class FileRepository : RepositoryBase, IFileRepository
 {
-    private static readonly Logger logger = LogManager.GetLogger("FileRepository");
+    private readonly ILogger<FileRepository> logger;
     private readonly IConfiguration configuration;
-    public FileRepository(AppDbContext _context, IConfiguration _configuration) : base(_context)
+    public FileRepository(AppDbContext _context, IConfiguration _configuration, ILogger<FileRepository> _logger) : base(_context)
     {
         configuration = _configuration;
+        logger = _logger;
     }
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
@@ -70,7 +70,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         var path = Path.Combine(basepath, file.Location, file.Hash);
 
-        LogHelper.SystemLog(logger, $"正在删除文件 [{file.Hash[..8]}] {file.Name}...", TaskStatus.Pending, NLog.LogLevel.Info);
+        logger.SystemLog($"正在删除文件 [{file.Hash[..8]}] {file.Name}...", TaskStatus.Pending, LogLevel.Information);
 
         if (File.Exists(path))
         {

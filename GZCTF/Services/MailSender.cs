@@ -1,6 +1,6 @@
 ﻿using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using NLog;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 using System.Reflection;
@@ -8,26 +8,34 @@ using System.Text;
 
 namespace CTFServer.Services;
 
+public record SmtpOptions(string Host, ushort Port);
+public record EmailOptions(string UserName, string Password, string SendMailAddress, SmtpOptions Smtp);
+
 public class MailSender : IMailSender
 {
-    private readonly IConfiguration configuration;
-    private static readonly Logger logger = LogManager.GetLogger("MailSender");
+    private readonly EmailOptions options;
+    private readonly ILogger<MailSender> logger;
+    private readonly SmtpClient smtp;
 
-    public MailSender(IConfiguration _configuration)
-        => configuration = _configuration;
+    public MailSender(IOptions<EmailOptions> options, ILogger<MailSender> logger)
+    {
+        this.options = options.Value;
+        this.logger = logger;
+        smtp = new()
+        {
+            Host = this.options.Smtp.Host,
+            Port = this.options.Smtp.Port,
+            EnableSsl = true,
+            UseDefaultCredentials = false,
+            Credentials = new NetworkCredential(this.options.UserName, this.options.Password)
+        };
+    }
 
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
     {
-        var username = configuration["EmailConfig:UserName"];
-        var password = configuration["EmailConfig:Password"];
-        var sendMailAddress = configuration["EmailConfig:SendMailAddress"];
-        var smtpHost = configuration["EmailConfig:Smtp:Host"];
-        var smtpPort = int.Parse(configuration["EmailConfig:Smtp:Port"]);
-        bool isSuccess = false;
-
         var msg = new MailMessage
         {
-            From = new MailAddress(sendMailAddress),
+            From = new MailAddress(options.SendMailAddress),
             Subject = subject,
             SubjectEncoding = Encoding.UTF8,
             Body = content,
@@ -37,26 +45,18 @@ public class MailSender : IMailSender
 
         msg.To.Add(to);
 
+        bool isSuccess;
         try
         {
-            using var smtp = new SmtpClient()
-            {
-                Host = smtpHost,
-                Port = smtpPort,
-                EnableSsl = true,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(username, password)
-            };
-
             await smtp.SendMailAsync(msg);
 
             isSuccess = true;
 
-            LogHelper.SystemLog(logger, "发送邮件：" + to, TaskStatus.Success, NLog.LogLevel.Info);
+            logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
         }
         catch (Exception e)
         {
-            logger.Error(e, "邮件发送遇到问题。");
+            logger.LogError(e, "邮件发送遇到问题。");
             isSuccess = false;
         }
 

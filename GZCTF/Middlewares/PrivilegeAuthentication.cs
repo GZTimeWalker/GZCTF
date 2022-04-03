@@ -20,14 +20,13 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
     /// </summary>
     private readonly Role RequiredPrivilege;
 
-    private static readonly Logger logger = LogManager.GetLogger("Authorization");
-
     public RequirePrivilegeAttribute(Role privilege)
         => RequiredPrivilege = privilege;
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         var env = context.HttpContext.RequestServices.GetRequiredService<IHostEnvironment>();
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
 
         if (env.IsDevelopment())
             return;
@@ -50,7 +49,7 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
 
         if (user.Role < RequiredPrivilege)
         {
-            LogHelper.Log(logger, $"尝试访问未经授权的接口 {context.HttpContext.Request.Path}", user, TaskStatus.Denied);
+            logger.Log($"尝试访问未经授权的接口 {context.HttpContext.Request.Path}", user, TaskStatus.Denied);
             var result = new JsonResult(new RequestResponse("无权访问", 403))
             {
                 StatusCode = 403

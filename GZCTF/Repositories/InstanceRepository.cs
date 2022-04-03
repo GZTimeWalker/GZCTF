@@ -4,7 +4,6 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
-using NLog;
 
 namespace CTFServer.Repositories;
 
@@ -12,14 +11,16 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 {
     private readonly IContainerService service;
     private readonly IContainerRepository containerRepository;
-    private static readonly Logger logger = LogManager.GetLogger("InstanceRepository");
+    private readonly ILogger<InstanceRepository> logger;
 
     public InstanceRepository(AppDbContext _context,
         IContainerRepository _containerRepository,
-        IContainerService _service) : base(_context) 
+        IContainerService _service,
+        ILogger<InstanceRepository> _logger) : base(_context)
     {
         service = _service;
         containerRepository = _containerRepository;
+        logger = _logger;
     }
 
     public async Task<Participation> CreateInstances(Participation team, CancellationToken token = default)
@@ -31,9 +32,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         await context.Entry(team.Game).Collection(e => e.Challenges).LoadAsync(token);
 
         if (team.Instances.Count > 0)
-            LogHelper.SystemLog(logger, "当前队伍实例列表不为空，即将添加更多实例，这可能造成非预期的行为！", TaskStatus.Pending, NLog.LogLevel.Warn);
+            logger.SystemLog("当前队伍实例列表不为空，即将添加更多实例，这可能造成非预期的行为！", TaskStatus.Pending, LogLevel.Warning);
 
-        foreach(var challenge in team.Game.Challenges)
+        foreach (var challenge in team.Game.Challenges)
         {
             if (!challenge.IsEnabled)
                 continue;
@@ -45,7 +46,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 Participation = team
             };
 
-            if(challenge.Type.IsStatic())
+            if (challenge.Type.IsStatic())
                 instance.Flag = null; // use challenge to verify
             else
             {
@@ -81,11 +82,11 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             await service.DestoryContainer(container, token);
             await containerRepository.RemoveContainer(container, token);
-            LogHelper.SystemLog(logger, $"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()})", TaskStatus.Success);
+            logger.SystemLog($"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()})", TaskStatus.Success);
         }
         catch (Exception ex)
         {
-            LogHelper.SystemLog(logger, $"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Fail, NLog.LogLevel.Warn);
+            logger.SystemLog($"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Fail, LogLevel.Warning);
         }
     }
 
@@ -94,9 +95,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
     public async Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default)
     {
-        if(string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
+        if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
-            LogHelper.SystemLog(logger, $"无法为题目 {instance.Challenge.Title} 启动容器实例", TaskStatus.Denied, NLog.LogLevel.Warn);
+            logger.SystemLog($"无法为题目 {instance.Challenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Denied);
         }
 

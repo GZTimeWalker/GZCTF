@@ -2,9 +2,7 @@
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
 using System.Net.Mime;
-using Microsoft.EntityFrameworkCore;
 using CTFServer.Middlewares;
 using CTFServer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -22,14 +20,13 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class GameController : ControllerBase
 {
-    private static readonly Logger logger = LogManager.GetLogger("GameController");
-
     private readonly UserManager<UserInfo> userManager;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
     private readonly IInstanceRepository instanceRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
+    private readonly ILogger<GameController> logger;
 
     public GameController(
         IMemoryCache memoryCache,
@@ -38,7 +35,8 @@ public class GameController : ControllerBase
         ITeamRepository _teamRepository,
         IInstanceRepository _instanceRepository,
         ISubmissionRepository _submissionRepository,
-        IParticipationRepository _participationRepository)
+        IParticipationRepository _participationRepository,
+        ILogger<GameController> _logger)
     {
         userManager = _userManager;
         gameRepository = _gameRepository;
@@ -46,6 +44,7 @@ public class GameController : ControllerBase
         instanceRepository = _instanceRepository;
         submissionRepository = _submissionRepository;
         participationRepository = _participationRepository;
+        logger = _logger;
     }
 
     /// <summary>
