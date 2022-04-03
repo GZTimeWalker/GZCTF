@@ -19,12 +19,6 @@ public class ChallengeInfoModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目答案
-    /// </summary>
-    [Required(ErrorMessage = "答案是必需的")]
-    public string Answer { get; set; } = string.Empty;
-
-    /// <summary>
     /// 题目标签
     /// </summary>
     [JsonConverter(typeof(JsonStringEnumConverter))]

@@ -29,7 +29,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     public Task<List<Game>> GetGames(int count = 10, int skip = 0, CancellationToken token = default)
         => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToListAsync(token);
 
-    public Task<Scoreboard> GetScoreboard(Game game, CancellationToken token = default)
+    public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
@@ -46,7 +46,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     private record Data(Instance Instance, Submission? Submission);
 
     // By xfoxfu & GZTimeWalker @ 2022/04/03
-    private async Task<Scoreboard> GenScoreboard(Game game, CancellationToken token = default)
+    private async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
     {
         var data = await FetchData(game, token);
         var bloods = GenBloods(data);

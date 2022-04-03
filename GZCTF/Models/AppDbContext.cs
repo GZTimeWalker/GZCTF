@@ -43,6 +43,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithMany()
                 .HasForeignKey(e => e.OwnTeamId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Navigation(e => e.ActiveTeam).AutoInclude();
+            entity.Navigation(e => e.OwnTeam).AutoInclude();
         });
 
         builder.Entity<Game>(entity =>

@@ -62,7 +62,6 @@ public class UserInfo : IdentityUser
     /// </summary>
     public int? OwnTeamId { get; set; } = null;
 
-
     /// <summary>
     /// 当前激活队伍
     /// </summary>

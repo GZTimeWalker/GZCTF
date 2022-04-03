@@ -27,6 +27,7 @@ public class GameController : ControllerBase
     private readonly UserManager<UserInfo> userManager;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
+    private readonly IInstanceRepository instanceRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
 
@@ -35,12 +36,14 @@ public class GameController : ControllerBase
         UserManager<UserInfo> _userManager,
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
+        IInstanceRepository _instanceRepository,
         ISubmissionRepository _submissionRepository,
         IParticipationRepository _participationRepository)
     {
         userManager = _userManager;
         gameRepository = _gameRepository;
         teamRepository = _teamRepository;
+        instanceRepository = _instanceRepository;
         submissionRepository = _submissionRepository;
         participationRepository = _participationRepository;
     }
@@ -143,20 +146,54 @@ public class GameController : ControllerBase
     /// 获取积分榜
     /// </summary>
     /// <remarks>
-    /// 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
+    /// 获取积分榜数据
     /// </remarks>
     /// <param name="id">比赛id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
+    /// <response code="400">比赛未找到</response>
     [HttpGet("{id}/Scoreboard")]
-    [ProducesResponseType(typeof(Scoreboard), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ScoreboardModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到"));
-        
+
+        if (DateTimeOffset.UtcNow < game.StartTimeUTC)
+            return BadRequest(new RequestResponse("比赛还未开始"));
+
         return Ok(await gameRepository.GetScoreboard(game, token));
+    }
+
+    [RequireUser]
+    [HttpGet("{id}/Challenges")]
+    [ProducesResponseType(typeof(Team), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到"));
+
+        var user = await userManager.GetUserAsync(User);
+
+        if (user.ActiveTeam is null)
+            return BadRequest(new RequestResponse("请激活一个队伍以参赛"));
+
+        if (DateTimeOffset.UtcNow < game.StartTimeUTC)
+            return BadRequest(new RequestResponse("比赛还未开始"));
+
+        var participation = await participationRepository.GetParticipation(user.ActiveTeam, game, token);
+
+        if (participation is null)
+            return BadRequest(new RequestResponse("您尚未参赛"));
+
+        participation.Instances.Select(
+
+        return Ok();
     }
 }

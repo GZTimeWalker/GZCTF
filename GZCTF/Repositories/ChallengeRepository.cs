@@ -16,7 +16,6 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             Type = model.Type,
             Title = model.Title,
             Content = model.Content,
-            Answer = model.Answer,
             Tag = model.Tag,
             Hints = model.Hints,
             ContainerImage = model.ContainerImage,
@@ -46,6 +45,15 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         await context.SaveChangesAsync(token);
 
         return challenge;
+    }
+
+    public Task EnableChallenge(Challenge challenge, CancellationToken token)
+    {
+        challenge.IsEnabled = true;
+
+        // TODO: 还需要为每个队伍生成题目实例
+
+        throw new NotImplementedException();
     }
 
     public Task<List<Challenge>> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default)

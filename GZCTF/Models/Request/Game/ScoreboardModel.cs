@@ -2,7 +2,7 @@
 
 namespace CTFServer.Models.Request.Game;
 
-public class Scoreboard
+public class ScoreboardModel
 {
     /// <summary>
     /// 更新时间

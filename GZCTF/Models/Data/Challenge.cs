@@ -24,10 +24,9 @@ public class Challenge
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目答案
+    /// 是否启用题目
     /// </summary>
-    [Required(ErrorMessage = "答案是必需的")]
-    public string Answer { get; set; } = string.Empty;
+    public bool IsEnabled { get; set; } = false;
 
     /// <summary>
     /// 题目标签

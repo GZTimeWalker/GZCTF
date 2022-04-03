@@ -44,5 +44,5 @@ public interface IGameRepository : IRepository
     /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Scoreboard> GetScoreboard(Game game, CancellationToken token = default);
+    public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default);
 }

@@ -24,6 +24,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
     public async Task<Participation> CreateInstances(Participation team, CancellationToken token = default)
     {
+        // TODO: 生成题目实例的时机策略？
+        
         await context.Entry(team).Reference(e => e.Game).LoadAsync(token);
         await context.Entry(team).Reference(e => e.Instances).LoadAsync(token);
         await context.Entry(team.Game).Collection(e => e.Challenges).LoadAsync(token);
@@ -33,6 +35,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         foreach(var challenge in team.Game.Challenges)
         {
+            if (!challenge.IsEnabled)
+                continue;
+            
             Instance instance = new()
             {
                 Challenge = challenge,
