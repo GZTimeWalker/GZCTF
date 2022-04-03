@@ -104,7 +104,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                .WithMany()
                .HasForeignKey(e => e.ChallengeId);
 
-            entity.HasOne(e => e.Flag)
+            entity.HasOne(e => e.Context)
                 .WithMany()
                 .HasForeignKey(e => e.FlagId);
 

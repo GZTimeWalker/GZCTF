@@ -9,21 +9,29 @@ using System.Collections.Generic;
 using Docker.DotNet.Models;
 using NLog;
 using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CTFServer.Test;
 
 public class ContainerServiceTest
 {
-    public IContainerService service;
+    private readonly IContainerService service;
     private readonly ITestOutputHelper output;
-
+    private readonly HttpClient httpClient;
+                
     public ContainerServiceTest(ITestOutputHelper _output)
     {
         LogManager.GlobalThreshold = LogLevel.Off;
+        var app = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
 
-        var builder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-        service = new DockerService(builder.Build());
+            });
+        httpClient = app.CreateClient();
+        service = app.Services.GetRequiredService<IContainerService>();
         output = _output;
     }
 

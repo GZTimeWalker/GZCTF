@@ -8,8 +8,19 @@ using System.Text;
 
 namespace CTFServer.Services;
 
-public record SmtpOptions(string Host, ushort Port);
-public record EmailOptions(string UserName, string Password, string SendMailAddress, SmtpOptions Smtp);
+public class SmtpOptions
+{
+    public string Host { get; set; } = default!;
+    public ushort Port { get; set; } = default;
+}
+
+public class EmailOptions
+{
+    public string UserName { get; set; } = default!;
+    public string Password { get; set; } = default!;
+    public string SendMailAddress { get; set; } = default!;
+    public SmtpOptions Smtp { get; set; } = default!;
+}
 
 public class MailSender : IMailSender
 {

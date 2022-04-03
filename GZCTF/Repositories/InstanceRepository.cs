@@ -47,7 +47,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             };
 
             if (challenge.Type.IsStatic())
-                instance.Flag = null; // use challenge to verify
+                instance.Context = null; // use challenge to verify
             else
             {
                 if (challenge.Type.IsAttachment())
@@ -55,11 +55,11 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     var flags = await context.Entry(challenge).Collection(e => e.Flags).Query().Where(e => !e.IsOccupied).ToListAsync(token);
                     var pos = Random.Shared.Next(flags.Count);
                     flags[pos].IsOccupied = true;
-                    instance.Flag = flags[pos];
+                    instance.Context = flags[pos];
                 }
                 else
                 {
-                    instance.Flag = new()
+                    instance.Context = new()
                     {
                         AttachmentType = FileType.None,
                         Flag = $"flag{Guid.NewGuid():B}",
@@ -103,11 +103,11 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         if (instance.Container is null)
         {
-            await context.Entry(instance).Reference(e => e.Flag).LoadAsync(token);
+            await context.Entry(instance).Reference(e => e.Context).LoadAsync(token);
             var container = await service.CreateContainer(new ContainerConfig()
             {
                 CPUCount = instance.Challenge.CPUCount ?? 1,
-                Flag = instance.Flag?.Flag ?? throw new ArgumentException("创建容器时遇到无效的 Flag"),
+                Flag = instance.Context?.Flag ?? throw new ArgumentException("创建容器时遇到无效的 Flag"),
                 Image = instance.Challenge.ContainerImage,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
                 Port = instance.Challenge.ContainerExposePort?.ToString() ?? throw new ArgumentException("创建容器时遇到无效的端口"),

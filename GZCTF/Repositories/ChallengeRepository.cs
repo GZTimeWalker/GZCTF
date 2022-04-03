@@ -38,7 +38,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
                                 !string.IsNullOrEmpty(item.Url) ? FileType.Remote : FileType.None,
                 Challenge = challenge,
                 LocalFile = string.IsNullOrEmpty(item.FileHash) ? null : context.Files.Single(x => x.Hash == item.FileHash),
-                Url = item.Url
+                RemoteUrl = item.Url
             }).ToList();
 
         context.Update(challenge);

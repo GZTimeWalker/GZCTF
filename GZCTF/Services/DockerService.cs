@@ -8,7 +8,10 @@ using Microsoft.Extensions.Options;
 
 namespace CTFServer.Services;
 
-public record DockerOptions(string Uri);
+public class DockerOptions
+{
+    public string Uri { get; set; } = default!;
+}
 
 public class DockerService : IContainerService
 {

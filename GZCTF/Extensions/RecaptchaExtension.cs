@@ -9,7 +9,12 @@ public interface IRecaptchaExtension
     Task<bool> VerifyAsync(string token, string ip);
 }
 
-public record RecaptchaOptions(string Secretkey, string VefiyAPIAddress, float RecaptchaThreshold = 1);
+public class RecaptchaOptions
+{
+    public string Secretkey { get; set; } = default!;
+    public string VefiyAPIAddress { get; set; } = default!;
+    public float RecaptchaThreshold { get; set; } = 1;
+}
 
 public class RecaptchaExtension : IRecaptchaExtension
 {

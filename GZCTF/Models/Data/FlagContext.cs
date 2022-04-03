@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CTFServer.Models;
 
@@ -22,7 +23,7 @@ public class FlagContext
     /// <summary>
     /// Flag 对应附件 (远程文件）
     /// </summary>
-    public string? Url { get; set; } = string.Empty;
+    public string? RemoteUrl { get; set; } = string.Empty;
 
     /// <summary>
     /// Flag 对应文件（本地文件）
@@ -43,4 +44,16 @@ public class FlagContext
     /// 赛题Id
     /// </summary>
     public int ChallengeId { get; set; }
+
+    /// <summary>
+    /// 附件访问链接
+    /// </summary>
+    [NotMapped]
+    public string? Url => AttachmentType switch
+    {
+        FileType.None => null,
+        FileType.Local => LocalFile?.Url,
+        FileType.Remote => RemoteUrl,
+        _ => throw new ArgumentException(nameof(AttachmentType))
+    };
 }

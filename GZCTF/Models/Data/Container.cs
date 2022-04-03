@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CTFServer.Models;
 
@@ -59,13 +60,19 @@ public class Container
     /// 公开 IP
     /// </summary>
     [Required]
-    public string PublicIP { get; set; } = string.Empty;
+    public string? PublicIP { get; set; }
 
     /// <summary>
     /// 公开端口
     /// </summary>
     [Required]
-    public int PublicPort { get; set; }
+    public int? PublicPort { get; set; }
+
+    /// <summary>
+    /// 容器实例访问方式
+    /// </summary>
+    [NotMapped]
+    public string Entry => $"{PublicIP ?? IP}:{PublicPort ?? Port}";
 
     #region Db Relationship
 

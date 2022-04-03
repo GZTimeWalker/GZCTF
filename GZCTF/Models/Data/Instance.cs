@@ -27,9 +27,9 @@ public class Instance
     public int? FlagId { get; set; }
 
     /// <summary>
-    /// Flag 对象
+    /// Flag 上下文对象
     /// </summary>
-    public FlagContext? Flag { get; set; } = default!;
+    public FlagContext? Context { get; set; } = default!;
 
     [Required]
     public int ChallengeId { get; set; }

@@ -191,8 +191,23 @@ public class GameController : ControllerBase
         if (participation is null)
             return BadRequest(new RequestResponse("您尚未参赛"));
 
-        // participation.Instances.Select(
-
+        var res = participation.Instances.Select(i => new ChallengeDetailModel
+        {
+            Id = i.Challenge.Id,
+            Content = i.Challenge.Content,
+            Hints = i.Challenge.Hints,
+            Score = i.Challenge.CurrentScore,
+            Tag = i.Challenge.Tag,
+            Title = i.Challenge.Title,
+            Type = i.Challenge.Type,
+            Context = new()
+            {
+                Name = i.Challenge.FileName,
+                Url  = i.Context?.Url,
+                InstanceEntry = i.Container?.Entry
+            }
+        }).ToArray();
+        
         return Ok();
     }
 }
