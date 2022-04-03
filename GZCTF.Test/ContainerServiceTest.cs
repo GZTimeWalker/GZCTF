@@ -1,15 +1,9 @@
 using Xunit;
-using CTFServer.Services;
 using CTFServer.Services.Interface;
-using Microsoft.Extensions.Configuration;
-using System.IO;
-using System.Text;
 using Xunit.Abstractions;
 using System.Collections.Generic;
 using Docker.DotNet.Models;
-using NLog;
 using System;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +18,6 @@ public class ContainerServiceTest
                 
     public ContainerServiceTest(ITestOutputHelper _output)
     {
-        LogManager.GlobalThreshold = LogLevel.Off;
         var app = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {

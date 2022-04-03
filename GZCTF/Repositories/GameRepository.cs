@@ -10,7 +10,7 @@ namespace CTFServer.Repositories;
 public class GameRepository : RepositoryBase, IGameRepository
 {
     private readonly IMemoryCache cache;
-    
+
     public GameRepository(IMemoryCache memoryCache, AppDbContext _context) : base(_context)
     {
         cache = memoryCache;
@@ -22,7 +22,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         await context.SaveChangesAsync(token);
         return game;
     }
-    
+
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
@@ -69,23 +69,23 @@ public class GameRepository : RepositoryBase, IGameRepository
                 context.Submissions.Where(s => s.Status == AnswerResult.Accepted),
                 i => new { i.ChallengeId, i.ParticipationId },
                 s => new { s.ChallengeId, s.ParticipationId },
-                (i, s) => new { Instance = i, Submissions = s}
-            ).SelectMany(j => j.Submissions.DefaultIfEmpty(), 
+                (i, s) => new { Instance = i, Submissions = s }
+            ).SelectMany(j => j.Submissions.DefaultIfEmpty(),
                 (j, s) => new Data(j.Instance, s)
             ).ToArrayAsync(token);
 
     private static IDictionary<int, Blood?[]> GenBloods(Data[] data)
         => data.GroupBy(j => j.Instance.Challenge).Select(g => new
+        {
+            g.Key,
+            Value = g.Select(c => c.Submission is null ? null : new Blood
             {
-                g.Key,
-                Value = g.Select(c => c.Submission is null ? null : new Blood
-                {
-                     Id = c.Instance.Participation.TeamId,
-                     Avatar = c.Instance.Participation.Team.AvatarUrl,
-                     Name = c.Instance.Participation.Team.Name,
-                     SubmitTimeUTC = c.Submission.SubmitTimeUTC
-                }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
-            }).ToDictionary(a => a.Key.Id, a => a.Value);
+                Id = c.Instance.Participation.TeamId,
+                Avatar = c.Instance.Participation.Team.AvatarUrl,
+                Name = c.Instance.Participation.Team.Name,
+                SubmitTimeUTC = c.Submission.SubmitTimeUTC
+            }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
+        }).ToDictionary(a => a.Key.Id, a => a.Value);
 
     private static IDictionary<string, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(g => g.Instance.Challenge)
@@ -101,7 +101,7 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(j => j.Instance.Participation)
-            .Select(j => new 
+            .Select(j => new
             {
                 Item = new ScoreboardItem
                 {
@@ -161,13 +161,13 @@ public class GameRepository : RepositoryBase, IGameRepository
     {
         var score = 0;
         List<TimeLine> timeline = new();
-        foreach(var item in items.Where(i => i.SubmitTimeUTC is not null).OrderBy(i => i.SubmitTimeUTC))
+        foreach (var item in items.Where(i => i.SubmitTimeUTC is not null).OrderBy(i => i.SubmitTimeUTC))
         {
             score += item.Score;
             timeline.Add(new()
             {
                 Score = score,
-                Time = item.SubmitTimeUTC ?? DateTimeOffset.UtcNow // 此处不为 null
+                Time = item.SubmitTimeUTC!.Value // 此处不为 null
             });
         }
         return timeline.ToArray();

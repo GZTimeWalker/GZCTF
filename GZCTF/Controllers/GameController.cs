@@ -186,7 +186,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        var participation = await participationRepository.GetParticipation(user.ActiveTeam, game, token);
+        var participation = await participationRepository.GetParticipationWithInstances(user.ActiveTeam, game, token);
 
         if (participation is null)
             return BadRequest(new RequestResponse("您尚未参赛"));
@@ -208,6 +208,6 @@ public class GameController : ControllerBase
             }
         }).ToArray();
         
-        return Ok();
+        return Ok(res);
     }
 }

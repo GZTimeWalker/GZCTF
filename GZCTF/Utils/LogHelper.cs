@@ -44,7 +44,7 @@ public static class LogHelper
         if (remoteAddress is null)
             return;
 
-        string ip = remoteAddress.IsIPv4MappedToIPv6 ? remoteAddress.MapToIPv4().ToString() : remoteAddress.MapToIPv6().ToString().Replace("::ffff:", "");
+        string ip = remoteAddress.ToString();
 
         Log(_logger, msg, username, ip, status, level);
     }
@@ -65,12 +65,10 @@ public static class LogHelper
     /// </summary>
     /// <param name="_logger">传入的 Nlog.Logger</param>
     /// <param name="msg">Log 消息</param>
-    /// <param name="username">用户名</param>
+    /// <param name="uname">用户名</param>
     /// <param name="ip">当前IP</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> _logger, string msg, string username, string ip, TaskStatus status, LogLevel? level = null)
-    {
-        _logger.Log(level ?? LogLevel.Information, msg, new { uname = username, ip, status });
-    }
+    public static void Log<T>(this ILogger<T> _logger, string msg, string uname, string ip, TaskStatus status, LogLevel? level = null)
+        => _logger.Log(level ?? LogLevel.Information, msg, new { uname, ip, status });
 }

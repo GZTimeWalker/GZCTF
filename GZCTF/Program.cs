@@ -11,13 +11,12 @@ using CTFServer.Services;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using NJsonSchema.Generation;
-using NLog;
-using NLog.Web;
 using NLog.Targets;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,11 +51,11 @@ builder.Services.AddSingleton<SignalRLoggingService>();
 builder.Host.ConfigureLogging(logging =>
 {
     logging.ClearProviders();
-    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-}).UseNLog();
+    logging.SetMinimumLevel(LogLevel.Trace);
+}).UseNLog(new() { RemoveLoggerFactoryFilter = true });
 
 Target.Register<SignalRTarget>("SignalR");
-LogManager.Configuration.Variables["connectionString"] = builder.Configuration.GetConnectionString("DefaultConnection");
+NLog.LogManager.Configuration.Variables["connectionString"] = builder.Configuration.GetConnectionString("DefaultConnection");
 
 #endregion
 
@@ -225,5 +224,5 @@ catch (Exception exception)
 }
 finally
 {
-    LogManager.Shutdown();
+    NLog.LogManager.Shutdown();
 }
