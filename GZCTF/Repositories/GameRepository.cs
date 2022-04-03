@@ -30,15 +30,19 @@ public class GameRepository : RepositoryBase, IGameRepository
         => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToListAsync(token);
 
     public Task<Scoreboard> GetScoreboard(Game game, CancellationToken token = default)
-        => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry => GenScoreboard(game, token));
+        => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
+            return GenScoreboard(game, token);
+        });
 
     public Task<int> UpdateGame(Game game, CancellationToken token = default)
     {
         context.Update(game);
         return context.SaveChangesAsync(token);
     }
-    
 
+    #region Generate Scoreboard
     private record Data(Instance Instance, Submission? Submission);
 
     // By xfoxfu & GZTimeWalker @ 2022/04/03
@@ -168,4 +172,5 @@ public class GameRepository : RepositoryBase, IGameRepository
         }
         return timeline.ToArray();
     }
+    #endregion
 }

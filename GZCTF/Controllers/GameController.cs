@@ -139,6 +139,15 @@ public class GameController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 获取积分榜
+    /// </summary>
+    /// <remarks>
+    /// 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
+    /// </remarks>
+    /// <param name="id">比赛id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛信息</response>
     [HttpGet("{id}/Scoreboard")]
     [ProducesResponseType(typeof(Scoreboard), StatusCodes.Status200OK)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
