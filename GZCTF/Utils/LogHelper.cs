@@ -14,7 +14,7 @@ public static class LogHelper
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
     public static void SystemLog<T>(this ILogger<T> _logger, string msg, TaskStatus status = TaskStatus.Success, LogLevel? level = null)
-        => Log(_logger, msg, "System", "-", status, level ?? LogLevel.Debug);
+        => Log(_logger, msg, "System", "-", status, level ?? LogLevel.Information);
 
     /// <summary>
     /// 登记一条 Log 记录
