@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CTFServer.Utils;
-using NLog;
 using System.Net.Mime;
 using CTFServer.Repositories.Interface;
 using CTFServer.Middlewares;
-using System.Net.Http.Headers;
 using CTFServer.Models;
 
 namespace CTFServer.Controllers;
@@ -17,14 +15,15 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AssetsController : ControllerBase
 {
-    private static readonly Logger logger = LogManager.GetLogger("AssetsController");
+    private readonly ILogger<AssetsController> logger;
     private readonly IFileRepository fileRepository;
     private readonly IConfiguration configuration;
 
-    public AssetsController(IFileRepository _fileRepository, IConfiguration _configuration)
+    public AssetsController(IFileRepository _fileRepository, IConfiguration _configuration, ILogger<AssetsController> _logger)
     {
         fileRepository = _fileRepository;
         configuration = _configuration;
+        logger = _logger;
     }
 
     /// <summary>
@@ -46,10 +45,10 @@ public class AssetsController : ControllerBase
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         path = Path.GetFullPath(Path.Combine(basepath, path));
-
+        
         if (!System.IO.File.Exists(path))
         {
-            LogHelper.Log(logger, $"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, NLog.LogLevel.Warn);
+            logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, LogLevel.Warning);
             return NotFound(new RequestResponse("文件不存在", 404));
         }
 
@@ -85,7 +84,7 @@ public class AssetsController : ControllerBase
                 if (file.Length > 0)
                 {
                     var res = await fileRepository.CreateOrUpdateFile(file, null, token);
-                    LogHelper.SystemLog(logger, $"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, NLog.LogLevel.Info); 
+                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Information); 
                     results.Add(res);
                 }
             }
@@ -93,7 +92,7 @@ public class AssetsController : ControllerBase
         }
         catch (Exception ex)
         {
-            logger.Error(ex);
+            logger.LogError(ex, ex.Message);
             return BadRequest(new RequestResponse("遇到IO错误"));
         }
     }
@@ -119,7 +118,7 @@ public class AssetsController : ControllerBase
     {
         var result = await fileRepository.DeleteFileByHash(hash, token);
 
-        LogHelper.SystemLog(logger, $"删除文件 [{hash[..8]}]...", result, NLog.LogLevel.Info);
+        logger.SystemLog($"删除文件 [{hash[..8]}]...", result, LogLevel.Information);
 
         return result switch
         {

@@ -19,21 +19,23 @@ namespace CTFServer.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class TeamController : ControllerBase
 {
-    private static readonly Logger logger = LogManager.GetLogger("TeamController");
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileRepository;
     private readonly ITeamRepository teamRepository;
+    private readonly ILogger<TeamController> logger;
 
     public TeamController(UserManager<UserInfo> _userManager,
         ILogRepository _logRepository,
         IFileRepository _fileRepository,
-        ITeamRepository _teamRepository)
+        ITeamRepository _teamRepository,
+        ILogger<TeamController> _logger)
     {
         userManager = _userManager;
         logRepository = _logRepository;
         fileRepository = _fileRepository;
         teamRepository = _teamRepository;
+        logger = _logger;
     }
 
     /// <summary>
@@ -94,7 +96,7 @@ public class TeamController : ControllerBase
         user.ActiveTeam = team;
         await userManager.UpdateAsync(user);
 
-        LogHelper.Log(logger, $"创建队伍 {team.Name}", user, TaskStatus.Success);
+        logger.Log($"创建队伍 {team.Name}", user, TaskStatus.Success);
 
         return Ok(TeamInfoModel.FromTeam(team));
     }
@@ -292,7 +294,7 @@ public class TeamController : ControllerBase
             await teamRepository.UpdateAsync(team, token);
             await trans.CommitAsync(token);
 
-            LogHelper.Log(logger, $"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
+            logger.Log($"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
             return Ok(team.InviteToken);
         }
         catch
@@ -345,7 +347,7 @@ public class TeamController : ControllerBase
             await teamRepository.UpdateAsync(team, cancelToken);
             await trans.CommitAsync(cancelToken);
 
-            LogHelper.Log(logger, $"加入队伍 {team.Name}", user, TaskStatus.Success);
+            logger.Log($"加入队伍 {team.Name}", user, TaskStatus.Success);
             return Ok();
         }
         catch
@@ -398,7 +400,7 @@ public class TeamController : ControllerBase
             await teamRepository.UpdateAsync(team, token);
             await trans.CommitAsync(token);
 
-            LogHelper.Log(logger, $"离开队伍 {team.Name}", user, TaskStatus.Success);
+            logger.Log($"离开队伍 {team.Name}", user, TaskStatus.Success);
             return Ok();
         }
         catch
@@ -452,7 +454,7 @@ public class TeamController : ControllerBase
         team.AvatarHash = avatar.Hash;
         await teamRepository.UpdateAsync(team, token);
 
-        LogHelper.Log(logger, $"队伍 {team.Name} 更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
+        logger.Log($"队伍 {team.Name} 更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
 
         return Ok(avatar.Url);
     }
@@ -489,7 +491,7 @@ public class TeamController : ControllerBase
 
         await userManager.UpdateAsync(user);
 
-        LogHelper.Log(logger, $"删除队伍 {team!.Name}", user, TaskStatus.Success);
+        logger.Log($"删除队伍 {team!.Name}", user, TaskStatus.Success);
 
         return Ok();
     }

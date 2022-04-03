@@ -5,21 +5,21 @@ using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using NLog;
 using CTFServer.Models.Internal;
+using Microsoft.Extensions.Options;
 
 namespace CTFServer.Services;
+
+public record DockerOptions(string Uri);
 
 public class DockerService : IContainerService
 {
     private static readonly Logger logger = LogManager.GetLogger("ContainerService");
-    private readonly IConfigurationSection? config;
+    private readonly DockerOptions options;
     private readonly DockerClient dockerClient;
-    public DockerService(IConfiguration _configuration)
+    public DockerService(IOptions<DockerOptions> options)
     {
-        config = _configuration.GetSection("DockerConfig") ?? throw new ArgumentException("Docker config required!");
-
-        var uri = config?.GetValue<string>("Uri");
-
-        DockerClientConfiguration cfg = string.IsNullOrEmpty(uri) ? new() : new(new Uri(uri));
+        this.options = options.Value;
+        DockerClientConfiguration cfg = string.IsNullOrEmpty(this.options.Uri) ? new() : new(new Uri(this.options.Uri));
 
         // TODO: Docker Auth Required
         // TODO: Docker Swarm Support

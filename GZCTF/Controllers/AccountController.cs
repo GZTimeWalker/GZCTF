@@ -21,7 +21,7 @@ namespace CTFServer.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class AccountController : ControllerBase
 {
-    private static readonly Logger logger = LogManager.GetLogger("AccountController");
+    private readonly ILogger<AccountController> logger;
     private readonly IMailSender mailSender;
     private readonly UserManager<UserInfo> userManager;
     private readonly SignInManager<UserInfo> signInManager;
@@ -35,7 +35,8 @@ public class AccountController : ControllerBase
         IHostEnvironment _environment,
         IRecaptchaExtension _recaptcha,
         UserManager<UserInfo> _userManager,
-        SignInManager<UserInfo> _signInManager)
+        SignInManager<UserInfo> _signInManager,
+        ILogger<AccountController> _logger)
     {
         recaptcha = _recaptcha;
         mailSender = _mailSender;
@@ -43,6 +44,7 @@ public class AccountController : ControllerBase
         userManager = _userManager;
         signInManager = _signInManager;
         fileRepository = _fileRepository;
+        logger = _logger;
     }
 
     /// <summary>
@@ -87,7 +89,7 @@ public class AccountController : ControllerBase
             user = current;
         }
 
-        LogHelper.Log(logger, "发送用户邮箱验证邮件。", user, TaskStatus.Pending);
+        logger.Log("发送用户邮箱验证邮件。", user, TaskStatus.Pending);
 
         mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
             $"https://{HttpContext.Request.Host}/verify?token={Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user))}&email={Codec.Base64.Encode(model.Email)}");
@@ -115,7 +117,7 @@ public class AccountController : ControllerBase
         if (user is null)
             return NotFound(new RequestResponse("用户不存在",404));
 
-        LogHelper.Log(logger, "发送用户密码重置邮件。", user.UserName, HttpContext, TaskStatus.Pending);
+        logger.Log("发送用户密码重置邮件。", user.UserName, HttpContext, TaskStatus.Pending);
 
         mailSender.SendResetPasswordUrl(user.UserName, user.Email,
             $"https://{HttpContext.Request.Host}/reset?token={Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user))}&email={Codec.Base64.Encode(model.Email)}");
@@ -148,7 +150,7 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
 
-        LogHelper.Log(logger, "用户成功重置密码。", user, TaskStatus.Success);
+        logger.Log("用户成功重置密码。", user, TaskStatus.Success);
 
         return Ok();
     }
@@ -181,7 +183,7 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return Unauthorized(new RequestResponse("邮箱验证失败", 401));
 
-        LogHelper.Log(logger, "通过邮箱验证。", user, TaskStatus.Success);
+        logger.Log("通过邮箱验证。", user, TaskStatus.Success);
         await signInManager.SignInAsync(user, true);
 
         user.LastSignedInUTC = DateTimeOffset.UtcNow;
@@ -233,7 +235,7 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return Unauthorized(new RequestResponse("用户名或密码错误", 401));
 
-        LogHelper.Log(logger, "用户成功登录。", user, TaskStatus.Success);
+        logger.Log("用户成功登录。", user, TaskStatus.Success);
 
         return Ok();
     }
@@ -286,7 +288,7 @@ public class AccountController : ControllerBase
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
 
         if (oname != user.UserName)
-            LogHelper.Log(logger, "用户更新：" + oname + " => " + model.UserName, user, TaskStatus.Success);
+            logger.Log("用户更新：" + oname + " => " + model.UserName, user, TaskStatus.Success);
 
         return Ok();
     }
@@ -313,7 +315,7 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
 
-        LogHelper.Log(logger, "用户更新密码。", user, TaskStatus.Success);
+        logger.Log("用户更新密码。", user, TaskStatus.Success);
 
         return Ok();
     }
@@ -339,7 +341,7 @@ public class AccountController : ControllerBase
             return BadRequest(new RequestResponse("邮箱已经被占用。"));
 
         var user = await userManager.GetUserAsync(User);
-        LogHelper.Log(logger, "发送用户邮箱更改邮件。", user, TaskStatus.Pending);
+        logger.Log("发送用户邮箱更改邮件。", user, TaskStatus.Pending);
 
         mailSender.SendChangeEmailUrl(user.UserName, model.NewMail,
             $"https://{HttpContext.Request.Host}/confirm?token={Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user, model.NewMail))}&email={Codec.Base64.Encode(model.NewMail)}");
@@ -371,7 +373,7 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(new RequestResponse("无效邮箱。"));
 
-        LogHelper.Log(logger, "更改邮箱成功。", user, TaskStatus.Success);
+        logger.Log("更改邮箱成功。", user, TaskStatus.Success);
 
         return Ok();
     }
@@ -432,7 +434,7 @@ public class AccountController : ControllerBase
 
         if(result == IdentityResult.Success)
         {
-            LogHelper.Log(logger, $"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
+            logger.Log($"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
 
             return Ok(avatar.Url);
         }

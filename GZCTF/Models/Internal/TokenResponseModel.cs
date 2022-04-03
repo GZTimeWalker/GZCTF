@@ -11,7 +11,7 @@ public class TokenResponseModel
     public bool Success { get; set; }
 
     [JsonPropertyName("score")]
-    public decimal Score { get; set; }
+    public float Score { get; set; }
 
     [JsonPropertyName("action")]
     public string Action { get; set; } = string.Empty;
