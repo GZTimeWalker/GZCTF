@@ -191,7 +191,7 @@ public class GameController : ControllerBase
         if (participation is null)
             return BadRequest(new RequestResponse("您尚未参赛"));
 
-        participation.Instances.Select(
+        // participation.Instances.Select(
 
         return Ok();
     }
