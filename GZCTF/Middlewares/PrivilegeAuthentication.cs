@@ -20,8 +20,6 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
     /// </summary>
     private readonly Role RequiredPrivilege;
 
-    private static readonly Logger logger = LogManager.GetLogger("Authorization");
-
     public RequirePrivilegeAttribute(Role privilege)
         => RequiredPrivilege = privilege;
 
