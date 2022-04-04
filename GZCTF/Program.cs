@@ -17,6 +17,13 @@ using NJsonSchema.Generation;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Serilog.Events;
+using Serilog.Templates;
+using Serilog.Templates.Themes;
+using Serilog.Sinks.AspNetCore.SignalR.Extensions;
+using CTFServer.Hubs.Client;
+using Serilog.Sinks.File.Archive;
+using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,9 +54,51 @@ builder.Services.AddSignalR().AddJsonProtocol();
 
 #region Logging
 
+const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .MinimumLevel.Debug()
+    .Filter.ByExcluding(logEvent =>
+         logEvent.Exception != null &&
+         logEvent.Exception.GetType() == typeof(OperationCanceledException))
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+    .WriteTo.Async(t => t.Console(
+        formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+        restrictedToMinimumLevel: LogEventLevel.Debug
+    ))
+    .WriteTo.Async(t => t.File(
+        path: "log/log_.log",
+        formatter: new ExpressionTemplate(LogTemplate),
+        rollingInterval: RollingInterval.Day,
+        fileSizeLimitBytes: 10 * 1024 * 1024,
+        restrictedToMinimumLevel: LogEventLevel.Debug,
+        rollOnFileSizeLimit: true,
+        retainedFileCountLimit: 5,
+        hooks: new ArchiveHooks(CompressionLevel.Optimal, "log/archive/{UtcDate:yyyyMM}/{UtcDate:yyyy-MM-dd}")
+    ))
+    .MinimumLevel.Information()
+    .WriteTo.Async(t => t.PostgreSQL(
+        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+        tableName: "Logs",
+        respectCase: true,
+        columnOptions: LogHelper.ColumnWriters,
+        restrictedToMinimumLevel: LogEventLevel.Information,
+        period: TimeSpan.FromSeconds(30)
+    ))
+    .CreateLogger();
+
+Serilog.Debugging.SelfLog.Enable(Console.Error);
+
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseSerilog(dispose: true);
+
+//builder.Host.UseNLog(new() { RemoveLoggerFactoryFilter = true });
+// Target.Register<SignalRTarget>("SignalR");
+// NLog.LogManager.Configuration.Variables["connectionString"] = builder.Configuration.GetConnectionString("DefaultConnection");
 
 #endregion
 
@@ -167,8 +216,6 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 });
 
 var app = builder.Build();
-
-Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
