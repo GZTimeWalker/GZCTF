@@ -1,4 +1,7 @@
-﻿using Serilog;
+﻿using NpgsqlTypes;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.PostgreSQL;
 using Serilog.Templates.Themes;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -68,9 +71,28 @@ public static class LogHelper
     /// <param name="level">Log 级别</param>
     public static void Log<T>(this ILogger<T> _logger, string msg, string uname, string ip, TaskStatus status, LogLevel? level = null)
     {
-        using (_logger.BeginScope("{uname}{status}{ip}", uname, status, ip))
+        using (_logger.BeginScope("{UserName}{Status}{IP}", uname, status, ip))
         {
             _logger.Log(level ?? LogLevel.Information, msg);
         }
     }
+
+    public static IDictionary<string, ColumnWriterBase> ColumnWriters = new Dictionary<string, ColumnWriterBase>
+    {
+        {"Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
+        {"Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
+        {"TimeUTC", new TimeColumnWriter() },
+        {"Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
+        {"Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
+        {"UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
+        {"Status", new SinglePropertyColumnWriter("Status", PropertyWriteMethod.ToString, NpgsqlDbType.Varchar) },
+        {"RemoteIP", new SinglePropertyColumnWriter("IP", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) }
+    };
+}
+
+public class TimeColumnWriter : ColumnWriterBase
+{
+    public TimeColumnWriter() : base(NpgsqlDbType.TimestampTz) { }
+    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null)
+        => logEvent.Timestamp.ToUniversalTime();
 }
