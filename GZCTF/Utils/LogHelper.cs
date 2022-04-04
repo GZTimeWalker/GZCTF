@@ -120,7 +120,6 @@ public static class LogHelper
         retainedFileCountLimit: 5,
         hooks: new ArchiveHooks(CompressionLevel.Optimal, "log/archive/{UtcDate:yyyyMM}/{UtcDate:yyyy-MM-dd}")
     ))
-    .MinimumLevel.Information()
     .WriteTo.Async(t => t.PostgreSQL(
         connectionString: configuration.GetConnectionString("DefaultConnection"),
         tableName: "Logs",

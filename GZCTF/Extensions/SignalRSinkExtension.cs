@@ -27,23 +27,23 @@ public class SignalRSink : ILogEventSink
         serviceProvider = _serviceProvider;
     }
     
-    public async void Emit(LogEvent logEvent)
+    public void Emit(LogEvent logEvent)
     {
         if (hubContext is null)
             hubContext = serviceProvider.GetRequiredService<IHubContext<LoggingHub, ILoggingClient>>();
 
         if (logEvent.Level >= LogEventLevel.Information)
         {
-            await hubContext.Clients.All.ReceivedLog(
+            hubContext.Clients.All.ReceivedLog(
                 new LogMessageModel
                 {
                     Time = logEvent.Timestamp,
                     Level = logEvent.Level.ToString(),
-                    UserName = logEvent.Properties["UserName"].ToString(),
-                    IP = logEvent.Properties["IP"].ToString(),
+                    UserName = logEvent.Properties.GetValueOrDefault("UserName")?.ToString(),
+                    IP = logEvent.Properties.GetValueOrDefault("IP")?.ToString(),
                     Msg = logEvent.RenderMessage(),
-                    Status = logEvent.Properties["Status"].ToString()
-                });
+                    Status = logEvent.Properties.GetValueOrDefault("Status")?.ToString()
+                }).Wait();
         }
     }
 }
