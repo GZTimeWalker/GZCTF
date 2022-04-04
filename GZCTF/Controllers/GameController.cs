@@ -131,7 +131,7 @@ public class GameController : ControllerBase
             team.Locked = true;
             await teamRepository.UpdateAsync(team, token);
             await trans.CommitAsync(token);
-            LogHelper.Log(logger, $"{team.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
+            logger.Log($"{team.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
             return Ok();
         }
         catch

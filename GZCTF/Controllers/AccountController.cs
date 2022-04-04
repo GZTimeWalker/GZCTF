@@ -7,7 +7,6 @@ using CTFServer.Models.Request.Account;
 using CTFServer.Services.Interface;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using NLog;
 using System.Net.Mime;
 using CTFServer.Extensions;
 

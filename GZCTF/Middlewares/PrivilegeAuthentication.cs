@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using CTFServer.Models;
 using CTFServer.Utils;
-using NLog;
 using System.Security.Claims;
 
 namespace CTFServer.Middlewares;

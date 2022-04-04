@@ -2,8 +2,7 @@
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Hubs.Client;
-using CTFServer.Models.Request.Admin;
-using NLog;
+using CTFServer.Models.Request.Admin;
 
 namespace CTFServer.Services;
 
@@ -11,14 +10,14 @@ public class SignalRLoggingService : IDisposable
 {
     private bool disposed = false;
     private IHubContext<LoggingHub, ILoggingClient> Hub { get; set; }
-    public SignalRTarget? Target { get; set; }
+    // public SignalRTarget? Target { get; set; }
 
     public SignalRLoggingService(IHubContext<LoggingHub, ILoggingClient> _Hub)
     {
         Hub = _Hub;
-        Target = SignalRTarget.Instance;
-        if (Target is not null)
-            Target.LogEventHandler += OnLog;
+        //Target = SignalRTarget.Instance;
+        //if (Target is not null)
+        //    Target.LogEventHandler += OnLog;
     }
 
     ~SignalRLoggingService()
@@ -31,13 +30,13 @@ public class SignalRLoggingService : IDisposable
         if (!disposed)
         {
             disposed = true;
-            if (Target is not null)
-                Target.LogEventHandler -= OnLog;
+            //if (Target is not null)
+            //    Target.LogEventHandler -= OnLog;
             GC.SuppressFinalize(this);
         }
     }
 
-    public async void OnLog(LogEventInfo logInfo)
+    /*public async void OnLog(LogEventInfo logInfo)
     {
         if(logInfo.Level >= NLog.LogLevel.Error)
         {
@@ -68,5 +67,5 @@ public class SignalRLoggingService : IDisposable
                     Status = (string)logInfo.Properties["status"]
                 });
         }
-    }
+    }*/
 }

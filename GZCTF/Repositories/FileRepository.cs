@@ -21,7 +21,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         using Stream tmp = file.Length <= 16 * 1024 * 1024 ? new MemoryStream() :
                 File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
 
-        LogHelper.SystemLog(logger, $"缓存位置：{tmp.GetType()}");
+        logger.SystemLog($"缓存位置：{tmp.GetType()}");
 
         await file.CopyToAsync(tmp, token);
 

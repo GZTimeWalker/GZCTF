@@ -1,22 +1,27 @@
+global using CTFServer.Models;
+
+using System.Text;
+using System.Text.Json;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
-using CTFServer.Models;
 using CTFServer.Repositories;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using NJsonSchema.Generation;
-using NLog.Targets;
-using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
-using NLog.Web;
+using Serilog;
+using Serilog.Events;
+using Serilog.Templates;
+using Serilog.Templates.Themes;
+using Serilog.Sinks.AspNetCore.SignalR.Extensions;
+using CTFServer.Hubs.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,18 +47,39 @@ builder.Host.ConfigureAppConfiguration((host, config) =>
 #region SignalR
 
 builder.Services.AddSignalR().AddJsonProtocol();
-builder.Services.AddSingleton<SignalRLoggingService>();
 
 #endregion SignalR
 
 #region Logging
 
+const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {Username} #{Status} @ {IP}\n{@x}";
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+    .WriteTo.Async(t => t.Console(
+        formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+        restrictedToMinimumLevel: LogEventLevel.Information
+    ))
+    .WriteTo.Async(t => t.File(
+        path: "log/.log",
+        formatter: new ExpressionTemplate(LogTemplate),
+        rollingInterval: RollingInterval.Day,
+        fileSizeLimitBytes: 10 * 1024 * 1024,
+        restrictedToMinimumLevel: LogEventLevel.Information,
+        rollOnFileSizeLimit: true
+    ))
+    .CreateLogger();
+
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Trace);
-builder.Host.UseNLog(new() { RemoveLoggerFactoryFilter = true });
+builder.Host.UseSerilog(dispose: true);
 
-Target.Register<SignalRTarget>("SignalR");
-NLog.LogManager.Configuration.Variables["connectionString"] = builder.Configuration.GetConnectionString("DefaultConnection");
+//builder.Host.UseNLog(new() { RemoveLoggerFactoryFilter = true });
+// Target.Register<SignalRTarget>("SignalR");
+// NLog.LogManager.Configuration.Variables["connectionString"] = builder.Configuration.GetConnectionString("DefaultConnection");
 
 #endregion
 
@@ -132,8 +158,10 @@ builder.Services.AddHostedService<ContainerChecker>();
 
 builder.Services.AddTransient<IMailSender, MailSender>()
     .Configure<EmailOptions>(options => builder.Configuration.GetSection("EmailConfig").Bind(options));
+
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
     .Configure<RecaptchaOptions>(options => builder.Configuration.GetSection("GoogleRecaptcha").Bind(options));
+
 builder.Services.AddSingleton<IContainerService, DockerService>()
     .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
 
@@ -186,6 +214,8 @@ else
     app.UseHsts();
 }
 
+app.UseSerilogRequestLogging();
+
 app.UseSwaggerUi3();
 
 app.UseMiddleware<ProxyMiddleware>();
@@ -212,15 +242,15 @@ var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    logger.SystemLog("服务器初始化。");
+    logger.SystemLog("服务器初始化");
     await app.RunAsync();
 }
 catch (Exception exception)
 {
-    logger.LogError(exception, "因异常，应用程序意外停止。");
+    logger.LogError(exception, "因异常，应用程序意外停止");
     throw;
 }
 finally
 {
-    NLog.LogManager.Shutdown();
+    Log.CloseAndFlush();
 }

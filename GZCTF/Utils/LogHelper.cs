@@ -1,5 +1,5 @@
-﻿using CTFServer.Models;
-using NLog;
+﻿using Serilog;
+using Serilog.Templates.Themes;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace CTFServer.Utils;
@@ -39,10 +39,10 @@ public static class LogHelper
     public static void Log<T>(this ILogger<T> _logger, string msg, string username, HttpContext context, TaskStatus status, LogLevel? level = null)
     {
         var ip = context.Connection.RemoteIpAddress?.ToString();
-        
+
         if (ip is null)
             return;
-        
+
         Log(_logger, msg, username, ip, status, level);
     }
 
@@ -67,5 +67,10 @@ public static class LogHelper
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
     public static void Log<T>(this ILogger<T> _logger, string msg, string uname, string ip, TaskStatus status, LogLevel? level = null)
-        => _logger.Log(level ?? LogLevel.Information, msg, new { uname, ip, status });
+    {
+        using (_logger.BeginScope("Username: {Username}, Status: {Status}, IP: {ip}", uname, status, ip))
+        {
+            _logger.Log(level ?? LogLevel.Information, msg);
+        }
+    }
 }

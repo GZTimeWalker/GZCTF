@@ -6,7 +6,6 @@ using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using NLog;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

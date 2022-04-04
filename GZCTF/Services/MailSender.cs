@@ -78,7 +78,7 @@ public class MailSender : IMailSender
     {
         if (email is null || userName is null || title is null)
         {
-            LogHelper.SystemLog(logger, "无效调用！", TaskStatus.Fail);
+            logger.SystemLog("无效调用！", TaskStatus.Fail);
             return;
         }
         string _namespace = MethodBase.GetCurrentMethod()!.DeclaringType!.Namespace!;
@@ -96,7 +96,7 @@ public class MailSender : IMailSender
             .Replace("{url}", url)
             .Replace("{nowtime}", DateTimeOffset.UtcNow.ToString("u"));
         if (!await SendEmailAsync(title, emailContent, email))
-            LogHelper.SystemLog(logger, "邮件发送失败！", TaskStatus.Fail);
+            logger.SystemLog("邮件发送失败！", TaskStatus.Fail);
     }
 
     public void SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)

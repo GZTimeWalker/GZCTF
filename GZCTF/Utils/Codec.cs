@@ -1,5 +1,4 @@
-﻿using NLog;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace CTFServer.Utils;

@@ -4,7 +4,6 @@ using CTFServer.Models;
 using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using NLog;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
 
