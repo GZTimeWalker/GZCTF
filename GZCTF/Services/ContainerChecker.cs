@@ -1,6 +1,7 @@
 ﻿using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using CTFServer.Utils;
+
 
 namespace CTFServer.Services;
 

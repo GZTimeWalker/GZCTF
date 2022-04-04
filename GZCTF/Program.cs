@@ -22,6 +22,8 @@ using Serilog.Templates;
 using Serilog.Templates.Themes;
 using Serilog.Sinks.AspNetCore.SignalR.Extensions;
 using CTFServer.Hubs.Client;
+using Serilog.Sinks.File.Archive;
+using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +54,7 @@ builder.Services.AddSignalR().AddJsonProtocol();
 
 #region Logging
 
-const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {Username} #{Status} @ {IP}\n{@x}";
+const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(status) > 0}#{status} <{uname}>{#if Length(ip) > 0}@{ip}{#end}{#end}\n{@x}";
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -64,12 +66,14 @@ Log.Logger = new LoggerConfiguration()
         restrictedToMinimumLevel: LogEventLevel.Information
     ))
     .WriteTo.Async(t => t.File(
-        path: "log/.log",
+        path: "log/log_.log",
         formatter: new ExpressionTemplate(LogTemplate),
         rollingInterval: RollingInterval.Day,
         fileSizeLimitBytes: 10 * 1024 * 1024,
         restrictedToMinimumLevel: LogEventLevel.Information,
-        rollOnFileSizeLimit: true
+        rollOnFileSizeLimit: true,
+        retainedFileCountLimit: 5,
+        hooks: new ArchiveHooks(CompressionLevel.Optimal, "log/archive/{UtcDate:yyyyMM}/{UtcDate:yyyy-MM-dd}")
     ))
     .CreateLogger();
 

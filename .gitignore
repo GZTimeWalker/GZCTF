@@ -239,3 +239,4 @@ _Pvt_Extensions
 **/CTFServer.xml
 .vscode/**
 **/uploads/**
+**/log/**
