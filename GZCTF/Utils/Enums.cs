@@ -60,6 +60,11 @@ public enum TaskStatus: sbyte
     /// 任务请求未找到
     /// </summary>
     NotFound = 4,
+
+    /// <summary>
+    /// 任务线程将要退出
+    /// </summary>
+    Exit = 5,
 }
 
 public enum FileType: byte

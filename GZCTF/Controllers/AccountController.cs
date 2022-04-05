@@ -421,7 +421,7 @@ public class AccountController : ControllerBase
         var user = await userManager.GetUserAsync(User);
 
         if (user.AvatarHash is not null)
-            _ = await fileRepository.DeleteFileByHash(user.AvatarHash, token);
+            await fileRepository.DeleteFileByHash(user.AvatarHash, token);
 
         var avatar = await fileRepository.CreateOrUpdateFile(file, "avatar", token);
 

@@ -124,8 +124,6 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 
 #region Services and Repositories
 
-builder.Services.AddHostedService<ContainerChecker>();
-
 builder.Services.AddTransient<IMailSender, MailSender>()
     .Configure<EmailOptions>(options => builder.Configuration.GetSection("EmailConfig").Bind(options));
 
@@ -146,6 +144,11 @@ builder.Services.AddScoped<INoticeRepository, NoticeRepository>();
 builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+
+builder.Services.AddHostedService<ContainerChecker>();
+
+builder.Services.AddChannel<Submission>();
+builder.Services.AddHostedService<FlagChecker>();
 
 #endregion Services and Repositories
 
