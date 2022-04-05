@@ -33,22 +33,33 @@ public class FlagChecker : IHostedService
         serviceScopeFactory = _serviceScopeFactory;
     }
 
-    private async Task Consumer(CancellationToken token = default)
+    private async Task Consumer(int id, CancellationToken token = default)
     {
+        logger.SystemLog($"消费者 #{id} 已启动", TaskStatus.Pending, LogLevel.Debug);
+
         await using var scope = serviceScopeFactory.CreateAsyncScope();
+
+        var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
+        var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
 
         try
         {
             while(!channelReader.Completion.IsCompleted)
             {
                 var item = await channelReader.ReadAsync(token);
+
+                var result = await instanceRepository.CheckCheat(item, token);
                 // TODO
             }
         }
         catch (TaskCanceledException) { }
         catch (ChannelClosedException) 
         {
-            logger.SystemLog("管道关闭，消费者将退出", TaskStatus.Exit, LogLevel.Warning);
+            logger.SystemLog($"管道关闭，消费者 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
+        }
+        finally
+        {
+            logger.SystemLog($"消费者 #{id} 已退出", TaskStatus.Exit, LogLevel.Debug);
         }
     }
 
@@ -57,7 +68,7 @@ public class FlagChecker : IHostedService
         TokenSource = new CancellationTokenSource();
 
         for(int i = 0; i < 4; ++i)
-            _ = Consumer(TokenSource.Token);
+            _ = Consumer(i, TokenSource.Token);
 
         logger.SystemLog("Flag 作弊检查已启用", TaskStatus.Success, LogLevel.Information);
 

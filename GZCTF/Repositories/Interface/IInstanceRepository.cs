@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models;
+using CTFServer.Models.Internal;
 using CTFServer.Utils;
 
 namespace CTFServer.Repositories.Interface;
@@ -40,6 +41,13 @@ public interface IInstanceRepository : IRepository
     /// <returns></returns>
     public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default);
 
+    /// <summary>
+    /// 检查抄袭行为
+    /// </summary>
+    /// <param name="submission">当前提交</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default);
 
     /// <summary>
     /// 创建容器实例

@@ -24,7 +24,7 @@ public class GameController : ControllerBase
     private readonly UserManager<UserInfo> userManager;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
-    private readonly IEventRepository eventRepository;
+    private readonly IGameNoticeRepository eventRepository;
     private readonly IInstanceRepository instanceRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
@@ -35,7 +35,7 @@ public class GameController : ControllerBase
         UserManager<UserInfo> _userManager,
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
-        IEventRepository _eventRepository,
+        IGameNoticeRepository _eventRepository,
         IInstanceRepository _instanceRepository,
         ISubmissionRepository _submissionRepository,
         IParticipationRepository _participationRepository,
@@ -186,10 +186,10 @@ public class GameController : ControllerBase
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛事件</response>
     /// <response code="400">比赛未找到</response>
-    [HttpGet("{id}/Events")]
-    [ProducesResponseType(typeof(Event[]), StatusCodes.Status200OK)]
+    [HttpGet("{id}/Notices")]
+    [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Events([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> Notices([FromRoute] int id, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -199,7 +199,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok(await eventRepository.GetEvents(game, 30, 0, token));
+        return Ok(await eventRepository.GetNotices(game, 30, 0, token));
     }
 
     /// <summary>

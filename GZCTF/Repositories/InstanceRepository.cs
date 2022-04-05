@@ -138,4 +138,33 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             return AnswerResult.Accepted;
         return AnswerResult.WrongAnswer;
     }
+
+    public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
+    {
+        CheatCheckInfo checkInfo = new();
+
+        var instances = await context.Instances.Where(i => i.ChallengeId == submission.ChallengeId &&
+                i.ParticipationId != submission.ParticipationId)
+                .Include(i => i.Challenge).Include(i => i.Context)
+                .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
+
+        foreach (var instance in instances)
+        {
+            if(instance.Context?.Flag == submission.Answer)
+            {
+                await context.Entry(submission).Reference(s => s.User).LoadAsync(token);
+                await context.Entry(submission).Reference(s => s.Participation.Team).LoadAsync(token);
+
+                checkInfo.AnswerResult = AnswerResult.CheatDetected;
+                checkInfo.CheatUser = submission.User;
+                checkInfo.CheatTeam = submission.Participation.Team;
+                checkInfo.SourceTeam = instance.Participation.Team;
+                checkInfo.Challenge = instance.Challenge;
+
+                return checkInfo;
+            }
+        }
+
+        return checkInfo;
+    }
 }

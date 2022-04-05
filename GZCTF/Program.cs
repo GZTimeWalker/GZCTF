@@ -135,7 +135,8 @@ builder.Services.AddSingleton<IContainerService, DockerService>()
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
+builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();

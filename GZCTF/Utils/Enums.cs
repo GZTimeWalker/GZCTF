@@ -140,6 +140,33 @@ public enum NoticeType: byte
     ErrorFix = 6
 }
 
+/// <summary>
+/// 比赛事件类型
+/// </summary>
+public enum EventType: byte
+{
+    /// <summary>
+    /// 常规信息
+    /// </summary>
+    Normal = 0,
+    /// <summary>
+    /// 容器启动信息
+    /// </summary>
+    ContainerStart = 1,
+    /// <summary>
+    /// 容器销毁信息
+    /// </summary>
+    ContainerDestroy = 2,
+    /// <summary>
+    /// Flag 提交信息
+    /// </summary>
+    FlagSubmit = 3,
+    /// <summary>
+    /// 作弊信息
+    /// </summary>
+    CheatDetected = 4
+}
+
 public enum SubmissionType: byte
 {
     /// <summary>
