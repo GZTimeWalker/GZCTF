@@ -26,7 +26,7 @@ public class ContainerChecker : IHostedService, IDisposable
 
     private async void Execute(object? state)
     {
-        using var scope = serviceProvider.CreateScope();
+        await using var scope = serviceProvider.CreateAsyncScope();
 
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
         var containerService = scope.ServiceProvider.GetRequiredService<IContainerService>();
