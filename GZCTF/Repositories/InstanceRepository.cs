@@ -130,4 +130,12 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         => context.Instances.Where(i => i.GameId == game.Id).OrderBy(i => i.ParticipationId)
             .Skip(skip).Take(count).Include(i => i.Participation).ThenInclude(i => i.Team)
             .Include(i => i.Challenge).ToArrayAsync(token);
+
+    public AnswerResult VerifyAnswer(Instance instance, string flag)
+    {
+        if ((instance.Challenge.Type.IsStatic() && instance.Challenge.Flags.Any(f => f.Flag == flag))
+            || (instance.Challenge.Type.IsDynamic() && instance.Context?.Flag == flag))
+            return AnswerResult.Accepted;
+        return AnswerResult.WrongAnswer;
+    }
 }

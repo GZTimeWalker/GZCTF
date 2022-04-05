@@ -14,6 +14,14 @@ public interface IInstanceRepository : IRepository
     public Task<Participation> CreateInstances(Participation team, CancellationToken token = default);
 
     /// <summary>
+    /// 验证答案
+    /// </summary>
+    /// <param name="instance">实例</param>
+    /// <param name="flag">Flag 字符串</param>
+    /// <returns></returns>
+    public AnswerResult VerifyAnswer(Instance instance, string flag);
+
+    /// <summary>
     /// 获取题目实例
     /// </summary>
     /// <param name="team">参与队伍</param>

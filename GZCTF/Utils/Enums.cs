@@ -200,7 +200,8 @@ public enum ChallengeTag : byte
     Blockchain = 5,
     Forensics = 6,
     Hardware = 7,
-    Mobile = 8
+    Mobile = 8,
+    PPC = 9
 }
 
 public static class ChallengeTypeExtensions
