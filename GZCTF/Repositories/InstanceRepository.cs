@@ -127,7 +127,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     }
 
     public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default)
-    {
-        throw new NotImplementedException();
-    }
+        => context.Instances.Where(i => i.GameId == game.Id).OrderBy(i => i.ParticipationId)
+            .Skip(skip).Take(count).Include(i => i.Participation).ThenInclude(i => i.Team)
+            .Include(i => i.Challenge).ToArrayAsync(token);
 }

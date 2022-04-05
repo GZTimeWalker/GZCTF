@@ -187,7 +187,7 @@ public class GameController : ControllerBase
     /// <response code="200">成功获取比赛事件</response>
     /// <response code="400">比赛未找到</response>
     [HttpGet("{id}/Events")]
-    [ProducesResponseType(typeof(ScoreboardModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Event[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Events([FromRoute] int id, CancellationToken token)
     {
@@ -216,7 +216,7 @@ public class GameController : ControllerBase
     /// <response code="400">比赛未找到</response>
     [RequireMonitor]
     [HttpGet("{id}/Submissions")]
-    [ProducesResponseType(typeof(ScoreboardModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Submission[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
@@ -245,7 +245,7 @@ public class GameController : ControllerBase
     /// <response code="400">比赛未找到</response>
     [RequireMonitor]
     [HttpGet("{id}/Instances")]
-    [ProducesResponseType(typeof(ScoreboardModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(InstanceInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Instances([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
@@ -257,7 +257,8 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok(await instanceRepository.GetInstances(game, count, skip, token));
+        return Ok((await instanceRepository.GetInstances(game, count, skip, token))
+            .Select(i => InstanceInfoModel.FromInstance(i)));
     }
 
     private class ActiveGame
@@ -273,7 +274,7 @@ public class GameController : ControllerBase
         }
     };
 
-    private async Task<ActiveGame> InActiveGame(int id, CancellationToken token = default)
+    private async Task<ActiveGame> GetActiveGame(int id, CancellationToken token = default)
     {
         ActiveGame res = new();
 
@@ -309,32 +310,16 @@ public class GameController : ControllerBase
     /// <response code="200">成功获取比赛题目信息</response>
     [RequireUser]
     [HttpGet("{id}/Challenges")]
-    [ProducesResponseType(typeof(Team), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ChallengeDetailModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)
     {
-        var activeGame = await InActiveGame(id, token);
+        var activeGame = await GetActiveGame(id, token);
 
         if(activeGame.ErrorMessage is not null)
             return BadRequest(new RequestResponse(activeGame.ErrorMessage));
 
-        var res = activeGame.Participation!.Instances.Select(i => new ChallengeDetailModel
-        {
-            Id = i.Challenge.Id,
-            Content = i.Challenge.Content,
-            Hints = i.Challenge.Hints,
-            Score = i.Challenge.CurrentScore,
-            Tag = i.Challenge.Tag,
-            Title = i.Challenge.Title,
-            Type = i.Challenge.Type,
-            Context = new()
-            {
-                Name = i.Challenge.FileName,
-                Url  = i.Context?.Url,
-                InstanceEntry = i.Container?.Entry
-            }
-        }).ToArray();
-        
-        return Ok(res);
+        return Ok(activeGame.Participation!.Instances
+                .Select(i => ChallengeDetailModel.FromInstance(i)));
     }
 }

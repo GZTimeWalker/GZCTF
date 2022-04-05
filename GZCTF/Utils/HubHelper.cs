@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using CTFServer.Models;
+using CTFServer.Models;
+
 using System.Security.Claims;
 
 namespace CTFServer.Utils;

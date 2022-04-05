@@ -41,6 +41,24 @@ public class ChallengeDetailModel
     /// Flag 上下文
     /// </summary>
     public ClientFlagContext Context { get; set; } = default!;
+
+    public static ChallengeDetailModel FromInstance(Instance instance)
+        => new()
+        {
+            Id = instance.Challenge.Id,
+            Content = instance.Challenge.Content,
+            Hints = instance.Challenge.Hints,
+            Score = instance.Challenge.CurrentScore,
+            Tag = instance.Challenge.Tag,
+            Title = instance.Challenge.Title,
+            Type = instance.Challenge.Type,
+            Context = new()
+            {
+                Name = instance.Challenge.FileName,
+                Url = instance.Context?.Url,
+                InstanceEntry = instance.Container?.Entry
+            }
+        };
 }
 
 public class ClientFlagContext

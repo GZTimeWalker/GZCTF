@@ -139,10 +139,10 @@ public class TeamController : ControllerBase
     }
 
     /// <summary>
-    /// 更改队伍信息
+    /// 设置队伍为当前激活队伍
     /// </summary>
     /// <remarks>
-    /// 队伍信息更改接口，需要为队伍创建者
+    /// 设置队伍为当前激活队伍接口，需要为用户
     /// </remarks>
     /// <param name="id">队伍Id</param>
     /// <param name="token"></param>
@@ -424,7 +424,7 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Avatar([FromRoute] int id, [FromBody] IFormFile file, CancellationToken token)
+    public async Task<IActionResult> Avatar([FromRoute] int id, IFormFile file, CancellationToken token)
     {
         var team = await teamRepository.GetTeamById(id, token);
 
