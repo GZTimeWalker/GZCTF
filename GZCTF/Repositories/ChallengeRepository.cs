@@ -56,16 +56,16 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<Challenge>> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default)
+    public Task<Challenge[]> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<List<Challenge>> GetChallenges(Game game, CancellationToken token = default)
+    public async Task<Challenge[]> GetChallenges(Game game, CancellationToken token = default)
     {
         await context.Entry(game).Collection(e => e.Challenges).LoadAsync(token);
 
-        return game.Challenges;
+        return game.Challenges.ToArray();
     }
 
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)

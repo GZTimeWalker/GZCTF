@@ -15,9 +15,9 @@ public class NoticeRepository : RepositoryBase, INoticeRepository
         return notice;
     }
 
-    public Task<List<Notice>> GetNotices(CancellationToken token = default)
+    public Task<Notice[]> GetNotices(CancellationToken token = default)
         => context.Notices.OrderByDescending(e => e.PublishTimeUTC)
-            .OrderByDescending(e => e.IsPinned).Take(20).ToListAsync(token);
+            .OrderByDescending(e => e.IsPinned).Take(20).ToArrayAsync(token);
 
     public async Task RemoveNotice(Notice notice, CancellationToken token = default)
     {

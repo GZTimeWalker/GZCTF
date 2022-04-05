@@ -12,5 +12,5 @@ public interface ILogRepository : IRepository
     /// <param name="level">等级</param>
     /// <param name="token">操作取消token</param>
     /// <returns>不超过指定数量的日志</returns>
-    public Task<List<LogMessageModel>> GetLogs(int skip, int count, string? level, CancellationToken token);
+    public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, CancellationToken token);
 }

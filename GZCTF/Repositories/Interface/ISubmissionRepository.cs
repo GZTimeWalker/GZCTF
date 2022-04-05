@@ -11,7 +11,7 @@ public interface ISubmissionRepository : IRepository
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Submission>> GetSubmissions(int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 获取比赛的提交，按时间降序
@@ -21,7 +21,7 @@ public interface ISubmissionRepository : IRepository
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Submission>> GetSubmissions(Game game, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(Game game, int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目的提交，按时间降序
@@ -31,7 +31,7 @@ public interface ISubmissionRepository : IRepository
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Submission>> GetSubmissions(Challenge challenge, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(Challenge challenge, int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 获取队伍的提交，按时间降序
@@ -41,7 +41,7 @@ public interface ISubmissionRepository : IRepository
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Submission>> GetSubmissions(Participation team, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(Participation team, int count = 100, int skip = 0, CancellationToken token = default);
     
     /// <summary>
     /// 添加提交

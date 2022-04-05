@@ -21,5 +21,5 @@ public interface IEventRepository : IRepository
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Event>> GetEvents(Game game, int count = 10, int skip = 0, CancellationToken token = default);
+    public Task<Event[]> GetEvents(Game game, int count = 10, int skip = 0, CancellationToken token = default);
 }

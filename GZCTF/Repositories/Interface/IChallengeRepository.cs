@@ -21,7 +21,7 @@ public interface IChallengeRepository : IRepository
     /// <param name="skip">跳过</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Challenge>> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Challenge[]> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default);
     
     /// <summary>
     /// 获取比赛全部题目
@@ -29,7 +29,7 @@ public interface IChallengeRepository : IRepository
     /// <param name="game">比赛</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Challenge>> GetChallenges(Game game, CancellationToken token = default);
+    public Task<Challenge[]> GetChallenges(Game game, CancellationToken token = default);
 
     /// <summary>
     /// 验证静态 Flag（可能多个答案）

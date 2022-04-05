@@ -125,4 +125,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         container.ExpectStopAt += time;
         await context.SaveChangesAsync(token);
     }
+
+    public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default)
+    {
+        throw new NotImplementedException();
+    }
 }
