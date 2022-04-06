@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CTFServer.Models.Request.Edit;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
 public class Notice
 {
     [Key]
-    [JsonIgnore]
     public int Id {  get; set; }
 
     /// <summary>
@@ -32,4 +32,11 @@ public class Notice
     [Required]
     [JsonPropertyName("time")]
     public DateTimeOffset PublishTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+
+    public void UpdateInfo(NoticeModel model) {
+        Title = model.Title;
+        Content = model.Content;
+        IsPinned = model.IsPinned;
+        PublishTimeUTC = DateTimeOffset.UtcNow;
+    }
 }

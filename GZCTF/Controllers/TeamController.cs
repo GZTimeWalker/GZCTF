@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 namespace CTFServer.Controllers;
 
 /// <summary>
-/// 管理员数据交互接口
+/// 队伍数据交互接口
 /// </summary>
 [RequireAdmin]
 [ApiController]
