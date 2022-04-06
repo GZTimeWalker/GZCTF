@@ -15,7 +15,7 @@ namespace CTFServer.Utils;
 public static class LogHelper
 {
     /// <summary>
-    /// 记录一条系统日志（无用户信息，默认Debug）
+    /// 记录一条系统日志（无用户信息，默认Info）
     /// </summary>
     /// <param name="_logger">传入的 Nlog.Logger</param>
     /// <param name="msg">Log 消息</param>

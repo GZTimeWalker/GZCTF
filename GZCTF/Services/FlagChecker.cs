@@ -44,18 +44,16 @@ public class FlagChecker : IHostedService
 
         try
         {
-            while(!channelReader.Completion.IsCompleted)
+            await foreach(var item in channelReader.ReadAllAsync(token))
             {
-                var item = await channelReader.ReadAsync(token);
-
+                logger.SystemLog($"消费者 #{id} 开始处理提交：{item.Answer}", TaskStatus.Exit, LogLevel.Debug);
                 var result = await instanceRepository.CheckCheat(item, token);
                 // TODO
             }
         }
-        catch (TaskCanceledException) { }
-        catch (ChannelClosedException) 
+        catch (TaskCanceledException) 
         {
-            logger.SystemLog($"管道关闭，消费者 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
+            logger.SystemLog($"任务取消，消费者 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
         }
         finally
         {
