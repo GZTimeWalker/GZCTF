@@ -49,6 +49,7 @@ public class FlagChecker : IHostedService
                 logger.SystemLog($"消费者 #{id} 开始处理提交：{item.Answer}", TaskStatus.Exit, LogLevel.Debug);
                 var result = await instanceRepository.CheckCheat(item, token);
                 // TODO
+                token.ThrowIfCancellationRequested();
             }
         }
         catch (TaskCanceledException) 
