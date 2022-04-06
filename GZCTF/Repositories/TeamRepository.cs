@@ -44,6 +44,13 @@ public class TeamRepository : RepositoryBase, ITeamRepository
     public Task<Team?> GetTeamById(int id, CancellationToken token = default)
         => context.Teams.Include(e => e.Members).FirstOrDefaultAsync(t => t.Id == id, token);
 
+    public Task<Team[]> GetTeams(int count = 100, int skip = 0, CancellationToken token = default)
+        => context.Teams.OrderBy(t => t.Id).Skip(0).Take(count).ToArrayAsync(token);
+
+    public Task<Team[]> GetUserTeams(UserInfo user, CancellationToken token = default)
+        => context.Teams.Where(t => t.Members.Any(u => u.Id == user.Id))
+            .Include(t => t.Members).ToArrayAsync(token);
+
     public Task<int> UpdateAsync(Team team, CancellationToken token = default)
     {
         context.Update(team);

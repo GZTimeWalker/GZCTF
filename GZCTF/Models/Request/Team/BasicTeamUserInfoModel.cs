@@ -1,6 +1,6 @@
 ﻿namespace CTFServer.Models.Request.Teams;
 
-public class BasicUserInfoModel
+public class BasicTeamUserInfoModel
 {
     /// <summary>
     /// 用户ID

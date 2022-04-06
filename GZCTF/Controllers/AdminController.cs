@@ -9,6 +9,7 @@ using CTFServer.Utils;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using CTFServer.Models.Request.Teams;
 
 namespace CTFServer.Controllers;
 
@@ -26,14 +27,17 @@ public class AdminController : ControllerBase
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileRepository;
+    private readonly ITeamRepository teamRepository;
 
     public AdminController(UserManager<UserInfo> _userManager, 
         ILogRepository _logRepository,
+        ITeamRepository _teamRepository,
         IFileRepository _fileRepository)
     {
         userManager = _userManager;
         logRepository = _logRepository;
         fileRepository = _fileRepository;
+        teamRepository = _teamRepository;
     }
 
     /// <summary>
@@ -46,12 +50,27 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Users")]
-    [ProducesResponseType(typeof(List<BasicUserInfoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BasicUserInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await (
             from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
             select BasicUserInfoModel.FromUserInfo(user)
-           ).ToListAsync(token));
+           ).ToArrayAsync(token));
+
+    /// <summary>
+    /// 获取全部队伍信息
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口获取全部队伍，需要Admin权限
+    /// </remarks>
+    /// <response code="200">用户列表</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpGet("Teams")]
+    [ProducesResponseType(typeof(TeamInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+        => Ok((await teamRepository.GetTeams(count, skip, token))
+                .Select(team => TeamInfoModel.FromTeam(team, false)));
 
     /// <summary>
     /// 修改用户信息

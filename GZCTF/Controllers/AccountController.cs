@@ -9,6 +9,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using System.Net.Mime;
 using CTFServer.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace CTFServer.Controllers;
 
@@ -90,8 +91,17 @@ public class AccountController : ControllerBase
 
         logger.Log("发送用户邮箱验证邮件。", user, TaskStatus.Pending);
 
-        mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
-            $"https://{HttpContext.Request.Host}/verify?token={Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user))}&email={Codec.Base64.Encode(model.Email)}");
+        var token = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
+        if (environment.IsDevelopment())
+        {
+            logger.Log($"用户注册信息：\nToken = {token}\nEmail = {Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
+        }
+        else
+        {
+            mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
+                $"https://{HttpContext.Request.Host}/verify?token={token}&email={Codec.Base64.Encode(model.Email)}");
+        }
+
 
         return Ok();
     }

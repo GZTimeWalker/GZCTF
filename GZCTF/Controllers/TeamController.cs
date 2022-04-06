@@ -61,6 +61,27 @@ public class TeamController : ControllerBase
     }
 
     /// <summary>
+    /// 获取当前自己队伍信息
+    /// </summary>
+    /// <remarks>
+    /// 根据用户获取一个队伍的基本信息
+    /// </remarks>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取队伍信息</response>
+    /// <response code="400">队伍不存在</response>
+    [HttpGet]
+    [RequireUser]
+    [ProducesResponseType(typeof(TeamInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetTeamsInfo(CancellationToken token)
+    {
+        var user = await userManager.GetUserAsync(User);
+
+        return Ok((await teamRepository.GetUserTeams(user, token))
+            .Select(team => TeamInfoModel.FromTeam(team)));
+    }
+
+    /// <summary>
     /// 创建队伍
     /// </summary>
     /// <remarks>
@@ -316,44 +337,33 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/Accept")]
+    [HttpPost("{id}/Accept/{token}")]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Accept([FromRoute] int id, [FromQuery] string token, CancellationToken cancelToken)
+    public async Task<IActionResult> Accept(int id, string token, CancellationToken cancelToken)
     {
-        var trans = await teamRepository.BeginTransactionAsync(cancelToken);
+        var team = await teamRepository.GetTeamById(id, cancelToken);
 
-        try
-        {
-            var team = await teamRepository.GetTeamById(id, cancelToken);
+        if (team is null)
+            return BadRequest(new RequestResponse("队伍未找到"));
 
-            if (team is null)
-                return BadRequest(new RequestResponse("队伍未找到"));
+        if (team.InviteToken != token)
+            return BadRequest(new RequestResponse("邀请无效"));
 
-            if (team.InviteToken != token)
-                return BadRequest(new RequestResponse("邀请无效"));
+        var user = await userManager.GetUserAsync(User);
 
-            var user = await userManager.GetUserAsync(User);
+        if (team.Members.Any(m => m.Id == user.Id))
+            return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
 
-            if (team.Members.Any(m => m.Id == user.Id))
-                return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
+        team.Members.Add(user);
 
-            team.Members.Add(user);
+        await teamRepository.UpdateAsync(team, cancelToken);
 
-            await teamRepository.UpdateAsync(team, cancelToken);
-            await trans.CommitAsync(cancelToken);
-
-            logger.Log($"加入队伍 {team.Name}", user, TaskStatus.Success);
-            return Ok();
-        }
-        catch
-        {
-            await trans.RollbackAsync(cancelToken);
-            throw;
-        }
+        logger.Log($"加入队伍 {team.Name}", user, TaskStatus.Success);
+        return Ok();
     }
 
     /// <summary>

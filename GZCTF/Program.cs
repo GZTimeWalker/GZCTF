@@ -17,6 +17,7 @@ using NJsonSchema.Generation;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -190,7 +191,12 @@ else
     app.UseHsts();
 }
 
-app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:#####.00}ms HTTP {RequestMethod,-6} {RequestPath}";
+    options.GetLevel = (context, time, ex) =>
+        (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
+});
 
 app.UseSwaggerUi3();
 

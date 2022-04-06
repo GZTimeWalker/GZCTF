@@ -30,9 +30,9 @@ public class TeamInfoModel
     /// <summary>
     /// 队伍成员
     /// </summary>
-    public List<BasicUserInfoModel> Members { get; set; } = new();
+    public List<BasicTeamUserInfoModel>? Members { get; set; } = new();
 
-    public static TeamInfoModel FromTeam(Team team)
+    public static TeamInfoModel FromTeam(Team team, bool includeMembers = true)
         => new()
         {
             Id = team.Id,
@@ -40,13 +40,13 @@ public class TeamInfoModel
             Bio = team.Bio,
             Avatar = team.AvatarUrl,
             Locked = team.Locked,
-            Members = team.Members.Select(m => new BasicUserInfoModel()
+            Members = includeMembers ? team.Members.Select(m => new BasicTeamUserInfoModel()
                        {
                            Id = m.Id,
                            Bio = m.Bio,
                            UserName = m.UserName,
                            Avatar = m.AvatarUrl,
                            Captain = m.Id == team.CaptainId
-                       }).ToList()
+                       }).ToList() : null
         };
 }
