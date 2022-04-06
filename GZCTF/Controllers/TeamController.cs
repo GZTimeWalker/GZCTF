@@ -345,25 +345,36 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Accept(int id, string token, CancellationToken cancelToken)
     {
-        var team = await teamRepository.GetTeamById(id, cancelToken);
+        var trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
-        if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+        try
+        {
+            var team = await teamRepository.GetTeamById(id, cancelToken);
 
-        if (team.InviteToken != token)
-            return BadRequest(new RequestResponse("邀请无效"));
+            if (team is null)
+                return BadRequest(new RequestResponse("队伍未找到"));
 
-        var user = await userManager.GetUserAsync(User);
+            if (team.InviteToken != token)
+                return BadRequest(new RequestResponse("邀请无效"));
 
-        if (team.Members.Any(m => m.Id == user.Id))
-            return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
+            var user = await userManager.GetUserAsync(User);
 
-        team.Members.Add(user);
+            if (team.Members.Any(m => m.Id == user.Id))
+                return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
 
-        await teamRepository.UpdateAsync(team, cancelToken);
+            team.Members.Add(user);
 
-        logger.Log($"加入队伍 {team.Name}", user, TaskStatus.Success);
-        return Ok();
+            await teamRepository.UpdateAsync(team, cancelToken);
+            await trans.CommitAsync(cancelToken);
+
+            logger.Log($"加入队伍 {team.Name}", user, TaskStatus.Success);
+            return Ok();
+        }
+        catch
+        {
+            await trans.RollbackAsync(cancelToken);
+            throw;
+        }
     }
 
     /// <summary>

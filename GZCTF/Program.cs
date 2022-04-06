@@ -57,8 +57,9 @@ builder.Host.UseSerilog(dispose: true);
 #region AppDbContext
 
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    provideropt => provideropt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null)));
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
+    // provideropt => provideropt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null))
+));
 
 #endregion
 
