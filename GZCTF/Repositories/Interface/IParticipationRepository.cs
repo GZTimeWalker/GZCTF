@@ -19,5 +19,5 @@ public interface IParticipationRepository : IRepository
     /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Participation?> GetParticipationWithInstances(Team team, Game game, CancellationToken token = default);
+    public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default);
 }

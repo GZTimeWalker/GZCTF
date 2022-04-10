@@ -23,57 +23,54 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         logger = _logger;
     }
 
-    public async Task<Participation> CreateInstances(Participation team, CancellationToken token = default)
+    public async Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default)
     {
-        // TODO: 生成题目实例的时机策略？
-        
-        await context.Entry(team).Reference(e => e.Game).LoadAsync(token);
-        await context.Entry(team).Reference(e => e.Instances).LoadAsync(token);
-        await context.Entry(team.Game).Collection(e => e.Challenges).LoadAsync(token);
+        var instance = await context.Instances.Include(e => e.Challenge)
+                .Where(e => e.ChallengeId == challengeId && e.Participation == team)
+                .SingleOrDefaultAsync(token);
 
-        if (team.Instances.Count > 0)
-            logger.SystemLog("当前队伍实例列表不为空，即将添加更多实例，这可能造成非预期的行为！", TaskStatus.Pending, LogLevel.Warning);
+        if(instance is not null)
+            return instance;
 
-        foreach (var challenge in team.Game.Challenges)
+        var challenge = await context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId, token);
+
+        if(challenge is null || !challenge.IsEnabled)
+            return null;
+
+        instance = new()
         {
-            if (!challenge.IsEnabled)
-                continue;
-            
-            Instance instance = new()
-            {
-                Challenge = challenge,
-                Game = team.Game,
-                Participation = team
-            };
+            Challenge = challenge,
+            GameId = team.GameId,
+            Participation = team
+        };
 
-            if (challenge.Type.IsStatic())
-                instance.Context = null; // use challenge to verify
+        if (challenge.Type.IsStatic())
+            instance.Context = null; // use challenge to verify
+        else
+        {
+            if (challenge.Type.IsAttachment())
+            {
+                var flags = await context.Entry(challenge).Collection(e => e.Flags)
+                        .Query().Where(e => !e.IsOccupied).ToListAsync(token);
+                var pos = Random.Shared.Next(flags.Count);
+                flags[pos].IsOccupied = true;
+                instance.Context = flags[pos];
+            }
             else
             {
-                if (challenge.Type.IsAttachment())
+                instance.Context = new()
                 {
-                    var flags = await context.Entry(challenge).Collection(e => e.Flags).Query().Where(e => !e.IsOccupied).ToListAsync(token);
-                    var pos = Random.Shared.Next(flags.Count);
-                    flags[pos].IsOccupied = true;
-                    instance.Context = flags[pos];
-                }
-                else
-                {
-                    instance.Context = new()
-                    {
-                        AttachmentType = FileType.None,
-                        Flag = $"flag{Guid.NewGuid():B}",
-                    };
-                }
+                    AttachmentType = FileType.None,
+                    Flag = $"flag{Guid.NewGuid():B}",
+                };
             }
-
-            team.Instances.Add(instance);
-            team.Game.Instances.Add(instance);
         }
+
+        team.Instances.Add(instance);
 
         await context.SaveChangesAsync(token);
 
-        return team;
+        return instance;
     }
 
     public async Task DestoryContainer(Container container, CancellationToken token = default)

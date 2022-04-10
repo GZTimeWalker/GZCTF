@@ -22,8 +22,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         return participation;
     }
 
-    public Task<Participation?> GetParticipationWithInstances(Team team, Game game, CancellationToken token = default)
+    public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default)
         => context.Participations.Include(e => e.Team).Include(e => e.Game)
-            .Include(e => e.Instances).ThenInclude(e => e.Challenge)
             .FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
 }

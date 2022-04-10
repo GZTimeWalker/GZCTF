@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Edit;
 
-public class ChallengeInfoModel
+public class ChallengeModel
 {
     /// <summary>
     /// 题目名称

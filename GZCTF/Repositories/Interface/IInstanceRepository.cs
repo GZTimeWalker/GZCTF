@@ -7,12 +7,13 @@ namespace CTFServer.Repositories.Interface;
 public interface IInstanceRepository : IRepository
 {
     /// <summary>
-    /// 创建队伍的题目实例
+    /// 获取或创建队伍的题目实例
     /// </summary>
     /// <param name="team">队伍</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Participation> CreateInstances(Participation team, CancellationToken token = default);
+    public Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default);
 
     /// <summary>
     /// 验证答案
