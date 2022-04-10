@@ -17,19 +17,10 @@ public interface IInstanceRepository : IRepository
     /// <summary>
     /// 验证答案
     /// </summary>
-    /// <param name="instance">实例</param>
-    /// <param name="flag">Flag 字符串</param>
-    /// <returns></returns>
-    public AnswerResult VerifyAnswer(Instance instance, string flag);
-
-    /// <summary>
-    /// 获取题目实例
-    /// </summary>
-    /// <param name="team">参与队伍</param>
-    /// <param name="challenge">题目对象</param>
+    /// <param name="submission">当前提交</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Instance?> GetInstance(Participation team, Challenge challenge, CancellationToken token = default);
+    public Task<AnswerResult> VerifyAnswer(Submission submission, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目实例

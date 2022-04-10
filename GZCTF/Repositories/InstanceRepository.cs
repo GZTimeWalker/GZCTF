@@ -90,9 +90,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
     }
 
-    public Task<Instance?> GetInstance(Participation team, Challenge challenge, CancellationToken token = default)
-        => context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == challenge.Id && i.ParticipationId == team.Id, token);
-
     public async Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
@@ -131,14 +128,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             .Skip(skip).Take(count).Include(i => i.Participation).ThenInclude(i => i.Team)
             .Include(i => i.Challenge).ToArrayAsync(token);
 
-    public AnswerResult VerifyAnswer(Instance instance, string flag)
-    {
-        if ((instance.Challenge.Type.IsStatic() && instance.Challenge.Flags.Any(f => f.Flag == flag))
-            || (instance.Challenge.Type.IsDynamic() && instance.Context?.Flag == flag))
-            return AnswerResult.Accepted;
-        return AnswerResult.WrongAnswer;
-    }
-
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
     {
         CheatCheckInfo checkInfo = new();
@@ -166,5 +155,19 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
 
         return checkInfo;
+    }
+
+    public async Task<AnswerResult> VerifyAnswer(Submission submission, CancellationToken token = default)
+    {
+        var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
+
+        if (instance is null)
+            return AnswerResult.NotFound;
+
+        if ((instance.Challenge.Type.IsStatic() && instance.Challenge.Flags.Any(f => f.Flag == submission.Answer))
+            || (instance.Challenge.Type.IsDynamic() && instance.Context?.Flag == submission.Answer))
+            return AnswerResult.Accepted;
+
+        return AnswerResult.WrongAnswer;
     }
 }

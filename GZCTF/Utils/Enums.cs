@@ -265,6 +265,11 @@ public static class ChallengeTypeExtensions
 public enum AnswerResult: byte
 {
     /// <summary>
+    /// 成功提交
+    /// </summary>
+    Submitted = 0,
+
+    /// <summary>
     /// 答案正确
     /// </summary>
     Accepted = 1,
@@ -275,9 +280,9 @@ public enum AnswerResult: byte
     WrongAnswer = 2,
 
     /// <summary>
-    /// 提交未授权
+    /// 提交的题目实例未找到
     /// </summary>
-    Unauthorized = 3,
+    NotFound = 3,
 
     /// <summary>
     /// 检测到抄袭

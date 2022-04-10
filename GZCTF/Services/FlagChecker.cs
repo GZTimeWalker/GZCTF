@@ -41,14 +41,43 @@ public class FlagChecker : IHostedService
 
         var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
         var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
+        var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
 
         try
         {
             await foreach(var item in channelReader.ReadAllAsync(token))
             {
-                logger.SystemLog($"消费者 #{id} 开始处理提交：{item.Answer}", TaskStatus.Exit, LogLevel.Debug);
+                logger.SystemLog($"消费者 #{id} 开始处理提交：{item.Answer}", TaskStatus.Pending, LogLevel.Debug);
+
+                item.Status = await instanceRepository.VerifyAnswer(item, token);
+
+                await submissionRepository.UpdateSubmission(item, token);
+
+                if (item.Status == AnswerResult.Accepted)
+                {
+                    logger.Log($"[提交正确] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                    continue;
+                }
+
+                if (item.Status == AnswerResult.NotFound)
+                {
+                    logger.Log($"[实例未知] 未找到队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
+                    continue;
+                }
+
+                logger.Log($"[提交错误] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
+
                 var result = await instanceRepository.CheckCheat(item, token);
-                // TODO
+
+                if (result.AnswerResult == AnswerResult.WrongAnswer)
+                    continue;
+
+                logger.Log($"[作弊检查] 题目[{item.Challenge.Title}]中队伍[{item.Participation.Team.Name}]疑似作弊，相关队伍[{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
+
+                await submissionRepository.UpdateSubmission(item, token);
+
+                // TODO: send game event
+
                 token.ThrowIfCancellationRequested();
             }
         }

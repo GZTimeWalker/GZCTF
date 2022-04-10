@@ -8,6 +8,7 @@ using CTFServer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using CTFServer.Repositories;
+using System.Threading.Channels;
 
 namespace CTFServer.Controllers;
 
@@ -21,34 +22,39 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class GameController : ControllerBase
 {
+    private readonly ILogger<GameController> logger;
     private readonly UserManager<UserInfo> userManager;
+    private readonly ChannelWriter<Submission> channelWriter;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
-    private readonly IGameNoticeRepository eventRepository;
+    private readonly IGameNoticeRepository noticeRepository;
+    private readonly IGameEventRepository eventRepository;
     private readonly IInstanceRepository instanceRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
-    private readonly ILogger<GameController> logger;
 
     public GameController(
-        IMemoryCache memoryCache,
+        ILogger<GameController> _logger,
         UserManager<UserInfo> _userManager,
+        ChannelWriter<Submission> _channelWriter,
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
-        IGameNoticeRepository _eventRepository,
+        IGameNoticeRepository _noticeRepository,
+        IGameEventRepository _eventRepository,
         IInstanceRepository _instanceRepository,
         ISubmissionRepository _submissionRepository,
-        IParticipationRepository _participationRepository,
-        ILogger<GameController> _logger)
+        IParticipationRepository _participationRepository)
     {
+        logger = _logger;
         userManager = _userManager;
+        channelWriter = _channelWriter;
         gameRepository = _gameRepository;
         teamRepository = _teamRepository;
+        noticeRepository = _noticeRepository;
         eventRepository = _eventRepository;
         instanceRepository = _instanceRepository;
         submissionRepository = _submissionRepository;
         participationRepository = _participationRepository;
-        logger = _logger;
     }
 
     /// <summary>
@@ -199,7 +205,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok(await eventRepository.GetNotices(game, 30, 0, token));
+        return Ok(await noticeRepository.GetNotices(game, 30, 0, token));
     }
 
     /// <summary>
@@ -261,44 +267,6 @@ public class GameController : ControllerBase
             .Select(i => InstanceInfoModel.FromInstance(i)));
     }
 
-    private class ActiveGame
-    {
-        public Game? Game = null;
-        public Participation? Participation = null;
-        public UserInfo? User = null;
-        public string? ErrorMessage = null;
-        public ActiveGame WithError(string error)
-        {
-            ErrorMessage = error;
-            return this;
-        }
-    };
-
-    private async Task<ActiveGame> GetActiveGame(int id, CancellationToken token = default)
-    {
-        ActiveGame res = new();
-
-        res.Game = await gameRepository.GetGameById(id, token);
-
-        if (res.Game is null)
-            return res.WithError("比赛未找到");
-
-        res.User = await userManager.GetUserAsync(User);
-
-        if (res.User.ActiveTeam is null)
-            return res.WithError("请激活一个队伍以参赛");
-
-        if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
-            return res.WithError("比赛还未开始");
-
-        res.Participation = await participationRepository.GetParticipationWithInstances(res.User.ActiveTeam, res.Game, token);
-
-        if (res.Participation is null)
-            return res.WithError("您尚未参赛");
-
-        return res;
-    }
-
     /// <summary>
     /// 获取比赛题目信息
     /// </summary>
@@ -314,12 +282,94 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)
     {
-        var activeGame = await GetActiveGame(id, token);
+        var context = await GetContextInfo(id, true, token);
 
-        if(activeGame.ErrorMessage is not null)
-            return BadRequest(new RequestResponse(activeGame.ErrorMessage));
+        if(context.Result is not null)
+            return context.Result;
 
-        return Ok(activeGame.Participation!.Instances
+        return Ok(context.Participation!.Instances
                 .Select(i => ChallengeDetailModel.FromInstance(i)));
+    }
+
+    /// <summary>
+    /// 提交 flag
+    /// </summary>
+    /// <remarks>
+    /// 提交flag，需要User权限，需要当前激活队伍已经报名
+    /// </remarks>
+    /// <param name="id">比赛id</param>
+    /// <param name="challengeId">题目id</param>
+    /// <param name="flag">提交Flag</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目信息</response>
+    [RequireUser]
+    [HttpGet("{id}/Submit/{challengeId}")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
+    {
+        var context = await GetContextInfo(id, true, token);
+
+        if (context.Result is not null)
+            return context.Result;
+
+        Submission submission = new()
+        {
+            ChallengeId = challengeId,
+            Answer = flag,
+            Game = context.Game!,
+            User = context.User,
+            Participation = context.Participation!,
+            Status = AnswerResult.Submitted,
+            SubmitTimeUTC = DateTimeOffset.UtcNow,
+        };
+
+        submission = await submissionRepository.AddSubmission(submission, token);
+        
+        // send to flag checker service
+        await channelWriter.WriteAsync(submission, token);
+
+        return Ok(submission.Id);
+    }
+
+    private class ContextInfo
+    {
+        public Game? Game = null;
+        public UserInfo? User = null;
+        public Participation? Participation = null;
+        public IActionResult? Result = null;
+
+        public ContextInfo WithResult(IActionResult res)
+        {
+            Result = res;
+            return this;
+        }
+    };
+
+    private async Task<ContextInfo> GetContextInfo(int id, bool withPartication = false, CancellationToken token = default)
+    {
+        ContextInfo res = new();
+
+        res.User = await userManager.GetUserAsync(User);
+
+        res.Game = await gameRepository.GetGameById(id, token);
+
+        if (res.Game is null)
+            return res.WithResult(NotFound(new RequestResponse("比赛未找到")));
+
+        if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
+            return res.WithResult(BadRequest(new RequestResponse("比赛还未开始")));
+
+        if (!withPartication)
+            return res;
+
+        if (res.User!.ActiveTeam is null)
+            return res.WithResult(BadRequest(new RequestResponse("请激活一个队伍以参赛")));
+
+        res.Participation = await participationRepository.GetParticipationWithInstances(res.User.ActiveTeam, res.Game, token);
+
+        if (res.Participation is null)
+            return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));
+
+        return res;
     }
 }
