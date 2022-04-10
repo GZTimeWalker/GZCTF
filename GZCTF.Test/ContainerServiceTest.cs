@@ -4,7 +4,6 @@ using Xunit.Abstractions;
 using System.Collections.Generic;
 using Docker.DotNet.Models;
 using System;
-using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,11 +17,7 @@ public class ContainerServiceTest
                 
     public ContainerServiceTest(ITestOutputHelper _output)
     {
-        var app = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder =>
-            {
-
-            });
+        var app = new TestWebAppFactory<Program>();
         httpClient = app.CreateClient();
         service = app.Services.GetRequiredService<IContainerService>();
         output = _output;
