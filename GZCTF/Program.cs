@@ -93,7 +93,13 @@ builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = IdentityConstants.ApplicationScheme;
     o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-}).AddIdentityCookies();
+}).AddIdentityCookies(options =>
+{
+    options.ApplicationCookie.Configure(cookie =>
+    {
+        cookie.Cookie.Name = "GZCTF_Token";
+    });
+});
 
 builder.Services.AddIdentityCore<UserInfo>(options =>
 {
@@ -194,7 +200,7 @@ else
 
 app.UseSerilogRequestLogging(options =>
 {
-    options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:#####.00}ms HTTP {RequestMethod,-6} {RequestPath}";
+    options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
     options.GetLevel = (context, time, ex) =>
         (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
 });
