@@ -35,7 +35,7 @@ public class FlagChecker : IHostedService
 
     private async Task Checker(int id, CancellationToken token = default)
     {
-        logger.SystemLog($"消费者 #{id} 已启动", TaskStatus.Pending, LogLevel.Debug);
+        logger.SystemLog($"检查线程 #{id} 已启动", TaskStatus.Pending, LogLevel.Debug);
 
         await using var scope = serviceScopeFactory.CreateAsyncScope();
 
@@ -47,7 +47,7 @@ public class FlagChecker : IHostedService
         {
             await foreach(var item in channelReader.ReadAllAsync(token))
             {
-                logger.SystemLog($"消费者 #{id} 开始处理提交：{item.Answer}", TaskStatus.Pending, LogLevel.Debug);
+                logger.SystemLog($"检查线程 #{id} 开始处理提交：{item.Answer}", TaskStatus.Pending, LogLevel.Debug);
 
                 item.Status = await instanceRepository.VerifyAnswer(item, token);
 
@@ -82,11 +82,11 @@ public class FlagChecker : IHostedService
         }
         catch (TaskCanceledException) 
         {
-            logger.SystemLog($"任务取消，消费者 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
+            logger.SystemLog($"任务取消，检查线程 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
         }
         finally
         {
-            logger.SystemLog($"消费者 #{id} 已退出", TaskStatus.Exit, LogLevel.Debug);
+            logger.SystemLog($"检查线程 #{id} 已退出", TaskStatus.Exit, LogLevel.Debug);
         }
     }
 

@@ -332,7 +332,7 @@ public class GameController : ControllerBase
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     [RequireUser]
-    [HttpGet("{id}/Submit/{challengeId}")]
+    [HttpPost("{id}/Challenges/{challengeId}/Submit")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
     {
