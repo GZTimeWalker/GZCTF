@@ -76,14 +76,40 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateNotice(int id, [FromBody] NoticeModel model, CancellationToken token) 
     {
-        var notice = await noticeRepository.GetNoticeById(id);
+        var notice = await noticeRepository.GetNoticeById(id, token);
 
         if (notice is null)
             return NotFound(new RequestResponse("公告未找到", 404));
 
         notice.UpdateInfo(model);
-        await noticeRepository.UpdateAsync(notice);
+        await noticeRepository.UpdateAsync(notice, token);
 
         return Ok(notice);
+    }
+
+    /// <summary>
+    /// 删除公告
+    /// </summary>
+    /// <remarks>
+    /// 删除公告，需要管理员权限
+    /// </remarks>
+    /// <param name="id">公告Id</param>
+    /// <param name="token"></param>
+    /// <param name="model"></param>
+    /// <response code="200">成功删除公告</response>
+    /// <response code="404">未找到公告</response>
+    [HttpDelete("Notices/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteNotice(int id, [FromBody] NoticeModel model, CancellationToken token)
+    {
+        var notice = await noticeRepository.GetNoticeById(id, token);
+
+        if (notice is null)
+            return NotFound(new RequestResponse("公告未找到", 404));
+
+        await noticeRepository.RemoveNotice(notice, token);
+
+        return Ok();
     }
 }
