@@ -219,23 +219,6 @@ public enum ChallengeType: byte
     DynamicContainer  = 0b11
 }
 
-/// <summary>
-/// 题目标签
-/// </summary>
-public enum ChallengeTag : byte
-{
-    Misc = 0,
-    Crypto = 1,
-    Pwn = 2,
-    Web = 3,
-    Reverse = 4,
-    Blockchain = 5,
-    Forensics = 6,
-    Hardware = 7,
-    Mobile = 8,
-    PPC = 9
-}
-
 public static class ChallengeTypeExtensions
 {
     /// <summary>
@@ -258,6 +241,24 @@ public static class ChallengeTypeExtensions
     /// </summary>
     public static bool IsContainer(this ChallengeType type) => ((byte)type & 0b10) != 0;
 }
+
+/// <summary>
+/// 题目标签
+/// </summary>
+public enum ChallengeTag : byte
+{
+    Misc = 0,
+    Crypto = 1,
+    Pwn = 2,
+    Web = 3,
+    Reverse = 4,
+    Blockchain = 5,
+    Forensics = 6,
+    Hardware = 7,
+    Mobile = 8,
+    PPC = 9
+}
+
 
 /// <summary>
 /// 判定结果

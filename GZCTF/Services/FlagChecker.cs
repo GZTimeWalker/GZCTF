@@ -33,7 +33,7 @@ public class FlagChecker : IHostedService
         serviceScopeFactory = _serviceScopeFactory;
     }
 
-    private async Task Consumer(int id, CancellationToken token = default)
+    private async Task Checker(int id, CancellationToken token = default)
     {
         logger.SystemLog($"消费者 #{id} 已启动", TaskStatus.Pending, LogLevel.Debug);
 
@@ -77,7 +77,6 @@ public class FlagChecker : IHostedService
                 await submissionRepository.UpdateSubmission(item, token);
 
                 // TODO: send game event
-
                 token.ThrowIfCancellationRequested();
             }
         }
@@ -96,9 +95,9 @@ public class FlagChecker : IHostedService
         TokenSource = new CancellationTokenSource();
 
         for(int i = 0; i < 4; ++i)
-            _ = Consumer(i, TokenSource.Token);
+            _ = Checker(i, TokenSource.Token);
 
-        logger.SystemLog("Flag 作弊检查已启用", TaskStatus.Success, LogLevel.Information);
+        logger.SystemLog("Flag 检查已启用", TaskStatus.Success, LogLevel.Debug);
 
         return Task.CompletedTask;
     }
@@ -107,7 +106,7 @@ public class FlagChecker : IHostedService
     {
         TokenSource.Cancel();
 
-        logger.SystemLog("Flag 作弊检查已停止", TaskStatus.Success, LogLevel.Information);
+        logger.SystemLog("Flag 检查已停止", TaskStatus.Success, LogLevel.Debug);
 
         return Task.CompletedTask;
     }
