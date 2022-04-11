@@ -9,6 +9,7 @@
     "@microsoft/signalr": "^5.0.9",
     "@reduxjs/toolkit": "^1.6.1",
     "@types/marked": "^3.0.0",
+    "echarts": "^5.3.2",
     "echarts-for-react": "^3.0.1",
     "framer-motion": "^4.1.17",
     "http-proxy-middleware": "^0.19.1",
