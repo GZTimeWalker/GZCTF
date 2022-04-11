@@ -58,6 +58,14 @@ public interface IInstanceRepository : IRepository
     public Task DestoryContainer(Container container, CancellationToken token = default);
 
     /// <summary>
+    /// 尝试将当前队伍状态标记为已解决题目
+    /// </summary>
+    /// <param name="submission">提交</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> TrySolved(Submission submission, CancellationToken token = default);
+
+    /// <summary>
     /// 容器延期
     /// </summary>
     /// <param name="container">容器实例对象</param>

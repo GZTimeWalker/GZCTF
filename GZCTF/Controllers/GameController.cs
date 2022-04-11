@@ -333,8 +333,8 @@ public class GameController : ControllerBase
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     [RequireUser]
-    [HttpPost("{id}/Challenges/{challengeId}/Submit")]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [HttpPost("{id}/Challenges/{challengeId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
     {
         var context = await GetContextInfo(id, true, token);
@@ -349,7 +349,7 @@ public class GameController : ControllerBase
             Game = context.Game!,
             User = context.User,
             Participation = context.Participation!,
-            Status = AnswerResult.Submitted,
+            Status = AnswerResult.FlagSubmitted,
             SubmitTimeUTC = DateTimeOffset.UtcNow,
         };
 
@@ -373,7 +373,7 @@ public class GameController : ControllerBase
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     [RequireUser]
-    [HttpGet("{id}/Challenges/{challengeId}/Submit/{submitId}")]
+    [HttpGet("{id}/Status/{submitId}")]
     [ProducesResponseType(typeof(AnswerResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> Status([FromRoute] int id, [FromRoute] int challengeId, [FromRoute] int submitId, CancellationToken token)
     {

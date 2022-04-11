@@ -45,4 +45,11 @@ public interface IGameRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// 刷新排行榜
+    /// </summary>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    public void FlushScoreboard(Game game, CancellationToken token = default);
 }

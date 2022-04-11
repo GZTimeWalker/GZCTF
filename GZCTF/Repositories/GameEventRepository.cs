@@ -13,6 +13,9 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
         await context.Entry(game).Collection(e => e.GameEvents).LoadAsync(token);
         game.GameEvents.Add(gameEvent);
         await context.SaveChangesAsync(token);
+
+        // TODO: send to signalR (for monitor)
+
         return gameEvent;
     }
 

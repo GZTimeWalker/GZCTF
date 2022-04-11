@@ -167,4 +167,19 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         return AnswerResult.WrongAnswer;
     }
+
+    public async Task<bool> TrySolved(Submission submission, CancellationToken token = default)
+    {
+        var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
+        
+        if(instance is null)
+            throw new NullReferenceException(nameof(instance));
+        
+        if(instance.IsSolved)
+            return false;
+
+        instance.IsSolved = true;
+        await context.SaveChangesAsync(token);
+        return true;
+    }
 }

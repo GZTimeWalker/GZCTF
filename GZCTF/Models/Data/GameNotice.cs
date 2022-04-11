@@ -31,4 +31,11 @@ public class GameNotice
     [Required]
     [JsonPropertyName("time")]
     public DateTimeOffset PublishTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+
+    public static GameNotice FromSubmission(Submission submission, NoticeType type)
+        => new()
+        {
+            Type = type,
+            Content = $"恭喜 {submission.Participation.Team.Name} 获得 ⌈{submission.Challenge.Title}⌋ 的{type.ToBloodString()}"
+        };
 }

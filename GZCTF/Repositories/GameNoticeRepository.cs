@@ -13,6 +13,9 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         await context.Entry(game).Collection(e => e.GameNotices).LoadAsync(token);
         game.GameNotices.Add(notice);
         await context.SaveChangesAsync(token);
+
+        // TODO: send to signalR (for user)
+
         return notice;
     }
 

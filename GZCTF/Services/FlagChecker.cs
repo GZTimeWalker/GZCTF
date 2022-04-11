@@ -41,7 +41,8 @@ public class FlagChecker : IHostedService
 
         var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
         var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
-        var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
+        var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
+        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
 
         try
         {
@@ -51,32 +52,42 @@ public class FlagChecker : IHostedService
 
                 item.Status = await instanceRepository.VerifyAnswer(item, token);
 
-                await submissionRepository.UpdateSubmission(item, token);
-
-                if (item.Status == AnswerResult.Accepted)
-                {
-                    logger.Log($"[提交正确] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
-                    continue;
-                }
 
                 if (item.Status == AnswerResult.NotFound)
-                {
                     logger.Log($"[实例未知] 未找到队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
-                    continue;
+                else if (item.Status == AnswerResult.Accepted)
+                    logger.Log($"[提交正确] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                else
+                {
+                    logger.Log($"[提交错误] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
+
+                    var result = await instanceRepository.CheckCheat(item, token);
+
+                    if (result.AnswerResult == AnswerResult.CheatDetected)
+                    {
+                        logger.Log($"[作弊检查] 题目[{item.Challenge.Title}]中队伍[{item.Participation.Team.Name}]疑似作弊，相关队伍[{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
+                    }
                 }
 
-                logger.Log($"[提交错误] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
+                await eventRepository.AddEvent(item.Game, GameEvent.FromSubmission(item), token);
+                
+                if(item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(item, token))
+                {
+                    item.Challenge.AcceptedUserCount++;
+                    NoticeType type = item.Challenge.AcceptedUserCount switch
+                    {
+                        1 => NoticeType.FirstBlood,
+                        2 => NoticeType.SecondBlood,
+                        3 => NoticeType.ThirdBlood,
+                        _ => NoticeType.Normal
+                    };
 
-                var result = await instanceRepository.CheckCheat(item, token);
+                    if (type != NoticeType.Normal)
+                        await gameNoticeRepository.AddNotice(item.Game, GameNotice.FromSubmission(item, type), token);
+                }
 
-                if (result.AnswerResult == AnswerResult.WrongAnswer)
-                    continue;
+                gameRepository.FlushScoreboard(item.Game, token);
 
-                logger.Log($"[作弊检查] 题目[{item.Challenge.Title}]中队伍[{item.Participation.Team.Name}]疑似作弊，相关队伍[{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
-
-                await submissionRepository.UpdateSubmission(item, token);
-
-                // TODO: send game event
                 token.ThrowIfCancellationRequested();
             }
         }
