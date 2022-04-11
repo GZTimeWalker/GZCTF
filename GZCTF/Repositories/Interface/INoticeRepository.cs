@@ -25,5 +25,5 @@ public interface INoticeRepository : IRepository
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Notice>> GetNotices(CancellationToken token = default);
+    public Task<Notice[]> GetNotices(CancellationToken token = default);
 }

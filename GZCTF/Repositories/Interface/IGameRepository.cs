@@ -12,7 +12,7 @@ public interface IGameRepository : IRepository
     /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Game>> GetGames(int count = 10, int skip = 0, CancellationToken token = default);
+    public Task<Game[]> GetGames(int count = 10, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 根据Id获取比赛对象

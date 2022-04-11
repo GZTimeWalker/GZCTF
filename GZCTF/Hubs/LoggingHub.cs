@@ -7,8 +7,6 @@ namespace CTFServer.Hubs;
 
 public class LoggingHub : Hub<ILoggingClient>
 {
-    public LoggingHub(SignalRLoggingService emitter) { _ = emitter; }
-
     public override async Task OnConnectedAsync()
     {
         if (!await HubHelper.HasAdmin(Context.GetHttpContext()!))

@@ -1,7 +1,7 @@
 ﻿using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using NLog;
+
 
 namespace CTFServer.Services;
 
@@ -19,14 +19,14 @@ public class ContainerChecker : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+        timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
         logger.SystemLog("容器生命周期检查已启动");
         return Task.CompletedTask;
     }
 
     private async void Execute(object? state)
     {
-        using var scope = serviceProvider.CreateScope();
+        await using var scope = serviceProvider.CreateAsyncScope();
 
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
         var containerService = scope.ServiceProvider.GetRequiredService<IContainerService>();

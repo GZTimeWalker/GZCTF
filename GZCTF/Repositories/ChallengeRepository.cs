@@ -1,7 +1,8 @@
-﻿using CTFServer.Models;
-using CTFServer.Models.Request.Edit;
+﻿using CTFServer.Models.Request.Edit;
+using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CTFServer.Repositories;
 
@@ -9,7 +10,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 {
     public ChallengeRepository(AppDbContext _context) : base(_context) { }
 
-    public async Task<Challenge> CreateChallenge(Game game, ChallengeInfoModel model, CancellationToken token = default)
+    public async Task<Challenge> CreateChallenge(Game game, ChallengeModel model, CancellationToken token = default)
     {
         Challenge challenge = new()
         {
@@ -50,23 +51,12 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     public Task EnableChallenge(Challenge challenge, CancellationToken token)
     {
         challenge.IsEnabled = true;
-
-        // TODO: 还需要为每个队伍生成题目实例
-
-        throw new NotImplementedException();
+        context.Update(challenge);
+        return context.SaveChangesAsync(token);
     }
 
-    public Task<List<Challenge>> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<List<Challenge>> GetChallenges(Game game, CancellationToken token = default)
-    {
-        await context.Entry(game).Collection(e => e.Challenges).LoadAsync(token);
-
-        return game.Challenges;
-    }
+    public Task<Challenge[]> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default)
+        => context.Challenges.OrderBy(c => c.Id).Skip(skip).Take(count).ToArrayAsync(token);
 
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)
         => context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);

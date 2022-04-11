@@ -11,7 +11,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Submission> Submissions { get; set; } = default!;
     public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Notice> Notices { get; set; } = default!;
-    public DbSet<Event> Events { get; set; } = default!;
+    public DbSet<GameNotice> GameNotices { get; set; } = default!;
+    public DbSet<GameEvent> GameEvents { get; set; } = default!;
     public DbSet<LocalFile> Files { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;
     public DbSet<Instance> Instances { get; set; } = default!;
@@ -50,7 +51,10 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<Game>(entity =>
         {
-            entity.HasMany(e => e.Events)
+            entity.HasMany(e => e.GameEvents)
+                .WithOne();
+
+            entity.HasMany(e => e.GameNotices)
                 .WithOne();
 
             entity.HasMany(e => e.Challenges)
@@ -96,6 +100,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Navigation(e => e.Team).AutoInclude();
         });
 
         builder.Entity<Instance>(entity =>
@@ -146,6 +152,20 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         {
             entity.Property(e => e.Status)
                 .HasConversion<string>();
+        });
+
+        builder.Entity<GameEvent>(entity =>
+        {
+            entity.HasOne(e => e.Team)
+                .WithMany()
+                .HasForeignKey(e => e.TeamId);
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId);
+
+            entity.Navigation(e => e.Team).AutoInclude();
+            entity.Navigation(e => e.User).AutoInclude();
         });
     }
 }

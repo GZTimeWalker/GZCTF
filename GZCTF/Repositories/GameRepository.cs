@@ -26,8 +26,8 @@ public class GameRepository : RepositoryBase, IGameRepository
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
-    public Task<List<Game>> GetGames(int count = 10, int skip = 0, CancellationToken token = default)
-        => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToListAsync(token);
+    public Task<Game[]> GetGames(int count = 10, int skip = 0, CancellationToken token = default)
+        => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry =>
@@ -61,8 +61,8 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     private Task<Data[]> FetchData(Game game, CancellationToken token = default)
         => context.Instances
-            .Where(i => i.Game == game)
             .Include(i => i.Challenge)
+            .Where(i => i.Game == game && i.Challenge.IsEnabled)
             .Include(i => i.Participation)
                 .ThenInclude(t => t.Team)
             .GroupJoin(

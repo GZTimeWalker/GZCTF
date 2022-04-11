@@ -2,14 +2,19 @@
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
-public class Event
+
+/// <summary>
+/// 比赛通知，会发往客户端。
+/// 信息涵盖一二三血通知、提示发布通知、题目开启通知等
+/// </summary>
+public class GameNotice
 {
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
 
     /// <summary>
-    /// 通知标题
+    /// 通知类型
     /// </summary>
     [Required]
     public NoticeType Type { get; set; } = NoticeType.Normal;

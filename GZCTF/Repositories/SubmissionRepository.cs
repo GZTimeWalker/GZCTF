@@ -16,22 +16,28 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
         return submission;
     }
 
-    public Task<List<Submission>> GetSubmissions(int count = 100, int skip = 0, CancellationToken token = default)
-        => context.Submissions.OrderByDescending(s => s.SubmitTimeUTC).Skip(skip).Take(count).ToListAsync(token);
+    public Task UpdateSubmission(Submission submission, CancellationToken token = default)
+    {
+        context.Update(submission);
+        return context.SaveChangesAsync(token);
+    }
 
-    public Task<List<Submission>> GetSubmissions(Game game, int count = 100, int skip = 0, CancellationToken token = default)
+    public Task<Submission[]> GetSubmissions(int count = 100, int skip = 0, CancellationToken token = default)
+        => context.Submissions.OrderByDescending(s => s.SubmitTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+
+    public Task<Submission[]> GetSubmissions(Game game, int count = 100, int skip = 0, CancellationToken token = default)
         => context.Entry(game).Collection(g => g.Submissions)
         .Query().OrderByDescending(s => s.SubmitTimeUTC)
-        .Skip(skip).Take(count).ToListAsync(token);
+        .Skip(skip).Take(count).ToArrayAsync(token);
 
 
-    public Task<List<Submission>> GetSubmissions(Challenge challenge, int count = 100, int skip = 0, CancellationToken token = default)
+    public Task<Submission[]> GetSubmissions(Challenge challenge, int count = 100, int skip = 0, CancellationToken token = default)
         => context.Entry(challenge).Collection(c => c.Submissions)
         .Query().OrderByDescending(s => s.SubmitTimeUTC)
-        .Skip(skip).Take(count).ToListAsync(token);
+        .Skip(skip).Take(count).ToArrayAsync(token);
 
-    public Task<List<Submission>> GetSubmissions(Participation team, int count = 100, int skip = 0, CancellationToken token = default)
+    public Task<Submission[]> GetSubmissions(Participation team, int count = 100, int skip = 0, CancellationToken token = default)
         => context.Entry(team).Collection(t => t.Submissions)
         .Query().OrderByDescending(s => s.SubmitTimeUTC)
-        .Skip(skip).Take(count).ToListAsync(token);
+        .Skip(skip).Take(count).ToArrayAsync(token);
 }

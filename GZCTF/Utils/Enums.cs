@@ -60,6 +60,11 @@ public enum TaskStatus: sbyte
     /// 任务请求未找到
     /// </summary>
     NotFound = 4,
+
+    /// <summary>
+    /// 任务线程将要退出
+    /// </summary>
+    Exit = 5,
 }
 
 public enum FileType: byte
@@ -135,6 +140,33 @@ public enum NoticeType: byte
     ErrorFix = 6
 }
 
+/// <summary>
+/// 比赛事件类型
+/// </summary>
+public enum EventType: byte
+{
+    /// <summary>
+    /// 常规信息
+    /// </summary>
+    Normal = 0,
+    /// <summary>
+    /// 容器启动信息
+    /// </summary>
+    ContainerStart = 1,
+    /// <summary>
+    /// 容器销毁信息
+    /// </summary>
+    ContainerDestroy = 2,
+    /// <summary>
+    /// Flag 提交信息
+    /// </summary>
+    FlagSubmit = 3,
+    /// <summary>
+    /// 作弊信息
+    /// </summary>
+    CheatDetected = 4
+}
+
 public enum SubmissionType: byte
 {
     /// <summary>
@@ -187,22 +219,6 @@ public enum ChallengeType: byte
     DynamicContainer  = 0b11
 }
 
-/// <summary>
-/// 题目标签
-/// </summary>
-public enum ChallengeTag : byte
-{
-    Misc = 0,
-    Crypto = 1,
-    Pwn = 2,
-    Web = 3,
-    Reverse = 4,
-    Blockchain = 5,
-    Forensics = 6,
-    Hardware = 7,
-    Mobile = 8
-}
-
 public static class ChallengeTypeExtensions
 {
     /// <summary>
@@ -227,10 +243,33 @@ public static class ChallengeTypeExtensions
 }
 
 /// <summary>
+/// 题目标签
+/// </summary>
+public enum ChallengeTag : byte
+{
+    Misc = 0,
+    Crypto = 1,
+    Pwn = 2,
+    Web = 3,
+    Reverse = 4,
+    Blockchain = 5,
+    Forensics = 6,
+    Hardware = 7,
+    Mobile = 8,
+    PPC = 9
+}
+
+
+/// <summary>
 /// 判定结果
 /// </summary>
 public enum AnswerResult: byte
 {
+    /// <summary>
+    /// 成功提交
+    /// </summary>
+    Submitted = 0,
+
     /// <summary>
     /// 答案正确
     /// </summary>
@@ -242,9 +281,9 @@ public enum AnswerResult: byte
     WrongAnswer = 2,
 
     /// <summary>
-    /// 提交未授权
+    /// 提交的题目实例未找到
     /// </summary>
-    Unauthorized = 3,
+    NotFound = 3,
 
     /// <summary>
     /// 检测到抄袭

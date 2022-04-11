@@ -23,57 +23,54 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         logger = _logger;
     }
 
-    public async Task<Participation> CreateInstances(Participation team, CancellationToken token = default)
+    public async Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default)
     {
-        // TODO: 生成题目实例的时机策略？
-        
-        await context.Entry(team).Reference(e => e.Game).LoadAsync(token);
-        await context.Entry(team).Reference(e => e.Instances).LoadAsync(token);
-        await context.Entry(team.Game).Collection(e => e.Challenges).LoadAsync(token);
+        var instance = await context.Instances.Include(e => e.Challenge)
+                .Where(e => e.ChallengeId == challengeId && e.Participation == team)
+                .SingleOrDefaultAsync(token);
 
-        if (team.Instances.Count > 0)
-            logger.SystemLog("当前队伍实例列表不为空，即将添加更多实例，这可能造成非预期的行为！", TaskStatus.Pending, LogLevel.Warning);
+        if(instance is not null)
+            return instance;
 
-        foreach (var challenge in team.Game.Challenges)
+        var challenge = await context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId, token);
+
+        if(challenge is null || !challenge.IsEnabled)
+            return null;
+
+        instance = new()
         {
-            if (!challenge.IsEnabled)
-                continue;
-            
-            Instance instance = new()
-            {
-                Challenge = challenge,
-                Game = team.Game,
-                Participation = team
-            };
+            Challenge = challenge,
+            GameId = team.GameId,
+            Participation = team
+        };
 
-            if (challenge.Type.IsStatic())
-                instance.Context = null; // use challenge to verify
+        if (challenge.Type.IsStatic())
+            instance.Context = null; // use challenge to verify
+        else
+        {
+            if (challenge.Type.IsAttachment())
+            {
+                var flags = await context.Entry(challenge).Collection(e => e.Flags)
+                        .Query().Where(e => !e.IsOccupied).ToListAsync(token);
+                var pos = Random.Shared.Next(flags.Count);
+                flags[pos].IsOccupied = true;
+                instance.Context = flags[pos];
+            }
             else
             {
-                if (challenge.Type.IsAttachment())
+                instance.Context = new()
                 {
-                    var flags = await context.Entry(challenge).Collection(e => e.Flags).Query().Where(e => !e.IsOccupied).ToListAsync(token);
-                    var pos = Random.Shared.Next(flags.Count);
-                    flags[pos].IsOccupied = true;
-                    instance.Context = flags[pos];
-                }
-                else
-                {
-                    instance.Context = new()
-                    {
-                        AttachmentType = FileType.None,
-                        Flag = $"flag{Guid.NewGuid():B}",
-                    };
-                }
+                    AttachmentType = FileType.None,
+                    Flag = $"flag{Guid.NewGuid():B}",
+                };
             }
-
-            team.Instances.Add(instance);
-            team.Game.Instances.Add(instance);
         }
+
+        team.Instances.Add(instance);
 
         await context.SaveChangesAsync(token);
 
-        return team;
+        return instance;
     }
 
     public async Task DestoryContainer(Container container, CancellationToken token = default)
@@ -89,9 +86,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             logger.SystemLog($"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Fail, LogLevel.Warning);
         }
     }
-
-    public Task<Instance?> GetInstance(Participation team, Challenge challenge, CancellationToken token = default)
-        => context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == challenge.Id && i.ParticipationId == team.Id, token);
 
     public async Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default)
     {
@@ -124,5 +118,53 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     {
         container.ExpectStopAt += time;
         await context.SaveChangesAsync(token);
+    }
+
+    public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default)
+        => context.Instances.Where(i => i.GameId == game.Id).OrderBy(i => i.ParticipationId)
+            .Skip(skip).Take(count).Include(i => i.Participation).ThenInclude(i => i.Team)
+            .Include(i => i.Challenge).ToArrayAsync(token);
+
+    public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
+    {
+        CheatCheckInfo checkInfo = new();
+
+        var instances = await context.Instances.Where(i => i.ChallengeId == submission.ChallengeId &&
+                i.ParticipationId != submission.ParticipationId)
+                .Include(i => i.Challenge).Include(i => i.Context)
+                .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
+
+        foreach (var instance in instances)
+        {
+            if(instance.Context?.Flag == submission.Answer)
+            {
+                await context.Entry(submission).Reference(s => s.User).LoadAsync(token);
+                await context.Entry(submission).Reference(s => s.Participation.Team).LoadAsync(token);
+
+                checkInfo.AnswerResult = AnswerResult.CheatDetected;
+                checkInfo.CheatUser = submission.User;
+                checkInfo.CheatTeam = submission.Participation.Team;
+                checkInfo.SourceTeam = instance.Participation.Team;
+                checkInfo.Challenge = instance.Challenge;
+
+                return checkInfo;
+            }
+        }
+
+        return checkInfo;
+    }
+
+    public async Task<AnswerResult> VerifyAnswer(Submission submission, CancellationToken token = default)
+    {
+        var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
+
+        if (instance is null)
+            return AnswerResult.NotFound;
+
+        if ((instance.Challenge.Type.IsStatic() && instance.Challenge.Flags.Any(f => f.Flag == submission.Answer))
+            || (instance.Challenge.Type.IsDynamic() && instance.Context?.Flag == submission.Answer))
+            return AnswerResult.Accepted;
+
+        return AnswerResult.WrongAnswer;
     }
 }

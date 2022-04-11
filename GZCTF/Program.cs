@@ -1,22 +1,23 @@
+global using CTFServer.Models;
+
+using System.Text;
+using System.Text.Json;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
-using CTFServer.Models;
 using CTFServer.Repositories;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using NJsonSchema.Generation;
-using NLog.Targets;
-using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
-using NLog.Web;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,6 @@ builder.Host.ConfigureAppConfiguration((host, config) =>
 #region SignalR
 
 builder.Services.AddSignalR().AddJsonProtocol();
-builder.Services.AddSingleton<SignalRLoggingService>();
 
 #endregion SignalR
 
@@ -50,18 +50,16 @@ builder.Services.AddSingleton<SignalRLoggingService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Trace);
-builder.Host.UseNLog(new() { RemoveLoggerFactoryFilter = true });
-
-Target.Register<SignalRTarget>("SignalR");
-NLog.LogManager.Configuration.Variables["connectionString"] = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Host.UseSerilog(dispose: true);
 
 #endregion
 
 #region AppDbContext
 
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    provideropt => provideropt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null)));
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
+    // provideropt => provideropt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null))
+));
 
 #endregion
 
@@ -95,7 +93,13 @@ builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = IdentityConstants.ApplicationScheme;
     o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-}).AddIdentityCookies();
+}).AddIdentityCookies(options =>
+{
+    options.ApplicationCookie.Configure(cookie =>
+    {
+        cookie.Cookie.Name = "GZCTF_Token";
+    });
+});
 
 builder.Services.AddIdentityCore<UserInfo>(options =>
 {
@@ -128,18 +132,19 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 
 #region Services and Repositories
 
-builder.Services.AddHostedService<ContainerChecker>();
-
 builder.Services.AddTransient<IMailSender, MailSender>()
     .Configure<EmailOptions>(options => builder.Configuration.GetSection("EmailConfig").Bind(options));
+
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
     .Configure<RecaptchaOptions>(options => builder.Configuration.GetSection("GoogleRecaptcha").Bind(options));
+
 builder.Services.AddSingleton<IContainerService, DockerService>()
     .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
+builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
@@ -148,6 +153,11 @@ builder.Services.AddScoped<INoticeRepository, NoticeRepository>();
 builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+
+builder.Services.AddHostedService<ContainerChecker>();
+
+builder.Services.AddChannel<Submission>();
+builder.Services.AddHostedService<FlagChecker>();
 
 #endregion Services and Repositories
 
@@ -170,6 +180,8 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 
 var app = builder.Build();
 
+Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
+
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
     await serviceScope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
@@ -185,6 +197,14 @@ else
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
+    options.GetLevel = (context, time, ex) =>
+        time > 10000 ? LogEventLevel.Warning :
+        (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
+});
 
 app.UseSwaggerUi3();
 
@@ -212,15 +232,15 @@ var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    logger.SystemLog("服务器初始化。");
+    logger.SystemLog("服务器初始化");
     await app.RunAsync();
 }
 catch (Exception exception)
 {
-    logger.LogError(exception, "因异常，应用程序意外停止。");
+    logger.LogError(exception, "因异常，应用程序意外停止");
     throw;
 }
 finally
 {
-    NLog.LogManager.Shutdown();
+    Log.CloseAndFlush();
 }

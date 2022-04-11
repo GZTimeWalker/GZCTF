@@ -19,22 +19,24 @@ public class RecaptchaOptions
 public class RecaptchaExtension : IRecaptchaExtension
 {
     private readonly RecaptchaOptions options;
+    private readonly HttpClient httpClient;
 
     public RecaptchaExtension(IOptions<RecaptchaOptions> options)
     {
         this.options = options.Value;
+        httpClient = new();
     }
+    
     public async Task<bool> VerifyAsync(string token, string ip)
     {
         if (string.IsNullOrEmpty(token))
             return false;
-        using (var client = new HttpClient())
-        {
-            var response = await client.GetStreamAsync($"{options.VefiyAPIAddress}?secret={options.Secretkey}&response={token}&remoteip={ip}");
-            var tokenResponse = await JsonSerializer.DeserializeAsync<TokenResponseModel>(response);
-            if (tokenResponse is null || !tokenResponse.Success || tokenResponse.Score < options.RecaptchaThreshold)
-                return false;
-        }
+
+        var response = await httpClient.GetStreamAsync($"{options.VefiyAPIAddress}?secret={options.Secretkey}&response={token}&remoteip={ip}");
+        var tokenResponse = await JsonSerializer.DeserializeAsync<TokenResponseModel>(response);
+        if (tokenResponse is null || !tokenResponse.Success || tokenResponse.Score < options.RecaptchaThreshold)
+            return false;
+            
         return true;
     }
 }

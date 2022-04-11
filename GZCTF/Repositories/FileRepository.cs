@@ -21,7 +21,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         using Stream tmp = file.Length <= 16 * 1024 * 1024 ? new MemoryStream() :
                 File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
 
-        LogHelper.SystemLog(logger, $"缓存位置：{tmp.GetType()}");
+        logger.SystemLog($"缓存位置：{tmp.GetType()}", TaskStatus.Pending, LogLevel.Trace);
 
         await file.CopyToAsync(tmp, token);
 
@@ -70,7 +70,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         var path = Path.Combine(basepath, file.Location, file.Hash);
 
-        logger.SystemLog($"正在删除文件 [{file.Hash[..8]}] {file.Name}...", TaskStatus.Pending, LogLevel.Information);
+        logger.SystemLog($"删除文件 [{file.Hash[..8]}] {file.Name}...", TaskStatus.Pending, LogLevel.Information);
 
         if (File.Exists(path))
         {

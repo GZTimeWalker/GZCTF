@@ -52,7 +52,6 @@ public class DockerService : IContainerService
 
     public async Task<Container?> CreateContainer(CreateContainerParameters parameters, CancellationToken token = default)
     {
-
         // TODO: Docker Registry Auth Required
         var res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
 

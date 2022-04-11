@@ -31,6 +31,5 @@ public class RegisterModel
     /// <summary>
     /// Google Recaptcha Token
     /// </summary>
-    [Required]
     public string? GToken { get; set; }
 }

@@ -4,7 +4,6 @@ using CTFServer.Models;
 using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using NLog;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
 
@@ -59,6 +58,27 @@ public class TeamController : ControllerBase
             return NotFound(new RequestResponse("队伍不存在", 404));
 
         return Ok(TeamInfoModel.FromTeam(team));
+    }
+
+    /// <summary>
+    /// 获取当前自己队伍信息
+    /// </summary>
+    /// <remarks>
+    /// 根据用户获取一个队伍的基本信息
+    /// </remarks>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取队伍信息</response>
+    /// <response code="400">队伍不存在</response>
+    [HttpGet]
+    [RequireUser]
+    [ProducesResponseType(typeof(TeamInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetTeamsInfo(CancellationToken token)
+    {
+        var user = await userManager.GetUserAsync(User);
+
+        return Ok((await teamRepository.GetUserTeams(user, token))
+            .Select(team => TeamInfoModel.FromTeam(team)));
     }
 
     /// <summary>
@@ -140,10 +160,10 @@ public class TeamController : ControllerBase
     }
 
     /// <summary>
-    /// 更改队伍信息
+    /// 设置队伍为当前激活队伍
     /// </summary>
     /// <remarks>
-    /// 队伍信息更改接口，需要为队伍创建者
+    /// 设置队伍为当前激活队伍接口，需要为用户
     /// </remarks>
     /// <param name="id">队伍Id</param>
     /// <param name="token"></param>
@@ -317,13 +337,13 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/Accept")]
+    [HttpPost("{id}/Accept/{token}")]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Accept([FromRoute] int id, [FromQuery] string token, CancellationToken cancelToken)
+    public async Task<IActionResult> Accept(int id, string token, CancellationToken cancelToken)
     {
         var trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
@@ -425,7 +445,7 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Avatar([FromRoute] int id, [FromBody] IFormFile file, CancellationToken token)
+    public async Task<IActionResult> Avatar([FromRoute] int id, IFormFile file, CancellationToken token)
     {
         var team = await teamRepository.GetTeamById(id, token);
 

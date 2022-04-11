@@ -67,7 +67,7 @@ public class MailSender : IMailSender
         }
         catch (Exception e)
         {
-            logger.LogError(e, "邮件发送遇到问题。");
+            logger.LogError(e, "邮件发送遇到问题");
             isSuccess = false;
         }
 
@@ -78,12 +78,12 @@ public class MailSender : IMailSender
     {
         if (email is null || userName is null || title is null)
         {
-            LogHelper.SystemLog(logger, "无效调用！", TaskStatus.Fail);
+            logger.SystemLog("无效的邮件发送调用！", TaskStatus.Fail);
             return;
         }
         string _namespace = MethodBase.GetCurrentMethod()!.DeclaringType!.Namespace!;
         Assembly _assembly = Assembly.GetExecutingAssembly();
-        string resourceName = _namespace + ".Assets.URLEmailTemplate.html";
+        string resourceName = $"{_namespace}.Assets.URLEmailTemplate.html";
         string emailContent = await
             new StreamReader(_assembly.GetManifestResourceStream(resourceName)!)
             .ReadToEndAsync();
@@ -96,7 +96,7 @@ public class MailSender : IMailSender
             .Replace("{url}", url)
             .Replace("{nowtime}", DateTimeOffset.UtcNow.ToString("u"));
         if (!await SendEmailAsync(title, emailContent, email))
-            LogHelper.SystemLog(logger, "邮件发送失败！", TaskStatus.Fail);
+            logger.SystemLog("邮件发送失败！", TaskStatus.Fail);
     }
 
     public void SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)

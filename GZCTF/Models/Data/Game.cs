@@ -46,10 +46,16 @@ public class Game
 
     #region Db Relationship
     /// <summary>
+    /// 比赛事件
+    /// </summary>
+    [JsonIgnore]
+    public List<GameEvent> GameEvents { get; set; } = new();
+
+    /// <summary>
     /// 比赛通知
     /// </summary>
     [JsonIgnore]
-    public List<Event> Events { get; set; } = new();
+    public List<GameNotice> GameNotices { get; set; } = new();
 
     /// <summary>
     /// 比赛题目

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CTFServer.Models;
-using NLog;
+
 using System.Security.Claims;
 
 namespace CTFServer.Utils;
