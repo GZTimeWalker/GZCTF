@@ -51,6 +51,6 @@ public class HubHelper
     /// </summary>
     /// <param name="context">当前请求</param>
     /// <returns></returns>
-    public static Task<bool> HasSignedIn(HttpContext context)
+    public static Task<bool> HasUser(HttpContext context)
         => HasPrivilege(context, Role.User);
 }

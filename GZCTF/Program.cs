@@ -223,6 +223,8 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
+    endpoints.MapHub<UserHub>("/hub/user");
+    endpoints.MapHub<MonitorHub>("/hub/monitor");
     endpoints.MapHub<AdminHub>("/hub/admin");
     endpoints.MapFallbackToFile("index.html");
 });
