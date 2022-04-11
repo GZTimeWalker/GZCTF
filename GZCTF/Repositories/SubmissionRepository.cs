@@ -40,4 +40,8 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
         => context.Entry(team).Collection(t => t.Submissions)
         .Query().OrderByDescending(s => s.SubmitTimeUTC)
         .Skip(skip).Take(count).ToArrayAsync(token);
+
+    public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId, CancellationToken token = default)
+        => context.Submissions.Where(s => s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
+            .FirstOrDefaultAsync(token);
 }

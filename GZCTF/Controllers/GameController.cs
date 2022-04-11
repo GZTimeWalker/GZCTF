@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using CTFServer.Repositories;
 using System.Threading.Channels;
+using System.Security.Claims;
 
 namespace CTFServer.Controllers;
 
@@ -24,7 +25,7 @@ public class GameController : ControllerBase
 {
     private readonly ILogger<GameController> logger;
     private readonly UserManager<UserInfo> userManager;
-    private readonly ChannelWriter<Submission> channelWriter;
+    private readonly ChannelWriter<Submission> checkerChannelWriter;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
     private readonly IGameNoticeRepository noticeRepository;
@@ -47,7 +48,7 @@ public class GameController : ControllerBase
     {
         logger = _logger;
         userManager = _userManager;
-        channelWriter = _channelWriter;
+        checkerChannelWriter = _channelWriter;
         gameRepository = _gameRepository;
         teamRepository = _teamRepository;
         eventRepository = _eventRepository;
@@ -355,9 +356,36 @@ public class GameController : ControllerBase
         submission = await submissionRepository.AddSubmission(submission, token);
         
         // send to flag checker service
-        await channelWriter.WriteAsync(submission, token);
+        await checkerChannelWriter.WriteAsync(submission, token);
 
         return Ok(submission.Id);
+    }
+
+    /// <summary>
+    /// 查询 flag 状态
+    /// </summary>
+    /// <remarks>
+    /// 查询 flag 状态，需要User权限
+    /// </remarks>
+    /// <param name="id">比赛id</param>
+    /// <param name="challengeId">题目id</param>
+    /// <param name="submitId">提交id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目信息</response>
+    [RequireUser]
+    [HttpGet("{id}/Challenges/{challengeId}/Submit/{submitId}")]
+    [ProducesResponseType(typeof(AnswerResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Status([FromRoute] int id, [FromRoute] int challengeId, [FromRoute] int submitId, CancellationToken token)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var submission = await submissionRepository.GetSubmission(id, challengeId, userId, submitId, token);
+        
+        if(submission is null)
+            return NotFound(new RequestResponse("提交未找到", 404));
+
+        return Ok(submission.Status == AnswerResult.CheatDetected ?
+            AnswerResult.WrongAnswer : submission.Status);
     }
 
     private class ContextInfo

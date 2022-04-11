@@ -58,4 +58,16 @@ public interface ISubmissionRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task UpdateSubmission(Submission submission, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取提交
+    /// </summary>
+    /// <param name="gameId">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
+    /// <param name="userId">用户Id</param>
+    /// <param name="submitId">提交Id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId, CancellationToken token = default);
+
 }
