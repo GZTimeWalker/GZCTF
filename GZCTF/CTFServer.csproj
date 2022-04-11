@@ -14,7 +14,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <SpaProxyServerUrl>http://localhost:3000</SpaProxyServerUrl>
-    <SpaProxyLaunchCommand>pnpm run dev</SpaProxyLaunchCommand>
+    <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
   </PropertyGroup>
   
   <ItemGroup>

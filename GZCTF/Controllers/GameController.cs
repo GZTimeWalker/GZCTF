@@ -212,7 +212,7 @@ public class GameController : ControllerBase
     /// 获取比赛提交
     /// </summary>
     /// <remarks>
-    /// 获取比赛提交数据
+    /// 获取比赛提交数据，需要观察者权限
     /// </remarks>
     /// <param name="id">比赛id</param>
     /// <param name="count"></param>
@@ -238,10 +238,10 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
-    /// 获取比赛提交
+    /// 获取比赛实例列表
     /// </summary>
     /// <remarks>
-    /// 获取比赛提交数据
+    /// 获取比赛实例数据，需要观察者权限
     /// </remarks>
     /// <param name="id">比赛id</param>
     /// <param name="count"></param>
