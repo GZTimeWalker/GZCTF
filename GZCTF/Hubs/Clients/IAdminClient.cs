@@ -2,7 +2,7 @@
 
 namespace CTFServer.Hubs.Client;
 
-public interface ILoggingClient
+public interface IAdminClient
 {
     /// <summary>
     /// 接收到广播日志信息

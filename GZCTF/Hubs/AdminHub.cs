@@ -5,7 +5,7 @@ using CTFServer.Utils;
 
 namespace CTFServer.Hubs;
 
-public class LoggingHub : Hub<ILoggingClient>
+public class AdminHub : Hub<IAdminClient>
 {
     public override async Task OnConnectedAsync()
     {

@@ -22,6 +22,11 @@ public class HubHelper
 
         var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
 
+        var env = context.RequestServices.GetRequiredService<IHostEnvironment>();
+
+        if (env.IsDevelopment())
+            return true;
+
         return currentUser is not null && currentUser.Role >= privilege;
     }
 
