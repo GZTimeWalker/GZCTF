@@ -29,15 +29,15 @@ import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
   link: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: theme.radius.md,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     margin: '3px 0',
+    cursor: 'pointer',
 
     '&:hover': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
@@ -48,10 +48,14 @@ const useStyles = createStyles((theme) => ({
     '&, &:hover': {
       backgroundColor:
         theme.colorScheme === 'dark'
-          ? theme.fn.rgba(theme.colors[theme.primaryColor][9], 0.25)
+          ? theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.25)
           : theme.colors[theme.primaryColor][0],
       color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],
     },
+  },
+
+  navbar: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
   },
 }));
 
@@ -105,24 +109,9 @@ export const AppNavbar: FC = () => {
   ));
 
   return (
-    <Navbar fixed width={{ base: 80 }} p="md">
+    <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
       <Center>
-        <Stack>
-          <MainIcon style={{ width: '100%', height: 'auto' }} />
-          <Title
-            style={{
-              fontWeight: 'normal',
-              writingMode: 'vertical-rl',
-              fontFamily: "'Chakra Petch', sans-serif",
-            }}
-          >
-            GZ
-            <span style={{ position: 'relative', left: '.3rem', color: theme.colors.brand[4] }}>
-              ::
-            </span>
-            CTF
-          </Title>
-        </Stack>
+        <MainIcon style={{ width: 'auto', height: 'auto' }} />
       </Center>
       <Navbar.Section grow mb={100} style={{ display: 'flex', alignItems: 'center' }}>
         <Group direction="column" align="center" spacing={0}>
@@ -131,13 +120,7 @@ export const AppNavbar: FC = () => {
       </Navbar.Section>
       <Navbar.Section>
         <Group direction="column" align="center" spacing={0}>
-          <UnstyledButton
-            onClick={() => toggleColorScheme()}
-            className={cx(classes.link)}
-            sx={(theme) => ({
-              color: theme.colorScheme === 'dark' ? theme.colors.yellow[4] : theme.colors.blue[6],
-            })}
-          >
+          <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
             {colorScheme === 'dark' ? (
               <Icon path={mdiWhiteBalanceSunny} size={1} />
             ) : (
