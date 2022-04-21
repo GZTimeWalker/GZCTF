@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;
+using Namotion.Reflection;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,10 +58,20 @@ builder.Host.UseSerilog(dispose: true);
 
 #region AppDbContext
 
-builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
-    // provideropt => provideropt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null))
-));
+if (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("ConnectionStrings").Exists())
+{
+    builder.Services.AddDbContext<AppDbContext>(
+        options => options.UseInMemoryDatabase("TestDb")
+    );
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(
+        options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
+}
+
+
 
 #endregion
 
@@ -145,14 +157,15 @@ builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
 builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
 builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
-builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
-builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<INoticeRepository, NoticeRepository>();
 builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddHostedService<ContainerChecker>();
 
@@ -184,7 +197,9 @@ Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
-    await serviceScope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
+    var db = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>().Database;
+    if (db.IsRelational())
+        await db.MigrateAsync();
 }
 
 if (app.Environment.IsDevelopment())

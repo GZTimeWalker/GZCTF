@@ -25,13 +25,13 @@ public class AccountController : ControllerBase
     private readonly IMailSender mailSender;
     private readonly UserManager<UserInfo> userManager;
     private readonly SignInManager<UserInfo> signInManager;
-    private readonly IFileRepository fileRepository;
+    private readonly IFileService FileService;
     private readonly IRecaptchaExtension recaptcha;
     private readonly IHostEnvironment environment;
 
     public AccountController(
         IMailSender _mailSender,
-        IFileRepository _fileRepository,
+        IFileService _FileService,
         IHostEnvironment _environment,
         IRecaptchaExtension _recaptcha,
         UserManager<UserInfo> _userManager,
@@ -43,7 +43,7 @@ public class AccountController : ControllerBase
         environment = _environment;
         userManager = _userManager;
         signInManager = _signInManager;
-        fileRepository = _fileRepository;
+        FileService = _FileService;
         logger = _logger;
     }
 
@@ -431,9 +431,9 @@ public class AccountController : ControllerBase
         var user = await userManager.GetUserAsync(User);
 
         if (user.AvatarHash is not null)
-            await fileRepository.DeleteFileByHash(user.AvatarHash, token);
+            await FileService.DeleteFileByHash(user.AvatarHash, token);
 
-        var avatar = await fileRepository.CreateOrUpdateFile(file, "avatar", token);
+        var avatar = await FileService.CreateOrUpdateFile(file, "avatar", token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("未知错误"));
