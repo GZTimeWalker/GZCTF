@@ -94,12 +94,7 @@ export const AppNavbar: FC = () => {
     }, [router.pathname])
 
     const links = items.map((link) => (
-      <NavbarLink
-        {...link}
-        key={link.label}
-        isActive={link.label === active}
-        onClick={() => { setActive(link.label); }}
-        />
+      <NavbarLink {...link}  key={link.label} isActive={link.label === active} />
     ));
 
     return (
