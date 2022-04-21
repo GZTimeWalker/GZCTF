@@ -50,7 +50,7 @@ export default function App(props: AppProps) {
                 '#009985',
                 '#007F6E',
               ],
-              alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', ''],
+              alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', '']
             },
             primaryColor: 'brand',
           }}

@@ -1,14 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
 import {
-  Navbar,
-  Center,
+  Box,
   Stack,
-  Tooltip,
-  UnstyledButton,
-  createStyles,
   Group,
   Title,
-  ActionIcon,
+  Center,
+  Navbar,
+  Avatar,
+  createStyles,
+  UnstyledButton,
   useMantineTheme,
   useMantineColorScheme,
 } from '@mantine/core';
@@ -35,7 +35,9 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+    margin: '3px 0',
 
     '&:hover': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
@@ -72,31 +74,23 @@ export interface NavbarLinkProps {
 const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles();
   return (
-    <Tooltip
-      label={props.label}
-      position="right"
-      withArrow
-      transitionDuration={0}
-      style={{ padding: '2px' }}
-    >
-      <Link href={props.link ?? '#'} passHref>
-        <UnstyledButton
-          onClick={props.onClick}
-          className={cx(classes.link, { [classes.active]: props.isActive })}
-        >
-          <Icon path={props.icon} size={1} />
-        </UnstyledButton>
-      </Link>
-    </Tooltip>
+    <Link href={props.link ?? '#'} passHref>
+      <UnstyledButton
+        onClick={props.onClick}
+        className={cx(classes.link, { [classes.active]: props.isActive })}
+      >
+        <Icon path={props.icon} size={1} />
+      </UnstyledButton>
+    </Link>
   );
 };
 
 export const AppNavbar: FC = () => {
-  const [active, setActive] = useState('Home');
-  const theme = useMantineTheme();
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const router = useRouter();
+  const theme = useMantineTheme();
   const { classes, cx } = useStyles();
+  const [active, setActive] = useState('Home');
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   useEffect(() => {
     items.forEach((i) => {
@@ -117,7 +111,6 @@ export const AppNavbar: FC = () => {
           <MainIcon style={{ width: '100%', height: 'auto' }} />
           <Title
             style={{
-              color: '#fff',
               fontWeight: 'normal',
               writingMode: 'vertical-rl',
               fontFamily: "'Chakra Petch', sans-serif",
@@ -151,7 +144,13 @@ export const AppNavbar: FC = () => {
               <Icon path={mdiWeatherNight} size={1} />
             )}
           </UnstyledButton>
-          <NavbarLink icon={mdiAccountCircle} label="Account" />
+          <Link href="/profile" passHref>
+            <Box className={cx(classes.link)}>
+              <Avatar src={null} size="sm" radius="xl">
+                <Icon path={mdiAccountCircle} size={1} />
+              </Avatar>
+            </Box>
+          </Link>
         </Group>
       </Navbar.Section>
     </Navbar>
