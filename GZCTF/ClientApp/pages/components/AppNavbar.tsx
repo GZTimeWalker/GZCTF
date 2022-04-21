@@ -36,7 +36,6 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
-    margin: '3px 0',
     cursor: 'pointer',
 
     '&:hover': {
@@ -111,15 +110,15 @@ export const AppNavbar: FC = () => {
   return (
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
       <Center>
-        <MainIcon style={{ width: 'auto', height: 'auto' }} />
+        <MainIcon style={{ width: '100%', height: 'auto' }} />
       </Center>
       <Navbar.Section grow mb={100} style={{ display: 'flex', alignItems: 'center' }}>
-        <Group direction="column" align="center" spacing={0}>
+        <Stack align="center" spacing={5}>
           {links}
-        </Group>
+        </Stack>
       </Navbar.Section>
       <Navbar.Section>
-        <Group direction="column" align="center" spacing={0}>
+        <Stack align="center" spacing={5}>
           <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
             {colorScheme === 'dark' ? (
               <Icon path={mdiWhiteBalanceSunny} size={1} />
@@ -134,7 +133,7 @@ export const AppNavbar: FC = () => {
               </Avatar>
             </Box>
           </Link>
-        </Group>
+        </Stack>
       </Navbar.Section>
     </Navbar>
   );
