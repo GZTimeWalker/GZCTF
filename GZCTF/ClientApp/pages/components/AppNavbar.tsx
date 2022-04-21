@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Navbar,
   Center,
@@ -21,6 +21,7 @@ import {
 import { Icon } from '@mdi/react';
 import { MainIcon } from './icon/MainIcon';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -69,7 +70,8 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
     return (
         <Tooltip label={props.label} position="right" withArrow transitionDuration={0}>
           <Link href={props.link ?? "#"} passHref>
-            <UnstyledButton onClick={props.onClick} className={cx(classes.link, { [classes.active]: props.isActive })}>
+            <UnstyledButton onClick={props.onClick}
+              className={cx(classes.link, { [classes.active]: props.isActive })}>
                 <Icon path={props.icon} size={1} />
             </UnstyledButton>
           </Link>
@@ -79,15 +81,24 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 
 export const AppNavbar: FC = () => {
 
-    const [active, setActive] = useState(2);
+    const [active, setActive] = useState('Home');
     const theme = useMantineTheme();
+    const router = useRouter();
 
-    const links = items.map((link, index) => (
+    useEffect(() => {
+      items.forEach(i => {
+        if(i.link && router.pathname.startsWith(i.link)) {
+          setActive(i.label)
+        }
+      })
+    }, [router.pathname])
+
+    const links = items.map((link) => (
       <NavbarLink
         {...link}
         key={link.label}
-        isActive={index === active}
-        onClick={() => { setActive(index); }}
+        isActive={link.label === active}
+        onClick={() => { setActive(link.label); }}
         />
     ));
 
