@@ -1,19 +1,23 @@
-﻿using CTFServer.Models;
-using CTFServer.Repositories.Interface;
+﻿using CTFServer.Services.Interface;
+using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
-using CTFServer.Utils;
 
-namespace CTFServer.Repositories;
+namespace CTFServer.Services;
 
-public class FileRepository : RepositoryBase, IFileRepository
+public class FileService : IFileService
 {
-    private readonly ILogger<FileRepository> logger;
+    private readonly ILogger<FileService> logger;
     private readonly IConfiguration configuration;
-    public FileRepository(AppDbContext _context, IConfiguration _configuration, ILogger<FileRepository> _logger) : base(_context)
+    protected readonly AppDbContext context;
+
+    public FileService(AppDbContext _context, 
+        IConfiguration _configuration, 
+        ILogger<FileService> _logger)
     {
-        configuration = _configuration;
+        context = _context;
         logger = _logger;
+        configuration = _configuration;
     }
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
@@ -33,7 +37,7 @@ public class FileRepository : RepositoryBase, IFileRepository
 
         var localFile = await GetFileByHash(fileHash, token);
 
-        if(localFile is null)
+        if (localFile is null)
         {
             localFile = new() { Hash = fileHash, Name = fileName ?? file.FileName };
             await context.AddAsync(localFile, token);
@@ -60,7 +64,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         return localFile;
     }
 
-    public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token =  default)
+    public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token = default)
     {
         var file = await context.Files.Where(f => f.Hash == fileHash).FirstOrDefaultAsync(token);
 
@@ -89,15 +93,9 @@ public class FileRepository : RepositoryBase, IFileRepository
         }
     }
 
-    public Task<LocalFile?> GetFileByHash(string fileHash, CancellationToken token =  default)
+    public Task<LocalFile?> GetFileByHash(string fileHash, CancellationToken token = default)
         => context.Files.Where(f => f.Hash == fileHash).FirstOrDefaultAsync(token);
 
     public Task<List<LocalFile>> GetFiles(int count, int skip, CancellationToken token = default)
         => context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToListAsync(token);
-
-    public Task<LocalFile?> GetFileById(int fileId, CancellationToken token =  default)
-        => context.Files.Where(f => f.Id == fileId).FirstOrDefaultAsync(token);
-
-    public Task<List<LocalFile>> GetFilesByName(string fileName, CancellationToken token =  default)
-        => context.Files.Where(f => f.Name == fileName).ToListAsync(token);
 }

@@ -6,6 +6,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
+using CTFServer.Services.Interface;
 
 namespace CTFServer.Controllers;
 
@@ -19,20 +20,17 @@ namespace CTFServer.Controllers;
 public class TeamController : ControllerBase
 {
     private readonly UserManager<UserInfo> userManager;
-    private readonly ILogRepository logRepository;
-    private readonly IFileRepository fileRepository;
+    private readonly IFileService FileService;
     private readonly ITeamRepository teamRepository;
     private readonly ILogger<TeamController> logger;
 
     public TeamController(UserManager<UserInfo> _userManager,
-        ILogRepository _logRepository,
-        IFileRepository _fileRepository,
+        IFileService _FileService,
         ITeamRepository _teamRepository,
         ILogger<TeamController> _logger)
     {
         userManager = _userManager;
-        logRepository = _logRepository;
-        fileRepository = _fileRepository;
+        FileService = _FileService;
         teamRepository = _teamRepository;
         logger = _logger;
     }
@@ -464,9 +462,9 @@ public class TeamController : ControllerBase
             return BadRequest(new RequestResponse("文件过大"));
 
         if (user.AvatarHash is not null)
-            _ = await fileRepository.DeleteFileByHash(user.AvatarHash, token);
+            _ = await FileService.DeleteFileByHash(user.AvatarHash, token);
 
-        var avatar = await fileRepository.CreateOrUpdateFile(file, "avatar", token);
+        var avatar = await FileService.CreateOrUpdateFile(file, "avatar", token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("未知错误"));

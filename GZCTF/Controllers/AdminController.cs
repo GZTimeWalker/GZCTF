@@ -10,6 +10,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CTFServer.Models.Request.Teams;
+using CTFServer.Services.Interface;
 
 namespace CTFServer.Controllers;
 
@@ -25,18 +26,18 @@ namespace CTFServer.Controllers;
 public class AdminController : ControllerBase
 {
     private readonly UserManager<UserInfo> userManager;
-    private readonly ILogRepository logRepository;
-    private readonly IFileRepository fileRepository;
+    private readonly IAdminService adminService;
+    private readonly IFileService fileService;
     private readonly ITeamRepository teamRepository;
 
     public AdminController(UserManager<UserInfo> _userManager, 
-        ILogRepository _logRepository,
+        IAdminService _adminService,
         ITeamRepository _teamRepository,
-        IFileRepository _fileRepository)
+        IFileService _FileService)
     {
         userManager = _userManager;
-        logRepository = _logRepository;
-        fileRepository = _fileRepository;
+        adminService = _adminService;
+        fileService = _FileService;
         teamRepository = _teamRepository;
     }
 
@@ -167,7 +168,7 @@ public class AdminController : ControllerBase
     [HttpGet("Logs/{level:alpha=All}")]
     [ProducesResponseType(typeof(List<ClientUserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromRoute] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await logRepository.GetLogs(skip, count, level, token));
+        => Ok(await adminService.GetLogs(skip, count, level, token));
 
     /// <summary>
     /// 获取全部文件
@@ -181,5 +182,5 @@ public class AdminController : ControllerBase
     [HttpGet("Files")]
     [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await fileRepository.GetFiles(count, skip, token));
+        => Ok(await fileService.GetFiles(count, skip, token));
 }

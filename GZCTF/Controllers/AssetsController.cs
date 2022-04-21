@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CTFServer.Utils;
 using System.Net.Mime;
-using CTFServer.Repositories.Interface;
 using CTFServer.Middlewares;
-using CTFServer.Models;
+using CTFServer.Services.Interface;
 
 namespace CTFServer.Controllers;
 
@@ -16,12 +15,14 @@ namespace CTFServer.Controllers;
 public class AssetsController : ControllerBase
 {
     private readonly ILogger<AssetsController> logger;
-    private readonly IFileRepository fileRepository;
+    private readonly IFileService fileService;
     private readonly IConfiguration configuration;
 
-    public AssetsController(IFileRepository _fileRepository, IConfiguration _configuration, ILogger<AssetsController> _logger)
+    public AssetsController(IFileService _fileeService, 
+        IConfiguration _configuration, 
+        ILogger<AssetsController> _logger)
     {
-        fileRepository = _fileRepository;
+        fileService = _fileeService;
         configuration = _configuration;
         logger = _logger;
     }
@@ -83,7 +84,7 @@ public class AssetsController : ControllerBase
             {
                 if (file.Length > 0)
                 {
-                    var res = await fileRepository.CreateOrUpdateFile(file, null, token);
+                    var res = await fileService.CreateOrUpdateFile(file, null, token);
                     logger.SystemLog($"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Information); 
                     results.Add(res);
                 }
@@ -116,7 +117,7 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(string hash, CancellationToken token)
     {
-        var result = await fileRepository.DeleteFileByHash(hash, token);
+        var result = await fileService.DeleteFileByHash(hash, token);
 
         logger.SystemLog($"删除文件 [{hash[..8]}]...", result, LogLevel.Information);
 
