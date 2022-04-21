@@ -128,7 +128,7 @@ export const AppNavbar: FC = () => {
           </UnstyledButton>
           <Link href="/profile" passHref>
             <Box className={cx(classes.link)}>
-              <Avatar src={null} size="sm" radius="xl">
+              <Avatar src={null} size="md" radius="xl">
                 <Icon path={mdiAccountCircle} size={1} />
               </Avatar>
             </Box>
