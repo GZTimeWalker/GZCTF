@@ -11,7 +11,7 @@ interface MainIconProps extends SVGProps<SVGSVGElement> {
   ignoreTheme?: boolean;
 }
 
-export const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
+const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
   const { classes, cx } = useStyles();
   const { ignoreTheme, ...svgProps } = props;
 
@@ -53,3 +53,5 @@ export const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
     </svg>
   );
 };
+
+export default MainIcon;

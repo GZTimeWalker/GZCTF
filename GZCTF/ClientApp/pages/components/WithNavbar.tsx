@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { AppNavbar } from './AppNavbar';
+import AppNavbar from './AppNavbar';
 import { AppShell, Box, Center } from '@mantine/core';
 
-export const WithNavBar: FC<any> = ({ children }) => {
+const WithNavBar: FC<React.ReactNode> = ({ children }) => {
   return (
     <AppShell
       padding="md"
@@ -21,3 +21,5 @@ export const WithNavBar: FC<any> = ({ children }) => {
     </AppShell>
   );
 };
+
+export default WithNavBar;

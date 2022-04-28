@@ -13,7 +13,7 @@ import {
   Anchor,
 } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
-import { MainIcon } from './components/icon/MainIcon';
+import MainIcon from './components/icon/MainIcon';
 
 const useStyles = createStyles((theme) => ({
   brand: {

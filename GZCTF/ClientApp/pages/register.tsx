@@ -18,7 +18,7 @@ import {
 import { useInputState } from '@mantine/hooks';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { MainIcon } from './components/icon/MainIcon';
+import MainIcon from './components/icon/MainIcon';
 import { useState } from 'react';
 
 const useStyles = createStyles((theme) => ({

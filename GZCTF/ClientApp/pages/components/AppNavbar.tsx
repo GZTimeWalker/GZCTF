@@ -2,14 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Stack,
-  Group,
-  Title,
   Center,
   Navbar,
-  Avatar,
   createStyles,
   UnstyledButton,
-  useMantineTheme,
   useMantineColorScheme,
 } from '@mantine/core';
 import {
@@ -23,7 +19,7 @@ import {
   mdiWeatherNight,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { MainIcon } from './icon/MainIcon';
+import MainIcon from './icon/MainIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -88,7 +84,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   );
 };
 
-export const AppNavbar: FC = () => {
+const AppNavbar: FC = () => {
   const router = useRouter();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
@@ -136,3 +132,5 @@ export const AppNavbar: FC = () => {
     </Navbar>
   );
 };
+
+export default AppNavbar;

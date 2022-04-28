@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { Button, Stack, Group  } from '@mantine/core';
-import { MainIcon } from './components/icon/MainIcon';
-import { WithNavBar } from './components/WithNavbar';
+import MainIcon from './components/icon/MainIcon';
+import WithNavBar from './components/WithNavbar';
 
 const Home: NextPage = () => {
 
