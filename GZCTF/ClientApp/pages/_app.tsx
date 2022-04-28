@@ -22,9 +22,8 @@ export default function App(props: AppProps) {
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="shortcut icon" href="/favicon.png" />
       </Head>
-
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider
+        <MantineProvider withGlobalStyles withCSSVariables
           theme={{
             colorScheme: colorScheme,
             colors: {
@@ -50,19 +49,27 @@ export default function App(props: AppProps) {
                 '#009985',
                 '#007F6E',
               ],
-              alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', '']
+              alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', ''],
             },
             primaryColor: 'brand',
+            fontFamily: "Kanit,'Noto Sans SC'",
+            fontFamilyMonospace: "'JetBrains Mono'",
+            lineHeight: 1.2,
+            fontSizes: 18,
+            headings: {
+              fontFamily: "Kanit,'Noto Sans SC'"
+            }
           }}
         >
           <Global
             styles={(theme) => ({
               body: {
+                ...theme.fn.fontStyles(),
                 backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
                 color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
                 lineHeight: theme.lineHeight,
                 padding: 0,
-                margin: 0
+                margin: 0,
               },
             })}
           />

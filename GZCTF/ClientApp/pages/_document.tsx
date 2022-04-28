@@ -9,7 +9,11 @@ export default class _Document extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="crossorigin"></link>
+          <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Noto+Sans+SC&family=Kanit&display=swap" rel="stylesheet"></link>
+        </Head>
         <body>
           <Main />
           <NextScript />
