@@ -2,6 +2,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { MantineProvider, Global, ColorScheme, ColorSchemeProvider } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import './_app.css';
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -23,7 +24,7 @@ export default function App(props: AppProps) {
         <link rel="shortcut icon" href="/favicon.png" />
       </Head>
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider withGlobalStyles
+        <MantineProvider withGlobalStyles withCSSVariables
           theme={{
             colorScheme: colorScheme,
             colors: {
@@ -74,7 +75,7 @@ export default function App(props: AppProps) {
                 color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
                 lineHeight: theme.lineHeight,
                 padding: 0,
-                margin: 0,
+                margin: 0
               },
             })}
           />
