@@ -1,11 +1,19 @@
 import { SVGProps, FC } from 'react';
+import { createStyles } from '@mantine/core';
+
+const useStyles = createStyles((theme) => ({
+  triangle: {
+    fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[7],
+  }
+}));
 
 export const MainIcon: FC<SVGProps<SVGSVGElement>> = (props: SVGProps<SVGSVGElement>) => {
+  const { classes, cx } = useStyles();
+
   return (
     <svg width="480" height="480" viewBox="0 0 4800 4800" {...props}>
       <path
-        id="Triangle"
-        fill="#fff"
+        className={cx(classes.triangle)}
         fillRule="evenodd"
         d="M2994.48,4244.61L505.28,2807.47V1992.53l256.572-148.14L1287,2285l258-307,160.39,135.56L1209.27,2400l1786.1,1031.21V2427.79L3517,1806,2420.98,886.5l573.5-331.11,705.76,407.474V3837.14Z"
       />
