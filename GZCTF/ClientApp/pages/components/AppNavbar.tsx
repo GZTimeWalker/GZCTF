@@ -125,7 +125,8 @@ export const AppNavbar: FC = () => {
               <Icon path={mdiWeatherNight} size={1} />
             )}
           </UnstyledButton>
-          <Link href="/profile" passHref>
+          {/* TODO: /profile but redirect to login when there is no user */}
+          <Link href="/login" passHref>
             <Box className={cx(classes.link)}>
               <Icon path={mdiAccountCircle} size={1} />
             </Box>
