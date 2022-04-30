@@ -2,6 +2,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { MantineProvider, Global, ColorScheme, ColorSchemeProvider } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import './_app.css';
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -22,9 +23,8 @@ export default function App(props: AppProps) {
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="shortcut icon" href="/favicon.png" />
       </Head>
-
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider
+        <MantineProvider withGlobalStyles withCSSVariables
           theme={{
             colorScheme: colorScheme,
             colors: {
@@ -50,14 +50,27 @@ export default function App(props: AppProps) {
                 '#009985',
                 '#007F6E',
               ],
-              alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', '']
+              alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', ''],
             },
             primaryColor: 'brand',
+            fontFamily: "Kanit, 'Noto Sans SC', sans-serif",
+            fontFamilyMonospace: "'JetBrains Mono', monospace",
+            fontSizes: {
+              'xs': 13,
+              'sm': 16,
+              'md': 20,
+              'lg': 25,
+              'xl': 30
+            },
+            headings: {
+              fontFamily: "Kanit,'Noto Sans SC', sans-serif"
+            }
           }}
         >
           <Global
             styles={(theme) => ({
               body: {
+                ...theme.fn.fontStyles(),
                 backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
                 color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
                 lineHeight: theme.lineHeight,

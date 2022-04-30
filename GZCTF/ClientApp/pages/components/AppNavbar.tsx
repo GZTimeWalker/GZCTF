@@ -2,14 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Stack,
-  Group,
-  Title,
   Center,
   Navbar,
-  Avatar,
   createStyles,
   UnstyledButton,
-  useMantineTheme,
   useMantineColorScheme,
 } from '@mantine/core';
 import {
@@ -23,7 +19,7 @@ import {
   mdiWeatherNight,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { MainIcon } from './icon/MainIcon';
+import MainIcon from './icon/MainIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -35,11 +31,11 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[3],
     cursor: 'pointer',
 
     '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[6],
     },
   },
 
@@ -48,13 +44,13 @@ const useStyles = createStyles((theme) => ({
       backgroundColor:
         theme.colorScheme === 'dark'
           ? theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.25)
-          : theme.colors[theme.primaryColor][0],
-      color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],
+          : theme.fn.rgba(theme.colors[theme.primaryColor][0], 0.25),
+      color: theme.colors[theme.primaryColor][4],
     },
   },
 
   navbar: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[7],
   },
 }));
 
@@ -88,9 +84,8 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   );
 };
 
-export const AppNavbar: FC = () => {
+const AppNavbar: FC = () => {
   const router = useRouter();
-  const theme = useMantineTheme();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -110,7 +105,7 @@ export const AppNavbar: FC = () => {
   return (
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
       <Center>
-        <MainIcon style={{ width: '100%', height: 'auto' }} />
+        <MainIcon style={{ width: '100%', height: 'auto' }} ignoreTheme/>
       </Center>
       <Navbar.Section grow mb={100} style={{ display: 'flex', alignItems: 'center' }}>
         <Stack align="center" spacing={5}>
@@ -126,11 +121,10 @@ export const AppNavbar: FC = () => {
               <Icon path={mdiWeatherNight} size={1} />
             )}
           </UnstyledButton>
-          <Link href="/profile" passHref>
+          {/* TODO: /profile but redirect to login when there is no user */}
+          <Link href="/login" passHref>
             <Box className={cx(classes.link)}>
-              <Avatar src={null} size="md" radius="xl">
-                <Icon path={mdiAccountCircle} size={1} />
-              </Avatar>
+              <Icon path={mdiAccountCircle} size={1} />
             </Box>
           </Link>
         </Stack>
@@ -138,3 +132,5 @@ export const AppNavbar: FC = () => {
     </Navbar>
   );
 };
+
+export default AppNavbar;

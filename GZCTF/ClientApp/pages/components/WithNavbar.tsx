@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { AppNavbar } from './AppNavbar';
+import AppNavbar from './AppNavbar';
 import { AppShell, Box, Center } from '@mantine/core';
 
-export const WithNavBar: FC = ({ children }) => {
+const WithNavBar: FC<React.ReactNode> = ({ children }) => {
   return (
     <AppShell
       padding="md"
@@ -11,7 +11,7 @@ export const WithNavBar: FC = ({ children }) => {
       styles={(theme) => ({
         main: {
           backgroundColor:
-            theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.gray[0],
+            theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.white,
         },
       })}
     >
@@ -21,3 +21,5 @@ export const WithNavBar: FC = ({ children }) => {
     </AppShell>
   );
 };
+
+export default WithNavBar;
