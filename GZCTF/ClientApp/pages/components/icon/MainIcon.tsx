@@ -3,7 +3,7 @@ import { createStyles } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   triangle: {
-    fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[7],
+    fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
   },
 }));
 

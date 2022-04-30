@@ -7,15 +7,16 @@ import {
   createStyles,
   UnstyledButton,
   useMantineColorScheme,
+  Tooltip,
 } from '@mantine/core';
 import {
-  mdiAccountCircle,
-  mdiAccountGroup,
-  mdiChartBox,
-  mdiFlag,
-  mdiHomeVariant,
-  mdiHelp,
-  mdiWhiteBalanceSunny,
+  mdiAccountCircleOutline,
+  mdiAccountGroupOutline,
+  mdiChartBoxOutline,
+  mdiFlagOutline,
+  mdiHomeVariantOutline,
+  mdiInformationOutline,
+  mdiWeatherSunny,
   mdiWeatherNight,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -31,35 +32,42 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[3],
+    color: theme.colors.gray[1],
     cursor: 'pointer',
 
     '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[6],
+      backgroundColor: theme.colors.gray[6] + "80",
     },
   },
 
   active: {
     '&, &:hover': {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.25)
-          : theme.fn.rgba(theme.colors[theme.primaryColor][0], 0.25),
+      backgroundColor: theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.25),
       color: theme.colors[theme.primaryColor][4],
     },
   },
 
   navbar: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[7],
+    backgroundColor: theme.colors.gray[8],
   },
+
+  tooltipBody: {
+    marginLeft: 20,
+    backgroundColor: theme.colorScheme === 'dark'
+      ? theme.colors[theme.primaryColor][8] + "40"
+      : theme.colors[theme.primaryColor][2],
+    color: theme.colorScheme === 'dark'
+      ? theme.colors[theme.primaryColor][4]
+      : theme.colors.gray[8]
+  }
 }));
 
 const items = [
-  { icon: mdiHomeVariant, label: 'Home', link: '/' },
-  { icon: mdiAccountGroup, label: 'Teams' },
-  { icon: mdiFlag, label: 'Contest' },
-  { icon: mdiChartBox, label: 'Scoreboard' },
-  { icon: mdiHelp, label: 'About', link: '/about' },
+  { icon: mdiHomeVariantOutline, label: 'Home', link: '/' },
+  { icon: mdiAccountGroupOutline, label: 'Teams' },
+  { icon: mdiFlagOutline, label: 'Contest' },
+  { icon: mdiChartBoxOutline, label: 'Scoreboard' },
+  { icon: mdiInformationOutline, label: 'About', link: '/about' },
 ];
 
 export interface NavbarLinkProps {
@@ -74,12 +82,18 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles();
   return (
     <Link href={props.link ?? '#'} passHref>
-      <UnstyledButton
-        onClick={props.onClick}
-        className={cx(classes.link, { [classes.active]: props.isActive })}
+      <Tooltip
+        label={props.label}
+        classNames={{ body: classes.tooltipBody }}
+        position="right"
       >
-        <Icon path={props.icon} size={1} />
-      </UnstyledButton>
+        <UnstyledButton
+          onClick={props.onClick}
+          className={cx(classes.link, { [classes.active]: props.isActive })}
+        >
+          <Icon path={props.icon} size={1} />
+        </UnstyledButton>
+      </Tooltip>
     </Link>
   );
 };
@@ -104,28 +118,41 @@ const AppNavbar: FC = () => {
 
   return (
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
-      <Center>
-        <MainIcon style={{ width: '100%', height: 'auto' }} ignoreTheme/>
-      </Center>
-      <Navbar.Section grow mb={100} style={{ display: 'flex', alignItems: 'center' }}>
+      <Navbar.Section grow>
+        <Center>
+          <MainIcon style={{ width: "100%", height: 'auto', position: "relative", left: 2 }} ignoreTheme />
+        </Center>
+      </Navbar.Section>
+      <Navbar.Section grow mb={20} mt={20} style={{ display: 'flex', alignItems: 'center' }}>
         <Stack align="center" spacing={5}>
           {links}
         </Stack>
       </Navbar.Section>
-      <Navbar.Section>
+      <Navbar.Section grow style={{ display: "flex", flexDirection: "column", justifyContent: "end" }}>
         <Stack align="center" spacing={5}>
-          <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
-            {colorScheme === 'dark' ? (
-              <Icon path={mdiWhiteBalanceSunny} size={1} />
-            ) : (
-              <Icon path={mdiWeatherNight} size={1} />
-            )}
-          </UnstyledButton>
+          <Tooltip
+            label={colorScheme === 'dark' ? "Light Theme" : "Dark Theme"}
+            classNames={{ body: classes.tooltipBody }}
+            position="right"
+          >
+            <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
+              {colorScheme === 'dark'
+                ? <Icon path={mdiWeatherSunny} size={1} />
+                : <Icon path={mdiWeatherNight} size={1} />
+              }
+            </UnstyledButton>
+          </Tooltip>
           {/* TODO: /profile but redirect to login when there is no user */}
           <Link href="/login" passHref>
-            <Box className={cx(classes.link)}>
-              <Icon path={mdiAccountCircle} size={1} />
-            </Box>
+            <Tooltip
+              label="Login"
+              classNames={{ body: classes.tooltipBody }}
+              position="right"
+            >
+              <Box className={cx(classes.link)}>
+                <Icon path={mdiAccountCircleOutline} size={1} />
+              </Box>
+            </Tooltip>
           </Link>
         </Stack>
       </Navbar.Section>
