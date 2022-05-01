@@ -14,12 +14,29 @@ public interface IGameNoticeRepository : IRepository
     public Task<GameNotice> AddNotice(Game game, GameNotice notice, CancellationToken token = default);
 
     /// <summary>
-    /// 获取全部通知
+    /// 获取比赛通知
     /// </summary>
-    /// <param name="game">比赛对象</param>
+    /// <param name="gameId">比赛Id</param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameNotice[]> GetNotices(Game game, int count = 10, int skip = 0, CancellationToken token = default);
+    public Task<GameNotice[]> GetNotices(int gameId, int count = 10, int skip = 0, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取比赛通知
+    /// </summary>
+    /// <param name="gameId">比赛ID</param>
+    /// <param name="noticeId">通知ID</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default);
+
+    /// <summary>
+    /// 删除比赛通知
+    /// </summary>
+    /// <param name="notice">比赛通知对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task RemoveNotice(GameNotice notice, CancellationToken token = default);
 }

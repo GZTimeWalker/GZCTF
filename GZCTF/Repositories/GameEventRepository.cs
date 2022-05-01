@@ -19,7 +19,7 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
         return gameEvent;
     }
 
-    public Task<GameEvent[]> GetEvents(Game game, int count = 10, int skip = 0, CancellationToken token = default)
-        => context.Entry(game).Collection(e => e.GameEvents).Query()
+    public Task<GameEvent[]> GetEvents(int gameId, int count = 10, int skip = 0, CancellationToken token = default)
+        => context.GameEvents.Where(e => e.GameId == gameId)
             .OrderByDescending(e => e.PublishTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
 }

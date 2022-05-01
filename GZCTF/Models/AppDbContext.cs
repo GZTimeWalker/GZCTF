@@ -52,10 +52,12 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         builder.Entity<Game>(entity =>
         {
             entity.HasMany(e => e.GameEvents)
-                .WithOne();
+                .WithOne(e => e.Game)
+                .HasForeignKey(e => e.GameId);
 
             entity.HasMany(e => e.GameNotices)
-                .WithOne();
+                .WithOne(e => e.Game)
+                .HasForeignKey(e => e.GameId);
 
             entity.HasMany(e => e.Challenges)
                 .WithOne(e => e.Game)

@@ -32,6 +32,12 @@ public class GameNotice
     [JsonPropertyName("time")]
     public DateTimeOffset PublishTimeUTC { get; set; } = DateTimeOffset.UtcNow;
 
+    [JsonIgnore]
+    public int GameId { get; set; }
+
+    [JsonIgnore]
+    public Game? Game { get; set; }
+
     public static GameNotice FromSubmission(Submission submission, NoticeType type)
         => new()
         {

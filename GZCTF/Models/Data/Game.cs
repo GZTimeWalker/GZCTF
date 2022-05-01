@@ -12,7 +12,6 @@ public class Game
     /// 比赛标题
     /// </summary>
     [Required]
-    [MinLength(1, ErrorMessage = "题目过短")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -26,9 +25,9 @@ public class Game
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 队员数量限制
+    /// 队员数量限制, 0 为无上限
     /// </summary>
-    public int TeamMemberLimitCount { get; set; } = 0;
+    public int TeamMemberCountLimit { get; set; } = 0;
 
     /// <summary>
     /// 开始时间

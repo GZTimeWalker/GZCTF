@@ -19,7 +19,16 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         return notice;
     }
 
-    public Task<GameNotice[]> GetNotices(Game game, int count = 10, int skip = 0, CancellationToken token = default)
-        => context.Entry(game).Collection(e => e.GameNotices).Query()
+    public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default)
+        => context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
+
+    public Task<GameNotice[]> GetNotices(int gameId, int count = 10, int skip = 0, CancellationToken token = default)
+        => context.GameNotices.Where(e => e.GameId == gameId)
             .OrderByDescending(e => e.PublishTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+
+    public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
+    {
+        context.Remove(notice);
+        return context.SaveChangesAsync(token);
+    }
 }

@@ -56,6 +56,12 @@ public class GameEvent
     [JsonIgnore]
     public Team? Team { get; set; }
 
+    [JsonIgnore]
+    public int GameId { get; set; }
+
+    [JsonIgnore]
+    public Game? Game { get; set; }
+
     public static GameEvent FromSubmission(Submission submission)
         => new()
         {

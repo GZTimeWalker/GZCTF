@@ -132,7 +132,7 @@ public class GameController : ControllerBase
             if (team is null)
                 return BadRequest(new RequestResponse("请激活一个队伍以参赛"));
 
-            if (game.TeamMemberLimitCount > 0 && game.TeamMemberLimitCount > team.Members.Count)
+            if (game.TeamMemberCountLimit > 0 && game.TeamMemberCountLimit > team.Members.Count)
                 return BadRequest(new RequestResponse("参赛队伍不符合人数限制"));
 
             if (game.StartTimeUTC < DateTimeOffset.UtcNow)
@@ -206,7 +206,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok(await noticeRepository.GetNotices(game, 30, 0, token));
+        return Ok(await noticeRepository.GetNotices(game.Id, 30, 0, token));
     }
 
     /// <summary>

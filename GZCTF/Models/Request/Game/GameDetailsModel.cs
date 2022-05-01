@@ -27,7 +27,7 @@ public class GameDetailsModel
     /// 队员数量限制
     /// </summary>
     [JsonPropertyName("limit")]
-    public int TeamMemberLimitCount { get; set; } = 0;
+    public int TeamMemberCountLimit { get; set; } = 0;
 
     /// <summary>
     /// 开始时间
@@ -50,6 +50,6 @@ public class GameDetailsModel
             Content = game.Content,
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC,
-            TeamMemberLimitCount = game.TeamMemberLimitCount
+            TeamMemberCountLimit = game.TeamMemberCountLimit
         };
 }
