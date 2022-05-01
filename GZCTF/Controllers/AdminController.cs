@@ -26,17 +26,17 @@ namespace CTFServer.Controllers;
 public class AdminController : ControllerBase
 {
     private readonly UserManager<UserInfo> userManager;
-    private readonly IAdminService adminService;
-    private readonly IFileService fileService;
+    private readonly ILogRepository logRepository;
+    private readonly IFileRepository fileService;
     private readonly ITeamRepository teamRepository;
 
-    public AdminController(UserManager<UserInfo> _userManager, 
-        IAdminService _adminService,
+    public AdminController(UserManager<UserInfo> _userManager,
+        ILogRepository _logRepository,
         ITeamRepository _teamRepository,
-        IFileService _FileService)
+        IFileRepository _FileService)
     {
         userManager = _userManager;
-        adminService = _adminService;
+        logRepository = _logRepository;
         fileService = _FileService;
         teamRepository = _teamRepository;
     }
@@ -168,7 +168,7 @@ public class AdminController : ControllerBase
     [HttpGet("Logs/{level:alpha=All}")]
     [ProducesResponseType(typeof(List<ClientUserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromRoute] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await adminService.GetLogs(skip, count, level, token));
+        => Ok(await logRepository.GetLogs(skip, count, level, token));
 
     /// <summary>
     /// 获取全部文件

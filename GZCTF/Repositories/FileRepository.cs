@@ -1,21 +1,18 @@
-﻿using CTFServer.Services.Interface;
+﻿using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
-namespace CTFServer.Services;
+namespace CTFServer.Repositories;
 
-public class FileService : IFileService
+public class FileRepository : RepositoryBase, IFileRepository
 {
-    private readonly ILogger<FileService> logger;
+    private readonly ILogger<FileRepository> logger;
     private readonly IConfiguration configuration;
-    protected readonly AppDbContext context;
 
-    public FileService(AppDbContext _context, 
-        IConfiguration _configuration, 
-        ILogger<FileService> _logger)
+    public FileRepository(AppDbContext context ,IConfiguration _configuration, 
+        ILogger<FileRepository> _logger) : base(context)
     {
-        context = _context;
         logger = _logger;
         configuration = _configuration;
     }

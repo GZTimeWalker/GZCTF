@@ -1,6 +1,4 @@
-﻿using CTFServer.Models;
-
-namespace CTFServer.Repositories.Interface;
+﻿namespace CTFServer.Repositories.Interface;
 
 public interface IContainerRepository : IRepository
 {

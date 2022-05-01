@@ -25,13 +25,13 @@ public class AccountController : ControllerBase
     private readonly IMailSender mailSender;
     private readonly UserManager<UserInfo> userManager;
     private readonly SignInManager<UserInfo> signInManager;
-    private readonly IFileService FileService;
+    private readonly IFileRepository FileService;
     private readonly IRecaptchaExtension recaptcha;
     private readonly IHostEnvironment environment;
 
     public AccountController(
         IMailSender _mailSender,
-        IFileService _FileService,
+        IFileRepository _FileService,
         IHostEnvironment _environment,
         IRecaptchaExtension _recaptcha,
         UserManager<UserInfo> _userManager,

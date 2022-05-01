@@ -20,12 +20,12 @@ namespace CTFServer.Controllers;
 public class TeamController : ControllerBase
 {
     private readonly UserManager<UserInfo> userManager;
-    private readonly IFileService FileService;
+    private readonly IFileRepository FileService;
     private readonly ITeamRepository teamRepository;
     private readonly ILogger<TeamController> logger;
 
     public TeamController(UserManager<UserInfo> _userManager,
-        IFileService _FileService,
+        IFileRepository _FileService,
         ITeamRepository _teamRepository,
         ILogger<TeamController> _logger)
     {

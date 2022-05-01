@@ -163,14 +163,13 @@ builder.Services.AddScoped<INoticeRepository, NoticeRepository>();
 builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
 
-builder.Services.AddScoped<IAdminService, AdminService>();
-builder.Services.AddScoped<IFileService, FileService>();
-
-builder.Services.AddHostedService<ContainerChecker>();
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddHostedService<FlagChecker>();
+builder.Services.AddHostedService<ContainerChecker>();
 
 #endregion Services and Repositories
 

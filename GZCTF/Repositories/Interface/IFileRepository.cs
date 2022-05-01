@@ -1,6 +1,6 @@
-﻿namespace CTFServer.Services.Interface;
+﻿namespace CTFServer.Repositories.Interface;
 
-public interface IFileService
+public interface IFileRepository : IRepository
 {
     /// <summary>
     /// 创建或更新一个文件
