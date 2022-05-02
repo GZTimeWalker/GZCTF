@@ -39,12 +39,6 @@ public class GameRepository : RepositoryBase, IGameRepository
     public void FlushScoreboard(Game game, CancellationToken token = default)
         => cache.Remove(CacheKey.ScoreBoard(game.Id));
 
-    public Task<int> UpdateGame(Game game, CancellationToken token = default)
-    {
-        context.Update(game);
-        return context.SaveChangesAsync(token);
-    }
-
     #region Generate Scoreboard
     private record Data(Instance Instance, Submission? Submission);
 

@@ -8,7 +8,7 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 {
     public GameNoticeRepository(AppDbContext _context) : base(_context) { }
 
-    public async Task<GameNotice> AddNotice(Game game, GameNotice notice, CancellationToken token = default)
+    public async Task<GameNotice> CreateNotice(Game game, GameNotice notice, CancellationToken token = default)
     {
         await context.Entry(game).Collection(e => e.GameNotices).LoadAsync(token);
         game.GameNotices.Add(notice);

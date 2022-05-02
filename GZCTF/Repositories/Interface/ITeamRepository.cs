@@ -48,14 +48,6 @@ public interface ITeamRepository : IRepository
     public Task<Team?> GetActiveTeamWithMembers(UserInfo user, CancellationToken token = default);
 
     /// <summary>
-    /// 更新队伍信息
-    /// </summary>
-    /// <param name="team">队伍对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<int> UpdateAsync(Team team, CancellationToken token = default);
-
-    /// <summary>
     /// 验证Token
     /// </summary>
     /// <param name="id">队伍Id</param>

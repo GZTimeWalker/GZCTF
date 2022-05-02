@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CTFServer.Models.Request.Edit;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
@@ -80,4 +81,16 @@ public class Game
     [JsonIgnore]
     public List<Participation> Teams { get; set; } = new();
     #endregion Db Relationship
+
+    public Game Update(GameInfoModel model)
+    {
+        Title = model.Title;
+        Content = model.Content;
+        Summary = model.Summary;
+        StartTimeUTC = model.StartTimeUTC;
+        EndTimeUTC = model.EndTimeUTC;
+        TeamMemberCountLimit = model.TeamMemberCountLimit;
+        
+        return this;
+    }
 }

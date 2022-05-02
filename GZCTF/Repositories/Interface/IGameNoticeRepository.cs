@@ -11,7 +11,7 @@ public interface IGameNoticeRepository : IRepository
     /// <param name="notice">通知</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameNotice> AddNotice(Game game, GameNotice notice, CancellationToken token = default);
+    public Task<GameNotice> CreateNotice(Game game, GameNotice notice, CancellationToken token = default);
 
     /// <summary>
     /// 获取比赛通知

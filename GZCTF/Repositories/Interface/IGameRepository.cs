@@ -31,14 +31,6 @@ public interface IGameRepository : IRepository
     public Task<Game?> CreateGame(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 更新比赛信息
-    /// </summary>
-    /// <param name="game">比赛对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<int> UpdateGame(Game game, CancellationToken token = default);
-
-    /// <summary>
     /// 获取排行榜
     /// </summary>
     /// <param name="game">比赛对象</param>

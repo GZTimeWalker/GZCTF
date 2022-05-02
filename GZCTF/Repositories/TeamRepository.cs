@@ -51,12 +51,6 @@ public class TeamRepository : RepositoryBase, ITeamRepository
         => context.Teams.Where(t => t.Members.Any(u => u.Id == user.Id))
             .Include(t => t.Members).ToArrayAsync(token);
 
-    public Task<int> UpdateAsync(Team team, CancellationToken token = default)
-    {
-        context.Update(team);
-        return context.SaveChangesAsync(token);
-    }
-
     public async Task<bool> VeifyToken(int id, string inviteToken, CancellationToken token = default)
     {
         var team = await context.Teams.FirstOrDefaultAsync(t => t.Id == id, token);

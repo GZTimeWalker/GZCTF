@@ -10,20 +10,31 @@ public interface IChallengeRepository : IRepository
     /// 创建题目对象
     /// </summary>
     /// <param name="game">比赛对象</param>
-    /// <param name="model">题目信息</param>
+    /// <param name="challenge">题目对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Challenge> CreateChallenge(Game game, ChallengeModel model, CancellationToken token = default);
+    public Task<Challenge> CreateChallenge(Game game, Challenge challenge, CancellationToken token = default);
 
     /// <summary>
     /// 获取全部题目
     /// </summary>
+    /// <param name="gameId">比赛Id</param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Challenge[]> GetChallenges(int count = 100, int skip = 0, CancellationToken token = default);
-    
+    public Task<Challenge[]> GetChallenges(int gameId, int count = 100, int skip = 0, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取题目
+    /// </summary>
+    /// <param name="gameId">比赛Id</param>
+    /// <param name="id">题目Id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Challenge?> GetChallenge(int gameId, int id, CancellationToken token = default);
+
+
     /// <summary>
     /// 验证静态 Flag（可能多个答案）
     /// </summary>

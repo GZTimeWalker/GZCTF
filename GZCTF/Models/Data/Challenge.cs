@@ -1,10 +1,12 @@
 ﻿using CTFServer.Models.Request.Edit;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
 
+[Index(nameof(GameId))]
 public class Challenge
 {
     [Key]
@@ -144,4 +146,24 @@ public class Challenge
 
     public int GameId { get; set; }
     #endregion Db Relationship
+
+    public Challenge Update(ChallengeModel model)
+    {
+        Type = model.Type;
+        Title = model.Title;
+        Content = model.Content;
+        Tag = model.Tag;
+        Hints = model.Hints;
+        ContainerImage = model.ContainerImage;
+        MemoryLimit = model.MemoryLimit ?? 64;
+        CPUCount = model.CPUCount ?? 1;
+        ContainerExposePort = model.ContainerExposePort ?? 80;
+        OriginalScore = model.OriginalScore;
+        MinScore = model.MinScore;
+        ExpectMaxCount = model.ExpectMaxCount;
+        AwardCount = model.AwardCount;
+        FileName = model.FileName ?? "attachment";
+
+        return this;
+    }
 }

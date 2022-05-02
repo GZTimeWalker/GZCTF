@@ -83,25 +83,4 @@ public class ChallengeModel
     /// 统一文件名
     /// </summary>
     public string? FileName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Flag 及其对应附件
-    /// </summary>
-    public List<FlagInfoModel> Flags { get; set; } = new();
-}
-
-public class FlagInfoModel
-{
-    /// <summary>
-    /// Flag文本
-    /// </summary>
-    public string Flag { get; set; } = string.Empty;
-    /// <summary>
-    /// Flag 对应附件（本地文件哈希）
-    /// </summary>
-    public string? FileHash { get; set; } = string.Empty;
-    /// <summary>
-    /// Flag 对应附件 (远程文件）
-    /// </summary>
-    public string? Url { get; set; } = string.Empty;
 }

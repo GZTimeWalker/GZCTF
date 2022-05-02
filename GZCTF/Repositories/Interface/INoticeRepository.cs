@@ -10,7 +10,7 @@ public interface INoticeRepository : IRepository
     /// <param name="notice">公告对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Notice> AddNotice(Notice notice, CancellationToken token = default);
+    public Task<Notice> CreateNotice(Notice notice, CancellationToken token = default);
 
     /// <summary>
     /// 移除公告
@@ -34,12 +34,4 @@ public interface INoticeRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Notice?> GetNoticeById(int id, CancellationToken token = default);
-
-    /// <summary>
-    /// 异步更新
-    /// </summary>
-    /// <param name="notice">公告对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<int> UpdateAsync(Notice notice, CancellationToken token = default);
 }

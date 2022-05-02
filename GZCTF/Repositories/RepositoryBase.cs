@@ -11,6 +11,12 @@ public class RepositoryBase : IRepository
     public RepositoryBase(AppDbContext _context)
         => context = _context;
 
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-        => context.Database.BeginTransactionAsync(cancellationToken);
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default)
+        => context.Database.BeginTransactionAsync(token);
+
+    public Task UpdateAsync(object item, CancellationToken token = default)
+    {
+        context.Update(item);
+        return context.SaveChangesAsync(token);
+    }
 }

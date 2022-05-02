@@ -8,7 +8,7 @@ public class NoticeRepository : RepositoryBase, INoticeRepository
 {
     public NoticeRepository(AppDbContext _context) : base(_context) { }
 
-    public async Task<Notice> AddNotice(Notice notice, CancellationToken token = default)
+    public async Task<Notice> CreateNotice(Notice notice, CancellationToken token = default)
     {
         await context.AddAsync(notice, token);
         await context.SaveChangesAsync(token);
@@ -26,11 +26,5 @@ public class NoticeRepository : RepositoryBase, INoticeRepository
     {
         context.Remove(notice);
         await context.SaveChangesAsync(token);
-    }
-
-    public Task<int> UpdateAsync(Notice notice, CancellationToken token = default)
-    {
-        context.Update(notice);
-        return context.SaveChangesAsync(token);
     }
 }

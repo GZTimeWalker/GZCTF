@@ -47,7 +47,7 @@ public class EditController : Controller
     [ProducesResponseType(typeof(Notice), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddNotice([FromBody] NoticeModel model, CancellationToken token)
     {
-        var res = await noticeRepository.AddNotice(new() {
+        var res = await noticeRepository.CreateNotice(new() {
              Content = model.Content,
              Title = model.Title,
              IsPinned = model.IsPinned,
@@ -135,19 +135,11 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGame([FromBody] GameInfoModel model, CancellationToken token)
     {
-        var game = await gameRepository.CreateGame(new()
-        {
-            Title = model.Title,
-            Content = model.Content,
-            Summary = model.Summary,
-            StartTimeUTC = model.StartTimeUTC,
-            EndTimeUTC = model.EndTimeUTC,
-            TeamMemberCountLimit = model.TeamMemberCountLimit,
-        }, token);
+        var game = await gameRepository.CreateGame(new Game().Update(model), token);
         
         return Ok(game);
     }
-
+    
     /// <summary>
     /// 获取比赛列表
     /// </summary>
@@ -205,12 +197,7 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        game.Title = model.Title;
-        game.Content = model.Content;
-        game.Summary = model.Summary;
-        game.StartTimeUTC = model.StartTimeUTC;
-        game.EndTimeUTC = model.EndTimeUTC;
-        game.TeamMemberCountLimit = model.TeamMemberCountLimit;
+        game.Update(model);
 
         return Ok(game);
     }
@@ -235,7 +222,7 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
         
-        var res = await gameNoticeRepository.AddNotice(game, new()
+        var res = await gameNoticeRepository.CreateNotice(game, new()
         {
             Content = model.Content,
             Type = NoticeType.Normal,
@@ -252,9 +239,9 @@ public class EditController : Controller
     /// 获取比赛公告，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛ID</param>
-    /// <param name="token"></param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过数量</param>
+    /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpGet("Games/{id}/Notices")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
@@ -308,7 +295,84 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await challengeRepository.CreateChallenge(game, model, token);
+        var res = await challengeRepository.CreateChallenge(game, new Challenge().Update(model), token);
+
+        return Ok(res);
+    }
+
+    /// <summary>
+    /// 获取全部比赛题目
+    /// </summary>
+    /// <remarks>
+    /// 获取全部比赛题目，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛ID</param>
+    /// <param name="count">数量</param>
+    /// <param name="skip">跳过数量</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目</response>
+    [HttpGet("Games/{id}/Challenges")]
+    [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, [FromQuery] int count, [FromQuery] int skip, CancellationToken token)
+        => Ok((await challengeRepository.GetChallenges(id, count, skip, token)).Select(c => ChallengeInfoModel.FromChallenge(c)));
+
+    /// <summary>
+    /// 获取比赛题目
+    /// </summary>
+    /// <remarks>
+    /// 获取比赛题目，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛ID</param>
+    /// <param name="cId">题目Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目</response>
+    [HttpPost("Games/{id}/Challenges/{cId}")]
+    [ProducesResponseType(typeof(Challenge), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var res = await challengeRepository.GetChallenge(id, cId, token);
+
+        if (res is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        return Ok(res);
+    }
+
+
+    /// <summary>
+    /// 修改比赛题目信息
+    /// </summary>
+    /// <remarks>
+    /// 修改比赛题目，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛ID</param>
+    /// <param name="cId">题目Id</param>
+    /// <param name="model">题目信息</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目</response>
+    [HttpPut("Games/{id}/Challenges/{cId}")]
+    [ProducesResponseType(typeof(Challenge), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateGameChallenge([FromRoute] int id, [FromRoute] int cId, [FromBody] ChallengeModel model, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var res = await challengeRepository.GetChallenge(id, cId, token);
+
+        if (res is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        res.Update(model);
+        await challengeRepository.UpdateAsync(res, token);
 
         return Ok(res);
     }
