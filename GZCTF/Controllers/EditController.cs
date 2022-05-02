@@ -344,7 +344,6 @@ public class EditController : Controller
         return Ok(res);
     }
 
-
     /// <summary>
     /// 修改比赛题目信息
     /// </summary>
@@ -375,5 +374,95 @@ public class EditController : Controller
         await challengeRepository.UpdateAsync(res, token);
 
         return Ok(res);
+    }
+
+    /// <summary>
+    /// 删除比赛题目
+    /// </summary>
+    /// <remarks>
+    /// 删除比赛题目，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛ID</param>
+    /// <param name="cId">题目Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目</response>
+    [HttpDelete("Games/{id}/Challenges/{cId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var res = await challengeRepository.GetChallenge(id, cId, token);
+
+        if (res is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        await challengeRepository.RemoveChallenge(res, token);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// 添加比赛题目 Flag
+    /// </summary>
+    /// <remarks>
+    /// 添加比赛题目 Flag，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛ID</param>
+    /// <param name="cId">题目ID</param>
+    /// <param name="model"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目</response>
+    [HttpPost("Games/{id}/Challenges/{cId}/Flags")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddFlag([FromRoute] int id, [FromRoute] int cId, [FromBody] FlagInfoModel model, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
+
+        if (challenge is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        var fid = await challengeRepository.AddFlag(challenge, model, token);
+
+        return Ok(fid);
+    }
+
+    /// <summary>
+    /// 删除比赛题目 Flag
+    /// </summary>
+    /// <remarks>
+    /// 删除比赛题目 Flag，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛ID</param>
+    /// <param name="cId">题目ID</param>
+    /// <param name="fId">Flag ID</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目</response>
+    [HttpDelete("Games/{id}/Challenges/{cId}/Flags/{fId}")]
+    [ProducesResponseType(typeof(TaskStatus), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveFlag([FromRoute] int id, [FromRoute] int cId, [FromRoute] int fId, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
+        
+        if (challenge is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
     }
 }

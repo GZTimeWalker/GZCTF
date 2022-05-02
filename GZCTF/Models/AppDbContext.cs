@@ -156,6 +156,12 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasConversion<string>();
         });
 
+
+        builder.Entity<FlagContext>(entity =>
+        {
+            entity.Navigation(e => e.LocalFile).AutoInclude();
+        });
+
         builder.Entity<GameEvent>(entity =>
         {
             entity.HasOne(e => e.Team)
