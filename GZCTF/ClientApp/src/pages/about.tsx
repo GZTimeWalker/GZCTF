@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import { Text, Stack, Group, Title, Center } from '@mantine/core';
-import MainIcon from './components/icon/MainIcon';
-import WithNavBar from './components/WithNavbar';
-import RichTextEditor from './components/RichText';
+import MainIcon from '../components/icon/MainIcon';
+import WithNavBar from '../components/WithNavbar';
+import RichTextEditor from '../components/RichText';
 import { useState } from 'react';
 
 const initialValue =

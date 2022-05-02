@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 import { useState } from 'react';
 import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
-import AccountView from '../components/AccountView';
-import { AccountService } from '../client';
+import AccountView from '../../components/AccountView';
+import { AccountService } from '../../client';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { showNotification } from '@mantine/notifications';

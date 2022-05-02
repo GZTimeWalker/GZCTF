@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Link from 'next/link';
 import { TextInput, Button, Anchor } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
-import AccountView from '../components/AccountView';
+import AccountView from '../../components/AccountView';
 
 const Recovery: NextPage = () => {
   const [email, setEmail] = useInputState('');

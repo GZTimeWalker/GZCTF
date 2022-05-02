@@ -14,10 +14,10 @@ import {
 import { useInputState } from '@mantine/hooks';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import AccountView from '../components/AccountView';
+import AccountView from '../../components/AccountView';
 import { showNotification } from '@mantine/notifications';
 import { useState } from 'react';
-import { AccountService } from '../client';
+import { AccountService } from '../../client';
 
 function PasswordRequirement({ meets, label }: { meets: boolean; label: string }) {
   return (
