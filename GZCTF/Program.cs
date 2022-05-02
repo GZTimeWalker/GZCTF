@@ -20,6 +20,7 @@ using Serilog;
 using Serilog.Events;
 using Namotion.Reflection;
 using Microsoft.Extensions.Configuration;
+using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -204,7 +205,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseOpenApi();
+    app.UseOpenApi(options => { options.PostProcess += (document, _) => { document.Servers.Clear(); }; });
 }
 else
 {
