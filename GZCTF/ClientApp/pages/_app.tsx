@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { MantineProvider, Global, ColorScheme, ColorSchemeProvider } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { NotificationsProvider } from '@mantine/notifications';
+import { SWRConfig } from 'swr';
 import './_app.css';
 
 export default function App(props: AppProps) {
@@ -71,19 +72,27 @@ export default function App(props: AppProps) {
           }}
         >
           <NotificationsProvider zIndex={5000}>
-          <Global
-            styles={(theme) => ({
-              body: {
-                ...theme.fn.fontStyles(),
-                backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-                color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
-                lineHeight: theme.lineHeight,
-                padding: 0,
-                margin: 0,
-              },
-            })}
-          />
-            <Component {...pageProps} />
+            <Global
+              styles={(theme) => ({
+                body: {
+                  ...theme.fn.fontStyles(),
+                  backgroundColor:
+                    theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                  color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+                  lineHeight: theme.lineHeight,
+                  padding: 0,
+                  margin: 0,
+                },
+              })}
+            />
+            <SWRConfig
+              value={{
+                refreshInterval: 10000,
+                fetcher: (arg: string) => fetch(arg).then(res => res.json()),
+              }}
+            >
+              <Component {...pageProps} />
+            </SWRConfig>
           </NotificationsProvider>
         </MantineProvider>
       </ColorSchemeProvider>

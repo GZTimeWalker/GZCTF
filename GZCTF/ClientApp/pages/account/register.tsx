@@ -17,6 +17,7 @@ import { Icon } from '@mdi/react';
 import AccountView from '../components/AccountView';
 import { showNotification } from '@mantine/notifications';
 import { useState } from 'react';
+import { AccountService } from '../client';
 
 function PasswordRequirement({ meets, label }: { meets: boolean; label: string }) {
   return (
@@ -53,6 +54,8 @@ const Register: NextPage = () => {
   const [pwd, setPwd] = useInputState('');
   const [uname, setUname] = useInputState('');
   const [email, setEmail] = useInputState('');
+  const [disabled, setDisabled] = useState(false);
+
   const strength = getStrength(pwd);
   const checks = [
     <PasswordRequirement key={0} label="至少 6 个字符" meets={pwd.length >= 6} />,
@@ -66,6 +69,33 @@ const Register: NextPage = () => {
   ];
   const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
+  const onRegister = () => {
+    setDisabled(true);
+    AccountService.accountRegister({
+      userName: uname,
+      password: pwd,
+      email,
+    })
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          title: '一封注册邮件已发送',
+          message: '请检查你的邮箱及垃圾邮件~',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        });
+      })
+      .catch(() => {
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: '请稍后重试',
+          icon: <Icon path={mdiClose} size={1} />,
+        });
+        setDisabled(false);
+      });
+  };
+
   return (
     <AccountView>
       <TextInput
@@ -75,6 +105,7 @@ const Register: NextPage = () => {
         placeholder="ctf@example.com"
         style={{ width: '100%' }}
         value={email}
+        disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
       <TextInput
@@ -84,6 +115,7 @@ const Register: NextPage = () => {
         placeholder="ctfer"
         style={{ width: '100%' }}
         value={uname}
+        disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
       />
       <Popover
@@ -102,6 +134,7 @@ const Register: NextPage = () => {
             label="密码"
             placeholder="P4ssW@rd"
             value={pwd}
+            disabled={disabled}
             onChange={(event) => setPwd(event.currentTarget.value)}
           />
         }
@@ -121,18 +154,7 @@ const Register: NextPage = () => {
           已经拥有账户？
         </Anchor>
       </Link>
-      <Button
-        fullWidth
-        onClick={() => {
-          showNotification({
-            color: 'teal',
-            autoClose: 5000,
-            title: '一封注册邮件已发送',
-            message: '请检查你的邮箱及垃圾邮件~',
-            icon: <Icon path={mdiCheck} size={1} />,
-          });
-        }}
-      >
+      <Button fullWidth onClick={onRegister} disabled={disabled}>
         注册
       </Button>
     </AccountView>

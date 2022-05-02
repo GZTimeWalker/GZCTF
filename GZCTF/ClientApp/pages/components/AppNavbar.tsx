@@ -23,6 +23,8 @@ import { Icon } from '@mdi/react';
 import MainIcon from './icon/MainIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
+import { AccountService, ClientUserInfoModel } from '../client';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -103,6 +105,7 @@ const AppNavbar: FC = () => {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const { data } = useSWR<ClientUserInfoModel>('/api/account/profile');
 
   useEffect(() => {
     items.forEach((i) => {
@@ -111,6 +114,8 @@ const AppNavbar: FC = () => {
       }
     });
   }, [router.pathname]);
+
+  console.log(data)
 
   const links = items.map((link) => (
     <NavbarLink {...link} key={link.label} isActive={link.label === active} />
@@ -143,7 +148,7 @@ const AppNavbar: FC = () => {
             </UnstyledButton>
           </Tooltip>
           {/* TODO: /profile but redirect to login when there is no user */}
-          <Link href="/account/login" passHref>
+          <Link href={`/account/login?from=${router.asPath}`} passHref>
             <Tooltip
               label="Login"
               classNames={{ body: classes.tooltipBody }}

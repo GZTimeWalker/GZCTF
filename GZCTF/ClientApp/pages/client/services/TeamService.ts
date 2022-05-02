@@ -22,7 +22,7 @@ export class TeamService {
     ): CancelablePromise<TeamInfoModel> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Team/{id}',
+            url: '/api/team/{id}',
             path: {
                 'id': id,
             },
@@ -46,7 +46,7 @@ export class TeamService {
     ): CancelablePromise<TeamInfoModel> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Team/{id}',
+            url: '/api/team/{id}',
             path: {
                 'id': id,
             },
@@ -74,7 +74,7 @@ export class TeamService {
     ): CancelablePromise<TeamInfoModel> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/Team/{id}',
+            url: '/api/team/{id}',
             path: {
                 'id': id,
             },
@@ -95,7 +95,7 @@ export class TeamService {
     public static teamGetTeamsInfo(): CancelablePromise<Array<TeamInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Team',
+            url: '/api/team',
             errors: {
                 400: `队伍不存在`,
             },
@@ -114,7 +114,7 @@ export class TeamService {
     ): CancelablePromise<TeamInfoModel> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Team',
+            url: '/api/team',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -135,7 +135,7 @@ export class TeamService {
     ): CancelablePromise<TeamInfoModel> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Team/{id}/SetActive',
+            url: '/api/team/{id}/setactive',
             path: {
                 'id': id,
             },
@@ -159,7 +159,7 @@ export class TeamService {
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Team/{id}/Invite',
+            url: '/api/team/{id}/invite',
             path: {
                 'id': id,
             },
@@ -183,7 +183,7 @@ export class TeamService {
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Team/{id}/UpdateInviteToken',
+            url: '/api/team/{id}/updateinvitetoken',
             path: {
                 'id': id,
             },
@@ -209,7 +209,7 @@ export class TeamService {
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Team/{id}/Kick/{userid}',
+            url: '/api/team/{id}/kick/{userid}',
             path: {
                 'id': id,
                 'userid': userid,
@@ -236,7 +236,7 @@ export class TeamService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Team/{id}/Accept/{token}',
+            url: '/api/team/{id}/accept/{token}',
             path: {
                 'id': id,
                 'token': token,
@@ -261,7 +261,7 @@ export class TeamService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Team/{id}/Leave',
+            url: '/api/team/{id}/leave',
             path: {
                 'id': id,
             },
@@ -289,7 +289,7 @@ export class TeamService {
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Team/{id}/Avatar',
+            url: '/api/team/{id}/avatar',
             path: {
                 'id': id,
             },

@@ -26,7 +26,7 @@ export class GameService {
     public static gameGamesAll(): CancelablePromise<Array<BasicGameInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game',
+            url: '/api/game',
         });
     }
 
@@ -42,7 +42,7 @@ export class GameService {
     ): CancelablePromise<GameDetailsModel> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}',
+            url: '/api/game/{id}',
             path: {
                 'id': id,
             },
@@ -61,7 +61,7 @@ export class GameService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Game/{id}',
+            url: '/api/game/{id}',
             path: {
                 'id': id,
             },
@@ -80,7 +80,7 @@ export class GameService {
     ): CancelablePromise<ScoreboardModel> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}/Scoreboard',
+            url: '/api/game/{id}/scoreboard',
             path: {
                 'id': id,
             },
@@ -99,7 +99,7 @@ export class GameService {
     ): CancelablePromise<Array<GameEvent>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}/Notices',
+            url: '/api/game/{id}/notices',
             path: {
                 'id': id,
             },
@@ -122,7 +122,7 @@ export class GameService {
     ): CancelablePromise<Array<Submission>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}/Submissions',
+            url: '/api/game/{id}/submissions',
             path: {
                 'id': id,
             },
@@ -149,7 +149,7 @@ export class GameService {
     ): CancelablePromise<Array<InstanceInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}/Instances',
+            url: '/api/game/{id}/instances',
             path: {
                 'id': id,
             },
@@ -172,7 +172,7 @@ export class GameService {
     ): CancelablePromise<Record<string, Array<ChallengeInfo>>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}/Challenges',
+            url: '/api/game/{id}/challenges',
             path: {
                 'id': id,
             },
@@ -193,7 +193,7 @@ export class GameService {
     ): CancelablePromise<ChallengeDetailModel> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}/Challenges/{challengeId}',
+            url: '/api/game/{id}/challenges/{challengeId}',
             path: {
                 'id': id,
                 'challengeId': challengeId,
@@ -217,7 +217,7 @@ export class GameService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Game/{id}/Challenges/{challengeId}',
+            url: '/api/game/{id}/challenges/{challengeId}',
             path: {
                 'id': id,
                 'challengeId': challengeId,
@@ -243,7 +243,7 @@ export class GameService {
     ): CancelablePromise<AnswerResult> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Game/{id}/Status/{submitId}',
+            url: '/api/game/{id}/status/{submitId}',
             path: {
                 'id': id,
                 'challengeId': challengeId,

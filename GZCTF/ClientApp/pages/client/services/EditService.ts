@@ -31,7 +31,7 @@ export class EditService {
     ): CancelablePromise<Notice> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Edit/Notices',
+            url: '/api/edit/notices',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -46,7 +46,7 @@ export class EditService {
     public static editGetNotices(): CancelablePromise<Array<Notice>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Edit/Notices',
+            url: '/api/edit/notices',
         });
     }
 
@@ -64,7 +64,7 @@ export class EditService {
     ): CancelablePromise<Notice> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Edit/Notices/{id}',
+            url: '/api/edit/notices/{id}',
             path: {
                 'id': id,
             },
@@ -88,7 +88,7 @@ export class EditService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/Edit/Notices/{id}',
+            url: '/api/edit/notices/{id}',
             path: {
                 'id': id,
             },
@@ -110,7 +110,7 @@ export class EditService {
     ): CancelablePromise<Game> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Edit/Games',
+            url: '/api/edit/games',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -130,7 +130,7 @@ export class EditService {
     ): CancelablePromise<Array<GameInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Edit/Games',
+            url: '/api/edit/games',
             query: {
                 'count': count,
                 'skip': skip,
@@ -150,7 +150,7 @@ export class EditService {
     ): CancelablePromise<Game> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Edit/Games/{id}',
+            url: '/api/edit/games/{id}',
             path: {
                 'id': id,
             },
@@ -171,7 +171,7 @@ export class EditService {
     ): CancelablePromise<Game> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Edit/Games/{id}',
+            url: '/api/edit/games/{id}',
             path: {
                 'id': id,
             },
@@ -194,7 +194,7 @@ export class EditService {
     ): CancelablePromise<GameNotice> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Edit/Games/{id}/Notices',
+            url: '/api/edit/games/{id}/notices',
             path: {
                 'id': id,
             },
@@ -219,7 +219,7 @@ export class EditService {
     ): CancelablePromise<GameNotice> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Edit/Games/{id}/Notices',
+            url: '/api/edit/games/{id}/notices',
             path: {
                 'id': id,
             },
@@ -244,7 +244,7 @@ export class EditService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/Edit/Games/{id}/Notices/{noticeId}',
+            url: '/api/edit/games/{id}/notices/{noticeId}',
             path: {
                 'id': id,
                 'noticeId': noticeId,
@@ -269,7 +269,7 @@ export class EditService {
     ): CancelablePromise<Challenge> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Edit/Games/{id}/Challenges',
+            url: '/api/edit/games/{id}/challenges',
             path: {
                 'id': id,
             },
@@ -294,7 +294,7 @@ export class EditService {
     ): CancelablePromise<Array<ChallengeInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Edit/Games/{id}/Challenges',
+            url: '/api/edit/games/{id}/challenges',
             path: {
                 'id': id,
             },
@@ -319,7 +319,7 @@ export class EditService {
     ): CancelablePromise<Challenge> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Edit/Games/{id}/Challenges/{cId}',
+            url: '/api/edit/games/{id}/challenges/{cId}',
             path: {
                 'id': id,
                 'cId': cId,
@@ -343,7 +343,7 @@ export class EditService {
     ): CancelablePromise<Challenge> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Edit/Games/{id}/Challenges/{cId}',
+            url: '/api/edit/games/{id}/challenges/{cId}',
             path: {
                 'id': id,
                 'cId': cId,
@@ -367,7 +367,7 @@ export class EditService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/Edit/Games/{id}/Challenges/{cId}',
+            url: '/api/edit/games/{id}/challenges/{cId}',
             path: {
                 'id': id,
                 'cId': cId,
@@ -391,7 +391,7 @@ export class EditService {
     ): CancelablePromise<number> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Edit/Games/{id}/Challenges/{cId}/Flags',
+            url: '/api/edit/games/{id}/challenges/{cId}/flags',
             path: {
                 'id': id,
                 'cId': cId,
@@ -417,7 +417,7 @@ export class EditService {
     ): CancelablePromise<TaskStatus> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/Edit/Games/{id}/Challenges/{cId}/Flags/{fId}',
+            url: '/api/edit/games/{id}/challenges/{cId}/flags/{fId}',
             path: {
                 'id': id,
                 'cId': cId,

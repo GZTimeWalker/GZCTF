@@ -23,7 +23,7 @@ export class AssetsService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/Assets/{hash}/{filename}',
+            url: '/assets/{hash}/{filename}',
             path: {
                 'hash': hash,
                 'filename': filename,
@@ -48,7 +48,7 @@ export class AssetsService {
     ): CancelablePromise<Array<LocalFile>> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Assets',
+            url: '/api/assets',
             formData: formData,
             mediaType: 'multipart/form-data',
             errors: {
@@ -71,7 +71,7 @@ export class AssetsService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/Assets/{hash}',
+            url: '/api/assets/{hash}',
             path: {
                 'hash': hash,
             },

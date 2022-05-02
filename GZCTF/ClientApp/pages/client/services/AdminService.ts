@@ -27,7 +27,7 @@ export class AdminService {
     ): CancelablePromise<Array<BasicUserInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Admin/Users',
+            url: '/api/admin/users',
             query: {
                 'count': count,
                 'skip': skip,
@@ -53,7 +53,7 @@ export class AdminService {
     ): CancelablePromise<Array<TeamInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Admin/Teams',
+            url: '/api/admin/teams',
             query: {
                 'count': count,
                 'skip': skip,
@@ -79,7 +79,7 @@ export class AdminService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Admin/Users/{userid}',
+            url: '/api/admin/users/{userid}',
             path: {
                 'userid': userid,
             },
@@ -105,7 +105,7 @@ export class AdminService {
     ): CancelablePromise<ClientUserInfoModel> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Admin/Users/{userid}',
+            url: '/api/admin/users/{userid}',
             path: {
                 'userid': userid,
             },
@@ -128,7 +128,7 @@ export class AdminService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/Admin/Users/{userid}',
+            url: '/api/admin/users/{userid}',
             path: {
                 'userid': userid,
             },
@@ -155,7 +155,7 @@ export class AdminService {
     ): CancelablePromise<Array<ClientUserInfoModel>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Admin/Logs/{level}',
+            url: '/api/admin/logs/{level}',
             path: {
                 'level': level,
             },
@@ -184,7 +184,7 @@ export class AdminService {
     ): CancelablePromise<Array<LocalFile>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/Admin/Files',
+            url: '/api/admin/files',
             query: {
                 'count': count,
                 'skip': skip,

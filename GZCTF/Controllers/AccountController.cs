@@ -395,7 +395,7 @@ public class AccountController : ControllerBase
     /// </remarks>
     /// <response code="200">用户成功获取信息</response>
     /// <response code="401">未授权用户</response>
-    [HttpPost]
+    [HttpGet]
     [RequireUser]
     [ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]

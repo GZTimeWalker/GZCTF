@@ -72,12 +72,11 @@ else
     ));
 }
 
-
-
 #endregion
 
 #region OpenApiDocument
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddOpenApiDocument(settings =>
 {
     settings.DocumentName = "v1";
@@ -166,7 +165,6 @@ builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
-
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddHostedService<FlagChecker>();

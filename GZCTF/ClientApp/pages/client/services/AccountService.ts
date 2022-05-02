@@ -30,7 +30,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Account/Register',
+            url: '/api/account/register',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -51,7 +51,7 @@ export class AccountService {
     ): CancelablePromise<RequestResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Account/Recovery',
+            url: '/api/account/recovery',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -73,7 +73,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Account/PasswordReset',
+            url: '/api/account/passwordreset',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -94,7 +94,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Account/Verify',
+            url: '/api/account/verify',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -116,7 +116,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Account/LogIn',
+            url: '/api/account/login',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -134,7 +134,7 @@ export class AccountService {
     public static accountLogOut(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Account/LogOut',
+            url: '/api/account/logout',
         });
     }
 
@@ -150,7 +150,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Account/Update',
+            url: '/api/account/update',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -171,7 +171,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Account/ChangePassword',
+            url: '/api/account/changepassword',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -192,7 +192,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Account/ChangeEmail',
+            url: '/api/account/changeemail',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -214,7 +214,7 @@ export class AccountService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/Account/MailChangeConfirm',
+            url: '/api/account/mailchangeconfirm',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -232,8 +232,8 @@ export class AccountService {
      */
     public static accountProfile(): CancelablePromise<ClientUserInfoModel> {
         return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/Account/Profile',
+            method: 'GET',
+            url: '/api/account/profile',
             errors: {
                 401: `未授权用户`,
             },
@@ -254,7 +254,7 @@ export class AccountService {
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/Account/Avatar',
+            url: '/api/account/avatar',
             formData: formData,
             mediaType: 'multipart/form-data',
             errors: {
