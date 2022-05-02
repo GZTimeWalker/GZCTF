@@ -15,6 +15,10 @@ const nextConfig = {
         destination: `${TARGET}/swagger/:path*`
       },
       {
+        source: '/assets/:path*',
+        destination: `${TARGET}/assets/:path*`
+      },
+      {
         source: '/hub/:path*',
         destination: `${TARGET}/hub/:path*`
       }

@@ -57,7 +57,7 @@ export default function App(props: AppProps) {
               alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', ''],
             },
             primaryColor: 'brand',
-            fontFamily: "Play, 'Noto Sans SC', sans-serif",
+            fontFamily: "'IBM Plex Sans', 'Noto Sans SC', sans-serif",
             fontFamilyMonospace: "'JetBrains Mono', monospace",
             fontSizes: {
               xs: 13,
@@ -67,7 +67,7 @@ export default function App(props: AppProps) {
               xl: 30,
             },
             headings: {
-              fontFamily: "Play,'Noto Sans SC', sans-serif",
+              fontFamily: "'IBM Plex Sans','Noto Sans SC', sans-serif",
             },
           }}
         >

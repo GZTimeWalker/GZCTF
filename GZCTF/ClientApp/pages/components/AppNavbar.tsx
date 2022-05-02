@@ -4,10 +4,11 @@ import {
   Stack,
   Center,
   Navbar,
+  Avatar,
+  Tooltip,
   createStyles,
   UnstyledButton,
   useMantineColorScheme,
-  Tooltip,
 } from '@mantine/core';
 import {
   mdiAccountCircleOutline,
@@ -23,8 +24,8 @@ import { Icon } from '@mdi/react';
 import MainIcon from './icon/MainIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
-import { AccountService, ClientUserInfoModel } from '../client';
+import useSWRImmutable from 'swr/immutable';
+import { ClientUserInfoModel } from '../client';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -38,7 +39,7 @@ const useStyles = createStyles((theme) => ({
     cursor: 'pointer',
 
     '&:hover': {
-      backgroundColor: theme.colors.gray[6] + "80",
+      backgroundColor: theme.colors.gray[6] + '80',
     },
   },
 
@@ -55,19 +56,19 @@ const useStyles = createStyles((theme) => ({
 
   tooltipBody: {
     marginLeft: 20,
-    backgroundColor: theme.colorScheme === 'dark'
-      ? theme.colors[theme.primaryColor][8] + "40"
-      : theme.colors[theme.primaryColor][2],
-    color: theme.colorScheme === 'dark'
-      ? theme.colors[theme.primaryColor][4]
-      : theme.colors.gray[8]
-  }
+    backgroundColor:
+      theme.colorScheme === 'dark'
+        ? theme.colors[theme.primaryColor][8] + '40'
+        : theme.colors[theme.primaryColor][2],
+    color:
+      theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.gray[8],
+  },
 }));
 
 const items = [
   { icon: mdiHomeVariantOutline, label: 'Home', link: '/' },
-  { icon: mdiAccountGroupOutline, label: 'Teams' },
   { icon: mdiFlagOutline, label: 'Contest' },
+  { icon: mdiAccountGroupOutline, label: 'Teams' },
   { icon: mdiChartBoxOutline, label: 'Scoreboard' },
   { icon: mdiInformationOutline, label: 'About', link: '/about' },
 ];
@@ -84,11 +85,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles();
   return (
     <Link href={props.link ?? '#'} passHref>
-      <Tooltip
-        label={props.label}
-        classNames={{ body: classes.tooltipBody }}
-        position="right"
-      >
+      <Tooltip label={props.label} classNames={{ body: classes.tooltipBody }} position="right">
         <UnstyledButton
           onClick={props.onClick}
           className={cx(classes.link, { [classes.active]: props.isActive })}
@@ -105,7 +102,7 @@ const AppNavbar: FC = () => {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { data } = useSWR<ClientUserInfoModel>('/api/account/profile');
+  const { data } = useSWRImmutable<ClientUserInfoModel>('/api/account/profile');
 
   useEffect(() => {
     items.forEach((i) => {
@@ -115,8 +112,6 @@ const AppNavbar: FC = () => {
     });
   }, [router.pathname]);
 
-  console.log(data)
-
   const links = items.map((link) => (
     <NavbarLink {...link} key={link.label} isActive={link.label === active} />
   ));
@@ -125,7 +120,10 @@ const AppNavbar: FC = () => {
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
       <Navbar.Section grow>
         <Center>
-          <MainIcon style={{ width: "100%", height: 'auto', position: "relative", left: 2 }} ignoreTheme />
+          <MainIcon
+            style={{ width: '100%', height: 'auto', position: 'relative', left: 2 }}
+            ignoreTheme
+          />
         </Center>
       </Navbar.Section>
       <Navbar.Section grow mb={20} mt={20} style={{ display: 'flex', alignItems: 'center' }}>
@@ -133,29 +131,36 @@ const AppNavbar: FC = () => {
           {links}
         </Stack>
       </Navbar.Section>
-      <Navbar.Section grow style={{ display: "flex", flexDirection: "column", justifyContent: "end" }}>
+      <Navbar.Section
+        grow
+        style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
+      >
         <Stack align="center" spacing={5}>
           <Tooltip
-            label={colorScheme === 'dark' ? "Light Theme" : "Dark Theme"}
+            label={colorScheme === 'dark' ? 'Light Theme' : 'Dark Theme'}
             classNames={{ body: classes.tooltipBody }}
             position="right"
           >
             <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
-              {colorScheme === 'dark'
-                ? <Icon path={mdiWeatherSunny} size={1} />
-                : <Icon path={mdiWeatherNight} size={1} />
-              }
+              {colorScheme === 'dark' ? (
+                <Icon path={mdiWeatherSunny} size={1} />
+              ) : (
+                <Icon path={mdiWeatherNight} size={1} />
+              )}
             </UnstyledButton>
           </Tooltip>
-          {/* TODO: /profile but redirect to login when there is no user */}
-          <Link href={`/account/login?from=${router.asPath}`} passHref>
+          <Link href={data ? '/profile' : `/account/login?from=${router.asPath}`} passHref>
             <Tooltip
-              label="Login"
+              label={data ? 'Profile' : 'Login'}
               classNames={{ body: classes.tooltipBody }}
               position="right"
             >
               <Box className={cx(classes.link)}>
-                <Icon path={mdiAccountCircleOutline} size={1} />
+                {data && data.avatar ? (
+                  <Avatar src={data.avatar} radius="md" size="md"/>
+                ) : (
+                  <Icon path={mdiAccountCircleOutline} size={1} />
+                )}
               </Box>
             </Tooltip>
           </Link>
