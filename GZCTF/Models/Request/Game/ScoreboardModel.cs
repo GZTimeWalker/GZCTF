@@ -96,6 +96,7 @@ public class ChallengeItem
     /// 未解出、一血、二血、三血或者其他
     /// </summary>
     [JsonPropertyName("rank")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public SubmissionType Type { get; set; }
     /// <summary>
     /// 题目提交的时间，为了计算时间线
@@ -117,6 +118,7 @@ public class ChallengeInfo
     /// <summary>
     /// 题目标签
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ChallengeTag Tag { get; set; }
     /// <summary>
     /// 题目分值

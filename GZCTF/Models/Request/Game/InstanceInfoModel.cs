@@ -1,4 +1,7 @@
-﻿namespace CTFServer.Models.Request.Game;
+﻿using CTFServer.Models.Request.Edit;
+using System.Text.Json.Serialization;
+
+namespace CTFServer.Models.Request.Game;
 
 public class InstanceInfoModel
 {
@@ -46,31 +49,12 @@ public class InstanceInfoModel
         };
 }
 
-public class ChallengeInfoModel
-{
-    /// <summary>
-    /// 题目 Id
-    /// </summary>
-    public int Id { get; set; }
-    /// <summary>
-    /// 题目名称
-    /// </summary>
-    public string Title { get; set; } = string.Empty;
-    /// <summary>
-    /// 题目类型
-    /// </summary>
-    public ChallengeType Type { get; set; }
-    /// <summary>
-    /// 题目标签
-    /// </summary>
-    public ChallengeTag Tag { get; set; }
-}
-
 public class ContainerInfoModel
 {
     /// <summary>
     /// 容器状态
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ContainerStatus Status { get; set; } = ContainerStatus.Pending;
 
     /// <summary>
