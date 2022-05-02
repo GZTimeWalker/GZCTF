@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
 
-[Index(nameof(GameId))]
 public class Challenge
 {
     [Key]

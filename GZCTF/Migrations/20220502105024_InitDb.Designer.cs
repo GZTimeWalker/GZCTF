@@ -12,14 +12,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220405091045_Update")]
-    partial class Update
+    [Migration("20220502105024_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -142,35 +142,9 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("InstanceId");
+
                     b.ToTable("Containers");
-                });
-
-            modelBuilder.Entity("CTFServer.Models.Event", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("GameId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("PublishTimeUTC")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<byte>("Type")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("CTFServer.Models.FlagContext", b =>
@@ -231,7 +205,7 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TeamMemberLimitCount")
+                    b.Property<int>("TeamMemberCountLimit")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -241,6 +215,72 @@ namespace CTFServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.GameEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("PublishTimeUTC")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("integer");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GameEvents");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.GameNotice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("PublishTimeUTC")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GameNotices");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Instance", b =>
@@ -287,7 +327,7 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ParticipationId");
+                    b.HasIndex("ParticipationId", "ChallengeId", "GameId");
 
                     b.ToTable("Instances");
                 });
@@ -409,7 +449,7 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("TeamId");
+                    b.HasIndex("TeamId", "GameId");
 
                     b.ToTable("Participations");
                 });
@@ -452,9 +492,9 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ParticipationId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("ParticipationId", "ChallengeId", "GameId");
 
                     b.ToTable("Submissions");
                 });
@@ -755,13 +795,6 @@ namespace CTFServer.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("CTFServer.Models.Event", b =>
-                {
-                    b.HasOne("CTFServer.Models.Game", null)
-                        .WithMany("Events")
-                        .HasForeignKey("GameId");
-                });
-
             modelBuilder.Entity("CTFServer.Models.FlagContext", b =>
                 {
                     b.HasOne("CTFServer.Models.Challenge", "Challenge")
@@ -777,6 +810,42 @@ namespace CTFServer.Migrations
                     b.Navigation("Challenge");
 
                     b.Navigation("LocalFile");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.GameEvent", b =>
+                {
+                    b.HasOne("CTFServer.Models.Game", "Game")
+                        .WithMany("GameEvents")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CTFServer.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CTFServer.Models.UserInfo", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Game");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.GameNotice", b =>
+                {
+                    b.HasOne("CTFServer.Models.Game", "Game")
+                        .WithMany("GameNotices")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Instance", b =>
@@ -984,7 +1053,9 @@ namespace CTFServer.Migrations
                 {
                     b.Navigation("Challenges");
 
-                    b.Navigation("Events");
+                    b.Navigation("GameEvents");
+
+                    b.Navigation("GameNotices");
 
                     b.Navigation("Instances");
 

@@ -104,6 +104,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.Navigation(e => e.Team).AutoInclude();
+
+            entity.HasIndex(e => new { e.TeamId, e.GameId });
         });
 
         builder.Entity<Instance>(entity =>
@@ -128,6 +130,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
+
+            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId, e.GameId });
         });
 
         builder.Entity<Container>(entity =>
@@ -136,6 +140,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithOne(e => e.Container)
                 .HasForeignKey<Instance>(e => e.ContainerId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasIndex(e => e.InstanceId);
         });
 
         builder.Entity<Challenge>(entity =>
@@ -148,18 +154,24 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithOne(e => e.Challenge)
                 .HasForeignKey(e => e.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.GameId);
         });
 
         builder.Entity<Submission>(entity =>
         {
             entity.Property(e => e.Status)
                 .HasConversion<string>();
+
+            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId, e.GameId });
         });
 
 
         builder.Entity<FlagContext>(entity =>
         {
             entity.Navigation(e => e.LocalFile).AutoInclude();
+
+            entity.HasIndex(e => e.ChallengeId);
         });
 
         builder.Entity<GameEvent>(entity =>

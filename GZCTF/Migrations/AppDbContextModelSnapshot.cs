@@ -17,7 +17,7 @@ namespace CTFServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -140,6 +140,8 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("InstanceId");
+
                     b.ToTable("Containers");
                 });
 
@@ -201,7 +203,7 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TeamMemberLimitCount")
+                    b.Property<int>("TeamMemberCountLimit")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -225,7 +227,7 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("GameId")
+                    b.Property<int>("GameId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("PublishTimeUTC")
@@ -263,7 +265,7 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("GameId")
+                    b.Property<int>("GameId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("PublishTimeUTC")
@@ -323,7 +325,7 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ParticipationId");
+                    b.HasIndex("ParticipationId", "ChallengeId", "GameId");
 
                     b.ToTable("Instances");
                 });
@@ -445,7 +447,7 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("TeamId");
+                    b.HasIndex("TeamId", "GameId");
 
                     b.ToTable("Participations");
                 });
@@ -488,9 +490,9 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ParticipationId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("ParticipationId", "ChallengeId", "GameId");
 
                     b.ToTable("Submissions");
                 });
@@ -810,9 +812,11 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.GameEvent", b =>
                 {
-                    b.HasOne("CTFServer.Models.Game", null)
+                    b.HasOne("CTFServer.Models.Game", "Game")
                         .WithMany("GameEvents")
-                        .HasForeignKey("GameId");
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CTFServer.Models.Team", "Team")
                         .WithMany()
@@ -824,6 +828,8 @@ namespace CTFServer.Migrations
                         .WithMany()
                         .HasForeignKey("UserId");
 
+                    b.Navigation("Game");
+
                     b.Navigation("Team");
 
                     b.Navigation("User");
@@ -831,9 +837,13 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.GameNotice", b =>
                 {
-                    b.HasOne("CTFServer.Models.Game", null)
+                    b.HasOne("CTFServer.Models.Game", "Game")
                         .WithMany("GameNotices")
-                        .HasForeignKey("GameId");
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Instance", b =>
