@@ -64,4 +64,5 @@ export { AdminService } from './services/AdminService';
 export { AssetsService } from './services/AssetsService';
 export { EditService } from './services/EditService';
 export { GameService } from './services/GameService';
+export { InfoService } from './services/InfoService';
 export { TeamService } from './services/TeamService';

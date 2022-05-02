@@ -195,9 +195,21 @@ Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
-    var db = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>().Database;
-    if (db.IsRelational())
-        await db.MigrateAsync();
+    var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if (context.Database.IsRelational())
+        await context.Database.MigrateAsync();
+    
+    if (!await context.Notices.AnyAsync())
+    {
+        await context.Notices.AddAsync(new()
+        {
+            PublishTimeUTC = DateTimeOffset.UtcNow,
+            Title = "Welcome to GZ::CTF!",
+            Content = "一个开源的CTF比赛平台"
+        });
+
+        await context.SaveChangesAsync();
+    }
 }
 
 if (app.Environment.IsDevelopment())

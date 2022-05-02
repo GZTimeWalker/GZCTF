@@ -4,6 +4,7 @@ import MainIcon from '../components/icon/MainIcon';
 import WithNavBar from '../components/WithNavbar';
 import RichTextEditor from '../components/RichText';
 import { useState } from 'react';
+import LogoHeader from '../components/LogoHeader';
 
 const initialValue =
   '<p>Your initial <b>html value</b> or an empty string to init editor without value</p>';
@@ -14,10 +15,7 @@ const About: NextPage = () => {
   return (
     <WithNavBar>
       <Stack>
-        <Group>
-          <MainIcon style={{ height: 200, width: "auto" }} />
-          <Title>GZ::CTF</Title>
-        </Group>
+        <LogoHeader/>
         <Text>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima nostrum soluta vitae ea nulla cum autem possimus dicta provident aliquam. Quibusdam, consequatur eligendi dolorum illo impedit quos dolores aut fuga.
         </Text>

@@ -16,7 +16,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const AccountHeader: FC = () => {
+const LogoHeader: FC = () => {
   const { classes, cx } = useStyles();
 
   return (
@@ -29,4 +29,4 @@ const AccountHeader: FC = () => {
   );
 };
 
-export default AccountHeader;
+export default LogoHeader;

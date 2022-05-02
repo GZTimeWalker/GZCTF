@@ -1,26 +1,35 @@
 import type { NextPage } from 'next';
-import Link from 'next/link';
-import { Button, Stack, Group  } from '@mantine/core';
-import MainIcon from '../components/icon/MainIcon';
+import { Stack, Card, Group, Badge, Text, useMantineTheme } from '@mantine/core';
 import WithNavBar from '../components/WithNavbar';
+import useSWR from 'swr';
+import { Notice } from '../client';
+import LogoHeader from '../components/LogoHeader';
 
 const Home: NextPage = () => {
+  const { data } = useSWR<Array<Notice>>('/api/notices', { refreshInterval: 3600_000 });
+  const theme = useMantineTheme();
+  const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
 
   return (
     <WithNavBar>
       <Stack align="center">
-        <MainIcon style={{ maxWidth: 300 }}/>
-        <Group>
-          <Link href="/" passHref>
-            <Button component="a" color="brand"> Home </Button>
-          </Link>
-          <Link href="/about" passHref>
-            <Button component="a" color="brand"> About </Button>
-          </Link>
-        </Group>
+        <LogoHeader />
+        <Card shadow="sm" p="lg" style={{ width: '80%' }}>
+          <Group position="apart" style={{ margin: 'auto' }}>
+            <Text weight={500}>{data && data.length > 0 ? data[0].title : 'Welcome!'}</Text>
+            <Badge color="teal" variant="light">
+              {data && data.length > 0 ? new Date(data[0].time).toLocaleString() : new Date().toLocaleString()}
+            </Badge>
+          </Group>
+          <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
+            {data && data.length > 0
+              ? data[0].content
+              : 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet nam esse placeat, ipsa commodi aliquam aperiam quaerat quam velit exercitationem voluptates quidem ut eius ducimus aliquid est magni eaque corrupti?'}
+          </Text>
+        </Card>
       </Stack>
     </WithNavBar>
-  )
-}
+  );
+};
 
 export default Home;

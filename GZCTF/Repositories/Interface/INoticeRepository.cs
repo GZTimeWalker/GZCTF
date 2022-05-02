@@ -28,6 +28,13 @@ public interface INoticeRepository : IRepository
     public Task<Notice[]> GetNotices(CancellationToken token = default);
 
     /// <summary>
+    /// 获取最新公告（3条）
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Notice[]> GetLatestNotices(CancellationToken token = default);
+
+    /// <summary>
     /// 根据 Id 返回公告
     /// </summary>
     /// <param name="id"></param>

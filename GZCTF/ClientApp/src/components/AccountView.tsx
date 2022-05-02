@@ -4,7 +4,7 @@ import {
   Center,
   createStyles,
 } from '@mantine/core';
-import AccountHeader from './AccountHeader';
+import LogoHeader from './LogoHeader';
 
 const useStyles = createStyles((theme) => ({
   input: {
@@ -20,7 +20,7 @@ const AccountView: FC<React.ReactNode> = ({ children }) => {
   return (
     <Center style={{ height: '100vh' }}>
       <Stack align="center" justify="center" className={cx(classes.input)}>
-        <AccountHeader />
+        <LogoHeader />
         {children}
       </Stack>
     </Center>
