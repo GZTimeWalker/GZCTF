@@ -2,6 +2,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { MantineProvider, Global, ColorScheme, ColorSchemeProvider } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { NotificationsProvider } from '@mantine/notifications';
 import './_app.css';
 
 export default function App(props: AppProps) {
@@ -24,7 +25,9 @@ export default function App(props: AppProps) {
         <link rel="shortcut icon" href="/favicon.png" />
       </Head>
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider withGlobalStyles withCSSVariables
+        <MantineProvider
+          withGlobalStyles
+          withCSSVariables
           theme={{
             colorScheme: colorScheme,
             colors: {
@@ -53,20 +56,21 @@ export default function App(props: AppProps) {
               alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', ''],
             },
             primaryColor: 'brand',
-            fontFamily: "Kanit, 'Noto Sans SC', sans-serif",
+            fontFamily: "Play, 'Noto Sans SC', sans-serif",
             fontFamilyMonospace: "'JetBrains Mono', monospace",
             fontSizes: {
-              'xs': 13,
-              'sm': 16,
-              'md': 20,
-              'lg': 25,
-              'xl': 30
+              xs: 13,
+              sm: 16,
+              md: 20,
+              lg: 25,
+              xl: 30,
             },
             headings: {
-              fontFamily: "Kanit,'Noto Sans SC', sans-serif"
-            }
+              fontFamily: "Play,'Noto Sans SC', sans-serif",
+            },
           }}
         >
+          <NotificationsProvider zIndex={5000}>
           <Global
             styles={(theme) => ({
               body: {
@@ -75,11 +79,12 @@ export default function App(props: AppProps) {
                 color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
                 lineHeight: theme.lineHeight,
                 padding: 0,
-                margin: 0
+                margin: 0,
               },
             })}
           />
-          <Component {...pageProps} />
+            <Component {...pageProps} />
+          </NotificationsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </>

@@ -143,7 +143,7 @@ const AppNavbar: FC = () => {
             </UnstyledButton>
           </Tooltip>
           {/* TODO: /profile but redirect to login when there is no user */}
-          <Link href="/login" passHref>
+          <Link href="/account/login" passHref>
             <Tooltip
               label="Login"
               classNames={{ body: classes.tooltipBody }}
