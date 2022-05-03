@@ -113,7 +113,7 @@ const AppNavbar: FC = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { data, error } = useSWR<ClientUserInfoModel>('/api/account/profile', {
     refreshInterval: 3600_000,
-    shouldRetryOnError: false
+    shouldRetryOnError: false,
   });
 
   useEffect(() => {
@@ -155,19 +155,13 @@ const AppNavbar: FC = () => {
         style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
       >
         <Stack align="center" spacing={5}>
-          <Tooltip
-            label={colorScheme === 'dark' ? '明亮模式' : '黑夜模式'}
-            classNames={{ body: classes.tooltipBody }}
-            position="right"
-          >
-            <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
-              {colorScheme === 'dark' ? (
-                <Icon path={mdiWeatherSunny} size={1} />
-              ) : (
-                <Icon path={mdiWeatherNight} size={1} />
-              )}
-            </UnstyledButton>
-          </Tooltip>
+          <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
+            {colorScheme === 'dark' ? (
+              <Icon path={mdiWeatherSunny} size={1} />
+            ) : (
+              <Icon path={mdiWeatherNight} size={1} />
+            )}
+          </UnstyledButton>
 
           {data && !error ? (
             <Menu
