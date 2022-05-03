@@ -106,7 +106,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 const AppNavbar: FC = () => {
   const router = useRouter();
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState('Home');
+  const [active, setActive] = useState('主页');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { data, error } = api.account.useAccountProfile();
 

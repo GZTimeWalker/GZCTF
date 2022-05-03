@@ -11,41 +11,51 @@ const queryName = (query && query.name) || "query";
 const pathParams = _.values(parameters);
 const pathParamsNames = _.map(pathParams, "name");
 
-const requestConfigParam = {
+const SWRConfigParam = {
     name: "options",
     optional: true,
     type: "SWRConfiguration",
-    defaultValue: "{}",
+    defaultValue: null,
+}
+
+const MutateConfigParam = {
+    name: "options",
+    optional: true,
+    type: "MutatorOptions",
+    defaultValue: null,
+}
+
+const DataParam = {
+    name: "data",
+    optional: true,
+    type: type,
+    defaultValue: null,
 }
 
 const argToTmpl = ({ name, optional, type, defaultValue }) => `${name}${!defaultValue && optional ? '?' : ''}: ${type}${defaultValue ? ` = ${defaultValue}` : ''}`;
 
 const rawWrapperArgs = config.extractRequestParams ?
-    _.compact([
+    [
         requestParams && {
           name: pathParams.length ? `{ ${_.join(pathParamsNames, ", ")}, ...${queryName} }` : queryName,
           optional: false,
           type: getInlineParseContent(requestParams),
         },
         ...(!requestParams ? pathParams : []),
-        payload,
-        requestConfigParam,
-    ]) :
-    _.compact([
+        payload
+    ] : [
         ...pathParams,
         query,
-        payload,
-        requestConfigParam,
-    ])
+        payload
+    ]
 
 const mutateArgs = _
-    .sortBy(rawWrapperArgs.slice(0, rawWrapperArgs.length - 1), [o => o.optional])
+    .sortBy(_.compact([...rawWrapperArgs, DataParam, MutateConfigParam]), [o => o.optional])
     .map(argToTmpl)
     .join(', ')
 
 const wrapperArgs = _
-    // Sort by optionality
-    .sortBy(rawWrapperArgs, [o => o.optional])
+    .sortBy(_.compact([...rawWrapperArgs, SWRConfigParam]), [o => o.optional])
     .map(argToTmpl)
     .join(', ')
 
@@ -65,7 +75,15 @@ const queryTmpl = (query != null && queryName) || null;
     useSWR<<%~ type %>, <%~  errorType %>>(
         <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %>, options),
 
+/**
+<%~ routeDocs.description %>
+
+ * <% /* Here you can add some other JSDoc tags */ %>
+
+<%~ routeDocs.lines %>
+
+ */
   mutate<%~ route.routeName.usage.charAt(0).toUpperCase() %><%~ route.routeName.usage.slice(1) %><%~ route.namespace ? ': ' : ' = ' %>(<%~ mutateArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %> =>
-    mutate(
-        <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %>),
+    mutate<<%~ type %>>(
+        <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %>, data, options),
 <% } %>

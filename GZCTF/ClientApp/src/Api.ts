@@ -1,5 +1,3 @@
-import useSWR, { mutate, SWRConfiguration } from 'swr';
-
 /* eslint-disable */
 /* tslint:disable */
 /*
@@ -10,6 +8,8 @@ import useSWR, { mutate, SWRConfiguration } from 'swr';
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
+
+import useSWR, { mutate, MutatorOptions, SWRConfiguration } from 'swr';
 
 /**
  * 请求响应
@@ -1415,10 +1415,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取用户信息接口
      * @request GET:/api/account/profile
      */
-    useAccountProfile: (options: SWRConfiguration = {}) =>
+    useAccountProfile: (options?: SWRConfiguration) =>
       useSWR<ClientUserInfoModel, RequestResponse>(`/api/account/profile`, options),
 
-    mutateAccountProfile: () => mutate(`/api/account/profile`),
+    /**
+     * @description 使用此接口获取用户信息，需要User权限
+     *
+     * @tags Account
+     * @name AccountProfile
+     * @summary 获取用户信息接口
+     * @request GET:/api/account/profile
+     */
+    mutateAccountProfile: (data?: ClientUserInfoModel, options?: MutatorOptions) =>
+      mutate<ClientUserInfoModel>(`/api/account/profile`, data, options),
 
     /**
      * @description 使用此接口更新用户头像，需要User权限
@@ -1463,11 +1472,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部用户
      * @request GET:/api/admin/users
      */
-    useAdminUsers: (query?: { count?: number; skip?: number }, options: SWRConfiguration = {}) =>
+    useAdminUsers: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
       useSWR<BasicUserInfoModel[], RequestResponse>([`/api/admin/users`, query], options),
 
-    mutateAdminUsers: (query?: { count?: number; skip?: number }) =>
-      mutate([`/api/admin/users`, query]),
+    /**
+     * @description 使用此接口获取全部用户，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminUsers
+     * @summary 获取全部用户
+     * @request GET:/api/admin/users
+     */
+    mutateAdminUsers: (
+      query?: { count?: number; skip?: number },
+      data?: BasicUserInfoModel[],
+      options?: MutatorOptions
+    ) => mutate<BasicUserInfoModel[]>([`/api/admin/users`, query], data, options),
 
     /**
      * @description 使用此接口获取全部队伍，需要Admin权限
@@ -1493,11 +1513,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部队伍信息
      * @request GET:/api/admin/teams
      */
-    useAdminTeams: (query?: { count?: number; skip?: number }, options: SWRConfiguration = {}) =>
+    useAdminTeams: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
       useSWR<TeamInfoModel[], RequestResponse>([`/api/admin/teams`, query], options),
 
-    mutateAdminTeams: (query?: { count?: number; skip?: number }) =>
-      mutate([`/api/admin/teams`, query]),
+    /**
+     * @description 使用此接口获取全部队伍，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminTeams
+     * @summary 获取全部队伍信息
+     * @request GET:/api/admin/teams
+     */
+    mutateAdminTeams: (
+      query?: { count?: number; skip?: number },
+      data?: TeamInfoModel[],
+      options?: MutatorOptions
+    ) => mutate<TeamInfoModel[]>([`/api/admin/teams`, query], data, options),
 
     /**
      * @description 使用此接口修改用户信息，需要Admin权限
@@ -1539,10 +1570,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取用户信息
      * @request GET:/api/admin/users/{userid}
      */
-    useAdminUserInfo: (userid: string, options: SWRConfiguration = {}) =>
+    useAdminUserInfo: (userid: string, options?: SWRConfiguration) =>
       useSWR<ClientUserInfoModel, RequestResponse>(`/api/admin/users/${userid}`, options),
 
-    mutateAdminUserInfo: (userid: string) => mutate(`/api/admin/users/${userid}`),
+    /**
+     * @description 使用此接口获取用户信息，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminUserInfo
+     * @summary 获取用户信息
+     * @request GET:/api/admin/users/{userid}
+     */
+    mutateAdminUserInfo: (userid: string, data?: ClientUserInfoModel, options?: MutatorOptions) =>
+      mutate<ClientUserInfoModel>(`/api/admin/users/${userid}`, data, options),
 
     /**
      * @description 使用此接口删除用户，需要Admin权限
@@ -1590,12 +1630,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useAdminLogs: (
       level: string | null,
       query?: { count?: number; skip?: number },
-      options: SWRConfiguration = {}
+      options?: SWRConfiguration
     ) =>
       useSWR<ClientUserInfoModel[], RequestResponse>([`/api/admin/logs/${level}`, query], options),
 
-    mutateAdminLogs: (level: string | null, query?: { count?: number; skip?: number }) =>
-      mutate([`/api/admin/logs/${level}`, query]),
+    /**
+     * @description 使用此接口获取全部日志，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminLogs
+     * @summary 获取全部日志
+     * @request GET:/api/admin/logs/{level}
+     */
+    mutateAdminLogs: (
+      level: string | null,
+      query?: { count?: number; skip?: number },
+      data?: ClientUserInfoModel[],
+      options?: MutatorOptions
+    ) => mutate<ClientUserInfoModel[]>([`/api/admin/logs/${level}`, query], data, options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -1621,11 +1673,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部文件
      * @request GET:/api/admin/files
      */
-    useAdminFiles: (query?: { count?: number; skip?: number }, options: SWRConfiguration = {}) =>
+    useAdminFiles: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
       useSWR<LocalFile[], RequestResponse>([`/api/admin/files`, query], options),
 
-    mutateAdminFiles: (query?: { count?: number; skip?: number }) =>
-      mutate([`/api/admin/files`, query]),
+    /**
+     * @description 使用此接口获取全部日志，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminFiles
+     * @summary 获取全部文件
+     * @request GET:/api/admin/files
+     */
+    mutateAdminFiles: (
+      query?: { count?: number; skip?: number },
+      data?: LocalFile[],
+      options?: MutatorOptions
+    ) => mutate<LocalFile[]>([`/api/admin/files`, query], data, options),
   };
   assets = {
     /**
@@ -1650,10 +1713,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取文件接口
      * @request GET:/assets/{hash}/{filename}
      */
-    useAssetsGetFile: (hash: string, filename: string, options: SWRConfiguration = {}) =>
+    useAssetsGetFile: (hash: string, filename: string, options?: SWRConfiguration) =>
       useSWR<void, RequestResponse>(`/assets/${hash}/${filename}`, options),
 
-    mutateAssetsGetFile: (hash: string, filename: string) => mutate(`/assets/${hash}/${filename}`),
+    /**
+     * @description 根据哈希获取文件，不匹配文件名
+     *
+     * @tags Assets
+     * @name AssetsGetFile
+     * @summary 获取文件接口
+     * @request GET:/assets/{hash}/{filename}
+     */
+    mutateAssetsGetFile: (hash: string, filename: string, data?: void, options?: MutatorOptions) =>
+      mutate<void>(`/assets/${hash}/${filename}`, data, options),
 
     /**
      * @description 上传一个或多个文件
@@ -1730,10 +1802,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取所有公告
      * @request GET:/api/edit/notices
      */
-    useEditGetNotices: (options: SWRConfiguration = {}) =>
+    useEditGetNotices: (options?: SWRConfiguration) =>
       useSWR<Notice[], RequestResponse>(`/api/edit/notices`, options),
 
-    mutateEditGetNotices: () => mutate(`/api/edit/notices`),
+    /**
+     * @description 获取所有公告，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetNotices
+     * @summary 获取所有公告
+     * @request GET:/api/edit/notices
+     */
+    mutateEditGetNotices: (data?: Notice[], options?: MutatorOptions) =>
+      mutate<Notice[]>(`/api/edit/notices`, data, options),
 
     /**
      * @description 修改公告，需要管理员权限
@@ -1810,11 +1891,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛列表
      * @request GET:/api/edit/games
      */
-    useEditGetGames: (query?: { count?: number; skip?: number }, options: SWRConfiguration = {}) =>
+    useEditGetGames: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
       useSWR<GameInfoModel[], RequestResponse>([`/api/edit/games`, query], options),
 
-    mutateEditGetGames: (query?: { count?: number; skip?: number }) =>
-      mutate([`/api/edit/games`, query]),
+    /**
+     * @description 获取比赛列表，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGames
+     * @summary 获取比赛列表
+     * @request GET:/api/edit/games
+     */
+    mutateEditGetGames: (
+      query?: { count?: number; skip?: number },
+      data?: GameInfoModel[],
+      options?: MutatorOptions
+    ) => mutate<GameInfoModel[]>([`/api/edit/games`, query], data, options),
 
     /**
      * @description 获取比赛，需要管理员权限
@@ -1839,10 +1931,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛
      * @request GET:/api/edit/games/{id}
      */
-    useEditGetGame: (id: number, options: SWRConfiguration = {}) =>
+    useEditGetGame: (id: number, options?: SWRConfiguration) =>
       useSWR<Game, RequestResponse>(`/api/edit/games/${id}`, options),
 
-    mutateEditGetGame: (id: number) => mutate(`/api/edit/games/${id}`),
+    /**
+     * @description 获取比赛，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGame
+     * @summary 获取比赛
+     * @request GET:/api/edit/games/{id}
+     */
+    mutateEditGetGame: (id: number, data?: Game, options?: MutatorOptions) =>
+      mutate<Game>(`/api/edit/games/${id}`, data, options),
 
     /**
      * @description 修改比赛，需要管理员权限
@@ -1911,11 +2012,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useEditGetGameNotices: (
       id: number,
       query?: { count?: number; skip?: number },
-      options: SWRConfiguration = {}
+      options?: SWRConfiguration
     ) => useSWR<GameNotice, RequestResponse>([`/api/edit/games/${id}/notices`, query], options),
 
-    mutateEditGetGameNotices: (id: number, query?: { count?: number; skip?: number }) =>
-      mutate([`/api/edit/games/${id}/notices`, query]),
+    /**
+     * @description 获取比赛公告，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameNotices
+     * @summary 获取比赛公告
+     * @request GET:/api/edit/games/{id}/notices
+     */
+    mutateEditGetGameNotices: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      data?: GameNotice,
+      options?: MutatorOptions
+    ) => mutate<GameNotice>([`/api/edit/games/${id}/notices`, query], data, options),
 
     /**
      * @description 删除比赛公告，需要管理员权限
@@ -1981,15 +2094,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useEditGetGameChallenges: (
       id: number,
       query?: { count?: number; skip?: number },
-      options: SWRConfiguration = {}
+      options?: SWRConfiguration
     ) =>
       useSWR<ChallengeInfoModel[], RequestResponse>(
         [`/api/edit/games/${id}/challenges`, query],
         options
       ),
 
-    mutateEditGetGameChallenges: (id: number, query?: { count?: number; skip?: number }) =>
-      mutate([`/api/edit/games/${id}/challenges`, query]),
+    /**
+     * @description 获取全部比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenges
+     * @summary 获取全部比赛题目
+     * @request GET:/api/edit/games/{id}/challenges
+     */
+    mutateEditGetGameChallenges: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      data?: ChallengeInfoModel[],
+      options?: MutatorOptions
+    ) => mutate<ChallengeInfoModel[]>([`/api/edit/games/${id}/challenges`, query], data, options),
 
     /**
      * @description 获取比赛题目，需要管理员权限
@@ -2103,10 +2228,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取最新的比赛
      * @request GET:/api/game
      */
-    useGameGamesAll: (options: SWRConfiguration = {}) =>
+    useGameGamesAll: (options?: SWRConfiguration) =>
       useSWR<BasicGameInfoModel[], RequestResponse>(`/api/game`, options),
 
-    mutateGameGamesAll: () => mutate(`/api/game`),
+    /**
+     * @description 获取最近十个比赛
+     *
+     * @tags Game
+     * @name GameGamesAll
+     * @summary 获取最新的比赛
+     * @request GET:/api/game
+     */
+    mutateGameGamesAll: (data?: BasicGameInfoModel[], options?: MutatorOptions) =>
+      mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
 
     /**
      * @description 获取比赛的详细信息
@@ -2131,10 +2265,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛详细信息
      * @request GET:/api/game/{id}
      */
-    useGameGames: (id: number, options: SWRConfiguration = {}) =>
+    useGameGames: (id: number, options?: SWRConfiguration) =>
       useSWR<GameDetailsModel, RequestResponse>(`/api/game/${id}`, options),
 
-    mutateGameGames: (id: number) => mutate(`/api/game/${id}`),
+    /**
+     * @description 获取比赛的详细信息
+     *
+     * @tags Game
+     * @name GameGames
+     * @summary 获取比赛详细信息
+     * @request GET:/api/game/{id}
+     */
+    mutateGameGames: (id: number, data?: GameDetailsModel, options?: MutatorOptions) =>
+      mutate<GameDetailsModel>(`/api/game/${id}`, data, options),
 
     /**
      * @description 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
@@ -2174,10 +2317,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取积分榜
      * @request GET:/api/game/{id}/scoreboard
      */
-    useGameScoreboard: (id: number, options: SWRConfiguration = {}) =>
+    useGameScoreboard: (id: number, options?: SWRConfiguration) =>
       useSWR<ScoreboardModel, RequestResponse>(`/api/game/${id}/scoreboard`, options),
 
-    mutateGameScoreboard: (id: number) => mutate(`/api/game/${id}/scoreboard`),
+    /**
+     * @description 获取积分榜数据
+     *
+     * @tags Game
+     * @name GameScoreboard
+     * @summary 获取积分榜
+     * @request GET:/api/game/{id}/scoreboard
+     */
+    mutateGameScoreboard: (id: number, data?: ScoreboardModel, options?: MutatorOptions) =>
+      mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
 
     /**
      * @description 获取比赛事件数据
@@ -2202,10 +2354,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛事件
      * @request GET:/api/game/{id}/notices
      */
-    useGameNotices: (id: number, options: SWRConfiguration = {}) =>
+    useGameNotices: (id: number, options?: SWRConfiguration) =>
       useSWR<GameEvent[], RequestResponse>(`/api/game/${id}/notices`, options),
 
-    mutateGameNotices: (id: number) => mutate(`/api/game/${id}/notices`),
+    /**
+     * @description 获取比赛事件数据
+     *
+     * @tags Game
+     * @name GameNotices
+     * @summary 获取比赛事件
+     * @request GET:/api/game/{id}/notices
+     */
+    mutateGameNotices: (id: number, data?: GameEvent[], options?: MutatorOptions) =>
+      mutate<GameEvent[]>(`/api/game/${id}/notices`, data, options),
 
     /**
      * @description 获取比赛提交数据，需要观察者权限
@@ -2238,11 +2399,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useGameSubmissions: (
       id: number,
       query?: { count?: number; skip?: number },
-      options: SWRConfiguration = {}
+      options?: SWRConfiguration
     ) => useSWR<Submission[], RequestResponse>([`/api/game/${id}/submissions`, query], options),
 
-    mutateGameSubmissions: (id: number, query?: { count?: number; skip?: number }) =>
-      mutate([`/api/game/${id}/submissions`, query]),
+    /**
+     * @description 获取比赛提交数据，需要观察者权限
+     *
+     * @tags Game
+     * @name GameSubmissions
+     * @summary 获取比赛提交
+     * @request GET:/api/game/{id}/submissions
+     */
+    mutateGameSubmissions: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      data?: Submission[],
+      options?: MutatorOptions
+    ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
 
     /**
      * @description 获取比赛实例数据，需要观察者权限
@@ -2275,12 +2448,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useGameInstances: (
       id: number,
       query?: { count?: number; skip?: number },
-      options: SWRConfiguration = {}
+      options?: SWRConfiguration
     ) =>
       useSWR<InstanceInfoModel[], RequestResponse>([`/api/game/${id}/instances`, query], options),
 
-    mutateGameInstances: (id: number, query?: { count?: number; skip?: number }) =>
-      mutate([`/api/game/${id}/instances`, query]),
+    /**
+     * @description 获取比赛实例数据，需要观察者权限
+     *
+     * @tags Game
+     * @name GameInstances
+     * @summary 获取比赛实例列表
+     * @request GET:/api/game/{id}/instances
+     */
+    mutateGameInstances: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      data?: InstanceInfoModel[],
+      options?: MutatorOptions
+    ) => mutate<InstanceInfoModel[]>([`/api/game/${id}/instances`, query], data, options),
 
     /**
      * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
@@ -2305,13 +2490,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛题目信息
      * @request GET:/api/game/{id}/challenges
      */
-    useGameChallenges: (id: number, options: SWRConfiguration = {}) =>
+    useGameChallenges: (id: number, options?: SWRConfiguration) =>
       useSWR<Record<string, ChallengeInfo[]>, RequestResponse>(
         `/api/game/${id}/challenges`,
         options
       ),
 
-    mutateGameChallenges: (id: number) => mutate(`/api/game/${id}/challenges`),
+    /**
+     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameChallenges
+     * @summary 获取全部比赛题目信息
+     * @request GET:/api/game/{id}/challenges
+     */
+    mutateGameChallenges: (
+      id: number,
+      data?: Record<string, ChallengeInfo[]>,
+      options?: MutatorOptions
+    ) => mutate<Record<string, ChallengeInfo[]>>(`/api/game/${id}/challenges`, data, options),
 
     /**
      * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
@@ -2336,14 +2533,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛题目信息
      * @request GET:/api/game/{id}/challenges/{challengeId}
      */
-    useGameGetChallenge: (id: number, challengeId: number, options: SWRConfiguration = {}) =>
+    useGameGetChallenge: (id: number, challengeId: number, options?: SWRConfiguration) =>
       useSWR<ChallengeDetailModel, RequestResponse>(
         `/api/game/${id}/challenges/${challengeId}`,
         options
       ),
 
-    mutateGameGetChallenge: (id: number, challengeId: number) =>
-      mutate(`/api/game/${id}/challenges/${challengeId}`),
+    /**
+     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameGetChallenge
+     * @summary 获取比赛题目信息
+     * @request GET:/api/game/{id}/challenges/{challengeId}
+     */
+    mutateGameGetChallenge: (
+      id: number,
+      challengeId: number,
+      data?: ChallengeDetailModel,
+      options?: MutatorOptions
+    ) => mutate<ChallengeDetailModel>(`/api/game/${id}/challenges/${challengeId}`, data, options),
 
     /**
      * @description 提交flag，需要User权限，需要当前激活队伍已经报名
@@ -2389,11 +2598,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       id: number,
       challengeId: number,
       submitId: number,
-      options: SWRConfiguration = {}
+      options?: SWRConfiguration
     ) => useSWR<AnswerResult, RequestResponse>(`/api/game/${id}/status/${submitId}`, options),
 
-    mutateGameStatus: (id: number, challengeId: number, submitId: number) =>
-      mutate(`/api/game/${id}/status/${submitId}`),
+    /**
+     * @description 查询 flag 状态，需要User权限
+     *
+     * @tags Game
+     * @name GameStatus
+     * @summary 查询 flag 状态
+     * @request GET:/api/game/{id}/status/{submitId}
+     */
+    mutateGameStatus: (
+      id: number,
+      challengeId: number,
+      submitId: number,
+      data?: AnswerResult,
+      options?: MutatorOptions
+    ) => mutate<AnswerResult>(`/api/game/${id}/status/${submitId}`, data, options),
   };
   info = {
     /**
@@ -2419,10 +2641,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取最新公告
      * @request GET:/api/notices
      */
-    useInfoGetNotices: (options: SWRConfiguration = {}) =>
+    useInfoGetNotices: (options?: SWRConfiguration) =>
       useSWR<Notice[], any>(`/api/notices`, options),
 
-    mutateInfoGetNotices: () => mutate(`/api/notices`),
+    /**
+     * @description 获取最新公告
+     *
+     * @tags Info
+     * @name InfoGetNotices
+     * @summary 获取最新公告
+     * @request GET:/api/notices
+     */
+    mutateInfoGetNotices: (data?: Notice[], options?: MutatorOptions) =>
+      mutate<Notice[]>(`/api/notices`, data, options),
   };
   team = {
     /**
@@ -2448,10 +2679,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取队伍信息
      * @request GET:/api/team/{id}
      */
-    useTeamGetBasicInfo: (id: number, options: SWRConfiguration = {}) =>
+    useTeamGetBasicInfo: (id: number, options?: SWRConfiguration) =>
       useSWR<TeamInfoModel, RequestResponse>(`/api/team/${id}`, options),
 
-    mutateTeamGetBasicInfo: (id: number) => mutate(`/api/team/${id}`),
+    /**
+     * @description 根据 id 获取一个队伍的基本信息
+     *
+     * @tags Team
+     * @name TeamGetBasicInfo
+     * @summary 获取队伍信息
+     * @request GET:/api/team/{id}
+     */
+    mutateTeamGetBasicInfo: (id: number, data?: TeamInfoModel, options?: MutatorOptions) =>
+      mutate<TeamInfoModel>(`/api/team/${id}`, data, options),
 
     /**
      * @description 队伍信息更改接口，需要为队伍创建者
@@ -2512,10 +2752,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取当前自己队伍信息
      * @request GET:/api/team
      */
-    useTeamGetTeamsInfo: (options: SWRConfiguration = {}) =>
+    useTeamGetTeamsInfo: (options?: SWRConfiguration) =>
       useSWR<TeamInfoModel[], RequestResponse>(`/api/team`, options),
 
-    mutateTeamGetTeamsInfo: () => mutate(`/api/team`),
+    /**
+     * @description 根据用户获取一个队伍的基本信息
+     *
+     * @tags Team
+     * @name TeamGetTeamsInfo
+     * @summary 获取当前自己队伍信息
+     * @request GET:/api/team
+     */
+    mutateTeamGetTeamsInfo: (data?: TeamInfoModel[], options?: MutatorOptions) =>
+      mutate<TeamInfoModel[]>(`/api/team`, data, options),
 
     /**
      * @description 用户创建队伍接口，每个用户只能创建一个队伍

@@ -1,4 +1,4 @@
-import useSWR, { SWRConfiguration, mutate } from "swr";
+import useSWR, { SWRConfiguration, MutatorOptions, mutate } from "swr";
 
 <%~ includeFile("@default/api.eta", it) %>
 
