@@ -61,8 +61,8 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        if (/*!environment.IsDevelopment() && */(model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
-            !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())))
+        if (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
+            !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString()))
             return BadRequest(new RequestResponse("校验失败"));
 
         var user = new UserInfo
@@ -219,7 +219,7 @@ public class AccountController : ControllerBase
     /// 用户登录接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口登录账户，Dev环境下不校验 GToken
+    /// 使用此接口登录账户
     /// </remarks>
     /// <param name="model"></param>
     /// <response code="200">用户成功登录</response>
@@ -231,10 +231,6 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> LogIn([FromBody] LoginModel model)
     {
-        if (!environment.IsDevelopment() && (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
-            !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())))
-            return BadRequest(new RequestResponse("校验失败"));
-
         var user = await userManager.FindByNameAsync(model.UserName);
         if (user is null)
             user = await userManager.FindByEmailAsync(model.UserName);
