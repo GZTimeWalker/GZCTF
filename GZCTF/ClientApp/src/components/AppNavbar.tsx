@@ -112,7 +112,7 @@ const AppNavbar: FC = () => {
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
-   });
+  });
 
   useEffect(() => {
     items.forEach((i) => {

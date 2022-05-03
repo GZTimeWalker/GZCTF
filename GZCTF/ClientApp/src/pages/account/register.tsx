@@ -54,6 +54,7 @@ const Register: NextPage = () => {
       message: '等待服务器验证',
       loading: true,
       autoClose: false,
+      disallowClose: true,
     });
 
     api.account
