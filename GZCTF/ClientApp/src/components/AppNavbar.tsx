@@ -1,10 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
+  Menu,
   Stack,
   Center,
   Navbar,
   Avatar,
+  Divider,
   Tooltip,
   createStyles,
   UnstyledButton,
@@ -13,19 +15,22 @@ import {
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
-  mdiChartBoxOutline,
   mdiFlagOutline,
   mdiHomeVariantOutline,
   mdiInformationOutline,
   mdiWeatherSunny,
   mdiWeatherNight,
+  mdiLogout,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import MainIcon from './icon/MainIcon';
 import Link from 'next/link';
+import { NextLink } from '@mantine/next';
 import { useRouter } from 'next/router';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { ClientUserInfoModel } from '../client';
+import { AccountService } from '../client';
+import { mutate } from 'swr';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -63,14 +68,17 @@ const useStyles = createStyles((theme) => ({
     color:
       theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.gray[8],
   },
+
+  menuBody: {
+    marginLeft: 20,
+  },
 }));
 
 const items = [
-  { icon: mdiHomeVariantOutline, label: 'Home', link: '/' },
-  { icon: mdiFlagOutline, label: 'Contest' },
-  { icon: mdiAccountGroupOutline, label: 'Teams' },
-  { icon: mdiChartBoxOutline, label: 'Scoreboard' },
-  { icon: mdiInformationOutline, label: 'About', link: '/about' },
+  { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
+  { icon: mdiFlagOutline, label: '赛事' },
+  { icon: mdiAccountGroupOutline, label: '队伍' },
+  { icon: mdiInformationOutline, label: '关于', link: '/about' },
 ];
 
 export interface NavbarLinkProps {
@@ -83,6 +91,7 @@ export interface NavbarLinkProps {
 
 const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles();
+
   return (
     <Link href={props.link ?? '#'} passHref>
       <Tooltip label={props.label} classNames={{ body: classes.tooltipBody }} position="right">
@@ -102,7 +111,10 @@ const AppNavbar: FC = () => {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { data } = useSWRImmutable<ClientUserInfoModel>('/api/account/profile');
+  const { data, error } = useSWR<ClientUserInfoModel>('/api/account/profile', {
+    refreshInterval: 3600_000,
+    shouldRetryOnError: false
+  });
 
   useEffect(() => {
     items.forEach((i) => {
@@ -111,6 +123,13 @@ const AppNavbar: FC = () => {
       }
     });
   }, [router.pathname]);
+
+  const logout = () => {
+    AccountService.accountLogOut().then(() => {
+      router.push('/');
+      mutate('/api/account/profile');
+    });
+  };
 
   const links = items.map((link) => (
     <NavbarLink {...link} key={link.label} isActive={link.label === active} />
@@ -137,7 +156,7 @@ const AppNavbar: FC = () => {
       >
         <Stack align="center" spacing={5}>
           <Tooltip
-            label={colorScheme === 'dark' ? 'Light Theme' : 'Dark Theme'}
+            label={colorScheme === 'dark' ? '明亮模式' : '黑夜模式'}
             classNames={{ body: classes.tooltipBody }}
             position="right"
           >
@@ -149,21 +168,47 @@ const AppNavbar: FC = () => {
               )}
             </UnstyledButton>
           </Tooltip>
-          <Link href={data ? '/profile' : `/account/login?from=${router.asPath}`} passHref>
-            <Tooltip
-              label={data ? 'Profile' : 'Login'}
-              classNames={{ body: classes.tooltipBody }}
+
+          {data && !error ? (
+            <Menu
+              control={
+                <Box className={cx(classes.link)}>
+                  {data.avatar ? (
+                    <Avatar src={data.avatar} radius="md" size="md" />
+                  ) : (
+                    <Icon path={mdiAccountCircleOutline} size={1} />
+                  )}
+                </Box>
+              }
+              classNames={{ body: classes.menuBody }}
               position="right"
+              placement="end"
+              trigger="hover"
             >
-              <Box className={cx(classes.link)}>
-                {data && data.avatar ? (
-                  <Avatar src={data.avatar} radius="md" size="md"/>
-                ) : (
+              <Menu.Label>{data.userName}</Menu.Label>
+              <Menu.Item
+                component={NextLink}
+                href="/account/profile"
+                icon={<Icon path={mdiAccountCircleOutline} size={1} />}
+              >
+                用户信息
+              </Menu.Item>
+
+              <Divider />
+
+              <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
+                登出
+              </Menu.Item>
+            </Menu>
+          ) : (
+            <Link href={`/account/login?from=${router.asPath}`} passHref>
+              <Tooltip label="Login" classNames={{ body: classes.tooltipBody }} position="right">
+                <Box className={cx(classes.link)}>
                   <Icon path={mdiAccountCircleOutline} size={1} />
-                )}
-              </Box>
-            </Tooltip>
-          </Link>
+                </Box>
+              </Tooltip>
+            </Link>
+          )}
         </Stack>
       </Navbar.Section>
     </Navbar>

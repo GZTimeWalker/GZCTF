@@ -1,5 +1,4 @@
 ﻿using CTFServer.Repositories.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTFServer.Controllers;

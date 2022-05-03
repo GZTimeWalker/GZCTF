@@ -9,6 +9,7 @@ import { AccountService } from '../../client';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { showNotification } from '@mantine/notifications';
+import { mutate } from 'swr';
 
 const Login: NextPage = () => {
   const router = useRouter()
@@ -43,6 +44,7 @@ const Login: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
+        mutate('/api/account/profile');
         let from = router.query['from'];
         router.push(from ? from as string : '/')
       })

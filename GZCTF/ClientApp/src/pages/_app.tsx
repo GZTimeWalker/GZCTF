@@ -6,6 +6,8 @@ import { NotificationsProvider } from '@mantine/notifications';
 import { SWRConfig } from 'swr';
 import './_app.css';
 
+const fetcher =  (arg: string) => fetch(arg).then(res => res.ok ? res.json() : Promise.reject(res));
+
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
 
@@ -59,13 +61,6 @@ export default function App(props: AppProps) {
             primaryColor: 'brand',
             fontFamily: "'IBM Plex Sans', 'Noto Sans SC', sans-serif",
             fontFamilyMonospace: "'JetBrains Mono', monospace",
-            fontSizes: {
-              xs: 13,
-              sm: 16,
-              md: 20,
-              lg: 25,
-              xl: 30,
-            },
             headings: {
               fontFamily: "'IBM Plex Sans','Noto Sans SC', sans-serif",
             },
@@ -88,7 +83,7 @@ export default function App(props: AppProps) {
             <SWRConfig
               value={{
                 refreshInterval: 10000,
-                fetcher: (arg: string) => fetch(arg).then(res => res.json()),
+                fetcher,
               }}
             >
               <Component {...pageProps} />
