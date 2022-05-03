@@ -4,7 +4,7 @@ import { showNotification } from '@mantine/notifications';
 import { useRouter } from 'next/router';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { AccountService } from '../../client';
+import api from '../../Api';
 import { useEffect } from 'react';
 import { Text } from '@mantine/core';
 
@@ -15,7 +15,7 @@ const Verify: NextPage = () => {
 
   useEffect(() => {
     if (token && email && typeof token === 'string' && typeof email === 'string') {
-      AccountService.accountVerify({ token, email })
+      api.account.accountVerify({ token, email })
         .then(() => {
           showNotification({
             color: 'teal',

@@ -27,9 +27,7 @@ import MainIcon from './icon/MainIcon';
 import Link from 'next/link';
 import { NextLink } from '@mantine/next';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
-import { ClientUserInfoModel } from '../client';
-import { AccountService } from '../client';
+import api from '../Api';
 import { mutate } from 'swr';
 
 const useStyles = createStyles((theme) => ({
@@ -111,10 +109,7 @@ const AppNavbar: FC = () => {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { data, error } = useSWR<ClientUserInfoModel>('/api/account/profile', {
-    refreshInterval: 3600_000,
-    shouldRetryOnError: false,
-  });
+  const { data, error } = api.account.useAccountProfile();
 
   useEffect(() => {
     items.forEach((i) => {
@@ -125,9 +120,9 @@ const AppNavbar: FC = () => {
   }, [router.pathname]);
 
   const logout = () => {
-    AccountService.accountLogOut().then(() => {
+    api.account.accountLogOut().then(() => {
       router.push('/');
-      mutate('/api/account/profile');
+      api.account.mutateAccountProfile();
     });
   };
 

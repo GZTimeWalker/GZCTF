@@ -5,8 +5,18 @@ import { useLocalStorage } from '@mantine/hooks';
 import { NotificationsProvider } from '@mantine/notifications';
 import { SWRConfig } from 'swr';
 import './_app.css';
+import { URLSearchParams } from 'url';
 
-const fetcher =  (arg: string) => fetch(arg).then(res => res.ok ? res.json() : Promise.reject(res));
+const fetcher = async (arg: string | [string, Record<string, string>]) => {
+  if(typeof arg === 'string') {
+    const res = await fetch(arg);
+    return await (res.ok ? res.json() : Promise.reject(res));
+  } else {
+    const qs = new URLSearchParams(arg[1]).toString();
+    const res_1 = await fetch(`${arg[0]}?${qs}`);
+    return await (res_1.ok ? res_1.json() : Promise.reject(res_1));
+  }
+}
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;

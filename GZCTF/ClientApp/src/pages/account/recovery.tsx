@@ -3,16 +3,16 @@ import Link from 'next/link';
 import { TextInput, Button, Anchor } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
 import AccountView from '../../components/AccountView';
-import { AccountService } from '../../client';
 import { showNotification } from '@mantine/notifications';
 import Icon from '@mdi/react';
 import { mdiCheck, mdiClose } from '@mdi/js';
+import api from '../../Api';
 
 const Recovery: NextPage = () => {
   const [email, setEmail] = useInputState('');
 
   const onRecovery = () => {
-    AccountService.accountRecovery({
+    api.account.accountRecovery({
       email,
     })
       .then(() => {

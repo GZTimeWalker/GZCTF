@@ -18,9 +18,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;
-using Namotion.Reflection;
-using Microsoft.Extensions.Configuration;
-using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
 

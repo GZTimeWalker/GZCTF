@@ -33,6 +33,5 @@ public class UpdateUserInfoModel
     /// <summary>
     /// 用户角色
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public Role? Role { get; set; }
 }

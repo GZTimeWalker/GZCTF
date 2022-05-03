@@ -1,8 +1,11 @@
-﻿namespace CTFServer;
+﻿using System.Text.Json.Serialization;
+
+namespace CTFServer;
 
 /// <summary>
 /// 用户权限枚举
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Role: byte
 {
     /// <summary>
@@ -29,6 +32,7 @@ public enum Role: byte
 /// <summary>
 /// 任务执行状态
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum TaskStatus: sbyte
 {
     /// <summary>
@@ -83,6 +87,10 @@ public enum FileType: byte
     Remote = 2,
 }
 
+/// <summary>
+/// 容器状态
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ContainerStatus : byte
 {
     /// <summary>
@@ -102,6 +110,7 @@ public enum ContainerStatus : byte
 /// <summary>
 /// 比赛公告类型
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum NoticeType: byte
 {
     /// <summary>
@@ -155,6 +164,7 @@ public static class NoticeTypeExtensions
 /// <summary>
 /// 比赛事件类型
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum EventType: byte
 {
     /// <summary>
@@ -179,6 +189,10 @@ public enum EventType: byte
     CheatDetected = 4
 }
 
+/// <summary>
+/// 提交类型
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SubmissionType: byte
 {
     /// <summary>
@@ -207,6 +221,7 @@ public enum SubmissionType: byte
     Normal = 4,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ChallengeType: byte
 {
     /// <summary>
@@ -257,6 +272,7 @@ public static class ChallengeTypeExtensions
 /// <summary>
 /// 题目标签
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ChallengeTag : byte
 {
     Misc = 0,

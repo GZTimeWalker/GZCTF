@@ -54,7 +54,6 @@ public class ContainerInfoModel
     /// <summary>
     /// 容器状态
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ContainerStatus Status { get; set; } = ContainerStatus.Pending;
 
     /// <summary>

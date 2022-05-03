@@ -4,7 +4,7 @@ import { showNotification } from '@mantine/notifications';
 import { useRouter } from 'next/router';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { AccountService } from '../../client';
+import api from '../../Api';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
 import { Button, PasswordInput } from '@mantine/core';
@@ -41,11 +41,12 @@ const Reset: NextPage = () => {
     }
 
     setDisabled(true);
-    AccountService.accountPasswordReset({
-      rToken: token,
-      email: email,
-      password: pwd,
-    })
+    api.account
+      .accountPasswordReset({
+        rToken: token,
+        email: email,
+        password: pwd,
+      })
       .then(() => {
         showNotification({
           color: 'teal',
@@ -54,7 +55,7 @@ const Reset: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        router.push('/account/login')
+        router.push('/account/login');
       })
       .catch((err) => {
         showNotification({
@@ -68,11 +69,11 @@ const Reset: NextPage = () => {
   };
 
   useWindowEvent('keydown', (e) => {
-    console.log(e.code)
-    if(e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onReset()
+    console.log(e.code);
+    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+      onReset();
     }
-  })
+  });
 
   return (
     <AccountView>

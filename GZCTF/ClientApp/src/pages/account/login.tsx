@@ -1,18 +1,17 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
 import AccountView from '../../components/AccountView';
-import { AccountService } from '../../client';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { showNotification } from '@mantine/notifications';
-import { mutate } from 'swr';
+import api from '../../Api';
 
 const Login: NextPage = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [pwd, setPwd] = useInputState('');
   const [uname, setUname] = useInputState('');
   const [disabled, setDisabled] = useState(false);
@@ -20,7 +19,7 @@ const Login: NextPage = () => {
   const onLogin = () => {
     setDisabled(true);
 
-    if(uname.length == 0 || pwd.length < 6){
+    if (uname.length == 0 || pwd.length < 6) {
       showNotification({
         color: 'red',
         title: '请检查输入',
@@ -32,10 +31,11 @@ const Login: NextPage = () => {
       return;
     }
 
-    AccountService.accountLogIn({
-      userName: uname,
-      password: pwd,
-    })
+    api.account
+      .accountLogIn({
+        userName: uname,
+        password: pwd,
+      })
       .then(() => {
         showNotification({
           color: 'teal',
@@ -44,9 +44,9 @@ const Login: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        mutate('/api/account/profile');
+        api.account.mutateAccountProfile()
         let from = router.query['from'];
-        router.push(from ? from as string : '/')
+        router.push(from ? (from as string) : '/');
       })
       .catch(() => {
         showNotification({
@@ -61,11 +61,11 @@ const Login: NextPage = () => {
   };
 
   useWindowEvent('keydown', (e) => {
-    console.log(e.code)
-    if(e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onLogin()
+    console.log(e.code);
+    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+      onLogin();
     }
-  })
+  });
 
   return (
     <AccountView>

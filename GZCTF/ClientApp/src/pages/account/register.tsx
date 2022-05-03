@@ -7,7 +7,7 @@ import { Icon } from '@mdi/react';
 import AccountView from '../../components/AccountView';
 import { showNotification } from '@mantine/notifications';
 import { useState } from 'react';
-import { AccountService } from '../../client';
+import api from '../../Api';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
 
 const Register: NextPage = () => {
@@ -29,7 +29,7 @@ const Register: NextPage = () => {
     }
 
     setDisabled(true);
-    AccountService.accountRegister({
+    api.account.accountRegister({
       userName: uname,
       password: pwd,
       email,

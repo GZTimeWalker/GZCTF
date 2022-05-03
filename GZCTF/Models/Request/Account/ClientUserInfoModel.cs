@@ -47,7 +47,6 @@ public class ClientUserInfoModel
     /// <summary>
     /// 用户角色
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public Role? Role { get; set; }
 
     public static ClientUserInfoModel FromUserInfo(UserInfo user)

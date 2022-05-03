@@ -2,11 +2,11 @@ import type { NextPage } from 'next';
 import { Stack, Card, Group, Badge, Text, useMantineTheme } from '@mantine/core';
 import WithNavBar from '../components/WithNavbar';
 import useSWR from 'swr';
-import { Notice } from '../client';
+import api from '../Api';
 import LogoHeader from '../components/LogoHeader';
 
 const Home: NextPage = () => {
-  const { data } = useSWR<Array<Notice>>('/api/notices', { refreshInterval: 3600_000 });
+  const { data } = api.info.useInfoGetNotices();
   const theme = useMantineTheme();
   const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
 

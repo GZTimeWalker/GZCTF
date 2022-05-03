@@ -21,7 +21,6 @@ public class ChallengeModel
     /// <summary>
     /// 题目标签
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
 
     /// <summary>
@@ -32,7 +31,6 @@ public class ChallengeModel
     /// <summary>
     /// 题目类型
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     #region Container
