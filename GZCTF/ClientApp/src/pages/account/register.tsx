@@ -1,14 +1,16 @@
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
-import { showNotification } from '@mantine/notifications';
+import { showNotification, updateNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import api from '../../Api';
 import AccountView from '../../components/AccountView';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
+import useReCaptcha from '../../utils/Recaptcha';
 
 const Register: NextPage = () => {
   const [pwd, setPwd] = useInputState('');
@@ -16,8 +18,10 @@ const Register: NextPage = () => {
   const [uname, setUname] = useInputState('');
   const [email, setEmail] = useInputState('');
   const [disabled, setDisabled] = useState(false);
+  const router = useRouter();
+  const reCaptcha = useReCaptcha('register');
 
-  const onRegister = () => {
+  const onRegister = async () => {
     if (pwd !== retypedPwd) {
       showNotification({
         color: 'red',
@@ -28,24 +32,51 @@ const Register: NextPage = () => {
       return;
     }
 
+    let token = await reCaptcha?.getToken();
+
+    if (!token) {
+      showNotification({
+        color: 'orange',
+        title: '请等待验证码……',
+        message: '请稍后重试',
+        loading: true,
+        disallowClose: true,
+      });
+      return;
+    }
+
     setDisabled(true);
+
+    showNotification({
+      color: 'orange',
+      id: 'register-status',
+      title: '请求已发送……',
+      message: '等待服务器验证',
+      loading: true,
+      autoClose: false,
+    });
+
     api.account
       .accountRegister({
         userName: uname,
         password: pwd,
         email,
+        gToken: token,
       })
       .then(() => {
-        showNotification({
+        updateNotification({
+          id: 'register-status',
           color: 'teal',
           title: '一封注册邮件已发送',
           message: '请检查你的邮箱及垃圾邮件~',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
+        router.push('/account/login');
       })
       .catch((err) => {
-        showNotification({
+        updateNotification({
+          id: 'register-status',
           color: 'red',
           title: '遇到了问题，请稍后重试',
           message: `${err}`,

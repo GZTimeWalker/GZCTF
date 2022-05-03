@@ -2655,6 +2655,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateInfoGetNotices: (data?: Notice[], options?: MutatorOptions) =>
       mutate<Notice[]>(`/api/notices`, data, options),
+
+    /**
+     * @description 获取 Recaptcha SiteKey
+     *
+     * @tags Info
+     * @name InfoGetRecaptchaSiteKey
+     * @summary 获取 Recaptcha SiteKey
+     * @request GET:/api/sitekey
+     */
+    infoGetRecaptchaSiteKey: (params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/api/sitekey`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取 Recaptcha SiteKey
+     *
+     * @tags Info
+     * @name InfoGetRecaptchaSiteKey
+     * @summary 获取 Recaptcha SiteKey
+     * @request GET:/api/sitekey
+     */
+    useInfoGetRecaptchaSiteKey: (options?: SWRConfiguration) =>
+      useSWR<string, any>(`/api/sitekey`, options),
+
+    /**
+     * @description 获取 Recaptcha SiteKey
+     *
+     * @tags Info
+     * @name InfoGetRecaptchaSiteKey
+     * @summary 获取 Recaptcha SiteKey
+     * @request GET:/api/sitekey
+     */
+    mutateInfoGetRecaptchaSiteKey: (data?: string, options?: MutatorOptions) =>
+      mutate<string>(`/api/sitekey`, data, options),
   };
   team = {
     /**

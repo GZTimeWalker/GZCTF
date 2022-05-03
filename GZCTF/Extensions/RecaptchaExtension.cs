@@ -7,11 +7,13 @@ namespace CTFServer.Extensions;
 public interface IRecaptchaExtension
 {
     Task<bool> VerifyAsync(string token, string ip);
+    string SiteKey();
 }
 
 public class RecaptchaOptions
 {
     public string Secretkey { get; set; } = default!;
+    public string SiteKey { get; set; } = default!;
     public string VefiyAPIAddress { get; set; } = default!;
     public float RecaptchaThreshold { get; set; } = 1;
 }
@@ -39,4 +41,6 @@ public class RecaptchaExtension : IRecaptchaExtension
             
         return true;
     }
+
+    public string SiteKey() => options.SiteKey;
 }

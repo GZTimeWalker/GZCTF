@@ -108,7 +108,7 @@ const AppNavbar: FC = () => {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('主页');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { data, error } = api.account.useAccountProfile();
+  const { data, error } = api.account.useAccountProfile({ refreshInterval: 0 });
 
   useEffect(() => {
     items.forEach((i) => {

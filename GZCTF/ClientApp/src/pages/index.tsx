@@ -5,7 +5,7 @@ import LogoHeader from '../components/LogoHeader';
 import WithNavBar from '../components/WithNavbar';
 
 const Home: NextPage = () => {
-  const { data } = api.info.useInfoGetNotices();
+  const { data } = api.info.useInfoGetNotices({ refreshInterval: 0 });
   const theme = useMantineTheme();
   const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
 

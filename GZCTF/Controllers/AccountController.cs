@@ -61,7 +61,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        if (!environment.IsDevelopment() && (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
+        if (/*!environment.IsDevelopment() && */(model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
             !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())))
             return BadRequest(new RequestResponse("校验失败"));
 

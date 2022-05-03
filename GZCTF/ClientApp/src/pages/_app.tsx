@@ -5,18 +5,8 @@ import Head from 'next/head';
 import { MantineProvider, Global, ColorScheme, ColorSchemeProvider } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { NotificationsProvider } from '@mantine/notifications';
+import fetcher from '../utils/Fetcher';
 import './_app.css';
-
-const fetcher = async (arg: string | [string, Record<string, string>]) => {
-  if (typeof arg === 'string') {
-    const res = await fetch(arg);
-    return await (res.ok ? res.json() : Promise.reject(res));
-  } else {
-    const qs = new URLSearchParams(arg[1]).toString();
-    const result = await fetch(`${arg[0]}?${qs}`);
-    return await (result.ok ? result.json() : Promise.reject(result));
-  }
-};
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -69,10 +59,10 @@ export default function App(props: AppProps) {
               alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', ''],
             },
             primaryColor: 'brand',
-            fontFamily: "'IBM Plex Sans', 'Noto Sans SC', sans-serif",
+            fontFamily: "'IBM Plex Sans', sans-serif",
             fontFamilyMonospace: "'JetBrains Mono', monospace",
             headings: {
-              fontFamily: "'IBM Plex Sans','Noto Sans SC', sans-serif",
+              fontFamily: "'IBM Plex Sans', sans-serif",
             },
           }}
         >
