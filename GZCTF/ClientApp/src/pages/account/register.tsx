@@ -1,13 +1,13 @@
 import type { NextPage } from 'next';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import AccountView from '../../components/AccountView';
-import { showNotification } from '@mantine/notifications';
-import { useState } from 'react';
 import api from '../../Api';
+import AccountView from '../../components/AccountView';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
 
 const Register: NextPage = () => {

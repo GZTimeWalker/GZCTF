@@ -1,12 +1,12 @@
 import type { NextPage } from 'next';
-import AccountView from '../../components/AccountView';
-import { showNotification } from '@mantine/notifications';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { Text } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import api from '../../Api';
-import { useEffect } from 'react';
-import { Text } from '@mantine/core';
+import AccountView from '../../components/AccountView';
 
 const Verify: NextPage = () => {
   const router = useRouter();

@@ -1,10 +1,10 @@
 import type { NextPage } from 'next';
-import { Text, Stack, Group, Title, Center } from '@mantine/core';
-import MainIcon from '../components/icon/MainIcon';
-import WithNavBar from '../components/WithNavbar';
-import RichTextEditor from '../components/RichText';
 import { useState } from 'react';
+import { Text, Stack, Group, Title, Center } from '@mantine/core';
 import LogoHeader from '../components/LogoHeader';
+import RichTextEditor from '../components/RichText';
+import WithNavBar from '../components/WithNavbar';
+import MainIcon from '../components/icon/MainIcon';
 
 const initialValue =
   '<p>Your initial <b>html value</b> or an empty string to init editor without value</p>';

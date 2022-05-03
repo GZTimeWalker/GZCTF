@@ -1,6 +1,6 @@
+import { FC } from 'react';
 import { Group, Title, createStyles } from '@mantine/core';
 import MainIcon from './icon/MainIcon';
-import { FC } from 'react';
 
 const useStyles = createStyles((theme) => ({
   brand: {

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import AppNavbar from './AppNavbar';
 import { AppShell, Box, Center } from '@mantine/core';
+import AppNavbar from './AppNavbar';
 
 const WithNavBar: FC<React.ReactNode> = ({ children }) => {
   return (

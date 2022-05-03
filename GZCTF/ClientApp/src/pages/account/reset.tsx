@@ -1,14 +1,14 @@
 import type { NextPage } from 'next';
-import AccountView from '../../components/AccountView';
-import { showNotification } from '@mantine/notifications';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { Button, PasswordInput } from '@mantine/core';
+import { useInputState, useWindowEvent } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import api from '../../Api';
+import AccountView from '../../components/AccountView';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
-import { useInputState, useWindowEvent } from '@mantine/hooks';
-import { Button, PasswordInput } from '@mantine/core';
-import { useState } from 'react';
 
 const Reset: NextPage = () => {
   const router = useRouter();

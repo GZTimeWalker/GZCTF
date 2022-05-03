@@ -1,4 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import {
   Box,
   Menu,
@@ -12,6 +14,7 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from '@mantine/core';
+import { NextLink } from '@mantine/next';
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -23,12 +26,8 @@ import {
   mdiLogout,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import MainIcon from './icon/MainIcon';
-import Link from 'next/link';
-import { NextLink } from '@mantine/next';
-import { useRouter } from 'next/router';
 import api from '../Api';
-import { mutate } from 'swr';
+import MainIcon from './icon/MainIcon';
 
 const useStyles = createStyles((theme) => ({
   link: {

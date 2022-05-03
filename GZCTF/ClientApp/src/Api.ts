@@ -1,3 +1,5 @@
+import useSWR, { mutate, SWRConfiguration } from 'swr';
+
 /* eslint-disable */
 /* tslint:disable */
 /*
@@ -1212,8 +1214,6 @@ export class HttpClient<SecurityDataType = unknown> {
     });
   };
 }
-
-import useSWR, { mutate, SWRConfiguration } from 'swr';
 
 /**
  * @title GZCTF Server API

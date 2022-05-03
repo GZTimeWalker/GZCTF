@@ -1,9 +1,8 @@
 import type { NextPage } from 'next';
 import { Stack, Card, Group, Badge, Text, useMantineTheme } from '@mantine/core';
-import WithNavBar from '../components/WithNavbar';
-import useSWR from 'swr';
 import api from '../Api';
 import LogoHeader from '../components/LogoHeader';
+import WithNavBar from '../components/WithNavbar';
 
 const Home: NextPage = () => {
   const { data } = api.info.useInfoGetNotices();
