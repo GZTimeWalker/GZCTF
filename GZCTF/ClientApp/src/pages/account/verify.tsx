@@ -21,7 +21,7 @@ const Verify: NextPage = () => {
           showNotification({
             color: 'teal',
             title: '账户已验证，请登录',
-            message: Buffer.from(email, 'base64'),
+            message: Buffer.from(email, 'base64').toString('binary'),
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
