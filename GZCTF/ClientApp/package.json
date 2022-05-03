@@ -7,7 +7,7 @@
     "build": "next build && next export",
     "start": "next start",
     "lint": "next lint",
-    "genapi": "ts-codegen"
+    "genapi": "swagger-typescript-api -p template/swagger.json -t template -o src --module-name-first-tag"
   },
   "dependencies": {
     "@babel/core": "^7.17.9",

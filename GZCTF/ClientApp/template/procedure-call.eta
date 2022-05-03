@@ -1,0 +1,71 @@
+<%~ includeFile("@default/procedure-call.eta", it) %>
+<%
+const { utils, route, config } = it;
+const { requestBodyInfo, responseBodyInfo, specificArgNameResolver } = route;
+const { _, getInlineParseContent, getParseContent, parseSchema, getComponentByRef, require } = utils;
+const { parameters, path, method, payload, query, formData, security, requestParams } = route.request;
+const { type, errorType, contentTypes } = route.response;
+const { HTTP_CLIENT, RESERVED_REQ_PARAMS_ARG_NAMES } = config.constants;
+const routeDocs = includeFile("@base/route-docs", { config, route, utils });
+const queryName = (query && query.name) || "query";
+const pathParams = _.values(parameters);
+const pathParamsNames = _.map(pathParams, "name");
+
+const requestConfigParam = {
+    name: "options",
+    optional: true,
+    type: "SWRConfiguration",
+    defaultValue: "{}",
+}
+
+const argToTmpl = ({ name, optional, type, defaultValue }) => `${name}${!defaultValue && optional ? '?' : ''}: ${type}${defaultValue ? ` = ${defaultValue}` : ''}`;
+
+const rawWrapperArgs = config.extractRequestParams ?
+    _.compact([
+        requestParams && {
+          name: pathParams.length ? `{ ${_.join(pathParamsNames, ", ")}, ...${queryName} }` : queryName,
+          optional: false,
+          type: getInlineParseContent(requestParams),
+        },
+        ...(!requestParams ? pathParams : []),
+        payload,
+        requestConfigParam,
+    ]) :
+    _.compact([
+        ...pathParams,
+        query,
+        payload,
+        requestConfigParam,
+    ])
+
+const mutateArgs = _
+    .sortBy(rawWrapperArgs.slice(0, rawWrapperArgs.length - 1), [o => o.optional])
+    .map(argToTmpl)
+    .join(', ')
+
+const wrapperArgs = _
+    // Sort by optionality
+    .sortBy(rawWrapperArgs, [o => o.optional])
+    .map(argToTmpl)
+    .join(', ')
+
+const queryTmpl = (query != null && queryName) || null;
+%>
+
+<% if (_.upperCase(method) === "GET") { %>
+/**
+<%~ routeDocs.description %>
+
+ * <% /* Here you can add some other JSDoc tags */ %>
+
+<%~ routeDocs.lines %>
+
+ */
+  use<%~ route.routeName.usage.charAt(0).toUpperCase() %><%~ route.routeName.usage.slice(1) %><%~ route.namespace ? ': ' : ' = ' %>(<%~ wrapperArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %> =>
+    useSWR<<%~ type %>, <%~  errorType %>>(
+        <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %>, options),
+
+  mutate<%~ route.routeName.usage.charAt(0).toUpperCase() %><%~ route.routeName.usage.slice(1) %><%~ route.namespace ? ': ' : ' = ' %>(<%~ mutateArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %> =>
+    mutate(
+        <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %>),
+<% } %>

@@ -1,0 +1,6 @@
+import useSWR, { SWRConfiguration, mutate } from "swr";
+
+<%~ includeFile("@default/api.eta", it) %>
+
+const api = new Api();
+export default api;
