@@ -48,7 +48,7 @@ const Login: NextPage = () => {
         let from = router.query['from'];
         router.push(from ? from as string : '/')
       })
-      .catch((_) => {
+      .catch(() => {
         showNotification({
           color: 'red',
           title: '登陆失败',

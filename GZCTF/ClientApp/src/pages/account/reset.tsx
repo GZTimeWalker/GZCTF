@@ -1,23 +1,24 @@
 import type { NextPage } from 'next';
-import Link from 'next/link';
-import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core';
-import { useInputState, useWindowEvent } from '@mantine/hooks';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import { Icon } from '@mdi/react';
 import AccountView from '../../components/AccountView';
 import { showNotification } from '@mantine/notifications';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { mdiCheck, mdiClose } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import { AccountService } from '../../client';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
+import { useInputState, useWindowEvent } from '@mantine/hooks';
+import { Button, PasswordInput } from '@mantine/core';
+import { useState } from 'react';
 
-const Register: NextPage = () => {
+const Reset: NextPage = () => {
+  const router = useRouter();
+  const token = router.query['token'];
+  const email = router.query['email'];
   const [pwd, setPwd] = useInputState('');
   const [retypedPwd, setRetypedPwd] = useInputState('');
-  const [uname, setUname] = useInputState('');
-  const [email, setEmail] = useInputState('');
   const [disabled, setDisabled] = useState(false);
 
-  const onRegister = () => {
+  const onReset = () => {
     if (pwd !== retypedPwd) {
       showNotification({
         color: 'red',
@@ -28,20 +29,32 @@ const Register: NextPage = () => {
       return;
     }
 
+    if (!(token && email && typeof token === 'string' && typeof email === 'string')) {
+      showNotification({
+        color: 'red',
+        title: '密码重设失败',
+        message: '参数错误，请检查',
+        icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
+      });
+      return;
+    }
+
     setDisabled(true);
-    AccountService.accountRegister({
-      userName: uname,
+    AccountService.accountPasswordReset({
+      rToken: token,
+      email: email,
       password: pwd,
-      email,
     })
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '一封注册邮件已发送',
-          message: '请检查你的邮箱及垃圾邮件~',
+          title: '密码已重置',
+          message: '请重新登录',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
+        router.push('/account/login')
       })
       .catch((err) => {
         showNotification({
@@ -57,63 +70,32 @@ const Register: NextPage = () => {
   useWindowEvent('keydown', (e) => {
     console.log(e.code)
     if(e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onRegister()
+      onReset()
     }
   })
 
   return (
     <AccountView>
-      <TextInput
-        required
-        label="邮箱"
-        type="email"
-        placeholder="ctf@example.com"
-        style={{ width: '100%' }}
-        value={email}
-        disabled={disabled}
-        onChange={(event) => setEmail(event.currentTarget.value)}
-      />
-      <TextInput
-        required
-        label="用户名"
-        type="text"
-        placeholder="ctfer"
-        style={{ width: '100%' }}
-        value={uname}
-        disabled={disabled}
-        onChange={(event) => setUname(event.currentTarget.value)}
-      />
       <StrengthPasswordInput
         value={pwd}
         onChange={(event) => setPwd(event.currentTarget.value)}
+        label="新密码"
         disabled={disabled}
       />
       <PasswordInput
         required
         value={retypedPwd}
         onChange={(event) => setRetypedPwd(event.currentTarget.value)}
-        disabled={disabled}
         label="重复密码"
         style={{ width: '100%' }}
+        disabled={disabled}
         error={pwd !== retypedPwd}
       />
-      <Link href="/account/login" passHref={true}>
-        <Anchor<'a'>
-          sx={(theme) => ({
-            color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],
-            fontWeight: 500,
-            fontSize: theme.fontSizes.xs,
-            alignSelf: 'end',
-          })}
-        >
-          已经拥有账户？
-        </Anchor>
-      </Link>
-      <Button fullWidth onClick={onRegister} disabled={disabled}>
-        注册
+      <Button fullWidth onClick={onReset} disabled={disabled}>
+        重置密码
       </Button>
     </AccountView>
   );
 };
 
-export default Register;
+export default Reset;

@@ -94,14 +94,13 @@ public class AccountController : ControllerBase
         var token = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
         if (environment.IsDevelopment())
         {
-            logger.Log($"用户注册信息：\nToken = {token}\nEmail = {Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log($"http://{HttpContext.Request.Host}/account/verify?token={token}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
             mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
-                $"https://{HttpContext.Request.Host}/verify?token={token}&email={Codec.Base64.Encode(model.Email)}");
+                $"https://{HttpContext.Request.Host}/account/verify?token={token}&email={Codec.Base64.Encode(model.Email)}");
         }
-
 
         return Ok();
     }
@@ -128,9 +127,18 @@ public class AccountController : ControllerBase
 
         logger.Log("发送用户密码重置邮件。", user.UserName, HttpContext, TaskStatus.Pending);
 
-        mailSender.SendResetPasswordUrl(user.UserName, user.Email,
-            $"https://{HttpContext.Request.Host}/reset?token={Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user))}&email={Codec.Base64.Encode(model.Email)}");
+        var token = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
 
+        if (environment.IsDevelopment())
+        {
+            logger.Log($"http://{HttpContext.Request.Host}/account/reset?token={token}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
+        }
+        else
+        {
+            mailSender.SendResetPasswordUrl(user.UserName, user.Email,
+                $"https://{HttpContext.Request.Host}/account/reset?token={token}&email={Codec.Base64.Encode(model.Email)}");
+        }
+        
         return Ok(new RequestResponse("邮件发送成功", 200));
     }
 
@@ -352,8 +360,17 @@ public class AccountController : ControllerBase
         var user = await userManager.GetUserAsync(User);
         logger.Log("发送用户邮箱更改邮件。", user, TaskStatus.Pending);
 
-        mailSender.SendChangeEmailUrl(user.UserName, model.NewMail,
-            $"https://{HttpContext.Request.Host}/confirm?token={Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user, model.NewMail))}&email={Codec.Base64.Encode(model.NewMail)}");
+        var token = Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user, model.NewMail));
+
+        if (environment.IsDevelopment())
+        {
+            logger.Log($"http://{HttpContext.Request.Host}/account/confirm?token={token}&email={Codec.Base64.Encode(model.NewMail)}", user, TaskStatus.Pending, LogLevel.Debug);
+        }
+        else
+        {
+            mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
+                $"https://{HttpContext.Request.Host}/account/confirm?token={token}&email={Codec.Base64.Encode(model.NewMail)}");
+        }
 
         return Ok();
     }
