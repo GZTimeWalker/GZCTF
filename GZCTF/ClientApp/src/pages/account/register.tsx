@@ -78,8 +78,8 @@ const Register: NextPage = () => {
         updateNotification({
           id: 'register-status',
           color: 'red',
-          title: '遇到了问题，请稍后重试',
-          message: `${err}`,
+          title: '遇到了问题',
+          message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
         });
         setDisabled(false);
@@ -87,7 +87,6 @@ const Register: NextPage = () => {
   };
 
   useWindowEvent('keydown', (e) => {
-    console.log(e.code);
     if (e.code == 'Enter' || e.code == 'NumpadEnter') {
       onRegister();
     }

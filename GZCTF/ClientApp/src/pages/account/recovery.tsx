@@ -29,14 +29,13 @@ const Recovery: NextPage = () => {
         showNotification({
           color: 'red',
           title: '遇到了问题',
-          message: `${err}`,
+          message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
         });
       });
   };
 
   useWindowEvent('keydown', (e) => {
-    console.log(e.code);
     if (e.code == 'Enter' || e.code == 'NumpadEnter') {
       onRecovery();
     }

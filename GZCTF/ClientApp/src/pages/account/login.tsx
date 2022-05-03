@@ -61,7 +61,6 @@ const Login: NextPage = () => {
   };
 
   useWindowEvent('keydown', (e) => {
-    console.log(e.code);
     if (e.code == 'Enter' || e.code == 'NumpadEnter') {
       onLogin();
     }

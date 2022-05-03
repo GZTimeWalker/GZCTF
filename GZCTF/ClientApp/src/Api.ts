@@ -90,9 +90,6 @@ export interface LoginModel {
 
   /** 密码 */
   password: string;
-
-  /** Google Recaptcha Token */
-  gToken?: string | null;
 }
 
 /**
@@ -1171,7 +1168,7 @@ export class HttpClient<SecurityDataType = unknown> {
     const requestParams = this.mergeRequestParams(params, secureParams);
     const queryString = query && this.toQueryString(query);
     const payloadFormatter = this.contentFormatters[type || ContentType.Json];
-    const responseFormat = format || requestParams.format;
+    const responseFormat = format || requestParams.format || 'json';
 
     return this.customFetch(
       `${baseUrl || this.baseUrl || ''}${path}${queryString ? `?${queryString}` : ''}`,
@@ -1293,7 +1290,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口登录账户，Dev环境下不校验 GToken
+     * @description 使用此接口登录账户
      *
      * @tags Account
      * @name AccountLogIn
