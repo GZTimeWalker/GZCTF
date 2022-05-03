@@ -13,8 +13,8 @@ const fetcher = async (arg: string | [string, Record<string, string>]) => {
     return await (res.ok ? res.json() : Promise.reject(res));
   } else {
     const qs = new URLSearchParams(arg[1]).toString();
-    const res_1 = await fetch(`${arg[0]}?${qs}`);
-    return await (res_1.ok ? res_1.json() : Promise.reject(res_1));
+    const result = await fetch(`${arg[0]}?${qs}`);
+    return await (result.ok ? result.json() : Promise.reject(result));
   }
 };
 

@@ -1,14 +1,18 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
-import useSWR from 'swr';
-import { Text, Stack, Group, Title, Center } from '@mantine/core';
+import { Text, Stack, Tabs } from '@mantine/core';
 import api from '../../Api';
 import WithNavBar from '../../components/WithNavbar';
 
 const Profile: NextPage = () => {
+  const { data } = api.account.useAccountProfile();
+
   return (
     <WithNavBar>
-      <Stack></Stack>
+      <Tabs color="brand">
+        <Tabs.Tab label="基础信息"></Tabs.Tab>
+        <Tabs.Tab label="更改密码"></Tabs.Tab>
+        <Tabs.Tab label="更改邮箱"></Tabs.Tab>
+      </Tabs>
     </WithNavBar>
   );
 };
