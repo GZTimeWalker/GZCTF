@@ -1,8 +1,4 @@
-import {
-  Group,
-  Title,
-  createStyles,
-} from '@mantine/core';
+import { Group, Title, createStyles } from '@mantine/core';
 import MainIcon from './icon/MainIcon';
 import { FC } from 'react';
 

@@ -12,9 +12,10 @@ const Recovery: NextPage = () => {
   const [email, setEmail] = useInputState('');
 
   const onRecovery = () => {
-    api.account.accountRecovery({
-      email,
-    })
+    api.account
+      .accountRecovery({
+        email,
+      })
       .then(() => {
         showNotification({
           color: 'teal',
@@ -35,11 +36,11 @@ const Recovery: NextPage = () => {
   };
 
   useWindowEvent('keydown', (e) => {
-    console.log(e.code)
-    if(e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onRecovery()
+    console.log(e.code);
+    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+      onRecovery();
     }
-  })
+  });
 
   return (
     <AccountView>
@@ -64,7 +65,9 @@ const Recovery: NextPage = () => {
           准备好登录？
         </Anchor>
       </Link>
-      <Button fullWidth onClick={onRecovery}>发送重置邮件</Button>
+      <Button fullWidth onClick={onRecovery}>
+        发送重置邮件
+      </Button>
     </AccountView>
   );
 };

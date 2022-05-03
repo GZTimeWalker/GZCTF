@@ -18,7 +18,9 @@ const Home: NextPage = () => {
           <Group position="apart" style={{ margin: 'auto' }}>
             <Text weight={500}>{data && data.length > 0 ? data[0].title : 'Welcome!'}</Text>
             <Badge color="teal" variant="light">
-              {data && data.length > 0 ? new Date(data[0].time).toLocaleString() : new Date().toLocaleString()}
+              {data && data.length > 0
+                ? new Date(data[0].time).toLocaleString()
+                : new Date().toLocaleString()}
             </Badge>
           </Group>
           <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>

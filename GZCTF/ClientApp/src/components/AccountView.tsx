@@ -1,16 +1,12 @@
 import { FC } from 'react';
-import {
-  Stack,
-  Center,
-  createStyles,
-} from '@mantine/core';
+import { Stack, Center, createStyles } from '@mantine/core';
 import LogoHeader from './LogoHeader';
 
 const useStyles = createStyles((theme) => ({
   input: {
     width: '20%',
     minWidth: '250px',
-    maxWidth: '300px'
+    maxWidth: '300px',
   },
 }));
 

@@ -8,7 +8,7 @@ import './_app.css';
 import { URLSearchParams } from 'url';
 
 const fetcher = async (arg: string | [string, Record<string, string>]) => {
-  if(typeof arg === 'string') {
+  if (typeof arg === 'string') {
     const res = await fetch(arg);
     return await (res.ok ? res.json() : Promise.reject(res));
   } else {
@@ -16,7 +16,7 @@ const fetcher = async (arg: string | [string, Record<string, string>]) => {
     const res_1 = await fetch(`${arg[0]}?${qs}`);
     return await (res_1.ok ? res_1.json() : Promise.reject(res_1));
   }
-}
+};
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;

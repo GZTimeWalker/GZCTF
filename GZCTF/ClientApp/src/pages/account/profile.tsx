@@ -6,12 +6,9 @@ import useSWR from 'swr';
 import api from '../../Api';
 
 const Profile: NextPage = () => {
-
   return (
     <WithNavBar>
-        <Stack>
-
-        </Stack>
+      <Stack></Stack>
     </WithNavBar>
   );
 };

@@ -8,22 +8,22 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${TARGET}/api/:path*`
+        destination: `${TARGET}/api/:path*`,
       },
       {
         source: '/swagger/:path*',
-        destination: `${TARGET}/swagger/:path*`
+        destination: `${TARGET}/swagger/:path*`,
       },
       {
         source: '/assets/:path*',
-        destination: `${TARGET}/assets/:path*`
+        destination: `${TARGET}/assets/:path*`,
       },
       {
         source: '/hub/:path*',
-        destination: `${TARGET}/hub/:path*`
-      }
-    ]
-  }
-}
+        destination: `${TARGET}/hub/:path*`,
+      },
+    ];
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

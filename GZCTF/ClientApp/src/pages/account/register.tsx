@@ -29,11 +29,12 @@ const Register: NextPage = () => {
     }
 
     setDisabled(true);
-    api.account.accountRegister({
-      userName: uname,
-      password: pwd,
-      email,
-    })
+    api.account
+      .accountRegister({
+        userName: uname,
+        password: pwd,
+        email,
+      })
       .then(() => {
         showNotification({
           color: 'teal',
@@ -55,11 +56,11 @@ const Register: NextPage = () => {
   };
 
   useWindowEvent('keydown', (e) => {
-    console.log(e.code)
-    if(e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onRegister()
+    console.log(e.code);
+    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+      onRegister();
     }
-  })
+  });
 
   return (
     <AccountView>

@@ -44,7 +44,7 @@ const Login: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        api.account.mutateAccountProfile()
+        api.account.mutateAccountProfile();
         let from = router.query['from'];
         router.push(from ? (from as string) : '/');
       })

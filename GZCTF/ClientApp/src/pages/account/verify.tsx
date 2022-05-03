@@ -15,7 +15,8 @@ const Verify: NextPage = () => {
 
   useEffect(() => {
     if (token && email && typeof token === 'string' && typeof email === 'string') {
-      api.account.accountVerify({ token, email })
+      api.account
+        .accountVerify({ token, email })
         .then(() => {
           showNotification({
             color: 'teal',
