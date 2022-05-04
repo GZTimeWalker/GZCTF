@@ -82,6 +82,7 @@ public class GameController : ControllerBase
     /// <param name="id">比赛id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
+    /// <response code="404">比赛未找到</response>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(GameDetailsModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -104,10 +105,12 @@ public class GameController : ControllerBase
     /// <param name="id">比赛id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
+    /// <response code="403">无权操作或操作无效</response>
+    /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpPost("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> JoinGame(int id, CancellationToken token)
     {
@@ -278,9 +281,12 @@ public class GameController : ControllerBase
     /// <param name="id">比赛id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
+    /// <response code="400">操作无效</response>
+    /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpGet("{id}/Challenges")]
     [ProducesResponseType(typeof(IDictionary<string, IEnumerable<ChallengeInfo>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)
     {
@@ -302,9 +308,12 @@ public class GameController : ControllerBase
     /// <param name="challengeId">题目id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
+    /// <response code="400">操作无效</response>
+    /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpGet("{id}/Challenges/{challengeId}")]
     [ProducesResponseType(typeof(ChallengeDetailModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetChallenge([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
@@ -332,9 +341,13 @@ public class GameController : ControllerBase
     /// <param name="flag">提交Flag</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
+    /// <response code="400">操作无效</response>
+    /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpPost("{id}/Challenges/{challengeId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
     {
         var context = await GetContextInfo(id, true, token);
@@ -371,10 +384,12 @@ public class GameController : ControllerBase
     /// <param name="challengeId">题目id</param>
     /// <param name="submitId">提交id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目信息</response>
+    /// <response code="200">成功获取比赛提交状态</response>
+    /// <response code="404">提交未找到</response>
     [RequireUser]
     [HttpGet("{id}/Status/{submitId}")]
     [ProducesResponseType(typeof(AnswerResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Status([FromRoute] int id, [FromRoute] int challengeId, [FromRoute] int submitId, CancellationToken token)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -2286,7 +2286,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/game/{id}
      */
     gameJoinGame: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse | ProblemDetails>({
+      this.request<void, RequestResponse>({
         path: `/api/game/${id}`,
         method: 'POST',
         ...params,
