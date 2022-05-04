@@ -5,8 +5,6 @@ using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NJsonSchema.Validation.FormatValidators;
-using Org.BouncyCastle.Bcpg.Attr;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Channels;
@@ -28,7 +26,6 @@ public class GameController : ControllerBase
     private readonly ChannelWriter<Submission> checkerChannelWriter;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
-    private readonly IContainerService containerService;
     private readonly IContainerRepository containerRepository;
     private readonly IGameNoticeRepository noticeRepository;
     private readonly IGameEventRepository eventRepository;
@@ -42,7 +39,6 @@ public class GameController : ControllerBase
         ChannelWriter<Submission> _channelWriter,
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
-        IContainerService _containerService,
         IGameNoticeRepository _noticeRepository,
         IGameEventRepository _eventRepository,
         IInstanceRepository _instanceRepository,
@@ -53,7 +49,6 @@ public class GameController : ControllerBase
         logger = _logger;
         userManager = _userManager;
         checkerChannelWriter = _channelWriter;
-        containerService = _containerService;
         gameRepository = _gameRepository;
         teamRepository = _teamRepository;
         eventRepository = _eventRepository;
@@ -389,8 +384,11 @@ public class GameController : ControllerBase
         if (submission is null)
             return NotFound(new RequestResponse("提交未找到", 404));
 
-        return Ok(submission.Status == AnswerResult.CheatDetected ?
-            AnswerResult.WrongAnswer : submission.Status);
+        return Ok(submission.Status switch
+        {
+            AnswerResult.CheatDetected => AnswerResult.WrongAnswer,
+            var x => x,
+        });
     }
 
     /// <summary>
@@ -557,14 +555,13 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器", 400));
 
-        await containerService.DestoryContainer(instance.Container, token);
+        var res = await instanceRepository.DestoryContainer(instance.Container, token);
 
-        if (instance.Container.Status != ContainerStatus.Destoryed)
-            return BadRequest(new RequestResponse("题目删除容器失败", 400));
-
-        await containerRepository.RemoveContainer(instance.Container, token);
-
-        return Ok();
+        return res switch
+        {
+            true => Ok(),
+            false => BadRequest(new RequestResponse("题目删除容器失败", 400))
+        };
     }
 
     private class ContextInfo

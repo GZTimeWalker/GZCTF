@@ -301,6 +301,7 @@ public enum ChallengeTag : byte
 /// <summary>
 /// 判定结果
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum AnswerResult : byte
 {
     /// <summary>

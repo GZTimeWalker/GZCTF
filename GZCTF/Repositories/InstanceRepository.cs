@@ -72,17 +72,19 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return instance;
     }
 
-    public async Task DestoryContainer(Container container, CancellationToken token = default)
+    public async Task<bool> DestoryContainer(Container container, CancellationToken token = default)
     {
         try
         {
             await service.DestoryContainer(container, token);
             await containerRepository.RemoveContainer(container, token);
             logger.SystemLog($"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()})", TaskStatus.Success);
+            return true;
         }
         catch (Exception ex)
         {
             logger.SystemLog($"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Fail, LogLevel.Warning);
+            return false;
         }
     }
 

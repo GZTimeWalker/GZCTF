@@ -554,11 +554,11 @@ export interface Submission {
  * 判定结果
  */
 export enum AnswerResult {
-  FlagSubmitted = 0,
-  Accepted = 1,
-  WrongAnswer = 2,
-  NotFound = 3,
-  CheatDetected = 4,
+  FlagSubmitted = 'FlagSubmitted',
+  Accepted = 'Accepted',
+  WrongAnswer = 'WrongAnswer',
+  NotFound = 'NotFound',
+  CheatDetected = 'CheatDetected',
 }
 
 export interface ChallengeModel {
