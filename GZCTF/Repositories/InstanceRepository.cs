@@ -24,9 +24,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
     public async Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default)
     {
-        var instance = await context.Instances.Include(e => e.Challenge)
-                .Where(e => e.ChallengeId == challengeId && e.Participation == team)
-                .SingleOrDefaultAsync(token);
+        var instance = await context.Instances
+            .Where(e => e.ChallengeId == challengeId && e.Participation == team)
+            .SingleOrDefaultAsync(token);
 
         if (instance is not null)
             return instance;
@@ -44,7 +44,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         };
 
         if (challenge.Type.IsStatic())
-            instance.Context = null; // use challenge to verify
+            instance.FlagContext = null; // use challenge to verify
         else
         {
             if (challenge.Type.IsAttachment())
@@ -53,11 +53,11 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                         .Query().Where(e => !e.IsOccupied).ToListAsync(token);
                 var pos = Random.Shared.Next(flags.Count);
                 flags[pos].IsOccupied = true;
-                instance.Context = flags[pos];
+                instance.FlagContext = flags[pos];
             }
             else
             {
-                instance.Context = new()
+                instance.FlagContext = new()
                 {
                     AttachmentType = FileType.None,
                     Flag = $"flag{Guid.NewGuid():B}",
@@ -96,14 +96,14 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         if (instance.Container is null)
         {
-            await context.Entry(instance).Reference(e => e.Context).LoadAsync(token);
+            await context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
             var container = await service.CreateContainer(new ContainerConfig()
             {
                 CPUCount = instance.Challenge.CPUCount ?? 1,
-                Flag = instance.Context?.Flag ?? throw new ArgumentException("创建容器时遇到无效的 Flag"),
+                Flag = instance.FlagContext?.Flag ?? throw new ArgumentException("创建容器时遇到无效的 Flag"),
                 Image = instance.Challenge.ContainerImage,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
-                Port = instance.Challenge.ContainerExposePort?.ToString() ?? throw new ArgumentException("创建容器时遇到无效的端口"),
+                ExposedPort = instance.Challenge.ContainerExposePort?.ToString() ?? throw new ArgumentException("创建容器时遇到无效的端口"),
             }, token);
             instance.Container = container;
 
@@ -130,12 +130,12 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         var instances = await context.Instances.Where(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId != submission.ParticipationId)
-                .Include(i => i.Challenge).Include(i => i.Context)
+                .Include(i => i.Challenge).Include(i => i.FlagContext)
                 .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
 
         foreach (var instance in instances)
         {
-            if (instance.Context?.Flag == submission.Answer)
+            if (instance.FlagContext?.Flag == submission.Answer)
             {
                 await context.Entry(submission).Reference(s => s.User).LoadAsync(token);
                 await context.Entry(submission).Reference(s => s.Participation.Team).LoadAsync(token);
@@ -161,7 +161,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             return AnswerResult.NotFound;
 
         if ((instance.Challenge.Type.IsStatic() && instance.Challenge.Flags.Any(f => f.Flag == submission.Answer))
-            || (instance.Challenge.Type.IsDynamic() && instance.Context?.Flag == submission.Answer))
+            || (instance.Challenge.Type.IsDynamic() && instance.FlagContext?.Flag == submission.Answer))
             return AnswerResult.Accepted;
 
         return AnswerResult.WrongAnswer;

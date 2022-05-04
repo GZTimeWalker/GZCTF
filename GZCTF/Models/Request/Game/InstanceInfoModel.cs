@@ -42,13 +42,7 @@ public class InstanceInfoModel
                 Type = instance.Challenge.Type,
                 Tag = instance.Challenge.Tag
             },
-            Container = instance.Container is null ? null : new()
-            {
-                Status = instance.Container.Status,
-                StartedAt = instance.Container.StartedAt,
-                ExpectStopAt = instance.Container.ExpectStopAt,
-                Entry = instance.Container.Entry
-            }
+            Container = instance.Container is null ? null : ContainerInfoModel.FromContainer(instance.Container)
         };
 }
 
@@ -73,4 +67,13 @@ public class ContainerInfoModel
     /// 题目入口
     /// </summary>
     public string Entry { get; set; } = string.Empty;
+
+    public static ContainerInfoModel FromContainer(Container container)
+        => new()
+        {
+            Status = container.Status,
+            StartedAt = container.StartedAt,
+            ExpectStopAt = container.ExpectStopAt,
+            Entry = container.Entry
+        };
 }

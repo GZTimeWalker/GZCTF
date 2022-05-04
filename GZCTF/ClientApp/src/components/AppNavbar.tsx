@@ -76,7 +76,7 @@ const useStyles = createStyles((theme) => ({
 const items = [
   { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
   { icon: mdiFlagOutline, label: '赛事' },
-  { icon: mdiAccountGroupOutline, label: '队伍' },
+  { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
   { icon: mdiInformationOutline, label: '关于', link: '/about' },
 ];
 

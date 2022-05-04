@@ -55,7 +55,7 @@ public class ChallengeDetailModel
             Context = new()
             {
                 Name = instance.Challenge.FileName,
-                Url = instance.Context?.Url,
+                Url = instance.FlagContext?.Url,
                 InstanceEntry = instance.Container?.Entry
             }
         };

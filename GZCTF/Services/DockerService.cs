@@ -38,7 +38,7 @@ public class DockerService : IContainerService
             Name = $"{config.Image.Split("/").LastOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
             Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" },
             // TODO: Add Health Check
-            ExposedPorts = { { config.Port.ToString(), default } },
+            ExposedPorts = { { config.ExposedPort.ToString(), default } },
             HostConfig = new()
             {
                 PublishAllPorts = true,
@@ -47,10 +47,10 @@ public class DockerService : IContainerService
             }
         };
 
-        return CreateContainer(parameters, token);
+        return CreateContainerByParams(parameters, token);
     }
 
-    public async Task<Container?> CreateContainer(CreateContainerParameters parameters, CancellationToken token = default)
+    public async Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default)
     {
         // TODO: Docker Registry Auth Required
         var res = await dockerClient.Containers.CreateContainerAsync(parameters, token);

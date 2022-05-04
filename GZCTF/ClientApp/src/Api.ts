@@ -2614,6 +2614,81 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: AnswerResult,
       options?: MutatorOptions
     ) => mutate<AnswerResult>(`/api/game/${id}/status/${submitId}`, data, options),
+
+    /**
+     * @description 创建容器，需要User权限
+     *
+     * @tags Game
+     * @name GameCreateContainer
+     * @summary 创建容器
+     * @request POST:/api/game/{id}/container/{challengeId}
+     */
+    gameCreateContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}`,
+        method: 'POST',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 获取容器信息，需要User权限
+     *
+     * @tags Game
+     * @name GameGetContainer
+     * @summary 获取容器信息
+     * @request GET:/api/game/{id}/container/{challengeId}
+     */
+    gameGetContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取容器信息，需要User权限
+     *
+     * @tags Game
+     * @name GameGetContainer
+     * @summary 获取容器信息
+     * @request GET:/api/game/{id}/container/{challengeId}
+     */
+    useGameGetContainer: (id: number, challengeId: number, options?: SWRConfiguration) =>
+      useSWR<ContainerInfoModel, RequestResponse>(
+        `/api/game/${id}/container/${challengeId}`,
+        options
+      ),
+
+    /**
+     * @description 获取容器信息，需要User权限
+     *
+     * @tags Game
+     * @name GameGetContainer
+     * @summary 获取容器信息
+     * @request GET:/api/game/{id}/container/{challengeId}
+     */
+    mutateGameGetContainer: (
+      id: number,
+      challengeId: number,
+      data?: ContainerInfoModel,
+      options?: MutatorOptions
+    ) => mutate<ContainerInfoModel>(`/api/game/${id}/container/${challengeId}`, data, options),
+
+    /**
+     * @description 删除，需要User权限
+     *
+     * @tags Game
+     * @name GameDeleteContainer
+     * @summary 删除容器
+     * @request DELETE:/api/game/{id}/container/{challengeId}
+     */
+    gameDeleteContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}`,
+        method: 'DELETE',
+        ...params,
+      }),
   };
   info = {
     /**

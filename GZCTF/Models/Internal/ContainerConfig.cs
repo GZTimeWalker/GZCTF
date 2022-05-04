@@ -8,9 +8,9 @@ public class ContainerConfig
     public string Image { get; set; } = string.Empty;
 
     /// <summary>
-    /// 容器端口
+    /// 容器需要暴露的端口
     /// </summary>
-    public string Port { get; set; } = string.Empty;
+    public string ExposedPort { get; set; } = string.Empty;
 
     /// <summary>
     /// Flag文本

@@ -30,7 +30,7 @@ public class Instance
     /// <summary>
     /// Flag 上下文对象
     /// </summary>
-    public FlagContext? Context { get; set; } = default!;
+    public FlagContext? FlagContext { get; set; } = default!;
 
     [Required]
     public int ChallengeId { get; set; }

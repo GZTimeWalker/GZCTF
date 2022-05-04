@@ -67,7 +67,7 @@ public class ContainerServiceTest
             },
         };
 
-        var container = await service.CreateContainer(parameters);
+        var container = await service.CreateContainerByParams(parameters);
 
         Assert.NotNull(container);
         output.WriteLine($"[{DateTime.Now:u}] Container Created.");
