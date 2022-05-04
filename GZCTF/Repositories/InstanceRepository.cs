@@ -61,6 +61,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 {
                     AttachmentType = FileType.None,
                     Flag = $"flag{Guid.NewGuid():B}",
+                    IsOccupied = true
                 };
             }
         }
@@ -93,8 +94,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
             logger.SystemLog($"无法为题目 {instance.Challenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
-            return new TaskResult<Container>(TaskStatus.Denied);
+            return new TaskResult<Container>(TaskStatus.Fail);
         }
+
+        if (context.Instances.Count(i => i.Participation == instance.Participation
+            && i.Container != null
+            && i.Container.Status == ContainerStatus.Running) == 3)
+            return new TaskResult<Container>(TaskStatus.Denied);
 
         if (instance.Container is null)
         {

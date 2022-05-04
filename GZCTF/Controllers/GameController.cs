@@ -446,12 +446,13 @@ public class GameController : ControllerBase
             await containerRepository.RemoveContainer(instance.Container, token);
         }
 
-        var res = await instanceRepository.CreateContainer(instance, token);
-
-        if (res is null || res.Status != TaskStatus.Success)
-            return BadRequest(new RequestResponse("创建容器失败", 400));
-
-        return Ok(ContainerInfoModel.FromContainer(res.Result!));
+        return await instanceRepository.CreateContainer(instance, token) switch
+        {
+            null or (TaskStatus.Fail, null) => BadRequest(new RequestResponse("题目创建容器失败", 400)),
+            (TaskStatus.Denied, null) => BadRequest(new RequestResponse("队伍容器数目到达上限", 400)),
+            (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
+            _ => throw new NotImplementedException(),
+        };
     }
 
     /// <summary>
