@@ -1,5 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Repositories.Interface;
+﻿using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CTFServer.Repositories;

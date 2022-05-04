@@ -1,12 +1,13 @@
-﻿using CTFServer.Models;
-using CTFServer.Repositories.Interface;
+﻿using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
 
 public class ParticipationRepository : RepositoryBase, IParticipationRepository
 {
-    public ParticipationRepository(AppDbContext _context) : base(_context) { }
+    public ParticipationRepository(AppDbContext _context) : base(_context)
+    {
+    }
 
     public async Task<Participation> CreateParticipation(Team team, Game game, CancellationToken token = default)
     {

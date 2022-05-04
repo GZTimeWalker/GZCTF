@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using CTFServer.Hubs.Client;
+﻿using CTFServer.Hubs.Clients;
 using CTFServer.Utils;
-using CTFServer.Hubs.Clients;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CTFServer.Hubs;
 

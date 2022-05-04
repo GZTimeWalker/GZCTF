@@ -10,7 +10,7 @@ public class FileRepository : RepositoryBase, IFileRepository
     private readonly ILogger<FileRepository> logger;
     private readonly IConfiguration configuration;
 
-    public FileRepository(AppDbContext context ,IConfiguration _configuration, 
+    public FileRepository(AppDbContext context, IConfiguration _configuration,
         ILogger<FileRepository> _logger) : base(context)
     {
         logger = _logger;

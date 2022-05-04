@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using CTFServer.Models;
-using CTFServer.Models.Request.Admin;
+﻿using CTFServer.Models.Request.Admin;
 using CTFServer.Repositories.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
 
 public class LogRepository : RepositoryBase, ILogRepository
 {
-    public LogRepository(AppDbContext _context) : base(_context) { }
+    public LogRepository(AppDbContext _context) : base(_context)
+    {
+    }
 
     public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, CancellationToken token)
     {

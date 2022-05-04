@@ -41,12 +41,12 @@ public class TeamInfoModel
             Avatar = team.AvatarUrl,
             Locked = team.Locked,
             Members = includeMembers ? team.Members.Select(m => new BasicTeamUserInfoModel()
-                       {
-                           Id = m.Id,
-                           Bio = m.Bio,
-                           UserName = m.UserName,
-                           Avatar = m.AvatarUrl,
-                           Captain = m.Id == team.CaptainId
-                       }).ToList() : null
+            {
+                Id = m.Id,
+                Bio = m.Bio,
+                UserName = m.UserName,
+                Avatar = m.AvatarUrl,
+                Captain = m.Id == team.CaptainId
+            }).ToList() : null
         };
 }

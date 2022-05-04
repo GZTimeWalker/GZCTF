@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CTFServer.Utils;
-using System.Net.Mime;
-using CTFServer.Middlewares;
+﻿using CTFServer.Middlewares;
 using CTFServer.Repositories.Interface;
+using CTFServer.Utils;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace CTFServer.Controllers;
 
@@ -18,8 +18,8 @@ public class AssetsController : ControllerBase
     private readonly IFileRepository fileRepository;
     private readonly IConfiguration configuration;
 
-    public AssetsController(IFileRepository _fileeService, 
-        IConfiguration _configuration, 
+    public AssetsController(IFileRepository _fileeService,
+        IConfiguration _configuration,
         ILogger<AssetsController> _logger)
     {
         fileRepository = _fileeService;
@@ -46,7 +46,7 @@ public class AssetsController : ControllerBase
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
         var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         path = Path.GetFullPath(Path.Combine(basepath, path));
-        
+
         if (!System.IO.File.Exists(path))
         {
             logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, LogLevel.Warning);
@@ -85,7 +85,7 @@ public class AssetsController : ControllerBase
                 if (file.Length > 0)
                 {
                     var res = await fileRepository.CreateOrUpdateFile(file, null, token);
-                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Information); 
+                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Information);
                     results.Add(res);
                 }
             }

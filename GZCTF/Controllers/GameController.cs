@@ -1,15 +1,12 @@
-﻿using CTFServer.Models.Request.Game;
+﻿using CTFServer.Middlewares;
+using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using CTFServer.Middlewares;
-using CTFServer.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
-using CTFServer.Repositories;
-using System.Threading.Channels;
 using System.Security.Claims;
+using System.Threading.Channels;
 
 namespace CTFServer.Controllers;
 
@@ -314,9 +311,9 @@ public class GameController : ControllerBase
             return context.Result;
 
         var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
-        
-        if(instance is null)
-            return NotFound(new RequestResponse("题目未找到",404));
+
+        if (instance is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
 
         return Ok(ChallengeDetailModel.FromInstance(instance));
     }
@@ -354,7 +351,7 @@ public class GameController : ControllerBase
         };
 
         submission = await submissionRepository.AddSubmission(submission, token);
-        
+
         // send to flag checker service
         await checkerChannelWriter.WriteAsync(submission, token);
 
@@ -380,8 +377,8 @@ public class GameController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var submission = await submissionRepository.GetSubmission(id, challengeId, userId, submitId, token);
-        
-        if(submission is null)
+
+        if (submission is null)
             return NotFound(new RequestResponse("提交未找到", 404));
 
         return Ok(submission.Status == AnswerResult.CheatDetected ?

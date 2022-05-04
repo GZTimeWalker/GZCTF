@@ -23,6 +23,7 @@ public class Instance
     public bool IsSolved { get; set; } = false;
 
     #region Db Relationship
+
     [Required]
     public int? FlagId { get; set; }
 

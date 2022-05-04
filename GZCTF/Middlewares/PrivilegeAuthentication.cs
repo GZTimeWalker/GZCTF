@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CTFServer.Utils;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using CTFServer.Utils;
 
 namespace CTFServer.Middlewares;
 
@@ -55,7 +55,9 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
 /// </summary>
 public class RequireUserAttribute : RequirePrivilegeAttribute
 {
-    public RequireUserAttribute() : base(Role.User) { }
+    public RequireUserAttribute() : base(Role.User)
+    {
+    }
 }
 
 /// <summary>
@@ -63,7 +65,9 @@ public class RequireUserAttribute : RequirePrivilegeAttribute
 /// </summary>
 public class RequireMonitorAttribute : RequirePrivilegeAttribute
 {
-    public RequireMonitorAttribute() : base(Role.Monitor) { }
+    public RequireMonitorAttribute() : base(Role.Monitor)
+    {
+    }
 }
 
 /// <summary>
@@ -71,5 +75,7 @@ public class RequireMonitorAttribute : RequirePrivilegeAttribute
 /// </summary>
 public class RequireAdminAttribute : RequirePrivilegeAttribute
 {
-    public RequireAdminAttribute() : base(Role.Admin) { }
+    public RequireAdminAttribute() : base(Role.Admin)
+    {
+    }
 }

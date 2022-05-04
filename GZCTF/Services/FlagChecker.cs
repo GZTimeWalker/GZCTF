@@ -46,12 +46,11 @@ public class FlagChecker : IHostedService
 
         try
         {
-            await foreach(var item in channelReader.ReadAllAsync(token))
+            await foreach (var item in channelReader.ReadAllAsync(token))
             {
                 logger.SystemLog($"检查线程 #{id} 开始处理提交：{item.Answer}", TaskStatus.Pending, LogLevel.Debug);
 
                 item.Status = await instanceRepository.VerifyAnswer(item, token);
-
 
                 if (item.Status == AnswerResult.NotFound)
                     logger.Log($"[实例未知] 未找到队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
@@ -70,8 +69,8 @@ public class FlagChecker : IHostedService
                 }
 
                 await eventRepository.AddEvent(item.Game, GameEvent.FromSubmission(item), token);
-                
-                if(item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(item, token))
+
+                if (item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(item, token))
                 {
                     item.Challenge.AcceptedUserCount++;
                     NoticeType type = item.Challenge.AcceptedUserCount switch
@@ -91,7 +90,7 @@ public class FlagChecker : IHostedService
                 token.ThrowIfCancellationRequested();
             }
         }
-        catch (TaskCanceledException) 
+        catch (TaskCanceledException)
         {
             logger.SystemLog($"任务取消，检查线程 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
         }
@@ -105,7 +104,7 @@ public class FlagChecker : IHostedService
     {
         TokenSource = new CancellationTokenSource();
 
-        for(int i = 0; i < 4; ++i)
+        for (int i = 0; i < 4; ++i)
             _ = Checker(i, TokenSource.Token);
 
         logger.SystemLog("Flag 检查已启用", TaskStatus.Success, LogLevel.Debug);

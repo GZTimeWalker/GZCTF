@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Edit;
 
@@ -34,6 +33,7 @@ public class ChallengeModel
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     #region Container
+
     /// <summary>
     /// 镜像名称与标签
     /// </summary>
@@ -53,9 +53,11 @@ public class ChallengeModel
     /// 镜像暴露端口
     /// </summary>
     public int? ContainerExposePort { get; set; } = 80;
-    #endregion
+
+    #endregion Container
 
     #region Score
+
     /// <summary>
     /// 初始分数
     /// </summary>
@@ -75,7 +77,8 @@ public class ChallengeModel
     /// 奖励人数
     /// </summary>
     public int AwardCount { get; set; } = 10;
-    #endregion
+
+    #endregion Score
 
     /// <summary>
     /// 统一文件名

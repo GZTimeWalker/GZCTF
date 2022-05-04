@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CTFServer.Models;
 
 namespace CTFServer.Models.Request.Edit;
 

@@ -1,6 +1,5 @@
 ﻿using CTFServer.Extensions;
 using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTFServer.Controllers;
@@ -48,5 +47,5 @@ public class InfoController : ControllerBase
     [HttpGet("SiteKey")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public IActionResult GetRecaptchaSiteKey()
-        => Ok(recaptchaExtension.SiteKey());    
+        => Ok(recaptchaExtension.SiteKey());
 }

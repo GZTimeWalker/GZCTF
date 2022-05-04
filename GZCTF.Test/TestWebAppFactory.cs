@@ -15,8 +15,8 @@ internal class TestWebAppFactory<TStartup>
         builder.ConfigureServices(services =>
         {
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
-            
-            if(descriptor is not null)
+
+            if (descriptor is not null)
                 services.Remove(descriptor);
 
             services.AddDbContext<AppDbContext>(options =>

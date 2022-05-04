@@ -1,5 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Repositories.Interface;
+﻿using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -8,6 +7,7 @@ namespace CTFServer.Repositories;
 public class NoticeRepository : RepositoryBase, INoticeRepository
 {
     private readonly IMemoryCache cache;
+
     public NoticeRepository(IMemoryCache memoryCache, AppDbContext _context) : base(_context)
     {
         cache = memoryCache;

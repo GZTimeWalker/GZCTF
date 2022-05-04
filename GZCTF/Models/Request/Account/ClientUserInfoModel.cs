@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CTFServer.Models.Request.Account;
+﻿namespace CTFServer.Models.Request.Account;
 
 public class ClientUserInfoModel
 {

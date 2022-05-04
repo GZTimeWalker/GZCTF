@@ -1,12 +1,13 @@
-﻿using CTFServer.Models;
-using CTFServer.Repositories.Interface;
+﻿using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
 
 public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 {
-    public GameNoticeRepository(AppDbContext _context) : base(_context) { }
+    public GameNoticeRepository(AppDbContext _context) : base(_context)
+    {
+    }
 
     public async Task<GameNotice> CreateNotice(Game game, GameNotice notice, CancellationToken token = default)
     {

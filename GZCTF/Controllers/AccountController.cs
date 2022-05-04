@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
+﻿using CTFServer.Extensions;
 using CTFServer.Middlewares;
-using CTFServer.Models;
 using CTFServer.Models.Request.Account;
-using CTFServer.Services.Interface;
 using CTFServer.Repositories.Interface;
+using CTFServer.Services.Interface;
 using CTFServer.Utils;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using CTFServer.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace CTFServer.Controllers;
 
@@ -123,7 +120,7 @@ public class AccountController : ControllerBase
     {
         var user = await userManager.FindByEmailAsync(model.Email);
         if (user is null)
-            return NotFound(new RequestResponse("用户不存在",404));
+            return NotFound(new RequestResponse("用户不存在", 404));
 
         logger.Log("发送用户密码重置邮件。", user.UserName, HttpContext, TaskStatus.Pending);
 
@@ -138,7 +135,7 @@ public class AccountController : ControllerBase
             mailSender.SendResetPasswordUrl(user.UserName, user.Email,
                 $"https://{HttpContext.Request.Host}/account/reset?token={token}&email={Codec.Base64.Encode(model.Email)}");
         }
-        
+
         return Ok(new RequestResponse("邮件发送成功", 200));
     }
 
@@ -161,7 +158,7 @@ public class AccountController : ControllerBase
             return BadRequest(new RequestResponse("无效的邮件地址"));
 
         user.UpdateByHttpContext(HttpContext);
-        
+
         var result = await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
 
         if (!result.Succeeded)
@@ -433,7 +430,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Avatar(IFormFile file,CancellationToken token)
+    public async Task<IActionResult> Avatar(IFormFile file, CancellationToken token)
     {
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
@@ -454,7 +451,7 @@ public class AccountController : ControllerBase
         user.AvatarHash = avatar.Hash;
         var result = await userManager.UpdateAsync(user);
 
-        if(result == IdentityResult.Success)
+        if (result == IdentityResult.Success)
         {
             logger.Log($"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
 

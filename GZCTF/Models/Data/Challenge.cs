@@ -1,5 +1,4 @@
 ﻿using CTFServer.Models.Request.Edit;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -133,6 +132,7 @@ public class Challenge
     }
 
     #region Db Relationship
+
     public List<FlagContext> Flags { get; set; } = new();
 
     /// <summary>
@@ -146,6 +146,7 @@ public class Challenge
     public Game Game { get; set; } = default!;
 
     public int GameId { get; set; }
+
     #endregion Db Relationship
 
     public Challenge Update(ChallengeModel model)

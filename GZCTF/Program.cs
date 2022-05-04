@@ -1,10 +1,5 @@
 global using CTFServer.Models;
-
-using System.Text;
-using System.Text.Json;
 using AspNetCoreRateLimit;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
@@ -13,11 +8,15 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Services;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using NJsonSchema.Generation;
-using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using NJsonSchema.Generation;
 using Serilog;
 using Serilog.Events;
+using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +28,8 @@ var uploadPath = Path.Combine(builder.Configuration.GetSection("UploadFolder").V
 
 if (!Directory.Exists(uploadPath))
     Directory.CreateDirectory(uploadPath);
-#endregion
+
+#endregion Directory
 
 #region Configuration
 
@@ -38,7 +38,7 @@ builder.Host.ConfigureAppConfiguration((host, config) =>
     config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
 });
 
-#endregion
+#endregion Configuration
 
 #region SignalR
 
@@ -52,7 +52,7 @@ builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseSerilog(dispose: true);
 
-#endregion
+#endregion Logging
 
 #region AppDbContext
 
@@ -69,7 +69,7 @@ else
     ));
 }
 
-#endregion
+#endregion AppDbContext
 
 #region OpenApiDocument
 
@@ -171,7 +171,7 @@ builder.Services.AddHostedService<ContainerChecker>();
 
 builder.Services.AddResponseCompression(options =>
 {
-    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat( new[] { "application/json" });
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
 });
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
@@ -195,7 +195,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
     var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
     if (context.Database.IsRelational())
         await context.Database.MigrateAsync();
-    
+
     if (!await context.Notices.AnyAsync())
     {
         await context.Notices.AddAsync(new()

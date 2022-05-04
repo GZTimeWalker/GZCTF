@@ -1,9 +1,7 @@
-﻿using CTFServer.Models;
-using CTFServer.Models.Request.Game;
+﻿using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using System.Linq;
 
 namespace CTFServer.Repositories;
 
@@ -40,6 +38,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         => cache.Remove(CacheKey.ScoreBoard(game.Id));
 
     #region Generate Scoreboard
+
     private record Data(Instance Instance, Submission? Submission);
 
     // By xfoxfu & GZTimeWalker @ 2022/04/03
@@ -169,5 +168,6 @@ public class GameRepository : RepositoryBase, IGameRepository
         }
         return timeline.ToArray();
     }
-    #endregion
+
+    #endregion Generate Scoreboard
 }

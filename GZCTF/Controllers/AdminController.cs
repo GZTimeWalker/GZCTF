@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using CTFServer.Middlewares;
-using CTFServer.Models;
+﻿using CTFServer.Middlewares;
 using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
+using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CTFServer.Models.Request.Teams;
-using CTFServer.Services.Interface;
+using System.Net.Mime;
 
 namespace CTFServer.Controllers;
 
@@ -155,7 +152,7 @@ public class AdminController : ControllerBase
 
         return Ok();
     }
-    
+
     /// <summary>
     /// 获取全部日志
     /// </summary>

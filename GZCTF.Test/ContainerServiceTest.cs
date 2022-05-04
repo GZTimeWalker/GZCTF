@@ -1,11 +1,11 @@
-using Xunit;
 using CTFServer.Services.Interface;
-using Xunit.Abstractions;
-using System.Collections.Generic;
 using Docker.DotNet.Models;
-using System;
-using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace CTFServer.Test;
 
@@ -14,7 +14,7 @@ public class ContainerServiceTest
     private readonly IContainerService service;
     private readonly ITestOutputHelper output;
     private readonly HttpClient httpClient;
-                
+
     public ContainerServiceTest(ITestOutputHelper _output)
     {
         var app = new TestWebAppFactory<Program>();

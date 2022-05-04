@@ -20,5 +20,4 @@ public class NoticeModel
     /// 是否置顶
     /// </summary>
     public bool IsPinned { get; set; } = false;
-
 }

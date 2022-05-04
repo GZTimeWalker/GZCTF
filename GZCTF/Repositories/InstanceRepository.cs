@@ -1,5 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Models.Internal;
+﻿using CTFServer.Models.Internal;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
@@ -29,12 +28,12 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 .Where(e => e.ChallengeId == challengeId && e.Participation == team)
                 .SingleOrDefaultAsync(token);
 
-        if(instance is not null)
+        if (instance is not null)
             return instance;
 
         var challenge = await context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId, token);
 
-        if(challenge is null || !challenge.IsEnabled)
+        if (challenge is null || !challenge.IsEnabled)
             return null;
 
         instance = new()
@@ -136,7 +135,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         foreach (var instance in instances)
         {
-            if(instance.Context?.Flag == submission.Answer)
+            if (instance.Context?.Flag == submission.Answer)
             {
                 await context.Entry(submission).Reference(s => s.User).LoadAsync(token);
                 await context.Entry(submission).Reference(s => s.Participation.Team).LoadAsync(token);
@@ -171,11 +170,11 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     public async Task<bool> TrySolved(Submission submission, CancellationToken token = default)
     {
         var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
-        
-        if(instance is null)
+
+        if (instance is null)
             throw new NullReferenceException(nameof(instance));
-        
-        if(instance.IsSolved)
+
+        if (instance.IsSolved)
             return false;
 
         instance.IsSolved = true;

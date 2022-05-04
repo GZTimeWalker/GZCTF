@@ -1,14 +1,14 @@
-﻿using NpgsqlTypes;
+﻿using CTFServer.Extensions;
+using NpgsqlTypes;
+using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Templates;
-using Serilog.Sinks.PostgreSQL;
 using Serilog.Sinks.File.Archive;
+using Serilog.Sinks.PostgreSQL;
+using Serilog.Templates;
+using Serilog.Templates.Themes;
 using System.IO.Compression;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
-using Serilog;
-using Serilog.Templates.Themes;
-using CTFServer.Extensions;
 
 namespace CTFServer.Utils;
 
@@ -94,7 +94,7 @@ public static class LogHelper
         {"RemoteIP", new SinglePropertyColumnWriter("IP", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) }
     };
 
-    const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
+    private const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
 
     public static Logger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
         => new LoggerConfiguration()
@@ -135,7 +135,10 @@ public static class LogHelper
 
 public class TimeColumnWriter : ColumnWriterBase
 {
-    public TimeColumnWriter() : base(NpgsqlDbType.TimestampTz) { }
+    public TimeColumnWriter() : base(NpgsqlDbType.TimestampTz)
+    {
+    }
+
     public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null)
         => logEvent.Timestamp.ToUniversalTime();
 }

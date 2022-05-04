@@ -1,6 +1,4 @@
-﻿using CTFServer.Models;
-
-namespace CTFServer.Repositories.Interface;
+﻿namespace CTFServer.Repositories.Interface;
 
 public interface IParticipationRepository : IRepository
 {
@@ -12,6 +10,7 @@ public interface IParticipationRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Participation> CreateParticipation(Team team, Game game, CancellationToken token = default);
+
     /// <summary>
     /// 获取比赛参与对象以及其对应题目列表
     /// </summary>

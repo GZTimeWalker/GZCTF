@@ -6,7 +6,7 @@ namespace CTFServer;
 /// 用户权限枚举
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum Role: byte
+public enum Role : byte
 {
     /// <summary>
     /// 小黑屋用户权限
@@ -33,7 +33,7 @@ public enum Role: byte
 /// 任务执行状态
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum TaskStatus: sbyte
+public enum TaskStatus : sbyte
 {
     /// <summary>
     /// 任务正在进行
@@ -71,16 +71,18 @@ public enum TaskStatus: sbyte
     Exit = 5,
 }
 
-public enum FileType: byte
+public enum FileType : byte
 {
     /// <summary>
     /// 无附件
     /// </summary>
     None = 0,
+
     /// <summary>
     /// 本地文件
     /// </summary>
     Local = 1,
+
     /// <summary>
     /// 远程文件
     /// </summary>
@@ -97,10 +99,12 @@ public enum ContainerStatus : byte
     /// 正在启动
     /// </summary>
     Pending = 0,
+
     /// <summary>
     /// 正在运行
     /// </summary>
     Running = 1,
+
     /// <summary>
     /// 已销毁
     /// </summary>
@@ -111,7 +115,7 @@ public enum ContainerStatus : byte
 /// 比赛公告类型
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum NoticeType: byte
+public enum NoticeType : byte
 {
     /// <summary>
     /// 常规公告
@@ -165,24 +169,28 @@ public static class NoticeTypeExtensions
 /// 比赛事件类型
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum EventType: byte
+public enum EventType : byte
 {
     /// <summary>
     /// 常规信息
     /// </summary>
     Normal = 0,
+
     /// <summary>
     /// 容器启动信息
     /// </summary>
     ContainerStart = 1,
+
     /// <summary>
     /// 容器销毁信息
     /// </summary>
     ContainerDestroy = 2,
+
     /// <summary>
     /// Flag 提交信息
     /// </summary>
     FlagSubmit = 3,
+
     /// <summary>
     /// 作弊信息
     /// </summary>
@@ -193,7 +201,7 @@ public enum EventType: byte
 /// 提交类型
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum SubmissionType: byte
+public enum SubmissionType : byte
 {
     /// <summary>
     /// 未解出
@@ -222,28 +230,31 @@ public enum SubmissionType: byte
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ChallengeType: byte
+public enum ChallengeType : byte
 {
     /// <summary>
     /// 静态题目
     /// 所有队伍使用统一附件、统一 flag
     /// </summary>
-    StaticAttachment  = 0b00,
+    StaticAttachment = 0b00,
+
     /// <summary>
     /// 容器静态题目
     /// 所有队伍使用统一 docker，统一 flag
     /// </summary>
-    StaticContainer   = 0b01,
+    StaticContainer = 0b01,
+
     /// <summary>
     /// 动态附件题目
     /// 随机分发附件，随附件实现 flag 特异性
     /// </summary>
     DynamicAttachment = 0b10,
+
     /// <summary>
     /// 容器动态题目
     /// 随机分发容器，动态 flag 随环境变量传入
     /// </summary>
-    DynamicContainer  = 0b11
+    DynamicContainer = 0b11
 }
 
 public static class ChallengeTypeExtensions
@@ -287,11 +298,10 @@ public enum ChallengeTag : byte
     PPC = 9
 }
 
-
 /// <summary>
 /// 判定结果
 /// </summary>
-public enum AnswerResult: byte
+public enum AnswerResult : byte
 {
     /// <summary>
     /// 成功提交
@@ -324,11 +334,11 @@ public static class AnswerResultExtensions
     public static string ToShortString(this AnswerResult result)
         => result switch
         {
-            AnswerResult.FlagSubmitted  => "🟦 成功提交",
-            AnswerResult.Accepted       => "🟩 答案正确",
-            AnswerResult.WrongAnswer    => "🟥 答案错误",
-            AnswerResult.NotFound       => "🟦 实例未知",
-            AnswerResult.CheatDetected  => "🟧 作弊检测",
+            AnswerResult.FlagSubmitted => "🟦 成功提交",
+            AnswerResult.Accepted => "🟩 答案正确",
+            AnswerResult.WrongAnswer => "🟥 答案错误",
+            AnswerResult.NotFound => "🟦 实例未知",
+            AnswerResult.CheatDetected => "🟧 作弊检测",
             _ => "??"
         };
 }

@@ -1,10 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CTFServer.Models.Request.Admin;
+﻿namespace CTFServer.Models.Request.Admin;
 
 public class UpdateUserInfoModel
 {
-
     /// <summary>
     /// 用户名
     /// </summary>

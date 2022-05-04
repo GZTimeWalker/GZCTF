@@ -1,12 +1,23 @@
-﻿using System.Text.Json;
-using CTFServer.Models.Internal;
+﻿using CTFServer.Models.Internal;
 using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace CTFServer.Extensions;
 
 public interface IRecaptchaExtension
 {
+    /// <summary>
+    /// 异步校验 token
+    /// </summary>
+    /// <param name="token">google recaptcha token</param>
+    /// <param name="ip">user ip</param>
+    /// <returns>校验结果</returns>
     Task<bool> VerifyAsync(string token, string ip);
+
+    /// <summary>
+    /// 获取 Sitekey
+    /// </summary>
+    /// <returns>Sitekey</returns>
     string SiteKey();
 }
 
@@ -28,7 +39,7 @@ public class RecaptchaExtension : IRecaptchaExtension
         this.options = options.Value;
         httpClient = new();
     }
-    
+
     public async Task<bool> VerifyAsync(string token, string ip)
     {
         if (string.IsNullOrEmpty(token))
@@ -38,7 +49,7 @@ public class RecaptchaExtension : IRecaptchaExtension
         var tokenResponse = await JsonSerializer.DeserializeAsync<TokenResponseModel>(response);
         if (tokenResponse is null || !tokenResponse.Success || tokenResponse.Score < options.RecaptchaThreshold)
             return false;
-            
+
         return true;
     }
 

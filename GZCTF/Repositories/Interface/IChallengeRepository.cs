@@ -1,6 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Models.Request.Edit;
-using CTFServer.Models.Request.Game;
+﻿using CTFServer.Models.Request.Edit;
 
 namespace CTFServer.Repositories.Interface;
 

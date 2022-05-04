@@ -11,9 +11,7 @@ namespace CTFServer.Extensions;
 
 public static class SignalRSinkExtension
 {
-    public static LoggerConfiguration SignalR(
-        this LoggerSinkConfiguration loggerConfiguration,
-        IServiceProvider serviceProvider)
+    public static LoggerConfiguration SignalR(this LoggerSinkConfiguration loggerConfiguration, IServiceProvider serviceProvider)
         => loggerConfiguration.Sink(new SignalRSink(serviceProvider));
 }
 
@@ -26,7 +24,7 @@ public class SignalRSink : ILogEventSink
     {
         serviceProvider = _serviceProvider;
     }
-    
+
     public void Emit(LogEvent logEvent)
     {
         if (hubContext is null)

@@ -45,6 +45,7 @@ public class Game
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     #region Db Relationship
+
     /// <summary>
     /// 比赛事件
     /// </summary>
@@ -80,6 +81,7 @@ public class Game
     /// </summary>
     [JsonIgnore]
     public List<Participation> Teams { get; set; } = new();
+
     #endregion Db Relationship
 
     public Game Update(GameInfoModel model)
@@ -90,7 +92,7 @@ public class Game
         StartTimeUTC = model.StartTimeUTC;
         EndTimeUTC = model.EndTimeUTC;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
-        
+
         return this;
     }
 }

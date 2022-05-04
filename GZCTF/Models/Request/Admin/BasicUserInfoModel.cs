@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CTFServer.Models.Request.Admin;
+﻿namespace CTFServer.Models.Request.Admin;
 
 public class BasicUserInfoModel
 {
@@ -33,12 +31,14 @@ public class BasicUserInfoModel
     /// 所拥有的队伍
     /// </summary>
     public string? OwnTeamName { get; set; }
+
     public int? OwnTeamId { get; set; }
 
     /// <summary>
     /// 激活的队伍
     /// </summary>
     public string? ActiveTeamName { get; set; }
+
     public int? ActiveTeamId { get; set; }
 
     public static BasicUserInfoModel FromUserInfo(UserInfo user)

@@ -1,6 +1,5 @@
-﻿using CTFServer.Models;
+﻿using CTFServer.Models.Internal;
 using Docker.DotNet.Models;
-using CTFServer.Models.Internal;
 
 namespace CTFServer.Services.Interface;
 

@@ -14,5 +14,4 @@ public class TeamUpdateModel
     /// 队伍签名
     /// </summary>
     public string? Bio { get; set; }
-
 }

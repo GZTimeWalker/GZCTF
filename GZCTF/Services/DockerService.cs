@@ -1,9 +1,8 @@
-﻿using CTFServer.Models;
-using Docker.DotNet;
-using Docker.DotNet.Models;
+﻿using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using CTFServer.Models.Internal;
+using Docker.DotNet;
+using Docker.DotNet.Models;
 using Microsoft.Extensions.Options;
 
 namespace CTFServer.Services;
@@ -37,10 +36,11 @@ public class DockerService : IContainerService
         {
             Image = config.Image,
             Name = $"{config.Image.Split("/").LastOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
-            Env = config.Flag is null ? new() : new List<string>{ $"GZCTF_FLAG={config.Flag}" },
+            Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" },
             // TODO: Add Health Check
             ExposedPorts = { { config.Port.ToString(), default } },
-            HostConfig = new() { 
+            HostConfig = new()
+            {
                 PublishAllPorts = true,
                 Memory = config.MemoryLimit * 1024 * 1024,
                 CPUCount = 1

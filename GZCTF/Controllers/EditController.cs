@@ -1,7 +1,7 @@
 ﻿using CTFServer.Middlewares;
+using CTFServer.Models.Request.Edit;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using CTFServer.Models.Request.Edit;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -33,7 +33,7 @@ public class EditController : Controller
         gameRepository = _gameRepository;
         challengeRepository = _challengeRepository;
     }
-    
+
     /// <summary>
     /// 添加公告
     /// </summary>
@@ -47,11 +47,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(Notice), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddNotice([FromBody] NoticeModel model, CancellationToken token)
     {
-        var res = await noticeRepository.CreateNotice(new() {
-             Content = model.Content,
-             Title = model.Title,
-             IsPinned = model.IsPinned,
-             PublishTimeUTC = DateTimeOffset.UtcNow
+        var res = await noticeRepository.CreateNotice(new()
+        {
+            Content = model.Content,
+            Title = model.Title,
+            IsPinned = model.IsPinned,
+            PublishTimeUTC = DateTimeOffset.UtcNow
         }, token);
         return Ok(res);
     }
@@ -66,7 +67,7 @@ public class EditController : Controller
     /// <response code="200">成功获取文件</response>
     [HttpGet("Notices")]
     [ProducesResponseType(typeof(Notice[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetNotices(CancellationToken token) 
+    public async Task<IActionResult> GetNotices(CancellationToken token)
         => Ok(await noticeRepository.GetNotices(token));
 
     /// <summary>
@@ -83,7 +84,7 @@ public class EditController : Controller
     [HttpPut("Notices/{id}")]
     [ProducesResponseType(typeof(Notice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateNotice(int id, [FromBody] NoticeModel model, CancellationToken token) 
+    public async Task<IActionResult> UpdateNotice(int id, [FromBody] NoticeModel model, CancellationToken token)
     {
         var notice = await noticeRepository.GetNoticeById(id, token);
 
@@ -136,10 +137,10 @@ public class EditController : Controller
     public async Task<IActionResult> AddGame([FromBody] GameInfoModel model, CancellationToken token)
     {
         var game = await gameRepository.CreateGame(new Game().Update(model), token);
-        
+
         return Ok(game);
     }
-    
+
     /// <summary>
     /// 获取比赛列表
     /// </summary>
@@ -171,7 +172,7 @@ public class EditController : Controller
     {
         var game = await gameRepository.GetGameById(id, token);
 
-        if(game is null)
+        if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
         return Ok(game);
@@ -215,13 +216,13 @@ public class EditController : Controller
     [HttpPost("Games/{id}/Notices")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddGameNotice([FromRoute] int id,[FromBody] GameNoticeModel model, CancellationToken token)
+    public async Task<IActionResult> AddGameNotice([FromRoute] int id, [FromBody] GameNoticeModel model, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
-        
+
         var res = await gameNoticeRepository.CreateNotice(game, new()
         {
             Content = model.Content,
@@ -459,7 +460,7 @@ public class EditController : Controller
             return NotFound(new RequestResponse("比赛未找到", 404));
 
         var challenge = await challengeRepository.GetChallenge(id, cId, token);
-        
+
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
 

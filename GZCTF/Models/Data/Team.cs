@@ -1,7 +1,6 @@
 ﻿using CTFServer.Models.Request.Teams;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
 
@@ -59,11 +58,12 @@ public class Team
     /// 队员
     /// </summary>
     public HashSet<UserInfo> Members { get; set; } = new();
+
     #endregion Db Relationship
 
     [NotMapped]
     public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
-    
+
     public void UpdateInviteToken() => InviteToken = Guid.NewGuid().ToString("N");
 
     public void UpdateInfo(TeamUpdateModel model)

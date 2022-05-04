@@ -38,4 +38,3 @@ public class LocalFile
     [JsonIgnore]
     public string Url => $"/assets/{Hash}/{Name}";
 }
-

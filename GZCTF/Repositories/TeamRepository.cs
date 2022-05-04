@@ -1,5 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Models.Request.Teams;
+﻿using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +6,9 @@ namespace CTFServer.Repositories;
 
 public class TeamRepository : RepositoryBase, ITeamRepository
 {
-    public TeamRepository(AppDbContext _context) : base(_context) { }
+    public TeamRepository(AppDbContext _context) : base(_context)
+    {
+    }
 
     public async Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
     {

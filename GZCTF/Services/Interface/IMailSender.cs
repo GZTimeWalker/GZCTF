@@ -1,4 +1,5 @@
 ﻿namespace CTFServer.Services.Interface;
+
 public interface IMailSender
 {
     /// <summary>

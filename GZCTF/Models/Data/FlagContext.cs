@@ -29,12 +29,12 @@ public class FlagContext
     /// Flag 对应文件（本地文件）
     /// </summary>
     public LocalFile? LocalFile { get; set; } = default;
-    
+
     /// <summary>
     /// 是否已被占用
     /// </summary>
     public bool IsOccupied { get; set; } = false;
-         
+
     /// <summary>
     /// 赛题
     /// </summary>

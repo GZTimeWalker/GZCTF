@@ -1,5 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Models.Request.Teams;
+﻿using CTFServer.Models.Request.Teams;
 
 namespace CTFServer.Repositories.Interface;
 
@@ -63,5 +62,4 @@ public interface ITeamRepository : IRepository
     /// <param name="token"></param>
     /// <returns>队伍对象</returns>
     public Task<int> DeleteTeam(Team team, CancellationToken token = default);
-
 }

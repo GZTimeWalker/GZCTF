@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Edit;
 
@@ -9,7 +8,7 @@ public class ChallengeInfoModel
     /// 题目Id
     /// </summary>
     public int Id { get; set; }
-    
+
     /// <summary>
     /// 题目名称
     /// </summary>

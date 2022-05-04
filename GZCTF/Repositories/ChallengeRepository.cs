@@ -7,6 +7,7 @@ namespace CTFServer.Repositories;
 public class ChallengeRepository : RepositoryBase, IChallengeRepository
 {
     private readonly IFileRepository fileRepository;
+
     public ChallengeRepository(AppDbContext _context, IFileRepository _fileRepository) : base(_context)
     {
         fileRepository = _fileRepository;
@@ -23,12 +24,12 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             LocalFile = string.IsNullOrEmpty(model.FileHash) ? null : context.Files.Single(x => x.Hash == model.FileHash),
             RemoteUrl = model.Url
         };
-        
+
         challenge.Flags.Add(flag);
 
         context.Update(challenge);
         await context.SaveChangesAsync(token);
-        
+
         return flag.Id;
     }
 
@@ -66,7 +67,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         if (flag is null)
             return TaskStatus.NotFound;
 
-        if(flag.AttachmentType == FileType.Local && flag.LocalFile is not null)
+        if (flag.AttachmentType == FileType.Local && flag.LocalFile is not null)
         {
             var res = await fileRepository.DeleteFileByHash(flag.LocalFile.Hash, token);
             if (res != TaskStatus.Success)

@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CTFServer.Middlewares;
-using CTFServer.Models;
+﻿using CTFServer.Middlewares;
 using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using System.Net.Mime;
 using Microsoft.AspNetCore.Identity;
-using CTFServer.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace CTFServer.Controllers;
 

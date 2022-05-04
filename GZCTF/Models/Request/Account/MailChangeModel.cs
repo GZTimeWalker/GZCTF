@@ -2,7 +2,6 @@
 
 namespace CTFServer.Models.Request.Account;
 
-
 /// <summary>
 /// 邮箱更改
 /// </summary>

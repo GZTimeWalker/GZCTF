@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CTFServer.Models.Request.Game;
+﻿namespace CTFServer.Models.Request.Game;
 
 public class ChallengeDetailModel
 {
@@ -69,7 +67,7 @@ public class ClientFlagContext
     /// 题目实例的连接方式
     /// </summary>
     public string? InstanceEntry { get; set; } = null;
-    
+
     /// <summary>
     /// 附件 Url
     /// </summary>

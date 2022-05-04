@@ -2,7 +2,6 @@
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 
-
 namespace CTFServer.Services;
 
 public class ContainerChecker : IHostedService, IDisposable

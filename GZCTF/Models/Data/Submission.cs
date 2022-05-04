@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
 
@@ -27,7 +27,6 @@ public class Submission
     /// </summary>
     [JsonPropertyName("time")]
     public DateTimeOffset SubmitTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
-
 
     #region Db Relationship
 

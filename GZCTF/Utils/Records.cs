@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CTFServer.Utils;
+﻿namespace CTFServer.Utils;
 
 /// <summary>
 /// 任务结果

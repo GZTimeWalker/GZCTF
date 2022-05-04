@@ -2,7 +2,6 @@
 
 namespace CTFServer.Models.Request.Account;
 
-
 /// <summary>
 /// 密码更改
 /// </summary>

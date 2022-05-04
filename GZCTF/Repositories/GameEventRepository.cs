@@ -1,12 +1,13 @@
-﻿using CTFServer.Models;
-using CTFServer.Repositories.Interface;
+﻿using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
 
 public class GameEventRepository : RepositoryBase, IGameEventRepository
 {
-    public GameEventRepository(AppDbContext _context) : base(_context) { }
+    public GameEventRepository(AppDbContext _context) : base(_context)
+    {
+    }
 
     public async Task<GameEvent> AddEvent(Game game, GameEvent gameEvent, CancellationToken token = default)
     {

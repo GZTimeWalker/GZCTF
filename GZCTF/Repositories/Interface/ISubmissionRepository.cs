@@ -1,6 +1,4 @@
-﻿using CTFServer.Models;
-
-namespace CTFServer.Repositories.Interface;
+﻿namespace CTFServer.Repositories.Interface;
 
 public interface ISubmissionRepository : IRepository
 {
@@ -42,7 +40,7 @@ public interface ISubmissionRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Submission[]> GetSubmissions(Participation team, int count = 100, int skip = 0, CancellationToken token = default);
-    
+
     /// <summary>
     /// 添加提交
     /// </summary>
@@ -69,5 +67,4 @@ public interface ISubmissionRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId, CancellationToken token = default);
-
 }
