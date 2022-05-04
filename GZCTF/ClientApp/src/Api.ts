@@ -2689,6 +2689,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'DELETE',
         ...params,
       }),
+
+    /**
+     * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
+     *
+     * @tags Game
+     * @name GameProlongContainer
+     * @summary 延长容器时间
+     * @request POST:/api/game/{id}/container/{challengeId}/prolong
+     */
+    gameProlongContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}/prolong`,
+        method: 'POST',
+        format: 'json',
+        ...params,
+      }),
   };
   info = {
     /**

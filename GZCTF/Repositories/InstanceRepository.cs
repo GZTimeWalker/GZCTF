@@ -100,7 +100,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             var container = await service.CreateContainer(new ContainerConfig()
             {
                 CPUCount = instance.Challenge.CPUCount ?? 1,
-                Flag = instance.FlagContext?.Flag ?? throw new ArgumentException("创建容器时遇到无效的 Flag"),
+                Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
                 Image = instance.Challenge.ContainerImage,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
                 ExposedPort = instance.Challenge.ContainerExposePort?.ToString() ?? throw new ArgumentException("创建容器时遇到无效的端口"),

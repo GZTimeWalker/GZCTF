@@ -294,7 +294,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        return Ok((await gameRepository.GetScoreboard(context.Game!, token)).Challenges);
+        return Ok((await gameRepository.GetScoreboard(context.Game, token)).Challenges);
     }
 
     /// <summary>
@@ -318,7 +318,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -351,9 +351,9 @@ public class GameController : ControllerBase
         {
             ChallengeId = challengeId,
             Answer = flag,
-            Game = context.Game!,
+            Game = context.Game,
             User = context.User,
-            Participation = context.Participation!,
+            Participation = context.Participation,
             Status = AnswerResult.FlagSubmitted,
             SubmitTimeUTC = DateTimeOffset.UtcNow,
         };
@@ -417,7 +417,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -426,45 +426,19 @@ public class GameController : ControllerBase
             return BadRequest(new RequestResponse("题目不可创建容器", 400));
 
         if (instance.Container is not null)
-            return BadRequest(new RequestResponse("题目已经创建容器", 400));
-
-        string flag;
-        if (instance.Challenge.Type.IsStatic())
         {
-            flag = instance.FlagContext!.Flag;
-        }
-        else
-        {
-            if (instance.FlagContext is null)
-            {
-                instance.FlagContext = new()
-                {
-                    Flag = $"flag{Guid.NewGuid():B}",
-                    AttachmentType = FileType.None,
-                    IsOccupied = true,
-                };
-                await instanceRepository.UpdateAsync(instance, token);
-            }
+            if (instance.Container.Status == ContainerStatus.Running)
+                return BadRequest(new RequestResponse("题目已经创建容器", 400));
 
-            flag = instance.FlagContext.Flag;
+            await containerRepository.RemoveContainer(instance.Container, token);
         }
 
-        var result = await containerService.CreateContainer(new()
-        {
-            Image = instance.Challenge.ContainerImage!,
-            Flag = flag,
-            CPUCount = instance.Challenge.CPUCount!.Value,
-            MemoryLimit = instance.Challenge.MemoryLimit!.Value,
-            ExposedPort = instance.Challenge.ContainerExposePort!.Value.ToString(),
-        }, token);
+        var res = await instanceRepository.CreateContainer(instance, token);
 
-        if (result is null)
+        if (res is null || res.Status != TaskStatus.Success)
             return BadRequest(new RequestResponse("创建容器失败", 400));
 
-        instance.Container = result;
-        await instanceRepository.UpdateAsync(instance, token);
-
-        return Ok(ContainerInfoModel.FromContainer(result));
+        return Ok(ContainerInfoModel.FromContainer(res.Result!));
     }
 
     /// <summary>
@@ -476,7 +450,7 @@ public class GameController : ControllerBase
     /// <param name="id">比赛id</param>
     /// <param name="challengeId">题目id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目信息</response>
+    /// <response code="200">成功获取比赛题目容器信息</response>
     /// <response code="404">题目未找到</response>
     /// <response code="400">题目不可创建容器</response>
     [RequireUser]
@@ -491,7 +465,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -501,6 +475,49 @@ public class GameController : ControllerBase
 
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器", 400));
+
+        return Ok(ContainerInfoModel.FromContainer(instance.Container));
+    }
+
+    /// <summary>
+    /// 延长容器时间
+    /// </summary>
+    /// <remarks>
+    /// 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
+    /// </remarks>
+    /// <param name="id">比赛id</param>
+    /// <param name="challengeId">题目id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目容器信息</response>
+    /// <response code="404">题目未找到</response>
+    /// <response code="400">容器未创建或无法延期</response>
+    [RequireUser]
+    [HttpPost("{id}/Container/{challengeId}/Prolong")]
+    [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ProlongContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
+    {
+        var context = await GetContextInfo(id, true, token);
+
+        if (context.Result is not null)
+            return context.Result;
+
+        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
+
+        if (instance is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        if (!instance.Challenge.Type.IsContainer())
+            return BadRequest(new RequestResponse("题目不可创建容器", 400));
+
+        if (instance.Container is null)
+            return BadRequest(new RequestResponse("题目未创建容器", 400));
+
+        if (instance.Container.ExpectStopAt <= DateTimeOffset.UtcNow.AddMinutes(-10))
+            return BadRequest(new RequestResponse("容器时间尚不可延长", 400));
+
+        await instanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }
@@ -529,7 +546,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -552,9 +569,9 @@ public class GameController : ControllerBase
 
     private class ContextInfo
     {
-        public Game? Game = null;
-        public UserInfo? User = null;
-        public Participation? Participation = null;
+        public Game Game = default!;
+        public UserInfo User = default!;
+        public Participation Participation = default!;
         public IActionResult? Result = null;
 
         public ContextInfo WithResult(IActionResult res)
@@ -570,10 +587,12 @@ public class GameController : ControllerBase
 
         res.User = await userManager.GetUserAsync(User);
 
-        res.Game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
-        if (res.Game is null)
+        if (game is null)
             return res.WithResult(NotFound(new RequestResponse("比赛未找到")));
+
+        res.Game = game;
 
         if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
             return res.WithResult(BadRequest(new RequestResponse("比赛还未开始")));
@@ -584,10 +603,12 @@ public class GameController : ControllerBase
         if (res.User!.ActiveTeam is null)
             return res.WithResult(BadRequest(new RequestResponse("请激活一个队伍以参赛")));
 
-        res.Participation = await participationRepository.GetParticipation(res.User.ActiveTeam, res.Game, token);
+        var part = await participationRepository.GetParticipation(res.User.ActiveTeam, res.Game, token);
 
-        if (res.Participation is null)
+        if (part is null)
             return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));
+
+        res.Participation = part;
 
         return res;
     }
