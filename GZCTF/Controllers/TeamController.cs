@@ -299,6 +299,9 @@ public class TeamController : ControllerBase
             if (!team.Members.Any(m => m.Id == userid))
                 return BadRequest(new RequestResponse("用户不在队伍中"));
 
+            if (team.Locked && await teamRepository.AnyActiveGame(team, token))
+                return BadRequest(new RequestResponse("队伍已锁定"));
+
             var kickUser = team.Members.FirstOrDefault(m => m.Id == userid);
 
             if (kickUser!.ActiveTeamId == id)
@@ -353,6 +356,9 @@ public class TeamController : ControllerBase
             if (team.InviteToken != token)
                 return BadRequest(new RequestResponse("邀请无效"));
 
+            if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
+                return BadRequest(new RequestResponse("队伍已锁定"));
+
             var user = await userManager.GetUserAsync(User);
 
             if (team.Members.Any(m => m.Id == user.Id))
@@ -406,6 +412,9 @@ public class TeamController : ControllerBase
 
             if (!team.Members.Any(m => m.Id == user.Id))
                 return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
+
+            if (team.Locked && await teamRepository.AnyActiveGame(team, token))
+                return BadRequest(new RequestResponse("队伍已锁定"));
 
             if (user.ActiveTeamId == team.Id)
                 user.ActiveTeamId = null;

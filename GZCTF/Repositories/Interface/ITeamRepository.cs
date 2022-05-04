@@ -47,6 +47,14 @@ public interface ITeamRepository : IRepository
     public Task<Team?> GetActiveTeamWithMembers(UserInfo user, CancellationToken token = default);
 
     /// <summary>
+    /// 是否有正在进行的比赛，比赛期间不允许进行人员变动
+    /// </summary>
+    /// <param name="team"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> AnyActiveGame(Team team, CancellationToken token = default);
+
+    /// <summary>
     /// 验证Token
     /// </summary>
     /// <param name="id">队伍Id</param>

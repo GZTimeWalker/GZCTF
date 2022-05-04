@@ -285,7 +285,6 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        // get from cache
         return Ok((await gameRepository.GetScoreboard(context.Game!, token)).Challenges);
     }
 

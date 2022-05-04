@@ -10,6 +10,19 @@ public class TeamRepository : RepositoryBase, ITeamRepository
     {
     }
 
+    public async Task<bool> AnyActiveGame(Team team, CancellationToken token = default)
+    {
+        bool result = await context.Participations.AnyAsync(p => p.Team == team && p.Game.IsActive, token);
+
+        if (team.Locked != result)
+        {
+            team.Locked = result;
+            await context.SaveChangesAsync(token);
+        }
+
+        return result;
+    }
+
     public async Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
     {
         if (model.Name is null)

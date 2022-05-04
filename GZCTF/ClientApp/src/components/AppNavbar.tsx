@@ -24,10 +24,12 @@ import {
   mdiWeatherSunny,
   mdiWeatherNight,
   mdiLogout,
+  mdiCheck
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import api from '../Api';
 import MainIcon from './icon/MainIcon';
+import { showNotification } from '@mantine/notifications';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -126,6 +128,13 @@ const AppNavbar: FC = () => {
     api.account.accountLogOut().then(() => {
       router.push('/');
       api.account.mutateAccountProfile();
+      showNotification({
+        color: 'teal',
+        title: '登出成功',
+        message: '',
+        icon: <Icon path={mdiCheck} size={1} />,
+        disallowClose: true,
+      });
     });
   };
 
@@ -194,7 +203,7 @@ const AppNavbar: FC = () => {
             </Menu>
           ) : (
             <Link href={`/account/login?from=${router.asPath}`} passHref>
-              <Tooltip label="Login" classNames={{ body: classes.tooltipBody }} position="right">
+              <Tooltip label="登录" classNames={{ body: classes.tooltipBody }} position="right">
                 <Box className={cx(classes.link)}>
                   <Icon path={mdiAccountCircleOutline} size={1} />
                 </Box>

@@ -341,6 +341,7 @@ export interface Game {
    * @format date-time
    */
   end: string;
+  isActive?: boolean;
 }
 
 export interface GameInfoModel {

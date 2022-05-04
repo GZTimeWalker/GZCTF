@@ -39,7 +39,7 @@ const Login: NextPage = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '登陆成功',
+          title: '登录成功',
           message: '跳转回登录前页面',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
@@ -51,7 +51,7 @@ const Login: NextPage = () => {
       .catch(() => {
         showNotification({
           color: 'red',
-          title: '登陆失败',
+          title: '登录失败',
           message: '无效的用户名或密码',
           icon: <Icon path={mdiClose} size={1} />,
           disallowClose: true,

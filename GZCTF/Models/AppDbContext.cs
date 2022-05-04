@@ -106,6 +106,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.Navigation(e => e.Team).AutoInclude();
+            entity.Navigation(e => e.Game).AutoInclude();
 
             entity.HasIndex(e => new { e.TeamId, e.GameId });
         });

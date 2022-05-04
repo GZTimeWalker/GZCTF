@@ -60,7 +60,6 @@ public class GameRepository : RepositoryBase, IGameRepository
             .Include(i => i.Challenge)
             .Where(i => i.Game == game && i.Challenge.IsEnabled)
             .Include(i => i.Participation)
-                .ThenInclude(t => t.Team)
             .GroupJoin(
                 context.Submissions.Where(s => s.Status == AnswerResult.Accepted),
                 i => new { i.ChallengeId, i.ParticipationId },
