@@ -1424,8 +1424,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取用户信息接口
      * @request GET:/api/account/profile
      */
-    mutateAccountProfile: (data?: ClientUserInfoModel, options?: MutatorOptions) =>
-      mutate<ClientUserInfoModel>(`/api/account/profile`, data, options),
+    mutateAccountProfile: (
+      data?: ClientUserInfoModel | Promise<ClientUserInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<ClientUserInfoModel>(`/api/account/profile`, data, options),
 
     /**
      * @description 使用此接口更新用户头像，需要User权限
@@ -1483,7 +1485,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateAdminUsers: (
       query?: { count?: number; skip?: number },
-      data?: BasicUserInfoModel[],
+      data?: BasicUserInfoModel[] | Promise<BasicUserInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<BasicUserInfoModel[]>([`/api/admin/users`, query], data, options),
 
@@ -1524,7 +1526,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateAdminTeams: (
       query?: { count?: number; skip?: number },
-      data?: TeamInfoModel[],
+      data?: TeamInfoModel[] | Promise<TeamInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<TeamInfoModel[]>([`/api/admin/teams`, query], data, options),
 
@@ -1579,8 +1581,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取用户信息
      * @request GET:/api/admin/users/{userid}
      */
-    mutateAdminUserInfo: (userid: string, data?: ClientUserInfoModel, options?: MutatorOptions) =>
-      mutate<ClientUserInfoModel>(`/api/admin/users/${userid}`, data, options),
+    mutateAdminUserInfo: (
+      userid: string,
+      data?: ClientUserInfoModel | Promise<ClientUserInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<ClientUserInfoModel>(`/api/admin/users/${userid}`, data, options),
 
     /**
      * @description 使用此接口删除用户，需要Admin权限
@@ -1643,7 +1648,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateAdminLogs: (
       level: string | null,
       query?: { count?: number; skip?: number },
-      data?: ClientUserInfoModel[],
+      data?: ClientUserInfoModel[] | Promise<ClientUserInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<ClientUserInfoModel[]>([`/api/admin/logs/${level}`, query], data, options),
 
@@ -1684,7 +1689,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateAdminFiles: (
       query?: { count?: number; skip?: number },
-      data?: LocalFile[],
+      data?: LocalFile[] | Promise<LocalFile[]>,
       options?: MutatorOptions
     ) => mutate<LocalFile[]>([`/api/admin/files`, query], data, options),
   };
@@ -1722,8 +1727,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取文件接口
      * @request GET:/assets/{hash}/{filename}
      */
-    mutateAssetsGetFile: (hash: string, filename: string, data?: void, options?: MutatorOptions) =>
-      mutate<void>(`/assets/${hash}/${filename}`, data, options),
+    mutateAssetsGetFile: (
+      hash: string,
+      filename: string,
+      data?: void | Promise<void>,
+      options?: MutatorOptions
+    ) => mutate<void>(`/assets/${hash}/${filename}`, data, options),
 
     /**
      * @description 上传一个或多个文件
@@ -1811,7 +1820,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取所有公告
      * @request GET:/api/edit/notices
      */
-    mutateEditGetNotices: (data?: Notice[], options?: MutatorOptions) =>
+    mutateEditGetNotices: (data?: Notice[] | Promise<Notice[]>, options?: MutatorOptions) =>
       mutate<Notice[]>(`/api/edit/notices`, data, options),
 
     /**
@@ -1902,7 +1911,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateEditGetGames: (
       query?: { count?: number; skip?: number },
-      data?: GameInfoModel[],
+      data?: GameInfoModel[] | Promise<GameInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<GameInfoModel[]>([`/api/edit/games`, query], data, options),
 
@@ -1940,7 +1949,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛
      * @request GET:/api/edit/games/{id}
      */
-    mutateEditGetGame: (id: number, data?: Game, options?: MutatorOptions) =>
+    mutateEditGetGame: (id: number, data?: Game | Promise<Game>, options?: MutatorOptions) =>
       mutate<Game>(`/api/edit/games/${id}`, data, options),
 
     /**
@@ -2024,7 +2033,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateEditGetGameNotices: (
       id: number,
       query?: { count?: number; skip?: number },
-      data?: GameNotice,
+      data?: GameNotice | Promise<GameNotice>,
       options?: MutatorOptions
     ) => mutate<GameNotice>([`/api/edit/games/${id}/notices`, query], data, options),
 
@@ -2110,7 +2119,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateEditGetGameChallenges: (
       id: number,
       query?: { count?: number; skip?: number },
-      data?: ChallengeInfoModel[],
+      data?: ChallengeInfoModel[] | Promise<ChallengeInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<ChallengeInfoModel[]>([`/api/edit/games/${id}/challenges`, query], data, options),
 
@@ -2237,8 +2246,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取最新的比赛
      * @request GET:/api/game
      */
-    mutateGameGamesAll: (data?: BasicGameInfoModel[], options?: MutatorOptions) =>
-      mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
+    mutateGameGamesAll: (
+      data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
 
     /**
      * @description 获取比赛的详细信息
@@ -2274,8 +2285,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛详细信息
      * @request GET:/api/game/{id}
      */
-    mutateGameGames: (id: number, data?: GameDetailsModel, options?: MutatorOptions) =>
-      mutate<GameDetailsModel>(`/api/game/${id}`, data, options),
+    mutateGameGames: (
+      id: number,
+      data?: GameDetailsModel | Promise<GameDetailsModel>,
+      options?: MutatorOptions
+    ) => mutate<GameDetailsModel>(`/api/game/${id}`, data, options),
 
     /**
      * @description 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
@@ -2326,8 +2340,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取积分榜
      * @request GET:/api/game/{id}/scoreboard
      */
-    mutateGameScoreboard: (id: number, data?: ScoreboardModel, options?: MutatorOptions) =>
-      mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
+    mutateGameScoreboard: (
+      id: number,
+      data?: ScoreboardModel | Promise<ScoreboardModel>,
+      options?: MutatorOptions
+    ) => mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
 
     /**
      * @description 获取比赛事件数据
@@ -2363,8 +2380,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛事件
      * @request GET:/api/game/{id}/notices
      */
-    mutateGameNotices: (id: number, data?: GameEvent[], options?: MutatorOptions) =>
-      mutate<GameEvent[]>(`/api/game/${id}/notices`, data, options),
+    mutateGameNotices: (
+      id: number,
+      data?: GameEvent[] | Promise<GameEvent[]>,
+      options?: MutatorOptions
+    ) => mutate<GameEvent[]>(`/api/game/${id}/notices`, data, options),
 
     /**
      * @description 获取比赛提交数据，需要观察者权限
@@ -2411,7 +2431,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateGameSubmissions: (
       id: number,
       query?: { count?: number; skip?: number },
-      data?: Submission[],
+      data?: Submission[] | Promise<Submission[]>,
       options?: MutatorOptions
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
 
@@ -2461,7 +2481,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateGameInstances: (
       id: number,
       query?: { count?: number; skip?: number },
-      data?: InstanceInfoModel[],
+      data?: InstanceInfoModel[] | Promise<InstanceInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<InstanceInfoModel[]>([`/api/game/${id}/instances`, query], data, options),
 
@@ -2504,7 +2524,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameChallenges: (
       id: number,
-      data?: Record<string, ChallengeInfo[]>,
+      data?: Record<string, ChallengeInfo[]> | Promise<Record<string, ChallengeInfo[]>>,
       options?: MutatorOptions
     ) => mutate<Record<string, ChallengeInfo[]>>(`/api/game/${id}/challenges`, data, options),
 
@@ -2548,7 +2568,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateGameGetChallenge: (
       id: number,
       challengeId: number,
-      data?: ChallengeDetailModel,
+      data?: ChallengeDetailModel | Promise<ChallengeDetailModel>,
       options?: MutatorOptions
     ) => mutate<ChallengeDetailModel>(`/api/game/${id}/challenges/${challengeId}`, data, options),
 
@@ -2611,7 +2631,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       id: number,
       challengeId: number,
       submitId: number,
-      data?: AnswerResult,
+      data?: AnswerResult | Promise<AnswerResult>,
       options?: MutatorOptions
     ) => mutate<AnswerResult>(`/api/game/${id}/status/${submitId}`, data, options),
 
@@ -2671,7 +2691,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateGameGetContainer: (
       id: number,
       challengeId: number,
-      data?: ContainerInfoModel,
+      data?: ContainerInfoModel | Promise<ContainerInfoModel>,
       options?: MutatorOptions
     ) => mutate<ContainerInfoModel>(`/api/game/${id}/container/${challengeId}`, data, options),
 
@@ -2741,7 +2761,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取最新公告
      * @request GET:/api/notices
      */
-    mutateInfoGetNotices: (data?: Notice[], options?: MutatorOptions) =>
+    mutateInfoGetNotices: (data?: Notice[] | Promise<Notice[]>, options?: MutatorOptions) =>
       mutate<Notice[]>(`/api/notices`, data, options),
 
     /**
@@ -2778,7 +2798,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取 Recaptcha SiteKey
      * @request GET:/api/sitekey
      */
-    mutateInfoGetRecaptchaSiteKey: (data?: string, options?: MutatorOptions) =>
+    mutateInfoGetRecaptchaSiteKey: (data?: string | Promise<string>, options?: MutatorOptions) =>
       mutate<string>(`/api/sitekey`, data, options),
   };
   team = {
@@ -2816,8 +2836,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取队伍信息
      * @request GET:/api/team/{id}
      */
-    mutateTeamGetBasicInfo: (id: number, data?: TeamInfoModel, options?: MutatorOptions) =>
-      mutate<TeamInfoModel>(`/api/team/${id}`, data, options),
+    mutateTeamGetBasicInfo: (
+      id: number,
+      data?: TeamInfoModel | Promise<TeamInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<TeamInfoModel>(`/api/team/${id}`, data, options),
 
     /**
      * @description 队伍信息更改接口，需要为队伍创建者
@@ -2889,8 +2912,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取当前自己队伍信息
      * @request GET:/api/team
      */
-    mutateTeamGetTeamsInfo: (data?: TeamInfoModel[], options?: MutatorOptions) =>
-      mutate<TeamInfoModel[]>(`/api/team`, data, options),
+    mutateTeamGetTeamsInfo: (
+      data?: TeamInfoModel[] | Promise<TeamInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<TeamInfoModel[]>(`/api/team`, data, options),
 
     /**
      * @description 用户创建队伍接口，每个用户只能创建一个队伍
