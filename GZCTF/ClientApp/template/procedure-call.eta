@@ -28,7 +28,7 @@ const MutateConfigParam = {
 const DataParam = {
     name: "data",
     optional: true,
-    type: type,
+    type: `${type} | Promise<${type}>`,
     defaultValue: null,
 }
 
