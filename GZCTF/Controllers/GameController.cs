@@ -571,9 +571,7 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器", 400));
 
-        var res = await instanceRepository.DestoryContainer(instance.Container, token);
-
-        return res switch
+        return await instanceRepository.DestoryContainer(instance.Container, token) switch
         {
             true => Ok(),
             false => BadRequest(new RequestResponse("题目删除容器失败", 400))

@@ -193,8 +193,11 @@ Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
     var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+
     if (context.Database.IsRelational())
         await context.Database.MigrateAsync();
+
+    await context.Database.EnsureCreatedAsync();
 
     if (!await context.Notices.AnyAsync())
     {
