@@ -75,7 +75,7 @@ const useStyles = createStyles((theme) => ({
 
 const items = [
   { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
-  { icon: mdiFlagOutline, label: '赛事' },
+  { icon: mdiFlagOutline, label: '赛事', link: '/games' },
   { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
   { icon: mdiInformationOutline, label: '关于', link: '/about' },
 ];
@@ -108,7 +108,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 const AppNavbar: FC = () => {
   const router = useRouter();
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState('主页');
+  const [active, setActive] = useState('');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { data, error } = api.account.useAccountProfile({
     refreshInterval: 0,
@@ -117,8 +117,11 @@ const AppNavbar: FC = () => {
   });
 
   useEffect(() => {
+    if (router.pathname == '/') {
+      setActive(items[0].label)
+    }
     items.forEach((i) => {
-      if (i.link && router.pathname.startsWith(i.link)) {
+      if (router.pathname.startsWith(i.link) && i.link != '/') {
         setActive(i.label);
       }
     });
@@ -144,24 +147,30 @@ const AppNavbar: FC = () => {
 
   return (
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
+      {/* Logo */}
       <Navbar.Section grow>
         <Center>
           <MainIcon
             style={{ width: '100%', height: 'auto', position: 'relative', left: 2 }}
             ignoreTheme
+            onClick={() => router.push('/')}
           />
         </Center>
       </Navbar.Section>
+
+      {/* Common Nav */}
       <Navbar.Section grow mb={20} mt={20} style={{ display: 'flex', alignItems: 'center' }}>
         <Stack align="center" spacing={5}>
           {links}
         </Stack>
       </Navbar.Section>
+
       <Navbar.Section
         grow
         style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
       >
         <Stack align="center" spacing={5}>
+          {/* Color Mode */}
           <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
             {colorScheme === 'dark' ? (
               <Icon path={mdiWeatherSunny} size={1} />
@@ -169,7 +178,8 @@ const AppNavbar: FC = () => {
               <Icon path={mdiWeatherNight} size={1} />
             )}
           </UnstyledButton>
-
+          
+          {/* User Info */}
           {data && !error ? (
             <Menu
               control={

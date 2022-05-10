@@ -19,7 +19,11 @@ const Home: NextPage = () => {
         <LogoHeader />
         <Card shadow="sm" p="lg" style={{ width: '80%' }}>
           <Group position="apart" style={{ margin: 'auto' }}>
-            <Text weight={500}>{data && data.length > 0 ? data[0].title : 'Welcome!'}</Text>
+            <Text weight={500}>
+              {data && data.length > 0
+                ? data[0].title
+                : 'Welcome!'}
+            </Text>
             <Badge color="brand" variant="light">
               {data && data.length > 0
                 ? new Date(data[0].time).toLocaleString()
