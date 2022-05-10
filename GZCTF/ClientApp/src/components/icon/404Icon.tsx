@@ -19,7 +19,7 @@ const useStyles = createStyles((theme) => ({
 const Icon404: FC = () => {
   const { classes, cx } = useStyles();
   return (
-    <svg id="main_logo" xmlns="http://www.w3.org/2000/svg" width="320px" height="320px" viewBox="0 0 6400 6400">
+    <svg id="main_logo" xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 6400 6400">
       <g id="Num4_left">
         <path fill="#007f6e" fillRule="evenodd" d="M5000,2400l282.84,282.84-800.11,800.11-282.84-282.84Z" />
         <rect fill="#00bfa5" x="4200" y="3200" width="1600" height="400" />
