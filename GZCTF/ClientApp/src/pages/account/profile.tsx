@@ -56,7 +56,7 @@ const Profile: NextPage = () => {
             <TextInput
               label="用户名"
               type="text"
-              placeholder={data?.userName||"ctfer"}
+              placeholder={data?.userName ?? "ctfer"}
               style={{ width: '100%' }}
               value={uname}
               disabled={disabled}
@@ -65,7 +65,7 @@ const Profile: NextPage = () => {
             <TextInput
               label="描述"
               type="text"
-              placeholder={data?.bio||"这个人很懒，什么都没有写"}
+              placeholder={data?.bio ?? "这个人很懒，什么都没有写"}
               style={{ width: '100%' }}
               value={bio}
               disabled={disabled}
