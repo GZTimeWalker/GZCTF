@@ -5,41 +5,53 @@ import {
   Stack,
   Group,
   Divider,
-  Title,
   Text,
   Button,
-  Input,
   Grid,
-  Card,
   TextInput,
   Paper,
-  Center,
   Textarea,
   Modal,
   PasswordInput,
   Avatar,
-  Image,
-  Indicator,
-  Header,
+  MantineTheme,
+  useMantineTheme,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { useInputState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { mdiAccessPoint, mdiAirHorn, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiAirHorn, mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api from '../../Api';
 import WithNavBar from '../../components/WithNavbar';
 
+const dropzoneChildren = (status: DropzoneStatus, theme: MantineTheme, file: File) => (
+  <Group position="center" spacing="xl" style={{ minHeight: 220, pointerEvents: 'none' }}>
+    <div>
+      <Text size="xl" inline>
+        Drag images here or click to select files
+      </Text>
+      <Text size="sm" color="dimmed" inline mt={7}>
+        Your file should not exceed 5mb
+      </Text>
+    </div>
+    <Text size='md'>{file.name}</Text>
+  </Group>
+);
+
+
 const Profile: NextPage = () => {
+  const theme = useMantineTheme()
   const [opened, setOpened] = useState(false);
+  const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const { data, mutate } = api.account.useAccountProfile();
   const [disabled, setDisabled] = useState(false);
   const [pwdDisabled, setPwdDisabled] = useState(false);
   const [uname, setUname] = useInputState('');
   const [bio, setBio] = useInputState('');
   const [pwd, setPwd] = useInputState('');
-  const [avatar, setAvatar] = useState(data?.avatar || '');
   const [email, setEmail] = useInputState('');
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const onSaveChange = () => {
     setDisabled(true);
@@ -68,17 +80,32 @@ const Profile: NextPage = () => {
   };
 
   const onChangeAvatar = () => {
-    /*
-    TODO: Profile props, update with mutate, avatar with DropZone
-    Refer: https://mantine.dev/others/dropzone/
-  */
-    showNotification({
-      color: 'teal',
-      title: '未实现',
-      message: '但你为什么要换头像捏',
-      icon: <Icon path={mdiAccessPoint} size={1} />,
-      disallowClose: true,
-    });
+    if (avatarFile) {
+      api.account
+      .accountAvatar({
+        file: avatarFile,
+      })
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          title: '修改头像成功',
+          message: '您的头像已经更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        });
+        mutate({ ...data });
+        setDropzoneOpened(false);
+      })
+      .catch((err) => {
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: `${err.error.title}`,
+          icon: <Icon path={mdiClose} size={1} />,
+        });
+        setDropzoneOpened(false);
+      });
+    }
   };
 
   const onClearInfo = () => {
@@ -87,7 +114,6 @@ const Profile: NextPage = () => {
     setUname('');
     setBio('');
     setEmail('');
-    // setAvatar(data?.avatar);
 
     setDisabled(false);
   };
@@ -150,35 +176,6 @@ const Profile: NextPage = () => {
 
   return (
     <>
-      {/* OverLay */}
-      <Modal opened={opened} onClose={() => setOpened(false)} title="您即将修改邮箱，请确认密码">
-        <PasswordInput
-          required
-          label="密码"
-          placeholder="P4ssW@rd"
-          style={{ width: '100%' }}
-          value={pwd}
-          disabled={pwdDisabled}
-          onChange={(event) => setPwd(event.currentTarget.value)}
-        />
-        <Box style={{ margin: 'auto', marginTop: '30px' }}>
-          {
-            <Grid grow>
-              <Grid.Col span={8}>
-                <Button fullWidth variant="outline" onClick={onConfirmEmail}>
-                  确认修改
-                </Button>
-              </Grid.Col>
-              <Grid.Col span={4}>
-                <Button fullWidth color="red" variant="outline" onClick={() => setOpened(false)}>
-                  取消修改
-                </Button>
-              </Grid.Col>
-            </Grid>
-          }
-        </Box>
-      </Modal>
-
       {/* Main Page */}
       <WithNavBar>
         <Stack align="center">
@@ -189,12 +186,43 @@ const Profile: NextPage = () => {
           >
             {/* Header */}
             <Box style={{ marginBottom: '5px' }}>
-              <Header height={36}>个人信息</Header>
+              <h2>个人信息</h2>
             </Box>
             <Divider />
+
             <Grid style={{ marginTop: '15px' }}>
               {/* User Info */}
               <Grid.Col span={9}>
+
+                {/* OverLay */}
+                <Modal opened={opened} onClose={() => setOpened(false)} title="您即将修改邮箱，请确认密码">
+                  <PasswordInput
+                    required
+                    label="密码"
+                    placeholder="P4ssW@rd"
+                    style={{ width: '100%' }}
+                    value={pwd}
+                    disabled={pwdDisabled}
+                    onChange={(event) => setPwd(event.currentTarget.value)}
+                  />
+                  <Box style={{ margin: 'auto', marginTop: '30px' }}>
+                    {
+                      <Grid grow>
+                        <Grid.Col span={8}>
+                          <Button fullWidth variant="outline" onClick={onConfirmEmail}>
+                            确认修改
+                          </Button>
+                        </Grid.Col>
+                        <Grid.Col span={4}>
+                          <Button fullWidth color="red" variant="outline" onClick={() => setOpened(false)}>
+                            取消修改
+                          </Button>
+                        </Grid.Col>
+                      </Grid>
+                    }
+                  </Box>
+                </Modal>
+
                 {/* Input and Info display */}
                 <Group position="apart" style={{ margin: 'auto' }}>
                   <TextInput
@@ -260,13 +288,40 @@ const Profile: NextPage = () => {
 
               {/* User Avator */}
               <Grid.Col span={3}>
-                <Text size="sm">用户头像</Text>
-                <Stack align="center" style={{ width: '100%' }}>
+                <Stack align="center" style={{ width: '100%', marginTop: '10px' }}>
+                  {/* Dropzone */}
+                  <Modal opened={dropzoneOpened} onClose={() => setDropzoneOpened(false)} withCloseButton={false}>
+                    <Dropzone
+                      onDrop={(files) => setAvatarFile(files[0])}
+                      onReject={() => {
+                        showNotification({
+                          color: 'red',
+                          title: '文件上传失败',
+                          message: `请重新提交`,
+                          icon: <Icon path={mdiClose} size={1} />,
+                        });
+                      }}
+                      maxSize={3 * 1024 ** 2}
+                      accept={IMAGE_MIME_TYPE}
+                    >
+                      {(status) => dropzoneChildren(status, theme, avatarFile ?? new File([], ''))}
+                    </Dropzone>
+                    <Button
+                      fullWidth
+                      variant="outline"
+                      disabled={disabled}
+                      onClick={onChangeAvatar}
+                    >
+                      修改头像
+                    </Button>
+                  </Modal>
+
+                  {/* Avatar */}
                   <Avatar
                     style={{ borderRadius: '50%' }}
                     size="xl"
-                    src={avatar ?? 'https://mantine.dev/images/avatar.png'}
-                    onClick={onChangeAvatar}
+                    src={data?.avatar ?? 'https://mantine.dev/images/avatar.png'}
+                    onClick={() => setDropzoneOpened(true)}
                   />
                 </Stack>
               </Grid.Col>
