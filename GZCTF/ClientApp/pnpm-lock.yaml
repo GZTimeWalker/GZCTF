@@ -1,18 +1,18 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 specifiers:
-  '@babel/core': '=7.17.9'
-  '@mantine/core': ^4.2.4
-  '@mantine/dates': ^4.2.4
-  '@mantine/dropzone': ^4.2.4
-  '@mantine/form': ^4.2.4
-  '@mantine/hooks': ^4.2.4
-  '@mantine/modals': ^4.2.4
-  '@mantine/next': ^4.2.4
-  '@mantine/notifications': ^4.2.4
-  '@mantine/prism': ^4.2.4
-  '@mantine/rte': ^4.2.4
-  '@mantine/spotlight': ^4.2.4
+  '@babel/core': ^7.17.10
+  '@mantine/core': ^4.2.5
+  '@mantine/dates': ^4.2.5
+  '@mantine/dropzone': ^4.2.5
+  '@mantine/form': ^4.2.5
+  '@mantine/hooks': ^4.2.5
+  '@mantine/modals': ^4.2.5
+  '@mantine/next': ^4.2.5
+  '@mantine/notifications': ^4.2.5
+  '@mantine/prism': ^4.2.5
+  '@mantine/rte': ^4.2.5
+  '@mantine/spotlight': ^4.2.5
   '@mdi/js': ^6.6.96
   '@mdi/react': ^1.6.0
   '@trivago/prettier-plugin-sort-imports': ^3.2.0
@@ -36,38 +36,23 @@ specifiers:
   typescript: 4.6.3
 
 dependencies:
-<<<<<<< HEAD
-  '@babel/core': 7.17.9
-  '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-  '@mantine/dates': 4.2.4_kodfcfe4bxvyvqdajvk67fyk3i
-  '@mantine/dropzone': 4.2.4_6lcu2o47faoygtutbxspubeq7m
-  '@mantine/form': 4.2.4_react@17.0.2
-  '@mantine/hooks': 4.2.4_react@17.0.2
-  '@mantine/modals': 4.2.4_6lcu2o47faoygtutbxspubeq7m
-  '@mantine/next': 4.2.4_vwl7ja4bmwsrzteukav3hiru7q
-  '@mantine/notifications': 4.2.4_6lcu2o47faoygtutbxspubeq7m
-  '@mantine/prism': 4.2.4_6lcu2o47faoygtutbxspubeq7m
-  '@mantine/rte': 4.2.4_6lcu2o47faoygtutbxspubeq7m
-  '@mantine/spotlight': 4.2.4_6lcu2o47faoygtutbxspubeq7m
-=======
   '@babel/core': 7.17.10
-  '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
-  '@mantine/dates': 4.2.4_c4d6b0b069834969397c8ffaca889c92
-  '@mantine/dropzone': 4.2.4_f2c54d3b9f281d834e930de4fa0490fb
-  '@mantine/form': 4.2.4_react@17.0.2
-  '@mantine/hooks': 4.2.4_react@17.0.2
-  '@mantine/modals': 4.2.4_f2c54d3b9f281d834e930de4fa0490fb
-  '@mantine/next': 4.2.4_5d08dd6bedd117d20d9267f9230050d1
-  '@mantine/notifications': 4.2.4_f2c54d3b9f281d834e930de4fa0490fb
-  '@mantine/prism': 4.2.4_f2c54d3b9f281d834e930de4fa0490fb
-  '@mantine/rte': 4.2.4_f2c54d3b9f281d834e930de4fa0490fb
-  '@mantine/spotlight': 4.2.4_f2c54d3b9f281d834e930de4fa0490fb
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
+  '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+  '@mantine/dates': 4.2.5_anqe4i2mpge4bzfb4worg43uam
+  '@mantine/dropzone': 4.2.5_53v6ci6gse6lo3anyfvgfze4se
+  '@mantine/form': 4.2.5_react@17.0.2
+  '@mantine/hooks': 4.2.5_react@17.0.2
+  '@mantine/modals': 4.2.5_53v6ci6gse6lo3anyfvgfze4se
+  '@mantine/next': 4.2.5_luen227n2el5edmsm74sgacq2e
+  '@mantine/notifications': 4.2.5_53v6ci6gse6lo3anyfvgfze4se
+  '@mantine/prism': 4.2.5_53v6ci6gse6lo3anyfvgfze4se
+  '@mantine/rte': 4.2.5_53v6ci6gse6lo3anyfvgfze4se
+  '@mantine/spotlight': 4.2.5_53v6ci6gse6lo3anyfvgfze4se
   '@mdi/js': 6.6.96
   '@mdi/react': 1.6.0
   dayjs: 1.11.2
-  jotai: 1.6.6_@babel+core@7.17.10+react@17.0.2
-  next: 12.1.5_9b0027aae606c22bf55a7fd89836f009
+  jotai: 1.6.6_zewwurpcg5ac2u23rlvo252rr4
+  next: 12.1.5_tmacpkxga3bcx5k2p7mjqnxqbe
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   swr: 1.3.0_react@17.0.2
@@ -76,14 +61,10 @@ devDependencies:
   '@trivago/prettier-plugin-sort-imports': 3.2.0_prettier@2.6.2
   '@types/node': 17.0.25
   '@types/react': 17.0.45
-<<<<<<< HEAD
-  '@types/react-dom': 17.0.16
-=======
   '@types/react-dom': 17.0.17
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
   axios: 0.26.1
   eslint: 8.13.0
-  eslint-config-next: 12.1.5_73f9dd19bec33b69290ec95d96fcfe5a
+  eslint-config-next: 12.1.5_op452gn6ym5wskiozfozn7h6li
   form-data: 4.0.0
   lodash: 4.17.21
   prettier: 2.6.2
@@ -282,12 +263,16 @@ packages:
     resolution: {integrity: sha512-oG0ej7efjEXxb4UgE+klVx+3j4MVo+A2vCzm7OUN4CLo6WhQ+vSOD2yJ8m7B+DghObxtLxt3EfgMWpq+AsWehQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.13.0
     dev: true
 
   /@babel/parser/7.17.10:
     resolution: {integrity: sha512-n2Q6i+fnJqzOaq2VkdXxy2TCPCWQZHiCo0XqmrCvDWcZQKRyZzYi4Z0yxlBuN0w+r2ZHmre+Q087DSrw3pbJDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.10
 
   /@babel/runtime-corejs3/7.17.9:
     resolution: {integrity: sha512-WxYHHUWF2uZ7Hp1K+D1xQgbgkGUfA+5UPOegEXGt2Y5SMog/rYCVaifLZDbw8UkNXozEqqrZTy6bglL7xTaCOw==}
@@ -377,11 +362,7 @@ packages:
     resolution: {integrity: sha512-igX9a37DR2ZPGYtV6suZ6whr8pTFtyHL3K/oLUotxpSVO2ASaprmAe2Dkq7tBo7CRY7MMDrAa9nuQP9/YG8FxQ==}
     dev: false
 
-<<<<<<< HEAD
-  /@emotion/react/11.7.1_pdvgfkxcbv326rzphpmfrxt3ru:
-=======
-  /@emotion/react/11.7.1_0191d4f7d13d8e58ed45c49e4813c090:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
+  /@emotion/react/11.7.1_agi5j56rhwhfr3kfyspeqe6asa:
     resolution: {integrity: sha512-DV2Xe3yhkF1yT4uAUoJcYL1AmrnO5SVsdfvu+fBuS7IbByDeTVx9+wFmvx9Idzv7/78+9Mgx2Hcmr7Fex3tIyw==}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -396,15 +377,9 @@ packages:
       '@babel/core': 7.17.10
       '@babel/runtime': 7.17.9
       '@emotion/cache': 11.7.1
-<<<<<<< HEAD
-      '@emotion/serialize': 1.0.3
-      '@emotion/sheet': 1.1.0
-      '@emotion/utils': 1.1.0
-=======
       '@emotion/serialize': 1.0.2
       '@emotion/sheet': 1.1.0
       '@emotion/utils': 1.0.0
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
       '@emotion/weak-memoize': 0.2.5
       '@types/react': 17.0.45
       hoist-non-react-statics: 3.3.2
@@ -413,19 +388,6 @@ packages:
 
   /@emotion/serialize/1.0.2:
     resolution: {integrity: sha512-95MgNJ9+/ajxU7QIAruiOAdYNjxZX7G2mhgrtDWswA21VviYIRP1R5QilZ/bDY42xiKsaktP4egJb3QdYQZi1A==}
-<<<<<<< HEAD
-    dependencies:
-      '@emotion/hash': 0.8.0
-      '@emotion/memoize': 0.7.5
-      '@emotion/unitless': 0.7.5
-      '@emotion/utils': 1.1.0
-      csstype: 3.0.11
-    dev: false
-
-  /@emotion/serialize/1.0.3:
-    resolution: {integrity: sha512-2mSSvgLfyV3q+iVh3YWgNlUc2a9ZlDU7DjuP5MjK3AXRR0dYigCrP99aeFtaB2L/hjfEZdSThn5dsZ0ufqbvsA==}
-=======
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     dependencies:
       '@emotion/hash': 0.8.0
       '@emotion/memoize': 0.7.5
@@ -458,13 +420,6 @@ packages:
 
   /@emotion/utils/1.0.0:
     resolution: {integrity: sha512-mQC2b3XLDs6QCW+pDQDiyO/EdGZYOygE8s5N5rrzjSI4M3IejPE/JPndCBwRT9z982aqQNi6beWs1UeayrQxxA==}
-<<<<<<< HEAD
-    dev: false
-
-  /@emotion/utils/1.1.0:
-    resolution: {integrity: sha512-iRLa/Y4Rs5H/f2nimczYmS5kFJEbpiVvgN3XVfZ022IYhuNA1IRSHEizcof88LtCTXtl9S2Cxt32KgaXEu72JQ==}
-=======
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     dev: false
 
   /@emotion/weak-memoize/0.2.5:
@@ -533,142 +488,94 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.13
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/core/4.2.4_rmmab26vtzxuahkqoiltz36zxm:
-=======
-  /@mantine/core/4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-YeN8slz3bcb47NUUkSZ4UAedMZH7bWvqIx7OfRf2D0m2o4Fu1BLO73xUCpgj18R31fx3BcSopRujZC9x/8bqUg==}
+  /@mantine/core/4.2.5_scqkimxibvowppxuldduavdcsi:
+    resolution: {integrity: sha512-A/mixxpmCsA9acYVrCAurHrj/ikyLGksPqFILPJJpjC4uUDm85HHqVUa209VVLAKlvr26tX6CzDVqUeSe6s3Zg==}
     peerDependencies:
-      '@mantine/hooks': 4.2.4
+      '@mantine/hooks': 4.2.5
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@mantine/hooks': 4.2.4_react@17.0.2
-<<<<<<< HEAD
-      '@mantine/styles': 4.2.4_bdyffdmz5zg6jsq2w4yljnwrhm
-=======
-      '@mantine/styles': 4.2.4_119827f31b0360eaa21c3c49ad2eba57
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
+      '@mantine/hooks': 4.2.5_react@17.0.2
+      '@mantine/styles': 4.2.5_cgmcp4y3anqoviq4hre22lv2k4
       '@popperjs/core': 2.11.5
       '@radix-ui/react-scroll-area': 0.1.4_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-<<<<<<< HEAD
       react-popper: 2.3.0_kz2vxbzpsgxv356x2ucg6oykdm
       react-textarea-autosize: 8.3.3_hx2b44akkvgcgvvtmk7ds2qk6q
-=======
-      react-popper: 2.3.0_56755b872f91af5df7d7d5046f3b0a1b
-      react-textarea-autosize: 8.3.3_3df41e700a554c2356b362be396a0af4
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     transitivePeerDependencies:
       - '@babel/core'
       - '@types/react'
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/dates/4.2.4_kodfcfe4bxvyvqdajvk67fyk3i:
-=======
-  /@mantine/dates/4.2.4_c4d6b0b069834969397c8ffaca889c92:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-ullVkmiOhLBTk30zJgRraMggR8ZLPc4IEwM83dJbhx4mTiJ10CFvl8oz23j2yy00tInCw6vYglqK514ytlsItg==}
+  /@mantine/dates/4.2.5_anqe4i2mpge4bzfb4worg43uam:
+    resolution: {integrity: sha512-qWgkTzNKP0OrNfvTHhBC+pF1rzZ8sfw6aRf1ZJMTADCNf3ol6yLlG9xl+Do9ekq1sOxllKngWnMGiYt2gNxBmQ==}
     peerDependencies:
-      '@mantine/core': 4.2.4
-      '@mantine/hooks': 4.2.4
+      '@mantine/core': 4.2.5
+      '@mantine/hooks': 4.2.5
       dayjs: ^1.10.5
       react: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-      '@mantine/hooks': 4.2.4_react@17.0.2
-      dayjs: 1.11.1
-      react: 17.0.2
-    dev: false
-
-  /@mantine/dropzone/4.2.4_6lcu2o47faoygtutbxspubeq7m:
-=======
-      '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
-      '@mantine/hooks': 4.2.4_react@17.0.2
+      '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+      '@mantine/hooks': 4.2.5_react@17.0.2
       dayjs: 1.11.2
       react: 17.0.2
     dev: false
 
-  /@mantine/dropzone/4.2.4_f2c54d3b9f281d834e930de4fa0490fb:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-Y4lzzkKEtfbW941BdEwFBaS87ZAXyXB080GJUxxpuP0KQ1xb9GG66l3l3zu/+UcwXOyT4m91W2E3okip9BcIew==}
+  /@mantine/dropzone/4.2.5_53v6ci6gse6lo3anyfvgfze4se:
+    resolution: {integrity: sha512-Jt6oQF2/4ZMMev047BYkbs2ggTsepfWINj41rBGfQXeF9jarPA/kv0we8I0CCKSj2YDIIjHAxsR2U4KnkN75DQ==}
     peerDependencies:
-      '@mantine/core': 4.2.4
-      '@mantine/hooks': 4.2.4
+      '@mantine/core': 4.2.5
+      '@mantine/hooks': 4.2.5
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-=======
-      '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-      '@mantine/hooks': 4.2.4_react@17.0.2
+      '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+      '@mantine/hooks': 4.2.5_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-dropzone: 11.7.1_react@17.0.2
     dev: false
 
-  /@mantine/form/4.2.4_react@17.0.2:
-    resolution: {integrity: sha512-7exttJwSY0yRjzChL6L0NM5i5xxXuGiP4c8quGb7/mxP/hwfUSFMOua3Pme8svP7U8w3gxZL3HWvzGMQQfXqSw==}
+  /@mantine/form/4.2.5_react@17.0.2:
+    resolution: {integrity: sha512-BqYy/orl7ha3pVnMhWVGDK6v5O9IqBQK76Eb15FRc3KvlcX+PaaQwvwHQW1mN2Tk362WPqe3LJwAATOgy3xAog==}
     peerDependencies:
       react: '>=16.8.0'
     dependencies:
       react: 17.0.2
     dev: false
 
-  /@mantine/hooks/4.2.4_react@17.0.2:
-    resolution: {integrity: sha512-C4Mvm9suYFuM5dDJXKaZ2fRFvJ5JMXl5S7eSNsHvzkRmCy0GppKkDETwXi0uwS7QyjMllNRizGvoyU4CyHyvrA==}
+  /@mantine/hooks/4.2.5_react@17.0.2:
+    resolution: {integrity: sha512-CEpdUXPAC28rXosgo/Wxvs3ch9qC+QYfqh4AFkOH0+EKdlXkD1xRN8vv6pd5AHJtRZvGf7CZDuGKSjWgssvgeA==}
     peerDependencies:
       react: '>=16.8.0'
     dependencies:
       react: 17.0.2
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/modals/4.2.4_6lcu2o47faoygtutbxspubeq7m:
-=======
-  /@mantine/modals/4.2.4_f2c54d3b9f281d834e930de4fa0490fb:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-ce0shaBjAw5kzSCZ8cDgtct3ge1dtB0RQyYMvk+6y3na4gqXqUOsHJmQ8cUVAOb78Ge7ibEQA0rOW6dOSeAVRA==}
+  /@mantine/modals/4.2.5_53v6ci6gse6lo3anyfvgfze4se:
+    resolution: {integrity: sha512-kHrgLKYT/CIoR2tqo2fSifdzBhQYckJ2xsAj75uSox5JK58NXlypg4/t/FHMIhV+ZajyTysMi1TcrqUOklMXjA==}
     peerDependencies:
-      '@mantine/core': 4.2.4
-      '@mantine/hooks': 4.2.4
+      '@mantine/core': 4.2.5
+      '@mantine/hooks': 4.2.5
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-=======
-      '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-      '@mantine/hooks': 4.2.4_react@17.0.2
+      '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+      '@mantine/hooks': 4.2.5_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/next/4.2.4_vwl7ja4bmwsrzteukav3hiru7q:
-=======
-  /@mantine/next/4.2.4_5d08dd6bedd117d20d9267f9230050d1:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-YU/Hv4srckitt1n5nKf9FVSfvYLypQfevQX/rcy00Bjr4iFxZQdpGCCdfSw82XR/JaY6Bw/Soj9BdGhK0DPcRg==}
+  /@mantine/next/4.2.5_luen227n2el5edmsm74sgacq2e:
+    resolution: {integrity: sha512-3hwe8pzKmIvdfG8rRlPMzd3mbg+I/U26axzLeE8gtK/OH+0PmYAq1Zle99aHDAbwPi5vFyLaHwGLXFHspdrjfA==}
     peerDependencies:
       next: '*'
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/ssr': 4.2.4_bdyffdmz5zg6jsq2w4yljnwrhm
-      next: 12.1.5_6nyponiwjib2clhkbtejle6l5y
-=======
-      '@mantine/ssr': 4.2.4_119827f31b0360eaa21c3c49ad2eba57
-      next: 12.1.5_9b0027aae606c22bf55a7fd89836f009
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
+      '@mantine/ssr': 4.2.5_cgmcp4y3anqoviq4hre22lv2k4
+      next: 12.1.5_tmacpkxga3bcx5k2p7mjqnxqbe
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     transitivePeerDependencies:
@@ -677,123 +584,79 @@ packages:
       - '@types/react'
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/notifications/4.2.4_6lcu2o47faoygtutbxspubeq7m:
-=======
-  /@mantine/notifications/4.2.4_f2c54d3b9f281d834e930de4fa0490fb:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-BgiG8jMW6WStgHuuj/BSX6g8camSUY1iP5SFw0hFkseWW4Y/6IPbcshejGQKS7stkjoJZQVZGaXkJQGkZcWcpA==}
+  /@mantine/notifications/4.2.5_53v6ci6gse6lo3anyfvgfze4se:
+    resolution: {integrity: sha512-Qb+Zs66N5u+nlO6cKWoQI+0b8Tp+0AzugtXGaTrhRq5kpjOdH6XwSDkSXpkLPHBUYGwlweuTkMrc2Md1FNORqg==}
     peerDependencies:
-      '@mantine/core': 4.2.4
-      '@mantine/hooks': 4.2.4
+      '@mantine/core': 4.2.5
+      '@mantine/hooks': 4.2.5
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-=======
-      '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-      '@mantine/hooks': 4.2.4_react@17.0.2
+      '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+      '@mantine/hooks': 4.2.5_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-transition-group: 4.4.2_react-dom@17.0.2+react@17.0.2
+      react-transition-group: 4.4.2_sfoxds7t5ydpegc3knd667wn6m
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/prism/4.2.4_6lcu2o47faoygtutbxspubeq7m:
-=======
-  /@mantine/prism/4.2.4_f2c54d3b9f281d834e930de4fa0490fb:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-r/Q3XdpjCkrW+6Tsh4N94FlvsJ6jflg9JXv1UukAyoSvZpfyqTErb+FHK3J4eC26bVbaEj9hfq1fBDvkJNwMsQ==}
+  /@mantine/prism/4.2.5_53v6ci6gse6lo3anyfvgfze4se:
+    resolution: {integrity: sha512-s61KWOCIsANChSOaeE/c3jU8YtP3ogsJ5NH2bC8nX80wdO68MTB5h8AQWslHsMThOG7OoeakWF1I6+VSK4+k4g==}
     peerDependencies:
-      '@mantine/core': 4.2.4
-      '@mantine/hooks': 4.2.4
+      '@mantine/core': 4.2.5
+      '@mantine/hooks': 4.2.5
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-=======
-      '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-      '@mantine/hooks': 4.2.4_react@17.0.2
-      prism-react-renderer: 1.3.1_react@17.0.2
+      '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+      '@mantine/hooks': 4.2.5_react@17.0.2
+      prism-react-renderer: 1.3.3_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/rte/4.2.4_6lcu2o47faoygtutbxspubeq7m:
-=======
-  /@mantine/rte/4.2.4_f2c54d3b9f281d834e930de4fa0490fb:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-fkW8TTpOOCrDuHkxHGMjP/DiwriwagaHD5Ry5oKSKXVXB9NMl/McmIdpII9zgH3jpnSCLcSQjr2knRrMlx+YUg==}
+  /@mantine/rte/4.2.5_53v6ci6gse6lo3anyfvgfze4se:
+    resolution: {integrity: sha512-zR+97Dgj4fqjIrSudwkrkshRL/YooF3/C6pkbViQP0WnEUI4dcTPlAz6kFJFEjYTKad3i55u6YwZRhGTdzuamA==}
     peerDependencies:
-      '@mantine/core': 4.2.4
-      '@mantine/hooks': 4.2.4
+      '@mantine/core': 4.2.5
+      '@mantine/hooks': 4.2.5
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-=======
-      '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-      '@mantine/hooks': 4.2.4_react@17.0.2
+      '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+      '@mantine/hooks': 4.2.5_react@17.0.2
       '@modulz/radix-icons': 4.0.0_react@17.0.2
       quill-mention: 3.1.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-quill: 2.0.0-beta.4_react-dom@17.0.2+react@17.0.2
+      react-quill: 2.0.0-beta.4_sfoxds7t5ydpegc3knd667wn6m
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/spotlight/4.2.4_6lcu2o47faoygtutbxspubeq7m:
-=======
-  /@mantine/spotlight/4.2.4_f2c54d3b9f281d834e930de4fa0490fb:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-jxFqR5myZ0fD8URBF5eH1lisfSUPy2fW28IUHCOEn08oL6+zsHUxeAUuVDUbZXbuhjkoBGyUh7BXRln8YcYXfw==}
+  /@mantine/spotlight/4.2.5_53v6ci6gse6lo3anyfvgfze4se:
+    resolution: {integrity: sha512-fONqFvigUigh/B658C79R6ZTe3gWXwIOAJlsmB7upGLMCmBtr+4iPozIvpK1WGaJ3Y5oOdvWNf0E0MTNfN462Q==}
     peerDependencies:
-      '@mantine/core': 4.2.4
-      '@mantine/hooks': 4.2.4
+      '@mantine/core': 4.2.5
+      '@mantine/hooks': 4.2.5
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-<<<<<<< HEAD
-      '@mantine/core': 4.2.4_rmmab26vtzxuahkqoiltz36zxm
-=======
-      '@mantine/core': 4.2.4_54ac0fcbdcd0e3f3fce8bf16dba2f406
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-      '@mantine/hooks': 4.2.4_react@17.0.2
+      '@mantine/core': 4.2.5_scqkimxibvowppxuldduavdcsi
+      '@mantine/hooks': 4.2.5_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/ssr/4.2.4_bdyffdmz5zg6jsq2w4yljnwrhm:
-=======
-  /@mantine/ssr/4.2.4_119827f31b0360eaa21c3c49ad2eba57:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-3hPSTTvkapuiMlUGLa3xDSOJpjlklMCOOMh01Yu4VRmj/n0Jd9KS9T9fOWnxF3q8wZDy3sV56mr9N4nc143B6A==}
+  /@mantine/ssr/4.2.5_cgmcp4y3anqoviq4hre22lv2k4:
+    resolution: {integrity: sha512-3Nt5PjCSKylAeyg1j6yct5hoX45J0jvxCwblphnhcYL+YVdNdaI2KL5Dg+KE/wcIAzOATquidUCFSHUwqcUVkg==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@emotion/cache': 11.7.1
-<<<<<<< HEAD
-      '@emotion/react': 11.7.1_pdvgfkxcbv326rzphpmfrxt3ru
+      '@emotion/react': 11.7.1_agi5j56rhwhfr3kfyspeqe6asa
       '@emotion/serialize': 1.0.2
       '@emotion/server': 11.4.0
       '@emotion/utils': 1.0.0
-      '@mantine/styles': 4.2.4_bdyffdmz5zg6jsq2w4yljnwrhm
-=======
-      '@emotion/react': 11.7.1_0191d4f7d13d8e58ed45c49e4813c090
-      '@emotion/serialize': 1.0.2
-      '@emotion/server': 11.4.0
-      '@emotion/utils': 1.0.0
-      '@mantine/styles': 4.2.4_119827f31b0360eaa21c3c49ad2eba57
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
+      '@mantine/styles': 4.2.5_cgmcp4y3anqoviq4hre22lv2k4
       csstype: 3.0.9
       html-react-parser: 1.3.0_react@17.0.2
       react: 17.0.2
@@ -804,22 +667,14 @@ packages:
       - '@types/react'
     dev: false
 
-<<<<<<< HEAD
-  /@mantine/styles/4.2.4_bdyffdmz5zg6jsq2w4yljnwrhm:
-=======
-  /@mantine/styles/4.2.4_119827f31b0360eaa21c3c49ad2eba57:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
-    resolution: {integrity: sha512-nG8qwE7uuZ7pJaY5jES9DLIkYxlLf3pK8Gn01gdbSfcyDC8hldvr83bMQOS9gLZ/3F/lrhtsu8u+31kxXIBIsw==}
+  /@mantine/styles/4.2.5_cgmcp4y3anqoviq4hre22lv2k4:
+    resolution: {integrity: sha512-A6sIm3+Aa4ZqpaIqpmiaCmkAJI4ow9vwmCgpvuwWYCspBhWTWQWtdpnNyWfnTjszYY1uSnx9mb50JlIsglgLNQ==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@emotion/cache': 11.7.1
-<<<<<<< HEAD
-      '@emotion/react': 11.7.1_pdvgfkxcbv326rzphpmfrxt3ru
-=======
-      '@emotion/react': 11.7.1_0191d4f7d13d8e58ed45c49e4813c090
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
+      '@emotion/react': 11.7.1_agi5j56rhwhfr3kfyspeqe6asa
       '@emotion/serialize': 1.0.2
       '@emotion/utils': 1.0.0
       clsx: 1.1.1
@@ -1120,7 +975,7 @@ packages:
     dev: true
 
   /@types/json5/0.0.29:
-    resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
+    resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
   /@types/node/17.0.25:
@@ -1163,7 +1018,7 @@ packages:
     resolution: {integrity: sha512-n9BbLOjR4Hre7B4TSGGMPohOgOg8tcp00uxqsIE00uuWQC0QuX57G1bqC1csLsk2DpTGtHkd0dEb3ipsCZ9dAA==}
     dev: true
 
-  /@typescript-eslint/parser/5.10.1_eslint@8.13.0+typescript@4.6.3:
+  /@typescript-eslint/parser/5.10.1_jzhokl4shvj5szf5bgr66kln2a:
     resolution: {integrity: sha512-GReo3tjNBwR5RnRO0K2wDIDN31cM3MmDtgyQ85oAxAmC5K3j/g85IjP+cDfcqDsDDBf1HNKQAD0WqOYL8jXqUA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -1315,11 +1170,11 @@ packages:
     dev: true
 
   /ast-types-flow/0.0.7:
-    resolution: {integrity: sha1-9wtzXGvKGlycItmCw+Oef+ujva0=}
+    resolution: {integrity: sha512-eBvWn1lvIApYMhzQMsu9ciLfkBY499mFZlNqG+/9WR7PVlroQw0vG30cOQQbaKz3sCEc44TAOu2ykzqXSNnwag==}
     dev: true
 
   /asynckit/0.4.0:
-    resolution: {integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=}
+    resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: true
 
   /attr-accept/2.2.2:
@@ -1375,7 +1230,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001340
+      caniuse-lite: 1.0.30001341
       electron-to-chromium: 1.4.137
       escalade: 3.1.1
       node-releases: 2.0.4
@@ -1392,7 +1247,7 @@ packages:
       get-intrinsic: 1.1.1
 
   /call-me-maybe/1.0.1:
-    resolution: {integrity: sha1-JtII6onje1y95gJQoV8DHBak1ms=}
+    resolution: {integrity: sha512-wCyFsDQkKPwwF8BDwOiWNx/9K45L/hvggQiDbve+viMNMQnWhrlYIuBk09offfwCRtCO9P6XwUttufzU11WCVw==}
     dev: true
 
   /callsites/3.1.0:
@@ -1400,8 +1255,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite/1.0.30001340:
-    resolution: {integrity: sha512-jUNz+a9blQTQVu4uFcn17uAD8IDizPzQkIKh3LCJfg9BkyIqExYYdyc/ZSlWUSKb8iYiXxKsxbv4zYSvkqjrxw==}
+  /caniuse-lite/1.0.30001341:
+    resolution: {integrity: sha512-2SodVrFFtvGENGCv0ChVJIDQ0KPaS1cg7/qtfMaICgeMolDdo/Z2OD32F0Aq9yl6F4YFwGPBS5AaPqNYiW4PoA==}
 
   /chalk/2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -1523,12 +1378,22 @@ packages:
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.0.0
     dev: true
 
   /debug/3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.3
     dev: true
@@ -1613,16 +1478,6 @@ packages:
 
   /domhandler/4.2.2:
     resolution: {integrity: sha512-PzE9aBMsdZO8TK4BnuJwH0QT41wgMbRzuZrHUcpYncEjmQazq8QEaBWgLG7ZyC/DAZKEgglpIA6j4Qn/HmxS3w==}
-<<<<<<< HEAD
-    engines: {node: '>= 4'}
-    dependencies:
-      domelementtype: 2.3.0
-    dev: false
-
-  /domhandler/4.3.1:
-    resolution: {integrity: sha512-GrwoxYN+uWlzO8uhUXRl0P+kHE4GtVPfYzVLcUxPL7KNdHKj66vvlhiweIHqYYXWlw+T8iLMp42Lm67ghw4WMQ==}
-=======
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     engines: {node: '>= 4'}
     dependencies:
       domelementtype: 2.3.0
@@ -1724,7 +1579,7 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-config-next/12.1.5_73f9dd19bec33b69290ec95d96fcfe5a:
+  /eslint-config-next/12.1.5_op452gn6ym5wskiozfozn7h6li:
     resolution: {integrity: sha512-P+DCt5ti63KhC0qNLzrAmPcwRGq8pYqgcf/NNr1E+WjCrMkWdCAXkIANTquo+kcO1adR2k1lTo5GCrNUtKy4hQ==}
     peerDependencies:
       eslint: ^7.23.0 || ^8.0.0
@@ -1736,17 +1591,18 @@ packages:
     dependencies:
       '@next/eslint-plugin-next': 12.1.5
       '@rushstack/eslint-patch': 1.0.8
-      '@typescript-eslint/parser': 5.10.1_eslint@8.13.0+typescript@4.6.3
+      '@typescript-eslint/parser': 5.10.1_jzhokl4shvj5szf5bgr66kln2a
       eslint: 8.13.0
       eslint-import-resolver-node: 0.3.4
-      eslint-import-resolver-typescript: 2.4.0_b628ede801adc205e5afb127a3c18cbc
-      eslint-plugin-import: 2.25.2_eslint@8.13.0
+      eslint-import-resolver-typescript: 2.4.0_wyuo32abvxbalznpwet2hqmmxq
+      eslint-plugin-import: 2.25.2_vyqqexwtoj2vixpuv6m7naplae
       eslint-plugin-jsx-a11y: 6.5.1_eslint@8.13.0
       eslint-plugin-react: 7.29.1_eslint@8.13.0
       eslint-plugin-react-hooks: 4.3.0_eslint@8.13.0
-      next: 12.1.5_9b0027aae606c22bf55a7fd89836f009
+      next: 12.1.5_tmacpkxga3bcx5k2p7mjqnxqbe
       typescript: 4.6.3
     transitivePeerDependencies:
+      - eslint-import-resolver-webpack
       - supports-color
     dev: true
 
@@ -1755,6 +1611,8 @@ packages:
     dependencies:
       debug: 2.6.9
       resolve: 1.22.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /eslint-import-resolver-node/0.3.6:
@@ -1762,9 +1620,11 @@ packages:
     dependencies:
       debug: 3.2.7
       resolve: 1.22.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
-  /eslint-import-resolver-typescript/2.4.0_b628ede801adc205e5afb127a3c18cbc:
+  /eslint-import-resolver-typescript/2.4.0_wyuo32abvxbalznpwet2hqmmxq:
     resolution: {integrity: sha512-useJKURidCcldRLCNKWemr1fFQL1SzB3G4a0li6lFGvlc5xGe1hY343bvG07cbpCzPuM/lK19FIJB3XGFSkplA==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -1773,8 +1633,8 @@ packages:
     dependencies:
       debug: 4.3.4
       eslint: 8.13.0
-      eslint-plugin-import: 2.25.2_eslint@8.13.0
-      glob: 7.2.0
+      eslint-plugin-import: 2.25.2_vyqqexwtoj2vixpuv6m7naplae
+      glob: 7.2.3
       is-glob: 4.0.3
       resolve: 1.22.0
       tsconfig-paths: 3.14.1
@@ -1782,27 +1642,51 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-module-utils/2.7.3:
+  /eslint-module-utils/2.7.3_sysdrzuw2ki4kxpuwc4tznw2ha:
     resolution: {integrity: sha512-088JEC7O3lDZM9xGe0RerkOMd0EjFl+Yvd1jPWIkMT5u3H9+HC34mWWPnqPrN13gieT9pBOO+Qt07Nb/6TresQ==}
     engines: {node: '>=4'}
+    peerDependencies:
+      '@typescript-eslint/parser': '*'
+      eslint-import-resolver-node: '*'
+      eslint-import-resolver-typescript: '*'
+      eslint-import-resolver-webpack: '*'
+    peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
+      eslint-import-resolver-node:
+        optional: true
+      eslint-import-resolver-typescript:
+        optional: true
+      eslint-import-resolver-webpack:
+        optional: true
     dependencies:
+      '@typescript-eslint/parser': 5.10.1_jzhokl4shvj5szf5bgr66kln2a
       debug: 3.2.7
+      eslint-import-resolver-node: 0.3.6
+      eslint-import-resolver-typescript: 2.4.0_wyuo32abvxbalznpwet2hqmmxq
       find-up: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
-  /eslint-plugin-import/2.25.2_eslint@8.13.0:
+  /eslint-plugin-import/2.25.2_vyqqexwtoj2vixpuv6m7naplae:
     resolution: {integrity: sha512-qCwQr9TYfoBHOFcVGKY9C9unq05uOxxdklmBXLVvcwo68y5Hta6/GzCZEMx2zQiu0woKNEER0LE7ZgaOfBU14g==}
     engines: {node: '>=4'}
     peerDependencies:
+      '@typescript-eslint/parser': '*'
       eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
+    peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
     dependencies:
+      '@typescript-eslint/parser': 5.10.1_jzhokl4shvj5szf5bgr66kln2a
       array-includes: 3.1.5
       array.prototype.flat: 1.3.0
       debug: 2.6.9
       doctrine: 2.1.0
       eslint: 8.13.0
       eslint-import-resolver-node: 0.3.6
-      eslint-module-utils: 2.7.3
+      eslint-module-utils: 2.7.3_sysdrzuw2ki4kxpuwc4tznw2ha
       has: 1.0.3
       is-core-module: 2.9.0
       is-glob: 4.0.3
@@ -1810,6 +1694,10 @@ packages:
       object.values: 1.1.5
       resolve: 1.22.0
       tsconfig-paths: 3.14.1
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
     dev: true
 
   /eslint-plugin-jsx-a11y/6.5.1_eslint@8.13.0:
@@ -2152,8 +2040,8 @@ packages:
       path-is-absolute: 1.0.1
     dev: true
 
-  /glob/7.2.0:
-    resolution: {integrity: sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==}
+  /glob/7.2.3:
+    resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -2319,11 +2207,7 @@ packages:
     dev: false
 
   /is-arrayish/0.2.1:
-<<<<<<< HEAD
-    resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
-=======
     resolution: {integrity: sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0=}
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     dev: true
 
   /is-bigint/1.0.4:
@@ -2440,7 +2324,7 @@ packages:
     resolution: {integrity: sha1-+eIwPUUH9tdDVac2ZNFED7Wg71k=}
     dev: true
 
-  /jotai/1.6.6_@babel+core@7.17.10+react@17.0.2:
+  /jotai/1.6.6_zewwurpcg5ac2u23rlvo252rr4:
     resolution: {integrity: sha512-rzUyxHFImnDDjUmC0i0BXyppq1M6ZxrHjhp0SK3VQXvXYAu5Hz9wPJ6w207s2Mlv7jpfiIf26w9m82FLCP3eqw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -2643,7 +2527,7 @@ packages:
     resolution: {integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=}
     dev: true
 
-  /next/12.1.5_9b0027aae606c22bf55a7fd89836f009:
+  /next/12.1.5_tmacpkxga3bcx5k2p7mjqnxqbe:
     resolution: {integrity: sha512-YGHDpyfgCfnT5GZObsKepmRnne7Kzp7nGrac07dikhutWQug7hHg85/+sPJ4ZW5Q2pDkb+n0FnmLkmd44htIJQ==}
     engines: {node: '>=12.22.0'}
     hasBin: true
@@ -2662,11 +2546,11 @@ packages:
         optional: true
     dependencies:
       '@next/env': 12.1.5
-      caniuse-lite: 1.0.30001340
+      caniuse-lite: 1.0.30001341
       postcss: 8.4.5
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      styled-jsx: 5.0.1_@babel+core@7.17.10+react@17.0.2
+      styled-jsx: 5.0.1_zewwurpcg5ac2u23rlvo252rr4
     optionalDependencies:
       '@next/swc-android-arm-eabi': 12.1.5
       '@next/swc-android-arm64': 12.1.5
@@ -2741,7 +2625,7 @@ packages:
       oas-kit-common: 1.0.8
       reftools: 1.1.9
       yaml: 1.10.2
-      yargs: 17.5.0
+      yargs: 17.5.1
     dev: true
 
   /oas-schema-walker/1.1.5:
@@ -2939,8 +2823,8 @@ packages:
     hasBin: true
     dev: true
 
-  /prism-react-renderer/1.3.1_react@17.0.2:
-    resolution: {integrity: sha512-xUeDMEz074d0zc5y6rxiMp/dlC7C+5IDDlaEUlcBOFE2wddz7hz5PNupb087mPwTt7T9BrFmewObfCBuf/LKwQ==}
+  /prism-react-renderer/1.3.3_react@17.0.2:
+    resolution: {integrity: sha512-Viur/7tBTCH2HmYzwCHmt2rEFn+rdIWNIINXyg0StiISbDiIhHKhrFuEK8eMkKgvsIYSjgGqy/hNyucHp6FpoQ==}
     peerDependencies:
       react: '>=0.14.9'
     dependencies:
@@ -3023,7 +2907,7 @@ packages:
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  /react-popper/2.3.0_56755b872f91af5df7d7d5046f3b0a1b:
+  /react-popper/2.3.0_kz2vxbzpsgxv356x2ucg6oykdm:
     resolution: {integrity: sha512-e1hj8lL3uM+sgSR4Lxzn5h1GxBlpa4CQz0XLF8kx4MDrDRWY0Ena4c97PUeSX9i5W3UAfDP0z0FXCTQkoXUl3Q==}
     peerDependencies:
       '@popperjs/core': ^2.0.0
@@ -3041,7 +2925,7 @@ packages:
     resolution: {integrity: sha512-kzmNjIgU32mO4mmH5+iUyrqlpFQhF8K2k7eZ4fdLSOPFrD1XgEuSBv9LDEgxRXTMBqMd8ppT0x6TIzqE5pdGdw==}
     dev: false
 
-  /react-quill/2.0.0-beta.4_react-dom@17.0.2+react@17.0.2:
+  /react-quill/2.0.0-beta.4_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-KyAHvAlPjP4xLElKZJefMth91Z6FbbXRvq9OSu6xN3KBaoasLP9p+3dcxg4Ywr4tBlpMGXcPszYSAgd5CpJ45Q==}
     peerDependencies:
       react: ^16 || ^17
@@ -3054,11 +2938,7 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-<<<<<<< HEAD
   /react-textarea-autosize/8.3.3_hx2b44akkvgcgvvtmk7ds2qk6q:
-=======
-  /react-textarea-autosize/8.3.3_3df41e700a554c2356b362be396a0af4:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     resolution: {integrity: sha512-2XlHXK2TDxS6vbQaoPbMOfQ8GK7+irc2fVK6QFIcC8GOnH3zI/v481n+j1L0WaPVvKxwesnY93fEfH++sus2rQ==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -3067,16 +2947,12 @@ packages:
       '@babel/runtime': 7.17.9
       react: 17.0.2
       use-composed-ref: 1.3.0_react@17.0.2
-<<<<<<< HEAD
       use-latest: 1.2.1_hx2b44akkvgcgvvtmk7ds2qk6q
-=======
-      use-latest: 1.2.1_3df41e700a554c2356b362be396a0af4
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     transitivePeerDependencies:
       - '@types/react'
     dev: false
 
-  /react-transition-group/4.4.2_react-dom@17.0.2+react@17.0.2:
+  /react-transition-group/4.4.2_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==}
     peerDependencies:
       react: '>=16.6.0'
@@ -3174,7 +3050,7 @@ packages:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     hasBin: true
     dependencies:
-      glob: 7.2.0
+      glob: 7.2.3
     dev: true
 
   /run-parallel/1.2.0:
@@ -3355,7 +3231,7 @@ packages:
       inline-style-parser: 0.1.1
     dev: false
 
-  /styled-jsx/5.0.1_@babel+core@7.17.10+react@17.0.2:
+  /styled-jsx/5.0.1_zewwurpcg5ac2u23rlvo252rr4:
     resolution: {integrity: sha512-+PIZ/6Uk40mphiQJJI1202b+/dYeTVd9ZnMPR80pgiWbjIwvN2zIp4r9et0BgqBuShh48I0gttPlAXA7WVvBxw==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -3435,7 +3311,7 @@ packages:
       oas-validator: 5.0.8
       reftools: 1.1.9
       yaml: 1.10.2
-      yargs: 17.5.0
+      yargs: 17.5.1
     transitivePeerDependencies:
       - encoding
     dev: true
@@ -3545,11 +3421,7 @@ packages:
       react: 17.0.2
     dev: false
 
-<<<<<<< HEAD
   /use-isomorphic-layout-effect/1.1.2_hx2b44akkvgcgvvtmk7ds2qk6q:
-=======
-  /use-isomorphic-layout-effect/1.1.2_3df41e700a554c2356b362be396a0af4:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
     peerDependencies:
       '@types/react': '*'
@@ -3562,11 +3434,7 @@ packages:
       react: 17.0.2
     dev: false
 
-<<<<<<< HEAD
   /use-latest/1.2.1_hx2b44akkvgcgvvtmk7ds2qk6q:
-=======
-  /use-latest/1.2.1_3df41e700a554c2356b362be396a0af4:
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     resolution: {integrity: sha512-xA+AVm/Wlg3e2P/JiItTziwS7FK92LWrDB0p+hgXloIMuVCeJJ8v6f0eeHyPZaJrM+usM1FkFfbNCrJGs8A/zw==}
     peerDependencies:
       '@types/react': '*'
@@ -3577,11 +3445,7 @@ packages:
     dependencies:
       '@types/react': 17.0.45
       react: 17.0.2
-<<<<<<< HEAD
       use-isomorphic-layout-effect: 1.1.2_hx2b44akkvgcgvvtmk7ds2qk6q
-=======
-      use-isomorphic-layout-effect: 1.1.2_3df41e700a554c2356b362be396a0af4
->>>>>>> d7f7d3e (Update the dependency version, implement a part of profile.)
     dev: false
 
   /util-deprecate/1.0.2:
@@ -3671,8 +3535,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /yargs/17.5.0:
-    resolution: {integrity: sha512-3sLxVhbAB5OC8qvVRebCLWuouhwh/rswsiDYx3WGxajUk/l4G20SKfrKKFeNIHboUFt2JFgv2yfn+5cgOr/t5A==}
+  /yargs/17.5.1:
+    resolution: {integrity: sha512-t6YAJcxDkNX7NFYiVtKvWUz8l+PaKTLiL63mJYWR2GnHq2gjEWISzsLp9wg3aY36dY1j+gfIEL3pIF+XlJJfbA==}
     engines: {node: '>=12'}
     dependencies:
       cliui: 7.0.4
