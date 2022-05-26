@@ -210,6 +210,25 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 
         await context.SaveChangesAsync();
     }
+
+    // only for testing
+    if (app.Environment.IsDevelopment())
+    {
+        var usermanager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
+        var admin = await usermanager.FindByNameAsync("Admin");
+        if (admin is null)
+        {
+            admin = new UserInfo
+            {
+                UserName = "Admin",
+                Email = "admin@gzti.me",
+                Role = CTFServer.Role.Admin,
+                EmailConfirmed = true,
+                RegisterTimeUTC = DateTimeOffset.UtcNow
+            };
+            await usermanager.CreateAsync(admin, "Admin@2022");
+        }
+    }
 }
 
 if (app.Environment.IsDevelopment())
