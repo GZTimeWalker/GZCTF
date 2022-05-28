@@ -320,7 +320,7 @@ const Profile: NextPage = () => {
                   <Avatar
                     style={{ borderRadius: '50%' }}
                     size="xl"
-                    src={data?.avatar ?? 'https://mantine.dev/images/avatar.png'}
+                    src={data?.avatar}
                     onClick={() => setDropzoneOpened(true)}
                   />
                 </Stack>
