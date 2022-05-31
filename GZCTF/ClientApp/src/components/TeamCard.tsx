@@ -28,7 +28,7 @@ const TeamCard: FC<TeamInfoModel> = (team) => {
   return (
     <Card shadow="sm">
       <Group align="stretch">
-        <Avatar color="cyan" size="lg" radius="md">
+        <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
           {team.name?.at(0) ?? 'T'}
         </Avatar>
         <Box style={{ flexGrow: 1 }}>
@@ -39,11 +39,11 @@ const TeamCard: FC<TeamInfoModel> = (team) => {
         </Box>
         <Box style={{ height: '100%' }}>
           {user?.activeTeamId === team.id ? (
-            <Text transform="uppercase" size="xs" color="yellow">
+            <Text transform="uppercase" size="sm" color="yellow">
               Active
             </Text>
           ) : (
-            <Text transform="uppercase" size="xs">
+            <Text transform="uppercase" size="sm">
               Inactive
             </Text>
           )}
@@ -53,7 +53,7 @@ const TeamCard: FC<TeamInfoModel> = (team) => {
       <Stack spacing="xs">
         <Group spacing="xs" position="apart">
           <Text transform="uppercase" color="dimmed">
-            Role:{' '}
+            Role:
           </Text>
           {team.members?.find((m) => m?.captain && m.id == user?.userId) ? (
             <Badge color="brand" size="lg">
@@ -67,7 +67,7 @@ const TeamCard: FC<TeamInfoModel> = (team) => {
         </Group>
         <Group spacing="xs">
           <Text transform="uppercase" color="dimmed">
-            MEMBERS:{' '}
+            MEMBERS:
           </Text>
           <Box style={{ flexGrow: 1 }}></Box>
           {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.alert[1]} />}
