@@ -143,4 +143,14 @@ public class DockerService : IContainerService
                     Name = c.Names[0]
                 }).ToArray();
     }
+
+    public async Task<Container> QueryContainer(Container container, CancellationToken token = default)
+    {
+        var info = await dockerClient.Containers.InspectContainerAsync(container.ContainerId, token);
+
+        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Destoryed :
+                info.State.Running ? ContainerStatus.Running : ContainerStatus.Pending;
+
+        return container;
+    }
 }

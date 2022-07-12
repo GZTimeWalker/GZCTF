@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -46,7 +47,24 @@ public class ContainerServiceTest
         var container = await service.CreateContainer(config);
 
         Assert.NotNull(container);
-        output.WriteLine($"[{DateTime.Now:u}] Container Created.");
+        output.WriteLine($"[{DateTime.Now:u}] Container created.");
+
+        int times = 0;
+
+        do
+        {
+            await Task.Delay(1000);
+            times += 1;
+            output.WriteLine($"[{DateTime.Now:u}] Query: {times} times.");
+
+            container = await service.QueryContainer(container!);
+
+            if (container!.Status == ContainerStatus.Destoryed)
+            {
+                output.WriteLine($"[{DateTime.Now:u}] Container destroyed unexpected.");
+                return;
+            }
+        } while (container!.Status != ContainerStatus.Running);
 
         output.WriteLine("[[ Container Info ]]");
         foreach (var item in container!.GetType().GetProperties())
@@ -61,6 +79,6 @@ public class ContainerServiceTest
 
         Assert.Equal(ContainerStatus.Destoryed, container.Status);
 
-        output.WriteLine($"[{DateTime.Now:u}] Container Destoryed.");
+        output.WriteLine($"[{DateTime.Now:u}] Container destoryed.");
     }
 }

@@ -13,6 +13,14 @@ public interface IContainerService
     public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default);
 
     /// <summary>
+    /// 查询并更新容器状态
+    /// </summary>
+    /// <param name="container">容器对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Container> QueryContainer(Container container, CancellationToken token = default);
+
+    /// <summary>
     /// 销毁容器
     /// </summary>
     /// <param name="container">容器对象</param>
