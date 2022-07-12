@@ -64,19 +64,17 @@ public class ChallengeModel
     public int OriginalScore { get; set; } = 500;
 
     /// <summary>
-    /// 最低分数
+    /// 最低分数比例
     /// </summary>
-    public int MinScore { get; set; } = 300;
+    [Required]
+    [Range(0, 1)]
+    public double MinScoreRate { get; set; } = 0.25;
 
     /// <summary>
-    /// 预期最大解出人数
+    /// 难度系数
     /// </summary>
-    public int ExpectMaxCount { get; set; } = 100;
-
-    /// <summary>
-    /// 奖励人数
-    /// </summary>
-    public int AwardCount { get; set; } = 10;
+    [Required]
+    public int Difficulty { get; set; } = 100;
 
     #endregion Score
 

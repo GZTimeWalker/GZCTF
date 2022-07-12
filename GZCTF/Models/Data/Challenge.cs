@@ -84,22 +84,17 @@ public class Challenge
     public int OriginalScore { get; set; } = 500;
 
     /// <summary>
-    /// 最低分数
+    /// 最低分数比例
     /// </summary>
     [Required]
-    public int MinScore { get; set; } = 300;
+    [Range(0, 1)]
+    public double MinScoreRate { get; set; } = 0.25;
 
     /// <summary>
-    /// 预期最大解出人数
+    /// 难度系数
     /// </summary>
     [Required]
-    public int ExpectMaxCount { get; set; } = 100;
-
-    /// <summary>
-    /// 奖励人数
-    /// </summary>
-    [Required]
-    public int AwardCount { get; set; } = 10;
+    public int Difficulty { get; set; } = 100;
 
     /// <summary>
     /// 题目类型
@@ -121,13 +116,10 @@ public class Challenge
     {
         get
         {
-            if (AcceptedUserCount <= AwardCount)
-                return OriginalScore - AcceptedUserCount;
-            if (AcceptedUserCount > ExpectMaxCount)
-                return MinScore;
-            var range = OriginalScore - AwardCount - MinScore;
-            return (int)(OriginalScore - AwardCount
-                - Math.Floor(range * (AcceptedUserCount - AwardCount) / (float)(ExpectMaxCount - AwardCount)));
+            return (int)Math.Floor(
+                OriginalScore * (MinScoreRate +
+                    (1.0 - MinScoreRate) * Math.Exp((1.0 - AcceptedUserCount) / Difficulty)
+                ));
         }
     }
 
@@ -161,9 +153,8 @@ public class Challenge
         CPUCount = model.CPUCount ?? 1;
         ContainerExposePort = model.ContainerExposePort ?? 80;
         OriginalScore = model.OriginalScore;
-        MinScore = model.MinScore;
-        ExpectMaxCount = model.ExpectMaxCount;
-        AwardCount = model.AwardCount;
+        MinScoreRate = model.MinScoreRate;
+        Difficulty = model.Difficulty;
         FileName = model.FileName ?? "attachment";
 
         return this;
