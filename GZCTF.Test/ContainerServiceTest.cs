@@ -1,9 +1,10 @@
+using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
-using Docker.DotNet.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -26,51 +27,44 @@ public class ContainerServiceTest
     [Fact]
     public async void BasicInfo()
     {
-        (var ver, var info) = await service.GetHostInfo();
+        var info = await service.GetHostInfo();
 
-        Assert.NotNull(info);
-        Assert.NotNull(ver);
-
-        output.WriteLine("[[ Version ]]");
-        foreach (var item in ver.GetType().GetProperties())
-        {
-            var val = item.GetValue(ver);
-            if (val is IEnumerable<object> vals)
-                val = string.Join(", ", vals);
-            output.WriteLine($"{item.Name,-20}: {val}");
-        }
-
-        output.WriteLine("[[ Info ]]");
-        foreach (var item in info.GetType().GetProperties())
-        {
-            var val = item.GetValue(info);
-            if (val is IEnumerable<object> vals)
-                val = string.Join(", ", vals);
-            output.WriteLine($"{item.Name,-20}: {val}");
-        }
+        output.WriteLine(info);
     }
 
     [Fact]
     public async void CreateThenDestory()
     {
-        var parameters = new CreateContainerParameters()
+        var config = new ContainerConfig()
         {
             Image = "busybox",
-            Name = $"test_{Guid.NewGuid().ToString("N")[..6]}",
-            ExposedPorts = new Dictionary<string, EmptyStruct> { { "80/tcp", default } },
-            Entrypoint = new List<string> { "/bin/busybox", "sleep", "360000" },
-            HostConfig = new()
-            {
-                PublishAllPorts = true,
-                Memory = 64 * 1024 * 1024,
-                CPUCount = 1
-            },
+            ExposedPort = 80,
+            CPUCount = 1,
+            Flag = "flag{the_test_flag}",
+            MemoryLimit = 64
         };
 
-        var container = await service.CreateContainerByParams(parameters);
+        var container = await service.CreateContainer(config);
 
         Assert.NotNull(container);
-        output.WriteLine($"[{DateTime.Now:u}] Container Created.");
+        output.WriteLine($"[{DateTime.Now:u}] Container created.");
+
+        int times = 0;
+
+        do
+        {
+            await Task.Delay(1000);
+            times += 1;
+            output.WriteLine($"[{DateTime.Now:u}] Query: {times} times.");
+
+            container = await service.QueryContainer(container!);
+
+            if (container!.Status == ContainerStatus.Destoryed)
+            {
+                output.WriteLine($"[{DateTime.Now:u}] Container destroyed unexpected.");
+                return;
+            }
+        } while (container!.Status != ContainerStatus.Running);
 
         output.WriteLine("[[ Container Info ]]");
         foreach (var item in container!.GetType().GetProperties())
@@ -85,6 +79,6 @@ public class ContainerServiceTest
 
         Assert.Equal(ContainerStatus.Destoryed, container.Status);
 
-        output.WriteLine($"[{DateTime.Now:u}] Container Destoryed.");
+        output.WriteLine($"[{DateTime.Now:u}] Container destoryed.");
     }
 }

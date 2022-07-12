@@ -111,7 +111,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
                 Image = instance.Challenge.ContainerImage,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
-                ExposedPort = instance.Challenge.ContainerExposePort?.ToString() ?? throw new ArgumentException("创建容器时遇到无效的端口"),
+                ExposedPort = instance.Challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口"),
             }, token);
             instance.Container = container;
 

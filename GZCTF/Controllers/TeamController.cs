@@ -11,7 +11,6 @@ namespace CTFServer.Controllers;
 /// <summary>
 /// 队伍数据交互接口
 /// </summary>
-[RequireAdmin]
 [ApiController]
 [Route("api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]

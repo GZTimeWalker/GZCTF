@@ -56,6 +56,18 @@ export default function App(props: AppProps) {
                 '#007F6E',
               ],
               alert: ['#FF8A80', '#FF5252', '', '#FF1744', '', '', '#D50000', '', ''],
+              dark: [
+                '#d5d7d7',
+                '#acaeae',
+                '#8c8f8f',
+                '#666969',
+                '#4d4f4f',
+                '#343535',
+                '#2b2c2c',
+                '#1d1e1e',
+                '#0c0d0d',
+                '#010101',
+              ],
             },
             primaryColor: 'brand',
             fontFamily: "'IBM Plex Sans', sans-serif",
@@ -63,6 +75,7 @@ export default function App(props: AppProps) {
             headings: {
               fontFamily: "'IBM Plex Sans', sans-serif",
             },
+            loader: 'bars'
           }}
         >
           <NotificationsProvider zIndex={5000}>
@@ -71,7 +84,7 @@ export default function App(props: AppProps) {
                 body: {
                   ...theme.fn.fontStyles(),
                   backgroundColor:
-                    theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                    theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
                   color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
                   lineHeight: theme.lineHeight,
                   padding: 0,

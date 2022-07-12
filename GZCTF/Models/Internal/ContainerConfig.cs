@@ -10,7 +10,7 @@ public class ContainerConfig
     /// <summary>
     /// 容器需要暴露的端口
     /// </summary>
-    public string ExposedPort { get; set; } = string.Empty;
+    public int ExposedPort { get; set; }
 
     /// <summary>
     /// Flag文本

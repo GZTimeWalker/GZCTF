@@ -147,8 +147,15 @@ builder.Services.AddTransient<IMailSender, MailSender>()
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
     .Configure<RecaptchaOptions>(options => builder.Configuration.GetSection("GoogleRecaptcha").Bind(options));
 
-builder.Services.AddSingleton<IContainerService, DockerService>()
-    .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
+if (builder.Configuration.GetSection("ContainerProvider").Value == "K8s")
+{
+    builder.Services.AddSingleton<IContainerService, K8sService>();
+}
+else
+{
+    builder.Services.AddSingleton<IContainerService, DockerService>()
+        .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
+}
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
@@ -209,6 +216,25 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
         });
 
         await context.SaveChangesAsync();
+    }
+
+    // only for testing
+    if (app.Environment.IsDevelopment())
+    {
+        var usermanager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
+        var admin = await usermanager.FindByNameAsync("Admin");
+        if (admin is null)
+        {
+            admin = new UserInfo
+            {
+                UserName = "Admin",
+                Email = "admin@gzti.me",
+                Role = CTFServer.Role.Admin,
+                EmailConfirmed = true,
+                RegisterTimeUTC = DateTimeOffset.UtcNow
+            };
+            await usermanager.CreateAsync(admin, "Admin@2022");
+        }
     }
 }
 

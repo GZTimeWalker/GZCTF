@@ -234,6 +234,9 @@ _Pvt_Extensions
 **/appsettings.json
 **/appsettings.*.json
 !**/appsettings.Template.json
+
+**/k8sconfig.yaml
+
 /.VSCodeCounter/*
 */db/*
 **/CTFServer.xml
@@ -241,3 +244,4 @@ _Pvt_Extensions
 **/uploads/**
 **/log/**
 **/*.key
+**/*.db*
