@@ -41,6 +41,8 @@ public class K8sService : IContainerService
                 }
             });
         }
+
+        logger.SystemLog($"K8s 服务已启动 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
     }
 
     public async Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)

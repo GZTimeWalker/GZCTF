@@ -29,6 +29,8 @@ public class DockerService : IContainerService
         // TODO: Docker Swarm Support
 
         dockerClient = cfg.CreateClient();
+
+        logger.SystemLog($"Docker 服务已启动 ({this.options.Uri})", TaskStatus.Success, LogLevel.Debug);
     }
 
     public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
