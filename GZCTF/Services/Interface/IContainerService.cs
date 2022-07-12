@@ -1,5 +1,4 @@
 ﻿using CTFServer.Models.Internal;
-using Docker.DotNet.Models;
 
 namespace CTFServer.Services.Interface;
 
@@ -14,14 +13,6 @@ public interface IContainerService
     public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default);
 
     /// <summary>
-    /// 创建容器
-    /// </summary>
-    /// <param name="parameters">容器</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default);
-
-    /// <summary>
     /// 销毁容器
     /// </summary>
     /// <param name="container">容器对象</param>
@@ -34,12 +25,12 @@ public interface IContainerService
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<(VersionResponse, SystemInfoResponse)> GetHostInfo(CancellationToken token = default);
+    public Task<string> GetHostInfo(CancellationToken token = default);
 
     /// <summary>
     /// 获取全部容器
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<IList<ContainerListResponse>> GetContainers(CancellationToken token = default);
+    public Task<IList<ContainerInfo>> GetContainers(CancellationToken token = default);
 }

@@ -4,6 +4,7 @@ using CTFServer.Utils;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace CTFServer.Services;
 
@@ -50,7 +51,7 @@ public class DockerService : IContainerService
         return CreateContainerByParams(parameters, token);
     }
 
-    public async Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default)
+    private async Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default)
     {
         // TODO: Docker Registry Auth Required
         var res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
@@ -63,6 +64,7 @@ public class DockerService : IContainerService
 
         var retry = 0;
         bool started;
+
         do
         {
             started = await dockerClient.Containers.StartContainerAsync(res.ID, new(), token);
@@ -101,13 +103,44 @@ public class DockerService : IContainerService
         container.Status = ContainerStatus.Destoryed;
     }
 
-    public Task<IList<ContainerListResponse>> GetContainers(CancellationToken token = default)
-        => dockerClient.Containers.ListContainersAsync(new() { All = true }, token);
-
-    public async Task<(VersionResponse, SystemInfoResponse)> GetHostInfo(CancellationToken token = default)
+    public async Task<string> GetHostInfo(CancellationToken token = default)
     {
         var info = await dockerClient.System.GetSystemInfoAsync(token);
         var ver = await dockerClient.System.GetVersionAsync(token);
-        return (ver, info);
+
+        StringBuilder output = new();
+
+        output.AppendLine("[[ Version ]]");
+        foreach (var item in ver.GetType().GetProperties())
+        {
+            var val = item.GetValue(ver);
+            if (val is IEnumerable<object> vals)
+                val = string.Join(", ", vals);
+            output.AppendLine($"{item.Name,-20}: {val}");
+        }
+
+        output.AppendLine("[[ Info ]]");
+        foreach (var item in info.GetType().GetProperties())
+        {
+            var val = item.GetValue(info);
+            if (val is IEnumerable<object> vals)
+                val = string.Join(", ", vals);
+            output.AppendLine($"{item.Name,-20}: {val}");
+        }
+
+        return output.ToString();
+    }
+
+    public async Task<IList<ContainerInfo>> GetContainers(CancellationToken token)
+    {
+        var containers = await dockerClient.Containers.ListContainersAsync(new() { All = true }, token);
+        return (from c in containers
+                select new ContainerInfo()
+                {
+                    Id = c.ID,
+                    Image = c.Image,
+                    State = c.State,
+                    Name = c.Names[0]
+                }).ToArray();
     }
 }

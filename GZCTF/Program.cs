@@ -147,8 +147,15 @@ builder.Services.AddTransient<IMailSender, MailSender>()
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
     .Configure<RecaptchaOptions>(options => builder.Configuration.GetSection("GoogleRecaptcha").Bind(options));
 
-builder.Services.AddSingleton<IContainerService, DockerService>()
-    .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
+if (builder.Configuration.GetSection("ContainerProvider").Value == "K8s")
+{
+    builder.Services.AddSingleton<IContainerService, K8sService>();
+}
+else
+{
+    builder.Services.AddSingleton<IContainerService, DockerService>()
+        .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
+}
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
