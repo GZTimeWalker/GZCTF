@@ -1,9 +1,9 @@
-import { Tuple } from '@mantine/core';
+import { Tuple, DefaultMantineColor } from '@mantine/core';
 
-type CustomColors = 'brand' | 'alert';
+type ExtendedCustomColors = 'gray' | 'brand' | 'dark' | 'alert' | DefaultMantineColor;
 
 declare module '@mantine/core' {
   export interface MantineThemeColorsOverride {
-    colors: Record<CustomColors, Tuple<string, 10>>;
+    colors: Record<ExtendedCustomColors, Tuple<string, 10>>;
   }
 }
