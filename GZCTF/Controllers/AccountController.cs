@@ -446,18 +446,16 @@ public class AccountController : ControllerBase
         var avatar = await FileService.CreateOrUpdateFile(file, "avatar", token);
 
         if (avatar is null)
-            return BadRequest(new RequestResponse("未知错误"));
+            return BadRequest(new RequestResponse("文件创建失败"));
 
         user.AvatarHash = avatar.Hash;
         var result = await userManager.UpdateAsync(user);
 
-        if (result == IdentityResult.Success)
-        {
-            logger.Log($"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
+        if (result != IdentityResult.Success)
+            return BadRequest(new RequestResponse("用户更新失败"));
 
-            return Ok(avatar.Url);
-        }
+        logger.Log($"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
 
-        return BadRequest(new RequestResponse("未知错误"));
+        return Ok(avatar.Url);
     }
 }

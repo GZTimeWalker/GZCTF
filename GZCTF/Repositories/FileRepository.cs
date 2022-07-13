@@ -8,13 +8,16 @@ namespace CTFServer.Repositories;
 public class FileRepository : RepositoryBase, IFileRepository
 {
     private readonly ILogger<FileRepository> logger;
-    private readonly IConfiguration configuration;
+    private readonly string uploadPath;
 
     public FileRepository(AppDbContext context, IConfiguration _configuration,
         ILogger<FileRepository> _logger) : base(context)
     {
         logger = _logger;
-        configuration = _configuration;
+        uploadPath = _configuration.GetSection("UploadFolder").Value;
+
+        if (string.IsNullOrEmpty(uploadPath))
+            uploadPath = "uploads";
     }
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
@@ -30,8 +33,6 @@ public class FileRepository : RepositoryBase, IFileRepository
         var hash = await SHA256.Create().ComputeHashAsync(tmp, token);
         var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
-        var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
-
         var localFile = await GetFileByHash(fileHash, token);
 
         if (localFile is null)
@@ -45,7 +46,7 @@ public class FileRepository : RepositoryBase, IFileRepository
             context.Update(localFile);
         }
 
-        var path = Path.Combine(basepath, localFile.Location);
+        var path = Path.Combine(uploadPath, localFile.Location);
 
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
@@ -68,8 +69,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         if (file is null)
             return TaskStatus.NotFound;
 
-        var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
-        var path = Path.Combine(basepath, file.Location, file.Hash);
+        var path = Path.Combine(uploadPath, file.Location, file.Hash);
 
         logger.SystemLog($"删除文件 [{file.Hash[..8]}] {file.Name}...", TaskStatus.Pending, LogLevel.Information);
 
