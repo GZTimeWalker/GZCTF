@@ -14,7 +14,7 @@ import {
   Modal,
   PasswordInput,
   Avatar,
-  MantineTheme,
+  Image,
   useMantineTheme,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
@@ -25,27 +25,29 @@ import Icon from '@mdi/react';
 import api from '../../Api';
 import WithNavBar from '../../components/WithNavbar';
 
-const dropzoneChildren = (status: DropzoneStatus, theme: MantineTheme, file: File) => (
-  <Group position="center" spacing="xl" style={{ minHeight: 220, pointerEvents: 'none' }}>
-    <div>
-      <Text size="xl" inline>
-        拖放图片或点击此处以选择头像
-      </Text>
-      <Text size="sm" color="dimmed" inline mt={7}>
-        请选择小于 5MB 的图片
-      </Text>
-    </div>
-    <Text size='md'>{file.name}</Text>
+const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
+  <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
+    {file ? (
+      <Image fit="contain" src={URL.createObjectURL(file)} alt="avatar" />
+    ) : (
+      <Box>
+        <Text size="xl" inline>
+          拖放图片或点击此处以选择头像
+        </Text>
+        <Text size="sm" color="dimmed" inline mt={7}>
+          请选择小于 3MB 的图片
+        </Text>
+      </Box>
+    )}
   </Group>
 );
 
-
 const Profile: NextPage = () => {
-  const theme = useMantineTheme()
+  const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const { data, mutate } = api.account.useAccountProfile({
-    refreshInterval: 600,
+    refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });
@@ -86,29 +88,30 @@ const Profile: NextPage = () => {
   const onChangeAvatar = () => {
     if (avatarFile) {
       api.account
-      .accountAvatar({
-        file: avatarFile,
-      })
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          title: '修改头像成功',
-          message: '您的头像已经更新',
-          icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+        .accountAvatar({
+          file: avatarFile,
+        })
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            title: '修改头像成功',
+            message: '您的头像已经更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          });
+          mutate({ ...data });
+          setAvatarFile(null);
+          setDropzoneOpened(false);
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          });
+          setDropzoneOpened(false);
         });
-        mutate({ ...data });
-        setDropzoneOpened(false);
-      })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        });
-        setDropzoneOpened(false);
-      });
     }
   };
 
@@ -197,9 +200,12 @@ const Profile: NextPage = () => {
             <Grid style={{ marginTop: '15px' }}>
               {/* User Info */}
               <Grid.Col span={9}>
-
                 {/* OverLay */}
-                <Modal opened={opened} onClose={() => setOpened(false)} title="您即将修改邮箱，请确认密码">
+                <Modal
+                  opened={opened}
+                  onClose={() => setOpened(false)}
+                  title="您即将修改邮箱，请确认密码"
+                >
                   <PasswordInput
                     required
                     label="密码"
@@ -218,7 +224,12 @@ const Profile: NextPage = () => {
                           </Button>
                         </Grid.Col>
                         <Grid.Col span={4}>
-                          <Button fullWidth color="red" variant="outline" onClick={() => setOpened(false)}>
+                          <Button
+                            fullWidth
+                            color="red"
+                            variant="outline"
+                            onClick={() => setOpened(false)}
+                          >
                             取消修改
                           </Button>
                         </Grid.Col>
@@ -294,7 +305,11 @@ const Profile: NextPage = () => {
               <Grid.Col span={3}>
                 <Stack align="center" style={{ width: '100%', marginTop: '10px' }}>
                   {/* Dropzone */}
-                  <Modal opened={dropzoneOpened} onClose={() => setDropzoneOpened(false)} withCloseButton={false}>
+                  <Modal
+                    opened={dropzoneOpened}
+                    onClose={() => setDropzoneOpened(false)}
+                    withCloseButton={false}
+                  >
                     <Dropzone
                       onDrop={(files) => setAvatarFile(files[0])}
                       onReject={() => {
@@ -305,10 +320,15 @@ const Profile: NextPage = () => {
                           icon: <Icon path={mdiClose} size={1} />,
                         });
                       }}
-                      maxSize={3 * 1024 ** 2}
+                      style={{
+                        margin: '0 auto 20px auto',
+                        minWidth: '220px',
+                        minHeight: '220px',
+                      }}
+                      maxSize={3 * 1024 * 1024}
                       accept={IMAGE_MIME_TYPE}
                     >
-                      {(status) => dropzoneChildren(status, theme, avatarFile ?? new File([], ''))}
+                      {(status) => dropzoneChildren(status, avatarFile)}
                     </Dropzone>
                     <Button
                       fullWidth
