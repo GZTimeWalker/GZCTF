@@ -435,7 +435,7 @@ public class AccountController : ControllerBase
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
 
-        if (file.Length > 5 * 1024 * 1024)
+        if (file.Length > 3 * 1024 * 1024)
             return BadRequest(new RequestResponse("文件过大"));
 
         var user = await userManager.GetUserAsync(User);

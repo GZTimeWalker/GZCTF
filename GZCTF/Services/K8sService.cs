@@ -48,7 +48,7 @@ public class K8sService : IContainerService
     public async Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
     {
         var name = $"{config.Image.Split("/").LastOrDefault()}-{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}";
-        var body = new V1Pod("v1", "Pod")
+        var pod = new V1Pod("v1", "Pod")
         {
             Metadata = new V1ObjectMeta()
             {
@@ -94,11 +94,9 @@ public class K8sService : IContainerService
             }
         };
 
-        V1Pod pod;
-
         try
         {
-            pod = await kubernetesClient.CreateNamespacedPodAsync(body, "gzctf", cancellationToken: token);
+            pod = await kubernetesClient.CreateNamespacedPodAsync(pod, "gzctf", cancellationToken: token);
         }
         catch (Exception e)
         {
@@ -120,7 +118,7 @@ public class K8sService : IContainerService
             IsProxy = true,
         };
 
-        var serviceBody = new V1Service("v1", "Service")
+        var service = new V1Service("v1", "Service")
         {
             Metadata = new V1ObjectMeta()
             {
@@ -145,11 +143,9 @@ public class K8sService : IContainerService
             }
         };
 
-        V1Service service;
-
         try
         {
-            service = await kubernetesClient.CreateNamespacedServiceAsync(serviceBody, "gzctf", cancellationToken: token);
+            service = await kubernetesClient.CreateNamespacedServiceAsync(service, "gzctf", cancellationToken: token);
         }
         catch (Exception e)
         {
