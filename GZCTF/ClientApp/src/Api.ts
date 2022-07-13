@@ -435,22 +435,18 @@ export interface Challenge {
   originalScore: number;
 
   /**
-   * 最低分数
-   * @format int32
+   * 最低分数比例
+   * @format double
+   * @min 0
+   * @max 1
    */
-  minScore: number;
+  minScoreRate: number;
 
   /**
-   * 预期最大解出人数
+   * 难度系数
    * @format int32
    */
-  expectMaxCount: number;
-
-  /**
-   * 奖励人数
-   * @format int32
-   */
-  awardCount: number;
+  difficulty: number;
 
   /** 题目类型 */
   type: ChallengeType;
@@ -605,22 +601,18 @@ export interface ChallengeModel {
   originalScore?: number;
 
   /**
-   * 最低分数
-   * @format int32
+   * 最低分数比例
+   * @format double
+   * @min 0
+   * @max 1
    */
-  minScore?: number;
+  minScoreRate: number;
 
   /**
-   * 预期最大解出人数
+   * 难度系数
    * @format int32
    */
-  expectMaxCount?: number;
-
-  /**
-   * 奖励人数
-   * @format int32
-   */
-  awardCount?: number;
+  difficulty: number;
 
   /** 统一文件名 */
   fileName?: string | null;
