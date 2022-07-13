@@ -14,12 +14,10 @@ public class ContainerServiceTest
 {
     private readonly IContainerService service;
     private readonly ITestOutputHelper output;
-    private readonly HttpClient httpClient;
 
     public ContainerServiceTest(ITestOutputHelper _output)
     {
         var app = new TestWebAppFactory<Program>();
-        httpClient = app.CreateClient();
         service = app.Services.GetRequiredService<IContainerService>();
         output = _output;
     }

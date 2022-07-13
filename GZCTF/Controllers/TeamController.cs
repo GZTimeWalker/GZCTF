@@ -328,21 +328,27 @@ public class TeamController : ControllerBase
     /// <remarks>
     /// 接受邀请的接口，需要User权限，且不在队伍中
     /// </remarks>
-    /// <param name="id">队伍Id</param>
-    /// <param name="token">队伍邀请Token</param>
+    /// <param name="code">队伍邀请Token</param>
     /// <param name="cancelToken"></param>
     /// <response code="200">接受队伍邀请</response>
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/Accept/{token}")]
+    [HttpPost("Accept/{code}")]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Accept(int id, string token, CancellationToken cancelToken)
+    public async Task<IActionResult> Accept(string code, CancellationToken cancelToken)
     {
+        var items = code.Split(':');
+
+        if (items.Length != 3 || !int.TryParse(items[1], out int id))
+        {
+            return BadRequest(new RequestResponse($"Code 无效"));
+        }
+
         var trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
         try
@@ -350,13 +356,13 @@ public class TeamController : ControllerBase
             var team = await teamRepository.GetTeamById(id, cancelToken);
 
             if (team is null)
-                return BadRequest(new RequestResponse("队伍未找到"));
+                return BadRequest(new RequestResponse($"{items[0]}({items[1]}) 队伍未找到"));
 
-            if (team.InviteCode != token)
-                return BadRequest(new RequestResponse("邀请无效"));
+            if (team.InviteCode != code)
+                return BadRequest(new RequestResponse($"{items[0]}({items[1]}) 邀请无效"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
-                return BadRequest(new RequestResponse("队伍已锁定"));
+                return BadRequest(new RequestResponse($"{items[0]}({items[1]}) 队伍已锁定"));
 
             var user = await userManager.GetUserAsync(User);
 

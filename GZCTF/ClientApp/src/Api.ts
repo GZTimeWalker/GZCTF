@@ -2997,11 +2997,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Team
      * @name TeamAccept
      * @summary 接受邀请
-     * @request POST:/api/team/{id}/accept/{token}
+     * @request POST:/api/team/accept/{code}
      */
-    teamAccept: (id: number, token: string, params: RequestParams = {}) =>
+    teamAccept: (code: string, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
-        path: `/api/team/${id}/accept/${token}`,
+        path: `/api/team/accept/${code}`,
         method: 'POST',
         ...params,
       }),

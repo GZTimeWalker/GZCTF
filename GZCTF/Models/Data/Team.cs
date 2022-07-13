@@ -15,6 +15,7 @@ public class Team
     /// </summary>
     [Required]
     [MaxLength(32)]
+    [RegularExpression("[0-9A-Za-z]+")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -41,7 +42,7 @@ public class Team
     /// 邀请 Code
     /// </summary>
     [NotMapped]
-    public string InviteCode => $"{Name}:{InviteToken}";
+    public string InviteCode => $"{Name}:{Id}:{InviteToken}";
 
     #region Db Relationship
 
