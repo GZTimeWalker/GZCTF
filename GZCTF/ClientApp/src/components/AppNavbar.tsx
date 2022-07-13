@@ -15,6 +15,7 @@ import {
   useMantineColorScheme,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
+import { showNotification } from '@mantine/notifications';
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -24,12 +25,11 @@ import {
   mdiWeatherSunny,
   mdiWeatherNight,
   mdiLogout,
-  mdiCheck
+  mdiCheck,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import api from '../Api';
 import MainIcon from './icon/MainIcon';
-import { showNotification } from '@mantine/notifications';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -118,7 +118,7 @@ const AppNavbar: FC = () => {
 
   useEffect(() => {
     if (router.pathname == '/') {
-      setActive(items[0].label)
+      setActive(items[0].label);
     }
     items.forEach((i) => {
       if (router.pathname.startsWith(i.link) && i.link != '/') {

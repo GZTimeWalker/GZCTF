@@ -71,13 +71,16 @@ const TeamCard: FC<TeamInfoModel> = (team) => {
           </Text>
           <Box style={{ flexGrow: 1 }}></Box>
           {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.alert[1]} />}
-          <AvatarsGroup limit={3} size="md" styles={{
-            child: {
-              border: 'none',
-            }
-          }}>
-            {team.members &&
-              team.members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
+          <AvatarsGroup
+            limit={3}
+            size="md"
+            styles={{
+              child: {
+                border: 'none',
+              },
+            }}
+          >
+            {team.members && team.members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
           </AvatarsGroup>
         </Group>
       </Stack>

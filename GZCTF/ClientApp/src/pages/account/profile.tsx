@@ -16,6 +16,7 @@ import {
   Avatar,
   Image,
   useMantineTheme,
+  Center,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { useInputState } from '@mantine/hooks';
@@ -197,159 +198,140 @@ const Profile: NextPage = () => {
             </Box>
             <Divider />
 
-            <Grid style={{ marginTop: '15px' }}>
-              {/* User Info */}
-              <Grid.Col span={9}>
-                {/* OverLay */}
-                <Modal
-                  opened={opened}
-                  onClose={() => setOpened(false)}
-                  title="您即将修改邮箱，请确认密码"
-                >
-                  <PasswordInput
-                    required
-                    label="密码"
-                    placeholder="P4ssW@rd"
-                    style={{ width: '100%' }}
-                    value={pwd}
-                    disabled={pwdDisabled}
-                    onChange={(event) => setPwd(event.currentTarget.value)}
-                  />
-                  <Box style={{ margin: 'auto', marginTop: '30px' }}>
-                    {
-                      <Grid grow>
-                        <Grid.Col span={8}>
-                          <Button fullWidth variant="outline" onClick={onConfirmEmail}>
-                            确认修改
-                          </Button>
-                        </Grid.Col>
-                        <Grid.Col span={4}>
-                          <Button
-                            fullWidth
-                            color="red"
-                            variant="outline"
-                            onClick={() => setOpened(false)}
-                          >
-                            取消修改
-                          </Button>
-                        </Grid.Col>
-                      </Grid>
-                    }
-                  </Box>
-                </Modal>
-
-                {/* Input and Info display */}
-                <Group position="apart" style={{ margin: 'auto' }}>
+            {/* User Info */}
+            <Stack spacing="lg" style={{ margin: 'auto', marginTop: '15px' }}>
+              <Grid grow>
+                <Grid.Col span={8}>
                   <TextInput
                     label="用户名"
                     type="text"
                     placeholder={data?.userName ?? 'ctfer'}
-                    style={{ width: '200px' }}
+                    style={{ width: '100%' }}
                     value={uname}
                     disabled={disabled}
                     onChange={(event) => setUname(event.currentTarget.value)}
                   />
-                  <TextInput
-                    label="邮箱"
-                    type="email"
-                    placeholder={data?.email ?? 'ctfer@GZ.cn'}
-                    style={{ width: '100%' }}
-                    value={email}
-                    disabled={disabled}
-                    onChange={(event) => setEmail(event.currentTarget.value)}
-                  />
-                  <Textarea
-                    label="描述"
-                    placeholder={data?.bio ?? '这个人很懒，什么都没有写'}
-                    value={bio}
-                    style={{ width: '100%' }}
-                    disabled={disabled}
-                    autosize
-                    minRows={2}
-                    maxRows={4}
-                    onChange={(event) => setBio(event.currentTarget.value)}
-                  />
-                </Group>
-
-                {/* Button: save Changes or clear Changes */}
-                <Box style={{ margin: 'auto', marginTop: '30px' }}>
-                  {
-                    <Grid grow>
-                      <Grid.Col span={8}>
-                        <Button
-                          fullWidth
-                          variant="outline"
-                          disabled={disabled}
-                          onClick={onSaveChange}
-                        >
-                          保存变更
-                        </Button>
-                      </Grid.Col>
-                      <Grid.Col span={4}>
-                        <Button
-                          fullWidth
-                          color="red"
-                          variant="outline"
-                          disabled={disabled}
-                          onClick={onClearInfo}
-                        >
-                          清除变更
-                        </Button>
-                      </Grid.Col>
-                    </Grid>
-                  }
-                </Box>
-              </Grid.Col>
-
-              {/* User Avator */}
-              <Grid.Col span={3}>
-                <Stack align="center" style={{ width: '100%', marginTop: '10px' }}>
-                  {/* Dropzone */}
-                  <Modal
-                    opened={dropzoneOpened}
-                    onClose={() => setDropzoneOpened(false)}
-                    withCloseButton={false}
-                  >
-                    <Dropzone
-                      onDrop={(files) => setAvatarFile(files[0])}
-                      onReject={() => {
-                        showNotification({
-                          color: 'red',
-                          title: '文件上传失败',
-                          message: `请重新提交`,
-                          icon: <Icon path={mdiClose} size={1} />,
-                        });
-                      }}
-                      style={{
-                        margin: '0 auto 20px auto',
-                        minWidth: '220px',
-                        minHeight: '220px',
-                      }}
-                      maxSize={3 * 1024 * 1024}
-                      accept={IMAGE_MIME_TYPE}
-                    >
-                      {(status) => dropzoneChildren(status, avatarFile)}
-                    </Dropzone>
+                </Grid.Col>
+                <Grid.Col span={4}>
+                  <Center>
+                    <Avatar
+                      style={{ borderRadius: '50%' }}
+                      size={70}
+                      src={data?.avatar}
+                      onClick={() => setDropzoneOpened(true)}
+                    />
+                  </Center>
+                </Grid.Col>
+              </Grid>
+              <TextInput
+                label="邮箱"
+                type="email"
+                placeholder={data?.email ?? 'ctfer@gzti.me'}
+                style={{ width: '100%' }}
+                value={email}
+                disabled={disabled}
+                onChange={(event) => setEmail(event.currentTarget.value)}
+              />
+              <Textarea
+                label="描述"
+                placeholder={data?.bio ?? '这个人很懒，什么都没有写'}
+                value={bio}
+                style={{ width: '100%' }}
+                disabled={disabled}
+                autosize
+                minRows={2}
+                maxRows={4}
+                onChange={(event) => setBio(event.currentTarget.value)}
+              />
+              <Box style={{ margin: 'auto', width: '100%' }}>
+                <Grid grow>
+                  <Grid.Col span={8}>
+                    <Button fullWidth variant="outline" disabled={disabled} onClick={onSaveChange}>
+                      保存变更
+                    </Button>
+                  </Grid.Col>
+                  <Grid.Col span={4}>
                     <Button
                       fullWidth
+                      color="red"
                       variant="outline"
                       disabled={disabled}
-                      onClick={onChangeAvatar}
+                      onClick={onClearInfo}
                     >
-                      修改头像
+                      清除变更
                     </Button>
-                  </Modal>
+                  </Grid.Col>
+                </Grid>
+              </Box>
+            </Stack>
 
-                  {/* Avatar */}
-                  <Avatar
-                    style={{ borderRadius: '50%' }}
-                    size="xl"
-                    src={data?.avatar}
-                    onClick={() => setDropzoneOpened(true)}
-                  />
-                </Stack>
-              </Grid.Col>
-            </Grid>
+            {/* Change password */}
+            <Modal
+              opened={opened}
+              onClose={() => setOpened(false)}
+              title="您即将修改邮箱，请确认密码"
+            >
+              <PasswordInput
+                required
+                label="密码"
+                placeholder="P4ssW@rd"
+                style={{ width: '100%' }}
+                value={pwd}
+                disabled={pwdDisabled}
+                onChange={(event) => setPwd(event.currentTarget.value)}
+              />
+              <Box style={{ margin: 'auto', marginTop: '30px' }}>
+                {
+                  <Grid grow>
+                    <Grid.Col span={8}>
+                      <Button fullWidth variant="outline" onClick={onConfirmEmail}>
+                        确认修改
+                      </Button>
+                    </Grid.Col>
+                    <Grid.Col span={4}>
+                      <Button
+                        fullWidth
+                        color="red"
+                        variant="outline"
+                        onClick={() => setOpened(false)}
+                      >
+                        取消修改
+                      </Button>
+                    </Grid.Col>
+                  </Grid>
+                }
+              </Box>
+            </Modal>
+            {/* Change avatar */}
+            <Modal
+              opened={dropzoneOpened}
+              onClose={() => setDropzoneOpened(false)}
+              withCloseButton={false}
+            >
+              <Dropzone
+                onDrop={(files) => setAvatarFile(files[0])}
+                onReject={() => {
+                  showNotification({
+                    color: 'red',
+                    title: '文件上传失败',
+                    message: `请重新提交`,
+                    icon: <Icon path={mdiClose} size={1} />,
+                  });
+                }}
+                style={{
+                  margin: '0 auto 20px auto',
+                  minWidth: '220px',
+                  minHeight: '220px',
+                }}
+                maxSize={3 * 1024 * 1024}
+                accept={IMAGE_MIME_TYPE}
+              >
+                {(status) => dropzoneChildren(status, avatarFile)}
+              </Dropzone>
+              <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
+                修改头像
+              </Button>
+            </Modal>
           </Paper>
         </Stack>
       </WithNavBar>

@@ -6,10 +6,7 @@ import TeamCard from '../components/TeamCard';
 import WithNavBar from '../components/WithNavbar';
 
 const Teams: NextPage = () => {
-  const {
-    data: teams,
-    error
-  } = api.team.useTeamGetTeamsInfo({
+  const { data: teams, error } = api.team.useTeamGetTeamsInfo({
     refreshInterval: 3000,
   });
 
@@ -19,7 +16,9 @@ const Teams: NextPage = () => {
         <LogoHeader />
         {teams && !error ? (
           <SimpleGrid cols={3} spacing="lg">
-            {teams.map((t, i) => <TeamCard key={i} {...t} />)}
+            {teams.map((t, i) => (
+              <TeamCard key={i} {...t} />
+            ))}
           </SimpleGrid>
         ) : (
           <Center style={{ width: '100%', height: '100%' }}>

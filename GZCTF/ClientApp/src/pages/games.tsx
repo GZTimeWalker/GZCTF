@@ -4,12 +4,10 @@ import LogoHeader from '../components/LogoHeader';
 import WithNavBar from '../components/WithNavbar';
 
 const Games: NextPage = () => {
-
   return (
     <WithNavBar>
       <Stack>
         <LogoHeader />
-
       </Stack>
     </WithNavBar>
   );
