@@ -306,6 +306,7 @@ const Profile: NextPage = () => {
             <Modal
               opened={dropzoneOpened}
               onClose={() => setDropzoneOpened(false)}
+              centered
               withCloseButton={false}
             >
               <Dropzone
