@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { Stack, SimpleGrid, Loader, Center } from '@mantine/core';
+import { Stack, SimpleGrid, Loader, Center, Group } from '@mantine/core';
 import api from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import TeamCard from '../components/TeamCard';
@@ -13,7 +13,10 @@ const Teams: NextPage = () => {
   return (
     <WithNavBar>
       <Stack>
-        <LogoHeader />
+        <Group>
+          <LogoHeader />
+          
+        </Group>
         {teams && !error ? (
           <SimpleGrid cols={3} spacing="lg">
             {teams.map((t, i) => (

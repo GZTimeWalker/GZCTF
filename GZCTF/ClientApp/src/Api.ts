@@ -2947,11 +2947,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取队伍邀请信息，需要为队伍创建者
      *
      * @tags Team
-     * @name TeamTeamInviteToken
+     * @name TeamTeamInviteCode
      * @summary 获取邀请信息
      * @request POST:/api/team/{id}/invite
      */
-    teamTeamInviteToken: (id: number, params: RequestParams = {}) =>
+    teamTeamInviteCode: (id: number, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
         path: `/api/team/${id}/invite`,
         method: 'POST',
