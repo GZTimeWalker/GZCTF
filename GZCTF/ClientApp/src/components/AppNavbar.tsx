@@ -178,7 +178,7 @@ const AppNavbar: FC = () => {
               <Icon path={mdiWeatherNight} size={1} />
             )}
           </UnstyledButton>
-          
+
           {/* User Info */}
           {data && !error ? (
             <Menu

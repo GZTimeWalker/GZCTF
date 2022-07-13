@@ -29,10 +29,10 @@ const dropzoneChildren = (status: DropzoneStatus, theme: MantineTheme, file: Fil
   <Group position="center" spacing="xl" style={{ minHeight: 220, pointerEvents: 'none' }}>
     <div>
       <Text size="xl" inline>
-        Drag images here or click to select files
+        拖放图片或点击此处以选择头像
       </Text>
       <Text size="sm" color="dimmed" inline mt={7}>
-        Your file should not exceed 5mb
+        请选择小于 5MB 的图片
       </Text>
     </div>
     <Text size='md'>{file.name}</Text>
@@ -44,7 +44,11 @@ const Profile: NextPage = () => {
   const theme = useMantineTheme()
   const [opened, setOpened] = useState(false);
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
-  const { data, mutate } = api.account.useAccountProfile();
+  const { data, mutate } = api.account.useAccountProfile({
+    refreshInterval: 600,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  });
   const [disabled, setDisabled] = useState(false);
   const [pwdDisabled, setPwdDisabled] = useState(false);
   const [uname, setUname] = useInputState('');

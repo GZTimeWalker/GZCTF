@@ -61,14 +61,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="k8sconfig.yaml" />
     <None Remove="Services\Assets\URLEmailTemplate.html" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="k8sconfig.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -76,7 +69,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="log\" />
+    <None Update="k8sconfig.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
