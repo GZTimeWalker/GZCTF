@@ -208,7 +208,7 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> TeamInviteToken([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> TeamInviteCode([FromRoute] int id, CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
 
