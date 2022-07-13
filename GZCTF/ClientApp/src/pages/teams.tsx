@@ -10,13 +10,12 @@ import {
   Button,
   Modal,
   TextInput,
-  Text,
-  createStyles,
+  Text
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import api, {TeamInfoModel} from '../Api';
+import api, { TeamInfoModel } from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import TeamCard from '../components/TeamCard';
 import TeamEditModal from '../components/TeamEditModal';
@@ -45,7 +44,7 @@ const Teams: NextPage = () => {
         icon: <Icon path={mdiClose} size={1} />,
       });
     }
-  }
+  };
 
   const onJoinTeam = () => {
     api.team
@@ -84,7 +83,14 @@ const Teams: NextPage = () => {
             >
               加入队伍
             </Button>
-            <Button leftIcon={<Icon path={mdiAccountGroup} size={1} />} variant="outline">
+            <Button
+              leftIcon={<Icon path={mdiAccountGroup} size={1} />}
+              variant="outline"
+              onClick={() => {
+                setEditTeam(null);
+                setEditOpened(true);
+              }}
+            >
               创建队伍
             </Button>
           </Group>
@@ -132,7 +138,7 @@ const Teams: NextPage = () => {
       <TeamEditModal
         opened={editOpened}
         centered
-        title="编辑队伍"
+        title={editTeam ? '编辑队伍' : '创建队伍'}
         onClose={() => setEditOpened(false)}
         team={editTeam}
       />
