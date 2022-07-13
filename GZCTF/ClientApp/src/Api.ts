@@ -2980,7 +2980,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Team
      * @name TeamKickUser
-     * @summary 踢除队伍接口
+     * @summary 踢除用户接口
      * @request POST:/api/team/{id}/kick/{userid}
      */
     teamKickUser: (id: number, userid: string, params: RequestParams = {}) =>

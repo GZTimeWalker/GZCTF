@@ -261,7 +261,7 @@ public class TeamController : ControllerBase
     }
 
     /// <summary>
-    /// 踢除队伍接口
+    /// 踢除用户接口
     /// </summary>
     /// <remarks>
     /// 踢除用户接口，踢出对应id的用户，需要队伍创建者权限
