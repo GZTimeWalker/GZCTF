@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models.Request.Teams;
+using CTFServer.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,9 +33,15 @@ public class Team
     public bool Locked { get; set; } = false;
 
     /// <summary>
-    /// 邀请链接
+    /// 邀请 Token
     /// </summary>
     public string InviteToken { get; set; } = Guid.NewGuid().ToString("N");
+
+    /// <summary>
+    /// 邀请 Code
+    /// </summary>
+    [NotMapped]
+    public string InviteCode => $"{Name}:{InviteToken}";
 
     #region Db Relationship
 

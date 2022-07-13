@@ -220,7 +220,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        return Ok(team.InviteToken);
+        return Ok(team.InviteCode);
     }
 
     /// <summary>
@@ -257,7 +257,7 @@ public class TeamController : ControllerBase
 
         await teamRepository.UpdateAsync(team, token);
 
-        return Ok(team.InviteToken);
+        return Ok(team.InviteCode);
     }
 
     /// <summary>
@@ -313,7 +313,7 @@ public class TeamController : ControllerBase
             await trans.CommitAsync(token);
 
             logger.Log($"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
-            return Ok(team.InviteToken);
+            return Ok(team.InviteCode);
         }
         catch
         {
@@ -352,7 +352,7 @@ public class TeamController : ControllerBase
             if (team is null)
                 return BadRequest(new RequestResponse("队伍未找到"));
 
-            if (team.InviteToken != token)
+            if (team.InviteCode != token)
                 return BadRequest(new RequestResponse("邀请无效"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
