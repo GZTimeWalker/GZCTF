@@ -6,17 +6,20 @@ import {
   Loader,
   Center,
   Group,
+  UnstyledButton,
   Button,
   Modal,
   TextInput,
   Text,
+  createStyles,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import api from '../Api';
+import api, {TeamInfoModel} from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import TeamCard from '../components/TeamCard';
+import TeamEditModal from '../components/TeamEditModal';
 import WithNavBar from '../components/WithNavbar';
 
 const Teams: NextPage = () => {
@@ -26,6 +29,23 @@ const Teams: NextPage = () => {
 
   const [joinOpened, setJoinOpened] = useState(false);
   const [joinTeamCode, setJoinTeamCode] = useState('');
+  const [editOpened, setEditOpened] = useState(false);
+  const [editTeam, setEditTeam] = useState(null as TeamInfoModel | null);
+
+  const onEditTeam = (id: number) => {
+    let cur = teams?.find((team) => team.id === id);
+    if (cur) {
+      setEditTeam(cur);
+      setEditOpened(true);
+    } else {
+      showNotification({
+        color: 'red',
+        title: '遇到了问题',
+        message: '所请求的队伍不存在',
+        icon: <Icon path={mdiClose} size={1} />,
+      });
+    }
+  }
 
   const onJoinTeam = () => {
     api.team
@@ -79,7 +99,9 @@ const Teams: NextPage = () => {
             ]}
           >
             {teams.map((t, i) => (
-              <TeamCard key={i} {...t} />
+              <UnstyledButton key={i} onClick={() => onEditTeam(t.id!)}>
+                <TeamCard {...t} />
+              </UnstyledButton>
             ))}
           </SimpleGrid>
         ) : (
@@ -107,6 +129,13 @@ const Teams: NextPage = () => {
           </Button>
         </Stack>
       </Modal>
+      <TeamEditModal
+        opened={editOpened}
+        centered
+        title="编辑队伍"
+        onClose={() => setEditOpened(false)}
+        team={editTeam}
+      />
     </WithNavBar>
   );
 };
