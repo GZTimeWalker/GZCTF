@@ -10,7 +10,8 @@ const WithNavBar: FC<React.ReactNode> = ({ children }) => {
       navbar={<AppNavbar />}
       styles={(theme) => ({
         main: {
-          backgroundColor: theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.gray[0],
+          backgroundColor:
+            theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.gray[0],
         },
       })}
     >
