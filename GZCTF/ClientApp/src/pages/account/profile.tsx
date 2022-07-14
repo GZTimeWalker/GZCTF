@@ -183,10 +183,8 @@ const Profile: NextPage = () => {
   };
 
   return (
-    <>
-      {/* Main Page */}
       <WithNavBar>
-        <Stack align="center">
+        <Center>
           <Paper
             style={{ width: '55%', padding: '5%', paddingTop: '2%', marginTop: '5%' }}
             shadow="sm"
@@ -334,9 +332,8 @@ const Profile: NextPage = () => {
               </Button>
             </Modal>
           </Paper>
-        </Stack>
+        </Center>
       </WithNavBar>
-    </>
   );
 };
 

@@ -49,7 +49,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false);
   const [tname, setTname] = useInputState('');
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
-  const [tid, setTid] = useInputState('');
   const [bio, setBio] = useInputState('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
@@ -73,7 +72,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     setDisabled(true);
 
     setTname('');
-    setTid('');
     setBio('');
 
     setDisabled(false);
@@ -138,121 +136,95 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     }
   };
 
-  const C_NameAvatar = () => (
-    <Grid grow>
-      <Grid.Col span={8}>
-        <TextInput
-          label="队伍名称"
-          type="text"
-          placeholder={team?.name ?? 'ctfteam'}
-          style={{ width: '100%' }}
-          value={tname}
-          disabled={disabled}
-          onChange={(event) => setTname(event.currentTarget.value)}
-        />
-      </Grid.Col>
-      <Grid.Col span={4}>
-        <Center>
-          <Avatar
-            style={{ borderRadius: '50%' }}
-            size={70}
-            src={team?.avatar}
-            onClick={() => setDropzoneOpened(true)}
-          />
-        </Center>
-      </Grid.Col>
-    </Grid>
-  );
-
-  const C_ControlButton = () => (
-    <Box style={{ margin: 'auto', width: '100%' }}>
-      <Grid grow>
-        <Grid.Col span={8}>
-          <Button fullWidth variant="outline" disabled={disabled} onClick={onSaveChange}>
-            保存
-          </Button>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Button fullWidth color="red" variant="outline" disabled={disabled} onClick={onClearInfo}>
-            清除变更
-          </Button>
-        </Grid.Col>
-      </Grid>
-    </Box>
-  );
-
-  const C_ChangeAvatar = () => (
-    <Modal
-      opened={dropzoneOpened}
-      onClose={() => setDropzoneOpened(false)}
-      centered
-      withCloseButton={false}
-    >
-      <Dropzone
-        onDrop={(files) => setAvatarFile(files[0])}
-        onReject={() => {
-          showNotification({
-            color: 'red',
-            title: '文件上传失败',
-            message: `请重新提交`,
-            icon: <Icon path={mdiClose} size={1} />,
-          });
-        }}
-        style={{
-          margin: '0 auto 20px auto',
-          minWidth: '220px',
-          minHeight: '220px',
-        }}
-        maxSize={3 * 1024 * 1024}
-        accept={IMAGE_MIME_TYPE}
-      >
-        {(status) => dropzoneChildren(status, avatarFile)}
-      </Dropzone>
-      <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
-        修改头像
-      </Button>
-    </Modal>
-  );
-
   return (
     <Modal {...modalProps}>
-      <Stack>
-        <Text>**开发中，不可用。**</Text>
-        <Text>{team?.name ?? 'new'}</Text>
-        <Text>{team?.id ?? '0'}</Text>
-        {/* <Paper
-          style={{ width: '55%', padding: '5%', paddingTop: '2%', marginTop: '5%' }}
-          shadow="sm"
-          p="lg"
-        > */}
+      <Stack spacing="lg">
         {/* User Info */}
-        <Stack spacing="lg" style={{ marginTop: '15px' }}>
-          <C_NameAvatar />
-          <TextInput
-            label="队伍 Id"
-            type="number"
-            placeholder={team?.id?.toString() ?? '123456789'}
-            style={{ width: '100%' }}
-            value={tid}
-            disabled={disabled}
-            onChange={(event) => setTid(event.currentTarget.value)}
-          />
-          <Textarea
-            label="队伍签名"
-            placeholder={team?.bio ?? '这个人很懒，什么都没有写'}
-            value={bio}
-            style={{ width: '100%' }}
-            disabled={disabled}
-            autosize
-            minRows={2}
-            maxRows={4}
-            onChange={(event) => setBio(event.currentTarget.value)}
-          />
-          <C_ControlButton />
-        </Stack>
-        {/* </Paper> */}
+        <Grid grow>
+          <Grid.Col span={8}>
+            <TextInput
+              label="队伍名称"
+              type="text"
+              placeholder={team?.name ?? 'ctfteam'}
+              style={{ width: '100%' }}
+              value={tname}
+              disabled={disabled}
+              onChange={(event) => setTname(event.currentTarget.value)}
+            />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <Center>
+              <Avatar
+                style={{ borderRadius: '50%' }}
+                size={70}
+                src={team?.avatar}
+                onClick={() => setDropzoneOpened(true)}
+              />
+            </Center>
+          </Grid.Col>
+        </Grid>
+        <Textarea
+          label="队伍签名"
+          placeholder={team?.bio ?? '这个人很懒，什么都没有写'}
+          value={bio}
+          style={{ width: '100%' }}
+          disabled={disabled}
+          autosize
+          minRows={2}
+          maxRows={4}
+          onChange={(event) => setBio(event.currentTarget.value)}
+        />
+        <Box style={{ margin: 'auto', width: '100%' }}>
+          <Grid grow>
+            <Grid.Col span={8}>
+              <Button fullWidth variant="outline" disabled={disabled} onClick={onSaveChange}>
+                保存
+              </Button>
+            </Grid.Col>
+            <Grid.Col span={4}>
+              <Button
+                fullWidth
+                color="red"
+                variant="outline"
+                disabled={disabled}
+                onClick={onClearInfo}
+              >
+                清除变更
+              </Button>
+            </Grid.Col>
+          </Grid>
+        </Box>
       </Stack>
-      <C_ChangeAvatar />
+      <Modal
+        opened={dropzoneOpened}
+        onClose={() => setDropzoneOpened(false)}
+        centered
+        withCloseButton={false}
+      >
+        <Dropzone
+          onDrop={(files) => setAvatarFile(files[0])}
+          onReject={() => {
+            showNotification({
+              color: 'red',
+              title: '文件上传失败',
+              message: `请重新提交`,
+              icon: <Icon path={mdiClose} size={1} />,
+            });
+          }}
+          style={{
+            margin: '0 auto 20px auto',
+            minWidth: '220px',
+            minHeight: '220px',
+          }}
+          maxSize={3 * 1024 * 1024}
+          accept={IMAGE_MIME_TYPE}
+        >
+          {(status) => dropzoneChildren(status, avatarFile)}
+        </Dropzone>
+        <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
+          修改头像
+        </Button>
+      </Modal>
     </Modal>
   );
 };

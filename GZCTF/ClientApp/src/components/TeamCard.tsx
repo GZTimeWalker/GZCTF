@@ -12,18 +12,28 @@ import {
   Stack,
   Box,
   useMantineTheme,
+  Button,
 } from '@mantine/core';
 import { mdiLockOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
-const TeamCard: FC<TeamInfoModel> = (team) => {
+interface TeamCardProps {
+  team: TeamInfoModel;
+  onEdit?: () => void;
+  onLeave?: () => void;
+}
+
+const TeamCard: FC<TeamCardProps> = (props) => {
+
   const { data: user } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });
+
   const theme = useMantineTheme();
+  const team = props.team;
 
   return (
     <Card shadow="sm">

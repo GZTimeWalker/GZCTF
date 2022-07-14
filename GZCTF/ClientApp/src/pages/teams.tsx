@@ -10,7 +10,7 @@ import {
   Button,
   Modal,
   TextInput,
-  Text
+  Text,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose } from '@mdi/js';
@@ -30,23 +30,32 @@ const Teams: NextPage = () => {
   const [joinTeamCode, setJoinTeamCode] = useState('');
   const [editOpened, setEditOpened] = useState(false);
   const [editTeam, setEditTeam] = useState(null as TeamInfoModel | null);
+  const [leaveOpened, setLeaveOpened] = useState(false);
+  const [leaveTeam, setLeaveTeam] = useState(null as TeamInfoModel | null);
 
-  const onEditTeam = (id: number) => {
-    let cur = teams?.find((team) => team.id === id);
-    if (cur) {
-      setEditTeam(cur);
+  const onEditTeam = (team: TeamInfoModel) => {
+      setEditTeam(team);
       setEditOpened(true);
-    } else {
+  };
+
+  const onLeaveTeam = (team: TeamInfoModel) => {
+      setLeaveTeam(team);
+      setLeaveOpened(true);
+  }
+
+  const onJoinTeam = () => {
+    const parts = joinTeamCode.split(':');
+
+    if (parts.length !== 3 || parts[2].length !== 32) {
       showNotification({
         color: 'red',
         title: '遇到了问题',
-        message: '所请求的队伍不存在',
+        message: '队伍邀请码格式不正确',
         icon: <Icon path={mdiClose} size={1} />,
       });
+      return;
     }
-  };
 
-  const onJoinTeam = () => {
     api.team
       .teamAccept(joinTeamCode)
       .then(() => {
@@ -57,7 +66,6 @@ const Teams: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        setJoinOpened(false);
       })
       .catch((err) => {
         showNotification({
@@ -66,8 +74,37 @@ const Teams: NextPage = () => {
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
         });
+      })
+      .finally(() => {
+        setJoinTeamCode('');
         setJoinOpened(false);
       });
+  };
+
+  const onConfirmLeaveTeam = () => {
+    if (leaveTeam) {
+      api.team
+        .teamLeave(leaveTeam.id!)
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            title: '退出队伍成功',
+            message: '您的队伍信息已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          });
+          setLeaveOpened(false);
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          });
+          setLeaveOpened(false);
+        });
+    }
   };
 
   return (
@@ -105,9 +142,12 @@ const Teams: NextPage = () => {
             ]}
           >
             {teams.map((t, i) => (
-              <UnstyledButton key={i} onClick={() => onEditTeam(t.id!)}>
-                <TeamCard {...t} />
-              </UnstyledButton>
+              <TeamCard
+                key={i}
+                team={t}
+                onEdit={() => onEditTeam(t)}
+                onLeave={() => onLeaveTeam(t)}
+              />
             ))}
           </SimpleGrid>
         ) : (
@@ -116,6 +156,7 @@ const Teams: NextPage = () => {
           </Center>
         )}
       </Stack>
+
       <Modal opened={joinOpened} centered title="加入已有队伍" onClose={() => setJoinOpened(false)}>
         <Stack>
           <Text size="sm">
@@ -135,6 +176,16 @@ const Teams: NextPage = () => {
           </Button>
         </Stack>
       </Modal>
+
+      <Modal opened={leaveOpened} centered title="离开队伍" onClose={() => setLeaveOpened(false)}>
+        <Stack>
+          <Text size="sm">你确定要离开 {leaveTeam?.name} 吗？</Text>
+          <Button color="red" fullWidth variant="outline" onClick={onConfirmLeaveTeam}>
+            确认离开
+          </Button>
+        </Stack>
+      </Modal>
+
       <TeamEditModal
         opened={editOpened}
         centered
