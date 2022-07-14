@@ -28,6 +28,11 @@ public class UpdateUserInfoModel
     public string? RealName { get; set; }
 
     /// <summary>
+    /// 学工号
+    /// </summary>
+    public string StdNumber { get; set; }
+
+    /// <summary>
     /// 用户角色
     /// </summary>
     public Role? Role { get; set; }

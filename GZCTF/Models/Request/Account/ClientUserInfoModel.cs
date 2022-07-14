@@ -33,6 +33,11 @@ public class ClientUserInfoModel
     public string? RealName { get; set; }
 
     /// <summary>
+    /// 学工号
+    /// </summary>
+    public string StdNumber { get; set; }
+
+    /// <summary>
     /// 头像链接
     /// </summary>
     public string? Avatar { get; set; }
@@ -58,6 +63,7 @@ public class ClientUserInfoModel
             Phone = user.PhoneNumber,
             Avatar = user.AvatarUrl,
             ActiveTeamId = user.ActiveTeamId,
+            StdNumber = user.StdNumber,
             Role = user.Role
         };
 }

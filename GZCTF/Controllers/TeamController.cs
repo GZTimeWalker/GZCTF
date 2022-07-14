@@ -512,24 +512,30 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> DeleteTeam([FromBody] int id, CancellationToken token)
+    public Task<IActionResult> DeleteTeam(int id, CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
+        return Task.FromResult(
+            new JsonResult(new RequestResponse("无权操作", 403)) { StatusCode = 403 }
+            as IActionResult);
 
-        if (user.OwnTeamId != id)
-            return new JsonResult(new RequestResponse("无权操作", 403)) { StatusCode = 403 };
+        //var user = await userManager.GetUserAsync(User);
 
-        var team = await teamRepository.GetTeamById(id, token);
-        await teamRepository.DeleteTeam(team!, token);
+        //if (user.OwnTeamId != id)
+        //    return new JsonResult(new RequestResponse("无权操作", 403)) { StatusCode = 403 };
 
-        user.OwnTeam = null;
-        if (user.ActiveTeamId == id)
-            user.ActiveTeamId = null;
+        // /* TODO: remove all team data? */
 
-        await userManager.UpdateAsync(user);
+        //var team = await teamRepository.GetTeamById(id, token);
+        //await teamRepository.DeleteTeam(team!, token);
 
-        logger.Log($"删除队伍 {team!.Name}", user, TaskStatus.Success);
+        //user.OwnTeam = null;
+        //if (user.ActiveTeamId == id)
+        //    user.ActiveTeamId = null;
 
-        return Ok();
+        //await userManager.UpdateAsync(user);
+
+        //logger.Log($"删除队伍 {team!.Name}", user, TaskStatus.Success);
+
+        //return Ok();
     }
 }

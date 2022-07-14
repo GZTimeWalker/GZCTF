@@ -40,6 +40,11 @@ public class UserInfo : IdentityUser
     /// </summary>
     public string RealName { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 学工号
+    /// </summary>
+    public string StdNumber { get; set; } = string.Empty;
+
     #region 数据库关系
 
     /// <summary>

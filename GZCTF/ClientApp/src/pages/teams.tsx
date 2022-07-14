@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Stack,
   SimpleGrid,
@@ -25,7 +25,6 @@ import TeamEditModal from '../components/TeamEditModal';
 import WithNavBar from '../components/WithNavbar';
 
 const Teams: NextPage = () => {
-
   const { data: user, error: userError } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
@@ -33,8 +32,6 @@ const Teams: NextPage = () => {
   });
 
   const { data: teams, error: teamsError } = api.team.useTeamGetTeamsInfo();
-
-  console.log(teams, user);
 
   const theme = useMantineTheme();
 
@@ -46,19 +43,11 @@ const Teams: NextPage = () => {
   const [editOpened, setEditOpened] = useState(false);
   const [editTeam, setEditTeam] = useState(null as TeamInfoModel | null);
 
-  const [leaveOpened, setLeaveOpened] = useState(false);
-  const [leaveTeam, setLeaveTeam] = useState(null as TeamInfoModel | null);
-
   const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id == user?.userId));
 
   const onEditTeam = (team: TeamInfoModel) => {
     setEditTeam(team);
     setEditOpened(true);
-  };
-
-  const onLeaveTeam = (team: TeamInfoModel) => {
-    setLeaveTeam(team);
-    setLeaveOpened(true);
   };
 
   const onJoinTeam = () => {
@@ -76,7 +65,7 @@ const Teams: NextPage = () => {
 
     api.team
       .teamAccept(joinTeamCode)
-      .then(() => {
+      .then((res) => {
         showNotification({
           color: 'teal',
           title: '加入队伍成功',
@@ -85,6 +74,12 @@ const Teams: NextPage = () => {
           disallowClose: true,
         });
         api.team.mutateTeamGetTeamsInfo();
+        if(!user?.activeTeamId) {
+          api.account.mutateAccountProfile({
+            activeTeamId: parseInt(joinTeamCode.split(':')[1]),
+            ...user,
+          });
+        }
       })
       .catch((err) => {
         showNotification({
@@ -100,43 +95,9 @@ const Teams: NextPage = () => {
       });
   };
 
-  const onConfirmLeaveTeam = () => {
-    if (leaveTeam) {
-      api.team
-        .teamLeave(leaveTeam.id!)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            title: '退出队伍成功',
-            message: '您的队伍信息已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          });
-          api.team.mutateTeamGetTeamsInfo();
-        })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          });
-        })
-        .finally(() => {
-          setLeaveOpened(false);
-        });
-    }
-  };
-
   //Divide teams into Active & Inactive
-  const teamsActive = [];
-  const teamsInactive = [];
-  if (teams) {
-    for (const t of teams) {
-      if (t.id === user?.activeTeamId) teamsActive.push(t);
-      else teamsInactive.push(t);
-    }
-  }
+  const activeTeam = teams?.filter((t) => t.id === user?.activeTeamId)[0];
+  const teamsInactive = teams?.filter((t) => t.id !== user?.activeTeamId);
 
   return (
     <WithNavBar>
@@ -162,7 +123,7 @@ const Teams: NextPage = () => {
         </Group>
         {teams && !teamsError && user && !userError ? (
           <>
-            {teamsActive.length > 0 && (
+            {activeTeam && (
               <>
                 <Title
                   order={2}
@@ -178,19 +139,18 @@ const Teams: NextPage = () => {
                 >
                   ACTIVE
                 </Title>
-                {teamsActive.map((t, i) => (
-                  <TeamCard
-                    key={i}
-                    team={t}
-                    isActive={t.id === user?.activeTeamId}
-                    isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
-                    onEdit={() => onEditTeam(t)}
-                    mutateActive={() => {}}
-                  />
-                ))}
+                <TeamCard
+                  team={activeTeam}
+                  isActive={true}
+                  isCaptain={
+                    activeTeam.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
+                  }
+                  onEdit={() => onEditTeam(activeTeam)}
+                  mutateActive={() => {}}
+                />
               </>
             )}
-            {teamsInactive.length > 0 && (
+            {teamsInactive && teamsInactive.length > 0 && (
               <>
                 <Title
                   order={2}
@@ -227,8 +187,8 @@ const Teams: NextPage = () => {
                           mutateActive={() => {
                             api.account.mutateAccountProfile({
                               activeTeamId: t.id!,
-                              ...user
-                            })
+                              ...user,
+                            });
                           }}
                         />
                       )
@@ -261,21 +221,20 @@ const Teams: NextPage = () => {
         </Stack>
       </Modal>
 
-      <Modal opened={leaveOpened} centered title="离开队伍" onClose={() => setLeaveOpened(false)}>
-        <Stack>
-          <Text size="sm">你确定要离开 {leaveTeam?.name} 吗？</Text>
-          <Button color="red" fullWidth variant="outline" onClick={onConfirmLeaveTeam}>
-            确认离开
-          </Button>
-        </Stack>
-      </Modal>
-
       <TeamCreateModal
         opened={createOpened}
         centered
         title="创建新队伍"
         isOwnTeam={ownTeam ?? false}
         onClose={() => setCreateOpened(false)}
+        mutateActive={(id) => {
+          if(!user?.activeTeamId) {
+            api.account.mutateAccountProfile({
+              activeTeamId: id,
+              ...user,
+            });
+          }
+        }}
       />
 
       <TeamEditModal
@@ -284,6 +243,7 @@ const Teams: NextPage = () => {
         title="编辑队伍"
         onClose={() => setEditOpened(false)}
         team={editTeam}
+        isCaptain={editTeam?.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
       />
     </WithNavBar>
   );

@@ -440,6 +440,10 @@ namespace CTFServer.Migrations
                     b.Property<int>("Score")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("TeamId")
                         .HasColumnType("integer");
 
@@ -610,6 +614,10 @@ namespace CTFServer.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StdNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")

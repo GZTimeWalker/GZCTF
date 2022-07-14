@@ -28,4 +28,9 @@ public class ProfileUpdateModel
     /// 真实姓名
     /// </summary>
     public string? RealName { get; set; }
+
+    /// <summary>
+    /// 学工号
+    /// </summary>
+    public string? StdNumber { get; set; }
 }

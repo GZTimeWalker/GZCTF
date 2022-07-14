@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { mdiLockOutline, mdiPinOffOutline, mdiPinOutline, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiLockOutline, mdiPinOutline, mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -37,6 +37,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
     if (isActive) {
       return;
     } else {
+      setCardClickable(false);
       api.team
         .teamSetActive(team.id!)
         .then(() => {
@@ -56,6 +57,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           });
+        })
+        .finally(() => {
+          setCardClickable(true);
         });
     }
   };
@@ -123,7 +127,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                   },
                 })}
               >
-                <Icon path={isActive ? mdiPinOffOutline : mdiPinOutline} size={1} />
+                <Icon path={mdiPinOutline} size={1} />
               </ActionIcon>
             </Tooltip>
           </Box>

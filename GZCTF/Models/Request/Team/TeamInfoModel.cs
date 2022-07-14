@@ -30,7 +30,7 @@ public class TeamInfoModel
     /// <summary>
     /// 队伍成员
     /// </summary>
-    public List<BasicTeamUserInfoModel>? Members { get; set; } = new();
+    public List<TeamUserInfoModel>? Members { get; set; } = new();
 
     public static TeamInfoModel FromTeam(Team team, bool includeMembers = true)
         => new()
@@ -40,7 +40,7 @@ public class TeamInfoModel
             Bio = team.Bio,
             Avatar = team.AvatarUrl,
             Locked = team.Locked,
-            Members = includeMembers ? team.Members.Select(m => new BasicTeamUserInfoModel()
+            Members = includeMembers ? team.Members.Select(m => new TeamUserInfoModel()
             {
                 Id = m.Id,
                 Bio = m.Bio,

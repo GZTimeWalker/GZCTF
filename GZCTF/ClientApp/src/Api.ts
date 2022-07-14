@@ -107,6 +107,9 @@ export interface ProfileUpdateModel {
 
   /** 真实姓名 */
   realName?: string | null;
+
+  /** 学工号 */
+  stdNumber?: string | null;
 }
 
 /**
@@ -149,6 +152,9 @@ export interface ClientUserInfoModel {
 
   /** 真实姓名 */
   realName?: string | null;
+
+  /** 学工号 */
+  stdNumber?: string;
 
   /** 头像链接 */
   avatar?: string | null;
@@ -222,10 +228,10 @@ export interface TeamInfoModel {
   locked?: boolean;
 
   /** 队伍成员 */
-  members?: BasicTeamUserInfoModel[] | null;
+  members?: TeamUserInfoModel[] | null;
 }
 
-export interface BasicTeamUserInfoModel {
+export interface TeamUserInfoModel {
   /** 用户ID */
   id?: string | null;
 
@@ -257,6 +263,9 @@ export interface UpdateUserInfoModel {
 
   /** 真实姓名 */
   realName?: string | null;
+
+  /** 学工号 */
+  stdNumber?: string;
 
   /** 用户角色 */
   role?: Role | null;
@@ -2938,12 +2947,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 删除队伍
      * @request DELETE:/api/team/{id}
      */
-    teamDeleteTeam: (id: string, data: number, params: RequestParams = {}) =>
+    teamDeleteTeam: (id: number, params: RequestParams = {}) =>
       this.request<TeamInfoModel, RequestResponse>({
         path: `/api/team/${id}`,
         method: 'DELETE',
-        body: data,
-        type: ContentType.Json,
         format: 'json',
         ...params,
       }),

@@ -281,6 +281,7 @@ namespace CTFServer.Migrations
                     RegisterTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Bio = table.Column<string>(type: "text", nullable: false),
                     RealName = table.Column<string>(type: "text", nullable: false),
+                    StdNumber = table.Column<string>(type: "text", nullable: false),
                     AvatarHash = table.Column<string>(type: "text", nullable: true),
                     OwnTeamId = table.Column<int>(type: "integer", nullable: true),
                     ActiveTeamId = table.Column<int>(type: "integer", nullable: true),
@@ -389,6 +390,7 @@ namespace CTFServer.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     Score = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),
                     TeamId = table.Column<int>(type: "integer", nullable: false)

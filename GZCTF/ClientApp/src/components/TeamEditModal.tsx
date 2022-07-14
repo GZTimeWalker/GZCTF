@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -6,6 +6,7 @@ import {
   Center,
   Grid,
   Group,
+  Title,
   Image,
   Modal,
   ModalProps,
@@ -13,10 +14,11 @@ import {
   Text,
   Textarea,
   TextInput,
+  useMantineTheme,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose } from '@mdi/js';
+import { mdiCheck, mdiClose, mdiCloseCircle } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -39,15 +41,51 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null;
+  isCaptain: boolean;
 }
 
 const TeamEditModal: FC<TeamEditModalProps> = (props) => {
-  const { team, ...modalProps } = props;
+  const { team, isCaptain, ...modalProps } = props;
 
   const [teamInfo, setTeamInfo] = useState<TeamInfoModel | null>(team);
-  const [disabled, setDisabled] = useState(false);
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+  const [leaveOpened, setLeaveOpened] = useState(false);
+
+  const theme = useMantineTheme();
+
+  useEffect(() => {
+    setTeamInfo(team);
+  }, [team]);
+
+  const onConfirmLeaveTeam = () => {
+    if (teamInfo && !isCaptain) {
+      api.team
+        .teamLeave(teamInfo.id!)
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            title: '退出队伍成功',
+            message: '您的队伍信息已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          });
+          api.team.mutateTeamGetTeamsInfo();
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          });
+        })
+        .finally(() => {
+          setLeaveOpened(false);
+        });
+    }
+  };
 
   const onChangeAvatar = () => {
     if (avatarFile && team?.id) {
@@ -63,7 +101,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          setTeamInfo({ avatar: data.data, ...teamInfo})
+          setTeamInfo({ avatar: data.data, ...teamInfo });
           api.team.mutateTeamGetTeamsInfo();
           setAvatarFile(null);
           setDropzoneOpened(false);
@@ -84,7 +122,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     if (teamInfo && teamInfo?.id) {
       api.team
         .teamUpdateTeam(teamInfo.id, teamInfo)
-        .then(() => {
+        .then((data) => {
+          // Updated TeamInfoModel
           showNotification({
             color: 'teal',
             title: '你改变了一些东西',
@@ -117,7 +156,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               placeholder={team?.name ?? 'ctfteam'}
               style={{ width: '100%' }}
               value={teamInfo?.name ?? 'team'}
-              disabled={disabled}
+              disabled={!isCaptain}
               onChange={(event) => setTeamInfo({ ...teamInfo, name: event.target.value })}
             />
           </Grid.Col>
@@ -127,7 +166,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                 style={{ borderRadius: '50%' }}
                 size={70}
                 src={team?.avatar}
-                onClick={() => setDropzoneOpened(true)}
+                onClick={() => isCaptain && setDropzoneOpened(true)}
               />
             </Center>
           </Grid.Col>
@@ -137,31 +176,20 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           placeholder={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
           value={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
           style={{ width: '100%' }}
-          disabled={disabled}
+          disabled={!isCaptain}
           autosize
           minRows={2}
           maxRows={4}
           onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
-        <Box style={{ margin: 'auto', width: '100%' }}>
-          <Grid grow>
-            <Grid.Col span={8}>
-              <Button fullWidth variant="outline" disabled={disabled} onClick={onSaveChange}>
-                保存
-              </Button>
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Button
-                fullWidth
-                color="red"
-                variant="outline"
-                disabled={disabled}
-              >
-                清除变更
-              </Button>
-            </Grid.Col>
-          </Grid>
-        </Box>
+        <Group grow style={{ margin: 'auto', width: '100%' }}>
+          <Button fullWidth color="red" variant="outline" onClick={() => setLeaveOpened(true)}>
+            {isCaptain ? '删除队伍' : '退出队伍'}
+          </Button>
+          <Button fullWidth disabled={!isCaptain} onClick={onSaveChange}>
+            更新队伍
+          </Button>
+        </Group>
       </Stack>
       <Modal
         opened={dropzoneOpened}
@@ -189,9 +217,41 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         >
           {(status) => dropzoneChildren(status, avatarFile)}
         </Dropzone>
-        <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
-          修改头像
+        <Button fullWidth variant="outline" onClick={onChangeAvatar}>
+          更新头像
         </Button>
+      </Modal>
+      <Modal
+        opened={leaveOpened}
+        centered
+        title={isCaptain ? '删除队伍' : '离开队伍'}
+        onClose={() => setLeaveOpened(false)}
+      >
+        {isCaptain ? (
+          <Stack spacing="lg" p={40} style={{ textAlign: 'center' }}>
+            <Center>
+              <Icon color={theme.colors.red[7]} path={mdiCloseCircle} size={4} />
+            </Center>
+            <Title order={3}>暂不允许删除战队</Title>
+            <Text>
+              为保证数据完整性
+              <br />
+              删除战队功能已被禁用
+            </Text>
+          </Stack>
+        ) : (
+          <Stack>
+            <Text size="sm">你确定要离开 {teamInfo?.name} 吗？</Text>
+            <Group grow style={{ margin: 'auto', width: '100%' }}>
+              <Button fullWidth color="red" variant="outline" onClick={onConfirmLeaveTeam}>
+                确认离开
+              </Button>
+              <Button fullWidth onClick={() => setLeaveOpened(false)}>
+                取消
+              </Button>
+            </Group>
+          </Stack>
+        )}
       </Modal>
     </Modal>
   );

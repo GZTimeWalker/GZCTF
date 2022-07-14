@@ -94,6 +94,7 @@ public class AdminController : ControllerBase
         user.Email = model.Email ?? user.Email;
         user.Bio = model.Bio ?? user.Bio;
         user.Role = model.Role ?? user.Role;
+        user.StdNumber = model.StdNumber ?? user.StdNumber;
         user.RealName = model.RealName ?? user.RealName;
         user.PhoneNumber = model.Phone ?? user.PhoneNumber;
 

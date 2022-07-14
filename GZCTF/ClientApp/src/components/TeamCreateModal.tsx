@@ -18,10 +18,11 @@ import api, { TeamUpdateModel } from '../Api';
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean;
+  mutateActive: (id: number) => void;
 }
 
 const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
-  const { isOwnTeam, ...modalProps } = props;
+  const { isOwnTeam, mutateActive, ...modalProps } = props;
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' });
   const theme = useMantineTheme();
 
@@ -37,6 +38,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           disallowClose: true,
         });
         api.team.mutateTeamGetTeamsInfo();
+        mutateActive(res.data.id!);
       })
       .catch((err) => {
         showNotification({
@@ -67,6 +69,9 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
         </Stack>
       ) : (
         <Stack>
+          <Text>
+            创建一个队伍，你可以组织一个队伍，并且可以邀请其他人加入。每个人只能拥有一个队伍。
+          </Text>
           <TextInput
             label="队伍名称"
             type="text"

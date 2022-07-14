@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   Stack,
@@ -15,16 +16,18 @@ import {
   PasswordInput,
   Avatar,
   Image,
-  useMantineTheme,
   Center,
+  SimpleGrid,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { useInputState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { mdiAirHorn, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
-import api from '../../Api';
+import api, { ProfileUpdateModel } from '../../Api';
+import StrengthPasswordInput from '../../components/StrengthPasswordInput';
 import WithNavBar from '../../components/WithNavbar';
+import PasswordChangeModal from '../../components/PasswordChangeModal';
 
 const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
   <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
@@ -44,46 +47,38 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
 );
 
 const Profile: NextPage = () => {
-  const [opened, setOpened] = useState(false);
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const { data, mutate } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });
-  const [disabled, setDisabled] = useState(false);
-  const [pwdDisabled, setPwdDisabled] = useState(false);
-  const [uname, setUname] = useInputState('');
-  const [bio, setBio] = useInputState('');
-  const [pwd, setPwd] = useInputState('');
-  const [email, setEmail] = useInputState('');
+
+  const [profile, setProfile] = useState<ProfileUpdateModel>({
+    userName: data?.userName,
+    bio: data?.bio,
+    stdNumber: data?.stdNumber,
+    phone: data?.phone,
+    realName: data?.realName,
+  });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
-  const onSaveChange = () => {
-    setDisabled(true);
-    if (email && email != data?.email) {
-      setOpened(true);
-    } else if ((uname && uname != data?.userName) || (bio && bio != data?.bio)) {
-      changeInfo();
-    } else {
-      showNotification({
-        color: 'red',
-        title: '你没有做任何修改',
-        message: '这很值得',
-        icon: <Icon path={mdiAirHorn} size={1} />,
-        disallowClose: true,
-      });
-    }
-    setDisabled(false);
-  };
+  const [disabled, setDisabled] = useState(false);
 
-  const onConfirmEmail = () => {
-    setPwdDisabled(true);
-    // Need a check code API
-    setOpened(false);
-    changeEmailAndInfo();
-    setPwdDisabled(false);
-  };
+  const [mailEditOpened, setMailEditOpened] = useState(false);
+  const [pwdChangeOpened, setPwdChangeOpened] = useState(false);
+
+  const [email, setEmail] = useState(data?.email ?? '');
+
+  useEffect(() => {
+    setProfile({
+      userName: data?.userName,
+      bio: data?.bio,
+      stdNumber: data?.stdNumber,
+      phone: data?.phone,
+      realName: data?.realName,
+    });
+  }, [data]);
 
   const onChangeAvatar = () => {
     if (avatarFile) {
@@ -115,46 +110,30 @@ const Profile: NextPage = () => {
     }
   };
 
-  const onClearInfo = () => {
-    setDisabled(true);
-
-    setUname('');
-    setBio('');
-    setEmail('');
-
-    setDisabled(false);
-  };
-
-  const changeInfo = () => {
-    if (uname || bio) {
-      api.account
-        .accountUpdate({
-          userName: uname || data?.userName,
-          bio: bio || data?.bio,
-        })
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            title: '你改变了一些东西',
-            message: '但值得吗？',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          });
-          onClearInfo();
-          mutate({ ...data });
-        })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          });
+  const onChangeProfile = () => {
+    api.account
+      .accountUpdate(profile)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          title: '更改成功',
+          message: '个人信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
         });
-    }
+        mutate({ ...data });
+      })
+      .catch((err) => {
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: `${err.error.title}`,
+          icon: <Icon path={mdiClose} size={1} />,
+        });
+      });
   };
 
-  const changeEmailAndInfo = () => {
+  const onChangeEmail = () => {
     if (email) {
       api.account
         .accountChangeEmail({
@@ -163,12 +142,12 @@ const Profile: NextPage = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            title: '确认邮件已发送',
-            message: '请在您的邮箱中查收',
+            title: '验证邮件已发送',
+            message: '请检查你的邮箱及垃圾邮件~',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          changeInfo();
+          setMailEditOpened(false);
         })
         .catch((err) => {
           showNotification({
@@ -183,12 +162,8 @@ const Profile: NextPage = () => {
 
   return (
     <WithNavBar>
-      <Center>
-        <Paper
-          style={{ width: '55%', padding: '5%', paddingTop: '2%', marginTop: '5%' }}
-          shadow="sm"
-          p="lg"
-        >
+      <Center style={{ height: '90vh' }}>
+        <Paper style={{ width: '55%', padding: '2% 5%' }} shadow="sm" p="lg">
           {/* Header */}
           <Box style={{ marginBottom: '5px' }}>
             <h2>个人信息</h2>
@@ -196,17 +171,16 @@ const Profile: NextPage = () => {
           <Divider />
 
           {/* User Info */}
-          <Stack spacing="lg" style={{ margin: 'auto', marginTop: '15px' }}>
+          <Stack spacing="md" style={{ margin: 'auto', marginTop: '15px' }}>
             <Grid grow>
               <Grid.Col span={8}>
                 <TextInput
                   label="用户名"
                   type="text"
-                  placeholder={data?.userName ?? 'ctfer'}
                   style={{ width: '100%' }}
-                  value={uname}
+                  value={profile.userName ?? 'ctfer'}
                   disabled={disabled}
-                  onChange={(event) => setUname(event.currentTarget.value)}
+                  onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
                 />
               </Grid.Col>
               <Grid.Col span={4}>
@@ -223,28 +197,58 @@ const Profile: NextPage = () => {
             <TextInput
               label="邮箱"
               type="email"
-              placeholder={data?.email ?? 'ctfer@gzti.me'}
               style={{ width: '100%' }}
-              value={email}
+              value={data?.email ?? 'ctfer@gzti.me'}
               disabled={disabled}
-              onChange={(event) => setEmail(event.currentTarget.value)}
+              readOnly
             />
+            <TextInput
+              label="手机号"
+              type="tel"
+              style={{ width: '100%' }}
+              value={profile.phone ?? ''}
+              disabled={disabled}
+              onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
+            />
+            <SimpleGrid cols={2}>
+              <TextInput
+                label="学工号"
+                type="number"
+                style={{ width: '100%' }}
+                value={profile.stdNumber ?? ''}
+                disabled={disabled}
+                onChange={(event) => setProfile({ ...profile, stdNumber: event.target.value })}
+              />
+              <TextInput
+                label="真实姓名"
+                type="text"
+                style={{ width: '100%' }}
+                value={profile.realName ?? ''}
+                disabled={disabled}
+                onChange={(event) => setProfile({ ...profile, realName: event.target.value })}
+              />
+            </SimpleGrid>
             <Textarea
               label="描述"
-              placeholder={data?.bio ?? '这个人很懒，什么都没有写'}
-              value={bio}
+              value={profile.bio ?? '这个人很懒，什么都没有写'}
               style={{ width: '100%' }}
               disabled={disabled}
               autosize
               minRows={2}
               maxRows={4}
-              onChange={(event) => setBio(event.currentTarget.value)}
+              onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
             />
             <Box style={{ margin: 'auto', width: '100%' }}>
               <Grid grow>
-                <Grid.Col span={8}>
-                  <Button fullWidth variant="outline" disabled={disabled} onClick={onSaveChange}>
-                    保存变更
+                <Grid.Col span={4}>
+                  <Button
+                    fullWidth
+                    color="red"
+                    variant="outline"
+                    disabled={disabled}
+                    onClick={() => setMailEditOpened(true)}
+                  >
+                    更改邮箱
                   </Button>
                 </Grid.Col>
                 <Grid.Col span={4}>
@@ -253,52 +257,70 @@ const Profile: NextPage = () => {
                     color="red"
                     variant="outline"
                     disabled={disabled}
-                    onClick={onClearInfo}
+                    onClick={() => setPwdChangeOpened(true)}
                   >
-                    清除变更
+                    更改密码
+                  </Button>
+                </Grid.Col>
+                <Grid.Col span={4}>
+                  <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
+                    保存信息
                   </Button>
                 </Grid.Col>
               </Grid>
             </Box>
           </Stack>
 
-          {/* Change password */}
+          {/* Change Password */}
+          <PasswordChangeModal
+            opened={pwdChangeOpened}
+            centered
+            onClose={() => setPwdChangeOpened(false)}
+            title="更改密码"
+          />
+
+          {/* Change Email */}
           <Modal
-            opened={opened}
-            onClose={() => setOpened(false)}
-            title="您即将修改邮箱，请确认密码"
+            opened={mailEditOpened}
+            centered
+            onClose={() => setMailEditOpened(false)}
+            title="更改邮箱"
           >
-            <PasswordInput
-              required
-              label="密码"
-              placeholder="P4ssW@rd"
-              style={{ width: '100%' }}
-              value={pwd}
-              disabled={pwdDisabled}
-              onChange={(event) => setPwd(event.currentTarget.value)}
-            />
-            <Box style={{ margin: 'auto', marginTop: '30px' }}>
-              {
-                <Grid grow>
-                  <Grid.Col span={8}>
-                    <Button fullWidth variant="outline" onClick={onConfirmEmail}>
-                      确认修改
-                    </Button>
-                  </Grid.Col>
-                  <Grid.Col span={4}>
-                    <Button
-                      fullWidth
-                      color="red"
-                      variant="outline"
-                      onClick={() => setOpened(false)}
-                    >
-                      取消修改
-                    </Button>
-                  </Grid.Col>
-                </Grid>
-              }
-            </Box>
+            <Stack>
+              <Text>
+                更改邮箱后，您将不能通过原邮箱登录。一封邮件将会发送至您的新邮箱，请点击邮件中的链接完成验证。
+              </Text>
+              <TextInput
+                required
+                label="新邮箱"
+                type="email"
+                style={{ width: '100%' }}
+                placeholder={data?.email ?? 'ctfer@gzti.me'}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+                  <Grid grow>
+                    <Grid.Col span={6}>
+                      <Button fullWidth color="red" variant="outline" onClick={onChangeEmail}>
+                        确认修改
+                      </Button>
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <Button
+                        fullWidth
+                        variant="outline"
+                        onClick={() => {
+                          setEmail(data?.email ?? '');
+                          setMailEditOpened(false);
+                        }}
+                      >
+                        取消修改
+                      </Button>
+                    </Grid.Col>
+                  </Grid>
+            </Stack>
           </Modal>
+
           {/* Change avatar */}
           <Modal
             opened={dropzoneOpened}
