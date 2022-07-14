@@ -6,7 +6,7 @@ import {
   Loader,
   Center,
   Group,
-  UnstyledButton,
+  Textarea,
   Button,
   Modal,
   TextInput,
@@ -15,14 +15,19 @@ import {
 import { showNotification } from '@mantine/notifications';
 import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import api, { TeamInfoModel } from '../Api';
+import api, { TeamInfoModel, TeamUpdateModel } from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import TeamCard from '../components/TeamCard';
 import TeamEditModal from '../components/TeamEditModal';
 import WithNavBar from '../components/WithNavbar';
+import TeamCreateModal from '../components/TeamCreateModal';
 
 const Teams: NextPage = () => {
-  const { data: teams, error, mutate } = api.team.useTeamGetTeamsInfo({
+  const {
+    data: teams,
+    error,
+    mutate,
+  } = api.team.useTeamGetTeamsInfo({
     refreshInterval: 3000,
   });
 
@@ -34,10 +39,16 @@ const Teams: NextPage = () => {
 
   const [joinOpened, setJoinOpened] = useState(false);
   const [joinTeamCode, setJoinTeamCode] = useState('');
+
+  const [createOpened, setCreateOpened] = useState(false);
+
   const [editOpened, setEditOpened] = useState(false);
   const [editTeam, setEditTeam] = useState(null as TeamInfoModel | null);
+
   const [leaveOpened, setLeaveOpened] = useState(false);
   const [leaveTeam, setLeaveTeam] = useState(null as TeamInfoModel | null);
+
+  const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id == user?.userId));
 
   const onEditTeam = (team: TeamInfoModel) => {
     setEditTeam(team);
@@ -129,10 +140,7 @@ const Teams: NextPage = () => {
             <Button
               leftIcon={<Icon path={mdiAccountGroup} size={1} />}
               variant="outline"
-              onClick={() => {
-                setEditTeam(null);
-                setEditOpened(true);
-              }}
+              onClick={() => setCreateOpened(true)}
             >
               创建队伍
             </Button>
@@ -194,14 +202,24 @@ const Teams: NextPage = () => {
         </Stack>
       </Modal>
 
+      <TeamCreateModal
+        opened={createOpened}
+        centered
+        title="创建新队伍"
+        isOwnTeam={ownTeam ?? false}
+        onClose={() => setCreateOpened(false)}
+        mutate={mutate}
+      />
+
       <TeamEditModal
         opened={editOpened}
         centered
-        title={editTeam ? '编辑队伍' : '创建队伍'}
+        title="编辑队伍"
         onClose={() => setEditOpened(false)}
         team={editTeam}
         mutate={mutate}
       />
+
     </WithNavBar>
   );
 };
