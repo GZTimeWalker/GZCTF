@@ -25,6 +25,12 @@ public class LocalFile
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// 引用计数
+    /// </summary>
+    [JsonIgnore]
+    public uint ReferenceCount { get; set; } = 1;
+
+    /// <summary>
     /// 文件存储位置
     /// </summary>
     [NotMapped]

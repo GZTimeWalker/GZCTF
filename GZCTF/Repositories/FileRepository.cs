@@ -30,29 +30,33 @@ public class FileRepository : RepositoryBase, IFileRepository
         await file.CopyToAsync(tmp, token);
 
         tmp.Position = 0;
-        var hash = await SHA256.Create().ComputeHashAsync(tmp, token);
+        var hash = await SHA384.Create().ComputeHashAsync(tmp, token);
         var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
         var localFile = await GetFileByHash(fileHash, token);
 
-        if (localFile is null)
+        if (localFile is not null)
         {
-            localFile = new() { Hash = fileHash, Name = fileName ?? file.FileName };
-            await context.AddAsync(localFile, token);
+            localFile.Name = fileName ?? file.FileName;
+
+            localFile.ReferenceCount++; // same hash, add ref count
+
+            logger.SystemLog($"文件引用计数 [{localFile.Hash[..8]}] {localFile.Name} => {localFile.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
+
+            context.Update(localFile);
         }
         else
         {
-            localFile.Name = fileName ?? file.FileName;
-            context.Update(localFile);
-        }
+            localFile = new() { Hash = fileHash, Name = fileName ?? file.FileName };
+            await context.AddAsync(localFile, token);
 
-        var path = Path.Combine(uploadPath, localFile.Location);
+            var path = Path.Combine(uploadPath, localFile.Location);
 
-        if (!Directory.Exists(path))
-            Directory.CreateDirectory(path);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
 
-        using (var fileStream = File.Create(Path.Combine(path, localFile.Hash)))
-        {
+            using var fileStream = File.Create(Path.Combine(path, localFile.Hash));
+
             tmp.Position = 0;
             await tmp.CopyToAsync(fileStream, token);
         }
@@ -64,14 +68,26 @@ public class FileRepository : RepositoryBase, IFileRepository
 
     public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token = default)
     {
-        var file = await context.Files.Where(f => f.Hash == fileHash).FirstOrDefaultAsync(token);
+        var file = await GetFileByHash(fileHash, token);
 
         if (file is null)
             return TaskStatus.NotFound;
 
         var path = Path.Combine(uploadPath, file.Location, file.Hash);
 
-        logger.SystemLog($"删除文件 [{file.Hash[..8]}] {file.Name}...", TaskStatus.Pending, LogLevel.Information);
+        if (file.ReferenceCount > 1)
+        {
+            file.ReferenceCount--; // other ref exists, decrease ref count
+
+            logger.SystemLog($"文件引用计数 [{file.Hash[..8]}] {file.Name} => {file.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
+
+            context.Update(file);
+            await context.SaveChangesAsync(token);
+
+            return TaskStatus.Success;
+        }
+
+        logger.SystemLog($"删除文件 [{file.Hash[..8]}] {file.Name}", TaskStatus.Pending, LogLevel.Information);
 
         if (File.Exists(path))
         {

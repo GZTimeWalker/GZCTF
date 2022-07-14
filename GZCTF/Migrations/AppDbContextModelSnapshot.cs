@@ -344,6 +344,9 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long>("ReferenceCount")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Hash");
