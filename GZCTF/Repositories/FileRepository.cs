@@ -30,7 +30,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         await file.CopyToAsync(tmp, token);
 
         tmp.Position = 0;
-        var hash = await SHA384.Create().ComputeHashAsync(tmp, token);
+        var hash = await SHA256.Create().ComputeHashAsync(tmp, token);
         var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
         var localFile = await GetFileByHash(fileHash, token);
