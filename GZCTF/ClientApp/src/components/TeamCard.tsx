@@ -20,20 +20,15 @@ import api, { TeamInfoModel } from '../Api';
 
 interface TeamCardProps {
   team: TeamInfoModel;
+  isCaptain: boolean;
+  isActive: boolean;
   onEdit?: () => void;
   onLeave?: () => void;
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
-
-  const { data: user } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
-
+  const { team, isCaptain, isActive, onEdit, onLeave } = props;
   const theme = useMantineTheme();
-  const team = props.team;
 
   return (
     <Card shadow="sm">
@@ -48,7 +43,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Text size="md">{team.bio}</Text>
         </Box>
         <Box style={{ height: '100%' }}>
-          {user?.activeTeamId === team.id ? (
+          {isActive ? (
             <Text transform="uppercase" size="sm" color="yellow">
               Active
             </Text>
@@ -65,7 +60,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Text transform="uppercase" color="dimmed">
             Role:
           </Text>
-          {team.members?.find((m) => m?.captain && m.id == user?.userId) ? (
+          {isCaptain ? (
             <Badge color="brand" size="lg">
               captain
             </Badge>

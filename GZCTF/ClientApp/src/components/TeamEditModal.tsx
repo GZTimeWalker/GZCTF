@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { mutate } from 'swr';
 import {
   Avatar,
   Box,
@@ -41,10 +40,11 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null;
+  mutate: () => void;
 }
 
 const TeamEditModal: FC<TeamEditModalProps> = (props) => {
-  const { team, ...modalProps } = props;
+  const { team, mutate, ...modalProps } = props;
 
   const [disabled, setDisabled] = useState(false);
   const [tname, setTname] = useInputState('');
@@ -91,7 +91,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          mutate({ ...team });
+          mutate();
           setAvatarFile(null);
           setDropzoneOpened(false);
         })
@@ -123,7 +123,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             disallowClose: true,
           });
           onClearInfo();
-          mutate({ ...team });
+          mutate();
         })
         .catch((err) => {
           showNotification({

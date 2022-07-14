@@ -22,8 +22,14 @@ import TeamEditModal from '../components/TeamEditModal';
 import WithNavBar from '../components/WithNavbar';
 
 const Teams: NextPage = () => {
-  const { data: teams, error } = api.team.useTeamGetTeamsInfo({
+  const { data: teams, error, mutate } = api.team.useTeamGetTeamsInfo({
     refreshInterval: 3000,
+  });
+
+  const { data: user } = api.account.useAccountProfile({
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
   });
 
   const [joinOpened, setJoinOpened] = useState(false);
@@ -34,14 +40,14 @@ const Teams: NextPage = () => {
   const [leaveTeam, setLeaveTeam] = useState(null as TeamInfoModel | null);
 
   const onEditTeam = (team: TeamInfoModel) => {
-      setEditTeam(team);
-      setEditOpened(true);
+    setEditTeam(team);
+    setEditOpened(true);
   };
 
   const onLeaveTeam = (team: TeamInfoModel) => {
-      setLeaveTeam(team);
-      setLeaveOpened(true);
-  }
+    setLeaveTeam(team);
+    setLeaveOpened(true);
+  };
 
   const onJoinTeam = () => {
     const parts = joinTeamCode.split(':');
@@ -145,6 +151,8 @@ const Teams: NextPage = () => {
               <TeamCard
                 key={i}
                 team={t}
+                isActive={t.id === user?.activeTeamId}
+                isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
                 onEdit={() => onEditTeam(t)}
                 onLeave={() => onLeaveTeam(t)}
               />
@@ -192,6 +200,7 @@ const Teams: NextPage = () => {
         title={editTeam ? '编辑队伍' : '创建队伍'}
         onClose={() => setEditOpened(false)}
         team={editTeam}
+        mutate={mutate}
       />
     </WithNavBar>
   );

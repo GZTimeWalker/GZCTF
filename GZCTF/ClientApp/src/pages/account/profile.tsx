@@ -44,7 +44,6 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
 );
 
 const Profile: NextPage = () => {
-  const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const { data, mutate } = api.account.useAccountProfile({
