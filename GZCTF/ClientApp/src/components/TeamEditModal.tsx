@@ -46,36 +46,10 @@ interface TeamEditModalProps extends ModalProps {
 const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const { team, mutate, ...modalProps } = props;
 
+  const [teamInfo, setTeamInfo] = useState<TeamInfoModel | null>(team);
   const [disabled, setDisabled] = useState(false);
-  const [tname, setTname] = useInputState('');
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
-  const [bio, setBio] = useInputState('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-
-  const onSaveChange = () => {
-    setDisabled(true);
-    if ((tname && tname != team?.name) || (bio && bio != team?.bio)) {
-      changeInfo();
-    } else {
-      showNotification({
-        color: 'red',
-        title: '你没有做任何修改',
-        message: '这很值得',
-        icon: <Icon path={mdiAirHorn} size={1} />,
-        disallowClose: true,
-      });
-    }
-    setDisabled(false);
-  };
-
-  const onClearInfo = () => {
-    setDisabled(true);
-
-    setTname('');
-    setBio('');
-
-    setDisabled(false);
-  };
 
   const onChangeAvatar = () => {
     if (avatarFile && team?.id) {
@@ -83,7 +57,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         .teamAvatar(team.id, {
           file: avatarFile,
         })
-        .then(() => {
+        .then((data) => {
           showNotification({
             color: 'teal',
             title: '修改头像成功',
@@ -91,6 +65,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
+          setTeamInfo({ avatar: data.data, ...teamInfo})
           mutate();
           setAvatarFile(null);
           setDropzoneOpened(false);
@@ -107,13 +82,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     }
   };
 
-  const changeInfo = () => {
-    if ((tname || bio) && team?.id) {
+  const onSaveChange = () => {
+    if (teamInfo && teamInfo?.id) {
       api.team
-        .teamUpdateTeam(team.id, {
-          name: tname || team?.name,
-          bio: bio || team?.bio,
-        })
+        .teamUpdateTeam(teamInfo.id, teamInfo)
         .then(() => {
           showNotification({
             color: 'teal',
@@ -122,7 +94,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          onClearInfo();
           mutate();
         })
         .catch((err) => {
@@ -147,9 +118,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               type="text"
               placeholder={team?.name ?? 'ctfteam'}
               style={{ width: '100%' }}
-              value={tname}
+              value={teamInfo?.name ?? 'team'}
               disabled={disabled}
-              onChange={(event) => setTname(event.currentTarget.value)}
+              onChange={(event) => setTeamInfo({ ...teamInfo, name: event.target.value })}
             />
           </Grid.Col>
           <Grid.Col span={4}>
@@ -165,14 +136,14 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         </Grid>
         <Textarea
           label="队伍签名"
-          placeholder={team?.bio ?? '这个人很懒，什么都没有写'}
-          value={bio}
+          placeholder={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
+          value={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
           style={{ width: '100%' }}
           disabled={disabled}
           autosize
           minRows={2}
           maxRows={4}
-          onChange={(event) => setBio(event.currentTarget.value)}
+          onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
         <Box style={{ margin: 'auto', width: '100%' }}>
           <Grid grow>
@@ -187,7 +158,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                 color="red"
                 variant="outline"
                 disabled={disabled}
-                onClick={onClearInfo}
               >
                 清除变更
               </Button>
