@@ -15,7 +15,7 @@ public class LocalFile
     /// <summary>
     /// 文件哈希
     /// </summary>
-    [MaxLength(64)]
+    [MaxLength(96)]
     public string Hash { get; set; } = string.Empty;
 
     /// <summary>

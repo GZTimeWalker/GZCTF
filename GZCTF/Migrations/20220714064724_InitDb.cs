@@ -52,7 +52,7 @@ namespace CTFServer.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Hash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Hash = table.Column<string>(type: "character varying(96)", maxLength: 96, nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     ReferenceCount = table.Column<long>(type: "bigint", nullable: false)
                 },
