@@ -26,16 +26,19 @@ public class AdminController : ControllerBase
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileService;
     private readonly ITeamRepository teamRepository;
+    private readonly IParticipationRepository participationRepository;
 
     public AdminController(UserManager<UserInfo> _userManager,
         ILogRepository _logRepository,
         ITeamRepository _teamRepository,
+        IParticipationRepository _participationRepository,
         IFileRepository _FileService)
     {
         userManager = _userManager;
         logRepository = _logRepository;
         fileService = _FileService;
         teamRepository = _teamRepository;
+        participationRepository = _participationRepository;
     }
 
     /// <summary>
@@ -167,6 +170,31 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(List<ClientUserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromRoute] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await logRepository.GetLogs(skip, count, level, token));
+
+    /// <summary>
+    /// 更新参与状态
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口更新队伍参与状态，审核申请，需要Admin权限
+    /// </remarks>
+    /// <response code="200">更新成功</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpPut("Participation/{id}/{status}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Participation(int id, ParticipationStatus status, CancellationToken token = default)
+    {
+        var participation = await participationRepository.GetParticipationById(id, token);
+
+        if (participation is null)
+            return NotFound(new RequestResponse("参与状态未找到", 404));
+
+        participation.Status = status;
+        await participationRepository.UpdateAsync(participation, token);
+
+        return Ok();
+    }
 
     /// <summary>
     /// 获取全部文件

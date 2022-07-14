@@ -271,6 +271,14 @@ export interface UpdateUserInfoModel {
   role?: Role | null;
 }
 
+export enum ParticipationStatus {
+  Pending = 'Pending',
+  Accepted = 'Accepted',
+  Denied = 'Denied',
+  Forfeited = 'Forfeited',
+  Unsubmitted = 'Unsubmitted',
+}
+
 export interface LocalFile {
   /** 文件哈希 */
   hash?: string;
@@ -732,14 +740,6 @@ export interface GameDetailsModel {
   end?: string;
 }
 
-export enum ParticipationStatus {
-  Pending = 'Pending',
-  Accepted = 'Accepted',
-  Denied = 'Denied',
-  Forfeited = 'Forfeited',
-  Unsubmitted = 'Unsubmitted',
-}
-
 export interface ScoreboardModel {
   /**
    * 更新时间
@@ -956,6 +956,12 @@ export enum ContainerStatus {
 }
 
 export interface ParticipationInfoModel {
+  /**
+   * 参与对象 Id
+   * @format int32
+   */
+  id?: number;
+
   /** 参与队伍 */
   team?: TeamInfoModel;
 
@@ -1677,6 +1683,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: ClientUserInfoModel[] | Promise<ClientUserInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<ClientUserInfoModel[]>([`/api/admin/logs/${level}`, query], data, options),
+
+    /**
+     * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminParticipation
+     * @summary 更新参与状态
+     * @request PUT:/api/admin/participation/{id}/{status}
+     */
+    adminParticipation: (id: number, status: ParticipationStatus, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/participation/${id}/${status}`,
+        method: 'PUT',
+        ...params,
+      }),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限

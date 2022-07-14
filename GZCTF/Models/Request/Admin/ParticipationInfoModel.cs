@@ -1,9 +1,14 @@
 ﻿using CTFServer.Models.Request.Teams;
 
-namespace CTFServer.Models.Request.Game;
+namespace CTFServer.Models.Request.Admin;
 
 public class ParticipationInfoModel
 {
+    /// <summary>
+    /// 参与对象 Id
+    /// </summary>
+    public int Id { get; set; }
+
     /// <summary>
     /// 参与队伍
     /// </summary>
@@ -22,6 +27,7 @@ public class ParticipationInfoModel
     public static ParticipationInfoModel FromParticipation(Participation part)
         => new()
         {
+            Id = part.Id,
             Team = TeamInfoModel.FromTeam(part.Team),
             Score = part.Score,
             Status = part.Status
