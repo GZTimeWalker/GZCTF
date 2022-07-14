@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import {
   Group,
   Title,
@@ -13,8 +13,10 @@ import {
   Box,
   useMantineTheme,
   Button,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core';
-import { mdiLockOutline } from '@mdi/js';
+import { mdiLockOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -29,9 +31,16 @@ interface TeamCardProps {
 const TeamCard: FC<TeamCardProps> = (props) => {
   const { team, isCaptain, isActive, onEdit, onLeave } = props;
   const theme = useMantineTheme();
-
+  const [cardClickable, setCardClickable] = useState(true);
+  const [showAction, setShowAction] = useState(false);
   return (
-    <Card shadow="sm">
+    <Card shadow="sm" onClick={() => { if (cardClickable) console.log("Card Clicked!") }} sx={(theme) => ({
+      cursor: "pointer",
+      transition: "filter .2s",
+      '&:hover': {
+        filter: theme.colorScheme === 'dark' ? "brightness(1.2)": "brightness(.97)"
+      },
+    })}>
       <Group align="stretch">
         <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
           {team.name?.at(0) ?? 'T'}
@@ -43,7 +52,19 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Text size="md">{team.bio}</Text>
         </Box>
         <Box style={{ height: '100%' }}>
-          
+          <Tooltip
+            label={isActive ? "取消激活" : "激活"}
+            position="right"
+            color="brand"
+          >
+            <ActionIcon size="lg" onMouseEnter={() => setCardClickable(false)} onMouseLeave={() => setCardClickable(true)} onClick={() => { console.log("Pin!") }} sx={(theme) => ({
+              '&:hover': {
+                color: theme.colors.brand[2],
+              },
+            })}>
+              <Icon path={isActive ? mdiPinOffOutline : mdiPinOutline} size={1} />
+            </ActionIcon>
+          </Tooltip>
         </Box>
       </Group>
       <Divider my="sm" />
