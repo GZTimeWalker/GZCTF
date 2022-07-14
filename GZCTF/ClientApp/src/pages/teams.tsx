@@ -19,9 +19,9 @@ import { Icon } from '@mdi/react';
 import api, { TeamInfoModel, TeamUpdateModel } from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import TeamCard from '../components/TeamCard';
+import TeamCreateModal from '../components/TeamCreateModal';
 import TeamEditModal from '../components/TeamEditModal';
 import WithNavBar from '../components/WithNavbar';
-import TeamCreateModal from '../components/TeamCreateModal';
 
 const Teams: NextPage = () => {
   const {
@@ -246,7 +246,6 @@ const Teams: NextPage = () => {
         team={editTeam}
         mutate={mutate}
       />
-
     </WithNavBar>
   );
 };

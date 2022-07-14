@@ -55,12 +55,16 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       {isOwnTeam ? (
-        <Stack spacing='lg' p={40} style={{ textAlign: 'center'}}>
+        <Stack spacing="lg" p={40} style={{ textAlign: 'center' }}>
           <Center>
             <Icon color={theme.colors.red[7]} path={mdiCloseCircle} size={4} />
           </Center>
           <Title order={3}>你已经创建了一个队伍</Title>
-          <Text>每个人只能拥有一个队伍<br/>你可以删除队伍后重新创建</Text>
+          <Text>
+            每个人只能拥有一个队伍
+            <br />
+            你可以删除队伍后重新创建
+          </Text>
         </Stack>
       ) : (
         <Stack>

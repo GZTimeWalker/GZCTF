@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220714064724_InitDb")]
+    [Migration("20220714074354_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -339,8 +339,8 @@ namespace CTFServer.Migrations
 
                     b.Property<string>("Hash")
                         .IsRequired()
-                        .HasMaxLength(96)
-                        .HasColumnType("character varying(96)");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Name")
                         .IsRequired()

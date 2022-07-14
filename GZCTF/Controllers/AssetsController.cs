@@ -37,7 +37,7 @@ public class AssetsController : ControllerBase
     /// <param name="filename">下载文件名</param>
     /// <response code="200">成功获取文件</response>
     /// <response code="404">文件未找到</response>
-    [HttpGet("[controller]/{hash:length(96)}/{filename:minlength(1)}")]
+    [HttpGet("[controller]/{hash:length(64)}/{filename:minlength(1)}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
