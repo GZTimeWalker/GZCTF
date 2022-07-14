@@ -356,13 +356,13 @@ public class TeamController : ControllerBase
             var team = await teamRepository.GetTeamById(id, cancelToken);
 
             if (team is null)
-                return BadRequest(new RequestResponse($"{items[0]}({items[1]}) 队伍未找到"));
+                return BadRequest(new RequestResponse($"{items[0]} 队伍未找到"));
 
             if (team.InviteCode != code)
-                return BadRequest(new RequestResponse($"{items[0]}({items[1]}) 邀请无效"));
+                return BadRequest(new RequestResponse($"{items[0]} 邀请无效"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
-                return BadRequest(new RequestResponse($"{items[0]}({items[1]}) 队伍已锁定"));
+                return BadRequest(new RequestResponse($"{items[0]} 队伍已锁定"));
 
             var user = await userManager.GetUserAsync(User);
 

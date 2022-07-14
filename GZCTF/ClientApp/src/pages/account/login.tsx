@@ -102,7 +102,9 @@ const Login: NextPage = () => {
       <Grid grow style={{ width: '100%' }}>
         <Grid.Col span={2}>
           <Link href="/account/register" passHref={true}>
-            <Button fullWidth variant="outline">注册</Button>
+            <Button fullWidth variant="outline">
+              注册
+            </Button>
           </Link>
         </Grid.Col>
         <Grid.Col span={2}>
