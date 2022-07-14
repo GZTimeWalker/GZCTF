@@ -477,11 +477,11 @@ public class TeamController : ControllerBase
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
 
-        if (file.Length > 5 * 1024 * 1024)
+        if (file.Length > 3 * 1024 * 1024)
             return BadRequest(new RequestResponse("文件过大"));
 
-        if (user.AvatarHash is not null)
-            _ = await FileService.DeleteFileByHash(user.AvatarHash, token);
+        if (team.AvatarHash is not null)
+            _ = await FileService.DeleteFileByHash(team.AvatarHash, token);
 
         var avatar = await FileService.CreateOrUpdateFile(file, "avatar", token);
 
