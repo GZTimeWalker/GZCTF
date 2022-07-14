@@ -108,7 +108,10 @@ public class TeamController : ControllerBase
             return BadRequest(new RequestResponse("队伍创建失败"));
 
         user.OwnTeam = team;
-        user.ActiveTeam = team;
+
+        if (user.ActiveTeam is null)
+            user.ActiveTeam = team;
+
         await userManager.UpdateAsync(user);
 
         logger.Log($"创建队伍 {team.Name}", user, TaskStatus.Success);
@@ -372,6 +375,10 @@ public class TeamController : ControllerBase
             team.Members.Add(user);
 
             await teamRepository.UpdateAsync(team, cancelToken);
+
+            if (user.ActiveTeam is null)
+                user.ActiveTeam = team;
+
             await trans.CommitAsync(cancelToken);
 
             logger.Log($"加入队伍 {team.Name}", user, TaskStatus.Success);
