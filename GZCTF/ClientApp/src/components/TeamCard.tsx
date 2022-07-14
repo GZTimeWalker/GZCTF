@@ -43,15 +43,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Text size="md">{team.bio}</Text>
         </Box>
         <Box style={{ height: '100%' }}>
-          {isActive ? (
-            <Text transform="uppercase" size="sm" color="yellow">
-              Active
-            </Text>
-          ) : (
-            <Text transform="uppercase" size="sm">
-              Inactive
-            </Text>
-          )}
+          
         </Box>
       </Group>
       <Divider my="sm" />

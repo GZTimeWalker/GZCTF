@@ -11,6 +11,8 @@ import {
   TextInput,
   Text,
   Divider,
+  Title,
+  useMantineTheme,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js';
@@ -38,6 +40,8 @@ const Teams: NextPage = () => {
   });
 
   console.log(teams, user);
+
+  const theme = useMantineTheme();
 
   const [joinOpened, setJoinOpened] = useState(false);
   const [joinTeamCode, setJoinTeamCode] = useState('');
@@ -129,6 +133,16 @@ const Teams: NextPage = () => {
     }
   };
 
+  //Divide teams into Active & Inactive
+  const teamsActive = [];
+  const teamsInactive = [];
+  if (teams) {
+    for (const t of teams) {
+      if (t.id === user?.activeTeamId) teamsActive.push(t);
+      else teamsInactive.push(t);
+    }
+  }
+
   return (
     <WithNavBar>
       <Stack>
@@ -153,17 +167,11 @@ const Teams: NextPage = () => {
         </Group>
         {teams && !error ? (
           <>
-            <SimpleGrid
-              cols={3}
-              spacing="lg"
-              breakpoints={[
-                { maxWidth: 1200, cols: 2, spacing: 'md' },
-                { maxWidth: 800, cols: 1, spacing: 'sm' },
-              ]}
-            >
-              {teams.map(
-                (t, i) =>
-                  t.id === user?.activeTeamId && (
+            {teamsActive.length > 0 &&
+              <>
+                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .15, height: "4.5rem", paddingLeft: "1rem", color: theme.colors.brand[2] }}>ACTIVE</Title>
+                {teamsActive.map(
+                  (t, i) => (
                     <TeamCard
                       key={i}
                       team={t}
@@ -175,11 +183,12 @@ const Teams: NextPage = () => {
                       onLeave={() => onLeaveTeam(t)}
                     />
                   )
-              )}
-            </SimpleGrid>
-            {teams.length > 1 && (
+                )}
+              </>
+            }
+            {teamsInactive.length > 0 &&
               <>
-                <Divider />
+                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .15, height: "4.5rem", paddingLeft: "1rem" }}>INACTIVE</Title>
                 <SimpleGrid
                   cols={3}
                   spacing="lg"
@@ -205,7 +214,7 @@ const Teams: NextPage = () => {
                   )}
                 </SimpleGrid>
               </>
-            )}
+            }
           </>
         ) : (
           <Center style={{ width: '100%', height: '100%' }}>
