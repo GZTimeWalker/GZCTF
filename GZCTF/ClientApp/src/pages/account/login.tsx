@@ -102,11 +102,13 @@ const Login: NextPage = () => {
       <Grid grow style={{ width: '100%' }}>
         <Grid.Col span={2}>
           <Link href="/account/register" passHref={true}>
-            <Button fullWidth>注册</Button>
+            <Button fullWidth variant="outline">
+              注册
+            </Button>
           </Link>
         </Grid.Col>
         <Grid.Col span={2}>
-          <Button fullWidth variant="outline" disabled={disabled} onClick={onLogin}>
+          <Button fullWidth disabled={disabled} onClick={onLogin}>
             登录
           </Button>
         </Grid.Col>

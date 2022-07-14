@@ -1,9 +1,8 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import {
   Group,
   Title,
   Text,
-  createStyles,
   Divider,
   Avatar,
   AvatarsGroup,
@@ -12,9 +11,11 @@ import {
   Stack,
   Box,
   useMantineTheme,
-  Button,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core';
-import { mdiLockOutline } from '@mdi/js';
+import { showNotification } from '@mantine/notifications';
+import { mdiLockOutline, mdiPinOffOutline, mdiPinOutline, mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -22,16 +23,58 @@ interface TeamCardProps {
   team: TeamInfoModel;
   isCaptain: boolean;
   isActive: boolean;
-  onEdit?: () => void;
-  onLeave?: () => void;
+  onEdit: () => void;
+  mutate: () => void;
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
-  const { team, isCaptain, isActive, onEdit, onLeave } = props;
+  const { team, isCaptain, isActive, onEdit, mutate } = props;
   const theme = useMantineTheme();
+  const [cardClickable, setCardClickable] = useState(true);
+
+  const onActive = () => {
+    if (isActive) {
+      return;
+    } else {
+      api.team
+        .teamSetActive(team.id!)
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            title: '激活队伍成功',
+            message: '您的队伍已经更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          });
+          mutate();
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          });
+        });
+    }
+  };
 
   return (
-    <Card shadow="sm">
+    <Card
+      shadow="sm"
+      onClick={() => {
+        if (cardClickable) {
+          onEdit();
+        }
+      }}
+      sx={(theme) => ({
+        cursor: 'pointer',
+        transition: 'filter .2s',
+        '&:hover': {
+          filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
+        },
+      })}
+    >
       <Group align="stretch">
         <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
           {team.name?.at(0) ?? 'T'}
@@ -42,17 +85,48 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           </Title>
           <Text size="md">{team.bio}</Text>
         </Box>
-        <Box style={{ height: '100%' }}>
-          {isActive ? (
-            <Text transform="uppercase" size="sm" color="yellow">
-              Active
-            </Text>
-          ) : (
-            <Text transform="uppercase" size="sm">
-              Inactive
-            </Text>
-          )}
-        </Box>
+        {!isActive && (
+          <Box style={{ height: '100%' }}>
+            <Tooltip
+              label={'激活'}
+              styles={(theme) => ({
+                body: {
+                  margin: 4,
+                  backgroundColor:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors[theme.primaryColor][8] + '40'
+                      : theme.colors[theme.primaryColor][2],
+                  color:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors[theme.primaryColor][4]
+                      : theme.colors.gray[8],
+                },
+              })}
+              position="left"
+              transition="pop-bottom-right"
+              color="brand"
+            >
+              <ActionIcon
+                size="lg"
+                onMouseEnter={() => setCardClickable(false)}
+                onMouseLeave={() => setCardClickable(true)}
+                onClick={onActive}
+                sx={(theme) => ({
+                  '&:hover': {
+                    color:
+                      theme.colorScheme === 'dark'
+                        ? theme.colors[theme.primaryColor][2]
+                        : theme.colors[theme.primaryColor][7],
+                    backgroundColor:
+                      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                  },
+                })}
+              >
+                <Icon path={isActive ? mdiPinOffOutline : mdiPinOutline} size={1} />
+              </ActionIcon>
+            </Tooltip>
+          </Box>
+        )}
       </Group>
       <Divider my="sm" />
       <Stack spacing="xs">

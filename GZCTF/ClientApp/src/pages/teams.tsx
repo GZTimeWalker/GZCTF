@@ -6,16 +6,18 @@ import {
   Loader,
   Center,
   Group,
-  Textarea,
   Button,
   Modal,
   TextInput,
   Text,
+  Divider,
+  Title,
+  useMantineTheme,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import api, { TeamInfoModel, TeamUpdateModel } from '../Api';
+import api, { TeamInfoModel } from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import TeamCard from '../components/TeamCard';
 import TeamCreateModal from '../components/TeamCreateModal';
@@ -28,7 +30,7 @@ const Teams: NextPage = () => {
     error,
     mutate,
   } = api.team.useTeamGetTeamsInfo({
-    refreshInterval: 3000,
+    refreshInterval: 10000,
   });
 
   const { data: user } = api.account.useAccountProfile({
@@ -36,6 +38,10 @@ const Teams: NextPage = () => {
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });
+
+  console.log(teams, user);
+
+  const theme = useMantineTheme();
 
   const [joinOpened, setJoinOpened] = useState(false);
   const [joinTeamCode, setJoinTeamCode] = useState('');
@@ -83,6 +89,7 @@ const Teams: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
+        mutate();
       })
       .catch((err) => {
         showNotification({
@@ -110,7 +117,7 @@ const Teams: NextPage = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          setLeaveOpened(false);
+          mutate();
         })
         .catch((err) => {
           showNotification({
@@ -119,10 +126,22 @@ const Teams: NextPage = () => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           });
+        })
+        .finally(() => {
           setLeaveOpened(false);
         });
     }
   };
+
+  //Divide teams into Active & Inactive
+  const teamsActive = [];
+  const teamsInactive = [];
+  if (teams) {
+    for (const t of teams) {
+      if (t.id === user?.activeTeamId) teamsActive.push(t);
+      else teamsInactive.push(t);
+    }
+  }
 
   return (
     <WithNavBar>
@@ -131,14 +150,14 @@ const Teams: NextPage = () => {
           <LogoHeader />
           <Group position="right">
             <Button
-              leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
+              leftIcon={<Icon path={mdiHumanGreetingVariant} size={1} />}
               variant="outline"
               onClick={() => setJoinOpened(true)}
             >
               加入队伍
             </Button>
             <Button
-              leftIcon={<Icon path={mdiAccountGroup} size={1} />}
+              leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
               variant="outline"
               onClick={() => setCreateOpened(true)}
             >
@@ -147,25 +166,77 @@ const Teams: NextPage = () => {
           </Group>
         </Group>
         {teams && !error ? (
-          <SimpleGrid
-            cols={3}
-            spacing="lg"
-            breakpoints={[
-              { maxWidth: 1200, cols: 2, spacing: 'md' },
-              { maxWidth: 800, cols: 1, spacing: 'sm' },
-            ]}
-          >
-            {teams.map((t, i) => (
-              <TeamCard
-                key={i}
-                team={t}
-                isActive={t.id === user?.activeTeamId}
-                isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
-                onEdit={() => onEditTeam(t)}
-                onLeave={() => onLeaveTeam(t)}
-              />
-            ))}
-          </SimpleGrid>
+          <>
+            {teamsActive.length > 0 && (
+              <>
+                <Title
+                  order={2}
+                  style={{
+                    fontSize: '6rem',
+                    fontWeight: 'bold',
+                    opacity: 0.15,
+                    height: '4.5rem',
+                    paddingLeft: '1rem',
+                    color: theme.colors.brand[theme.colorScheme === 'dark' ? 2 : 6],
+                    userSelect: 'none',
+                  }}
+                >
+                  ACTIVE
+                </Title>
+                {teamsActive.map((t, i) => (
+                  <TeamCard
+                    key={i}
+                    team={t}
+                    isActive={t.id === user?.activeTeamId}
+                    isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
+                    onEdit={() => onEditTeam(t)}
+                    mutate={mutate}
+                  />
+                ))}
+              </>
+            )}
+            {teamsInactive.length > 0 && (
+              <>
+                <Title
+                  order={2}
+                  style={{
+                    fontSize: '6rem',
+                    fontWeight: 'bold',
+                    opacity: 0.1,
+                    height: '4.5rem',
+                    paddingLeft: '1rem',
+                    userSelect: 'none',
+                  }}
+                >
+                  INACTIVE
+                </Title>
+                <SimpleGrid
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1200, cols: 2, spacing: 'md' },
+                    { maxWidth: 800, cols: 1, spacing: 'sm' },
+                  ]}
+                >
+                  {teams.map(
+                    (t, i) =>
+                      t.id !== user?.activeTeamId && (
+                        <TeamCard
+                          key={i}
+                          team={t}
+                          isActive={t.id === user?.activeTeamId}
+                          isCaptain={
+                            t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
+                          }
+                          onEdit={() => onEditTeam(t)}
+                          mutate={mutate}
+                        />
+                      )
+                  )}
+                </SimpleGrid>
+              </>
+            )}
+          </>
         ) : (
           <Center style={{ width: '100%', height: '100%' }}>
             <Loader />
@@ -175,10 +246,7 @@ const Teams: NextPage = () => {
 
       <Modal opened={joinOpened} centered title="加入已有队伍" onClose={() => setJoinOpened(false)}>
         <Stack>
-          <Text size="sm">
-            请从队伍创建者处获取队伍邀请码，然后输入邀请码以加入队伍。
-            <strong>每个邀请码只能使用一次。</strong>
-          </Text>
+          <Text size="sm">请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。</Text>
           <TextInput
             label="邀请码"
             type="text"
