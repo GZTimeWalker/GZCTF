@@ -257,6 +257,35 @@ public enum ChallengeType : byte
     DynamicContainer = 0b11
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ParticipationStatus : byte
+{
+    /// <summary>
+    /// 已报名
+    /// </summary>
+    Pending = 0,
+
+    /// <summary>
+    /// 已接受
+    /// </summary>
+    Accepted = 1,
+
+    /// <summary>
+    /// 已拒绝
+    /// </summary>
+    Denied = 2,
+
+    /// <summary>
+    /// 已取消
+    /// </summary>
+    Forfeited = 3,
+
+    /// <summary>
+    /// 未提交
+    /// </summary>
+    Unsubmitted = 4,
+}
+
 public static class ChallengeTypeExtensions
 {
     /// <summary>

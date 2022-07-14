@@ -98,6 +98,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<Participation>(entity =>
         {
+            entity.Property(e => e.Status)
+                .HasConversion<string>();
+
             entity.HasMany(e => e.Instances).WithOne();
 
             entity.HasMany(e => e.Submissions)

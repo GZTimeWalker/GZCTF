@@ -1,7 +1,6 @@
 ﻿using CTFServer.Middlewares;
 using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
-using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -88,12 +87,13 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Games(int id, CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
+        var context = await GetContextInfo(id, token);
 
-        if (game is null)
+        if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
 
-        return Ok(GameDetailsModel.FromGame(game));
+        return Ok(GameDetailsModel.FromGame(context.Game)
+                      .WithParticipation(context.Participation));
     }
 
     /// <summary>
@@ -121,44 +121,20 @@ public class GameController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
-        if (user.OwnTeamId != id || user.ActiveTeamId != id)
+        if (user.OwnTeamId is null || user.OwnTeamId != user.ActiveTeamId)
+            // (user.ActiveTeamId is null) is impossible
             return new JsonResult(new RequestResponse("您不是当前激活队伍的队长", 403))
             {
                 StatusCode = 403
             };
 
-        using var trans = await teamRepository.BeginTransactionAsync(token);
+        var team = await teamRepository.GetActiveTeamWithMembers(user, token);
 
-        try
-        {
-            var team = await teamRepository.GetActiveTeamWithMembers(user, token);
+        await participationRepository.CreateParticipation(team!, game, token);
 
-            if (team is null)
-                return BadRequest(new RequestResponse("请激活一个队伍以参赛"));
+        logger.Log($"{team!.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
 
-            if (game.TeamMemberCountLimit > 0 && game.TeamMemberCountLimit > team.Members.Count)
-                return BadRequest(new RequestResponse("参赛队伍不符合人数限制"));
-
-            if (game.StartTimeUTC < DateTimeOffset.UtcNow)
-                return BadRequest(new RequestResponse("比赛已经开始，不能加入"));
-
-            await participationRepository.CreateParticipation(team, game, token);
-
-            team.Locked = true;
-
-            await teamRepository.UpdateAsync(team, token);
-
-            await trans.CommitAsync(token);
-
-            logger.Log($"{team.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
-
-            return Ok();
-        }
-        catch
-        {
-            await trans.RollbackAsync(token);
-            throw;
-        }
+        return Ok();
     }
 
     /// <summary>
@@ -290,12 +266,41 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)
     {
-        var context = await GetContextInfo(id, true, token);
+        var context = await GetContextInfo(id, token);
 
         if (context.Result is not null)
             return context.Result;
 
-        return Ok((await gameRepository.GetScoreboard(context.Game, token)).Challenges);
+        return Ok((await gameRepository.GetScoreboard(context.Game!, token)).Challenges);
+    }
+
+    /// <summary>
+    /// 获取全部比赛参与信息
+    /// </summary>
+    /// <remarks>
+    /// 获取比赛的全部题目参与信息，需要Admin权限
+    /// </remarks>
+    /// <param name="id">比赛id</param>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛参与信息</response>
+    /// <response code="400">操作无效</response>
+    /// <response code="404">比赛未找到</response>
+    [RequireAdmin]
+    [HttpGet("{id}/Participations")]
+    [ProducesResponseType(typeof(IEnumerable<ParticipationInfoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Participations([FromRoute] int id, [FromQuery] int count = 20, [FromQuery] int skip = 0, CancellationToken token = default)
+    {
+        var context = await GetContextInfo(id, token);
+
+        if (context.Result is not null)
+            return context.Result;
+
+        return Ok((await participationRepository.GetParticipations(context.Game!, count, skip, token))
+                    .Select(p => ParticipationInfoModel.FromParticipation(p)));
     }
 
     /// <summary>
@@ -317,12 +322,12 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetChallenge([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, true, token);
+        var context = await GetContextInfo(id, token);
 
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -350,7 +355,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
     {
-        var context = await GetContextInfo(id, true, token);
+        var context = await GetContextInfo(id, token);
 
         if (context.Result is not null)
             return context.Result;
@@ -359,9 +364,9 @@ public class GameController : ControllerBase
         {
             ChallengeId = challengeId,
             Answer = flag,
-            Game = context.Game,
+            Game = context.Game!,
             User = context.User,
-            Participation = context.Participation,
+            Participation = context.Participation!,
             Status = AnswerResult.FlagSubmitted,
             SubmitTimeUTC = DateTimeOffset.UtcNow,
         };
@@ -425,12 +430,12 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, true, token);
+        var context = await GetContextInfo(id, token);
 
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -474,12 +479,12 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, true, token);
+        var context = await GetContextInfo(id, token);
 
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -512,12 +517,12 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ProlongContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, true, token);
+        var context = await GetContextInfo(id, token);
 
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -555,12 +560,12 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, true, token);
+        var context = await GetContextInfo(id, token);
 
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await instanceRepository.GetInstance(context.Participation, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -580,9 +585,9 @@ public class GameController : ControllerBase
 
     private class ContextInfo
     {
-        public Game Game = default!;
-        public UserInfo User = default!;
-        public Participation Participation = default!;
+        public Game? Game = default!;
+        public UserInfo? User = default!;
+        public Participation? Participation = default!;
         public IActionResult? Result = null;
 
         public ContextInfo WithResult(IActionResult res)
@@ -592,24 +597,16 @@ public class GameController : ControllerBase
         }
     };
 
-    private async Task<ContextInfo> GetContextInfo(int id, bool withPartication = false, CancellationToken token = default)
+    private async Task<ContextInfo> GetContextInfo(int id, CancellationToken token = default)
     {
-        ContextInfo res = new();
+        ContextInfo res = new()
+        {
+            User = await userManager.GetUserAsync(User),
+            Game = await gameRepository.GetGameById(id, token)
+        };
 
-        res.User = await userManager.GetUserAsync(User);
-
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
+        if (res.Game is null)
             return res.WithResult(NotFound(new RequestResponse("比赛未找到")));
-
-        res.Game = game;
-
-        if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
-            return res.WithResult(BadRequest(new RequestResponse("比赛还未开始")));
-
-        if (!withPartication)
-            return res;
 
         if (res.User!.ActiveTeam is null)
             return res.WithResult(BadRequest(new RequestResponse("请激活一个队伍以参赛")));
@@ -619,7 +616,13 @@ public class GameController : ControllerBase
         if (part is null)
             return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));
 
+        if (part.Status != ParticipationStatus.Accepted)
+            return res.WithResult(BadRequest(new RequestResponse("您的参赛申请尚未通过或被禁赛")));
+
         res.Participation = part;
+
+        if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
+            return res.WithResult(BadRequest(new RequestResponse("比赛还未开始")));
 
         return res;
     }

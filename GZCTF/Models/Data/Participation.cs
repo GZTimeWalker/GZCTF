@@ -10,6 +10,12 @@ public class Participation
     public int Id { get; set; }
 
     /// <summary>
+    /// 参与状态
+    /// </summary>
+    [Required]
+    public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
+
+    /// <summary>
     /// 当前分数
     /// </summary>
     [Required]

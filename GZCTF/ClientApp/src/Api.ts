@@ -707,6 +707,9 @@ export interface GameDetailsModel {
    */
   limit?: number;
 
+  /** 队员数量限制 */
+  status?: ParticipationStatus;
+
   /**
    * 开始时间
    * @format date-time
@@ -718,6 +721,14 @@ export interface GameDetailsModel {
    * @format date-time
    */
   end?: string;
+}
+
+export enum ParticipationStatus {
+  Pending = 'Pending',
+  Accepted = 'Accepted',
+  Denied = 'Denied',
+  Forfeited = 'Forfeited',
+  Unsubmitted = 'Unsubmitted',
 }
 
 export interface ScoreboardModel {
@@ -933,6 +944,20 @@ export enum ContainerStatus {
   Pending = 'Pending',
   Running = 'Running',
   Destoryed = 'Destoryed',
+}
+
+export interface ParticipationInfoModel {
+  /** 参与队伍 */
+  team?: TeamInfoModel;
+
+  /**
+   * 队伍分值
+   * @format int32
+   */
+  score?: number;
+
+  /** 参与状态 */
+  status?: ParticipationStatus;
 }
 
 export interface ChallengeDetailModel {
@@ -2519,6 +2544,59 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: Record<string, ChallengeInfo[]> | Promise<Record<string, ChallengeInfo[]>>,
       options?: MutatorOptions
     ) => mutate<Record<string, ChallengeInfo[]>>(`/api/game/${id}/challenges`, data, options),
+
+    /**
+     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     *
+     * @tags Game
+     * @name GameParticipations
+     * @summary 获取全部比赛参与信息
+     * @request GET:/api/game/{id}/participations
+     */
+    gameParticipations: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {}
+    ) =>
+      this.request<ParticipationInfoModel[], RequestResponse>({
+        path: `/api/game/${id}/participations`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     *
+     * @tags Game
+     * @name GameParticipations
+     * @summary 获取全部比赛参与信息
+     * @request GET:/api/game/{id}/participations
+     */
+    useGameParticipations: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration
+    ) =>
+      useSWR<ParticipationInfoModel[], RequestResponse>(
+        [`/api/game/${id}/participations`, query],
+        options
+      ),
+
+    /**
+     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     *
+     * @tags Game
+     * @name GameParticipations
+     * @summary 获取全部比赛参与信息
+     * @request GET:/api/game/{id}/participations
+     */
+    mutateGameParticipations: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<ParticipationInfoModel[]>([`/api/game/${id}/participations`, query], data, options),
 
     /**
      * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名

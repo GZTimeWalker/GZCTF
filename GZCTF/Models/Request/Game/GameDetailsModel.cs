@@ -30,6 +30,12 @@ public class GameDetailsModel
     public int TeamMemberCountLimit { get; set; } = 0;
 
     /// <summary>
+    /// 队员数量限制
+    /// </summary>
+    [JsonPropertyName("status")]
+    public ParticipationStatus Status { get; set; } = ParticipationStatus.Unsubmitted;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [JsonPropertyName("start")]
@@ -40,6 +46,12 @@ public class GameDetailsModel
     /// </summary>
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+
+    public GameDetailsModel WithParticipation(Participation? part)
+    {
+        Status = part?.Status ?? ParticipationStatus.Unsubmitted;
+        return this;
+    }
 
     public static GameDetailsModel FromGame(Models.Game game)
         => new()
