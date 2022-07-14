@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import {
   Box,
   Stack,
@@ -13,21 +12,18 @@ import {
   Paper,
   Textarea,
   Modal,
-  PasswordInput,
   Avatar,
   Image,
   Center,
   SimpleGrid,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { useInputState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { ProfileUpdateModel } from '../../Api';
-import StrengthPasswordInput from '../../components/StrengthPasswordInput';
-import WithNavBar from '../../components/WithNavbar';
 import PasswordChangeModal from '../../components/PasswordChangeModal';
+import WithNavBar from '../../components/WithNavbar';
 
 const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
   <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
@@ -299,25 +295,25 @@ const Profile: NextPage = () => {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
-                  <Grid grow>
-                    <Grid.Col span={6}>
-                      <Button fullWidth color="red" variant="outline" onClick={onChangeEmail}>
-                        确认修改
-                      </Button>
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                      <Button
-                        fullWidth
-                        variant="outline"
-                        onClick={() => {
-                          setEmail(data?.email ?? '');
-                          setMailEditOpened(false);
-                        }}
-                      >
-                        取消修改
-                      </Button>
-                    </Grid.Col>
-                  </Grid>
+              <Grid grow>
+                <Grid.Col span={6}>
+                  <Button fullWidth color="red" variant="outline" onClick={onChangeEmail}>
+                    确认修改
+                  </Button>
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <Button
+                    fullWidth
+                    variant="outline"
+                    onClick={() => {
+                      setEmail(data?.email ?? '');
+                      setMailEditOpened(false);
+                    }}
+                  >
+                    取消修改
+                  </Button>
+                </Grid.Col>
+              </Grid>
             </Stack>
           </Modal>
 

@@ -74,7 +74,7 @@ const Teams: NextPage = () => {
           disallowClose: true,
         });
         api.team.mutateTeamGetTeamsInfo();
-        if(!user?.activeTeamId) {
+        if (!user?.activeTeamId) {
           api.account.mutateAccountProfile({
             activeTeamId: parseInt(joinTeamCode.split(':')[1]),
             ...user,
@@ -228,7 +228,7 @@ const Teams: NextPage = () => {
         isOwnTeam={ownTeam ?? false}
         onClose={() => setCreateOpened(false)}
         mutateActive={(id) => {
-          if(!user?.activeTeamId) {
+          if (!user?.activeTeamId) {
             api.account.mutateAccountProfile({
               activeTeamId: id,
               ...user,
