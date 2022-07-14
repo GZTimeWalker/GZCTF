@@ -11,9 +11,10 @@ import {
   Modal,
   TextInput,
   Text,
+  Divider,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import api, { TeamInfoModel, TeamUpdateModel } from '../Api';
 import LogoHeader from '../components/LogoHeader';
@@ -131,14 +132,14 @@ const Teams: NextPage = () => {
           <LogoHeader />
           <Group position="right">
             <Button
-              leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
+              leftIcon={<Icon path={mdiHumanGreetingVariant} size={1} />}
               variant="outline"
               onClick={() => setJoinOpened(true)}
             >
               加入队伍
             </Button>
             <Button
-              leftIcon={<Icon path={mdiAccountGroup} size={1} />}
+              leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
               variant="outline"
               onClick={() => setCreateOpened(true)}
             >
@@ -147,25 +148,51 @@ const Teams: NextPage = () => {
           </Group>
         </Group>
         {teams && !error ? (
-          <SimpleGrid
-            cols={3}
-            spacing="lg"
-            breakpoints={[
-              { maxWidth: 1200, cols: 2, spacing: 'md' },
-              { maxWidth: 800, cols: 1, spacing: 'sm' },
-            ]}
-          >
-            {teams.map((t, i) => (
-              <TeamCard
-                key={i}
-                team={t}
-                isActive={t.id === user?.activeTeamId}
-                isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
-                onEdit={() => onEditTeam(t)}
-                onLeave={() => onLeaveTeam(t)}
-              />
-            ))}
-          </SimpleGrid>
+          <>
+            <SimpleGrid
+              cols={3}
+              spacing="lg"
+              breakpoints={[
+                { maxWidth: 1200, cols: 2, spacing: 'md' },
+                { maxWidth: 800, cols: 1, spacing: 'sm' },
+              ]}
+            >
+              {teams.map((t, i) => t.id === user?.activeTeamId &&
+                <TeamCard
+                  key={i}
+                  team={t}
+                  isActive={t.id === user?.activeTeamId}
+                  isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
+                  onEdit={() => onEditTeam(t)}
+                  onLeave={() => onLeaveTeam(t)}
+                />
+              )}
+            </SimpleGrid>
+            {teams.length > 1 &&
+              <>
+                <Divider />
+                <SimpleGrid
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1200, cols: 2, spacing: 'md' },
+                    { maxWidth: 800, cols: 1, spacing: 'sm' },
+                  ]}
+                >
+                  {teams.map((t, i) => t.id !== user?.activeTeamId &&
+                    <TeamCard
+                      key={i}
+                      team={t}
+                      isActive={t.id === user?.activeTeamId}
+                      isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
+                      onEdit={() => onEditTeam(t)}
+                      onLeave={() => onLeaveTeam(t)}
+                    />
+                  )}
+                </SimpleGrid>
+              </>
+            }
+          </>
         ) : (
           <Center style={{ width: '100%', height: '100%' }}>
             <Loader />
