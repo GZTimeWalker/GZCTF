@@ -15,9 +15,8 @@ import {
   TextInput,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { useInputState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { mdiAirHorn, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -40,11 +39,10 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null;
-  mutate: () => void;
 }
 
 const TeamEditModal: FC<TeamEditModalProps> = (props) => {
-  const { team, mutate, ...modalProps } = props;
+  const { team, ...modalProps } = props;
 
   const [teamInfo, setTeamInfo] = useState<TeamInfoModel | null>(team);
   const [disabled, setDisabled] = useState(false);
@@ -66,7 +64,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             disallowClose: true,
           });
           setTeamInfo({ avatar: data.data, ...teamInfo})
-          mutate();
+          api.team.mutateTeamGetTeamsInfo();
           setAvatarFile(null);
           setDropzoneOpened(false);
         })
@@ -94,7 +92,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          mutate();
+          api.team.mutateTeamGetTeamsInfo();
         })
         .catch((err) => {
           showNotification({

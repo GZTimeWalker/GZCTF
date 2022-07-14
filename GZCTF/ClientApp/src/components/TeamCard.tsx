@@ -24,11 +24,12 @@ interface TeamCardProps {
   isCaptain: boolean;
   isActive: boolean;
   onEdit: () => void;
-  mutate: () => void;
+  mutateActive: () => void;
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
-  const { team, isCaptain, isActive, onEdit, mutate } = props;
+  const { team, isCaptain, isActive, onEdit, mutateActive } = props;
+
   const theme = useMantineTheme();
   const [cardClickable, setCardClickable] = useState(true);
 
@@ -46,7 +47,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          mutate();
+          mutateActive();
         })
         .catch((err) => {
           showNotification({

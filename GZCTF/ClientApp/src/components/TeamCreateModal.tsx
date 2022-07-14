@@ -18,11 +18,10 @@ import api, { TeamUpdateModel } from '../Api';
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean;
-  mutate: () => void;
 }
 
 const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
-  const { isOwnTeam, mutate, ...modalProps } = props;
+  const { isOwnTeam, ...modalProps } = props;
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' });
   const theme = useMantineTheme();
 
@@ -37,7 +36,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        mutate();
+        api.team.mutateTeamGetTeamsInfo();
       })
       .catch((err) => {
         showNotification({

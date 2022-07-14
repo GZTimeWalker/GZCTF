@@ -25,19 +25,14 @@ import TeamEditModal from '../components/TeamEditModal';
 import WithNavBar from '../components/WithNavbar';
 
 const Teams: NextPage = () => {
-  const {
-    data: teams,
-    error,
-    mutate,
-  } = api.team.useTeamGetTeamsInfo({
-    refreshInterval: 10000,
-  });
 
-  const { data: user } = api.account.useAccountProfile({
+  const { data: user, error: userError } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });
+
+  const { data: teams, error: teamsError } = api.team.useTeamGetTeamsInfo();
 
   console.log(teams, user);
 
@@ -89,7 +84,7 @@ const Teams: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        mutate();
+        api.team.mutateTeamGetTeamsInfo();
       })
       .catch((err) => {
         showNotification({
@@ -117,7 +112,7 @@ const Teams: NextPage = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          mutate();
+          api.team.mutateTeamGetTeamsInfo();
         })
         .catch((err) => {
           showNotification({
@@ -165,7 +160,7 @@ const Teams: NextPage = () => {
             </Button>
           </Group>
         </Group>
-        {teams && !error ? (
+        {teams && !teamsError && user && !userError ? (
           <>
             {teamsActive.length > 0 && (
               <>
@@ -190,7 +185,7 @@ const Teams: NextPage = () => {
                     isActive={t.id === user?.activeTeamId}
                     isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
                     onEdit={() => onEditTeam(t)}
-                    mutate={mutate}
+                    mutateActive={() => {}}
                   />
                 ))}
               </>
@@ -229,7 +224,12 @@ const Teams: NextPage = () => {
                             t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
                           }
                           onEdit={() => onEditTeam(t)}
-                          mutate={mutate}
+                          mutateActive={() => {
+                            api.account.mutateAccountProfile({
+                              activeTeamId: t.id!,
+                              ...user
+                            })
+                          }}
                         />
                       )
                   )}
@@ -238,7 +238,7 @@ const Teams: NextPage = () => {
             )}
           </>
         ) : (
-          <Center style={{ width: '100%', height: '100%' }}>
+          <Center style={{ width: '100%', height: '80wh' }}>
             <Loader />
           </Center>
         )}
@@ -276,7 +276,6 @@ const Teams: NextPage = () => {
         title="创建新队伍"
         isOwnTeam={ownTeam ?? false}
         onClose={() => setCreateOpened(false)}
-        mutate={mutate}
       />
 
       <TeamEditModal
@@ -285,7 +284,6 @@ const Teams: NextPage = () => {
         title="编辑队伍"
         onClose={() => setEditOpened(false)}
         team={editTeam}
-        mutate={mutate}
       />
     </WithNavBar>
   );
