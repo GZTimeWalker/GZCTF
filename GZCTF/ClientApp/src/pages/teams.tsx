@@ -28,7 +28,7 @@ const Teams: NextPage = () => {
     error,
     mutate,
   } = api.team.useTeamGetTeamsInfo({
-    refreshInterval: 3000,
+    refreshInterval: 10000,
   });
 
   const { data: user } = api.account.useAccountProfile({
@@ -36,6 +36,8 @@ const Teams: NextPage = () => {
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });
+
+  console.log(teams, user);
 
   const [joinOpened, setJoinOpened] = useState(false);
   const [joinTeamCode, setJoinTeamCode] = useState('');
@@ -83,6 +85,7 @@ const Teams: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
+        mutate();
       })
       .catch((err) => {
         showNotification({
@@ -110,7 +113,7 @@ const Teams: NextPage = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          setLeaveOpened(false);
+          mutate();
         })
         .catch((err) => {
           showNotification({
@@ -119,6 +122,8 @@ const Teams: NextPage = () => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           });
+        })
+        .finally(() => {
           setLeaveOpened(false);
         });
     }
@@ -176,8 +181,7 @@ const Teams: NextPage = () => {
       <Modal opened={joinOpened} centered title="加入已有队伍" onClose={() => setJoinOpened(false)}>
         <Stack>
           <Text size="sm">
-            请从队伍创建者处获取队伍邀请码，然后输入邀请码以加入队伍。
-            <strong>每个邀请码只能使用一次。</strong>
+            请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。
           </Text>
           <TextInput
             label="邀请码"
