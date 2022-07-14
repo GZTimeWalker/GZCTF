@@ -169,7 +169,7 @@ const Teams: NextPage = () => {
           <>
             {teamsActive.length > 0 &&
               <>
-                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .15, height: "4.5rem", paddingLeft: "1rem", color: theme.colors.brand[2], userSelect: "none" }}>ACTIVE</Title>
+                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .15, height: "4.5rem", paddingLeft: "1rem", color: theme.colors.brand[theme.colorScheme === 'dark'? 2 : 6], userSelect: "none" }}>ACTIVE</Title>
                 {teamsActive.map(
                   (t, i) => (
                     <TeamCard
@@ -188,7 +188,7 @@ const Teams: NextPage = () => {
             }
             {teamsInactive.length > 0 &&
               <>
-                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .15, height: "4.5rem", paddingLeft: "1rem", userSelect: "none" }}>INACTIVE</Title>
+                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .1, height: "4.5rem", paddingLeft: "1rem", userSelect: "none" }}>INACTIVE</Title>
                 <SimpleGrid
                   cols={3}
                   spacing="lg"
