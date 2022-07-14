@@ -167,28 +167,49 @@ const Teams: NextPage = () => {
         </Group>
         {teams && !error ? (
           <>
-            {teamsActive.length > 0 &&
+            {teamsActive.length > 0 && (
               <>
-                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .15, height: "4.5rem", paddingLeft: "1rem", color: theme.colors.brand[theme.colorScheme === 'dark'? 2 : 6], userSelect: "none" }}>ACTIVE</Title>
-                {teamsActive.map(
-                  (t, i) => (
-                    <TeamCard
-                      key={i}
-                      team={t}
-                      isActive={t.id === user?.activeTeamId}
-                      isCaptain={
-                        t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
-                      }
-                      onEdit={() => onEditTeam(t)}
-                      onLeave={() => onLeaveTeam(t)}
-                    />
-                  )
-                )}
+                <Title
+                  order={2}
+                  style={{
+                    fontSize: '6rem',
+                    fontWeight: 'bold',
+                    opacity: 0.15,
+                    height: '4.5rem',
+                    paddingLeft: '1rem',
+                    color: theme.colors.brand[theme.colorScheme === 'dark' ? 2 : 6],
+                    userSelect: 'none',
+                  }}
+                >
+                  ACTIVE
+                </Title>
+                {teamsActive.map((t, i) => (
+                  <TeamCard
+                    key={i}
+                    team={t}
+                    isActive={t.id === user?.activeTeamId}
+                    isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
+                    onEdit={() => onEditTeam(t)}
+                    mutate={mutate}
+                  />
+                ))}
               </>
-            }
-            {teamsInactive.length > 0 &&
+            )}
+            {teamsInactive.length > 0 && (
               <>
-                <Title order={2} style={{ fontSize: "6rem", fontWeight: "bold", opacity: .1, height: "4.5rem", paddingLeft: "1rem", userSelect: "none" }}>INACTIVE</Title>
+                <Title
+                  order={2}
+                  style={{
+                    fontSize: '6rem',
+                    fontWeight: 'bold',
+                    opacity: 0.1,
+                    height: '4.5rem',
+                    paddingLeft: '1rem',
+                    userSelect: 'none',
+                  }}
+                >
+                  INACTIVE
+                </Title>
                 <SimpleGrid
                   cols={3}
                   spacing="lg"
@@ -208,13 +229,13 @@ const Teams: NextPage = () => {
                             t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
                           }
                           onEdit={() => onEditTeam(t)}
-                          onLeave={() => onLeaveTeam(t)}
+                          mutate={mutate}
                         />
                       )
                   )}
                 </SimpleGrid>
               </>
-            }
+            )}
           </>
         ) : (
           <Center style={{ width: '100%', height: '100%' }}>
