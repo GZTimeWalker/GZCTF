@@ -6,7 +6,6 @@ import {
   Loader,
   Center,
   Group,
-  Textarea,
   Button,
   Modal,
   TextInput,
@@ -14,9 +13,9 @@ import {
   Divider,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { mdiAccountGroup, mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js';
+import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import api, { TeamInfoModel, TeamUpdateModel } from '../Api';
+import api, { TeamInfoModel } from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import TeamCard from '../components/TeamCard';
 import TeamCreateModal from '../components/TeamCreateModal';
@@ -162,18 +161,23 @@ const Teams: NextPage = () => {
                 { maxWidth: 800, cols: 1, spacing: 'sm' },
               ]}
             >
-              {teams.map((t, i) => t.id === user?.activeTeamId &&
-                <TeamCard
-                  key={i}
-                  team={t}
-                  isActive={t.id === user?.activeTeamId}
-                  isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
-                  onEdit={() => onEditTeam(t)}
-                  onLeave={() => onLeaveTeam(t)}
-                />
+              {teams.map(
+                (t, i) =>
+                  t.id === user?.activeTeamId && (
+                    <TeamCard
+                      key={i}
+                      team={t}
+                      isActive={t.id === user?.activeTeamId}
+                      isCaptain={
+                        t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
+                      }
+                      onEdit={() => onEditTeam(t)}
+                      onLeave={() => onLeaveTeam(t)}
+                    />
+                  )
               )}
             </SimpleGrid>
-            {teams.length > 1 &&
+            {teams.length > 1 && (
               <>
                 <Divider />
                 <SimpleGrid
@@ -184,19 +188,24 @@ const Teams: NextPage = () => {
                     { maxWidth: 800, cols: 1, spacing: 'sm' },
                   ]}
                 >
-                  {teams.map((t, i) => t.id !== user?.activeTeamId &&
-                    <TeamCard
-                      key={i}
-                      team={t}
-                      isActive={t.id === user?.activeTeamId}
-                      isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
-                      onEdit={() => onEditTeam(t)}
-                      onLeave={() => onLeaveTeam(t)}
-                    />
+                  {teams.map(
+                    (t, i) =>
+                      t.id !== user?.activeTeamId && (
+                        <TeamCard
+                          key={i}
+                          team={t}
+                          isActive={t.id === user?.activeTeamId}
+                          isCaptain={
+                            t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
+                          }
+                          onEdit={() => onEditTeam(t)}
+                          onLeave={() => onLeaveTeam(t)}
+                        />
+                      )
                   )}
                 </SimpleGrid>
               </>
-            }
+            )}
           </>
         ) : (
           <Center style={{ width: '100%', height: '100%' }}>
@@ -207,9 +216,7 @@ const Teams: NextPage = () => {
 
       <Modal opened={joinOpened} centered title="加入已有队伍" onClose={() => setJoinOpened(false)}>
         <Stack>
-          <Text size="sm">
-            请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。
-          </Text>
+          <Text size="sm">请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。</Text>
           <TextInput
             label="邀请码"
             type="text"
