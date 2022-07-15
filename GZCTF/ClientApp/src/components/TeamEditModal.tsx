@@ -16,11 +16,12 @@ import {
   TextInput,
   useMantineTheme,
   PasswordInput,
+  ActionIcon,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { useClipboard } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose, mdiCloseCircle } from '@mdi/js';
+import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -96,6 +97,27 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         });
     }
   };
+
+  const onRefreshInviteCode = () => {
+    if (inviteCode) {
+      api.team.teamUpdateInviteToken(team?.id!).then((data) => {
+        setInviteCode(data.data);
+        showNotification({
+          color: 'teal',
+          message: '队伍邀请码已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        });
+      }).catch((err) => {
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: `${err.error.title}`,
+          icon: <Icon path={mdiClose} size={1} />,
+        });
+      })
+    }
+  }
 
   const onChangeAvatar = () => {
     if (avatarFile && teamInfo?.id) {
@@ -183,7 +205,28 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         </Grid>
         {isCaptain && (
           <PasswordInput
-            label="邀请码"
+            label={
+              <Group spacing="xs" >
+                <Text size="sm">邀请码</Text>
+                <ActionIcon
+                  size="sm"
+                  onClick={onRefreshInviteCode}
+                  sx={(theme) => ({
+                    margin: '0 0 -0.1rem -0.5rem',
+                    '&:hover': {
+                      color:
+                        theme.colorScheme === 'dark'
+                          ? theme.colors[theme.primaryColor][2]
+                          : theme.colors[theme.primaryColor][7],
+                      backgroundColor:
+                        theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                    },
+                  })}
+                >
+                  <Icon path={mdiRefresh} size={1} />
+                </ActionIcon>
+              </Group>
+            }
             value={inviteCode}
             placeholder="loading..."
             onClick={() => {
