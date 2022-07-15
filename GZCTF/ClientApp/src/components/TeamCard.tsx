@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { mdiLockOutline, mdiPinOutline, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -127,7 +127,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                   },
                 })}
               >
-                <Icon path={mdiPinOutline} size={1} />
+                <Icon path={mdiPower} size={1} />
               </ActionIcon>
             </Tooltip>
           </Box>

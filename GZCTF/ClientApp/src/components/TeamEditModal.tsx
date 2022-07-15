@@ -350,7 +350,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             {isCaptain ? '删除队伍' : '退出队伍'}
           </Button>
           <Button fullWidth disabled={!isCaptain} onClick={onSaveChange}>
-            更新队伍
+            更新信息
           </Button>
         </Group>
       </Stack>
