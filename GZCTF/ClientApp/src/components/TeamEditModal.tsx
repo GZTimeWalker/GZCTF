@@ -426,7 +426,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         opened={kickUserOpened}
         onClose={() => setKickUserOpened(false)}
         centered
-        title='踢出用户'
+        title="踢出用户"
         withCloseButton={false}
       >
         <Stack>
