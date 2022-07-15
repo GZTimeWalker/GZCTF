@@ -131,6 +131,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         })
         .finally(() => {
           setLeaveOpened(false);
+          props.onClose();
         });
     }
   };
