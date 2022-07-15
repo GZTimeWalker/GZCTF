@@ -3090,7 +3090,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/team/{id}/kick/{userid}
      */
     teamKickUser: (id: number, userid: string, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
+      this.request<TeamInfoModel, RequestResponse>({
         path: `/api/team/${id}/kick/${userid}`,
         method: 'POST',
         format: 'json',
