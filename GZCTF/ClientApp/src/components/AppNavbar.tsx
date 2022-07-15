@@ -170,6 +170,7 @@ const AppNavbar: FC = () => {
         style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
       >
         <Stack align="center" spacing={5}>
+          
           {/* Color Mode */}
           <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
             {colorScheme === 'dark' ? (
