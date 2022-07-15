@@ -15,8 +15,10 @@ import {
   Textarea,
   TextInput,
   useMantineTheme,
+  PasswordInput,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { useClipboard } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose, mdiCloseCircle } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -54,10 +56,18 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const [leaveOpened, setLeaveOpened] = useState(false);
 
   const theme = useMantineTheme();
+  const clipboard = useClipboard({ timeout: 500 });
+
+  const [inviteCode, setInviteCode] = useState('');
 
   useEffect(() => {
     setTeamInfo(team);
-  }, [team]);
+    if (isCaptain && !inviteCode) {
+      api.team.teamTeamInviteCode(team?.id!).then((code) => {
+        setInviteCode(code.data);
+      });
+    }
+  }, [team, inviteCode, isCaptain]);
 
   const onConfirmLeaveTeam = () => {
     if (teamInfo && !isCaptain) {
@@ -147,7 +157,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       <Stack spacing="lg">
-      {/* Team Info */}
+        {/* Team Info */}
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
@@ -171,7 +181,24 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             </Center>
           </Grid.Col>
         </Grid>
-        
+        {isCaptain && (
+          <PasswordInput
+            label="邀请码"
+            value={inviteCode}
+            placeholder="loading..."
+            onClick={() => {
+              clipboard.copy(inviteCode);
+              showNotification({
+                color: 'teal',
+                message: '邀请码已复制',
+                icon: <Icon path={mdiCheck} size={1} />,
+                disallowClose: true,
+              });
+            }}
+            readOnly
+          />
+        )}
+
         <Textarea
           label="队伍签名"
           placeholder={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
