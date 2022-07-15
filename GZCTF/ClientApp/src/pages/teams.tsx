@@ -30,7 +30,9 @@ const Teams: NextPage = () => {
     revalidateOnFocus: false,
   });
 
-  const { data: teams, error: teamsError } = api.team.useTeamGetTeamsInfo();
+  const { data: teams, error: teamsError } = api.team.useTeamGetTeamsInfo({
+    refreshInterval: 120000,
+  });
 
   const theme = useMantineTheme();
 
