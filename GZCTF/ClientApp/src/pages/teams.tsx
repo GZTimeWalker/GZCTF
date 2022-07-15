@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Stack,
   SimpleGrid,
@@ -10,7 +10,6 @@ import {
   Modal,
   TextInput,
   Text,
-  Divider,
   Title,
   useMantineTheme,
 } from '@mantine/core';
@@ -240,7 +239,7 @@ const Teams: NextPage = () => {
       <TeamEditModal
         opened={editOpened}
         centered
-        title="编辑队伍"
+        title="队伍详情"
         onClose={() => setEditOpened(false)}
         team={editTeam}
         isCaptain={editTeam?.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
