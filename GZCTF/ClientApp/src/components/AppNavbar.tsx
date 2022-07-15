@@ -179,6 +179,7 @@ const AppNavbar: FC = () => {
         style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
       >
         <Stack align="center" spacing={5}>
+          
           {/* Color Mode */}
           <Tooltip
             label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
