@@ -88,9 +88,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   };
 
   const onChangeAvatar = () => {
-    if (avatarFile && team?.id) {
+    if (avatarFile && teamInfo?.id) {
       api.team
-        .teamAvatar(team.id, {
+        .teamAvatar(teamInfo?.id, {
           file: avatarFile,
         })
         .then((data) => {
@@ -101,7 +101,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          setTeamInfo({ avatar: data.data, ...teamInfo });
+          setTeamInfo({ ...teamInfo, avatar: data.data });
           api.team.mutateTeamGetTeamsInfo();
           setAvatarFile(null);
           setDropzoneOpened(false);
@@ -147,7 +147,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       <Stack spacing="lg">
-        {/* User Info */}
+      {/* Team Info */}
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
@@ -165,12 +165,13 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               <Avatar
                 style={{ borderRadius: '50%' }}
                 size={70}
-                src={team?.avatar}
+                src={teamInfo?.avatar}
                 onClick={() => isCaptain && setDropzoneOpened(true)}
               />
             </Center>
           </Grid.Col>
         </Grid>
+        
         <Textarea
           label="队伍签名"
           placeholder={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
@@ -191,6 +192,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           </Button>
         </Group>
       </Stack>
+
+      {/* 更新头像浮窗 */}
       <Modal
         opened={dropzoneOpened}
         onClose={() => setDropzoneOpened(false)}
@@ -221,6 +224,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           更新头像
         </Button>
       </Modal>
+
+      {/* 删除队伍浮窗 */}
       <Modal
         opened={leaveOpened}
         centered
