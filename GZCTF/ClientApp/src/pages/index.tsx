@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { Stack, Card, Group, Badge, Text, useMantineTheme } from '@mantine/core';
+import { Stack } from '@mantine/core';
 import api from '../Api';
 import LogoHeader from '../components/LogoHeader';
 import NoticeCard from '../components/NoticeCard';
