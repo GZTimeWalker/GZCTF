@@ -278,7 +278,7 @@ public class TeamController : ControllerBase
     /// <response code="403">无权操作</response>
     [HttpPost("{id}/Kick/{userid}")]
     [RequireUser]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
@@ -316,7 +316,7 @@ public class TeamController : ControllerBase
             await trans.CommitAsync(token);
 
             logger.Log($"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
-            return Ok(team.InviteCode);
+            return Ok(TeamInfoModel.FromTeam(team));
         }
         catch
         {
