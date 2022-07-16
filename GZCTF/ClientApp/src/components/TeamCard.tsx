@@ -155,21 +155,21 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Stack spacing="xs">
             <Group spacing="xs" position="apart">
               <Text transform="uppercase" color="dimmed">
-                Role:
+                个人身份:
               </Text>
               {isCaptain ? (
                 <Badge color="yellow" size="lg">
-                  captain
+                  队长
                 </Badge>
               ) : (
                 <Badge color="gray" size="lg">
-                  crew
+                  普通队员
                 </Badge>
               )}
             </Group>
             <Group spacing="xs">
               <Text transform="uppercase" color="dimmed">
-                MEMBERS:
+                队员列表:
               </Text>
               <Box style={{ flexGrow: 1 }}></Box>
               {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.alert[1]} />}
