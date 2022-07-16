@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
   Group,
   Title,
@@ -67,6 +67,12 @@ const TeamCard: FC<TeamCardProps> = (props) => {
     }
   };
 
+  const ref = useRef();
+  const [cardSzY, setCardSzY] = useState("180px");
+  useEffect(() => {
+    setCardSzY(window.getComputedStyle(ref.current).getPropertyValue("height"));
+  }, [])
+
   return (
     <Card
       shadow="sm"
@@ -83,10 +89,19 @@ const TeamCard: FC<TeamCardProps> = (props) => {
         },
       })}
     >
+      <Group align="stretch" style={{ alignItems: "center" }}>
+        {isActive &&
+          <Avatar color="cyan" size="xl" radius="md" src={team.avatar} style={{ height: cardSzY, width: "auto", aspectRatio: "1 / 1" }} id="bigAvatar">
+            {team.name?.at(0) ?? 'T'}
+          </Avatar>
+        }
+        <Stack style={{ flexGrow: 1 }} ref={ref}>
       <Group align="stretch">
-        <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
-          {team.name?.at(0) ?? 'T'}
-        </Avatar>
+        {!isActive &&
+          <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
+            {team.name?.at(0) ?? 'T'}
+          </Avatar>
+        }
         <Box style={{ flexGrow: 1 }}>
           <Title order={2} align="left">
             {team.name}
@@ -136,14 +151,14 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           </Box>
         )}
       </Group>
-      <Divider my="sm" />
+      <Divider my="xs" />
       <Stack spacing="xs">
         <Group spacing="xs" position="apart">
           <Text transform="uppercase" color="dimmed">
             Role:
           </Text>
           {isCaptain ? (
-            <Badge color="brand" size="lg">
+            <Badge color="yellow" size="lg">
               captain
             </Badge>
           ) : (
@@ -171,7 +186,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             {members && members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
           </AvatarsGroup>
         </Group>
-      </Stack>
+          </Stack>
+        </Stack>
+      </Group>
     </Card>
   );
 };

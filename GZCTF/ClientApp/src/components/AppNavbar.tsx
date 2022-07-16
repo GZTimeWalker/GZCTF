@@ -27,6 +27,7 @@ import {
   mdiWeatherNight,
   mdiLogout,
   mdiCheck,
+  mdiWrenchOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import api, { Role } from '../Api';
@@ -86,7 +87,7 @@ const items: NavbarItem[] = [
   { icon: mdiFlagOutline, label: '赛事', link: '/games'},
   { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams'},
   { icon: mdiInformationOutline, label: '关于', link: '/about'},
-  { icon: mdiCog, label: '管理', link: '/admin', admin: true },
+  { icon: mdiWrenchOutline, label: '管理', link: '/admin', admin: true },
 ];
 
 export interface NavbarLinkProps {
