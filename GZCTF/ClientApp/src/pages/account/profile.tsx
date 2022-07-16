@@ -195,7 +195,7 @@ const Profile: NextPage = () => {
               type="email"
               style={{ width: '100%' }}
               value={data?.email ?? 'ctfer@gzti.me'}
-              disabled={disabled}
+              disabled = {true}
               readOnly
             />
             <TextInput
