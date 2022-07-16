@@ -64,7 +64,7 @@ const useStyles = createStyles((theme) => ({
     marginLeft: 20,
     backgroundColor:
       theme.colorScheme === 'dark'
-        ? theme.colors[theme.primaryColor][8] + '40'
+        ? theme.fn.darken(theme.colors[theme.primaryColor][8], 0.45)
         : theme.colors[theme.primaryColor][2],
     color:
       theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.gray[8],
@@ -83,10 +83,10 @@ interface NavbarItem {
 }
 
 const items: NavbarItem[] = [
-  { icon: mdiHomeVariantOutline, label: '主页', link: '/'},
-  { icon: mdiFlagOutline, label: '赛事', link: '/games'},
-  { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams'},
-  { icon: mdiInformationOutline, label: '关于', link: '/about'},
+  { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
+  { icon: mdiFlagOutline, label: '赛事', link: '/games' },
+  { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
+  { icon: mdiInformationOutline, label: '关于', link: '/about' },
   { icon: mdiWrenchOutline, label: '管理', link: '/admin', admin: true },
 ];
 
@@ -182,30 +182,34 @@ const AppNavbar: FC = () => {
       >
         <Stack align="center" spacing={5}>
           {/* Color Mode */}
-          <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
-            {colorScheme === 'dark' ? (
-              <Icon path={mdiWeatherSunny} size={1} />
-            ) : (
-              <Icon path={mdiWeatherNight} size={1} />
-            )}
-          </UnstyledButton>
+          <Tooltip label={"切换至" + (colorScheme === 'dark' ? "浅色" : "深色") + "主题"} classNames={{ body: classes.tooltipBody }} position="right">
+            <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
+              {colorScheme === 'dark' ? (
+                <Icon path={mdiWeatherSunny} size={1} />
+              ) : (
+                <Icon path={mdiWeatherNight} size={1} />
+              )}
+            </UnstyledButton>
+          </Tooltip>
 
           {/* User Info */}
           {user && !error ? (
             <Menu
               control={
-                <Box className={cx(classes.link)}>
-                  {user.avatar ? (
-                    <Avatar src={user.avatar} radius="md" size="md" />
-                  ) : (
-                    <Icon path={mdiAccountCircleOutline} size={1} />
-                  )}
-                </Box>
+                <Tooltip label="账户" classNames={{ body: classes.tooltipBody }} position="right">
+                  <Box className={cx(classes.link)}>
+                    {user.avatar ? (
+                      <Avatar src={user.avatar} radius="md" size="md" />
+                    ) : (
+                      <Icon path={mdiAccountCircleOutline} size={1} />
+                    )}
+                  </Box>
+                </Tooltip>
               }
               classNames={{ body: classes.menuBody }}
               position="right"
               placement="end"
-              trigger="hover"
+              trigger="click"
             >
               <Menu.Label>{user.userName}</Menu.Label>
               <Menu.Item
