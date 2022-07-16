@@ -22,13 +22,14 @@ import {
   mdiFlagOutline,
   mdiHomeVariantOutline,
   mdiInformationOutline,
+  mdiCog,
   mdiWeatherSunny,
   mdiWeatherNight,
   mdiLogout,
   mdiCheck,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import api from '../Api';
+import api, { Role } from '../Api';
 import MainIcon from './icon/MainIcon';
 
 const useStyles = createStyles((theme) => ({
@@ -73,11 +74,19 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const items = [
-  { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
-  { icon: mdiFlagOutline, label: '赛事', link: '/games' },
-  { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
-  { icon: mdiInformationOutline, label: '关于', link: '/about' },
+interface NavbarItem {
+  icon: string;
+  label: string;
+  link: string;
+  admin?: boolean;
+}
+
+const items: NavbarItem[] = [
+  { icon: mdiHomeVariantOutline, label: '主页', link: '/'},
+  { icon: mdiFlagOutline, label: '赛事', link: '/games'},
+  { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams'},
+  { icon: mdiInformationOutline, label: '关于', link: '/about'},
+  { icon: mdiCog, label: '管理', link: '/admin', admin: true },
 ];
 
 export interface NavbarLinkProps {
@@ -110,7 +119,8 @@ const AppNavbar: FC = () => {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { data, error } = api.account.useAccountProfile({
+
+  const { data: user, error } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -141,7 +151,7 @@ const AppNavbar: FC = () => {
     });
   };
 
-  const links = items.map((link) => (
+  const links = items.filter((m) => !m.admin || user?.role === Role.Admin).map((link) => (
     <NavbarLink {...link} key={link.label} isActive={link.label === active} />
   ));
 
@@ -180,12 +190,12 @@ const AppNavbar: FC = () => {
           </UnstyledButton>
 
           {/* User Info */}
-          {data && !error ? (
+          {user && !error ? (
             <Menu
               control={
                 <Box className={cx(classes.link)}>
-                  {data.avatar ? (
-                    <Avatar src={data.avatar} radius="md" size="md" />
+                  {user.avatar ? (
+                    <Avatar src={user.avatar} radius="md" size="md" />
                   ) : (
                     <Icon path={mdiAccountCircleOutline} size={1} />
                   )}
@@ -196,7 +206,7 @@ const AppNavbar: FC = () => {
               placement="end"
               trigger="hover"
             >
-              <Menu.Label>{data.userName}</Menu.Label>
+              <Menu.Label>{user.userName}</Menu.Label>
               <Menu.Item
                 component={NextLink}
                 href="/account/profile"

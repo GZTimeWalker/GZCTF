@@ -38,7 +38,7 @@ const WithRole: FC<WithRoleProps> = (props) => {
     if (current < required) router.push('/404');
   }, [user, error, required, router]);
 
-  if (!user) {
+  if (!user || RoleMap.get(user?.role ?? Role.User)! < required /* show loader before redirect */) {
     return (
       <Center style={{ height: 'calc(100vh - 32px)' }}>
         <Loader/>

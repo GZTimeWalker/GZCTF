@@ -28,7 +28,10 @@ interface TeamCardProps {
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
-  const { team, isCaptain, isActive, onEdit, mutateActive } = props;
+  const { team, isCaptain, isActive, onEdit, mutateActive } = props
+
+  const captain = team.members?.filter((m) => m?.captain).at(0);
+  const members = team.members?.filter((m) => !m?.captain);
 
   const theme = useMantineTheme();
   const [cardClickable, setCardClickable] = useState(true);
@@ -164,7 +167,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               },
             }}
           >
-            {team.members && team.members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
+            <Avatar src={captain?.avatar} />
+            {members && members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
           </AvatarsGroup>
         </Group>
       </Stack>
