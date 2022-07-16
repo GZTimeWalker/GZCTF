@@ -89,9 +89,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
         },
       })}
     >
-      <Group align="stretch" style={{ alignItems: "center" }}>
+      <Group align="stretch" style={{ flexWrap: "nowrap", alignItems: "center" }}>
         {isActive &&
-          <Avatar color="cyan" size="xl" radius="md" src={team.avatar} style={{ height: cardSzY, width: "auto", aspectRatio: "1 / 1" }} id="bigAvatar">
+          <Avatar color="cyan" size="xl" radius="md" src={team.avatar} style={{ height: cardSzY, width: "auto", aspectRatio: "1 / 1", flexShrink: 0 }}>
             {team.name?.at(0) ?? 'T'}
           </Avatar>
         }
@@ -106,7 +106,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               <Title order={2} align="left">
                 {team.name}
               </Title>
-              <Text size="md">{team.bio}</Text>
+              <Text size="md" lineClamp={3}>{team.bio}</Text>
             </Box>
             {!isActive && (
               <Box style={{ height: '100%' }}>
