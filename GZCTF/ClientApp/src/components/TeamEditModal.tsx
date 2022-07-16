@@ -77,6 +77,8 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
 const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const { team, isCaptain, ...modalProps } = props;
 
+  const teamId = team?.id;
+
   const [teamInfo, setTeamInfo] = useState<TeamInfoModel | null>(team);
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -93,14 +95,18 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const captain = teamInfo?.members?.filter((x) => x.captain).at(0);
   const crew = teamInfo?.members?.filter((x) => !x.captain);
 
+
   useEffect(() => {
     setTeamInfo(team);
-    if (isCaptain && !inviteCode) {
-      api.team.teamTeamInviteCode(team?.id!).then((code) => {
+  }, [team]);
+
+  useEffect(() => {
+    if (isCaptain && !inviteCode && teamId) {
+      api.team.teamTeamInviteCode(teamId).then((code) => {
         setInviteCode(code.data);
       });
     }
-  }, [team, inviteCode, isCaptain]);
+  }, [inviteCode, isCaptain, teamId])
 
   const onConfirmLeaveTeam = () => {
     if (teamInfo && !isCaptain) {
