@@ -3053,17 +3053,38 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取队伍邀请信息，需要为队伍创建者
      *
      * @tags Team
-     * @name TeamTeamInviteCode
+     * @name TeamInviteCode
      * @summary 获取邀请信息
-     * @request POST:/api/team/{id}/invite
+     * @request GET:/api/team/{id}/invite
      */
-    teamTeamInviteCode: (id: number, params: RequestParams = {}) =>
+    teamInviteCode: (id: number, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
         path: `/api/team/${id}/invite`,
-        method: 'POST',
+        method: 'GET',
         format: 'json',
         ...params,
       }),
+    /**
+     * @description 获取队伍邀请信息，需要为队伍创建者
+     *
+     * @tags Team
+     * @name TeamInviteCode
+     * @summary 获取邀请信息
+     * @request GET:/api/team/{id}/invite
+     */
+    useTeamInviteCode: (id: number, options?: SWRConfiguration) =>
+      useSWR<string, RequestResponse>(`/api/team/${id}/invite`, options),
+
+    /**
+     * @description 获取队伍邀请信息，需要为队伍创建者
+     *
+     * @tags Team
+     * @name TeamInviteCode
+     * @summary 获取邀请信息
+     * @request GET:/api/team/{id}/invite
+     */
+    mutateTeamInviteCode: (id: number, data?: string | Promise<string>, options?: MutatorOptions) =>
+      mutate<string>(`/api/team/${id}/invite`, data, options),
 
     /**
      * @description 更新邀请 Token 的接口，需要为队伍创建者
@@ -3071,12 +3092,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Team
      * @name TeamUpdateInviteToken
      * @summary 更新邀请 Token
-     * @request POST:/api/team/{id}/updateinvitetoken
+     * @request PUT:/api/team/{id}/invite
      */
     teamUpdateInviteToken: (id: number, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
-        path: `/api/team/${id}/updateinvitetoken`,
-        method: 'POST',
+        path: `/api/team/${id}/invite`,
+        method: 'PUT',
         format: 'json',
         ...params,
       }),

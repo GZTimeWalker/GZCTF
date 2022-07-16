@@ -101,7 +101,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
   useEffect(() => {
     if (isCaptain && !inviteCode && teamId) {
-      api.team.teamTeamInviteCode(teamId).then((code) => {
+      api.team.teamInviteCode(teamId).then((code) => {
         setInviteCode(code.data);
       });
     }

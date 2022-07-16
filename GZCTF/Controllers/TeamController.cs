@@ -205,13 +205,13 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/Invite")]
+    [HttpGet("{id}/Invite")]
     [RequireUser]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> TeamInviteCode([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> InviteCode([FromRoute] int id, CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
 
@@ -238,7 +238,7 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/UpdateInviteToken")]
+    [HttpPut("{id}/Invite")]
     [RequireUser]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
