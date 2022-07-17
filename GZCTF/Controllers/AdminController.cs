@@ -167,7 +167,7 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Logs/{level:alpha=All}")]
-    [ProducesResponseType(typeof(List<ClientUserInfoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<LogMessageModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromRoute] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await logRepository.GetLogs(skip, count, level, token));
 

@@ -271,6 +271,30 @@ export interface UpdateUserInfoModel {
   role?: Role | null;
 }
 
+/**
+ * 日志信息
+ */
+export interface LogMessageModel {
+  /**
+   * 日志时间
+   * @format date-time
+   */
+  time?: string;
+
+  /** 用户名 */
+  name?: string | null;
+  level?: string | null;
+
+  /** IP地址 */
+  ip?: string | null;
+
+  /** 日志信息 */
+  msg?: string | null;
+
+  /** 任务状态 */
+  status?: string | null;
+}
+
 export enum ParticipationStatus {
   Pending = 'Pending',
   Accepted = 'Accepted',
@@ -1647,7 +1671,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: { count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
-      this.request<ClientUserInfoModel[], RequestResponse>({
+      this.request<LogMessageModel[], RequestResponse>({
         path: `/api/admin/logs/${level}`,
         method: 'GET',
         query: query,
@@ -1666,8 +1690,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       level: string | null,
       query?: { count?: number; skip?: number },
       options?: SWRConfiguration
-    ) =>
-      useSWR<ClientUserInfoModel[], RequestResponse>([`/api/admin/logs/${level}`, query], options),
+    ) => useSWR<LogMessageModel[], RequestResponse>([`/api/admin/logs/${level}`, query], options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -1680,9 +1703,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateAdminLogs: (
       level: string | null,
       query?: { count?: number; skip?: number },
-      data?: ClientUserInfoModel[] | Promise<ClientUserInfoModel[]>,
+      data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions
-    ) => mutate<ClientUserInfoModel[]>([`/api/admin/logs/${level}`, query], data, options),
+    ) => mutate<LogMessageModel[]>([`/api/admin/logs/${level}`, query], data, options),
 
     /**
      * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限

@@ -16,15 +16,13 @@ public class HubHelper
     {
         var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         if (dbContext is null || userId is null)
             return false;
 
         var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
 
         var env = context.RequestServices.GetRequiredService<IHostEnvironment>();
-
-        if (env.IsDevelopment())
-            return true;
 
         return currentUser is not null && currentUser.Role >= privilege;
     }
