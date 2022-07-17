@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
   Group,
   Title,
@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { mdiLockOutline, mdiPinOutline, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { TeamInfoModel } from '../Api';
 
@@ -29,6 +29,9 @@ interface TeamCardProps {
 
 const TeamCard: FC<TeamCardProps> = (props) => {
   const { team, isCaptain, isActive, onEdit, mutateActive } = props;
+
+  const captain = team.members?.filter((m) => m?.captain).at(0);
+  const members = team.members?.filter((m) => !m?.captain);
 
   const theme = useMantineTheme();
   const [cardClickable, setCardClickable] = useState(true);
@@ -64,6 +67,13 @@ const TeamCard: FC<TeamCardProps> = (props) => {
     }
   };
 
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [cardSzY, setCardSzY] = useState('180px');
+
+  useEffect(() => {
+    setCardSzY(window.getComputedStyle(ref.current!).getPropertyValue('height'));
+  }, []);
+
   return (
     <Card
       shadow="sm"
@@ -80,94 +90,114 @@ const TeamCard: FC<TeamCardProps> = (props) => {
         },
       })}
     >
-      <Group align="stretch">
-        <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
-          {team.name?.at(0) ?? 'T'}
-        </Avatar>
-        <Box style={{ flexGrow: 1 }}>
-          <Title order={2} align="left">
-            {team.name}
-          </Title>
-          <Text size="md">{team.bio}</Text>
-        </Box>
-        {!isActive && (
-          <Box style={{ height: '100%' }}>
-            <Tooltip
-              label={'激活'}
-              styles={(theme) => ({
-                body: {
-                  margin: 4,
-                  backgroundColor:
-                    theme.colorScheme === 'dark'
-                      ? theme.colors[theme.primaryColor][8] + '40'
-                      : theme.colors[theme.primaryColor][2],
-                  color:
-                    theme.colorScheme === 'dark'
-                      ? theme.colors[theme.primaryColor][4]
-                      : theme.colors.gray[8],
-                },
-              })}
-              position="left"
-              transition="pop-bottom-right"
-              color="brand"
-            >
-              <ActionIcon
-                size="lg"
-                onMouseEnter={() => setCardClickable(false)}
-                onMouseLeave={() => setCardClickable(true)}
-                onClick={onActive}
-                sx={(theme) => ({
-                  '&:hover': {
-                    color:
-                      theme.colorScheme === 'dark'
-                        ? theme.colors[theme.primaryColor][2]
-                        : theme.colors[theme.primaryColor][7],
-                    backgroundColor:
-                      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-                  },
-                })}
-              >
-                <Icon path={mdiPinOutline} size={1} />
-              </ActionIcon>
-            </Tooltip>
-          </Box>
-        )}
-      </Group>
-      <Divider my="sm" />
-      <Stack spacing="xs">
-        <Group spacing="xs" position="apart">
-          <Text transform="uppercase" color="dimmed">
-            Role:
-          </Text>
-          {isCaptain ? (
-            <Badge color="brand" size="lg">
-              captain
-            </Badge>
-          ) : (
-            <Badge color="gray" size="lg">
-              crew
-            </Badge>
-          )}
-        </Group>
-        <Group spacing="xs">
-          <Text transform="uppercase" color="dimmed">
-            MEMBERS:
-          </Text>
-          <Box style={{ flexGrow: 1 }}></Box>
-          {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.alert[1]} />}
-          <AvatarsGroup
-            limit={3}
-            size="md"
-            styles={{
-              child: {
-                border: 'none',
-              },
-            }}
+      <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
+        {isActive && (
+          <Avatar
+            color="cyan"
+            size="xl"
+            radius="md"
+            src={team.avatar}
+            style={{ height: cardSzY, width: 'auto', aspectRatio: '1 / 1', flexShrink: 0 }}
           >
-            {team.members && team.members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
-          </AvatarsGroup>
-        </Group>
-      </Stack>
+            {team.name?.at(0) ?? 'T'}
+          </Avatar>
+        )}
+        <Stack style={{ flexGrow: 1 }} ref={ref}>
+          <Group align="stretch">
+            {!isActive && (
+              <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
+                {team.name?.at(0) ?? 'T'}
+              </Avatar>
+            )}
+            <Box style={{ flexGrow: 1 }}>
+              <Title order={2} align="left">
+                {team.name}
+              </Title>
+              <Text size="md" lineClamp={3}>
+                {team.bio}
+              </Text>
+            </Box>
+            {!isActive && (
+              <Box style={{ height: '100%' }}>
+                <Tooltip
+                  label={'激活'}
+                  styles={(theme) => ({
+                    body: {
+                      margin: 4,
+                      backgroundColor:
+                        theme.colorScheme === 'dark'
+                          ? theme.colors[theme.primaryColor][8] + '40'
+                          : theme.colors[theme.primaryColor][2],
+                      color:
+                        theme.colorScheme === 'dark'
+                          ? theme.colors[theme.primaryColor][4]
+                          : theme.colors.gray[8],
+                    },
+                  })}
+                  position="left"
+                  transition="pop-bottom-right"
+                  color="brand"
+                >
+                  <ActionIcon
+                    size="lg"
+                    onMouseEnter={() => setCardClickable(false)}
+                    onMouseLeave={() => setCardClickable(true)}
+                    onClick={onActive}
+                    sx={(theme) => ({
+                      '&:hover': {
+                        color:
+                          theme.colorScheme === 'dark'
+                            ? theme.colors[theme.primaryColor][2]
+                            : theme.colors[theme.primaryColor][7],
+                        backgroundColor:
+                          theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                      },
+                    })}
+                  >
+                    <Icon path={mdiPower} size={1} />
+                  </ActionIcon>
+                </Tooltip>
+              </Box>
+            )}
+          </Group>
+          <Divider my="xs" />
+          <Stack spacing="xs">
+            <Group spacing="xs" position="apart">
+              <Text transform="uppercase" color="dimmed">
+                个人身份:
+              </Text>
+              {isCaptain ? (
+                <Badge color="yellow" size="lg">
+                  队长
+                </Badge>
+              ) : (
+                <Badge color="gray" size="lg">
+                  普通队员
+                </Badge>
+              )}
+            </Group>
+            <Group spacing="xs">
+              <Text transform="uppercase" color="dimmed">
+                队员列表:
+              </Text>
+              <Box style={{ flexGrow: 1 }}></Box>
+              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.alert[1]} />}
+              <AvatarsGroup
+                limit={3}
+                size="md"
+                styles={{
+                  child: {
+                    border: 'none',
+                  },
+                }}
+              >
+                <Avatar src={captain?.avatar} />
+                {members && members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
+              </AvatarsGroup>
+            </Group>
+          </Stack>
+        </Stack>
+      </Group>
     </Card>
   );
 };

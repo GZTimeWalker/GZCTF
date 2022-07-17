@@ -271,6 +271,30 @@ export interface UpdateUserInfoModel {
   role?: Role | null;
 }
 
+/**
+ * 日志信息
+ */
+export interface LogMessageModel {
+  /**
+   * 日志时间
+   * @format date-time
+   */
+  time?: string;
+
+  /** 用户名 */
+  name?: string | null;
+  level?: string | null;
+
+  /** IP地址 */
+  ip?: string | null;
+
+  /** 日志信息 */
+  msg?: string | null;
+
+  /** 任务状态 */
+  status?: string | null;
+}
+
 export enum ParticipationStatus {
   Pending = 'Pending',
   Accepted = 'Accepted',
@@ -1647,7 +1671,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: { count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
-      this.request<ClientUserInfoModel[], RequestResponse>({
+      this.request<LogMessageModel[], RequestResponse>({
         path: `/api/admin/logs/${level}`,
         method: 'GET',
         query: query,
@@ -1666,8 +1690,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       level: string | null,
       query?: { count?: number; skip?: number },
       options?: SWRConfiguration
-    ) =>
-      useSWR<ClientUserInfoModel[], RequestResponse>([`/api/admin/logs/${level}`, query], options),
+    ) => useSWR<LogMessageModel[], RequestResponse>([`/api/admin/logs/${level}`, query], options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -1680,9 +1703,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateAdminLogs: (
       level: string | null,
       query?: { count?: number; skip?: number },
-      data?: ClientUserInfoModel[] | Promise<ClientUserInfoModel[]>,
+      data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions
-    ) => mutate<ClientUserInfoModel[]>([`/api/admin/logs/${level}`, query], data, options),
+    ) => mutate<LogMessageModel[]>([`/api/admin/logs/${level}`, query], data, options),
 
     /**
      * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限
@@ -3053,17 +3076,38 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取队伍邀请信息，需要为队伍创建者
      *
      * @tags Team
-     * @name TeamTeamInviteCode
+     * @name TeamInviteCode
      * @summary 获取邀请信息
-     * @request POST:/api/team/{id}/invite
+     * @request GET:/api/team/{id}/invite
      */
-    teamTeamInviteCode: (id: number, params: RequestParams = {}) =>
+    teamInviteCode: (id: number, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
         path: `/api/team/${id}/invite`,
-        method: 'POST',
+        method: 'GET',
         format: 'json',
         ...params,
       }),
+    /**
+     * @description 获取队伍邀请信息，需要为队伍创建者
+     *
+     * @tags Team
+     * @name TeamInviteCode
+     * @summary 获取邀请信息
+     * @request GET:/api/team/{id}/invite
+     */
+    useTeamInviteCode: (id: number, options?: SWRConfiguration) =>
+      useSWR<string, RequestResponse>(`/api/team/${id}/invite`, options),
+
+    /**
+     * @description 获取队伍邀请信息，需要为队伍创建者
+     *
+     * @tags Team
+     * @name TeamInviteCode
+     * @summary 获取邀请信息
+     * @request GET:/api/team/{id}/invite
+     */
+    mutateTeamInviteCode: (id: number, data?: string | Promise<string>, options?: MutatorOptions) =>
+      mutate<string>(`/api/team/${id}/invite`, data, options),
 
     /**
      * @description 更新邀请 Token 的接口，需要为队伍创建者
@@ -3071,12 +3115,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Team
      * @name TeamUpdateInviteToken
      * @summary 更新邀请 Token
-     * @request POST:/api/team/{id}/updateinvitetoken
+     * @request PUT:/api/team/{id}/invite
      */
     teamUpdateInviteToken: (id: number, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
-        path: `/api/team/${id}/updateinvitetoken`,
-        method: 'POST',
+        path: `/api/team/${id}/invite`,
+        method: 'PUT',
         format: 'json',
         ...params,
       }),
@@ -3090,7 +3134,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/team/{id}/kick/{userid}
      */
     teamKickUser: (id: number, userid: string, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
+      this.request<TeamInfoModel, RequestResponse>({
         path: `/api/team/${id}/kick/${userid}`,
         method: 'POST',
         format: 'json',

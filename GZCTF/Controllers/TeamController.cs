@@ -205,13 +205,13 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/Invite")]
+    [HttpGet("{id}/Invite")]
     [RequireUser]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> TeamInviteCode([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> InviteCode([FromRoute] int id, CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
 
@@ -238,7 +238,7 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/UpdateInviteToken")]
+    [HttpPut("{id}/Invite")]
     [RequireUser]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -278,7 +278,7 @@ public class TeamController : ControllerBase
     /// <response code="403">无权操作</response>
     [HttpPost("{id}/Kick/{userid}")]
     [RequireUser]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
@@ -316,7 +316,7 @@ public class TeamController : ControllerBase
             await trans.CommitAsync(token);
 
             logger.Log($"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
-            return Ok(team.InviteCode);
+            return Ok(TeamInfoModel.FromTeam(team));
         }
         catch
         {

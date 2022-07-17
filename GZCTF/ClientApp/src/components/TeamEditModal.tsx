@@ -15,12 +15,16 @@ import {
   Textarea,
   TextInput,
   useMantineTheme,
+  PasswordInput,
+  ActionIcon,
+  ScrollArea,
 } from '@mantine/core';
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { useClipboard, useHover } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose, mdiCloseCircle } from '@mdi/js';
+import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js';
 import Icon from '@mdi/react';
-import api, { TeamInfoModel } from '../Api';
+import api, { TeamInfoModel, TeamUserInfoModel } from '../Api';
 
 const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
   <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
@@ -44,20 +48,64 @@ interface TeamEditModalProps extends ModalProps {
   isCaptain: boolean;
 }
 
+interface TeamMemberInfoProps {
+  user: TeamUserInfoModel;
+  isCaptain: boolean;
+  onKick: (user: TeamUserInfoModel) => void;
+}
+
+const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
+  const { user, isCaptain, onKick } = props;
+
+  const [showKick, setShowKick] = useState(false);
+
+  return (
+    <Group
+      position="apart"
+      onMouseEnter={() => setShowKick(true)}
+      onMouseLeave={() => setShowKick(false)}
+    >
+      <Group position="left">
+        <Avatar src={user.avatar} radius="xl" />
+        <Text>{user.userName}</Text>
+      </Group>
+      {isCaptain && showKick && <Button onClick={() => onKick(user)}>Kick</Button>}
+    </Group>
+  );
+};
+
 const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const { team, isCaptain, ...modalProps } = props;
+
+  const teamId = team?.id;
 
   const [teamInfo, setTeamInfo] = useState<TeamInfoModel | null>(team);
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const [leaveOpened, setLeaveOpened] = useState(false);
+  const [kickUserOpened, setKickUserOpened] = useState(false);
 
   const theme = useMantineTheme();
+  const clipboard = useClipboard({ timeout: 500 });
+
+  const [inviteCode, setInviteCode] = useState('');
+  const [kickUser, setKickUser] = useState<TeamUserInfoModel | null>(null);
+
+  const captain = teamInfo?.members?.filter((x) => x.captain).at(0);
+  const crew = teamInfo?.members?.filter((x) => !x.captain);
 
   useEffect(() => {
     setTeamInfo(team);
   }, [team]);
+
+  useEffect(() => {
+    if (isCaptain && !inviteCode && teamId) {
+      api.team.teamInviteCode(teamId).then((code) => {
+        setInviteCode(code.data);
+      });
+    }
+  }, [inviteCode, isCaptain, teamId]);
 
   const onConfirmLeaveTeam = () => {
     if (teamInfo && !isCaptain) {
@@ -87,10 +135,63 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     }
   };
 
-  const onChangeAvatar = () => {
-    if (avatarFile && team?.id) {
+  const onConfirmKickUser = () => {
+    if (kickUser) {
       api.team
-        .teamAvatar(team.id, {
+        .teamKickUser(teamInfo?.id!, kickUser.id!)
+        .then((data) => {
+          showNotification({
+            color: 'teal',
+            title: '踢出成员成功',
+            message: '您的队伍信息已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          });
+          api.team.mutateTeamGetTeamsInfo();
+          setTeamInfo(data.data);
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          });
+        })
+        .finally(() => {
+          setKickUserOpened(false);
+        });
+    }
+  };
+
+  const onRefreshInviteCode = () => {
+    if (inviteCode) {
+      api.team
+        .teamUpdateInviteToken(team?.id!)
+        .then((data) => {
+          setInviteCode(data.data);
+          showNotification({
+            color: 'teal',
+            message: '队伍邀请码已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          });
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          });
+        });
+    }
+  };
+
+  const onChangeAvatar = () => {
+    if (avatarFile && teamInfo?.id) {
+      api.team
+        .teamAvatar(teamInfo?.id, {
           file: avatarFile,
         })
         .then((data) => {
@@ -101,7 +202,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          setTeamInfo({ avatar: data.data, ...teamInfo });
+          setTeamInfo({ ...teamInfo, avatar: data.data });
           api.team.mutateTeamGetTeamsInfo();
           setAvatarFile(null);
           setDropzoneOpened(false);
@@ -147,7 +248,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       <Stack spacing="lg">
-        {/* User Info */}
+        {/* Team Info */}
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
@@ -165,12 +266,51 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               <Avatar
                 style={{ borderRadius: '50%' }}
                 size={70}
-                src={team?.avatar}
+                src={teamInfo?.avatar}
                 onClick={() => isCaptain && setDropzoneOpened(true)}
               />
             </Center>
           </Grid.Col>
         </Grid>
+        {isCaptain && (
+          <PasswordInput
+            label={
+              <Group spacing="xs">
+                <Text size="sm">邀请码</Text>
+                <ActionIcon
+                  size="sm"
+                  onClick={onRefreshInviteCode}
+                  sx={(theme) => ({
+                    margin: '0 0 -0.1rem -0.5rem',
+                    '&:hover': {
+                      color:
+                        theme.colorScheme === 'dark'
+                          ? theme.colors[theme.primaryColor][2]
+                          : theme.colors[theme.primaryColor][7],
+                      backgroundColor:
+                        theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                    },
+                  })}
+                >
+                  <Icon path={mdiRefresh} size={1} />
+                </ActionIcon>
+              </Group>
+            }
+            value={inviteCode}
+            placeholder="loading..."
+            onClick={() => {
+              clipboard.copy(inviteCode);
+              showNotification({
+                color: 'teal',
+                message: '邀请码已复制',
+                icon: <Icon path={mdiCheck} size={1} />,
+                disallowClose: true,
+              });
+            }}
+            readOnly
+          />
+        )}
+
         <Textarea
           label="队伍签名"
           placeholder={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
@@ -182,15 +322,45 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           maxRows={4}
           onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
+
+        <Text size="sm">队员管理</Text>
+        <ScrollArea style={{ height: 140 }} offsetScrollbars>
+          <Stack spacing="xs">
+            {captain && (
+              <Group position="apart">
+                <Group position="left">
+                  <Avatar src={captain.avatar} radius="xl" />
+                  <Text>{captain.userName}</Text>
+                </Group>
+                <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />
+              </Group>
+            )}
+            {crew &&
+              crew.map((user) => (
+                <TeamMemberInfo
+                  key={user.id}
+                  isCaptain={isCaptain}
+                  user={user}
+                  onKick={(user: TeamUserInfoModel) => {
+                    setKickUser(user);
+                    setKickUserOpened(true);
+                  }}
+                />
+              ))}
+          </Stack>
+        </ScrollArea>
+
         <Group grow style={{ margin: 'auto', width: '100%' }}>
           <Button fullWidth color="red" variant="outline" onClick={() => setLeaveOpened(true)}>
             {isCaptain ? '删除队伍' : '退出队伍'}
           </Button>
           <Button fullWidth disabled={!isCaptain} onClick={onSaveChange}>
-            更新队伍
+            更新信息
           </Button>
         </Group>
       </Stack>
+
+      {/* 更新头像浮窗 */}
       <Modal
         opened={dropzoneOpened}
         onClose={() => setDropzoneOpened(false)}
@@ -221,6 +391,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           更新头像
         </Button>
       </Modal>
+
+      {/* 删除队伍浮窗 */}
       <Modal
         opened={leaveOpened}
         centered
@@ -252,6 +424,27 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             </Group>
           </Stack>
         )}
+      </Modal>
+
+      {/* 删除用户浮窗 */}
+      <Modal
+        opened={kickUserOpened}
+        onClose={() => setKickUserOpened(false)}
+        centered
+        title="踢出用户"
+        withCloseButton={false}
+      >
+        <Stack>
+          <Text size="sm">你确定要踢出 {kickUser?.userName ?? ''} 吗？</Text>
+          <Group grow style={{ margin: 'auto', width: '100%' }}>
+            <Button fullWidth color="red" variant="outline" onClick={onConfirmKickUser}>
+              确认踢出
+            </Button>
+            <Button fullWidth onClick={() => setKickUserOpened(false)}>
+              取消
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
     </Modal>
   );

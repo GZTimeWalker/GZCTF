@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalProps, PasswordInput, SimpleGrid, Stack } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -13,7 +13,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
   const [pwd, setPwd] = useInputState('');
   const [retypedPwd, setRetypedPwd] = useInputState('');
 
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const onChangePwd = () => {
     if (!pwd || !retypedPwd) {
@@ -38,7 +38,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           });
           props.onClose();
           api.account.accountLogOut();
-          router.push('/account/login');
+          navigate('/account/login');
         })
         .catch((err) => {
           showNotification({

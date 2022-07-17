@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Menu,
@@ -14,7 +13,6 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from '@mantine/core';
-import { NextLink } from '@mantine/next';
 import { showNotification } from '@mantine/notifications';
 import {
   mdiAccountCircleOutline,
@@ -26,9 +24,10 @@ import {
   mdiWeatherNight,
   mdiLogout,
   mdiCheck,
+  mdiWrenchOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import api from '../Api';
+import api, { Role } from '../Api';
 import MainIcon from './icon/MainIcon';
 
 const useStyles = createStyles((theme) => ({
@@ -62,7 +61,7 @@ const useStyles = createStyles((theme) => ({
     marginLeft: 20,
     backgroundColor:
       theme.colorScheme === 'dark'
-        ? theme.colors[theme.primaryColor][8] + '40'
+        ? theme.fn.darken(theme.colors[theme.primaryColor][8], 0.45)
         : theme.colors[theme.primaryColor][2],
     color:
       theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.gray[8],
@@ -73,11 +72,19 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const items = [
+interface NavbarItem {
+  icon: string;
+  label: string;
+  link: string;
+  admin?: boolean;
+}
+
+const items: NavbarItem[] = [
   { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
   { icon: mdiFlagOutline, label: '赛事', link: '/games' },
   { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
   { icon: mdiInformationOutline, label: '关于', link: '/about' },
+  { icon: mdiWrenchOutline, label: '管理', link: '/admin', admin: true },
 ];
 
 export interface NavbarLinkProps {
@@ -92,7 +99,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles();
 
   return (
-    <Link href={props.link ?? '#'} passHref>
+    <Link to={props.link ?? '#'}>
       <Tooltip label={props.label} classNames={{ body: classes.tooltipBody }} position="right">
         <UnstyledButton
           onClick={props.onClick}
@@ -106,30 +113,32 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 };
 
 const AppNavbar: FC = () => {
-  const router = useRouter();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { data, error } = api.account.useAccountProfile({
+
+  const { data: user, error } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
   });
 
   useEffect(() => {
-    if (router.pathname == '/') {
+    if (location.pathname == '/') {
       setActive(items[0].label);
     }
     items.forEach((i) => {
-      if (router.pathname.startsWith(i.link) && i.link != '/') {
+      if (location.pathname.startsWith(i.link) && i.link != '/') {
         setActive(i.label);
       }
     });
-  }, [router.pathname]);
+  }, [location.pathname]);
 
   const logout = () => {
     api.account.accountLogOut().then(() => {
-      router.push('/');
+      navigate('/');
       api.account.mutateAccountProfile();
       showNotification({
         color: 'teal',
@@ -141,9 +150,9 @@ const AppNavbar: FC = () => {
     });
   };
 
-  const links = items.map((link) => (
-    <NavbarLink {...link} key={link.label} isActive={link.label === active} />
-  ));
+  const links = items
+    .filter((m) => !m.admin || user?.role === Role.Admin)
+    .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />);
 
   return (
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
@@ -153,7 +162,7 @@ const AppNavbar: FC = () => {
           <MainIcon
             style={{ width: '100%', height: 'auto', position: 'relative', left: 2 }}
             ignoreTheme
-            onClick={() => router.push('/')}
+            onClick={() => navigate('/')}
           />
         </Center>
       </Navbar.Section>
@@ -171,35 +180,43 @@ const AppNavbar: FC = () => {
       >
         <Stack align="center" spacing={5}>
           {/* Color Mode */}
-          <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
-            {colorScheme === 'dark' ? (
-              <Icon path={mdiWeatherSunny} size={1} />
-            ) : (
-              <Icon path={mdiWeatherNight} size={1} />
-            )}
-          </UnstyledButton>
+          <Tooltip
+            label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
+            classNames={{ body: classes.tooltipBody }}
+            position="right"
+          >
+            <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
+              {colorScheme === 'dark' ? (
+                <Icon path={mdiWeatherSunny} size={1} />
+              ) : (
+                <Icon path={mdiWeatherNight} size={1} />
+              )}
+            </UnstyledButton>
+          </Tooltip>
 
           {/* User Info */}
-          {data && !error ? (
+          {user && !error ? (
             <Menu
               control={
-                <Box className={cx(classes.link)}>
-                  {data.avatar ? (
-                    <Avatar src={data.avatar} radius="md" size="md" />
-                  ) : (
-                    <Icon path={mdiAccountCircleOutline} size={1} />
-                  )}
-                </Box>
+                <Tooltip label="账户" classNames={{ body: classes.tooltipBody }} position="right">
+                  <Box className={cx(classes.link)}>
+                    {user.avatar ? (
+                      <Avatar src={user.avatar} radius="md" size="md" />
+                    ) : (
+                      <Icon path={mdiAccountCircleOutline} size={1} />
+                    )}
+                  </Box>
+                </Tooltip>
               }
               classNames={{ body: classes.menuBody }}
               position="right"
               placement="end"
-              trigger="hover"
+              trigger="click"
             >
-              <Menu.Label>{data.userName}</Menu.Label>
+              <Menu.Label>{user.userName}</Menu.Label>
               <Menu.Item
-                component={NextLink}
-                href="/account/profile"
+                component={Link}
+                to="/account/profile"
                 icon={<Icon path={mdiAccountCircleOutline} size={1} />}
               >
                 用户信息
@@ -212,7 +229,7 @@ const AppNavbar: FC = () => {
               </Menu.Item>
             </Menu>
           ) : (
-            <Link href={`/account/login?from=${router.asPath}`} passHref>
+            <Link to={`/account/login?from=${location.pathname}`}>
               <Tooltip label="登录" classNames={{ body: classes.tooltipBody }} position="right">
                 <Box className={cx(classes.link)}>
                   <Icon path={mdiAccountCircleOutline} size={1} />

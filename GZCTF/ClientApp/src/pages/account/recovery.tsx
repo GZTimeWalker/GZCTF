@@ -1,5 +1,5 @@
-import type { NextPage } from 'next';
-import Link from 'next/link';
+import { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { TextInput, Button, Anchor } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -8,7 +8,7 @@ import Icon from '@mdi/react';
 import api from '../../Api';
 import AccountView from '../../components/AccountView';
 
-const Recovery: NextPage = () => {
+const Recovery: FC = () => {
   const [email, setEmail] = useInputState('');
 
   const onRecovery = () => {
@@ -52,7 +52,7 @@ const Recovery: NextPage = () => {
         value={email}
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
-      <Link href="/account/login" passHref={true}>
+      <Link to="/account/login">
         <Anchor<'a'>
           sx={(theme) => ({
             color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],

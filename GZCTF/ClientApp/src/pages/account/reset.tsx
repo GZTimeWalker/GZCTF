@@ -1,6 +1,5 @@
-import type { NextPage } from 'next';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { FC, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, PasswordInput } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -10,10 +9,11 @@ import api from '../../Api';
 import AccountView from '../../components/AccountView';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
 
-const Reset: NextPage = () => {
-  const router = useRouter();
-  const token = router.query['token'];
-  const email = router.query['email'];
+const Reset: FC = () => {
+  const params = useParams();
+  const token = params.token;
+  const email = params.email;
+  const navigate = useNavigate();
   const [pwd, setPwd] = useInputState('');
   const [retypedPwd, setRetypedPwd] = useInputState('');
   const [disabled, setDisabled] = useState(false);
@@ -55,7 +55,7 @@ const Reset: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        router.push('/account/login');
+        navigate('/account/login');
       })
       .catch((err) => {
         showNotification({

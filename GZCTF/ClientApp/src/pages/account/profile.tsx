@@ -1,5 +1,4 @@
-import type { NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Box,
   Stack,
@@ -42,7 +41,7 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
   </Group>
 );
 
-const Profile: NextPage = () => {
+const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const { data, mutate } = api.account.useAccountProfile({
     refreshInterval: 0,
@@ -64,7 +63,7 @@ const Profile: NextPage = () => {
   const [mailEditOpened, setMailEditOpened] = useState(false);
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false);
 
-  const [email, setEmail] = useState(data?.email ?? '');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     setProfile({
@@ -159,7 +158,7 @@ const Profile: NextPage = () => {
   return (
     <WithNavBar>
       <Center style={{ height: '90vh' }}>
-        <Paper style={{ width: '55%', padding: '2% 5%' }} shadow="sm" p="lg">
+        <Paper style={{ width: '55%', maxWidth: 600, padding: '2% 5%' }} shadow="sm" p="lg">
           {/* Header */}
           <Box style={{ marginBottom: '5px' }}>
             <h2>个人信息</h2>
@@ -195,7 +194,7 @@ const Profile: NextPage = () => {
               type="email"
               style={{ width: '100%' }}
               value={data?.email ?? 'ctfer@gzti.me'}
-              disabled={disabled}
+              disabled
               readOnly
             />
             <TextInput

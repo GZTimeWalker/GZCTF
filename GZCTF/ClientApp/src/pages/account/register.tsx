@@ -1,7 +1,5 @@
-import type { NextPage } from 'next';
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { FC, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
 import { showNotification, updateNotification } from '@mantine/notifications';
@@ -12,13 +10,14 @@ import AccountView from '../../components/AccountView';
 import StrengthPasswordInput from '../../components/StrengthPasswordInput';
 import useReCaptcha from '../../utils/Recaptcha';
 
-const Register: NextPage = () => {
+const Register: FC = () => {
   const [pwd, setPwd] = useInputState('');
   const [retypedPwd, setRetypedPwd] = useInputState('');
   const [uname, setUname] = useInputState('');
   const [email, setEmail] = useInputState('');
   const [disabled, setDisabled] = useState(false);
-  const router = useRouter();
+
+  const navigate = useNavigate();
   const reCaptcha = useReCaptcha('register');
 
   const onRegister = async () => {
@@ -73,7 +72,7 @@ const Register: NextPage = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        router.push('/account/login');
+        navigate('/account/login');
       })
       .catch((err) => {
         updateNotification({
@@ -129,7 +128,7 @@ const Register: NextPage = () => {
         style={{ width: '100%' }}
         error={pwd !== retypedPwd}
       />
-      <Link href="/account/login" passHref={true}>
+      <Link to="/account/login">
         <Anchor<'a'>
           sx={(theme) => ({
             color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],

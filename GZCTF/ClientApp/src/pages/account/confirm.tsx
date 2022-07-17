@@ -1,6 +1,5 @@
-import type { NextPage } from 'next';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { FC, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Text } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
@@ -8,10 +7,11 @@ import { Icon } from '@mdi/react';
 import api from '../../Api';
 import AccountView from '../../components/AccountView';
 
-const Confirm: NextPage = () => {
-  const router = useRouter();
-  const token = router.query['token'];
-  const email = router.query['email'];
+const Confirm: FC = () => {
+  const navigate = useNavigate();
+  const params = useParams();
+  const token = params.token;
+  const email = params.email;
 
   useEffect(() => {
     if (token && email && typeof token === 'string' && typeof email === 'string') {
@@ -25,7 +25,7 @@ const Confirm: NextPage = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           });
-          router.push('/');
+          navigate('/');
         })
         .catch(() => {
           showNotification({

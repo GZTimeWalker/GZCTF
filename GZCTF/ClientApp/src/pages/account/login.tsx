@@ -1,7 +1,5 @@
-import type { NextPage } from 'next';
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { FC, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core';
 import { useInputState, useWindowEvent } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -10,8 +8,10 @@ import { Icon } from '@mdi/react';
 import api from '../../Api';
 import AccountView from '../../components/AccountView';
 
-const Login: NextPage = () => {
-  const router = useRouter();
+const Login: FC = () => {
+  const params = useParams();
+  const navigate = useNavigate();
+
   const [pwd, setPwd] = useInputState('');
   const [uname, setUname] = useInputState('');
   const [disabled, setDisabled] = useState(false);
@@ -45,8 +45,8 @@ const Login: NextPage = () => {
           disallowClose: true,
         });
         api.account.mutateAccountProfile();
-        let from = router.query['from'];
-        router.push(from ? (from as string) : '/');
+        let from = params['from'];
+        navigate(from ? (from as string) : '/');
       })
       .catch(() => {
         showNotification({
@@ -87,7 +87,7 @@ const Login: NextPage = () => {
         disabled={disabled}
         onChange={(event) => setPwd(event.currentTarget.value)}
       />
-      <Link href="/account/recovery" passHref={true}>
+      <Link to="/account/recovery">
         <Anchor<'a'>
           sx={(theme) => ({
             color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],
@@ -101,7 +101,7 @@ const Login: NextPage = () => {
       </Link>
       <Grid grow style={{ width: '100%' }}>
         <Grid.Col span={2}>
-          <Link href="/account/register" passHref={true}>
+          <Link to="/account/register">
             <Button fullWidth variant="outline">
               注册
             </Button>

@@ -10,7 +10,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const AccountView: FC<React.ReactNode> = ({ children }) => {
+const AccountView: FC<React.PropsWithChildren> = ({ children }) => {
   const { classes, cx } = useStyles();
 
   return (
