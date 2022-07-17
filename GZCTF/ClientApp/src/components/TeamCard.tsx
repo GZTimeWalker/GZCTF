@@ -28,7 +28,7 @@ interface TeamCardProps {
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
-  const { team, isCaptain, isActive, onEdit, mutateActive } = props
+  const { team, isCaptain, isActive, onEdit, mutateActive } = props;
 
   const captain = team.members?.filter((m) => m?.captain).at(0);
   const members = team.members?.filter((m) => !m?.captain);
@@ -68,10 +68,10 @@ const TeamCard: FC<TeamCardProps> = (props) => {
   };
 
   const ref = useRef();
-  const [cardSzY, setCardSzY] = useState("180px");
+  const [cardSzY, setCardSzY] = useState('180px');
   useEffect(() => {
-    setCardSzY(window.getComputedStyle(ref.current).getPropertyValue("height"));
-  }, [])
+    setCardSzY(window.getComputedStyle(ref.current).getPropertyValue('height'));
+  }, []);
 
   return (
     <Card
@@ -89,24 +89,32 @@ const TeamCard: FC<TeamCardProps> = (props) => {
         },
       })}
     >
-      <Group align="stretch" style={{ flexWrap: "nowrap", alignItems: "center" }}>
-        {isActive &&
-          <Avatar color="cyan" size="xl" radius="md" src={team.avatar} style={{ height: cardSzY, width: "auto", aspectRatio: "1 / 1", flexShrink: 0 }}>
+      <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
+        {isActive && (
+          <Avatar
+            color="cyan"
+            size="xl"
+            radius="md"
+            src={team.avatar}
+            style={{ height: cardSzY, width: 'auto', aspectRatio: '1 / 1', flexShrink: 0 }}
+          >
             {team.name?.at(0) ?? 'T'}
           </Avatar>
-        }
+        )}
         <Stack style={{ flexGrow: 1 }} ref={ref}>
           <Group align="stretch">
-            {!isActive &&
+            {!isActive && (
               <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
                 {team.name?.at(0) ?? 'T'}
               </Avatar>
-            }
+            )}
             <Box style={{ flexGrow: 1 }}>
               <Title order={2} align="left">
                 {team.name}
               </Title>
-              <Text size="md" lineClamp={3}>{team.bio}</Text>
+              <Text size="md" lineClamp={3}>
+                {team.bio}
+              </Text>
             </Box>
             {!isActive && (
               <Box style={{ height: '100%' }}>

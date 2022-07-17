@@ -105,7 +105,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         setInviteCode(code.data);
       });
     }
-  }, [inviteCode, isCaptain, teamId])
+  }, [inviteCode, isCaptain, teamId]);
 
   const onConfirmLeaveTeam = () => {
     if (teamInfo && !isCaptain) {

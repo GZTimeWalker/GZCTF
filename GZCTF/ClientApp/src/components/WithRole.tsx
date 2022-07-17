@@ -28,8 +28,7 @@ const WithRole: FC<WithRoleProps> = (props) => {
   const required = RoleMap.get(requiredRole)!;
 
   useEffect(() => {
-    if (error && error.status === 401)
-      router.push(`/account/login?from=${router.asPath}`);
+    if (error && error.status === 401) router.push(`/account/login?from=${router.asPath}`);
 
     if (!user?.role) return;
 
@@ -41,7 +40,7 @@ const WithRole: FC<WithRoleProps> = (props) => {
   if (!user || RoleMap.get(user?.role ?? Role.User)! < required /* show loader before redirect */) {
     return (
       <Center style={{ height: 'calc(100vh - 32px)' }}>
-        <Loader/>
+        <Loader />
       </Center>
     );
   }

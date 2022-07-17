@@ -152,9 +152,9 @@ const AppNavbar: FC = () => {
     });
   };
 
-  const links = items.filter((m) => !m.admin || user?.role === Role.Admin).map((link) => (
-    <NavbarLink {...link} key={link.label} isActive={link.label === active} />
-  ));
+  const links = items
+    .filter((m) => !m.admin || user?.role === Role.Admin)
+    .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />);
 
   return (
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
@@ -182,7 +182,11 @@ const AppNavbar: FC = () => {
       >
         <Stack align="center" spacing={5}>
           {/* Color Mode */}
-          <Tooltip label={"切换至" + (colorScheme === 'dark' ? "浅色" : "深色") + "主题"} classNames={{ body: classes.tooltipBody }} position="right">
+          <Tooltip
+            label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
+            classNames={{ body: classes.tooltipBody }}
+            position="right"
+          >
             <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
               {colorScheme === 'dark' ? (
                 <Icon path={mdiWeatherSunny} size={1} />
