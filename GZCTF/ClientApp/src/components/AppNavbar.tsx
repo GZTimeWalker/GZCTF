@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Menu,
@@ -14,7 +13,6 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from '@mantine/core';
-import { NextLink } from '@mantine/next';
 import { showNotification } from '@mantine/notifications';
 import {
   mdiAccountCircleOutline,
@@ -22,7 +20,6 @@ import {
   mdiFlagOutline,
   mdiHomeVariantOutline,
   mdiInformationOutline,
-  mdiCog,
   mdiWeatherSunny,
   mdiWeatherNight,
   mdiLogout,
@@ -102,7 +99,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles();
 
   return (
-    <Link href={props.link ?? '#'} passHref>
+    <Link to={props.link ?? '#'}>
       <Tooltip label={props.label} classNames={{ body: classes.tooltipBody }} position="right">
         <UnstyledButton
           onClick={props.onClick}
@@ -116,7 +113,8 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 };
 
 const AppNavbar: FC = () => {
-  const router = useRouter();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('');
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -128,19 +126,19 @@ const AppNavbar: FC = () => {
   });
 
   useEffect(() => {
-    if (router.pathname == '/') {
+    if (location.pathname == '/') {
       setActive(items[0].label);
     }
     items.forEach((i) => {
-      if (router.pathname.startsWith(i.link) && i.link != '/') {
+      if (location.pathname.startsWith(i.link) && i.link != '/') {
         setActive(i.label);
       }
     });
-  }, [router.pathname]);
+  }, [location.pathname]);
 
   const logout = () => {
     api.account.accountLogOut().then(() => {
-      router.push('/');
+      navigate('/');
       api.account.mutateAccountProfile();
       showNotification({
         color: 'teal',
@@ -164,7 +162,7 @@ const AppNavbar: FC = () => {
           <MainIcon
             style={{ width: '100%', height: 'auto', position: 'relative', left: 2 }}
             ignoreTheme
-            onClick={() => router.push('/')}
+            onClick={() => navigate('/')}
           />
         </Center>
       </Navbar.Section>
@@ -217,8 +215,8 @@ const AppNavbar: FC = () => {
             >
               <Menu.Label>{user.userName}</Menu.Label>
               <Menu.Item
-                component={NextLink}
-                href="/account/profile"
+                component={Link}
+                to="/account/profile"
                 icon={<Icon path={mdiAccountCircleOutline} size={1} />}
               >
                 用户信息
@@ -231,7 +229,7 @@ const AppNavbar: FC = () => {
               </Menu.Item>
             </Menu>
           ) : (
-            <Link href={`/account/login?from=${router.asPath}`} passHref>
+            <Link to={`/account/login?from=${location.pathname}`}>
               <Tooltip label="登录" classNames={{ body: classes.tooltipBody }} position="right">
                 <Box className={cx(classes.link)}>
                   <Icon path={mdiAccountCircleOutline} size={1} />

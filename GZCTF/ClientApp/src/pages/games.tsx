@@ -1,9 +1,9 @@
-import type { NextPage } from 'next';
+import { FC } from 'react';
 import { Stack } from '@mantine/core';
 import LogoHeader from '../components/LogoHeader';
 import WithNavBar from '../components/WithNavbar';
 
-const Games: NextPage = () => {
+const Games: FC = () => {
   return (
     <WithNavBar>
       <Stack>

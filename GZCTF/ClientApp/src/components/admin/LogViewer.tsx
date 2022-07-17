@@ -1,7 +1,7 @@
 import * as signalR from '@microsoft/signalr';
 import { HubConnectionState, LogLevel } from '@microsoft/signalr';
 import { FC, useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/router';
+import { useParams } from 'react-router-dom';
 import { Stack, Title, Pagination, Group, Table } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
@@ -26,8 +26,8 @@ function formatDate(dateString?: string) {
 }
 
 const LogViewer: FC = () => {
-  const router = useRouter();
-  const level = router.query.level ?? 'All';
+  const params = useParams();
+  const level = params.level ?? 'All';
 
   const [activePage, setPage] = useState(1);
 
@@ -52,7 +52,6 @@ const LogViewer: FC = () => {
       .withUrl('/hub/admin')
       .withHubProtocol(new signalR.JsonHubProtocol())
       .withAutomaticReconnect()
-      .configureLogging(LogLevel.Debug)
       .build();
 
     connection.on('ReceivedLog', (message: LogMessageModel) => {
@@ -61,8 +60,14 @@ const LogViewer: FC = () => {
       update(new Date(message.time!));
     });
 
-    connection.start().catch((error) => {
-      console.log(error);
+    connection.start().then(() => {
+      showNotification({
+        color: 'teal',
+        message: 'signalR 连接成功',
+        icon: <Icon path={mdiCheck} size={1} />,
+      });
+    }).catch((error) => {
+      console.error(error);
       showNotification({
         color: 'red',
         title: 'signalR 连接失败',
@@ -74,7 +79,7 @@ const LogViewer: FC = () => {
     return () => {
       connection.stop().catch(() => {});
     };
-  });
+  }, []);
 
   const rows = logs?.map((item, i) => (
     <tr key={`${item.time}@${i}`}>

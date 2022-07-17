@@ -1,14 +1,13 @@
-import type { NextPage } from 'next';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import { Text, Stack, Center } from '@mantine/core';
+import { RichTextEditor } from '@mantine/rte';
 import LogoHeader from '../components/LogoHeader';
-import RichTextEditor from '../components/RichText';
 import WithNavBar from '../components/WithNavbar';
 
 const initialValue =
   '<p>Your initial <b>html value</b> or an empty string to init editor without value</p>';
 
-const About: NextPage = () => {
+const About: FC = () => {
   const [value, onChange] = useState(initialValue);
 
   return (

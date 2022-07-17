@@ -1,5 +1,4 @@
-import type { NextPage } from 'next';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import {
   Stack,
   SimpleGrid,
@@ -24,7 +23,7 @@ import TeamEditModal from '../components/TeamEditModal';
 import WithNavBar from '../components/WithNavbar';
 import WithRole from '../components/WithRole';
 
-const Teams: NextPage = () => {
+const Teams: FC = () => {
   const { data: user, error: userError } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,

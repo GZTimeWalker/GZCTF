@@ -18,16 +18,6 @@ public class AdminHub : Hub<IAdminClient>
 
     public override async Task OnConnectedAsync()
     {
-        var context = Context.GetHttpContext()!;
-        var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
-        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (dbContext is not null && userId is not null)
-        {
-            var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
-            logger.Log($"AdminHub 获取新连接", currentUser!, TaskStatus.Pending, LogLevel.Information);
-        }
-
         if (!await HubHelper.HasAdmin(Context.GetHttpContext()!))
         {
             Context.Abort();

@@ -1,5 +1,4 @@
-import type { NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Box,
   Stack,
@@ -42,7 +41,7 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
   </Group>
 );
 
-const Profile: NextPage = () => {
+const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false);
   const { data, mutate } = api.account.useAccountProfile({
     refreshInterval: 0,

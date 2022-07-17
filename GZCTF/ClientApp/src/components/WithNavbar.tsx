@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { AppShell, Box, Center } from '@mantine/core';
 import AppNavbar from './AppNavbar';
 
-const WithNavBar: FC<React.ReactNode> = ({ children }) => {
+const WithNavBar: FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <AppShell
       padding="md"
