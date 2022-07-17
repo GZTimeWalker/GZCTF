@@ -64,7 +64,7 @@ const Profile: NextPage = () => {
   const [mailEditOpened, setMailEditOpened] = useState(false);
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false);
 
-  const [email, setEmail] = useState(data?.email ?? '');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     setProfile({
