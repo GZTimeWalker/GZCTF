@@ -31,6 +31,7 @@
     "react-dom": "^18.2.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
+    "vite-plugin-chunk-split": "^0.2.4",
     "swr": "^1.3.0"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "tslib": "^2.4.0",
     "typescript": "4.7.4",
     "vite": "^3.0.0",
-    "vite-plugin-pages": "^0.25.0"
+    "vite-plugin-pages": "^0.25.0",
+    "vite-plugin-progress": "^0.0.3"
   }
 }
