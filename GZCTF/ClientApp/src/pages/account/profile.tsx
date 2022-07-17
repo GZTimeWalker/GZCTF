@@ -159,7 +159,7 @@ const Profile: NextPage = () => {
   return (
     <WithNavBar>
       <Center style={{ height: '90vh' }}>
-        <Paper style={{ width: '55%', padding: '2% 5%' }} shadow="sm" p="lg">
+        <Paper style={{ width: '55%', maxWidth: 600, padding: '2% 5%' }} shadow="sm" p="lg">
           {/* Header */}
           <Box style={{ marginBottom: '5px' }}>
             <h2>个人信息</h2>

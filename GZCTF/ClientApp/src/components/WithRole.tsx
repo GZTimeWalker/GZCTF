@@ -6,7 +6,7 @@ import api, { Role } from '../Api';
 
 interface WithRoleProps {
   requiredRole: Role;
-  children: JSX.Element;
+  children?: React.ReactNode;
 }
 
 const RoleMap = new Map<Role, number>([
@@ -16,8 +16,7 @@ const RoleMap = new Map<Role, number>([
   [Role.BannedUser, -1],
 ]);
 
-const WithRole: FC<WithRoleProps> = (props) => {
-  const { requiredRole, children } = props;
+const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
   const { data: user, error } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
@@ -45,7 +44,7 @@ const WithRole: FC<WithRoleProps> = (props) => {
     );
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default WithRole;
