@@ -67,10 +67,11 @@ const TeamCard: FC<TeamCardProps> = (props) => {
     }
   };
 
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement | null>(null);
   const [cardSzY, setCardSzY] = useState('180px');
+
   useEffect(() => {
-    setCardSzY(window.getComputedStyle(ref.current).getPropertyValue('height'));
+    setCardSzY(window.getComputedStyle(ref.current!).getPropertyValue('height'));
   }, []);
 
   return (
