@@ -17,6 +17,6 @@
     "incremental": true,
     "allowSyntheticDefaultImports": true,
   },
-  "include": ["vite.config.ts", "src/vite-env.d.ts", "**/*.ts", "**/*.tsx", "../../client-react.d.ts"],
+  "include": ["vite.config.ts", "src_1/vite-env.d.ts", "**/*.ts", "**/*.tsx", "../../client-react.d.ts"],
   "exclude": ["node_modules"]
 }

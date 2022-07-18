@@ -28,11 +28,11 @@ export default defineConfig({
     progress(),
     chunkSplitPlugin({
       customSplitting: {
-        'account': [/src\/pages\/account\/.*/],
+        'Account': [/src\/pages\/account\/.*/],
       }
     }),
     Pages({
-      dirs: [{ dir: 'src/pages', baseRoute: '' }],
+      dirs: [{ dir: 'src/pages', baseRoute: '' }]
     }),
   ],
 });
