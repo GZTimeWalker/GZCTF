@@ -13,6 +13,7 @@ public class LogRepository : RepositoryBase, ILogRepository
     public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, CancellationToken token)
     {
         IQueryable<LogModel> data = context.Logs;
+
         if (level is not null && level != "All")
             data = data.Where(x => x.Level == level);
         data = data.OrderByDescending(x => x.TimeUTC).Skip(skip).Take(count);

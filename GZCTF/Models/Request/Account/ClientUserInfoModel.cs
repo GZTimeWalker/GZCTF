@@ -35,7 +35,7 @@ public class ClientUserInfoModel
     /// <summary>
     /// 学工号
     /// </summary>
-    public string StdNumber { get; set; }
+    public string? StdNumber { get; set; }
 
     /// <summary>
     /// 头像链接

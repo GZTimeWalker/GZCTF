@@ -30,7 +30,7 @@ public class UpdateUserInfoModel
     /// <summary>
     /// 学工号
     /// </summary>
-    public string StdNumber { get; set; }
+    public string? StdNumber { get; set; }
 
     /// <summary>
     /// 用户角色

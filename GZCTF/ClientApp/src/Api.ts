@@ -154,7 +154,7 @@ export interface ClientUserInfoModel {
   realName?: string | null;
 
   /** 学工号 */
-  stdNumber?: string;
+  stdNumber?: string | null;
 
   /** 头像链接 */
   avatar?: string | null;
@@ -265,7 +265,7 @@ export interface UpdateUserInfoModel {
   realName?: string | null;
 
   /** 学工号 */
-  stdNumber?: string;
+  stdNumber?: string | null;
 
   /** 用户角色 */
   role?: Role | null;

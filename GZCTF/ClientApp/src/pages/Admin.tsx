@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { Tabs } from '@mantine/core';
+import React, { FC } from 'react';
+import { ScrollArea, Tabs } from '@mantine/core';
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,
