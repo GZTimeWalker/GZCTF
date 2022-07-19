@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import { Center } from '@mantine/core';
-import WithNavBar from '../components/WithNavbar';
-import Icon404 from '../components/icon/404Icon';
+import { FC } from 'react'
+import { Center } from '@mantine/core'
+import WithNavBar from '../components/WithNavbar'
+import Icon404 from '../components/icon/404Icon'
 
 const Error404: FC = () => {
   return (
@@ -10,7 +10,7 @@ const Error404: FC = () => {
         <Icon404 />
       </Center>
     </WithNavBar>
-  );
-};
+  )
+}
 
-export default Error404;
+export default Error404

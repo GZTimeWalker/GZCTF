@@ -1,5 +1,5 @@
-import { marked } from 'marked';
-import { FC, useState } from 'react';
+import { marked } from 'marked'
+import { FC, useState } from 'react'
 import {
   ActionIcon,
   Group,
@@ -13,9 +13,9 @@ import {
   Button,
   Center,
   Modal,
-} from '@mantine/core';
-import { useModals } from '@mantine/modals';
-import { showNotification } from '@mantine/notifications';
+} from '@mantine/core'
+import { useModals } from '@mantine/modals'
+import { showNotification } from '@mantine/notifications'
 import {
   mdiPinOffOutline,
   mdiPinOutline,
@@ -24,20 +24,20 @@ import {
   mdiPlus,
   mdiCheck,
   mdiClose,
-} from '@mdi/js';
-import Icon from '@mdi/react';
-import api, { Notice } from '../../Api';
-import NoticeEditModal from './edit/NoticeEditModal';
+} from '@mdi/js'
+import Icon from '@mdi/react'
+import api, { Notice } from '../../Api'
+import NoticeEditModal from './edit/NoticeEditModal'
 
 interface NoticeEditCardProps {
-  notice: Notice;
-  onDelete: () => void;
-  onEdit: () => void;
-  onPin: () => void;
+  notice: Notice
+  onDelete: () => void
+  onEdit: () => void
+  onPin: () => void
 }
 
 const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onPin }) => {
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
   return (
     <Card shadow="sm" p="lg">
       <Stack>
@@ -74,29 +74,29 @@ const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onP
         </Group>
       </Stack>
     </Card>
-  );
-};
+  )
+}
 
 const NoticeManager: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
-  });
+  })
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [activeNotice, setActiveNotice] = useState<Notice | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [activeNotice, setActiveNotice] = useState<Notice | null>(null)
 
   const onPin = (notice: Notice) => {
     api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned }).then(() => {
       mutate([
         { ...notice, isPinned: !notice.isPinned },
         ...(notices?.filter((t) => t.id !== notice.id) ?? []),
-      ]);
-    });
-  };
+      ])
+    })
+  }
 
-  const modals = useModals();
+  const modals = useModals()
   const onDeleteNotice = (notice: Notice) => {
     modals.openConfirmModal({
       title: '删除通知',
@@ -105,8 +105,8 @@ const NoticeManager: FC = () => {
       centered: true,
       labels: { confirm: '删除通知', cancel: '取消' },
       confirmProps: { color: 'red' },
-    });
-  };
+    })
+  }
 
   const onConfirmDelete = (notice: Notice) => {
     api.edit
@@ -117,8 +117,8 @@ const NoticeManager: FC = () => {
           message: '通知已删除',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
-        });
-        mutate(notices?.filter((t) => t.id !== notice.id) ?? []);
+        })
+        mutate(notices?.filter((t) => t.id !== notice.id) ?? [])
       })
       .catch((err) => {
         showNotification({
@@ -126,9 +126,9 @@ const NoticeManager: FC = () => {
           title: '遇到了问题',
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
-        });
-      });
-  };
+        })
+      })
+  }
 
   return (
     <Stack
@@ -145,8 +145,8 @@ const NoticeManager: FC = () => {
               key={notice.id}
               notice={notice}
               onEdit={() => {
-                setActiveNotice(notice);
-                setIsEditModalOpen(true);
+                setActiveNotice(notice)
+                setIsEditModalOpen(true)
               }}
               onDelete={() => onDeleteNotice(notice)}
               onPin={() => onPin(notice)}
@@ -157,8 +157,8 @@ const NoticeManager: FC = () => {
         <Button
           leftIcon={<Icon path={mdiPlus} size={1} />}
           onClick={() => {
-            setActiveNotice(null);
-            setIsEditModalOpen(true);
+            setActiveNotice(null)
+            setIsEditModalOpen(true)
           }}
         >
           新建通知
@@ -173,11 +173,11 @@ const NoticeManager: FC = () => {
         opened={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         mutateNotice={(notice: Notice) => {
-          mutate([notice, ...(notices?.filter((n) => n.id !== notice.id) ?? [])]);
+          mutate([notice, ...(notices?.filter((n) => n.id !== notice.id) ?? [])])
         }}
       />
     </Stack>
-  );
-};
+  )
+}
 
-export default NoticeManager;
+export default NoticeManager

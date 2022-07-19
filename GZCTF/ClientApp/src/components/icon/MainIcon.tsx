@@ -1,19 +1,19 @@
-import { SVGProps, FC } from 'react';
-import { createStyles } from '@mantine/core';
+import { SVGProps, FC } from 'react'
+import { createStyles } from '@mantine/core'
 
 const useStyles = createStyles((theme) => ({
   triangle: {
     fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
   },
-}));
+}))
 
 interface MainIconProps extends SVGProps<SVGSVGElement> {
-  ignoreTheme?: boolean;
+  ignoreTheme?: boolean
 }
 
 const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
-  const { classes, cx } = useStyles();
-  const { ignoreTheme, ...svgProps } = props;
+  const { classes, cx } = useStyles()
+  const { ignoreTheme, ...svgProps } = props
 
   return (
     <svg width="480" height="480" viewBox="0 0 4800 4800" {...svgProps}>
@@ -51,7 +51,7 @@ const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
         />
       </g>
     </svg>
-  );
-};
+  )
+}
 
-export default MainIcon;
+export default MainIcon

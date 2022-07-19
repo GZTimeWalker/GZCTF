@@ -1,13 +1,13 @@
-import * as signalR from '@microsoft/signalr';
-import { FC, useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { Stack, Group, Table, createStyles, ActionIcon, keyframes, Badge } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose, mdiArrowRightBold, mdiArrowLeftBold } from '@mdi/js';
-import Icon from '@mdi/react';
-import api, { LogMessageModel } from '../../Api';
+import * as signalR from '@microsoft/signalr'
+import { FC, useEffect, useState, useRef } from 'react'
+import { useParams } from 'react-router-dom'
+import { Stack, Group, Table, createStyles, ActionIcon, keyframes, Badge } from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose, mdiArrowRightBold, mdiArrowLeftBold } from '@mdi/js'
+import Icon from '@mdi/react'
+import api, { LogMessageModel } from '../../Api'
 
-const ITEM_COUNT_PER_PAGE = 30;
+const ITEM_COUNT_PER_PAGE = 30
 
 const useStyles = createStyles((theme) => ({
   mono: {
@@ -16,10 +16,10 @@ const useStyles = createStyles((theme) => ({
   fade: {
     animation: `${keyframes`0% {opacity:0;} 100% {opacity:1;}`} 0.5s linear`,
   },
-}));
+}))
 
 function formatDate(dateString?: string) {
-  const date = new Date(dateString!);
+  const date = new Date(dateString!)
   return (
     `${date.getMonth() + 1}`.padStart(2, '0') +
     '/' +
@@ -30,19 +30,19 @@ function formatDate(dateString?: string) {
     `${date.getMinutes()}`.padStart(2, '0') +
     ':' +
     `${date.getSeconds()}`.padStart(2, '0')
-  );
+  )
 }
 
 const LogViewer: FC = () => {
-  const params = useParams();
-  const level = params.level ?? 'All';
+  const params = useParams()
+  const level = params.level ?? 'All'
 
-  const [activePage, setPage] = useState(1);
-  const { classes, cx } = useStyles();
+  const [activePage, setPage] = useState(1)
+  const { classes, cx } = useStyles()
 
-  const [, update] = useState(new Date());
-  const newLogs = useRef<LogMessageModel[]>([]);
-  const [logs, setLogs] = useState<LogMessageModel[]>([]);
+  const [, update] = useState(new Date())
+  const newLogs = useRef<LogMessageModel[]>([])
+  const [logs, setLogs] = useState<LogMessageModel[]>([])
 
   useEffect(() => {
     api.admin
@@ -51,7 +51,7 @@ const LogViewer: FC = () => {
         skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
       })
       .then((data) => {
-        setLogs(data.data);
+        setLogs(data.data)
       })
       .catch((err) => {
         showNotification({
@@ -60,27 +60,27 @@ const LogViewer: FC = () => {
           message: err.message,
           icon: <Icon path={mdiClose} size={1} />,
           disallowClose: true,
-        });
-      });
+        })
+      })
     if (activePage === 1) {
-      newLogs.current = [];
+      newLogs.current = []
     }
-  }, [activePage, level]);
+  }, [activePage, level])
 
   useEffect(() => {
     let connection = new signalR.HubConnectionBuilder()
       .withUrl('/hub/admin')
       .withHubProtocol(new signalR.JsonHubProtocol())
       .withAutomaticReconnect()
-      .build();
+      .build()
 
-    connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 24;
+    connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 24
 
     connection.on('ReceivedLog', (message: LogMessageModel) => {
-      console.log(message);
-      newLogs.current = [message, ...newLogs.current];
-      update(new Date(message.time!));
-    });
+      console.log(message)
+      newLogs.current = [message, ...newLogs.current]
+      update(new Date(message.time!))
+    })
 
     connection
       .start()
@@ -89,16 +89,16 @@ const LogViewer: FC = () => {
           color: 'teal',
           message: '实时日志连接成功',
           icon: <Icon path={mdiCheck} size={1} />,
-        });
+        })
       })
       .catch((error) => {
-        console.error(error);
-      });
+        console.error(error)
+      })
 
     return () => {
-      connection.stop().catch(() => {});
-    };
-  }, []);
+      connection.stop().catch(() => {})
+    }
+  }, [])
 
   const rows = [...(activePage === 1 ? newLogs.current : []), ...logs!].map((item, i) => (
     <tr
@@ -113,7 +113,7 @@ const LogViewer: FC = () => {
       <td className={cx(classes.mono)}>{item.status}</td>
       <td className={cx(classes.mono)}>{item.ip}</td>
     </tr>
-  ));
+  ))
 
   return (
     <Stack>
@@ -153,7 +153,7 @@ const LogViewer: FC = () => {
         <tbody>{rows}</tbody>
       </Table>
     </Stack>
-  );
-};
+  )
+}
 
-export default LogViewer;
+export default LogViewer

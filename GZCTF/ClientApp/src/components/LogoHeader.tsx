@@ -1,6 +1,6 @@
-import { FC } from 'react';
-import { Group, Title, createStyles } from '@mantine/core';
-import MainIcon from './icon/MainIcon';
+import { FC } from 'react'
+import { Group, Title, createStyles } from '@mantine/core'
+import MainIcon from './icon/MainIcon'
 
 const useStyles = createStyles((theme) => ({
   brand: {
@@ -10,10 +10,10 @@ const useStyles = createStyles((theme) => ({
     marginLeft: '-20px',
     marginBottom: '-5px',
   },
-}));
+}))
 
 const LogoHeader: FC = () => {
-  const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles()
 
   return (
     <Group>
@@ -22,7 +22,7 @@ const LogoHeader: FC = () => {
         GZ<span className={cx(classes.brand)}>::</span>CTF
       </Title>
     </Group>
-  );
-};
+  )
+}
 
-export default LogoHeader;
+export default LogoHeader

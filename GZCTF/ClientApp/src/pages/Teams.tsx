@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState } from 'react'
 import {
   Stack,
   SimpleGrid,
@@ -11,48 +11,48 @@ import {
   Text,
   Title,
   useMantineTheme,
-} from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
-import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import api, { TeamInfoModel, Role } from '../Api';
-import LogoHeader from '../components/LogoHeader';
-import TeamCard from '../components/TeamCard';
-import TeamCreateModal from '../components/TeamCreateModal';
-import TeamEditModal from '../components/TeamEditModal';
-import WithNavBar from '../components/WithNavbar';
-import WithRole from '../components/WithRole';
+} from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js'
+import { Icon } from '@mdi/react'
+import api, { TeamInfoModel, Role } from '../Api'
+import LogoHeader from '../components/LogoHeader'
+import TeamCard from '../components/TeamCard'
+import TeamCreateModal from '../components/TeamCreateModal'
+import TeamEditModal from '../components/TeamEditModal'
+import WithNavBar from '../components/WithNavbar'
+import WithRole from '../components/WithRole'
 
 const Teams: FC = () => {
   const { data: user, error: userError } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
-  });
+  })
 
   const { data: teams, error: teamsError } = api.team.useTeamGetTeamsInfo({
     refreshInterval: 120000,
-  });
+  })
 
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
 
-  const [joinOpened, setJoinOpened] = useState(false);
-  const [joinTeamCode, setJoinTeamCode] = useState('');
+  const [joinOpened, setJoinOpened] = useState(false)
+  const [joinTeamCode, setJoinTeamCode] = useState('')
 
-  const [createOpened, setCreateOpened] = useState(false);
+  const [createOpened, setCreateOpened] = useState(false)
 
-  const [editOpened, setEditOpened] = useState(false);
-  const [editTeam, setEditTeam] = useState(null as TeamInfoModel | null);
+  const [editOpened, setEditOpened] = useState(false)
+  const [editTeam, setEditTeam] = useState(null as TeamInfoModel | null)
 
-  const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id == user?.userId));
+  const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id == user?.userId))
 
   const onEditTeam = (team: TeamInfoModel) => {
-    setEditTeam(team);
-    setEditOpened(true);
-  };
+    setEditTeam(team)
+    setEditOpened(true)
+  }
 
   const onJoinTeam = () => {
-    const parts = joinTeamCode.split(':');
+    const parts = joinTeamCode.split(':')
 
     if (parts.length !== 3 || parts[2].length !== 32) {
       showNotification({
@@ -60,8 +60,8 @@ const Teams: FC = () => {
         title: '遇到了问题',
         message: '队伍邀请码格式不正确',
         icon: <Icon path={mdiClose} size={1} />,
-      });
-      return;
+      })
+      return
     }
 
     api.team
@@ -73,13 +73,13 @@ const Teams: FC = () => {
           message: '您的队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
-        });
-        api.team.mutateTeamGetTeamsInfo();
+        })
+        api.team.mutateTeamGetTeamsInfo()
         if (!user?.activeTeamId) {
           api.account.mutateAccountProfile({
             activeTeamId: parseInt(joinTeamCode.split(':')[1]),
             ...user,
-          });
+          })
         }
       })
       .catch((err) => {
@@ -88,17 +88,17 @@ const Teams: FC = () => {
           title: '遇到了问题',
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
-        });
+        })
       })
       .finally(() => {
-        setJoinTeamCode('');
-        setJoinOpened(false);
-      });
-  };
+        setJoinTeamCode('')
+        setJoinOpened(false)
+      })
+  }
 
   //Divide teams into Active & Inactive
-  const activeTeam = teams?.filter((t) => t.id === user?.activeTeamId)[0];
-  const teamsInactive = teams?.filter((t) => t.id !== user?.activeTeamId);
+  const activeTeam = teams?.filter((t) => t.id === user?.activeTeamId)[0]
+  const teamsInactive = teams?.filter((t) => t.id !== user?.activeTeamId)
 
   return (
     <WithNavBar>
@@ -190,7 +190,7 @@ const Teams: FC = () => {
                               api.account.mutateAccountProfile({
                                 activeTeamId: t.id!,
                                 ...user,
-                              });
+                              })
                             }}
                           />
                         )
@@ -239,7 +239,7 @@ const Teams: FC = () => {
               api.account.mutateAccountProfile({
                 activeTeamId: id,
                 ...user,
-              });
+              })
             }
           }}
         />
@@ -254,7 +254,7 @@ const Teams: FC = () => {
         />
       </WithRole>
     </WithNavBar>
-  );
-};
+  )
+}
 
-export default Teams;
+export default Teams

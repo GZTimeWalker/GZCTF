@@ -1,19 +1,19 @@
-import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Group, Modal, ModalProps, PasswordInput, SimpleGrid, Stack } from '@mantine/core';
-import { useInputState } from '@mantine/hooks';
-import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import Icon from '@mdi/react';
-import api from '../Api';
-import StrengthPasswordInput from './StrengthPasswordInput';
+import { FC } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button, Group, Modal, ModalProps, PasswordInput, SimpleGrid, Stack } from '@mantine/core'
+import { useInputState } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import api from '../Api'
+import StrengthPasswordInput from './StrengthPasswordInput'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {
-  const [oldPwd, setOldPwd] = useInputState('');
-  const [pwd, setPwd] = useInputState('');
-  const [retypedPwd, setRetypedPwd] = useInputState('');
+  const [oldPwd, setOldPwd] = useInputState('')
+  const [pwd, setPwd] = useInputState('')
+  const [retypedPwd, setRetypedPwd] = useInputState('')
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const onChangePwd = () => {
     if (!pwd || !retypedPwd) {
@@ -22,7 +22,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
         title: '密码不能为空',
         message: '请检查你的输入',
         icon: <Icon path={mdiClose} size={1} />,
-      });
+      })
     } else if (pwd === retypedPwd) {
       api.account
         .accountChangePassword({
@@ -35,10 +35,10 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
             message: '密码已修改，请重新登录',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
-          });
-          props.onClose();
-          api.account.accountLogOut();
-          navigate('/account/login');
+          })
+          props.onClose()
+          api.account.accountLogOut()
+          navigate('/account/login')
         })
         .catch((err) => {
           showNotification({
@@ -46,17 +46,17 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
             title: '遇到了问题',
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
-          });
-        });
+          })
+        })
     } else {
       showNotification({
         color: 'red',
         title: '密码不一致',
         message: '请检查你的输入',
         icon: <Icon path={mdiClose} size={1} />,
-      });
+      })
     }
-  };
+  }
 
   return (
     <Modal {...props}>
@@ -83,10 +83,10 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           <Button
             variant="default"
             onClick={() => {
-              setOldPwd('');
-              setPwd('');
-              setRetypedPwd('');
-              props.onClose();
+              setOldPwd('')
+              setPwd('')
+              setRetypedPwd('')
+              props.onClose()
             }}
           >
             取消
@@ -97,7 +97,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
         </Group>
       </Stack>
     </Modal>
-  );
-};
+  )
+}
 
-export default PasswordChangeModal;
+export default PasswordChangeModal

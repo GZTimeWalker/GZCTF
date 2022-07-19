@@ -1,7 +1,11 @@
 module.exports = {
-  "singleQuote": true,
-  "printWidth": 100,
-  "htmlWhitespaceSensitivity": "ignore",
-  "plugins": [require.resolve("@trivago/prettier-plugin-sort-imports")],
-  "importOrder": ["^@mantine/(.*)$", "^@mdi/(.*)$", "^[./]"]
+  useTabs: false,
+  tabWidth: 2,
+  singleQuote: true,
+  trailingComma: 'es5',
+  semi: false,
+  printWidth: 100,
+  htmlWhitespaceSensitivity: 'ignore',
+  plugins: [require.resolve('@trivago/prettier-plugin-sort-imports')],
+  importOrder: ['^@mantine/(.*)$', '^@mdi/(.*)$', '^[./]'],
 }

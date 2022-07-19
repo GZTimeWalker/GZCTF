@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState } from 'react'
 import {
   Button,
   Modal,
@@ -10,21 +10,21 @@ import {
   Title,
   Center,
   useMantineTheme,
-} from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
-import { mdiCloseCircle, mdiCheck, mdiClose } from '@mdi/js';
-import Icon from '@mdi/react';
-import api, { TeamUpdateModel } from '../Api';
+} from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { mdiCloseCircle, mdiCheck, mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import api, { TeamUpdateModel } from '../Api'
 
 interface TeamEditModalProps extends ModalProps {
-  isOwnTeam: boolean;
-  mutateActive: (id: number) => void;
+  isOwnTeam: boolean
+  mutateActive: (id: number) => void
 }
 
 const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
-  const { isOwnTeam, mutateActive, ...modalProps } = props;
-  const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' });
-  const theme = useMantineTheme();
+  const { isOwnTeam, mutateActive, ...modalProps } = props
+  const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' })
+  const theme = useMantineTheme()
 
   const onCreateTeam = () => {
     api.team
@@ -36,9 +36,9 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           message: `${res.data.name} 创建成功，快去邀请队友吧！`,
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
-        });
-        api.team.mutateTeamGetTeamsInfo();
-        mutateActive(res.data.id!);
+        })
+        api.team.mutateTeamGetTeamsInfo()
+        mutateActive(res.data.id!)
       })
       .catch((err) => {
         showNotification({
@@ -46,12 +46,12 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           title: '遇到了问题',
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
-        });
+        })
       })
       .finally(() => {
-        modalProps.onClose();
-      });
-  };
+        modalProps.onClose()
+      })
+  }
 
   return (
     <Modal {...modalProps}>
@@ -96,7 +96,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
         </Stack>
       )}
     </Modal>
-  );
-};
+  )
+}
 
-export default TeamCreateModal;
+export default TeamCreateModal

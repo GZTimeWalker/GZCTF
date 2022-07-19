@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import { Stack } from '@mantine/core';
-import LogoHeader from '../components/LogoHeader';
-import WithNavBar from '../components/WithNavbar';
+import { FC } from 'react'
+import { Stack } from '@mantine/core'
+import LogoHeader from '../components/LogoHeader'
+import WithNavBar from '../components/WithNavbar'
 
 const Games: FC = () => {
   return (
@@ -10,7 +10,7 @@ const Games: FC = () => {
         <LogoHeader />
       </Stack>
     </WithNavBar>
-  );
-};
+  )
+}
 
-export default Games;
+export default Games

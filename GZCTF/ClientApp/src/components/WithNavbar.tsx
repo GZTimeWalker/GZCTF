@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import { AppShell, Box, Center } from '@mantine/core';
-import AppNavbar from './AppNavbar';
+import React, { FC } from 'react'
+import { AppShell, Box, Center } from '@mantine/core'
+import AppNavbar from './AppNavbar'
 
 const WithNavBar: FC<React.PropsWithChildren> = ({ children }) => {
   return (
@@ -19,7 +19,7 @@ const WithNavBar: FC<React.PropsWithChildren> = ({ children }) => {
         <Box style={{ width: '80%' }}>{children}</Box>
       </Center>
     </AppShell>
-  );
-};
+  )
+}
 
-export default WithNavBar;
+export default WithNavBar

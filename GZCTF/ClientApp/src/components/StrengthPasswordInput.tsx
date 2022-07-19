@@ -1,7 +1,7 @@
-import React, { FC, useState } from 'react';
-import { Text, Box, Center, PasswordInput, Popover, Progress } from '@mantine/core';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import { Icon } from '@mdi/react';
+import React, { FC, useState } from 'react'
+import { Text, Box, Center, PasswordInput, Popover, Progress } from '@mantine/core'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import { Icon } from '@mdi/react'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {
   return (
@@ -11,38 +11,38 @@ const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, lab
         <Box ml={7}>{label}</Box>
       </Center>
     </Text>
-  );
-};
+  )
+}
 
 const requirements = [
   { re: /[0-9]/, label: '包含数字' },
   { re: /[a-z]/, label: '包含小写字母' },
   { re: /[A-Z]/, label: '包含大写字母' },
   { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: '包含特殊字符' },
-];
+]
 
 function getStrength(password: string) {
-  let multiplier = password.length > 5 ? 0 : 1;
+  let multiplier = password.length > 5 ? 0 : 1
 
   requirements.forEach((requirement) => {
     if (!requirement.re.test(password)) {
-      multiplier += 1;
+      multiplier += 1
     }
-  });
+  })
 
-  return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0);
+  return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0)
 }
 
 interface StrengthPasswordInputProps {
-  value: string;
-  disabled?: boolean;
-  label?: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  value: string
+  disabled?: boolean
+  label?: string
+  onChange: React.ChangeEventHandler<HTMLInputElement>
 }
 
 const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const pwd = props.value;
+  const [popoverOpened, setPopoverOpened] = useState(false)
+  const pwd = props.value
 
   const checks = [
     <PasswordRequirement key={0} label="至少 6 个字符" meets={pwd.length >= 6} />,
@@ -53,10 +53,10 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
         meets={requirement.re.test(pwd)}
       />
     )),
-  ];
+  ]
 
-  const strength = getStrength(pwd);
-  const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
+  const strength = getStrength(pwd)
+  const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red'
 
   return (
     <Popover
@@ -83,7 +83,7 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
       <Progress color={color} value={strength} size={5} style={{ marginBottom: 10 }} />
       {checks}
     </Popover>
-  );
-};
+  )
+}
 
-export default StrengthPasswordInput;
+export default StrengthPasswordInput

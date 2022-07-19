@@ -1,7 +1,7 @@
-import { FC, Suspense } from 'react';
-import { useRoutes } from 'react-router-dom';
-import { SWRConfig } from 'swr';
-import routes from '~react-pages';
+import { FC, Suspense } from 'react'
+import { useRoutes } from 'react-router-dom'
+import { SWRConfig } from 'swr'
+import routes from '~react-pages'
 import {
   MantineProvider,
   Global,
@@ -9,21 +9,21 @@ import {
   ColorSchemeProvider,
   Center,
   Loader,
-} from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
-import { ModalsProvider } from '@mantine/modals';
-import { NotificationsProvider } from '@mantine/notifications';
-import fetcher from './utils/Fetcher';
+} from '@mantine/core'
+import { useLocalStorage } from '@mantine/hooks'
+import { ModalsProvider } from '@mantine/modals'
+import { NotificationsProvider } from '@mantine/notifications'
+import fetcher from './utils/Fetcher'
 
 export const App: FC = () => {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'color-scheme',
     defaultValue: 'dark',
     getInitialValueInEffect: true,
-  });
+  })
 
   const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
@@ -113,5 +113,5 @@ export const App: FC = () => {
         </NotificationsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
-  );
-};
+  )
+}

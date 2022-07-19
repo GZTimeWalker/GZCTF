@@ -1,26 +1,26 @@
-import { FC, useEffect } from 'react';
-import { Button, Group, Modal, ModalProps, Stack, Text, Textarea, TextInput } from '@mantine/core';
-import { useInputState } from '@mantine/hooks';
-import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import Icon from '@mdi/react';
-import api, { Notice } from '../../../Api';
+import { FC, useEffect } from 'react'
+import { Button, Group, Modal, ModalProps, Stack, Text, Textarea, TextInput } from '@mantine/core'
+import { useInputState } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import api, { Notice } from '../../../Api'
 
 interface NoticeEditModalProps extends ModalProps {
-  notice?: Notice | null;
-  mutateNotice: (notice: Notice) => void;
+  notice?: Notice | null
+  mutateNotice: (notice: Notice) => void
 }
 
 const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
-  const { notice, mutateNotice, ...modalProps } = props;
+  const { notice, mutateNotice, ...modalProps } = props
 
-  const [title, setTitle] = useInputState(notice?.title);
-  const [content, setContent] = useInputState(notice?.content);
+  const [title, setTitle] = useInputState(notice?.title)
+  const [content, setContent] = useInputState(notice?.content)
 
   useEffect(() => {
-    setTitle(notice?.title);
-    setContent(notice?.content);
-  }, [notice]);
+    setTitle(notice?.title)
+    setContent(notice?.content)
+  }, [notice])
 
   const onUpdate = () => {
     if (!title || !content) {
@@ -29,8 +29,8 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         title: '输入不能为空',
         message: '请输入标题和内容',
         icon: <Icon path={mdiClose} size={1} />,
-      });
-      return;
+      })
+      return
     }
 
     if (notice) {
@@ -45,9 +45,9 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             message: '通知修改成功',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
-          });
-          mutateNotice(data.data);
-          modalProps.onClose();
+          })
+          mutateNotice(data.data)
+          modalProps.onClose()
         })
         .catch((err) => {
           showNotification({
@@ -55,8 +55,8 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             title: '遇到了问题',
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
-          });
-        });
+          })
+        })
     } else {
       api.edit
         .editAddNotice({
@@ -69,9 +69,9 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             message: '通知已添加',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
-          });
-          mutateNotice(data.data);
-          modalProps.onClose();
+          })
+          mutateNotice(data.data)
+          modalProps.onClose()
         })
         .catch((err) => {
           showNotification({
@@ -79,10 +79,10 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             title: '遇到了问题',
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
-          });
-        });
+          })
+        })
     }
-  };
+  }
 
   return (
     <Modal {...modalProps}>
@@ -116,8 +116,8 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             fullWidth
             variant="outline"
             onClick={() => {
-              setTitle(notice?.title);
-              setContent(notice?.content);
+              setTitle(notice?.title)
+              setContent(notice?.content)
             }}
           >
             {notice ? '还原通知' : '清空通知'}
@@ -128,7 +128,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         </Group>
       </Stack>
     </Modal>
-  );
-};
+  )
+}
 
-export default NoticeEditModal;
+export default NoticeEditModal

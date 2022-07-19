@@ -1,5 +1,5 @@
-import { marked } from 'marked';
-import { FC } from 'react';
+import { marked } from 'marked'
+import { FC } from 'react'
 import {
   Group,
   Text,
@@ -10,12 +10,12 @@ import {
   Title,
   Stack,
   TypographyStylesProvider,
-} from '@mantine/core';
-import { Notice } from '../Api';
+} from '@mantine/core'
+import { Notice } from '../Api'
 
 const NoticeCard: FC<Notice> = (notice) => {
-  const theme = useMantineTheme();
-  const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
+  const theme = useMantineTheme()
+  const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]
 
   return (
     <Card shadow="sm" p="lg" style={{ width: '80%' }}>
@@ -37,7 +37,7 @@ const NoticeCard: FC<Notice> = (notice) => {
         </Stack>
       </Blockquote>
     </Card>
-  );
-};
+  )
+}
 
-export default NoticeCard;
+export default NoticeCard
