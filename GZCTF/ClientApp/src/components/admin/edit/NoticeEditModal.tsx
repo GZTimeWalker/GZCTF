@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Button, Group, Modal, ModalProps, Stack, Text, Textarea, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -16,6 +16,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
 
   const [title, setTitle] = useInputState(notice?.title)
   const [content, setContent] = useInputState(notice?.content)
+  const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
     setTitle(notice?.title)
@@ -30,6 +31,17 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         message: '请输入标题和内容',
         icon: <Icon path={mdiClose} size={1} />,
       })
+      setDisabled(false)
+      return
+    }
+    if ( title == notice?.title && content == notice?.content ) {
+      showNotification({
+        color: 'red',
+        title: '未作出改变',
+        message: '请变更内容',
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      setDisabled(false)
       return
     }
 
@@ -82,6 +94,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           })
         })
     }
+    setDisabled(false)
   }
 
   return (
@@ -122,8 +135,13 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           >
             {notice ? '还原通知' : '清空通知'}
           </Button>
-          <Button fullWidth variant="outline" color="orange" onClick={onUpdate}>
-            {notice ? '更改通知' : '新建通知'}
+          <Button 
+            fullWidth
+            variant="outline" 
+            color="orange" 
+            disabled = { disabled }
+            onClick={onUpdate}>
+              {notice ? '更改通知' : '新建通知'}
           </Button>
         </Group>
       </Stack>
