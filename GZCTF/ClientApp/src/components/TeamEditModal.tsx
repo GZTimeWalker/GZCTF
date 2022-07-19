@@ -415,7 +415,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         ) : (
           <Stack>
             <Text size="sm">你确定要离开 {teamInfo?.name} 吗？</Text>
-            <Group position='right'>
+            <Group position="right">
               <Button variant="default" onClick={() => setLeaveOpened(false)}>
                 取消
               </Button>
@@ -437,7 +437,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       >
         <Stack>
           <Text size="sm">你确定要踢出 {kickUser?.userName ?? ''} 吗？</Text>
-          <Group position='right'>
+          <Group position="right">
             <Button variant="default" onClick={() => setKickUserOpened(false)}>
               取消
             </Button>

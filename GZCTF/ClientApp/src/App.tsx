@@ -11,9 +11,9 @@ import {
   Loader,
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import fetcher from './utils/Fetcher';
-import { ModalsProvider } from '@mantine/modals';
 
 export const App: FC = () => {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({

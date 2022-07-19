@@ -91,7 +91,7 @@ const NoticeManager: FC = () => {
     api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned }).then(() => {
       mutate([
         { ...notice, isPinned: !notice.isPinned },
-        ...(notices?.filter((t) => t.id !== notice.id) ?? [])
+        ...(notices?.filter((t) => t.id !== notice.id) ?? []),
       ]);
     });
   };
