@@ -1,5 +1,16 @@
+import { marked } from 'marked';
 import { FC } from 'react';
-import { Group, Text, Badge, Card, useMantineTheme, Blockquote, Title, Stack } from '@mantine/core';
+import {
+  Group,
+  Text,
+  Badge,
+  Card,
+  useMantineTheme,
+  Blockquote,
+  Title,
+  Stack,
+  TypographyStylesProvider,
+} from '@mantine/core';
 import { Notice } from '../Api';
 
 const NoticeCard: FC<Notice> = (notice) => {
@@ -20,9 +31,9 @@ const NoticeCard: FC<Notice> = (notice) => {
       >
         <Stack>
           <Title order={3}>{notice.title}</Title>
-          <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
-            {notice.content}
-          </Text>
+          <TypographyStylesProvider>
+            <div dangerouslySetInnerHTML={{ __html: marked(notice.content) }} />
+          </TypographyStylesProvider>
         </Stack>
       </Blockquote>
     </Card>

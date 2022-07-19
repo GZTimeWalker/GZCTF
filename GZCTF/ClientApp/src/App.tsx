@@ -2,7 +2,14 @@ import { FC, Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { SWRConfig } from 'swr';
 import routes from '~react-pages';
-import { MantineProvider, Global, ColorScheme, ColorSchemeProvider, Center, Loader } from '@mantine/core';
+import {
+  MantineProvider,
+  Global,
+  ColorScheme,
+  ColorSchemeProvider,
+  Center,
+  Loader,
+} from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { NotificationsProvider } from '@mantine/notifications';
 import fetcher from './utils/Fetcher';

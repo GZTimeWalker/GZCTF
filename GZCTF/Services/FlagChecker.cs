@@ -116,7 +116,7 @@ public class FlagChecker : IHostedService
     {
         TokenSource.Cancel();
 
-        logger.SystemLog("Flag 检查已停止", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog("Flag 检查已停止", TaskStatus.Exit, LogLevel.Debug);
 
         return Task.CompletedTask;
     }

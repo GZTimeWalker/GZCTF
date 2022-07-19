@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { Text, Stack, Center } from '@mantine/core';
-import { RichTextEditor } from '@mantine/rte';
 import LogoHeader from '../components/LogoHeader';
 import WithNavBar from '../components/WithNavbar';
 
@@ -50,9 +49,6 @@ const About: FC = () => {
           necessitatibus. Consequatur nulla minus, perspiciatis sint, ab aliquam ipsam magni illum
           ipsum, voluptatem exercitationem expedita doloribus. Error, ad?
         </Text>
-        <Center>
-          <RichTextEditor style={{ width: '95%', height: 200 }} value={value} onChange={onChange} />
-        </Center>
       </Stack>
     </WithNavBar>
   );

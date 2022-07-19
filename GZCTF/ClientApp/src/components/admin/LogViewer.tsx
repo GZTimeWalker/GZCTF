@@ -3,13 +3,12 @@ import { FC, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Stack,
-  Text,
   Group,
   Table,
   createStyles,
   ActionIcon,
-  ScrollArea,
   keyframes,
+  Badge,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose, mdiArrowRightBold, mdiArrowLeftBold } from '@mdi/js';
@@ -24,7 +23,7 @@ const useStyles = createStyles((theme) => ({
   },
   fade: {
     animation: `${keyframes`0% {opacity:0;} 100% {opacity:1;}`} 0.5s linear`,
-  },
+  }
 }));
 
 function formatDate(dateString?: string) {
@@ -127,7 +126,7 @@ const LogViewer: FC = () => {
   return (
     <Stack>
       <Group position="apart">
-        <Text>第 {activePage} 页</Text>
+        <Badge size="xl" radius="sm" variant="outline">第 {activePage} 页</Badge>
         <Group position="right">
           <ActionIcon
             size="lg"
