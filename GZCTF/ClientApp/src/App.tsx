@@ -13,6 +13,7 @@ import {
 import { useLocalStorage } from '@mantine/hooks';
 import { NotificationsProvider } from '@mantine/notifications';
 import fetcher from './utils/Fetcher';
+import { ModalsProvider } from '@mantine/modals';
 
 export const App: FC = () => {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -91,22 +92,24 @@ export const App: FC = () => {
               },
             })}
           />
-          <SWRConfig
-            value={{
-              refreshInterval: 10000,
-              fetcher,
-            }}
-          >
-            <Suspense
-              fallback={
-                <Center style={{ height: 'calc(100vh - 32px)' }}>
-                  <Loader />
-                </Center>
-              }
+          <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>
+            <SWRConfig
+              value={{
+                refreshInterval: 10000,
+                fetcher,
+              }}
             >
-              {useRoutes(routes)}
-            </Suspense>
-          </SWRConfig>
+              <Suspense
+                fallback={
+                  <Center style={{ height: 'calc(100vh - 32px)' }}>
+                    <Loader />
+                  </Center>
+                }
+              >
+                {useRoutes(routes)}
+              </Suspense>
+            </SWRConfig>
+          </ModalsProvider>
         </NotificationsProvider>
       </MantineProvider>
     </ColorSchemeProvider>

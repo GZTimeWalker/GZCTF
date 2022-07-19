@@ -1,9 +1,8 @@
 import { FC, useEffect } from 'react';
-import { mutate } from 'swr';
 import { Button, Group, Modal, ModalProps, Stack, Text, Textarea, TextInput } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { mdiCloseCircle, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiCheck, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import api, { Notice } from '../../../Api';
 

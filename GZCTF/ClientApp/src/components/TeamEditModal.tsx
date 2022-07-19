@@ -415,12 +415,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         ) : (
           <Stack>
             <Text size="sm">你确定要离开 {teamInfo?.name} 吗？</Text>
-            <Group grow style={{ margin: 'auto', width: '100%' }}>
-              <Button fullWidth color="red" variant="outline" onClick={onConfirmLeaveTeam}>
-                确认离开
-              </Button>
-              <Button fullWidth onClick={() => setLeaveOpened(false)}>
+            <Group position='right'>
+              <Button variant="default" onClick={() => setLeaveOpened(false)}>
                 取消
+              </Button>
+              <Button color="red" onClick={onConfirmLeaveTeam}>
+                确认离开
               </Button>
             </Group>
           </Stack>
@@ -437,12 +437,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       >
         <Stack>
           <Text size="sm">你确定要踢出 {kickUser?.userName ?? ''} 吗？</Text>
-          <Group grow style={{ margin: 'auto', width: '100%' }}>
-            <Button fullWidth color="red" variant="outline" onClick={onConfirmKickUser}>
-              确认踢出
-            </Button>
-            <Button fullWidth onClick={() => setKickUserOpened(false)}>
+          <Group position='right'>
+            <Button variant="default" onClick={() => setKickUserOpened(false)}>
               取消
+            </Button>
+            <Button color="red" onClick={onConfirmKickUser}>
+              确认踢出
             </Button>
           </Group>
         </Stack>

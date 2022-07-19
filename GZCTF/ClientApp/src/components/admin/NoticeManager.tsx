@@ -14,6 +14,7 @@ import {
   Center,
   Modal,
 } from '@mantine/core';
+import { useModals } from '@mantine/modals';
 import { showNotification } from '@mantine/notifications';
 import {
   mdiPinOffOutline,
@@ -86,20 +87,30 @@ const NoticeManager: FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [activeNotice, setActiveNotice] = useState<Notice | null>(null);
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteNotice, setDeleteNotice] = useState<Notice | null>(null);
-
   const onPin = (notice: Notice) => {
     api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned }).then(() => {
-      mutate();
+      mutate([
+        { ...notice, isPinned: !notice.isPinned },
+        ...(notices?.filter((t) => t.id !== notice.id) ?? [])
+      ]);
     });
   };
 
-  const onConfirmDelete = () => {
-    if (!deleteNotice) return;
+  const modals = useModals();
+  const onDeleteNotice = (notice: Notice) => {
+    modals.openConfirmModal({
+      title: '删除通知',
+      children: <Text size="sm">你确定要删除通知 "{notice?.title ?? ''}" 吗？</Text>,
+      onConfirm: () => onConfirmDelete(notice),
+      centered: true,
+      labels: { confirm: '删除通知', cancel: '取消' },
+      confirmProps: { color: 'red' },
+    });
+  };
 
+  const onConfirmDelete = (notice: Notice) => {
     api.edit
-      .editDeleteNotice(deleteNotice.id!)
+      .editDeleteNotice(notice.id!)
       .then(() => {
         showNotification({
           color: 'teal',
@@ -107,8 +118,7 @@ const NoticeManager: FC = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
-        mutate(notices?.filter((t) => t.id !== deleteNotice.id) ?? []);
-        setDeleteNotice(null);
+        mutate(notices?.filter((t) => t.id !== notice.id) ?? []);
       })
       .catch((err) => {
         showNotification({
@@ -117,9 +127,6 @@ const NoticeManager: FC = () => {
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
         });
-      })
-      .finally(() => {
-        setIsDeleteModalOpen(false);
       });
   };
 
@@ -141,10 +148,7 @@ const NoticeManager: FC = () => {
                 setActiveNotice(notice);
                 setIsEditModalOpen(true);
               }}
-              onDelete={() => {
-                setDeleteNotice(notice);
-                setIsDeleteModalOpen(true);
-              }}
+              onDelete={() => onDeleteNotice(notice)}
               onPin={() => onPin(notice)}
             />
           ))}
@@ -172,26 +176,6 @@ const NoticeManager: FC = () => {
           mutate([notice, ...(notices?.filter((n) => n.id !== notice.id) ?? [])]);
         }}
       />
-
-      <Modal
-        opened={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        centered
-        title="删除通知"
-        withCloseButton={false}
-      >
-        <Stack>
-          <Text size="sm">你确定要删除 "{deleteNotice?.title ?? ''}" 吗？</Text>
-          <Group grow style={{ margin: 'auto', width: '100%' }}>
-            <Button fullWidth color="red" variant="outline" onClick={onConfirmDelete}>
-              确认删除
-            </Button>
-            <Button fullWidth onClick={() => setIsDeleteModalOpen(false)}>
-              取消
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
     </Stack>
   );
 };
