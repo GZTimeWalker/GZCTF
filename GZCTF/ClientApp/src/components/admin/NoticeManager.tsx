@@ -107,6 +107,7 @@ const NoticeManager: FC = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         });
+        mutate(notices?.filter((t) => t.id !== deleteNotice.id) ?? []);
         setDeleteNotice(null);
       })
       .catch((err) => {
