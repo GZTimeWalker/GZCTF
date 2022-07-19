@@ -84,20 +84,30 @@ const NoticeManager: FC = () => {
     revalidateOnFocus: false,
   })
 
+  const [disabled, setDisabled] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeNotice, setActiveNotice] = useState<Notice | null>(null)
 
   const onPin = (notice: Notice) => {
-    api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned }).then(() => {
-      mutate([
-        { ...notice, isPinned: !notice.isPinned },
-        ...(notices?.filter((t) => t.id !== notice.id) ?? []),
-      ])
-    })
+    if( !disabled ) {
+      setDisabled(true)
+
+      api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned })
+      .then(() => {
+        mutate([
+          { ...notice, isPinned: !notice.isPinned },
+          ...(notices?.filter((t) => t.id !== notice.id) ?? []),
+        ])
+        setDisabled(false)
+      })
+    }
   }
 
   const modals = useModals()
   const onDeleteNotice = (notice: Notice) => {
+    if ( disabled ) {
+      return
+    }
     modals.openConfirmModal({
       title: '删除通知',
       children: <Text size="sm">你确定要删除通知 "{notice?.title ?? ''}" 吗？</Text>,

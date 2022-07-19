@@ -31,7 +31,6 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         message: '请输入标题和内容',
         icon: <Icon path={mdiClose} size={1} />,
       })
-      setDisabled(false)
       return
     }
     if ( title == notice?.title && content == notice?.content ) {
@@ -41,11 +40,11 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         message: '请变更内容',
         icon: <Icon path={mdiClose} size={1} />,
       })
-      setDisabled(false)
       return
     }
 
-    if (notice) {
+    if (notice && !disabled) {
+      setDisabled(true)
       api.edit
         .editUpdateNotice(notice.id!, {
           title: title,
@@ -59,6 +58,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             disallowClose: true,
           })
           mutateNotice(data.data)
+          setDisabled(false)
           modalProps.onClose()
         })
         .catch((err) => {
@@ -68,6 +68,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           })
+          setDisabled(false)
         })
     } else {
       api.edit
@@ -83,6 +84,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             disallowClose: true,
           })
           mutateNotice(data.data)
+          setDisabled(false)
           modalProps.onClose()
         })
         .catch((err) => {
@@ -92,9 +94,9 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           })
+          setDisabled(false)
         })
     }
-    setDisabled(false)
   }
 
   return (
@@ -128,6 +130,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           <Button
             fullWidth
             variant="outline"
+            disabled = { disabled }
             onClick={() => {
               setTitle(notice?.title)
               setContent(notice?.content)
