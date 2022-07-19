@@ -48,6 +48,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             disallowClose: true,
           });
           mutateNotice(data.data);
+          modalProps.onClose();
         })
         .catch((err) => {
           showNotification({
@@ -71,6 +72,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             disallowClose: true,
           });
           mutateNotice(data.data);
+          modalProps.onClose();
         })
         .catch((err) => {
           showNotification({
@@ -81,11 +83,6 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           });
         });
     }
-  };
-
-  const onClear = () => {
-    setTitle(notice?.title);
-    setContent(notice?.content);
   };
 
   return (
@@ -116,7 +113,14 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           onChange={setContent}
         />
         <Group grow style={{ margin: 'auto', width: '100%' }}>
-          <Button fullWidth variant="outline" onClick={onClear}>
+          <Button
+            fullWidth
+            variant="outline"
+            onClick={() => {
+              setTitle(notice?.title);
+              setContent(notice?.content);
+            }}
+          >
             {notice ? '还原通知' : '清空通知'}
           </Button>
           <Button fullWidth variant="outline" color="orange" onClick={onUpdate}>
