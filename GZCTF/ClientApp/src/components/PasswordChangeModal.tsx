@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Modal, ModalProps, PasswordInput, SimpleGrid, Stack } from '@mantine/core';
+import { Button, Group, Modal, ModalProps, PasswordInput, SimpleGrid, Stack } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
@@ -79,13 +79,9 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           onChange={setRetypedPwd}
         />
 
-        <SimpleGrid cols={2}>
-          <Button fullWidth color="red" variant="outline" onClick={onChangePwd}>
-            确认修改
-          </Button>
+        <Group position='right'>
           <Button
-            fullWidth
-            variant="outline"
+            variant="default"
             onClick={() => {
               setOldPwd('');
               setPwd('');
@@ -93,9 +89,12 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
               props.onClose();
             }}
           >
-            取消修改
+            取消
           </Button>
-        </SimpleGrid>
+          <Button color="orange" onClick={onChangePwd}>
+            确认修改
+          </Button>
+        </Group>
       </Stack>
     </Modal>
   );

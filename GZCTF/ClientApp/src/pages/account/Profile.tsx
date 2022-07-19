@@ -238,7 +238,7 @@ const Profile: FC = () => {
                 <Grid.Col span={4}>
                   <Button
                     fullWidth
-                    color="red"
+                    color="orange"
                     variant="outline"
                     disabled={disabled}
                     onClick={() => setMailEditOpened(true)}
@@ -249,7 +249,7 @@ const Profile: FC = () => {
                 <Grid.Col span={4}>
                   <Button
                     fullWidth
-                    color="red"
+                    color="orange"
                     variant="outline"
                     disabled={disabled}
                     onClick={() => setPwdChangeOpened(true)}
@@ -294,25 +294,20 @@ const Profile: FC = () => {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
-              <Grid grow>
-                <Grid.Col span={6}>
-                  <Button fullWidth color="red" variant="outline" onClick={onChangeEmail}>
-                    确认修改
-                  </Button>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <Button
-                    fullWidth
-                    variant="outline"
-                    onClick={() => {
-                      setEmail(data?.email ?? '');
-                      setMailEditOpened(false);
-                    }}
-                  >
-                    取消修改
-                  </Button>
-                </Grid.Col>
-              </Grid>
+              <Group position="right">
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    setEmail(data?.email ?? '');
+                    setMailEditOpened(false);
+                  }}
+                >
+                  取消
+                </Button>
+                <Button color="orange" onClick={onChangeEmail}>
+                  确认修改
+                </Button>
+              </Group>
             </Stack>
           </Modal>
 
