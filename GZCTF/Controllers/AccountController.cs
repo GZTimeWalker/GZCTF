@@ -235,6 +235,9 @@ public class AccountController : ControllerBase
         if (user is null)
             return Unauthorized(new RequestResponse("用户名或密码错误", 401));
 
+        if (user.Role == Role.Banned)
+            return Unauthorized(new RequestResponse("用户已被禁用", 401));
+
         user.LastSignedInUTC = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
 
