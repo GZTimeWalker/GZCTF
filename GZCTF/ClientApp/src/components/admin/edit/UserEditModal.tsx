@@ -23,7 +23,7 @@ import Icon from '@mdi/react'
 import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../../Api'
 
 interface UserEditModalProps extends ModalProps {
-  basicInfo: UserInfoModel
+  user: UserInfoModel
   mutateUser: (user: UserInfoModel) => void
 }
 
@@ -45,37 +45,32 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
 )
 
 const UserEditModal: FC<UserEditModalProps> = (props) => {
+  const { user, mutateUser, ...modalProps } = props
+
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
-  const { basicInfo, mutateUser, ...modalProps } = props
-  const { data, mutate } = api.admin.useAdminUserInfo(basicInfo!.id!, {
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
   const [disabled, setDisabled] = useState(false)
-  const [profile, setProfile] = useState<UpdateUserInfoModel>({
-    userName: basicInfo?.userName,
-    email: basicInfo?.email,
-    role: basicInfo?.role,
-  })
+
+  const [avatar, setAvatar] = useState('')
+  const [profile, setProfile] = useState<UpdateUserInfoModel>({})
 
   useEffect(() => {
     setProfile({
-      userName: data?.userName,
-      email: data?.email,
-      bio: data?.bio,
-      phone: data?.phone,
-      realName: data?.realName,
-      stdNumber: data?.stdNumber,
-      role: data?.role,
+      userName: user.userName,
+      email: user.email,
+      role: user.role,
+      bio: user.bio,
+      realName: user.realName,
+      stdNumber: user.stdNumber,
+      phone: user.phone,
     })
-  }, [data])
+    setAvatar(user.avatar ?? '')
+  }, [user])
 
   const onChangeProfile = () => {
     setDisabled(true)
     api.admin
-      .adminUpdateUserInfo(basicInfo.id!, profile)
+      .adminUpdateUserInfo(user.id!, profile)
       .then(() => {
         showNotification({
           color: 'teal',
@@ -84,7 +79,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
-        mutate({ ...data })
+        mutateUser({ ...user, ...profile })
         modalProps.onClose()
       })
       .catch((err) => {
@@ -106,7 +101,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         .accountAvatar({
           file: avatarFile,
         })
-        .then(() => {
+        .then((res) => {
           showNotification({
             color: 'teal',
             title: '修改头像成功',
@@ -114,7 +109,8 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
-          mutate({ ...data })
+          setAvatar(res.data)
+          mutateUser({ ...user, avatar })
           setAvatarFile(null)
           setDropzoneOpened(false)
         })
@@ -147,12 +143,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           </Grid.Col>
           <Grid.Col span={4}>
             <Center>
-              <Avatar
-                radius="xl"
-                size={70}
-                src={data?.avatar}
-                onClick={() => setDropzoneOpened(true)}
-              />
+              <Avatar radius="xl" size={70} src={avatar} onClick={() => setDropzoneOpened(true)} />
             </Center>
           </Grid.Col>
         </Grid>
@@ -160,7 +151,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           label="邮箱"
           type="email"
           style={{ width: '100%' }}
-          value={data?.email ?? 'ctfer@gzti.me'}
+          value={profile.email ?? 'ctfer@gzti.me'}
           disabled={disabled}
           onChange={(event) => setProfile({ ...profile, email: event.target.value })}
         />
@@ -206,7 +197,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           onChange={(value: Role) => setProfile({ ...profile, role: value })}
           data={Object.entries(Role).map((role) => ({
             value: role[1],
-            label: role[0]
+            label: role[0],
           }))}
         />
         <Group grow style={{ margin: 'auto', width: '100%' }}>

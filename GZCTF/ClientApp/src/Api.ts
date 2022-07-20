@@ -201,6 +201,9 @@ export interface UserInfoModel {
   /** 联系电话 */
   phone?: string | null
 
+  /** 签名 */
+  bio?: string | null
+
   /**
    * 注册时间
    * @format date-time

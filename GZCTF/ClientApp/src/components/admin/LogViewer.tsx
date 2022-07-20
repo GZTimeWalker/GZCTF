@@ -133,7 +133,7 @@ const LogViewer: FC = () => {
           <ActionIcon
             size="lg"
             variant="hover"
-            disabled={logs ? logs.length < ITEM_COUNT_PER_PAGE : false}
+            disabled={logs && logs.length < ITEM_COUNT_PER_PAGE}
             onClick={() => setPage(activePage + 1)}
           >
             <Icon path={mdiArrowRightBold} size={1} />

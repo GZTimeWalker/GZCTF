@@ -31,6 +31,11 @@ public class UserInfoModel
     public string? Phone { get; set; }
 
     /// <summary>
+    /// 签名
+    /// </summary>
+    public string? Bio { get; set; }
+
+    /// <summary>
     /// 注册时间
     /// </summary>
     public DateTimeOffset RegisterTimeUTC { get; set; }
@@ -79,10 +84,12 @@ public class UserInfoModel
     {
         Id = user.Id,
         IP = user.IP,
+        Bio = user.Bio,
         Role = user.Role,
         Email = user.Email,
         Phone = user.PhoneNumber,
         Avatar = user.AvatarUrl,
+        RealName = user.RealName,
         UserName = user.UserName,
         StdNumber = user.StdNumber,
         LastVisitedUTC = user.LastVisitedUTC,
