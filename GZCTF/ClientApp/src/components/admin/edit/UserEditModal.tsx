@@ -7,9 +7,10 @@ import {
   Grid,
   Group,
   Image,
+  InputWrapper,
   Modal,
   ModalProps,
-  Select,
+  SegmentedControl,
   SimpleGrid,
   Stack,
   Text,
@@ -21,6 +22,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import Icon from '@mdi/react'
 import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../../Api'
+import { RoleColorMap } from '../UserManager'
 
 interface UserEditModalProps extends ModalProps {
   user: UserInfoModel
@@ -47,11 +49,9 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
 const UserEditModal: FC<UserEditModalProps> = (props) => {
   const { user, mutateUser, ...modalProps } = props
 
-  const [dropzoneOpened, setDropzoneOpened] = useState(false)
-  const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [disabled, setDisabled] = useState(false)
 
-  const [avatar, setAvatar] = useState('')
+  const [activeUser, setActiveUser] = useState<UserInfoModel>(user)
   const [profile, setProfile] = useState<UpdateUserInfoModel>({})
 
   useEffect(() => {
@@ -64,13 +64,13 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
       stdNumber: user.stdNumber,
       phone: user.phone,
     })
-    setAvatar(user.avatar ?? '')
+    setActiveUser(user)
   }, [user])
 
   const onChangeProfile = () => {
     setDisabled(true)
     api.admin
-      .adminUpdateUserInfo(user.id!, profile)
+      .adminUpdateUserInfo(activeUser.id!, profile)
       .then(() => {
         showNotification({
           color: 'teal',
@@ -79,7 +79,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
-        mutateUser({ ...user, ...profile })
+        mutateUser({ ...activeUser, ...profile })
         modalProps.onClose()
       })
       .catch((err) => {
@@ -93,37 +93,6 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
       .finally(() => {
         setDisabled(false)
       })
-  }
-
-  const onChangeAvatar = () => {
-    if (avatarFile) {
-      api.account
-        .accountAvatar({
-          file: avatarFile,
-        })
-        .then((res) => {
-          showNotification({
-            color: 'teal',
-            title: '修改头像成功',
-            message: '您的头像已经更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
-          setAvatar(res.data)
-          mutateUser({ ...user, avatar })
-          setAvatarFile(null)
-          setDropzoneOpened(false)
-        })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-          setDropzoneOpened(false)
-        })
-    }
   }
 
   return (
@@ -143,27 +112,44 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           </Grid.Col>
           <Grid.Col span={4}>
             <Center>
-              <Avatar radius="xl" size={70} src={avatar} onClick={() => setDropzoneOpened(true)} />
+              <Avatar
+                radius="xl"
+                size={70}
+                src={activeUser.avatar}
+              />
             </Center>
           </Grid.Col>
         </Grid>
-        <TextInput
-          label="邮箱"
-          type="email"
-          style={{ width: '100%' }}
-          value={profile.email ?? 'ctfer@gzti.me'}
-          disabled={disabled}
-          onChange={(event) => setProfile({ ...profile, email: event.target.value })}
-        />
-        <TextInput
-          label="手机号"
-          type="tel"
-          style={{ width: '100%' }}
-          value={profile.phone ?? ''}
-          disabled={disabled}
-          onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
-        />
+        <InputWrapper label="用户角色">
+          <SegmentedControl
+            fullWidth
+            disabled={disabled}
+            color={RoleColorMap.get(profile.role ?? Role.User)}
+            value={profile.role ?? Role.User}
+            onChange={(value: Role) => setProfile({ ...profile, role: value })}
+            data={Object.entries(Role).map((role) => ({
+              value: role[1],
+              label: role[0],
+            }))}
+          />
+        </InputWrapper>
         <SimpleGrid cols={2}>
+          <TextInput
+            label="邮箱"
+            type="email"
+            style={{ width: '100%' }}
+            value={profile.email ?? 'ctfer@gzti.me'}
+            disabled={disabled}
+            onChange={(event) => setProfile({ ...profile, email: event.target.value })}
+          />
+          <TextInput
+            label="手机号"
+            type="tel"
+            style={{ width: '100%' }}
+            value={profile.phone ?? ''}
+            disabled={disabled}
+            onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
+          />
           <TextInput
             label="学工号"
             type="number"
@@ -191,53 +177,12 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           maxRows={4}
           onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
         />
-        <Select
-          label="用户角色"
-          value={profile.role ?? Role.User}
-          onChange={(value: Role) => setProfile({ ...profile, role: value })}
-          data={Object.entries(Role).map((role) => ({
-            value: role[1],
-            label: role[0],
-          }))}
-        />
         <Group grow style={{ margin: 'auto', width: '100%' }}>
           <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
             保存信息
           </Button>
         </Group>
       </Stack>
-
-      {/* Change avatar */}
-      <Modal
-        opened={dropzoneOpened}
-        onClose={() => setDropzoneOpened(false)}
-        centered
-        withCloseButton={false}
-      >
-        <Dropzone
-          onDrop={(files) => setAvatarFile(files[0])}
-          onReject={() => {
-            showNotification({
-              color: 'red',
-              title: '文件上传失败',
-              message: `请重新提交`,
-              icon: <Icon path={mdiClose} size={1} />,
-            })
-          }}
-          style={{
-            margin: '0 auto 20px auto',
-            minWidth: '220px',
-            minHeight: '220px',
-          }}
-          maxSize={3 * 1024 * 1024}
-          accept={IMAGE_MIME_TYPE}
-        >
-          {(status) => dropzoneChildren(status, avatarFile)}
-        </Dropzone>
-        <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
-          修改头像
-        </Button>
-      </Modal>
     </Modal>
   )
 }

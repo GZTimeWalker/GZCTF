@@ -13,7 +13,7 @@ const RoleMap = new Map<Role, number>([
   [Role.Admin, 3],
   [Role.Monitor, 1],
   [Role.User, 0],
-  [Role.BannedUser, -1],
+  [Role.Banned, -1],
 ])
 
 const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {

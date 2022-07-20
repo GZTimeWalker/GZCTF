@@ -27,11 +27,11 @@ import UserEditModal from './edit/UserEditModal'
 
 const ITEM_COUNT_PER_PAGE = 30
 
-const RoleColorMap = new Map<Role, string>([
+export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],
   [Role.User, 'brand'],
   [Role.Monitor, 'yellow'],
-  [Role.BannedUser, 'red'],
+  [Role.Banned, 'red'],
 ])
 
 const UserManager: FC = () => {
@@ -49,7 +49,10 @@ const UserManager: FC = () => {
 
   useEffect(() => {
     api.admin
-      .adminUsers({ count: ITEM_COUNT_PER_PAGE, skip: (page - 1) * ITEM_COUNT_PER_PAGE })
+      .adminUsers({
+        count: ITEM_COUNT_PER_PAGE,
+        skip: (page - 1) * ITEM_COUNT_PER_PAGE,
+      })
       .then((res) => {
         setUsers(res.data)
       })
@@ -209,6 +212,11 @@ const UserManager: FC = () => {
           onClose={() => setIsEditModalOpen(false)}
           mutateUser={(user: UserInfoModel) => {
             setUsers(
+              [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) =>
+                a.id! < b.id! ? -1 : 1
+              )
+            )
+            console.log(
               [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) =>
                 a.id! < b.id! ? -1 : 1
               )

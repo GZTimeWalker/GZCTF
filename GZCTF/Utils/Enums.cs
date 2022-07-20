@@ -11,7 +11,7 @@ public enum Role : byte
     /// <summary>
     /// 小黑屋用户权限
     /// </summary>
-    BannedUser = 0,
+    Banned = 0,
 
     /// <summary>
     /// 常规用户权限

@@ -80,23 +80,23 @@ public class UserInfoModel
     public int? ActiveTeamId { get; set; }
 
     public static UserInfoModel FromUserInfo(UserInfo user)
-    => new()
-    {
-        Id = user.Id,
-        IP = user.IP,
-        Bio = user.Bio,
-        Role = user.Role,
-        Email = user.Email,
-        Phone = user.PhoneNumber,
-        Avatar = user.AvatarUrl,
-        RealName = user.RealName,
-        UserName = user.UserName,
-        StdNumber = user.StdNumber,
-        LastVisitedUTC = user.LastVisitedUTC,
-        RegisterTimeUTC = user.RegisterTimeUTC,
-        OwnTeamId = user.OwnTeamId,
-        OwnTeamName = user.OwnTeam?.Name,
-        ActiveTeamId = user.ActiveTeamId,
-        ActiveTeamName = user.ActiveTeam?.Name
-    };
+        => new()
+        {
+            Id = user.Id,
+            IP = user.IP,
+            Bio = user.Bio,
+            Role = user.Role,
+            Email = user.Email,
+            Phone = user.PhoneNumber,
+            Avatar = user.AvatarUrl,
+            RealName = user.RealName,
+            UserName = user.UserName,
+            StdNumber = user.StdNumber,
+            LastVisitedUTC = user.LastVisitedUTC,
+            RegisterTimeUTC = user.RegisterTimeUTC,
+            OwnTeamId = user.OwnTeamId,
+            OwnTeamName = user.OwnTeam?.Name,
+            ActiveTeamId = user.ActiveTeamId,
+            ActiveTeamName = user.ActiveTeam?.Name
+        };
 }

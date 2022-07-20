@@ -176,7 +176,7 @@ export interface ProfileUserInfoModel {
  * 用户权限枚举
  */
 export enum Role {
-  BannedUser = 'BannedUser',
+  Banned = 'Banned',
   User = 'User',
   Monitor = 'Monitor',
   Admin = 'Admin',
