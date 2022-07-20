@@ -148,7 +148,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           <Grid.Col span={4}>
             <Center>
               <Avatar
-                style={{ borderRadius: '50%' }}
+                radius="xl"
                 size={70}
                 src={data?.avatar}
                 onClick={() => setDropzoneOpened(true)}

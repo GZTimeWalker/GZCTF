@@ -265,7 +265,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           <Grid.Col span={4}>
             <Center>
               <Avatar
-                style={{ borderRadius: '50%' }}
+                radius="xl"
                 size={70}
                 src={teamInfo?.avatar}
                 onClick={() => isCaptain && setDropzoneOpened(true)}

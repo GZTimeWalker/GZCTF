@@ -192,6 +192,30 @@ export interface UserInfoModel {
   /** 用户名 */
   userName?: string | null
 
+  /** 真实姓名 */
+  realName?: string | null
+
+  /** 学号 */
+  stdNumber?: string | null
+
+  /** 联系电话 */
+  phone?: string | null
+
+  /**
+   * 注册时间
+   * @format date-time
+   */
+  registerTimeUTC?: string
+
+  /**
+   * 用户最近访问时间
+   * @format date-time
+   */
+  lastVisitedUTC?: string
+
+  /** 用户最近访问IP */
+  ip?: string
+
   /** 邮箱 */
   email?: string | null
 

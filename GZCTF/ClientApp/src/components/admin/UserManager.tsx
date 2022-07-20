@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { Group, Stack, Table, Text, ActionIcon, Badge } from '@mantine/core'
+import { Group, Stack, Table, Text, ActionIcon, Badge, Avatar } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -11,10 +11,17 @@ import {
   mdiFileEditOutline,
 } from '@mdi/js'
 import Icon from '@mdi/react'
-import api, { UserInfoModel } from '../../Api'
+import api, { Role, UserInfoModel } from '../../Api'
 import UserEditModal from './edit/UserEditModal'
 
 const ITEM_COUNT_PER_PAGE = 30
+
+const RoleColorMap = new Map<Role, string>([
+  [Role.Admin, 'blue'],
+  [Role.User, 'brand'],
+  [Role.Monitor, 'yellow'],
+  [Role.BannedUser, 'red'],
+])
 
 const UserManager: FC = () => {
   const [activePage, setPage] = useState(-1)
@@ -95,8 +102,7 @@ const UserManager: FC = () => {
       <Table>
         <thead>
           <tr>
-            <th>用户名</th>
-            <th>用户角色</th>
+            <th>用户</th>
             <th>所拥有的队伍</th>
             <th>激活的队伍</th>
             <th>操作</th>
@@ -105,26 +111,20 @@ const UserManager: FC = () => {
         <tbody>
           {users?.map((user) => (
             <tr key={user.id}>
-              <td>{user.userName}</td>
-              <td>{user.role}</td>
-              <td>{user.ownTeamName}</td>
-              <td>{user.activeTeamName}</td>
               <td>
-                <Group>
-                  <ActionIcon
-                    disabled={disabled}
-                    onClick={() => {
-                      setActiveUser(user)
-                      setIsEditModalOpen(true)
-                    }}
-                  >
-                    <Icon path={mdiFileEditOutline} size={1} />
-                  </ActionIcon>
-                  <ActionIcon disabled={disabled} onClick={() => onDeleteUser(user)} color="red">
-                    <Icon path={mdiDeleteOutline} size={1} />
-                  </ActionIcon>
+                <Group position="left">
+                  <Avatar src={user.avatar} radius="xl" />
+                  <Text>{user.userName}</Text>
+                </Group>
+                <Group position="right">
+                  <Badge size="lg" color={RoleColorMap.get(user.role ?? Role.User)}>
+                    {user.role}
+                  </Badge>
                 </Group>
               </td>
+              <td>{user.ownTeamName}</td>
+              <td>{user.activeTeamName}</td>
+              <td></td>
             </tr>
           ))}
         </tbody>

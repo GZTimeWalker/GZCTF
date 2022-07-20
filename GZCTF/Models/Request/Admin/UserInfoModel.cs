@@ -16,6 +16,36 @@ public class UserInfoModel
     public string? UserName { get; set; }
 
     /// <summary>
+    /// 真实姓名
+    /// </summary>
+    public string? RealName { get; set; }
+
+    /// <summary>
+    /// 学号
+    /// </summary>
+    public string? StdNumber { get; set; }
+
+    /// <summary>
+    /// 联系电话
+    /// </summary>
+    public string? Phone { get; set; }
+
+    /// <summary>
+    /// 注册时间
+    /// </summary>
+    public DateTimeOffset RegisterTimeUTC { get; set; }
+
+    /// <summary>
+    /// 用户最近访问时间
+    /// </summary>
+    public DateTimeOffset LastVisitedUTC { get; set; }
+
+    /// <summary>
+    /// 用户最近访问IP
+    /// </summary>
+    public string IP { get; set; } = "0.0.0.0";
+
+    /// <summary>
     /// 邮箱
     /// </summary>
     public string? Email { get; set; }
@@ -48,10 +78,15 @@ public class UserInfoModel
     => new()
     {
         Id = user.Id,
-        UserName = user.UserName,
-        Email = user.Email,
-        Avatar = user.AvatarUrl,
+        IP = user.IP,
         Role = user.Role,
+        Email = user.Email,
+        Phone = user.PhoneNumber,
+        Avatar = user.AvatarUrl,
+        UserName = user.UserName,
+        StdNumber = user.StdNumber,
+        LastVisitedUTC = user.LastVisitedUTC,
+        RegisterTimeUTC = user.RegisterTimeUTC,
         OwnTeamId = user.OwnTeamId,
         OwnTeamName = user.OwnTeam?.Name,
         ActiveTeamId = user.ActiveTeamId,
