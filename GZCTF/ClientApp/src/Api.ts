@@ -1637,6 +1637,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<UserInfoModel[]>([`/api/admin/users`, query], data, options),
 
     /**
+     * @description 使用此接口搜索用户，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminSearchUsers
+     * @summary 搜索用户
+     * @request POST:/api/admin/users/search
+     */
+    adminSearchUsers: (query?: { hint?: string }, params: RequestParams = {}) =>
+      this.request<UserInfoModel[], RequestResponse>({
+        path: `/api/admin/users/search`,
+        method: 'POST',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 使用此接口获取全部队伍，需要Admin权限
      *
      * @tags Admin

@@ -59,6 +59,30 @@ public class AdminController : ControllerBase
            ).ToArrayAsync(token));
 
     /// <summary>
+    /// 搜索用户
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口搜索用户，需要Admin权限
+    /// </remarks>
+    /// <response code="200">用户列表</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpPost("Users/Search")]
+    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
+        => Ok(await (
+            from user in userManager.Users
+                .Where(item =>
+                    EF.Functions.Like(item.UserName, $"%{hint}%") ||
+                    EF.Functions.Like(item.StdNumber, $"%{hint}%") ||
+                    EF.Functions.Like(item.Email, $"%{hint}%") ||
+                    EF.Functions.Like(item.RealName, $"%{hint}%")
+                )
+                .Take(20)
+            select UserInfoModel.FromUserInfo(user)
+           ).ToArrayAsync(token));
+
+    /// <summary>
     /// 获取全部队伍信息
     /// </summary>
     /// <remarks>

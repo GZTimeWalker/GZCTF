@@ -8,8 +8,8 @@ import {
   Badge,
   Avatar,
   Paper,
-  NumberInput,
   useMantineTheme,
+  TextInput,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -17,6 +17,7 @@ import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiCheck,
+  mdiMagnify,
   mdiClose,
   mdiDeleteOutline,
   mdiFileEditOutline,
@@ -24,6 +25,7 @@ import {
 import Icon from '@mdi/react'
 import api, { Role, UserInfoModel } from '../../Api'
 import UserEditModal from './edit/UserEditModal'
+import { useInputState } from '@mantine/hooks'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -39,6 +41,8 @@ const UserManager: FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
   const [users, setUsers] = useState<UserInfoModel[]>([])
+  const [hint, setHint] = useInputState('');
+  const [searching, setSearching] = useState(false)
 
   const theme = useMantineTheme()
   const { data: currentUser } = api.account.useAccountProfile({
@@ -57,6 +61,24 @@ const UserManager: FC = () => {
         setUsers(res.data)
       })
   }, [page])
+
+  const onSearch = () => {
+    setSearching(true)
+    api.admin.adminSearchUsers({
+      hint
+    }).then((res) => {
+      setUsers(res.data)
+    }).catch((err) => {
+      showNotification({
+        color: 'red',
+        title: '遇到了问题',
+        message: `${err.error.title}`,
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+    }).finally(() => {
+      setSearching(false)
+    })
+  }
 
   const modals = useModals()
 
@@ -110,9 +132,14 @@ const UserManager: FC = () => {
     <Paper shadow="md" p="md">
       <Stack>
         <Group position="apart">
-          <Badge size="xl" radius="sm" variant="outline">
-            第 {page} 页
-          </Badge>
+          <TextInput
+            icon={<Icon path={mdiMagnify} size={1} />}
+            style={{ width: '30%' }}
+            placeholder="搜索用户名/邮箱/学号/姓名"
+            value={hint}
+            onChange={setHint}
+            onKeyDown={(e) => {!searching && e.key === 'Enter' && onSearch()}}
+          />
           <Group position="right">
             <ActionIcon
               size="lg"
@@ -212,11 +239,6 @@ const UserManager: FC = () => {
           onClose={() => setIsEditModalOpen(false)}
           mutateUser={(user: UserInfoModel) => {
             setUsers(
-              [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) =>
-                a.id! < b.id! ? -1 : 1
-              )
-            )
-            console.log(
               [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) =>
                 a.id! < b.id! ? -1 : 1
               )
