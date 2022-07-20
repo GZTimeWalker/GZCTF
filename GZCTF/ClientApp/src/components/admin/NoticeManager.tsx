@@ -146,6 +146,18 @@ const NoticeManager: FC = () => {
         margin: '2%',
       }}
     >
+      <Center>
+        <Button
+          leftIcon={<Icon path={mdiPlus} size={1} />}
+          onClick={() => {
+            setActiveNotice(null)
+            setIsEditModalOpen(true)
+          }}
+        >
+          新建通知
+        </Button>
+      </Center>
+
       {notices &&
         notices
           .sort((x, y) => (x.isPinned || new Date(x.time) < new Date(y.time) ? 1 : -1))
@@ -161,18 +173,6 @@ const NoticeManager: FC = () => {
               onPin={() => onPin(notice)}
             />
           ))}
-
-      <Center>
-        <Button
-          leftIcon={<Icon path={mdiPlus} size={1} />}
-          onClick={() => {
-            setActiveNotice(null)
-            setIsEditModalOpen(true)
-          }}
-        >
-          新建通知
-        </Button>
-      </Center>
 
       <NoticeEditModal
         centered

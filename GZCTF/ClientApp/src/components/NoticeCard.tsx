@@ -12,6 +12,8 @@ import {
   TypographyStylesProvider,
 } from '@mantine/core'
 import { Notice } from '../Api'
+import { mdiPinOutline } from '@mdi/js'
+import Icon from '@mdi/react'
 
 const NoticeCard: FC<Notice> = (notice) => {
   const theme = useMantineTheme()
@@ -23,6 +25,9 @@ const NoticeCard: FC<Notice> = (notice) => {
         color={secondaryColor}
         cite={
           <Group position="right" style={{ margin: 'auto', fontStyle: 'normal' }}>
+            {notice.isPinned && (
+              <Icon color={theme.colors.orange[4]} path={mdiPinOutline} size={1}></Icon>
+            )}
             <Badge color="brand" variant="light">
               {new Date(notice.time).toLocaleString()}
             </Badge>
@@ -30,7 +35,9 @@ const NoticeCard: FC<Notice> = (notice) => {
         }
       >
         <Stack>
-          <Title order={3}>{notice.title}</Title>
+          <Title order={3}>
+            {notice.title}
+          </Title>
           <TypographyStylesProvider>
             <div dangerouslySetInnerHTML={{ __html: marked(notice.content) }} />
           </TypographyStylesProvider>
