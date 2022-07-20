@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react'
 import {
   Box,
   Stack,
@@ -15,14 +15,14 @@ import {
   Image,
   Center,
   SimpleGrid,
-} from '@mantine/core';
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import Icon from '@mdi/react';
-import api, { ProfileUpdateModel } from '../../Api';
-import PasswordChangeModal from '../../components/PasswordChangeModal';
-import WithNavBar from '../../components/WithNavbar';
+} from '@mantine/core'
+import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import api, { ProfileUpdateModel } from '../../Api'
+import PasswordChangeModal from '../../components/PasswordChangeModal'
+import WithNavBar from '../../components/WithNavbar'
 
 const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
   <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
@@ -39,15 +39,15 @@ const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
       </Box>
     )}
   </Group>
-);
+)
 
 const Profile: FC = () => {
-  const [dropzoneOpened, setDropzoneOpened] = useState(false);
+  const [dropzoneOpened, setDropzoneOpened] = useState(false)
   const { data, mutate } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
-  });
+  })
 
   const [profile, setProfile] = useState<ProfileUpdateModel>({
     userName: data?.userName,
@@ -55,15 +55,15 @@ const Profile: FC = () => {
     stdNumber: data?.stdNumber,
     phone: data?.phone,
     realName: data?.realName,
-  });
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  })
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(false)
 
-  const [mailEditOpened, setMailEditOpened] = useState(false);
-  const [pwdChangeOpened, setPwdChangeOpened] = useState(false);
+  const [mailEditOpened, setMailEditOpened] = useState(false)
+  const [pwdChangeOpened, setPwdChangeOpened] = useState(false)
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     setProfile({
@@ -72,8 +72,8 @@ const Profile: FC = () => {
       stdNumber: data?.stdNumber,
       phone: data?.phone,
       realName: data?.realName,
-    });
-  }, [data]);
+    })
+  }, [data])
 
   const onChangeAvatar = () => {
     if (avatarFile) {
@@ -88,10 +88,10 @@ const Profile: FC = () => {
             message: '您的头像已经更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
-          });
-          mutate({ ...data });
-          setAvatarFile(null);
-          setDropzoneOpened(false);
+          })
+          mutate({ ...data })
+          setAvatarFile(null)
+          setDropzoneOpened(false)
         })
         .catch((err) => {
           showNotification({
@@ -99,11 +99,11 @@ const Profile: FC = () => {
             title: '遇到了问题',
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
-          });
-          setDropzoneOpened(false);
-        });
+          })
+          setDropzoneOpened(false)
+        })
     }
-  };
+  }
 
   const onChangeProfile = () => {
     api.account
@@ -115,8 +115,8 @@ const Profile: FC = () => {
           message: '个人信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
-        });
-        mutate({ ...data });
+        })
+        mutate({ ...data })
       })
       .catch((err) => {
         showNotification({
@@ -124,9 +124,9 @@ const Profile: FC = () => {
           title: '遇到了问题',
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
-        });
-      });
-  };
+        })
+      })
+  }
 
   const onChangeEmail = () => {
     if (email) {
@@ -141,8 +141,8 @@ const Profile: FC = () => {
             message: '请检查你的邮箱及垃圾邮件~',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
-          });
-          setMailEditOpened(false);
+          })
+          setMailEditOpened(false)
         })
         .catch((err) => {
           showNotification({
@@ -150,10 +150,10 @@ const Profile: FC = () => {
             title: '遇到了问题',
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
-          });
-        });
+          })
+        })
     }
-  };
+  }
 
   return (
     <WithNavBar>
@@ -181,7 +181,7 @@ const Profile: FC = () => {
               <Grid.Col span={4}>
                 <Center>
                   <Avatar
-                    style={{ borderRadius: '50%' }}
+                    radius="xl"
                     size={70}
                     src={data?.avatar}
                     onClick={() => setDropzoneOpened(true)}
@@ -238,7 +238,7 @@ const Profile: FC = () => {
                 <Grid.Col span={4}>
                   <Button
                     fullWidth
-                    color="red"
+                    color="orange"
                     variant="outline"
                     disabled={disabled}
                     onClick={() => setMailEditOpened(true)}
@@ -249,7 +249,7 @@ const Profile: FC = () => {
                 <Grid.Col span={4}>
                   <Button
                     fullWidth
-                    color="red"
+                    color="orange"
                     variant="outline"
                     disabled={disabled}
                     onClick={() => setPwdChangeOpened(true)}
@@ -294,25 +294,20 @@ const Profile: FC = () => {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
-              <Grid grow>
-                <Grid.Col span={6}>
-                  <Button fullWidth color="red" variant="outline" onClick={onChangeEmail}>
-                    确认修改
-                  </Button>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <Button
-                    fullWidth
-                    variant="outline"
-                    onClick={() => {
-                      setEmail(data?.email ?? '');
-                      setMailEditOpened(false);
-                    }}
-                  >
-                    取消修改
-                  </Button>
-                </Grid.Col>
-              </Grid>
+              <Group position="right">
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    setEmail(data?.email ?? '')
+                    setMailEditOpened(false)
+                  }}
+                >
+                  取消
+                </Button>
+                <Button color="orange" onClick={onChangeEmail}>
+                  确认修改
+                </Button>
+              </Group>
             </Stack>
           </Modal>
 
@@ -331,7 +326,7 @@ const Profile: FC = () => {
                   title: '文件上传失败',
                   message: `请重新提交`,
                   icon: <Icon path={mdiClose} size={1} />,
-                });
+                })
               }}
               style={{
                 margin: '0 auto 20px auto',
@@ -350,7 +345,7 @@ const Profile: FC = () => {
         </Paper>
       </Center>
     </WithNavBar>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

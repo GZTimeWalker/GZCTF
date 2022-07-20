@@ -11,7 +11,7 @@ public enum Role : byte
     /// <summary>
     /// 小黑屋用户权限
     /// </summary>
-    BannedUser = 0,
+    Banned = 0,
 
     /// <summary>
     /// 常规用户权限
@@ -382,6 +382,11 @@ public static class CacheKey
     /// 积分榜缓存
     /// </summary>
     public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
+
+    /// <summary>
+    /// 比赛基础信息缓存
+    /// </summary>
+    public const string BasicGameInfo = "_BasicGameInfo";
 
     /// <summary>
     /// 公告

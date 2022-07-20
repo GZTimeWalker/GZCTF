@@ -1,23 +1,23 @@
-import { FC, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core';
-import { useInputState, useWindowEvent } from '@mantine/hooks';
-import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import api from '../../Api';
-import AccountView from '../../components/AccountView';
+import { FC, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core'
+import { useInputState, useWindowEvent } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import { Icon } from '@mdi/react'
+import api from '../../Api'
+import AccountView from '../../components/AccountView'
 
 const Login: FC = () => {
-  const params = useParams();
-  const navigate = useNavigate();
+  const params = useParams()
+  const navigate = useNavigate()
 
-  const [pwd, setPwd] = useInputState('');
-  const [uname, setUname] = useInputState('');
-  const [disabled, setDisabled] = useState(false);
+  const [pwd, setPwd] = useInputState('')
+  const [uname, setUname] = useInputState('')
+  const [disabled, setDisabled] = useState(false)
 
   const onLogin = () => {
-    setDisabled(true);
+    setDisabled(true)
 
     if (uname.length == 0 || pwd.length < 6) {
       showNotification({
@@ -26,9 +26,9 @@ const Login: FC = () => {
         message: '无效的用户名或密码',
         icon: <Icon path={mdiClose} size={1} />,
         disallowClose: true,
-      });
-      setDisabled(false);
-      return;
+      })
+      setDisabled(false)
+      return
     }
 
     api.account
@@ -43,10 +43,10 @@ const Login: FC = () => {
           message: '跳转回登录前页面',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
-        });
-        api.account.mutateAccountProfile();
-        let from = params['from'];
-        navigate(from ? (from as string) : '/');
+        })
+        api.account.mutateAccountProfile()
+        let from = params['from']
+        navigate(from ? (from as string) : '/')
       })
       .catch(() => {
         showNotification({
@@ -55,16 +55,16 @@ const Login: FC = () => {
           message: '无效的用户名或密码',
           icon: <Icon path={mdiClose} size={1} />,
           disallowClose: true,
-        });
-        setDisabled(false);
-      });
-  };
+        })
+        setDisabled(false)
+      })
+  }
 
   useWindowEvent('keydown', (e) => {
     if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onLogin();
+      onLogin()
     }
-  });
+  })
 
   return (
     <AccountView>
@@ -114,7 +114,7 @@ const Login: FC = () => {
         </Grid.Col>
       </Grid>
     </AccountView>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

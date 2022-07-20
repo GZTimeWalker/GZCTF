@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react'
 import {
   Group,
   Title,
@@ -13,34 +13,34 @@ import {
   useMantineTheme,
   ActionIcon,
   Tooltip,
-} from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
-import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js';
-import Icon from '@mdi/react';
-import api, { TeamInfoModel } from '../Api';
+} from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import api, { TeamInfoModel } from '../Api'
 
 interface TeamCardProps {
-  team: TeamInfoModel;
-  isCaptain: boolean;
-  isActive: boolean;
-  onEdit: () => void;
-  mutateActive: () => void;
+  team: TeamInfoModel
+  isCaptain: boolean
+  isActive: boolean
+  onEdit: () => void
+  mutateActive: () => void
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
-  const { team, isCaptain, isActive, onEdit, mutateActive } = props;
+  const { team, isCaptain, isActive, onEdit, mutateActive } = props
 
-  const captain = team.members?.filter((m) => m?.captain).at(0);
-  const members = team.members?.filter((m) => !m?.captain);
+  const captain = team.members?.filter((m) => m?.captain).at(0)
+  const members = team.members?.filter((m) => !m?.captain)
 
-  const theme = useMantineTheme();
-  const [cardClickable, setCardClickable] = useState(true);
+  const theme = useMantineTheme()
+  const [cardClickable, setCardClickable] = useState(true)
 
   const onActive = () => {
     if (isActive) {
-      return;
+      return
     } else {
-      setCardClickable(false);
+      setCardClickable(false)
       api.team
         .teamSetActive(team.id!)
         .then(() => {
@@ -50,8 +50,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             message: '您的队伍已经更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
-          });
-          mutateActive();
+          })
+          mutateActive()
         })
         .catch((err) => {
           showNotification({
@@ -59,27 +59,27 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             title: '遇到了问题',
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
-          });
+          })
         })
         .finally(() => {
-          setCardClickable(true);
-        });
+          setCardClickable(true)
+        })
     }
-  };
+  }
 
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [cardSzY, setCardSzY] = useState('180px');
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [cardSzY, setCardSzY] = useState('180px')
 
   useEffect(() => {
-    setCardSzY(window.getComputedStyle(ref.current!).getPropertyValue('height'));
-  }, []);
+    setCardSzY(window.getComputedStyle(ref.current!).getPropertyValue('height'))
+  }, [])
 
   return (
     <Card
       shadow="sm"
       onClick={() => {
         if (cardClickable) {
-          onEdit();
+          onEdit()
         }
       }}
       sx={(theme) => ({
@@ -199,7 +199,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
         </Stack>
       </Group>
     </Card>
-  );
-};
+  )
+}
 
-export default TeamCard;
+export default TeamCard

@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { FC, useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Box,
   Menu,
@@ -12,8 +12,8 @@ import {
   createStyles,
   UnstyledButton,
   useMantineColorScheme,
-} from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
+} from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -25,10 +25,10 @@ import {
   mdiLogout,
   mdiCheck,
   mdiWrenchOutline,
-} from '@mdi/js';
-import { Icon } from '@mdi/react';
-import api, { Role } from '../Api';
-import MainIcon from './icon/MainIcon';
+} from '@mdi/js'
+import { Icon } from '@mdi/react'
+import api, { Role } from '../Api'
+import MainIcon from './icon/MainIcon'
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -70,13 +70,13 @@ const useStyles = createStyles((theme) => ({
   menuBody: {
     marginLeft: 20,
   },
-}));
+}))
 
 interface NavbarItem {
-  icon: string;
-  label: string;
-  link: string;
-  admin?: boolean;
+  icon: string
+  label: string
+  link: string
+  admin?: boolean
 }
 
 const items: NavbarItem[] = [
@@ -85,18 +85,18 @@ const items: NavbarItem[] = [
   { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
   { icon: mdiInformationOutline, label: '关于', link: '/about' },
   { icon: mdiWrenchOutline, label: '管理', link: '/admin', admin: true },
-];
+]
 
 export interface NavbarLinkProps {
-  icon: string;
-  label?: string;
-  link?: string;
-  onClick?: () => void;
-  isActive?: boolean;
+  icon: string
+  label?: string
+  link?: string
+  onClick?: () => void
+  isActive?: boolean
 }
 
 const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
-  const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles()
 
   return (
     <Link to={props.link ?? '#'}>
@@ -109,50 +109,50 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
         </UnstyledButton>
       </Tooltip>
     </Link>
-  );
-};
+  )
+}
 
 const AppNavbar: FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { classes, cx } = useStyles();
-  const [active, setActive] = useState('');
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { classes, cx } = useStyles()
+  const [active, setActive] = useState('')
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const { data: user, error } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
-  });
+  })
 
   useEffect(() => {
     if (location.pathname == '/') {
-      setActive(items[0].label);
+      setActive(items[0].label)
     }
     items.forEach((i) => {
       if (location.pathname.startsWith(i.link) && i.link != '/') {
-        setActive(i.label);
+        setActive(i.label)
       }
-    });
-  }, [location.pathname]);
+    })
+  }, [location.pathname])
 
   const logout = () => {
     api.account.accountLogOut().then(() => {
-      navigate('/');
-      api.account.mutateAccountProfile();
+      navigate('/')
+      api.account.mutateAccountProfile()
       showNotification({
         color: 'teal',
         title: '登出成功',
         message: '',
         icon: <Icon path={mdiCheck} size={1} />,
         disallowClose: true,
-      });
-    });
-  };
+      })
+    })
+  }
 
   const links = items
     .filter((m) => !m.admin || user?.role === Role.Admin)
-    .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />);
+    .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />)
 
   return (
     <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
@@ -240,7 +240,7 @@ const AppNavbar: FC = () => {
         </Stack>
       </Navbar.Section>
     </Navbar>
-  );
-};
+  )
+}
 
-export default AppNavbar;
+export default AppNavbar

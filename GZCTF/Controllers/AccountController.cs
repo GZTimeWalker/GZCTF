@@ -22,7 +22,7 @@ public class AccountController : ControllerBase
     private readonly IMailSender mailSender;
     private readonly UserManager<UserInfo> userManager;
     private readonly SignInManager<UserInfo> signInManager;
-    private readonly IFileRepository FileService;
+    private readonly IFileRepository fileService;
     private readonly IRecaptchaExtension recaptcha;
     private readonly IHostEnvironment environment;
 
@@ -40,7 +40,7 @@ public class AccountController : ControllerBase
         environment = _environment;
         userManager = _userManager;
         signInManager = _signInManager;
-        FileService = _FileService;
+        fileService = _FileService;
         logger = _logger;
     }
 
@@ -235,6 +235,9 @@ public class AccountController : ControllerBase
         if (user is null)
             return Unauthorized(new RequestResponse("用户名或密码错误", 401));
 
+        if (user.Role == Role.Banned)
+            return Unauthorized(new RequestResponse("用户已被禁用", 401));
+
         user.LastSignedInUTC = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
 
@@ -408,13 +411,13 @@ public class AccountController : ControllerBase
     /// <response code="401">未授权用户</response>
     [HttpGet]
     [RequireUser]
-    [ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Profile()
     {
         var user = await userManager.GetUserAsync(User);
 
-        return Ok(ClientUserInfoModel.FromUserInfo(user));
+        return Ok(ProfileUserInfoModel.FromUserInfo(user));
     }
 
     /// <summary>
@@ -442,9 +445,9 @@ public class AccountController : ControllerBase
         var user = await userManager.GetUserAsync(User);
 
         if (user.AvatarHash is not null)
-            await FileService.DeleteFileByHash(user.AvatarHash, token);
+            await fileService.DeleteFileByHash(user.AvatarHash, token);
 
-        var avatar = await FileService.CreateOrUpdateFile(file, "avatar", token);
+        var avatar = await fileService.CreateOrUpdateFile(file, "avatar", token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("文件创建失败"));

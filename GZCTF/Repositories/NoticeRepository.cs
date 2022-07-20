@@ -25,7 +25,8 @@ public class NoticeRepository : RepositoryBase, INoticeRepository
         => cache.GetOrCreateAsync(CacheKey.Notices, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-            return context.Notices.OrderByDescending(n => n.PublishTimeUTC).Take(3).ToArrayAsync(token);
+            return context.Notices.OrderByDescending(n => n.IsPinned)
+                    .ThenByDescending(n => n.PublishTimeUTC).Take(3).ToArrayAsync(token);
         });
 
     public Task<Notice?> GetNoticeById(int id, CancellationToken token = default)

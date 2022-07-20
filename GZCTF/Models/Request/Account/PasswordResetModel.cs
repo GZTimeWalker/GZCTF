@@ -3,7 +3,7 @@
 namespace CTFServer.Models.Request.Account;
 
 /// <summary>
-/// 密码重置
+/// 账号密码重置
 /// </summary>
 public class PasswordResetModel
 {

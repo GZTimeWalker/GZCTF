@@ -1,21 +1,21 @@
-import { FC } from 'react';
-import { Tabs } from '@mantine/core';
+import React, { FC } from 'react'
+import { ScrollArea, Tabs } from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,
   mdiFlagOutline,
   mdiAccountGroupOutline,
   mdiFileDocumentOutline,
-} from '@mdi/js';
-import Icon from '@mdi/react';
-import { Role } from '../Api';
-import WithNavBar from '../components/WithNavbar';
-import WithRole from '../components/WithRole';
-import GameManager from '../components/admin/GameManager';
-import LogViewer from '../components/admin/LogViewer';
-import NoticeManager from '../components/admin/NoticeManager';
-import TeamManager from '../components/admin/TeamManager';
-import UserManager from '../components/admin/UserManager';
+} from '@mdi/js'
+import Icon from '@mdi/react'
+import { Role } from '../Api'
+import WithNavBar from '../components/WithNavbar'
+import WithRole from '../components/WithRole'
+import GameManager from '../components/admin/GameManager'
+import LogViewer from '../components/admin/LogViewer'
+import NoticeManager from '../components/admin/NoticeManager'
+import TeamManager from '../components/admin/TeamManager'
+import UserManager from '../components/admin/UserManager'
 
 const Admin: FC = () => {
   return (
@@ -44,7 +44,7 @@ const Admin: FC = () => {
         </Tabs>
       </WithRole>
     </WithNavBar>
-  );
-};
+  )
+}
 
-export default Admin;
+export default Admin

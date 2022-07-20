@@ -3,7 +3,7 @@
 namespace CTFServer.Models.Request.Admin;
 
 /// <summary>
-/// 日志信息
+/// 日志信息（Admin）
 /// </summary>
 public class LogMessageModel
 {

@@ -19,7 +19,7 @@ public class ContainerChecker : IHostedService, IDisposable
     public Task StartAsync(CancellationToken cancellationToken)
     {
         timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
-        logger.SystemLog("容器生命周期检查已启动");
+        logger.SystemLog("容器生命周期检查已启动", TaskStatus.Success, LogLevel.Debug);
         return Task.CompletedTask;
     }
 
@@ -41,7 +41,7 @@ public class ContainerChecker : IHostedService, IDisposable
     public Task StopAsync(CancellationToken cancellationToken)
     {
         timer?.Change(Timeout.Infinite, 0);
-        logger.SystemLog("容器生命周期检查已停止");
+        logger.SystemLog("容器生命周期检查已停止", TaskStatus.Exit, LogLevel.Debug);
         return Task.CompletedTask;
     }
 

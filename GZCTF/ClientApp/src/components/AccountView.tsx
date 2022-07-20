@@ -1,6 +1,6 @@
-import { FC } from 'react';
-import { Stack, Center, createStyles } from '@mantine/core';
-import LogoHeader from './LogoHeader';
+import { FC } from 'react'
+import { Stack, Center, createStyles } from '@mantine/core'
+import LogoHeader from './LogoHeader'
 
 const useStyles = createStyles((theme) => ({
   input: {
@@ -8,10 +8,10 @@ const useStyles = createStyles((theme) => ({
     minWidth: '250px',
     maxWidth: '300px',
   },
-}));
+}))
 
 const AccountView: FC<React.PropsWithChildren> = ({ children }) => {
-  const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles()
 
   return (
     <Center style={{ height: '100vh' }}>
@@ -20,7 +20,7 @@ const AccountView: FC<React.PropsWithChildren> = ({ children }) => {
         {children}
       </Stack>
     </Center>
-  );
-};
+  )
+}
 
-export default AccountView;
+export default AccountView

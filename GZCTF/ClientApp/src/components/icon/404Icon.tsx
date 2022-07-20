@@ -1,10 +1,10 @@
-import { FC } from 'react';
-import { createStyles, keyframes } from '@mantine/core';
+import { FC } from 'react'
+import { createStyles, keyframes } from '@mantine/core'
 
 const spinning = keyframes({
   from: { transform: 'rotate(0deg)' },
   to: { transform: 'rotate(360deg)' },
-});
+})
 
 const useStyles = createStyles((theme) => ({
   triangle: {
@@ -14,10 +14,10 @@ const useStyles = createStyles((theme) => ({
     transformOrigin: '50% 50%',
     animation: `${spinning} 8s linear infinite`,
   },
-}));
+}))
 
 const Icon404: FC = () => {
-  const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles()
   return (
     <svg
       id="main_logo"
@@ -67,7 +67,7 @@ const Icon404: FC = () => {
         <rect fill="#1de9b6" x="1200" y="2400" width="400" height="1600" />
       </g>
     </svg>
-  );
-};
+  )
+}
 
-export default Icon404;
+export default Icon404

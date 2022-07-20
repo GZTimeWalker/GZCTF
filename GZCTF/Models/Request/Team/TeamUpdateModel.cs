@@ -2,6 +2,9 @@
 
 namespace CTFServer.Models.Request.Teams;
 
+/// <summary>
+/// 队伍信息更新
+/// </summary>
 public class TeamUpdateModel
 {
     /// <summary>

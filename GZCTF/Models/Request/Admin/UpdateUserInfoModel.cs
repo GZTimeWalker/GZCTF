@@ -1,5 +1,8 @@
 ﻿namespace CTFServer.Models.Request.Admin;
 
+/// <summary>
+/// 用户信息更改（Admin）
+/// </summary>
 public class UpdateUserInfoModel
 {
     /// <summary>
@@ -30,7 +33,7 @@ public class UpdateUserInfoModel
     /// <summary>
     /// 学工号
     /// </summary>
-    public string StdNumber { get; set; }
+    public string? StdNumber { get; set; }
 
     /// <summary>
     /// 用户角色

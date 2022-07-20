@@ -29,6 +29,7 @@ export default defineConfig({
     chunkSplitPlugin({
       customSplitting: {
         'Account': [/src\/pages\/account\/.*/],
+        'Games': [/src\/pages\/games\/.*/],
       }
     }),
     Pages({

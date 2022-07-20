@@ -1,15 +1,15 @@
-import { FC } from 'react';
-import { Link } from 'react-router-dom';
-import { TextInput, Button, Anchor } from '@mantine/core';
-import { useInputState, useWindowEvent } from '@mantine/hooks';
-import { showNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import Icon from '@mdi/react';
-import api from '../../Api';
-import AccountView from '../../components/AccountView';
+import { FC } from 'react'
+import { Link } from 'react-router-dom'
+import { TextInput, Button, Anchor } from '@mantine/core'
+import { useInputState, useWindowEvent } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import api from '../../Api'
+import AccountView from '../../components/AccountView'
 
 const Recovery: FC = () => {
-  const [email, setEmail] = useInputState('');
+  const [email, setEmail] = useInputState('')
 
   const onRecovery = () => {
     api.account
@@ -23,7 +23,7 @@ const Recovery: FC = () => {
           message: '请检查你的邮箱及垃圾邮件~',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
-        });
+        })
       })
       .catch((err) => {
         showNotification({
@@ -31,15 +31,15 @@ const Recovery: FC = () => {
           title: '遇到了问题',
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
-        });
-      });
-  };
+        })
+      })
+  }
 
   useWindowEvent('keydown', (e) => {
     if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onRecovery();
+      onRecovery()
     }
-  });
+  })
 
   return (
     <AccountView>
@@ -68,7 +68,7 @@ const Recovery: FC = () => {
         发送重置邮件
       </Button>
     </AccountView>
-  );
-};
+  )
+}
 
-export default Recovery;
+export default Recovery

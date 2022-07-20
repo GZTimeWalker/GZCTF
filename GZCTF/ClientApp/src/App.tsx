@@ -1,21 +1,29 @@
-import { FC, Suspense } from 'react';
-import { useRoutes } from 'react-router-dom';
-import { SWRConfig } from 'swr';
-import routes from '~react-pages';
-import { MantineProvider, Global, ColorScheme, ColorSchemeProvider, Center, Loader } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
-import { NotificationsProvider } from '@mantine/notifications';
-import fetcher from './utils/Fetcher';
+import { FC, Suspense } from 'react'
+import { useRoutes } from 'react-router-dom'
+import { SWRConfig } from 'swr'
+import routes from '~react-pages'
+import {
+  MantineProvider,
+  Global,
+  ColorScheme,
+  ColorSchemeProvider,
+  Center,
+  Loader,
+} from '@mantine/core'
+import { useLocalStorage } from '@mantine/hooks'
+import { ModalsProvider } from '@mantine/modals'
+import { NotificationsProvider } from '@mantine/notifications'
+import fetcher from './utils/Fetcher'
 
 export const App: FC = () => {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'color-scheme',
     defaultValue: 'dark',
     getInitialValueInEffect: true,
-  });
+  })
 
   const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
@@ -76,7 +84,7 @@ export const App: FC = () => {
               body: {
                 ...theme.fn.fontStyles(),
                 backgroundColor:
-                  theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[1],
+                  theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.gray[0],
                 color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
                 lineHeight: theme.lineHeight,
                 padding: 0,
@@ -84,24 +92,26 @@ export const App: FC = () => {
               },
             })}
           />
-          <SWRConfig
-            value={{
-              refreshInterval: 10000,
-              fetcher,
-            }}
-          >
-            <Suspense
-              fallback={
-                <Center style={{ height: 'calc(100vh - 32px)' }}>
-                  <Loader />
-                </Center>
-              }
+          <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>
+            <SWRConfig
+              value={{
+                refreshInterval: 10000,
+                fetcher,
+              }}
             >
-              {useRoutes(routes)}
-            </Suspense>
-          </SWRConfig>
+              <Suspense
+                fallback={
+                  <Center style={{ height: 'calc(100vh - 32px)' }}>
+                    <Loader />
+                  </Center>
+                }
+              >
+                {useRoutes(routes)}
+              </Suspense>
+            </SWRConfig>
+          </ModalsProvider>
         </NotificationsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
-  );
-};
+  )
+}

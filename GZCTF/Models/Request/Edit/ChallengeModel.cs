@@ -2,6 +2,9 @@
 
 namespace CTFServer.Models.Request.Edit;
 
+/// <summary>
+/// 题目信息更改（Edit）
+/// </summary>
 public class ChallengeModel
 {
     /// <summary>

@@ -22,16 +22,19 @@ public class EditController : Controller
     private readonly IGameNoticeRepository gameNoticeRepository;
     private readonly IGameRepository gameRepository;
     private readonly IChallengeRepository challengeRepository;
+    private readonly IFileRepository fileService;
 
     public EditController(INoticeRepository _noticeRepository,
         IChallengeRepository _challengeRepository,
         IGameNoticeRepository _gameNoticeRepository,
-        IGameRepository _gameRepository)
+        IGameRepository _gameRepository,
+        IFileRepository _fileService)
     {
         noticeRepository = _noticeRepository;
         gameNoticeRepository = _gameNoticeRepository;
         gameRepository = _gameRepository;
         challengeRepository = _challengeRepository;
+        fileService = _fileService;
     }
 
     /// <summary>
@@ -138,6 +141,8 @@ public class EditController : Controller
     {
         var game = await gameRepository.CreateGame(new Game().Update(model), token);
 
+        gameRepository.FlushGameInfoCache();
+
         return Ok(game);
     }
 
@@ -198,9 +203,47 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        game.Update(model);
+        await gameRepository.UpdateAsync(game.Update(model), token);
+        gameRepository.FlushGameInfoCache();
 
         return Ok(game);
+    }
+
+    /// <summary>
+    /// 更新比赛头图
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口更新比赛头图，需要Admin权限
+    /// </remarks>
+    /// <response code="200">比赛头图URL</response>
+    /// <response code="400">非法请求</response>
+    /// <response code="401">未授权用户</response>
+    [HttpPut("Games/{id}/Poster")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateGamePoster([FromRoute] int id, IFormFile file, CancellationToken token)
+    {
+        if (file.Length == 0)
+            return BadRequest(new RequestResponse("文件非法"));
+
+        if (file.Length > 3 * 1024 * 1024)
+            return BadRequest(new RequestResponse("文件过大"));
+
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var poster = await fileService.CreateOrUpdateFile(file, "poster", token);
+
+        if (poster is null)
+            return BadRequest(new RequestResponse("文件创建失败"));
+
+        game.PosterHash = poster.Hash;
+        await gameRepository.UpdateAsync(game, token);
+
+        return Ok(poster.Url);
     }
 
     /// <summary>

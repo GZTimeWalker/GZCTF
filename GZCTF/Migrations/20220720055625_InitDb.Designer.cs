@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220714134335_InitDb")]
+    [Migration("20220720055625_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -194,6 +194,9 @@ namespace CTFServer.Migrations
 
                     b.Property<DateTimeOffset>("EndTimeUTC")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PosterHash")
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("StartTimeUTC")
                         .HasColumnType("timestamp with time zone");

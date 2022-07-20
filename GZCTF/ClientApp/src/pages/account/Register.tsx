@@ -1,24 +1,24 @@
-import { FC, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core';
-import { useInputState, useWindowEvent } from '@mantine/hooks';
-import { showNotification, updateNotification } from '@mantine/notifications';
-import { mdiCheck, mdiClose } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import api from '../../Api';
-import AccountView from '../../components/AccountView';
-import StrengthPasswordInput from '../../components/StrengthPasswordInput';
-import useReCaptcha from '../../utils/Recaptcha';
+import { FC, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core'
+import { useInputState, useWindowEvent } from '@mantine/hooks'
+import { showNotification, updateNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import { Icon } from '@mdi/react'
+import api from '../../Api'
+import AccountView from '../../components/AccountView'
+import StrengthPasswordInput from '../../components/StrengthPasswordInput'
+import useReCaptcha from '../../utils/Recaptcha'
 
 const Register: FC = () => {
-  const [pwd, setPwd] = useInputState('');
-  const [retypedPwd, setRetypedPwd] = useInputState('');
-  const [uname, setUname] = useInputState('');
-  const [email, setEmail] = useInputState('');
-  const [disabled, setDisabled] = useState(false);
+  const [pwd, setPwd] = useInputState('')
+  const [retypedPwd, setRetypedPwd] = useInputState('')
+  const [uname, setUname] = useInputState('')
+  const [email, setEmail] = useInputState('')
+  const [disabled, setDisabled] = useState(false)
 
-  const navigate = useNavigate();
-  const reCaptcha = useReCaptcha('register');
+  const navigate = useNavigate()
+  const reCaptcha = useReCaptcha('register')
 
   const onRegister = async () => {
     if (pwd !== retypedPwd) {
@@ -27,11 +27,11 @@ const Register: FC = () => {
         title: '请检查输入',
         message: '重复密码有误',
         icon: <Icon path={mdiClose} size={1} />,
-      });
-      return;
+      })
+      return
     }
 
-    let token = await reCaptcha?.getToken();
+    let token = await reCaptcha?.getToken()
 
     if (!token) {
       showNotification({
@@ -40,11 +40,11 @@ const Register: FC = () => {
         message: '请稍后重试',
         loading: true,
         disallowClose: true,
-      });
-      return;
+      })
+      return
     }
 
-    setDisabled(true);
+    setDisabled(true)
 
     showNotification({
       color: 'orange',
@@ -54,7 +54,7 @@ const Register: FC = () => {
       loading: true,
       autoClose: false,
       disallowClose: true,
-    });
+    })
 
     api.account
       .accountRegister({
@@ -71,8 +71,8 @@ const Register: FC = () => {
           message: '请检查你的邮箱及垃圾邮件~',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
-        });
-        navigate('/account/login');
+        })
+        navigate('/account/login')
       })
       .catch((err) => {
         updateNotification({
@@ -81,16 +81,16 @@ const Register: FC = () => {
           title: '遇到了问题',
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
-        });
-        setDisabled(false);
-      });
-  };
+        })
+        setDisabled(false)
+      })
+  }
 
   useWindowEvent('keydown', (e) => {
     if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onRegister();
+      onRegister()
     }
-  });
+  })
 
   return (
     <AccountView>
@@ -144,7 +144,7 @@ const Register: FC = () => {
         注册
       </Button>
     </AccountView>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

@@ -1,5 +1,8 @@
 ﻿namespace CTFServer.Models.Request.Game;
 
+/// <summary>
+/// 题目详细信息
+/// </summary>
 public class ChallengeDetailModel
 {
     /// <summary>

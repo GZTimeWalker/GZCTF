@@ -1,6 +1,9 @@
 ﻿namespace CTFServer.Models.Request.Account;
 
-public class ClientUserInfoModel
+/// <summary>
+/// 基本账号信息
+/// </summary>
+public class ProfileUserInfoModel
 {
     /// <summary>
     /// 用户ID
@@ -35,7 +38,7 @@ public class ClientUserInfoModel
     /// <summary>
     /// 学工号
     /// </summary>
-    public string StdNumber { get; set; }
+    public string? StdNumber { get; set; }
 
     /// <summary>
     /// 头像链接
@@ -52,7 +55,7 @@ public class ClientUserInfoModel
     /// </summary>
     public Role? Role { get; set; }
 
-    public static ClientUserInfoModel FromUserInfo(UserInfo user)
+    public static ProfileUserInfoModel FromUserInfo(UserInfo user)
         => new()
         {
             UserId = user.Id,

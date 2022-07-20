@@ -2,6 +2,9 @@
 
 namespace CTFServer.Models.Request.Game;
 
+/// <summary>
+/// 题目实例信息
+/// </summary>
 public class InstanceInfoModel
 {
     /// <summary>

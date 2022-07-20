@@ -1,10 +1,21 @@
-import { FC } from 'react';
-import { Group, Text, Badge, Card, useMantineTheme, Blockquote, Title, Stack } from '@mantine/core';
-import { Notice } from '../Api';
+import { marked } from 'marked'
+import { FC } from 'react'
+import {
+  Group,
+  Text,
+  Badge,
+  Card,
+  useMantineTheme,
+  Blockquote,
+  Title,
+  Stack,
+  TypographyStylesProvider,
+} from '@mantine/core'
+import { Notice } from '../Api'
 
 const NoticeCard: FC<Notice> = (notice) => {
-  const theme = useMantineTheme();
-  const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
+  const theme = useMantineTheme()
+  const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]
 
   return (
     <Card shadow="sm" p="lg" style={{ width: '80%' }}>
@@ -20,13 +31,13 @@ const NoticeCard: FC<Notice> = (notice) => {
       >
         <Stack>
           <Title order={3}>{notice.title}</Title>
-          <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
-            {notice.content}
-          </Text>
+          <TypographyStylesProvider>
+            <div dangerouslySetInnerHTML={{ __html: marked(notice.content) }} />
+          </TypographyStylesProvider>
         </Stack>
       </Blockquote>
     </Card>
-  );
-};
+  )
+}
 
-export default NoticeCard;
+export default NoticeCard

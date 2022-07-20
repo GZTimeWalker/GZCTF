@@ -85,7 +85,7 @@ public class FlagChecker : IHostedService
                         await gameNoticeRepository.CreateNotice(item.Game, GameNotice.FromSubmission(item, type), token);
                 }
 
-                gameRepository.FlushScoreboard(item.Game, token);
+                gameRepository.FlushScoreboard(item.Game);
 
                 token.ThrowIfCancellationRequested();
             }
@@ -116,7 +116,7 @@ public class FlagChecker : IHostedService
     {
         TokenSource.Cancel();
 
-        logger.SystemLog("Flag 检查已停止", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog("Flag 检查已停止", TaskStatus.Exit, LogLevel.Debug);
 
         return Task.CompletedTask;
     }

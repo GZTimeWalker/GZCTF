@@ -1,5 +1,8 @@
 ﻿namespace CTFServer.Models.Request.Teams;
 
+/// <summary>
+/// 队员信息
+/// </summary>
 public class TeamUserInfoModel
 {
     /// <summary>

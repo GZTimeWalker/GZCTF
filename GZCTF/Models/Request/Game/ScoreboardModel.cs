@@ -2,6 +2,9 @@
 
 namespace CTFServer.Models.Request.Game;
 
+/// <summary>
+/// 排行榜
+/// </summary>
 public class ScoreboardModel
 {
     /// <summary>

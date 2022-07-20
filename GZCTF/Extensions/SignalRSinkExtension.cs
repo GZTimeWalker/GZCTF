@@ -37,10 +37,10 @@ public class SignalRSink : ILogEventSink
                 {
                     Time = logEvent.Timestamp,
                     Level = logEvent.Level.ToString(),
-                    UserName = logEvent.Properties.GetValueOrDefault("UserName")?.ToString(),
-                    IP = logEvent.Properties.GetValueOrDefault("IP")?.ToString(),
+                    UserName = logEvent.Properties["UserName"].ToString()[1..^1],
+                    IP = logEvent.Properties["IP"].ToString()[1..^1],
                     Msg = logEvent.RenderMessage(),
-                    Status = logEvent.Properties.GetValueOrDefault("Status")?.ToString()
+                    Status = logEvent.Properties["Status"].ToString()
                 }).Wait();
         }
     }

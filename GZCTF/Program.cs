@@ -295,5 +295,6 @@ catch (Exception exception)
 }
 finally
 {
+    logger.SystemLog("服务器已退出", CTFServer.TaskStatus.Exit);
     Log.CloseAndFlush();
 }

@@ -193,6 +193,9 @@ namespace CTFServer.Migrations
                     b.Property<DateTimeOffset>("EndTimeUTC")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("PosterHash")
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset>("StartTimeUTC")
                         .HasColumnType("timestamp with time zone");
 

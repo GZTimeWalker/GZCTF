@@ -9,20 +9,20 @@
  * ---------------------------------------------------------------
  */
 
-import useSWR, { mutate, MutatorOptions, SWRConfiguration } from 'swr';
+import useSWR, { mutate, MutatorOptions, SWRConfiguration } from 'swr'
 
 /**
  * 请求响应
  */
 export interface RequestResponse {
   /** 响应信息 */
-  title?: string;
+  title?: string
 
   /**
    * 状态码
    * @format int32
    */
-  status?: number;
+  status?: number
 }
 
 /**
@@ -30,19 +30,19 @@ export interface RequestResponse {
  */
 export interface RegisterModel {
   /** 用户名 */
-  userName: string;
+  userName: string
 
   /** 密码 */
-  password: string;
+  password: string
 
   /**
    * 邮箱
    * @format email
    */
-  email: string;
+  email: string
 
   /** Google Recaptcha Token */
-  gToken?: string | null;
+  gToken?: string | null
 }
 
 /**
@@ -53,21 +53,21 @@ export interface RecoveryModel {
    * 用户邮箱
    * @format email
    */
-  email: string;
+  email: string
 }
 
 /**
- * 密码重置
+ * 账号密码重置
  */
 export interface PasswordResetModel {
   /** 密码 */
-  password: string;
+  password: string
 
   /** 邮箱 */
-  email: string;
+  email: string
 
   /** 邮箱接收到的Base64格式Token */
-  rToken: string;
+  rToken: string
 }
 
 /**
@@ -75,10 +75,10 @@ export interface PasswordResetModel {
  */
 export interface AccountVerifyModel {
   /** 邮箱接收到的Base64格式Token */
-  token: string;
+  token: string
 
   /** 用户邮箱的Base64格式 */
-  email: string;
+  email: string
 }
 
 /**
@@ -86,30 +86,30 @@ export interface AccountVerifyModel {
  */
 export interface LoginModel {
   /** 用户名或邮箱 */
-  userName: string;
+  userName: string
 
   /** 密码 */
-  password: string;
+  password: string
 }
 
 /**
- * 个人信息更改
+ * 基本账号信息更改
  */
 export interface ProfileUpdateModel {
   /** 用户名 */
-  userName?: string | null;
+  userName?: string | null
 
   /** 描述 */
-  bio?: string | null;
+  bio?: string | null
 
   /** 手机号 */
-  phone?: string | null;
+  phone?: string | null
 
   /** 真实姓名 */
-  realName?: string | null;
+  realName?: string | null
 
   /** 学工号 */
-  stdNumber?: string | null;
+  stdNumber?: string | null
 }
 
 /**
@@ -117,10 +117,10 @@ export interface ProfileUpdateModel {
  */
 export interface PasswordChangeModel {
   /** 旧密码 */
-  old: string;
+  old: string
 
   /** 新密码 */
-  new: string;
+  new: string
 }
 
 /**
@@ -131,168 +131,210 @@ export interface MailChangeModel {
    * 新邮箱
    * @format email
    */
-  newMail: string;
+  newMail: string
 }
 
-export interface ClientUserInfoModel {
+/**
+ * 基本账号信息
+ */
+export interface ProfileUserInfoModel {
   /** 用户ID */
-  userId?: string | null;
+  userId?: string | null
 
   /** 用户名 */
-  userName?: string | null;
+  userName?: string | null
 
   /** 邮箱 */
-  email?: string | null;
+  email?: string | null
 
   /** 签名 */
-  bio?: string | null;
+  bio?: string | null
 
   /** 手机号码 */
-  phone?: string | null;
+  phone?: string | null
 
   /** 真实姓名 */
-  realName?: string | null;
+  realName?: string | null
 
   /** 学工号 */
-  stdNumber?: string;
+  stdNumber?: string | null
 
   /** 头像链接 */
-  avatar?: string | null;
+  avatar?: string | null
 
   /**
    * 当前队伍
    * @format int32
    */
-  activeTeamId?: number | null;
+  activeTeamId?: number | null
 
   /** 用户角色 */
-  role?: Role | null;
+  role?: Role | null
 }
 
 /**
  * 用户权限枚举
  */
 export enum Role {
-  BannedUser = 'BannedUser',
+  Banned = 'Banned',
   User = 'User',
   Monitor = 'Monitor',
   Admin = 'Admin',
 }
 
-export interface BasicUserInfoModel {
+/**
+ * 用户信息（Admin）
+ */
+export interface UserInfoModel {
   /** 用户ID */
-  id?: string | null;
+  id?: string | null
 
   /** 用户名 */
-  userName?: string | null;
+  userName?: string | null
+
+  /** 真实姓名 */
+  realName?: string | null
+
+  /** 学号 */
+  stdNumber?: string | null
+
+  /** 联系电话 */
+  phone?: string | null
+
+  /** 签名 */
+  bio?: string | null
+
+  /**
+   * 注册时间
+   * @format date-time
+   */
+  registerTimeUTC?: string
+
+  /**
+   * 用户最近访问时间
+   * @format date-time
+   */
+  lastVisitedUTC?: string
+
+  /** 用户最近访问IP */
+  ip?: string
 
   /** 邮箱 */
-  email?: string | null;
+  email?: string | null
 
   /** 头像链接 */
-  avatar?: string | null;
+  avatar?: string | null
 
   /** 用户角色 */
-  role?: Role | null;
+  role?: Role | null
 
   /** 所拥有的队伍 */
-  ownTeamName?: string | null;
+  ownTeamName?: string | null
 
   /** @format int32 */
-  ownTeamId?: number | null;
+  ownTeamId?: number | null
 
   /** 激活的队伍 */
-  activeTeamName?: string | null;
+  activeTeamName?: string | null
 
   /** @format int32 */
-  activeTeamId?: number | null;
+  activeTeamId?: number | null
 }
 
+/**
+ * 队伍信息
+ */
 export interface TeamInfoModel {
   /**
    * 队伍 Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /** 队伍名称 */
-  name?: string | null;
+  name?: string | null
 
   /** 队伍签名 */
-  bio?: string | null;
+  bio?: string | null
 
   /** 头像链接 */
-  avatar?: string | null;
+  avatar?: string | null
 
   /** 是否锁定 */
-  locked?: boolean;
+  locked?: boolean
 
   /** 队伍成员 */
-  members?: TeamUserInfoModel[] | null;
-}
-
-export interface TeamUserInfoModel {
-  /** 用户ID */
-  id?: string | null;
-
-  /** 用户名 */
-  userName?: string | null;
-
-  /** 签名 */
-  bio?: string | null;
-
-  /** 头像链接 */
-  avatar?: string | null;
-
-  /** 是否是队长 */
-  captain?: boolean;
-}
-
-export interface UpdateUserInfoModel {
-  /** 用户名 */
-  userName?: string | null;
-
-  /** 邮箱 */
-  email?: string | null;
-
-  /** 签名 */
-  bio?: string | null;
-
-  /** 手机号码 */
-  phone?: string | null;
-
-  /** 真实姓名 */
-  realName?: string | null;
-
-  /** 学工号 */
-  stdNumber?: string;
-
-  /** 用户角色 */
-  role?: Role | null;
+  members?: TeamUserInfoModel[] | null
 }
 
 /**
- * 日志信息
+ * 队员信息
+ */
+export interface TeamUserInfoModel {
+  /** 用户ID */
+  id?: string | null
+
+  /** 用户名 */
+  userName?: string | null
+
+  /** 签名 */
+  bio?: string | null
+
+  /** 头像链接 */
+  avatar?: string | null
+
+  /** 是否是队长 */
+  captain?: boolean
+}
+
+/**
+ * 用户信息更改（Admin）
+ */
+export interface UpdateUserInfoModel {
+  /** 用户名 */
+  userName?: string | null
+
+  /** 邮箱 */
+  email?: string | null
+
+  /** 签名 */
+  bio?: string | null
+
+  /** 手机号码 */
+  phone?: string | null
+
+  /** 真实姓名 */
+  realName?: string | null
+
+  /** 学工号 */
+  stdNumber?: string | null
+
+  /** 用户角色 */
+  role?: Role | null
+}
+
+/**
+ * 日志信息（Admin）
  */
 export interface LogMessageModel {
   /**
    * 日志时间
    * @format date-time
    */
-  time?: string;
+  time?: string
 
   /** 用户名 */
-  name?: string | null;
-  level?: string | null;
+  name?: string | null
+  level?: string | null
 
   /** IP地址 */
-  ip?: string | null;
+  ip?: string | null
 
   /** 日志信息 */
-  msg?: string | null;
+  msg?: string | null
 
   /** 任务状态 */
-  status?: string | null;
+  status?: string | null
 }
 
 export enum ParticipationStatus {
@@ -305,113 +347,123 @@ export enum ParticipationStatus {
 
 export interface LocalFile {
   /** 文件哈希 */
-  hash?: string;
+  hash?: string
 
   /** 文件名 */
-  name: string;
+  name: string
 }
 
 export interface ProblemDetails {
-  type?: string | null;
-  title?: string | null;
+  type?: string | null
+  title?: string | null
 
   /** @format int32 */
-  status?: number | null;
-  detail?: string | null;
-  instance?: string | null;
+  status?: number | null
+  detail?: string | null
+  instance?: string | null
 }
 
 export interface Notice {
   /** @format int32 */
-  id?: number;
+  id?: number
 
   /** 通知标题 */
-  title: string;
+  title: string
 
   /** 通知内容 */
-  content: string;
+  content: string
 
   /** 是否置顶 */
-  isPinned: boolean;
+  isPinned: boolean
 
   /**
    * 发布时间
    * @format date-time
    */
-  time: string;
+  time: string
 }
 
+/**
+ * 全局通知（Edit）
+ */
 export interface NoticeModel {
   /** 通知标题 */
-  title: string;
+  title: string
 
   /** 通知内容 */
-  content: string;
+  content: string
 
   /** 是否置顶 */
-  isPinned?: boolean;
+  isPinned?: boolean
 }
 
 export interface Game {
   /** @format int32 */
-  id?: number;
+  id?: number
 
   /** 比赛标题 */
-  title: string;
+  title: string
+
+  /** 头图哈希 */
+  posterHash?: string | null
 
   /** 比赛描述 */
-  summary?: string;
+  summary?: string
 
   /** 比赛详细介绍 */
-  content?: string;
+  content?: string
 
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
    */
-  teamMemberCountLimit?: number;
+  teamMemberCountLimit?: number
 
   /**
    * 开始时间
    * @format date-time
    */
-  start: string;
+  start: string
 
   /**
    * 结束时间
    * @format date-time
    */
-  end: string;
-  isActive?: boolean;
+  end: string
+  isActive?: boolean
+  posterUrl?: string | null
 }
 
+/**
+ * 比赛信息（Edit）
+ */
 export interface GameInfoModel {
   /** 比赛标题 */
-  title: string;
+  title: string
 
   /** 比赛描述 */
-  summary?: string;
+  summary?: string
 
   /** 比赛详细介绍 */
-  content?: string;
+  content?: string
 
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
    */
-  teamMemberCountLimit?: number;
+  teamMemberCountLimit?: number
 
   /**
    * 开始时间
    * @format date-time
    */
-  start: string;
+  start: string
 
   /**
    * 结束时间
    * @format date-time
    */
-  end: string;
+  end: string
 }
 
 /**
@@ -420,16 +472,16 @@ export interface GameInfoModel {
 */
 export interface GameNotice {
   /** 通知类型 */
-  type: NoticeType;
+  type: NoticeType
 
   /** 通知内容 */
-  content: string;
+  content: string
 
   /**
    * 发布时间
    * @format date-time
    */
-  time: string;
+  time: string
 }
 
 /**
@@ -445,35 +497,38 @@ export enum NoticeType {
   ErrorFix = 'ErrorFix',
 }
 
+/**
+ * 比赛通知（Edit）
+ */
 export interface GameNoticeModel {
   /** 通知内容 */
-  content: string;
+  content: string
 }
 
 export interface Challenge {
   /** @format int32 */
-  id?: number;
+  id?: number
 
   /** 题目名称 */
-  title: string;
+  title: string
 
   /** 题目内容 */
-  content: string;
+  content: string
 
   /** 是否启用题目 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /** 题目标签 */
-  tag?: ChallengeTag;
+  tag?: ChallengeTag
 
   /** 题目提示，用";"分隔 */
-  hints?: string;
+  hints?: string
 
   /**
    * 初始分数
    * @format int32
    */
-  originalScore: number;
+  originalScore: number
 
   /**
    * 最低分数比例
@@ -481,35 +536,35 @@ export interface Challenge {
    * @min 0
    * @max 1
    */
-  minScoreRate: number;
+  minScoreRate: number
 
   /**
    * 难度系数
    * @format int32
    */
-  difficulty: number;
+  difficulty: number
 
   /** 题目类型 */
-  type: ChallengeType;
+  type: ChallengeType
 
   /** 下载文件名称 */
-  fileName?: string;
+  fileName?: string
 
   /**
    * 当前题目分值
    * @format int32
    */
-  currentScore?: number;
-  flags?: FlagContext[];
+  currentScore?: number
+  flags?: FlagContext[]
 
   /** 提交 */
-  submissions?: Submission[];
+  submissions?: Submission[]
 
   /** 比赛对象 */
-  game?: Game;
+  game?: Game
 
   /** @format int32 */
-  gameId?: number;
+  gameId?: number
 }
 
 /**
@@ -537,34 +592,34 @@ export enum ChallengeType {
 
 export interface FlagContext {
   /** @format int32 */
-  id?: number;
+  id?: number
 
   /** Flag 内容 */
-  flag: string;
+  flag: string
 
   /** 附件类型 */
-  attachmentType: FileType;
+  attachmentType: FileType
 
   /** Flag 对应附件 (远程文件） */
-  remoteUrl?: string | null;
+  remoteUrl?: string | null
 
   /** Flag 对应文件（本地文件） */
-  localFile?: LocalFile | null;
+  localFile?: LocalFile | null
 
   /** 是否已被占用 */
-  isOccupied?: boolean;
+  isOccupied?: boolean
 
   /** 赛题 */
-  challenge?: Challenge | null;
+  challenge?: Challenge | null
 
   /**
    * 赛题Id
    * @format int32
    */
-  challengeId?: number;
+  challengeId?: number
 
   /** 附件访问链接 */
-  url?: string | null;
+  url?: string | null
 }
 
 export enum FileType {
@@ -575,16 +630,16 @@ export enum FileType {
 
 export interface Submission {
   /** 提交的答案字符串 */
-  answer?: string;
+  answer?: string
 
   /** 提交的答案状态 */
-  status?: AnswerResult;
+  status?: AnswerResult
 
   /**
    * 答案提交的时间
    * @format date-time
    */
-  time?: string;
+  time?: string
 }
 
 /**
@@ -598,48 +653,51 @@ export enum AnswerResult {
   CheatDetected = 'CheatDetected',
 }
 
+/**
+ * 题目信息更改（Edit）
+ */
 export interface ChallengeModel {
   /** 题目名称 */
-  title: string;
+  title: string
 
   /** 题目内容 */
-  content: string;
+  content: string
 
   /** 题目标签 */
-  tag?: ChallengeTag;
+  tag?: ChallengeTag
 
   /** 题目提示，用";"分隔 */
-  hints?: string;
+  hints?: string
 
   /** 题目类型 */
-  type?: ChallengeType;
+  type?: ChallengeType
 
   /** 镜像名称与标签 */
-  containerImage?: string | null;
+  containerImage?: string | null
 
   /**
    * 运行内存限制 (MB)
    * @format int32
    */
-  memoryLimit?: number | null;
+  memoryLimit?: number | null
 
   /**
    * CPU 运行数量限制
    * @format int32
    */
-  cpuCount?: number | null;
+  cpuCount?: number | null
 
   /**
    * 镜像暴露端口
    * @format int32
    */
-  containerExposePort?: number | null;
+  containerExposePort?: number | null
 
   /**
    * 初始分数
    * @format int32
    */
-  originalScore?: number;
+  originalScore?: number
 
   /**
    * 最低分数比例
@@ -647,44 +705,50 @@ export interface ChallengeModel {
    * @min 0
    * @max 1
    */
-  minScoreRate: number;
+  minScoreRate: number
 
   /**
    * 难度系数
    * @format int32
    */
-  difficulty: number;
+  difficulty: number
 
   /** 统一文件名 */
-  fileName?: string | null;
+  fileName?: string | null
 }
 
+/**
+ * 基础题目信息（Edit）
+ */
 export interface ChallengeInfoModel {
   /**
    * 题目Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /** 题目名称 */
-  title: string;
+  title: string
 
   /** 题目标签 */
-  tag?: ChallengeTag;
+  tag?: ChallengeTag
 
   /** 题目类型 */
-  type?: ChallengeType;
+  type?: ChallengeType
 }
 
+/**
+ * Flag 信息（Edit）
+ */
 export interface FlagInfoModel {
   /** Flag文本 */
-  flag?: string;
+  flag?: string
 
   /** Flag 对应附件（本地文件哈希） */
-  fileHash?: string | null;
+  fileHash?: string | null
 
   /** Flag 对应附件 (远程文件） */
-  url?: string | null;
+  url?: string | null
 }
 
 /**
@@ -700,85 +764,100 @@ export enum TaskStatus {
   Pending = 'Pending',
 }
 
+/**
+ * 比赛基本信息，不包含详细介绍与当前队伍报名状态
+ */
 export interface BasicGameInfoModel {
   /** @format int32 */
-  id?: number;
+  id?: number
 
   /** 比赛标题 */
-  title?: string;
+  title?: string
 
   /** 比赛描述 */
-  summary?: string;
+  summary?: string
+
+  /** 头图 */
+  poster?: string | null
 
   /**
    * 队员数量限制
    * @format int32
    */
-  limit?: number;
+  limit?: number
 
   /**
    * 开始时间
    * @format date-time
    */
-  start?: string;
+  start?: string
 
   /**
    * 结束时间
    * @format date-time
    */
-  end?: string;
+  end?: string
 }
 
+/**
+ * 比赛详细信息，包含详细介绍与当前队伍报名状态
+ */
 export interface GameDetailsModel {
   /** @format int32 */
-  id?: number;
+  id?: number
 
   /** 比赛标题 */
-  title?: string;
+  title?: string
 
   /** 比赛描述 */
-  summary?: string;
+  summary?: string
 
   /** 比赛详细介绍 */
-  content?: string;
+  content?: string
+
+  /** 比赛头图 */
+  poster?: string | null
 
   /**
    * 队员数量限制
    * @format int32
    */
-  limit?: number;
+  limit?: number
 
-  /** 队员数量限制 */
-  status?: ParticipationStatus;
+  /** 队伍参与状态 */
+  status?: ParticipationStatus
 
   /**
    * 开始时间
    * @format date-time
    */
-  start?: string;
+  start?: string
 
   /**
    * 结束时间
    * @format date-time
    */
-  end?: string;
+  end?: string
 }
 
+/**
+ * 排行榜
+ */
 export interface ScoreboardModel {
   /**
    * 更新时间
    * @format date-time
    */
-  updateTimeUTC?: string;
+  updateTimeUTC?: string
 
   /** 前十名的时间线 */
-  timeLine?: TopTimeLine[];
+  timeLine?: TopTimeLine[]
 
   /** 队伍信息 */
-  items?: ScoreboardItem[];
+  items?: ScoreboardItem[]
 
   /** 题目信息 */
-  challenges?: Record<string, ChallengeInfo[]>;
+  challenges?: Record<string, ChallengeInfo[]>
 }
 
 export interface TopTimeLine {
@@ -786,13 +865,13 @@ export interface TopTimeLine {
    * 队伍Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /** 队伍名称 */
-  name?: string;
+  name?: string
 
   /** 时间线 */
-  items?: TimeLine[];
+  items?: TimeLine[]
 }
 
 export interface TimeLine {
@@ -800,13 +879,13 @@ export interface TimeLine {
    * 时间
    * @format date-time
    */
-  time?: string;
+  time?: string
 
   /**
    * 得分
    * @format int32
    */
-  score?: number;
+  score?: number
 }
 
 export interface ScoreboardItem {
@@ -814,34 +893,34 @@ export interface ScoreboardItem {
    * 队伍Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /** 队伍名称 */
-  name?: string;
+  name?: string
 
   /** 队伍头像 */
-  avatar?: string | null;
+  avatar?: string | null
 
   /**
    * 分数
    * @format int32
    */
-  score?: number;
+  score?: number
 
   /**
    * 排名
    * @format int32
    */
-  rank?: number;
+  rank?: number
 
   /**
    * 已解出的题目数量
    * @format int32
    */
-  solvedCount?: number;
+  solvedCount?: number
 
   /** 题目情况列表 */
-  challenges?: ChallengeItem[];
+  challenges?: ChallengeItem[]
 }
 
 export interface ChallengeItem {
@@ -849,16 +928,16 @@ export interface ChallengeItem {
    * 题目 Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /**
    * 题目分值
    * @format int32
    */
-  score?: number;
+  score?: number
 
   /** 未解出、一血、二血、三血或者其他 */
-  rank?: SubmissionType;
+  rank?: SubmissionType
 }
 
 /**
@@ -877,19 +956,19 @@ export interface ChallengeInfo {
    * 题目Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /** 题目名称 */
-  title?: string;
+  title?: string
 
   /** 题目标签 */
-  tag?: ChallengeTag;
+  tag?: ChallengeTag
 
   /**
    * 题目分值
    * @format int32
    */
-  score?: number;
+  score?: number
 }
 
 /**
@@ -898,22 +977,22 @@ export interface ChallengeInfo {
 */
 export interface GameEvent {
   /** 事件类型 */
-  type: EventType;
+  type: EventType
 
   /** 事件内容 */
-  content: string;
+  content: string
 
   /**
    * 发布时间
    * @format date-time
    */
-  time: string;
+  time: string
 
   /** 相关用户名 */
-  user?: string;
+  user?: string
 
   /** 相关队伍名 */
-  team?: string;
+  team?: string
 }
 
 /**
@@ -927,47 +1006,50 @@ export enum EventType {
   CheatDetected = 'CheatDetected',
 }
 
+/**
+ * 题目实例信息
+ */
 export interface InstanceInfoModel {
   /**
    * 实例 Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /**
    * 队伍 Id
    * @format int32
    */
-  teamId?: number;
+  teamId?: number
 
   /** 队伍名 */
-  teamName?: string;
+  teamName?: string
 
   /** 题目详情 */
-  challenge?: ChallengeInfoModel;
+  challenge?: ChallengeInfoModel
 
   /** 容器信息 */
-  container?: ContainerInfoModel | null;
+  container?: ContainerInfoModel | null
 }
 
 export interface ContainerInfoModel {
   /** 容器状态 */
-  status?: ContainerStatus;
+  status?: ContainerStatus
 
   /**
    * 容器创建时间
    * @format date-time
    */
-  startedAt?: string;
+  startedAt?: string
 
   /**
    * 容器期望终止时间
    * @format date-time
    */
-  expectStopAt?: string;
+  expectStopAt?: string
 
   /** 题目入口 */
-  entry?: string;
+  entry?: string
 }
 
 /**
@@ -979,116 +1061,125 @@ export enum ContainerStatus {
   Destoryed = 'Destoryed',
 }
 
+/**
+ * 比赛参与对象，用于审核查看（Admin）
+ */
 export interface ParticipationInfoModel {
   /**
    * 参与对象 Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /** 参与队伍 */
-  team?: TeamInfoModel;
+  team?: TeamInfoModel
 
   /**
    * 队伍分值
    * @format int32
    */
-  score?: number;
+  score?: number
 
   /** 参与状态 */
-  status?: ParticipationStatus;
+  status?: ParticipationStatus
 }
 
+/**
+ * 题目详细信息
+ */
 export interface ChallengeDetailModel {
   /**
    * 题目 Id
    * @format int32
    */
-  id?: number;
+  id?: number
 
   /** 题目名称 */
-  title?: string;
+  title?: string
 
   /** 题目内容 */
-  content?: string;
+  content?: string
 
   /** 题目标签 */
-  tag?: ChallengeTag;
+  tag?: ChallengeTag
 
   /** 题目提示，用";"分隔 */
-  hints?: string;
+  hints?: string
 
   /**
    * 题目当前分值
    * @format int32
    */
-  score?: number;
+  score?: number
 
   /** 题目类型 */
-  type?: ChallengeType;
+  type?: ChallengeType
 
   /** Flag 上下文 */
-  context?: ClientFlagContext;
+  context?: ClientFlagContext
 }
 
 export interface ClientFlagContext {
   /** 题目实例的连接方式 */
-  instanceEntry?: string | null;
+  instanceEntry?: string | null
 
   /** 附件 Url */
-  url?: string | null;
+  url?: string | null
 
   /** 附件名称 */
-  name?: string | null;
+  name?: string | null
 }
 
+/**
+ * 队伍信息更新
+ */
 export interface TeamUpdateModel {
   /** 队伍名称 */
-  name?: string | null;
+  name?: string | null
 
   /** 队伍签名 */
-  bio?: string | null;
+  bio?: string | null
 }
 
-export type QueryParamsType = Record<string | number, any>;
-export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>;
+export type QueryParamsType = Record<string | number, any>
+export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>
 
 export interface FullRequestParams extends Omit<RequestInit, 'body'> {
   /** set parameter to `true` for call `securityWorker` for this request */
-  secure?: boolean;
+  secure?: boolean
   /** request path */
-  path: string;
+  path: string
   /** content type of request body */
-  type?: ContentType;
+  type?: ContentType
   /** query params */
-  query?: QueryParamsType;
+  query?: QueryParamsType
   /** format of response (i.e. response.json() -> format: "json") */
-  format?: ResponseFormat;
+  format?: ResponseFormat
   /** request body */
-  body?: unknown;
+  body?: unknown
   /** base url */
-  baseUrl?: string;
+  baseUrl?: string
   /** request cancellation token */
-  cancelToken?: CancelToken;
+  cancelToken?: CancelToken
 }
 
-export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>;
+export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>
 
 export interface ApiConfig<SecurityDataType = unknown> {
-  baseUrl?: string;
-  baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>;
+  baseUrl?: string
+  baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>
   securityWorker?: (
     securityData: SecurityDataType | null
-  ) => Promise<RequestParams | void> | RequestParams | void;
-  customFetch?: typeof fetch;
+  ) => Promise<RequestParams | void> | RequestParams | void
+  customFetch?: typeof fetch
 }
 
 export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
-  data: D;
-  error: E;
+  data: D
+  error: E
 }
 
-type CancelToken = Symbol | string | number;
+type CancelToken = Symbol | string | number
 
 export enum ContentType {
   Json = 'application/json',
@@ -1097,56 +1188,56 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = '';
-  private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
-  private abortControllers = new Map<CancelToken, AbortController>();
-  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
+  public baseUrl: string = ''
+  private securityData: SecurityDataType | null = null
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker']
+  private abortControllers = new Map<CancelToken, AbortController>()
+  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams)
 
   private baseApiParams: RequestParams = {
     credentials: 'same-origin',
     headers: {},
     redirect: 'follow',
     referrerPolicy: 'no-referrer',
-  };
+  }
 
   constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
-    Object.assign(this, apiConfig);
+    Object.assign(this, apiConfig)
   }
 
   public setSecurityData = (data: SecurityDataType | null) => {
-    this.securityData = data;
-  };
+    this.securityData = data
+  }
 
   private encodeQueryParam(key: string, value: any) {
-    const encodedKey = encodeURIComponent(key);
-    return `${encodedKey}=${encodeURIComponent(typeof value === 'number' ? value : `${value}`)}`;
+    const encodedKey = encodeURIComponent(key)
+    return `${encodedKey}=${encodeURIComponent(typeof value === 'number' ? value : `${value}`)}`
   }
 
   private addQueryParam(query: QueryParamsType, key: string) {
-    return this.encodeQueryParam(key, query[key]);
+    return this.encodeQueryParam(key, query[key])
   }
 
   private addArrayQueryParam(query: QueryParamsType, key: string) {
-    const value = query[key];
-    return value.map((v: any) => this.encodeQueryParam(key, v)).join('&');
+    const value = query[key]
+    return value.map((v: any) => this.encodeQueryParam(key, v)).join('&')
   }
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
-    const query = rawQuery || {};
-    const keys = Object.keys(query).filter((key) => 'undefined' !== typeof query[key]);
+    const query = rawQuery || {}
+    const keys = Object.keys(query).filter((key) => 'undefined' !== typeof query[key])
     return keys
       .map((key) =>
         Array.isArray(query[key])
           ? this.addArrayQueryParam(query, key)
           : this.addQueryParam(query, key)
       )
-      .join('&');
+      .join('&')
   }
 
   protected addQueryParams(rawQuery?: QueryParamsType): string {
-    const queryString = this.toQueryString(rawQuery);
-    return queryString ? `?${queryString}` : '';
+    const queryString = this.toQueryString(rawQuery)
+    return queryString ? `?${queryString}` : ''
   }
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
@@ -1156,7 +1247,7 @@ export class HttpClient<SecurityDataType = unknown> {
         : input,
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
-        const property = input[key];
+        const property = input[key]
         formData.append(
           key,
           property instanceof Blob
@@ -1164,11 +1255,11 @@ export class HttpClient<SecurityDataType = unknown> {
             : typeof property === 'object' && property !== null
             ? JSON.stringify(property)
             : `${property}`
-        );
-        return formData;
+        )
+        return formData
       }, new FormData()),
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
-  };
+  }
 
   private mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
     return {
@@ -1180,31 +1271,31 @@ export class HttpClient<SecurityDataType = unknown> {
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
       },
-    };
+    }
   }
 
   private createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
-      const abortController = this.abortControllers.get(cancelToken);
+      const abortController = this.abortControllers.get(cancelToken)
       if (abortController) {
-        return abortController.signal;
+        return abortController.signal
       }
-      return void 0;
+      return void 0
     }
 
-    const abortController = new AbortController();
-    this.abortControllers.set(cancelToken, abortController);
-    return abortController.signal;
-  };
+    const abortController = new AbortController()
+    this.abortControllers.set(cancelToken, abortController)
+    return abortController.signal
+  }
 
   public abortRequest = (cancelToken: CancelToken) => {
-    const abortController = this.abortControllers.get(cancelToken);
+    const abortController = this.abortControllers.get(cancelToken)
 
     if (abortController) {
-      abortController.abort();
-      this.abortControllers.delete(cancelToken);
+      abortController.abort()
+      this.abortControllers.delete(cancelToken)
     }
-  };
+  }
 
   public request = async <T = any, E = any>({
     body,
@@ -1221,11 +1312,11 @@ export class HttpClient<SecurityDataType = unknown> {
       ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
-      {};
-    const requestParams = this.mergeRequestParams(params, secureParams);
-    const queryString = query && this.toQueryString(query);
-    const payloadFormatter = this.contentFormatters[type || ContentType.Json];
-    const responseFormat = format || requestParams.format || 'json';
+      {}
+    const requestParams = this.mergeRequestParams(params, secureParams)
+    const queryString = query && this.toQueryString(query)
+    const payloadFormatter = this.contentFormatters[type || ContentType.Json]
+    const responseFormat = format || requestParams.format || 'json'
 
     return this.customFetch(
       `${baseUrl || this.baseUrl || ''}${path}${queryString ? `?${queryString}` : ''}`,
@@ -1239,34 +1330,34 @@ export class HttpClient<SecurityDataType = unknown> {
         body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
       }
     ).then(async (response) => {
-      const r = response as HttpResponse<T, E>;
-      r.data = null as unknown as T;
-      r.error = null as unknown as E;
+      const r = response as HttpResponse<T, E>
+      r.data = null as unknown as T
+      r.error = null as unknown as E
 
       const data = !responseFormat
         ? r
         : await response[responseFormat]()
             .then((data) => {
               if (r.ok) {
-                r.data = data;
+                r.data = data
               } else {
-                r.error = data;
+                r.error = data
               }
-              return r;
+              return r
             })
             .catch((e) => {
-              r.error = e;
-              return r;
-            });
+              r.error = e
+              return r
+            })
 
       if (cancelToken) {
-        this.abortControllers.delete(cancelToken);
+        this.abortControllers.delete(cancelToken)
       }
 
-      if (!response.ok) throw data;
-      return data;
-    });
-  };
+      if (!response.ok) throw data
+      return data
+    })
+  }
 }
 
 /**
@@ -1455,7 +1546,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/account/profile
      */
     accountProfile: (params: RequestParams = {}) =>
-      this.request<ClientUserInfoModel, RequestResponse>({
+      this.request<ProfileUserInfoModel, RequestResponse>({
         path: `/api/account/profile`,
         method: 'GET',
         format: 'json',
@@ -1470,7 +1561,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/account/profile
      */
     useAccountProfile: (options?: SWRConfiguration) =>
-      useSWR<ClientUserInfoModel, RequestResponse>(`/api/account/profile`, options),
+      useSWR<ProfileUserInfoModel, RequestResponse>(`/api/account/profile`, options),
 
     /**
      * @description 使用此接口获取用户信息，需要User权限
@@ -1481,9 +1572,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/account/profile
      */
     mutateAccountProfile: (
-      data?: ClientUserInfoModel | Promise<ClientUserInfoModel>,
+      data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>,
       options?: MutatorOptions
-    ) => mutate<ClientUserInfoModel>(`/api/account/profile`, data, options),
+    ) => mutate<ProfileUserInfoModel>(`/api/account/profile`, data, options),
 
     /**
      * @description 使用此接口更新用户头像，需要User权限
@@ -1502,7 +1593,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-  };
+  }
   admin = {
     /**
      * @description 使用此接口获取全部用户，需要Admin权限
@@ -1513,7 +1604,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users
      */
     adminUsers: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
-      this.request<BasicUserInfoModel[], RequestResponse>({
+      this.request<UserInfoModel[], RequestResponse>({
         path: `/api/admin/users`,
         method: 'GET',
         query: query,
@@ -1529,7 +1620,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users
      */
     useAdminUsers: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
-      useSWR<BasicUserInfoModel[], RequestResponse>([`/api/admin/users`, query], options),
+      useSWR<UserInfoModel[], RequestResponse>([`/api/admin/users`, query], options),
 
     /**
      * @description 使用此接口获取全部用户，需要Admin权限
@@ -1541,9 +1632,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateAdminUsers: (
       query?: { count?: number; skip?: number },
-      data?: BasicUserInfoModel[] | Promise<BasicUserInfoModel[]>,
+      data?: UserInfoModel[] | Promise<UserInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<BasicUserInfoModel[]>([`/api/admin/users`, query], data, options),
+    ) => mutate<UserInfoModel[]>([`/api/admin/users`, query], data, options),
+
+    /**
+     * @description 使用此接口搜索用户，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminSearchUsers
+     * @summary 搜索用户
+     * @request POST:/api/admin/users/search
+     */
+    adminSearchUsers: (query?: { hint?: string }, params: RequestParams = {}) =>
+      this.request<UserInfoModel[], RequestResponse>({
+        path: `/api/admin/users/search`,
+        method: 'POST',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
 
     /**
      * @description 使用此接口获取全部队伍，需要Admin权限
@@ -1612,7 +1720,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users/{userid}
      */
     adminUserInfo: (userid: string, params: RequestParams = {}) =>
-      this.request<ClientUserInfoModel, RequestResponse>({
+      this.request<ProfileUserInfoModel, RequestResponse>({
         path: `/api/admin/users/${userid}`,
         method: 'GET',
         format: 'json',
@@ -1627,7 +1735,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users/{userid}
      */
     useAdminUserInfo: (userid: string, options?: SWRConfiguration) =>
-      useSWR<ClientUserInfoModel, RequestResponse>(`/api/admin/users/${userid}`, options),
+      useSWR<ProfileUserInfoModel, RequestResponse>(`/api/admin/users/${userid}`, options),
 
     /**
      * @description 使用此接口获取用户信息，需要Admin权限
@@ -1639,9 +1747,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateAdminUserInfo: (
       userid: string,
-      data?: ClientUserInfoModel | Promise<ClientUserInfoModel>,
+      data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>,
       options?: MutatorOptions
-    ) => mutate<ClientUserInfoModel>(`/api/admin/users/${userid}`, data, options),
+    ) => mutate<ProfileUserInfoModel>(`/api/admin/users/${userid}`, data, options),
 
     /**
      * @description 使用此接口删除用户，需要Admin权限
@@ -1762,7 +1870,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: LocalFile[] | Promise<LocalFile[]>,
       options?: MutatorOptions
     ) => mutate<LocalFile[]>([`/api/admin/files`, query], data, options),
-  };
+  }
   assets = {
     /**
      * @description 根据哈希获取文件，不匹配文件名
@@ -1836,7 +1944,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'DELETE',
         ...params,
       }),
-  };
+  }
   edit = {
     /**
      * @description 添加公告，需要管理员权限
@@ -2036,6 +2144,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'PUT',
         body: data,
         type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口更新比赛头图，需要Admin权限
+     *
+     * @tags Edit
+     * @name EditUpdateGamePoster
+     * @summary 更新比赛头图
+     * @request PUT:/api/edit/games/{id}/poster
+     */
+    editUpdateGamePoster: (id: number, data: { file?: File }, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/edit/games/${id}/poster`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.FormData,
         format: 'json',
         ...params,
       }),
@@ -2280,7 +2406,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-  };
+  }
   game = {
     /**
      * @description 获取最近十个比赛
@@ -2848,7 +2974,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-  };
+  }
   info = {
     /**
      * @description 获取最新公告
@@ -2923,7 +3049,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateInfoGetRecaptchaSiteKey: (data?: string | Promise<string>, options?: MutatorOptions) =>
       mutate<string>(`/api/sitekey`, data, options),
-  };
+  }
   team = {
     /**
      * @description 根据 id 获取一个队伍的基本信息
@@ -3188,8 +3314,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-  };
+  }
 }
 
-const api = new Api();
-export default api;
+const api = new Api()
+export default api

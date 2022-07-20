@@ -51,11 +51,35 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Users")]
-    [ProducesResponseType(typeof(BasicUserInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await (
             from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
-            select BasicUserInfoModel.FromUserInfo(user)
+            select UserInfoModel.FromUserInfo(user)
+           ).ToArrayAsync(token));
+
+    /// <summary>
+    /// 搜索用户
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口搜索用户，需要Admin权限
+    /// </remarks>
+    /// <response code="200">用户列表</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpPost("Users/Search")]
+    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
+        => Ok(await (
+            from user in userManager.Users
+                .Where(item =>
+                    EF.Functions.Like(item.UserName, $"%{hint}%") ||
+                    EF.Functions.Like(item.StdNumber, $"%{hint}%") ||
+                    EF.Functions.Like(item.Email, $"%{hint}%") ||
+                    EF.Functions.Like(item.RealName, $"%{hint}%")
+                )
+                .OrderBy(e => e.Id).Take(30)
+            select UserInfoModel.FromUserInfo(user)
            ).ToArrayAsync(token));
 
     /// <summary>
@@ -116,7 +140,7 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Users/{userid}")]
-    [ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UserInfo(string userid)
     {
@@ -125,7 +149,7 @@ public class AdminController : ControllerBase
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
 
-        return Ok(ClientUserInfoModel.FromUserInfo(user));
+        return Ok(ProfileUserInfoModel.FromUserInfo(user));
     }
 
     /// <summary>
