@@ -1,8 +1,8 @@
 import { FC, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Center } from '@mantine/core'
 import WithNavBar from '../components/WithNavbar'
 import Icon404 from '../components/icon/404Icon'
-import { useNavigate, useLocation } from 'react-router-dom'
 
 const Error404: FC = () => {
   const navigate = useNavigate()
