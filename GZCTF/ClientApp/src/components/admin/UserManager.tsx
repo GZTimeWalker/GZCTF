@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { Group, Stack, Table, Title, Text, ActionIcon, Badge } from '@mantine/core'
+import { Group, Stack, Table, Text, ActionIcon, Badge } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {

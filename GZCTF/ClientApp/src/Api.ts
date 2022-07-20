@@ -1576,7 +1576,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部用户
      * @request GET:/api/admin/users
      */
-    adminUsers: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
+    adminUsers: (query?: { after?: string; count?: number }, params: RequestParams = {}) =>
       this.request<UserInfoModel[], RequestResponse>({
         path: `/api/admin/users`,
         method: 'GET',
@@ -1592,7 +1592,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部用户
      * @request GET:/api/admin/users
      */
-    useAdminUsers: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
+    useAdminUsers: (query?: { after?: string; count?: number }, options?: SWRConfiguration) =>
       useSWR<UserInfoModel[], RequestResponse>([`/api/admin/users`, query], options),
 
     /**
@@ -1604,7 +1604,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users
      */
     mutateAdminUsers: (
-      query?: { count?: number; skip?: number },
+      query?: { after?: string; count?: number },
       data?: UserInfoModel[] | Promise<UserInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<UserInfoModel[]>([`/api/admin/users`, query], data, options),
