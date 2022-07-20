@@ -1,0 +1,258 @@
+import { FC, useEffect, useState } from 'react'
+import {
+  Avatar,
+  Box,
+  Button,
+  Center,
+  Grid,
+  Group,
+  Image,
+  Modal,
+  ModalProps,
+  Radio,
+  RadioGroup,
+  SimpleGrid,
+  Stack,
+  Text,
+  Textarea,
+  TextInput,
+} from '@mantine/core'
+import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import api, { BasicUserInfoModel, UpdateUserInfoModel, Role } from '../../../Api'
+
+interface UserEditModalProps extends ModalProps {
+  basicInfo: BasicUserInfoModel
+  mutateUser: (user: BasicUserInfoModel) => void
+}
+
+const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
+  <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
+    {file ? (
+      <Image fit="contain" src={URL.createObjectURL(file)} alt="avatar" />
+    ) : (
+      <Box>
+        <Text size="xl" inline>
+          拖放图片或点击此处以选择头像
+        </Text>
+        <Text size="sm" color="dimmed" inline mt={7}>
+          请选择小于 3MB 的图片
+        </Text>
+      </Box>
+    )}
+  </Group>
+)
+
+const UserEditModal: FC<UserEditModalProps> = (props) => {
+  const [dropzoneOpened, setDropzoneOpened] = useState(false)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const { basicInfo, mutateUser, ...modalProps } = props
+  const { data, mutate } = api.admin.useAdminUserInfo(basicInfo!.id!, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
+  const [disabled, setDisabled] = useState(false)
+  const [profile, setProfile] = useState<UpdateUserInfoModel>({
+    userName: basicInfo?.userName,
+    email: basicInfo?.email,
+    role: basicInfo?.role,
+  })
+
+  useEffect(() => {
+    setProfile({
+      userName: data?.userName,
+      email: data?.email,
+      bio: data?.bio,
+      phone: data?.phone,
+      realName: data?.realName,
+      stdNumber: data?.stdNumber,
+      role: data?.role,
+    })
+  }, [data])
+
+  const onChangeProfile = () => {
+    setDisabled(true)
+    api.admin
+      .adminUpdateUserInfo(basicInfo.id!, profile)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          title: '更改成功',
+          message: '用户信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        })
+        mutate({ ...data })
+        modalProps.onClose()
+      })
+      .catch((err) => {
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: `${err.error.title}`,
+          icon: <Icon path={mdiClose} size={1} />,
+        })
+      })
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
+  const onChangeAvatar = () => {
+    if (avatarFile) {
+      api.account
+        .accountAvatar({
+          file: avatarFile,
+        })
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            title: '修改头像成功',
+            message: '您的头像已经更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+          mutate({ ...data })
+          setAvatarFile(null)
+          setDropzoneOpened(false)
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          })
+          setDropzoneOpened(false)
+        })
+    }
+  }
+  
+  const radios = []
+  for (const key in Role) {
+    radios.push(<Radio value={Role[key]} label={key} />)
+  }
+
+  return (
+    <Modal {...modalProps}>
+      {/* User Info */}
+      <Stack spacing="md" style={{ margin: 'auto', marginTop: '15px' }}>
+        <Grid grow>
+          <Grid.Col span={8}>
+            <TextInput
+              label="用户名"
+              type="text"
+              style={{ width: '100%' }}
+              value={profile.userName ?? 'ctfer'}
+              disabled={disabled}
+              onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
+            />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <Center>
+              <Avatar
+                style={{ borderRadius: '50%' }}
+                size={70}
+                src={data?.avatar}
+                onClick={() => setDropzoneOpened(true)}
+              />
+            </Center>
+          </Grid.Col>
+        </Grid>
+        <TextInput
+          label="邮箱"
+          type="email"
+          style={{ width: '100%' }}
+          value={data?.email ?? 'ctfer@gzti.me'}
+          disabled={disabled}
+          onChange={(event) => setProfile({ ...profile, email: event.target.value })}
+        />
+        <TextInput
+          label="手机号"
+          type="tel"
+          style={{ width: '100%' }}
+          value={profile.phone ?? ''}
+          disabled={disabled}
+          onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
+        />
+        <SimpleGrid cols={2}>
+          <TextInput
+            label="学工号"
+            type="number"
+            style={{ width: '100%' }}
+            value={profile.stdNumber ?? ''}
+            disabled={disabled}
+            onChange={(event) => setProfile({ ...profile, stdNumber: event.target.value })}
+          />
+          <TextInput
+            label="真实姓名"
+            type="text"
+            style={{ width: '100%' }}
+            value={profile.realName ?? ''}
+            disabled={disabled}
+            onChange={(event) => setProfile({ ...profile, realName: event.target.value })}
+          />
+        </SimpleGrid>
+        <Textarea
+          label="描述"
+          value={profile.bio ?? '这个人很懒，什么都没有写'}
+          style={{ width: '100%' }}
+          disabled={disabled}
+          autosize
+          minRows={2}
+          maxRows={4}
+          onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
+        />
+        <RadioGroup
+          label="用户角色"
+          value={profile.role ?? Role.User}
+          onChange={(value: Role) => setProfile({ ...profile, role: value })}
+        >
+          {radios}
+        </RadioGroup>
+        <Group grow style={{ margin: 'auto', width: '100%' }}>
+          <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
+            保存信息
+          </Button>
+        </Group>
+      </Stack>
+
+      {/* Change avatar */}
+      <Modal
+        opened={dropzoneOpened}
+        onClose={() => setDropzoneOpened(false)}
+        centered
+        withCloseButton={false}
+      >
+        <Dropzone
+          onDrop={(files) => setAvatarFile(files[0])}
+          onReject={() => {
+            showNotification({
+              color: 'red',
+              title: '文件上传失败',
+              message: `请重新提交`,
+              icon: <Icon path={mdiClose} size={1} />,
+            })
+          }}
+          style={{
+            margin: '0 auto 20px auto',
+            minWidth: '220px',
+            minHeight: '220px',
+          }}
+          maxSize={3 * 1024 * 1024}
+          accept={IMAGE_MIME_TYPE}
+        >
+          {(status) => dropzoneChildren(status, avatarFile)}
+        </Dropzone>
+        <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
+          修改头像
+        </Button>
+      </Modal>
+    </Modal>
+  )
+}
+
+export default UserEditModal
