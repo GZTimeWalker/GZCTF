@@ -89,11 +89,10 @@ const NoticeManager: FC = () => {
   const [activeNotice, setActiveNotice] = useState<Notice | null>(null)
 
   const onPin = (notice: Notice) => {
-    if( !disabled ) {
+    if (!disabled) {
       setDisabled(true)
 
-      api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned })
-      .then(() => {
+      api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned }).then(() => {
         mutate([
           { ...notice, isPinned: !notice.isPinned },
           ...(notices?.filter((t) => t.id !== notice.id) ?? []),
@@ -105,7 +104,7 @@ const NoticeManager: FC = () => {
 
   const modals = useModals()
   const onDeleteNotice = (notice: Notice) => {
-    if ( disabled ) {
+    if (disabled) {
       return
     }
     modals.openConfirmModal({

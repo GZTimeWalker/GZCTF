@@ -33,11 +33,10 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
       })
       return
     }
-    if ( title == notice?.title && content == notice?.content ) {
+    if (title === notice?.title && content === notice?.content) {
       showNotification({
-        color: 'red',
-        title: '未作出改变',
-        message: '请变更内容',
+        color: 'orange',
+        message: '似乎没有变化哦',
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -130,7 +129,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           <Button
             fullWidth
             variant="outline"
-            disabled = { disabled }
+            disabled={disabled}
             onClick={() => {
               setTitle(notice?.title)
               setContent(notice?.content)
@@ -138,13 +137,8 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           >
             {notice ? '还原通知' : '清空通知'}
           </Button>
-          <Button 
-            fullWidth
-            variant="outline" 
-            color="orange" 
-            disabled = { disabled }
-            onClick={onUpdate}>
-              {notice ? '更改通知' : '新建通知'}
+          <Button fullWidth variant="outline" color="orange" disabled={disabled} onClick={onUpdate}>
+            {notice ? '更改通知' : '新建通知'}
           </Button>
         </Group>
       </Stack>
