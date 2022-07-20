@@ -52,7 +52,7 @@ public class AdminController : ControllerBase
     /// <response code="403">禁止访问</response>
     [HttpGet("Users")]
     [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Users([FromQuery] string after, [FromQuery] int count = 100, CancellationToken token = default)
+    public async Task<IActionResult> Users([FromQuery] string after = "0", [FromQuery] int count = 100, CancellationToken token = default)
         => Ok(await (
             from user in userManager.Users.OrderBy(e => e.Id)
                 .SkipWhile(u => string.Compare(u.Id, after, StringComparison.OrdinalIgnoreCase) <= 0)
