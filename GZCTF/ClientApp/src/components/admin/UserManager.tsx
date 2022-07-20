@@ -2,9 +2,16 @@ import { FC, useState } from 'react'
 import { Group, Stack, Table, Title, Text, ActionIcon, Badge } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose, mdiDeleteOutline, mdiFileEditOutline } from '@mdi/js'
+import {
+  mdiArrowLeftBold,
+  mdiArrowRightBold,
+  mdiCheck,
+  mdiClose,
+  mdiDeleteOutline,
+  mdiFileEditOutline,
+} from '@mdi/js'
 import Icon from '@mdi/react'
-import api, { BasicUserInfoModel } from '../../Api'
+import api, { UserInfoModel } from '../../Api'
 import UserEditModal from './edit/UserEditModal'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -13,7 +20,7 @@ const UserManager: FC = () => {
   const [activePage, setPage] = useState(-1)
   const [disabled, setDisabled] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [activeUser, setActiveUser] = useState<BasicUserInfoModel>({})
+  const [activeUser, setActiveUser] = useState<UserInfoModel>({})
 
   const { data: users, mutate } = api.admin.useAdminUsers(undefined, {
     refreshInterval: 0,
@@ -23,7 +30,7 @@ const UserManager: FC = () => {
 
   const modals = useModals()
 
-  const onConfirmDelete = (user: BasicUserInfoModel) => {
+  const onConfirmDelete = (user: UserInfoModel) => {
     api.admin
       .adminDeleteUser(user.id!)
       .then(() => {
@@ -45,13 +52,14 @@ const UserManager: FC = () => {
       })
   }
 
-  const onDeleteUser = (user: BasicUserInfoModel) => {
-    if (disabled) {
+  const onDeleteUser = (user: UserInfoModel) => {
+    if (disabled && !user) {
       return
     }
+
     modals.openConfirmModal({
       title: '删除用户',
-      children: <Text size="sm">你确定要删除用户 "{user?.userName ?? ''}" 吗？</Text>,
+      children: <Text size="sm">你确定要删除用户 "{user.userName}" 吗？</Text>,
       onConfirm: () => onConfirmDelete(user),
       centered: true,
       labels: { confirm: '删除用户', cancel: '取消' },
@@ -128,7 +136,7 @@ const UserManager: FC = () => {
         basicInfo={activeUser}
         opened={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        mutateUser={(user: BasicUserInfoModel) => {
+        mutateUser={(user: UserInfoModel) => {
           mutate([user, ...(users?.filter((n) => n.id !== user.id) ?? [])])
         }}
       />

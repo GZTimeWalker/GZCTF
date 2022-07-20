@@ -2,6 +2,9 @@
 
 namespace CTFServer.Models.Request.Edit;
 
+/// <summary>
+/// 比赛通知（Edit）
+/// </summary>
 public class GameNoticeModel
 {
     /// <summary>

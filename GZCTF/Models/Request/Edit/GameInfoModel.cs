@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Edit;
 
+/// <summary>
+/// 比赛信息（Edit）
+/// </summary>
 public class GameInfoModel
 {
     /// <summary>

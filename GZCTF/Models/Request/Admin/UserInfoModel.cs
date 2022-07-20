@@ -1,6 +1,9 @@
 ﻿namespace CTFServer.Models.Request.Admin;
 
-public class BasicUserInfoModel
+/// <summary>
+/// 用户信息（Admin）
+/// </summary>
+public class UserInfoModel
 {
     /// <summary>
     /// 用户ID
@@ -41,7 +44,7 @@ public class BasicUserInfoModel
 
     public int? ActiveTeamId { get; set; }
 
-    public static BasicUserInfoModel FromUserInfo(UserInfo user)
+    public static UserInfoModel FromUserInfo(UserInfo user)
     => new()
     {
         Id = user.Id,

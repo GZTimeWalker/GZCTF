@@ -2,6 +2,9 @@
 
 namespace CTFServer.Models.Request.Edit;
 
+/// <summary>
+/// 全局通知（Edit）
+/// </summary>
 public class NoticeModel
 {
     /// <summary>

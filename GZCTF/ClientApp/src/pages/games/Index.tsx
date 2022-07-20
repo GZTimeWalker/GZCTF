@@ -1,13 +1,27 @@
 import { FC } from 'react'
 import { SimpleGrid, Stack, Tabs, useMantineTheme } from '@mantine/core'
+import { mdiFlag, mdiPackageVariantClosed, mdiProgressClock } from '@mdi/js'
+import Icon from '@mdi/react'
+import api from '../../Api'
+import GameCard from '../../components/GameCard'
 import LogoHeader from '../../components/LogoHeader'
 import WithNavBar from '../../components/WithNavbar'
-import GameCard from "../../components/GameCard"
-import Icon from "@mdi/react"
-import { mdiFlag, mdiInbox, mdiPackageVariantClosed, mdiProgressClock } from "@mdi/js"
 
 const Games: FC = () => {
-  const theme = useMantineTheme();
+  const { data: games } = api.game.useGameGamesAll({
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
+
+  const now = new Date()
+
+  const coming = games?.filter((game) => new Date(game.start!) > now)
+  const ongoing = games?.filter(
+    (game) => new Date(game.start!) <= now && new Date(game.end!) >= now
+  )
+  const ended = games?.filter((game) => new Date(game.end!) < now)
+
   return (
     <WithNavBar>
       <Stack>
@@ -22,16 +36,19 @@ const Games: FC = () => {
                 { maxWidth: 800, cols: 1, spacing: 'sm' },
               ]}
             >
-              <GameCard state={0} />
-              <GameCard state={1} />
-              <GameCard state={2} />
+              {ongoing && ongoing.map((g) => <GameCard {...g} />)}
             </SimpleGrid>
           </Tabs.Tab>
-          <Tabs.Tab label="未开始" icon={<Icon path={mdiProgressClock} size={1} />} color="yellow">
-          </Tabs.Tab>
-          <Tabs.Tab label="已结束" icon={<Icon path={mdiPackageVariantClosed} size={1} />}
-            color="red">
-          </Tabs.Tab>
+          <Tabs.Tab
+            label="未开始"
+            icon={<Icon path={mdiProgressClock} size={1} />}
+            color="yellow"
+          ></Tabs.Tab>
+          <Tabs.Tab
+            label="已结束"
+            icon={<Icon path={mdiPackageVariantClosed} size={1} />}
+            color="red"
+          ></Tabs.Tab>
         </Tabs>
       </Stack>
     </WithNavBar>

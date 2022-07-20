@@ -1,5 +1,8 @@
 ﻿namespace CTFServer.Models.Request.Admin;
 
+/// <summary>
+/// 用户信息更改（Admin）
+/// </summary>
 public class UpdateUserInfoModel
 {
     /// <summary>

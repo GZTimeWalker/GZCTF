@@ -408,13 +408,13 @@ public class AccountController : ControllerBase
     /// <response code="401">未授权用户</response>
     [HttpGet]
     [RequireUser]
-    [ProducesResponseType(typeof(ClientUserInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Profile()
     {
         var user = await userManager.GetUserAsync(User);
 
-        return Ok(ClientUserInfoModel.FromUserInfo(user));
+        return Ok(ProfileUserInfoModel.FromUserInfo(user));
     }
 
     /// <summary>

@@ -2,6 +2,9 @@
 
 namespace CTFServer.Models.Request.Admin;
 
+/// <summary>
+/// 比赛参与对象，用于审核查看（Admin）
+/// </summary>
 public class ParticipationInfoModel
 {
     /// <summary>

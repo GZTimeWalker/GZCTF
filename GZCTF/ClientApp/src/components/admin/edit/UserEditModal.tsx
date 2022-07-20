@@ -21,11 +21,11 @@ import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import Icon from '@mdi/react'
-import api, { BasicUserInfoModel, UpdateUserInfoModel, Role } from '../../../Api'
+import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../../Api'
 
 interface UserEditModalProps extends ModalProps {
-  basicInfo: BasicUserInfoModel
-  mutateUser: (user: BasicUserInfoModel) => void
+  basicInfo: UserInfoModel
+  mutateUser: (user: UserInfoModel) => void
 }
 
 const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
@@ -130,11 +130,6 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         })
     }
   }
-  
-  const radios = []
-  for (const key in Role) {
-    radios.push(<Radio value={Role[key]} label={key} />)
-  }
 
   return (
     <Modal {...modalProps}>
@@ -211,7 +206,9 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           value={profile.role ?? Role.User}
           onChange={(value: Role) => setProfile({ ...profile, role: value })}
         >
-          {radios}
+          {Object.entries(Role).map((role) => (
+            <Radio value={role[1]} label={role[0]} />
+          ))}
         </RadioGroup>
         <Group grow style={{ margin: 'auto', width: '100%' }}>
           <Button fullWidth disabled={disabled} onClick={onChangeProfile}>

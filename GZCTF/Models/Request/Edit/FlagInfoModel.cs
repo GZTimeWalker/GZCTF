@@ -1,5 +1,8 @@
 ﻿namespace CTFServer.Models.Request.Edit;
 
+/// <summary>
+/// Flag 信息（Edit）
+/// </summary>
 public class FlagInfoModel
 {
     /// <summary>

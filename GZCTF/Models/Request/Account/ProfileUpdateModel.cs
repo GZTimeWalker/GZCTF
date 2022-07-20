@@ -3,7 +3,7 @@
 namespace CTFServer.Models.Request.Account;
 
 /// <summary>
-/// 个人信息更改
+/// 基本账号信息更改
 /// </summary>
 public class ProfileUpdateModel
 {

@@ -57,7 +57,7 @@ export interface RecoveryModel {
 }
 
 /**
- * 密码重置
+ * 账号密码重置
  */
 export interface PasswordResetModel {
   /** 密码 */
@@ -93,7 +93,7 @@ export interface LoginModel {
 }
 
 /**
- * 个人信息更改
+ * 基本账号信息更改
  */
 export interface ProfileUpdateModel {
   /** 用户名 */
@@ -134,7 +134,10 @@ export interface MailChangeModel {
   newMail: string
 }
 
-export interface ClientUserInfoModel {
+/**
+ * 基本账号信息
+ */
+export interface ProfileUserInfoModel {
   /** 用户ID */
   userId?: string | null
 
@@ -179,7 +182,10 @@ export enum Role {
   Admin = 'Admin',
 }
 
-export interface BasicUserInfoModel {
+/**
+ * 用户信息（Admin）
+ */
+export interface UserInfoModel {
   /** 用户ID */
   id?: string | null
 
@@ -208,6 +214,9 @@ export interface BasicUserInfoModel {
   activeTeamId?: number | null
 }
 
+/**
+ * 队伍信息
+ */
 export interface TeamInfoModel {
   /**
    * 队伍 Id
@@ -231,6 +240,9 @@ export interface TeamInfoModel {
   members?: TeamUserInfoModel[] | null
 }
 
+/**
+ * 队员信息
+ */
 export interface TeamUserInfoModel {
   /** 用户ID */
   id?: string | null
@@ -248,6 +260,9 @@ export interface TeamUserInfoModel {
   captain?: boolean
 }
 
+/**
+ * 用户信息更改（Admin）
+ */
 export interface UpdateUserInfoModel {
   /** 用户名 */
   userName?: string | null
@@ -272,7 +287,7 @@ export interface UpdateUserInfoModel {
 }
 
 /**
- * 日志信息
+ * 日志信息（Admin）
  */
 export interface LogMessageModel {
   /**
@@ -341,6 +356,9 @@ export interface Notice {
   time: string
 }
 
+/**
+ * 全局通知（Edit）
+ */
 export interface NoticeModel {
   /** 通知标题 */
   title: string
@@ -389,6 +407,9 @@ export interface Game {
   posterUrl?: string | null
 }
 
+/**
+ * 比赛信息（Edit）
+ */
 export interface GameInfoModel {
   /** 比赛标题 */
   title: string
@@ -449,6 +470,9 @@ export enum NoticeType {
   ErrorFix = 'ErrorFix',
 }
 
+/**
+ * 比赛通知（Edit）
+ */
 export interface GameNoticeModel {
   /** 通知内容 */
   content: string
@@ -602,6 +626,9 @@ export enum AnswerResult {
   CheatDetected = 'CheatDetected',
 }
 
+/**
+ * 题目信息更改（Edit）
+ */
 export interface ChallengeModel {
   /** 题目名称 */
   title: string
@@ -663,6 +690,9 @@ export interface ChallengeModel {
   fileName?: string | null
 }
 
+/**
+ * 基础题目信息（Edit）
+ */
 export interface ChallengeInfoModel {
   /**
    * 题目Id
@@ -680,6 +710,9 @@ export interface ChallengeInfoModel {
   type?: ChallengeType
 }
 
+/**
+ * Flag 信息（Edit）
+ */
 export interface FlagInfoModel {
   /** Flag文本 */
   flag?: string
@@ -780,6 +813,9 @@ export interface GameDetailsModel {
   end?: string
 }
 
+/**
+ * 排行榜
+ */
 export interface ScoreboardModel {
   /**
    * 更新时间
@@ -943,6 +979,9 @@ export enum EventType {
   CheatDetected = 'CheatDetected',
 }
 
+/**
+ * 题目实例信息
+ */
 export interface InstanceInfoModel {
   /**
    * 实例 Id
@@ -995,6 +1034,9 @@ export enum ContainerStatus {
   Destoryed = 'Destoryed',
 }
 
+/**
+ * 比赛参与对象，用于审核查看（Admin）
+ */
 export interface ParticipationInfoModel {
   /**
    * 参与对象 Id
@@ -1015,6 +1057,9 @@ export interface ParticipationInfoModel {
   status?: ParticipationStatus
 }
 
+/**
+ * 题目详细信息
+ */
 export interface ChallengeDetailModel {
   /**
    * 题目 Id
@@ -1058,6 +1103,9 @@ export interface ClientFlagContext {
   name?: string | null
 }
 
+/**
+ * 队伍信息更新
+ */
 export interface TeamUpdateModel {
   /** 队伍名称 */
   name?: string | null
@@ -1471,7 +1519,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/account/profile
      */
     accountProfile: (params: RequestParams = {}) =>
-      this.request<ClientUserInfoModel, RequestResponse>({
+      this.request<ProfileUserInfoModel, RequestResponse>({
         path: `/api/account/profile`,
         method: 'GET',
         format: 'json',
@@ -1486,7 +1534,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/account/profile
      */
     useAccountProfile: (options?: SWRConfiguration) =>
-      useSWR<ClientUserInfoModel, RequestResponse>(`/api/account/profile`, options),
+      useSWR<ProfileUserInfoModel, RequestResponse>(`/api/account/profile`, options),
 
     /**
      * @description 使用此接口获取用户信息，需要User权限
@@ -1497,9 +1545,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/account/profile
      */
     mutateAccountProfile: (
-      data?: ClientUserInfoModel | Promise<ClientUserInfoModel>,
+      data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>,
       options?: MutatorOptions
-    ) => mutate<ClientUserInfoModel>(`/api/account/profile`, data, options),
+    ) => mutate<ProfileUserInfoModel>(`/api/account/profile`, data, options),
 
     /**
      * @description 使用此接口更新用户头像，需要User权限
@@ -1529,7 +1577,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users
      */
     adminUsers: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
-      this.request<BasicUserInfoModel[], RequestResponse>({
+      this.request<UserInfoModel[], RequestResponse>({
         path: `/api/admin/users`,
         method: 'GET',
         query: query,
@@ -1545,7 +1593,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users
      */
     useAdminUsers: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
-      useSWR<BasicUserInfoModel[], RequestResponse>([`/api/admin/users`, query], options),
+      useSWR<UserInfoModel[], RequestResponse>([`/api/admin/users`, query], options),
 
     /**
      * @description 使用此接口获取全部用户，需要Admin权限
@@ -1557,9 +1605,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateAdminUsers: (
       query?: { count?: number; skip?: number },
-      data?: BasicUserInfoModel[] | Promise<BasicUserInfoModel[]>,
+      data?: UserInfoModel[] | Promise<UserInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<BasicUserInfoModel[]>([`/api/admin/users`, query], data, options),
+    ) => mutate<UserInfoModel[]>([`/api/admin/users`, query], data, options),
 
     /**
      * @description 使用此接口获取全部队伍，需要Admin权限
@@ -1628,7 +1676,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users/{userid}
      */
     adminUserInfo: (userid: string, params: RequestParams = {}) =>
-      this.request<ClientUserInfoModel, RequestResponse>({
+      this.request<ProfileUserInfoModel, RequestResponse>({
         path: `/api/admin/users/${userid}`,
         method: 'GET',
         format: 'json',
@@ -1643,7 +1691,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users/{userid}
      */
     useAdminUserInfo: (userid: string, options?: SWRConfiguration) =>
-      useSWR<ClientUserInfoModel, RequestResponse>(`/api/admin/users/${userid}`, options),
+      useSWR<ProfileUserInfoModel, RequestResponse>(`/api/admin/users/${userid}`, options),
 
     /**
      * @description 使用此接口获取用户信息，需要Admin权限
@@ -1655,9 +1703,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateAdminUserInfo: (
       userid: string,
-      data?: ClientUserInfoModel | Promise<ClientUserInfoModel>,
+      data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>,
       options?: MutatorOptions
-    ) => mutate<ClientUserInfoModel>(`/api/admin/users/${userid}`, data, options),
+    ) => mutate<ProfileUserInfoModel>(`/api/admin/users/${userid}`, data, options),
 
     /**
      * @description 使用此接口删除用户，需要Admin权限
