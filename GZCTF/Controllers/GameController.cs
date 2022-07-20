@@ -68,10 +68,9 @@ public class GameController : ControllerBase
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
     [HttpGet]
-    [ProducesResponseType(typeof(List<BasicGameInfoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Games(CancellationToken token)
-         => Ok((from game in await gameRepository.GetGames(10, 0, token)
-                select BasicGameInfoModel.FromGame(game)).ToList());
+         => Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
 
     /// <summary>
     /// 获取比赛详细信息

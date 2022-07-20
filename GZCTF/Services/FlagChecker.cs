@@ -85,7 +85,7 @@ public class FlagChecker : IHostedService
                         await gameNoticeRepository.CreateNotice(item.Game, GameNotice.FromSubmission(item, type), token);
                 }
 
-                gameRepository.FlushScoreboard(item.Game, token);
+                gameRepository.FlushScoreboard(item.Game);
 
                 token.ThrowIfCancellationRequested();
             }

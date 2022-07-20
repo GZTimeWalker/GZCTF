@@ -1,5 +1,6 @@
 ﻿using CTFServer.Models.Request.Edit;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models;
@@ -14,6 +15,11 @@ public class Game
     /// </summary>
     [Required]
     public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 头图哈希
+    /// </summary>
+    public string? PosterHash { get; set; }
 
     /// <summary>
     /// 比赛描述
@@ -85,6 +91,9 @@ public class Game
     public List<Participation> Teams { get; set; } = new();
 
     #endregion Db Relationship
+
+    [NotMapped]
+    public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
 
     public Game Update(GameInfoModel model)
     {

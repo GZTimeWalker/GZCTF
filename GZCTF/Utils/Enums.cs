@@ -384,6 +384,11 @@ public static class CacheKey
     public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
 
     /// <summary>
+    /// 比赛基础信息缓存
+    /// </summary>
+    public const string BasicGameInfo = "_BasicGameInfo";
+
+    /// <summary>
     /// 公告
     /// </summary>
     public const string Notices = "_Notices";

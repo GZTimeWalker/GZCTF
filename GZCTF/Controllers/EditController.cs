@@ -138,6 +138,8 @@ public class EditController : Controller
     {
         var game = await gameRepository.CreateGame(new Game().Update(model), token);
 
+        gameRepository.FlushGameInfoCache();
+
         return Ok(game);
     }
 
@@ -198,7 +200,8 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        game.Update(model);
+        await gameRepository.UpdateAsync(game.Update(model), token);
+        gameRepository.FlushGameInfoCache();
 
         return Ok(game);
     }

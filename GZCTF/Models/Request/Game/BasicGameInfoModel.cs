@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Game;
 
+/// <summary>
+/// 比赛基本信息，不包含详细介绍与当前队伍报名状态
+/// </summary>
 public class BasicGameInfoModel
 {
     [Key]
@@ -17,6 +20,12 @@ public class BasicGameInfoModel
     /// 比赛描述
     /// </summary>
     public string Summary { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 头图
+    /// </summary>
+    [JsonPropertyName("poster")]
+    public string? PosterUrl { get; set; } = string.Empty;
 
     /// <summary>
     /// 队员数量限制
@@ -42,6 +51,7 @@ public class BasicGameInfoModel
             Id = game.Id,
             Title = game.Title,
             Summary = game.Summary,
+            PosterUrl = game.PosterUrl,
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC,
             TeamMemberLimitCount = game.TeamMemberCountLimit

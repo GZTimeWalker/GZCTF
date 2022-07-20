@@ -24,8 +24,13 @@ public class GameRepository : RepositoryBase, IGameRepository
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
-    public Task<Game[]> GetGames(int count = 10, int skip = 0, CancellationToken token = default)
-        => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+    public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default)
+        => (await cache.GetOrCreateAsync(CacheKey.BasicGameInfo, entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
+            return context.Games.OrderByDescending(g => g.StartTimeUTC)
+                .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
+        })).Skip(skip).Take(count).ToArray();
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry =>
@@ -34,7 +39,13 @@ public class GameRepository : RepositoryBase, IGameRepository
             return GenScoreboard(game, token);
         });
 
-    public void FlushScoreboard(Game game, CancellationToken token = default)
+    public Task<Game[]> GetGames(int count, int skip, CancellationToken token)
+        => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+
+    public void FlushGameInfoCache()
+        => cache.Remove(CacheKey.BasicGameInfo);
+
+    public void FlushScoreboard(Game game)
         => cache.Remove(CacheKey.ScoreBoard(game.Id));
 
     #region Generate Scoreboard
