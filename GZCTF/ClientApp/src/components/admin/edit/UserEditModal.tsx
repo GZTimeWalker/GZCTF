@@ -9,8 +9,7 @@ import {
   Image,
   Modal,
   ModalProps,
-  Radio,
-  RadioGroup,
+  Select,
   SimpleGrid,
   Stack,
   Text,
@@ -201,15 +200,15 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           maxRows={4}
           onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
         />
-        <RadioGroup
+        <Select
           label="用户角色"
           value={profile.role ?? Role.User}
           onChange={(value: Role) => setProfile({ ...profile, role: value })}
-        >
-          {Object.entries(Role).map((role) => (
-            <Radio value={role[1]} label={role[0]} />
-          ))}
-        </RadioGroup>
+          data={Object.entries(Role).map((role) => ({
+            value: role[1],
+            label: role[0]
+          }))}
+        />
         <Group grow style={{ margin: 'auto', width: '100%' }}>
           <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
             保存信息
