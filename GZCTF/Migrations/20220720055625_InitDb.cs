@@ -68,6 +68,7 @@ namespace CTFServer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
+                    PosterHash = table.Column<string>(type: "text", nullable: true),
                     Summary = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     TeamMemberCountLimit = table.Column<int>(type: "integer", nullable: false),
