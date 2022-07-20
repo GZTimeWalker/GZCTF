@@ -399,9 +399,6 @@ export interface GameInfoModel {
   /** 比赛详细介绍 */
   content?: string
 
-  /** 比赛头图 */
-  poster?: string | null
-
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
@@ -2055,6 +2052,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'PUT',
         body: data,
         type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口更新比赛头图，需要Admin权限
+     *
+     * @tags Edit
+     * @name EditUpdateGamePoster
+     * @summary 更新比赛头图
+     * @request PUT:/api/edit/games/{id}/poster
+     */
+    editUpdateGamePoster: (id: number, data: { file?: File }, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/edit/games/${id}/poster`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.FormData,
         format: 'json',
         ...params,
       }),

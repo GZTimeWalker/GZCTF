@@ -22,7 +22,7 @@ public class AccountController : ControllerBase
     private readonly IMailSender mailSender;
     private readonly UserManager<UserInfo> userManager;
     private readonly SignInManager<UserInfo> signInManager;
-    private readonly IFileRepository FileService;
+    private readonly IFileRepository fileService;
     private readonly IRecaptchaExtension recaptcha;
     private readonly IHostEnvironment environment;
 
@@ -40,7 +40,7 @@ public class AccountController : ControllerBase
         environment = _environment;
         userManager = _userManager;
         signInManager = _signInManager;
-        FileService = _FileService;
+        fileService = _FileService;
         logger = _logger;
     }
 
@@ -442,9 +442,9 @@ public class AccountController : ControllerBase
         var user = await userManager.GetUserAsync(User);
 
         if (user.AvatarHash is not null)
-            await FileService.DeleteFileByHash(user.AvatarHash, token);
+            await fileService.DeleteFileByHash(user.AvatarHash, token);
 
-        var avatar = await FileService.CreateOrUpdateFile(file, "avatar", token);
+        var avatar = await fileService.CreateOrUpdateFile(file, "avatar", token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("文件创建失败"));

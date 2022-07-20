@@ -22,12 +22,6 @@ public class GameInfoModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 比赛头图
-    /// </summary>
-    [JsonPropertyName("poster")]
-    public string? PosterUrl { get; set; } = string.Empty;
-
-    /// <summary>
     /// 队员数量限制, 0 为无上限
     /// </summary>
     public int TeamMemberCountLimit { get; set; } = 0;
@@ -52,7 +46,6 @@ public class GameInfoModel
             Title = game.Title,
             Summary = game.Summary,
             Content = game.Content,
-            PosterUrl = game.PosterUrl,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC
