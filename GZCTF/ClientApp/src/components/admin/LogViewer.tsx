@@ -1,7 +1,17 @@
 import * as signalR from '@microsoft/signalr'
 import { FC, useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
-import { Stack, Group, Table, createStyles, ActionIcon, keyframes, Badge } from '@mantine/core'
+import {
+  Stack,
+  Group,
+  Table,
+  createStyles,
+  ActionIcon,
+  keyframes,
+  Badge,
+  Paper,
+  SegmentedControl,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiArrowRightBold, mdiArrowLeftBold } from '@mdi/js'
 import Icon from '@mdi/react'
@@ -33,9 +43,15 @@ function formatDate(dateString?: string) {
   )
 }
 
+enum LogLevel {
+  Info = 'Information',
+  Warn = 'Warning',
+  Error = 'Error',
+  All = 'All',
+}
+
 const LogViewer: FC = () => {
-  const params = useParams()
-  const level = params.level ?? 'All'
+  const [level, setLevel] = useState(LogLevel.Info)
 
   const [activePage, setPage] = useState(1)
   const { classes, cx } = useStyles()
@@ -116,43 +132,51 @@ const LogViewer: FC = () => {
   ))
 
   return (
-    <Stack>
-      <Group position="apart">
-        <Badge size="xl" radius="sm" variant="outline">
-          第 {activePage} 页
-        </Badge>
-        <Group position="right">
-          <ActionIcon
-            size="lg"
-            variant="hover"
-            disabled={activePage <= 1}
-            onClick={() => setPage(activePage - 1)}
-          >
-            <Icon path={mdiArrowLeftBold} size={1} />
-          </ActionIcon>
-          <ActionIcon
-            size="lg"
-            variant="hover"
-            disabled={logs && logs.length < ITEM_COUNT_PER_PAGE}
-            onClick={() => setPage(activePage + 1)}
-          >
-            <Icon path={mdiArrowRightBold} size={1} />
-          </ActionIcon>
+    <Paper shadow="md" p="md">
+      <Stack>
+        <Group position="apart">
+          <SegmentedControl
+            color='brand'
+            value={level}
+            onChange={(value: LogLevel) => setLevel(value)}
+            data={Object.entries(LogLevel).map((role) => ({
+              value: role[1],
+              label: role[0],
+            }))}
+          />
+          <Group position="right">
+            <ActionIcon
+              size="lg"
+              variant="hover"
+              disabled={activePage <= 1}
+              onClick={() => setPage(activePage - 1)}
+            >
+              <Icon path={mdiArrowLeftBold} size={1} />
+            </ActionIcon>
+            <ActionIcon
+              size="lg"
+              variant="hover"
+              disabled={logs && logs.length < ITEM_COUNT_PER_PAGE}
+              onClick={() => setPage(activePage + 1)}
+            >
+              <Icon path={mdiArrowRightBold} size={1} />
+            </ActionIcon>
+          </Group>
         </Group>
-      </Group>
-      <Table>
-        <thead>
-          <tr>
-            <th>时间</th>
-            <th>用户名</th>
-            <th>信息</th>
-            <th>状态</th>
-            <th>IP</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </Stack>
+        <Table>
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>用户名</th>
+              <th>信息</th>
+              <th>状态</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
+      </Stack>
+    </Paper>
   )
 }
 

@@ -78,7 +78,7 @@ public class AdminController : ControllerBase
                     EF.Functions.Like(item.Email, $"%{hint}%") ||
                     EF.Functions.Like(item.RealName, $"%{hint}%")
                 )
-                .Take(20)
+                .OrderBy(e => e.Id).Take(30)
             select UserInfoModel.FromUserInfo(user)
            ).ToArrayAsync(token));
 
