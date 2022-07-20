@@ -11,6 +11,7 @@ import {
   useMantineTheme,
   TextInput,
 } from '@mantine/core'
+import { useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -25,7 +26,6 @@ import {
 import Icon from '@mdi/react'
 import api, { Role, UserInfoModel } from '../../Api'
 import UserEditModal from './edit/UserEditModal'
-import { useInputState } from '@mantine/hooks'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -41,7 +41,7 @@ const UserManager: FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
   const [users, setUsers] = useState<UserInfoModel[]>([])
-  const [hint, setHint] = useInputState('');
+  const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
 
   const theme = useMantineTheme()
@@ -64,20 +64,24 @@ const UserManager: FC = () => {
 
   const onSearch = () => {
     setSearching(true)
-    api.admin.adminSearchUsers({
-      hint
-    }).then((res) => {
-      setUsers(res.data)
-    }).catch((err) => {
-      showNotification({
-        color: 'red',
-        title: '遇到了问题',
-        message: `${err.error.title}`,
-        icon: <Icon path={mdiClose} size={1} />,
+    api.admin
+      .adminSearchUsers({
+        hint,
       })
-    }).finally(() => {
-      setSearching(false)
-    })
+      .then((res) => {
+        setUsers(res.data)
+      })
+      .catch((err) => {
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: `${err.error.title}`,
+          icon: <Icon path={mdiClose} size={1} />,
+        })
+      })
+      .finally(() => {
+        setSearching(false)
+      })
   }
 
   const modals = useModals()
@@ -138,7 +142,9 @@ const UserManager: FC = () => {
             placeholder="搜索用户名/邮箱/学号/姓名"
             value={hint}
             onChange={setHint}
-            onKeyDown={(e) => {!searching && e.key === 'Enter' && onSearch()}}
+            onKeyDown={(e) => {
+              !searching && e.key === 'Enter' && onSearch()
+            }}
           />
           <Group position="right">
             <ActionIcon

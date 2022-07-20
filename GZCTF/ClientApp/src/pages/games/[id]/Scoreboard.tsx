@@ -6,6 +6,7 @@ import WithNavBar from '../../../components/WithNavbar'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
+  
   return (
     <WithNavBar>
       <Stack>

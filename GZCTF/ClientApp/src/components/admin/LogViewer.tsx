@@ -136,7 +136,7 @@ const LogViewer: FC = () => {
       <Stack>
         <Group position="apart">
           <SegmentedControl
-            color='brand'
+            color="brand"
             value={level}
             onChange={(value: LogLevel) => setLevel(value)}
             data={Object.entries(LogLevel).map((role) => ({
