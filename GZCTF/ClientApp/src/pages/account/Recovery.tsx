@@ -52,18 +52,16 @@ const Recovery: FC = () => {
         value={email}
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
-      <Link to="/account/login">
-        <Anchor<'a'>
-          sx={(theme) => ({
-            color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],
-            fontWeight: 500,
-            fontSize: theme.fontSizes.xs,
-            alignSelf: 'end',
-          })}
-        >
-          准备好登录？
-        </Anchor>
-      </Link>
+      <Anchor
+        sx={(theme) => ({
+          fontSize: theme.fontSizes.xs,
+          alignSelf: 'end',
+        })}
+        component={Link}
+        to="/account/login"
+      >
+        准备好登录？
+      </Anchor>
       <Button fullWidth onClick={onRecovery}>
         发送重置邮件
       </Button>
