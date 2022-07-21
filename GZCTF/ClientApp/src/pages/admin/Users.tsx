@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import {
   Group,
   Stack,
@@ -7,9 +7,9 @@ import {
   ActionIcon,
   Badge,
   Avatar,
-  Paper,
   useMantineTheme,
   TextInput,
+  Paper,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -25,18 +25,12 @@ import {
 } from '@mdi/js'
 import Icon from '@mdi/react'
 import api, { Role, UserInfoModel } from '../../Api'
-import UserEditModal from './edit/UserEditModal'
+import AdminPage from '../../components/admin/AdminPage'
+import UserEditModal, { RoleColorMap } from '../../components/admin/edit/UserEditModal'
 
 const ITEM_COUNT_PER_PAGE = 30
 
-export const RoleColorMap = new Map<Role, string>([
-  [Role.Admin, 'blue'],
-  [Role.User, 'brand'],
-  [Role.Monitor, 'yellow'],
-  [Role.Banned, 'red'],
-])
-
-const UserManager: FC = () => {
+const Users: FC = () => {
   const [page, setPage] = useState(1)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
@@ -133,9 +127,9 @@ const UserManager: FC = () => {
   }
 
   return (
-    <Paper shadow="md" p="md">
-      <Stack>
-        <Group position="apart">
+    <AdminPage
+      head={
+        <>
           <TextInput
             icon={<Icon path={mdiMagnify} size={1} />}
             style={{ width: '30%' }}
@@ -164,7 +158,10 @@ const UserManager: FC = () => {
               <Icon path={mdiArrowRightBold} size={1} />
             </ActionIcon>
           </Group>
-        </Group>
+        </>
+      }
+    >
+      <Paper shadow="md" p="md">
         <Table>
           <thead>
             <tr>
@@ -251,9 +248,9 @@ const UserManager: FC = () => {
             )
           }}
         />
-      </Stack>
-    </Paper>
+      </Paper>
+    </AdminPage>
   )
 }
 
-export default UserManager
+export default Users
