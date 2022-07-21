@@ -51,9 +51,10 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
     <Stack spacing="xs">
       <Group position="apart">
         <LogoHeader />
-        <Tabs position="left" tabPadding="md" active={activeTab} onTabChange={onChange} style={{ flexGrow: 1 }}>
+        <Tabs position="right" tabPadding="md" active={activeTab} onTabChange={onChange} style={{ flexGrow: 1 }}>
           {pages.map((page) => (
             <Tabs.Tab
+              key={page.path}
               label={page.title}
               icon={<Icon path={page.icon} size={1} />}
               tabKey={page.path}

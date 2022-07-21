@@ -2,7 +2,6 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import Pages from 'vite-plugin-pages';
 import progress from 'vite-plugin-progress'
-import { chunkSplitPlugin } from 'vite-plugin-chunk-split';
 
 const TARGET = 'http://localhost:5000';
 
@@ -26,13 +25,6 @@ export default defineConfig({
   plugins: [
     react(),
     progress(),
-    chunkSplitPlugin({
-      customSplitting: {
-        'Account': [/src\/pages\/account\/.*/],
-        'Games': [/src\/pages\/games\/.*/],
-        'Admin': [/src\/pages\/admin\/.*/],
-      }
-    }),
     Pages({
       dirs: [{ dir: 'src/pages', baseRoute: '' }]
     }),
