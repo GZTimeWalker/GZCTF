@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <Configurations>Debug;Release;GenAPI</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

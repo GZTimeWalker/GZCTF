@@ -7,8 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		Dockerfile = Dockerfile
 		README.md = README.md
-		Dockerfile1. = Dockerfile1.
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CTFServer", "GZCTF\CTFServer.csproj", "{9AAEFC0F-73F3-44F0-B8AC-140640792603}"
@@ -18,15 +18,20 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		GenAPI|Any CPU = GenAPI|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.GenAPI|Any CPU.ActiveCfg = GenAPI|Any CPU
+		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.GenAPI|Any CPU.Build.0 = GenAPI|Any CPU
 		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AAEFC0F-73F3-44F0-B8AC-140640792603}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.GenAPI|Any CPU.ActiveCfg = GenAPI|Any CPU
+		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.GenAPI|Any CPU.Build.0 = GenAPI|Any CPU
 		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2B5B2F3-0861-4503-9AE4-2152701726DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

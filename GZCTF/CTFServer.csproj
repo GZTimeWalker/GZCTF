@@ -15,6 +15,7 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <SpaProxyServerUrl>http://localhost:3000</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+    <Configurations>Debug;Release;GenAPI</Configurations>
   </PropertyGroup>
   
   <ItemGroup>
@@ -89,7 +90,7 @@
     <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
   </Target>
 
-  <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' != 'Debug'">
+  <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'GenAPI'">
     <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net60) aspnetcore2openapi /assembly:$(TargetDir)CTFServer.dll /output:ClientApp/template/swagger.json" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run genapi" />
   </Target>
