@@ -10,7 +10,7 @@ import {
   useMantineTheme,
   TypographyStylesProvider,
 } from '@mantine/core'
-import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiFileEditOutline, mdiPencilOutline } from '@mdi/js'
+import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import Icon from '@mdi/react'
 import { Notice } from '../../Api'
 

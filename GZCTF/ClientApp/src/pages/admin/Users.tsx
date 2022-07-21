@@ -21,7 +21,6 @@ import {
   mdiMagnify,
   mdiClose,
   mdiDeleteOutline,
-  mdiFileEditOutline,
   mdiPencilOutline,
 } from '@mdi/js'
 import Icon from '@mdi/react'
