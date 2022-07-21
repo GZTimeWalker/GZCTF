@@ -66,7 +66,7 @@ const Teams: FC = () => {
 
     api.team
       .teamAccept(joinTeamCode)
-      .then((res) => {
+      .then(() => {
         showNotification({
           color: 'teal',
           title: '加入队伍成功',

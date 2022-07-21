@@ -112,11 +112,15 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   )
 }
 
+const getLabel = (path: string) =>
+  items.find((item) => (item.link === '/' ? path === '/' : path.startsWith(item.link)))
+
 const AppNavbar: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { classes, cx } = useStyles()
-  const [active, setActive] = useState('')
+
+  const [active, setActive] = useState(getLabel(location.pathname) ?? '')
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const { data: user, error } = api.account.useAccountProfile({
@@ -129,11 +133,7 @@ const AppNavbar: FC = () => {
     if (location.pathname == '/') {
       setActive(items[0].label)
     }
-    items.forEach((i) => {
-      if (location.pathname.startsWith(i.link) && i.link != '/') {
-        setActive(i.label)
-      }
-    })
+    setActive(getLabel(location.pathname) ?? '')
   }, [location.pathname])
 
   const logout = () => {

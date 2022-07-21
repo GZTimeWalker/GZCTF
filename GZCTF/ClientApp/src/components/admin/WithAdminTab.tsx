@@ -30,9 +30,8 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [activeTab, setActiveTab] = useState(
-    getTab(location.pathname) < 0 ? 0 : getTab(location.pathname)
-  )
+  const tabIndex = getTab(location.pathname)
+  const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
   const onChange = (active: number, tabKey: string) => {
     setActiveTab(active)
@@ -40,10 +39,11 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
   }
 
   useEffect(() => {
-    const tab = pages.findIndex((page) => location.pathname.startsWith(page.path))
-
+    const tab = getTab(location.pathname)
     if (tab >= 0) {
       setActiveTab(tab)
+    } else {
+      navigate(pages[0].path)
     }
   }, [location])
 
