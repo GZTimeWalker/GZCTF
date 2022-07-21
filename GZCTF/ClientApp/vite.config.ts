@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import Pages from 'vite-plugin-pages';
 import progress from 'vite-plugin-progress'
+import Pages from 'vite-plugin-pages';
 
 const TARGET = 'http://localhost:5000';
 
@@ -17,7 +17,8 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    assetsDir: 'static'
+    assetsDir: 'static',
+    target: 'esnext'
   },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' },
@@ -27,6 +28,6 @@ export default defineConfig({
     progress(),
     Pages({
       dirs: [{ dir: 'src/pages', baseRoute: '' }]
-    }),
+    })
   ],
 });

@@ -9,7 +9,7 @@ import {
   mdiFileDocumentOutline,
 } from '@mdi/js'
 import Icon from '@mdi/react'
-import LogoHeader from '../LogoHeader'
+import IconTabs from '../IconTabs'
 
 const pages = [
   { icon: mdiBullhornOutline, title: '通知管理', path: '/admin/notices' },
@@ -49,26 +49,15 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
 
   return (
     <Stack spacing="xs">
-      <Group position="apart">
-        <LogoHeader />
-        <Tabs
-          position="right"
-          variant="pills"
-          tabPadding="md"
-          active={activeTab}
-          onTabChange={onChange}
-          style={{ flexGrow: 1 }}
-        >
-          {pages.map((page) => (
-            <Tabs.Tab
-              key={page.path}
-              label={page.title}
-              icon={<Icon path={page.icon} size={1} />}
-              tabKey={page.path}
-            />
-          ))}
-        </Tabs>
-      </Group>
+      <IconTabs
+        active={activeTab}
+        onTabChange={onChange}
+        tabs={pages.map((p) => ({
+          tabKey: p.path,
+          label: p.title,
+          icon: <Icon path={p.icon} size={1} />,
+        }))}
+      />
       {head && (
         <Group position="apart" style={{ height: '40px', width: '100%' }} {...headProps}>
           {head}
