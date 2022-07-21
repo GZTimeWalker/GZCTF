@@ -91,7 +91,7 @@ const Login: FC = () => {
       <Anchor
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,
-          alignSelf: 'end'
+          alignSelf: 'end',
         })}
         component={Link}
         to="/account/recovery"

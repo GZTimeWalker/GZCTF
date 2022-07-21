@@ -137,7 +137,7 @@ const Teams: FC = () => {
                       paddingLeft: '1rem',
                       color: theme.colors.brand[theme.colorScheme === 'dark' ? 2 : 6],
                       userSelect: 'none',
-                      marginTop: "-1.5rem"
+                      marginTop: '-1.5rem',
                     }}
                   >
                     ACTIVE
@@ -149,7 +149,7 @@ const Teams: FC = () => {
                       activeTeam.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
                     }
                     onEdit={() => onEditTeam(activeTeam)}
-                    mutateActive={() => { }}
+                    mutateActive={() => {}}
                   />
                 </>
               )}
