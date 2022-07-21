@@ -1,21 +1,19 @@
 import * as signalR from '@microsoft/signalr'
-import { FC, useEffect, useState, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import {
-  Stack,
-  Group,
-  Table,
   createStyles,
-  ActionIcon,
   keyframes,
-  Badge,
-  Paper,
+  Group,
   SegmentedControl,
+  ActionIcon,
+  Table,
+  Paper,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiArrowRightBold, mdiArrowLeftBold } from '@mdi/js'
+import { mdiClose, mdiCheck, mdiArrowLeftBold, mdiArrowRightBold } from '@mdi/js'
 import Icon from '@mdi/react'
 import api, { LogMessageModel } from '../../Api'
+import AdminPage from '../../components/admin/AdminPage'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -50,7 +48,7 @@ enum LogLevel {
   All = 'All',
 }
 
-const LogViewer: FC = () => {
+const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
 
   const [activePage, setPage] = useState(1)
@@ -132,9 +130,9 @@ const LogViewer: FC = () => {
   ))
 
   return (
-    <Paper shadow="md" p="md">
-      <Stack>
-        <Group position="apart">
+    <AdminPage
+      head={
+        <>
           <SegmentedControl
             color="brand"
             value={level}
@@ -162,7 +160,10 @@ const LogViewer: FC = () => {
               <Icon path={mdiArrowRightBold} size={1} />
             </ActionIcon>
           </Group>
-        </Group>
+        </>
+      }
+    >
+      <Paper shadow="md" p="md">
         <Table>
           <thead>
             <tr>
@@ -175,9 +176,9 @@ const LogViewer: FC = () => {
           </thead>
           <tbody>{rows}</tbody>
         </Table>
-      </Stack>
-    </Paper>
+      </Paper>
+    </AdminPage>
   )
 }
 
-export default LogViewer
+export default Logs

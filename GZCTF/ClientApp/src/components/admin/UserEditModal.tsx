@@ -17,34 +17,22 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core'
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import Icon from '@mdi/react'
-import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../../Api'
-import { RoleColorMap } from '../UserManager'
+import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
+
+export const RoleColorMap = new Map<Role, string>([
+  [Role.Admin, 'blue'],
+  [Role.User, 'brand'],
+  [Role.Monitor, 'yellow'],
+  [Role.Banned, 'red'],
+])
 
 interface UserEditModalProps extends ModalProps {
   user: UserInfoModel
   mutateUser: (user: UserInfoModel) => void
 }
-
-const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
-  <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
-    {file ? (
-      <Image fit="contain" src={URL.createObjectURL(file)} alt="avatar" />
-    ) : (
-      <Box>
-        <Text size="xl" inline>
-          拖放图片或点击此处以选择头像
-        </Text>
-        <Text size="sm" color="dimmed" inline mt={7}>
-          请选择小于 3MB 的图片
-        </Text>
-      </Box>
-    )}
-  </Group>
-)
 
 const UserEditModal: FC<UserEditModalProps> = (props) => {
   const { user, mutateUser, ...modalProps } = props

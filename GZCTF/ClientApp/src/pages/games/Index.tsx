@@ -26,7 +26,10 @@ const Games: FC = () => {
     <WithNavBar>
       <Stack>
         <LogoHeader />
-        <Tabs tabPadding="md">
+        <Tabs tabPadding="xl" grow styles={(theme) => ({
+          root: { marginTop: -64 },
+          tabsListWrapper: { marginLeft: 210 }
+        })}>
           <Tabs.Tab label="进行中" icon={<Icon path={mdiFlag} size={1} />}>
             <SimpleGrid
               cols={3}

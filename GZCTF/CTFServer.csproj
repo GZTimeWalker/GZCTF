@@ -15,8 +15,11 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <SpaProxyServerUrl>http://localhost:3000</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+    <Configurations>Debug;Release;GenAPI</Configurations>
+    <FrontendBuildTool>pnpm</FrontendBuildTool>
+    <FrontendBuildTool Condition="'$(UseNpm)'=='true'">npm</FrontendBuildTool>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="4.0.2" />
     <PackageReference Include="Docker.DotNet" Version="3.125.5" />
@@ -89,19 +92,19 @@
     <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
   </Target>
 
-  <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' != 'Debug'">
+  <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'GenAPI'">
     <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net60) aspnetcore2openapi /assembly:$(TargetDir)CTFServer.dll /output:ClientApp/template/swagger.json" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run genapi" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="$(FrontendBuildTool) run genapi" />
   </Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run build" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="$(FrontendBuildTool) install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="$(FrontendBuildTool) run build" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(SpaRoot)out\**" />
+      <DistFiles Include="$(SpaRoot)build\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

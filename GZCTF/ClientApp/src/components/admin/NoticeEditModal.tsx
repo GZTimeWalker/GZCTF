@@ -4,7 +4,7 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import Icon from '@mdi/react'
-import api, { Notice } from '../../../Api'
+import api, { Notice } from '../../Api'
 
 interface NoticeEditModalProps extends ModalProps {
   notice?: Notice | null
@@ -129,6 +129,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           <Button
             fullWidth
             variant="outline"
+            color="orange"
             disabled={disabled}
             onClick={() => {
               setTitle(notice?.title)
@@ -137,7 +138,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           >
             {notice ? '还原通知' : '清空通知'}
           </Button>
-          <Button fullWidth variant="outline" color="orange" disabled={disabled} onClick={onUpdate}>
+          <Button fullWidth disabled={disabled} onClick={onUpdate}>
             {notice ? '更改通知' : '新建通知'}
           </Button>
         </Group>
