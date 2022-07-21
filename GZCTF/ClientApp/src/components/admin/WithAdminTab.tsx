@@ -66,10 +66,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
           {head}
         </Group>
       )}
-      <ScrollArea
-        offsetScrollbars
-        style={{ height: head ? 'calc(100vh - 160px)' : 'calc(100vh - 120px)' }}
-      >
+      <ScrollArea style={{ height: head ? 'calc(100vh - 160px)' : 'calc(100vh - 120px)' }}>
         {children}
       </ScrollArea>
     </Stack>

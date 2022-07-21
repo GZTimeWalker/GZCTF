@@ -57,7 +57,20 @@ const Users: FC = () => {
   }, [page])
 
   const onSearch = () => {
+    if (!hint) {
+      api.admin
+        .adminUsers({
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (page - 1) * ITEM_COUNT_PER_PAGE,
+        })
+        .then((res) => {
+          setUsers(res.data)
+        })
+      return
+    }
+
     setSearching(true)
+    
     api.admin
       .adminSearchUsers({
         hint,
