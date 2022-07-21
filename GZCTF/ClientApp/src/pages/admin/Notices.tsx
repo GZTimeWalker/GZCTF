@@ -75,15 +75,15 @@ const Notices: FC = () => {
     <AdminPage
       headProps={{ position: 'center' }}
       head={
-          <Button
-            leftIcon={<Icon path={mdiPlus} size={1} />}
-            onClick={() => {
-              setActiveNotice(null)
-              setIsEditModalOpen(true)
-            }}
-          >
-            新建通知
-          </Button>
+        <Button
+          leftIcon={<Icon path={mdiPlus} size={1} />}
+          onClick={() => {
+            setActiveNotice(null)
+            setIsEditModalOpen(true)
+          }}
+        >
+          新建通知
+        </Button>
       }
     >
       <Stack
