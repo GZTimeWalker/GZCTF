@@ -10,7 +10,7 @@ import {
   useMantineTheme,
   TypographyStylesProvider,
 } from '@mantine/core'
-import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiFileEditOutline } from '@mdi/js'
+import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiFileEditOutline, mdiPencilOutline } from '@mdi/js'
 import Icon from '@mdi/react'
 import { Notice } from '../../Api'
 
@@ -42,7 +42,7 @@ const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onP
               )}
             </ActionIcon>
             <ActionIcon onClick={onEdit}>
-              <Icon path={mdiFileEditOutline} size={1} />
+              <Icon path={mdiPencilOutline} size={1} />
             </ActionIcon>
             <ActionIcon onClick={onDelete} color="red">
               <Icon path={mdiDeleteOutline} size={1} />

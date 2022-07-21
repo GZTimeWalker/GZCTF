@@ -22,6 +22,7 @@ import {
   mdiClose,
   mdiDeleteOutline,
   mdiFileEditOutline,
+  mdiPencilOutline,
 } from '@mdi/js'
 import Icon from '@mdi/react'
 import api, { Role, UserInfoModel } from '../../Api'
@@ -70,7 +71,7 @@ const Users: FC = () => {
     }
 
     setSearching(true)
-    
+
     api.admin
       .adminSearchUsers({
         hint,
@@ -231,7 +232,7 @@ const Users: FC = () => {
                           setIsEditModalOpen(true)
                         }}
                       >
-                        <Icon path={mdiFileEditOutline} size={1} />
+                        <Icon path={mdiPencilOutline} size={1} />
                       </ActionIcon>
                       <ActionIcon
                         disabled={user.id === currentUser?.userId}
