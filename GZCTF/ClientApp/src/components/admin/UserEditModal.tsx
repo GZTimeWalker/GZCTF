@@ -17,11 +17,10 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core'
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import Icon from '@mdi/react'
-import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../../Api'
+import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],

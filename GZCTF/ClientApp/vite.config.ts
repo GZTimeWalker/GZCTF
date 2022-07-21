@@ -30,6 +30,7 @@ export default defineConfig({
       customSplitting: {
         'Account': [/src\/pages\/account\/.*/],
         'Games': [/src\/pages\/games\/.*/],
+        'Admin': [/src\/pages\/admin\/.*/],
       }
     }),
     Pages({
