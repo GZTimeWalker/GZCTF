@@ -23,7 +23,7 @@ import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { useClipboard, useHover } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api, { TeamInfoModel, TeamUserInfoModel } from '../Api'
 
 const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (

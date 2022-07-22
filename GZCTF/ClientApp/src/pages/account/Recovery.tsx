@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { TextInput, Button, Anchor } from '@mantine/core'
-import { useInputState, useWindowEvent } from '@mantine/hooks'
+import { getHotkeyHandler, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api from '../../Api'
 import AccountView from '../../components/AccountView'
 
@@ -35,12 +35,6 @@ const Recovery: FC = () => {
       })
   }
 
-  useWindowEvent('keydown', (e) => {
-    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onRecovery()
-    }
-  })
-
   return (
     <AccountView>
       <TextInput
@@ -51,6 +45,7 @@ const Recovery: FC = () => {
         style={{ width: '100%' }}
         value={email}
         onChange={(event) => setEmail(event.currentTarget.value)}
+        onKeyDown={getHotkeyHandler([['Enter', onRecovery]])}
       />
       <Anchor
         sx={(theme) => ({

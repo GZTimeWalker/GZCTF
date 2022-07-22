@@ -16,7 +16,7 @@ import {
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api, { TeamInfoModel } from '../Api'
 
 interface TeamCardProps {

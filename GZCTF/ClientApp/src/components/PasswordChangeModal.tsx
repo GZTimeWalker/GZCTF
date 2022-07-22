@@ -4,7 +4,7 @@ import { Button, Group, Modal, ModalProps, PasswordInput, SimpleGrid, Stack } fr
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api from '../Api'
 import StrengthPasswordInput from './StrengthPasswordInput'
 

@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Badge, Box, Card, Group, Image, Stack, Text, Title, useMantineTheme } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import { BasicGameInfoModel } from '../Api'
 
 const GameCard: FC<BasicGameInfoModel> = (game) => {

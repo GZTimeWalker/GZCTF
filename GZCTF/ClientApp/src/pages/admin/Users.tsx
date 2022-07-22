@@ -23,7 +23,7 @@ import {
   mdiDeleteOutline,
   mdiPencilOutline,
 } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api, { Role, UserInfoModel } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '../../components/admin/UserEditModal'
