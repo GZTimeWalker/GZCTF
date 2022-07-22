@@ -102,7 +102,10 @@ export interface ProfileUpdateModel {
   /** 描述 */
   bio?: string | null
 
-  /** 手机号 */
+  /**
+   * 手机号
+   * @format phone
+   */
   phone?: string | null
 
   /** 真实姓名 */
@@ -294,13 +297,19 @@ export interface UpdateUserInfoModel {
   /** 用户名 */
   userName?: string | null
 
-  /** 邮箱 */
+  /**
+   * 邮箱
+   * @format email
+   */
   email?: string | null
 
   /** 签名 */
   bio?: string | null
 
-  /** 手机号码 */
+  /**
+   * 手机号码
+   * @format phone
+   */
   phone?: string | null
 
   /** 真实姓名 */
@@ -1134,7 +1143,10 @@ export interface ClientFlagContext {
  * 队伍信息更新
  */
 export interface TeamUpdateModel {
-  /** 队伍名称 */
+  /**
+   * 队伍名称
+   * @pattern [0-9A-Za-z]+
+   */
   name?: string | null
 
   /** 队伍签名 */

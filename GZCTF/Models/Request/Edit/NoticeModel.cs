@@ -11,6 +11,7 @@ public class NoticeModel
     /// 通知标题
     /// </summary>
     [Required(ErrorMessage = "标题是必需的")]
+    [MaxLength(50, ErrorMessage = "标题过长")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>

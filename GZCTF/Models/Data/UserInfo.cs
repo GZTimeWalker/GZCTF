@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CTFServer.Models;
@@ -33,16 +34,19 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 个性签名
     /// </summary>
+    [MaxLength(50)]
     public string Bio { get; set; } = string.Empty;
 
     /// <summary>
     /// 真实姓名
     /// </summary>
+    [MaxLength(6)]
     public string RealName { get; set; } = string.Empty;
 
     /// <summary>
     /// 学工号
     /// </summary>
+    [MaxLength(10)]
     public string StdNumber { get; set; } = string.Empty;
 
     #region 数据库关系
