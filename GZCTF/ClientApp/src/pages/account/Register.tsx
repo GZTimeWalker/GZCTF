@@ -1,7 +1,7 @@
 import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core'
-import { useInputState, useWindowEvent } from '@mantine/hooks'
+import { getHotkeyHandler, useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -86,11 +86,7 @@ const Register: FC = () => {
       })
   }
 
-  useWindowEvent('keydown', (e) => {
-    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onRegister()
-    }
-  })
+  const enterHandler = getHotkeyHandler([['Enter', onRegister]])
 
   return (
     <AccountView>
@@ -103,6 +99,7 @@ const Register: FC = () => {
         value={email}
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
+        onKeyDown={enterHandler}
       />
       <TextInput
         required
@@ -113,11 +110,13 @@ const Register: FC = () => {
         value={uname}
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
+        onKeyDown={enterHandler}
       />
       <StrengthPasswordInput
         value={pwd}
         onChange={(event) => setPwd(event.currentTarget.value)}
         disabled={disabled}
+        onKeyDown={enterHandler}
       />
       <PasswordInput
         required
@@ -127,19 +126,18 @@ const Register: FC = () => {
         label="重复密码"
         style={{ width: '100%' }}
         error={pwd !== retypedPwd}
+        onKeyDown={enterHandler}
       />
-      <Link to="/account/login">
-        <Anchor<'a'>
-          sx={(theme) => ({
-            color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],
-            fontWeight: 500,
-            fontSize: theme.fontSizes.xs,
-            alignSelf: 'end',
-          })}
-        >
-          已经拥有账户？
-        </Anchor>
-      </Link>
+      <Anchor
+        sx={(theme) => ({
+          fontSize: theme.fontSizes.xs,
+          alignSelf: 'end',
+        })}
+        component={Link}
+        to="/account/login"
+      >
+        已经拥有账户？
+      </Anchor>
       <Button fullWidth onClick={onRegister} disabled={disabled}>
         注册
       </Button>

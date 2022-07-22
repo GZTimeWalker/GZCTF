@@ -1,7 +1,7 @@
 import { FC, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, PasswordInput } from '@mantine/core'
-import { useInputState, useWindowEvent } from '@mantine/hooks'
+import { getHotkeyHandler, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -68,11 +68,7 @@ const Reset: FC = () => {
       })
   }
 
-  useWindowEvent('keydown', (e) => {
-    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onReset()
-    }
-  })
+  const enterHandler = getHotkeyHandler([['Enter', onReset]])
 
   return (
     <AccountView>
@@ -81,6 +77,7 @@ const Reset: FC = () => {
         onChange={(event) => setPwd(event.currentTarget.value)}
         label="新密码"
         disabled={disabled}
+        onKeyDown={enterHandler}
       />
       <PasswordInput
         required
@@ -90,6 +87,7 @@ const Reset: FC = () => {
         style={{ width: '100%' }}
         disabled={disabled}
         error={pwd !== retypedPwd}
+        onKeyDown={enterHandler}
       />
       <Button fullWidth onClick={onReset} disabled={disabled}>
         重置密码

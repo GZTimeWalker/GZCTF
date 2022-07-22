@@ -9,17 +9,17 @@ specifiers:
   '@mantine/hooks': ^4.2.12
   '@mantine/modals': ^4.2.12
   '@mantine/notifications': ^4.2.12
-  '@mdi/js': ^6.9.96
+  '@mdi/js': ^7.0.96
   '@mdi/react': ^1.6.0
   '@microsoft/signalr': ^6.0.7
   '@trivago/prettier-plugin-sort-imports': ^3.3.0
   '@types/marked': ^4.0.3
-  '@types/node': 18.0.5
+  '@types/node': 18.0.6
   '@types/react': ^18.0.15
   '@types/react-dom': ^18.0.6
   '@vitejs/plugin-react': ^2.0.0
   axios: ^0.27.2
-  dayjs: ^1.11.3
+  dayjs: ^1.11.4
   echarts: ^5.3.3
   echarts-for-react: ^3.0.2
   eslint: 8.20.0
@@ -42,16 +42,16 @@ specifiers:
 dependencies:
   '@babel/core': 7.18.9
   '@mantine/core': 4.2.12_essemuo2ilucam5kriquhcncne
-  '@mantine/dates': 4.2.12_4yfrb77sreti4yhszibccv2ini
+  '@mantine/dates': 4.2.12_eu6ecr2ii34k3j4evqpacybtfq
   '@mantine/dropzone': 4.2.12_n5fi23fjjzlwcbqhnnpdtjftw4
   '@mantine/form': 4.2.12_react@18.2.0
   '@mantine/hooks': 4.2.12_react@18.2.0
   '@mantine/modals': 4.2.12_n5fi23fjjzlwcbqhnnpdtjftw4
   '@mantine/notifications': 4.2.12_n5fi23fjjzlwcbqhnnpdtjftw4
-  '@mdi/js': 6.9.96
+  '@mdi/js': 7.0.96
   '@mdi/react': 1.6.0
   '@microsoft/signalr': 6.0.7
-  dayjs: 1.11.3
+  dayjs: 1.11.4
   echarts: 5.3.3
   echarts-for-react: 3.0.2_echarts@5.3.3+react@18.2.0
   marked: 4.0.18
@@ -64,7 +64,7 @@ dependencies:
 devDependencies:
   '@trivago/prettier-plugin-sort-imports': 3.3.0_prettier@2.7.1
   '@types/marked': 4.0.3
-  '@types/node': 18.0.5
+  '@types/node': 18.0.6
   '@types/react': 18.0.15
   '@types/react-dom': 18.0.6
   '@vitejs/plugin-react': 2.0.0_vite@3.0.2
@@ -483,7 +483,7 @@ packages:
       ajv: 6.12.6
       debug: 4.3.4
       espree: 9.3.2
-      globals: 13.16.0
+      globals: 13.17.0
       ignore: 5.2.0
       import-fresh: 3.3.0
       js-yaml: 4.1.0
@@ -564,7 +564,7 @@ packages:
       - '@types/react'
     dev: false
 
-  /@mantine/dates/4.2.12_4yfrb77sreti4yhszibccv2ini:
+  /@mantine/dates/4.2.12_eu6ecr2ii34k3j4evqpacybtfq:
     resolution: {integrity: sha512-zyCZbU0Hx4pH3ylIFNvvg5EFh4b5ZnIE1nBWO0Yes9XI4j3exa6s5d1YQ5G8Hn+hrKWlu4YHVlXB08J0em83EA==}
     peerDependencies:
       '@mantine/core': 4.2.12
@@ -574,7 +574,7 @@ packages:
     dependencies:
       '@mantine/core': 4.2.12_essemuo2ilucam5kriquhcncne
       '@mantine/hooks': 4.2.12_react@18.2.0
-      dayjs: 1.11.3
+      dayjs: 1.11.4
       react: 18.2.0
     dev: false
 
@@ -657,8 +657,8 @@ packages:
       - '@types/react'
     dev: false
 
-  /@mdi/js/6.9.96:
-    resolution: {integrity: sha512-rK0/vLFaiItYS2W7uVmaKPKnhNQE4XVkylpk5njtVwENnp8elwY5uRL6qvdj2esuvUHG7DwygE4Qu3eKxxuJiQ==}
+  /@mdi/js/7.0.96:
+    resolution: {integrity: sha512-lNqhkV3cpPfYb/Avh+vXLFukUTbHbyHoFo4Jdc7Oc9UvURGVhamFIpgOVvEf2bNA78zvjXTZeVWExUTR+DLBfQ==}
     dev: false
 
   /@mdi/react/1.6.0:
@@ -847,8 +847,8 @@ packages:
     resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
     dev: true
 
-  /@types/node/18.0.5:
-    resolution: {integrity: sha512-En7tneq+j0qAiVwysBD79y86MT3ModuoIJbe7JXp+sb5UAjInSShmK3nXXMioBzfF7rXC12hv12d4IyCVwN4dA==}
+  /@types/node/18.0.6:
+    resolution: {integrity: sha512-/xUq6H2aQm261exT6iZTMifUySEt4GR5KX8eYyY+C4MSNPqSh9oNIP7tz2GLKTlFaiBbgZNxffoR3CVRG+cljw==}
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -903,16 +903,16 @@ packages:
       event-target-shim: 5.0.1
     dev: false
 
-  /acorn-jsx/5.3.2_acorn@8.7.1:
+  /acorn-jsx/5.3.2_acorn@8.8.0:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.7.1
+      acorn: 8.8.0
     dev: true
 
-  /acorn/8.7.1:
-    resolution: {integrity: sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==}
+  /acorn/8.8.0:
+    resolution: {integrity: sha512-QOxyigPVrpZ2GXT+PFyZTl6TtOFc5egxHIP9IlQ+RbupQuX4RkT/Bee4/kQuC02Xkzg84JcT7oLYtDIQxp+v7w==}
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
@@ -1002,8 +1002,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001367
-      electron-to-chromium: 1.4.194
+      caniuse-lite: 1.0.30001368
+      electron-to-chromium: 1.4.196
       node-releases: 2.0.6
       update-browserslist-db: 1.0.5_browserslist@4.21.2
 
@@ -1023,8 +1023,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite/1.0.30001367:
-    resolution: {integrity: sha512-XDgbeOHfifWV3GEES2B8rtsrADx4Jf+juKX2SICJcaUhjYBO3bR96kvEIHa15VU6ohtOhBZuPGGYGbXMRn0NCw==}
+  /caniuse-lite/1.0.30001368:
+    resolution: {integrity: sha512-wgfRYa9DenEomLG/SdWgQxpIyvdtH3NW8Vq+tB6AwR9e56iOIcu1im5F/wNdDf04XlKHXqIx4N8Jo0PemeBenQ==}
 
   /chalk/2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -1122,8 +1122,8 @@ packages:
   /csstype/3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
 
-  /dayjs/1.11.3:
-    resolution: {integrity: sha512-xxwlswWOlGhzgQ4TKzASQkUhqERI3egRNqgV4ScR8wlANA/A9tZ7miXa44vTTKEq5l7vWoL5G57bG3zA+Kow0A==}
+  /dayjs/1.11.4:
+    resolution: {integrity: sha512-Zj/lPM5hOvQ1Bf7uAvewDaUcsJoI6JmNqmHhHl3nyumwe0XHwt8sWdOVAPACJzCebL8gQCi+K49w7iKWnGwX9g==}
     dev: false
 
   /debug/4.3.4:
@@ -1207,8 +1207,8 @@ packages:
       zrender: 5.3.2
     dev: false
 
-  /electron-to-chromium/1.4.194:
-    resolution: {integrity: sha512-ola5UH0xAP1oYY0FFUsPvwtucEzCQHucXnT7PQ1zjHJMccZhCDktEugI++JUR3YuIs7Ff7afz+OVEhVAIMhLAQ==}
+  /electron-to-chromium/1.4.196:
+    resolution: {integrity: sha512-uxMa/Dt7PQsLBVXwH+t6JvpHJnrsYBaxWKi/J6HE+/nBtoHENhwBoNkgkm226/Kfxeg0z1eMQLBRPPKcDH8xWA==}
 
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -1547,7 +1547,7 @@ packages:
       file-entry-cache: 6.0.1
       functional-red-black-tree: 1.0.1
       glob-parent: 6.0.2
-      globals: 13.16.0
+      globals: 13.17.0
       ignore: 5.2.0
       import-fresh: 3.3.0
       imurmurhash: 0.1.4
@@ -1572,8 +1572,8 @@ packages:
     resolution: {integrity: sha512-D211tC7ZwouTIuY5x9XnS0E9sWNChB7IYKX/Xp5eQj3nFXhqmiUDB9q27y76oFl8jTg3pXcQx/bpxMfs3CIZbA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      acorn: 8.7.1
-      acorn-jsx: 5.3.2_acorn@8.7.1
+      acorn: 8.8.0
+      acorn-jsx: 5.3.2_acorn@8.8.0
       eslint-visitor-keys: 3.3.0
     dev: true
 
@@ -1822,8 +1822,8 @@ packages:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
     engines: {node: '>=4'}
 
-  /globals/13.16.0:
-    resolution: {integrity: sha512-A1lrQfpNF+McdPOnnFqY3kSN0AFTy485bTi1bkLk4mVPODIUEcSfhHgRqA+QdXPksrSTTztYXx37NFV+GpGk3Q==}
+  /globals/13.17.0:
+    resolution: {integrity: sha512-1C+6nQRb1GwGMKm2dH/E7enFAMxGTmGI7/dEdhy/DNelv85w9B72t3uc5frtMNXIbzrarJJ/lTCjcaZwbLJmyw==}
     engines: {node: '>=8'}
     dependencies:
       type-fest: 0.20.2

@@ -1,7 +1,7 @@
 import { FC, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core'
-import { useInputState, useWindowEvent } from '@mantine/hooks'
+import { useInputState, getHotkeyHandler } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -60,11 +60,7 @@ const Login: FC = () => {
       })
   }
 
-  useWindowEvent('keydown', (e) => {
-    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-      onLogin()
-    }
-  })
+  const enterHandler = getHotkeyHandler([['Enter', onLogin]])
 
   return (
     <AccountView>
@@ -77,35 +73,34 @@ const Login: FC = () => {
         value={uname}
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
+        onKeyDown={enterHandler}
       />
       <PasswordInput
         required
         label="密码"
+        id="your-password"
         placeholder="P4ssW@rd"
         style={{ width: '100%' }}
         value={pwd}
         disabled={disabled}
         onChange={(event) => setPwd(event.currentTarget.value)}
+        onKeyDown={enterHandler}
       />
-      <Link to="/account/recovery">
-        <Anchor<'a'>
-          sx={(theme) => ({
-            color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 7],
-            fontWeight: 500,
-            fontSize: theme.fontSizes.xs,
-            alignSelf: 'end',
-          })}
-        >
-          忘记密码？
-        </Anchor>
-      </Link>
+      <Anchor
+        sx={(theme) => ({
+          fontSize: theme.fontSizes.xs,
+          alignSelf: 'end',
+        })}
+        component={Link}
+        to="/account/recovery"
+      >
+        忘记密码？
+      </Anchor>
       <Grid grow style={{ width: '100%' }}>
         <Grid.Col span={2}>
-          <Link to="/account/register">
-            <Button fullWidth variant="outline">
-              注册
-            </Button>
-          </Link>
+          <Button fullWidth variant="outline" component={Link} to="/account/register">
+            注册
+          </Button>
         </Grid.Col>
         <Grid.Col span={2}>
           <Button fullWidth disabled={disabled} onClick={onLogin}>

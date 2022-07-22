@@ -38,6 +38,7 @@ interface StrengthPasswordInputProps {
   disabled?: boolean
   label?: string
   onChange: React.ChangeEventHandler<HTMLInputElement>
+  onKeyDown: React.KeyboardEventHandler<HTMLInputElement>
 }
 
 const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
