@@ -50,7 +50,6 @@ enum LogLevel {
 
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
-
   const [activePage, setPage] = useState(1)
   const { classes, cx } = useStyles()
 
@@ -110,7 +109,9 @@ const Logs: FC = () => {
       })
 
     return () => {
-      connection.stop().catch((err) => {console.error(err)})
+      connection.stop().catch((err) => {
+        console.error(err)
+      })
     }
   }, [])
 
@@ -136,6 +137,11 @@ const Logs: FC = () => {
           <SegmentedControl
             color="brand"
             value={level}
+            styles={{
+              root: {
+                background: 'transparent',
+              },
+            }}
             onChange={(value: LogLevel) => setLevel(value)}
             data={Object.entries(LogLevel).map((role) => ({
               value: role[1],
