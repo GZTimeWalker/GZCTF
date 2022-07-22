@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { SimpleGrid, Stack, Tabs, useMantineTheme } from '@mantine/core'
+import { SimpleGrid, Stack } from '@mantine/core'
 import { mdiFlag, mdiPackageVariantClosed, mdiProgressClock } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { BasicGameInfoModel } from '../../Api'

@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Group, Modal, ModalProps, PasswordInput, SimpleGrid, Stack } from '@mantine/core'
+import { Button, Group, Modal, ModalProps, PasswordInput, Stack } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'

@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Button, Center, Stack, Text } from '@mantine/core'
+import { Button, Stack, Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiPlus } from '@mdi/js'

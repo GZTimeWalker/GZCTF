@@ -82,7 +82,7 @@ const Logs: FC = () => {
   }, [activePage, level])
 
   useEffect(() => {
-    let connection = new signalR.HubConnectionBuilder()
+    const connection = new signalR.HubConnectionBuilder()
       .withUrl('/hub/admin')
       .withHubProtocol(new signalR.JsonHubProtocol())
       .withAutomaticReconnect()
@@ -110,7 +110,7 @@ const Logs: FC = () => {
       })
 
     return () => {
-      connection.stop().catch(() => {})
+      connection.stop().catch((err) => {console.error(err)})
     }
   }, [])
 

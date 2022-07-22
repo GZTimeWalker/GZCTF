@@ -1,9 +1,10 @@
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import progress from 'vite-plugin-progress'
-import Pages from 'vite-plugin-pages';
+import eslint from 'vite-plugin-eslint'
+import Pages from 'vite-plugin-pages'
 
-const TARGET = 'http://localhost:5000';
+const TARGET = 'http://localhost:5000'
 
 export default defineConfig({
   server: {
@@ -34,8 +35,9 @@ export default defineConfig({
   plugins: [
     react(),
     progress(),
+    eslint(),
     Pages({
       dirs: [{ dir: 'src/pages', baseRoute: '' }]
     })
   ],
-});
+})

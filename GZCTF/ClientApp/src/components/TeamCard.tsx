@@ -24,7 +24,7 @@ interface TeamCardProps {
   isCaptain: boolean
   isActive: boolean
   onEdit: () => void
-  mutateActive: () => void
+  mutateActive?: () => void
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
@@ -51,7 +51,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
-          mutateActive()
+          mutateActive && mutateActive()
         })
         .catch((err) => {
           showNotification({

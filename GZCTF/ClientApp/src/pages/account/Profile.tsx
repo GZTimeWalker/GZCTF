@@ -58,7 +58,7 @@ const Profile: FC = () => {
   })
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
-  const [disabled, setDisabled] = useState(false)
+  const [disabled, ] = useState(false)
 
   const [mailEditOpened, setMailEditOpened] = useState(false)
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false)

@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useEffect } from 'react'
-import { useNavigate, useLocation, useRoutes } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Center, Loader } from '@mantine/core'
 import api, { Role } from '../Api'
 

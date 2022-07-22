@@ -20,7 +20,7 @@ import {
   ScrollArea,
 } from '@mantine/core'
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
-import { useClipboard, useHover } from '@mantine/hooks'
+import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -224,7 +224,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     if (teamInfo && teamInfo?.id) {
       api.team
         .teamUpdateTeam(teamInfo.id, teamInfo)
-        .then((data) => {
+        .then(() => {
           // Updated TeamInfoModel
           showNotification({
             color: 'teal',

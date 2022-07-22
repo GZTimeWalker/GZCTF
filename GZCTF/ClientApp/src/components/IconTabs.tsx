@@ -14,7 +14,7 @@ interface TabProps {
   label?: React.ReactNode
 }
 
-interface IconTabsProps extends React.PropsWithChildren {
+interface IconTabsProps {
   position?: GroupPosition
   tabs: TabProps[]
   grow?: boolean
@@ -78,7 +78,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
 })
 
 const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) => {
-  const { tabKey, color, label, active, icon, ...others } = props
+  const { color, label, active, icon, ...others } = props
   const { classes, cx } = useTabStyle({ color })
 
   return (
@@ -98,7 +98,7 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
 }
 
 const IconTabs: FC<IconTabsProps> = (props) => {
-  const { active, onTabChange, children, tabs, ...others } = props
+  const { active, onTabChange, tabs, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
 
   const activeTab = clamp({ value: _activeTab, min: 0, max: tabs.length - 1 })

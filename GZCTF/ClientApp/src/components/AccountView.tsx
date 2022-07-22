@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Stack, Center, createStyles } from '@mantine/core'
 import LogoHeader from './LogoHeader'
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   input: {
     width: '20%',
     minWidth: '250px',

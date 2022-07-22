@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { Group, GroupProps, ScrollArea, Stack, Tabs } from '@mantine/core'
+import { Group, GroupProps, ScrollArea, Stack } from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,
