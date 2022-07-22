@@ -171,7 +171,7 @@ const Teams: FC = () => {
                     cols={3}
                     spacing="lg"
                     breakpoints={[
-                      { maxWidth: 1200, cols: 2, spacing: 'md' },
+                      { maxWidth: 1600, cols: 2, spacing: 'md' },
                       { maxWidth: 800, cols: 1, spacing: 'sm' },
                     ]}
                   >

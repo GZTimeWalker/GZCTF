@@ -14,7 +14,7 @@ public class Team
     /// 队伍名称
     /// </summary>
     [Required]
-    [MaxLength(32)]
+    [MaxLength(16)]
     [RegularExpression("[0-9A-Za-z]+")]
     public string Name { get; set; } = string.Empty;
 

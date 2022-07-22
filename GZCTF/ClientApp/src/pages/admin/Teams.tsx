@@ -150,11 +150,11 @@ const Teams: FC = () => {
                       </Group>
                     </td>
                     <td>
-                      <Text>{team.bio}</Text>
+                      <Text lineClamp={1} style={{ overflow: "hidden" }}>{team.bio}</Text>
                     </td>
                     <td>
                       <AvatarsGroup
-                        limit={3}
+                        limit={6}
                         size="md"
                         styles={{
                           child: {
