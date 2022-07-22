@@ -21,6 +21,7 @@ public class Team
     /// <summary>
     /// 队伍 Bio
     /// </summary>
+    [MaxLength(32)]
     public string? Bio { get; set; } = string.Empty;
 
     /// <summary>

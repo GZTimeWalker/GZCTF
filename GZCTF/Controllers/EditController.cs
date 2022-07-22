@@ -95,7 +95,7 @@ public class EditController : Controller
             return NotFound(new RequestResponse("公告未找到", 404));
 
         notice.UpdateInfo(model);
-        await noticeRepository.UpdateAsync(notice, token);
+        await noticeRepository.UpdateNotice(notice, token);
 
         return Ok(notice);
     }

@@ -43,4 +43,10 @@ public class NoticeRepository : RepositoryBase, INoticeRepository
 
         cache.Remove(CacheKey.Notices);
     }
+
+    public async Task UpdateNotice(Notice notice, CancellationToken token = default)
+    {
+        await UpdateAsync(notice, token);
+        cache.Remove(CacheKey.Notices);
+    }
 }

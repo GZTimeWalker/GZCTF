@@ -11,6 +11,14 @@ public interface INoticeRepository : IRepository
     public Task<Notice> CreateNotice(Notice notice, CancellationToken token = default);
 
     /// <summary>
+    /// 更新公告
+    /// </summary>
+    /// <param name="notice">公告对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Notice> UpdateNotice(Notice notice, CancellationToken token = default);
+
+    /// <summary>
     /// 移除公告
     /// </summary>
     /// <param name="notice">公告对象</param>
