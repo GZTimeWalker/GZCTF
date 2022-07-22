@@ -19,7 +19,7 @@ import {
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api, { ProfileUpdateModel } from '../../Api'
 import PasswordChangeModal from '../../components/PasswordChangeModal'
 import WithNavBar from '../../components/WithNavbar'

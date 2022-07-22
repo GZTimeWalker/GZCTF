@@ -4,7 +4,7 @@ import { TextInput, Button, Anchor } from '@mantine/core'
 import { useInputState, useWindowEvent } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api from '../../Api'
 import AccountView from '../../components/AccountView'
 

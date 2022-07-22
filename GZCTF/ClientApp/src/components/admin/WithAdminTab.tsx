@@ -8,7 +8,7 @@ import {
   mdiAccountGroupOutline,
   mdiFileDocumentOutline,
 } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import LogoHeader from '../LogoHeader'
 
 const pages = [

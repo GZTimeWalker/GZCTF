@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCloseCircle, mdiCheck, mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api, { TeamUpdateModel } from '../Api'
 
 interface TeamEditModalProps extends ModalProps {

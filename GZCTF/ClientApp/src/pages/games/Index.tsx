@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { SimpleGrid, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import { mdiFlag, mdiPackageVariantClosed, mdiProgressClock } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api from '../../Api'
 import GameCard from '../../components/GameCard'
 import LogoHeader from '../../components/LogoHeader'

@@ -19,7 +19,7 @@ import {
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
 
 export const RoleColorMap = new Map<Role, string>([

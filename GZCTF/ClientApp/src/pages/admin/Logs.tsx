@@ -11,7 +11,7 @@ import {
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose, mdiCheck, mdiArrowLeftBold, mdiArrowRightBold } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import api, { LogMessageModel } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 
