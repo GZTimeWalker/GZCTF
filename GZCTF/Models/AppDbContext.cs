@@ -32,6 +32,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.Property(e => e.Role)
                 .HasConversion<int>();
 
+            entity.Property(e => e.UserName)
+                .HasMaxLength(12);
+
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)

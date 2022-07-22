@@ -186,7 +186,7 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     options.InvalidModelStateResponseFactory = context =>
     {
         var errmsg = context.ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage;
-        return new JsonResult(new RequestResponse(errmsg ?? "验证失败"))
+        return new JsonResult(new RequestResponse(errmsg ?? "验证失败，请检查输入"))
         {
             StatusCode = 400
         };

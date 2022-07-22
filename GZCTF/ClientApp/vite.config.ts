@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'build',
       assetsDir: 'static',
-      target: 'esnext',
+      target: 'es6',
       rollupOptions: {
         output: {
           chunkFileNames: 'static/[hash].js',

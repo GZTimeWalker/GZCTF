@@ -103,62 +103,64 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           </Avatar>
         )}
         <Stack style={{ flexGrow: 1 }} ref={ref}>
-          <Group align="stretch">
+          <Group align="stretch" position="apart">
             {!isActive && (
               <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
                 {team.name?.at(0) ?? 'T'}
               </Avatar>
             )}
-            <Box style={{ flexGrow: 1 }}>
-              <Title order={2} align="left">
-                {team.name}
-              </Title>
-              <Text size="md" lineClamp={3}>
+            <Stack spacing={0} style={{ width: 'calc(100% - 72px)' }}>
+              <Group style={{ width: '100%' }} position="apart">
+                <Title order={2} align="left">
+                  {team.name}
+                </Title>
+                {!isActive && (
+                  <Box>
+                    <Tooltip
+                      label={'激活'}
+                      styles={(theme) => ({
+                        body: {
+                          margin: 4,
+                          backgroundColor:
+                            theme.colorScheme === 'dark'
+                              ? theme.colors[theme.primaryColor][8] + '40'
+                              : theme.colors[theme.primaryColor][2],
+                          color:
+                            theme.colorScheme === 'dark'
+                              ? theme.colors[theme.primaryColor][4]
+                              : theme.colors.gray[8],
+                        },
+                      })}
+                      position="left"
+                      transition="pop-bottom-right"
+                      color="brand"
+                    >
+                      <ActionIcon
+                        size="lg"
+                        onMouseEnter={() => setCardClickable(false)}
+                        onMouseLeave={() => setCardClickable(true)}
+                        onClick={onActive}
+                        sx={(theme) => ({
+                          '&:hover': {
+                            color:
+                              theme.colorScheme === 'dark'
+                                ? theme.colors[theme.primaryColor][2]
+                                : theme.colors[theme.primaryColor][7],
+                            backgroundColor:
+                              theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                          },
+                        })}
+                      >
+                        <Icon path={mdiPower} size={1} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Box>
+                )}
+              </Group>
+              <Text size="sm" lineClamp={2} style={{ overflow: 'hidden' }}>
                 {team.bio}
               </Text>
-            </Box>
-            {!isActive && (
-              <Box style={{ height: '100%' }}>
-                <Tooltip
-                  label={'激活'}
-                  styles={(theme) => ({
-                    body: {
-                      margin: 4,
-                      backgroundColor:
-                        theme.colorScheme === 'dark'
-                          ? theme.colors[theme.primaryColor][8] + '40'
-                          : theme.colors[theme.primaryColor][2],
-                      color:
-                        theme.colorScheme === 'dark'
-                          ? theme.colors[theme.primaryColor][4]
-                          : theme.colors.gray[8],
-                    },
-                  })}
-                  position="left"
-                  transition="pop-bottom-right"
-                  color="brand"
-                >
-                  <ActionIcon
-                    size="lg"
-                    onMouseEnter={() => setCardClickable(false)}
-                    onMouseLeave={() => setCardClickable(true)}
-                    onClick={onActive}
-                    sx={(theme) => ({
-                      '&:hover': {
-                        color:
-                          theme.colorScheme === 'dark'
-                            ? theme.colors[theme.primaryColor][2]
-                            : theme.colors[theme.primaryColor][7],
-                        backgroundColor:
-                          theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-                      },
-                    })}
-                  >
-                    <Icon path={mdiPower} size={1} />
-                  </ActionIcon>
-                </Tooltip>
-              </Box>
-            )}
+            </Stack>
           </Group>
           <Divider my="xs" />
           <Stack spacing="xs">
@@ -181,9 +183,11 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 队员列表:
               </Text>
               <Box style={{ flexGrow: 1 }}></Box>
-              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />}
+              {team.locked && (
+                <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />
+              )}
               <AvatarsGroup
-                limit={3}
+                limit={isActive ? 8 : 4}
                 size="md"
                 styles={{
                   child: {
