@@ -242,22 +242,20 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseOpenApi(options => { options.PostProcess += (document, _) => { document.Servers.Clear(); }; });
+    app.UseSerilogRequestLogging(options =>
+    {
+        options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
+        options.GetLevel = (context, time, ex) =>
+            time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
+            (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
+    });
+    app.UseSwaggerUi3();
 }
 else
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-
-app.UseSerilogRequestLogging(options =>
-{
-    options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
-    options.GetLevel = (context, time, ex) =>
-        time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
-        (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
-});
-
-app.UseSwaggerUi3();
 
 app.UseMiddleware<ProxyMiddleware>();
 app.UseIpRateLimiting();

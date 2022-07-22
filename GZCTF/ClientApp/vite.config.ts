@@ -18,7 +18,15 @@ export default defineConfig({
   build: {
     outDir: 'build',
     assetsDir: 'static',
-    target: 'esnext'
+    target: 'esnext',
+    rollupOptions: {
+      output: {
+        chunkFileNames: "static/[hash].js",
+        assetFileNames: "static/[hash].[ext]",
+        entryFileNames: "static/[name].js",
+        compact: true
+      }
+    }
   },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' },
