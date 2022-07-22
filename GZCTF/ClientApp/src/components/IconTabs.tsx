@@ -78,7 +78,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
 })
 
 const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) => {
-  const { color, label, active, icon, ...others } = props
+  const { color, label, active, icon, tabKey, ...others } = props
   const { classes, cx } = useTabStyle({ color })
 
   return (
@@ -87,6 +87,7 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
       component="button"
       type="button"
       role="tab"
+      key={tabKey}
       className={cx(classes.default, { [classes.activeTab]: active })}
     >
       <div className={classes.tabInner}>
@@ -106,6 +107,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   const panes = tabs.map((tab, index) => (
     <Tab
       {...tab}
+      key={tab.tabKey}
       active={activeTab === index}
       onClick={() => {
         setActiveTab(index)

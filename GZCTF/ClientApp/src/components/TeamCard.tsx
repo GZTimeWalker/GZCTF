@@ -181,7 +181,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 队员列表:
               </Text>
               <Box style={{ flexGrow: 1 }}></Box>
-              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.alert[1]} />}
+              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />}
               <AvatarsGroup
                 limit={3}
                 size="md"
