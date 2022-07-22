@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Button, PasswordInput } from '@mantine/core'
 import { getHotkeyHandler, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -10,9 +10,10 @@ import AccountView from '../../components/AccountView'
 import StrengthPasswordInput from '../../components/StrengthPasswordInput'
 
 const Reset: FC = () => {
-  const params = useParams()
-  const token = params.token
-  const email = params.email
+  const location = useLocation()
+  const sp = new URLSearchParams(location.search)
+  const token = sp.get('token')
+  const email = sp.get('email')
   const navigate = useNavigate()
   const [pwd, setPwd] = useInputState('')
   const [retypedPwd, setRetypedPwd] = useInputState('')
@@ -29,7 +30,7 @@ const Reset: FC = () => {
       return
     }
 
-    if (!(token && email && typeof token === 'string' && typeof email === 'string')) {
+    if (!(token && email)) {
       showNotification({
         color: 'red',
         title: '密码重设失败',

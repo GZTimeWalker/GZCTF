@@ -1695,6 +1695,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<TeamInfoModel[]>([`/api/admin/teams`, query], data, options),
 
     /**
+     * @description 使用此接口搜索队伍，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminSearchTeams
+     * @summary 搜索队伍
+     * @request POST:/api/admin/teams/search
+     */
+    adminSearchTeams: (query?: { hint?: string }, params: RequestParams = {}) =>
+      this.request<TeamInfoModel[], RequestResponse>({
+        path: `/api/admin/teams/search`,
+        method: 'POST',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 使用此接口修改用户信息，需要Admin权限
      *
      * @tags Admin

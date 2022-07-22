@@ -14,7 +14,7 @@ interface TabProps {
   label?: React.ReactNode
 }
 
-interface IconTabsProps extends React.PropsWithChildren {
+interface IconTabsProps {
   position?: GroupPosition
   tabs: TabProps[]
   grow?: boolean
@@ -53,7 +53,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
 
       [`&.${activeTab.ref}`]: {
         cursor: 'default',
-        color: theme.fn.themeColor(color as string, theme.colorScheme === 'dark' ? 3 : 6),
+        color: theme.fn.themeColor(color as string, theme.colorScheme === 'dark' ? 4 : 6),
         background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
       },
     },
@@ -78,7 +78,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
 })
 
 const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) => {
-  const { tabKey, color, label, active, icon, ...others } = props
+  const { color, label, active, icon, tabKey, ...others } = props
   const { classes, cx } = useTabStyle({ color })
 
   return (
@@ -87,6 +87,7 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
       component="button"
       type="button"
       role="tab"
+      key={tabKey}
       className={cx(classes.default, { [classes.activeTab]: active })}
     >
       <div className={classes.tabInner}>
@@ -98,7 +99,7 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
 }
 
 const IconTabs: FC<IconTabsProps> = (props) => {
-  const { active, onTabChange, children, tabs, ...others } = props
+  const { active, onTabChange, tabs, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
 
   const activeTab = clamp({ value: _activeTab, min: 0, max: tabs.length - 1 })
@@ -106,6 +107,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   const panes = tabs.map((tab, index) => (
     <Tab
       {...tab}
+      key={tab.tabKey}
       active={activeTab === index}
       onClick={() => {
         setActiveTab(index)

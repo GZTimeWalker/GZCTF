@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
@@ -9,19 +9,20 @@ import AccountView from '../../components/AccountView'
 
 const Confirm: FC = () => {
   const navigate = useNavigate()
-  const params = useParams()
-  const token = params.token
-  const email = params.email
+  const location = useLocation()
+  const sp = new URLSearchParams(location.search)
+  const token = sp.get('token')
+  const email = sp.get('email')
 
   useEffect(() => {
-    if (token && email && typeof token === 'string' && typeof email === 'string') {
+    if (token && email) {
       api.account
         .accountMailChangeConfirm({ token, email })
         .then(() => {
           showNotification({
             color: 'teal',
             title: '邮箱已验证',
-            message: Buffer.from(email, 'base64'),
+            message: atob(email),
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })

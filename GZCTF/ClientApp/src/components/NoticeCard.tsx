@@ -2,7 +2,6 @@ import { marked } from 'marked'
 import { FC } from 'react'
 import {
   Group,
-  Text,
   Badge,
   Card,
   useMantineTheme,

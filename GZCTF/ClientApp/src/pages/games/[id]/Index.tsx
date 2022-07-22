@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Stack, Text } from '@mantine/core'
+import { Stack, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -39,6 +39,7 @@ const GameDetail: FC = () => {
     <WithNavBar>
       <Stack>
         <LogoHeader />
+        <Title>{game?.title}</Title>
         <Text>Game No.{id}</Text>
       </Stack>
     </WithNavBar>

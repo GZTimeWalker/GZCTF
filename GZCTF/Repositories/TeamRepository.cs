@@ -59,11 +59,15 @@ public class TeamRepository : RepositoryBase, ITeamRepository
         => context.Teams.Include(e => e.Members).FirstOrDefaultAsync(t => t.Id == id, token);
 
     public Task<Team[]> GetTeams(int count = 100, int skip = 0, CancellationToken token = default)
-        => context.Teams.OrderBy(t => t.Id).Skip(0).Take(count).ToArrayAsync(token);
+        => context.Teams.Include(t => t.Members).OrderBy(t => t.Id).Skip(0).Take(count).ToArrayAsync(token);
 
     public Task<Team[]> GetUserTeams(UserInfo user, CancellationToken token = default)
         => context.Teams.Where(t => t.Members.Any(u => u.Id == user.Id))
             .Include(t => t.Members).ToArrayAsync(token);
+
+    public Task<Team[]> SearchTeams(string hint, CancellationToken token = default)
+        => context.Teams.Include(t => t.Members).Where(item => EF.Functions.Like(item.Name, $"%{hint}%"))
+            .OrderBy(t => t.Id).Take(30).ToArrayAsync(token);
 
     public async Task<bool> VeifyToken(int id, string inviteCode, CancellationToken token = default)
     {

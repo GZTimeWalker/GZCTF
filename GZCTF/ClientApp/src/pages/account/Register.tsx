@@ -31,7 +31,7 @@ const Register: FC = () => {
       return
     }
 
-    let token = await reCaptcha?.getToken()
+    const token = await reCaptcha?.getToken()
 
     if (!token) {
       showNotification({

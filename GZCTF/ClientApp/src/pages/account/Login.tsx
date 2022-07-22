@@ -45,7 +45,7 @@ const Login: FC = () => {
           disallowClose: true,
         })
         api.account.mutateAccountProfile()
-        let from = params['from']
+        const from = params['from']
         navigate(from ? (from as string) : '/')
       })
       .catch(() => {

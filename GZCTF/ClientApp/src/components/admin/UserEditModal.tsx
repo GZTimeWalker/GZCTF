@@ -1,19 +1,16 @@
 import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
-  Box,
   Button,
   Center,
   Grid,
   Group,
-  Image,
   InputWrapper,
   Modal,
   ModalProps,
   SegmentedControl,
   SimpleGrid,
   Stack,
-  Text,
   Textarea,
   TextInput,
 } from '@mantine/core'

@@ -24,7 +24,7 @@ interface TeamCardProps {
   isCaptain: boolean
   isActive: boolean
   onEdit: () => void
-  mutateActive: () => void
+  mutateActive?: () => void
 }
 
 const TeamCard: FC<TeamCardProps> = (props) => {
@@ -51,7 +51,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
-          mutateActive()
+          mutateActive && mutateActive()
         })
         .catch((err) => {
           showNotification({
@@ -181,7 +181,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 队员列表:
               </Text>
               <Box style={{ flexGrow: 1 }}></Box>
-              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.alert[1]} />}
+              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />}
               <AvatarsGroup
                 limit={3}
                 size="md"

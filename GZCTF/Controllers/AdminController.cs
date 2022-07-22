@@ -95,7 +95,22 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(TeamInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok((await teamRepository.GetTeams(count, skip, token))
-                .Select(team => TeamInfoModel.FromTeam(team, false)));
+                .Select(team => TeamInfoModel.FromTeam(team)));
+
+    /// <summary>
+    /// 搜索队伍
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口搜索队伍，需要Admin权限
+    /// </remarks>
+    /// <response code="200">用户列表</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpPost("Teams/Search")]
+    [ProducesResponseType(typeof(TeamInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default)
+        => Ok((await teamRepository.SearchTeams(hint, token))
+                .Select(team => TeamInfoModel.FromTeam(team)));
 
     /// <summary>
     /// 修改用户信息

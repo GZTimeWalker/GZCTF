@@ -1,14 +1,9 @@
-import { FC, useState } from 'react'
-import { Text, Stack, Center } from '@mantine/core'
+import { FC } from 'react'
+import { Text, Stack } from '@mantine/core'
 import LogoHeader from '../components/LogoHeader'
 import WithNavBar from '../components/WithNavbar'
 
-const initialValue =
-  '<p>Your initial <b>html value</b> or an empty string to init editor without value</p>'
-
 const About: FC = () => {
-  const [value, onChange] = useState(initialValue)
-
   return (
     <WithNavBar>
       <Stack>

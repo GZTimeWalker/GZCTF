@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { Group, GroupProps, ScrollArea, Stack, Tabs } from '@mantine/core'
+import { Group, GroupProps, ScrollArea, Stack } from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,
@@ -12,11 +12,11 @@ import { Icon } from '@mdi/react'
 import IconTabs from '../IconTabs'
 
 const pages = [
-  { icon: mdiBullhornOutline, title: '通知管理', path: '/admin/notices' },
-  { icon: mdiFlagOutline, title: '比赛管理', path: '/admin/games' },
-  { icon: mdiAccountGroupOutline, title: '队伍管理', path: '/admin/teams' },
-  { icon: mdiAccountCogOutline, title: '用户管理', path: '/admin/users' },
-  { icon: mdiFileDocumentOutline, title: '系统日志', path: '/admin/logs' },
+  { icon: mdiBullhornOutline, title: '通知管理', path: '/admin/notices', color: 'blue' },
+  { icon: mdiFlagOutline, title: '比赛管理', path: '/admin/games', color: 'yellow' },
+  { icon: mdiAccountGroupOutline, title: '队伍管理', path: '/admin/teams', color: 'green' },
+  { icon: mdiAccountCogOutline, title: '用户管理', path: '/admin/users', color: 'cyan' },
+  { icon: mdiFileDocumentOutline, title: '系统日志', path: '/admin/logs', color: 'red' },
 ]
 
 export interface AdminTabProps extends React.PropsWithChildren {
@@ -56,6 +56,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
           tabKey: p.path,
           label: p.title,
           icon: <Icon path={p.icon} size={1} />,
+          color: p.color,
         }))}
       />
       {head && (

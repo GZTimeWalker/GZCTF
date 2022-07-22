@@ -149,7 +149,6 @@ const Teams: FC = () => {
                       activeTeam.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
                     }
                     onEdit={() => onEditTeam(activeTeam)}
-                    mutateActive={() => {}}
                   />
                 </>
               )}
