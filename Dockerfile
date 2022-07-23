@@ -1,4 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+ARG TIMESTAMP
+ARG GIT_SHA
+ARG GIT_NAME
+ENV VITE_APP_TIMESTAMP=$TIMESTAMP
+ENV VITE_APP_GIT_SHA=$GIT_SHA
+ENV VITE_APP_GIT_NAME=$GIT_NAME
+
 RUN apt update && \
     apt install -y wget && \
     apt install -y gnupg2 && \
