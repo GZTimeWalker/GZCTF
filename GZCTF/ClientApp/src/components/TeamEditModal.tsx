@@ -373,8 +373,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           onReject={() => {
             showNotification({
               color: 'red',
-              title: '文件上传失败',
-              message: `请重新提交`,
+              title: '文件获取失败',
+              message: '请检查文件格式和大小',
               icon: <Icon path={mdiClose} size={1} />,
             })
           }}

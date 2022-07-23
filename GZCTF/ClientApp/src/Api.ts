@@ -431,6 +431,9 @@ export interface GameInfoModel {
    */
   teamMemberCountLimit?: number
 
+  /** 比赛头图 */
+  poster?: string | null
+
   /**
    * 开始时间
    * @format date-time

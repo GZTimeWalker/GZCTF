@@ -18,13 +18,13 @@ import { BasicGameInfoModel } from '../Api'
 export enum GameStatus {
   Coming = 'coming',
   OnGoing = 'ongoing',
-  Ended = 'ended'
+  Ended = 'ended',
 }
 
 export const GameColorMap = new Map<GameStatus, MantineColor>([
   [GameStatus.Coming, 'yellow'],
   [GameStatus.OnGoing, 'brand'],
-  [GameStatus.Ended, 'red']
+  [GameStatus.Ended, 'red'],
 ])
 
 interface GameCardProps {

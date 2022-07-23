@@ -1,13 +1,13 @@
 import { FC, useState } from 'react'
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ActionIcon, Button, Group, SimpleGrid } from '@mantine/core'
 import { mdiArrowLeftBold, mdiArrowRightBold, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameInfoModel } from '../../../Api'
 import GameCard from '../../../components/GameCard'
 import AdminPage from '../../../components/admin/AdminPage'
-import GameCreateModal from '../../../components/admin/GameCreateModal'
-import { useNavigate } from 'react-router-dom'
+import GameCreateModal from '../../../components/admin/games/GameCreateModal'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -24,13 +24,14 @@ const Games: FC = () => {
         skip: (page - 1) * ITEM_COUNT_PER_PAGE,
       })
       .then((res) => {
-        res.data.sort((a, b) => new Date(b.end) < new Date(a.end) ? -1 : 1)
+        res.data.sort((a, b) => (new Date(b.end) < new Date(a.end) ? -1 : 1))
         setGames(res.data)
       })
   }, [page])
 
   return (
     <AdminPage
+      scroll
       headProps={{ position: 'apart' }}
       head={
         <>
@@ -67,9 +68,12 @@ const Games: FC = () => {
         ]}
       >
         {games.map((g) => (
-          <GameCard game={g} onClick={() => {
-            navigate(`/admin/games/${g.id}`)
-          }}/>
+          <GameCard
+            game={g}
+            onClick={() => {
+              navigate(`/admin/games/${g.id}`)
+            }}
+          />
         ))}
       </SimpleGrid>
       <GameCreateModal

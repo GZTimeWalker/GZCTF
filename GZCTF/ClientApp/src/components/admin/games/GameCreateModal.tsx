@@ -7,7 +7,7 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../Api'
+import api from '../../../Api'
 
 const GameCreateModal: FC<ModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)

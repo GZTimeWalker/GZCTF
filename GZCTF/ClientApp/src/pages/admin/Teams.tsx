@@ -12,13 +12,7 @@ import {
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import {
-  mdiClose,
-  mdiMagnify,
-  mdiArrowLeftBold,
-  mdiArrowRightBold,
-  mdiLockOutline,
-} from '@mdi/js'
+import { mdiClose, mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
@@ -81,6 +75,7 @@ const Teams: FC = () => {
 
   return (
     <AdminPage
+      scroll
       head={
         <>
           <TextInput

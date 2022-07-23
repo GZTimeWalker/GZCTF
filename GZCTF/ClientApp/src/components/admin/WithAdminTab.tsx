@@ -21,12 +21,13 @@ const pages = [
 
 export interface AdminTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
+  scroll?: boolean
   headProps?: GroupProps
 }
 
 const getTab = (path: string) => pages.findIndex((page) => path.startsWith(page.path))
 
-const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
+const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, scroll, children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -64,9 +65,13 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
           {head}
         </Group>
       )}
-      <ScrollArea style={{ height: head ? 'calc(100vh - 160px)' : 'calc(100vh - 120px)' }}>
-        {children}
-      </ScrollArea>
+      {scroll ? (
+        <ScrollArea style={{ height: head ? 'calc(100vh - 160px)' : 'calc(100vh - 120px)' }}>
+          {children}
+        </ScrollArea>
+      ) : (
+        children
+      )}
     </Stack>
   )
 }

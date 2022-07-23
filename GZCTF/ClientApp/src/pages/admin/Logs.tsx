@@ -132,6 +132,7 @@ const Logs: FC = () => {
 
   return (
     <AdminPage
+      scroll
       head={
         <>
           <SegmentedControl

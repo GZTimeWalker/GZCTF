@@ -1,58 +1,58 @@
-import { FC, useState } from 'react'
-import { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Title } from '@mantine/core'
-import { showNotification } from '@mantine/notifications'
-import { mdiClose } from '@mdi/js'
-import Icon from '@mdi/react'
-import api, { GameInfoModel } from '../../../../Api'
+import { FC } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button, Tabs } from '@mantine/core'
+import {
+  mdiAccountMultipleCheckOutline,
+  mdiPencilOutline,
+  mdiBullhornOutline,
+  mdiFlagOutline,
+  mdiBackburger,
+} from '@mdi/js'
+import { Icon } from '@mdi/react'
 import AdminPage from '../../../../components/admin/AdminPage'
+import GameInfo from '../../../../components/admin/games/GameInfo'
 
 const GameEdit: FC = () => {
-  const { id } = useParams()
   const navigate = useNavigate()
-  const [game, setGame] = useState<GameInfoModel>()
-
-  useEffect(() => {
-    const numId = parseInt(id ?? '-1')
-
-    if (numId < 0) {
-      showNotification({
-        color: 'red',
-        message: `比赛 Id 错误：${id}`,
-        icon: <Icon path={mdiClose} size={1} />,
-      })
-      navigate('/admin/games')
-      return
-    }
-
-    api.edit
-      .editGetGame(numId)
-      .then((data) => {
-        setGame(data.data)
-      })
-      .catch((err) => {
-        if (err.status === 404) {
-          showNotification({
-            color: 'red',
-            message: `比赛未找到：${id}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-          navigate('/admin/games')
-        }
-
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
-  }, [id])
-
   return (
-    <AdminPage>
-      <Title order={1}># {game?.title}</Title>
+    <AdminPage
+      headProps={{ position: 'left' }}
+      head={
+        <Button
+          leftIcon={<Icon path={mdiBackburger} size={1} />}
+          onClick={() => navigate('/admin/games')}
+        >
+          返回上级
+        </Button>
+      }
+    >
+      <Tabs
+        orientation="vertical"
+        styles={{
+          root: {
+            display: 'flex',
+          },
+          tabsListWrapper: {
+            width: '8rem',
+          },
+          body: {
+            width: 'calc(100% - 10rem)',
+          },
+        }}
+      >
+        <Tabs.Tab label="信息编辑" icon={<Icon path={mdiPencilOutline} size={1} />}>
+          <GameInfo />
+        </Tabs.Tab>
+        <Tabs.Tab label="比赛通知" icon={<Icon path={mdiBullhornOutline} size={1} />}>
+          Messages tab content
+        </Tabs.Tab>
+        <Tabs.Tab label="题目编辑" icon={<Icon path={mdiFlagOutline} size={1} />}>
+          Settings tab content
+        </Tabs.Tab>
+        <Tabs.Tab label="队伍审核" icon={<Icon path={mdiAccountMultipleCheckOutline} size={1} />}>
+          Settings tab content
+        </Tabs.Tab>
+      </Tabs>
     </AdminPage>
   )
 }
