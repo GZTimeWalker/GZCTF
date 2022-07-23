@@ -9,6 +9,11 @@ namespace CTFServer.Models.Request.Edit;
 public class GameInfoModel
 {
     /// <summary>
+    /// 比赛 Id
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
     /// 比赛标题
     /// </summary>
     [Required]
@@ -46,6 +51,7 @@ public class GameInfoModel
     public static GameInfoModel FromGame(Models.Game game)
         => new()
         {
+            Id = game.Id,
             Title = game.Title,
             Summary = game.Summary,
             Content = game.Content,

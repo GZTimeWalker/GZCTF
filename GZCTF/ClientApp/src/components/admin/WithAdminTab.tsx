@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Group, GroupProps, ScrollArea, Stack } from '@mantine/core'
 import {
   mdiAccountCogOutline,

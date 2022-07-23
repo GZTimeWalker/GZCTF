@@ -1,18 +1,54 @@
 import { FC } from 'react'
-import { Badge, Box, Card, Group, Image, Stack, Text, Title, useMantineTheme } from '@mantine/core'
+import {
+  Badge,
+  Box,
+  Card,
+  Group,
+  Image,
+  MantineColor,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { BasicGameInfoModel } from '../Api'
 
-const GameCard: FC<BasicGameInfoModel> = (game) => {
+export enum GameStatus {
+  Coming = 'coming',
+  OnGoing = 'ongoing',
+  Ended = 'ended'
+}
+
+export const GameColorMap = new Map<GameStatus, MantineColor>([
+  [GameStatus.Coming, 'yellow'],
+  [GameStatus.OnGoing, 'brand'],
+  [GameStatus.Ended, 'red']
+])
+
+interface GameCardProps {
+  game: BasicGameInfoModel
+  onClick?: () => void
+}
+
+const getGameStatus = (start: Date, end: Date) => {
+  const now = new Date()
+  return end < now ? GameStatus.Ended : start > now ? GameStatus.Coming : GameStatus.OnGoing
+}
+
+const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
 
   const { summary, title, poster, start, end } = game
   const startTime = new Date(start!)
   const endTime = new Date(end!)
 
+  const color = GameColorMap.get(getGameStatus(startTime, endTime))
+
   return (
     <Card
+      {...others}
       shadow="sm"
       sx={(theme) => ({
         cursor: 'pointer',
@@ -39,11 +75,11 @@ const GameCard: FC<BasicGameInfoModel> = (game) => {
             {title}
           </Title>
           <Text size="md">
-            <Badge color="brand" variant="light">
+            <Badge color={color} variant="light">
               {startTime.toLocaleString()}
             </Badge>
             ~
-            <Badge color="brand" variant="light">
+            <Badge color={color} variant="light">
               {endTime.toLocaleString()}
             </Badge>
           </Text>

@@ -135,15 +135,18 @@ public class EditController : Controller
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpPost("Games")]
-    [ProducesResponseType(typeof(Game), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddGame([FromBody] GameInfoModel model, CancellationToken token)
     {
         var game = await gameRepository.CreateGame(new Game().Update(model), token);
 
+        if (game is null)
+            return BadRequest(new RequestResponse("比赛创建失败", 400));
+
         gameRepository.FlushGameInfoCache();
 
-        return Ok(game);
+        return Ok(GameInfoModel.FromGame(game));
     }
 
     /// <summary>
@@ -194,7 +197,7 @@ public class EditController : Controller
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpPut("Games/{id}")]
-    [ProducesResponseType(typeof(Game), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGame([FromRoute] int id, [FromBody] GameInfoModel model, CancellationToken token)
     {
@@ -206,7 +209,7 @@ public class EditController : Controller
         await gameRepository.UpdateAsync(game.Update(model), token);
         gameRepository.FlushGameInfoCache();
 
-        return Ok(game);
+        return Ok(GameInfoModel.FromGame(game));
     }
 
     /// <summary>
@@ -370,10 +373,10 @@ public class EditController : Controller
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
-    [HttpPost("Games/{id}/Challenges/{cId}")]
+    [HttpGet("Games/{id}/Challenges/{cId}")]
     [ProducesResponseType(typeof(Challenge), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
+    public async Task<IActionResult> GetGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 

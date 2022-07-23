@@ -406,6 +406,44 @@ export interface NoticeModel {
   isPinned?: boolean
 }
 
+/**
+ * 比赛信息（Edit）
+ */
+export interface GameInfoModel {
+  /**
+   * 比赛 Id
+   * @format int32
+   */
+  id?: number
+
+  /** 比赛标题 */
+  title: string
+
+  /** 比赛描述 */
+  summary?: string
+
+  /** 比赛详细介绍 */
+  content?: string
+
+  /**
+   * 队员数量限制, 0 为无上限
+   * @format int32
+   */
+  teamMemberCountLimit?: number
+
+  /**
+   * 开始时间
+   * @format date-time
+   */
+  start: string
+
+  /**
+   * 结束时间
+   * @format date-time
+   */
+  end: string
+}
+
 export interface Game {
   /** @format int32 */
   id?: number
@@ -441,38 +479,6 @@ export interface Game {
   end: string
   isActive?: boolean
   posterUrl?: string | null
-}
-
-/**
- * 比赛信息（Edit）
- */
-export interface GameInfoModel {
-  /** 比赛标题 */
-  title: string
-
-  /** 比赛描述 */
-  summary?: string
-
-  /** 比赛详细介绍 */
-  content?: string
-
-  /**
-   * 队员数量限制, 0 为无上限
-   * @format int32
-   */
-  teamMemberCountLimit?: number
-
-  /**
-   * 开始时间
-   * @format date-time
-   */
-  start: string
-
-  /**
-   * 结束时间
-   * @format date-time
-   */
-  end: string
 }
 
 /**
@@ -2072,7 +2078,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/edit/games
      */
     editAddGame: (data: GameInfoModel, params: RequestParams = {}) =>
-      this.request<Game, RequestResponse>({
+      this.request<GameInfoModel, RequestResponse>({
         path: `/api/edit/games`,
         method: 'POST',
         body: data,
@@ -2168,7 +2174,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/edit/games/{id}
      */
     editUpdateGame: (id: number, data: GameInfoModel, params: RequestParams = {}) =>
-      this.request<Game, RequestResponse>({
+      this.request<GameInfoModel, RequestResponse>({
         path: `/api/edit/games/${id}`,
         method: 'PUT',
         body: data,
@@ -2352,17 +2358,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛题目，需要管理员权限
      *
      * @tags Edit
-     * @name EditAddGameChallenge2
+     * @name EditGetGameChallenge
      * @summary 获取比赛题目
-     * @request POST:/api/edit/games/{id}/challenges/{cId}
+     * @request GET:/api/edit/games/{id}/challenges/{cId}
      */
-    editAddGameChallenge2: (id: number, cId: number, params: RequestParams = {}) =>
+    editGetGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
       this.request<Challenge, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}`,
-        method: 'POST',
+        method: 'GET',
         format: 'json',
         ...params,
       }),
+    /**
+     * @description 获取比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenge
+     * @summary 获取比赛题目
+     * @request GET:/api/edit/games/{id}/challenges/{cId}
+     */
+    useEditGetGameChallenge: (id: number, cId: number, options?: SWRConfiguration) =>
+      useSWR<Challenge, RequestResponse>(`/api/edit/games/${id}/challenges/${cId}`, options),
+
+    /**
+     * @description 获取比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenge
+     * @summary 获取比赛题目
+     * @request GET:/api/edit/games/{id}/challenges/{cId}
+     */
+    mutateEditGetGameChallenge: (
+      id: number,
+      cId: number,
+      data?: Challenge | Promise<Challenge>,
+      options?: MutatorOptions
+    ) => mutate<Challenge>(`/api/edit/games/${id}/challenges/${cId}`, data, options),
 
     /**
      * @description 修改比赛题目，需要管理员权限
