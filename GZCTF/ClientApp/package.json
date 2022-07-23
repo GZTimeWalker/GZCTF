@@ -19,7 +19,7 @@
     "@mantine/modals": "^4.2.12",
     "@mantine/notifications": "^4.2.12",
     "@mdi/js": "^7.0.96",
-    "@mdi/react": "^1.6.0",
+    "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^6.0.7",
     "dayjs": "^1.11.4",
     "echarts": "^5.3.3",
