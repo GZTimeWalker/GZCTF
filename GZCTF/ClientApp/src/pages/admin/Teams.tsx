@@ -18,8 +18,6 @@ import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiLockOutline,
-  mdiDeleteOutline,
-  mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel } from '../../Api'
@@ -123,7 +121,6 @@ const Teams: FC = () => {
               <th>队伍</th>
               <th>签名</th>
               <th>队员</th>
-              <th>操作</th>
             </tr>
           </thead>
           <tbody>
@@ -156,7 +153,7 @@ const Teams: FC = () => {
                     </td>
                     <td>
                       <AvatarsGroup
-                        limit={6}
+                        limit={8}
                         size="md"
                         styles={{
                           child: {
@@ -166,16 +163,6 @@ const Teams: FC = () => {
                       >
                         {members && members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
                       </AvatarsGroup>
-                    </td>
-                    <td>
-                      <Group>
-                        <ActionIcon>
-                          <Icon path={mdiPencilOutline} size={1} />
-                        </ActionIcon>
-                        <ActionIcon color="red">
-                          <Icon path={mdiDeleteOutline} size={1} />
-                        </ActionIcon>
-                      </Group>
                     </td>
                   </tr>
                 )
