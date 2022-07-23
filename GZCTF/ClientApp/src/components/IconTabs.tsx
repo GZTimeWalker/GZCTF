@@ -52,7 +52,6 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       },
 
       [`&.${activeTab.ref}`]: {
-        cursor: 'default',
         color: theme.fn.themeColor(color as string, theme.colorScheme === 'dark' ? 4 : 6),
         background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
       },

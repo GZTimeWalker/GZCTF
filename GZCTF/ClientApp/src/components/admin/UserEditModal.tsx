@@ -59,7 +59,6 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '更改成功',
           message: '用户信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,

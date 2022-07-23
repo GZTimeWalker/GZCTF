@@ -70,7 +70,7 @@ const Teams: FC = () => {
         showNotification({
           color: 'teal',
           title: '加入队伍成功',
-          message: '您的队伍信息已更新',
+          message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })

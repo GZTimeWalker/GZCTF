@@ -47,7 +47,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           showNotification({
             color: 'teal',
             title: '激活队伍成功',
-            message: '您的队伍已经更新',
+            message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })

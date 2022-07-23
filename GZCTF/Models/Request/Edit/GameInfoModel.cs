@@ -9,6 +9,11 @@ namespace CTFServer.Models.Request.Edit;
 public class GameInfoModel
 {
     /// <summary>
+    /// 比赛 Id
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
     /// 比赛标题
     /// </summary>
     [Required]
@@ -30,6 +35,12 @@ public class GameInfoModel
     public int TeamMemberCountLimit { get; set; } = 0;
 
     /// <summary>
+    /// 比赛头图
+    /// </summary>
+    [JsonPropertyName("poster")]
+    public string? PosterUrl { get; set; } = string.Empty;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [Required]
@@ -46,9 +57,11 @@ public class GameInfoModel
     public static GameInfoModel FromGame(Models.Game game)
         => new()
         {
+            Id = game.Id,
             Title = game.Title,
             Summary = game.Summary,
             Content = game.Content,
+            PosterUrl = game.PosterUrl,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC

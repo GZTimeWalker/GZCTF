@@ -50,6 +50,8 @@ public class Game
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
+    [NotMapped]
+    [JsonIgnore]
     public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
 
     #region Db Relationship

@@ -115,7 +115,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           showNotification({
             color: 'teal',
             title: '退出队伍成功',
-            message: '您的队伍信息已更新',
+            message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -144,7 +144,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           showNotification({
             color: 'teal',
             title: '踢出成员成功',
-            message: '您的队伍信息已更新',
+            message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -198,8 +198,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         .then((data) => {
           showNotification({
             color: 'teal',
-            title: '修改头像成功',
-            message: '您的头像已经更新',
+
+            message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -373,8 +373,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           onReject={() => {
             showNotification({
               color: 'red',
-              title: '文件上传失败',
-              message: `请重新提交`,
+              title: '文件获取失败',
+              message: '请检查文件格式和大小',
               icon: <Icon path={mdiClose} size={1} />,
             })
           }}

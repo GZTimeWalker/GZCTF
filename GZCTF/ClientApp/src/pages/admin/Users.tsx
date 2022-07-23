@@ -140,6 +140,7 @@ const Users: FC = () => {
 
   return (
     <AdminPage
+      scroll
       head={
         <>
           <TextInput
