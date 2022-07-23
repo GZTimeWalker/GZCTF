@@ -84,8 +84,8 @@ const Profile: FC = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            title: '修改头像成功',
-            message: '您的头像已经更新',
+
+            message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -283,7 +283,7 @@ const Profile: FC = () => {
           >
             <Stack>
               <Text>
-                更改邮箱后，您将不能通过原邮箱登录。一封邮件将会发送至您的新邮箱，请点击邮件中的链接完成验证。
+                更改邮箱后，您将不能通过原邮箱登录。一封邮件将会发送至新邮箱，请点击邮件中的链接完成验证。
               </Text>
               <TextInput
                 required

@@ -70,19 +70,41 @@ const GameInfo: FC = () => {
       })
   }, [id])
 
-  const onUpdate = (file: File | undefined) => {
+  const onUpdatePoster = (file: File | undefined) => {
     if (game && file) {
       api.edit
         .editUpdateGamePoster(game.id!, { file })
         .then((res) => {
           showNotification({
             color: 'teal',
-            title: '修改头像成功',
-            message: '您的头像已经更新',
+            message: '修改头像成功',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
           setGame({ ...game, poster: res.data })
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          })
+        })
+    }
+  }
+
+  const onUpdateInfo = () => {
+    if (game) {
+      api.edit
+        .editUpdateGame(game.id!, game)
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            message: '比赛信息已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
         })
         .catch((err) => {
           showNotification({
@@ -181,7 +203,7 @@ const GameInfo: FC = () => {
         <Grid.Col span={4}>
           <InputWrapper label="比赛海报">
             <Dropzone
-              onDrop={(files) => onUpdate(files[0])}
+              onDrop={(files) => onUpdatePoster(files[0])}
               onReject={() => {
                 showNotification({
                   color: 'red',
@@ -236,7 +258,7 @@ const GameInfo: FC = () => {
         onChange={(e) => setGame({ ...game, content: e.target.value })}
       />
       <Group position="right">
-        <Button>保存更改</Button>
+        <Button onClick={onUpdateInfo}>保存更改</Button>
       </Group>
     </Stack>
   )

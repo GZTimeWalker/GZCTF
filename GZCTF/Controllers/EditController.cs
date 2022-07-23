@@ -174,7 +174,7 @@ public class EditController : Controller
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpGet("Games/{id}")]
-    [ProducesResponseType(typeof(Game), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGame([FromRoute] int id, CancellationToken token)
     {
@@ -183,7 +183,7 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        return Ok(game);
+        return Ok(GameInfoModel.FromGame(game));
     }
 
     /// <summary>

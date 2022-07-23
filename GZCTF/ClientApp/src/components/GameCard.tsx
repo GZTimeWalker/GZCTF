@@ -69,7 +69,8 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
           </Box>
         )}
       </Card.Section>
-      <Stack style={{ flexGrow: 1 }}>
+
+      <Stack style={{ flexGrow: 1, marginTop: theme.spacing.sm }}>
         <Group align="end" position="apart">
           <Title order={2} align="left">
             {title}

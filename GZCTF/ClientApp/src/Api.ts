@@ -447,43 +447,6 @@ export interface GameInfoModel {
   end: string
 }
 
-export interface Game {
-  /** @format int32 */
-  id?: number
-
-  /** 比赛标题 */
-  title: string
-
-  /** 头图哈希 */
-  posterHash?: string | null
-
-  /** 比赛描述 */
-  summary?: string
-
-  /** 比赛详细介绍 */
-  content?: string
-
-  /**
-   * 队员数量限制, 0 为无上限
-   * @format int32
-   */
-  teamMemberCountLimit?: number
-
-  /**
-   * 开始时间
-   * @format date-time
-   */
-  start: string
-
-  /**
-   * 结束时间
-   * @format date-time
-   */
-  end: string
-  isActive?: boolean
-  posterUrl?: string | null
-}
-
 /**
 * 比赛通知，会发往客户端。
 信息涵盖一二三血通知、提示发布通知、题目开启通知等
@@ -669,6 +632,42 @@ export enum AnswerResult {
   WrongAnswer = 'WrongAnswer',
   NotFound = 'NotFound',
   CheatDetected = 'CheatDetected',
+}
+
+export interface Game {
+  /** @format int32 */
+  id?: number
+
+  /** 比赛标题 */
+  title: string
+
+  /** 头图哈希 */
+  posterHash?: string | null
+
+  /** 比赛描述 */
+  summary?: string
+
+  /** 比赛详细介绍 */
+  content?: string
+
+  /**
+   * 队员数量限制, 0 为无上限
+   * @format int32
+   */
+  teamMemberCountLimit?: number
+
+  /**
+   * 开始时间
+   * @format date-time
+   */
+  start: string
+
+  /**
+   * 结束时间
+   * @format date-time
+   */
+  end: string
+  posterUrl?: string | null
 }
 
 /**
@@ -2140,7 +2139,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games/{id}
      */
     editGetGame: (id: number, params: RequestParams = {}) =>
-      this.request<Game, RequestResponse>({
+      this.request<GameInfoModel, RequestResponse>({
         path: `/api/edit/games/${id}`,
         method: 'GET',
         format: 'json',
@@ -2155,7 +2154,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games/{id}
      */
     useEditGetGame: (id: number, options?: SWRConfiguration) =>
-      useSWR<Game, RequestResponse>(`/api/edit/games/${id}`, options),
+      useSWR<GameInfoModel, RequestResponse>(`/api/edit/games/${id}`, options),
 
     /**
      * @description 获取比赛，需要管理员权限
@@ -2165,8 +2164,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛
      * @request GET:/api/edit/games/{id}
      */
-    mutateEditGetGame: (id: number, data?: Game | Promise<Game>, options?: MutatorOptions) =>
-      mutate<Game>(`/api/edit/games/${id}`, data, options),
+    mutateEditGetGame: (
+      id: number,
+      data?: GameInfoModel | Promise<GameInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<GameInfoModel>(`/api/edit/games/${id}`, data, options),
 
     /**
      * @description 修改比赛，需要管理员权限
