@@ -17,7 +17,7 @@ const About: FC = () => {
         </Stack>
         <Text size="xs" align="center">
           © 2022 GZTime
-          {import.meta.env.PROD && `#${sha.substring(0, 6)}:${tag} - ${timestamp}`}
+          {import.meta.env.PROD && sha && ` #${sha.substring(0, 6)}:${tag} built at ${timestamp}`}
         </Text>
       </Stack>
     </WithNavBar>
