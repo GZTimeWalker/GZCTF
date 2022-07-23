@@ -11,7 +11,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core'
-import { mdiFlagOutline } from '@mdi/js'
+import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { BasicGameInfoModel } from '../Api'
 
@@ -71,21 +71,20 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
       </Card.Section>
 
       <Stack style={{ flexGrow: 1, marginTop: theme.spacing.sm }}>
-        <Group align="end" position="apart">
-          <Title order={2} align="left">
-            {title}
-          </Title>
-          <Text size="md">
-            <Badge color={color} variant="light">
-              {startTime.toLocaleString()}
-            </Badge>
-            ~
-            <Badge color={color} variant="light">
-              {endTime.toLocaleString()}
-            </Badge>
-          </Text>
+        <Title order={2} align="left">
+          {title}
+        </Title>
+        <Group spacing="xs">
+          <Badge size="xs" color={color} variant="light">
+            {startTime.toLocaleString()}
+          </Badge>
+          <Icon path={mdiChevronTripleRight} size={1}/>
+          <Badge size="xs" color={color} variant="light">
+            {endTime.toLocaleString()}
+          </Badge>
         </Group>
-        <Text size="md" lineClamp={1}>
+
+        <Text size="md" lineClamp={3} style={{ height: '4.9rem' }}>
           {summary}
         </Text>
       </Stack>

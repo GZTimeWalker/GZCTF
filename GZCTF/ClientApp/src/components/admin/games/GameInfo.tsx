@@ -28,6 +28,7 @@ const GameInfo: FC = () => {
   const navigate = useNavigate()
   const [game, setGame] = useState<GameInfoModel>()
 
+  const [disabled, setDisabled] = useState(false)
   const [start, setStart] = useInputState(new Date())
   const [end, setEnd] = useInputState(new Date())
 
@@ -96,6 +97,7 @@ const GameInfo: FC = () => {
 
   const onUpdateInfo = () => {
     if (game) {
+      setDisabled(true)
       api.edit
         .editUpdateGame(game.id!, game)
         .then(() => {
@@ -105,6 +107,7 @@ const GameInfo: FC = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
+          api.game.mutateGameGamesAll()
         })
         .catch((err) => {
           showNotification({
@@ -113,6 +116,9 @@ const GameInfo: FC = () => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           })
+        })
+        .finally(() => {
+          setDisabled(false)
         })
     }
   }
@@ -131,6 +137,7 @@ const GameInfo: FC = () => {
         <Grid.Col span={8}>
           <TextInput
             label="比赛标题"
+            disabled={disabled}
             value={game.title}
             onChange={(e) => setGame({ ...game, title: e.target.value })}
           />
@@ -138,6 +145,7 @@ const GameInfo: FC = () => {
         <Grid.Col span={4}>
           <NumberInput
             label="报名队伍人数限制"
+            disabled={disabled}
             min={0}
             value={game.teamMemberCountLimit}
             onChange={(e) => setGame({ ...game, teamMemberCountLimit: e })}
@@ -147,6 +155,7 @@ const GameInfo: FC = () => {
       <Group grow position="apart">
         <DatePicker
           label="开始日期"
+          disabled={disabled}
           placeholder="Start Date"
           value={start}
           clearable={false}
@@ -155,6 +164,7 @@ const GameInfo: FC = () => {
         />
         <TimeInput
           label="开始时间"
+          disabled={disabled}
           placeholder="Start Time"
           value={start}
           onChange={(e) => setStart(e)}
@@ -163,6 +173,7 @@ const GameInfo: FC = () => {
         />
         <DatePicker
           label="结束日期"
+          disabled={disabled}
           minDate={start}
           placeholder="End time"
           value={end}
@@ -173,6 +184,7 @@ const GameInfo: FC = () => {
         />
         <TimeInput
           label="结束时间"
+          disabled={disabled}
           placeholder="End time"
           value={end}
           onChange={(e) => setEnd(e)}
@@ -184,17 +196,11 @@ const GameInfo: FC = () => {
       <Grid grow>
         <Grid.Col span={8}>
           <Textarea
-            label={
-              <Group spacing="sm">
-                <Text>比赛简介</Text>
-                <Text size="xs" color="gray">
-                  支持 markdown 语法
-                </Text>
-              </Group>
-            }
+            label="比赛简介"
             value={game.summary}
             style={{ width: '100%' }}
             autosize
+            disabled={disabled}
             minRows={4}
             maxRows={4}
             onChange={(e) => setGame({ ...game, summary: e.target.value })}
@@ -214,6 +220,7 @@ const GameInfo: FC = () => {
               }}
               maxSize={3 * 1024 * 1024}
               accept={IMAGE_MIME_TYPE}
+              disabled={disabled}
               styles={{
                 root: {
                   height: '7rem',
@@ -253,12 +260,15 @@ const GameInfo: FC = () => {
         value={game.content}
         style={{ width: '100%' }}
         autosize
+        disabled={disabled}
         minRows={6}
         maxRows={8}
         onChange={(e) => setGame({ ...game, content: e.target.value })}
       />
       <Group position="right">
-        <Button onClick={onUpdateInfo}>保存更改</Button>
+        <Button disabled={disabled} onClick={onUpdateInfo}>
+          保存更改
+        </Button>
       </Group>
     </Stack>
   )
