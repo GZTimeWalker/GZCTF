@@ -4,6 +4,7 @@
 interface ImportMetaEnv {
   readonly VITE_APP_TIMESTAMP: string
   readonly VITE_APP_GIT_SHA: string
+  readonly VITE_APP_GIT_NAME: string
 }
 
 interface ImportMeta {
