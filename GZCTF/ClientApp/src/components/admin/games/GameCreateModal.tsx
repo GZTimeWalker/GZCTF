@@ -7,9 +7,14 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../../Api'
+import api, { GameInfoModel } from '../../../Api'
 
-const GameCreateModal: FC<ModalProps> = (props) => {
+interface GameCreateModalProps extends ModalProps {
+  onAddGame: (game: GameInfoModel) => void
+}
+
+const GameCreateModal: FC<GameCreateModalProps> = (props) => {
+  const { onAddGame, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
   const [title, setTitle] = useInputState('')
@@ -41,6 +46,7 @@ const GameCreateModal: FC<ModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
+        onAddGame(data.data)
         navigate(`/admin/games/${data.data.id}`)
       })
       .catch((err) => {
@@ -55,7 +61,7 @@ const GameCreateModal: FC<ModalProps> = (props) => {
   }
 
   return (
-    <Modal {...props}>
+    <Modal {...modalProps}>
       <Stack>
         <TextInput
           label="比赛标题"

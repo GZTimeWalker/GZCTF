@@ -17,6 +17,8 @@ const Games: FC = () => {
   const [games, setGames] = useState<GameInfoModel[]>([])
   const navigate = useNavigate()
 
+  games.sort((a, b) => (new Date(b.end) < new Date(a.end) ? -1 : 1))
+
   useEffect(() => {
     api.edit
       .editGetGames({
@@ -24,7 +26,6 @@ const Games: FC = () => {
         skip: (page - 1) * ITEM_COUNT_PER_PAGE,
       })
       .then((res) => {
-        res.data.sort((a, b) => (new Date(b.end) < new Date(a.end) ? -1 : 1))
         setGames(res.data)
       })
   }, [page])
@@ -82,6 +83,7 @@ const Games: FC = () => {
         size="30%"
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
+        onAddGame={(game) => setGames([...games, game])}
       />
     </AdminPage>
   )
