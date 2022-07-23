@@ -29,7 +29,7 @@ jobs:
           accessToken: ${{ github.token }}
           tag: |
             latest
-            ${{ github.ref.name }}
+            ${{ github.ref_name }}
             ${{ github.sha }}
 
       - name: Print Full Image URL
