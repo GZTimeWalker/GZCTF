@@ -1,8 +1,6 @@
 name: Docker Build Test
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -12,5 +10,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Get Time
+      id: time
+      uses: nanzm/get-time-action@v1.1
+      with:
+        timeZone: 8
+        format: 'YYYY-MM-DD HH:mm:ss'
+
     - name: Build the Docker image
+      env:
+        VITE_APP_TIMESTAMP: ${{ steps.time.outputs.time }}
+        VITE_APP_GIT_SHA: ${{ github.sha }}
       run: docker build . --file Dockerfile --tag gzctf:test

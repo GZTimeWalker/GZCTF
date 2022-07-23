@@ -150,7 +150,9 @@ const Teams: FC = () => {
                       </Group>
                     </td>
                     <td>
-                      <Text lineClamp={1} style={{ overflow: "hidden" }}>{team.bio}</Text>
+                      <Text lineClamp={1} style={{ overflow: 'hidden' }}>
+                        {team.bio}
+                      </Text>
                     </td>
                     <td>
                       <AvatarsGroup

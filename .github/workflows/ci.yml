@@ -2,7 +2,7 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
   workflow_dispatch:
 
 jobs:
@@ -12,8 +12,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build and publish Docker Image to GitHub Packages Registry
-        uses: VaultVulp/gp-docker-action@1.2.0
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@v1.1
         with:
-          github-token: ${{ secrets.PACKAGE_TOKEN }}
-          image-name: gzctf
+          timeZone: 8
+          format: 'YYYY-MM-DD HH:mm:ss'
+
+      - name: Build and publish Docker Image to GitHub Packages Registry
+        id: publish
+        uses: matootie/github-docker@v3.1.0
+        env:
+          VITE_APP_TIMESTAMP: ${{ steps.time.outputs.time }}
+          VITE_APP_GIT_SHA: ${{ github.sha }}
+        with:
+          accessToken: ${{ github.token }}
+          tag: |
+            latest
+            ${{ github.ref.name }}
+            ${{ github.sha }}
+
+      - name: Print Full Image URL
+        run: echo ${{ steps.publish.outputs.imageURL }}:${{ github.sha }}

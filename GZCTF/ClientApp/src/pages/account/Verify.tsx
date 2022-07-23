@@ -13,7 +13,7 @@ const Verify: FC = () => {
   const token = sp.get('token')
   const email = sp.get('email')
   const navigate = useNavigate()
-  
+
   useEffect(() => {
     if (token && email) {
       api.account
