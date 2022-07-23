@@ -17,7 +17,7 @@ jobs:
         uses: nanzm/get-time-action@v1.1
         with:
           timeZone: 8
-          format: 'YYYY-MM-DD HH:mm:ss'
+          format: 'YYYY-MM-DD_HH:mm:ss'
 
       - name: Build and publish Docker Image to GitHub Packages Registry
         id: publish
