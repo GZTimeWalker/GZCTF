@@ -11,7 +11,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { mdiPencilOutline } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import { ChallengeInfoModel, ChallengeTag } from '../../Api'
 import { ChallengeTagLabelMap } from '../ChallengeItem'
 
