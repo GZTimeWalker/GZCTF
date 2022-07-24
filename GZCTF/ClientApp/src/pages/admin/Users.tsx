@@ -226,7 +226,6 @@ const Users: FC = () => {
                     <Group>
                       <ActionIcon
                         onClick={() => {
-                          console.log(user)
                           setActiveUser(user)
                           setIsEditModalOpen(true)
                         }}

@@ -1,11 +1,28 @@
 import { FC, useState } from 'react'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ActionIcon, Button, Group, SimpleGrid } from '@mantine/core'
-import { mdiArrowLeftBold, mdiArrowRightBold, mdiPlus } from '@mdi/js'
+import {
+  ActionIcon,
+  Avatar,
+  AvatarsGroup,
+  Button,
+  Group,
+  Paper,
+  Text,
+  Table,
+  Badge,
+} from '@mantine/core'
+import {
+  mdiArrowLeftBold,
+  mdiArrowRightBold,
+  mdiChevronTripleRight,
+  mdiLockOutline,
+  mdiPencilOutline,
+  mdiPlus,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameInfoModel } from '../../../Api'
-import GameCard from '../../../components/GameCard'
+import { GameColorMap, GameStatus, getGameStatus } from '../../../components/GameCard'
 import AdminPage from '../../../components/admin/AdminPage'
 import GameCreateModal from '../../../components/admin/games/GameCreateModal'
 
@@ -60,23 +77,68 @@ const Games: FC = () => {
         </>
       }
     >
-      <SimpleGrid
-        cols={3}
-        spacing="lg"
-        breakpoints={[
-          { maxWidth: 1200, cols: 2, spacing: 'md' },
-          { maxWidth: 800, cols: 1, spacing: 'sm' },
-        ]}
-      >
-        {games.map((g) => (
-          <GameCard
-            game={g}
-            onClick={() => {
-              navigate(`/admin/games/${g.id}`)
-            }}
-          />
-        ))}
-      </SimpleGrid>
+      <Paper shadow="md" p="md">
+        <Table>
+          <thead>
+            <tr>
+              <th>比赛</th>
+              <th>比赛时间</th>
+              <th>简介</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {games &&
+              games.map((game) => {
+                const startTime = new Date(game.start)
+                const endTime = new Date(game.end)
+                const status = getGameStatus(startTime, endTime)
+                const color = GameColorMap.get(status)
+
+                return (
+                  <tr key={game.id}>
+                    <td>
+                      <Group position="apart">
+                        <Group position="left">
+                          <Avatar src={game.poster} radius="xl">
+                            {game.title?.at(0)}
+                          </Avatar>
+                          <Text>{game.title}</Text>
+                        </Group>
+                        <Badge color={color}>{status}</Badge>
+                      </Group>
+                    </td>
+                    <td>
+                      <Group spacing="xs">
+                        <Badge size="xs" color={color} variant="dot">
+                          {startTime.toLocaleString()}
+                        </Badge>
+                        <Icon path={mdiChevronTripleRight} size={1} />
+                        <Badge size="xs" color={color} variant="dot">
+                          {endTime.toLocaleString()}
+                        </Badge>
+                      </Group>
+                    </td>
+                    <td>
+                      <Text lineClamp={1} style={{ width: 'calc(50vw - 20rem)' }}>{game.summary}</Text>
+                    </td>
+                    <td>
+                      <Group>
+                        <ActionIcon
+                          onClick={() => {
+                            navigate(`/admin/games/${game.id}`)
+                          }}
+                        >
+                          <Icon path={mdiPencilOutline} size={1} />
+                        </ActionIcon>
+                      </Group>
+                    </td>
+                  </tr>
+                )
+              })}
+          </tbody>
+        </Table>
+      </Paper>
       <GameCreateModal
         title="新建比赛"
         centered

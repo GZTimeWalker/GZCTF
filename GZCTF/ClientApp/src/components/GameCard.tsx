@@ -32,7 +32,7 @@ interface GameCardProps {
   onClick?: () => void
 }
 
-const getGameStatus = (start: Date, end: Date) => {
+export const getGameStatus = (start: Date, end: Date) => {
   const now = new Date()
   return end < now ? GameStatus.Ended : start > now ? GameStatus.Coming : GameStatus.OnGoing
 }
