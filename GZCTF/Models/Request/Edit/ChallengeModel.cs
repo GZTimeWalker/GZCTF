@@ -74,14 +74,12 @@ public class ChallengeModel
     /// <summary>
     /// 最低分数比例
     /// </summary>
-    [Required]
     [Range(0, 1)]
     public double MinScoreRate { get; set; } = 0.25;
 
     /// <summary>
     /// 难度系数
     /// </summary>
-    [Required]
     public int Difficulty { get; set; } = 100;
 
     #endregion Score

@@ -25,11 +25,9 @@ public interface IChallengeRepository : IRepository
     /// 获取全部题目
     /// </summary>
     /// <param name="gameId">比赛Id</param>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Challenge[]> GetChallenges(int gameId, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目

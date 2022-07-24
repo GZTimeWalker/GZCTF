@@ -44,8 +44,8 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     public Task<Challenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
         => context.Challenges.Where(c => c.Id == id && c.GameId == gameId).FirstOrDefaultAsync(token);
 
-    public Task<Challenge[]> GetChallenges(int gameId, int count = 100, int skip = 0, CancellationToken token = default)
-        => context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).Skip(skip).Take(count).ToArrayAsync(token);
+    public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default)
+        => context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
     public Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
     {

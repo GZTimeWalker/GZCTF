@@ -671,6 +671,29 @@ export interface Game {
 }
 
 /**
+ * 基础题目信息（Edit）
+ */
+export interface ChallengeInfoModel {
+  /**
+   * 题目Id
+   * @format int32
+   */
+  id?: number
+
+  /** 题目名称 */
+  title: string
+
+  /** 题目标签 */
+  tag?: ChallengeTag
+
+  /** 题目类型 */
+  type?: ChallengeType
+
+  /** 是否启用题目 */
+  isEnabled?: boolean
+}
+
+/**
  * 题目信息更改（Edit）
  */
 export interface ChallengeModel {
@@ -725,39 +748,16 @@ export interface ChallengeModel {
    * @min 0
    * @max 1
    */
-  minScoreRate: number
+  minScoreRate?: number
 
   /**
    * 难度系数
    * @format int32
    */
-  difficulty: number
+  difficulty?: number
 
   /** 统一文件名 */
   fileName?: string | null
-}
-
-/**
- * 基础题目信息（Edit）
- */
-export interface ChallengeInfoModel {
-  /**
-   * 题目Id
-   * @format int32
-   */
-  id?: number
-
-  /** 题目名称 */
-  title: string
-
-  /** 题目标签 */
-  tag?: ChallengeTag
-
-  /** 题目类型 */
-  type?: ChallengeType
-
-  /** 是否启用题目 */
-  isEnabled?: boolean
 }
 
 /**
@@ -2302,7 +2302,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 添加比赛题目
      * @request POST:/api/edit/games/{id}/challenges
      */
-    editAddGameChallenge: (id: number, data: ChallengeModel, params: RequestParams = {}) =>
+    editAddGameChallenge: (id: number, data: ChallengeInfoModel, params: RequestParams = {}) =>
       this.request<Challenge, RequestResponse>({
         path: `/api/edit/games/${id}/challenges`,
         method: 'POST',
@@ -2320,15 +2320,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛题目
      * @request GET:/api/edit/games/{id}/challenges
      */
-    editGetGameChallenges: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      params: RequestParams = {}
-    ) =>
+    editGetGameChallenges: (id: number, params: RequestParams = {}) =>
       this.request<ChallengeInfoModel[], RequestResponse>({
         path: `/api/edit/games/${id}/challenges`,
         method: 'GET',
-        query: query,
         format: 'json',
         ...params,
       }),
@@ -2340,15 +2335,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛题目
      * @request GET:/api/edit/games/{id}/challenges
      */
-    useEditGetGameChallenges: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) =>
-      useSWR<ChallengeInfoModel[], RequestResponse>(
-        [`/api/edit/games/${id}/challenges`, query],
-        options
-      ),
+    useEditGetGameChallenges: (id: number, options?: SWRConfiguration) =>
+      useSWR<ChallengeInfoModel[], RequestResponse>(`/api/edit/games/${id}/challenges`, options),
 
     /**
      * @description 获取全部比赛题目，需要管理员权限
@@ -2360,10 +2348,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateEditGetGameChallenges: (
       id: number,
-      query?: { count?: number; skip?: number },
       data?: ChallengeInfoModel[] | Promise<ChallengeInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<ChallengeInfoModel[]>([`/api/edit/games/${id}/challenges`, query], data, options),
+    ) => mutate<ChallengeInfoModel[]>(`/api/edit/games/${id}/challenges`, data, options),
 
     /**
      * @description 获取比赛题目，需要管理员权限
