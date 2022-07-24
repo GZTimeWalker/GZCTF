@@ -21,7 +21,7 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const Teams: FC = () => {
   const [page, setPage] = useState(1)
-  const [teams, setTeams] = useState<TeamInfoModel[]>([])
+  const [teams, setTeams] = useState<TeamInfoModel[]>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
 
@@ -76,6 +76,7 @@ const Teams: FC = () => {
   return (
     <AdminPage
       scroll
+      isLoading={searching || !teams}
       head={
         <>
           <TextInput

@@ -74,6 +74,7 @@ const Notices: FC = () => {
   return (
     <AdminPage
       scroll
+      isLoading={!notices}
       headProps={{ position: 'center' }}
       head={
         <Button
