@@ -186,7 +186,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok(await noticeRepository.GetNotices(game.Id, 30, 0, token));
+        return Ok(await noticeRepository.GetNotices(game.Id, token));
     }
 
     /// <summary>

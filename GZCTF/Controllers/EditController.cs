@@ -286,15 +286,13 @@ public class EditController : Controller
     /// 获取比赛公告，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛ID</param>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpGet("Games/{id}/Notices")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetGameNotices([FromRoute] int id, [FromQuery] int count, [FromQuery] int skip, CancellationToken token)
-        => Ok(await gameNoticeRepository.GetNotices(id, count, skip, token));
+    public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token)
+        => Ok(await gameNoticeRepository.GetNotices(id, token));
 
     /// <summary>
     /// 删除比赛公告

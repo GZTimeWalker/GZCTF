@@ -7,7 +7,7 @@ import WithGameTab from '../../../../../components/admin/WithGameTab'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
-  const { id, chalId } = useParams()
+  const { id } = useParams()
   return (
     <WithGameTab
       headProps={{ position: 'left' }}
