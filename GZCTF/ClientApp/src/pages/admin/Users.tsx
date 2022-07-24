@@ -33,7 +33,7 @@ const Users: FC = () => {
   const [page, setPage] = useState(1)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
-  const [users, setUsers] = useState<UserInfoModel[]>([])
+  const [users, setUsers] = useState<UserInfoModel[]>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
 
@@ -141,6 +141,7 @@ const Users: FC = () => {
   return (
     <AdminPage
       scroll
+      isLoading={searching || !users}
       head={
         <>
           <TextInput
