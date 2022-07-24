@@ -29,6 +29,11 @@ public class ChallengeInfoModel
     /// </summary>
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
+    /// <summary>
+    /// 是否启用题目
+    /// </summary>
+    public bool IsEnabled { get; set; } = false;
+
     public static ChallengeInfoModel FromChallenge(Challenge challenge)
         => new()
         {
@@ -36,5 +41,6 @@ public class ChallengeInfoModel
             Title = challenge.Title,
             Tag = challenge.Tag,
             Type = challenge.Type,
+            IsEnabled = challenge.IsEnabled
         };
 }

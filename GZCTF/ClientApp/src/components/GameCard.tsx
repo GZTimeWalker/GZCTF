@@ -44,7 +44,8 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const startTime = new Date(start!)
   const endTime = new Date(end!)
 
-  const color = GameColorMap.get(getGameStatus(startTime, endTime))
+  const status = getGameStatus(startTime, endTime)
+  const color = GameColorMap.get(status)
 
   return (
     <Card
@@ -78,7 +79,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
           <Badge size="xs" color={color} variant="light">
             {startTime.toLocaleString()}
           </Badge>
-          <Icon path={mdiChevronTripleRight} size={1}/>
+          <Icon path={mdiChevronTripleRight} size={1} />
           <Badge size="xs" color={color} variant="light">
             {endTime.toLocaleString()}
           </Badge>

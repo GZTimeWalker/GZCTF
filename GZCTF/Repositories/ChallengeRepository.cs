@@ -41,13 +41,6 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         return challenge;
     }
 
-    public Task EnableChallenge(Challenge challenge, CancellationToken token)
-    {
-        challenge.IsEnabled = true;
-        context.Update(challenge);
-        return context.SaveChangesAsync(token);
-    }
-
     public Task<Challenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
         => context.Challenges.Where(c => c.Id == id && c.GameId == gameId).FirstOrDefaultAsync(token);
 

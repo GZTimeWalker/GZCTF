@@ -79,14 +79,24 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             placeholder="Start Date"
             value={start}
             clearable={false}
-            onChange={(e) => setStart(e)}
+            onChange={(e) => {
+              setStart(e)
+              if (e && end < e) {
+                setEnd(dayjs(new Date()).add(2, 'hours').toDate())
+              }
+            }}
             required
           />
           <TimeInput
             label="开始时间"
             placeholder="Start Time"
             value={start}
-            onChange={(e) => setStart(e)}
+            onChange={(e) => {
+              setStart(e)
+              if (e && end < e) {
+                setEnd(dayjs(new Date()).add(2, 'hours').toDate())
+              }
+            }}
             withSeconds
             required
           />

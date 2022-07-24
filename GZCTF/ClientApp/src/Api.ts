@@ -689,6 +689,9 @@ export interface ChallengeModel {
   /** 题目类型 */
   type?: ChallengeType
 
+  /** 是否启用题目 */
+  isEnabled?: boolean
+
   /** 镜像名称与标签 */
   containerImage?: string | null
 
@@ -752,6 +755,9 @@ export interface ChallengeInfoModel {
 
   /** 题目类型 */
   type?: ChallengeType
+
+  /** 是否启用题目 */
+  isEnabled?: boolean
 }
 
 /**

@@ -66,12 +66,4 @@ public interface IChallengeRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default);
-
-    /// <summary>
-    /// 启用一个题目
-    /// </summary>
-    /// <param name="challenge">题目对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task EnableChallenge(Challenge challenge, CancellationToken token);
 }

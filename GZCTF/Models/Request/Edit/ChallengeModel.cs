@@ -35,6 +35,11 @@ public class ChallengeModel
     /// </summary>
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
+    /// <summary>
+    /// 是否启用题目
+    /// </summary>
+    public bool IsEnabled { get; set; } = false;
+
     #region Container
 
     /// <summary>

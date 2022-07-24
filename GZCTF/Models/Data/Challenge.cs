@@ -148,6 +148,7 @@ public class Challenge
         Content = model.Content;
         Tag = model.Tag;
         Hints = model.Hints;
+        IsEnabled = model.IsEnabled;
         ContainerImage = model.ContainerImage;
         MemoryLimit = model.MemoryLimit ?? 64;
         CPUCount = model.CPUCount ?? 1;

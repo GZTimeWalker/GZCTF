@@ -178,7 +178,11 @@ builder.Services.AddHostedService<ContainerChecker>();
 
 builder.Services.AddResponseCompression(options =>
 {
-    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+        { "application/json", "text/javascript", "text/html", "text/css" }
+    );
 });
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
