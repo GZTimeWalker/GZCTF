@@ -20,27 +20,22 @@ const Notices: FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeNotice, setActiveNotice] = useState<Notice | null>(null)
 
-
-  // bug：通知管理显示未能排序
-  notices?.sort(function (a: Notice, b: Notice): number {
-    console.log("a: ", a.title, a.isPinned);
-    console.log("b: ", b.title, b.isPinned);
-    if (a.isPinned != b.isPinned) {
-      console.log("Pinned diff")
-      return a.isPinned ? - 1 : 1;
-    }
-    return (a.time < b.time) ? 1 : -1;
-  });
-
   const onPin = (notice: Notice) => {
     if (!disabled) {
       setDisabled(true)
 
       api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned }).then(() => {
-        mutate([
-          { ...notice, isPinned: !notice.isPinned },
-          ...(notices?.filter((t) => t.id !== notice.id) ?? []),
-        ])
+        if (notice.isPinned) {
+          mutate([
+            ...(notices?.filter((t) => t.id !== notice.id) ?? []),
+            { ...notice, isPinned: !notice.isPinned, time: new Date().toJSON() },
+          ])
+        } else {
+          mutate([
+            { ...notice, isPinned: !notice.isPinned, time: new Date().toJSON() },
+            ...(notices?.filter((t) => t.id !== notice.id) ?? []),
+          ])
+        }
         setDisabled(false)
       })
     }
@@ -108,7 +103,9 @@ const Notices: FC = () => {
       >
         {notices &&
           notices
-            .sort((x, y) => (x.isPinned || new Date(x.time) < new Date(y.time) ? 1 : -1))
+            .sort((x, y) =>
+              (x.isPinned && !y.isPinned) || new Date(x.time) > new Date(y.time) ? -1 : 1
+            )
             .map((notice) => (
               <NoticeEditCard
                 key={notice.id}
@@ -121,7 +118,6 @@ const Notices: FC = () => {
                 onPin={() => onPin(notice)}
               />
             ))}
-
         <NoticeEditModal
           centered
           size="30%"
