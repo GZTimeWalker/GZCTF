@@ -198,7 +198,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         .then((data) => {
           showNotification({
             color: 'teal',
-
             message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,

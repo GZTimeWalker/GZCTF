@@ -335,14 +335,19 @@ public class EditController : Controller
     [HttpPost("Games/{id}/Challenges")]
     [ProducesResponseType(typeof(Challenge), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddGameChallenge([FromRoute] int id, [FromBody] ChallengeModel model, CancellationToken token)
+    public async Task<IActionResult> AddGameChallenge([FromRoute] int id, [FromBody] ChallengeInfoModel model, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await challengeRepository.CreateChallenge(game, new Challenge().Update(model), token);
+        var res = await challengeRepository.CreateChallenge(game, new Challenge()
+        {
+            Title = model.Title,
+            Type = model.Type,
+            Tag = model.Tag
+        }, token);
 
         return Ok(res);
     }
@@ -354,14 +359,12 @@ public class EditController : Controller
     /// 获取全部比赛题目，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛ID</param>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目</response>
     [HttpGet("Games/{id}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, [FromQuery] int count, [FromQuery] int skip, CancellationToken token)
-        => Ok((await challengeRepository.GetChallenges(id, count, skip, token)).Select(c => ChallengeInfoModel.FromChallenge(c)));
+    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
+        => Ok((await challengeRepository.GetChallenges(id, token)).Select(c => ChallengeInfoModel.FromChallenge(c)));
 
     /// <summary>
     /// 获取比赛题目

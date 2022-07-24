@@ -1,29 +1,28 @@
-import { FC, useState } from 'react'
-import { useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
-  Text,
+  Button,
   Center,
+  Grid,
   Group,
-  Loader,
+  InputWrapper,
+  NumberInput,
   Stack,
   Textarea,
   TextInput,
-  NumberInput,
-  Grid,
   Image,
-  Button,
-  InputWrapper,
+  Text,
 } from '@mantine/core'
 import { DatePicker, TimeInput } from '@mantine/dates'
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameInfoModel } from '../../../Api'
+import api, { GameInfoModel } from '../../../../Api'
+import WithGameTab from '../../../../components/admin/WithGameTab'
 
-const GameInfo: FC = () => {
+const GameInfoEdit: FC = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [game, setGame] = useState<GameInfoModel>()
@@ -123,24 +122,27 @@ const GameInfo: FC = () => {
     }
   }
 
-  if (!game) {
-    return (
-      <Center>
-        <Loader />
-      </Center>
-    )
-  }
-
   return (
-    <Stack>
+    <WithGameTab
+      headProps={{ position: 'left' }}
+      isLoading={!game}
+      head={
+        <Button
+          leftIcon={<Icon path={mdiBackburger} size={1} />}
+          onClick={() => navigate('/admin/games')}
+        >
+          返回上级
+        </Button>
+      }
+    >
       <Grid grow>
         <Grid.Col span={8}>
           <TextInput
             label="比赛标题"
             disabled={disabled}
-            value={game.title}
+            value={game?.title}
             required
-            onChange={(e) => setGame({ ...game, title: e.target.value })}
+            onChange={(e) => game && setGame({ ...game, title: e.target.value })}
           />
         </Grid.Col>
         <Grid.Col span={4}>
@@ -148,8 +150,8 @@ const GameInfo: FC = () => {
             label="报名队伍人数限制"
             disabled={disabled}
             min={0}
-            value={game.teamMemberCountLimit}
-            onChange={(e) => setGame({ ...game, teamMemberCountLimit: e })}
+            value={game?.teamMemberCountLimit}
+            onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: e })}
           />
         </Grid.Col>
       </Grid>
@@ -198,13 +200,13 @@ const GameInfo: FC = () => {
         <Grid.Col span={8}>
           <Textarea
             label="比赛简介"
-            value={game.summary}
+            value={game?.summary}
             style={{ width: '100%' }}
             autosize
             disabled={disabled}
             minRows={4}
             maxRows={4}
-            onChange={(e) => setGame({ ...game, summary: e.target.value })}
+            onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
           />
         </Grid.Col>
         <Grid.Col span={4}>
@@ -225,13 +227,13 @@ const GameInfo: FC = () => {
               styles={{
                 root: {
                   height: '110px',
-                  padding: game.poster ? '0' : '16px',
+                  padding: game?.poster ? '0' : '16px',
                 },
               }}
             >
               {() => (
                 <Center style={{ pointerEvents: 'none', height: '100%' }}>
-                  {game.poster ? (
+                  {game?.poster ? (
                     <Image height="105px" fit="contain" src={game.poster} />
                   ) : (
                     <Stack spacing={0}>
@@ -258,21 +260,21 @@ const GameInfo: FC = () => {
             </Text>
           </Group>
         }
-        value={game.content}
+        value={game?.content}
         style={{ width: '100%' }}
         autosize
         disabled={disabled}
         minRows={6}
         maxRows={7}
-        onChange={(e) => setGame({ ...game, content: e.target.value })}
+        onChange={(e) => game && setGame({ ...game, content: e.target.value })}
       />
       <Group position="right">
         <Button disabled={disabled} onClick={onUpdateInfo}>
           保存更改
         </Button>
       </Group>
-    </Stack>
+    </WithGameTab>
   )
 }
 
-export default GameInfo
+export default GameInfoEdit

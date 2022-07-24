@@ -1,16 +1,7 @@
 import { FC, useState } from 'react'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  ActionIcon,
-  Avatar,
-  Button,
-  Group,
-  Paper,
-  Text,
-  Table,
-  Badge,
-} from '@mantine/core'
+import { ActionIcon, Avatar, Button, Group, Paper, Text, Table, Badge } from '@mantine/core'
 import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
@@ -22,7 +13,7 @@ import { Icon } from '@mdi/react'
 import api, { GameInfoModel } from '../../../Api'
 import { GameColorMap, getGameStatus } from '../../../components/GameCard'
 import AdminPage from '../../../components/admin/AdminPage'
-import GameCreateModal from '../../../components/admin/games/GameCreateModal'
+import GameCreateModal from '../../../components/admin/GameCreateModal'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -126,7 +117,7 @@ const Games: FC = () => {
                       <Group>
                         <ActionIcon
                           onClick={() => {
-                            navigate(`/admin/games/${game.id}`)
+                            navigate(`/admin/games/${game.id}/info`)
                           }}
                         >
                           <Icon path={mdiPencilOutline} size={1} />
