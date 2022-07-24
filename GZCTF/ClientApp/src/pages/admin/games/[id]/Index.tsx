@@ -10,9 +10,9 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AdminPage from '../../../../components/admin/AdminPage'
+import ChallengeEdit from '../../../../components/admin/games/ChallengeEdit'
 import GameInfo from '../../../../components/admin/games/GameInfo'
 import GameNotice from '../../../../components/admin/games/GameNotice'
-import ChallengeEdit from '../../../../components/admin/games/ChallengeEdit'
 import TeamReview from '../../../../components/admin/games/TeamReview'
 
 const GameEdit: FC = () => {

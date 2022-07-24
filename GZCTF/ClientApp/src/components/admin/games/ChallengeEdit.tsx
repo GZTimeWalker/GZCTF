@@ -1,12 +1,12 @@
-import { Stack } from '@mantine/core'
 import { FC } from 'react'
+// import { useNavigate, useParams } from 'react-router-dom'
+import { Stack } from '@mantine/core'
 
 const ChallengeEdit: FC = () => {
-  return (
-    <Stack>
+  // const { id } = useParams()
+  // const navigate = useNavigate()
 
-    </Stack>
-  )
+  return <Stack></Stack>
 }
 
 export default ChallengeEdit

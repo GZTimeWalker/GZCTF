@@ -96,7 +96,7 @@ const GameInfo: FC = () => {
   }
 
   const onUpdateInfo = () => {
-    if (game) {
+    if (game && game.title) {
       setDisabled(true)
       api.edit
         .editUpdateGame(game.id!, game)
@@ -139,6 +139,7 @@ const GameInfo: FC = () => {
             label="比赛标题"
             disabled={disabled}
             value={game.title}
+            required
             onChange={(e) => setGame({ ...game, title: e.target.value })}
           />
         </Grid.Col>
@@ -231,7 +232,7 @@ const GameInfo: FC = () => {
               {() => (
                 <Center style={{ pointerEvents: 'none', height: '100%' }}>
                   {game.poster ? (
-                    <Image height="6.5rem" fit="contain" src={game.poster} />
+                    <Image height="105px" fit="contain" src={game.poster} />
                   ) : (
                     <Stack spacing={0}>
                       <Text size="xl" inline>
@@ -262,7 +263,7 @@ const GameInfo: FC = () => {
         autosize
         disabled={disabled}
         minRows={6}
-        maxRows={8}
+        maxRows={7}
         onChange={(e) => setGame({ ...game, content: e.target.value })}
       />
       <Group position="right">

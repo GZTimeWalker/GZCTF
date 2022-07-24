@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import {
   ActionIcon,
   Avatar,
-  AvatarsGroup,
   Button,
   Group,
   Paper,
@@ -16,13 +15,12 @@ import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiChevronTripleRight,
-  mdiLockOutline,
   mdiPencilOutline,
   mdiPlus,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameInfoModel } from '../../../Api'
-import { GameColorMap, GameStatus, getGameStatus } from '../../../components/GameCard'
+import { GameColorMap, getGameStatus } from '../../../components/GameCard'
 import AdminPage from '../../../components/admin/AdminPage'
 import GameCreateModal from '../../../components/admin/games/GameCreateModal'
 
@@ -120,7 +118,9 @@ const Games: FC = () => {
                       </Group>
                     </td>
                     <td>
-                      <Text lineClamp={1} style={{ width: 'calc(50vw - 20rem)' }}>{game.summary}</Text>
+                      <Text lineClamp={1} style={{ width: 'calc(50vw - 20rem)' }}>
+                        {game.summary}
+                      </Text>
                     </td>
                     <td>
                       <Group>
