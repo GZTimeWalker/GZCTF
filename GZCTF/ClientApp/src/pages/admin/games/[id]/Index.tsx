@@ -11,6 +11,9 @@ import {
 import { Icon } from '@mdi/react'
 import AdminPage from '../../../../components/admin/AdminPage'
 import GameInfo from '../../../../components/admin/games/GameInfo'
+import GameNotice from '../../../../components/admin/games/GameNotice'
+import ChallengeEdit from '../../../../components/admin/games/ChallengeEdit'
+import TeamReview from '../../../../components/admin/games/TeamReview'
 
 const GameEdit: FC = () => {
   const navigate = useNavigate()
@@ -44,13 +47,13 @@ const GameEdit: FC = () => {
           <GameInfo />
         </Tabs.Tab>
         <Tabs.Tab label="比赛通知" icon={<Icon path={mdiBullhornOutline} size={1} />}>
-          Messages tab content
+          <GameNotice />
         </Tabs.Tab>
         <Tabs.Tab label="题目编辑" icon={<Icon path={mdiFlagOutline} size={1} />}>
-          Settings tab content
+          <ChallengeEdit />
         </Tabs.Tab>
         <Tabs.Tab label="队伍审核" icon={<Icon path={mdiAccountMultipleCheckOutline} size={1} />}>
-          Settings tab content
+          <TeamReview />
         </Tabs.Tab>
       </Tabs>
     </AdminPage>

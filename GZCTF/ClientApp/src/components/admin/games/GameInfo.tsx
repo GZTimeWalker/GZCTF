@@ -223,7 +223,7 @@ const GameInfo: FC = () => {
               disabled={disabled}
               styles={{
                 root: {
-                  height: '7rem',
+                  height: '110px',
                   padding: game.poster ? '0' : '16px',
                 },
               }}
