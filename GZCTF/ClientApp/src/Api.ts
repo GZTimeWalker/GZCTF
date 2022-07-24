@@ -2238,15 +2238,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛公告
      * @request GET:/api/edit/games/{id}/notices
      */
-    editGetGameNotices: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      params: RequestParams = {}
-    ) =>
+    editGetGameNotices: (id: number, params: RequestParams = {}) =>
       this.request<GameNotice, RequestResponse>({
         path: `/api/edit/games/${id}/notices`,
         method: 'GET',
-        query: query,
         format: 'json',
         ...params,
       }),
@@ -2258,11 +2253,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛公告
      * @request GET:/api/edit/games/{id}/notices
      */
-    useEditGetGameNotices: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) => useSWR<GameNotice, RequestResponse>([`/api/edit/games/${id}/notices`, query], options),
+    useEditGetGameNotices: (id: number, options?: SWRConfiguration) =>
+      useSWR<GameNotice, RequestResponse>(`/api/edit/games/${id}/notices`, options),
 
     /**
      * @description 获取比赛公告，需要管理员权限
@@ -2274,10 +2266,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateEditGetGameNotices: (
       id: number,
-      query?: { count?: number; skip?: number },
       data?: GameNotice | Promise<GameNotice>,
       options?: MutatorOptions
-    ) => mutate<GameNotice>([`/api/edit/games/${id}/notices`, query], data, options),
+    ) => mutate<GameNotice>(`/api/edit/games/${id}/notices`, data, options),
 
     /**
      * @description 删除比赛公告，需要管理员权限
