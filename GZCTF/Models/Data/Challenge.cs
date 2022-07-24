@@ -106,7 +106,7 @@ public class Challenge
     /// <summary>
     /// 下载文件名称
     /// </summary>
-    public string FileName { get; set; } = string.Empty;
+    public string FileName { get; set; } = "attachment";
 
     /// <summary>
     /// 当前题目分值
@@ -118,7 +118,7 @@ public class Challenge
         {
             return (int)Math.Floor(
                 OriginalScore * (MinScoreRate +
-                    (1.0 - MinScoreRate) * Math.Exp((1.0 - AcceptedUserCount) / Difficulty)
+                    (1.0 - MinScoreRate) * Math.Exp(-AcceptedUserCount / Difficulty)
                 ));
         }
     }
@@ -143,20 +143,20 @@ public class Challenge
 
     public Challenge Update(ChallengeModel model)
     {
-        Type = model.Type;
-        Title = model.Title;
-        Content = model.Content;
-        Tag = model.Tag;
-        Hints = model.Hints;
-        IsEnabled = model.IsEnabled;
-        ContainerImage = model.ContainerImage;
-        MemoryLimit = model.MemoryLimit ?? 64;
-        CPUCount = model.CPUCount ?? 1;
-        ContainerExposePort = model.ContainerExposePort ?? 80;
-        OriginalScore = model.OriginalScore;
-        MinScoreRate = model.MinScoreRate;
-        Difficulty = model.Difficulty;
-        FileName = model.FileName ?? "attachment";
+        Type = model.Type ?? Type;
+        Title = model.Title ?? Title;
+        Content = model.Content ?? Content;
+        Tag = model.Tag ?? Tag;
+        Hints = model.Hints ?? Hints;
+        IsEnabled = model.IsEnabled ?? IsEnabled;
+        ContainerImage = model.ContainerImage ?? ContainerImage;
+        MemoryLimit = model.MemoryLimit ?? MemoryLimit;
+        CPUCount = model.CPUCount ?? CPUCount;
+        ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
+        OriginalScore = model.OriginalScore ?? OriginalScore;
+        MinScoreRate = model.MinScoreRate ?? MinScoreRate;
+        Difficulty = model.Difficulty ?? Difficulty;
+        FileName = model.FileName ?? FileName;
 
         return this;
     }

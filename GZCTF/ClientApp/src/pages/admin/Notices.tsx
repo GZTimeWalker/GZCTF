@@ -8,7 +8,6 @@ import api, { Notice } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 import NoticeEditCard from '../../components/admin/NoticeEditCard'
 import NoticeEditModal from '../../components/admin/NoticeEditModal'
-import { number } from 'echarts'
 
 const Notices: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({

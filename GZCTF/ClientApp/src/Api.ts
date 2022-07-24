@@ -691,6 +691,24 @@ export interface ChallengeInfoModel {
 
   /** 是否启用题目 */
   isEnabled?: boolean
+
+  /**
+   * 题目分值
+   * @format int32
+   */
+  score?: number
+
+  /**
+   * 最低分值
+   * @format int32
+   */
+  minScore?: number
+
+  /**
+   * 最初分值
+   * @format int32
+   */
+  originalScore?: number
 }
 
 /**
@@ -698,22 +716,22 @@ export interface ChallengeInfoModel {
  */
 export interface ChallengeModel {
   /** 题目名称 */
-  title: string
+  title?: string | null
 
   /** 题目内容 */
-  content: string
+  content?: string | null
 
   /** 题目标签 */
-  tag?: ChallengeTag
+  tag?: ChallengeTag | null
 
   /** 题目提示，用";"分隔 */
-  hints?: string
+  hints?: string | null
 
   /** 题目类型 */
-  type?: ChallengeType
+  type?: ChallengeType | null
 
   /** 是否启用题目 */
-  isEnabled?: boolean
+  isEnabled?: boolean | null
 
   /** 镜像名称与标签 */
   containerImage?: string | null
@@ -740,7 +758,7 @@ export interface ChallengeModel {
    * 初始分数
    * @format int32
    */
-  originalScore?: number
+  originalScore?: number | null
 
   /**
    * 最低分数比例
@@ -748,13 +766,13 @@ export interface ChallengeModel {
    * @min 0
    * @max 1
    */
-  minScoreRate?: number
+  minScoreRate?: number | null
 
   /**
    * 难度系数
    * @format int32
    */
-  difficulty?: number
+  difficulty?: number | null
 
   /** 统一文件名 */
   fileName?: string | null
