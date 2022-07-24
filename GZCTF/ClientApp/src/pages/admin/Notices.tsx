@@ -8,6 +8,7 @@ import api, { Notice } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 import NoticeEditCard from '../../components/admin/NoticeEditCard'
 import NoticeEditModal from '../../components/admin/NoticeEditModal'
+import { number } from 'echarts'
 
 const Notices: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({
@@ -19,6 +20,18 @@ const Notices: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeNotice, setActiveNotice] = useState<Notice | null>(null)
+
+
+  // bug：通知管理显示未能排序
+  notices?.sort(function (a: Notice, b: Notice): number {
+    console.log("a: ", a.title, a.isPinned);
+    console.log("b: ", b.title, b.isPinned);
+    if (a.isPinned != b.isPinned) {
+      console.log("Pinned diff")
+      return a.isPinned ? - 1 : 1;
+    }
+    return (a.time < b.time) ? 1 : -1;
+  });
 
   const onPin = (notice: Notice) => {
     if (!disabled) {
