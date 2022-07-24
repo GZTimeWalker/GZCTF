@@ -34,6 +34,21 @@ public class ChallengeInfoModel
     /// </summary>
     public bool IsEnabled { get; set; } = false;
 
+    /// <summary>
+    /// 题目分值
+    /// </summary>
+    public int Score { get; set; } = 500;
+
+    /// <summary>
+    /// 最低分值
+    /// </summary>
+    public int MinScore { get; set; } = 0;
+
+    /// <summary>
+    /// 最初分值
+    /// </summary>
+    public int OriginalScore { get; set; } = 500;
+
     public static ChallengeInfoModel FromChallenge(Challenge challenge)
         => new()
         {
@@ -41,6 +56,9 @@ public class ChallengeInfoModel
             Title = challenge.Title,
             Tag = challenge.Tag,
             Type = challenge.Type,
+            Score = challenge.CurrentScore,
+            MinScore = (int)Math.Floor(challenge.MinScoreRate * challenge.OriginalScore),
+            OriginalScore = challenge.OriginalScore,
             IsEnabled = challenge.IsEnabled
         };
 }

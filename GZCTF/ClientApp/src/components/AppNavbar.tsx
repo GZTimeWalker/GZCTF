@@ -84,7 +84,7 @@ const items: NavbarItem[] = [
   { icon: mdiFlagOutline, label: '赛事', link: '/games' },
   { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
   { icon: mdiInformationOutline, label: '关于', link: '/about' },
-  { icon: mdiWrenchOutline, label: '管理', link: '/admin', admin: true },
+  { icon: mdiWrenchOutline, label: '管理', link: '/admin/notices', admin: true },
 ]
 
 export interface NavbarLinkProps {

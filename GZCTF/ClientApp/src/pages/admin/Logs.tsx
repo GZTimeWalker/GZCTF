@@ -55,7 +55,7 @@ const Logs: FC = () => {
 
   const [, update] = useState(new Date())
   const newLogs = useRef<LogMessageModel[]>([])
-  const [logs, setLogs] = useState<LogMessageModel[]>([])
+  const [logs, setLogs] = useState<LogMessageModel[]>()
 
   useEffect(() => {
     api.admin
@@ -102,6 +102,7 @@ const Logs: FC = () => {
           color: 'teal',
           message: '实时日志连接成功',
           icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
         })
       })
       .catch((error) => {
@@ -115,7 +116,7 @@ const Logs: FC = () => {
     }
   }, [])
 
-  const rows = [...(activePage === 1 ? newLogs.current : []), ...logs!].map((item, i) => (
+  const rows = [...(activePage === 1 ? newLogs.current : []), ...(logs ?? [])].map((item, i) => (
     <tr
       key={`${item.time}@${i}`}
       className={
@@ -133,6 +134,7 @@ const Logs: FC = () => {
   return (
     <AdminPage
       scroll
+      isLoading={!logs}
       head={
         <>
           <SegmentedControl

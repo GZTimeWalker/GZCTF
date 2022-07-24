@@ -6,17 +6,11 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '../../Api'
+import { ChallengeTagItem, ChallengeTagLabelMap, ChallengeTypeLabelMap } from '../ChallengeItem'
 
 interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void
 }
-
-export const ChallengeTypeLabelMap = new Map<ChallengeType, string>([
-  [ChallengeType.StaticAttachment, '静态附件题'],
-  [ChallengeType.StaticContainer, '静态容器题'],
-  [ChallengeType.DynamicAttachment, '动态附件题'],
-  [ChallengeType.DynamicContainer, '动态容器题'],
-])
 
 const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { id } = useParams()
@@ -40,7 +34,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
             icon: <Icon path={mdiCheck} size={1} />,
           })
           onAddChallenge(data.data)
-          navigate('/admin/games')
+          navigate(`/admin/games/${id}/challenges/${data.data.id}`)
         })
         .catch((err) => {
           showNotification({
@@ -72,6 +66,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
             required
             label="题目类型"
             placeholder="Type"
+            value={challenge.type}
+            onChange={(e) => setChallenge({ ...challenge, type: e as ChallengeType })}
             data={Object.entries(ChallengeType).map((type) => ({
               value: type[1],
               label: ChallengeTypeLabelMap.get(type[1]),
@@ -81,10 +77,13 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
             required
             label="题目标签"
             placeholder="Tag"
-            data={Object.entries(ChallengeTag).map((tag) => ({
-              value: tag[1],
-              label: tag[0],
-            }))}
+            value={challenge.tag}
+            onChange={(e) => setChallenge({ ...challenge, tag: e as ChallengeTag })}
+            itemComponent={ChallengeTagItem}
+            data={Object.entries(ChallengeTag).map((tag) => {
+              const data = ChallengeTagLabelMap.get(tag[1])
+              return { value: tag[1], ...data }
+            })}
           />
         </Group>
 

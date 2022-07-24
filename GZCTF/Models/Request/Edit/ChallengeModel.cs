@@ -10,35 +10,33 @@ public class ChallengeModel
     /// <summary>
     /// 题目名称
     /// </summary>
-    [Required(ErrorMessage = "标题是必需的")]
     [MinLength(1, ErrorMessage = "标题过短")]
-    public string Title { get; set; } = string.Empty;
+    public string? Title { get; set; }
 
     /// <summary>
     /// 题目内容
     /// </summary>
-    [Required(ErrorMessage = "题目内容是必需的")]
-    public string Content { get; set; } = string.Empty;
+    public string? Content { get; set; }
 
     /// <summary>
     /// 题目标签
     /// </summary>
-    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
+    public ChallengeTag? Tag { get; set; }
 
     /// <summary>
     /// 题目提示，用";"分隔
     /// </summary>
-    public string Hints { get; set; } = string.Empty;
+    public string? Hints { get; set; }
 
     /// <summary>
     /// 题目类型
     /// </summary>
-    public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
+    public ChallengeType? Type { get; set; }
 
     /// <summary>
     /// 是否启用题目
     /// </summary>
-    public bool IsEnabled { get; set; } = false;
+    public bool? IsEnabled { get; set; }
 
     #region Container
 
@@ -69,23 +67,23 @@ public class ChallengeModel
     /// <summary>
     /// 初始分数
     /// </summary>
-    public int OriginalScore { get; set; } = 500;
+    public int? OriginalScore { get; set; }
 
     /// <summary>
     /// 最低分数比例
     /// </summary>
     [Range(0, 1)]
-    public double MinScoreRate { get; set; } = 0.25;
+    public double? MinScoreRate { get; set; }
 
     /// <summary>
     /// 难度系数
     /// </summary>
-    public int Difficulty { get; set; } = 100;
+    public int? Difficulty { get; set; }
 
     #endregion Score
 
     /// <summary>
     /// 统一文件名
     /// </summary>
-    public string? FileName { get; set; } = string.Empty;
+    public string? FileName { get; set; }
 }

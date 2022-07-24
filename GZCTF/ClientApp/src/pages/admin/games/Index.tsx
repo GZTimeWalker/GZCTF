@@ -20,10 +20,10 @@ const ITEM_COUNT_PER_PAGE = 30
 const Games: FC = () => {
   const [page, setPage] = useState(1)
   const [createOpened, setCreateOpened] = useState(false)
-  const [games, setGames] = useState<GameInfoModel[]>([])
+  const [games, setGames] = useState<GameInfoModel[]>()
   const navigate = useNavigate()
 
-  games.sort((a, b) => (new Date(b.end) < new Date(a.end) ? -1 : 1))
+  games?.sort((a, b) => (new Date(b.end) < new Date(a.end) ? -1 : 1))
 
   useEffect(() => {
     api.edit
@@ -39,6 +39,7 @@ const Games: FC = () => {
   return (
     <AdminPage
       scroll
+      isLoading={!games}
       headProps={{ position: 'apart' }}
       head={
         <>
@@ -136,7 +137,7 @@ const Games: FC = () => {
         size="30%"
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
-        onAddGame={(game) => setGames([...games, game])}
+        onAddGame={(game) => setGames([...(games ?? []), game])}
       />
     </AdminPage>
   )
