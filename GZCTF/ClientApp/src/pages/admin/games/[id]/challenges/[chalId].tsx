@@ -20,9 +20,7 @@ const GameChallengeEdit: FC = () => {
         </Button>
       }
     >
-    <Text>
-      编辑题目 {chalId}
-    </Text>
+      <Text>编辑题目 {chalId}</Text>
     </WithGameTab>
   )
 }

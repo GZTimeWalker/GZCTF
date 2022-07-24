@@ -137,7 +137,7 @@ const Games: FC = () => {
         size="30%"
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
-        onAddGame={(game) => setGames([...games ?? [], game])}
+        onAddGame={(game) => setGames([...(games ?? []), game])}
       />
     </AdminPage>
   )

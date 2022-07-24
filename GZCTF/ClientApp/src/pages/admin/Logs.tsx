@@ -116,7 +116,7 @@ const Logs: FC = () => {
     }
   }, [])
 
-  const rows = [...(activePage === 1 ? newLogs.current : []), ...logs ?? []].map((item, i) => (
+  const rows = [...(activePage === 1 ? newLogs.current : []), ...(logs ?? [])].map((item, i) => (
     <tr
       key={`${item.time}@${i}`}
       className={
