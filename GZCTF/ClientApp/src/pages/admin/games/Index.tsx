@@ -49,7 +49,6 @@ const Games: FC = () => {
           <Group position="right">
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={page <= 1}
               onClick={() => setPage(page - 1)}
             >
@@ -57,7 +56,6 @@ const Games: FC = () => {
             </ActionIcon>
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={games && games.length < ITEM_COUNT_PER_PAGE}
               onClick={() => setPage(page + 1)}
             >

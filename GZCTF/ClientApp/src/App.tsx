@@ -101,7 +101,7 @@ export const App: FC = () => {
             >
               <Suspense
                 fallback={
-                  <Center style={{ height: 'calc(100vh - 32px)' }}>
+                  <Center style={{ height: '100vh' }}>
                     <Loader />
                   </Center>
                 }

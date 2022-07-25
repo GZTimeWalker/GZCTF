@@ -8,7 +8,7 @@ import {
   Table,
   Avatar,
   Text,
-  AvatarsGroup,
+  Tooltip,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -90,17 +90,11 @@ const Teams: FC = () => {
             }}
           />
           <Group position="right">
-            <ActionIcon
-              size="lg"
-              variant="hover"
-              disabled={page <= 1}
-              onClick={() => setPage(page - 1)}
-            >
+            <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={teams && teams.length < ITEM_COUNT_PER_PAGE}
               onClick={() => setPage(page + 1)}
             >
@@ -148,17 +142,37 @@ const Teams: FC = () => {
                       </Text>
                     </td>
                     <td>
-                      <AvatarsGroup
-                        limit={8}
-                        size="md"
-                        styles={{
-                          child: {
-                            border: 'none',
-                          },
-                        }}
-                      >
-                        {members && members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
-                      </AvatarsGroup>
+                      <Tooltip.Group openDelay={300} closeDelay={100}>
+                        <Avatar.Group
+                          spacing="md"
+                          styles={{
+                            child: {
+                              border: 'none',
+                            },
+                          }}
+                        >
+                          {members &&
+                            members.slice(0, 8).map((m) => (
+                              <Tooltip key={m.id} label={m.userName} withArrow>
+                                <Avatar src={m.avatar} />
+                              </Tooltip>
+                            ))}
+                          {members && members.length > 8 && (
+                            <Tooltip
+                              label={
+                                <>
+                                  {members.slice(8).map((m) => (
+                                    <Text>{m.userName}</Text>
+                                  ))}
+                                </>
+                              }
+                              withArrow
+                            >
+                              <Avatar>+{members.length - 8}</Avatar>
+                            </Tooltip>
+                          )}
+                        </Avatar.Group>
+                      </Tooltip.Group>
                     </td>
                   </tr>
                 )

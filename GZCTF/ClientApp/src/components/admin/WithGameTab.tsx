@@ -1,13 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import {
-  Group,
-  GroupProps,
-  LoadingOverlay,
-  Stack,
-  Tabs,
-  useMantineTheme,
-} from '@mantine/core'
+import { Group, GroupProps, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,
@@ -31,25 +24,19 @@ interface GameTabProps extends React.PropsWithChildren {
 }
 
 const getTab = (path: string) =>
-  pages.findIndex((page) => path.startsWith('/admin/games/') && path.includes(page.path))
+  pages.find((page) => path.startsWith('/admin/games/') && path.includes(page.path))
 
 const WithGameTab: FC<GameTabProps> = ({ children, isLoading, ...others }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
   const theme = useMantineTheme()
-  const tabIndex = getTab(location.pathname)
-  const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
-
-  const onChange = (active: number, tabKey: string) => {
-    setActiveTab(active)
-    navigate(tabKey)
-  }
+  const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
 
   useEffect(() => {
     const tab = getTab(location.pathname)
-    if (tab >= 0) {
-      setActiveTab(tab)
+    if (tab) {
+      setActiveTab(tab.path ?? '')
     } else {
       navigate(pages[0].path)
     }
@@ -60,22 +47,25 @@ const WithGameTab: FC<GameTabProps> = ({ children, isLoading, ...others }) => {
       <Group position="apart" align="flex-start">
         <Tabs
           orientation="vertical"
-          active={activeTab}
-          onTabChange={onChange}
+          value={activeTab}
+          onTabChange={(value) => navigate(`/admin/games/${id}/${value}`)}
           styles={{
             root: {
               width: '8rem',
             },
           }}
         >
-          {pages.map((page) => (
-            <Tabs.Tab
-              key={page.path}
-              label={page.title}
-              icon={<Icon path={page.icon} size={1} />}
-              tabKey={`/admin/games/${id}/${page.path}`}
-            />
-          ))}
+          <Tabs.List>
+            {pages.map((page) => (
+              <Tabs.Tab
+                key={page.path}
+                icon={<Icon path={page.icon} size={1} />}
+                value={page.path}
+              >
+                {page.title}
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
         </Tabs>
         <Stack style={{ width: 'calc(100% - 9rem)', position: 'relative' }}>
           <LoadingOverlay

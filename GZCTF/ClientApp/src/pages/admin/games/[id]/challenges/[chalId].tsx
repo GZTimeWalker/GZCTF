@@ -11,7 +11,7 @@ import {
   Stack,
   NumberInput,
   Slider,
-  InputWrapper,
+  Input,
   SimpleGrid,
 } from '@mantine/core'
 import { mdiBackburger } from '@mdi/js'
@@ -20,6 +20,7 @@ import api, { ChallengeModel, ChallengeTag, ChallengeType } from '../../../../..
 import {
   ChallengeTagItem,
   ChallengeTagLabelMap,
+  ChallengeTypeItem,
   ChallengeTypeLabelMap,
 } from '../../../../../components/ChallengeItem'
 import ScoreFunc from '../../../../../components/admin/ScoreFunc'
@@ -61,7 +62,7 @@ const GameChallengeEdit: FC = () => {
       }
     >
       <Grid grow>
-        <Grid.Col span={6}>
+        <Grid.Col span={4}>
           <TextInput
             label="题目标题"
             disabled={disabled}
@@ -70,20 +71,21 @@ const GameChallengeEdit: FC = () => {
             onChange={(e) => setChallengeInfo({ ...challengeInfo, title: e.target.value })}
           />
         </Grid.Col>
-        <Grid.Col span={3}>
+        <Grid.Col span={4}>
           <Select
             required
             label="题目类型"
             placeholder="Type"
             value={challengeInfo?.type}
             onChange={(e) => setChallengeInfo({ ...challengeInfo, type: e as ChallengeType })}
-            data={Object.entries(ChallengeType).map((type) => ({
-              value: type[1],
-              label: ChallengeTypeLabelMap.get(type[1]),
-            }))}
+            itemComponent={ChallengeTypeItem}
+            data={Object.entries(ChallengeType).map((type) => {
+              const data = ChallengeTypeLabelMap.get(type[1])
+              return { value: type[1], ...data }
+            })}
           />
         </Grid.Col>
-        <Grid.Col span={3}>
+        <Grid.Col span={4}>
           <Select
             required
             label="题目标签"
@@ -103,7 +105,7 @@ const GameChallengeEdit: FC = () => {
           <Textarea
             label={
               <Group spacing="sm">
-                <Text>题目描述</Text>
+                <Text size="sm">题目描述</Text>
                 <Text size="xs" color="gray">
                   支持 markdown 语法
                 </Text>
@@ -122,7 +124,7 @@ const GameChallengeEdit: FC = () => {
           <Textarea
             label={
               <Group spacing="sm">
-                <Text>题目提示</Text>
+                <Text size="sm">题目提示</Text>
                 <Text size="xs" color="gray">
                   请以分号 ; 分隔每个提示
                 </Text>
@@ -160,7 +162,7 @@ const GameChallengeEdit: FC = () => {
             stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
             onChange={(e) => setChallengeInfo({ ...challengeInfo, difficulty: e })}
           />
-          <InputWrapper label="题目最低分值比例" required>
+          <Input.Wrapper label="题目最低分值比例" required>
             <Slider
               label={(value) =>
                 `最低分值: ${((value / 100) * (challengeInfo?.originalScore ?? 500)).toFixed(0)}pt`
@@ -173,7 +175,7 @@ const GameChallengeEdit: FC = () => {
               ]}
               onChange={setMinRate}
             />
-          </InputWrapper>
+          </Input.Wrapper>
         </Stack>
         <ScoreFunc
           originalScore={challengeInfo?.originalScore ?? 500}

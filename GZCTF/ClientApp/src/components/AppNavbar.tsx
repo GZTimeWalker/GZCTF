@@ -10,8 +10,8 @@ import {
   Divider,
   Tooltip,
   createStyles,
-  UnstyledButton,
   useMantineColorScheme,
+  ActionIcon,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -30,47 +30,50 @@ import { Icon } from '@mdi/react'
 import api, { Role } from '../Api'
 import MainIcon from './icon/MainIcon'
 
-const useStyles = createStyles((theme) => ({
-  link: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.radius.md,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: theme.colors.gray[1],
-    cursor: 'pointer',
+const useStyles = createStyles((theme, _param, getRef) => {
+  const active = { ref: getRef('activeItem') } as const
 
-    '&:hover': {
-      backgroundColor: theme.colors.gray[6] + '80',
+  return {
+    active,
+    link: {
+      width: 40,
+      height: 40,
+      borderRadius: theme.radius.md,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: theme.colors.gray[1],
+      cursor: 'pointer',
+
+      '&:hover': {
+        backgroundColor: theme.colors.gray[6] + '80',
+      },
+
+      [`&.${active.ref}, &.${active.ref}:hover`]: {
+        backgroundColor: theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.25),
+        color: theme.colors[theme.primaryColor][4],
+      },
     },
-  },
 
-  active: {
-    '&, &:hover': {
-      backgroundColor: theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.25),
-      color: theme.colors[theme.primaryColor][4],
+    navbar: {
+      backgroundColor: theme.colors.gray[8],
     },
-  },
 
-  navbar: {
-    backgroundColor: theme.colors.gray[8],
-  },
+    tooltipBody: {
+      marginLeft: 20,
+      backgroundColor:
+        theme.colorScheme === 'dark'
+          ? theme.fn.darken(theme.colors[theme.primaryColor][8], 0.45)
+          : theme.colors[theme.primaryColor][2],
+      color:
+        theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.gray[8],
+    },
 
-  tooltipBody: {
-    marginLeft: 20,
-    backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.fn.darken(theme.colors[theme.primaryColor][8], 0.45)
-        : theme.colors[theme.primaryColor][2],
-    color:
-      theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.gray[8],
-  },
-
-  menuBody: {
-    marginLeft: 20,
-  },
-}))
+    menuBody: {
+      marginLeft: 20,
+    },
+  }
+})
 
 interface NavbarItem {
   icon: string
@@ -99,16 +102,16 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles()
 
   return (
-    <Link to={props.link ?? '#'}>
-      <Tooltip label={props.label} classNames={{ body: classes.tooltipBody }} position="right">
-        <UnstyledButton
-          onClick={props.onClick}
-          className={cx(classes.link, { [classes.active]: props.isActive })}
-        >
-          <Icon path={props.icon} size={1} />
-        </UnstyledButton>
-      </Tooltip>
-    </Link>
+    <Tooltip label={props.label} classNames={{ root: classes.tooltipBody }} position="right">
+      <ActionIcon
+        onClick={props.onClick}
+        component={Link}
+        to={props.link ?? '#'}
+        className={cx(classes.link, { [classes.active]: props.isActive })}
+      >
+        <Icon path={props.icon} size={1} />
+      </ActionIcon>
+    </Tooltip>
   )
 }
 
@@ -182,23 +185,23 @@ const AppNavbar: FC = () => {
           {/* Color Mode */}
           <Tooltip
             label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
-            classNames={{ body: classes.tooltipBody }}
+            classNames={{ root: classes.tooltipBody }}
             position="right"
           >
-            <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
+            <ActionIcon onClick={() => toggleColorScheme()} className={classes.link}>
               {colorScheme === 'dark' ? (
                 <Icon path={mdiWeatherSunny} size={1} />
               ) : (
                 <Icon path={mdiWeatherNight} size={1} />
               )}
-            </UnstyledButton>
+            </ActionIcon>
           </Tooltip>
 
           {/* User Info */}
           {user && !error ? (
-            <Menu
-              control={
-                <Tooltip label="账户" classNames={{ body: classes.tooltipBody }} position="right">
+            <Menu classNames={{ dropdown: classes.menuBody }} position="right-end" trigger="click">
+              <Menu.Target>
+                <Tooltip label="账户" classNames={{ root: classes.tooltipBody }} position="right">
                   <Box className={cx(classes.link)}>
                     {user.avatar ? (
                       <Avatar src={user.avatar} radius="md" size="md" />
@@ -207,30 +210,27 @@ const AppNavbar: FC = () => {
                     )}
                   </Box>
                 </Tooltip>
-              }
-              classNames={{ body: classes.menuBody }}
-              position="right"
-              placement="end"
-              trigger="click"
-            >
-              <Menu.Label>{user.userName}</Menu.Label>
-              <Menu.Item
-                component={Link}
-                to="/account/profile"
-                icon={<Icon path={mdiAccountCircleOutline} size={1} />}
-              >
-                用户信息
-              </Menu.Item>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>{user.userName}</Menu.Label>
+                <Menu.Item
+                  component={Link}
+                  to="/account/profile"
+                  icon={<Icon path={mdiAccountCircleOutline} size={1} />}
+                >
+                  用户信息
+                </Menu.Item>
 
-              <Divider />
+                <Divider />
 
-              <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
-                登出
-              </Menu.Item>
+                <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
+                  登出
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           ) : (
             <Link to={`/account/login?from=${location.pathname}`}>
-              <Tooltip label="登录" classNames={{ body: classes.tooltipBody }} position="right">
+              <Tooltip label="登录" classNames={{ root: classes.tooltipBody }} position="right">
                 <Box className={cx(classes.link)}>
                   <Icon path={mdiAccountCircleOutline} size={1} />
                 </Box>

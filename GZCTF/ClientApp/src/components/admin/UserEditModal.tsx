@@ -5,7 +5,7 @@ import {
   Center,
   Grid,
   Group,
-  InputWrapper,
+  Input,
   Modal,
   ModalProps,
   SegmentedControl,
@@ -100,7 +100,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
             </Center>
           </Grid.Col>
         </Grid>
-        <InputWrapper label="用户角色">
+        <Input.Wrapper label="用户角色">
           <SegmentedControl
             fullWidth
             disabled={disabled}
@@ -112,7 +112,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
               label: role[0],
             }))}
           />
-        </InputWrapper>
+        </Input.Wrapper>
         <SimpleGrid cols={2}>
           <TextInput
             label="邮箱"

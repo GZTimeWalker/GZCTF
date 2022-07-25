@@ -112,7 +112,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         <Textarea
           label={
             <Group spacing="sm">
-              <Text>通知详情</Text>
+              <Text size="sm">通知详情</Text>
               <Text size="xs" color="gray">
                 支持 markdown 语法
               </Text>
