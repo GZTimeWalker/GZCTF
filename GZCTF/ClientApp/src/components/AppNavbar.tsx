@@ -1,7 +1,6 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, forwardRef, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
-  Box,
   Menu,
   Stack,
   Center,
@@ -70,7 +69,7 @@ const useStyles = createStyles((theme, _param, getRef) => {
     },
 
     menuBody: {
-      marginLeft: 20,
+      left: 100,
     },
   }
 })
@@ -199,18 +198,17 @@ const AppNavbar: FC = () => {
 
           {/* User Info */}
           {user && !error ? (
-            <Menu classNames={{ dropdown: classes.menuBody }} position="right-end" trigger="click">
+            <Menu position="right-end" offset={24} width={160}>
               <Menu.Target>
-                <Tooltip label="账户" classNames={{ root: classes.tooltipBody }} position="right">
-                  <Box className={classes.link}>
-                    {user.avatar ? (
-                      <Avatar src={user.avatar} radius="md" size="md" />
-                    ) : (
-                      <Icon path={mdiAccountCircleOutline} size={1} />
-                    )}
-                  </Box>
-                </Tooltip>
+                <ActionIcon className={classes.link}>
+                  {user?.avatar ? (
+                    <Avatar src={user?.avatar} radius="md" size="md" />
+                  ) : (
+                    <Icon path={mdiAccountCircleOutline} size={1} />
+                  )}
+                </ActionIcon>
               </Menu.Target>
+
               <Menu.Dropdown>
                 <Menu.Label>{user.userName}</Menu.Label>
                 <Menu.Item
@@ -220,22 +218,21 @@ const AppNavbar: FC = () => {
                 >
                   用户信息
                 </Menu.Item>
-
-                <Divider />
-
                 <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
                   登出
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           ) : (
-            <Link to={`/account/login?from=${location.pathname}`}>
-              <Tooltip label="登录" classNames={{ root: classes.tooltipBody }} position="right">
-                <Box className={cx(classes.link)}>
-                  <Icon path={mdiAccountCircleOutline} size={1} />
-                </Box>
-              </Tooltip>
-            </Link>
+            <Tooltip label="登录" classNames={{ root: classes.tooltipBody }} position="right">
+              <ActionIcon
+                component={Link}
+                to={`/account/login?from=${location.pathname}`}
+                className={cx(classes.link)}
+              >
+                <Icon path={mdiAccountCircleOutline} size={1} />
+              </ActionIcon>
+            </Tooltip>
           )}
         </Stack>
       </Navbar.Section>
