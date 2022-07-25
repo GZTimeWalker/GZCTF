@@ -20,6 +20,7 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
     Math.floor(originalScore * (minScoreRate + (1 - minScoreRate) * Math.exp(-x / difficulty)))
 
   const curScore = func(currentAcceptCount)
+  const showCount = currentAcceptCount > 5.8 * difficulty ? 5.8 * difficulty : currentAcceptCount
   const theme = useMantineTheme()
   const plotData = [...Array(100).keys()].map((x) => [toX(x), func(toX(x))])
 
@@ -30,7 +31,7 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
         animation: false,
         backgroundColor: 'transparent',
         grid: {
-          top: 40,
+          top: 30,
           left: 40,
           right: 70,
           bottom: 30,
@@ -42,22 +43,31 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
         yAxis: {
           name: '题目分值',
           min: 0,
-          max: originalScore,
+          max: Math.ceil((originalScore * 1.2) / 100) * 100,
         },
         series: [
           {
             type: 'line',
             showSymbol: false,
             clip: true,
-            color: theme.colors.brand[7],
+            color: theme.colors.brand[8],
             data: plotData,
             markPoint: {
-              data: [{
-                name: '当前分值',
-                value: curScore,
-                xAxis: currentAcceptCount,
-                yAxis: curScore,
-              }]
+              label: {
+                show: true,
+                fontSize: 10,
+                formatter: '{c}',
+              },
+              symbol: 'pin',
+              symbolSize: 40,
+              symbolOffset: [0, 0],
+              data: [
+                {
+                  value: curScore,
+                  xAxis: showCount,
+                  yAxis: curScore,
+                },
+              ],
             },
             markLine: {
               symbol: 'none',

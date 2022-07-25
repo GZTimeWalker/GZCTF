@@ -1,11 +1,15 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { mutate } from 'swr'
 import { Button, Accordion } from '@mantine/core'
-import { mdiBackburger } from '@mdi/js'
+import { showNotification } from '@mantine/notifications'
+import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../../../../Api'
-import WithGameTab from '../../../../../components/admin/WithGameTab'
+import api, { ChallengeModel } from '../../../../../Api'
 import ChallengeInfoPart from '../../../../../components/admin/ChallengeInfoPart'
+import WithGameTab from '../../../../../components/admin/WithGameTab'
+import ChallengeContainerPart from '../../../../../components/admin/ChallengeContainerPart'
+import ChallengeAttachmentPart from '../../../../../components/admin/ChallengeAttachmentPart'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -17,6 +21,44 @@ const GameChallengeEdit: FC = () => {
     revalidateIfStale: false,
     revalidateOnFocus: false,
   })
+
+  const [value, setValue] = useState<string | null>("info")
+  const [challengeInfo, setChallengeInfo] = useState<ChallengeModel>({ ...challenge })
+  const [disabled, setDisabled] = useState(false)
+
+  useEffect(() => {
+    if (challenge) {
+      setChallengeInfo({ ...challenge })
+    }
+  }, [challenge])
+
+  const onUpdate = (challenge: ChallengeModel) => {
+    if (challenge) {
+      setDisabled(true)
+      api.edit
+        .editUpdateGameChallenge(numId, numCId, challenge)
+        .then((data) => {
+          showNotification({
+            color: 'teal',
+            message: '题目已更新，请分别编辑更新每部分信息',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+          mutate(data.data)
+        })
+        .catch((err) => {
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+          })
+        })
+        .finally(() => {
+          setDisabled(false)
+        })
+    }
+  }
 
   return (
     <WithGameTab
@@ -31,31 +73,43 @@ const GameChallengeEdit: FC = () => {
         </Button>
       }
     >
-      <Accordion chevronSize={20} defaultValue="Info">
-        <Accordion.Item value="Info">
-          <Accordion.Control>
-            基本信息
-          </Accordion.Control>
-          <Accordion.Panel>
-            <ChallengeInfoPart />
-          </Accordion.Panel>
-        </Accordion.Item>
-        <Accordion.Item value="Attachments">
-        <Accordion.Control>
-          附件信息
-        </Accordion.Control>
-          <Accordion.Panel>
-            <ChallengeInfoPart />
-          </Accordion.Panel>
-        </Accordion.Item>
-        <Accordion.Item value="Container">
-        <Accordion.Control>
-          容器信息
-        </Accordion.Control>
-          <Accordion.Panel>
-            <ChallengeInfoPart />
-          </Accordion.Panel>
-        </Accordion.Item>
+      <Accordion
+        chevronPosition="left"
+        styles={{
+          control: {
+            '&, &:hover': {
+              backgroundColor: 'transparent',
+            },
+          }
+        }}
+        chevronSize={20}
+        value={value}
+        onChange={setValue}
+      >
+        <ChallengeInfoPart
+          value="info"
+          curValue={value}
+          challengeInfo={challengeInfo}
+          setChallengeInfo={setChallengeInfo}
+          disabled={disabled}
+          onUpdate={onUpdate}
+        />
+        <ChallengeAttachmentPart
+          value="attachment"
+          curValue={value}
+          challengeInfo={challengeInfo}
+          setChallengeInfo={setChallengeInfo}
+          disabled={disabled}
+          onUpdate={onUpdate}
+        />
+        <ChallengeContainerPart
+          value="container"
+          curValue={value}
+          challengeInfo={challengeInfo}
+          setChallengeInfo={setChallengeInfo}
+          disabled={disabled}
+          onUpdate={onUpdate}
+        />
       </Accordion>
     </WithGameTab>
   )
