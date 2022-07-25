@@ -315,6 +315,9 @@ public class EditController : Controller
         if (notice is null)
             return NotFound(new RequestResponse("公告未找到", 404));
 
+        if (notice.Type != NoticeType.Normal)
+            return BadRequest(new RequestResponse("不能删除系统公告"));
+
         await gameNoticeRepository.RemoveNotice(notice, token);
 
         return Ok();
