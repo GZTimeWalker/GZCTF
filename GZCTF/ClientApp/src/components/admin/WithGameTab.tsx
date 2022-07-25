@@ -57,11 +57,7 @@ const WithGameTab: FC<GameTabProps> = ({ children, isLoading, ...others }) => {
         >
           <Tabs.List>
             {pages.map((page) => (
-              <Tabs.Tab
-                key={page.path}
-                icon={<Icon path={page.icon} size={1} />}
-                value={page.path}
-              >
+              <Tabs.Tab key={page.path} icon={<Icon path={page.icon} size={1} />} value={page.path}>
                 {page.title}
               </Tabs.Tab>
             ))}

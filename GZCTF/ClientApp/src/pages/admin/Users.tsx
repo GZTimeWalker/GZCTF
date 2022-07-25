@@ -155,11 +155,7 @@ const Users: FC = () => {
             }}
           />
           <Group position="right">
-            <ActionIcon
-              size="lg"
-              disabled={page <= 1}
-              onClick={() => setPage(page - 1)}
-            >
+            <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
             <ActionIcon

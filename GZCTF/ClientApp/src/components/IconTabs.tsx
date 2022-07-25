@@ -101,7 +101,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   const { active, onTabChange, tabs, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
 
-  const activeTab = clamp(_activeTab, 0, tabs.length - 1 )
+  const activeTab = clamp(_activeTab, 0, tabs.length - 1)
 
   const panes = tabs.map((tab, index) => (
     <Tab
