@@ -11,7 +11,7 @@ import {
   Stack,
   NumberInput,
   Slider,
-  InputWrapper,
+  Input,
   SimpleGrid,
 } from '@mantine/core'
 import { mdiBackburger } from '@mdi/js'
@@ -162,7 +162,7 @@ const GameChallengeEdit: FC = () => {
             stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
             onChange={(e) => setChallengeInfo({ ...challengeInfo, difficulty: e })}
           />
-          <InputWrapper label="题目最低分值比例" required>
+          <Input.Wrapper label="题目最低分值比例" required>
             <Slider
               label={(value) =>
                 `最低分值: ${((value / 100) * (challengeInfo?.originalScore ?? 500)).toFixed(0)}pt`
@@ -175,7 +175,7 @@ const GameChallengeEdit: FC = () => {
               ]}
               onChange={setMinRate}
             />
-          </InputWrapper>
+          </Input.Wrapper>
         </Stack>
         <ScoreFunc
           originalScore={challengeInfo?.originalScore ?? 500}

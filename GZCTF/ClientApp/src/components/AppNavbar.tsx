@@ -96,14 +96,14 @@ export interface NavbarLinkProps {
 }
 
 const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
-  const { classes, cx } = useStyles()
+  const { classes } = useStyles()
 
   return (
     <Link to={props.link ?? '#'}>
-      <Tooltip label={props.label} classNames={{ body: classes.tooltipBody }} position="right">
+      <Tooltip label={props.label} classNames={{ root: classes.tooltipBody }} position="right">
         <UnstyledButton
           onClick={props.onClick}
-          className={cx(classes.link, { [classes.active]: props.isActive })}
+          classNames={{ root: classes.link, [classes.active]: props.isActive }}
         >
           <Icon path={props.icon} size={1} />
         </UnstyledButton>
@@ -182,7 +182,7 @@ const AppNavbar: FC = () => {
           {/* Color Mode */}
           <Tooltip
             label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
-            classNames={{ body: classes.tooltipBody }}
+            classNames={{ root: classes.tooltipBody }}
             position="right"
           >
             <UnstyledButton onClick={() => toggleColorScheme()} className={cx(classes.link)}>
@@ -197,8 +197,12 @@ const AppNavbar: FC = () => {
           {/* User Info */}
           {user && !error ? (
             <Menu
-              control={
-                <Tooltip label="账户" classNames={{ body: classes.tooltipBody }} position="right">
+              classNames={{ dropdown: classes.menuBody }}
+              position="right-end"
+              trigger="click"
+            >
+              <Menu.Target>
+                <Tooltip label="账户" classNames={{ root: classes.tooltipBody }} position="right">
                   <Box className={cx(classes.link)}>
                     {user.avatar ? (
                       <Avatar src={user.avatar} radius="md" size="md" />
@@ -207,30 +211,27 @@ const AppNavbar: FC = () => {
                     )}
                   </Box>
                 </Tooltip>
-              }
-              classNames={{ body: classes.menuBody }}
-              position="right"
-              placement="end"
-              trigger="click"
-            >
-              <Menu.Label>{user.userName}</Menu.Label>
-              <Menu.Item
-                component={Link}
-                to="/account/profile"
-                icon={<Icon path={mdiAccountCircleOutline} size={1} />}
-              >
-                用户信息
-              </Menu.Item>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>{user.userName}</Menu.Label>
+                <Menu.Item
+                  component={Link}
+                  to="/account/profile"
+                  icon={<Icon path={mdiAccountCircleOutline} size={1} />}
+                >
+                  用户信息
+                </Menu.Item>
 
-              <Divider />
+                <Divider />
 
-              <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
-                登出
-              </Menu.Item>
+                <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
+                  登出
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           ) : (
             <Link to={`/account/login?from=${location.pathname}`}>
-              <Tooltip label="登录" classNames={{ body: classes.tooltipBody }} position="right">
+              <Tooltip label="登录" classNames={{ root: classes.tooltipBody }} position="right">
                 <Box className={cx(classes.link)}>
                   <Icon path={mdiAccountCircleOutline} size={1} />
                 </Box>

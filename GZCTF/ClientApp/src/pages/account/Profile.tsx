@@ -16,30 +16,13 @@ import {
   Center,
   SimpleGrid,
 } from '@mantine/core'
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ProfileUpdateModel } from '../../Api'
 import PasswordChangeModal from '../../components/PasswordChangeModal'
 import WithNavBar from '../../components/WithNavbar'
-
-const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
-  <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
-    {file ? (
-      <Image fit="contain" src={URL.createObjectURL(file)} alt="avatar" />
-    ) : (
-      <Box>
-        <Text size="xl" inline>
-          拖放图片或点击此处以选择头像
-        </Text>
-        <Text size="sm" color="dimmed" inline mt={7}>
-          请选择小于 3MB 的图片
-        </Text>
-      </Box>
-    )}
-  </Group>
-)
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -335,7 +318,24 @@ const Profile: FC = () => {
               maxSize={3 * 1024 * 1024}
               accept={IMAGE_MIME_TYPE}
             >
-              {(status) => dropzoneChildren(status, avatarFile)}
+              <Group
+                position="center"
+                spacing="xl"
+                style={{ minHeight: 240, pointerEvents: 'none' }}
+              >
+                {avatarFile ? (
+                  <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
+                ) : (
+                  <Box>
+                    <Text size="xl" inline>
+                      拖放图片或点击此处以选择头像
+                    </Text>
+                    <Text size="sm" color="dimmed" inline mt={7}>
+                      请选择小于 3MB 的图片
+                    </Text>
+                  </Box>
+                )}
+              </Group>
             </Dropzone>
             <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
               修改头像

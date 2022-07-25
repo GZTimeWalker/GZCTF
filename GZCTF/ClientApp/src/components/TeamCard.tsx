@@ -5,7 +5,6 @@ import {
   Text,
   Divider,
   Avatar,
-  AvatarsGroup,
   Badge,
   Card,
   Stack,
@@ -69,6 +68,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
 
   const ref = useRef<HTMLDivElement | null>(null)
   const [cardSzY, setCardSzY] = useState('180px')
+  const avatarLimit = isActive ? 8 : 4
 
   useEffect(() => {
     setCardSzY(window.getComputedStyle(ref.current!).getPropertyValue('height'))
@@ -119,7 +119,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     <Tooltip
                       label={'激活'}
                       styles={(theme) => ({
-                        body: {
+                        root: {
                           margin: 4,
                           backgroundColor:
                             theme.colorScheme === 'dark'
@@ -186,18 +186,40 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               {team.locked && (
                 <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />
               )}
-              <AvatarsGroup
-                limit={isActive ? 8 : 4}
-                size="md"
-                styles={{
-                  child: {
-                    border: 'none',
-                  },
-                }}
-              >
-                <Avatar src={captain?.avatar} />
-                {members && members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
-              </AvatarsGroup>
+              <Tooltip.Group openDelay={300} closeDelay={100}>
+                <Avatar.Group
+                  spacing="md"
+                  styles={{
+                    child: {
+                      border: 'none',
+                    },
+                  }}
+                >
+                  <Tooltip label={captain?.userName} withArrow>
+                    <Avatar src={captain?.avatar} />
+                  </Tooltip>
+                  {members &&
+                    members.slice(0, avatarLimit).map((m) => (
+                      <Tooltip key={m.id} label={m.userName} withArrow>
+                        <Avatar src={m.avatar} />
+                      </Tooltip>
+                    ))}
+                  {members && members.length > avatarLimit && (
+                    <Tooltip
+                      label={
+                        <>
+                          {members.slice(avatarLimit).map((m) => (
+                            <Text>{m.userName}</Text>
+                          ))}
+                        </>
+                      }
+                      withArrow
+                    >
+                      <Avatar>+{members.length - avatarLimit}</Avatar>
+                    </Tooltip>
+                  )}
+                </Avatar.Group>
+              </Tooltip.Group>
             </Group>
           </Stack>
         </Stack>

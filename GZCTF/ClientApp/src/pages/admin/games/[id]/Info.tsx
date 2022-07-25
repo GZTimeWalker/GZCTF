@@ -5,7 +5,7 @@ import {
   Center,
   Grid,
   Group,
-  InputWrapper,
+  Input,
   NumberInput,
   Stack,
   Textarea,
@@ -210,7 +210,7 @@ const GameInfoEdit: FC = () => {
           />
         </Grid.Col>
         <Grid.Col span={4}>
-          <InputWrapper label="比赛海报">
+          <Input.Wrapper label="比赛海报">
             <Dropzone
               onDrop={(files) => onUpdatePoster(files[0])}
               onReject={() => {
@@ -231,24 +231,22 @@ const GameInfoEdit: FC = () => {
                 },
               }}
             >
-              {() => (
-                <Center style={{ pointerEvents: 'none', height: '100%' }}>
-                  {game?.poster ? (
-                    <Image height="105px" fit="contain" src={game.poster} />
-                  ) : (
-                    <Stack spacing={0}>
-                      <Text size="xl" inline>
-                        拖放图片或点击此处以选择海报
-                      </Text>
-                      <Text size="sm" color="dimmed" inline mt={7}>
-                        请选择小于 3MB 的图片
-                      </Text>
-                    </Stack>
-                  )}
-                </Center>
-              )}
+              <Center style={{ pointerEvents: 'none', height: '100%' }}>
+                {game?.poster ? (
+                  <Image height="105px" fit="contain" src={game.poster} />
+                ) : (
+                  <Stack spacing={0}>
+                    <Text size="xl" inline>
+                      拖放图片或点击此处以选择海报
+                    </Text>
+                    <Text size="sm" color="dimmed" inline mt={7}>
+                      请选择小于 3MB 的图片
+                    </Text>
+                  </Stack>
+                )}
+              </Center>
             </Dropzone>
-          </InputWrapper>
+          </Input.Wrapper>
         </Grid.Col>
       </Grid>
       <Textarea

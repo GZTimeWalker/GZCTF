@@ -154,7 +154,6 @@ const Logs: FC = () => {
           <Group position="right">
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={activePage <= 1}
               onClick={() => setPage(activePage - 1)}
             >
@@ -162,7 +161,6 @@ const Logs: FC = () => {
             </ActionIcon>
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={logs && logs.length < ITEM_COUNT_PER_PAGE}
               onClick={() => setPage(activePage + 1)}
             >
