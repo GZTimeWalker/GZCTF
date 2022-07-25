@@ -94,7 +94,7 @@ public class Challenge
     /// 难度系数
     /// </summary>
     [Required]
-    public int Difficulty { get; set; } = 100;
+    public double Difficulty { get; set; } = 5;
 
     /// <summary>
     /// 题目类型

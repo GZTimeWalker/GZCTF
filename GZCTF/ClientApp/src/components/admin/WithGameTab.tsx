@@ -70,6 +70,7 @@ const WithGameTab: FC<GameTabProps> = ({ children, isLoading, ...others }) => {
         >
           {pages.map((page) => (
             <Tabs.Tab
+              key={page.path}
               label={page.title}
               icon={<Icon path={page.icon} size={1} />}
               tabKey={`/admin/games/${id}/${page.path}`}

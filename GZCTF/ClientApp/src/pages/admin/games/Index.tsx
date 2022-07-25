@@ -90,7 +90,7 @@ const Games: FC = () => {
                     <td>
                       <Group position="apart">
                         <Group position="left">
-                          <Avatar src={game.poster} radius="xl">
+                          <Avatar src={game.poster} radius={0}>
                             {game.title?.at(0)}
                           </Avatar>
                           <Text>{game.title}</Text>

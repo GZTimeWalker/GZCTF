@@ -78,7 +78,7 @@ public class ChallengeModel
     /// <summary>
     /// 难度系数
     /// </summary>
-    public int? Difficulty { get; set; }
+    public double? Difficulty { get; set; }
 
     #endregion Score
 

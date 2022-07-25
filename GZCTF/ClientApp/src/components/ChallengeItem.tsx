@@ -26,7 +26,7 @@ export const ChallengeTagLabelMap = new Map<ChallengeTag, ChallengeTagItemProps>
   [ChallengeTag.Misc, { desrc: '杂项', icon: mdiQrcode, label: ChallengeTag.Misc, color: 'teal' }],
   [
     ChallengeTag.Crypto,
-    { desrc: '密码学', icon: mdiMatrix, label: ChallengeTag.Crypto, color: 'blue' },
+    { desrc: '密码学', icon: mdiMatrix, label: ChallengeTag.Crypto, color: 'indigo' },
   ],
   [ChallengeTag.Pwn, { desrc: 'Pwn', icon: mdiBomb, label: ChallengeTag.Pwn, color: 'red' }],
   [ChallengeTag.Web, { desrc: 'Web', icon: mdiWeb, label: ChallengeTag.Web, color: 'blue' }],

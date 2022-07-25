@@ -524,7 +524,7 @@ export interface Challenge {
 
   /**
    * 难度系数
-   * @format int32
+   * @format double
    */
   difficulty: number
 
@@ -773,7 +773,7 @@ export interface ChallengeModel {
 
   /**
    * 难度系数
-   * @format int32
+   * @format double
    */
   difficulty?: number | null
 
