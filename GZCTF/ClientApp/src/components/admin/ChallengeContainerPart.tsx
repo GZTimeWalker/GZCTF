@@ -15,7 +15,12 @@ const ChallengeContainerPart: FC<ChallengeEditPartProps> = (props) => {
           challengeInfo.type === ChallengeType.StaticAttachment ||
           challengeInfo.type === ChallengeType.DynamicAttachment
         }
-        onBtnClick={() => onUpdate(challengeInfo)}
+        onBtnClick={() => onUpdate({
+            containerImage: challengeInfo.containerImage,
+            containerExposePort: challengeInfo.containerExposePort,
+            cpuCount: challengeInfo.cpuCount,
+            memoryLimit: challengeInfo.memoryLimit,
+        })}
       >
         容器信息
       </ChallengeAccordionControl>
