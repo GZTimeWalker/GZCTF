@@ -16,13 +16,13 @@ import { Icon } from '@mdi/react'
 import { ChallengeTag, ChallengeType } from '../Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
-  [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意flag均可提交' }],
-  [ChallengeType.StaticContainer, { label: '静态容器', desrc: '共用容器，任意flag均可提交' }],
+  [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],
+  [ChallengeType.StaticContainer, { label: '静态容器', desrc: '共用容器，任意 flag 均可提交' }],
   [
     ChallengeType.DynamicAttachment,
     { label: '动态附件', desrc: '按照队伍分发附件，需保证附件数量大于队伍数' },
   ],
-  [ChallengeType.DynamicContainer, { label: '动态容器', desrc: '自动生成下发flag，每队均唯一' }],
+  [ChallengeType.DynamicContainer, { label: '动态容器', desrc: '自动生成下发 flag，每队均唯一' }],
 ])
 
 export interface ChallengeTypeItemProps extends React.ComponentPropsWithoutRef<'div'> {
