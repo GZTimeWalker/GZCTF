@@ -112,16 +112,10 @@ public class Challenge
     /// 当前题目分值
     /// </summary>
     [NotMapped]
-    public int CurrentScore
-    {
-        get
-        {
-            return (int)Math.Floor(
-                OriginalScore * (MinScoreRate +
-                    (1.0 - MinScoreRate) * Math.Exp(-AcceptedUserCount / Difficulty)
-                ));
-        }
-    }
+    public int CurrentScore => (int)Math.Floor(
+        OriginalScore * (MinScoreRate +
+            (1.0 - MinScoreRate) * Math.Exp(-AcceptedUserCount / Difficulty)
+        ));
 
     #region Db Relationship
 

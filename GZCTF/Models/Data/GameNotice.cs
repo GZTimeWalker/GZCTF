@@ -10,7 +10,6 @@ namespace CTFServer.Models;
 public class GameNotice
 {
     [Key]
-    [JsonIgnore]
     public int Id { get; set; }
 
     /// <summary>

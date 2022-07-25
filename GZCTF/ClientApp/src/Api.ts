@@ -452,6 +452,9 @@ export interface GameInfoModel {
 信息涵盖一二三血通知、提示发布通知、题目开启通知等
 */
 export interface GameNotice {
+  /** @format int32 */
+  id?: number
+
   /** 通知类型 */
   type: NoticeType
 
