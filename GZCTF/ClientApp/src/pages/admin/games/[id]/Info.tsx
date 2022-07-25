@@ -254,7 +254,7 @@ const GameInfoEdit: FC = () => {
       <Textarea
         label={
           <Group spacing="sm">
-            <Text>比赛详情</Text>
+            <Text size="sm">比赛详情</Text>
             <Text size="xs" color="gray">
               支持 markdown 语法
             </Text>

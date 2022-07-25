@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { Group, MantineColor, Text, useMantineTheme } from '@mantine/core'
+import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
 import {
   mdiBomb,
   mdiCellphoneCog,
@@ -15,12 +15,31 @@ import {
 import { Icon } from '@mdi/react'
 import { ChallengeTag, ChallengeType } from '../Api'
 
-export const ChallengeTypeLabelMap = new Map<ChallengeType, string>([
-  [ChallengeType.StaticAttachment, '静态附件题'],
-  [ChallengeType.StaticContainer, '静态容器题'],
-  [ChallengeType.DynamicAttachment, '动态附件题'],
-  [ChallengeType.DynamicContainer, '动态容器题'],
+export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
+  [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意flag均可提交' }],
+  [ChallengeType.StaticContainer, { label: '静态容器', desrc: '共用容器，任意flag均可提交' }],
+  [
+    ChallengeType.DynamicAttachment,
+    { label: '动态附件', desrc: '按照队伍分发附件，需保证附件数量大于队伍数' },
+  ],
+  [ChallengeType.DynamicContainer, { label: '动态容器', desrc: '自动生成下发flag，每队均唯一' }],
 ])
+
+export interface ChallengeTypeItemProps extends React.ComponentPropsWithoutRef<'div'> {
+  label: string
+  desrc: string
+}
+
+export const ChallengeTypeItem = forwardRef<HTMLDivElement, ChallengeTypeItemProps>(
+  ({ label, desrc, ...others }: ChallengeTypeItemProps, ref) => {
+    return (
+      <Stack spacing={0} ref={ref} {...others}>
+        <Text size="sm">{label}</Text>
+        <Text size="xs">{desrc}</Text>
+      </Stack>
+    )
+  }
+)
 
 export const ChallengeTagLabelMap = new Map<ChallengeTag, ChallengeTagItemProps>([
   [ChallengeTag.Misc, { desrc: '杂项', icon: mdiQrcode, label: ChallengeTag.Misc, color: 'teal' }],

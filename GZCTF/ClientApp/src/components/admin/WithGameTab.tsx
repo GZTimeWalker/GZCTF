@@ -1,13 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import {
-  Group,
-  GroupProps,
-  LoadingOverlay,
-  Stack,
-  Tabs,
-  useMantineTheme,
-} from '@mantine/core'
+import { Group, GroupProps, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,

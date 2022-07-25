@@ -30,7 +30,7 @@ const ScoreFunc: FC<ScoreFuncProps> = ({ originalScore, difficulty, minScoreRate
           backgroundColor: 'transparent',
         },
         xAxis: {
-          name: '解出人数',
+          name: '解出次数',
         },
         yAxis: {
           name: '题目分值',

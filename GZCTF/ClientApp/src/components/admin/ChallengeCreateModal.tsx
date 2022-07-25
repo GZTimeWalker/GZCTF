@@ -6,7 +6,12 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '../../Api'
-import { ChallengeTagItem, ChallengeTagLabelMap, ChallengeTypeLabelMap } from '../ChallengeItem'
+import {
+  ChallengeTagItem,
+  ChallengeTagLabelMap,
+  ChallengeTypeItem,
+  ChallengeTypeLabelMap,
+} from '../ChallengeItem'
 
 interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void
@@ -66,12 +71,13 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
             required
             label="题目类型"
             placeholder="Type"
-            value={challenge.type}
+            value={challenge?.type}
             onChange={(e) => setChallenge({ ...challenge, type: e as ChallengeType })}
-            data={Object.entries(ChallengeType).map((type) => ({
-              value: type[1],
-              label: ChallengeTypeLabelMap.get(type[1]),
-            }))}
+            itemComponent={ChallengeTypeItem}
+            data={Object.entries(ChallengeType).map((type) => {
+              const data = ChallengeTypeLabelMap.get(type[1])
+              return { value: type[1], ...data }
+            })}
           />
           <Select
             required
