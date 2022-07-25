@@ -196,12 +196,12 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                   }}
                 >
                   <Tooltip label={captain?.userName} withArrow>
-                    <Avatar src={captain?.avatar} />
+                    <Avatar radius="xl" src={captain?.avatar} />
                   </Tooltip>
                   {members &&
                     members.slice(0, avatarLimit).map((m) => (
                       <Tooltip key={m.id} label={m.userName} withArrow>
-                        <Avatar src={m.avatar} />
+                        <Avatar radius="xl" src={m.avatar} />
                       </Tooltip>
                     ))}
                   {members && members.length > avatarLimit && (
@@ -215,7 +215,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                       }
                       withArrow
                     >
-                      <Avatar>+{members.length - avatarLimit}</Avatar>
+                      <Avatar radius="xl">+{members.length - avatarLimit}</Avatar>
                     </Tooltip>
                   )}
                 </Avatar.Group>

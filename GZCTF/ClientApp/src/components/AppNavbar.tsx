@@ -202,7 +202,7 @@ const AppNavbar: FC = () => {
             <Menu classNames={{ dropdown: classes.menuBody }} position="right-end" trigger="click">
               <Menu.Target>
                 <Tooltip label="账户" classNames={{ root: classes.tooltipBody }} position="right">
-                  <Box className={cx(classes.link)}>
+                  <Box className={classes.link}>
                     {user.avatar ? (
                       <Avatar src={user.avatar} radius="md" size="md" />
                     ) : (

@@ -289,7 +289,7 @@ public class EditController : Controller
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpGet("Games/{id}/Notices")]
-    [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token)
         => Ok(await gameNoticeRepository.GetNotices(id, token));

@@ -154,7 +154,7 @@ const Teams: FC = () => {
                           {members &&
                             members.slice(0, 8).map((m) => (
                               <Tooltip key={m.id} label={m.userName} withArrow>
-                                <Avatar src={m.avatar} />
+                                <Avatar radius="xl" src={m.avatar} />
                               </Tooltip>
                             ))}
                           {members && members.length > 8 && (
@@ -168,7 +168,7 @@ const Teams: FC = () => {
                               }
                               withArrow
                             >
-                              <Avatar>+{members.length - 8}</Avatar>
+                              <Avatar radius="xl">+{members.length - 8}</Avatar>
                             </Tooltip>
                           )}
                         </Avatar.Group>

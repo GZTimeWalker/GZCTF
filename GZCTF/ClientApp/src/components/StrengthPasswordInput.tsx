@@ -63,10 +63,13 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
   return (
     <Popover
       opened={opened}
-      position="right-end"
+      position="right"
+      styles={{
+        dropdown: {
+          marginLeft: '2rem'
+        }
+      }}
       withArrow
-      styles={{ dropdown: { width: '100%' } }}
-      trapFocus={false}
       transition="pop-bottom-left"
     >
       <Popover.Target>
@@ -79,6 +82,7 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
           onBlurCapture={close}
           disabled={props.disabled}
           onChange={props.onChange}
+          style={{ width: '100%' }}
         />
       </Popover.Target>
       <Popover.Dropdown>

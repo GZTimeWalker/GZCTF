@@ -2260,7 +2260,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games/{id}/notices
      */
     editGetGameNotices: (id: number, params: RequestParams = {}) =>
-      this.request<GameNotice, RequestResponse>({
+      this.request<GameNotice[], RequestResponse>({
         path: `/api/edit/games/${id}/notices`,
         method: 'GET',
         format: 'json',
@@ -2275,7 +2275,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games/{id}/notices
      */
     useEditGetGameNotices: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameNotice, RequestResponse>(`/api/edit/games/${id}/notices`, options),
+      useSWR<GameNotice[], RequestResponse>(`/api/edit/games/${id}/notices`, options),
 
     /**
      * @description 获取比赛公告，需要管理员权限
@@ -2287,9 +2287,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateEditGetGameNotices: (
       id: number,
-      data?: GameNotice | Promise<GameNotice>,
+      data?: GameNotice[] | Promise<GameNotice[]>,
       options?: MutatorOptions
-    ) => mutate<GameNotice>(`/api/edit/games/${id}/notices`, data, options),
+    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
 
     /**
      * @description 删除比赛公告，需要管理员权限
