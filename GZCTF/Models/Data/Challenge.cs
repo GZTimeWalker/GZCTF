@@ -8,6 +8,7 @@ namespace CTFServer.Models;
 public class Challenge
 {
     [Key]
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
@@ -50,25 +51,21 @@ public class Challenge
     /// <summary>
     /// 镜像名称与标签
     /// </summary>
-    [JsonIgnore]
     public string? ContainerImage { get; set; } = string.Empty;
 
     /// <summary>
     /// 运行内存限制 (MB)
     /// </summary>
-    [JsonIgnore]
     public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
     /// CPU 运行数量限制
     /// </summary>
-    [JsonIgnore]
     public int? CPUCount { get; set; } = 1;
 
     /// <summary>
     /// 镜像暴露端口
     /// </summary>
-    [JsonIgnore]
     public int? ContainerExposePort { get; set; } = 80;
 
     /// <summary>

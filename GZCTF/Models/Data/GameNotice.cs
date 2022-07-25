@@ -10,6 +10,7 @@ namespace CTFServer.Models;
 public class GameNotice
 {
     [Key]
+    [Required]
     public int Id { get; set; }
 
     /// <summary>

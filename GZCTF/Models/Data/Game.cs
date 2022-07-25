@@ -8,6 +8,7 @@ namespace CTFServer.Models;
 public class Game
 {
     [Key]
+    [Required]
     public int Id { get; set; }
 
     /// <summary>

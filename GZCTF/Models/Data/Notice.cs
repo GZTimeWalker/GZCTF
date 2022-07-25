@@ -7,6 +7,7 @@ namespace CTFServer.Models;
 public class Notice
 {
     [Key]
+    [Required]
     public int Id { get; set; }
 
     /// <summary>

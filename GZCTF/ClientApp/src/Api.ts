@@ -374,7 +374,7 @@ export interface ProblemDetails {
 
 export interface Notice {
   /** @format int32 */
-  id?: number
+  id: number
 
   /** 通知标题 */
   title: string
@@ -414,7 +414,7 @@ export interface GameInfoModel {
    * 比赛 Id
    * @format int32
    */
-  id?: number
+  id: number
 
   /** 比赛标题 */
   title: string
@@ -453,7 +453,7 @@ export interface GameInfoModel {
 */
 export interface GameNotice {
   /** @format int32 */
-  id?: number
+  id: number
 
   /** 通知类型 */
   type: NoticeType
@@ -491,7 +491,7 @@ export interface GameNoticeModel {
 
 export interface Challenge {
   /** @format int32 */
-  id?: number
+  id: number
 
   /** 题目名称 */
   title: string
@@ -510,6 +510,27 @@ export interface Challenge {
 
   /** 题目提示，用";"分隔 */
   hints?: string
+
+  /** 镜像名称与标签 */
+  containerImage?: string | null
+
+  /**
+   * 运行内存限制 (MB)
+   * @format int32
+   */
+  memoryLimit?: number | null
+
+  /**
+   * CPU 运行数量限制
+   * @format int32
+   */
+  cpuCount?: number | null
+
+  /**
+   * 镜像暴露端口
+   * @format int32
+   */
+  containerExposePort?: number | null
 
   /**
    * 解决题目人数
@@ -645,7 +666,7 @@ export enum AnswerResult {
 
 export interface Game {
   /** @format int32 */
-  id?: number
+  id: number
 
   /** 比赛标题 */
   title: string

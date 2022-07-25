@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220725164316_RenameCol")]
-    partial class RenameCol
+    [Migration("20220725164743_UpdateModels")]
+    partial class UpdateModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

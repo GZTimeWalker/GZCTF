@@ -4,7 +4,7 @@
 
 namespace CTFServer.Migrations
 {
-    public partial class RenameCol : Migration
+    public partial class UpdateModels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
