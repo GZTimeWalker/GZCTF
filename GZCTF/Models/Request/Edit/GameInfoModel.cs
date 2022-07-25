@@ -11,7 +11,6 @@ public class GameInfoModel
     /// <summary>
     /// 比赛 Id
     /// </summary>
-    [Required]
     public int Id { get; set; }
 
     /// <summary>

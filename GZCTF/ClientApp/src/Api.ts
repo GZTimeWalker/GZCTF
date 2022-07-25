@@ -414,7 +414,7 @@ export interface GameInfoModel {
    * 比赛 Id
    * @format int32
    */
-  id: number
+  id?: number
 
   /** 比赛标题 */
   title: string
