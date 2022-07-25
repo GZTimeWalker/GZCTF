@@ -6,13 +6,20 @@ interface ScoreFuncProps {
   originalScore: number
   difficulty: number
   minScoreRate: number
+  currentAcceptCount: number
 }
 
-const ScoreFunc: FC<ScoreFuncProps> = ({ originalScore, difficulty, minScoreRate }) => {
+const ScoreFunc: FC<ScoreFuncProps> = ({
+  originalScore,
+  difficulty,
+  minScoreRate,
+  currentAcceptCount,
+}) => {
   const toX = (x: number) => (x * 6 * difficulty) / 100
   const func = (x: number) =>
     Math.floor(originalScore * (minScoreRate + (1 - minScoreRate) * Math.exp(-x / difficulty)))
 
+  const curScore = func(currentAcceptCount)
   const theme = useMantineTheme()
   const plotData = [...Array(100).keys()].map((x) => [toX(x), func(toX(x))])
 
@@ -42,7 +49,16 @@ const ScoreFunc: FC<ScoreFuncProps> = ({ originalScore, difficulty, minScoreRate
             type: 'line',
             showSymbol: false,
             clip: true,
+            color: theme.colors.brand[7],
             data: plotData,
+            markPoint: {
+              data: [{
+                name: '当前分值',
+                value: curScore,
+                xAxis: currentAcceptCount,
+                yAxis: curScore,
+              }]
+            },
             markLine: {
               symbol: 'none',
               data: [

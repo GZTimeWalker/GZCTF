@@ -66,8 +66,8 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
       position="right"
       styles={{
         dropdown: {
-          marginLeft: '2rem'
-        }
+          marginLeft: '2rem',
+        },
       }}
       withArrow
       transition="pop-bottom-left"

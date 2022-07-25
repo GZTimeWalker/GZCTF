@@ -421,6 +421,10 @@ public class EditController : Controller
         if (res is null)
             return NotFound(new RequestResponse("题目未找到", 404));
 
+        // NOTE: IsEnabled can only be updated outside of the edit page
+        if (model.IsEnabled == true && !res.Flags.Any() && res.Type != ChallengeType.DynamicContainer)
+            return BadRequest(new RequestResponse("题目无 flag，不可启用"));
+
         res.Update(model);
         await challengeRepository.UpdateAsync(res, token);
 
@@ -465,13 +469,13 @@ public class EditController : Controller
     /// </remarks>
     /// <param name="id">比赛ID</param>
     /// <param name="cId">题目ID</param>
-    /// <param name="model"></param>
+    /// <param name="models"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">成功添加比赛题目数量</response>
     [HttpPost("Games/{id}/Challenges/{cId}/Flags")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddFlag([FromRoute] int id, [FromRoute] int cId, [FromBody] FlagInfoModel model, CancellationToken token)
+    public async Task<IActionResult> AddFlags([FromRoute] int id, [FromRoute] int cId, [FromBody] FlagInfoModel[] models, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -483,7 +487,7 @@ public class EditController : Controller
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
 
-        var fid = await challengeRepository.AddFlag(challenge, model, token);
+        var fid = await challengeRepository.AddFlags(challenge, models, token);
 
         return Ok(fid);
     }

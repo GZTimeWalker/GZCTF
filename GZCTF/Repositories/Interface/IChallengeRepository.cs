@@ -45,7 +45,7 @@ public interface IChallengeRepository : IRepository
     /// <param name="model">Flag 信息</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<int> AddFlag(Challenge challenge, FlagInfoModel model, CancellationToken token = default);
+    public Task<int> AddFlags(Challenge challenge, FlagInfoModel[] model, CancellationToken token = default);
 
     /// <summary>
     /// 删除 Flag

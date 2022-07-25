@@ -57,7 +57,6 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             disallowClose: true,
           })
           mutateNotice(data.data)
-          setDisabled(false)
           modalProps.onClose()
         })
         .catch((err) => {
@@ -67,6 +66,8 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           })
+        })
+        .finally(() => {
           setDisabled(false)
         })
     } else {
@@ -83,7 +84,6 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             disallowClose: true,
           })
           mutateNotice(data.data)
-          setDisabled(false)
           modalProps.onClose()
         })
         .catch((err) => {
@@ -93,6 +93,8 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
             message: `${err.error.title}`,
             icon: <Icon path={mdiClose} size={1} />,
           })
+        })
+        .finally(() => {
           setDisabled(false)
         })
     }
@@ -113,7 +115,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           label={
             <Group spacing="sm">
               <Text size="sm">通知详情</Text>
-              <Text size="xs" color="gray">
+              <Text size="xs" color="dimmed">
                 支持 markdown 语法
               </Text>
             </Group>

@@ -503,10 +503,19 @@ export interface Challenge {
   isEnabled?: boolean
 
   /** 题目标签 */
-  tag?: ChallengeTag
+  tag: ChallengeTag
+
+  /** 题目类型 */
+  type: ChallengeType
 
   /** 题目提示，用";"分隔 */
   hints?: string
+
+  /**
+   * 解决题目人数
+   * @format int32
+   */
+  acceptedCount: number
 
   /**
    * 初始分数
@@ -527,9 +536,6 @@ export interface Challenge {
    * @format double
    */
   difficulty: number
-
-  /** 题目类型 */
-  type: ChallengeType
 
   /** 下载文件名称 */
   fileName?: string
@@ -2447,11 +2453,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 添加比赛题目 Flag，需要管理员权限
      *
      * @tags Edit
-     * @name EditAddFlag
+     * @name EditAddFlags
      * @summary 添加比赛题目 Flag
      * @request POST:/api/edit/games/{id}/challenges/{cId}/flags
      */
-    editAddFlag: (id: number, cId: number, data: FlagInfoModel, params: RequestParams = {}) =>
+    editAddFlags: (id: number, cId: number, data: FlagInfoModel[], params: RequestParams = {}) =>
       this.request<number, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/flags`,
         method: 'POST',

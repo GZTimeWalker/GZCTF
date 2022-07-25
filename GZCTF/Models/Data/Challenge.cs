@@ -31,8 +31,16 @@ public class Challenge
     /// <summary>
     /// 题目标签
     /// </summary>
+    [Required]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
+
+    /// <summary>
+    /// 题目类型
+    /// </summary>
+    [Required]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     /// <summary>
     /// 题目提示，用";"分隔
@@ -67,8 +75,7 @@ public class Challenge
     /// 解决题目人数
     /// </summary>
     [Required]
-    [JsonIgnore]
-    public int AcceptedUserCount { get; set; } = 0;
+    public int AcceptedCount { get; set; } = 0;
 
     /// <summary>
     /// 提交答案的数量
@@ -97,13 +104,6 @@ public class Challenge
     public double Difficulty { get; set; } = 5;
 
     /// <summary>
-    /// 题目类型
-    /// </summary>
-    [Required]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
-
-    /// <summary>
     /// 下载文件名称
     /// </summary>
     public string FileName { get; set; } = "attachment";
@@ -114,7 +114,7 @@ public class Challenge
     [NotMapped]
     public int CurrentScore => (int)Math.Floor(
         OriginalScore * (MinScoreRate +
-            (1.0 - MinScoreRate) * Math.Exp(-AcceptedUserCount / Difficulty)
+            (1.0 - MinScoreRate) * Math.Exp(-AcceptedCount / Difficulty)
         ));
 
     #region Db Relationship

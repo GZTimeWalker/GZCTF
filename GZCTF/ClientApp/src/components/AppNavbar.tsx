@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Menu,
@@ -6,7 +6,6 @@ import {
   Center,
   Navbar,
   Avatar,
-  Divider,
   Tooltip,
   createStyles,
   useMantineColorScheme,

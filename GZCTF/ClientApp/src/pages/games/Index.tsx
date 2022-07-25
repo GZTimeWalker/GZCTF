@@ -68,7 +68,7 @@ const Games: FC = () => {
           ]}
         >
           {games.get(gameType)?.map((g) => (
-            <GameCard game={g} />
+            <GameCard key={g.id} game={g} />
           ))}
         </SimpleGrid>
       </Stack>

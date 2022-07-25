@@ -13,24 +13,25 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         fileRepository = _fileRepository;
     }
 
-    public async Task<int> AddFlag(Challenge challenge, FlagInfoModel model, CancellationToken token = default)
+    public async Task<int> AddFlags(Challenge challenge, FlagInfoModel[] models, CancellationToken token = default)
     {
-        var flag = new FlagContext()
-        {
-            Flag = model.Flag,
-            AttachmentType = !string.IsNullOrEmpty(model.FileHash) ? FileType.Local :
-                             !string.IsNullOrEmpty(model.Url) ? FileType.Remote : FileType.None,
-            Challenge = challenge,
-            LocalFile = string.IsNullOrEmpty(model.FileHash) ? null : context.Files.Single(x => x.Hash == model.FileHash),
-            RemoteUrl = model.Url
-        };
+        var flags = from model in models
+                    select new FlagContext()
+                    {
+                        Flag = model.Flag,
+                        AttachmentType = !string.IsNullOrEmpty(model.FileHash) ? FileType.Local :
+                                         !string.IsNullOrEmpty(model.Url) ? FileType.Remote : FileType.None,
+                        Challenge = challenge,
+                        LocalFile = string.IsNullOrEmpty(model.FileHash) ? null : context.Files.Single(x => x.Hash == model.FileHash),
+                        RemoteUrl = model.Url
+                    };
 
-        challenge.Flags.Add(flag);
+        challenge.Flags.AddRange(flags);
 
         context.Update(challenge);
         await context.SaveChangesAsync(token);
 
-        return flag.Id;
+        return flags.Count();
     }
 
     public async Task<Challenge> CreateChallenge(Game game, Challenge challenge, CancellationToken token = default)

@@ -72,8 +72,8 @@ public class FlagChecker : IHostedService
 
                 if (item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(item, token))
                 {
-                    item.Challenge.AcceptedUserCount++;
-                    NoticeType type = item.Challenge.AcceptedUserCount switch
+                    item.Challenge.AcceptedCount++;
+                    NoticeType type = item.Challenge.AcceptedCount switch
                     {
                         1 => NoticeType.FirstBlood,
                         2 => NoticeType.SecondBlood,

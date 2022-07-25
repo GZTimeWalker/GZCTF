@@ -1,14 +1,30 @@
 import { FC } from 'react'
-import { Text, Stack, Popover, Badge, Group, Code } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import {
+  Text,
+  Stack,
+  Badge,
+  Group,
+  Code,
+  HoverCard,
+  Title,
+  createStyles,
+  Anchor,
+} from '@mantine/core'
 import LogoHeader from '../components/LogoHeader'
 import WithNavBar from '../components/WithNavbar'
+import MainIcon from '../components/icon/MainIcon'
+
+const useStyles = createStyles((theme) => ({
+  brand: {
+    color: theme.colors[theme.primaryColor][4],
+  },
+}))
 
 const About: FC = () => {
   const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
   const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'develop'
   const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23_12:00:00'
-  const [opened, { close, open }] = useDisclosure(false)
+  const { classes } = useStyles()
 
   return (
     <WithNavBar>
@@ -18,46 +34,65 @@ const About: FC = () => {
           <Text>About</Text>
         </Stack>
         <Group position="right">
-          <Popover
-            opened={opened}
-            onClose={close}
-            position="top"
-            withArrow
-            trapFocus={false}
-            closeOnEscape={false}
-            styles={{
-              dropdown: { pointerEvents: 'none', border: 'none' },
-              arrow: { border: 'none' },
-            }}
-          >
-            <Popover.Target>
+          <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
+            <HoverCard.Target>
               <Badge
-                onMouseEnter={open}
-                onMouseLeave={close}
                 onClick={() => window.open('https://github.com/GZTimeWalker/GZCTF')}
                 style={{
                   cursor: 'pointer',
                 }}
-                size="md"
+                size="lg"
+                variant="outline"
               >
                 © 2022 GZTime {`#${sha.substring(0, 6)}`}
               </Badge>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Group spacing="xs">
-                <Badge
-                  variant="gradient"
-                  gradient={{ from: 'teal', to: 'blue', deg: 60 }}
-                  size="md"
-                >
-                  {`#${sha.substring(0, 6)}:${tag}`}
-                </Badge>
-                <Code style={{ background: 'transparent' }}>
-                  {`built at ${timestamp.replaceAll('_', ' ')}`}
-                </Code>
-              </Group>
-            </Popover.Dropdown>
-          </Popover>
+            </HoverCard.Target>
+            <HoverCard.Dropdown>
+              <Stack>
+                <Group>
+                  <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
+                  <Stack spacing="xs">
+                    <Title
+                      sx={{
+                        marginLeft: '-20px',
+                        marginBottom: '-5px',
+                      }}
+                    >
+                      GZ<span className={classes.brand}>::</span>CTF
+                    </Title>
+                    <Group sx={{ marginLeft: '-18px', marginTop: '-5px' }}>
+                      <Anchor
+                        href="https://github.com/GZTimeWalker"
+                        color="dimmed"
+                        size="sm"
+                        weight={500}
+                        sx={{ lineHeight: 1 }}
+                      >
+                        @GZTimeWalker
+                      </Anchor>
+                      <Badge
+                        variant="gradient"
+                        gradient={{ from: 'teal', to: 'blue', deg: 60 }}
+                        size="xs"
+                      >
+                        {`#${sha.substring(0, 6)}:${tag}`}
+                      </Badge>
+                    </Group>
+                  </Stack>
+                </Group>
+                <Group spacing="xs">
+                  <Text
+                    size="xs"
+                    weight={500}
+                    color="dimmed"
+                    sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
+                  >
+                    {`built at ${timestamp.replaceAll('_', ' ')}`}
+                  </Text>
+                </Group>
+              </Stack>
+            </HoverCard.Dropdown>
+          </HoverCard>
         </Group>
       </Stack>
     </WithNavBar>

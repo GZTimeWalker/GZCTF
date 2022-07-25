@@ -56,7 +56,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             radius="xl"
             sections={[
               { value: minRate, color: colors[9], label: `${challenge.minScore}` },
-              { value: curRate, color: colors[7], label: `${challenge.score}` },
+              { value: curRate - minRate, color: colors[7], label: `${challenge.score}` },
             ]}
           />
 

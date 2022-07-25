@@ -85,7 +85,7 @@ public class AssetsController : ControllerBase
                 if (file.Length > 0)
                 {
                     var res = await fileRepository.CreateOrUpdateFile(file, null, token);
-                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Information);
+                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Debug);
                     results.Add(res);
                 }
             }

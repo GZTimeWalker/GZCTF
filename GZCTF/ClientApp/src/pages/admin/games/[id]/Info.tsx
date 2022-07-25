@@ -98,7 +98,11 @@ const GameInfoEdit: FC = () => {
     if (game && game.title) {
       setDisabled(true)
       api.edit
-        .editUpdateGame(game.id!, game)
+        .editUpdateGame(game.id!, {
+          ...game,
+          start: start.toJSON(),
+          end: end.toJSON(),
+        })
         .then(() => {
           showNotification({
             color: 'teal',
@@ -253,7 +257,7 @@ const GameInfoEdit: FC = () => {
         label={
           <Group spacing="sm">
             <Text size="sm">比赛详情</Text>
-            <Text size="xs" color="gray">
+            <Text size="xs" color="dimmed">
               支持 markdown 语法
             </Text>
           </Group>

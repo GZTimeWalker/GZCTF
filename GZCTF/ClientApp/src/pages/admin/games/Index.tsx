@@ -87,7 +87,7 @@ const Games: FC = () => {
                           <Avatar src={game.poster} radius={0}>
                             {game.title?.at(0)}
                           </Avatar>
-                          <Text>{game.title}</Text>
+                          <Text weight={700}>{game.title}</Text>
                         </Group>
                         <Badge color={color}>{status}</Badge>
                       </Group>

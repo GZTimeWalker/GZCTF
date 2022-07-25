@@ -23,8 +23,8 @@ export enum GameStatus {
 
 export const GameColorMap = new Map<GameStatus, MantineColor>([
   [GameStatus.Coming, 'yellow'],
-  [GameStatus.OnGoing, 'brand'],
-  [GameStatus.Ended, 'red'],
+  [GameStatus.OnGoing, 'green'],
+  [GameStatus.Ended, 'blue'],
 ])
 
 interface GameCardProps {
