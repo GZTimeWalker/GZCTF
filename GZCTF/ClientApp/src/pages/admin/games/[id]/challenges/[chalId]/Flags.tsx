@@ -1,14 +1,39 @@
-import { FC} from 'react'
+import { FC } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  Button,
-  Stack,
-} from '@mantine/core'
+import { Button, Group, Stack, TextInput } from '@mantine/core'
 import { mdiBackburger } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../../../../../Api'
-
+import api, { ChallengeType } from '../../../../../../Api'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
+
+const OneAttachmentWithFlags: FC = () => {
+  // const { id, chalId } = useParams()
+  // const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
+
+  // const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
+  //   refreshInterval: 0,
+  //   revalidateIfStale: false,
+  //   revalidateOnFocus: false,
+  // })
+
+  return (
+    <Stack>
+      <Group position="apart">
+        <TextInput label="当前附件" />
+      </Group>
+    </Stack>
+  )
+}
+
+const FlagsWithAttachments: FC = () => {
+  return (
+    <Stack>
+      <Group position="apart">
+        <Stack spacing="xs"></Stack>
+      </Group>
+    </Stack>
+  )
+}
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -24,19 +49,28 @@ const GameChallengeEdit: FC = () => {
   return (
     <WithGameTab
       isLoading={!challenge}
-      headProps={{ position: 'left' }}
+      headProps={{ position: 'apart' }}
       head={
-        <Button
-          leftIcon={<Icon path={mdiBackburger} size={1} />}
-          onClick={() => navigate(`/admin/games/${numId}/challenges`)}
-        >
-          返回上级
-        </Button>
+        <>
+          <Button
+            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            onClick={() => navigate(`/admin/games/${id}/challenges`)}
+          >
+            返回上级
+          </Button>
+          <Group position="right">
+            <Button onClick={() => navigate(`/admin/games/${id}/challenges/${numCId}`)}>
+              编辑题目信息
+            </Button>
+          </Group>
+        </>
       }
     >
-      <Stack>
-
-      </Stack>
+      {challenge && challenge.type === ChallengeType.DynamicAttachment ? (
+        <FlagsWithAttachments />
+      ) : (
+        <OneAttachmentWithFlags />
+      )}
     </WithGameTab>
   )
 }
