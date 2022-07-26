@@ -71,7 +71,6 @@ const GameChallengeEdit: FC = () => {
           ...(challenges?.filter((c) => c.id != challenge.id) ?? []),
           { ...challenge, isEnabled: !challenge.isEnabled },
         ])
-        setDisabled(false)
       })
       .catch((err) => {
         showNotification({
@@ -81,6 +80,8 @@ const GameChallengeEdit: FC = () => {
           icon: <Icon path={mdiClose} size={1} />,
           disallowClose: true,
         })
+      }).finally(() => {
+        setDisabled(false)
       })
   }
 

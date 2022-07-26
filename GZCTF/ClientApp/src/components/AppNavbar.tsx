@@ -114,7 +114,9 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 }
 
 const getLabel = (path: string) =>
-  items.find((item) => (item.link === '/' ? path === '/' : path.startsWith(item.link)))?.label
+  items.find((item) => (item.link === '/' ? path === '/' :
+    item.link.startsWith('/admin') ? path.startsWith('/admin') :
+    path.startsWith(item.link)))?.label
 
 const AppNavbar: FC = () => {
   const location = useLocation()

@@ -71,6 +71,7 @@ public enum TaskStatus : sbyte
     Exit = 5,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FileType : byte
 {
     /// <summary>

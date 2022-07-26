@@ -1,9 +1,5 @@
-import { FC, forwardRef } from 'react'
+import { forwardRef } from 'react'
 import {
-  Accordion,
-  AccordionControlProps,
-  Box,
-  Button,
   Group,
   MantineColor,
   Stack,
@@ -23,7 +19,7 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeModel, ChallengeTag, ChallengeType } from '../Api'
+import { ChallengeTag, ChallengeType } from '../Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
   [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],
@@ -100,33 +96,3 @@ export const ChallengeTagItem = forwardRef<HTMLDivElement, ChallengeTagItemProps
     )
   }
 )
-
-export interface ChallengeEditPartProps {
-  value: string
-  curValue: string | null
-  disabled?: boolean
-  challengeInfo: ChallengeModel
-  onUpdate: (challenge: ChallengeModel) => void
-  setChallengeInfo: (challengeInfo: ChallengeModel) => void
-}
-
-export interface ChallengeAccordionControlProps extends AccordionControlProps {
-  shown?: boolean
-  btnDisabled?: boolean
-  onBtnClick?: () => void
-}
-
-export const ChallengeAccordionControl: FC<ChallengeAccordionControlProps> = (props) => {
-  const { btnDisabled, onBtnClick, shown, ...others } = props
-
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Accordion.Control {...others} />
-      {shown && (
-        <Button disabled={btnDisabled} onClick={onBtnClick}>
-          保存更改
-        </Button>
-      )}
-    </Box>
-  )
-}

@@ -634,9 +634,9 @@ export interface FlagContext {
 }
 
 export enum FileType {
-  None = 0,
-  Local = 1,
-  Remote = 2,
+  None = 'None',
+  Local = 'Local',
+  Remote = 'Remote',
 }
 
 export interface Submission {

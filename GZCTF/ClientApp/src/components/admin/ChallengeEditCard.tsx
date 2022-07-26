@@ -9,8 +9,9 @@ import {
   ActionIcon,
   Text,
   useMantineTheme,
+  Tooltip,
 } from '@mantine/core'
-import { mdiPencilOutline } from '@mdi/js'
+import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeInfoModel, ChallengeTag } from '../../Api'
 import { ChallengeTagLabelMap } from '../ChallengeItem'
@@ -69,13 +70,24 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             </Badge>
           </Group>
         </Group>
-        <ActionIcon
-          onClick={() => {
-            navigate(`/admin/games/${id}/challenges/${challenge.id}`)
-          }}
-        >
-          <Icon path={mdiPencilOutline} size={1} />
-        </ActionIcon>
+        <Tooltip label="编辑题目信息" position='left' width={120} offset={10}>
+          <ActionIcon
+            onClick={() => {
+              navigate(`/admin/games/${id}/challenges/${challenge.id}`)
+            }}
+          >
+            <Icon path={mdiPuzzleEditOutline} size={1} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label="编辑附件及 flag" position='left' width={120} offset={54}>
+          <ActionIcon
+            onClick={() => {
+              navigate(`/admin/games/${id}/challenges/${challenge.id}/flags`)
+            }}
+          >
+            <Icon path={mdiDatabaseEditOutline} size={1} />
+          </ActionIcon>
+        </Tooltip>
       </Group>
     </Card>
   )
