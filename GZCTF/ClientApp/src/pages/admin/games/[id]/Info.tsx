@@ -240,18 +240,20 @@ const GameInfoEdit: FC = () => {
                 },
               }}
             >
-              <Center style={{ pointerEvents: 'none', height: '74px' }}>
+              <Center style={{ pointerEvents: 'none' }}>
                 {game?.poster ? (
                   <Image height="105px" fit="contain" src={game.poster} />
                 ) : (
-                  <Stack spacing={0}>
+                  <Center style={{ height: '74px' }}>
+                    <Stack spacing={0} >
                     <Text size="xl" inline>
                       拖放图片或点击此处以选择海报
                     </Text>
                     <Text size="sm" color="dimmed" inline mt={7}>
                       请选择小于 3MB 的图片
                     </Text>
-                  </Stack>
+                    </Stack>
+                  </Center>
                 )}
               </Center>
             </Dropzone>

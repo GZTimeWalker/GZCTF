@@ -22,16 +22,23 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { onAddChallenge, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
-  const [challenge, setChallenge] = useInputState<ChallengeInfoModel>({
-    title: '',
-  })
+
+  const [title, setTitle] = useInputState('')
+  const [tag, setTag] = useState<string | null>(null);
+  const [type, setType] = useState<string | null>(null);
 
   const onCreate = () => {
-    if (challenge && challenge.title) {
+    if (title && tag && type) {
+      console.log(title, tag, type)
       setDisabled(true)
       const numId = parseInt(id ?? '-1')
+
       api.edit
-        .editAddGameChallenge(numId, challenge)
+        .editAddGameChallenge(numId, {
+          title: title,
+          tag: tag as ChallengeTag,
+          type: type as ChallengeType,
+        })
         .then((data) => {
           showNotification({
             color: 'teal',
@@ -61,16 +68,16 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           type="text"
           required
           placeholder="Title"
-          value={challenge.title}
-          onChange={(e) => setChallenge({ ...challenge, title: e.target.value })}
+          value={title}
+          onChange={setTitle}
         />
         <Select
           required
           label="题目类型"
           description="创建后不可更改"
           placeholder="Type"
-          value={challenge?.type}
-          onChange={(e) => setChallenge({ ...challenge, type: e as ChallengeType })}
+          value={type}
+          onChange={setType}
           itemComponent={ChallengeTypeItem}
           data={Object.entries(ChallengeType).map((type) => {
             const data = ChallengeTypeLabelMap.get(type[1])
@@ -81,8 +88,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           required
           label="题目标签"
           placeholder="Tag"
-          value={challenge.tag}
-          onChange={(e) => setChallenge({ ...challenge, tag: e as ChallengeTag })}
+          value={tag}
+          onChange={setTag}
           itemComponent={ChallengeTagItem}
           data={Object.entries(ChallengeTag).map((tag) => {
             const data = ChallengeTagLabelMap.get(tag[1])
