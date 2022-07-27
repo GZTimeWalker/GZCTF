@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CTFServer.Models.Data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CTFServer.Models;
@@ -15,30 +16,21 @@ public class FlagContext
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>
-    /// 附件类型
-    /// </summary>
-    [Required]
-    public FileType AttachmentType { get; set; } = FileType.None;
-
-    /// <summary>
-    /// Flag 对应附件 (远程文件）
-    /// </summary>
-    public string? RemoteUrl { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Flag 对应文件（本地文件）
-    /// </summary>
-    public LocalFile? LocalFile { get; set; } = default;
-
-    /// <summary>
     /// 是否已被占用
     /// </summary>
     public bool IsOccupied { get; set; } = false;
 
+    #region Db Relationship
+
     /// <summary>
-    /// 赛题
+    /// 附件 Id
     /// </summary>
-    public Challenge? Challenge { get; set; }
+    public int? AttachmentId { get; set; }
+
+    /// <summary>
+    /// 附件
+    /// </summary>
+    public Attachment? Attachment { get; set; }
 
     /// <summary>
     /// 赛题Id
@@ -46,14 +38,9 @@ public class FlagContext
     public int ChallengeId { get; set; }
 
     /// <summary>
-    /// 附件访问链接
+    /// 赛题
     /// </summary>
-    [NotMapped]
-    public string? Url => AttachmentType switch
-    {
-        FileType.None => null,
-        FileType.Local => LocalFile?.Url,
-        FileType.Remote => RemoteUrl,
-        _ => throw new ArgumentException(nameof(AttachmentType))
-    };
+    public Challenge? Challenge { get; set; }
+
+    #endregion Db Relationship
 }

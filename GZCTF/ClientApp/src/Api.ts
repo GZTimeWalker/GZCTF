@@ -489,18 +489,21 @@ export interface GameNoticeModel {
   content: string
 }
 
-export interface Challenge {
-  /** @format int32 */
-  id: number
+/**
+ * 题目详细信息（Edit）
+ */
+export interface ChallengeEditDetailModel {
+  /**
+   * 题目Id
+   * @format int32
+   */
+  id?: number
 
   /** 题目名称 */
   title: string
 
   /** 题目内容 */
-  content: string
-
-  /** 是否启用题目 */
-  isEnabled?: boolean
+  content?: string
 
   /** 题目标签 */
   tag: ChallengeTag
@@ -511,32 +514,29 @@ export interface Challenge {
   /** 题目提示，用";"分隔 */
   hints?: string
 
+  /** 是否启用题目 */
+  isEnabled: boolean
+
   /** 镜像名称与标签 */
-  containerImage?: string | null
+  containerImage: string
 
   /**
    * 运行内存限制 (MB)
    * @format int32
    */
-  memoryLimit?: number | null
+  memoryLimit: number
 
   /**
    * CPU 运行数量限制
    * @format int32
    */
-  cpuCount?: number | null
+  cpuCount: number
 
   /**
    * 镜像暴露端口
    * @format int32
    */
-  containerExposePort?: number | null
-
-  /**
-   * 解决题目人数
-   * @format int32
-   */
-  acceptedCount: number
+  containerExposePort: number
 
   /**
    * 初始分数
@@ -558,24 +558,20 @@ export interface Challenge {
    */
   difficulty: number
 
-  /** 下载文件名称 */
-  fileName?: string
-
   /**
-   * 当前题目分值
+   * 通过人数
    * @format int32
    */
-  currentScore?: number
-  flags?: FlagContext[]
+  acceptedCount: number
 
-  /** 提交 */
-  submissions?: Submission[]
+  /** 统一文件名（仅用于动态附件） */
+  fileName?: string | null
 
-  /** 比赛对象 */
-  game?: Game
+  /** 题目附件（动态附件存放于 FlagInfoModel） */
+  attachment?: Attachment | null
 
-  /** @format int32 */
-  gameId?: number
+  /** 题目 Flag 信息 */
+  flags: FlagInfoModel[]
 }
 
 /**
@@ -601,33 +597,24 @@ export enum ChallengeType {
   DynamicContainer = 'DynamicContainer',
 }
 
-export interface FlagContext {
+export interface Attachment {
   /** @format int32 */
-  id?: number
-
-  /** Flag 内容 */
-  flag: string
+  id: number
 
   /** 附件类型 */
-  attachmentType: FileType
+  type: FileType
 
   /** Flag 对应附件 (远程文件） */
   remoteUrl?: string | null
 
-  /** Flag 对应文件（本地文件） */
-  localFile?: LocalFile | null
-
-  /** 是否已被占用 */
-  isOccupied?: boolean
-
-  /** 赛题 */
-  challenge?: Challenge | null
-
   /**
-   * 赛题Id
+   * 本地文件 Id
    * @format int32
    */
-  challengeId?: number
+  localFileId?: number | null
+
+  /** Flag 对应文件（本地文件） */
+  localFile?: LocalFile | null
 
   /** 附件访问链接 */
   url?: string | null
@@ -639,65 +626,21 @@ export enum FileType {
   Remote = 'Remote',
 }
 
-export interface Submission {
-  /** 提交的答案字符串 */
-  answer?: string
-
-  /** 提交的答案状态 */
-  status?: AnswerResult
-
-  /**
-   * 答案提交的时间
-   * @format date-time
-   */
-  time?: string
-}
-
 /**
- * 判定结果
+ * Flag 信息（Edit）
  */
-export enum AnswerResult {
-  FlagSubmitted = 'FlagSubmitted',
-  Accepted = 'Accepted',
-  WrongAnswer = 'WrongAnswer',
-  NotFound = 'NotFound',
-  CheatDetected = 'CheatDetected',
-}
-
-export interface Game {
-  /** @format int32 */
-  id: number
-
-  /** 比赛标题 */
-  title: string
-
-  /** 头图哈希 */
-  posterHash?: string | null
-
-  /** 比赛描述 */
-  summary?: string
-
-  /** 比赛详细介绍 */
-  content?: string
-
+export interface FlagInfoModel {
   /**
-   * 队员数量限制, 0 为无上限
+   * Flag Id
    * @format int32
    */
-  teamMemberCountLimit?: number
+  id?: number
 
-  /**
-   * 开始时间
-   * @format date-time
-   */
-  start: string
+  /** Flag文本 */
+  flag?: string
 
-  /**
-   * 结束时间
-   * @format date-time
-   */
-  end: string
-  posterUrl?: string | null
+  /** Flag 对应附件 */
+  attachment?: Attachment | null
 }
 
 /**
@@ -742,9 +685,9 @@ export interface ChallengeInfoModel {
 }
 
 /**
- * 题目信息更改（Edit）
+ * 题目更新信息（Edit）
  */
-export interface ChallengeModel {
+export interface ChallengeUpdateModel {
   /** 题目名称 */
   title?: string | null
 
@@ -756,9 +699,6 @@ export interface ChallengeModel {
 
   /** 题目提示，用";"分隔 */
   hints?: string | null
-
-  /** 题目类型 */
-  type?: ChallengeType | null
 
   /** 是否启用题目 */
   isEnabled?: boolean | null
@@ -809,17 +749,34 @@ export interface ChallengeModel {
 }
 
 /**
- * Flag 信息（Edit）
+ * 新建附件信息（Edit）
  */
-export interface FlagInfoModel {
-  /** Flag文本 */
-  flag?: string
+export interface AttachmentCreateModel {
+  /** 附件类型 */
+  attachmentType?: FileType
 
-  /** Flag 对应附件（本地文件哈希） */
+  /** 文件哈希（本地文件） */
   fileHash?: string | null
 
-  /** Flag 对应附件 (远程文件） */
-  url?: string | null
+  /** 文件 Url（远程文件） */
+  remoteUrl?: string | null
+}
+
+/**
+ * 新建 Flag 信息（Edit）
+ */
+export interface FlagCreateModel {
+  /** Flag文本 */
+  flag: string
+
+  /** 附件类型 */
+  attachmentType?: FileType
+
+  /** 文件哈希（本地文件） */
+  fileHash?: string | null
+
+  /** 文件 Url（远程文件） */
+  remoteUrl?: string | null
 }
 
 /**
@@ -873,7 +830,7 @@ export interface BasicGameInfoModel {
 /**
  * 比赛详细信息，包含详细介绍与当前队伍报名状态
  */
-export interface GameDetailsModel {
+export interface GameDetailModel {
   /** @format int32 */
   id?: number
 
@@ -1077,6 +1034,31 @@ export enum EventType {
   CheatDetected = 'CheatDetected',
 }
 
+export interface Submission {
+  /** 提交的答案字符串 */
+  answer?: string
+
+  /** 提交的答案状态 */
+  status?: AnswerResult
+
+  /**
+   * 答案提交的时间
+   * @format date-time
+   */
+  time?: string
+}
+
+/**
+ * 判定结果
+ */
+export enum AnswerResult {
+  FlagSubmitted = 'FlagSubmitted',
+  Accepted = 'Accepted',
+  WrongAnswer = 'WrongAnswer',
+  NotFound = 'NotFound',
+  CheatDetected = 'CheatDetected',
+}
+
 /**
  * 题目实例信息
  */
@@ -1196,9 +1178,6 @@ export interface ClientFlagContext {
 
   /** 附件 Url */
   url?: string | null
-
-  /** 附件名称 */
-  name?: string | null
 }
 
 /**
@@ -2342,7 +2321,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/edit/games/{id}/challenges
      */
     editAddGameChallenge: (id: number, data: ChallengeInfoModel, params: RequestParams = {}) =>
-      this.request<Challenge, RequestResponse>({
+      this.request<ChallengeEditDetailModel, RequestResponse>({
         path: `/api/edit/games/${id}/challenges`,
         method: 'POST',
         body: data,
@@ -2400,7 +2379,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games/{id}/challenges/{cId}
      */
     editGetGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
-      this.request<Challenge, RequestResponse>({
+      this.request<ChallengeEditDetailModel, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}`,
         method: 'GET',
         format: 'json',
@@ -2415,7 +2394,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games/{id}/challenges/{cId}
      */
     useEditGetGameChallenge: (id: number, cId: number, options?: SWRConfiguration) =>
-      useSWR<Challenge, RequestResponse>(`/api/edit/games/${id}/challenges/${cId}`, options),
+      useSWR<ChallengeEditDetailModel, RequestResponse>(
+        `/api/edit/games/${id}/challenges/${cId}`,
+        options
+      ),
 
     /**
      * @description 获取比赛题目，需要管理员权限
@@ -2428,25 +2410,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateEditGetGameChallenge: (
       id: number,
       cId: number,
-      data?: Challenge | Promise<Challenge>,
+      data?: ChallengeEditDetailModel | Promise<ChallengeEditDetailModel>,
       options?: MutatorOptions
-    ) => mutate<Challenge>(`/api/edit/games/${id}/challenges/${cId}`, data, options),
+    ) => mutate<ChallengeEditDetailModel>(`/api/edit/games/${id}/challenges/${cId}`, data, options),
 
     /**
      * @description 修改比赛题目，需要管理员权限
      *
      * @tags Edit
      * @name EditUpdateGameChallenge
-     * @summary 修改比赛题目信息
+     * @summary 修改比赛题目信息，Flags 不受更改，使用 Flag 相关 API 修改
      * @request PUT:/api/edit/games/{id}/challenges/{cId}
      */
     editUpdateGameChallenge: (
       id: number,
       cId: number,
-      data: ChallengeModel,
+      data: ChallengeUpdateModel,
       params: RequestParams = {}
     ) =>
-      this.request<Challenge, RequestResponse>({
+      this.request<ChallengeEditDetailModel, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}`,
         method: 'PUT',
         body: data,
@@ -2471,6 +2453,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 更新比赛题目附件，需要管理员权限，仅用于非动态附件题目
+     *
+     * @tags Edit
+     * @name EditUpdateAttachment
+     * @summary 更新比赛题目附件
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/attachment
+     */
+    editUpdateAttachment: (
+      id: number,
+      cId: number,
+      data: AttachmentCreateModel,
+      params: RequestParams = {}
+    ) =>
+      this.request<number, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/attachment`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 添加比赛题目 Flag，需要管理员权限
      *
      * @tags Edit
@@ -2478,13 +2483,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 添加比赛题目 Flag
      * @request POST:/api/edit/games/{id}/challenges/{cId}/flags
      */
-    editAddFlags: (id: number, cId: number, data: FlagInfoModel[], params: RequestParams = {}) =>
-      this.request<number, RequestResponse>({
+    editAddFlags: (id: number, cId: number, data: FlagCreateModel[], params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/flags`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        format: 'json',
         ...params,
       }),
 
@@ -2553,7 +2557,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/game/{id}
      */
     gameGames: (id: number, params: RequestParams = {}) =>
-      this.request<GameDetailsModel, RequestResponse>({
+      this.request<GameDetailModel, RequestResponse>({
         path: `/api/game/${id}`,
         method: 'GET',
         format: 'json',
@@ -2568,7 +2572,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/game/{id}
      */
     useGameGames: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameDetailsModel, RequestResponse>(`/api/game/${id}`, options),
+      useSWR<GameDetailModel, RequestResponse>(`/api/game/${id}`, options),
 
     /**
      * @description 获取比赛的详细信息
@@ -2580,9 +2584,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameGames: (
       id: number,
-      data?: GameDetailsModel | Promise<GameDetailsModel>,
+      data?: GameDetailModel | Promise<GameDetailModel>,
       options?: MutatorOptions
-    ) => mutate<GameDetailsModel>(`/api/game/${id}`, data, options),
+    ) => mutate<GameDetailModel>(`/api/game/${id}`, data, options),
 
     /**
      * @description 加入一场比赛，需要User权限，需要当前激活队伍的队长权限

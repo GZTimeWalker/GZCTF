@@ -17,7 +17,7 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ChallengeModel, ChallengeTag, ChallengeType } from '../../../../../../Api'
+import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '../../../../../../Api'
 import {
   ChallengeTypeItem,
   ChallengeTypeLabelMap,
@@ -38,7 +38,7 @@ const GameChallengeEdit: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const [challengeInfo, setChallengeInfo] = useState<ChallengeModel>({ ...challenge })
+  const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)
 
   const [minRate, setMinRate] = useState((challenge?.minScoreRate ?? 0.25) * 100)
@@ -58,7 +58,7 @@ const GameChallengeEdit: FC = () => {
     }
   }, [challenge])
 
-  const onUpdate = (challenge: ChallengeModel) => {
+  const onUpdate = (challenge: ChallengeUpdateModel) => {
     if (challenge) {
       setDisabled(true)
       api.edit
@@ -116,49 +116,56 @@ const GameChallengeEdit: FC = () => {
   return (
     <WithGameTab
       isLoading={!challenge}
-      headProps={{ position: 'left' }}
+      headProps={{ position: 'apart' }}
       head={
-        <Button
-          leftIcon={<Icon path={mdiBackburger} size={1} />}
-          onClick={() => navigate(`/admin/games/${id}/challenges`)}
-        >
-          返回上级
-        </Button>
+        <>
+          <Button
+            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            onClick={() => navigate(`/admin/games/${id}/challenges`)}
+          >
+            返回上级
+          </Button>
+          <Group position="right">
+            <Button
+              disabled={disabled}
+              color="red"
+              variant="outline"
+              onClick={() =>
+                modals.openConfirmModal({
+                  title: `删除题目`,
+                  children: <Text size="sm">你确定要删除题目 "{challengeInfo.title}" 吗？</Text>,
+                  onConfirm: () => onConfirmDelete(),
+                  centered: true,
+                  labels: { confirm: '确认', cancel: '取消' },
+                  confirmProps: { color: 'red' },
+                })
+              }
+            >
+              删除题目
+            </Button>
+            <Button
+              disabled={disabled}
+              onClick={() => navigate(`/admin/games/${numId}/challenges/${numCId}/flags`)}
+            >
+              编辑附件及 flag
+            </Button>
+            <Button
+              disabled={disabled}
+              onClick={() =>
+                onUpdate({
+                  ...challengeInfo,
+                  tag: tag,
+                  minScoreRate: minRate / 100,
+                })
+              }
+            >
+              保存更改
+            </Button>
+          </Group>
+        </>
       }
     >
       <Stack>
-        <Group position="right">
-          <Button
-            disabled={disabled}
-            color="red"
-            variant="outline"
-            onClick={() =>
-              modals.openConfirmModal({
-                title: `删除题目`,
-                children: <Text size="sm">你确定要删除题目 "{challengeInfo.title}" 吗？</Text>,
-                onConfirm: () => onConfirmDelete(),
-                centered: true,
-                labels: { confirm: '确认', cancel: '取消' },
-                confirmProps: { color: 'red' },
-              })
-            }
-          >
-            删除题目
-          </Button>
-          <Button
-            disabled={disabled}
-            onClick={() =>
-              onUpdate({
-                ...challengeInfo,
-                tag: tag,
-                type: type,
-                minScoreRate: minRate / 100,
-              })
-            }
-          >
-            保存更改
-          </Button>
-        </Group>
         <SimpleGrid cols={3}>
           <TextInput
             label="题目标题"
@@ -172,11 +179,7 @@ const GameChallengeEdit: FC = () => {
             label="题目类型"
             placeholder="Type"
             value={type}
-            disabled={disabled}
-            onChange={(e) => {
-              setType(e as ChallengeType)
-              setChallengeInfo({ ...challengeInfo, type: e as ChallengeType })
-            }}
+            disabled
             itemComponent={ChallengeTypeItem}
             data={Object.entries(ChallengeType).map((type) => {
               const data = ChallengeTypeLabelMap.get(type[1])
@@ -290,71 +293,11 @@ const GameChallengeEdit: FC = () => {
             minScoreRate={minRate / 100}
             difficulty={challengeInfo?.difficulty ?? 30}
           />
-          {/* {challengeInfo.type != ChallengeType.DynamicAttachment && (
-            <>
-              <TextInput
-                label={
-                  challengeInfo.type === ChallengeType.DynamicContainer ? (
-                    <Group spacing="sm">
-                      <Text size="sm">flag 字符串</Text>
-                      <Text size="xs" color="dimmed">
-                        动态容器将会生成下发随机 flag 字符串
-                      </Text>
-                    </Group>
-                  ) : (
-                    'flag 字符串'
-                  )
-                }
-                placeholder="flag{he11o_w0rld}"
-                required={
-                  challengeInfo.type === ChallengeType.StaticAttachment ||
-                  challengeInfo.type === ChallengeType.StaticContainer
-                }
-                disabled={disabled || challengeInfo.type === ChallengeType.DynamicContainer}
-                value={flags.at(0)?.flag ?? ''}
-                onChange={(e) =>
-                  setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })
-                }
-              />
-
-              <Radio.Group
-                label="附件类型"
-                value={filetype}
-                onChange={(e) => setFileType(e as FileType)}
-                required
-              >
-                <Radio disabled={disabled} value={FileType.None} label="无附件" />
-                <Radio disabled={disabled} value={FileType.Remote} label="远程文件" />
-                <Radio disabled={disabled} value={FileType.Local} label="上传文件" />
-              </Radio.Group>
-
-              {filetype === FileType.Remote ? (
-                <TextInput
-                  label="题目附件"
-                  placeholder="http://example.com/a.zip"
-                  disabled={disabled}
-                  value={remoteURL}
-                  required
-                  onChange={(e) => setRemoteURL(e.target.value)}
-                />
-              ) : (
-                <FileInput
-                  label="题目附件"
-                  placeholder="选择文件"
-                  disabled={disabled || filetype === FileType.None}
-                  value={file}
-                  required
-                  onChange={(e) => setFile(e)}
-                />
-              )}
-            </>
-          )} */}
         </SimpleGrid>
-        {(challengeInfo.type === ChallengeType.StaticContainer ||
-          challengeInfo.type === ChallengeType.DynamicContainer) && (
+        {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
           <>
             <TextInput
-              label="镜像链接"
+              label="容器镜像"
               disabled={disabled}
               value={challengeInfo.containerImage ?? ''}
               required

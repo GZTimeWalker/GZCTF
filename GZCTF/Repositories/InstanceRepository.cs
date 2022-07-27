@@ -59,7 +59,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             {
                 instance.FlagContext = new()
                 {
-                    AttachmentType = FileType.None,
                     Flag = $"flag{Guid.NewGuid():B}",
                     IsOccupied = true
                 };

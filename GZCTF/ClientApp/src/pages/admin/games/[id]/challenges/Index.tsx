@@ -80,43 +80,50 @@ const GameChallengeEdit: FC = () => {
           icon: <Icon path={mdiClose} size={1} />,
           disallowClose: true,
         })
-      }).finally(() => {
+      })
+      .finally(() => {
         setDisabled(false)
       })
   }
 
   return (
     <WithGameTab
-      headProps={{ position: 'left' }}
+      headProps={{ position: 'apart' }}
       isLoading={!challenges}
       head={
-        <Button
-          leftIcon={<Icon path={mdiBackburger} size={1} />}
-          onClick={() => navigate('/admin/games')}
-        >
-          返回上级
-        </Button>
+        <>
+          <Button
+            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            onClick={() => navigate('/admin/games')}
+          >
+            返回上级
+          </Button>
+          <Group style={{ width: 'calc(100% - 9rem)' }} position="apart">
+            <Select
+              placeholder="全部题目"
+              clearable
+              searchable
+              nothingFound="没有找到标签"
+              clearButtonLabel="显示全部"
+              value={categray}
+              onChange={(value) => setCategray(value as ChallengeTag)}
+              itemComponent={ChallengeTagItem}
+              data={Object.entries(ChallengeTag).map((tag) => {
+                const data = ChallengeTagLabelMap.get(tag[1])
+                return { value: tag[1], ...data }
+              })}
+            />
+            <Button
+            style={{ marginRight: '18px'}}
+              leftIcon={<Icon path={mdiPlus} size={1} />}
+              onClick={() => setCreateOpened(true)}
+            >
+              新建题目
+            </Button>
+          </Group>
+        </>
       }
     >
-      <Group position="apart">
-        <Select
-          placeholder="全部题目"
-          clearable
-          searchable
-          nothingFound="没有找到标签"
-          clearButtonLabel="显示全部"
-          value={categray}
-          onChange={(value) => setCategray(value as ChallengeTag)}
-          itemComponent={ChallengeTagItem}
-          data={Object.entries(ChallengeTag).map((tag) => {
-            const data = ChallengeTagLabelMap.get(tag[1])
-            return { value: tag[1], ...data }
-          })}
-        />
-        <Button leftIcon={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
-          新建题目
-        </Button>
-      </Group>
       <ScrollArea style={{ height: 'calc(100vh - 250px)' }} offsetScrollbars type="auto">
         <SimpleGrid
           cols={2}

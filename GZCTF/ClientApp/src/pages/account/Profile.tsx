@@ -16,7 +16,7 @@ import {
   Center,
   SimpleGrid,
 } from '@mantine/core'
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -316,7 +316,7 @@ const Profile: FC = () => {
                 minHeight: '220px',
               }}
               maxSize={3 * 1024 * 1024}
-              accept={IMAGE_MIME_TYPE}
+              accept={["image/png", "image/gif", "image/jpeg"]}
             >
               <Group
                 position="center"

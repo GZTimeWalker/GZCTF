@@ -6,7 +6,7 @@ namespace CTFServer.Models.Request.Game;
 /// <summary>
 /// 比赛详细信息，包含详细介绍与当前队伍报名状态
 /// </summary>
-public class GameDetailsModel
+public class GameDetailModel
 {
     [Key]
     public int Id { get; set; }
@@ -56,13 +56,13 @@ public class GameDetailsModel
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
-    public GameDetailsModel WithParticipation(Participation? part)
+    public GameDetailModel WithParticipation(Participation? part)
     {
         Status = part?.Status ?? ParticipationStatus.Unsubmitted;
         return this;
     }
 
-    public static GameDetailsModel FromGame(Models.Game game)
+    public static GameDetailModel FromGame(Models.Game game)
         => new()
         {
             Id = game.Id,

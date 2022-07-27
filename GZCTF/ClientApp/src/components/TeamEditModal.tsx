@@ -19,7 +19,7 @@ import {
   ActionIcon,
   ScrollArea,
 } from '@mantine/core'
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
@@ -366,7 +366,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             minHeight: '220px',
           }}
           maxSize={3 * 1024 * 1024}
-          accept={IMAGE_MIME_TYPE}
+          accept={["image/png", "image/gif", "image/jpeg"]}
         >
           <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
             {avatarFile ? (

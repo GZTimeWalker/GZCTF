@@ -34,9 +34,10 @@ public interface IChallengeRepository : IRepository
     /// </summary>
     /// <param name="gameId">比赛Id</param>
     /// <param name="id">题目Id</param>
+    /// <param name="withFlag">是否加载Flag</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Challenge?> GetChallenge(int gameId, int id, CancellationToken token = default);
+    public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default);
 
     /// <summary>
     /// 添加 Flag
@@ -45,10 +46,19 @@ public interface IChallengeRepository : IRepository
     /// <param name="model">Flag 信息</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<int> AddFlags(Challenge challenge, FlagInfoModel[] model, CancellationToken token = default);
+    public Task AddFlags(Challenge challenge, FlagCreateModel[] model, CancellationToken token = default);
 
     /// <summary>
-    /// 删除 Flag
+    /// 更新附件
+    /// </summary>
+    /// <param name="challenge">比赛题目对象</param>
+    /// <param name="model">附件信息</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task UpdateAttachment(Challenge challenge, AttachmentCreateModel model, CancellationToken token = default);
+
+    /// <summary>
+    /// 删除 Flag，确保 Flags 字段已加载
     /// </summary>
     /// <param name="challenge">比赛题目对象</param>
     /// <param name="flagId">flag ID</param>

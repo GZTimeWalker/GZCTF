@@ -47,7 +47,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           disallowClose: true,
         })
         onAddGame(data.data)
-        navigate(`/admin/games/${data.data.id}`)
+        navigate(`/admin/games/${data.data.id}/info`)
       })
       .catch((err) => {
         showNotification({

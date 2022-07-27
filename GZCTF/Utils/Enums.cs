@@ -76,6 +76,7 @@ public enum FileType : byte
 {
     /// <summary>
     /// 无附件
+    /// 正常情况下 Attachment 不会是此值，若无附件则 Attachment 为 null
     /// </summary>
     None = 0,
 

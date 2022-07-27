@@ -33,6 +33,9 @@ namespace CTFServer.Migrations
                     b.Property<int>("AcceptedCount")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("AttachmentId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("CPUCount")
                         .HasColumnType("integer");
 
@@ -50,7 +53,6 @@ namespace CTFServer.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("GameId")
@@ -86,6 +88,8 @@ namespace CTFServer.Migrations
                         .HasColumnType("smallint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AttachmentId");
 
                     b.HasIndex("GameId");
 
@@ -142,6 +146,30 @@ namespace CTFServer.Migrations
                     b.ToTable("Containers");
                 });
 
+            modelBuilder.Entity("CTFServer.Models.Data.Attachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("LocalFileId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RemoteUrl")
+                        .HasColumnType("text");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocalFileId");
+
+                    b.ToTable("Attachments");
+                });
+
             modelBuilder.Entity("CTFServer.Models.FlagContext", b =>
                 {
                     b.Property<int>("Id")
@@ -150,8 +178,8 @@ namespace CTFServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<byte>("AttachmentType")
-                        .HasColumnType("smallint");
+                    b.Property<int?>("AttachmentId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ChallengeId")
                         .HasColumnType("integer");
@@ -163,17 +191,11 @@ namespace CTFServer.Migrations
                     b.Property<bool>("IsOccupied")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("LocalFileId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("RemoteUrl")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ChallengeId");
+                    b.HasIndex("AttachmentId");
 
-                    b.HasIndex("LocalFileId");
+                    b.HasIndex("ChallengeId");
 
                     b.ToTable("FlagContexts");
                 });
@@ -799,30 +821,47 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.Challenge", b =>
                 {
+                    b.HasOne("CTFServer.Models.Data.Attachment", "Attachment")
+                        .WithMany()
+                        .HasForeignKey("AttachmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("CTFServer.Models.Game", "Game")
                         .WithMany("Challenges")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Attachment");
+
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.Data.Attachment", b =>
+                {
+                    b.HasOne("CTFServer.Models.LocalFile", "LocalFile")
+                        .WithMany()
+                        .HasForeignKey("LocalFileId");
+
+                    b.Navigation("LocalFile");
                 });
 
             modelBuilder.Entity("CTFServer.Models.FlagContext", b =>
                 {
+                    b.HasOne("CTFServer.Models.Data.Attachment", "Attachment")
+                        .WithMany()
+                        .HasForeignKey("AttachmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("CTFServer.Models.Challenge", "Challenge")
                         .WithMany("Flags")
                         .HasForeignKey("ChallengeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CTFServer.Models.LocalFile", "LocalFile")
-                        .WithMany()
-                        .HasForeignKey("LocalFileId");
+                    b.Navigation("Attachment");
 
                     b.Navigation("Challenge");
-
-                    b.Navigation("LocalFile");
                 });
 
             modelBuilder.Entity("CTFServer.Models.GameEvent", b =>

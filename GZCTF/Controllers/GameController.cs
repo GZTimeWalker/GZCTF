@@ -83,7 +83,7 @@ public class GameController : ControllerBase
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="404">比赛未找到</response>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(GameDetailsModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GameDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Games(int id, CancellationToken token)
     {
@@ -92,7 +92,7 @@ public class GameController : ControllerBase
         if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
 
-        return Ok(GameDetailsModel.FromGame(context.Game)
+        return Ok(GameDetailModel.FromGame(context.Game)
                       .WithParticipation(context.Participation));
     }
 

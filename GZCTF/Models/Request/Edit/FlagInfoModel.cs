@@ -1,4 +1,6 @@
-﻿namespace CTFServer.Models.Request.Edit;
+﻿using CTFServer.Models.Data;
+
+namespace CTFServer.Models.Request.Edit;
 
 /// <summary>
 /// Flag 信息（Edit）
@@ -6,17 +8,25 @@
 public class FlagInfoModel
 {
     /// <summary>
+    /// Flag Id
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
     /// Flag文本
     /// </summary>
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>
-    /// Flag 对应附件（本地文件哈希）
+    /// Flag 对应附件
     /// </summary>
-    public string? FileHash { get; set; } = string.Empty;
+    public Attachment? Attachment { get; set; }
 
-    /// <summary>
-    /// Flag 对应附件 (远程文件）
-    /// </summary>
-    public string? Url { get; set; } = string.Empty;
+    public static FlagInfoModel FromFlagContext(FlagContext context)
+        => new()
+        {
+            Id = context.Id,
+            Flag = context.Flag,
+            Attachment = context.Attachment
+        };
 }

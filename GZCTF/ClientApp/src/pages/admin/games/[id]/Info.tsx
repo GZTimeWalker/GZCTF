@@ -14,7 +14,7 @@ import {
   Text,
 } from '@mantine/core'
 import { DatePicker, TimeInput } from '@mantine/dates'
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone } from '@mantine/dropzone'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
@@ -128,15 +128,20 @@ const GameInfoEdit: FC = () => {
 
   return (
     <WithGameTab
-      headProps={{ position: 'left' }}
+      headProps={{ position: 'apart' }}
       isLoading={!game}
       head={
-        <Button
-          leftIcon={<Icon path={mdiBackburger} size={1} />}
-          onClick={() => navigate('/admin/games')}
-        >
-          返回上级
-        </Button>
+        <>
+          <Button
+            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            onClick={() => navigate('/admin/games')}
+          >
+            返回上级
+          </Button>
+          <Button disabled={disabled} onClick={onUpdateInfo}>
+            保存更改
+          </Button>
+        </>
       }
     >
       <Grid grow>
@@ -226,7 +231,7 @@ const GameInfoEdit: FC = () => {
                 })
               }}
               maxSize={3 * 1024 * 1024}
-              accept={IMAGE_MIME_TYPE}
+              accept={["image/png", "image/gif", "image/jpeg"]}
               disabled={disabled}
               styles={{
                 root: {
@@ -270,11 +275,6 @@ const GameInfoEdit: FC = () => {
         maxRows={7}
         onChange={(e) => game && setGame({ ...game, content: e.target.value })}
       />
-      <Group position="right">
-        <Button disabled={disabled} onClick={onUpdateInfo}>
-          保存更改
-        </Button>
-      </Group>
     </WithGameTab>
   )
 }
