@@ -552,14 +552,17 @@ export interface ChallengeEditDetailModel {
    */
   difficulty: number
 
-  /** 统一文件名 */
-  fileName: string
-
   /**
-   * 统一文件名
+   * 通过人数
    * @format int32
    */
   acceptedCount: number
+
+  /** 统一文件名（仅用于动态附件） */
+  fileName?: string | null
+
+  /** 题目附件（动态附件存放于 FlagInfoModel） */
+  attachment?: Attachment | null
 
   /** 题目 Flag 信息 */
   flags: FlagInfoModel[]
@@ -588,6 +591,35 @@ export enum ChallengeType {
   DynamicContainer = 'DynamicContainer',
 }
 
+export interface Attachment {
+  /** @format int32 */
+  id: number
+
+  /** 附件类型 */
+  type: FileType
+
+  /** Flag 对应附件 (远程文件） */
+  remoteUrl?: string | null
+
+  /**
+   * 本地文件 Id
+   * @format int32
+   */
+  localFileId?: number | null
+
+  /** Flag 对应文件（本地文件） */
+  localFile?: LocalFile | null
+
+  /** 附件访问链接 */
+  url?: string | null
+}
+
+export enum FileType {
+  None = 'None',
+  Local = 'Local',
+  Remote = 'Remote',
+}
+
 /**
  * Flag 信息（Edit）
  */
@@ -601,23 +633,8 @@ export interface FlagInfoModel {
   /** Flag文本 */
   flag?: string
 
-  /** 对应附件类型 */
-  type?: FileType
-
-  /** Flag 对应附件（本地文件哈希） */
-  fileHash?: string | null
-
-  /** Flag 对应附件 (远程文件） */
-  remoteUrl?: string | null
-
-  /** Flag 对应附件链接 */
-  url?: string | null
-}
-
-export enum FileType {
-  None = 'None',
-  Local = 'Local',
-  Remote = 'Remote',
+  /** Flag 对应附件 */
+  attachment?: Attachment | null
 }
 
 /**
@@ -674,9 +691,6 @@ export interface ChallengeUpdateModel {
   /** 题目标签 */
   tag?: ChallengeTag | null
 
-  /** 题目类型 */
-  type?: ChallengeType | null
-
   /** 题目提示，用";"分隔 */
   hints?: string | null
 
@@ -729,17 +743,34 @@ export interface ChallengeUpdateModel {
 }
 
 /**
+ * 新建附件信息（Edit）
+ */
+export interface AttachmentCreateModel {
+  /** 附件类型 */
+  attachmentType?: FileType
+
+  /** 文件哈希（本地文件） */
+  fileHash?: string | null
+
+  /** 文件 Url（远程文件） */
+  remoteUrl?: string | null
+}
+
+/**
  * 新建 Flag 信息（Edit）
  */
 export interface FlagCreateModel {
   /** Flag文本 */
-  flag?: string
+  flag: string
 
-  /** Flag 对应附件（本地文件哈希） */
+  /** 附件类型 */
+  attachmentType?: FileType
+
+  /** 文件哈希（本地文件） */
   fileHash?: string | null
 
-  /** Flag 对应附件 (远程文件） */
-  url?: string | null
+  /** 文件 Url（远程文件） */
+  remoteUrl?: string | null
 }
 
 /**
@@ -1141,9 +1172,6 @@ export interface ClientFlagContext {
 
   /** 附件 Url */
   url?: string | null
-
-  /** 附件名称 */
-  name?: string | null
 }
 
 /**
@@ -2419,6 +2447,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 更新比赛题目附件，需要管理员权限，仅用于非动态附件题目
+     *
+     * @tags Edit
+     * @name EditUpdateAttachment
+     * @summary 更新比赛题目附件
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/attachment
+     */
+    editUpdateAttachment: (
+      id: number,
+      cId: number,
+      data: AttachmentCreateModel,
+      params: RequestParams = {}
+    ) =>
+      this.request<number, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/attachment`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 添加比赛题目 Flag，需要管理员权限
      *
      * @tags Edit
@@ -2427,12 +2478,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/edit/games/{id}/challenges/{cId}/flags
      */
     editAddFlags: (id: number, cId: number, data: FlagCreateModel[], params: RequestParams = {}) =>
-      this.request<number, RequestResponse>({
+      this.request<void, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/flags`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        format: 'json',
         ...params,
       }),
 
