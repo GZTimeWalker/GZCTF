@@ -74,11 +74,45 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const [disabled, setDisabled] = useState(false)
   const [type, setType] = useState<FileType>(challenge?.attachment?.type ?? FileType.None)
 
+  const modals = useModals()
+
   useEffect(() => {
     if (challenge) {
       setType(challenge.attachment?.type ?? FileType.None)
     }
   }, [challenge])
+
+  const onConfirmClear = () => {
+    setDisabled(true)
+    api.edit
+      .editUpdateAttachment(numId, numCId, { attachmentType: FileType.None })
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '附件已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        })
+        setType(FileType.None)
+        challenge &&
+          mutate({
+            ...challenge,
+            attachment: null,
+          })
+      })
+      .catch((err) =>
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: `${err.error.title}`,
+          icon: <Icon path={mdiClose} size={1} />,
+          disallowClose: true,
+        })
+      )
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
 
   const { classes, theme } = useStyles()
   const [progress, setProgress] = useState(0)
@@ -219,7 +253,24 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       <Divider />
       <Group position="apart">
         <Input.Wrapper label="附件类型" required>
-          <Chip.Group mt={8} value={type} onChange={(e) => setType(e as FileType)}>
+          <Chip.Group
+            mt={8}
+            value={type}
+            onChange={(e) => {
+              if (e === FileType.None) {
+                modals.openConfirmModal({
+                  title: '清除附件',
+                  children: <Text size="sm">你确定要清除本题的附件吗？</Text>,
+                  onConfirm: onConfirmClear,
+                  centered: true,
+                  labels: { confirm: '确认', cancel: '取消' },
+                  confirmProps: { color: 'orange' },
+                })
+              } else {
+                setType(e as FileType)
+              }
+            }}
+          >
             {Object.entries(FileType).map((type) => (
               <Chip key={type[0]} value={type[1]}>
                 {FileTypeDesrcMap.get(type[1])}

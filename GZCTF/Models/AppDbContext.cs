@@ -137,7 +137,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.Participation)
                 .WithMany(e => e.Instances)
                 .HasForeignKey(e => e.ParticipationId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
@@ -169,7 +169,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.Attachment)
                 .WithMany()
                 .HasForeignKey(e => e.AttachmentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Attachment).AutoInclude();
 
@@ -189,7 +189,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.Attachment)
                 .WithMany()
                 .HasForeignKey(e => e.AttachmentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Attachment).AutoInclude();
 
@@ -200,7 +200,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         {
             entity.HasOne(e => e.LocalFile)
                 .WithMany()
-                .HasForeignKey(e => e.LocalFileId);
+                .HasForeignKey(e => e.LocalFileId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.Navigation(e => e.LocalFile).AutoInclude();
         });
