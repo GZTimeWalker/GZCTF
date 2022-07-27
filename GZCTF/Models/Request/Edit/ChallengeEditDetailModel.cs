@@ -9,6 +9,11 @@ namespace CTFServer.Models.Request.Edit;
 public class ChallengeEditDetailModel
 {
     /// <summary>
+    /// 题目Id
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
     /// 题目名称
     /// </summary>
     [Required]
@@ -119,6 +124,7 @@ public class ChallengeEditDetailModel
     public static ChallengeEditDetailModel FromChallenge(Challenge chal)
         => new()
         {
+            Id = chal.Id,
             Title = chal.Title,
             Content = chal.Content,
             Tag = chal.Tag,

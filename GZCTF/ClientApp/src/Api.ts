@@ -493,6 +493,12 @@ export interface GameNoticeModel {
  * 题目详细信息（Edit）
  */
 export interface ChallengeEditDetailModel {
+  /**
+   * 题目Id
+   * @format int32
+   */
+  id?: number
+
   /** 题目名称 */
   title: string
 

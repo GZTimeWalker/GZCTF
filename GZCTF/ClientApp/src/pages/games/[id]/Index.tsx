@@ -4,14 +4,14 @@ import { Stack, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameDetailsModel } from '../../../Api'
+import api, { GameDetailModel } from '../../../Api'
 import LogoHeader from '../../../components/LogoHeader'
 import WithNavBar from '../../../components/WithNavbar'
 
 const GameDetail: FC = () => {
   const { id } = useParams()
 
-  const [game, setGame] = useState<GameDetailsModel>()
+  const [game, setGame] = useState<GameDetailModel>()
   const navigate = useNavigate()
 
   useEffect(() => {

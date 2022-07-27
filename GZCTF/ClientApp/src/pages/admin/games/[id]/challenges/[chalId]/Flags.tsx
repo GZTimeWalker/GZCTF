@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Grid, Group, Radio, Stack, TextInput } from '@mantine/core'
 import { mdiBackburger } from '@mdi/js'
@@ -14,17 +14,15 @@ const FileTypeDesrcMap = new Map<FileType, string>([
 
 // with only one attachment
 const OneAttachmentWithFlags: FC = () => {
-  const { id, chalId } = useParams()
-  const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
+  // const { id, chalId } = useParams()
+  // const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
-  const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId, {
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
+  // const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId, {
+  //   refreshInterval: 0,
+  //   revalidateIfStale: false,
+  //   revalidateOnFocus: false,
+  // })
 
-  const attachment = challenge?.flags.at(0)
-  const [fileType, setFileType] = useState(attachment?.type ?? FileType.None)
 
   return (
     <Stack>
@@ -33,8 +31,6 @@ const OneAttachmentWithFlags: FC = () => {
           <Radio.Group
             required
             label="附件类型"
-            value={fileType}
-            onChange={(v) => setFileType(v as FileType)}
           >
             {Object.entries(FileType).map((type) => (
               <Radio key={type[0]} value={type[1]} label={FileTypeDesrcMap.get(type[1])} />
@@ -42,7 +38,7 @@ const OneAttachmentWithFlags: FC = () => {
           </Radio.Group>
         </Grid.Col>
         <Grid.Col span={8}>
-          <TextInput label="附件链接" value={attachment?.url ?? ''} />
+          <TextInput label="附件链接"  />
         </Grid.Col>
       </Grid>
       <Group position="right">

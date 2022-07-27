@@ -155,7 +155,6 @@ const GameChallengeEdit: FC = () => {
                 onUpdate({
                   ...challengeInfo,
                   tag: tag,
-                  type: type,
                   minScoreRate: minRate / 100,
                 })
               }
@@ -180,11 +179,7 @@ const GameChallengeEdit: FC = () => {
             label="题目类型"
             placeholder="Type"
             value={type}
-            disabled={disabled}
-            onChange={(e) => {
-              setType(e as ChallengeType)
-              setChallengeInfo({ ...challengeInfo, type: e as ChallengeType })
-            }}
+            disabled
             itemComponent={ChallengeTypeItem}
             data={Object.entries(ChallengeType).map((type) => {
               const data = ChallengeTypeLabelMap.get(type[1])
@@ -299,8 +294,7 @@ const GameChallengeEdit: FC = () => {
             difficulty={challengeInfo?.difficulty ?? 30}
           />
         </SimpleGrid>
-        {(challengeInfo.type === ChallengeType.StaticContainer ||
-          challengeInfo.type === ChallengeType.DynamicContainer) && (
+        {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
           <>
             <TextInput
               label="容器镜像"
