@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using CTFServer.Models.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Models;
@@ -22,6 +23,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Team> Teams { get; set; } = default!;
     public DbSet<FlagContext> FlagContexts { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
+    public DbSet<Attachment> Attachments { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -164,6 +166,13 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity.HasOne(e => e.Attachment)
+                .WithMany()
+                .HasForeignKey(e => e.AttachmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Navigation(e => e.Attachment).AutoInclude();
+
             entity.HasIndex(e => e.GameId);
         });
 
@@ -177,9 +186,23 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<FlagContext>(entity =>
         {
-            entity.Navigation(e => e.LocalFile).AutoInclude();
+            entity.HasOne(e => e.Attachment)
+                .WithMany()
+                .HasForeignKey(e => e.AttachmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Navigation(e => e.Attachment).AutoInclude();
 
             entity.HasIndex(e => e.ChallengeId);
+        });
+
+        builder.Entity<Attachment>(entity =>
+        {
+            entity.HasOne(e => e.LocalFile)
+                .WithMany()
+                .HasForeignKey(e => e.LocalFileId);
+
+            entity.Navigation(e => e.LocalFile).AutoInclude();
         });
 
         builder.Entity<GameEvent>(entity =>

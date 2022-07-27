@@ -1,4 +1,5 @@
-﻿using CTFServer.Models.Request.Edit;
+﻿using CTFServer.Models.Data;
+using CTFServer.Models.Request.Edit;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -37,7 +38,7 @@ public class Challenge
     public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
 
     /// <summary>
-    /// 题目类型
+    /// 题目类型，创建后不可更改
     /// </summary>
     [Required]
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -101,11 +102,6 @@ public class Challenge
     public double Difficulty { get; set; } = 5;
 
     /// <summary>
-    /// 下载文件名称
-    /// </summary>
-    public string FileName { get; set; } = "attachment";
-
-    /// <summary>
     /// 当前题目分值
     /// </summary>
     [NotMapped]
@@ -114,8 +110,26 @@ public class Challenge
             (1.0 - MinScoreRate) * Math.Exp(-AcceptedCount / Difficulty)
         ));
 
+    /// <summary>
+    /// 下载文件名称，仅用于动态附件统一文件名
+    /// </summary>
+    public string? FileName { get; set; }
+
     #region Db Relationship
 
+    /// <summary>
+    /// 题目附件 Id
+    /// </summary>
+    public int? AttachmentId { get; set; }
+
+    /// <summary>
+    /// 题目附件（动态附件存放于 FlagContext）
+    /// </summary>
+    public Attachment? Attachment { get; set; }
+
+    /// <summary>
+    /// 题目对应的 Flag 列表
+    /// </summary>
     public List<FlagContext> Flags { get; set; } = new();
 
     /// <summary>
@@ -124,17 +138,19 @@ public class Challenge
     public List<Submission> Submissions { get; set; } = new();
 
     /// <summary>
+    /// 比赛 Id
+    /// </summary>
+    public int GameId { get; set; }
+
+    /// <summary>
     /// 比赛对象
     /// </summary>
     public Game Game { get; set; } = default!;
-
-    public int GameId { get; set; }
 
     #endregion Db Relationship
 
     public Challenge Update(ChallengeUpdateModel model)
     {
-        Type = model.Type ?? Type;
         Title = model.Title ?? Title;
         Content = model.Content ?? Content;
         Tag = model.Tag ?? Tag;

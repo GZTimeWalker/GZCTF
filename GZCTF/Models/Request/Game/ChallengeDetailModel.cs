@@ -57,9 +57,10 @@ public class ChallengeDetailModel
             Type = instance.Challenge.Type,
             Context = new()
             {
-                Name = instance.Challenge.FileName,
-                Url = instance.FlagContext?.Url,
-                InstanceEntry = instance.Container?.Entry
+                InstanceEntry = instance.Container?.Entry,
+                Url = instance.Challenge.Type.IsDynamic() ?
+                  instance.FlagContext?.Attachment?.Url :
+                  instance.Challenge.Attachment?.Url
             }
         };
 }
@@ -75,9 +76,4 @@ public class ClientFlagContext
     /// 附件 Url
     /// </summary>
     public string? Url { get; set; } = null;
-
-    /// <summary>
-    /// 附件名称
-    /// </summary>
-    public string? Name { get; set; } = null;
 }

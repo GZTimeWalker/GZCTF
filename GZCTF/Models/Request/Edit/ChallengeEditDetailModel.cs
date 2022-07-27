@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CTFServer.Models.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models.Request.Edit;
 
@@ -94,16 +95,20 @@ public class ChallengeEditDetailModel
     #endregion Score
 
     /// <summary>
-    /// 统一文件名
-    /// </summary>
-    [Required]
-    public string FileName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 统一文件名
+    /// 通过人数
     /// </summary>
     [Required]
     public int AcceptedCount { get; set; } = 0;
+
+    /// <summary>
+    /// 统一文件名（仅用于动态附件）
+    /// </summary>
+    public string? FileName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 题目附件（动态附件存放于 FlagInfoModel）
+    /// </summary>
+    public Attachment? Attachment { get; set; }
 
     /// <summary>
     /// 题目 Flag 信息

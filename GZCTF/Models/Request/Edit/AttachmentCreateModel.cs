@@ -1,18 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CTFServer.Models.Request.Edit;
+﻿namespace CTFServer.Models.Request.Edit;
 
 /// <summary>
-/// 新建 Flag 信息（Edit）
+/// 新建附件信息（Edit）
 /// </summary>
-public class FlagCreateModel
+public class AttachmentCreateModel
 {
-    /// <summary>
-    /// Flag文本
-    /// </summary>
-    [Required]
-    public string Flag { get; set; } = string.Empty;
-
     /// <summary>
     /// 附件类型
     /// </summary>

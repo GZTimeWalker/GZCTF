@@ -25,7 +25,7 @@ public interface IFileRepository : IRepository
     /// <param name="fileHash">文件哈希</param>
     /// <param name="token">取消Token</param>
     /// <returns>文件对象</returns>
-    public Task<LocalFile?> GetFileByHash(string fileHash, CancellationToken token = default);
+    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default);
 
     /// <summary>
     /// 获取全部文件

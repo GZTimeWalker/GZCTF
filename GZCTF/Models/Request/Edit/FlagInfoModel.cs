@@ -1,4 +1,6 @@
-﻿namespace CTFServer.Models.Request.Edit;
+﻿using CTFServer.Models.Data;
+
+namespace CTFServer.Models.Request.Edit;
 
 /// <summary>
 /// Flag 信息（Edit）
@@ -16,33 +18,15 @@ public class FlagInfoModel
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>
-    /// 对应附件类型
+    /// Flag 对应附件
     /// </summary>
-    public FileType Type { get; set; } = FileType.None;
-
-    /// <summary>
-    /// Flag 对应附件（本地文件哈希）
-    /// </summary>
-    public string? FileHash { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Flag 对应附件 (远程文件）
-    /// </summary>
-    public string? RemoteUrl { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Flag 对应附件链接
-    /// </summary>
-    public string? Url { get; set; } = string.Empty;
+    public Attachment? Attachment { get; set; }
 
     public static FlagInfoModel FromFlagContext(FlagContext context)
         => new()
         {
             Id = context.Id,
             Flag = context.Flag,
-            Type = context.AttachmentType,
-            FileHash = context.LocalFile?.Hash,
-            RemoteUrl = context.RemoteUrl,
-            Url = context.Url,
+            Attachment = context.Attachment
         };
 }

@@ -1,4 +1,5 @@
 ﻿using CTFServer.Middlewares;
+using CTFServer.Models.Data;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
@@ -462,6 +463,40 @@ public class EditController : Controller
     }
 
     /// <summary>
+    /// 更新比赛题目附件
+    /// </summary>
+    /// <remarks>
+    /// 更新比赛题目附件，需要管理员权限，仅用于非动态附件题目
+    /// </remarks>
+    /// <param name="id">比赛ID</param>
+    /// <param name="cId">题目ID</param>
+    /// <param name="model"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目数量</response>
+    [HttpPost("Games/{id}/Challenges/{cId}/Attachment")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateAttachment([FromRoute] int id, [FromRoute] int cId, [FromBody] AttachmentCreateModel model, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+
+        if (challenge is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        if (challenge.Type == ChallengeType.DynamicAttachment)
+            return BadRequest(new RequestResponse("动态附件题目请使用 assets API 上传附件"));
+
+        await challengeRepository.UpdateAttachment(challenge, model, token);
+
+        return Ok();
+    }
+
+    /// <summary>
     /// 添加比赛题目 Flag
     /// </summary>
     /// <remarks>
@@ -473,7 +508,7 @@ public class EditController : Controller
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目数量</response>
     [HttpPost("Games/{id}/Challenges/{cId}/Flags")]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddFlags([FromRoute] int id, [FromRoute] int cId, [FromBody] FlagCreateModel[] models, CancellationToken token)
     {
@@ -487,9 +522,9 @@ public class EditController : Controller
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
 
-        var fid = await challengeRepository.AddFlags(challenge, models, token);
+        await challengeRepository.AddFlags(challenge, models, token);
 
-        return Ok(fid);
+        return Ok();
     }
 
     /// <summary>

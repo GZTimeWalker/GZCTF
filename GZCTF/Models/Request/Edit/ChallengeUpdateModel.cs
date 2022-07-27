@@ -25,11 +25,6 @@ public class ChallengeUpdateModel
     public ChallengeTag? Tag { get; set; }
 
     /// <summary>
-    /// 题目类型
-    /// </summary>
-    public ChallengeType? Type { get; set; }
-
-    /// <summary>
     /// 题目提示，用";"分隔
     /// </summary>
     public string? Hints { get; set; }
