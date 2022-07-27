@@ -59,7 +59,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
     public async Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
     {
-        if (challenge.Type == ChallengeType.DynamicContainer)
+        if (challenge.Type == ChallengeType.DynamicAttachment)
         {
             foreach (var flag in challenge.Flags)
             {
