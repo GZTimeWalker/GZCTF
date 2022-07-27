@@ -128,6 +128,9 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             context.Remove(challenge.Attachment);
         }
 
+        if (attachment is not null)
+            await context.AddAsync(attachment, token);
+
         challenge.Attachment = attachment;
 
         await UpdateAsync(challenge, token);

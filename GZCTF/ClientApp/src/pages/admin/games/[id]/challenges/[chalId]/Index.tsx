@@ -175,11 +175,18 @@ const GameChallengeEdit: FC = () => {
             onChange={(e) => setChallengeInfo({ ...challengeInfo, title: e.target.value })}
           />
           <Select
-            required
-            label="题目类型"
+            label={
+              <Group spacing="sm">
+                <Text size="sm">题目类型</Text>
+                <Text size="xs" color="dimmed">
+                  创建后不可更改
+                </Text>
+              </Group>
+            }
             placeholder="Type"
             value={type}
-            disabled
+            disabled={disabled}
+            readOnly
             itemComponent={ChallengeTypeItem}
             data={Object.entries(ChallengeType).map((type) => {
               const data = ChallengeTypeLabelMap.get(type[1])

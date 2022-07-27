@@ -1,10 +1,22 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Grid, Group, Radio, Stack, TextInput } from '@mantine/core'
-import { mdiBackburger } from '@mdi/js'
+import {
+  Button,
+  Chip,
+  createStyles,
+  FileButton,
+  Group,
+  Input,
+  Progress,
+  Stack,
+  TextInput,
+} from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { mdiBackburger, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeType, FileType } from '../../../../../../Api'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
+import { useClipboard } from '@mantine/hooks'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],
@@ -12,38 +24,145 @@ const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.Local, '平台附件'],
 ])
 
+const useStyles = createStyles(() => ({
+  uploadButton: {
+    position: 'relative',
+    transition: 'background-color 150ms ease',
+  },
+
+  uploadProgress: {
+    position: 'absolute',
+    bottom: -1,
+    right: -1,
+    left: -1,
+    top: -1,
+    height: 'auto',
+    backgroundColor: 'transparent',
+    zIndex: 0,
+  },
+
+  uploadLabel: {
+    position: 'relative',
+    zIndex: 1,
+  },
+}))
+
 // with only one attachment
 const OneAttachmentWithFlags: FC = () => {
-  // const { id, chalId } = useParams()
-  // const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
+  const { id, chalId } = useParams()
+  const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
-  // const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId, {
-  //   refreshInterval: 0,
-  //   revalidateIfStale: false,
-  //   revalidateOnFocus: false,
-  // })
+  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
 
+  const [disabled, setDisabled] = useState(false)
+  const [type, setType] = useState<FileType>(challenge?.attachment?.type ?? FileType.None)
+
+  useEffect(() => {
+    if (challenge) {
+      setType(challenge.attachment?.type ?? FileType.None)
+    }
+  }, [challenge])
+
+  const { classes, theme } = useStyles()
+  const [progress, setProgress] = useState(0)
+
+  console.log(challenge)
+
+  const onUpload = (file: File) => {
+    setProgress(0)
+    setDisabled(true)
+
+    console.log(file)
+    api.assets
+      .assetsUpload({
+        files: [file],
+      })
+      .then((data) => {
+        setProgress(100)
+        const file = data.data[0]
+
+        console.log(file)
+        if (file) {
+          api.edit
+            .editUpdateAttachment(numId, numCId, {
+              attachmentType: FileType.Local,
+              fileHash: file.hash,
+            })
+            .then(() => {
+              setProgress(0)
+              setDisabled(false)
+              mutate()
+            })
+            .catch((err) =>
+              showNotification({
+                color: 'red',
+                title: '遇到了问题',
+                message: `${err.error.title}`,
+                icon: <Icon path={mdiClose} size={1} />,
+              })
+            )
+        }
+      })
+      .catch((err) =>
+        showNotification({
+          color: 'red',
+          title: '遇到了问题',
+          message: `${err.error.title}`,
+          icon: <Icon path={mdiClose} size={1} />,
+        })
+      )
+  }
 
   return (
     <Stack>
-      <Grid>
-        <Grid.Col span={4}>
-          <Radio.Group
-            required
-            label="附件类型"
-          >
+      <Group position="apart">
+        <Input.Wrapper label="附件类型" required>
+          <Chip.Group mt={8} value={type} onChange={(e) => setType(e as FileType)}>
             {Object.entries(FileType).map((type) => (
-              <Radio key={type[0]} value={type[1]} label={FileTypeDesrcMap.get(type[1])} />
+              <Chip key={type[0]} value={type[1]}>
+                {FileTypeDesrcMap.get(type[1])}
+              </Chip>
             ))}
-          </Radio.Group>
-        </Grid.Col>
-        <Grid.Col span={8}>
-          <TextInput label="附件链接"  />
-        </Grid.Col>
-      </Grid>
-      <Group position="right">
-
+          </Chip.Group>
+        </Input.Wrapper>
+        <Group position="right" style={{ width: 'calc(100% - 20rem)' }}>
+          <TextInput
+            label="附件链接"
+            readOnly
+            disabled={disabled || type === FileType.None}
+            value={challenge?.attachment?.url ?? ''}
+            style={{ width: 'calc(100% - 142px)' }}
+            onClick={() => challenge?.attachment?.url && window.open(challenge?.attachment?.url)}
+          />
+          <FileButton onChange={onUpload}>
+            {(props) => (
+              <Button
+                {...props}
+                fullWidth
+                className={classes.uploadButton}
+                disabled={type !== FileType.Local}
+                style={{ width: '122px', marginTop: '24px' }}
+                color={progress !== 0 ? 'cyan' : theme.primaryColor}
+              >
+                <div className={classes.uploadLabel}>{progress !== 0 ? '上传中' : '上传附件'}</div>
+                {progress !== 0 && (
+                  <Progress
+                    value={progress}
+                    className={classes.uploadProgress}
+                    color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
+                    radius="sm"
+                  />
+                )}
+              </Button>
+            )}
+          </FileButton>
+        </Group>
       </Group>
+      <Group position="right"></Group>
     </Stack>
   )
 }

@@ -140,6 +140,7 @@ public class ChallengeEditDetailModel
             Difficulty = chal.Difficulty,
             FileName = chal.FileName,
             AcceptedCount = chal.AcceptedCount,
+            Attachment = chal.Attachment,
             Flags = (from flag in chal.Flags
                      select FlagInfoModel.FromFlagContext(flag))
                     .ToArray()

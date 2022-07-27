@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Group, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
+import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
@@ -61,43 +61,37 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           type="text"
           required
           placeholder="Title"
-          style={{ width: '100%' }}
           value={challenge.title}
           onChange={(e) => setChallenge({ ...challenge, title: e.target.value })}
         />
-
-        <Group grow position="apart">
-          <Select
-            required
-            label="题目类型"
-            placeholder="Type"
-            value={challenge?.type}
-            onChange={(e) => setChallenge({ ...challenge, type: e as ChallengeType })}
-            itemComponent={ChallengeTypeItem}
-            data={Object.entries(ChallengeType).map((type) => {
-              const data = ChallengeTypeLabelMap.get(type[1])
-              return { value: type[1], ...data }
-            })}
-          />
-          <Select
-            required
-            label="题目标签"
-            placeholder="Tag"
-            value={challenge.tag}
-            onChange={(e) => setChallenge({ ...challenge, tag: e as ChallengeTag })}
-            itemComponent={ChallengeTagItem}
-            data={Object.entries(ChallengeTag).map((tag) => {
-              const data = ChallengeTagLabelMap.get(tag[1])
-              return { value: tag[1], ...data }
-            })}
-          />
-        </Group>
-
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
-          <Button fullWidth disabled={disabled} onClick={onCreate}>
-            创建题目
-          </Button>
-        </Group>
+        <Select
+          required
+          label="题目类型"
+          description="创建后不可更改"
+          placeholder="Type"
+          value={challenge?.type}
+          onChange={(e) => setChallenge({ ...challenge, type: e as ChallengeType })}
+          itemComponent={ChallengeTypeItem}
+          data={Object.entries(ChallengeType).map((type) => {
+            const data = ChallengeTypeLabelMap.get(type[1])
+            return { value: type[1], ...data }
+          })}
+        />
+        <Select
+          required
+          label="题目标签"
+          placeholder="Tag"
+          value={challenge.tag}
+          onChange={(e) => setChallenge({ ...challenge, tag: e as ChallengeTag })}
+          itemComponent={ChallengeTagItem}
+          data={Object.entries(ChallengeTag).map((tag) => {
+            const data = ChallengeTagLabelMap.get(tag[1])
+            return { value: tag[1], ...data }
+          })}
+        />
+        <Button fullWidth disabled={disabled} onClick={onCreate}>
+          创建题目
+        </Button>
       </Stack>
     </Modal>
   )
