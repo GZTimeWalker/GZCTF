@@ -316,7 +316,7 @@ const Profile: FC = () => {
                 minHeight: '220px',
               }}
               maxSize={3 * 1024 * 1024}
-              accept={IMAGE_MIME_TYPE}
+              accept={["image/png", "image/gif", "image/jpeg"]}
             >
               <Group
                 position="center"

@@ -14,7 +14,7 @@ import {
   Text,
 } from '@mantine/core'
 import { DatePicker, TimeInput } from '@mantine/dates'
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone } from '@mantine/dropzone'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
@@ -231,7 +231,7 @@ const GameInfoEdit: FC = () => {
                 })
               }}
               maxSize={3 * 1024 * 1024}
-              accept={IMAGE_MIME_TYPE}
+              accept={["image/png", "image/gif", "image/jpeg"]}
               disabled={disabled}
               styles={{
                 root: {

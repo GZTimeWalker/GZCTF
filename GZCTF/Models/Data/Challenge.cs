@@ -132,7 +132,7 @@ public class Challenge
 
     #endregion Db Relationship
 
-    public Challenge Update(ChallengeModel model)
+    public Challenge Update(ChallengeUpdateModel model)
     {
         Type = model.Type ?? Type;
         Title = model.Title ?? Title;

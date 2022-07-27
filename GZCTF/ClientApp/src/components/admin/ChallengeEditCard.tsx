@@ -70,7 +70,18 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             </Badge>
           </Group>
         </Group>
-        <Tooltip label="编辑题目信息" position='left' width={120} offset={10}>
+        <Tooltip
+          label="编辑题目信息"
+          position="left"
+          width={120}
+          offset={10}
+          styles={{
+            root: {
+              color: theme.colorScheme === "dark" ? "white" : "black",
+              backgroundColor: theme.colorScheme === "dark" ? "" : "white"
+            }
+          }}
+        >
           <ActionIcon
             onClick={() => {
               navigate(`/admin/games/${id}/challenges/${challenge.id}`)
@@ -79,7 +90,18 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             <Icon path={mdiPuzzleEditOutline} size={1} />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="编辑附件及 flag" position='left' width={120} offset={54}>
+        <Tooltip
+          label="编辑附件及 flag"
+          position="left"
+          width={120}
+          offset={54}
+          styles={{
+            root: {
+              color: theme.colorScheme === "dark" ? "white" : "black",
+              backgroundColor: theme.colorScheme === "dark" ? "" : "white"
+            }
+          }}
+        >
           <ActionIcon
             onClick={() => {
               navigate(`/admin/games/${id}/challenges/${challenge.id}/flags`)

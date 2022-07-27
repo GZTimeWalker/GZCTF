@@ -17,7 +17,7 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ChallengeModel, ChallengeTag, ChallengeType } from '../../../../../../Api'
+import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '../../../../../../Api'
 import {
   ChallengeTypeItem,
   ChallengeTypeLabelMap,
@@ -38,7 +38,7 @@ const GameChallengeEdit: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const [challengeInfo, setChallengeInfo] = useState<ChallengeModel>({ ...challenge })
+  const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)
 
   const [minRate, setMinRate] = useState((challenge?.minScoreRate ?? 0.25) * 100)
@@ -58,7 +58,7 @@ const GameChallengeEdit: FC = () => {
     }
   }, [challenge])
 
-  const onUpdate = (challenge: ChallengeModel) => {
+  const onUpdate = (challenge: ChallengeUpdateModel) => {
     if (challenge) {
       setDisabled(true)
       api.edit

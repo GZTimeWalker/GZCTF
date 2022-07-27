@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using k8s.KubeConfigModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models.Request.Edit;
 
 /// <summary>
-/// 题目信息更改（Edit）
+/// 题目更新信息（Edit）
 /// </summary>
-public class ChallengeModel
+public class ChallengeUpdateModel
 {
     /// <summary>
     /// 题目名称
@@ -24,14 +25,14 @@ public class ChallengeModel
     public ChallengeTag? Tag { get; set; }
 
     /// <summary>
-    /// 题目提示，用";"分隔
-    /// </summary>
-    public string? Hints { get; set; }
-
-    /// <summary>
     /// 题目类型
     /// </summary>
     public ChallengeType? Type { get; set; }
+
+    /// <summary>
+    /// 题目提示，用";"分隔
+    /// </summary>
+    public string? Hints { get; set; }
 
     /// <summary>
     /// 是否启用题目

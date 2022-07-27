@@ -13,7 +13,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         fileRepository = _fileRepository;
     }
 
-    public async Task<int> AddFlags(Challenge challenge, FlagInfoModel[] models, CancellationToken token = default)
+    public async Task<int> AddFlags(Challenge challenge, FlagCreateModel[] models, CancellationToken token = default)
     {
         var flags = from model in models
                     select new FlagContext()
@@ -42,8 +42,15 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         return challenge;
     }
 
-    public Task<Challenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
-        => context.Challenges.Where(c => c.Id == id && c.GameId == gameId).FirstOrDefaultAsync(token);
+    public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default)
+    {
+        var challenges = context.Challenges.Where(c => c.Id == id && c.GameId == gameId);
+
+        if (withFlag)
+            challenges = challenges.Include(e => e.Flags);
+
+        return challenges.FirstOrDefaultAsync(token);
+    }
 
     public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default)
         => context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
@@ -56,7 +63,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
     public async Task<TaskStatus> RemoveFlag(Challenge challenge, int flagId, CancellationToken token = default)
     {
-        var flag = await context.FlagContexts.Where(f => f.ChallengeId == challenge.Id && f.Id == flagId).FirstOrDefaultAsync(token);
+        var flag = challenge.Flags.FirstOrDefault(f => f.Id == flagId);
 
         if (flag is null)
             return TaskStatus.NotFound;
