@@ -42,8 +42,8 @@ const GameChallengeEdit: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const [minRate, setMinRate] = useState((challenge?.minScoreRate ?? 0.25) * 100)
-  const [tag, setTag] = useState<ChallengeTag>(challenge?.tag ?? ChallengeTag.Misc)
-  const [type, setType] = useState<ChallengeType>(challenge?.type ?? ChallengeType.StaticAttachment)
+  const [tag, setTag] = useState<string | null>(challenge?.tag ?? ChallengeTag.Misc)
+  const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
 
   const modals = useModals()
@@ -154,7 +154,7 @@ const GameChallengeEdit: FC = () => {
               onClick={() =>
                 onUpdate({
                   ...challengeInfo,
-                  tag: tag,
+                  tag: tag as ChallengeTag,
                   minScoreRate: minRate / 100,
                 })
               }
@@ -200,7 +200,7 @@ const GameChallengeEdit: FC = () => {
             value={tag}
             disabled={disabled}
             onChange={(e) => {
-              setTag(e as ChallengeTag)
+              setTag(e)
               setChallengeInfo({ ...challengeInfo, tag: e as ChallengeTag })
             }}
             itemComponent={ChallengeTagItem}

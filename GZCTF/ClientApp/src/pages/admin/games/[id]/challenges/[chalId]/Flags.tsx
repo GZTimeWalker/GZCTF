@@ -12,7 +12,7 @@ import {
   TextInput,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiClose } from '@mdi/js'
+import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeType, FileType } from '../../../../../../Api'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
@@ -69,18 +69,23 @@ const OneAttachmentWithFlags: FC = () => {
   const { classes, theme } = useStyles()
   const [progress, setProgress] = useState(0)
 
+  const [remoteUrl, setRemoteUrl] = useState(challenge?.attachment?.remoteUrl ?? '')
+
   const onUpload = (file: File) => {
     setProgress(0)
     setDisabled(true)
 
     api.assets
-      .assetsUpload({
-        files: [file],
-      },{
-        onUploadProgress: (e) => {
-          setProgress(e.loaded / e.total * 100)
+      .assetsUpload(
+        {
+          files: [file],
+        },
+        {
+          onUploadProgress: (e) => {
+            setProgress((e.loaded / e.total) * 100)
+          },
         }
-      })
+      )
       .then((data) => {
         const file = data.data[0]
         if (file) {
@@ -93,6 +98,12 @@ const OneAttachmentWithFlags: FC = () => {
               setProgress(0)
               setDisabled(false)
               mutate()
+              showNotification({
+                color: 'teal',
+                message: '附件已更新',
+                icon: <Icon path={mdiCheck} size={1} />,
+                disallowClose: true,
+              })
             })
             .catch((err) =>
               showNotification({
@@ -100,8 +111,12 @@ const OneAttachmentWithFlags: FC = () => {
                 title: '遇到了问题',
                 message: `${err.error.title}`,
                 icon: <Icon path={mdiClose} size={1} />,
+                disallowClose: true,
               })
             )
+            .finally(() => {
+              setDisabled(false)
+            })
         }
       })
       .catch((err) =>
@@ -110,8 +125,43 @@ const OneAttachmentWithFlags: FC = () => {
           title: '遇到了问题',
           message: `${err.error.title}`,
           icon: <Icon path={mdiClose} size={1} />,
+          disallowClose: true,
         })
       )
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
+  const onRemote = () => {
+    if (remoteUrl.startsWith('http')) {
+      setDisabled(true)
+      api.edit
+        .editUpdateAttachment(numId, numCId, {
+          attachmentType: FileType.Remote,
+          remoteUrl: remoteUrl,
+        })
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            message: '附件已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+        })
+        .catch((err) =>
+          showNotification({
+            color: 'red',
+            title: '遇到了问题',
+            message: `${err.error.title}`,
+            icon: <Icon path={mdiClose} size={1} />,
+            disallowClose: true,
+          })
+        )
+        .finally(() => {
+          setDisabled(false)
+        })
+    }
   }
 
   return (
@@ -127,36 +177,57 @@ const OneAttachmentWithFlags: FC = () => {
           </Chip.Group>
         </Input.Wrapper>
         <Group position="right" style={{ width: 'calc(100% - 20rem)' }}>
-          <TextInput
-            label="附件链接"
-            readOnly
-            disabled={disabled || type === FileType.None}
-            value={challenge?.attachment?.url ?? ''}
-            style={{ width: 'calc(100% - 142px)' }}
-            onClick={() => challenge?.attachment?.url && window.open(challenge?.attachment?.url)}
-          />
-          <FileButton onChange={onUpload}>
-            {(props) => (
-              <Button
-                {...props}
-                fullWidth
-                className={classes.uploadButton}
-                disabled={type !== FileType.Local}
-                style={{ width: '122px', marginTop: '24px' }}
-                color={progress !== 0 ? 'cyan' : theme.primaryColor}
-              >
-                <div className={classes.uploadLabel}>{progress !== 0 ? '上传中' : '上传附件'}</div>
-                {progress !== 0 && (
-                  <Progress
-                    value={progress}
-                    className={classes.uploadProgress}
-                    color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
-                    radius="sm"
-                  />
+          {type !== FileType.Remote ? (
+            <>
+              <TextInput
+                label="附件链接"
+                readOnly
+                disabled={disabled || type === FileType.None}
+                value={challenge?.attachment?.url ?? ''}
+                style={{ width: 'calc(100% - 142px)' }}
+                onClick={() =>
+                  challenge?.attachment?.url && window.open(challenge?.attachment?.url)
+                }
+              />
+              <FileButton onChange={onUpload}>
+                {(props) => (
+                  <Button
+                    {...props}
+                    fullWidth
+                    className={classes.uploadButton}
+                    disabled={type !== FileType.Local}
+                    style={{ width: '122px', marginTop: '24px' }}
+                    color={progress !== 0 ? 'cyan' : theme.primaryColor}
+                  >
+                    <div className={classes.uploadLabel}>
+                      {progress !== 0 ? '上传中' : '上传附件'}
+                    </div>
+                    {progress !== 0 && (
+                      <Progress
+                        value={progress}
+                        className={classes.uploadProgress}
+                        color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
+                        radius="sm"
+                      />
+                    )}
+                  </Button>
                 )}
+              </FileButton>
+            </>
+          ) : (
+            <>
+              <TextInput
+                label="附件链接"
+                disabled={disabled}
+                value={remoteUrl}
+                style={{ width: 'calc(100% - 142px)' }}
+                onChange={(e) => setRemoteUrl(e.target.value)}
+              />
+              <Button disabled={disabled} style={{ width: '122px', marginTop: '24px' }} onClick={onRemote}>
+                保存链接
               </Button>
-            )}
-          </FileButton>
+            </>
+          )}
         </Group>
       </Group>
       <Group position="right"></Group>
