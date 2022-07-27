@@ -35,7 +35,7 @@ const GameTeamReview: FC = () => {
                   </Box>
                 </Group>
               </Accordion.Control>
-              <Group noWrap sx={{ padding: '16px' }}>
+              <Group noWrap p="md">
                 <Button leftIcon={<Icon path={mdiCheck} size={1} />} loading>
                   接受
                 </Button>

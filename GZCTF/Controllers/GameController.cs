@@ -296,7 +296,7 @@ public class GameController : ControllerBase
     {
         var context = await GetContextInfo(id, token);
 
-        if (context.Game is not null)
+        if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
 
         return Ok((await participationRepository.GetParticipations(context.Game!, count, skip, token))
