@@ -240,7 +240,7 @@ const GameInfoEdit: FC = () => {
                 },
               }}
             >
-              <Center style={{ pointerEvents: 'none', height: '100%' }}>
+              <Center style={{ pointerEvents: 'none', height: '74px' }}>
                 {game?.poster ? (
                   <Image height="105px" fit="contain" src={game.poster} />
                 ) : (

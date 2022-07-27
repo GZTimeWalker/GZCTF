@@ -16,7 +16,6 @@ import { mdiBackburger, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeType, FileType } from '../../../../../../Api'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
-import { useClipboard } from '@mantine/hooks'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],
@@ -70,22 +69,20 @@ const OneAttachmentWithFlags: FC = () => {
   const { classes, theme } = useStyles()
   const [progress, setProgress] = useState(0)
 
-  console.log(challenge)
-
   const onUpload = (file: File) => {
     setProgress(0)
     setDisabled(true)
 
-    console.log(file)
     api.assets
       .assetsUpload({
         files: [file],
+      },{
+        onUploadProgress: (e) => {
+          setProgress(e.loaded / e.total * 100)
+        }
       })
       .then((data) => {
-        setProgress(100)
         const file = data.data[0]
-
-        console.log(file)
         if (file) {
           api.edit
             .editUpdateAttachment(numId, numCId, {
