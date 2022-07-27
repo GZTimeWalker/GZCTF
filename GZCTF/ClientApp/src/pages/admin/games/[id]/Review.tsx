@@ -36,8 +36,12 @@ const GameTeamReview: FC = () => {
                 </Group>
               </Accordion.Control>
               <Group noWrap sx={{ padding: '16px' }}>
-                <Button leftIcon={<Icon path={mdiCheck} size={1} />} loading>接受</Button>
-                <Button leftIcon={<Icon path={mdiClose} size={1} />} color="red" disabled>拒绝</Button>
+                <Button leftIcon={<Icon path={mdiCheck} size={1} />} loading>
+                  接受
+                </Button>
+                <Button leftIcon={<Icon path={mdiClose} size={1} />} color="red" disabled>
+                  拒绝
+                </Button>
               </Group>
             </Box>
             <Accordion.Panel>
@@ -61,21 +65,29 @@ const GameTeamReview: FC = () => {
 
           <Accordion.Item value="customization">
             <Accordion.Control>Customization</Accordion.Control>
-            <Accordion.Panel>Colors, fonts, shadows and many other parts are customizable to fit your design needs</Accordion.Panel>
+            <Accordion.Panel>
+              Colors, fonts, shadows and many other parts are customizable to fit your design needs
+            </Accordion.Panel>
           </Accordion.Item>
 
           <Accordion.Item value="flexibility">
             <Accordion.Control>Flexibility</Accordion.Control>
-            <Accordion.Panel>Configure components appearance and behavior with vast amount of settings or overwrite any part of component styles</Accordion.Panel>
+            <Accordion.Panel>
+              Configure components appearance and behavior with vast amount of settings or overwrite
+              any part of component styles
+            </Accordion.Panel>
           </Accordion.Item>
 
           <Accordion.Item value="focus-ring">
             <Accordion.Control>No annoying focus ring</Accordion.Control>
-            <Accordion.Panel>With new :focus-visible pseudo-class focus ring appears only when user navigates with keyboard</Accordion.Panel>
+            <Accordion.Panel>
+              With new :focus-visible pseudo-class focus ring appears only when user navigates with
+              keyboard
+            </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
       </Paper>
-    </WithGameTab >
+    </WithGameTab>
   )
 }
 

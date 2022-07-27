@@ -46,7 +46,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           checked={challenge.isEnabled}
           onChange={() => onToggle(challenge, setDisabled)}
         />
-        <Icon path={data!.icon} color={theme.colors[data?.color ?? "brand"][5]} size={1}/>
+        <Icon path={data!.icon} color={theme.colors[data?.color ?? 'brand'][5]} size={1} />
         <Group noWrap position="apart" spacing="sm" style={{ width: 'calc(100% - 100px)' }}>
           <Text lineClamp={1} weight={700} style={{ width: '14rem' }}>
             {challenge.title}
@@ -78,9 +78,9 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           offset={10}
           styles={{
             root: {
-              color: theme.colorScheme === "dark" ? "white" : "black",
-              backgroundColor: theme.colorScheme === "dark" ? "" : "white"
-            }
+              color: theme.colorScheme === 'dark' ? 'white' : 'black',
+              backgroundColor: theme.colorScheme === 'dark' ? '' : 'white',
+            },
           }}
         >
           <ActionIcon
@@ -98,9 +98,9 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           offset={54}
           styles={{
             root: {
-              color: theme.colorScheme === "dark" ? "white" : "black",
-              backgroundColor: theme.colorScheme === "dark" ? "" : "white"
-            }
+              color: theme.colorScheme === 'dark' ? 'white' : 'black',
+              backgroundColor: theme.colorScheme === 'dark' ? '' : 'white',
+            },
           }}
         >
           <ActionIcon

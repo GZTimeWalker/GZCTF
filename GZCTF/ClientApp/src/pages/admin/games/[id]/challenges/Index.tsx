@@ -114,7 +114,7 @@ const GameChallengeEdit: FC = () => {
               })}
             />
             <Button
-            style={{ marginRight: '18px'}}
+              style={{ marginRight: '18px' }}
               leftIcon={<Icon path={mdiPlus} size={1} />}
               onClick={() => setCreateOpened(true)}
             >

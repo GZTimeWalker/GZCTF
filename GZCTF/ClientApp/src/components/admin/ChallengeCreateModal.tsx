@@ -24,8 +24,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const navigate = useNavigate()
 
   const [title, setTitle] = useInputState('')
-  const [tag, setTag] = useState<string | null>(null);
-  const [type, setType] = useState<string | null>(null);
+  const [tag, setTag] = useState<string | null>(null)
+  const [type, setType] = useState<string | null>(null)
 
   const onCreate = () => {
     if (title && tag && type) {

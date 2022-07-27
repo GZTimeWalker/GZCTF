@@ -75,7 +75,7 @@ export const App: FC = () => {
           headings: {
             fontFamily: "'IBM Plex Sans', sans-serif",
           },
-          loader: 'bars'
+          loader: 'bars',
         }}
       >
         <NotificationsProvider zIndex={5000}>

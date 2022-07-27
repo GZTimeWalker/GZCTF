@@ -23,9 +23,9 @@ import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeType, FileType, FlagInfoModel } from '../../../../../../Api'
+import FlagCreateModal from '../../../../../../components/admin/FlagCreateModal'
 import FladEditPanel from '../../../../../../components/admin/FlagEditPanel'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
-import FlagCreateModal from '../../../../../../components/admin/FlagCreateModal'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],
@@ -269,7 +269,11 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             </Center>
           </>
         )}
-        <FladEditPanel flags={challenge?.flags} onDelete={onDelete} unifiedAttachment={challenge?.attachment}/>
+        <FladEditPanel
+          flags={challenge?.flags}
+          onDelete={onDelete}
+          unifiedAttachment={challenge?.attachment}
+        />
       </ScrollArea>
       <FlagCreateModal
         title="添加 flag"

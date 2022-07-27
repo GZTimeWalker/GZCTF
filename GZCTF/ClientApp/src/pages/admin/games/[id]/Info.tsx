@@ -231,7 +231,7 @@ const GameInfoEdit: FC = () => {
                 })
               }}
               maxSize={3 * 1024 * 1024}
-              accept={["image/png", "image/gif", "image/jpeg"]}
+              accept={['image/png', 'image/gif', 'image/jpeg']}
               disabled={disabled}
               styles={{
                 root: {
@@ -245,13 +245,13 @@ const GameInfoEdit: FC = () => {
                   <Image height="105px" fit="contain" src={game.poster} />
                 ) : (
                   <Center style={{ height: '74px' }}>
-                    <Stack spacing={0} >
-                    <Text size="xl" inline>
-                      拖放图片或点击此处以选择海报
-                    </Text>
-                    <Text size="sm" color="dimmed" inline mt={7}>
-                      请选择小于 3MB 的图片
-                    </Text>
+                    <Stack spacing={0}>
+                      <Text size="xl" inline>
+                        拖放图片或点击此处以选择海报
+                      </Text>
+                      <Text size="sm" color="dimmed" inline mt={7}>
+                        请选择小于 3MB 的图片
+                      </Text>
                     </Stack>
                   </Center>
                 )}

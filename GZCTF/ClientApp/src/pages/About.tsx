@@ -1,14 +1,5 @@
 import { FC } from 'react'
-import {
-  Text,
-  Stack,
-  Badge,
-  Group,
-  HoverCard,
-  Title,
-  createStyles,
-  Anchor,
-} from '@mantine/core'
+import { Text, Stack, Badge, Group, HoverCard, Title, createStyles, Anchor } from '@mantine/core'
 import LogoHeader from '../components/LogoHeader'
 import WithNavBar from '../components/WithNavbar'
 import MainIcon from '../components/icon/MainIcon'

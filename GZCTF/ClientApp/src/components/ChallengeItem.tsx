@@ -1,11 +1,5 @@
 import { forwardRef } from 'react'
-import {
-  Group,
-  MantineColor,
-  Stack,
-  Text,
-  useMantineTheme,
-} from '@mantine/core'
+import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
 import {
   mdiBomb,
   mdiCellphoneCog,

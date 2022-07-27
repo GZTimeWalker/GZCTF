@@ -366,7 +366,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             minHeight: '220px',
           }}
           maxSize={3 * 1024 * 1024}
-          accept={["image/png", "image/gif", "image/jpeg"]}
+          accept={['image/png', 'image/gif', 'image/jpeg']}
         >
           <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
             {avatarFile ? (
