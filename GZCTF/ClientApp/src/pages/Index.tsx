@@ -12,6 +12,12 @@ const Home: FC = () => {
     revalidateOnFocus: false,
   })
 
+  // const { data: allGames } = api.game.useGameGamesAll({
+  //   refreshInterval: 0,
+  //   revalidateIfStale: false,
+  //   revalidateOnFocus: false,
+  // })
+
   return (
     <WithNavBar>
       <Stack align="center">

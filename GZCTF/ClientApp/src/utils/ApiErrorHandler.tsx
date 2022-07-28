@@ -2,7 +2,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 
-function showErrorNotification(err: any) {
+export const showErrorNotification = (err: any) => {
   showNotification({
     color: 'red',
     title: '遇到了问题',
@@ -11,5 +11,3 @@ function showErrorNotification(err: any) {
     disallowClose: true,
   })
 }
-
-export { showErrorNotification }

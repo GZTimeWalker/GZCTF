@@ -22,7 +22,7 @@ const requirements = [
   { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: '包含特殊字符' },
 ]
 
-function getStrength(password: string) {
+const getStrength = (password: string) => {
   let multiplier = password.length > 5 ? 0 : 1
 
   requirements.forEach((requirement) => {

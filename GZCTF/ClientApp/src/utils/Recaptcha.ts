@@ -49,7 +49,7 @@ const loadReCaptcha = (siteKey: string) => {
   return script
 }
 
-export default function useReCaptcha(action: string) {
+export const useReCaptcha = (action: string) => {
   const { data: sitekey, error } = api.info.useInfoGetRecaptchaSiteKey({
     refreshInterval: 0,
     revalidateIfStale: false,
