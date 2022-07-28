@@ -15,7 +15,7 @@ import {
   TextInput,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
 import { showErrorNotification } from '../../utils/ApiErrorHandler'

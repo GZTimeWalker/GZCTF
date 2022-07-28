@@ -7,14 +7,17 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   Group,
   MantineColor,
   Paper,
   Popover,
+  ScrollArea,
   Select,
   Stack,
   Text,
   TextProps,
+  Title,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -181,7 +184,7 @@ const GameTeamReview: FC = () => {
 
   return (
     <WithGameTab
-      headProps={{ position: 'left' }}
+      headProps={{ position: 'apart' }}
       head={
         <>
           <Button
@@ -190,87 +193,108 @@ const GameTeamReview: FC = () => {
           >
             返回上级
           </Button>
-          <Select
-            placeholder="全部显示"
-            clearable
-            data={Array.from(StatusMap, (v) => ({ value: v[0], label: v[1].title }))}
-            value={selectedStatus}
-            onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
-          />
+          <Group style={{ width: 'calc(100% - 9rem)' }} position="apart">
+            <Select
+              placeholder="全部显示"
+              clearable
+              data={Array.from(StatusMap, (v) => ({ value: v[0], label: v[1].title }))}
+              value={selectedStatus}
+              onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
+            />
+          </Group>
         </>
       }
     >
-      <Paper shadow="md">
-        <Accordion variant="contained" chevronPosition="left">
-          {participations?.map(
-            (participation) =>
-              (selectedStatus === null || participation.status === selectedStatus) && (
-                <Accordion.Item key={participation.id} value={participation.id!.toString()}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Accordion.Control>
-                      <Group>
-                        <Avatar src={participation.team?.avatar} />
-                        <Box>
-                          <Text>
-                            {!participation.team?.name ? '（无名队伍）' : participation.team.name}
-                          </Text>
-                          <Text size="sm" color="dimmed">
-                            {participation.team?.bio}
-                          </Text>
-                        </Box>
-                      </Group>
-                    </Accordion.Control>
-                    <Group p="md" position="apart" sx={{ width: '300px' }}>
-                      <Badge color={StatusMap.get(participation.status!)?.color}>
-                        {StatusMap.get(participation.status!)?.title}
-                      </Badge>
-                      <Group>
-                        {StatusMap.get(participation.status!)?.transformTo.map((value) => {
-                          const s = StatusMap.get(value)!
-                          return (
-                            <ActionIconWithConfirm
-                              key={`${participation.id}@${value}`}
-                              iconPath={s.iconPath}
-                              color={s.color}
-                              message={`确定要设为“${s.title}”吗？`}
-                              disabled={disabled}
-                              onClick={() => setParticipationStatus(participation.id!, value)}
-                            />
-                          )
-                        })}
-                      </Group>
-                    </Group>
-                  </Box>
-                  <Accordion.Panel>
-                    {participation.team?.members?.map((user) => (
-                      <Group key={user.userId} spacing="xl">
-                        <Group>
-                          <Avatar src={user.avatar} />
-                          <Box>
-                            <Group>
-                              <Text>{user.userName}</Text>
-                              <Text>{!user.realName ? '未填写真实姓名' : user.realName}</Text>
-                            </Group>
-                            <Text {...fieldProps}>
-                              {!user.stdNumber ? '未填写学工号' : user.stdNumber}
-                            </Text>
-                          </Box>
+      <ScrollArea
+        style={{ height: 'calc(100vh - 180px)', position: 'relative' }}
+        offsetScrollbars
+        type="auto"
+      >
+        {!participations || participations.length === 0 ? (
+          <Center style={{ height: 'calc(100vh - 180px)' }}>
+            <Stack spacing={0}>
+              <Title order={2}>Ouch! 还没有队伍报名这个比赛</Title>
+              <Text>在路上了……别急！</Text>
+            </Stack>
+          </Center>
+        ) : (
+          <Paper shadow="md">
+            <Accordion variant="contained" chevronPosition="left">
+              {participations?.map(
+                (participation) =>
+                  (selectedStatus === null || participation.status === selectedStatus) && (
+                    <Accordion.Item key={participation.id} value={participation.id!.toString()}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Accordion.Control>
+                          <Group>
+                            <Avatar src={participation.team?.avatar} />
+                            <Box>
+                              <Text>
+                                {!participation.team?.name
+                                  ? '（无名队伍）'
+                                  : participation.team.name}
+                              </Text>
+                              <Text size="sm" color="dimmed">
+                                {participation.team?.bio}
+                              </Text>
+                            </Box>
+                          </Group>
+                        </Accordion.Control>
+                        <Group p="md" position="apart" sx={{ width: '300px' }}>
+                          <Badge color={StatusMap.get(participation.status!)?.color}>
+                            {StatusMap.get(participation.status!)?.title}
+                          </Badge>
+                          <Group>
+                            {StatusMap.get(participation.status!)?.transformTo.map((value) => {
+                              const s = StatusMap.get(value)!
+                              return (
+                                <ActionIconWithConfirm
+                                  key={`${participation.id}@${value}`}
+                                  iconPath={s.iconPath}
+                                  color={s.color}
+                                  message={`确定要设为“${s.title}”吗？`}
+                                  disabled={disabled}
+                                  onClick={() => setParticipationStatus(participation.id!, value)}
+                                />
+                              )
+                            })}
+                          </Group>
                         </Group>
-                        <Box style={{ width: '1.5rem' }}>
-                          {participation.team?.captainId === user.userId && (
-                            <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />
-                          )}
-                        </Box>
-                        <Text {...fieldProps}>{!user.email ? '未填写邮箱' : user.email}</Text>
-                        <Text {...fieldProps}>{!user.phone ? '未填写手机号码' : user.phone}</Text>
-                      </Group>
-                    ))}
-                  </Accordion.Panel>
-                </Accordion.Item>
-              )
-          )}
-        </Accordion>
-      </Paper>
+                      </Box>
+                      <Accordion.Panel>
+                        {participation.team?.members?.map((user) => (
+                          <Group key={user.userId} spacing="xl">
+                            <Group>
+                              <Avatar src={user.avatar} />
+                              <Box>
+                                <Group>
+                                  <Text>{user.userName}</Text>
+                                  <Text>{!user.realName ? '未填写真实姓名' : user.realName}</Text>
+                                </Group>
+                                <Text {...fieldProps}>
+                                  {!user.stdNumber ? '未填写学工号' : user.stdNumber}
+                                </Text>
+                              </Box>
+                            </Group>
+                            <Box style={{ width: '1.5rem' }}>
+                              {participation.team?.captainId === user.userId && (
+                                <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />
+                              )}
+                            </Box>
+                            <Text {...fieldProps}>{!user.email ? '未填写邮箱' : user.email}</Text>
+                            <Text {...fieldProps}>
+                              {!user.phone ? '未填写手机号码' : user.phone}
+                            </Text>
+                          </Group>
+                        ))}
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  )
+              )}
+            </Accordion>
+          </Paper>
+        )}
+      </ScrollArea>
     </WithGameTab>
   )
 }

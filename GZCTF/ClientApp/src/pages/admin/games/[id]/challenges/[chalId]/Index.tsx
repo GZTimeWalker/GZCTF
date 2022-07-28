@@ -15,7 +15,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiBackburger, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '../../../../../../Api'
 import {

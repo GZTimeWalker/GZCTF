@@ -12,7 +12,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCloseCircle, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCloseCircle, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamUpdateModel } from '../Api'
 import { showErrorNotification } from '../utils/ApiErrorHandler'

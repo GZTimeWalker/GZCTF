@@ -1,9 +1,20 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Group, ScrollArea, Select, SimpleGrid, Text } from '@mantine/core'
+import {
+  Button,
+  Center,
+  Group,
+  Overlay,
+  ScrollArea,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck, mdiClose, mdiPlus } from '@mdi/js'
+import { mdiBackburger, mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfoModel, ChallengeTag } from '../../../../../Api'
 import { ChallengeTagItem, ChallengeTagLabelMap } from '../../../../../components/ChallengeItem'
@@ -29,7 +40,7 @@ const GameChallengeEdit: FC = () => {
   const [filteredChallenges, setFilteredChallenges] = useState<ChallengeInfoModel[]>()
 
   useEffect(() => {
-    const arr = (category && challenges) ? challenges?.filter((c) => c.tag === category) : challenges
+    const arr = category && challenges ? challenges?.filter((c) => c.tag === category) : challenges
     arr?.sort((a, b) => ((a.tag ?? '') > (b.tag ?? '') ? -1 : 1))
 
     setFilteredChallenges(arr)
@@ -123,20 +134,33 @@ const GameChallengeEdit: FC = () => {
         </>
       }
     >
-      <ScrollArea style={{ height: 'calc(100vh - 250px)' }} offsetScrollbars type="auto">
-        <SimpleGrid
-          cols={2}
-          pr={6}
-          breakpoints={[
-            { maxWidth: 3600, cols: 2, spacing: 'sm' },
-            { maxWidth: 1800, cols: 1, spacing: 'sm' },
-          ]}
-        >
-          {filteredChallenges &&
-            filteredChallenges.map((challenge) => (
-              <ChallengeEditCard key={challenge.id} challenge={challenge} onToggle={onToggle} />
-            ))}
-        </SimpleGrid>
+      <ScrollArea
+        style={{ height: 'calc(100vh - 180px)', position: 'relative' }}
+        offsetScrollbars
+        type="auto"
+      >
+        {!filteredChallenges || filteredChallenges.length === 0 ? (
+          <Center style={{ height: 'calc(100vh - 180px)' }}>
+            <Stack spacing={0}>
+              <Title order={2}>Ouch! 这个比赛还没有题目</Title>
+              <Text>点击右上角创建第一个题目</Text>
+            </Stack>
+          </Center>
+        ) : (
+          <SimpleGrid
+            cols={2}
+            pr={6}
+            breakpoints={[
+              { maxWidth: 3600, cols: 2, spacing: 'sm' },
+              { maxWidth: 1800, cols: 1, spacing: 'sm' },
+            ]}
+          >
+            {filteredChallenges &&
+              filteredChallenges.map((challenge) => (
+                <ChallengeEditCard key={challenge.id} challenge={challenge} onToggle={onToggle} />
+              ))}
+          </SimpleGrid>
+        )}
       </ScrollArea>
 
       <ChallengeCreateModal
