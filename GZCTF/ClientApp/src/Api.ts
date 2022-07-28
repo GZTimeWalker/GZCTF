@@ -617,7 +617,7 @@ export interface Attachment {
   /** Flag 对应文件（本地文件） */
   localFile?: LocalFile | null
 
-  /** 附件访问链接 */
+  /** 文件默认 Url */
   url?: string | null
 }
 
@@ -1941,10 +1941,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 上传文件接口
      * @request POST:/api/assets
      */
-    assetsUpload: (data: { files?: File[] }, params: RequestParams = {}) =>
+    assetsUpload: (
+      data: { files?: File[] },
+      query?: { filename?: string | null },
+      params: RequestParams = {}
+    ) =>
       this.request<LocalFile[], RequestResponse>({
         path: `/api/assets`,
         method: 'POST',
+        query: query,
         body: data,
         type: ContentType.FormData,
         format: 'json',

@@ -247,7 +247,7 @@ public class EditController : Controller
         game.PosterHash = poster.Hash;
         await gameRepository.UpdateAsync(game, token);
 
-        return Ok(poster.Url);
+        return Ok(poster.Url());
     }
 
     /// <summary>
@@ -425,6 +425,9 @@ public class EditController : Controller
         // NOTE: IsEnabled can only be updated outside of the edit page
         if (model.IsEnabled == true && !res.Flags.Any() && res.Type != ChallengeType.DynamicContainer)
             return BadRequest(new RequestResponse("题目无 flag，不可启用"));
+
+        if (model.FileName is not null && string.IsNullOrWhiteSpace(model.FileName))
+            return BadRequest(new RequestResponse("动态附件名不可为空"));
 
         res.Update(model);
         await challengeRepository.UpdateAsync(res, token);

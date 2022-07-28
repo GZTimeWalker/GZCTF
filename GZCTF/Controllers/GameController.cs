@@ -130,6 +130,21 @@ public class GameController : ControllerBase
 
         var team = await teamRepository.GetActiveTeamWithMembers(user, token);
 
+        var part = await participationRepository.GetParticipation(team!, game, token);
+
+        if (part is not null)
+        {
+            if (part.Status != ParticipationStatus.Denied)
+                return BadRequest(new RequestResponse("您已经报名该比赛"));
+            else
+            {
+                part.Status = ParticipationStatus.Pending;
+                await participationRepository.UpdateAsync(part, token);
+
+                return Ok();
+            }
+        }
+
         await participationRepository.CreateParticipation(team!, game, token);
 
         logger.Log($"{team!.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);

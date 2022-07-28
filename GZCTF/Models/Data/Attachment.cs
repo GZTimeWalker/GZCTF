@@ -35,13 +35,18 @@ public class Attachment
     public LocalFile? LocalFile { get; set; } = default;
 
     /// <summary>
-    /// 附件访问链接
+    /// 文件默认 Url
     /// </summary>
     [NotMapped]
-    public string? Url => Type switch
+    public string? Url => UrlWithName();
+
+    /// <summary>
+    /// 附件访问链接
+    /// </summary>
+    public string? UrlWithName(string? filename = null) => Type switch
     {
         FileType.None => null,
-        FileType.Local => LocalFile?.Url,
+        FileType.Local => LocalFile?.Url(filename),
         FileType.Remote => RemoteUrl,
         _ => throw new ArgumentException(nameof(Type))
     };

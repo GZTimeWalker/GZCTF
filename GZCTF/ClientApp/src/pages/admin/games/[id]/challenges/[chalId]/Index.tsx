@@ -296,11 +296,20 @@ const GameChallengeEdit: FC = () => {
           </Stack>
           <ScoreFunc
             currentAcceptCount={currentAcceptCount}
-            originalScore={challengeInfo?.originalScore ?? 500}
+            originalScore={challengeInfo.originalScore ?? 500}
             minScoreRate={minRate / 100}
-            difficulty={challengeInfo?.difficulty ?? 30}
+            difficulty={challengeInfo.difficulty ?? 30}
           />
         </SimpleGrid>
+        {type === ChallengeType.DynamicAttachment && (
+          <TextInput
+            label="全局附件名"
+            description="所有动态附件均会以此文件名下载"
+            disabled={disabled}
+            value={challengeInfo.fileName ?? 'attachment'}
+            onChange={(e) => setChallengeInfo({ ...challengeInfo, fileName: e.target.value })}
+          />
+        )}
         {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
           <>
             <TextInput

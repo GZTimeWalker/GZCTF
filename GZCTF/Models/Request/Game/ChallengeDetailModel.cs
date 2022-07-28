@@ -59,8 +59,8 @@ public class ChallengeDetailModel
             {
                 InstanceEntry = instance.Container?.Entry,
                 Url = instance.Challenge.Type.IsDynamic() ?
-                  instance.FlagContext?.Attachment?.Url :
-                  instance.Challenge.Attachment?.Url
+                  instance.FlagContext?.Attachment?.UrlWithName(instance.Challenge.FileName) :
+                  instance.Challenge.Attachment?.UrlWithName()
             }
         };
 }

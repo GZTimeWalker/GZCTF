@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   Chip,
-  createStyles,
   Divider,
   FileButton,
   Group,
@@ -23,8 +22,12 @@ import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeType, FileType, FlagInfoModel } from '../../../../../../Api'
+import AttachmentRemoteEditModal from '../../../../../../components/admin/AttachmentRemoteEditModal'
+import AttachmentUploadModal, {
+  useUploadStyles,
+} from '../../../../../../components/admin/AttachmentUploadModal'
 import FlagCreateModal from '../../../../../../components/admin/FlagCreateModal'
-import FladEditPanel from '../../../../../../components/admin/FlagEditPanel'
+import FlagEditPanel from '../../../../../../components/admin/FlagEditPanel'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
@@ -32,29 +35,6 @@ const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.Remote, '远程文件'],
   [FileType.Local, '平台附件'],
 ])
-
-const useStyles = createStyles(() => ({
-  uploadButton: {
-    position: 'relative',
-    transition: 'background-color 150ms ease',
-  },
-
-  uploadProgress: {
-    position: 'absolute',
-    bottom: -1,
-    right: -1,
-    left: -1,
-    top: -1,
-    height: 'auto',
-    backgroundColor: 'transparent',
-    zIndex: 0,
-  },
-
-  uploadLabel: {
-    position: 'relative',
-    zIndex: 1,
-  },
-}))
 
 interface FlagEditProps {
   onDelete: (flag: FlagInfoModel) => void
@@ -114,7 +94,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       })
   }
 
-  const { classes, theme } = useStyles()
+  const { classes, theme } = useUploadStyles()
   const [progress, setProgress] = useState(0)
   const [flagCreateModalOpen, setFlagCreateModalOpen] = useState(false)
 
@@ -129,14 +109,16 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         {
           files: [file],
         },
+        undefined,
         {
           onUploadProgress: (e) => {
-            setProgress((e.loaded / e.total) * 100)
+            setProgress((e.loaded / e.total) * 90)
           },
         }
       )
       .then((data) => {
         const file = data.data[0]
+        setProgress(95)
         if (file) {
           api.edit
             .editUpdateAttachment(numId, numCId, {
@@ -320,7 +302,18 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             </Center>
           </>
         )}
-        <FladEditPanel
+        {!challenge?.flags.length && (
+          <>
+            <Overlay opacity={0.3} color="black" />
+            <Center style={{ height: 'calc(100vh - 430px)' }}>
+              <Stack spacing={0}>
+                <Title order={2}>flag 列表为空</Title>
+                <Text>请通过右上角添加 flag</Text>
+              </Stack>
+            </Center>
+          </>
+        )}
+        <FlagEditPanel
           flags={challenge?.flags}
           onDelete={onDelete}
           unifiedAttachment={challenge?.attachment}
@@ -336,12 +329,57 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   )
 }
 
-const FlagsWithAttachments: FC<FlagEditProps> = () => {
+const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
+  const { id, chalId } = useParams()
+  const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
+
+  const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
+
+  const [attachmentUploadModalOpened, setAttachmentUploadModalOpened] = useState(false)
+  const [remoteAttachmentModalOpened, setRemoteAttachmentModalOpened] = useState(false)
+
   return (
     <Stack>
-      <Group position="apart">
-        <Stack spacing="xs"></Stack>
+      <Group position="apart" mt={20}>
+        <Title order={2}>flag 管理</Title>
+        <Group position="right">
+          <Button onClick={() => setRemoteAttachmentModalOpened(true)}>添加远程附件</Button>
+          <Button onClick={() => setAttachmentUploadModalOpened(true)}>上传动态附件</Button>
+        </Group>
       </Group>
+      <Divider />
+      <ScrollArea sx={{ height: 'calc(100vh - 250px)', position: 'relative' }}>
+        {!challenge?.flags.length && (
+          <>
+            <Overlay opacity={0.3} color="black" />
+            <Center style={{ height: 'calc(100vh - 250px)' }}>
+              <Stack spacing={0}>
+                <Title order={2}>flag 列表为空</Title>
+                <Text>请通过右上角添加 flag</Text>
+              </Stack>
+            </Center>
+          </>
+        )}
+        <FlagEditPanel flags={challenge?.flags} onDelete={onDelete} />
+      </ScrollArea>
+      <AttachmentUploadModal
+        title="批量添加动态附件"
+        size="40%"
+        centered
+        opened={attachmentUploadModalOpened}
+        onClose={() => setAttachmentUploadModalOpened(false)}
+      />
+      <AttachmentRemoteEditModal
+        title="批量添加远程附件"
+        size="40%"
+        centered
+        opened={remoteAttachmentModalOpened}
+        onClose={() => setRemoteAttachmentModalOpened(false)}
+      />
     </Stack>
   )
 }
@@ -354,7 +392,7 @@ const GameChallengeEdit: FC = () => {
   const theme = useMantineTheme()
   const modals = useModals()
 
-  const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId, {
+  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -386,6 +424,11 @@ const GameChallengeEdit: FC = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
+        challenge &&
+          mutate({
+            ...challenge,
+            flags: challenge.flags.filter((f) => f.id !== id),
+          })
       })
       .catch((err) => {
         showNotification({
