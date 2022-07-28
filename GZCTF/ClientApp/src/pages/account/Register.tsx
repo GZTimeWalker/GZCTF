@@ -8,7 +8,7 @@ import { Icon } from '@mdi/react'
 import api from '../../Api'
 import AccountView from '../../components/AccountView'
 import StrengthPasswordInput from '../../components/StrengthPasswordInput'
-import useReCaptcha from '../../utils/Recaptcha'
+import { useReCaptcha } from '../../utils/Recaptcha'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
