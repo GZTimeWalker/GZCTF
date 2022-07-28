@@ -33,5 +33,12 @@ jobs:
             ${{ github.ref_name }}
             ${{ github.sha }}
 
+      - name: Delete Old Package
+        uses: actions/delete-package-versions@v2.0.1
+        with:
+            package-name: 'gzctf'
+            ignore-versions: '^(0|[1-9]\\d*)\\.0\\.0$'
+            min-versions-to-keep: 5
+      
       - name: Print Full Image URL
         run: echo ${{ steps.publish.outputs.imageURL }}:${{ github.sha }}
