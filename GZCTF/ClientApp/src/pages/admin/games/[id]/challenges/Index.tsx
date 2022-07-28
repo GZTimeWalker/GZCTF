@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, ScrollArea, Select, SimpleGrid, Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
@@ -17,7 +17,7 @@ const GameChallengeEdit: FC = () => {
 
   const navigate = useNavigate()
   const [createOpened, setCreateOpened] = useState(false)
-  const [categray, setCategray] = useState<ChallengeTag | null>(null)
+  const [category, setCategory] = useState<ChallengeTag | null>(null)
 
   const { data: challenges, mutate } = api.edit.useEditGetGameChallenges(numId, {
     refreshInterval: 0,
@@ -25,10 +25,14 @@ const GameChallengeEdit: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const filteredChallenges =
-    categray && challenges ? challenges?.filter((c) => c.tag === categray) : challenges
+  const [filteredChallenges, setFilteredChallenges] = useState<ChallengeInfoModel[]>()
 
-  filteredChallenges?.sort((a, b) => ((a.tag ?? '') > (b.tag ?? '') ? -1 : 1))
+  useEffect(() => {
+    const arr = (category && challenges) ? challenges?.filter((c) => c.tag === category) : challenges
+    arr?.sort((a, b) => ((a.tag ?? '') > (b.tag ?? '') ? -1 : 1))
+
+    setFilteredChallenges(arr)
+  }, [challenges])
 
   const modals = useModals()
   const onToggle = (
@@ -105,8 +109,8 @@ const GameChallengeEdit: FC = () => {
               searchable
               nothingFound="没有找到标签"
               clearButtonLabel="显示全部"
-              value={categray}
-              onChange={(value) => setCategray(value as ChallengeTag)}
+              value={category}
+              onChange={(value) => setCategory(value as ChallengeTag)}
               itemComponent={ChallengeTagItem}
               data={Object.entries(ChallengeTag).map((tag) => {
                 const data = ChallengeTagLabelMap.get(tag[1])

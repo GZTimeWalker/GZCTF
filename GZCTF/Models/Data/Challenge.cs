@@ -113,7 +113,7 @@ public class Challenge
     /// <summary>
     /// 下载文件名称，仅用于动态附件统一文件名
     /// </summary>
-    public string FileName { get; set; } = "attachment";
+    public string? FileName { get; set; } = "attachment";
 
     #region Db Relationship
 
