@@ -81,14 +81,14 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         style={{
           position: 'relative',
           marginTop: POSTER_HEIGHT - 32 - 34,
-          background: 'rgba(0,0,0,.4)',
+          background: 'rgba(0,0,0,.5)',
           display: 'flex',
           height: 34,
           padding: '0 16px',
           alignItems: 'center',
         }}
       >
-        <Title order={4} align="left">
+        <Title order={4} align="left" style={{ color: theme.colors.gray[0] }}>
           &gt; {title}
         </Title>
       </Card.Section>
