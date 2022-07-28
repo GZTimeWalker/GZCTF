@@ -1160,6 +1160,9 @@ export interface TeamWithDetailedUserInfo {
   /** 是否锁定 */
   locked?: boolean
 
+  /** 队长 Id */
+  captainId?: string
+
   /** 队伍成员 */
   members?: ProfileUserInfoModel[] | null
 }

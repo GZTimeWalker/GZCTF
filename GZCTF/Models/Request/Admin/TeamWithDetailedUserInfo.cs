@@ -33,6 +33,11 @@ public class TeamWithDetailedUserInfo
     public bool Locked { get; set; }
 
     /// <summary>
+    /// 队长 Id
+    /// </summary>
+    public string CaptainId { get; set; } = string.Empty;
+
+    /// <summary>
     /// 队伍成员
     /// </summary>
     public ProfileUserInfoModel[]? Members { get; set; }
@@ -45,6 +50,7 @@ public class TeamWithDetailedUserInfo
             Bio = team.Bio,
             Avatar = team.AvatarUrl,
             Locked = team.Locked,
+            CaptainId = team.CaptainId,
             Members = team.Members.Select(u => ProfileUserInfoModel.FromUserInfo(u)).ToArray()
         };
 }
