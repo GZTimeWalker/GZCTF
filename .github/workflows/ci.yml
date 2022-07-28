@@ -36,7 +36,7 @@ jobs:
       - name: Delete Old Package
         uses: actions/delete-package-versions@v2.0.1
         with:
-            package-name: 'gzctf'
+            package-name: 'gzctf/gzctf'
             ignore-versions: '^(0|[1-9]\\d*)\\.0\\.0$'
             min-versions-to-keep: 5
       
