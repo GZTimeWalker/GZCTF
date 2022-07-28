@@ -30,7 +30,11 @@ import {
   mdiHelpCircleOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ParticipationInfoModel, ParticipationStatus } from '../../../../Api'
+import api, {
+  ParticipationInfoModel,
+  ParticipationStatus,
+  ProfileUserInfoModel,
+} from '../../../../Api'
 import WithGameTab from '../../../../components/admin/WithGameTab'
 import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
@@ -73,12 +77,13 @@ interface ActionIconWithConfirmProps {
   color?: MantineColor
   message: string
   disabled?: boolean
-  onClick: () => Promise<any>
+  onClick: () => Promise<void>
 }
 
 const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
   const [opened, setOpened] = useState(false)
   const [loading, setLoading] = useState(false)
+
   return (
     <Popover
       shadow="md"
@@ -119,8 +124,8 @@ const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
             <Button
               size="xs"
               variant="outline"
-              onClick={() => setOpened(false)}
               disabled={props.disabled}
+              onClick={() => setOpened(false)}
             >
               取消
             </Button>
@@ -131,19 +136,105 @@ const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
   )
 }
 
-const GameTeamReview: FC = () => {
-  const navigate = useNavigate()
+interface MemberItemProps {
+  user: ProfileUserInfoModel
+  isCaptain: boolean
+}
+
+const MemberItem: FC<MemberItemProps> = (props) => {
+  const { user, isCaptain } = props
   const theme = useMantineTheme()
-  const { id } = useParams()
-  const numId = parseInt(id ?? '-1')
-  const [disabled, setDisabled] = useState(false)
-  const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
-  const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
 
   const fieldProps: TextProps = {
     size: 'sm',
     sx: { fontFamily: theme.fontFamilyMonospace },
   }
+
+  return (
+    <Group spacing="xl">
+      <Group>
+        <Avatar src={user.avatar} />
+        <Box>
+          <Group>
+            <Text>{user.userName}</Text>
+            <Text>{!user.realName ? '未填写真实姓名' : user.realName}</Text>
+          </Group>
+          <Text {...fieldProps}>{!user.stdNumber ? '未填写学工号' : user.stdNumber}</Text>
+        </Box>
+      </Group>
+      <Box style={{ width: '1.5rem' }}>
+        {isCaptain && <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />}
+      </Box>
+      <Text {...fieldProps}>{!user.email ? '未填写邮箱' : user.email}</Text>
+      <Text {...fieldProps}>{!user.phone ? '未填写手机号码' : user.phone}</Text>
+    </Group>
+  )
+}
+
+interface ParticipationItemProps {
+  participation: ParticipationInfoModel
+  disabled: boolean
+  setParticipationStatus: (id: number, status: ParticipationStatus) => Promise<void>
+}
+
+const ParticipationItem: FC<ParticipationItemProps> = (props) => {
+  const { participation, disabled, setParticipationStatus } = props
+
+  return (
+    <Accordion.Item value={participation.id!.toString()}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Accordion.Control>
+          <Group>
+            <Avatar src={participation.team?.avatar} />
+            <Box>
+              <Text>{!participation.team?.name ? '（无名队伍）' : participation.team.name}</Text>
+              <Text size="sm" color="dimmed">
+                {participation.team?.bio}
+              </Text>
+            </Box>
+          </Group>
+        </Accordion.Control>
+        <Group p="md" position="apart" sx={{ width: '300px' }}>
+          <Badge color={StatusMap.get(participation.status!)?.color}>
+            {StatusMap.get(participation.status!)?.title}
+          </Badge>
+          <Group>
+            {StatusMap.get(participation.status!)?.transformTo.map((value) => {
+              const s = StatusMap.get(value)!
+              return (
+                <ActionIconWithConfirm
+                  key={`${participation.id}@${value}`}
+                  iconPath={s.iconPath}
+                  color={s.color}
+                  message={`确定要设为“${s.title}”吗？`}
+                  disabled={disabled}
+                  onClick={() => setParticipationStatus(participation.id!, value)}
+                />
+              )
+            })}
+          </Group>
+        </Group>
+      </Box>
+      <Accordion.Panel>
+        {participation.team?.members?.map((user) => (
+          <MemberItem
+            key={user.userId}
+            user={user}
+            isCaptain={participation.team?.captainId === user.userId}
+          />
+        ))}
+      </Accordion.Panel>
+    </Accordion.Item>
+  )
+}
+
+const GameTeamReview: FC = () => {
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const numId = parseInt(id ?? '-1')
+  const [disabled, setDisabled] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
+  const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
 
   const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
     setDisabled(true)
@@ -223,72 +314,12 @@ const GameTeamReview: FC = () => {
               {participations?.map(
                 (participation) =>
                   (selectedStatus === null || participation.status === selectedStatus) && (
-                    <Accordion.Item key={participation.id} value={participation.id!.toString()}>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Accordion.Control>
-                          <Group>
-                            <Avatar src={participation.team?.avatar} />
-                            <Box>
-                              <Text>
-                                {!participation.team?.name
-                                  ? '（无名队伍）'
-                                  : participation.team.name}
-                              </Text>
-                              <Text size="sm" color="dimmed">
-                                {participation.team?.bio}
-                              </Text>
-                            </Box>
-                          </Group>
-                        </Accordion.Control>
-                        <Group p="md" position="apart" sx={{ width: '300px' }}>
-                          <Badge color={StatusMap.get(participation.status!)?.color}>
-                            {StatusMap.get(participation.status!)?.title}
-                          </Badge>
-                          <Group>
-                            {StatusMap.get(participation.status!)?.transformTo.map((value) => {
-                              const s = StatusMap.get(value)!
-                              return (
-                                <ActionIconWithConfirm
-                                  key={`${participation.id}@${value}`}
-                                  iconPath={s.iconPath}
-                                  color={s.color}
-                                  message={`确定要设为“${s.title}”吗？`}
-                                  disabled={disabled}
-                                  onClick={() => setParticipationStatus(participation.id!, value)}
-                                />
-                              )
-                            })}
-                          </Group>
-                        </Group>
-                      </Box>
-                      <Accordion.Panel>
-                        {participation.team?.members?.map((user) => (
-                          <Group key={user.userId} spacing="xl">
-                            <Group>
-                              <Avatar src={user.avatar} />
-                              <Box>
-                                <Group>
-                                  <Text>{user.userName}</Text>
-                                  <Text>{!user.realName ? '未填写真实姓名' : user.realName}</Text>
-                                </Group>
-                                <Text {...fieldProps}>
-                                  {!user.stdNumber ? '未填写学工号' : user.stdNumber}
-                                </Text>
-                              </Box>
-                            </Group>
-                            <Box style={{ width: '1.5rem' }}>
-                              {participation.team?.captainId === user.userId && (
-                                <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />
-                              )}
-                            </Box>
-                            <Text {...fieldProps}>{!user.email ? '未填写邮箱' : user.email}</Text>
-                            <Text {...fieldProps}>
-                              {!user.phone ? '未填写手机号码' : user.phone}
-                            </Text>
-                          </Group>
-                        ))}
-                      </Accordion.Panel>
-                    </Accordion.Item>
+                    <ParticipationItem
+                      key={participation.id}
+                      participation={participation}
+                      disabled={disabled}
+                      setParticipationStatus={setParticipationStatus}
+                    />
                   )
               )}
             </Accordion>
