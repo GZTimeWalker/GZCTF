@@ -70,7 +70,7 @@ const Logs: FC = () => {
         showNotification({
           color: 'red',
           title: '获取日志失败',
-          message: err.message,
+          message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
           disallowClose: true,
         })

@@ -17,6 +17,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel } from '../Api'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 interface TeamCardProps {
   team: TeamInfoModel
@@ -53,12 +54,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           mutateActive && mutateActive()
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
         .finally(() => {
           setCardClickable(true)

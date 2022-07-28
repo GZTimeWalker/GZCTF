@@ -12,6 +12,7 @@ import {
   ChallengeTypeItem,
   ChallengeTypeLabelMap,
 } from '../ChallengeItem'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void
@@ -49,12 +50,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           navigate(`/admin/games/${id}/challenges/${data.data.id}`)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
           setDisabled(false)
         })
     }

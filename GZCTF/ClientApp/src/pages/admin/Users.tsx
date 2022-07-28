@@ -26,6 +26,7 @@ import { Icon } from '@mdi/react'
 import api, { Role, UserInfoModel } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '../../components/admin/UserEditModal'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -78,12 +79,7 @@ const Users: FC = () => {
         setUsers(res.data)
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
       .finally(() => {
         setSearching(false)
@@ -105,12 +101,7 @@ const Users: FC = () => {
         setUsers(users?.filter((t) => t.id !== user.id) ?? [])
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
   }
 

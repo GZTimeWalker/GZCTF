@@ -7,6 +7,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '../Api'
 import StrengthPasswordInput from './StrengthPasswordInput'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {
   const [oldPwd, setOldPwd] = useInputState('')
@@ -41,12 +42,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           navigate('/account/login')
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
     } else {
       showNotification({

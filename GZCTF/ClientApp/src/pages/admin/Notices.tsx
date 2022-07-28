@@ -8,6 +8,7 @@ import api, { Notice } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 import NoticeEditCard from '../../components/admin/NoticeEditCard'
 import NoticeEditModal from '../../components/admin/NoticeEditModal'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Notices: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({
@@ -69,12 +70,7 @@ const Notices: FC = () => {
         mutate(notices?.filter((t) => t.id !== notice.id) ?? [])
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
   }
 

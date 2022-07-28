@@ -5,6 +5,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { Notice } from '../../Api'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 interface NoticeEditModalProps extends ModalProps {
   notice?: Notice | null
@@ -60,12 +61,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           modalProps.onClose()
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
         .finally(() => {
           setDisabled(false)
@@ -87,12 +83,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           modalProps.onClose()
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
         .finally(() => {
           setDisabled(false)

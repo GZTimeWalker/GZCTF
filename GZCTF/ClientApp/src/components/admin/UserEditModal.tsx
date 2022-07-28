@@ -18,6 +18,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],
@@ -67,12 +68,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         modalProps.onClose()
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
       .finally(() => {
         setDisabled(false)

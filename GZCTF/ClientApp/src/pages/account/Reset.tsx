@@ -8,6 +8,7 @@ import { Icon } from '@mdi/react'
 import api from '../../Api'
 import AccountView from '../../components/AccountView'
 import StrengthPasswordInput from '../../components/StrengthPasswordInput'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Reset: FC = () => {
   const location = useLocation()
@@ -59,12 +60,7 @@ const Reset: FC = () => {
         navigate('/account/login')
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题，请稍后重试',
-          message: `${err}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
         setDisabled(false)
       })
   }

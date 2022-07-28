@@ -8,6 +8,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameInfoModel } from '../../Api'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 interface GameCreateModalProps extends ModalProps {
   onAddGame: (game: GameInfoModel) => void
@@ -50,12 +51,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         navigate(`/admin/games/${data.data.id}/info`)
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
         setDisabled(false)
       })
   }

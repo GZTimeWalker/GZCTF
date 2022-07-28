@@ -7,6 +7,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '../../Api'
 import AccountView from '../../components/AccountView'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
@@ -26,12 +27,7 @@ const Recovery: FC = () => {
         })
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
   }
 

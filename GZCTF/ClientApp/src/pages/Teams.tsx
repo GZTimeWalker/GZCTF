@@ -22,6 +22,7 @@ import TeamCreateModal from '../components/TeamCreateModal'
 import TeamEditModal from '../components/TeamEditModal'
 import WithNavBar from '../components/WithNavbar'
 import WithRole from '../components/WithRole'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 const Teams: FC = () => {
   const { data: user, error: userError } = api.account.useAccountProfile({
@@ -83,12 +84,7 @@ const Teams: FC = () => {
         }
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
       .finally(() => {
         setJoinTeamCode('')

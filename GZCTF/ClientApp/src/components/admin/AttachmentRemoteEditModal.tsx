@@ -5,6 +5,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { FileType, FlagCreateModel } from '../../Api'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()
@@ -49,13 +50,7 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
           api.edit.mutateEditGetGameChallenge(numId, numCId)
         })
         .catch((err) =>
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-            disallowClose: true,
-          })
+          showErrorNotification(err)
         )
         .finally(() => {
           setDisabled(false)

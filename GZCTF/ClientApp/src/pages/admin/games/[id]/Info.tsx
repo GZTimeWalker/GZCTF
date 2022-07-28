@@ -21,6 +21,7 @@ import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameInfoModel } from '../../../../Api'
 import WithGameTab from '../../../../components/admin/WithGameTab'
+import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
 const GameInfoEdit: FC = () => {
   const { id } = useParams()
@@ -61,12 +62,7 @@ const GameInfoEdit: FC = () => {
           navigate('/admin/games')
         }
 
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
   }, [id])
 
@@ -84,12 +80,7 @@ const GameInfoEdit: FC = () => {
           setGame({ ...game, poster: res.data })
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
     }
   }
@@ -113,12 +104,7 @@ const GameInfoEdit: FC = () => {
           api.game.mutateGameGamesAll()
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
         .finally(() => {
           setDisabled(false)

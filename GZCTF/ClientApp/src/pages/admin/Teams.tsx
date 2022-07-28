@@ -16,6 +16,7 @@ import { mdiClose, mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutli
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -61,12 +62,7 @@ const Teams: FC = () => {
         setTeams(res.data)
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
       .finally(() => {
         setSearching(false)

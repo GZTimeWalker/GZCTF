@@ -10,6 +10,7 @@ import { ChallengeTagItem, ChallengeTagLabelMap } from '../../../../../component
 import ChallengeCreateModal from '../../../../../components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '../../../../../components/admin/ChallengeEditCard'
 import WithGameTab from '../../../../../components/admin/WithGameTab'
+import { showErrorNotification } from '../../../../../utils/ApiErrorHandler'
 
 const GameChallengeEdit: FC = () => {
   const { id } = useParams()
@@ -77,13 +78,7 @@ const GameChallengeEdit: FC = () => {
         ])
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
-        })
+        showErrorNotification(err)
       })
       .finally(() => {
         setDisabled(false)

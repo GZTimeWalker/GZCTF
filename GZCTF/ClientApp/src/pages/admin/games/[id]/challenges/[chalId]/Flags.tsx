@@ -29,6 +29,7 @@ import AttachmentUploadModal, {
 import FlagCreateModal from '../../../../../../components/admin/FlagCreateModal'
 import FlagEditPanel from '../../../../../../components/admin/FlagEditPanel'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
+import { showErrorNotification } from '../../../../../../utils/ApiErrorHandler'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],
@@ -81,13 +82,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           })
       })
       .catch((err) =>
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
-        })
+        showErrorNotification(err)
       )
       .finally(() => {
         setDisabled(false)
@@ -137,13 +132,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               })
             })
             .catch((err) =>
-              showNotification({
-                color: 'red',
-                title: '遇到了问题',
-                message: `${err.error.title}`,
-                icon: <Icon path={mdiClose} size={1} />,
-                disallowClose: true,
-              })
+              showErrorNotification(err)
             )
             .finally(() => {
               setDisabled(false)
@@ -151,13 +140,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         }
       })
       .catch((err) =>
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
-        })
+        showErrorNotification(err)
       )
       .finally(() => {
         setDisabled(false)
@@ -181,13 +164,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           })
         })
         .catch((err) =>
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-            disallowClose: true,
-          })
+          showErrorNotification(err)
         )
         .finally(() => {
           setDisabled(false)
@@ -431,13 +408,7 @@ const GameChallengeEdit: FC = () => {
           })
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
-        })
+        showErrorNotification(err)
       })
   }
 

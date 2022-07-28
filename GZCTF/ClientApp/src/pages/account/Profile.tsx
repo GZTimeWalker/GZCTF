@@ -23,6 +23,7 @@ import { Icon } from '@mdi/react'
 import api, { ProfileUpdateModel } from '../../Api'
 import PasswordChangeModal from '../../components/PasswordChangeModal'
 import WithNavBar from '../../components/WithNavbar'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -76,12 +77,7 @@ const Profile: FC = () => {
           setDropzoneOpened(false)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
           setDropzoneOpened(false)
         })
     }
@@ -101,12 +97,7 @@ const Profile: FC = () => {
         mutate({ ...data })
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
   }
 
@@ -127,12 +118,7 @@ const Profile: FC = () => {
           setMailEditOpened(false)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
     }
   }

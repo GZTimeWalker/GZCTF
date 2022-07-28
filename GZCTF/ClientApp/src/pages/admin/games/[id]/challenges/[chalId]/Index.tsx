@@ -26,6 +26,7 @@ import {
 } from '../../../../../../components/ChallengeItem'
 import ScoreFunc from '../../../../../../components/admin/ScoreFunc'
 import WithGameTab from '../../../../../../components/admin/WithGameTab'
+import { showErrorNotification } from '../../../../../../utils/ApiErrorHandler'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -74,12 +75,7 @@ const GameChallengeEdit: FC = () => {
           api.edit.mutateEditGetGameChallenges(numId)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
         .finally(() => {
           setDisabled(false)
@@ -101,12 +97,7 @@ const GameChallengeEdit: FC = () => {
         navigate(`/admin/games/${id}/challenges`)
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
       })
       .finally(() => {
         setDisabled(false)

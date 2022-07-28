@@ -29,6 +29,7 @@ import {
 import { Icon } from '@mdi/react'
 import api, { ParticipationInfoModel, ParticipationStatus } from '../../../../Api'
 import WithGameTab from '../../../../components/admin/WithGameTab'
+import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
 const StatusMap = new Map([
   [
@@ -156,12 +157,7 @@ const GameTeamReview: FC = () => {
         disallowClose: true,
       })
     } catch (err: any) {
-      showNotification({
-        color: 'red',
-        title: '遇到了问题',
-        message: `${err.response.data.title}`,
-        icon: <Icon path={mdiClose} size={1} />,
-      })
+      showErrorNotification(err)
     } finally {
       setDisabled(false)
     }

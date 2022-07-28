@@ -7,6 +7,7 @@ import { Icon } from '@mdi/react'
 import api, { GameDetailModel } from '../../../Api'
 import LogoHeader from '../../../components/LogoHeader'
 import WithNavBar from '../../../components/WithNavbar'
+import { showErrorNotification } from '../../../utils/ApiErrorHandler'
 
 const GameDetail: FC = () => {
   const { id } = useParams()
@@ -22,12 +23,7 @@ const GameDetail: FC = () => {
         console.log(data.data)
       })
       .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+        showErrorNotification(err)
 
         if (err.status === 404) {
           navigate('/games')

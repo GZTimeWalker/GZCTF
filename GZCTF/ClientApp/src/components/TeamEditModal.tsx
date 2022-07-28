@@ -25,6 +25,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel, TeamUserInfoModel } from '../Api'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -105,12 +106,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           api.team.mutateTeamGetTeamsInfo()
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
         .finally(() => {
           setLeaveOpened(false)
@@ -135,12 +131,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           setTeamInfo(data.data)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
         .finally(() => {
           setKickUserOpened(false)
@@ -162,12 +153,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           })
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
     }
   }
@@ -191,12 +177,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           setDropzoneOpened(false)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
           setDropzoneOpened(false)
         })
     }
@@ -218,12 +199,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           api.team.mutateTeamGetTeamsInfo()
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
         })
     }
   }
