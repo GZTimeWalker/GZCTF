@@ -15,7 +15,6 @@ public class Team
     /// </summary>
     [Required]
     [MaxLength(16)]
-    [RegularExpression("[0-9A-Za-z]+")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
