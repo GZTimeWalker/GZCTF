@@ -98,17 +98,13 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
                 props.onClose()
                 api.edit.mutateEditGetGameChallenge(numId, numCId)
               })
-              .catch((err) =>
-                showErrorNotification(err)
-              )
+              .catch((err) => showErrorNotification(err))
               .finally(() => {
                 setDisabled(false)
               })
           }
         })
-        .catch((err) =>
-          showErrorNotification(err)
-        )
+        .catch((err) => showErrorNotification(err))
         .finally(() => {
           setDisabled(false)
         })

@@ -6,8 +6,8 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '../Api'
-import StrengthPasswordInput from './StrengthPasswordInput'
 import { showErrorNotification } from '../utils/ApiErrorHandler'
+import StrengthPasswordInput from './StrengthPasswordInput'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {
   const [oldPwd, setOldPwd] = useInputState('')

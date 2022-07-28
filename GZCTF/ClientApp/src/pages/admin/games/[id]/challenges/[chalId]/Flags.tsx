@@ -81,9 +81,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             attachment: null,
           })
       })
-      .catch((err) =>
-        showErrorNotification(err)
-      )
+      .catch((err) => showErrorNotification(err))
       .finally(() => {
         setDisabled(false)
       })
@@ -131,17 +129,13 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 disallowClose: true,
               })
             })
-            .catch((err) =>
-              showErrorNotification(err)
-            )
+            .catch((err) => showErrorNotification(err))
             .finally(() => {
               setDisabled(false)
             })
         }
       })
-      .catch((err) =>
-        showErrorNotification(err)
-      )
+      .catch((err) => showErrorNotification(err))
       .finally(() => {
         setDisabled(false)
       })
@@ -163,9 +157,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             disallowClose: true,
           })
         })
-        .catch((err) =>
-          showErrorNotification(err)
-        )
+        .catch((err) => showErrorNotification(err))
         .finally(() => {
           setDisabled(false)
         })

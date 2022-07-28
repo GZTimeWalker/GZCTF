@@ -6,13 +6,13 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '../../Api'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 import {
   ChallengeTagItem,
   ChallengeTagLabelMap,
   ChallengeTypeItem,
   ChallengeTypeLabelMap,
 } from '../ChallengeItem'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void

@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Badge,
   Card,
@@ -14,7 +15,6 @@ import {
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { BasicGameInfoModel } from '../Api'
-import { Link } from 'react-router-dom'
 
 export enum GameStatus {
   Coming = 'coming',
@@ -64,9 +64,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
         {poster ? (
           <Image src={poster} height={160} alt="poster" />
         ) : (
-          <Center
-            style={{ height: 160 }}
-          >
+          <Center style={{ height: 160 }}>
             <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
           </Center>
         )}

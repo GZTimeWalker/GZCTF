@@ -36,7 +36,8 @@ const GameChallengeEdit: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const filteredChallenges = category && challenges ? challenges?.filter((c) => c.tag === category) : challenges
+  const filteredChallenges =
+    category && challenges ? challenges?.filter((c) => c.tag === category) : challenges
   filteredChallenges?.sort((a, b) => ((a.tag ?? '') > (b.tag ?? '') ? -1 : 1))
 
   const modals = useModals()
