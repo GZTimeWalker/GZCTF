@@ -33,12 +33,21 @@ jobs:
             ${{ github.ref_name }}
             ${{ github.sha }}
 
-      - name: Delete Old Package
-        uses: actions/delete-package-versions@v2.0.1
+      - name: Prune old packages
+        uses: vlaurin/action-ghcr-prune@v0.4.0
         with:
-            package-name: 'gzctf/gzctf'
-            ignore-versions: '^(0|[1-9]\\d*)\\.0\\.0$'
-            min-versions-to-keep: 5
+          token: ${{ secrets.PACKAGE_TOKEN }}
+          container: "gzctf/gzctf"
+          dry-run: false
+          tag-regex: ^[0-9a-f]{40}
+          keep-tags: |
+            latest
+            main
+            develop
+          keep-tags-regexes:
+            ^v(.)*
+          keep-last: 5
+          untagged: true
       
-      - name: Print Full Image URL
+      - name: Print full Image URL
         run: echo ${{ steps.publish.outputs.imageURL }}:${{ github.sha }}
