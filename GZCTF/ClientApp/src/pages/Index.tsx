@@ -48,10 +48,14 @@ const Home: FC = () => {
     revalidateOnFocus: false,
   })
 
+  console.log(allGames)
   allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
 
   const now = new Date()
-  const recentGames = allGames?.filter((g) => now < new Date(g.end ?? '')).slice(0, 3)
+  const recentGames = [
+    ...(allGames?.filter((g) => now < new Date(g.end ?? '')).slice(0, 3) ?? []),
+    ...allGames?.filter((g) => now >= new Date(g.end ?? '')).reverse() ?? [],
+  ].slice(0,3)
 
   const { classes, theme } = useStyles()
 

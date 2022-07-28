@@ -246,6 +246,7 @@ public class EditController : Controller
 
         game.PosterHash = poster.Hash;
         await gameRepository.UpdateAsync(game, token);
+        gameRepository.FlushGameInfoCache();
 
         return Ok(poster.Url());
     }
