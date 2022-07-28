@@ -30,7 +30,6 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
 
   const onCreate = () => {
     if (title && tag && type) {
-      console.log(title, tag, type)
       setDisabled(true)
       const numId = parseInt(id ?? '-1')
 

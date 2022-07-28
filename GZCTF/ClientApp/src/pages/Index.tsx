@@ -48,7 +48,6 @@ const Home: FC = () => {
     revalidateOnFocus: false,
   })
 
-  console.log(allGames)
   allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
 
   const now = new Date()

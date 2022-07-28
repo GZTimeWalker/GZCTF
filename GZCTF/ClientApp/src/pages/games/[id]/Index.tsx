@@ -17,7 +17,6 @@ const GameDetail: FC = () => {
       .gameGames(parseInt(id!))
       .then((data) => {
         setGame(data.data)
-        console.log(data.data)
       })
       .catch((err) => {
         showErrorNotification(err)
