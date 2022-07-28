@@ -2,41 +2,137 @@ import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Accordion,
+  ActionIcon,
   Avatar,
   Badge,
   Box,
   Button,
   Group,
+  MantineColor,
   Paper,
+  Popover,
   Select,
+  Stack,
   Text,
   TextProps,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck, mdiClose, mdiCrown } from '@mdi/js'
+import {
+  mdiBackburger,
+  mdiCancel,
+  mdiCheck,
+  mdiClose,
+  mdiCrown,
+  mdiHelpCircleOutline,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ParticipationInfoModel, ParticipationStatus } from '../../../../Api'
 import WithGameTab from '../../../../components/admin/WithGameTab'
 
-interface LaodingInfo {
-  id: number
-  status: ParticipationStatus
+const StatusMap = new Map([
+  [
+    ParticipationStatus.Pending,
+    {
+      title: '待审核',
+      color: 'yellow',
+      iconPath: mdiHelpCircleOutline,
+      transformTo: [ParticipationStatus.Accepted, ParticipationStatus.Denied],
+    },
+  ],
+  [
+    ParticipationStatus.Accepted,
+    {
+      title: '审核通过',
+      color: 'green',
+      iconPath: mdiCheck,
+      transformTo: [ParticipationStatus.Forfeited],
+    },
+  ],
+  [
+    ParticipationStatus.Denied,
+    { title: '审核不通过', color: 'red', iconPath: mdiClose, transformTo: [] },
+  ],
+  [
+    ParticipationStatus.Forfeited,
+    {
+      title: '禁赛',
+      color: 'alert',
+      iconPath: mdiCancel,
+      transformTo: [ParticipationStatus.Accepted],
+    },
+  ],
+])
+
+interface ActionIconWithConfirmProps {
+  iconPath: string
+  color?: MantineColor
+  message: string
+  disabled?: boolean
+  onClick: () => Promise<any>
 }
 
-const StatusMap = new Map([
-  [ParticipationStatus.Pending, { title: '已报名', color: 'yellow' }],
-  [ParticipationStatus.Accepted, { title: '已接受', color: 'green' }],
-  [ParticipationStatus.Denied, { title: '已拒绝', color: 'red' }],
-  [ParticipationStatus.Forfeited, { title: '已禁赛', color: 'alert' }],
-])
+const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
+  const [opened, setOpened] = useState(false)
+  const [loading, setLoading] = useState(false)
+  return (
+    <Popover
+      shadow="md"
+      width="max-content"
+      withArrow
+      position="top"
+      opened={opened}
+      onChange={setOpened}
+    >
+      <Popover.Target>
+        <ActionIcon
+          onClick={() => setOpened(true)}
+          disabled={props.disabled && !loading}
+          loading={loading}
+        >
+          <Icon path={props.iconPath} color={props.color} size={1} />
+        </ActionIcon>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <Stack align="center">
+          <Text size="sm">{props.message}</Text>
+          <Group>
+            <Button
+              size="xs"
+              color={props.color}
+              disabled={props.disabled && !loading}
+              loading={loading}
+              onClick={() => {
+                setLoading(true)
+                props.onClick().finally(() => {
+                  setLoading(false)
+                  setOpened(false)
+                })
+              }}
+            >
+              确定
+            </Button>
+            <Button
+              size="xs"
+              variant="outline"
+              onClick={() => setOpened(false)}
+              disabled={props.disabled}
+            >
+              取消
+            </Button>
+          </Group>
+        </Stack>
+      </Popover.Dropdown>
+    </Popover>
+  )
+}
 
 const GameTeamReview: FC = () => {
   const navigate = useNavigate()
   const theme = useMantineTheme()
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const [loading, setLoading] = useState<LaodingInfo | null>(null)
+  const [disabled, setDisabled] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
 
@@ -45,50 +141,31 @@ const GameTeamReview: FC = () => {
     sx: { fontFamily: theme.fontFamilyMonospace },
   }
 
-  const shouldLoading = (participation: ParticipationInfoModel, status: ParticipationStatus) =>
-    loading?.id === participation.id && loading?.status === status
-  const shouldDisabled = (participation: ParticipationInfoModel, status: ParticipationStatus) =>
-    participation.status === status || (!!loading && !shouldLoading(participation, status))
-
-  const setParticipationStatus = (id: number, status: ParticipationStatus) => {
-    setLoading({ id, status })
-    api.admin
-      .adminParticipation(id, status)
-      .then(() => {
-        setParticipations(
-          participations?.map((value) => {
-            if (value.id === id) {
-              return { ...value, status }
-            } else {
-              return value
-            }
-          })
-        )
-        showNotification({
-          color: 'teal',
-          title: '操作成功',
-          message: '参与状态已更新',
-          icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
-        })
+  const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
+    setDisabled(true)
+    try {
+      await api.admin.adminParticipation(id, status)
+      setParticipations(
+        participations?.map((value) => (value.id === id ? { ...value, status } : value))
+      )
+      showNotification({
+        color: 'teal',
+        title: '操作成功',
+        message: '参与状态已更新',
+        icon: <Icon path={mdiCheck} size={1} />,
+        disallowClose: true,
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+    } catch (err: any) {
+      showNotification({
+        color: 'red',
+        title: '遇到了问题',
+        message: `${err.response.data.title}`,
+        icon: <Icon path={mdiClose} size={1} />,
       })
-      .finally(() => {
-        setLoading(null)
-      })
+    } finally {
+      setDisabled(false)
+    }
   }
-
-  const onAccept = (participation: ParticipationInfoModel) =>
-    setParticipationStatus(participation.id!, ParticipationStatus.Accepted)
-  const onDeny = (participation: ParticipationInfoModel) =>
-    setParticipationStatus(participation.id!, ParticipationStatus.Denied)
 
   useEffect(() => {
     if (numId < 0) {
@@ -147,27 +224,25 @@ const GameTeamReview: FC = () => {
                         </Box>
                       </Group>
                     </Accordion.Control>
-                    <Group noWrap p="md">
+                    <Group p="md" position="apart" sx={{ width: '300px' }}>
                       <Badge color={StatusMap.get(participation.status!)?.color}>
                         {StatusMap.get(participation.status!)?.title}
                       </Badge>
-                      <Button
-                        leftIcon={<Icon path={mdiCheck} size={1} />}
-                        onClick={() => onAccept(participation)}
-                        disabled={shouldDisabled(participation, ParticipationStatus.Accepted)}
-                        loading={shouldLoading(participation, ParticipationStatus.Accepted)}
-                      >
-                        接受
-                      </Button>
-                      <Button
-                        leftIcon={<Icon path={mdiClose} size={1} />}
-                        color="red"
-                        onClick={() => onDeny(participation)}
-                        disabled={shouldDisabled(participation, ParticipationStatus.Denied)}
-                        loading={shouldLoading(participation, ParticipationStatus.Denied)}
-                      >
-                        拒绝
-                      </Button>
+                      <Group>
+                        {StatusMap.get(participation.status!)?.transformTo.map((value) => {
+                          const s = StatusMap.get(value)!
+                          return (
+                            <ActionIconWithConfirm
+                              key={`${participation.id}@${value}`}
+                              iconPath={s.iconPath}
+                              color={s.color}
+                              message={`确定要设为“${s.title}”吗？`}
+                              disabled={disabled}
+                              onClick={() => setParticipationStatus(participation.id!, value)}
+                            />
+                          )
+                        })}
+                      </Group>
                     </Group>
                   </Box>
                   <Accordion.Panel>
@@ -185,9 +260,11 @@ const GameTeamReview: FC = () => {
                             </Text>
                           </Box>
                         </Group>
-                        {participation.team?.captainId === user.userId && (
-                          <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />
-                        )}
+                        <Box style={{ width: '1.5rem' }}>
+                          {participation.team?.captainId === user.userId && (
+                            <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />
+                          )}
+                        </Box>
                         <Text {...fieldProps}>{!user.email ? '未填写邮箱' : user.email}</Text>
                         <Text {...fieldProps}>{!user.phone ? '未填写手机号码' : user.phone}</Text>
                       </Group>
