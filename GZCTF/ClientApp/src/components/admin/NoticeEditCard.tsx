@@ -9,22 +9,23 @@ import {
   Title,
   useMantineTheme,
   TypographyStylesProvider,
+  PaperProps,
 } from '@mantine/core'
 import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Notice } from '../../Api'
 
-interface NoticeEditCardProps {
+interface NoticeEditCardProps extends PaperProps {
   notice: Notice
   onDelete: () => void
   onEdit: () => void
   onPin: () => void
 }
 
-const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onPin }) => {
+const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onPin, ...props }) => {
   const theme = useMantineTheme()
   return (
-    <Card shadow="sm" p="lg">
+    <Card shadow="sm" p="lg" {...props}>
       <Stack>
         <Group position="apart">
           <Group position="left">

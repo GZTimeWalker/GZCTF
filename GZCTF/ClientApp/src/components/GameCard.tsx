@@ -1,8 +1,8 @@
 import { FC } from 'react'
 import {
   Badge,
-  Box,
   Card,
+  Center,
   Group,
   Image,
   MantineColor,
@@ -14,6 +14,7 @@ import {
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { BasicGameInfoModel } from '../Api'
+import { Link } from 'react-router-dom'
 
 export enum GameStatus {
   Coming = 'coming',
@@ -29,7 +30,6 @@ export const GameColorMap = new Map<GameStatus, MantineColor>([
 
 interface GameCardProps {
   game: BasicGameInfoModel
-  onClick?: () => void
 }
 
 export const getGameStatus = (start: Date, end: Date) => {
@@ -51,8 +51,9 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
     <Card
       {...others}
       shadow="sm"
+      component={Link}
+      to={`/games/${game.id}`}
       sx={(theme) => ({
-        cursor: 'pointer',
         transition: 'filter .2s',
         '&:hover': {
           filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
@@ -63,11 +64,11 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
         {poster ? (
           <Image src={poster} height={160} alt="poster" />
         ) : (
-          <Box
-            style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          <Center
+            style={{ height: 160 }}
           >
             <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
-          </Box>
+          </Center>
         )}
       </Card.Section>
 

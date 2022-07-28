@@ -91,6 +91,7 @@ const Notices: FC = () => {
     >
       <Stack
         spacing="lg"
+        align="center"
         style={{
           margin: '2%',
         }}
@@ -110,6 +111,7 @@ const Notices: FC = () => {
                 }}
                 onDelete={() => onDeleteNotice(notice)}
                 onPin={() => onPin(notice)}
+                style={{ width: '80%' }}
               />
             ))}
         <NoticeEditModal

@@ -17,7 +17,7 @@ const NoticeCard: FC<Notice> = (notice) => {
   const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]
 
   return (
-    <Card shadow="sm" p="lg" style={{ width: '80%' }}>
+    <Card shadow="sm" p="lg">
       <Blockquote
         color={secondaryColor}
         cite={
