@@ -1125,17 +1125,43 @@ export interface ParticipationInfoModel {
    */
   id?: number
 
-  /** 参与队伍 */
-  team?: TeamInfoModel
-
   /**
    * 队伍分值
    * @format int32
    */
   score?: number
 
+  /** 参与队伍 */
+  team?: TeamWithDetailedUserInfo
+
   /** 参与状态 */
   status?: ParticipationStatus
+}
+
+/**
+ * 比赛队伍详细信息，用于审核查看（Admin）
+ */
+export interface TeamWithDetailedUserInfo {
+  /**
+   * 队伍 Id
+   * @format int32
+   */
+  id?: number
+
+  /** 队伍名称 */
+  name?: string | null
+
+  /** 队伍签名 */
+  bio?: string | null
+
+  /** 头像链接 */
+  avatar?: string | null
+
+  /** 是否锁定 */
+  locked?: boolean
+
+  /** 队伍成员 */
+  members?: ProfileUserInfoModel[] | null
 }
 
 /**
@@ -2755,15 +2781,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛参与信息
      * @request GET:/api/game/{id}/participations
      */
-    gameParticipations: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      params: RequestParams = {}
-    ) =>
+    gameParticipations: (id: number, params: RequestParams = {}) =>
       this.request<ParticipationInfoModel[], RequestResponse>({
         path: `/api/game/${id}/participations`,
         method: 'GET',
-        query: query,
         format: 'json',
         ...params,
       }),
@@ -2775,15 +2796,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛参与信息
      * @request GET:/api/game/{id}/participations
      */
-    useGameParticipations: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) =>
-      useSWR<ParticipationInfoModel[], RequestResponse>(
-        [`/api/game/${id}/participations`, query],
-        options
-      ),
+    useGameParticipations: (id: number, options?: SWRConfiguration) =>
+      useSWR<ParticipationInfoModel[], RequestResponse>(`/api/game/${id}/participations`, options),
 
     /**
      * @description 获取比赛的全部题目参与信息，需要Admin权限
@@ -2795,10 +2809,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameParticipations: (
       id: number,
-      query?: { count?: number; skip?: number },
       data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<ParticipationInfoModel[]>([`/api/game/${id}/participations`, query], data, options),
+    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
 
     /**
      * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名

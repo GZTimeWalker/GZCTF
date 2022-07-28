@@ -281,25 +281,23 @@ public class GameController : ControllerBase
     /// 获取比赛的全部题目参与信息，需要Admin权限
     /// </remarks>
     /// <param name="id">比赛id</param>
-    /// <param name="count"></param>
-    /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛参与信息</response>
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireAdmin]
     [HttpGet("{id}/Participations")]
-    [ProducesResponseType(typeof(IEnumerable<ParticipationInfoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ParticipationInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Participations([FromRoute] int id, [FromQuery] int count = 20, [FromQuery] int skip = 0, CancellationToken token = default)
+    public async Task<IActionResult> Participations([FromRoute] int id, CancellationToken token = default)
     {
         var context = await GetContextInfo(id, token);
 
         if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
 
-        return Ok((await participationRepository.GetParticipations(context.Game!, count, skip, token))
+        return Ok((await participationRepository.GetParticipations(context.Game!, token))
                     .Select(p => ParticipationInfoModel.FromParticipation(p)));
     }
 

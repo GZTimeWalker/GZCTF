@@ -15,11 +15,9 @@ public interface IParticipationRepository : IRepository
     /// 获取比赛的全部参与对象
     /// </summary>
     /// <param name="game">比赛对象</param>
-    /// <param name="count"></param>
-    /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Participation[]> GetParticipations(Game game, int count = 20, int skip = 0, CancellationToken token = default);
+    public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default);
 
     /// <summary>
     /// 通过 Id 更改参与状态
