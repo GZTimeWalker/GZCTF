@@ -83,9 +83,7 @@ const Teams: FC = () => {
           })
         }
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setJoinTeamCode('')
         setJoinOpened(false)

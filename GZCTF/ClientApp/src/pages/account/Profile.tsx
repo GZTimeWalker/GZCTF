@@ -96,9 +96,7 @@ const Profile: FC = () => {
         })
         mutate({ ...data })
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
   }
 
   const onChangeEmail = () => {
@@ -117,9 +115,7 @@ const Profile: FC = () => {
           })
           setMailEditOpened(false)
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
     }
   }
 

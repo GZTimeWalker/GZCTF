@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '../../Api'
 import {

@@ -69,9 +69,7 @@ const Notices: FC = () => {
         })
         mutate(notices?.filter((t) => t.id !== notice.id) ?? [])
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
   }
 
   return (

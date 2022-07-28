@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiLockOutline, mdiPower, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel } from '../Api'
 import { showErrorNotification } from '../utils/ApiErrorHandler'
@@ -53,9 +53,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           })
           mutateActive && mutateActive()
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setCardClickable(true)
         })

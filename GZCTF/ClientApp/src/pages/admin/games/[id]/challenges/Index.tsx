@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
@@ -81,9 +81,7 @@ const GameChallengeEdit: FC = () => {
           { ...challenge, isEnabled: !challenge.isEnabled },
         ])
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setDisabled(false)
       })

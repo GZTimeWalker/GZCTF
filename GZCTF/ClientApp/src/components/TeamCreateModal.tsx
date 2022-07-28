@@ -41,9 +41,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
         api.team.mutateTeamGetTeamsInfo()
         mutateActive(res.data.id!)
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         modalProps.onClose()
       })

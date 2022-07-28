@@ -6,7 +6,7 @@ import NoticeCard from '../components/NoticeCard'
 import WithNavBar from '../components/WithNavbar'
 
 const Home: FC = () => {
-  const { data } = api.info.useInfoGetNotices({
+  const { data: notices } = api.info.useInfoGetNotices({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -16,7 +16,8 @@ const Home: FC = () => {
     <WithNavBar>
       <Stack align="center">
         <LogoHeader />
-        {data?.map((notice) => (
+
+        {notices?.map((notice) => (
           <NoticeCard key={notice.id} {...notice} />
         ))}
       </Stack>

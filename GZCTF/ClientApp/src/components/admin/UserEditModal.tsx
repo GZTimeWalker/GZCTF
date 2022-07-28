@@ -67,9 +67,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         mutateUser({ ...activeUser, ...profile })
         modalProps.onClose()
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setDisabled(false)
       })

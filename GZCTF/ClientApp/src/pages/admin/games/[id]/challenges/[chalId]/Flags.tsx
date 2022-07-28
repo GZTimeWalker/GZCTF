@@ -407,9 +407,7 @@ const GameChallengeEdit: FC = () => {
             flags: challenge.flags.filter((f) => f.id !== id),
           })
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
   }
 
   return (

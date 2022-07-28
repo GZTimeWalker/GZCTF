@@ -74,9 +74,7 @@ const GameChallengeEdit: FC = () => {
           mutate(data.data)
           api.edit.mutateEditGetGameChallenges(numId)
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setDisabled(false)
         })
@@ -96,9 +94,7 @@ const GameChallengeEdit: FC = () => {
         api.edit.mutateEditGetGameChallenges(numId)
         navigate(`/admin/games/${id}/challenges`)
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setDisabled(false)
       })

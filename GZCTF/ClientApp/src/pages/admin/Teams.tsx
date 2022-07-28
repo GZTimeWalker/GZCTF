@@ -60,9 +60,7 @@ const Teams: FC = () => {
       .then((res) => {
         setTeams(res.data)
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setSearching(false)
       })

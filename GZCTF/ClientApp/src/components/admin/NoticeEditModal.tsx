@@ -60,9 +60,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           mutateNotice(data.data)
           modalProps.onClose()
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setDisabled(false)
         })
@@ -82,9 +80,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
           mutateNotice(data.data)
           modalProps.onClose()
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setDisabled(false)
         })

@@ -105,9 +105,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           })
           api.team.mutateTeamGetTeamsInfo()
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setLeaveOpened(false)
           props.onClose()
@@ -130,9 +128,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           api.team.mutateTeamGetTeamsInfo()
           setTeamInfo(data.data)
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setKickUserOpened(false)
         })
@@ -152,9 +148,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             disallowClose: true,
           })
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
     }
   }
 
@@ -198,9 +192,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           })
           api.team.mutateTeamGetTeamsInfo()
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
     }
   }
 

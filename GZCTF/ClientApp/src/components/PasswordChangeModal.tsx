@@ -41,9 +41,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           api.account.accountLogOut()
           navigate('/account/login')
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
     } else {
       showNotification({
         color: 'red',

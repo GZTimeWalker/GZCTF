@@ -26,9 +26,7 @@ const Recovery: FC = () => {
           disallowClose: true,
         })
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
   }
 
   return (

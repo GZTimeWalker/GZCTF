@@ -78,9 +78,7 @@ const Users: FC = () => {
       .then((res) => {
         setUsers(res.data)
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setSearching(false)
       })
@@ -100,9 +98,7 @@ const Users: FC = () => {
         })
         setUsers(users?.filter((t) => t.id !== user.id) ?? [])
       })
-      .catch((err) => {
-        showErrorNotification(err)
-      })
+      .catch(showErrorNotification)
   }
 
   const onDeleteUser = (user: UserInfoModel) => {

@@ -79,9 +79,7 @@ const GameInfoEdit: FC = () => {
           })
           setGame({ ...game, poster: res.data })
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
     }
   }
 
@@ -103,9 +101,7 @@ const GameInfoEdit: FC = () => {
           })
           api.game.mutateGameGamesAll()
         })
-        .catch((err) => {
-          showErrorNotification(err)
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setDisabled(false)
         })
