@@ -17,8 +17,9 @@ const useStyles = createStyles((theme) => ({
     right: 0,
     paddingTop: 10,
     flex: `0 0 240px`,
+    minWidth: 250,
 
-    [`@media (max-width: 1080px)`]: {
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
       display: 'none',
     },
   },
@@ -74,7 +75,7 @@ const Home: FC = () => {
           </Title>
         </Group>
         <Grid style={{ width: '100%' }}>
-          <Grid.Col lg={recentGames.length > 0 ? 9 : 12} md={6}>
+          <Grid.Col span={12} md={recentGames.length > 0 ? 9 : 12}>
             <Stack>
               {notices?.map((notice) => (
                 <NoticeCard key={notice.id} {...notice} />
@@ -82,7 +83,7 @@ const Home: FC = () => {
             </Stack>
           </Grid.Col>
           {recentGames.length > 0 &&
-            <Grid.Col lg={3} md={6}>
+            <Grid.Col span={12} md={3}>
               <nav className={classes.wrapper}>
                 <div className={classes.inner}>
                   <Stack>
