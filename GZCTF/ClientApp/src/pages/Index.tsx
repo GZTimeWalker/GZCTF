@@ -74,28 +74,30 @@ const Home: FC = () => {
           </Title>
         </Group>
         <Grid style={{ width: '100%' }}>
-          <Grid.Col lg={9} md={6}>
+          <Grid.Col lg={recentGames.length > 0 ? 9 : 12} md={6}>
             <Stack>
               {notices?.map((notice) => (
                 <NoticeCard key={notice.id} {...notice} />
               ))}
             </Stack>
           </Grid.Col>
-          <Grid.Col lg={3} md={6}>
-            <nav className={classes.wrapper}>
-              <div className={classes.inner}>
-                <Stack>
-                  <Group>
-                    <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
-                    <Title order={3}>近期活动</Title>
-                  </Group>
-                  {recentGames?.map((game) => (
-                    <RecentGame key={game.id} game={game} />
-                  ))}
-                </Stack>
-              </div>
-            </nav>
-          </Grid.Col>
+          {recentGames.length > 0 &&
+            <Grid.Col lg={3} md={6}>
+              <nav className={classes.wrapper}>
+                <div className={classes.inner}>
+                  <Stack>
+                    <Group>
+                      <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
+                      <Title order={3}>近期活动</Title>
+                    </Group>
+                    {recentGames?.map((game) => (
+                      <RecentGame key={game.id} game={game} />
+                    ))}
+                  </Stack>
+                </div>
+              </nav>
+            </Grid.Col>
+          }
         </Grid>
       </Stack>
     </WithNavBar>
