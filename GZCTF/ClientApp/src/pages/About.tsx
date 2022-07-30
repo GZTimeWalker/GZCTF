@@ -4,7 +4,11 @@ import LogoHeader from '../components/LogoHeader'
 import WithNavBar from '../components/WithNavbar'
 import MainIcon from '../components/icon/MainIcon'
 
-const MODULE_LOAD_DATE = new Date()
+const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
+const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'develop'
+const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23T12:00:00+08:00'
+const builtdate = import.meta.env.DEV ? new Date() : new Date(timestamp)
+
 const dateTimeFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'long', timeStyle: 'long' })
 
 const useStyles = createStyles((theme) => ({
@@ -14,10 +18,6 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const About: FC = () => {
-  const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
-  const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'develop'
-  const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23T12:00:00+08:00'
-  const builtdate = import.meta.env.DEV ? MODULE_LOAD_DATE : new Date(timestamp)
   const { classes } = useStyles()
 
   return (
