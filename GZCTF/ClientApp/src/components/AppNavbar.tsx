@@ -64,7 +64,7 @@ const useStyles = createStyles((theme, _param, getRef) => {
           ? theme.fn.darken(theme.colors[theme.primaryColor][8], 0.45)
           : theme.colors[theme.primaryColor][6],
       color:
-        theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.gray[0],
+        theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : "#fff",
     },
 
     menuBody: {
