@@ -74,14 +74,14 @@ const Home: FC = () => {
           </Title>
         </Group>
         <Grid style={{ width: '100%' }}>
-          <Grid.Col span={9}>
+          <Grid.Col lg={9} md={6}>
             <Stack>
               {notices?.map((notice) => (
                 <NoticeCard key={notice.id} {...notice} />
               ))}
             </Stack>
           </Grid.Col>
-          <Grid.Col span={3}>
+          <Grid.Col lg={3} md={6}>
             <nav className={classes.wrapper}>
               <div className={classes.inner}>
                 <Stack>
@@ -90,7 +90,7 @@ const Home: FC = () => {
                     <Title order={3}>近期活动</Title>
                   </Group>
                   {recentGames?.map((game) => (
-                    <RecentGame game={game} />
+                    <RecentGame key={game.id} game={game} />
                   ))}
                 </Stack>
               </div>
