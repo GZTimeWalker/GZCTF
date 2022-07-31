@@ -103,14 +103,14 @@ const Teams: FC = () => {
             <Group position="right">
               <Button
                 leftIcon={<Icon path={mdiHumanGreetingVariant} size={1} />}
-                variant="outline"
+                variant={theme.colorScheme === 'dark' ? "outline" : "filled"}
                 onClick={() => setJoinOpened(true)}
               >
                 加入队伍
               </Button>
               <Button
                 leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
-                variant="outline"
+                variant={theme.colorScheme === 'dark' ? "outline" : "filled"}
                 onClick={() => setCreateOpened(true)}
               >
                 创建队伍
