@@ -30,7 +30,7 @@ const useStyles = createStyles((theme) => ({
     position: 'relative',
     height: '40vh',
     display: 'flex',
-    background: ` rgba(0,0,0,0.2)`,
+    background: theme.colorScheme === "dark" ? ` rgba(0,0,0,0.2)` : theme.white,
     justifyContent: 'center',
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
@@ -56,7 +56,7 @@ const useStyles = createStyles((theme) => ({
     maxWidth: 600,
   },
   title: {
-    color: theme.white,
+    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
     fontSize: 50,
     fontWeight: 900,
     lineHeight: 1.1,
@@ -78,6 +78,9 @@ const useStyles = createStyles((theme) => ({
       display: 'none',
     },
   },
+  date: {
+    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6]
+  }
 }))
 
 const GameAlertMap = new Map([
@@ -239,18 +242,18 @@ const GameDetail: FC = () => {
             <Title className={classes.title}>{game?.title}</Title>
             <Group>
               <Stack spacing={0}>
-                <Text size="sm" color="white">
+                <Text size="sm" className={classes.date}>
                   开始时间
                 </Text>
-                <Text size="sm" weight={700} color="white">
+                <Text size="sm" weight={700} className={classes.date}>
                   {startTime.format('HH:mm:ss, MMMM DD, YYYY')}
                 </Text>
               </Stack>
               <Stack spacing={0}>
-                <Text size="sm" color="white">
+                <Text size="sm" className={classes.date}>
                   结束时间
                 </Text>
-                <Text size="sm" weight={700} color="white">
+                <Text size="sm" weight={700} className={classes.date}>
                   {endTime.format('HH:mm:ss, MMMM DD, YYYY')}
                 </Text>
               </Stack>
