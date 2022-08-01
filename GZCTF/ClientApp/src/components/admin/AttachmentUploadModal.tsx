@@ -128,7 +128,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
         <ScrollArea offsetScrollbars sx={{ height: '40vh', position: 'relative' }}>
           {files.length === 0 ? (
             <>
-              <Overlay opacity={0.3} color="black" />
+              <Overlay opacity={0.3} color={theme.colorScheme === "dark" ? "black" : "white"} />
               <Center style={{ height: '40vh' }}>
                 <Stack spacing={0}>
                   <Title order={2}>你还没有选择任何文件</Title>

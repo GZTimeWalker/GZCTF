@@ -85,7 +85,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, c
             visible={isLoading ?? false}
             overlayOpacity={1}
             overlayColor={
-              theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.gray[0]
+              theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
             }
           />
           {children}

@@ -1,9 +1,9 @@
+import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Text, Stack, Badge, Group, HoverCard, Title, createStyles, Anchor } from '@mantine/core'
 import LogoHeader from '../components/LogoHeader'
 import WithNavBar from '../components/WithNavbar'
 import MainIcon from '../components/icon/MainIcon'
-import dayjs from 'dayjs'
 
 const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
 const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'develop'
@@ -13,6 +13,11 @@ const builtdate = dayjs(import.meta.env.DEV ? new Date() : new Date(timestamp))
 const useStyles = createStyles((theme) => ({
   brand: {
     color: theme.colors[theme.primaryColor][4],
+  },
+  title: {
+    marginLeft: '-20px',
+    marginBottom: '-5px',
+    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
   },
 }))
 
@@ -45,12 +50,7 @@ const About: FC = () => {
                 <Group>
                   <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
                   <Stack spacing="xs">
-                    <Title
-                      sx={{
-                        marginLeft: '-20px',
-                        marginBottom: '-5px',
-                      }}
-                    >
+                    <Title className={classes.title}>
                       GZ<span className={classes.brand}>::</span>CTF
                     </Title>
                     <Group sx={{ marginLeft: '-18px', marginTop: '-5px' }}>
@@ -80,7 +80,7 @@ const About: FC = () => {
                     color="dimmed"
                     sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
                   >
-                    {`built at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}`}
+                    built at {builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}
                   </Text>
                 </Group>
               </Stack>

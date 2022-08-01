@@ -262,7 +262,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       <ScrollArea sx={{ height: 'calc(100vh - 430px)', position: 'relative' }}>
         {challenge?.type === ChallengeType.DynamicContainer && (
           <>
-            <Overlay opacity={0.3} color="black" />
+            <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
             <Center style={{ height: 'calc(100vh - 430px)' }}>
               <Stack spacing={0}>
                 <Title order={2}>动态容器类型不需要配置 flag</Title>
@@ -273,7 +273,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         )}
         {!challenge?.flags.length && (
           <>
-            <Overlay opacity={0.3} color="black" />
+            <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
             <Center style={{ height: 'calc(100vh - 430px)' }}>
               <Stack spacing={0}>
                 <Title order={2}>flag 列表为空</Title>
@@ -302,6 +302,8 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
+  const theme = useMantineTheme()
+
   const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId, {
     refreshInterval: 0,
     revalidateIfStale: false,
@@ -324,7 +326,7 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
       <ScrollArea sx={{ height: 'calc(100vh - 250px)', position: 'relative' }}>
         {!challenge?.flags.length && (
           <>
-            <Overlay opacity={0.3} color="black" />
+            <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
             <Center style={{ height: 'calc(100vh - 250px)' }}>
               <Stack spacing={0}>
                 <Title order={2}>flag 列表为空</Title>
