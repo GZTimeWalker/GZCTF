@@ -22,7 +22,7 @@ const Verify: FC = () => {
           showNotification({
             color: 'teal',
             title: '账户已验证，请登录',
-            message: atob(email),
+            message: window.atob(email),
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -50,7 +50,7 @@ const Verify: FC = () => {
 
   return (
     <AccountView>
-      <Text>验证中……</Text>
+      <Text>验证中……${Buffer.from('', 'base64')}</Text>
     </AccountView>
   )
 }
