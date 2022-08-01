@@ -276,6 +276,7 @@ const GameTeamReview: FC = () => {
   return (
     <WithGameTab
       headProps={{ position: 'apart' }}
+      isLoading={!participations}
       head={
         <>
           <Button

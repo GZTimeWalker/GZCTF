@@ -18,7 +18,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiAlertCircle, mdiCheck, mdiFlagOutline } from '@mdi/js'
+import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ParticipationStatus } from '../../../Api'
 import WithNavBar from '../../../components/WithNavbar'
@@ -54,9 +54,61 @@ const useStyles = createStyles((theme) => ({
   },
   content: {
     minHeight: '100vh',
-    padding: '1rem 0'
+    padding: '1rem 0',
   },
 }))
+
+const GameAlertMap = new Map([
+  [
+    ParticipationStatus.Pending,
+    {
+      color: 'yellow',
+      icon: mdiTimerSand,
+      label: '您的队伍已成功报名',
+      content: '请耐心等待审核结果',
+    },
+  ],
+  [ParticipationStatus.Accepted, null],
+  [
+    ParticipationStatus.Denied,
+    {
+      color: 'red',
+      icon: mdiAlertCircle,
+      label: '您的参赛申请未通过',
+      content: '请确保参赛资格和要求后重新报名',
+    },
+  ],
+  [
+    ParticipationStatus.Forfeited,
+    {
+      color: 'red',
+      icon: mdiAlertCircle,
+      label: '您的队伍已被禁赛',
+      content: '如有异议，请联系管理员进行申诉',
+    },
+  ],
+  [ParticipationStatus.Unsubmitted, null],
+])
+
+const GameActionMap = new Map([
+  [ParticipationStatus.Pending, '等待审核'],
+  [ParticipationStatus.Accepted, '通过审核'],
+  [ParticipationStatus.Denied, '重新报名'],
+  [ParticipationStatus.Forfeited, '通过审核'],
+  [ParticipationStatus.Unsubmitted, '报名参赛'],
+])
+
+const GetAlert = (status: ParticipationStatus) => {
+  const data = GameAlertMap.get(status)
+  if (data) {
+    return (
+      <Alert color={data.color} icon={<Icon path={data.icon} />} title={data.label}>
+        {data.content}
+      </Alert>
+    )
+  }
+  return null
+}
 
 const GameDetail: FC = () => {
   const { id } = useParams()
@@ -75,11 +127,13 @@ const GameDetail: FC = () => {
 
   const startTime = dayjs(game?.start) ?? dayjs()
   const endTime = dayjs(game?.end) ?? dayjs()
+
   const duriation = endTime.diff(startTime, 'minute')
   const current = dayjs().diff(startTime, 'minute')
 
   const finished = current > duriation
-  const progress = finished ? 100 : current / duriation
+  const started = current > 0
+  const progress = started ? (finished ? 100 : current / duriation) : 0
 
   const { data: user } = api.account.useAccountProfile({
     refreshInterval: 0,
@@ -119,37 +173,34 @@ const GameDetail: FC = () => {
     user.ownTeamId &&
     user.activeTeamId === user.ownTeamId
 
-  const ControlButton = (
-    <Button
-      disabled={!canSubmit}
-      onClick={() => {
-        modals.openConfirmModal({
-          title: '确认报名',
-          children: (
-            <Stack spacing="xs">
-              <Text size="sm">你确定要报名此比赛吗？</Text>
-              <Text size="sm">
-                报名参赛后当前队伍将被锁定，不能再进行人员变动。即邀请、踢出队员。队伍将在比赛结束后或驳回请求时解锁。
-              </Text>
-            </Stack>
-          ),
-          onConfirm: onSubmit,
-          centered: true,
-          labels: { confirm: '确认报名', cancel: '取消' },
-          confirmProps: { color: 'brand' },
-        })
-      }}
-    >
-      {status === ParticipationStatus.Unsubmitted
-        ? '报名参赛'
-        : status === ParticipationStatus.Pending
-        ? '等待审核'
-        : status === ParticipationStatus.Accepted
-        ? '已经通过'
-        : status === ParticipationStatus.Denied
-        ? '重新报名'
-        : '报名成功'}
-    </Button>
+  const ControlButtons = (
+    <>
+      <Button
+        disabled={!canSubmit}
+        onClick={() => {
+          modals.openConfirmModal({
+            title: '确认报名',
+            children: (
+              <Stack spacing="xs">
+                <Text size="sm">你确定要报名此比赛吗？</Text>
+                <Text size="sm">
+                  报名参赛后当前队伍将被锁定，不能再进行人员变动。即邀请、踢出队员。队伍将在比赛结束后或驳回请求时解锁。
+                </Text>
+              </Stack>
+            ),
+            onConfirm: onSubmit,
+            centered: true,
+            labels: { confirm: '确认报名', cancel: '取消' },
+            confirmProps: { color: 'brand' },
+          })
+        }}
+      >
+        {finished ? '比赛结束' : GameActionMap.get(status)}
+      </Button>
+      {status === ParticipationStatus.Accepted && (
+        <Button onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</Button>
+      )}
+    </>
   )
 
   return (
@@ -176,8 +227,14 @@ const GameDetail: FC = () => {
                 </Text>
               </Stack>
             </Group>
-            <Progress size="xs" radius="xs" value={progress} />
-            <Group>{ControlButton}</Group>
+            <Progress
+              size="md"
+              radius="xs"
+              value={progress * 100}
+              animate={progress < 100}
+              color={progress < 100 ? 'brand' : 'yellow'}
+            />
+            <Group>{ControlButtons}</Group>
           </Stack>
           <Center style={{ width: '40%' }}>
             {game && game?.poster ? (
@@ -189,16 +246,8 @@ const GameDetail: FC = () => {
         </Group>
       </div>
       <Container className={classes.content}>
-        <Stack  spacing="xs">
-          {status === ParticipationStatus.Denied && (
-            <Alert
-              icon={<Icon path={mdiAlertCircle} size={1} />}
-              title="您的参赛申请未通过"
-              color="red"
-            >
-              请确保参赛资格和要求后重新报名
-            </Alert>
-          )}
+        <Stack spacing="xs">
+          {GetAlert(status)}
           <Group noWrap align="flex-start">
             <TypographyStylesProvider>
               <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
