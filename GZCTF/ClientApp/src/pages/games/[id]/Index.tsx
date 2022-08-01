@@ -34,6 +34,14 @@ const useStyles = createStyles((theme) => ({
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
     padding: `${theme.spacing.xl}px ${theme.spacing.xl * 4}px`,
+
+    [theme.fn.smallerThan('md')]: {
+      padding: `${theme.spacing.md}px ${theme.spacing.xl * 2}px`,
+    },
+
+    [theme.fn.smallerThan('sm')]: {
+      padding: `${theme.spacing.xs}px ${theme.spacing.xl}px`,
+    },
   },
   container: {
     position: 'relative',
@@ -51,10 +59,23 @@ const useStyles = createStyles((theme) => ({
     fontSize: 50,
     fontWeight: 900,
     lineHeight: 1.1,
+
+    [theme.fn.smallerThan('md')]: {
+      maxWidth: '100%',
+      fontSize: 34,
+      lineHeight: 1.15,
+    },
   },
   content: {
     minHeight: '100vh',
-    padding: '1rem 0',
+    paddingTop: '1rem',
+  },
+  banner: {
+    width: '40%',
+
+    [theme.fn.smallerThan('sm')]: {
+      display: 'none',
+    },
   },
 }))
 
@@ -121,6 +142,8 @@ const GameDetail: FC = () => {
     mutate,
   } = api.game.useGameGames(parseInt(id!), {
     refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
   })
 
   const { classes, theme } = useStyles()
@@ -236,7 +259,7 @@ const GameDetail: FC = () => {
             />
             <Group>{ControlButtons}</Group>
           </Stack>
-          <Center style={{ width: '40%' }}>
+          <Center className={classes.banner}>
             {game && game?.poster ? (
               <Image src={game.poster} alt="poster" />
             ) : (
