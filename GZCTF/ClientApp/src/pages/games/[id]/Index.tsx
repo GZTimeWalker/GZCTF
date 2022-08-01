@@ -15,6 +15,7 @@ import {
   Center,
   Progress,
   Alert,
+  Badge,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -230,6 +231,11 @@ const GameDetail: FC = () => {
       <div className={classes.root}>
         <Group noWrap position="apart" style={{ width: '100%' }} className={classes.container}>
           <Stack spacing="xs">
+            {(game?.limit ?? 0) > 0 && (
+              <Group>
+                <Badge variant="outline">{game?.limit} 人赛</Badge>
+              </Group>
+            )}
             <Title className={classes.title}>{game?.title}</Title>
             <Group>
               <Stack spacing={0}>
