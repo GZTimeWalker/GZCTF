@@ -100,7 +100,7 @@ const Games: FC = () => {
                         </Badge>
                         <Icon path={mdiChevronTripleRight} size={1} />
                         <Badge size="xs" color={color} variant="dot">
-                          {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
+                          {dayjs(endTime).format('YYYY-MM-DD HH:mm')}
                         </Badge>
                       </Group>
                     </td>

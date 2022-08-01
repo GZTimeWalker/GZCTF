@@ -172,6 +172,12 @@ export interface ProfileUserInfoModel {
    */
   activeTeamId?: number | null
 
+  /**
+   * 当前所有队伍
+   * @format int32
+   */
+  ownTeamId?: number | null
+
   /** 用户角色 */
   role?: Role | null
 }
@@ -1214,10 +1220,7 @@ export interface ClientFlagContext {
  * 队伍信息更新
  */
 export interface TeamUpdateModel {
-  /**
-   * 队伍名称
-   * @pattern [0-9A-Za-z]+
-   */
+  /** 队伍名称 */
   name?: string | null
 
   /** 队伍签名 */
