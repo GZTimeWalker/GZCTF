@@ -14,6 +14,7 @@ import api, { GameInfoModel } from '../../../Api'
 import { GameColorMap, getGameStatus } from '../../../components/GameCard'
 import AdminPage from '../../../components/admin/AdminPage'
 import GameCreateModal from '../../../components/admin/GameCreateModal'
+import dayjs from 'dayjs'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -95,11 +96,11 @@ const Games: FC = () => {
                     <td>
                       <Group spacing="xs">
                         <Badge size="xs" color={color} variant="dot">
-                          {startTime.toLocaleString()}
+                          {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
                         </Badge>
                         <Icon path={mdiChevronTripleRight} size={1} />
                         <Badge size="xs" color={color} variant="dot">
-                          {endTime.toLocaleString()}
+                          {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
                         </Badge>
                       </Group>
                     </td>
