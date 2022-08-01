@@ -1,31 +1,23 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Stack, Text, Title } from '@mantine/core'
-import api, { GameDetailModel } from '../../../Api'
+import api from '../../../Api'
 import LogoHeader from '../../../components/LogoHeader'
 import WithNavBar from '../../../components/WithNavbar'
 import { showErrorNotification } from '../../../utils/ApiErrorHandler'
 
 const GameDetail: FC = () => {
   const { id } = useParams()
-
-  const [game, setGame] = useState<GameDetailModel>()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    api.game
-      .gameGames(parseInt(id!))
-      .then((data) => {
-        setGame(data.data)
-      })
-      .catch((err) => {
-        showErrorNotification(err)
+  const { data: game, error } = api.game.useGameGames(parseInt(id!))
 
-        if (err.status === 404) {
-          navigate('/games')
-        }
-      })
-  }, [id])
+  useEffect(() => {
+    if (error) {
+      showErrorNotification(error)
+      navigate('/games')
+    }
+  }, [error])
 
   return (
     <WithNavBar>

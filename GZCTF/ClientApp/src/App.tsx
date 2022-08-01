@@ -13,7 +13,7 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
-import fetcher from './utils/Fetcher'
+import { fetcher } from './utils/Fetcher'
 import { ThemeOverride } from './utils/ThemeOverride'
 
 export const App: FC = () => {
