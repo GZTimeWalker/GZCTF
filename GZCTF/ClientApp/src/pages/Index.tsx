@@ -78,7 +78,16 @@ const Home: FC = () => {
   return (
     <WithNavBar>
       <Stack align="center">
-        <Group position="apart" align="flex-end" style={{ width: '100%' }}>
+        <Group
+          position="apart"
+          align="flex-end"
+          sx={{
+            width: '100%',
+            [theme.fn.smallerThan('xs')]: {
+              display: 'none',
+            },
+          }}
+        >
           <LogoHeader />
           <Title className={classes.subtitle} order={3}>
             &gt; Hack for fun not for profit<span className={classes.blink}>_</span>

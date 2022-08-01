@@ -55,6 +55,10 @@ const useStyles = createStyles((theme, _param, getRef) => {
 
     navbar: {
       backgroundColor: theme.colors.gray[8],
+
+      [theme.fn.smallerThan('xs')]: {
+        display: 'none',
+      },
     },
 
     tooltipBody: {
@@ -162,7 +166,7 @@ const AppNavbar: FC = () => {
     .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />)
 
   return (
-    <Navbar fixed width={{ base: 70 }} p="md" className={classes.navbar}>
+    <Navbar fixed width={{ xs: 70, base: 0 }} p="md" className={classes.navbar}>
       {/* Logo */}
       <Navbar.Section grow>
         <Center>

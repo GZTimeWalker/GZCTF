@@ -1,5 +1,5 @@
-import { FC } from 'react'
-import { Group, Title, createStyles } from '@mantine/core'
+import { forwardRef } from 'react'
+import { Group, Title, createStyles, GroupProps } from '@mantine/core'
 import MainIcon from './icon/MainIcon'
 
 const useStyles = createStyles((theme) => ({
@@ -17,17 +17,16 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-const LogoHeader: FC = () => {
+export const LogoHeader = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {
   const { classes } = useStyles()
-
   return (
-    <Group>
+    <Group ref={ref} noWrap {...props}>
       <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
       <Title className={classes.title}>
         GZ<span className={classes.brand}>::</span>CTF
       </Title>
     </Group>
   )
-}
+})
 
 export default LogoHeader

@@ -38,9 +38,13 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       fontWeight: 500,
       boxSizing: 'border-box',
       cursor: 'pointer',
-      display: 'block',
       border: 0,
+      display: 'block',
       backgroundColor: 'transparent',
+
+      [theme.fn.smallerThan('xs')]: {
+        padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+      },
 
       '&:disabled': {
         cursor: 'not-allowed',
@@ -63,9 +67,16 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       justifyContent: 'center',
       lineHeight: 1,
       height: '100%',
+
+      [theme.fn.smallerThan('xs')]: {
+        flexDirection: 'column',
+        gap: theme.spacing.md,
+      },
     },
     tabLabel: {},
     tabIcon: {
+      margin: 'auto',
+
       '&:not(:only-child)': {
         marginRight: theme.spacing.xs,
       },
@@ -117,8 +128,25 @@ const IconTabs: FC<IconTabsProps> = (props) => {
 
   return (
     <Group position="apart" style={{ width: '100%' }}>
-      <LogoHeader />
-      <Group position="right" spacing={5} {...others}>
+      <LogoHeader
+        sx={(theme) => ({
+          [theme.fn.smallerThan('xs')]: {
+            display: 'none',
+          },
+        })}
+      />
+      <Group
+        position="right"
+        noWrap
+        spacing={5}
+        sx={(theme) => ({
+          [theme.fn.smallerThan('xs')]: {
+            width: '100%',
+            justifyContent: 'space-around',
+          },
+        })}
+        {...others}
+      >
         {panes}
       </Group>
     </Group>
