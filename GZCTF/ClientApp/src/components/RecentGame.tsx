@@ -21,7 +21,7 @@ interface RecentGameProps {
   game: BasicGameInfoModel
 }
 
-const POSTER_HEIGHT = 105
+const POSTER_HEIGHT = '15vh'
 
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
@@ -35,9 +35,9 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const color = GameColorMap.get(status)
 
   const duration =
-    status === GameStatus.Coming
-      ? dayjs(endTime.getTime()).diff(startTime.getTime(), 'h')
-      : dayjs(endTime.getTime()).diff(new Date(), 'h')
+    status === GameStatus.OnGoing
+      ? dayjs(endTime.getTime()).diff(new Date(), 'h')
+      : dayjs(endTime.getTime()).diff(startTime.getTime(), 'h')
 
   return (
     <Card
@@ -66,7 +66,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         inheritPadding
         style={{
           position: 'relative',
-          marginTop: 16 - POSTER_HEIGHT,
+          marginTop: `calc(16px - ${POSTER_HEIGHT})`,
           alignContent: 'flex-end',
         }}
       >
@@ -80,7 +80,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
       <Card.Section
         style={{
           position: 'relative',
-          marginTop: POSTER_HEIGHT - 32 - 34,
+          marginTop: `calc(${POSTER_HEIGHT} - 2rem - 34px)`,
           background: 'rgba(0,0,0,.5)',
           display: 'flex',
           height: 34,
@@ -106,7 +106,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         </Group>
         <Group noWrap spacing={0} position="apart">
           <Text size="sm" weight={700}>
-            {status === GameStatus.Coming ? '持续时间' : '剩余时间'}
+            {status === GameStatus.OnGoing ? '剩余时间' : '持续时间'}
           </Text>
           <Badge size="xs" color={color} variant="light">
             {duration}小时
