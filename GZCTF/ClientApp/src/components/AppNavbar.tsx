@@ -100,7 +100,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles()
 
   return (
-    <Tooltip label={props.label} classNames={{ root: classes.tooltipBody }} position="right">
+    <Tooltip label={props.label} classNames={{ tooltip: classes.tooltipBody }} position="right">
       <ActionIcon
         onClick={props.onClick}
         component={Link}
@@ -189,7 +189,7 @@ const AppNavbar: FC = () => {
           {/* Color Mode */}
           <Tooltip
             label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
-            classNames={{ root: classes.tooltipBody }}
+            classNames={{ tooltip: classes.tooltipBody }}
             position="right"
           >
             <ActionIcon onClick={() => toggleColorScheme()} className={classes.link}>
@@ -229,7 +229,7 @@ const AppNavbar: FC = () => {
               </Menu.Dropdown>
             </Menu>
           ) : (
-            <Tooltip label="登录" classNames={{ root: classes.tooltipBody }} position="right">
+            <Tooltip label="登录" classNames={{ tooltip: classes.tooltipBody }} position="right">
               <ActionIcon
                 component={Link}
                 to={`/account/login?from=${location.pathname}`}

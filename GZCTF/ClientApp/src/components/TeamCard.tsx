@@ -113,7 +113,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     <Tooltip
                       label={'激活'}
                       styles={(theme) => ({
-                        root: {
+                        tooltip: {
                           margin: 4,
                           backgroundColor:
                             theme.colorScheme === 'dark'

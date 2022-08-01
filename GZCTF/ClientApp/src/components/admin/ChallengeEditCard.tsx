@@ -77,7 +77,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           width={120}
           offset={10}
           styles={{
-            root: {
+            tooltip: {
               color: theme.colorScheme === 'dark' ? 'white' : 'black',
               backgroundColor: theme.colorScheme === 'dark' ? '' : 'white',
             },
@@ -97,7 +97,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           width={120}
           offset={54}
           styles={{
-            root: {
+            tooltip: {
               color: theme.colorScheme === 'dark' ? 'white' : 'black',
               backgroundColor: theme.colorScheme === 'dark' ? '' : 'white',
             },
