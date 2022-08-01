@@ -621,7 +621,7 @@ public class GameController : ControllerBase
         if (res.Game is null)
             return res.WithResult(NotFound(new RequestResponse("比赛未找到")));
 
-        if (res.User!.ActiveTeam is null)
+        if (res.User?.ActiveTeam is null)
             return res.WithResult(BadRequest(new RequestResponse("请激活一个队伍以参赛")));
 
         var part = await participationRepository.GetParticipation(res.User.ActiveTeam, res.Game, token);
@@ -629,10 +629,10 @@ public class GameController : ControllerBase
         if (part is null)
             return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));
 
+        res.Participation = part;
+
         if (part.Status != ParticipationStatus.Accepted)
             return res.WithResult(BadRequest(new RequestResponse("您的参赛申请尚未通过或被禁赛")));
-
-        res.Participation = part;
 
         if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
             return res.WithResult(BadRequest(new RequestResponse("比赛还未开始")));

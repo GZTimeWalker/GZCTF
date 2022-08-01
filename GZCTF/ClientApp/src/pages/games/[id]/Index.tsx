@@ -14,10 +14,11 @@ import {
   TypographyStylesProvider,
   Center,
   Progress,
+  Alert,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiFlagOutline } from '@mdi/js'
+import { mdiAlertCircle, mdiCheck, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ParticipationStatus } from '../../../Api'
 import WithNavBar from '../../../components/WithNavbar'
@@ -53,6 +54,7 @@ const useStyles = createStyles((theme) => ({
   },
   content: {
     minHeight: '100vh',
+    padding: '1rem 0'
   },
 }))
 
@@ -61,7 +63,11 @@ const GameDetail: FC = () => {
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
 
-  const { data: game, error } = api.game.useGameGames(parseInt(id!), {
+  const {
+    data: game,
+    error,
+    mutate,
+  } = api.game.useGameGames(parseInt(id!), {
     refreshInterval: 0,
   })
 
@@ -92,18 +98,22 @@ const GameDetail: FC = () => {
   const modals = useModals()
 
   const onSubmit = () => {
-    api.game.gameJoinGame(numId ?? 0).then(() => {
-      showNotification({
-        color: 'teal',
-        message: '成功报名，请等待审核',
-        icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+    api.game
+      .gameJoinGame(numId ?? 0)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '成功报名，请等待审核',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        })
+        mutate()
       })
-    })
+      .catch(showErrorNotification)
   }
 
   const canSubmit =
-    status === ParticipationStatus.Unsubmitted &&
+    (status === ParticipationStatus.Unsubmitted || status === ParticipationStatus.Denied) &&
     !finished &&
     user &&
     user.ownTeamId &&
@@ -130,7 +140,15 @@ const GameDetail: FC = () => {
         })
       }}
     >
-      {status === ParticipationStatus.Pending ? '等待审核' : '报名参赛'}
+      {status === ParticipationStatus.Unsubmitted
+        ? '报名参赛'
+        : status === ParticipationStatus.Pending
+        ? '等待审核'
+        : status === ParticipationStatus.Accepted
+        ? '已经通过'
+        : status === ParticipationStatus.Denied
+        ? '重新报名'
+        : '报名成功'}
     </Button>
   )
 
@@ -171,11 +189,22 @@ const GameDetail: FC = () => {
         </Group>
       </div>
       <Container className={classes.content}>
-        <Group noWrap align="flex-start">
-          <TypographyStylesProvider p="2rem 0">
-            <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
-          </TypographyStylesProvider>
-        </Group>
+        <Stack  spacing="xs">
+          {status === ParticipationStatus.Denied && (
+            <Alert
+              icon={<Icon path={mdiAlertCircle} size={1} />}
+              title="您的参赛申请未通过"
+              color="red"
+            >
+              请确保参赛资格和要求后重新报名
+            </Alert>
+          )}
+          <Group noWrap align="flex-start">
+            <TypographyStylesProvider>
+              <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
+            </TypographyStylesProvider>
+          </Group>
+        </Stack>
       </Container>
     </WithNavBar>
   )
