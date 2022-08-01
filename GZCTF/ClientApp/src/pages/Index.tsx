@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { createStyles, Grid, Group, keyframes, Stack, Title } from '@mantine/core'
+import { createStyles, Group, keyframes, Stack, Title } from '@mantine/core'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '../Api'
@@ -9,6 +9,13 @@ import RecentGame from '../components/RecentGame'
 import WithNavBar from '../components/WithNavbar'
 
 const useStyles = createStyles((theme) => ({
+  notices: {
+    width: '78%',
+
+    [`@media (max-width: 1080px)`]: {
+      width: '100%',
+    },
+  },
   wrapper: {
     boxSizing: 'border-box',
     paddingLeft: theme.spacing.md,
@@ -17,9 +24,8 @@ const useStyles = createStyles((theme) => ({
     right: 0,
     paddingTop: 10,
     flex: `0 0 240px`,
-    minWidth: 250,
 
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+    [`@media (max-width: 1080px)`]: {
       display: 'none',
     },
   },
@@ -65,41 +71,38 @@ const Home: FC = () => {
         <Group position="apart" align="flex-end" style={{ width: '100%' }}>
           <LogoHeader />
           <Title
-            style={{
+            sx={{
               fontFamily: theme.fontFamilyMonospace,
               color: theme.colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.dark[4],
+              [`@media (max-width: 900px)`]: {
+                display: 'none',
+              },
             }}
             order={3}
           >
             &gt; Hack for fun not for profit<span className={classes.blink}>_</span>
           </Title>
         </Group>
-        <Grid style={{ width: '100%' }}>
-          <Grid.Col span={12} md={recentGames.length > 0 ? 9 : 12}>
-            <Stack>
+        <Group noWrap position="apart" align="flex-start" style={{ width: '100%' }}>
+            <Stack className={classes.notices}>
               {notices?.map((notice) => (
                 <NoticeCard key={notice.id} {...notice} />
               ))}
             </Stack>
-          </Grid.Col>
-          {recentGames.length > 0 &&
-            <Grid.Col span={12} md={3}>
-              <nav className={classes.wrapper}>
-                <div className={classes.inner}>
-                  <Stack>
-                    <Group>
-                      <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
-                      <Title order={3}>近期活动</Title>
-                    </Group>
-                    {recentGames?.map((game) => (
-                      <RecentGame key={game.id} game={game} />
-                    ))}
-                  </Stack>
-                </div>
-              </nav>
-            </Grid.Col>
-          }
-        </Grid>
+            <nav className={classes.wrapper}>
+              <div className={classes.inner}>
+                <Stack>
+                  <Group>
+                    <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
+                    <Title order={3}>近期活动</Title>
+                  </Group>
+                  {recentGames?.map((game) => (
+                    <RecentGame game={game} />
+                  ))}
+                </Stack>
+              </div>
+            </nav>
+            </Group>
       </Stack>
     </WithNavBar>
   )

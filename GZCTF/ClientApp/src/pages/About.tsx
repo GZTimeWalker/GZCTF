@@ -3,13 +3,12 @@ import { Text, Stack, Badge, Group, HoverCard, Title, createStyles, Anchor } fro
 import LogoHeader from '../components/LogoHeader'
 import WithNavBar from '../components/WithNavbar'
 import MainIcon from '../components/icon/MainIcon'
+import dayjs from 'dayjs'
 
 const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
 const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'develop'
-const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23T12:00:00+08:00'
-const builtdate = import.meta.env.DEV ? new Date() : new Date(timestamp)
-
-const dateTimeFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'long', timeStyle: 'long' })
+const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23T12:00:00Z'
+const builtdate = dayjs(import.meta.env.DEV ? new Date() : new Date(timestamp))
 
 const useStyles = createStyles((theme) => ({
   brand: {
@@ -81,7 +80,7 @@ const About: FC = () => {
                     color="dimmed"
                     sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
                   >
-                    {`built at ${dateTimeFormat.format(builtdate)}`}
+                    {`built at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}`}
                   </Text>
                 </Group>
               </Stack>
