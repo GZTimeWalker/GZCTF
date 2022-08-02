@@ -13,7 +13,6 @@ const Challenges: FC = () => {
         <LogoHeader />
         <Text>Challenges of No.{id}</Text>
         {/* <TeamInfo/> */}
-        {/* <NoticeBoard/> */}
         {/* <ChallengeBoard/> */}
         {/* <NoticeBoard/> */}
       </Stack>
