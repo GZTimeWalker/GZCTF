@@ -9,6 +9,7 @@ import {
   Button,
   Center,
   Group,
+  Indicator,
   MantineColor,
   Paper,
   Popover,
@@ -22,12 +23,16 @@ import {
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiAccountOutline,
   mdiBackburger,
+  mdiBadgeAccountHorizontalOutline,
   mdiCancel,
   mdiCheck,
   mdiClose,
   mdiCrown,
+  mdiEmailOutline,
   mdiHelpCircleOutline,
+  mdiPhoneOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, {
@@ -85,14 +90,7 @@ const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
   const [loading, setLoading] = useState(false)
 
   return (
-    <Popover
-      shadow="md"
-      width="max-content"
-      withArrow
-      position="top"
-      opened={opened}
-      onChange={setOpened}
-    >
+    <Popover shadow="md" width="max-content" position="top" opened={opened} onChange={setOpened}>
       <Popover.Target>
         <ActionIcon
           onClick={() => setOpened(true)}
@@ -141,32 +139,56 @@ interface MemberItemProps {
   isCaptain: boolean
 }
 
+const iconProps = {
+  size: 0.8,
+  color: 'gray',
+}
+
 const MemberItem: FC<MemberItemProps> = (props) => {
   const { user, isCaptain } = props
   const theme = useMantineTheme()
 
   const fieldProps: TextProps = {
     size: 'sm',
-    sx: { fontFamily: theme.fontFamilyMonospace },
+    sx: { fontFamily: `${theme.fontFamilyMonospace},${theme.fontFamily}` },
   }
 
   return (
     <Group spacing="xl">
-      <Group>
+      {isCaptain ? (
+        <Indicator
+          inline
+          size={16}
+          label={<Icon path={mdiCrown} size={0.6} color={theme.colors.yellow[4]} />}
+        >
+          <Avatar src={user.avatar} />
+        </Indicator>
+      ) : (
         <Avatar src={user.avatar} />
-        <Box>
+      )}
+      <Box>
+        <Group noWrap spacing="xs">
+          <Icon path={mdiAccountOutline} {...iconProps} />
           <Group>
             <Text>{user.userName}</Text>
             <Text>{!user.realName ? '未填写真实姓名' : user.realName}</Text>
           </Group>
-          <Text {...fieldProps}>{!user.stdNumber ? '未填写学工号' : user.stdNumber}</Text>
-        </Box>
-      </Group>
-      <Box style={{ width: '1.5rem' }}>
-        {isCaptain && <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />}
+        </Group>
+        <Group noWrap spacing="xs">
+          <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
+          <Text {...fieldProps}>{!user.stdNumber ? '未填写' : user.stdNumber}</Text>
+        </Group>
       </Box>
-      <Text {...fieldProps}>{!user.email ? '未填写邮箱' : user.email}</Text>
-      <Text {...fieldProps}>{!user.phone ? '未填写手机号码' : user.phone}</Text>
+      <Box>
+        <Group noWrap spacing="xs">
+          <Icon path={mdiEmailOutline} {...iconProps} />
+          <Text {...fieldProps}>{!user.email ? '未填写' : user.email}</Text>
+        </Group>
+        <Group noWrap spacing="xs">
+          <Icon path={mdiPhoneOutline} {...iconProps} />
+          <Text {...fieldProps}>{!user.phone ? '未填写' : user.phone}</Text>
+        </Group>
+      </Box>
     </Group>
   )
 }
@@ -189,7 +211,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             <Box>
               <Text>{!participation.team?.name ? '（无名队伍）' : participation.team.name}</Text>
               <Text size="sm" color="dimmed">
-                {participation.team?.bio}
+                {!participation.team?.bio ? '（未设置签名）' : participation.team.bio}
               </Text>
             </Box>
           </Group>
