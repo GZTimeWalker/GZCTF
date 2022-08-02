@@ -93,11 +93,12 @@ const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
     <Popover shadow="md" width="max-content" position="top" opened={opened} onChange={setOpened}>
       <Popover.Target>
         <ActionIcon
+          color={props.color}
           onClick={() => setOpened(true)}
           disabled={props.disabled && !loading}
           loading={loading}
         >
-          <Icon path={props.iconPath} color={props.color} size={1} />
+          <Icon path={props.iconPath} size={1} />
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown>
