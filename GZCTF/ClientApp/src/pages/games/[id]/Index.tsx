@@ -223,6 +223,7 @@ const GameDetail: FC = () => {
       >
         {finished ? '比赛结束' : GameActionMap.get(status)}
       </Button>
+      {started && <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>}
       {status === ParticipationStatus.Accepted && (
         <Button onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</Button>
       )}
@@ -236,7 +237,7 @@ const GameDetail: FC = () => {
           <Stack spacing="xs">
             <Group>
               <Badge variant="outline">
-                {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit} 人赛
+                {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
               </Badge>
             </Group>
             <Title className={classes.title}>{game?.title}</Title>
