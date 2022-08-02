@@ -2785,6 +2785,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<Record<string, ChallengeInfo[]>>(`/api/game/${id}/challenges`, data, options),
 
     /**
+     * @description 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameMyTeam
+     * @summary 获取当前队伍比赛信息
+     * @request GET:/api/game/{id}/myteam
+     */
+    gameMyTeam: (id: number, params: RequestParams = {}) =>
+      this.request<ScoreboardItem, RequestResponse>({
+        path: `/api/game/${id}/myteam`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameMyTeam
+     * @summary 获取当前队伍比赛信息
+     * @request GET:/api/game/{id}/myteam
+     */
+    useGameMyTeam: (id: number, options?: SWRConfiguration) =>
+      useSWR<ScoreboardItem, RequestResponse>(`/api/game/${id}/myteam`, options),
+
+    /**
+     * @description 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameMyTeam
+     * @summary 获取当前队伍比赛信息
+     * @request GET:/api/game/{id}/myteam
+     */
+    mutateGameMyTeam: (
+      id: number,
+      data?: ScoreboardItem | Promise<ScoreboardItem>,
+      options?: MutatorOptions
+    ) => mutate<ScoreboardItem>(`/api/game/${id}/myteam`, data, options),
+
+    /**
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
@@ -2869,7 +2909,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ChallengeDetailModel>(`/api/game/${id}/challenges/${challengeId}`, data, options),
 
     /**
-     * @description 提交flag，需要User权限，需要当前激活队伍已经报名
+     * @description 提交 flag，需要User权限，需要当前激活队伍已经报名
      *
      * @tags Game
      * @name GameSubmit

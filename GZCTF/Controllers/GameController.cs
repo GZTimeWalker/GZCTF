@@ -290,6 +290,34 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
+    /// 获取当前队伍比赛信息
+    /// </summary>
+    /// <remarks>
+    /// 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
+    /// </remarks>
+    /// <param name="id">比赛id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目信息</response>
+    /// <response code="400">操作无效</response>
+    /// <response code="404">比赛未找到</response>
+    [RequireUser]
+    [HttpGet("{id}/MyTeam")]
+    [ProducesResponseType(typeof(ScoreboardItem), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> MyTeam([FromRoute] int id, CancellationToken token)
+    {
+        var context = await GetContextInfo(id, token);
+
+        if (context.Result is not null)
+            return context.Result;
+
+        var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
+
+        return Ok(scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId));
+    }
+
+    /// <summary>
     /// 获取全部比赛参与信息
     /// </summary>
     /// <remarks>
@@ -352,7 +380,7 @@ public class GameController : ControllerBase
     /// 提交 flag
     /// </summary>
     /// <remarks>
-    /// 提交flag，需要User权限，需要当前激活队伍已经报名
+    /// 提交 flag，需要User权限，需要当前激活队伍已经报名
     /// </remarks>
     /// <param name="id">比赛id</param>
     /// <param name="challengeId">题目id</param>
@@ -454,20 +482,20 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("题目未找到", 404));
 
         if (!instance.Challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目不可创建容器", 400));
+            return BadRequest(new RequestResponse("题目不可创建容器"));
 
         if (instance.Container is not null)
         {
             if (instance.Container.Status == ContainerStatus.Running)
-                return BadRequest(new RequestResponse("题目已经创建容器", 400));
+                return BadRequest(new RequestResponse("题目已经创建容器"));
 
             await containerRepository.RemoveContainer(instance.Container, token);
         }
 
         return await instanceRepository.CreateContainer(instance, token) switch
         {
-            null or (TaskStatus.Fail, null) => BadRequest(new RequestResponse("题目创建容器失败", 400)),
-            (TaskStatus.Denied, null) => BadRequest(new RequestResponse("队伍容器数目到达上限", 400)),
+            null or (TaskStatus.Fail, null) => BadRequest(new RequestResponse("题目创建容器失败")),
+            (TaskStatus.Denied, null) => BadRequest(new RequestResponse("队伍容器数目到达上限")),
             (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
             _ => throw new NotImplementedException(),
         };
@@ -503,10 +531,10 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("题目未找到", 404));
 
         if (!instance.Challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目不可创建容器", 400));
+            return BadRequest(new RequestResponse("题目不可创建容器"));
 
         if (instance.Container is null)
-            return BadRequest(new RequestResponse("题目未创建容器", 400));
+            return BadRequest(new RequestResponse("题目未创建容器"));
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }
@@ -541,13 +569,13 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("题目未找到", 404));
 
         if (!instance.Challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目不可创建容器", 400));
+            return BadRequest(new RequestResponse("题目不可创建容器"));
 
         if (instance.Container is null)
-            return BadRequest(new RequestResponse("题目未创建容器", 400));
+            return BadRequest(new RequestResponse("题目未创建容器"));
 
         if (instance.Container.ExpectStopAt <= DateTimeOffset.UtcNow.AddMinutes(-10))
-            return BadRequest(new RequestResponse("容器时间尚不可延长", 400));
+            return BadRequest(new RequestResponse("容器时间尚不可延长"));
 
         await instanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
 
@@ -584,15 +612,15 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("题目未找到", 404));
 
         if (!instance.Challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目不可创建容器", 400));
+            return BadRequest(new RequestResponse("题目不可创建容器"));
 
         if (instance.Container is null)
-            return BadRequest(new RequestResponse("题目未创建容器", 400));
+            return BadRequest(new RequestResponse("题目未创建容器"));
 
         return await instanceRepository.DestoryContainer(instance.Container, token) switch
         {
             true => Ok(),
-            false => BadRequest(new RequestResponse("题目删除容器失败", 400))
+            false => BadRequest(new RequestResponse("题目删除容器失败"))
         };
     }
 
