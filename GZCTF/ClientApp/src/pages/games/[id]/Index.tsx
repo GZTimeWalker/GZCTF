@@ -30,7 +30,7 @@ const useStyles = createStyles((theme) => ({
     position: 'relative',
     height: '40vh',
     display: 'flex',
-    background: theme.colorScheme === "dark" ? ` rgba(0,0,0,0.2)` : theme.white,
+    background: theme.colorScheme === 'dark' ? ` rgba(0,0,0,0.2)` : theme.white,
     justifyContent: 'center',
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
@@ -79,8 +79,8 @@ const useStyles = createStyles((theme) => ({
     },
   },
   date: {
-    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6]
-  }
+    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+  },
 }))
 
 const GameAlertMap = new Map([
@@ -234,11 +234,11 @@ const GameDetail: FC = () => {
       <div className={classes.root}>
         <Group noWrap position="apart" style={{ width: '100%' }} className={classes.container}>
           <Stack spacing="xs">
-            {(game?.limit ?? 0) > 0 && (
-              <Group>
-                <Badge variant="outline">{game?.limit} 人赛</Badge>
-              </Group>
-            )}
+            <Group>
+              <Badge variant="outline">
+                {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit} 人赛
+              </Badge>
+            </Group>
             <Title className={classes.title}>{game?.title}</Title>
             <Group>
               <Stack spacing={0}>
