@@ -31,7 +31,7 @@ public class Participation
     /// <summary>
     /// 队伍激活的题目
     /// </summary>
-    public ICollection<Challenge>? Challenges { get; set; }
+    public HashSet<Challenge> Challenges { get; set; } = new();
 
     /// <summary>
     /// 提交

@@ -431,7 +431,11 @@ public class EditController : Controller
             return BadRequest(new RequestResponse("动态附件名不可为空"));
 
         res.Update(model);
-        await challengeRepository.UpdateAsync(res, token);
+
+        if (model.IsEnabled == true)
+            await challengeRepository.EnsureInstances(res, game, token); // will also update IsEnabled
+        else
+            await challengeRepository.UpdateAsync(res, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }

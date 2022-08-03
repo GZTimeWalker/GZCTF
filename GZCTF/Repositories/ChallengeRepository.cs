@@ -44,6 +44,17 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         return challenge;
     }
 
+    public async Task EnsureInstances(Challenge challenge, Game game, CancellationToken token = default)
+    {
+        await context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
+        await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+
+        foreach (var participation in game.Participations)
+            challenge.Teams.Add(participation);
+
+        await UpdateAsync(challenge, token);
+    }
+
     public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default)
     {
         var challenges = context.Challenges.Where(c => c.Id == id && c.GameId == gameId);

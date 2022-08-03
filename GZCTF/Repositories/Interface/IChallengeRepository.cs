@@ -49,6 +49,15 @@ public interface IChallengeRepository : IRepository
     public Task AddFlags(Challenge challenge, FlagCreateModel[] model, CancellationToken token = default);
 
     /// <summary>
+    /// 确保此题目 Instance 对象已创建
+    /// </summary>
+    /// <param name="challenge"></param>
+    /// <param name="game"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task EnsureInstances(Challenge challenge, Game game, CancellationToken token = default);
+
+    /// <summary>
     /// 更新附件
     /// </summary>
     /// <param name="challenge">比赛题目对象</param>

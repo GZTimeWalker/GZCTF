@@ -28,20 +28,19 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             .Where(e => e.ChallengeId == challengeId && e.Participation == team)
             .SingleOrDefaultAsync(token);
 
-        if (instance is not null)
+        if (instance is null)
+        {
+            logger.SystemLog($"队伍对应参与对象为空，这可能是非预期的情况 [{team.Id}, {challengeId}]", TaskStatus.NotFound, LogLevel.Warning);
+            return null;
+        }
+
+        if (instance.IsLoaded)
             return instance;
 
         var challenge = await context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId, token);
 
         if (challenge is null || !challenge.IsEnabled)
             return null;
-
-        instance = new()
-        {
-            Challenge = challenge,
-            GameId = team.GameId,
-            Participation = team
-        };
 
         if (challenge.Type.IsStatic())
             instance.FlagContext = null; // use challenge to verify
@@ -65,9 +64,10 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             }
         }
 
-        team.Instances.Add(instance);
+        instance.GameId = challenge.GameId;
+        instance.IsLoaded = true;
 
-        await context.SaveChangesAsync(token);
+        await UpdateAsync(instance, token);
 
         return instance;
     }

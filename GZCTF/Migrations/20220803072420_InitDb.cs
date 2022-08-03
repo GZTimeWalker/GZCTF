@@ -212,7 +212,7 @@ namespace CTFServer.Migrations
                         column: x => x.AttachmentId,
                         principalTable: "Attachments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Challenges_Games_GameId",
                         column: x => x.GameId,
@@ -240,7 +240,7 @@ namespace CTFServer.Migrations
                         column: x => x.AttachmentId,
                         principalTable: "Attachments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_FlagContexts_Challenges_ChallengeId",
                         column: x => x.ChallengeId,
@@ -467,20 +467,17 @@ namespace CTFServer.Migrations
                 name: "Instances",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    StartTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    EndTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    IsSolved = table.Column<bool>(type: "boolean", nullable: false),
-                    FlagId = table.Column<int>(type: "integer", nullable: false),
                     ChallengeId = table.Column<int>(type: "integer", nullable: false),
+                    ParticipationId = table.Column<int>(type: "integer", nullable: false),
+                    IsSolved = table.Column<bool>(type: "boolean", nullable: false),
+                    IsLoaded = table.Column<bool>(type: "boolean", nullable: false),
+                    FlagId = table.Column<int>(type: "integer", nullable: true),
                     GameId = table.Column<int>(type: "integer", nullable: false),
-                    ContainerId = table.Column<string>(type: "text", nullable: true),
-                    ParticipationId = table.Column<int>(type: "integer", nullable: false)
+                    ContainerId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Instances", x => x.Id);
+                    table.PrimaryKey("PK_Instances", x => new { x.ChallengeId, x.ParticipationId });
                     table.ForeignKey(
                         name: "FK_Instances_Challenges_ChallengeId",
                         column: x => x.ChallengeId,
@@ -496,8 +493,7 @@ namespace CTFServer.Migrations
                         name: "FK_Instances_FlagContexts_FlagId",
                         column: x => x.FlagId,
                         principalTable: "FlagContexts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Instances_Games_GameId",
                         column: x => x.GameId,
@@ -509,7 +505,7 @@ namespace CTFServer.Migrations
                         column: x => x.ParticipationId,
                         principalTable: "Participations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -522,6 +518,7 @@ namespace CTFServer.Migrations
                     Status = table.Column<string>(type: "text", nullable: false),
                     SubmitTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
+                    TeamId = table.Column<int>(type: "integer", nullable: false),
                     ParticipationId = table.Column<int>(type: "integer", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false),
                     ChallengeId = table.Column<int>(type: "integer", nullable: false)
@@ -550,6 +547,12 @@ namespace CTFServer.Migrations
                         name: "FK_Submissions_Participations_ParticipationId",
                         column: x => x.ParticipationId,
                         principalTable: "Participations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Submissions_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -657,11 +660,6 @@ namespace CTFServer.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Instances_ChallengeId",
-                table: "Instances",
-                column: "ChallengeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Instances_ContainerId",
                 table: "Instances",
                 column: "ContainerId",
@@ -703,9 +701,14 @@ namespace CTFServer.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Submissions_ParticipationId_ChallengeId_GameId",
+                name: "IX_Submissions_ParticipationId",
                 table: "Submissions",
-                columns: new[] { "ParticipationId", "ChallengeId", "GameId" });
+                column: "ParticipationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Submissions_TeamId_ChallengeId_GameId",
+                table: "Submissions",
+                columns: new[] { "TeamId", "ChallengeId", "GameId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Submissions_UserId",

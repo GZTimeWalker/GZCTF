@@ -110,6 +110,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Instances).WithOne();
 
+            entity.Navigation(e => e.Game).AutoInclude();
+            entity.Navigation(e => e.Team).AutoInclude();
+
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId)

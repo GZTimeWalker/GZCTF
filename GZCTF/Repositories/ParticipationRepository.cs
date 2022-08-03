@@ -23,6 +23,17 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         return participation;
     }
 
+    public async Task EnsureInstances(Participation part, Game game, CancellationToken token = default)
+    {
+        await context.Entry(part).Collection(p => p.Challenges).LoadAsync(token);
+        await context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
+
+        foreach (var challenge in game.Challenges)
+            part.Challenges.Add(challenge);
+
+        await UpdateAsync(part, token);
+    }
+
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default)
         => context.Participations.FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
 

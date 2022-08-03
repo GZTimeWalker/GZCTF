@@ -238,7 +238,10 @@ public class AdminController : ControllerBase
         team.Locked = true;
         participation.Status = status;
 
-        await participationRepository.UpdateAsync(participation, token);
+        if (status == ParticipationStatus.Accepted)
+            await participationRepository.EnsureInstances(participation, game, token);
+        else
+            await participationRepository.UpdateAsync(participation, token);
 
         return Ok();
     }

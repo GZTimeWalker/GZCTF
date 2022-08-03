@@ -145,7 +145,7 @@ public class Challenge
     /// <summary>
     /// 激活赛题的队伍
     /// </summary>
-    public List<Participation> Teams { get; set; } = new();
+    public HashSet<Participation> Teams { get; set; } = new();
 
     /// <summary>
     /// 比赛 Id

@@ -91,7 +91,7 @@ public class Game
     /// 比赛队伍参赛对象
     /// </summary>
     [JsonIgnore]
-    public ICollection<Participation>? Participations { get; set; }
+    public HashSet<Participation> Participations { get; set; } = new();
 
     /// <summary>
     /// 比赛队伍
