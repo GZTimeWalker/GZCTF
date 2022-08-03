@@ -148,7 +148,8 @@ public class GameRepository : RepositoryBase, IGameRepository
                     }).ToList()
                 },
                 LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow),
-            }).OrderBy(j => (-j.Item.Score, j.LastSubmissionTime)) //成绩倒序，最后提交时间正序
+            }).OrderByDescending(j => j.Item.Score) //成绩倒序，最后提交时间正序
+            .ThenBy(j => j.LastSubmissionTime)
             .Select((j, i) =>
             {
                 j.Item.Rank = i + 1;
