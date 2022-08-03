@@ -64,7 +64,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             }
         }
 
-        instance.GameId = challenge.GameId;
         instance.IsLoaded = true;
 
         await UpdateAsync(instance, token);
@@ -126,10 +125,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         await context.SaveChangesAsync(token);
     }
 
-    public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default)
-        => context.Instances.Where(i => i.GameId == game.Id).OrderBy(i => i.ParticipationId)
-            .Skip(skip).Take(count).Include(i => i.Participation).ThenInclude(i => i.Team)
-            .Include(i => i.Challenge).ToArrayAsync(token);
+    public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default)
+        => context.Instances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
+            .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
 
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
     {

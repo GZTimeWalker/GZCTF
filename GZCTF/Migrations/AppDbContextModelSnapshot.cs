@@ -317,7 +317,7 @@ namespace CTFServer.Migrations
                     b.Property<int?>("FlagId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("GameId")
+                    b.Property<int?>("GameId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsLoaded")
@@ -335,7 +335,7 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ParticipationId", "ChallengeId", "GameId");
+                    b.HasIndex("ParticipationId", "ChallengeId");
 
                     b.ToTable("Instances");
                 });
@@ -911,11 +911,9 @@ namespace CTFServer.Migrations
                         .WithMany()
                         .HasForeignKey("FlagId");
 
-                    b.HasOne("CTFServer.Models.Game", "Game")
+                    b.HasOne("CTFServer.Models.Game", null)
                         .WithMany("Instances")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GameId");
 
                     b.HasOne("CTFServer.Models.Participation", "Participation")
                         .WithMany("Instances")
@@ -928,8 +926,6 @@ namespace CTFServer.Migrations
                     b.Navigation("Container");
 
                     b.Navigation("FlagContext");
-
-                    b.Navigation("Game");
 
                     b.Navigation("Participation");
                 });

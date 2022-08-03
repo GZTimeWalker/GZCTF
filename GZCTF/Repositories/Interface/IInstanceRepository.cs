@@ -25,12 +25,10 @@ public interface IInstanceRepository : IRepository
     /// <summary>
     /// 获取题目实例
     /// </summary>
-    /// <param name="game">当前比赛</param>
-    /// <param name="count">获取数量</param>
-    /// <param name="skip">跳过数量</param>
+    /// <param name="challenge">当前题目</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default);
+    public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default);
 
     /// <summary>
     /// 检查抄袭行为

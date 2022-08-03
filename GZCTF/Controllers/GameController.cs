@@ -30,6 +30,7 @@ public class GameController : ControllerBase
     private readonly IGameNoticeRepository noticeRepository;
     private readonly IGameEventRepository eventRepository;
     private readonly IInstanceRepository instanceRepository;
+    private readonly IChallengeRepository challengeRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
 
@@ -42,6 +43,7 @@ public class GameController : ControllerBase
         IGameNoticeRepository _noticeRepository,
         IGameEventRepository _eventRepository,
         IInstanceRepository _instanceRepository,
+        IChallengeRepository _challengeRepository,
         ISubmissionRepository _submissionRepository,
         IContainerRepository _containerRepository,
         IParticipationRepository _participationRepository)
@@ -54,6 +56,7 @@ public class GameController : ControllerBase
         eventRepository = _eventRepository;
         noticeRepository = _noticeRepository;
         instanceRepository = _instanceRepository;
+        challengeRepository = _challengeRepository;
         containerRepository = _containerRepository;
         submissionRepository = _submissionRepository;
         participationRepository = _participationRepository;
@@ -240,16 +243,15 @@ public class GameController : ControllerBase
     /// 获取比赛实例数据，需要观察者权限
     /// </remarks>
     /// <param name="id">比赛id</param>
-    /// <param name="count"></param>
-    /// <param name="skip"></param>
+    /// <param name="challengeId">题目id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛提交</response>
     /// <response code="400">比赛未找到</response>
     [RequireMonitor]
-    [HttpGet("{id}/Instances")]
+    [HttpGet("{id}/Challenges/{challengeId}/Instances")]
     [ProducesResponseType(typeof(InstanceInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Instances([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+    public async Task<IActionResult> Instances([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -259,7 +261,12 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok((await instanceRepository.GetInstances(game, count, skip, token))
+        var challenge = await challengeRepository.GetChallenge(id, challengeId, token: token);
+
+        if (challenge is null)
+            return NotFound(new RequestResponse("题目未找到"));
+
+        return Ok((await instanceRepository.GetInstances(challenge, token))
             .Select(i => InstanceInfoModel.FromInstance(i)));
     }
 

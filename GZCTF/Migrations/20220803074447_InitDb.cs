@@ -472,8 +472,8 @@ namespace CTFServer.Migrations
                     IsSolved = table.Column<bool>(type: "boolean", nullable: false),
                     IsLoaded = table.Column<bool>(type: "boolean", nullable: false),
                     FlagId = table.Column<int>(type: "integer", nullable: true),
-                    GameId = table.Column<int>(type: "integer", nullable: false),
-                    ContainerId = table.Column<string>(type: "text", nullable: true)
+                    ContainerId = table.Column<string>(type: "text", nullable: true),
+                    GameId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -498,8 +498,7 @@ namespace CTFServer.Migrations
                         name: "FK_Instances_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Instances_Participations_ParticipationId",
                         column: x => x.ParticipationId,
@@ -676,9 +675,9 @@ namespace CTFServer.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Instances_ParticipationId_ChallengeId_GameId",
+                name: "IX_Instances_ParticipationId_ChallengeId",
                 table: "Instances",
-                columns: new[] { "ParticipationId", "ChallengeId", "GameId" });
+                columns: new[] { "ParticipationId", "ChallengeId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Participations_GameId",

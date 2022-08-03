@@ -31,14 +31,6 @@ public class Instance
     /// </summary>
     public Challenge Challenge { get; set; } = default!;
 
-    [Required]
-    public int GameId { get; set; }
-
-    /// <summary>
-    /// 比赛对象
-    /// </summary>
-    public Game Game { get; set; } = default!;
-
     public string? ContainerId { get; set; }
 
     /// <summary>

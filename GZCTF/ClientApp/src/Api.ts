@@ -1071,12 +1071,6 @@ export enum AnswerResult {
  */
 export interface InstanceInfoModel {
   /**
-   * 实例 Id
-   * @format int32
-   */
-  id?: number
-
-  /**
    * 队伍 Id
    * @format int32
    */
@@ -2697,17 +2691,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Game
      * @name GameInstances
      * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/instances
+     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
      */
-    gameInstances: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      params: RequestParams = {}
-    ) =>
+    gameInstances: (id: number, challengeId: number, params: RequestParams = {}) =>
       this.request<InstanceInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/instances`,
+        path: `/api/game/${id}/challenges/${challengeId}/instances`,
         method: 'GET',
-        query: query,
         format: 'json',
         ...params,
       }),
@@ -2717,14 +2706,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Game
      * @name GameInstances
      * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/instances
+     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
      */
-    useGameInstances: (
-      id: number,
-      query?: { count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) =>
-      useSWR<InstanceInfoModel[], RequestResponse>([`/api/game/${id}/instances`, query], options),
+    useGameInstances: (id: number, challengeId: number, options?: SWRConfiguration) =>
+      useSWR<InstanceInfoModel[], RequestResponse>(
+        `/api/game/${id}/challenges/${challengeId}/instances`,
+        options
+      ),
 
     /**
      * @description 获取比赛实例数据，需要观察者权限
@@ -2732,14 +2720,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Game
      * @name GameInstances
      * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/instances
+     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
      */
     mutateGameInstances: (
       id: number,
-      query?: { count?: number; skip?: number },
+      challengeId: number,
       data?: InstanceInfoModel[] | Promise<InstanceInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<InstanceInfoModel[]>([`/api/game/${id}/instances`, query], data, options),
+    ) =>
+      mutate<InstanceInfoModel[]>(
+        `/api/game/${id}/challenges/${challengeId}/instances`,
+        data,
+        options
+      ),
 
     /**
      * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名

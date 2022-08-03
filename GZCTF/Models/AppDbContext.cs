@@ -75,10 +75,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.GameId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasMany(e => e.Instances)
-                .WithOne(e => e.Game)
-                .HasForeignKey(e => e.GameId);
-
             entity.HasMany(e => e.Teams)
                 .WithMany(e => e.Games)
                 .UsingEntity<Participation>(
@@ -146,7 +142,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
 
-            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId, e.GameId });
+            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId });
         });
 
         builder.Entity<Container>(entity =>
