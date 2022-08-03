@@ -230,6 +230,7 @@ interface ParticipationItemProps {
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   const { participation, disabled, setParticipationStatus } = props
+  const theme = useMantineTheme()
 
   return (
     <Accordion.Item value={participation.id!.toString()}>
@@ -245,28 +246,26 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
             </Group>
-            <Group p="md" position="apart" sx={{ width: '300px' }}>
-              <Badge color={StatusMap.get(participation.status!)?.color}>
-                {StatusMap.get(participation.status!)?.title}
-              </Badge>
-              <Group>
-                {StatusMap.get(participation.status!)?.transformTo.map((value) => {
-                  const s = StatusMap.get(value)!
-                  return (
-                    <ActionIconWithConfirm
-                      key={`${participation.id}@${value}`}
-                      iconPath={s.iconPath}
-                      color={s.color}
-                      message={`确定要设为“${s.title}”吗？`}
-                      disabled={disabled}
-                      onClick={() => setParticipationStatus(participation.id!, value)}
-                    />
-                  )
-                })}
-              </Group>
-            </Group>
+            <Badge color={StatusMap.get(participation.status!)?.color}>
+              {StatusMap.get(participation.status!)?.title}
+            </Badge>
           </Group>
         </Accordion.Control>
+        <Group style={{ margin: `0 ${theme.spacing.xl}px`, minWidth: `${theme.spacing.xl * 3}px` }} position="right">
+          {StatusMap.get(participation.status!)?.transformTo.map((value) => {
+            const s = StatusMap.get(value)!
+            return (
+              <ActionIconWithConfirm
+                key={`${participation.id}@${value}`}
+                iconPath={s.iconPath}
+                color={s.color}
+                message={`确定要设为“${s.title}”吗？`}
+                disabled={disabled}
+                onClick={() => setParticipationStatus(participation.id!, value)}
+              />
+            )
+          })}
+        </Group>
       </Box>
       <Accordion.Panel>
         {participation.team?.members?.map((user) => (
