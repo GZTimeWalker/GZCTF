@@ -63,7 +63,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           />
 
           <Text size="xs" weight={700} style={{ width: '2.5rem' }}>
-            {challenge.originalScore}pt
+            {challenge.originalScore}pts
           </Text>
           <Group position="right" style={{ width: '8rem' }}>
             <Badge color={data?.color} variant="dot">

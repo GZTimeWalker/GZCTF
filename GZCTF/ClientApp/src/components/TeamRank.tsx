@@ -1,7 +1,17 @@
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
-import { Avatar, Group, Card, Stack, Title, Text, PaperProps, createStyles } from '@mantine/core'
-import api from '../Api'
+import {
+  Avatar,
+  Group,
+  Card,
+  Stack,
+  Title,
+  Text,
+  PaperProps,
+  createStyles,
+  Progress,
+} from '@mantine/core'
+import api, { SubmissionType } from '../Api'
 
 const useStyle = createStyles((theme) => ({
   number: {
@@ -20,10 +30,12 @@ const TeamRank: FC<PaperProps> = (props) => {
 
   const { classes } = useStyle()
 
+  const solved =
+    (myteam?.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted).length ?? 0) /
+    (myteam?.challenges?.length ?? 1)
+
   return (
-    <Card
-      {...props}
-    >
+    <Card shadow="sm" {...props}>
       <Stack>
         <Group>
           <Avatar color="cyan" size="md" radius="md" src={myteam?.avatar}>
@@ -43,13 +55,14 @@ const TeamRank: FC<PaperProps> = (props) => {
           </Stack>
           <Stack spacing={2}>
             <Text className={classes.number}>{myteam?.score}</Text>
-            <Text size="sm">分数</Text>
+            <Text size="sm">得分</Text>
           </Stack>
           <Stack spacing={2}>
             <Text className={classes.number}>{myteam?.solvedCount}</Text>
             <Text size="sm">攻克数量</Text>
           </Stack>
         </Group>
+        <Progress value={solved * 100}/>
       </Stack>
     </Card>
   )
