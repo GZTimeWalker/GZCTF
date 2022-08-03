@@ -88,10 +88,16 @@ public class Game
     public List<Instance> Instances { get; set; } = new();
 
     /// <summary>
+    /// 比赛队伍参赛对象
+    /// </summary>
+    [JsonIgnore]
+    public ICollection<Participation>? Participations { get; set; }
+
+    /// <summary>
     /// 比赛队伍
     /// </summary>
     [JsonIgnore]
-    public List<Participation> Teams { get; set; } = new();
+    public ICollection<Team>? Teams { get; set; }
 
     #endregion Db Relationship
 

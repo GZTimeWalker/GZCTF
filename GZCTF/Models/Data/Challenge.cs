@@ -138,6 +138,16 @@ public class Challenge
     public List<Submission> Submissions { get; set; } = new();
 
     /// <summary>
+    /// 赛题实例
+    /// </summary>
+    public List<Instance> Instances { get; set; } = new();
+
+    /// <summary>
+    /// 激活赛题的队伍
+    /// </summary>
+    public List<Participation> Teams { get; set; } = new();
+
+    /// <summary>
     /// 比赛 Id
     /// </summary>
     public int GameId { get; set; }

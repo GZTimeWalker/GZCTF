@@ -4,9 +4,6 @@ namespace CTFServer.Models;
 
 public class Instance
 {
-    [Key]
-    public int Id { get; set; }
-
     /// <summary>
     /// 开始时间
     /// </summary>

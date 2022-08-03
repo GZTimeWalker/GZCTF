@@ -8,11 +8,6 @@ namespace CTFServer.Models.Request.Game;
 public class InstanceInfoModel
 {
     /// <summary>
-    /// 实例 Id
-    /// </summary>
-    public int Id { get; set; }
-
-    /// <summary>
     /// 队伍 Id
     /// </summary>
     public int TeamId { get; set; }
@@ -35,7 +30,6 @@ public class InstanceInfoModel
     public static InstanceInfoModel FromInstance(Instance instance)
         => new()
         {
-            Id = instance.Id,
             TeamId = instance.Participation.TeamId,
             TeamName = instance.Participation.Team.Name,
             Challenge = new()

@@ -80,18 +80,20 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.GameId);
 
             entity.HasMany(e => e.Teams)
-                .WithOne(e => e.Game)
-                .HasForeignKey(e => e.GameId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(e => e.Games)
+                .UsingEntity<Participation>(
+                    e => e.HasOne(e => e.Team)
+                        .WithMany(e => e.Participations)
+                        .HasForeignKey(e => e.TeamId),
+                    e => e.HasOne(e => e.Game)
+                        .WithMany(e => e.Participations)
+                        .HasForeignKey(e => e.GameId),
+                    e => e.HasIndex(e => new { e.TeamId, e.GameId })
+                );
         });
 
         builder.Entity<Team>(entity =>
         {
-            entity.HasMany(e => e.Games)
-                .WithOne(e => e.Team)
-                .HasForeignKey(e => e.TeamId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             entity.HasMany(e => e.Members)
                 .WithMany(e => e.Teams);
 
@@ -113,18 +115,22 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.ParticipationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.Navigation(e => e.Team).AutoInclude();
-            entity.Navigation(e => e.Game).AutoInclude();
-
-            entity.HasIndex(e => new { e.TeamId, e.GameId });
+            entity.HasMany(e => e.Challenges)
+                .WithMany(e => e.Teams)
+                .UsingEntity<Instance>(
+                    e => e.HasOne(e => e.Challenge)
+                        .WithMany(c => c.Instances)
+                        .HasForeignKey(e => e.ChallengeId),
+                    e => e.HasOne(e => e.Participation)
+                        .WithMany(e => e.Instances)
+                        .HasForeignKey(e => e.ParticipationId)
+                        .OnDelete(DeleteBehavior.SetNull),
+                    e => e.HasKey(e => new { e.ChallengeId, e.ParticipationId })
+                );
         });
 
         builder.Entity<Instance>(entity =>
         {
-            entity.HasOne(e => e.Challenge)
-               .WithMany()
-               .HasForeignKey(e => e.ChallengeId);
-
             entity.HasOne(e => e.FlagContext)
                 .WithMany()
                 .HasForeignKey(e => e.FlagId);
@@ -132,11 +138,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.Container)
                 .WithOne(e => e.Instance)
                 .HasForeignKey<Container>(e => e.InstanceId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(e => e.Participation)
-                .WithMany(e => e.Instances)
-                .HasForeignKey(e => e.ParticipationId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Container).AutoInclude();
@@ -181,7 +182,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.Property(e => e.Status)
                 .HasConversion<string>();
 
-            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId, e.GameId });
+            entity.HasIndex(e => new { e.TeamId, e.ChallengeId, e.GameId });
         });
 
         builder.Entity<FlagContext>(entity =>
