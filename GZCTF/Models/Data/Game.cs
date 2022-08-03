@@ -82,12 +82,6 @@ public class Game
     public List<Submission> Submissions { get; set; } = new();
 
     /// <summary>
-    /// 比赛题目实例
-    /// </summary>
-    [JsonIgnore]
-    public List<Instance> Instances { get; set; } = new();
-
-    /// <summary>
     /// 比赛队伍参赛对象
     /// </summary>
     [JsonIgnore]
