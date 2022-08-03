@@ -98,8 +98,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   control: {
-    ...theme.fn.hover({ background: 'transparent' })
-  }
+    ...theme.fn.hover({ background: 'transparent' }),
+  },
 }))
 
 interface ActionIconWithConfirmProps {
@@ -251,7 +251,10 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Badge>
           </Group>
         </Accordion.Control>
-        <Group style={{ margin: `0 ${theme.spacing.xl}px`, minWidth: `${theme.spacing.xl * 3}px` }} position="right">
+        <Group
+          style={{ margin: `0 ${theme.spacing.xl}px`, minWidth: `${theme.spacing.xl * 3}px` }}
+          position="right"
+        >
           {StatusMap.get(participation.status!)?.transformTo.map((value) => {
             const s = StatusMap.get(value)!
             return (
