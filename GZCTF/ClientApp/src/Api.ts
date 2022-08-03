@@ -972,7 +972,7 @@ export interface ChallengeItem {
   score?: number
 
   /** 未解出、一血、二血、三血或者其他 */
-  rank?: SubmissionType
+  type?: SubmissionType
 }
 
 /**

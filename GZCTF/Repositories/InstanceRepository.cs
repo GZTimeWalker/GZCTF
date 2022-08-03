@@ -13,13 +13,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     private readonly ILogger<InstanceRepository> logger;
 
     public InstanceRepository(AppDbContext _context,
-        IContainerRepository _containerRepository,
         IContainerService _service,
+        IContainerRepository _containerRepository,
         ILogger<InstanceRepository> _logger) : base(_context)
     {
+        logger = _logger;
         service = _service;
         containerRepository = _containerRepository;
-        logger = _logger;
     }
 
     public async Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default)
@@ -50,6 +50,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             {
                 var flags = await context.Entry(challenge).Collection(e => e.Flags)
                         .Query().Where(e => !e.IsOccupied).ToListAsync(token);
+
+                if (flags.Count == 0)
+                {
+                    logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Fail, LogLevel.Warning);
+                    return null;
+                }
+
                 var pos = Random.Shared.Next(flags.Count);
                 flags[pos].IsOccupied = true;
                 instance.FlagContext = flags[pos];

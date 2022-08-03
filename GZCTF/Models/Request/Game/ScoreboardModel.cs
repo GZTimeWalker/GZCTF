@@ -112,7 +112,7 @@ public class ChallengeItem
     /// <summary>
     /// 未解出、一血、二血、三血或者其他
     /// </summary>
-    [JsonPropertyName("rank")]
+    [JsonPropertyName("type")]
     public SubmissionType Type { get; set; }
 
     /// <summary>

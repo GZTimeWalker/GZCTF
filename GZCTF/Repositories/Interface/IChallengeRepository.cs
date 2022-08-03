@@ -54,8 +54,8 @@ public interface IChallengeRepository : IRepository
     /// <param name="challenge"></param>
     /// <param name="game"></param>
     /// <param name="token"></param>
-    /// <returns></returns>
-    public Task EnsureInstances(Challenge challenge, Game game, CancellationToken token = default);
+    /// <returns>是否有实例更新</returns>
+    public Task<bool> EnsureInstances(Challenge challenge, Game game, CancellationToken token = default);
 
     /// <summary>
     /// 更新附件

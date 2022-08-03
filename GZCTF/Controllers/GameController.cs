@@ -378,7 +378,7 @@ public class GameController : ControllerBase
         var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
-            return NotFound(new RequestResponse("题目未找到", 404));
+            return NotFound(new RequestResponse("题目未找到或动态附件分配失败", 404));
 
         return Ok(ChallengeDetailModel.FromInstance(instance));
     }

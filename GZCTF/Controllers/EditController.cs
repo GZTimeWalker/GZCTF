@@ -433,7 +433,12 @@ public class EditController : Controller
         res.Update(model);
 
         if (model.IsEnabled == true)
-            await challengeRepository.EnsureInstances(res, game, token); // will also update IsEnabled
+        {
+            // will also update IsEnabled
+            if (await challengeRepository.EnsureInstances(res, game, token))
+                // flush scoreboard when instances are updated
+                gameRepository.FlushScoreboard(game);
+        }
         else
             await challengeRepository.UpdateAsync(res, token);
 

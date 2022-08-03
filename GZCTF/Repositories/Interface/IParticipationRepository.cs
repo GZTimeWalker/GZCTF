@@ -25,8 +25,8 @@ public interface IParticipationRepository : IRepository
     /// <param name="part"></param>
     /// <param name="game"></param>
     /// <param name="token"></param>
-    /// <returns></returns>
-    public Task EnsureInstances(Participation part, Game game, CancellationToken token = default);
+    /// <returns>是否有实例更新</returns>
+    public Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default);
 
     /// <summary>
     /// 通过 Id 更改参与状态

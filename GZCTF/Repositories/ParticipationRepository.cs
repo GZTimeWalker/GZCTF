@@ -23,15 +23,19 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         return participation;
     }
 
-    public async Task EnsureInstances(Participation part, Game game, CancellationToken token = default)
+    public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
         await context.Entry(part).Collection(p => p.Challenges).LoadAsync(token);
         await context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
 
+        bool update = false;
+
         foreach (var challenge in game.Challenges)
-            part.Challenges.Add(challenge);
+            update |= part.Challenges.Add(challenge);
 
         await UpdateAsync(part, token);
+
+        return update;
     }
 
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default)
