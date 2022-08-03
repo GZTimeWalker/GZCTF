@@ -19,7 +19,7 @@ import api, { ChallengeInfoModel, ChallengeTag } from '../../../../../Api'
 import { ChallengeTagItem, ChallengeTagLabelMap } from '../../../../../components/ChallengeItem'
 import ChallengeCreateModal from '../../../../../components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '../../../../../components/admin/ChallengeEditCard'
-import WithGameTab from '../../../../../components/admin/WithGameTab'
+import WithGameEditTab from '../../../../../components/admin/WithGameEditTab'
 import { showErrorNotification } from '../../../../../utils/ApiErrorHandler'
 
 const GameChallengeEdit: FC = () => {
@@ -89,7 +89,7 @@ const GameChallengeEdit: FC = () => {
   }
 
   return (
-    <WithGameTab
+    <WithGameEditTab
       headProps={{ position: 'apart' }}
       isLoading={!challenges}
       head={
@@ -163,7 +163,7 @@ const GameChallengeEdit: FC = () => {
         onClose={() => setCreateOpened(false)}
         onAddChallenge={(challenge) => mutate([challenge, ...(challenges ?? [])])}
       />
-    </WithGameTab>
+    </WithGameEditTab>
   )
 }
 

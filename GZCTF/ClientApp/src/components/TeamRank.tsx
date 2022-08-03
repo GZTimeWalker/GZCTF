@@ -22,9 +22,6 @@ const TeamRank: FC<PaperProps> = (props) => {
 
   return (
     <Card
-      style={{
-        maxWidth: '20rem',
-      }}
       {...props}
     >
       <Stack>
@@ -42,15 +39,15 @@ const TeamRank: FC<PaperProps> = (props) => {
         >
           <Stack spacing={2}>
             <Text className={classes.number}>{myteam?.rank}</Text>
-            <Text>排名</Text>
+            <Text size="sm">排名</Text>
           </Stack>
           <Stack spacing={2}>
             <Text className={classes.number}>{myteam?.score}</Text>
-            <Text>分数</Text>
+            <Text size="sm">分数</Text>
           </Stack>
           <Stack spacing={2}>
             <Text className={classes.number}>{myteam?.solvedCount}</Text>
-            <Text>攻克数量</Text>
+            <Text size="sm">攻克数量</Text>
           </Stack>
         </Group>
       </Stack>

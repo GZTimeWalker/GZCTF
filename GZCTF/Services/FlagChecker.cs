@@ -92,7 +92,7 @@ public class FlagChecker : IHostedService
         }
         catch (OperationCanceledException)
         {
-            logger.SystemLog($"任务取消，检查线程 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
+            logger.SystemLog($"任务取消，检查线程 #{id} 将退出", TaskStatus.Exit, LogLevel.Debug);
         }
         finally
         {

@@ -283,7 +283,7 @@ public class GameController : ControllerBase
     /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpGet("{id}/Challenges")]
-    [ProducesResponseType(typeof(IDictionary<string, IEnumerable<ChallengeInfo>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)

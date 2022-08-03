@@ -25,7 +25,7 @@ import {
   ChallengeTagLabelMap,
 } from '../../../../../../components/ChallengeItem'
 import ScoreFunc from '../../../../../../components/admin/ScoreFunc'
-import WithGameTab from '../../../../../../components/admin/WithGameTab'
+import WithGameEditTab from '../../../../../../components/admin/WithGameEditTab'
 import { showErrorNotification } from '../../../../../../utils/ApiErrorHandler'
 
 const GameChallengeEdit: FC = () => {
@@ -101,7 +101,7 @@ const GameChallengeEdit: FC = () => {
   }
 
   return (
-    <WithGameTab
+    <WithGameEditTab
       isLoading={!challenge}
       headProps={{ position: 'apart' }}
       head={
@@ -262,7 +262,7 @@ const GameChallengeEdit: FC = () => {
                 label={(value) =>
                   `最低分值: ${((value / 100) * (challengeInfo?.originalScore ?? 500)).toFixed(
                     0
-                  )}pt`
+                  )}pts`
                 }
                 disabled={disabled}
                 value={minRate}
@@ -346,7 +346,7 @@ const GameChallengeEdit: FC = () => {
           </>
         )}
       </Stack>
-    </WithGameTab>
+    </WithGameEditTab>
   )
 }
 

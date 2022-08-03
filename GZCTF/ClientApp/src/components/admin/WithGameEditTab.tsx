@@ -17,7 +17,7 @@ const pages = [
   { icon: mdiAccountCogOutline, title: '队伍审核', path: 'review' },
 ]
 
-interface GameTabProps extends React.PropsWithChildren {
+interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
   headProps?: GroupProps
   isLoading?: boolean
@@ -26,7 +26,7 @@ interface GameTabProps extends React.PropsWithChildren {
 const getTab = (path: string) =>
   pages.find((page) => path.startsWith('/admin/games/') && path.includes(page.path))
 
-const WithGameTab: FC<GameTabProps> = ({ children, isLoading, ...others }) => {
+const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
@@ -78,4 +78,4 @@ const WithGameTab: FC<GameTabProps> = ({ children, isLoading, ...others }) => {
   )
 }
 
-export default WithGameTab
+export default WithGameEditTab

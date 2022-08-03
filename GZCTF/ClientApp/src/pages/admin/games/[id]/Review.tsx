@@ -40,7 +40,7 @@ import api, {
   ParticipationStatus,
   ProfileUserInfoModel,
 } from '../../../../Api'
-import WithGameTab from '../../../../components/admin/WithGameTab'
+import WithGameEditTab from '../../../../components/admin/WithGameEditTab'
 import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
 const StatusMap = new Map([
@@ -330,7 +330,7 @@ const GameTeamReview: FC = () => {
   }, [])
 
   return (
-    <WithGameTab
+    <WithGameEditTab
       headProps={{ position: 'apart' }}
       isLoading={!participations}
       head={
@@ -388,7 +388,7 @@ const GameTeamReview: FC = () => {
           </Paper>
         )}
       </ScrollArea>
-    </WithGameTab>
+    </WithGameEditTab>
   )
 }
 

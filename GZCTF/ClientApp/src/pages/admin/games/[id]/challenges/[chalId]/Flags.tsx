@@ -28,7 +28,7 @@ import AttachmentUploadModal, {
 } from '../../../../../../components/admin/AttachmentUploadModal'
 import FlagCreateModal from '../../../../../../components/admin/FlagCreateModal'
 import FlagEditPanel from '../../../../../../components/admin/FlagEditPanel'
-import WithGameTab from '../../../../../../components/admin/WithGameTab'
+import WithGameEditTab from '../../../../../../components/admin/WithGameEditTab'
 import { showErrorNotification } from '../../../../../../utils/ApiErrorHandler'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
@@ -405,7 +405,7 @@ const GameChallengeEdit: FC = () => {
   }
 
   return (
-    <WithGameTab
+    <WithGameEditTab
       isLoading={!challenge}
       headProps={{ position: 'apart' }}
       head={
@@ -429,7 +429,7 @@ const GameChallengeEdit: FC = () => {
       ) : (
         <OneAttachmentWithFlags onDelete={onDeleteFlag} />
       )}
-    </WithGameTab>
+    </WithGameEditTab>
   )
 }
 

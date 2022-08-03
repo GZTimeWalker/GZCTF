@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Box, createStyles, Group, GroupPosition, MantineColor } from '@mantine/core'
+import { Box, createStyles, Group, GroupPosition, GroupProps, MantineColor } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import LogoHeader from './LogoHeader'
 
@@ -14,11 +14,13 @@ interface TabProps {
   label?: React.ReactNode
 }
 
-interface IconTabsProps {
+interface IconTabsProps extends GroupProps {
   position?: GroupPosition
   tabs: TabProps[]
   grow?: boolean
   active?: number
+  withIcon?: boolean
+  left?: React.ReactNode
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
@@ -73,7 +75,9 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
         gap: theme.spacing.md,
       },
     },
-    tabLabel: {},
+    tabLabel: {
+      fontWeight: 700
+    },
     tabIcon: {
       margin: 'auto',
 
@@ -109,7 +113,7 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
 }
 
 const IconTabs: FC<IconTabsProps> = (props) => {
-  const { active, onTabChange, tabs, ...others } = props
+  const { active, onTabChange, tabs, withIcon, left, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
 
   const activeTab = clamp(_activeTab, 0, tabs.length - 1)
@@ -128,13 +132,16 @@ const IconTabs: FC<IconTabsProps> = (props) => {
 
   return (
     <Group position="apart" style={{ width: '100%' }}>
-      <LogoHeader
-        sx={(theme) => ({
-          [theme.fn.smallerThan('xs')]: {
-            display: 'none',
-          },
-        })}
-      />
+      {left}
+      {withIcon && (
+        <LogoHeader
+          sx={(theme) => ({
+            [theme.fn.smallerThan('xs')]: {
+              display: 'none',
+            },
+          })}
+        />
+      )}
       <Group
         position="right"
         noWrap

@@ -1004,6 +1004,29 @@ export interface ChallengeInfo {
    * @format int32
    */
   score?: number
+
+  /** 题目三血 */
+  bloods?: (Blood | null)[]
+}
+
+export interface Blood {
+  /**
+   * 队伍Id
+   * @format int32
+   */
+  id?: number
+
+  /** 队伍名称 */
+  name?: string
+
+  /** 队伍头像 */
+  avatar?: string | null
+
+  /**
+   * 获得此血的时间
+   * @format date-time
+   */
+  submitTimeUTC?: string | null
 }
 
 /**

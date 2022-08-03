@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         '/api': TARGET,
         '/swagger': TARGET,
         '/assets': TARGET,
-        '/hub': { target: TARGET.replace('http:', 'ws:'), ws: true },
+        '/hub': { target: TARGET.replace('http', 'ws'), ws: true },
       },
     },
     build: {

@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@mantine/core'
 import { mdiBackburger } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import WithGameTab from '../../../../components/admin/WithGameTab'
+import WithGameEditTab from '../../../../components/admin/WithGameEditTab'
 
 const GameNoticeEdit: FC = () => {
   const navigate = useNavigate()
   return (
-    <WithGameTab
+    <WithGameEditTab
       headProps={{ position: 'left' }}
       head={
         <Button
@@ -18,7 +18,7 @@ const GameNoticeEdit: FC = () => {
           返回上级
         </Button>
       }
-    ></WithGameTab>
+    ></WithGameEditTab>
   )
 }
 

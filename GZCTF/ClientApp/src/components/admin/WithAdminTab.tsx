@@ -60,6 +60,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, c
   return (
     <Stack spacing="xs">
       <IconTabs
+        withIcon
         active={activeTab}
         onTabChange={onChange}
         tabs={pages.map((p) => ({

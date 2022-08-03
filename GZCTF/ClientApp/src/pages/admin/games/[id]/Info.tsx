@@ -20,7 +20,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameInfoModel } from '../../../../Api'
-import WithGameTab from '../../../../components/admin/WithGameTab'
+import WithGameEditTab from '../../../../components/admin/WithGameEditTab'
 import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
 const GameInfoEdit: FC = () => {
@@ -109,7 +109,7 @@ const GameInfoEdit: FC = () => {
   }
 
   return (
-    <WithGameTab
+    <WithGameEditTab
       headProps={{ position: 'apart' }}
       isLoading={!game}
       head={
@@ -259,7 +259,7 @@ const GameInfoEdit: FC = () => {
         maxRows={7}
         onChange={(e) => game && setGame({ ...game, content: e.target.value })}
       />
-    </WithGameTab>
+    </WithGameEditTab>
   )
 }
 

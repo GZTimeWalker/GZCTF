@@ -145,7 +145,7 @@ const GameDetail: FC = () => {
     data: game,
     error,
     mutate,
-  } = api.game.useGameGames(parseInt(id!), {
+  } = api.game.useGameGames(numId, {
     refreshInterval: 0,
     revalidateOnFocus: false,
   })

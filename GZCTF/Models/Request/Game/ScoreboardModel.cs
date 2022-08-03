@@ -25,7 +25,7 @@ public class ScoreboardModel
     /// <summary>
     /// 题目信息
     /// </summary>
-    public IDictionary<string, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
+    public IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
 }
 
 public class TopTimeLine
@@ -147,7 +147,6 @@ public class ChallengeInfo
     /// <summary>
     /// 题目三血
     /// </summary>
-    [JsonIgnore]
     public Blood?[] Bloods { get; set; } = default!;
 }
 

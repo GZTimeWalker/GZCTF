@@ -36,6 +36,7 @@ const Games: FC = () => {
     <WithNavBar>
       <Stack>
         <IconTabs
+          withIcon
           active={activeTab}
           onTabChange={onChange}
           tabs={[

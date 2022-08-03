@@ -93,7 +93,7 @@ public class GameRepository : RepositoryBase, IGameRepository
             }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
-    private static IDictionary<string, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
+    private static IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(g => g.Instance.Challenge)
             .Select(c => new ChallengeInfo
             {
@@ -103,7 +103,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 Score = c.Key.CurrentScore,
                 Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
-            .ToDictionary(c => c.Key.ToString(), c => c.AsEnumerable());
+            .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(j => j.Instance.Participation)
