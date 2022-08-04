@@ -50,7 +50,7 @@ const ChallengePanel: FC = () => {
           <Tabs.Tab value={'All'} icon={<Icon path={mdiPuzzle} size={1} />}>
             <Group position="apart">
               <Text>All</Text>
-              <Text>{currentChallenges.length}</Text>
+              <Text>{allChallenges.length}</Text>
             </Group>
           </Tabs.Tab>
           {tags.map((tab) => {
