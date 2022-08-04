@@ -413,10 +413,11 @@ public class GameController : ControllerBase
 
         Submission submission = new()
         {
-            ChallengeId = challengeId,
             Answer = flag,
             Game = context.Game!,
             User = context.User,
+            ChallengeId = challengeId,
+            TeamId = context.Participation!.TeamId,
             Participation = context.Participation!,
             Status = AnswerResult.FlagSubmitted,
             SubmitTimeUTC = DateTimeOffset.UtcNow,

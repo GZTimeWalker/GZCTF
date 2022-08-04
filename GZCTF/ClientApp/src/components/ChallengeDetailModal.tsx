@@ -20,7 +20,7 @@ import {
   TypographyStylesProvider,
 } from '@mantine/core'
 import { useClipboard, useDisclosure, useInputState, useInterval } from '@mantine/hooks'
-import { showNotification } from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { AnswerResult, ChallengeType } from '../Api'
@@ -134,7 +134,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             setFlagId(0)
             setFlag('')
             if (res.data === AnswerResult.Accepted) {
-              showNotification({
+              updateNotification({
+                id: 'flag-submitted',
                 color: 'teal',
                 message: 'Flag 正确',
                 icon: <Icon path={mdiCheck} size={1} />,
@@ -143,7 +144,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               onDestoryContainer()
               props.onClose()
             } else if (res.data === AnswerResult.WrongAnswer) {
-              showNotification({
+              updateNotification({
+                id: 'flag-submitted',
                 color: 'red',
                 message: 'Flag 错误',
                 icon: <Icon path={mdiClose} size={1} />,
@@ -167,6 +169,14 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         .then((res) => {
           setFlagId(res.data)
           checkInterval.start()
+          showNotification({
+            id: 'flag-submitted',
+            color: 'orange',
+            message: '请等待 flag 检查……',
+            loading: true,
+            autoClose: false,
+            disallowClose: true,
+          })
         })
         .catch(showErrorNotification)
         .finally(() => setDisabled(false))
