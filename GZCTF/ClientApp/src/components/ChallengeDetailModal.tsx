@@ -19,10 +19,11 @@ import {
   Title,
   TypographyStylesProvider,
 } from '@mantine/core'
-import { useClipboard, useDisclosure, useInterval } from '@mantine/hooks'
-import { mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
+import { useClipboard, useDisclosure, useInputState, useInterval } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ChallengeType } from '../Api'
+import api, { AnswerResult, ChallengeType } from '../Api'
 import { showErrorNotification } from '../utils/ApiErrorHandler'
 import { useTypographyStyles } from '../utils/ThemeOverride'
 import { ChallengeTagItemProps } from './ChallengeItem'
@@ -79,6 +80,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const clipBoard = useClipboard()
 
   const [disabled, setDisabled] = useState(false)
+  const [flag, setFlag] = useInputState('')
 
   const onCreateContainer = () => {
     if (challengeId) {
@@ -114,6 +116,57 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               instanceEntry: null,
             },
           })
+        })
+        .catch(showErrorNotification)
+        .finally(() => setDisabled(false))
+    }
+  }
+
+  const [flagId, setFlagId] = useState<number>(0)
+
+  const checkInterval = useInterval(() => {
+    if (flagId) {
+      api.game
+        .gameStatus(gameId, challengeId, flagId)
+        .then((res) => {
+          if (res && res.data !== AnswerResult.FlagSubmitted) {
+            checkInterval.stop()
+            setFlagId(0)
+            setFlag('')
+            if (res.data === AnswerResult.Accepted) {
+              showNotification({
+                color: 'teal',
+                message: 'Flag 正确',
+                icon: <Icon path={mdiCheck} size={1} />,
+                disallowClose: true,
+              })
+              onDestoryContainer()
+              props.onClose()
+            } else if (res.data === AnswerResult.WrongAnswer) {
+              showNotification({
+                color: 'red',
+                message: 'Flag 错误',
+                icon: <Icon path={mdiClose} size={1} />,
+                disallowClose: true,
+              })
+            }
+          }
+        })
+        .catch((err) => {
+          showErrorNotification(err)
+          checkInterval.stop()
+        })
+    }
+  }, 1000)
+
+  const onSubmit = () => {
+    if (challengeId && flag) {
+      setDisabled(true)
+      api.game
+        .gameSubmit(gameId, challengeId, flag)
+        .then((res) => {
+          setFlagId(res.data)
+          checkInterval.start()
         })
         .catch(showErrorNotification)
         .finally(() => setDisabled(false))
@@ -240,6 +293,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         <Divider size="sm" variant="dashed" color={tagData.color} />
         <TextInput
           placeholder="flag{...}"
+          value={flag}
+          onChange={setFlag}
           styles={{
             rightSection: {
               width: 'auto',
@@ -248,7 +303,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               fontFamily: theme.fontFamilyMonospace,
             },
           }}
-          rightSection={<Button>提交 flag</Button>}
+          rightSection={<Button onClick={onSubmit}>提交 flag</Button>}
         />
       </Stack>
     </Modal>

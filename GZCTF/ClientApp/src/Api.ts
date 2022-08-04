@@ -2945,11 +2945,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/game/{id}/challenges/{challengeId}
      */
     gameSubmit: (id: number, challengeId: number, data: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
+      this.request<number, RequestResponse>({
         path: `/api/game/${id}/challenges/${challengeId}`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
+        format: 'json',
         ...params,
       }),
 
@@ -2959,11 +2960,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Game
      * @name GameStatus
      * @summary 查询 flag 状态
-     * @request GET:/api/game/{id}/status/{submitId}
+     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
      */
     gameStatus: (id: number, challengeId: number, submitId: number, params: RequestParams = {}) =>
       this.request<AnswerResult, RequestResponse>({
-        path: `/api/game/${id}/status/${submitId}`,
+        path: `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
         method: 'GET',
         format: 'json',
         ...params,
@@ -2974,14 +2975,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Game
      * @name GameStatus
      * @summary 查询 flag 状态
-     * @request GET:/api/game/{id}/status/{submitId}
+     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
      */
     useGameStatus: (
       id: number,
       challengeId: number,
       submitId: number,
       options?: SWRConfiguration
-    ) => useSWR<AnswerResult, RequestResponse>(`/api/game/${id}/status/${submitId}`, options),
+    ) =>
+      useSWR<AnswerResult, RequestResponse>(
+        `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
+        options
+      ),
 
     /**
      * @description 查询 flag 状态，需要User权限
@@ -2989,7 +2994,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Game
      * @name GameStatus
      * @summary 查询 flag 状态
-     * @request GET:/api/game/{id}/status/{submitId}
+     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
      */
     mutateGameStatus: (
       id: number,
@@ -2997,7 +3002,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       submitId: number,
       data?: AnswerResult | Promise<AnswerResult>,
       options?: MutatorOptions
-    ) => mutate<AnswerResult>(`/api/game/${id}/status/${submitId}`, data, options),
+    ) =>
+      mutate<AnswerResult>(
+        `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
+        data,
+        options
+      ),
 
     /**
      * @description 创建容器，需要User权限

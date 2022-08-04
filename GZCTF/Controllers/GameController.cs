@@ -401,7 +401,7 @@ public class GameController : ControllerBase
     /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpPost("{id}/Challenges/{challengeId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
@@ -443,7 +443,7 @@ public class GameController : ControllerBase
     /// <response code="200">成功获取比赛提交状态</response>
     /// <response code="404">提交未找到</response>
     [RequireUser]
-    [HttpGet("{id}/Status/{submitId}")]
+    [HttpGet("{id}/Challenges/{challengeId}/Status/{submitId}")]
     [ProducesResponseType(typeof(AnswerResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Status([FromRoute] int id, [FromRoute] int challengeId, [FromRoute] int submitId, CancellationToken token)
