@@ -25,6 +25,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     public async Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default)
     {
         var instance = await context.Instances
+            .Include(i => i.FlagContext)
             .Where(e => e.ChallengeId == challengeId && e.Participation == team)
             .SingleOrDefaultAsync(token);
 
@@ -65,10 +66,12 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             {
                 instance.FlagContext = new()
                 {
+                    Challenge = challenge,
                     Flag = $"flag{Guid.NewGuid():B}",
                     IsOccupied = true
                 };
             }
+            await context.AddAsync(instance);
         }
 
         instance.IsLoaded = true;
@@ -118,8 +121,14 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
                 ExposedPort = instance.Challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口"),
             }, token);
-            instance.Container = container;
 
+            if (container is null)
+            {
+                logger.SystemLog($"为题目 {instance.Challenge.Title} 启动容器实例失败", TaskStatus.Fail, LogLevel.Warning);
+                return new TaskResult<Container>(TaskStatus.Fail);
+            }
+
+            instance.Container = container;
             await context.SaveChangesAsync(token);
         }
 

@@ -35,9 +35,9 @@ interface ChallengeCardProps {
   onClick?: () => void
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, onClick }) => {
+const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, onClick }) => {
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
-  const { classes, theme, cx } = useStyles()
+  const { theme } = useStyles()
 
   return (
     <Card
