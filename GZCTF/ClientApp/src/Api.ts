@@ -1005,6 +1005,12 @@ export interface ChallengeInfo {
    */
   score?: number
 
+  /**
+   * 解出队伍数量
+   * @format int32
+   */
+  solved?: number
+
   /** 题目三血 */
   bloods?: (Blood | null)[]
 }

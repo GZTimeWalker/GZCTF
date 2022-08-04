@@ -145,6 +145,12 @@ public class ChallengeInfo
     public int Score { get; set; }
 
     /// <summary>
+    /// 解出队伍数量
+    /// </summary>
+    [JsonPropertyName("solved")]
+    public int SolvedCount { get; set; }
+
+    /// <summary>
     /// 题目三血
     /// </summary>
     public Blood?[] Bloods { get; set; } = default!;

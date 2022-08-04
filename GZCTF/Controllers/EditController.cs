@@ -439,10 +439,12 @@ public class EditController : Controller
                 // flush scoreboard when instances are updated
                 gameRepository.FlushScoreboard(game);
         }
-        else if (model.IsEnabled == false)
-            gameRepository.FlushScoreboard(game);
         else
+        {
+            // flush scoreboard for challenge update
             await challengeRepository.UpdateAsync(res, token);
+            gameRepository.FlushScoreboard(game);
+        }
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }

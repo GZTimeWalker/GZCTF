@@ -101,6 +101,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 Title = c.Key.Title,
                 Tag = c.Key.Tag,
                 Score = c.Key.CurrentScore,
+                SolvedCount = c.Key.AcceptedCount,
                 Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
