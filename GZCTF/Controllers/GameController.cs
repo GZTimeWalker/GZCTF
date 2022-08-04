@@ -371,7 +371,7 @@ public class GameController : ControllerBase
     public async Task<IActionResult> GetChallenge([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
         if (id <= 0 || challengeId <= 0)
-            return NotFound(new RequestResponse("题目未找到或动态附件分配失败", 404));
+            return NotFound(new RequestResponse("题目未找到", 404));
 
         var context = await GetContextInfo(id, token);
 

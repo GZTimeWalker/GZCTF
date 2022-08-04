@@ -23,6 +23,7 @@ import { useClipboard, useDisclosure, useInterval } from '@mantine/hooks'
 import { mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeType } from '../Api'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 import { useTypographyStyles } from '../utils/ThemeOverride'
 import { ChallengeTagItemProps } from './ChallengeItem'
 
@@ -53,9 +54,7 @@ const Countdown: FC<{ time: string }> = ({ time }) => {
   return (
     <Card style={{ width: '5rem', textAlign: 'center', padding: '0px 4px' }}>
       <Text size="sm" style={{ fontWeight: 700 }}>
-        {countdown.asSeconds() > 0
-          ? countdown.format('HH:mm:ss')
-          : '00:00:00'}
+        {countdown.asSeconds() > 0 ? countdown.format('HH:mm:ss') : '00:00:00'}
       </Text>
     </Card>
   )
@@ -65,7 +64,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { gameId, challengeId, tagData, title, score, ...modalProps } = props
   const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
 
-  const { data: challenge } = api.game.useGameGetChallenge(gameId, challengeId, {
+  const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
     refreshInterval: 0,
     revalidateOnFocus: false,
   })
@@ -79,19 +78,45 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { classes, theme } = useTypographyStyles()
   const clipBoard = useClipboard()
 
+  const [disabled, setDisabled] = useState(false)
+
   const onCreateContainer = () => {
     if (challengeId) {
-      api.game.gameCreateContainer(gameId, challengeId).then((res) => {
-        console.log(res.data)
-      })
+      setDisabled(true)
+      api.game
+        .gameCreateContainer(gameId, challengeId)
+        .then((res) => {
+          mutate({
+            ...challenge,
+            context: {
+              ...challenge?.context,
+              closeTime: res.data.expectStopAt,
+              instanceEntry: res.data.entry,
+            },
+          })
+        })
+        .catch(showErrorNotification)
+        .finally(() => setDisabled(false))
     }
   }
 
   const onDestoryContainer = () => {
     if (challengeId) {
-      api.game.gameDeleteContainer(gameId, challengeId).then((res) => {
-        console.log(res.data)
-      })
+      setDisabled(true)
+      api.game
+        .gameDeleteContainer(gameId, challengeId)
+        .then(() => {
+          mutate({
+            ...challenge,
+            context: {
+              ...challenge?.context,
+              closeTime: null,
+              instanceEntry: null,
+            },
+          })
+        })
+        .catch(showErrorNotification)
+        .finally(() => setDisabled(false))
     }
   }
 
@@ -167,7 +192,9 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           </Group>
           {isDynamic && !challenge?.context?.instanceEntry && (
             <Group position="center" spacing={2}>
-              <Button onClick={onCreateContainer}>启动实例</Button>
+              <Button onClick={onCreateContainer} disabled={disabled} loading={disabled}>
+                开启实例
+              </Button>
             </Group>
           )}
           {isDynamic && challenge?.context?.instanceEntry && (
@@ -191,7 +218,9 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 <Button color="orange" disabled={instanceLeft > 10}>
                   延长时间
                 </Button>
-                <Button color="red" onClick={onDestoryContainer}>销毁实例</Button>
+                <Button color="red" onClick={onDestoryContainer} disabled={disabled}>
+                  销毁实例
+                </Button>
               </Group>
             </Stack>
           )}
