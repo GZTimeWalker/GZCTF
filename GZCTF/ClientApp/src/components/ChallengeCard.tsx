@@ -1,7 +1,33 @@
 import { FC } from 'react'
-import { Badge, Card, Divider, Group, Stack, Text, Title } from '@mantine/core'
+import {
+  Card,
+  createStyles,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core'
+import { Icon } from '@mdi/react'
 import { ChallengeInfo } from '../Api'
 import { ChallengeTagLabelMap } from './ChallengeItem'
+
+const useStyles = createStyles((theme, _param, getRef) => {
+  const solved = { ref: getRef('solved') } as const
+
+  return {
+    solved,
+    indicator: {
+      display: 'none',
+      background: 'transparent',
+      transform: 'translateY(-8px) translateX(30px) rotate(30deg)',
+
+      [`&.${solved.ref}`]: {
+        display: 'flex',
+      },
+    },
+  }
+})
 
 interface ChallengeCardProps {
   challenge: ChallengeInfo
@@ -9,14 +35,13 @@ interface ChallengeCardProps {
   onClick?: () => void
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, ...others }) => {
-  const noSolved = challenge.bloods?.filter((b) => b !== null).length === 0
-
-  console.log(challenge)
+const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, onClick }) => {
+  const tagData = ChallengeTagLabelMap.get(challenge.tag!)
+  const { classes, theme, cx } = useStyles()
 
   return (
     <Card
-      {...others}
+      onClick={onClick}
       shadow="sm"
       radius="md"
       sx={(theme) => ({
@@ -28,17 +53,18 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, ...others })
         },
       })}
     >
-      <Stack spacing="xs">
-        <Group noWrap position="apart">
-          <Title order={4} align="left">
+      <Stack spacing={3}>
+        <Group noWrap position="apart" spacing="xs">
+          <Text lineClamp={1} weight={700} size={theme.fontSizes.lg}>
             {challenge.title}
-          </Title>
-          <Badge color={solved ? 'yellow' : 'gray'}>{solved ? '已攻克' : '未攻克'}</Badge>
+          </Text>
         </Group>
         <Divider
           size="sm"
           variant="dashed"
-          color={ChallengeTagLabelMap.get(challenge.tag!)?.color}
+          color={tagData?.color}
+          labelPosition="center"
+          label={tagData && <Icon path={tagData.icon} size={1} />}
         />
         <Group position="center">
           <Text
@@ -51,11 +77,12 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, ...others })
           </Text>
         </Group>
         <Group position="center" style={{ height: '1.2rem' }}>
-          {noSolved && (
-            <Text color="dimmed" size="xs">
-              还没有队伍解出此题
+          <Title order={6}>
+            {`${challenge.solved} `}
+            <Text color="dimmed" size="xs" inherit component="span">
+              支队伍攻克
             </Text>
-          )}
+          </Title>
         </Group>
       </Stack>
     </Card>

@@ -1232,6 +1232,12 @@ export interface ChallengeDetailModel {
 }
 
 export interface ClientFlagContext {
+  /**
+   * 题目实例的关闭时间
+   * @format date-time
+   */
+  closeTime?: string | null
+
   /** 题目实例的连接方式 */
   instanceEntry?: string | null
 

@@ -129,7 +129,7 @@ const getLabel = (path: string) =>
 const AppNavbar: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { classes, cx } = useStyles()
+  const { classes } = useStyles()
 
   const [active, setActive] = useState(getLabel(location.pathname) ?? '')
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
@@ -237,7 +237,7 @@ const AppNavbar: FC = () => {
               <ActionIcon
                 component={Link}
                 to={`/account/login?from=${location.pathname}`}
-                className={cx(classes.link)}
+                className={classes.link}
               >
                 <Icon path={mdiAccountCircleOutline} size={1} />
               </ActionIcon>

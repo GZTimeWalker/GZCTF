@@ -11,10 +11,12 @@ import {
   TypographyStylesProvider,
 } from '@mantine/core'
 import { Notice } from '../Api'
+import { useTypographyStyles } from '../utils/ThemeOverride'
 
 const NoticeCard: FC<Notice> = (notice) => {
   const theme = useMantineTheme()
   const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]
+  const { classes } = useTypographyStyles()
 
   return (
     <Card shadow="sm" p="lg">
@@ -30,7 +32,7 @@ const NoticeCard: FC<Notice> = (notice) => {
       >
         <Stack>
           <Title order={3}>{notice.title}</Title>
-          <TypographyStylesProvider>
+          <TypographyStylesProvider className={classes.root}>
             <div dangerouslySetInnerHTML={{ __html: marked(notice.content) }} />
           </TypographyStylesProvider>
         </Stack>

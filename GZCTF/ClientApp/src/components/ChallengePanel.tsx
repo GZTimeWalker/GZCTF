@@ -1,10 +1,11 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Group, ScrollArea, SimpleGrid, Tabs, Text } from '@mantine/core'
 import { mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ChallengeTag, SubmissionType } from '../Api'
+import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '../Api'
 import ChallengeCard from './ChallengeCard'
+import ChallengeDetailModal from './ChallengeDetailModal'
 import { ChallengeTagLabelMap } from './ChallengeItem'
 
 const ChallengePanel: FC = () => {
@@ -20,7 +21,11 @@ const ChallengePanel: FC = () => {
   const [activeTab, setActiveTab] = React.useState<ChallengeTag | 'All'>('All')
 
   const allChallenges = Object.values(challenges ?? {}).flat()
-  const currentChallenges = challenges && activeTab !== "All" ? challenges[activeTab] ?? [] : allChallenges
+  const currentChallenges =
+    challenges && activeTab !== 'All' ? challenges[activeTab] ?? [] : allChallenges
+
+  const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
+  const [detailOpened, setDetailOpened] = useState(false)
 
   return (
     <Group noWrap position="apart" align="flex-start" style={{ width: 'calc(100% - 21rem)' }}>
@@ -77,6 +82,10 @@ const ChallengePanel: FC = () => {
           {currentChallenges.map((chal) => (
             <ChallengeCard
               challenge={chal}
+              onClick={() => {
+                setChallenge(chal)
+                setDetailOpened(true)
+              }}
               solved={
                 myteam &&
                 myteam.challenges?.find((c) => c.id === chal.id)?.type !== SubmissionType.Unaccepted
@@ -85,6 +94,18 @@ const ChallengePanel: FC = () => {
           ))}
         </SimpleGrid>
       </ScrollArea>
+      <ChallengeDetailModal
+        opened={detailOpened}
+        onClose={() => setDetailOpened(false)}
+        withCloseButton={false}
+        size="30%"
+        centered
+        gameId={numId}
+        tagData={ChallengeTagLabelMap.get(challenge?.tag as ChallengeTag ?? ChallengeTag.Misc)!}
+        title={challenge?.title ?? ''}
+        score={challenge?.score ?? 0}
+        challengeId={challenge?.id ?? null}
+      />
     </Group>
   )
 }

@@ -24,6 +24,7 @@ import { Icon } from '@mdi/react'
 import api, { ParticipationStatus } from '../../../Api'
 import WithNavBar from '../../../components/WithNavbar'
 import { showErrorNotification } from '../../../utils/ApiErrorHandler'
+import { useTypographyStyles } from '../../../utils/ThemeOverride'
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -151,6 +152,7 @@ const GameDetail: FC = () => {
   })
 
   const { classes, theme } = useStyles()
+  const { classes: typographyClasses } = useTypographyStyles()
 
   const startTime = dayjs(game?.start) ?? dayjs()
   const endTime = dayjs(game?.end) ?? dayjs()
@@ -284,7 +286,7 @@ const GameDetail: FC = () => {
         <Stack spacing="xs">
           {GetAlert(status)}
           <Group noWrap align="flex-start">
-            <TypographyStylesProvider>
+            <TypographyStylesProvider className={typographyClasses.root}>
               <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
             </TypographyStylesProvider>
           </Group>

@@ -7,13 +7,13 @@ import {
   Badge,
   Card,
   Title,
-  useMantineTheme,
   TypographyStylesProvider,
   PaperProps,
 } from '@mantine/core'
 import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Notice } from '../../Api'
+import { useTypographyStyles } from '../../utils/ThemeOverride'
 
 interface NoticeEditCardProps extends PaperProps {
   notice: Notice
@@ -23,7 +23,7 @@ interface NoticeEditCardProps extends PaperProps {
 }
 
 const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onPin, ...props }) => {
-  const theme = useMantineTheme()
+  const { classes, theme } = useTypographyStyles()
   return (
     <Card shadow="sm" p="lg" {...props}>
       <Stack>
@@ -50,7 +50,7 @@ const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onP
             </ActionIcon>
           </Group>
         </Group>
-        <TypographyStylesProvider>
+        <TypographyStylesProvider className={classes.root}>
           <div dangerouslySetInnerHTML={{ __html: marked(notice.content) }} />
         </TypographyStylesProvider>
         <Group position="right">

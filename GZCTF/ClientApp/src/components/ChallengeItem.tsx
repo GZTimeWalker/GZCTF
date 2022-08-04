@@ -8,8 +8,8 @@ import {
   mdiConsole,
   mdiEthereum,
   mdiFingerprint,
+  mdiGamepadVariantOutline,
   mdiMatrix,
-  mdiQrcode,
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -42,7 +42,7 @@ export const ChallengeTypeItem = forwardRef<HTMLDivElement, ChallengeTypeItemPro
 )
 
 export const ChallengeTagLabelMap = new Map<ChallengeTag, ChallengeTagItemProps>([
-  [ChallengeTag.Misc, { desrc: '杂项', icon: mdiQrcode, label: ChallengeTag.Misc, color: 'teal' }],
+  [ChallengeTag.Misc, { desrc: '杂项', icon: mdiGamepadVariantOutline, label: ChallengeTag.Misc, color: 'teal' }],
   [
     ChallengeTag.Crypto,
     { desrc: '密码学', icon: mdiMatrix, label: ChallengeTag.Crypto, color: 'indigo' },
