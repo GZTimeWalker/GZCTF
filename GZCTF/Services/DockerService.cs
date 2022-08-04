@@ -62,7 +62,41 @@ public class DockerService : IContainerService
     private async Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default)
     {
         // TODO: Docker Registry Auth Required
-        var res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+        CreateContainerResponse? res = null;
+        try
+        {
+            res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+        }
+        catch (DockerImageNotFoundException)
+        {
+            logger.SystemLog($"拉取容器镜像 {parameters.Image}", TaskStatus.Pending, LogLevel.Information);
+
+            await dockerClient.Images.CreateImageAsync(new()
+            {
+                FromImage = parameters.Image
+            }, null, new Progress<JSONMessage>(msg =>
+            {
+                Console.WriteLine($"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
+            }), token);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message, e);
+            return null;
+        }
+
+        if (res is null)
+        {
+            try
+            {
+                res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message, e);
+                return null;
+            }
+        }
 
         Container container = new()
         {
