@@ -59,13 +59,11 @@ public class Container
     /// <summary>
     /// 公开 IP
     /// </summary>
-    [Required]
     public string? PublicIP { get; set; }
 
     /// <summary>
     /// 公开端口
     /// </summary>
-    [Required]
     public int? PublicPort { get; set; }
 
     /// <summary>

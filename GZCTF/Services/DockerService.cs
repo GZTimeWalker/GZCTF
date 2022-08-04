@@ -11,6 +11,7 @@ namespace CTFServer.Services;
 public class DockerOptions
 {
     public string Uri { get; set; } = default!;
+    public string PublicIP { get; set; } = default!;
 }
 
 public class DockerService : IContainerService
@@ -30,18 +31,23 @@ public class DockerService : IContainerService
 
         dockerClient = cfg.CreateClient();
 
-        logger.SystemLog($"Docker 服务已启动 ({this.options.Uri})", TaskStatus.Success, LogLevel.Debug);
+        if (string.IsNullOrEmpty(this.options.Uri))
+            logger.SystemLog($"Docker 服务已启动 (localhost)", TaskStatus.Success, LogLevel.Debug);
+        else
+            logger.SystemLog($"Docker 服务已启动 ({this.options.Uri})", TaskStatus.Success, LogLevel.Debug);
     }
 
     public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
     {
+        // TODO: Add Health Check
         var parameters = new CreateContainerParameters()
         {
             Image = config.Image,
-            Name = $"{config.Image.Split("/").LastOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
+            Name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
             Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" },
-            // TODO: Add Health Check
-            ExposedPorts = { { config.ExposedPort.ToString(), default } },
+            ExposedPorts = new Dictionary<string, EmptyStruct>() {
+                { config.ExposedPort.ToString(), new EmptyStruct() }
+            },
             HostConfig = new()
             {
                 PublishAllPorts = true,
@@ -93,7 +99,13 @@ public class DockerService : IContainerService
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(1);
-        container.Port = int.Parse(info.NetworkSettings.Ports[parameters.ExposedPorts.First().Key].First().HostPort);
+        container.Port = int.Parse(info.NetworkSettings.Ports
+            .FirstOrDefault(p =>
+                p.Key.StartsWith(parameters.ExposedPorts.First().Key)
+            ).Value.First().HostPort);
+
+        if (!string.IsNullOrEmpty(options.PublicIP))
+            container.PublicIP = options.PublicIP;
 
         return container;
     }

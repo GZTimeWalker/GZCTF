@@ -47,7 +47,7 @@ public class K8sService : IContainerService
 
     public async Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
     {
-        var name = $"{config.Image.Split("/").LastOrDefault()?.Replace(":", "-")}-{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}";
+        var name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}-{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}";
         var pod = new V1Pod("v1", "Pod")
         {
             Metadata = new V1ObjectMeta()
