@@ -53,7 +53,9 @@ const Countdown: FC<{ time: string }> = ({ time }) => {
   return (
     <Card style={{ width: '5rem', textAlign: 'center', padding: '0px 4px' }}>
       <Text size="sm" style={{ fontWeight: 700 }}>
-        {countdown.asSeconds() > 0 ? countdown.format('hh : mm : ss') : '00:00:00'}
+        {countdown.asSeconds() > 0
+          ? countdown.format('HH:mm:ss')
+          : '00:00:00'}
       </Text>
     </Card>
   )
@@ -78,9 +80,16 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const clipBoard = useClipboard()
 
   const onCreateContainer = () => {
-    if(challengeId) {
-      api.game.gameCreateContainer(gameId, challengeId)
-      .then((res) => {
+    if (challengeId) {
+      api.game.gameCreateContainer(gameId, challengeId).then((res) => {
+        console.log(res.data)
+      })
+    }
+  }
+
+  const onDestoryContainer = () => {
+    if (challengeId) {
+      api.game.gameDeleteContainer(gameId, challengeId).then((res) => {
         console.log(res.data)
       })
     }
@@ -173,7 +182,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                     }}
                     onClick={() => clipBoard.copy(challenge.context?.instanceEntry ?? '')}
                   >
-                    127.0.0.1:25532
+                    {challenge?.context?.instanceEntry}
                   </Code>
                 </Text>
                 <Countdown time={challenge?.context?.closeTime ?? '0'} />
@@ -182,7 +191,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 <Button color="orange" disabled={instanceLeft > 10}>
                   延长时间
                 </Button>
-                <Button color="red">销毁实例</Button>
+                <Button color="red" onClick={onDestoryContainer}>销毁实例</Button>
               </Group>
             </Stack>
           )}
@@ -203,8 +212,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         <TextInput
           placeholder="flag{...}"
           styles={{
-            rightSection:{
-              width: 'auto'
+            rightSection: {
+              width: 'auto',
             },
             input: {
               fontFamily: theme.fontFamilyMonospace,

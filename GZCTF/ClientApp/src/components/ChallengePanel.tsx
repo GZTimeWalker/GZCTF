@@ -81,6 +81,7 @@ const ChallengePanel: FC = () => {
         <SimpleGrid cols={3}>
           {currentChallenges.map((chal) => (
             <ChallengeCard
+              key={chal.id}
               challenge={chal}
               onClick={() => {
                 setChallenge(chal)
@@ -104,7 +105,7 @@ const ChallengePanel: FC = () => {
         tagData={ChallengeTagLabelMap.get(challenge?.tag as ChallengeTag ?? ChallengeTag.Misc)!}
         title={challenge?.title ?? ''}
         score={challenge?.score ?? 0}
-        challengeId={challenge?.id ?? allChallenges.at(0)?.id ?? -1}
+        challengeId={challenge?.id ?? allChallenges.at(0)?.id ?? 0}
       />
     </Group>
   )
