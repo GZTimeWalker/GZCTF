@@ -50,7 +50,6 @@ public class DockerService : IContainerService
             },
             HostConfig = new()
             {
-                PublishAllPorts = true,
                 Memory = config.MemoryLimit * 1024 * 1024,
                 CPUCount = 1
             }
