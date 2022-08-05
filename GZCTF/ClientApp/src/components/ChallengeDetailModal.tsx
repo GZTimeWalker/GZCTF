@@ -141,7 +141,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 icon: <Icon path={mdiCheck} size={1} />,
                 disallowClose: true,
               })
-              onDestoryContainer()
+              if (isDynamic) onDestoryContainer()
               props.onClose()
             } else if (res.data === AnswerResult.WrongAnswer) {
               updateNotification({

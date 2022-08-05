@@ -413,7 +413,7 @@ public class GameController : ControllerBase
 
         Submission submission = new()
         {
-            Answer = flag,
+            Answer = flag.Trim(),
             Game = context.Game!,
             User = context.User,
             Challenge = context.Challenge!,

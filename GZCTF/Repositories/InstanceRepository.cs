@@ -183,13 +183,18 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId == submission.ParticipationId, token);
 
-        if (instance?.FlagContext is null && submission.Challenge.Type.IsStatic())
-            await context.Entry(submission.Challenge).Collection(c => c.Flags).LoadAsync(token);
-
-        submission.Status = instance is null ? AnswerResult.NotFound
-            : ((submission.Challenge.Type.IsStatic() && submission.Challenge.Flags.Any(f => f.Flag == submission.Answer))
-            || (submission.Challenge.Type.IsDynamic() && instance.FlagContext?.Flag == submission.Answer))
-            ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        if (instance is null)
+            submission.Status = AnswerResult.NotFound;
+        else if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
+            submission.Status = await context.FlagContexts
+                .AsNoTracking()
+                .AnyAsync(
+                    f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
+                    token)
+                ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        else
+            submission.Status = instance.FlagContext?.Flag == submission.Answer
+                ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
 
         await UpdateAsync(submission);
         return instance;
