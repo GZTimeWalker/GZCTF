@@ -80,7 +80,9 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const clipBoard = useClipboard()
 
   const [disabled, setDisabled] = useState(false)
+  const [onSubmitting, setOnSubmitting] = useState(false)
   const [flag, setFlag] = useInputState('')
+  const [flagId, setFlagId] = useState<number>(0)
 
   const onCreateContainer = () => {
     if (challengeId) {
@@ -122,8 +124,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
-  const [flagId, setFlagId] = useState<number>(0)
-
   const checkInterval = useInterval(() => {
     if (flagId) {
       api.game
@@ -158,12 +158,13 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           showErrorNotification(err)
           checkInterval.stop()
         })
+        .finally(() => setOnSubmitting(false))
     }
   }, 1000)
 
   const onSubmit = () => {
     if (challengeId && flag) {
-      setDisabled(true)
+      setOnSubmitting(true)
       api.game
         .gameSubmit(gameId, challengeId, flag)
         .then((res) => {
@@ -179,7 +180,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           })
         })
         .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
     }
   }
 
@@ -313,7 +313,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               fontFamily: theme.fontFamilyMonospace,
             },
           }}
-          rightSection={<Button onClick={onSubmit}>提交 flag</Button>}
+          rightSection={<Button onClick={onSubmit} disabled={onSubmitting}>提交 flag</Button>}
         />
       </Stack>
     </Modal>

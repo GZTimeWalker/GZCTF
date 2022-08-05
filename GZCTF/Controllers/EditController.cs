@@ -271,9 +271,10 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await gameNoticeRepository.CreateNotice(game, new()
+        var res = await gameNoticeRepository.CreateNotice(new()
         {
             Content = model.Content,
+            GameId = game.Id,
             Type = NoticeType.Normal,
             PublishTimeUTC = DateTimeOffset.UtcNow
         }, token);

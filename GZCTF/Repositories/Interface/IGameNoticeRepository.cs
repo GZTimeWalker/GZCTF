@@ -5,11 +5,10 @@ public interface IGameNoticeRepository : IRepository
     /// <summary>
     /// 添加一个通知
     /// </summary>
-    /// <param name="game">比赛对象</param>
     /// <param name="notice">通知</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameNotice> CreateNotice(Game game, GameNotice notice, CancellationToken token = default);
+    public Task<GameNotice> CreateNotice(GameNotice notice, CancellationToken token = default);
 
     /// <summary>
     /// 获取比赛通知

@@ -85,7 +85,7 @@ public class FlagChecker : IHostedService
                         };
 
                         if (type != NoticeType.Normal)
-                            await gameNoticeRepository.CreateNotice(item.Game, GameNotice.FromSubmission(item, type), token);
+                            await gameNoticeRepository.CreateNotice(GameNotice.FromSubmission(item, type), token);
                     }
 
                     gameRepository.FlushScoreboard(item.Game);

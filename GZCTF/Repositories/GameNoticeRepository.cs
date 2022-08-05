@@ -20,16 +20,14 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         hubContext = hub;
     }
 
-    public async Task<GameNotice> CreateNotice(Game game, GameNotice notice, CancellationToken token = default)
+    public async Task<GameNotice> CreateNotice(GameNotice notice, CancellationToken token = default)
     {
-        notice.Game = game;
-
         await context.AddAsync(notice);
         await context.SaveChangesAsync(token);
 
-        cache.Remove(CacheKey.GameNotice(game.Id));
+        cache.Remove(CacheKey.GameNotice(notice.GameId));
 
-        await hubContext.Clients.Group($"Game_{game.Id}").ReceivedGameNotice(notice);
+        await hubContext.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
 
         return notice;
     }

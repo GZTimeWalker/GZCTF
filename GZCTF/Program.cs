@@ -65,8 +65,17 @@ if (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("Co
 else
 {
     builder.Services.AddDbContext<AppDbContext>(
-        options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+        options =>
+        {
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+            if (builder.Environment.IsDevelopment())
+            {
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+            }
+        }
+    );
 }
 
 #endregion AppDbContext

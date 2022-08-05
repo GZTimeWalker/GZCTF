@@ -42,6 +42,7 @@ public class GameNotice
         => new()
         {
             Type = type,
+            GameId = submission.GameId,
             Content = $"恭喜 {submission.Participation.Team.Name} 获得 ⌈{submission.Challenge.Title}⌋ 的{type.ToBloodString()}"
         };
 }
