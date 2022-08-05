@@ -76,7 +76,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       },
     },
     tabLabel: {
-      fontWeight: 700
+      fontWeight: 700,
     },
     tabIcon: {
       margin: 'auto',

@@ -102,7 +102,7 @@ const ChallengePanel: FC = () => {
         size="40%"
         centered
         gameId={numId}
-        tagData={ChallengeTagLabelMap.get(challenge?.tag as ChallengeTag ?? ChallengeTag.Misc)!}
+        tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
         title={challenge?.title ?? ''}
         score={challenge?.score ?? 0}
         challengeId={challenge?.id ?? allChallenges.at(0)?.id ?? 0}
