@@ -19,9 +19,15 @@ import {
   Title,
   TypographyStylesProvider,
 } from '@mantine/core'
-import { useClipboard, useDisclosure, useInputState, useInterval } from '@mantine/hooks'
+import {
+  getHotkeyHandler,
+  useClipboard,
+  useDisclosure,
+  useInputState,
+  useInterval,
+} from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { AnswerResult, ChallengeType } from '../Api'
 import { showErrorNotification } from '../utils/ApiErrorHandler'
@@ -82,7 +88,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const [onSubmitting, setOnSubmitting] = useState(false)
   const [flag, setFlag] = useInputState('')
-  const [flagId, setFlagId] = useState(0)
 
   const onCreateContainer = () => {
     if (challengeId) {
@@ -124,50 +129,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
-  const checkInterval = useInterval(() => {
-    if (flagId) {
-      api.game
-        .gameStatus(gameId, challengeId, flagId)
-        .then((res) => {
-          console.log(res.data)
-          if (res && res.data !== AnswerResult.FlagSubmitted) {
-            setFlag('')
-            setFlagId(0)
-            if (res.data === AnswerResult.Accepted) {
-              updateNotification({
-                id: 'flag-submitted',
-                color: 'teal',
-                message: 'Flag 正确',
-                icon: <Icon path={mdiCheck} size={1} />,
-                disallowClose: true,
-              })
-              if (isDynamic) onDestoryContainer()
-              props.onClose()
-            } else if (res.data === AnswerResult.WrongAnswer) {
-              updateNotification({
-                id: 'flag-submitted',
-                color: 'red',
-                message: 'Flag 错误',
-                icon: <Icon path={mdiClose} size={1} />,
-                disallowClose: true,
-              })
-            }
-          }
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          checkInterval.stop()
-          setOnSubmitting(false)
-        })
-    }
-  }, 1000)
-
-  useEffect(() => {
-    if (props.opened && flagId) {
-      checkInterval.start()
-    }
-    return checkInterval.stop
-  }, [flagId])
+  // TODO: 轮询查询 flag 状态
 
   const onSubmit = () => {
     if (challengeId && flag) {
@@ -175,7 +137,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       api.game
         .gameSubmit(gameId, challengeId, flag)
         .then((res) => {
-          setFlagId(res.data)
           showNotification({
             id: 'flag-submitted',
             color: 'orange',
@@ -184,15 +145,60 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             autoClose: false,
             disallowClose: true,
           })
+
+          setTimeout(() => {
+            api.game
+              .gameStatus(gameId, challengeId, res.data)
+              .then((result) => {
+                console.log(result.data)
+                if (res && result.data !== AnswerResult.FlagSubmitted) {
+                  setFlag('')
+                  if (result.data === AnswerResult.Accepted) {
+                    updateNotification({
+                      id: 'flag-submitted',
+                      color: 'teal',
+                      message: 'Flag 正确',
+                      icon: <Icon path={mdiCheck} size={1} />,
+                      disallowClose: true,
+                    })
+                    if (isDynamic) onDestoryContainer()
+                    props.onClose()
+                  } else if (result.data === AnswerResult.WrongAnswer) {
+                    updateNotification({
+                      id: 'flag-submitted',
+                      color: 'red',
+                      message: 'Flag 错误',
+                      icon: <Icon path={mdiClose} size={1} />,
+                      disallowClose: true,
+                    })
+                  } else {
+                    updateNotification({
+                      id: 'flag-submitted',
+                      color: 'yellow',
+                      message: 'Flag 状态未知，后续请求还没写……',
+                      icon: <Icon path={mdiLoading} size={1} />,
+                      disallowClose: true,
+                    })
+                  }
+                }
+              })
+              .catch(showErrorNotification)
+          }, 3000)
         })
         .catch(showErrorNotification)
         .finally(() => setOnSubmitting(false))
     }
   }
 
+  const enterHandler = getHotkeyHandler([['Enter', onSubmit]])
+
   return (
     <Modal
       {...modalProps}
+      onClose={() => {
+        setFlag('')
+        modalProps.onClose()
+      }}
       styles={{
         ...modalProps.styles,
         header: {
@@ -312,6 +318,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           placeholder="flag{...}"
           value={flag}
           onChange={setFlag}
+          onKeyDown={enterHandler}
           styles={{
             rightSection: {
               width: 'auto',
