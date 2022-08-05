@@ -161,6 +161,13 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }, 1000)
 
+  useEffect(() => {
+    if (props.opened && flagId) {
+      checkInterval.start()
+    }
+    return checkInterval.stop
+  }, [flagId])
+
   const onSubmit = () => {
     if (challengeId && flag) {
       setDisabled(true)

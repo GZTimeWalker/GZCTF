@@ -20,9 +20,7 @@ const Scoreboard: FC = () => {
 
   return (
     <WithNavBar width="90%">
-      <WithGameTab isLoading={!game} game={game}>
-
-      </WithGameTab>
+      <WithGameTab isLoading={!game} game={game}></WithGameTab>
     </WithNavBar>
   )
 }
