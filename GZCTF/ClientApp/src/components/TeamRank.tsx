@@ -62,7 +62,7 @@ const TeamRank: FC<PaperProps> = (props) => {
             <Text size="sm">攻克数量</Text>
           </Stack>
         </Group>
-        <Progress value={solved * 100}/>
+        <Progress value={solved * 100} />
       </Stack>
     </Card>
   )
