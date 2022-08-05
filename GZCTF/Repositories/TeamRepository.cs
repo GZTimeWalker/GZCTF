@@ -12,7 +12,9 @@ public class TeamRepository : RepositoryBase, ITeamRepository
 
     public async Task<bool> AnyActiveGame(Team team, CancellationToken token = default)
     {
-        bool result = await context.Participations.AnyAsync(p => p.Team == team && p.Game.IsActive, token);
+        bool result = await context.Participations
+            .Where(p => p.Team == team && p.Game.IsActive)
+            .AnyAsync(token);
 
         if (team.Locked != result)
         {

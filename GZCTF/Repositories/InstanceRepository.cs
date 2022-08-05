@@ -158,12 +158,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             if (instance.FlagContext?.Flag == submission.Answer)
             {
-                await context.Entry(submission).Reference(s => s.User).LoadAsync(token);
-                await context.Entry(submission).Reference(s => s.Participation.Team).LoadAsync(token);
-
                 checkInfo.AnswerResult = AnswerResult.CheatDetected;
                 checkInfo.CheatUser = submission.User;
-                checkInfo.CheatTeam = submission.Participation.Team;
+                checkInfo.CheatTeam = submission.Team;
                 checkInfo.SourceTeam = instance.Participation.Team;
                 checkInfo.Challenge = instance.Challenge;
 
@@ -196,7 +193,10 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             submission.Status = instance.FlagContext?.Flag == submission.Answer
                 ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
 
-        await UpdateAsync(submission);
+        context.Attach(submission);
+        await UpdateAsync(submission, token);
+        context.Entry(submission).State = EntityState.Deleted;
+
         return instance;
     }
 

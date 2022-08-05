@@ -415,7 +415,7 @@ public class GameController : ControllerBase
         {
             Answer = flag.Trim(),
             Game = context.Game!,
-            User = context.User,
+            User = context.User!,
             Challenge = context.Challenge!,
             Team = context.Participation!.Team,
             Participation = context.Participation!,
@@ -424,6 +424,8 @@ public class GameController : ControllerBase
         };
 
         submission = await submissionRepository.AddSubmission(submission, token);
+
+        submissionRepository.Detach(submission);
 
         // send to flag checker service
         await checkerChannelWriter.WriteAsync(submission, token);

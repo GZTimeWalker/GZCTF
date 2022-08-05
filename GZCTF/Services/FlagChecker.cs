@@ -65,9 +65,7 @@ public class FlagChecker : IHostedService
                         var result = await instanceRepository.CheckCheat(item, token);
 
                         if (result.AnswerResult == AnswerResult.CheatDetected)
-                        {
                             logger.Log($"[作弊检查] 题目 [{item.Challenge.Title}] 中队伍 [{item.Team.Name}] 疑似作弊，相关队伍 [{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
-                        }
                     }
 
                     await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
@@ -87,7 +85,7 @@ public class FlagChecker : IHostedService
                             await gameNoticeRepository.CreateNotice(GameNotice.FromSubmission(item, type), token);
                     }
 
-                    gameRepository.FlushScoreboard(item.Game);
+                    gameRepository.FlushScoreboard(item.GameId);
                 }
                 catch (Exception e)
                 {

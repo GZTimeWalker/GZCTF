@@ -132,7 +132,7 @@ public class DockerService : IContainerService
         }
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
-        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(1);
+        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
         container.Port = int.Parse(info.NetworkSettings.Ports
             .FirstOrDefault(p =>
                 p.Key.StartsWith(parameters.ExposedPorts.First().Key)
