@@ -163,10 +163,10 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   }, 1000)
 
   useEffect(() => {
-    if (flagId) {
+    if (props.opened && flagId) {
       checkInterval.start()
-      return checkInterval.stop
     }
+    return checkInterval.stop
   }, [flagId])
 
   const onSubmit = () => {
