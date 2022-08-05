@@ -29,6 +29,11 @@ public class Participation
     public List<Instance> Instances { get; set; } = new();
 
     /// <summary>
+    /// 队伍激活的题目
+    /// </summary>
+    public HashSet<Challenge> Challenges { get; set; } = new();
+
+    /// <summary>
     /// 提交
     /// </summary>
     public List<Submission> Submissions { get; set; } = new();

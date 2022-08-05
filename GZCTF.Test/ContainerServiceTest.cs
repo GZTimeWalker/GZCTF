@@ -35,8 +35,8 @@ public class ContainerServiceTest
     {
         var config = new ContainerConfig()
         {
-            Image = "busybox",
-            ExposedPort = 80,
+            Image = "ghcr.io/gztimewalker/gzctf/test",
+            ExposedPort = 70,
             CPUCount = 1,
             Flag = "flag{the_test_flag}",
             MemoryLimit = 64

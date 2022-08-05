@@ -15,7 +15,6 @@ public class Team
     /// </summary>
     [Required]
     [MaxLength(16)]
-    [RegularExpression("[0-9A-Za-z]+")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -59,9 +58,14 @@ public class Team
     public UserInfo? Captain { get; set; }
 
     /// <summary>
-    /// 比赛
+    /// 比赛参与对象
     /// </summary>
-    public List<Participation> Games { get; set; } = new();
+    public List<Participation> Participations { get; set; } = new();
+
+    /// <summary>
+    /// 比赛对象
+    /// </summary>
+    public ICollection<Game>? Games { get; set; }
 
     /// <summary>
     /// 队员

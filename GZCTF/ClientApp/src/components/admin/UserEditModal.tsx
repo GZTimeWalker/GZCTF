@@ -5,7 +5,7 @@ import {
   Center,
   Grid,
   Group,
-  InputWrapper,
+  Input,
   Modal,
   ModalProps,
   SegmentedControl,
@@ -15,9 +15,10 @@ import {
   TextInput,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],
@@ -59,7 +60,6 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '更改成功',
           message: '用户信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
@@ -67,14 +67,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         mutateUser({ ...activeUser, ...profile })
         modalProps.onClose()
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setDisabled(false)
       })
@@ -101,7 +94,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
             </Center>
           </Grid.Col>
         </Grid>
-        <InputWrapper label="用户角色">
+        <Input.Wrapper label="用户角色">
           <SegmentedControl
             fullWidth
             disabled={disabled}
@@ -113,7 +106,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
               label: role[0],
             }))}
           />
-        </InputWrapper>
+        </Input.Wrapper>
         <SimpleGrid cols={2}>
           <TextInput
             label="邮箱"

@@ -26,6 +26,7 @@ import { Icon } from '@mdi/react'
 import api, { Role, UserInfoModel } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '../../components/admin/UserEditModal'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -33,7 +34,7 @@ const Users: FC = () => {
   const [page, setPage] = useState(1)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
-  const [users, setUsers] = useState<UserInfoModel[]>([])
+  const [users, setUsers] = useState<UserInfoModel[]>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
 
@@ -77,14 +78,7 @@ const Users: FC = () => {
       .then((res) => {
         setUsers(res.data)
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setSearching(false)
       })
@@ -104,14 +98,7 @@ const Users: FC = () => {
         })
         setUsers(users?.filter((t) => t.id !== user.id) ?? [])
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
   }
 
   const onDeleteUser = (user: UserInfoModel) => {
@@ -140,6 +127,8 @@ const Users: FC = () => {
 
   return (
     <AdminPage
+      scroll
+      isLoading={searching || !users}
       head={
         <>
           <TextInput
@@ -153,17 +142,11 @@ const Users: FC = () => {
             }}
           />
           <Group position="right">
-            <ActionIcon
-              size="lg"
-              variant="hover"
-              disabled={page <= 1}
-              onClick={() => setPage(page - 1)}
-            >
+            <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={users && users.length < ITEM_COUNT_PER_PAGE}
               onClick={() => setPage(page + 1)}
             >
@@ -225,7 +208,6 @@ const Users: FC = () => {
                     <Group>
                       <ActionIcon
                         onClick={() => {
-                          console.log(user)
                           setActiveUser(user)
                           setIsEditModalOpen(true)
                         }}

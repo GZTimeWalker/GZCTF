@@ -6,6 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '../Api'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 import StrengthPasswordInput from './StrengthPasswordInput'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {
@@ -40,14 +41,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           api.account.accountLogOut()
           navigate('/account/login')
         })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-        })
+        .catch(showErrorNotification)
     } else {
       showNotification({
         color: 'red',

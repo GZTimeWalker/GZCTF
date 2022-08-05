@@ -460,6 +460,6 @@ public class AccountController : ControllerBase
 
         logger.Log($"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
 
-        return Ok(avatar.Url);
+        return Ok(avatar.Url());
     }
 }

@@ -16,13 +16,13 @@ export default defineConfig(({ mode }) => {
         '/api': TARGET,
         '/swagger': TARGET,
         '/assets': TARGET,
-        '/hub': { target: TARGET.replace('http:', 'ws:'), ws: true },
+        '/hub': { target: TARGET.replace('http', 'ws'), ws: true },
       },
     },
     build: {
       outDir: 'build',
       assetsDir: 'static',
-      target: 'es6',
+      chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {
           chunkFileNames: 'static/[hash].js',

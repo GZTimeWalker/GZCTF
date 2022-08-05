@@ -22,6 +22,7 @@ import TeamCreateModal from '../components/TeamCreateModal'
 import TeamEditModal from '../components/TeamEditModal'
 import WithNavBar from '../components/WithNavbar'
 import WithRole from '../components/WithRole'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 const Teams: FC = () => {
   const { data: user, error: userError } = api.account.useAccountProfile({
@@ -70,7 +71,7 @@ const Teams: FC = () => {
         showNotification({
           color: 'teal',
           title: '加入队伍成功',
-          message: '您的队伍信息已更新',
+          message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
@@ -82,14 +83,7 @@ const Teams: FC = () => {
           })
         }
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         setJoinTeamCode('')
         setJoinOpened(false)
@@ -109,14 +103,14 @@ const Teams: FC = () => {
             <Group position="right">
               <Button
                 leftIcon={<Icon path={mdiHumanGreetingVariant} size={1} />}
-                variant="outline"
+                variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
                 onClick={() => setJoinOpened(true)}
               >
                 加入队伍
               </Button>
               <Button
                 leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
-                variant="outline"
+                variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
                 onClick={() => setCreateOpened(true)}
               >
                 创建队伍

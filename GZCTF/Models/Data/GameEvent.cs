@@ -65,8 +65,9 @@ public class GameEvent
     public static GameEvent FromSubmission(Submission submission)
         => new()
         {
-            Team = submission.Participation.Team,
-            User = submission.User,
+            TeamId = submission.TeamId,
+            UserId = submission.UserId,
+            GameId = submission.GameId,
             Type = EventType.FlagSubmit,
             Content = $"[{submission.Status.ToShortString()}] {submission.Answer}  #{submission.ChallengeId}"
         };

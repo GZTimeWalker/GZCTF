@@ -71,10 +71,12 @@ public enum TaskStatus : sbyte
     Exit = 5,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FileType : byte
 {
     /// <summary>
     /// 无附件
+    /// 正常情况下 Attachment 不会是此值，若无附件则 Attachment 为 null
     /// </summary>
     None = 0,
 
@@ -382,6 +384,11 @@ public static class CacheKey
     /// 积分榜缓存
     /// </summary>
     public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
+
+    /// <summary>
+    /// 比赛通知缓存
+    /// </summary>
+    public static string GameNotice(int id) => $"_GameNotice_{id}";
 
     /// <summary>
     /// 比赛基础信息缓存

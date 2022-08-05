@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Box, createStyles, Group, GroupPosition, MantineColor } from '@mantine/core'
+import { Box, createStyles, Group, GroupPosition, GroupProps, MantineColor } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import LogoHeader from './LogoHeader'
 
@@ -14,11 +14,13 @@ interface TabProps {
   label?: React.ReactNode
 }
 
-interface IconTabsProps {
+interface IconTabsProps extends GroupProps {
   position?: GroupPosition
   tabs: TabProps[]
   grow?: boolean
   active?: number
+  withIcon?: boolean
+  left?: React.ReactNode
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
@@ -38,9 +40,13 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       fontWeight: 500,
       boxSizing: 'border-box',
       cursor: 'pointer',
-      display: 'block',
       border: 0,
+      display: 'block',
       backgroundColor: 'transparent',
+
+      [theme.fn.smallerThan('xs')]: {
+        padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+      },
 
       '&:disabled': {
         cursor: 'not-allowed',
@@ -52,7 +58,6 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       },
 
       [`&.${activeTab.ref}`]: {
-        cursor: 'default',
         color: theme.fn.themeColor(color as string, theme.colorScheme === 'dark' ? 4 : 6),
         background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
       },
@@ -64,9 +69,18 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       justifyContent: 'center',
       lineHeight: 1,
       height: '100%',
+
+      [theme.fn.smallerThan('xs')]: {
+        flexDirection: 'column',
+        gap: theme.spacing.md,
+      },
     },
-    tabLabel: {},
+    tabLabel: {
+      fontWeight: 700
+    },
     tabIcon: {
+      margin: 'auto',
+
       '&:not(:only-child)': {
         marginRight: theme.spacing.xs,
       },
@@ -99,10 +113,10 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
 }
 
 const IconTabs: FC<IconTabsProps> = (props) => {
-  const { active, onTabChange, tabs, ...others } = props
+  const { active, onTabChange, tabs, withIcon, left, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
 
-  const activeTab = clamp({ value: _activeTab, min: 0, max: tabs.length - 1 })
+  const activeTab = clamp(_activeTab, 0, tabs.length - 1)
 
   const panes = tabs.map((tab, index) => (
     <Tab
@@ -118,8 +132,28 @@ const IconTabs: FC<IconTabsProps> = (props) => {
 
   return (
     <Group position="apart" style={{ width: '100%' }}>
-      <LogoHeader />
-      <Group position="right" spacing={5} {...others}>
+      {left}
+      {withIcon && (
+        <LogoHeader
+          sx={(theme) => ({
+            [theme.fn.smallerThan('xs')]: {
+              display: 'none',
+            },
+          })}
+        />
+      )}
+      <Group
+        position="right"
+        noWrap
+        spacing={5}
+        sx={(theme) => ({
+          [theme.fn.smallerThan('xs')]: {
+            width: '100%',
+            justifyContent: 'space-around',
+          },
+        })}
+        {...others}
+      >
         {panes}
       </Group>
     </Group>

@@ -13,35 +13,35 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     private readonly ILogger<InstanceRepository> logger;
 
     public InstanceRepository(AppDbContext _context,
-        IContainerRepository _containerRepository,
         IContainerService _service,
+        IContainerRepository _containerRepository,
         ILogger<InstanceRepository> _logger) : base(_context)
     {
+        logger = _logger;
         service = _service;
         containerRepository = _containerRepository;
-        logger = _logger;
     }
 
     public async Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default)
     {
         var instance = await context.Instances
+            .Include(i => i.FlagContext)
             .Where(e => e.ChallengeId == challengeId && e.Participation == team)
             .SingleOrDefaultAsync(token);
 
-        if (instance is not null)
+        if (instance is null)
+        {
+            logger.SystemLog($"队伍对应参与对象为空，这可能是非预期的情况 [{team.Id}, {challengeId}]", TaskStatus.NotFound, LogLevel.Warning);
+            return null;
+        }
+
+        if (instance.IsLoaded)
             return instance;
 
         var challenge = await context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId, token);
 
         if (challenge is null || !challenge.IsEnabled)
             return null;
-
-        instance = new()
-        {
-            Challenge = challenge,
-            GameId = team.GameId,
-            Participation = team
-        };
 
         if (challenge.Type.IsStatic())
             instance.FlagContext = null; // use challenge to verify
@@ -51,6 +51,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             {
                 var flags = await context.Entry(challenge).Collection(e => e.Flags)
                         .Query().Where(e => !e.IsOccupied).ToListAsync(token);
+
+                if (flags.Count == 0)
+                {
+                    logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Fail, LogLevel.Warning);
+                    return null;
+                }
+
                 var pos = Random.Shared.Next(flags.Count);
                 flags[pos].IsOccupied = true;
                 instance.FlagContext = flags[pos];
@@ -59,16 +66,17 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             {
                 instance.FlagContext = new()
                 {
-                    AttachmentType = FileType.None,
+                    Challenge = challenge,
                     Flag = $"flag{Guid.NewGuid():B}",
                     IsOccupied = true
                 };
             }
+            await context.AddAsync(instance);
         }
 
-        team.Instances.Add(instance);
+        instance.IsLoaded = true;
 
-        await context.SaveChangesAsync(token);
+        await UpdateAsync(instance, token);
 
         return instance;
     }
@@ -113,8 +121,14 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
                 ExposedPort = instance.Challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口"),
             }, token);
-            instance.Container = container;
 
+            if (container is null)
+            {
+                logger.SystemLog($"为题目 {instance.Challenge.Title} 启动容器实例失败", TaskStatus.Fail, LogLevel.Warning);
+                return new TaskResult<Container>(TaskStatus.Fail);
+            }
+
+            instance.Container = container;
             await context.SaveChangesAsync(token);
         }
 
@@ -127,10 +141,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         await context.SaveChangesAsync(token);
     }
 
-    public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default)
-        => context.Instances.Where(i => i.GameId == game.Id).OrderBy(i => i.ParticipationId)
-            .Skip(skip).Take(count).Include(i => i.Participation).ThenInclude(i => i.Team)
-            .Include(i => i.Challenge).ToArrayAsync(token);
+    public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default)
+        => context.Instances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
+            .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
 
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
     {
@@ -161,27 +174,34 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return checkInfo;
     }
 
-    public async Task<AnswerResult> VerifyAnswer(Submission submission, CancellationToken token = default)
+    public async Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
-        var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
+        var instance = await context.Instances
+            // avoid conflict caused by tracking 'Challenge'
+            .IgnoreAutoIncludes()
+            .Include(i => i.FlagContext)
+            .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
+                i.ParticipationId == submission.ParticipationId, token);
 
         if (instance is null)
-            return AnswerResult.NotFound;
+            submission.Status = AnswerResult.NotFound;
+        else if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
+            submission.Status = await context.FlagContexts
+                .AsNoTracking()
+                .AnyAsync(
+                    f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
+                    token)
+                ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        else
+            submission.Status = instance.FlagContext?.Flag == submission.Answer
+                ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
 
-        if ((instance.Challenge.Type.IsStatic() && instance.Challenge.Flags.Any(f => f.Flag == submission.Answer))
-            || (instance.Challenge.Type.IsDynamic() && instance.FlagContext?.Flag == submission.Answer))
-            return AnswerResult.Accepted;
-
-        return AnswerResult.WrongAnswer;
+        await UpdateAsync(submission);
+        return instance;
     }
 
-    public async Task<bool> TrySolved(Submission submission, CancellationToken token = default)
+    public async Task<bool> TrySolved(Instance instance, CancellationToken token = default)
     {
-        var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
-
-        if (instance is null)
-            throw new NullReferenceException(nameof(instance));
-
         if (instance.IsSolved)
             return false;
 

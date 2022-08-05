@@ -50,49 +50,57 @@ public class FlagChecker : IHostedService
             {
                 logger.SystemLog($"检查线程 #{id} 开始处理提交：{item.Answer}", TaskStatus.Pending, LogLevel.Debug);
 
-                item.Status = await instanceRepository.VerifyAnswer(item, token);
-
-                if (item.Status == AnswerResult.NotFound)
-                    logger.Log($"[实例未知] 未找到队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
-                else if (item.Status == AnswerResult.Accepted)
-                    logger.Log($"[提交正确] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
-                else
+                try
                 {
-                    logger.Log($"[提交错误] 队伍[{item.Participation.Team.Name}]提交题目[{item.Challenge.Title}]的答案[{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
+                    var instance = await instanceRepository.VerifyAnswer(item, token);
 
-                    var result = await instanceRepository.CheckCheat(item, token);
-
-                    if (result.AnswerResult == AnswerResult.CheatDetected)
+                    if (item.Status == AnswerResult.NotFound)
+                        logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
+                    else if (item.Status == AnswerResult.Accepted)
+                        logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                    else
                     {
-                        logger.Log($"[作弊检查] 题目[{item.Challenge.Title}]中队伍[{item.Participation.Team.Name}]疑似作弊，相关队伍[{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
+                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
+
+                        var result = await instanceRepository.CheckCheat(item, token);
+
+                        if (result.AnswerResult == AnswerResult.CheatDetected)
+                        {
+                            logger.Log($"[作弊检查] 题目 [{item.Challenge.Title}] 中队伍 [{item.Team.Name}] 疑似作弊，相关队伍 [{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
+                        }
                     }
-                }
 
-                await eventRepository.AddEvent(item.Game, GameEvent.FromSubmission(item), token);
+                    await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
 
-                if (item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(item, token))
-                {
-                    item.Challenge.AcceptedUserCount++;
-                    NoticeType type = item.Challenge.AcceptedUserCount switch
+                    if (item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(instance!, token))
                     {
-                        1 => NoticeType.FirstBlood,
-                        2 => NoticeType.SecondBlood,
-                        3 => NoticeType.ThirdBlood,
-                        _ => NoticeType.Normal
-                    };
+                        item.Challenge.AcceptedCount++;
+                        NoticeType type = item.Challenge.AcceptedCount switch
+                        {
+                            1 => NoticeType.FirstBlood,
+                            2 => NoticeType.SecondBlood,
+                            3 => NoticeType.ThirdBlood,
+                            _ => NoticeType.Normal
+                        };
 
-                    if (type != NoticeType.Normal)
-                        await gameNoticeRepository.CreateNotice(item.Game, GameNotice.FromSubmission(item, type), token);
+                        if (type != NoticeType.Normal)
+                            await gameNoticeRepository.CreateNotice(GameNotice.FromSubmission(item, type), token);
+                    }
+
+                    gameRepository.FlushScoreboard(item.Game);
                 }
-
-                gameRepository.FlushScoreboard(item.Game);
+                catch (Exception e)
+                {
+                    logger.SystemLog($"检查线程 #{id} 发生异常", TaskStatus.Fail, LogLevel.Debug);
+                    logger.LogError(e.Message, e);
+                }
 
                 token.ThrowIfCancellationRequested();
             }
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
-            logger.SystemLog($"任务取消，检查线程 #{id} 将退出", TaskStatus.Exit, LogLevel.Warning);
+            logger.SystemLog($"任务取消，检查线程 #{id} 将退出", TaskStatus.Exit, LogLevel.Debug);
         }
         finally
         {

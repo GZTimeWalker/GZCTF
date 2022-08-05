@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using CTFServer.Models.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Models;
@@ -22,6 +23,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Team> Teams { get; set; } = default!;
     public DbSet<FlagContext> FlagContexts { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
+    public DbSet<Attachment> Attachments { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -73,23 +75,21 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.GameId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasMany(e => e.Instances)
-                .WithOne(e => e.Game)
-                .HasForeignKey(e => e.GameId);
-
             entity.HasMany(e => e.Teams)
-                .WithOne(e => e.Game)
-                .HasForeignKey(e => e.GameId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(e => e.Games)
+                .UsingEntity<Participation>(
+                    e => e.HasOne(e => e.Team)
+                        .WithMany(e => e.Participations)
+                        .HasForeignKey(e => e.TeamId),
+                    e => e.HasOne(e => e.Game)
+                        .WithMany(e => e.Participations)
+                        .HasForeignKey(e => e.GameId),
+                    e => e.HasIndex(e => new { e.TeamId, e.GameId })
+                );
         });
 
         builder.Entity<Team>(entity =>
         {
-            entity.HasMany(e => e.Games)
-                .WithOne(e => e.Team)
-                .HasForeignKey(e => e.TeamId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             entity.HasMany(e => e.Members)
                 .WithMany(e => e.Teams);
 
@@ -106,23 +106,30 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Instances).WithOne();
 
+            entity.Navigation(e => e.Game).AutoInclude();
+            entity.Navigation(e => e.Team).AutoInclude();
+
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.Navigation(e => e.Team).AutoInclude();
-            entity.Navigation(e => e.Game).AutoInclude();
-
-            entity.HasIndex(e => new { e.TeamId, e.GameId });
+            entity.HasMany(e => e.Challenges)
+                .WithMany(e => e.Teams)
+                .UsingEntity<Instance>(
+                    e => e.HasOne(e => e.Challenge)
+                        .WithMany(c => c.Instances)
+                        .HasForeignKey(e => e.ChallengeId),
+                    e => e.HasOne(e => e.Participation)
+                        .WithMany(e => e.Instances)
+                        .HasForeignKey(e => e.ParticipationId)
+                        .OnDelete(DeleteBehavior.SetNull),
+                    e => e.HasKey(e => new { e.ChallengeId, e.ParticipationId })
+                );
         });
 
         builder.Entity<Instance>(entity =>
         {
-            entity.HasOne(e => e.Challenge)
-               .WithMany()
-               .HasForeignKey(e => e.ChallengeId);
-
             entity.HasOne(e => e.FlagContext)
                 .WithMany()
                 .HasForeignKey(e => e.FlagId);
@@ -130,17 +137,12 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.Container)
                 .WithOne(e => e.Instance)
                 .HasForeignKey<Container>(e => e.InstanceId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(e => e.Participation)
-                .WithMany(e => e.Instances)
-                .HasForeignKey(e => e.ParticipationId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
 
-            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId, e.GameId });
+            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId });
         });
 
         builder.Entity<Container>(entity =>
@@ -148,7 +150,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.Instance)
                 .WithOne(e => e.Container)
                 .HasForeignKey<Instance>(e => e.ContainerId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasIndex(e => e.InstanceId);
         });
@@ -164,6 +166,13 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity.HasOne(e => e.Attachment)
+                .WithMany()
+                .HasForeignKey(e => e.AttachmentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Navigation(e => e.Attachment).AutoInclude();
+
             entity.HasIndex(e => e.GameId);
         });
 
@@ -172,14 +181,29 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.Property(e => e.Status)
                 .HasConversion<string>();
 
-            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId, e.GameId });
+            entity.HasIndex(e => new { e.TeamId, e.ChallengeId, e.GameId });
         });
 
         builder.Entity<FlagContext>(entity =>
         {
-            entity.Navigation(e => e.LocalFile).AutoInclude();
+            entity.HasOne(e => e.Attachment)
+                .WithMany()
+                .HasForeignKey(e => e.AttachmentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Navigation(e => e.Attachment).AutoInclude();
 
             entity.HasIndex(e => e.ChallengeId);
+        });
+
+        builder.Entity<Attachment>(entity =>
+        {
+            entity.HasOne(e => e.LocalFile)
+                .WithMany()
+                .HasForeignKey(e => e.LocalFileId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.Navigation(e => e.LocalFile).AutoInclude();
         });
 
         builder.Entity<GameEvent>(entity =>

@@ -1,21 +1,59 @@
 import { FC } from 'react'
-import { Badge, Box, Card, Group, Image, Stack, Text, Title, useMantineTheme } from '@mantine/core'
-import { mdiFlagOutline } from '@mdi/js'
+import { Link } from 'react-router-dom'
+import {
+  Badge,
+  Card,
+  Center,
+  Group,
+  Image,
+  MantineColor,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from '@mantine/core'
+import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { BasicGameInfoModel } from '../Api'
 
-const GameCard: FC<BasicGameInfoModel> = (game) => {
+export enum GameStatus {
+  Coming = 'coming',
+  OnGoing = 'ongoing',
+  Ended = 'ended',
+}
+
+export const GameColorMap = new Map<GameStatus, MantineColor>([
+  [GameStatus.Coming, 'yellow'],
+  [GameStatus.OnGoing, 'green'],
+  [GameStatus.Ended, 'blue'],
+])
+
+interface GameCardProps {
+  game: BasicGameInfoModel
+}
+
+export const getGameStatus = (start: Date, end: Date) => {
+  const now = new Date()
+  return end < now ? GameStatus.Ended : start > now ? GameStatus.Coming : GameStatus.OnGoing
+}
+
+const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
 
   const { summary, title, poster, start, end } = game
   const startTime = new Date(start!)
   const endTime = new Date(end!)
 
+  const status = getGameStatus(startTime, endTime)
+  const color = GameColorMap.get(status)
+
   return (
     <Card
+      {...others}
       shadow="sm"
+      component={Link}
+      to={`/games/${game.id}`}
       sx={(theme) => ({
-        cursor: 'pointer',
         transition: 'filter .2s',
         '&:hover': {
           filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
@@ -26,29 +64,27 @@ const GameCard: FC<BasicGameInfoModel> = (game) => {
         {poster ? (
           <Image src={poster} height={160} alt="poster" />
         ) : (
-          <Box
-            style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
+          <Center style={{ height: 160 }}>
             <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
-          </Box>
+          </Center>
         )}
       </Card.Section>
-      <Stack style={{ flexGrow: 1 }}>
-        <Group align="end" position="apart">
-          <Title order={2} align="left">
-            {title}
-          </Title>
-          <Text size="md">
-            <Badge color="brand" variant="light">
-              {startTime.toLocaleString()}
-            </Badge>
-            ~
-            <Badge color="brand" variant="light">
-              {endTime.toLocaleString()}
-            </Badge>
-          </Text>
+
+      <Stack style={{ flexGrow: 1, marginTop: theme.spacing.sm }}>
+        <Title order={2} align="left">
+          {title}
+        </Title>
+        <Group spacing="xs">
+          <Badge size="xs" color={color} variant="light">
+            {startTime.toLocaleString()}
+          </Badge>
+          <Icon path={mdiChevronTripleRight} size={1} />
+          <Badge size="xs" color={color} variant="light">
+            {endTime.toLocaleString()}
+          </Badge>
         </Group>
-        <Text size="md" lineClamp={1}>
+
+        <Text size="md" lineClamp={3} style={{ height: '4.9rem' }}>
           {summary}
         </Text>
       </Stack>

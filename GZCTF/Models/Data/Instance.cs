@@ -4,27 +4,18 @@ namespace CTFServer.Models;
 
 public class Instance
 {
-    [Key]
-    public int Id { get; set; }
-
-    /// <summary>
-    /// 开始时间
-    /// </summary>
-    public DateTimeOffset StartTime { get; set; } = DateTimeOffset.Now;
-
-    /// <summary>
-    /// 关闭时间
-    /// </summary>
-    public DateTimeOffset EndTime { get; set; } = DateTimeOffset.Now;
-
     /// <summary>
     /// 题目是否已经解决
     /// </summary>
     public bool IsSolved { get; set; } = false;
 
+    /// <summary>
+    /// 题目是否已经加载
+    /// </summary>
+    public bool IsLoaded { get; set; } = false;
+
     #region Db Relationship
 
-    [Required]
     public int? FlagId { get; set; }
 
     /// <summary>
@@ -39,14 +30,6 @@ public class Instance
     /// 赛题对象
     /// </summary>
     public Challenge Challenge { get; set; } = default!;
-
-    [Required]
-    public int GameId { get; set; }
-
-    /// <summary>
-    /// 比赛对象
-    /// </summary>
-    public Game Game { get; set; } = default!;
 
     public string? ContainerId { get; set; }
 

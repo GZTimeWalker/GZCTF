@@ -1,5 +1,6 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { Text, Box, Center, PasswordInput, Popover, Progress } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 
@@ -21,7 +22,7 @@ const requirements = [
   { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: '包含特殊字符' },
 ]
 
-function getStrength(password: string) {
+const getStrength = (password: string) => {
   let multiplier = password.length > 5 ? 0 : 1
 
   requirements.forEach((requirement) => {
@@ -42,7 +43,7 @@ interface StrengthPasswordInputProps {
 }
 
 const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
-  const [popoverOpened, setPopoverOpened] = useState(false)
+  const [opened, { close, open }] = useDisclosure(false)
   const pwd = props.value
 
   const checks = [
@@ -61,28 +62,33 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
 
   return (
     <Popover
-      opened={popoverOpened}
+      opened={opened}
       position="right"
-      placement="end"
+      styles={{
+        dropdown: {
+          marginLeft: '2rem',
+        },
+      }}
       withArrow
-      styles={{ popover: { width: '100%' }, root: { width: '100%' } }}
-      trapFocus={false}
       transition="pop-bottom-left"
-      onFocusCapture={() => setPopoverOpened(true)}
-      onBlurCapture={() => setPopoverOpened(false)}
-      target={
+    >
+      <Popover.Target>
         <PasswordInput
           required
           label={props.label ?? '密码'}
           placeholder="P4ssW@rd"
           value={props.value}
+          onFocusCapture={open}
+          onBlurCapture={close}
           disabled={props.disabled}
           onChange={props.onChange}
+          style={{ width: '100%' }}
         />
-      }
-    >
-      <Progress color={color} value={strength} size={5} style={{ marginBottom: 10 }} />
-      {checks}
+      </Popover.Target>
+      <Popover.Dropdown>
+        <Progress color={color} value={strength} size={5} style={{ marginBottom: 10 }} />
+        {checks}
+      </Popover.Dropdown>
     </Popover>
   )
 }

@@ -1,6 +1,13 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
-import { Group, GroupProps, ScrollArea, Stack } from '@mantine/core'
+import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  Group,
+  GroupProps,
+  LoadingOverlay,
+  ScrollArea,
+  Stack,
+  useMantineTheme,
+} from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,
@@ -21,15 +28,18 @@ const pages = [
 
 export interface AdminTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
+  scroll?: boolean
+  isLoading?: boolean
   headProps?: GroupProps
 }
 
 const getTab = (path: string) => pages.findIndex((page) => path.startsWith(page.path))
 
-const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
+const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const theme = useMantineTheme()
   const tabIndex = getTab(location.pathname)
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
@@ -50,6 +60,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
   return (
     <Stack spacing="xs">
       <IconTabs
+        withIcon
         active={activeTab}
         onTabChange={onChange}
         tabs={pages.map((p) => ({
@@ -64,9 +75,25 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, children }) => {
           {head}
         </Group>
       )}
-      <ScrollArea style={{ height: head ? 'calc(100vh - 160px)' : 'calc(100vh - 120px)' }}>
-        {children}
-      </ScrollArea>
+      {scroll ? (
+        <ScrollArea
+          style={{
+            height: head ? 'calc(100vh - 160px)' : 'calc(100vh - 120px)',
+            position: 'relative',
+          }}
+        >
+          <LoadingOverlay
+            visible={isLoading ?? false}
+            overlayOpacity={1}
+            overlayColor={
+              theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
+            }
+          />
+          {children}
+        </ScrollArea>
+      ) : (
+        children
+      )}
     </Stack>
   )
 }

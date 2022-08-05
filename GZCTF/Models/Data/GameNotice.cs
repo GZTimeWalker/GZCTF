@@ -10,7 +10,7 @@ namespace CTFServer.Models;
 public class GameNotice
 {
     [Key]
-    [JsonIgnore]
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
@@ -42,6 +42,7 @@ public class GameNotice
         => new()
         {
             Type = type,
+            GameId = submission.GameId,
             Content = $"恭喜 {submission.Participation.Team.Name} 获得 ⌈{submission.Challenge.Title}⌋ 的{type.ToBloodString()}"
         };
 }

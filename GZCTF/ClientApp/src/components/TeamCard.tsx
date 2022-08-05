@@ -5,7 +5,6 @@ import {
   Text,
   Divider,
   Avatar,
-  AvatarsGroup,
   Badge,
   Card,
   Stack,
@@ -15,9 +14,10 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiLockOutline, mdiPower, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiLockOutline, mdiPower, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel } from '../Api'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 interface TeamCardProps {
   team: TeamInfoModel
@@ -47,20 +47,13 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           showNotification({
             color: 'teal',
             title: '激活队伍成功',
-            message: '您的队伍已经更新',
+            message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
           mutateActive && mutateActive()
         })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setCardClickable(true)
         })
@@ -69,6 +62,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
 
   const ref = useRef<HTMLDivElement | null>(null)
   const [cardSzY, setCardSzY] = useState('180px')
+  const avatarLimit = isActive ? 8 : 4
 
   useEffect(() => {
     setCardSzY(window.getComputedStyle(ref.current!).getPropertyValue('height'))
@@ -119,7 +113,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     <Tooltip
                       label={'激活'}
                       styles={(theme) => ({
-                        body: {
+                        tooltip: {
                           margin: 4,
                           backgroundColor:
                             theme.colorScheme === 'dark'
@@ -186,18 +180,40 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               {team.locked && (
                 <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />
               )}
-              <AvatarsGroup
-                limit={isActive ? 8 : 4}
-                size="md"
-                styles={{
-                  child: {
-                    border: 'none',
-                  },
-                }}
-              >
-                <Avatar src={captain?.avatar} />
-                {members && members.map((m) => <Avatar key={m.id} src={m.avatar} />)}
-              </AvatarsGroup>
+              <Tooltip.Group openDelay={300} closeDelay={100}>
+                <Avatar.Group
+                  spacing="md"
+                  styles={{
+                    child: {
+                      border: 'none',
+                    },
+                  }}
+                >
+                  <Tooltip label={captain?.userName} withArrow>
+                    <Avatar radius="xl" src={captain?.avatar} />
+                  </Tooltip>
+                  {members &&
+                    members.slice(0, avatarLimit).map((m) => (
+                      <Tooltip key={m.id} label={m.userName} withArrow>
+                        <Avatar radius="xl" src={m.avatar} />
+                      </Tooltip>
+                    ))}
+                  {members && members.length > avatarLimit && (
+                    <Tooltip
+                      label={
+                        <>
+                          {members.slice(avatarLimit).map((m) => (
+                            <Text>{m.userName}</Text>
+                          ))}
+                        </>
+                      }
+                      withArrow
+                    >
+                      <Avatar radius="xl">+{members.length - avatarLimit}</Avatar>
+                    </Tooltip>
+                  )}
+                </Avatar.Group>
+              </Tooltip.Group>
             </Group>
           </Stack>
         </Stack>

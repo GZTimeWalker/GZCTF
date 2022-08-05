@@ -40,7 +40,5 @@ public class LocalFile
     /// <summary>
     /// 获取文件Url
     /// </summary>
-    [NotMapped]
-    [JsonIgnore]
-    public string Url => $"/assets/{Hash}/{Name}";
+    public string Url(string? filename = null) => $"/assets/{Hash}/{filename ?? Name}";
 }

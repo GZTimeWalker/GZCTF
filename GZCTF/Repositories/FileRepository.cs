@@ -81,8 +81,7 @@ public class FileRepository : RepositoryBase, IFileRepository
 
             logger.SystemLog($"文件引用计数 [{file.Hash[..8]}] {file.Name} => {file.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
 
-            context.Update(file);
-            await context.SaveChangesAsync(token);
+            await UpdateAsync(file, token);
 
             return TaskStatus.Success;
         }
@@ -106,8 +105,8 @@ public class FileRepository : RepositoryBase, IFileRepository
         }
     }
 
-    public Task<LocalFile?> GetFileByHash(string fileHash, CancellationToken token = default)
-        => context.Files.Where(f => f.Hash == fileHash).FirstOrDefaultAsync(token);
+    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)
+        => context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
 
     public Task<List<LocalFile>> GetFiles(int count, int skip, CancellationToken token = default)
         => context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToListAsync(token);

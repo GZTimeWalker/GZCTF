@@ -3,7 +3,7 @@ import { SimpleGrid, Stack } from '@mantine/core'
 import { mdiFlag, mdiPackageVariantClosed, mdiProgressClock } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { BasicGameInfoModel } from '../../Api'
-import GameCard from '../../components/GameCard'
+import GameCard, { GameColorMap, GameStatus } from '../../components/GameCard'
 import IconTabs from '../../components/IconTabs'
 import WithNavBar from '../../components/WithNavbar'
 
@@ -24,38 +24,39 @@ const Games: FC = () => {
 
   const now = new Date()
   const games = new Map<string, BasicGameInfoModel[] | undefined>([
-    ['coming', allGames?.filter((game) => new Date(game.start!) > now)],
+    [GameStatus.Coming, allGames?.filter((game) => new Date(game.start!) > now)],
     [
-      'ongoing',
+      GameStatus.OnGoing,
       allGames?.filter((game) => new Date(game.start!) <= now && new Date(game.end!) >= now),
     ],
-    ['ended', allGames?.filter((game) => new Date(game.end!) < now)],
+    [GameStatus.Ended, allGames?.filter((game) => new Date(game.end!) < now)],
   ])
 
   return (
     <WithNavBar>
       <Stack>
         <IconTabs
+          withIcon
           active={activeTab}
           onTabChange={onChange}
           tabs={[
             {
-              tabKey: 'ongoing',
+              tabKey: GameStatus.OnGoing,
               label: '进行中',
               icon: <Icon path={mdiFlag} size={1} />,
-              color: 'brand',
+              color: GameColorMap.get(GameStatus.OnGoing)!,
             },
             {
-              tabKey: 'coming',
+              tabKey: GameStatus.Coming,
               label: '未开始',
               icon: <Icon path={mdiProgressClock} size={1} />,
-              color: 'yellow',
+              color: GameColorMap.get(GameStatus.Coming)!,
             },
             {
-              tabKey: 'ended',
+              tabKey: GameStatus.Ended,
               label: '已结束',
               icon: <Icon path={mdiPackageVariantClosed} size={1} />,
-              color: 'red',
+              color: GameColorMap.get(GameStatus.Ended)!,
             },
           ]}
         />
@@ -68,7 +69,7 @@ const Games: FC = () => {
           ]}
         >
           {games.get(gameType)?.map((g) => (
-            <GameCard {...g} />
+            <GameCard key={g.id} game={g} />
           ))}
         </SimpleGrid>
       </Stack>

@@ -1,4 +1,5 @@
-﻿using CTFServer.Models.Request.Edit;
+﻿using CTFServer.Models.Data;
+using CTFServer.Models.Request.Edit;
 using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,24 +14,26 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         fileRepository = _fileRepository;
     }
 
-    public async Task<int> AddFlag(Challenge challenge, FlagInfoModel model, CancellationToken token = default)
+    public async Task AddFlags(Challenge challenge, FlagCreateModel[] models, CancellationToken token = default)
     {
-        var flag = new FlagContext()
+        foreach (var model in models)
         {
-            Flag = model.Flag,
-            AttachmentType = !string.IsNullOrEmpty(model.FileHash) ? FileType.Local :
-                             !string.IsNullOrEmpty(model.Url) ? FileType.Remote : FileType.None,
-            Challenge = challenge,
-            LocalFile = string.IsNullOrEmpty(model.FileHash) ? null : context.Files.Single(x => x.Hash == model.FileHash),
-            RemoteUrl = model.Url
-        };
+            Attachment? attachment = model.AttachmentType == FileType.None ? null : new()
+            {
+                Type = model.AttachmentType,
+                LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
+                RemoteUrl = model.RemoteUrl
+            };
 
-        challenge.Flags.Add(flag);
+            challenge.Flags.Add(new()
+            {
+                Flag = model.Flag,
+                Challenge = challenge,
+                Attachment = attachment
+            });
+        }
 
-        context.Update(challenge);
-        await context.SaveChangesAsync(token);
-
-        return flag.Id;
+        await UpdateAsync(challenge, token);
     }
 
     public async Task<Challenge> CreateChallenge(Game game, Challenge challenge, CancellationToken token = default)
@@ -41,43 +44,111 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         return challenge;
     }
 
-    public Task EnableChallenge(Challenge challenge, CancellationToken token)
+    public async Task<bool> EnsureInstances(Challenge challenge, Game game, CancellationToken token = default)
     {
-        challenge.IsEnabled = true;
-        context.Update(challenge);
-        return context.SaveChangesAsync(token);
+        await context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
+        await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+
+        bool update = false;
+
+        foreach (var participation in game.Participations)
+            update |= challenge.Teams.Add(participation);
+
+        await UpdateAsync(challenge, token);
+
+        return update;
     }
 
-    public Task<Challenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
-        => context.Challenges.Where(c => c.Id == id && c.GameId == gameId).FirstOrDefaultAsync(token);
-
-    public Task<Challenge[]> GetChallenges(int gameId, int count = 100, int skip = 0, CancellationToken token = default)
-        => context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).Skip(skip).Take(count).ToArrayAsync(token);
-
-    public Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
+    public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default)
     {
+        var challenges = context.Challenges.Where(c => c.Id == id && c.GameId == gameId);
+
+        if (withFlag)
+            challenges = challenges.Include(e => e.Flags);
+
+        return challenges.FirstOrDefaultAsync(token);
+    }
+
+    public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default)
+        => context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
+
+    public async Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
+    {
+        if (challenge.Type == ChallengeType.DynamicAttachment)
+        {
+            foreach (var flag in challenge.Flags)
+            {
+                if (flag.Attachment is not null &&
+                    flag.Attachment.Type == FileType.Local &&
+                    flag.Attachment.LocalFile is not null)
+                {
+                    await fileRepository.DeleteFileByHash(
+                        flag.Attachment.LocalFile.Hash, token);
+                }
+
+                context.Remove(flag);
+            }
+        }
+        else if (challenge.Attachment is not null &&
+                 challenge.Attachment.Type == FileType.Local &&
+                 challenge.Attachment.LocalFile is not null)
+        {
+            await fileRepository.DeleteFileByHash(
+                challenge.Attachment.LocalFile.Hash, token);
+        }
+
         context.Remove(challenge);
-        return context.SaveChangesAsync(token);
+        await context.SaveChangesAsync(token);
     }
 
     public async Task<TaskStatus> RemoveFlag(Challenge challenge, int flagId, CancellationToken token = default)
     {
-        var flag = await context.FlagContexts.Where(f => f.ChallengeId == challenge.Id && f.Id == flagId).FirstOrDefaultAsync(token);
+        var flag = challenge.Flags.FirstOrDefault(f => f.Id == flagId);
 
         if (flag is null)
             return TaskStatus.NotFound;
 
-        if (flag.AttachmentType == FileType.Local && flag.LocalFile is not null)
+        if (flag.Attachment is not null &&
+            flag.Attachment.Type == FileType.Local &&
+            flag.Attachment.LocalFile is not null)
         {
-            var res = await fileRepository.DeleteFileByHash(flag.LocalFile.Hash, token);
-            if (res != TaskStatus.Success)
-                return res;
+            await fileRepository.DeleteFileByHash(
+                flag.Attachment.LocalFile.Hash, token);
         }
 
         context.Remove(flag);
         await context.SaveChangesAsync(token);
 
         return TaskStatus.Success;
+    }
+
+    public async Task UpdateAttachment(Challenge challenge, AttachmentCreateModel model, CancellationToken token = default)
+    {
+        Attachment? attachment = model.AttachmentType == FileType.None ? null : new()
+        {
+            Type = model.AttachmentType,
+            LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
+            RemoteUrl = model.RemoteUrl
+        };
+
+        if (challenge.Attachment is not null)
+        {
+            if (challenge.Attachment.Type == FileType.Local &&
+                challenge.Attachment.LocalFile is not null)
+            {
+                await fileRepository.DeleteFileByHash(
+                    challenge.Attachment.LocalFile.Hash, token);
+            }
+
+            context.Remove(challenge.Attachment);
+        }
+
+        if (attachment is not null)
+            await context.AddAsync(attachment, token);
+
+        challenge.Attachment = attachment;
+
+        await UpdateAsync(challenge, token);
     }
 
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)

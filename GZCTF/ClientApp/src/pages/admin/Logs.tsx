@@ -26,7 +26,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-function formatDate(dateString?: string) {
+const formatDate = (dateString?: string) => {
   const date = new Date(dateString!)
   return (
     `${date.getMonth() + 1}`.padStart(2, '0') +
@@ -55,7 +55,7 @@ const Logs: FC = () => {
 
   const [, update] = useState(new Date())
   const newLogs = useRef<LogMessageModel[]>([])
-  const [logs, setLogs] = useState<LogMessageModel[]>([])
+  const [logs, setLogs] = useState<LogMessageModel[]>()
 
   useEffect(() => {
     api.admin
@@ -70,7 +70,7 @@ const Logs: FC = () => {
         showNotification({
           color: 'red',
           title: '获取日志失败',
-          message: err.message,
+          message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
           disallowClose: true,
         })
@@ -102,6 +102,7 @@ const Logs: FC = () => {
           color: 'teal',
           message: '实时日志连接成功',
           icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
         })
       })
       .catch((error) => {
@@ -115,7 +116,7 @@ const Logs: FC = () => {
     }
   }, [])
 
-  const rows = [...(activePage === 1 ? newLogs.current : []), ...logs!].map((item, i) => (
+  const rows = [...(activePage === 1 ? newLogs.current : []), ...(logs ?? [])].map((item, i) => (
     <tr
       key={`${item.time}@${i}`}
       className={
@@ -132,6 +133,8 @@ const Logs: FC = () => {
 
   return (
     <AdminPage
+      scroll
+      isLoading={!logs}
       head={
         <>
           <SegmentedControl
@@ -151,7 +154,6 @@ const Logs: FC = () => {
           <Group position="right">
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={activePage <= 1}
               onClick={() => setPage(activePage - 1)}
             >
@@ -159,7 +161,6 @@ const Logs: FC = () => {
             </ActionIcon>
             <ActionIcon
               size="lg"
-              variant="hover"
               disabled={logs && logs.length < ITEM_COUNT_PER_PAGE}
               onClick={() => setPage(activePage + 1)}
             >

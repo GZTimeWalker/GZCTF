@@ -2,12 +2,13 @@ import React, { FC, useState } from 'react'
 import { Button, Stack, Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiPlus } from '@mdi/js'
+import { mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { Notice } from '../../Api'
 import AdminPage from '../../components/admin/AdminPage'
 import NoticeEditCard from '../../components/admin/NoticeEditCard'
 import NoticeEditModal from '../../components/admin/NoticeEditModal'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Notices: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({
@@ -25,10 +26,17 @@ const Notices: FC = () => {
       setDisabled(true)
 
       api.edit.editUpdateNotice(notice.id!, { ...notice, isPinned: !notice.isPinned }).then(() => {
-        mutate([
-          { ...notice, isPinned: !notice.isPinned },
-          ...(notices?.filter((t) => t.id !== notice.id) ?? []),
-        ])
+        if (notice.isPinned) {
+          mutate([
+            ...(notices?.filter((t) => t.id !== notice.id) ?? []),
+            { ...notice, isPinned: !notice.isPinned, time: new Date().toJSON() },
+          ])
+        } else {
+          mutate([
+            { ...notice, isPinned: !notice.isPinned, time: new Date().toJSON() },
+            ...(notices?.filter((t) => t.id !== notice.id) ?? []),
+          ])
+        }
         setDisabled(false)
       })
     }
@@ -61,18 +69,13 @@ const Notices: FC = () => {
         })
         mutate(notices?.filter((t) => t.id !== notice.id) ?? [])
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
   }
 
   return (
     <AdminPage
+      scroll
+      isLoading={!notices}
       headProps={{ position: 'center' }}
       head={
         <Button
@@ -88,13 +91,16 @@ const Notices: FC = () => {
     >
       <Stack
         spacing="lg"
+        align="center"
         style={{
           margin: '2%',
         }}
       >
         {notices &&
           notices
-            .sort((x, y) => (x.isPinned || new Date(x.time) < new Date(y.time) ? 1 : -1))
+            .sort((x, y) =>
+              (x.isPinned && !y.isPinned) || new Date(x.time) > new Date(y.time) ? -1 : 1
+            )
             .map((notice) => (
               <NoticeEditCard
                 key={notice.id}
@@ -105,9 +111,9 @@ const Notices: FC = () => {
                 }}
                 onDelete={() => onDeleteNotice(notice)}
                 onPin={() => onPin(notice)}
+                style={{ width: '80%' }}
               />
             ))}
-
         <NoticeEditModal
           centered
           size="30%"

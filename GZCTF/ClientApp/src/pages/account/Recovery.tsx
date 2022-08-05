@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 import { TextInput, Button, Anchor } from '@mantine/core'
 import { getHotkeyHandler, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '../../Api'
 import AccountView from '../../components/AccountView'
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
@@ -25,14 +26,7 @@ const Recovery: FC = () => {
           disallowClose: true,
         })
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
   }
 
   return (

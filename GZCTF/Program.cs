@@ -65,8 +65,17 @@ if (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("Co
 else
 {
     builder.Services.AddDbContext<AppDbContext>(
-        options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+        options =>
+        {
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+            if (builder.Environment.IsDevelopment())
+            {
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+            }
+        }
+    );
 }
 
 #endregion AppDbContext
@@ -178,7 +187,11 @@ builder.Services.AddHostedService<ContainerChecker>();
 
 builder.Services.AddResponseCompression(options =>
 {
-    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+        { "application/json", "text/javascript", "text/html", "text/css" }
+    );
 });
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>

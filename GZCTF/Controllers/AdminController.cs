@@ -26,18 +26,21 @@ public class AdminController : ControllerBase
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileService;
     private readonly ITeamRepository teamRepository;
+    private readonly IGameRepository gameRepository;
     private readonly IParticipationRepository participationRepository;
 
     public AdminController(UserManager<UserInfo> _userManager,
         ILogRepository _logRepository,
         ITeamRepository _teamRepository,
+        IGameRepository _gameRepository,
         IParticipationRepository _participationRepository,
         IFileRepository _FileService)
     {
         userManager = _userManager;
-        logRepository = _logRepository;
         fileService = _FileService;
+        logRepository = _logRepository;
         teamRepository = _teamRepository;
+        gameRepository = _gameRepository;
         participationRepository = _participationRepository;
     }
 
@@ -238,7 +241,15 @@ public class AdminController : ControllerBase
         team.Locked = true;
         participation.Status = status;
 
-        await participationRepository.UpdateAsync(participation, token);
+        if (status == ParticipationStatus.Accepted)
+        {
+            // will also update participation status
+            if (await participationRepository.EnsureInstances(participation, game, token))
+                // flush scoreboard when instances are updated
+                gameRepository.FlushScoreboard(game);
+        }
+        else
+            await participationRepository.UpdateAsync(participation, token);
 
         return Ok();
     }

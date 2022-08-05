@@ -51,6 +51,11 @@ public class ProfileUserInfoModel
     public int? ActiveTeamId { get; set; }
 
     /// <summary>
+    /// 当前所有队伍
+    /// </summary>
+    public int? OwnTeamId { get; set; }
+
+    /// <summary>
     /// 用户角色
     /// </summary>
     public Role? Role { get; set; }
@@ -66,6 +71,7 @@ public class ProfileUserInfoModel
             Phone = user.PhoneNumber,
             Avatar = user.AvatarUrl,
             ActiveTeamId = user.ActiveTeamId,
+            OwnTeamId = user.OwnTeamId,
             StdNumber = user.StdNumber,
             Role = user.Role
         };

@@ -11,6 +11,7 @@ namespace CTFServer.Services;
 public class DockerOptions
 {
     public string Uri { get; set; } = default!;
+    public string PublicIP { get; set; } = default!;
 }
 
 public class DockerService : IContainerService
@@ -30,18 +31,23 @@ public class DockerService : IContainerService
 
         dockerClient = cfg.CreateClient();
 
-        logger.SystemLog($"Docker 服务已启动 ({this.options.Uri})", TaskStatus.Success, LogLevel.Debug);
+        if (string.IsNullOrEmpty(this.options.Uri))
+            logger.SystemLog($"Docker 服务已启动 (localhost)", TaskStatus.Success, LogLevel.Debug);
+        else
+            logger.SystemLog($"Docker 服务已启动 ({this.options.Uri})", TaskStatus.Success, LogLevel.Debug);
     }
 
     public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
     {
+        // TODO: Add Health Check
         var parameters = new CreateContainerParameters()
         {
             Image = config.Image,
-            Name = $"{config.Image.Split("/").LastOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
+            Name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
             Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" },
-            // TODO: Add Health Check
-            ExposedPorts = { { config.ExposedPort.ToString(), default } },
+            ExposedPorts = new Dictionary<string, EmptyStruct>() {
+                { config.ExposedPort.ToString(), new EmptyStruct() }
+            },
             HostConfig = new()
             {
                 PublishAllPorts = true,
@@ -56,7 +62,41 @@ public class DockerService : IContainerService
     private async Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default)
     {
         // TODO: Docker Registry Auth Required
-        var res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+        CreateContainerResponse? res = null;
+        try
+        {
+            res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+        }
+        catch (DockerImageNotFoundException)
+        {
+            logger.SystemLog($"拉取容器镜像 {parameters.Image}", TaskStatus.Pending, LogLevel.Information);
+
+            await dockerClient.Images.CreateImageAsync(new()
+            {
+                FromImage = parameters.Image
+            }, null, new Progress<JSONMessage>(msg =>
+            {
+                Console.WriteLine($"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
+            }), token);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message, e);
+            return null;
+        }
+
+        if (res is null)
+        {
+            try
+            {
+                res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message, e);
+                return null;
+            }
+        }
 
         Container container = new()
         {
@@ -93,14 +133,32 @@ public class DockerService : IContainerService
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(1);
-        container.Port = int.Parse(info.NetworkSettings.Ports[parameters.ExposedPorts.First().Key].First().HostPort);
+        container.Port = int.Parse(info.NetworkSettings.Ports
+            .FirstOrDefault(p =>
+                p.Key.StartsWith(parameters.ExposedPorts.First().Key)
+            ).Value.First().HostPort);
+
+        if (!string.IsNullOrEmpty(options.PublicIP))
+            container.PublicIP = options.PublicIP;
 
         return container;
     }
 
     public async Task DestoryContainer(Container container, CancellationToken token = default)
     {
-        await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
+        try
+        {
+            await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
+        }
+        catch (DockerContainerNotFoundException)
+        {
+            logger.SystemLog($"容器 {container.ContainerId[..12]} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "删除容器失败");
+            return;
+        }
 
         container.Status = ContainerStatus.Destoryed;
     }

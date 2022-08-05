@@ -8,6 +8,7 @@ namespace CTFServer.Models;
 public class Game
 {
     [Key]
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
@@ -50,6 +51,8 @@ public class Game
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
+    [NotMapped]
+    [JsonIgnore]
     public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
 
     #region Db Relationship
@@ -79,16 +82,16 @@ public class Game
     public List<Submission> Submissions { get; set; } = new();
 
     /// <summary>
-    /// 比赛题目实例
+    /// 比赛队伍参赛对象
     /// </summary>
     [JsonIgnore]
-    public List<Instance> Instances { get; set; } = new();
+    public HashSet<Participation> Participations { get; set; } = new();
 
     /// <summary>
     /// 比赛队伍
     /// </summary>
     [JsonIgnore]
-    public List<Participation> Teams { get; set; } = new();
+    public ICollection<Team>? Teams { get; set; }
 
     #endregion Db Relationship
 

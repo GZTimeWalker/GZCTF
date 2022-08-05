@@ -25,7 +25,7 @@ public class ScoreboardModel
     /// <summary>
     /// 题目信息
     /// </summary>
-    public IDictionary<string, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
+    public IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
 }
 
 public class TopTimeLine
@@ -112,7 +112,7 @@ public class ChallengeItem
     /// <summary>
     /// 未解出、一血、二血、三血或者其他
     /// </summary>
-    [JsonPropertyName("rank")]
+    [JsonPropertyName("type")]
     public SubmissionType Type { get; set; }
 
     /// <summary>
@@ -145,9 +145,14 @@ public class ChallengeInfo
     public int Score { get; set; }
 
     /// <summary>
+    /// 解出队伍数量
+    /// </summary>
+    [JsonPropertyName("solved")]
+    public int SolvedCount { get; set; }
+
+    /// <summary>
     /// 题目三血
     /// </summary>
-    [JsonIgnore]
     public Blood?[] Bloods { get; set; } = default!;
 }
 

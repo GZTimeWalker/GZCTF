@@ -17,6 +17,7 @@ public class AssetsController : ControllerBase
     private readonly ILogger<AssetsController> logger;
     private readonly IFileRepository fileRepository;
     private readonly IConfiguration configuration;
+    private readonly string basepath;
 
     public AssetsController(IFileRepository _fileeService,
         IConfiguration _configuration,
@@ -25,6 +26,7 @@ public class AssetsController : ControllerBase
         fileRepository = _fileeService;
         configuration = _configuration;
         logger = _logger;
+        basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
     }
 
     /// <summary>
@@ -44,7 +46,6 @@ public class AssetsController : ControllerBase
     public IActionResult GetFile(string hash, string filename)
     {
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
-        var basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
         path = Path.GetFullPath(Path.Combine(basepath, path));
 
         if (!System.IO.File.Exists(path))
@@ -66,6 +67,7 @@ public class AssetsController : ControllerBase
     /// 上传一个或多个文件
     /// </remarks>
     /// <param name="files"></param>
+    /// <param name="filename">统一文件名</param>
     /// <param name="token"></param>
     /// <response code="200">成功上传文件</response>
     /// <response code="400">上传文件失败</response>
@@ -75,7 +77,7 @@ public class AssetsController : ControllerBase
     [HttpPost("api/[controller]")]
     [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Upload(List<IFormFile> files, CancellationToken token)
+    public async Task<IActionResult> Upload(List<IFormFile> files, [FromQuery] string? filename, CancellationToken token)
     {
         try
         {
@@ -84,8 +86,8 @@ public class AssetsController : ControllerBase
             {
                 if (file.Length > 0)
                 {
-                    var res = await fileRepository.CreateOrUpdateFile(file, null, token);
-                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Information);
+                    var res = await fileRepository.CreateOrUpdateFile(file, filename, token);
+                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {filename ?? file.FileName} - {file.Length} Bytes", TaskStatus.Success, LogLevel.Debug);
                     results.Add(res);
                 }
             }

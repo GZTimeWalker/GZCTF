@@ -69,7 +69,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     private Task<Data[]> FetchData(Game game, CancellationToken token = default)
         => context.Instances
             .Include(i => i.Challenge)
-            .Where(i => i.Game == game && i.Challenge.IsEnabled && i.Participation.Status == ParticipationStatus.Accepted)
+            .Where(i => i.Challenge.Game == game && i.Challenge.IsEnabled && i.Participation.Status == ParticipationStatus.Accepted)
             .Include(i => i.Participation)
             .GroupJoin(
                 context.Submissions.Where(s => s.Status == AnswerResult.Accepted),
@@ -93,7 +93,7 @@ public class GameRepository : RepositoryBase, IGameRepository
             }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
-    private static IDictionary<string, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
+    private static IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(g => g.Instance.Challenge)
             .Select(c => new ChallengeInfo
             {
@@ -101,9 +101,10 @@ public class GameRepository : RepositoryBase, IGameRepository
                 Title = c.Key.Title,
                 Tag = c.Key.Tag,
                 Score = c.Key.CurrentScore,
+                SolvedCount = c.Key.AcceptedCount,
                 Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
-            .ToDictionary(c => c.Key.ToString(), c => c.AsEnumerable());
+            .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(j => j.Instance.Participation)
@@ -147,8 +148,10 @@ public class GameRepository : RepositoryBase, IGameRepository
                         };
                     }).ToList()
                 },
-                LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow),
-            }).OrderBy(j => (-j.Item.Score, j.LastSubmissionTime)) //成绩倒序，最后提交时间正序
+                LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                    .OrderByDescending(t => t).FirstOrDefault()
+            }).OrderByDescending(j => j.Item.Score) //成绩倒序，最后提交时间正序
+            .ThenBy(j => j.LastSubmissionTime)
             .Select((j, i) =>
             {
                 j.Item.Rank = i + 1;

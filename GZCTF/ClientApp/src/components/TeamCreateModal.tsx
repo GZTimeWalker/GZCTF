@@ -12,9 +12,10 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCloseCircle, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCloseCircle, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamUpdateModel } from '../Api'
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean
@@ -40,14 +41,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
         api.team.mutateTeamGetTeamsInfo()
         mutateActive(res.data.id!)
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
       .finally(() => {
         modalProps.onClose()
       })

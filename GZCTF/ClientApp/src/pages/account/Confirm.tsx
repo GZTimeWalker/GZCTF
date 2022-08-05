@@ -22,7 +22,7 @@ const Confirm: FC = () => {
           showNotification({
             color: 'teal',
             title: '邮箱已验证',
-            message: atob(email),
+            message: window.atob(email),
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })

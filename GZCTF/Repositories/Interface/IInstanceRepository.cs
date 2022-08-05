@@ -20,17 +20,15 @@ public interface IInstanceRepository : IRepository
     /// <param name="submission">当前提交</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<AnswerResult> VerifyAnswer(Submission submission, CancellationToken token = default);
+    public Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目实例
     /// </summary>
-    /// <param name="game">当前比赛</param>
-    /// <param name="count">获取数量</param>
-    /// <param name="skip">跳过数量</param>
+    /// <param name="challenge">当前题目</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Instance[]> GetInstances(Game game, int count = 30, int skip = 0, CancellationToken token = default);
+    public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default);
 
     /// <summary>
     /// 检查抄袭行为
@@ -59,10 +57,10 @@ public interface IInstanceRepository : IRepository
     /// <summary>
     /// 尝试将当前队伍状态标记为已解决题目
     /// </summary>
-    /// <param name="submission">提交</param>
+    /// <param name="instance">实例</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<bool> TrySolved(Submission submission, CancellationToken token = default);
+    public Task<bool> TrySolved(Instance instance, CancellationToken token = default);
 
     /// <summary>
     /// 容器延期

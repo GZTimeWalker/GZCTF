@@ -8,7 +8,7 @@ import { Icon } from '@mdi/react'
 import api from '../../Api'
 import AccountView from '../../components/AccountView'
 import StrengthPasswordInput from '../../components/StrengthPasswordInput'
-import useReCaptcha from '../../utils/Recaptcha'
+import { useReCaptcha } from '../../utils/Recaptcha'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -79,7 +79,7 @@ const Register: FC = () => {
           id: 'register-status',
           color: 'red',
           title: '遇到了问题',
-          message: `${err.error.title}`,
+          message: `${err.response.data.title}`,
           icon: <Icon path={mdiClose} size={1} />,
         })
         setDisabled(false)

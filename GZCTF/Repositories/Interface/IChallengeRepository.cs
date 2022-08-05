@@ -25,20 +25,19 @@ public interface IChallengeRepository : IRepository
     /// 获取全部题目
     /// </summary>
     /// <param name="gameId">比赛Id</param>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Challenge[]> GetChallenges(int gameId, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目
     /// </summary>
     /// <param name="gameId">比赛Id</param>
     /// <param name="id">题目Id</param>
+    /// <param name="withFlag">是否加载Flag</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Challenge?> GetChallenge(int gameId, int id, CancellationToken token = default);
+    public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default);
 
     /// <summary>
     /// 添加 Flag
@@ -47,10 +46,28 @@ public interface IChallengeRepository : IRepository
     /// <param name="model">Flag 信息</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<int> AddFlag(Challenge challenge, FlagInfoModel model, CancellationToken token = default);
+    public Task AddFlags(Challenge challenge, FlagCreateModel[] model, CancellationToken token = default);
 
     /// <summary>
-    /// 删除 Flag
+    /// 确保此题目 Instance 对象已创建
+    /// </summary>
+    /// <param name="challenge"></param>
+    /// <param name="game"></param>
+    /// <param name="token"></param>
+    /// <returns>是否有实例更新</returns>
+    public Task<bool> EnsureInstances(Challenge challenge, Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// 更新附件
+    /// </summary>
+    /// <param name="challenge">比赛题目对象</param>
+    /// <param name="model">附件信息</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task UpdateAttachment(Challenge challenge, AttachmentCreateModel model, CancellationToken token = default);
+
+    /// <summary>
+    /// 删除 Flag，确保 Flags 字段已加载
     /// </summary>
     /// <param name="challenge">比赛题目对象</param>
     /// <param name="flagId">flag ID</param>
@@ -66,12 +83,4 @@ public interface IChallengeRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default);
-
-    /// <summary>
-    /// 启用一个题目
-    /// </summary>
-    /// <param name="challenge">题目对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task EnableChallenge(Challenge challenge, CancellationToken token);
 }

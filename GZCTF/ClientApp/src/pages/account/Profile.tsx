@@ -16,30 +16,14 @@ import {
   Center,
   SimpleGrid,
 } from '@mantine/core'
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ProfileUpdateModel } from '../../Api'
 import PasswordChangeModal from '../../components/PasswordChangeModal'
 import WithNavBar from '../../components/WithNavbar'
-
-const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
-  <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
-    {file ? (
-      <Image fit="contain" src={URL.createObjectURL(file)} alt="avatar" />
-    ) : (
-      <Box>
-        <Text size="xl" inline>
-          拖放图片或点击此处以选择头像
-        </Text>
-        <Text size="sm" color="dimmed" inline mt={7}>
-          请选择小于 3MB 的图片
-        </Text>
-      </Box>
-    )}
-  </Group>
-)
+import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -58,7 +42,7 @@ const Profile: FC = () => {
   })
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
-  const [disabled, ] = useState(false)
+  const [disabled] = useState(false)
 
   const [mailEditOpened, setMailEditOpened] = useState(false)
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false)
@@ -84,8 +68,7 @@ const Profile: FC = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            title: '修改头像成功',
-            message: '您的头像已经更新',
+            message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -94,12 +77,7 @@ const Profile: FC = () => {
           setDropzoneOpened(false)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
           setDropzoneOpened(false)
         })
     }
@@ -118,14 +96,7 @@ const Profile: FC = () => {
         })
         mutate({ ...data })
       })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.error.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
+      .catch(showErrorNotification)
   }
 
   const onChangeEmail = () => {
@@ -144,14 +115,7 @@ const Profile: FC = () => {
           })
           setMailEditOpened(false)
         })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-        })
+        .catch(showErrorNotification)
     }
   }
 
@@ -283,7 +247,7 @@ const Profile: FC = () => {
           >
             <Stack>
               <Text>
-                更改邮箱后，您将不能通过原邮箱登录。一封邮件将会发送至您的新邮箱，请点击邮件中的链接完成验证。
+                更改邮箱后，您将不能通过原邮箱登录。一封邮件将会发送至新邮箱，请点击邮件中的链接完成验证。
               </Text>
               <TextInput
                 required
@@ -323,8 +287,8 @@ const Profile: FC = () => {
               onReject={() => {
                 showNotification({
                   color: 'red',
-                  title: '文件上传失败',
-                  message: `请重新提交`,
+                  title: '文件获取失败',
+                  message: '请检查文件格式和大小',
                   icon: <Icon path={mdiClose} size={1} />,
                 })
               }}
@@ -334,9 +298,26 @@ const Profile: FC = () => {
                 minHeight: '220px',
               }}
               maxSize={3 * 1024 * 1024}
-              accept={IMAGE_MIME_TYPE}
+              accept={['image/png', 'image/gif', 'image/jpeg']}
             >
-              {(status) => dropzoneChildren(status, avatarFile)}
+              <Group
+                position="center"
+                spacing="xl"
+                style={{ minHeight: 240, pointerEvents: 'none' }}
+              >
+                {avatarFile ? (
+                  <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
+                ) : (
+                  <Box>
+                    <Text size="xl" inline>
+                      拖放图片或点击此处以选择头像
+                    </Text>
+                    <Text size="sm" color="dimmed" inline mt={7}>
+                      请选择小于 3MB 的图片
+                    </Text>
+                  </Box>
+                )}
+              </Group>
             </Dropzone>
             <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
               修改头像

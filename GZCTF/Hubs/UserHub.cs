@@ -14,6 +14,8 @@ public class UserHub : Hub<IUserClient>
             return;
         }
 
+        // TODO: Add users to their current game
+
         await base.OnConnectedAsync();
     }
 }

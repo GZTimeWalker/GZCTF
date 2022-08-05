@@ -13,14 +13,14 @@ public class ParticipationInfoModel
     public int Id { get; set; }
 
     /// <summary>
-    /// 参与队伍
-    /// </summary>
-    public TeamInfoModel Team { get; set; } = default!;
-
-    /// <summary>
     /// 队伍分值
     /// </summary>
     public int Score { get; set; } = 0;
+
+    /// <summary>
+    /// 参与队伍
+    /// </summary>
+    public TeamWithDetailedUserInfo Team { get; set; } = default!;
 
     /// <summary>
     /// 参与状态
@@ -31,8 +31,8 @@ public class ParticipationInfoModel
         => new()
         {
             Id = part.Id,
-            Team = TeamInfoModel.FromTeam(part.Team),
             Score = part.Score,
-            Status = part.Status
+            Status = part.Status,
+            Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };
 }

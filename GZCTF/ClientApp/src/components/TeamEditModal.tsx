@@ -19,29 +19,13 @@ import {
   ActionIcon,
   ScrollArea,
 } from '@mantine/core'
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { TeamInfoModel, TeamUserInfoModel } from '../Api'
-
-const dropzoneChildren = (status: DropzoneStatus, file: File | null) => (
-  <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
-    {file ? (
-      <Image fit="contain" src={URL.createObjectURL(file)} alt="avatar" />
-    ) : (
-      <Box>
-        <Text size="xl" inline>
-          拖放图片或点击此处以选择头像
-        </Text>
-        <Text size="sm" color="dimmed" inline mt={7}>
-          请选择小于 3MB 的图片
-        </Text>
-      </Box>
-    )}
-  </Group>
-)
+import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -115,20 +99,13 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           showNotification({
             color: 'teal',
             title: '退出队伍成功',
-            message: '您的队伍信息已更新',
+            message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
           api.team.mutateTeamGetTeamsInfo()
         })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setLeaveOpened(false)
           props.onClose()
@@ -144,21 +121,14 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           showNotification({
             color: 'teal',
             title: '踢出成员成功',
-            message: '您的队伍信息已更新',
+            message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
           api.team.mutateTeamGetTeamsInfo()
           setTeamInfo(data.data)
         })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-        })
+        .catch(showErrorNotification)
         .finally(() => {
           setKickUserOpened(false)
         })
@@ -178,14 +148,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             disallowClose: true,
           })
         })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-        })
+        .catch(showErrorNotification)
     }
   }
 
@@ -198,8 +161,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         .then((data) => {
           showNotification({
             color: 'teal',
-            title: '修改头像成功',
-            message: '您的头像已经更新',
+            message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -209,12 +171,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           setDropzoneOpened(false)
         })
         .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+          showErrorNotification(err)
           setDropzoneOpened(false)
         })
     }
@@ -235,14 +192,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           })
           api.team.mutateTeamGetTeamsInfo()
         })
-        .catch((err) => {
-          showNotification({
-            color: 'red',
-            title: '遇到了问题',
-            message: `${err.error.title}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-        })
+        .catch(showErrorNotification)
     }
   }
 
@@ -373,8 +323,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           onReject={() => {
             showNotification({
               color: 'red',
-              title: '文件上传失败',
-              message: `请重新提交`,
+              title: '文件获取失败',
+              message: '请检查文件格式和大小',
               icon: <Icon path={mdiClose} size={1} />,
             })
           }}
@@ -384,9 +334,22 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             minHeight: '220px',
           }}
           maxSize={3 * 1024 * 1024}
-          accept={IMAGE_MIME_TYPE}
+          accept={['image/png', 'image/gif', 'image/jpeg']}
         >
-          {(status) => dropzoneChildren(status, avatarFile)}
+          <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
+            {avatarFile ? (
+              <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
+            ) : (
+              <Box>
+                <Text size="xl" inline>
+                  拖放图片或点击此处以选择头像
+                </Text>
+                <Text size="sm" color="dimmed" inline mt={7}>
+                  请选择小于 3MB 的图片
+                </Text>
+              </Box>
+            )}
+          </Group>
         </Dropzone>
         <Button fullWidth variant="outline" onClick={onChangeAvatar}>
           更新头像

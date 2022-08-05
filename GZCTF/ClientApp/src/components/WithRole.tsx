@@ -1,5 +1,4 @@
-import React, { FC } from 'react'
-import { useEffect } from 'react'
+import React, { FC, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Center, Loader } from '@mantine/core'
 import api, { Role } from '../Api'
@@ -29,7 +28,8 @@ const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
   const required = RoleMap.get(requiredRole)!
 
   useEffect(() => {
-    if (error && error.status === 401) navigate(`/account/login?from=${location.pathname}`)
+    if (error && error.status === 401)
+      navigate(`/account/login?from=${location.pathname}`, { replace: true })
 
     if (!user?.role) return
 

@@ -13,7 +13,7 @@ const Verify: FC = () => {
   const token = sp.get('token')
   const email = sp.get('email')
   const navigate = useNavigate()
-  
+
   useEffect(() => {
     if (token && email) {
       api.account
@@ -22,7 +22,7 @@ const Verify: FC = () => {
           showNotification({
             color: 'teal',
             title: '账户已验证，请登录',
-            message: atob(email),
+            message: window.atob(email),
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })

@@ -43,13 +43,25 @@ public class Submission
     public UserInfo? User { get; set; }
 
     /// <summary>
-    /// 参与队伍
+    /// 参与队伍 Id
+    /// </summary>
+    [JsonIgnore]
+    public int TeamId { get; set; }
+
+    /// <summary>
+    /// 队伍
+    /// </summary>
+    [JsonIgnore]
+    public Team Team { get; set; } = default!;
+
+    /// <summary>
+    /// 参与对象 Id
     /// </summary>
     [JsonIgnore]
     public int ParticipationId { get; set; }
 
     /// <summary>
-    /// 队伍
+    /// 队伍参赛对象
     /// </summary>
     [JsonIgnore]
     public Participation Participation { get; set; } = default!;
