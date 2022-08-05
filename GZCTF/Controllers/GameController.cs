@@ -659,7 +659,7 @@ public class GameController : ControllerBase
         };
 
         if (res.Game is null)
-            return res.WithResult(NotFound(new RequestResponse("比赛未找到")));
+            return res.WithResult(NotFound(new RequestResponse("比赛未找到", 404)));
 
         if (res.User?.ActiveTeam is null)
             return res.WithResult(BadRequest(new RequestResponse("请激活一个队伍以参赛")));
@@ -682,7 +682,7 @@ public class GameController : ControllerBase
             var challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
 
             if (challenge is null)
-                return res.WithResult(NotFound(new RequestResponse("题目未找到")));
+                return res.WithResult(NotFound(new RequestResponse("题目未找到", 404)));
 
             res.Challenge = challenge;
         }
