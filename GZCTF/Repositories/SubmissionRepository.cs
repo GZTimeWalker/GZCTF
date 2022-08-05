@@ -44,4 +44,9 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
     public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId, CancellationToken token = default)
         => context.Submissions.Where(s => s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
             .FirstOrDefaultAsync(token);
+
+    public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default)
+        => context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
+            .Include(s => s.User).Include(s => s.Team).Include(s => s.Challenge)
+            .ToArrayAsync(token);
 }

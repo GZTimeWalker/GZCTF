@@ -193,9 +193,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             submission.Status = instance.FlagContext?.Flag == submission.Answer
                 ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
 
-        context.Attach(submission);
         await UpdateAsync(submission, token);
-        context.Entry(submission).State = EntityState.Deleted;
 
         return instance;
     }

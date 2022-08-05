@@ -425,8 +425,6 @@ public class GameController : ControllerBase
 
         submission = await submissionRepository.AddSubmission(submission, token);
 
-        submissionRepository.Detach(submission);
-
         // send to flag checker service
         await checkerChannelWriter.WriteAsync(submission, token);
 

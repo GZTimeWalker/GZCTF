@@ -58,6 +58,13 @@ public interface ISubmissionRepository : IRepository
     public Task UpdateSubmission(Submission submission, CancellationToken token = default);
 
     /// <summary>
+    /// 获取未检查的 flag
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default);
+
+    /// <summary>
     /// 获取提交
     /// </summary>
     /// <param name="gameId">比赛Id</param>
