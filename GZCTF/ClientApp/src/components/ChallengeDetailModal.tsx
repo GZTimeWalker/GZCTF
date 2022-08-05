@@ -82,7 +82,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const [onSubmitting, setOnSubmitting] = useState(false)
   const [flag, setFlag] = useInputState('')
-  const [flagId, setFlagId] = useState<number>(0)
+  const [flagId, setFlagId] = useState(0)
 
   const onCreateContainer = () => {
     if (challengeId) {
@@ -129,10 +129,10 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       api.game
         .gameStatus(gameId, challengeId, flagId)
         .then((res) => {
+          console.log(res.data)
           if (res && res.data !== AnswerResult.FlagSubmitted) {
-            checkInterval.stop()
-            setFlagId(0)
             setFlag('')
+            setFlagId(0)
             if (res.data === AnswerResult.Accepted) {
               updateNotification({
                 id: 'flag-submitted',
@@ -154,13 +154,20 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             }
           }
         })
-        .catch((err) => {
-          showErrorNotification(err)
+        .catch(showErrorNotification)
+        .finally(() => {
           checkInterval.stop()
+          setOnSubmitting(false)
         })
-        .finally(() => setOnSubmitting(false))
     }
   }, 1000)
+
+  useEffect(() => {
+    if (flagId) {
+      checkInterval.start()
+      return checkInterval.stop
+    }
+  }, [flagId])
 
   const onSubmit = () => {
     if (challengeId && flag) {
@@ -169,7 +176,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         .gameSubmit(gameId, challengeId, flag)
         .then((res) => {
           setFlagId(res.data)
-          checkInterval.start()
           showNotification({
             id: 'flag-submitted',
             color: 'orange',
@@ -180,6 +186,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           })
         })
         .catch(showErrorNotification)
+        .finally(() => setOnSubmitting(false))
     }
   }
 
@@ -313,7 +320,11 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               fontFamily: theme.fontFamilyMonospace,
             },
           }}
-          rightSection={<Button onClick={onSubmit} disabled={onSubmitting}>提交 flag</Button>}
+          rightSection={
+            <Button onClick={onSubmit} disabled={onSubmitting}>
+              提交 flag
+            </Button>
+          }
         />
       </Stack>
     </Modal>

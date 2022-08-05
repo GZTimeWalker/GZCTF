@@ -43,7 +43,6 @@ public class FlagChecker : IHostedService
         var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
         var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-        var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
 
         try
         {

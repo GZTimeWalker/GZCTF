@@ -177,24 +177,21 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     public async Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
         var instance = await context.Instances
-            // since submission have loaded challenge info
-            // this is unnecessary
-            //
-            // .Include(i => i.Challenge)
+            // avoid conflict caused by tracking 'Challenge'
+            .IgnoreAutoIncludes()
             .Include(i => i.FlagContext)
             .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId == submission.ParticipationId, token);
 
-        if (instance is null)
-        {
-            submission.Status = AnswerResult.NotFound;
-            return null;
-        }
+        if (instance?.FlagContext is null && submission.Challenge.Type.IsStatic())
+            await context.Entry(submission.Challenge).Collection(c => c.Flags).LoadAsync(token);
 
-        submission.Status = ((submission.Challenge.Type.IsStatic() && submission.Challenge.Flags.Any(f => f.Flag == submission.Answer))
+        submission.Status = instance is null ? AnswerResult.NotFound
+            : ((submission.Challenge.Type.IsStatic() && submission.Challenge.Flags.Any(f => f.Flag == submission.Answer))
             || (submission.Challenge.Type.IsDynamic() && instance.FlagContext?.Flag == submission.Answer))
             ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
 
+        await UpdateAsync(submission);
         return instance;
     }
 

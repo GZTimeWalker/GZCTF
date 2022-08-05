@@ -39,22 +39,22 @@ public class ChallengeUpdateModel
     /// <summary>
     /// 镜像名称与标签
     /// </summary>
-    public string? ContainerImage { get; set; } = string.Empty;
+    public string? ContainerImage { get; set; }
 
     /// <summary>
     /// 运行内存限制 (MB)
     /// </summary>
-    public int? MemoryLimit { get; set; } = 64;
+    public int? MemoryLimit { get; set; }
 
     /// <summary>
     /// CPU 运行数量限制
     /// </summary>
-    public int? CPUCount { get; set; } = 1;
+    public int? CPUCount { get; set; }
 
     /// <summary>
     /// 镜像暴露端口
     /// </summary>
-    public int? ContainerExposePort { get; set; } = 80;
+    public int? ContainerExposePort { get; set; }
 
     #endregion Container
 

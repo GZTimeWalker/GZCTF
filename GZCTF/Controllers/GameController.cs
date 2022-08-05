@@ -406,7 +406,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
     {
-        var context = await GetContextInfo(id, challengeId, true, token);
+        var context = await GetContextInfo(id, challengeId, false, token);
 
         if (context.Result is not null)
             return context.Result;
