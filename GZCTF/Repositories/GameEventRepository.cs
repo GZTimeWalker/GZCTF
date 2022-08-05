@@ -11,8 +11,9 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
 
     public async Task<GameEvent> AddEvent(Game game, GameEvent gameEvent, CancellationToken token = default)
     {
-        await context.Entry(game).Collection(e => e.GameEvents).LoadAsync(token);
-        game.GameEvents.Add(gameEvent);
+        gameEvent.Game = game;
+
+        await context.AddAsync(gameEvent);
         await context.SaveChangesAsync(token);
 
         // TODO: send to signalR (for monitor)

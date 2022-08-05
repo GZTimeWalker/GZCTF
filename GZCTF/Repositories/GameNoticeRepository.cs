@@ -22,9 +22,9 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 
     public async Task<GameNotice> CreateNotice(Game game, GameNotice notice, CancellationToken token = default)
     {
-        await context.Entry(game).Collection(e => e.GameNotices).LoadAsync(token);
+        notice.Game = game;
 
-        game.GameNotices.Add(notice);
+        await context.AddAsync(notice);
         await context.SaveChangesAsync(token);
 
         cache.Remove(CacheKey.GameNotice(game.Id));

@@ -20,7 +20,7 @@ public interface IInstanceRepository : IRepository
     /// <param name="submission">当前提交</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<AnswerResult> VerifyAnswer(Submission submission, CancellationToken token = default);
+    public Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目实例
@@ -57,10 +57,10 @@ public interface IInstanceRepository : IRepository
     /// <summary>
     /// 尝试将当前队伍状态标记为已解决题目
     /// </summary>
-    /// <param name="submission">提交</param>
+    /// <param name="instance">实例</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<bool> TrySolved(Submission submission, CancellationToken token = default);
+    public Task<bool> TrySolved(Instance instance, CancellationToken token = default);
 
     /// <summary>
     /// 容器延期

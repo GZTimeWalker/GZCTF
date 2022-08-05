@@ -90,7 +90,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Games(int id, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
@@ -288,7 +288,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -314,7 +314,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> MyTeam([FromRoute] int id, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -342,7 +342,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Participations([FromRoute] int id, CancellationToken token = default)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
@@ -373,7 +373,7 @@ public class GameController : ControllerBase
         if (id <= 0 || challengeId <= 0)
             return NotFound(new RequestResponse("题目未找到", 404));
 
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -406,7 +406,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, challengeId, true, token);
 
         if (context.Result is not null)
             return context.Result;
@@ -416,8 +416,8 @@ public class GameController : ControllerBase
             Answer = flag,
             Game = context.Game!,
             User = context.User,
-            ChallengeId = challengeId,
-            TeamId = context.Participation!.TeamId,
+            Challenge = context.Challenge!,
+            Team = context.Participation!.Team,
             Participation = context.Participation!,
             Status = AnswerResult.FlagSubmitted,
             SubmitTimeUTC = DateTimeOffset.UtcNow,
@@ -482,7 +482,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -531,7 +531,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -569,7 +569,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ProlongContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -612,7 +612,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -639,6 +639,7 @@ public class GameController : ControllerBase
     {
         public Game? Game = default!;
         public UserInfo? User = default!;
+        public Challenge? Challenge = default!;
         public Participation? Participation = default!;
         public IActionResult? Result = null;
 
@@ -649,7 +650,7 @@ public class GameController : ControllerBase
         }
     };
 
-    private async Task<ContextInfo> GetContextInfo(int id, CancellationToken token = default)
+    private async Task<ContextInfo> GetContextInfo(int id, int challengeId = 0, bool withFlag = false, CancellationToken token = default)
     {
         ContextInfo res = new()
         {
@@ -675,6 +676,16 @@ public class GameController : ControllerBase
 
         if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
             return res.WithResult(BadRequest(new RequestResponse("比赛还未开始")));
+
+        if (challengeId > 0)
+        {
+            var challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
+
+            if (challenge is null)
+                return res.WithResult(NotFound(new RequestResponse("题目未找到")));
+
+            res.Challenge = challenge;
+        }
 
         return res;
     }

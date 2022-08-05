@@ -146,7 +146,19 @@ public class DockerService : IContainerService
 
     public async Task DestoryContainer(Container container, CancellationToken token = default)
     {
-        await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
+        try
+        {
+            await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
+        }
+        catch (DockerContainerNotFoundException)
+        {
+            logger.SystemLog($"容器 {container.ContainerId[..12]} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "删除容器失败");
+            return;
+        }
 
         container.Status = ContainerStatus.Destoryed;
     }

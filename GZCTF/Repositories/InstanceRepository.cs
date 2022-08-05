@@ -174,27 +174,32 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return checkInfo;
     }
 
-    public async Task<AnswerResult> VerifyAnswer(Submission submission, CancellationToken token = default)
+    public async Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
-        var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
+        var instance = await context.Instances
+            // since submission have loaded challenge info
+            // this is unnecessary
+            //
+            // .Include(i => i.Challenge)
+            .Include(i => i.FlagContext)
+            .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
+                i.ParticipationId == submission.ParticipationId, token);
 
         if (instance is null)
-            return AnswerResult.NotFound;
+        {
+            submission.Status = AnswerResult.NotFound;
+            return null;
+        }
 
-        if ((instance.Challenge.Type.IsStatic() && instance.Challenge.Flags.Any(f => f.Flag == submission.Answer))
-            || (instance.Challenge.Type.IsDynamic() && instance.FlagContext?.Flag == submission.Answer))
-            return AnswerResult.Accepted;
+        submission.Status = ((submission.Challenge.Type.IsStatic() && submission.Challenge.Flags.Any(f => f.Flag == submission.Answer))
+            || (submission.Challenge.Type.IsDynamic() && instance.FlagContext?.Flag == submission.Answer))
+            ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
 
-        return AnswerResult.WrongAnswer;
+        return instance;
     }
 
-    public async Task<bool> TrySolved(Submission submission, CancellationToken token = default)
+    public async Task<bool> TrySolved(Instance instance, CancellationToken token = default)
     {
-        var instance = await context.Instances.SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId && i.ParticipationId == submission.ParticipationId, token);
-
-        if (instance is null)
-            throw new NullReferenceException(nameof(instance));
-
         if (instance.IsSolved)
             return false;
 
