@@ -49,8 +49,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             if (challenge.Type.IsAttachment())
             {
-                var flags = await context.Entry(challenge).Collection(e => e.Flags)
-                        .Query().Where(e => !e.IsOccupied).ToListAsync(token);
+                var flags = await context.FlagContexts
+                    .Where(e => e.Challenge == challenge && !e.IsOccupied)
+                    .ToListAsync(token);
 
                 if (flags.Count == 0)
                 {
@@ -60,7 +61,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
                 var pos = Random.Shared.Next(flags.Count);
                 flags[pos].IsOccupied = true;
-                instance.FlagContext = flags[pos];
+
+                instance.FlagId = flags[pos].Id;
             }
             else
             {
