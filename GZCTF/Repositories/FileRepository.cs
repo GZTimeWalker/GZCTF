@@ -81,7 +81,7 @@ public class FileRepository : RepositoryBase, IFileRepository
 
             logger.SystemLog($"文件引用计数 [{file.Hash[..8]}] {file.Name} => {file.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
 
-            await UpdateAsync(file, token);
+            await SaveAsync(token);
 
             return TaskStatus.Success;
         }

@@ -47,6 +47,7 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default)
         => context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
+            .AsNoTracking()
             .Include(s => s.User).Include(s => s.Team).Include(s => s.Challenge)
             .ToArrayAsync(token);
 }

@@ -76,7 +76,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         instance.IsLoaded = true;
 
-        await UpdateAsync(instance, token);
+        await SaveAsync(token);
 
         return instance;
     }
@@ -171,40 +171,42 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return checkInfo;
     }
 
-    public async Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default)
+    public async Task<bool> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
         var instance = await context.Instances
-            // avoid conflict caused by tracking 'Challenge'
             .IgnoreAutoIncludes()
             .Include(i => i.FlagContext)
             .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId == submission.ParticipationId, token);
 
+        var updateSub = await context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
+
         if (instance is null)
-            submission.Status = AnswerResult.NotFound;
+        {
+            updateSub.Status = AnswerResult.NotFound;
+            return false;
+        }
         else if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
-            submission.Status = await context.FlagContexts
+        {
+            updateSub.Status = await context.FlagContexts
                 .AsNoTracking()
                 .AnyAsync(
                     f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
                     token)
                 ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        }
         else
-            submission.Status = instance.FlagContext?.Flag == submission.Answer
+        {
+            updateSub.Status = instance.FlagContext?.Flag == submission.Answer
                 ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        }
 
-        await UpdateAsync(submission, token);
+        bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
+        instance.IsSolved = instance.IsSolved || updateSub.Status == AnswerResult.Accepted;
 
-        return instance;
-    }
+        await SaveAsync(token);
+        submission.Status = updateSub.Status;
 
-    public async Task<bool> TrySolved(Instance instance, CancellationToken token = default)
-    {
-        if (instance.IsSolved)
-            return false;
-
-        instance.IsSolved = true;
-        await context.SaveChangesAsync(token);
-        return true;
+        return firstTime;
     }
 }

@@ -16,11 +16,8 @@ public class RepositoryBase : IRepository
 
     public string ChangeTrackerView => context.ChangeTracker.DebugView.LongView;
 
-    public Task UpdateAsync(object item, CancellationToken token = default)
-    {
-        context.Update(item);
-        return context.SaveChangesAsync(token);
-    }
+    public Task SaveAsync(CancellationToken token = default)
+        => context.SaveChangesAsync(token);
 
     public void Detach(object item)
         => context.Entry(item).State = EntityState.Detached;

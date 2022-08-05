@@ -55,7 +55,7 @@ public class FlagChecker : IHostedService
 
                 try
                 {
-                    var instance = await instanceRepository.VerifyAnswer(item, token);
+                    var firstTime = await instanceRepository.VerifyAnswer(item, token);
 
                     if (item.Status == AnswerResult.NotFound)
                         logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
@@ -73,7 +73,7 @@ public class FlagChecker : IHostedService
 
                     await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
 
-                    if (item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(instance!, token))
+                    if (firstTime)
                     {
                         item.Challenge.AcceptedCount++;
                         NoticeType type = item.Challenge.AcceptedCount switch

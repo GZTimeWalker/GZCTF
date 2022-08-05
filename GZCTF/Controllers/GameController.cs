@@ -142,7 +142,7 @@ public class GameController : ControllerBase
             else
             {
                 part.Status = ParticipationStatus.Pending;
-                await participationRepository.UpdateAsync(part, token);
+                await participationRepository.SaveAsync(token);
 
                 return Ok();
             }

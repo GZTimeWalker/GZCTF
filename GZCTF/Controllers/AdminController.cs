@@ -249,7 +249,7 @@ public class AdminController : ControllerBase
                 gameRepository.FlushScoreboard(game.Id);
         }
         else
-            await participationRepository.UpdateAsync(participation, token);
+            await participationRepository.SaveAsync(token);
 
         return Ok();
     }

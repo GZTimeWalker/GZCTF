@@ -10,5 +10,5 @@ public interface IRepository
 
     public void Detach(object item);
 
-    public Task UpdateAsync(object item, CancellationToken token = default);
+    public Task SaveAsync(CancellationToken token = default);
 }

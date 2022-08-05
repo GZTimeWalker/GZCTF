@@ -207,7 +207,8 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        await gameRepository.UpdateAsync(game.Update(model), token);
+        game.Update(model);
+        await gameRepository.SaveAsync(token);
         gameRepository.FlushGameInfoCache();
 
         return Ok(GameInfoModel.FromGame(game));
@@ -245,7 +246,7 @@ public class EditController : Controller
             return BadRequest(new RequestResponse("文件创建失败"));
 
         game.PosterHash = poster.Hash;
-        await gameRepository.UpdateAsync(game, token);
+        await gameRepository.SaveAsync(token);
         gameRepository.FlushGameInfoCache();
 
         return Ok(poster.Url());
@@ -443,7 +444,7 @@ public class EditController : Controller
         else
         {
             // flush scoreboard for challenge update
-            await challengeRepository.UpdateAsync(res, token);
+            await challengeRepository.SaveAsync(token);
             gameRepository.FlushScoreboard(game.Id);
         }
 

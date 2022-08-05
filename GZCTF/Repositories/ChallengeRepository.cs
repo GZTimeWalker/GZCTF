@@ -33,7 +33,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             });
         }
 
-        await UpdateAsync(challenge, token);
+        await SaveAsync(token);
     }
 
     public async Task<Challenge> CreateChallenge(Game game, Challenge challenge, CancellationToken token = default)
@@ -54,7 +54,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         foreach (var participation in game.Participations)
             update |= challenge.Teams.Add(participation);
 
-        await UpdateAsync(challenge, token);
+        await SaveAsync(token);
 
         return update;
     }
@@ -148,7 +148,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
         challenge.Attachment = attachment;
 
-        await UpdateAsync(challenge, token);
+        await SaveAsync(token);
     }
 
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)
