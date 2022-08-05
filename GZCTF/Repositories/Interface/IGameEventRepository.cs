@@ -9,7 +9,7 @@ public interface IGameEventRepository : IRepository
     /// <param name="event">事件</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameEvent> AddEvent(Game game, GameEvent @event, CancellationToken token = default);
+    public Task<GameEvent> AddEvent(GameEvent @event, CancellationToken token = default);
 
     /// <summary>
     /// 获取全部事件

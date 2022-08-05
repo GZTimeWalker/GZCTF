@@ -9,10 +9,8 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
     {
     }
 
-    public async Task<GameEvent> AddEvent(Game game, GameEvent gameEvent, CancellationToken token = default)
+    public async Task<GameEvent> AddEvent(GameEvent gameEvent, CancellationToken token = default)
     {
-        gameEvent.Game = game;
-
         await context.AddAsync(gameEvent);
         await context.SaveChangesAsync(token);
 

@@ -71,7 +71,7 @@ public class FlagChecker : IHostedService
                         }
                     }
 
-                    await eventRepository.AddEvent(item.Game, GameEvent.FromSubmission(item), token);
+                    await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
 
                     if (item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(instance!, token))
                     {

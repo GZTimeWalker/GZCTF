@@ -67,6 +67,7 @@ public class GameEvent
         {
             Team = submission.Participation.Team,
             User = submission.User,
+            Game = submission.Game,
             Type = EventType.FlagSubmit,
             Content = $"[{submission.Status.ToShortString()}] {submission.Answer}  #{submission.ChallengeId}"
         };
