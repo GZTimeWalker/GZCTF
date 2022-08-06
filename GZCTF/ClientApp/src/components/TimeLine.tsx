@@ -13,11 +13,39 @@ const TimeLine: FC = () => {
     refreshInterval: 0,
   })
 
+  const { data: game } = api.game.useGameGames(numId, {
+    refreshInterval: 0,
+    revalidateOnFocus: false,
+  })
+
+  const endTime = new Date(game?.end ?? '')
+  const startTime = new Date(game?.start ?? '')
+  const now = new Date()
+
+  const last = now < endTime ? now : endTime
+
   const chartData = scoreboard?.timeLine?.map((team) => ({
     type: 'line',
     step: 'end',
     name: team.name,
-    data: team.items?.map((item) => [item.time, item.score]) ?? [],
+    data: [
+      ...(team.items?.map((item) => [item.time, item.score]) ?? []),
+      [last, team.items?.at(team.items.length - 1)?.score ?? 0],
+    ],
+    markLine:
+      now > endTime
+        ? undefined
+        : {
+            symbol: 'none',
+            data: [
+              {
+                xAxis: last,
+                label: {
+                  formatter: '{c}',
+                },
+              },
+            ],
+          },
   }))
 
   return (
@@ -28,6 +56,8 @@ const TimeLine: FC = () => {
         xAxis: {
           type: 'time',
           name: '时间',
+          min: startTime,
+          max: endTime,
           splitLine: {
             show: false,
           },
