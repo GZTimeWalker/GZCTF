@@ -180,7 +180,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId == submission.ParticipationId, token);
 
-        var updateSub = await context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
+        var updateSub = await context.Submissions
+                .Include(s => s.Challenge)
+                .SingleAsync(s => s.Id == submission.Id, token);
 
         if (instance is null)
         {
@@ -204,6 +206,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
         instance.IsSolved = instance.IsSolved || updateSub.Status == AnswerResult.Accepted;
+
+        if (firstTime)
+            updateSub.Challenge.AcceptedCount++;
 
         await SaveAsync(token);
         submission.Status = updateSub.Status;

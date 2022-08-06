@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220806013210_InitDb")]
+    [Migration("20220806021312_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -908,7 +908,8 @@ namespace CTFServer.Migrations
 
                     b.HasOne("CTFServer.Models.FlagContext", "FlagContext")
                         .WithMany()
-                        .HasForeignKey("FlagId");
+                        .HasForeignKey("FlagId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CTFServer.Models.Participation", "Participation")
                         .WithMany("Instances")

@@ -105,9 +105,10 @@ public class Challenge
     /// 当前题目分值
     /// </summary>
     [NotMapped]
-    public int CurrentScore => (int)Math.Floor(
+    public int CurrentScore =>
+        AcceptedCount <= 1 ? OriginalScore : (int)Math.Floor(
         OriginalScore * (MinScoreRate +
-            (1.0 - MinScoreRate) * Math.Exp(-AcceptedCount / Difficulty)
+            (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
         ));
 
     /// <summary>

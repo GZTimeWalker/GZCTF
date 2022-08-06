@@ -77,10 +77,11 @@ const GameChallengeEdit: FC = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
-        mutate([
-          ...(challenges?.filter((c) => c.id != challenge.id) ?? []),
-          { ...challenge, isEnabled: !challenge.isEnabled },
-        ])
+        mutate(
+          challenges?.map((c) =>
+            c.id === challenge.id ? { ...c, isEnabled: !challenge.isEnabled } : c
+          )
+        )
       })
       .catch(showErrorNotification)
       .finally(() => {

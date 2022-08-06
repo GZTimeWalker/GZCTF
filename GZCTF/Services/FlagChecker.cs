@@ -75,7 +75,6 @@ public class FlagChecker : IHostedService
 
                     if (firstTime)
                     {
-                        item.Challenge.AcceptedCount++;
                         NoticeType type = item.Challenge.AcceptedCount switch
                         {
                             1 => NoticeType.FirstBlood,

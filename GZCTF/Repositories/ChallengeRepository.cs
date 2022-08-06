@@ -85,8 +85,6 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
                     await fileRepository.DeleteFileByHash(
                         flag.Attachment.LocalFile.Hash, token);
                 }
-
-                context.Remove(flag);
             }
         }
         else if (challenge.Attachment is not null &&

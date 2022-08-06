@@ -50,9 +50,9 @@ const FladEditPanel: FC<FladEditPanelProps> = ({ flags, onDelete, unifiedAttachm
         ]}
       >
         {flags &&
-          flags.map((flag) => (
+          flags.map((flag, i) => (
             <FlagCard
-              key={flag.id}
+              key={i}
               flag={flag}
               onDelete={() => onDelete(flag)}
               unifiedAttachment={unifiedAttachment}

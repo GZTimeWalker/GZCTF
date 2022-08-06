@@ -471,7 +471,7 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await challengeRepository.GetChallenge(id, cId, false, token);
+        var res = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
             return NotFound(new RequestResponse("题目未找到", 404));

@@ -906,7 +906,8 @@ namespace CTFServer.Migrations
 
                     b.HasOne("CTFServer.Models.FlagContext", "FlagContext")
                         .WithMany()
-                        .HasForeignKey("FlagId");
+                        .HasForeignKey("FlagId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CTFServer.Models.Participation", "Participation")
                         .WithMany("Instances")

@@ -494,7 +494,8 @@ namespace CTFServer.Migrations
                         name: "FK_Instances_FlagContexts_FlagId",
                         column: x => x.FlagId,
                         principalTable: "FlagContexts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Instances_Participations_ParticipationId",
                         column: x => x.ParticipationId,
