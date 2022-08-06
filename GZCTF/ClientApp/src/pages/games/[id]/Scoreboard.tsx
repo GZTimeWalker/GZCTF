@@ -1,11 +1,11 @@
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Stack } from '@mantine/core'
+import ScoreboardTable from '@Components/ScoreboardTable'
 import TimeLine from '@Components/TimeLine'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import api from '@Api/Api'
-import ScoreboardTable from '@Components/ScoreboardTable'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
