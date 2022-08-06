@@ -1,3 +1,6 @@
+import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api/Api'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -35,13 +38,6 @@ import {
   mdiPhoneOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, {
-  ParticipationInfoModel,
-  ParticipationStatus,
-  ProfileUserInfoModel,
-} from '../../../../Api'
-import WithGameEditTab from '../../../../components/admin/WithGameEditTab'
-import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
 const StatusMap = new Map([
   [

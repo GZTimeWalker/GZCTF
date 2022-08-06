@@ -1,3 +1,6 @@
+import api, { AnswerResult, ChallengeType } from '@Api/Api'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTypographyStyles } from '@Utils/ThemeOverride'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { marked } from 'marked'
@@ -29,9 +32,6 @@ import {
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { AnswerResult, ChallengeType } from '../Api'
-import { showErrorNotification } from '../utils/ApiErrorHandler'
-import { useTypographyStyles } from '../utils/ThemeOverride'
 import { ChallengeTagItemProps } from './ChallengeItem'
 
 interface ChallengeDetailModalProps extends ModalProps {

@@ -1,3 +1,6 @@
+import api, { TeamInfoModel } from '@Api/Api'
+import AdminPage from '@Components/admin/AdminPage'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import React, { FC, useEffect, useState } from 'react'
 import {
   useMantineTheme,
@@ -13,9 +16,6 @@ import {
 import { useInputState } from '@mantine/hooks'
 import { mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { TeamInfoModel } from '../../Api'
-import AdminPage from '../../components/admin/AdminPage'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const ITEM_COUNT_PER_PAGE = 30
 

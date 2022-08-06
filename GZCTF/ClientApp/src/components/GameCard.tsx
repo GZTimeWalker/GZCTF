@@ -1,3 +1,4 @@
+import { BasicGameInfoModel } from '@Api/Api'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -14,7 +15,6 @@ import {
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { BasicGameInfoModel } from '../Api'
 
 export enum GameStatus {
   Coming = 'coming',

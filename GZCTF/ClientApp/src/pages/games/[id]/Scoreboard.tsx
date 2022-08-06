@@ -1,8 +1,8 @@
+import api from '@Api/Api'
+import WithGameTab from '@Components/WithGameTab'
+import WithNavBar from '@Components/WithNavbar'
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
-import api from '../../../Api'
-import WithGameTab from '../../../components/WithGameTab'
-import WithNavBar from '../../../components/WithNavbar'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()

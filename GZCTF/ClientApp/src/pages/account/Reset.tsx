@@ -1,3 +1,7 @@
+import api from '@Api/Api'
+import AccountView from '@Components/AccountView'
+import StrengthPasswordInput from '@Components/StrengthPasswordInput'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Button, PasswordInput } from '@mantine/core'
@@ -5,10 +9,6 @@ import { getHotkeyHandler, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../Api'
-import AccountView from '../../components/AccountView'
-import StrengthPasswordInput from '../../components/StrengthPasswordInput'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Reset: FC = () => {
   const location = useLocation()

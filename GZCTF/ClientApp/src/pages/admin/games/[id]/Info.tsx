@@ -1,3 +1,6 @@
+import api, { GameInfoModel } from '@Api/Api'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -19,9 +22,6 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameInfoModel } from '../../../../Api'
-import WithGameEditTab from '../../../../components/admin/WithGameEditTab'
-import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
 const GameInfoEdit: FC = () => {
   const { id } = useParams()

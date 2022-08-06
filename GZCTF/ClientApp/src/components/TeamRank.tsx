@@ -1,3 +1,4 @@
+import api, { SubmissionType } from '@Api/Api'
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -11,7 +12,6 @@ import {
   createStyles,
   Progress,
 } from '@mantine/core'
-import api, { SubmissionType } from '../Api'
 
 const useStyle = createStyles((theme) => ({
   number: {

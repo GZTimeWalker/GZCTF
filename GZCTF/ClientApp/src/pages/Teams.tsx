@@ -1,3 +1,11 @@
+import api, { TeamInfoModel, Role } from '@Api/Api'
+import LogoHeader from '@Components/LogoHeader'
+import TeamCard from '@Components/TeamCard'
+import TeamCreateModal from '@Components/TeamCreateModal'
+import TeamEditModal from '@Components/TeamEditModal'
+import WithNavBar from '@Components/WithNavbar'
+import WithRole from '@Components/WithRole'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useState } from 'react'
 import {
   Stack,
@@ -15,14 +23,6 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { TeamInfoModel, Role } from '../Api'
-import LogoHeader from '../components/LogoHeader'
-import TeamCard from '../components/TeamCard'
-import TeamCreateModal from '../components/TeamCreateModal'
-import TeamEditModal from '../components/TeamEditModal'
-import WithNavBar from '../components/WithNavbar'
-import WithRole from '../components/WithRole'
-import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 const Teams: FC = () => {
   const { data: user, error: userError } = api.account.useAccountProfile({

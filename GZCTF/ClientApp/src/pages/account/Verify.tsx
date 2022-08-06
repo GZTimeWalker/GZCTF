@@ -1,11 +1,11 @@
+import api from '@Api/Api'
+import AccountView from '@Components/AccountView'
 import { FC, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../Api'
-import AccountView from '../../components/AccountView'
 
 const Verify: FC = () => {
   const location = useLocation()

@@ -1,3 +1,4 @@
+import { ChallengeTag, ChallengeType } from '@Api/Api'
 import { forwardRef } from 'react'
 import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
 import {
@@ -13,7 +14,6 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTag, ChallengeType } from '../Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
   [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],

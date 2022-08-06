@@ -1,3 +1,7 @@
+import api, { ParticipationStatus } from '@Api/Api'
+import WithNavBar from '@Components/WithNavbar'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTypographyStyles } from '@Utils/ThemeOverride'
 import dayjs from 'dayjs'
 import { marked } from 'marked'
 import { FC, useEffect } from 'react'
@@ -21,10 +25,6 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ParticipationStatus } from '../../../Api'
-import WithNavBar from '../../../components/WithNavbar'
-import { showErrorNotification } from '../../../utils/ApiErrorHandler'
-import { useTypographyStyles } from '../../../utils/ThemeOverride'
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -73,8 +73,12 @@ const useStyles = createStyles((theme) => ({
     minHeight: '100vh',
     paddingTop: '1rem',
   },
+  info: {
+    height: '100%',
+  },
   banner: {
     maxWidth: '50%',
+    height: '100%',
     width: '40vw',
 
     [theme.fn.smallerThan('sm')]: {
@@ -152,7 +156,7 @@ const GameDetail: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const { classes, theme } = useStyles()
+  const { classes, theme, cx } = useStyles()
   const { classes: typographyClasses } = useTypographyStyles()
 
   const startTime = dayjs(game?.start) ?? dayjs()
@@ -239,7 +243,7 @@ const GameDetail: FC = () => {
       <div className={classes.root}>
         <Container style={{ margin: 0 }} className={classes.flexGrowAtSm}>
           <Group noWrap position="apart" style={{ width: '100%' }} className={classes.container}>
-            <Stack spacing="xs" className={classes.flexGrowAtSm}>
+            <Stack spacing="xs" className={cx(classes.flexGrowAtSm, classes.info)}>
               <Group>
                 <Badge variant="outline">
                   {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
@@ -286,11 +290,9 @@ const GameDetail: FC = () => {
       <Container className={classes.content}>
         <Stack spacing="xs">
           {GetAlert(status)}
-          <Group noWrap align="flex-start">
-            <TypographyStylesProvider className={typographyClasses.root}>
-              <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
-            </TypographyStylesProvider>
-          </Group>
+          <TypographyStylesProvider className={typographyClasses.root}>
+            <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
+          </TypographyStylesProvider>
         </Stack>
       </Container>
     </WithNavBar>

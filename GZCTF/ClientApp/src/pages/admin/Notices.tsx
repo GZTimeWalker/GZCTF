@@ -1,14 +1,14 @@
+import api, { Notice } from '@Api/Api'
+import AdminPage from '@Components/admin/AdminPage'
+import NoticeEditCard from '@Components/admin/NoticeEditCard'
+import NoticeEditModal from '@Components/admin/NoticeEditModal'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import React, { FC, useState } from 'react'
 import { Button, Stack, Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { Notice } from '../../Api'
-import AdminPage from '../../components/admin/AdminPage'
-import NoticeEditCard from '../../components/admin/NoticeEditCard'
-import NoticeEditModal from '../../components/admin/NoticeEditModal'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 const Notices: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({

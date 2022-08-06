@@ -1,3 +1,5 @@
+import api, { UserInfoModel, UpdateUserInfoModel, Role } from '@Api/Api'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
@@ -17,8 +19,6 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],

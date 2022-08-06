@@ -1,11 +1,11 @@
+import api, { Notice } from '@Api/Api'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import { Button, Group, Modal, ModalProps, Stack, Text, Textarea, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { Notice } from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 interface NoticeEditModalProps extends ModalProps {
   notice?: Notice | null

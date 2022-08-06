@@ -1,3 +1,5 @@
+import { Notice } from '@Api/Api'
+import { useTypographyStyles } from '@Utils/ThemeOverride'
 import { marked } from 'marked'
 import { FC } from 'react'
 import {
@@ -12,8 +14,6 @@ import {
 } from '@mantine/core'
 import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { Notice } from '../../Api'
-import { useTypographyStyles } from '../../utils/ThemeOverride'
 
 interface NoticeEditCardProps extends PaperProps {
   notice: Notice

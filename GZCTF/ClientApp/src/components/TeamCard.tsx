@@ -1,3 +1,5 @@
+import api, { TeamInfoModel } from '@Api/Api'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useRef, useState } from 'react'
 import {
   Group,
@@ -16,8 +18,6 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiLockOutline, mdiPower, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { TeamInfoModel } from '../Api'
-import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 interface TeamCardProps {
   team: TeamInfoModel

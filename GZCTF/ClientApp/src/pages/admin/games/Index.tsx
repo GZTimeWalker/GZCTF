@@ -1,3 +1,7 @@
+import api, { GameInfoModel } from '@Api/Api'
+import { GameColorMap, getGameStatus } from '@Components/GameCard'
+import AdminPage from '@Components/admin/AdminPage'
+import GameCreateModal from '@Components/admin/GameCreateModal'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useEffect } from 'react'
@@ -11,10 +15,6 @@ import {
   mdiPlus,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameInfoModel } from '../../../Api'
-import { GameColorMap, getGameStatus } from '../../../components/GameCard'
-import AdminPage from '../../../components/admin/AdminPage'
-import GameCreateModal from '../../../components/admin/GameCreateModal'
 
 const ITEM_COUNT_PER_PAGE = 30
 

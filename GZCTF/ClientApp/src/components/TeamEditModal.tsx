@@ -1,3 +1,5 @@
+import api, { TeamInfoModel, TeamUserInfoModel } from '@Api/Api'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
@@ -24,8 +26,6 @@ import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { TeamInfoModel, TeamUserInfoModel } from '../Api'
-import { showErrorNotification } from '../utils/ApiErrorHandler'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null

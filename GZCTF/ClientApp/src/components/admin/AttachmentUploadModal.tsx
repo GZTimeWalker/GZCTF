@@ -1,3 +1,5 @@
+import api, { FileType } from '@Api/Api'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -20,8 +22,6 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { FileType } from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
 
 export const useUploadStyles = createStyles(() => ({
   uploadButton: {

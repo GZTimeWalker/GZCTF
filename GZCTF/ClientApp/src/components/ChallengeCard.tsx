@@ -1,7 +1,7 @@
+import { ChallengeInfo } from '@Api/Api'
 import { FC } from 'react'
 import { Card, createStyles, Divider, Group, Stack, Text, Title } from '@mantine/core'
 import { Icon } from '@mdi/react'
-import { ChallengeInfo } from '../Api'
 import { ChallengeTagLabelMap } from './ChallengeItem'
 
 const useStyles = createStyles((theme, _param, getRef) => {
