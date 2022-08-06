@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
-import { mdiFlag, mdiHexagonSlice2, mdiHexagonSlice4, mdiHexagonSlice6 } from '@mdi/js'
+import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeInfo } from '@Api/Api'
+import { ChallengeInfo, SubmissionType } from '@Api/Api'
 import { ChallengeTagLabelMap } from './ChallengeItem'
 
 const useStyles = createStyles((theme, _param, getRef) => {
@@ -27,9 +27,16 @@ interface ChallengeCardProps {
   challenge: ChallengeInfo
   solved?: boolean
   onClick?: () => void
+  iconMap: Map<SubmissionType, React.ReactNode>
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, onClick }) => {
+const SubmissionTypes = [
+  SubmissionType.FirstBlood,
+  SubmissionType.SecondBlood,
+  SubmissionType.ThirdBlood,
+]
+
+const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onClick }) => {
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
   const { theme } = useStyles()
 
@@ -99,13 +106,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, onClick }) =
                   </Stack>
                 }
               >
-                <Icon
-                  path={
-                    idx === 0 ? mdiHexagonSlice6 : idx === 1 ? mdiHexagonSlice4 : mdiHexagonSlice2
-                  }
-                  color={theme.colors.yellow[theme.colorScheme === 'dark' ? 7 - idx : 5 + idx]}
-                  size={0.8}
-                />
+                {iconMap.get(SubmissionTypes[idx])}
               </Tooltip.Floating>
             ))}
         </Group>

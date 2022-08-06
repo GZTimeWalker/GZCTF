@@ -14,6 +14,7 @@ import { mdiClose, mdiCheck, mdiArrowLeftBold, mdiArrowRightBold } from '@mdi/js
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import api, { LogMessageModel } from '@Api/Api'
+import dayjs from 'dayjs'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -25,21 +26,6 @@ const useStyles = createStyles((theme) => ({
     animation: `${keyframes`0% {opacity:0;} 100% {opacity:1;}`} 0.5s linear`,
   },
 }))
-
-const formatDate = (dateString?: string) => {
-  const date = new Date(dateString!)
-  return (
-    `${date.getMonth() + 1}`.padStart(2, '0') +
-    '/' +
-    `${date.getDate()}`.padStart(2, '0') +
-    ' ' +
-    `${date.getHours()}`.padStart(2, '0') +
-    ':' +
-    `${date.getMinutes()}`.padStart(2, '0') +
-    ':' +
-    `${date.getSeconds()}`.padStart(2, '0')
-  )
-}
 
 enum LogLevel {
   Info = 'Information',
@@ -123,7 +109,7 @@ const Logs: FC = () => {
         i === 0 && activePage === 1 && newLogs.current.length > 0 ? cx(classes.fade) : undefined
       }
     >
-      <td className={cx(classes.mono)}>{formatDate(item.time)}</td>
+      <td className={cx(classes.mono)}>{dayjs(item.time).format('MM/DD HH:mm:ss')}</td>
       <td className={cx(classes.mono)}>{item.name}</td>
       <td>{item.msg}</td>
       <td className={cx(classes.mono)}>{item.status}</td>

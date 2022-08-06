@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
@@ -29,6 +30,7 @@ const TimeLine: FC = () => {
     step: 'end',
     name: team.name,
     data: [
+      [startTime, 0],
       ...(team.items?.map((item) => [item.time, item.score]) ?? []),
       [last, team.items?.at(team.items.length - 1)?.score ?? 0],
     ],
@@ -41,7 +43,7 @@ const TimeLine: FC = () => {
               {
                 xAxis: last,
                 label: {
-                  formatter: '{c}',
+                  formatter: (time: any) => dayjs(time.value).format('YYYY-MM-DD HH:mm'),
                 },
               },
             ],

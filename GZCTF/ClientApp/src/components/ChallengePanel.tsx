@@ -6,7 +6,7 @@ import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api/Api'
 import ChallengeCard from './ChallengeCard'
 import ChallengeDetailModal from './ChallengeDetailModal'
-import { ChallengeTagLabelMap } from './ChallengeItem'
+import { ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -26,6 +26,7 @@ const ChallengePanel: FC = () => {
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
   const [detailOpened, setDetailOpened] = useState(false)
+  const iconMap = SubmissionTypeIconMap(0.8)
 
   return (
     <Group noWrap position="apart" align="flex-start" style={{ width: 'calc(100% - 21rem)' }}>
@@ -96,6 +97,7 @@ const ChallengePanel: FC = () => {
             <ChallengeCard
               key={chal.id}
               challenge={chal}
+              iconMap={iconMap}
               onClick={() => {
                 setChallenge(chal)
                 setDetailOpened(true)

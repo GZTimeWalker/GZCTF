@@ -5,6 +5,7 @@ import TimeLine from '@Components/TimeLine'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import api from '@Api/Api'
+import ScoreboardTable from '@Components/ScoreboardTable'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
@@ -25,6 +26,7 @@ const Scoreboard: FC = () => {
       <WithGameTab isLoading={!game} game={game} status={game?.status}>
         <Stack>
           <TimeLine />
+          <ScoreboardTable />
         </Stack>
       </WithGameTab>
     </WithNavBar>

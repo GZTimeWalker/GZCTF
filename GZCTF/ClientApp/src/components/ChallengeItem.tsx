@@ -8,12 +8,16 @@ import {
   mdiConsole,
   mdiEthereum,
   mdiFingerprint,
+  mdiFlag,
   mdiGamepadVariantOutline,
+  mdiHexagonSlice2,
+  mdiHexagonSlice4,
+  mdiHexagonSlice6,
   mdiMatrix,
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTag, ChallengeType } from '@Api/Api'
+import { ChallengeTag, ChallengeType, SubmissionType } from '@Api/Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
   [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],
@@ -93,3 +97,27 @@ export const ChallengeTagItem = forwardRef<HTMLDivElement, ChallengeTagItemProps
     )
   }
 )
+
+export const SubmissionTypeIconMap = (size: number) => {
+  const theme = useMantineTheme()
+  return new Map([
+    [SubmissionType.Unaccepted, undefined],
+    [SubmissionType.Normal, <Icon path={mdiFlag} size={size} color={theme.colors.brand[7]} />],
+    [
+      SubmissionType.FirstBlood,
+      <Icon path={mdiHexagonSlice6} size={size} color={theme.colors.yellow[5]} />,
+    ],
+    [
+      SubmissionType.SecondBlood,
+      <Icon path={mdiHexagonSlice4} size={size} color={theme.colors.gray[2]} />,
+    ],
+    [
+      SubmissionType.ThirdBlood,
+      <Icon
+        path={mdiHexagonSlice2}
+        size={size}
+        color={theme.fn.darken(theme.colors.orange[7], theme.colorScheme === 'dark' ? 0.25 : 0.1)}
+      />,
+    ],
+  ])
+}
