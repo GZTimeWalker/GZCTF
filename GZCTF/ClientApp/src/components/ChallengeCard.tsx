@@ -82,11 +82,17 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, onClick }) =
           {challenge.bloods &&
             challenge.bloods.map((blood, idx) => (
               <Tooltip.Floating
+                key={idx}
                 position="bottom"
                 multiline
+                styles={{
+                  tooltip: {
+                    background: theme.colorScheme === 'dark' ? '' : theme.colors.white[1],
+                  },
+                }}
                 label={
                   <Stack spacing={0}>
-                    <Text>{blood?.name}</Text>
+                    <Text color={theme.colorScheme === 'dark' ? '' : 'dark'}>{blood?.name}</Text>
                     <Text size="xs" color="dimmed">
                       {dayjs(blood?.submitTimeUTC).format('YY/MM/DD HH:mm:ss')}
                     </Text>
