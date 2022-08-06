@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { marked } from 'marked'
 import { FC, useEffect, useState } from 'react'
+import React from 'react'
 import {
   ActionIcon,
   Button,
@@ -22,13 +23,7 @@ import {
   Title,
   TypographyStylesProvider,
 } from '@mantine/core'
-import {
-  getHotkeyHandler,
-  useClipboard,
-  useDisclosure,
-  useInputState,
-  useInterval,
-} from '@mantine/hooks'
+import { useClipboard, useDisclosure, useInputState, useInterval } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -87,6 +82,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
 
   const [disabled, setDisabled] = useState(false)
   const [onSubmitting, setOnSubmitting] = useState(false)
+  const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
 
   const onCreateContainer = () => {
@@ -129,68 +125,78 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
-  // TODO: 轮询查询 flag 状态
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    if (!challengeId || !flag) return
 
-  const onSubmit = () => {
-    if (challengeId && flag) {
-      setOnSubmitting(true)
-      api.game
-        .gameSubmit(gameId, challengeId, flag)
-        .then((res) => {
-          showNotification({
-            id: 'flag-submitted',
-            color: 'orange',
-            message: '请等待 flag 检查……',
-            loading: true,
-            autoClose: false,
-            disallowClose: true,
-          })
+    setOnSubmitting(true)
 
-          setTimeout(() => {
-            api.game
-              .gameStatus(gameId, challengeId, res.data)
-              .then((result) => {
-                console.log(result.data)
-                if (res && result.data !== AnswerResult.FlagSubmitted) {
-                  setFlag('')
-                  if (result.data === AnswerResult.Accepted) {
-                    updateNotification({
-                      id: 'flag-submitted',
-                      color: 'teal',
-                      message: 'Flag 正确',
-                      icon: <Icon path={mdiCheck} size={1} />,
-                      disallowClose: true,
-                    })
-                    if (isDynamic) onDestoryContainer()
-                    props.onClose()
-                  } else if (result.data === AnswerResult.WrongAnswer) {
-                    updateNotification({
-                      id: 'flag-submitted',
-                      color: 'red',
-                      message: 'Flag 错误',
-                      icon: <Icon path={mdiClose} size={1} />,
-                      disallowClose: true,
-                    })
-                  } else {
-                    updateNotification({
-                      id: 'flag-submitted',
-                      color: 'yellow',
-                      message: 'Flag 状态未知，后续请求还没写……',
-                      icon: <Icon path={mdiLoading} size={1} />,
-                      disallowClose: true,
-                    })
-                  }
-                }
-              })
-              .catch(showErrorNotification)
-          }, 1000)
+    api.game
+      .gameSubmit(gameId, challengeId, flag)
+      .then((res) => {
+        setSubmitId(res.data)
+
+        showNotification({
+          id: 'flag-submitted',
+          color: 'orange',
+          message: '请等待 flag 检查……',
+          loading: true,
+          autoClose: false,
+          disallowClose: true,
         })
-        .catch(showErrorNotification)
-        .finally(() => setOnSubmitting(false))
-    }
+      })
+      .catch(showErrorNotification)
   }
 
-  const enterHandler = getHotkeyHandler([['Enter', onSubmit]])
+  useEffect(() => {
+    // submitId initialization will trigger useEffect
+    if (!submitId) return
+
+    const polling = setInterval(() => {
+      api.game
+        .gameStatus(gameId, challengeId, submitId)
+        .then((res) => {
+          if (res.data !== AnswerResult.FlagSubmitted) {
+            setOnSubmitting(false)
+            setFlag('')
+            checkDataFlag(res.data)
+            clearInterval(polling)
+          }
+        })
+        .catch(showErrorNotification)
+    }, 1000)
+    return () => clearInterval(polling)
+  }, [submitId])
+
+  const checkDataFlag = (data: string) => {
+    if (data === AnswerResult.Accepted) {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'teal',
+        message: 'Flag 正确',
+        icon: <Icon path={mdiCheck} size={1} />,
+        disallowClose: true,
+      })
+      if (isDynamic) onDestoryContainer()
+      props.onClose()
+    } else if (data === AnswerResult.WrongAnswer) {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'red',
+        message: 'Flag 错误',
+        icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
+      })
+    } else {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'yellow',
+        message: 'Flag 状态未知，后续请求还没写……',
+        icon: <Icon path={mdiLoading} size={1} />,
+        disallowClose: true,
+      })
+    }
+  }
 
   return (
     <Modal
@@ -314,25 +320,26 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           )}
         </Stack>
         <Divider size="sm" variant="dashed" color={tagData.color} />
-        <TextInput
-          placeholder="flag{...}"
-          value={flag}
-          onChange={setFlag}
-          onKeyDown={enterHandler}
-          styles={{
-            rightSection: {
-              width: 'auto',
-            },
-            input: {
-              fontFamily: theme.fontFamilyMonospace,
-            },
-          }}
-          rightSection={
-            <Button onClick={onSubmit} disabled={onSubmitting}>
-              提交 flag
-            </Button>
-          }
-        />
+        <form onSubmit={onSubmit}>
+          <TextInput
+            placeholder="flag{...}"
+            value={flag}
+            onChange={setFlag}
+            styles={{
+              rightSection: {
+                width: 'auto',
+              },
+              input: {
+                fontFamily: theme.fontFamilyMonospace,
+              },
+            }}
+            rightSection={
+              <Button type="submit" onClick={onSubmit} disabled={onSubmitting}>
+                提交 flag
+              </Button>
+            }
+          />
+        </form>
       </Stack>
     </Modal>
   )
