@@ -7,7 +7,6 @@ import { marked } from 'marked'
 import { FC, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
-  Image,
   Button,
   Container,
   createStyles,
@@ -20,6 +19,7 @@ import {
   Progress,
   Alert,
   Badge,
+  BackgroundImage,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -45,6 +45,10 @@ const useStyles = createStyles((theme) => ({
     maxWidth: '960px',
     width: '100%',
     zIndex: 1,
+
+    [theme.fn.smallerThan('md')]: {
+      padding: `${theme.spacing.md}px ${theme.spacing.md * 2}px`,
+    },
   },
   flexGrowAtSm: {
     flexGrow: 0,
@@ -72,9 +76,6 @@ const useStyles = createStyles((theme) => ({
   content: {
     minHeight: '100vh',
     paddingTop: '1rem',
-  },
-  info: {
-    height: '100%',
   },
   banner: {
     maxWidth: '50%',
@@ -156,7 +157,7 @@ const GameDetail: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const { classes, theme, cx } = useStyles()
+  const { classes, theme } = useStyles()
   const { classes: typographyClasses } = useTypographyStyles()
 
   const startTime = dayjs(game?.start) ?? dayjs()
@@ -241,51 +242,49 @@ const GameDetail: FC = () => {
   return (
     <WithNavBar width="100%" padding={0} isLoading={!game}>
       <div className={classes.root}>
-        <Container style={{ margin: 0 }} className={classes.flexGrowAtSm}>
-          <Group noWrap position="apart" style={{ width: '100%' }} className={classes.container}>
-            <Stack spacing="xs" className={cx(classes.flexGrowAtSm, classes.info)}>
-              <Group>
-                <Badge variant="outline">
-                  {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
-                </Badge>
-              </Group>
-              <Title className={classes.title}>{game?.title}</Title>
-              <Group position="apart">
-                <Stack spacing={0}>
-                  <Text size="sm" className={classes.date}>
-                    开始时间
-                  </Text>
-                  <Text size="sm" weight={700} className={classes.date}>
-                    {startTime.format('HH:mm:ss, MMMM DD, YYYY')}
-                  </Text>
-                </Stack>
-                <Stack spacing={0}>
-                  <Text size="sm" className={classes.date}>
-                    结束时间
-                  </Text>
-                  <Text size="sm" weight={700} className={classes.date}>
-                    {endTime.format('HH:mm:ss, MMMM DD, YYYY')}
-                  </Text>
-                </Stack>
-              </Group>
-              <Progress
-                size="md"
-                radius="xs"
-                value={progress * 100}
-                animate={progress < 100}
-                color={progress < 100 ? 'brand' : 'yellow'}
-              />
-              <Group>{ControlButtons}</Group>
-            </Stack>
-            <Center className={classes.banner}>
-              {game && game?.poster ? (
-                <Image src={game.poster} alt="poster" radius="sm" />
-              ) : (
+        <Group noWrap position="apart" style={{ width: '100%' }} className={classes.container}>
+          <Stack spacing="xs" className={classes.flexGrowAtSm}>
+            <Group>
+              <Badge variant="outline">
+                {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
+              </Badge>
+            </Group>
+            <Title className={classes.title}>{game?.title}</Title>
+            <Group position="apart">
+              <Stack spacing={0}>
+                <Text size="sm" className={classes.date}>
+                  开始时间
+                </Text>
+                <Text size="sm" weight={700} className={classes.date}>
+                  {startTime.format('HH:mm:ss, MMMM DD, YYYY')}
+                </Text>
+              </Stack>
+              <Stack spacing={0}>
+                <Text size="sm" className={classes.date}>
+                  结束时间
+                </Text>
+                <Text size="sm" weight={700} className={classes.date}>
+                  {endTime.format('HH:mm:ss, MMMM DD, YYYY')}
+                </Text>
+              </Stack>
+            </Group>
+            <Progress
+              size="md"
+              radius="xs"
+              value={progress * 100}
+              animate={progress < 100}
+              color={progress < 100 ? 'brand' : 'yellow'}
+            />
+            <Group>{ControlButtons}</Group>
+          </Stack>
+          <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">
+            <Center style={{ height: '100%' }}>
+              {!game?.poster && (
                 <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
               )}
             </Center>
-          </Group>
-        </Container>
+          </BackgroundImage>
+        </Group>
       </div>
       <Container className={classes.content}>
         <Stack spacing="xs">

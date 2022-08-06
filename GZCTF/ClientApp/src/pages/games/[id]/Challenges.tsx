@@ -18,7 +18,7 @@ const Challenges: FC = () => {
 
   return (
     <WithNavBar width="90%">
-      <WithGameTab isLoading={!game} game={game}>
+      <WithGameTab isLoading={!game} game={game} status={game?.status}>
         <Group position="apart" align="flex-start" grow noWrap>
           <ChallengePanel />
 

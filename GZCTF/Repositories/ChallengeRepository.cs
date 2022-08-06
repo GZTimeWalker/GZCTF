@@ -115,6 +115,10 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         }
 
         context.Remove(flag);
+
+        if (challenge.Flags.Count == 0)
+            challenge.IsEnabled = false;
+
         await context.SaveChangesAsync(token);
 
         return TaskStatus.Success;

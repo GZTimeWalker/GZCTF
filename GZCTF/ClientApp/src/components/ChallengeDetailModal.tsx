@@ -178,6 +178,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         disallowClose: true,
       })
       if (isDynamic) onDestoryContainer()
+      mutate()
       props.onClose()
     } else if (data === AnswerResult.WrongAnswer) {
       updateNotification({

@@ -1,6 +1,7 @@
 import { ChallengeInfo } from '@Api/Api'
 import { FC } from 'react'
 import { Card, createStyles, Divider, Group, Stack, Text, Title } from '@mantine/core'
+import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeTagLabelMap } from './ChallengeItem'
 
@@ -27,22 +28,23 @@ interface ChallengeCardProps {
   onClick?: () => void
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, onClick }) => {
+const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, onClick }) => {
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
   const { theme } = useStyles()
+
+  const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
 
   return (
     <Card
       onClick={onClick}
-      shadow="sm"
       radius="md"
+      shadow="md"
       sx={(theme) => ({
         transition: 'filter .1s',
-        borderColor: ``,
-        '&:hover': {
+        ...theme.fn.hover({
           filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
           cursor: 'pointer',
-        },
+        }),
       })}
     >
       <Stack spacing={3}>
@@ -50,6 +52,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, onClick }) => {
           <Text lineClamp={1} weight={700} size={theme.fontSizes.lg}>
             {challenge.title}
           </Text>
+          {solved && <Icon path={mdiFlag} size={1} color={colorStr} />}
         </Group>
         <Divider
           size="sm"
