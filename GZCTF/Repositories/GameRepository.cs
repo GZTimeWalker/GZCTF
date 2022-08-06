@@ -84,13 +84,24 @@ public class GameRepository : RepositoryBase, IGameRepository
         => data.GroupBy(j => j.Instance.Challenge).Select(g => new
         {
             g.Key,
-            Value = g.Select(c => c.Submission is null ? null : new Blood
-            {
-                Id = c.Instance.Participation.TeamId,
-                Avatar = c.Instance.Participation.Team.AvatarUrl,
-                Name = c.Instance.Participation.Team.Name,
-                SubmitTimeUTC = c.Submission.SubmitTimeUTC
-            }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
+            Value = g.GroupBy(c => c.Submission?.TeamId)
+                .Where(t => t.Key is not null)
+                .Select(c =>
+                {
+                    var s = c.OrderBy(t => t.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                        .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
+
+                    return s is null ? null : new Blood
+                    {
+                        Id = s.Instance.Participation.TeamId,
+                        Avatar = s.Instance.Participation.Team.AvatarUrl,
+                        Name = s.Instance.Participation.Team.Name,
+                        SubmitTimeUTC = s.Submission?.SubmitTimeUTC
+                    };
+                })
+                .Where(t => t is not null)
+                .OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                .Take(3).ToArray(),
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
     private static IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
