@@ -73,12 +73,25 @@ const ChallengePanel: FC = () => {
       </Tabs>
       <ScrollArea
         style={{
-          width: 'calc(100% - 10rem)',
+          width: 'calc(100% - 9rem)',
           height: 'calc(100vh - 100px)',
           position: 'relative',
         }}
+        offsetScrollbars
+        scrollbarSize={4}
       >
-        <SimpleGrid cols={3}>
+        <SimpleGrid
+          cols={3}
+          spacing="sm"
+          breakpoints={[
+            { maxWidth: 2900, cols: 6 },
+            { maxWidth: 2500, cols: 5 },
+            { maxWidth: 2100, cols: 4 },
+            { maxWidth: 1700, cols: 3 },
+            { maxWidth: 1300, cols: 2 },
+            { maxWidth: 900, cols: 1 },
+          ]}
+        >
           {currentChallenges.map((chal) => (
             <ChallengeCard
               key={chal.id}
