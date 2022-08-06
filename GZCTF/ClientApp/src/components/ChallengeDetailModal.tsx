@@ -183,7 +183,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 }
               })
               .catch(showErrorNotification)
-          }, 3000)
+          }, 1000)
         })
         .catch(showErrorNotification)
         .finally(() => setOnSubmitting(false))

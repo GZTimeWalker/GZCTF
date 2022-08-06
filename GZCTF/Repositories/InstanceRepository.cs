@@ -73,7 +73,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     IsOccupied = true
                 };
             }
-            await context.AddAsync(instance, token);
         }
 
         instance.IsLoaded = true;

@@ -74,8 +74,8 @@ const useStyles = createStyles((theme) => ({
     paddingTop: '1rem',
   },
   banner: {
-    maxWidth: '40%',
-    width: '20vw',
+    maxWidth: '50%',
+    width: '40vw',
 
     [theme.fn.smallerThan('sm')]: {
       display: 'none',

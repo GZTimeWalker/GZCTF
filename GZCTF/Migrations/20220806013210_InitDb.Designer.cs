@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220805002817_UpdateDeleteBehavior")]
-    partial class UpdateDeleteBehavior
+    [Migration("20220806013210_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -207,6 +207,9 @@ namespace CTFServer.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContainerCountLimit")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -497,6 +500,7 @@ namespace CTFServer.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -969,7 +973,8 @@ namespace CTFServer.Migrations
                     b.HasOne("CTFServer.Models.UserInfo", "User")
                         .WithMany("Submissions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Challenge");
 
