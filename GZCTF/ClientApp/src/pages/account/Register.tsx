@@ -1,7 +1,3 @@
-import api from '@Api/Api'
-import AccountView from '@Components/AccountView'
-import StrengthPasswordInput from '@Components/StrengthPasswordInput'
-import { useReCaptcha } from '@Utils/Recaptcha'
 import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core'
@@ -9,6 +5,10 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import AccountView from '@Components/AccountView'
+import StrengthPasswordInput from '@Components/StrengthPasswordInput'
+import { useReCaptcha } from '@Utils/Recaptcha'
+import api from '@Api/Api'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')

@@ -1,5 +1,3 @@
-import api from '@Api/Api'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -16,6 +14,8 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api from '@Api/Api'
 
 const FlagCreateModal: FC<ModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)

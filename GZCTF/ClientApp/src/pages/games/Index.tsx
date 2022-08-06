@@ -1,11 +1,11 @@
-import api, { BasicGameInfoModel } from '@Api/Api'
-import GameCard, { GameColorMap, GameStatus } from '@Components/GameCard'
-import IconTabs from '@Components/IconTabs'
-import WithNavBar from '@Components/WithNavbar'
 import { FC, useState } from 'react'
 import { SimpleGrid, Stack } from '@mantine/core'
 import { mdiFlag, mdiPackageVariantClosed, mdiProgressClock } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import GameCard, { GameColorMap, GameStatus } from '@Components/GameCard'
+import IconTabs from '@Components/IconTabs'
+import WithNavBar from '@Components/WithNavbar'
+import api, { BasicGameInfoModel } from '@Api/Api'
 
 const Games: FC = () => {
   const { data: allGames } = api.game.useGameGamesAll({

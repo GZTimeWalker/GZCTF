@@ -1,5 +1,3 @@
-import api, { GameInfoModel } from '@Api/Api'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -9,6 +7,8 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { GameInfoModel } from '@Api/Api'
 
 interface GameCreateModalProps extends ModalProps {
   onAddGame: (game: GameInfoModel) => void

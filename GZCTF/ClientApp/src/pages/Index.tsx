@@ -1,12 +1,12 @@
-import api from '@Api/Api'
-import LogoHeader from '@Components/LogoHeader'
-import NoticeCard from '@Components/NoticeCard'
-import RecentGame from '@Components/RecentGame'
-import WithNavBar from '@Components/WithNavbar'
 import { FC } from 'react'
 import { createStyles, Group, keyframes, Stack, Title } from '@mantine/core'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import LogoHeader from '@Components/LogoHeader'
+import NoticeCard from '@Components/NoticeCard'
+import RecentGame from '@Components/RecentGame'
+import WithNavBar from '@Components/WithNavbar'
+import api from '@Api/Api'
 
 const useStyles = createStyles((theme) => ({
   notices: {

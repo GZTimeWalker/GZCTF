@@ -1,9 +1,3 @@
-import api, { ChallengeInfoModel, ChallengeTag } from '@Api/Api'
-import { ChallengeTagItem, ChallengeTagLabelMap } from '@Components/ChallengeItem'
-import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
-import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
-import WithGameEditTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -21,6 +15,12 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { ChallengeTagItem, ChallengeTagLabelMap } from '@Components/ChallengeItem'
+import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
+import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { ChallengeInfoModel, ChallengeTag } from '@Api/Api'
 
 const GameChallengeEdit: FC = () => {
   const { id } = useParams()

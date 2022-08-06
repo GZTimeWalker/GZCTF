@@ -1,7 +1,7 @@
-import { FC, Suspense } from 'react'
-import { useRoutes } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import routes from '~react-pages'
+import { FC, Suspense } from 'react'
+import { useRoutes } from 'react-router-dom'
 import {
   MantineProvider,
   Global,

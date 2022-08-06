@@ -1,4 +1,3 @@
-import { BasicGameInfoModel } from '@Api/Api'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
@@ -15,6 +14,7 @@ import {
 } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { BasicGameInfoModel } from '@Api/Api'
 import { getGameStatus, GameColorMap, GameStatus } from './GameCard'
 
 interface RecentGameProps {

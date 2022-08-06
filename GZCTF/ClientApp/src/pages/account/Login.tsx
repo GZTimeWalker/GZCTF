@@ -1,5 +1,3 @@
-import api from '@Api/Api'
-import AccountView from '@Components/AccountView'
 import { FC, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core'
@@ -7,6 +5,8 @@ import { useInputState, getHotkeyHandler } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import AccountView from '@Components/AccountView'
+import api from '@Api/Api'
 
 const Login: FC = () => {
   const params = useParams()

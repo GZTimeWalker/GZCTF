@@ -1,5 +1,3 @@
-import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api/Api'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
@@ -7,6 +5,8 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api/Api'
 import {
   ChallengeTagItem,
   ChallengeTagLabelMap,

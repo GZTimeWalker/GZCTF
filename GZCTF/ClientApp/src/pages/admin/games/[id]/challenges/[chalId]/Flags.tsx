@@ -1,10 +1,3 @@
-import api, { ChallengeType, FileType, FlagInfoModel } from '@Api/Api'
-import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
-import AttachmentUploadModal, { useUploadStyles } from '@Components/admin/AttachmentUploadModal'
-import FlagCreateModal from '@Components/admin/FlagCreateModal'
-import FlagEditPanel from '@Components/admin/FlagEditPanel'
-import WithGameEditTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -28,6 +21,13 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
+import AttachmentUploadModal, { useUploadStyles } from '@Components/admin/AttachmentUploadModal'
+import FlagCreateModal from '@Components/admin/FlagCreateModal'
+import FlagEditPanel from '@Components/admin/FlagEditPanel'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { ChallengeType, FileType, FlagInfoModel } from '@Api/Api'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],

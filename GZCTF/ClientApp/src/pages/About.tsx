@@ -1,9 +1,9 @@
-import LogoHeader from '@Components/LogoHeader'
-import WithNavBar from '@Components/WithNavbar'
-import MainIcon from '@Components/icon/MainIcon'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Text, Stack, Badge, Group, HoverCard, Title, createStyles, Anchor } from '@mantine/core'
+import LogoHeader from '@Components/LogoHeader'
+import WithNavBar from '@Components/WithNavbar'
+import MainIcon from '@Components/icon/MainIcon'
 
 const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
 const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'develop'

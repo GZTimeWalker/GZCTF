@@ -1,9 +1,9 @@
-import { ChallengeInfo } from '@Api/Api'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
 import { mdiFlag, mdiHexagonSlice2, mdiHexagonSlice4, mdiHexagonSlice6 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { ChallengeInfo } from '@Api/Api'
 import { ChallengeTagLabelMap } from './ChallengeItem'
 
 const useStyles = createStyles((theme, _param, getRef) => {

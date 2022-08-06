@@ -1,8 +1,8 @@
-import { Attachment, FlagInfoModel } from '@Api/Api'
 import { FC } from 'react'
 import { ActionIcon, Group, Stack, Text, Card, useMantineTheme, SimpleGrid } from '@mantine/core'
 import { mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { Attachment, FlagInfoModel } from '@Api/Api'
 
 interface FlagCardProps {
   flag: FlagInfoModel

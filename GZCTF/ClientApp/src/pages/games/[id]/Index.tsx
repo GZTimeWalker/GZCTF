@@ -1,7 +1,3 @@
-import api, { ParticipationStatus } from '@Api/Api'
-import WithNavBar from '@Components/WithNavbar'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTypographyStyles } from '@Utils/ThemeOverride'
 import dayjs from 'dayjs'
 import { marked } from 'marked'
 import { FC, useEffect } from 'react'
@@ -25,6 +21,10 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import WithNavBar from '@Components/WithNavbar'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTypographyStyles } from '@Utils/ThemeOverride'
+import api, { ParticipationStatus } from '@Api/Api'
 
 const useStyles = createStyles((theme) => ({
   root: {

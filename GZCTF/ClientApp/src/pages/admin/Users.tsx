@@ -1,7 +1,3 @@
-import api, { Role, UserInfoModel } from '@Api/Api'
-import AdminPage from '@Components/admin/AdminPage'
-import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import React, { FC, useEffect, useState } from 'react'
 import {
   Group,
@@ -27,6 +23,10 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import AdminPage from '@Components/admin/AdminPage'
+import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { Role, UserInfoModel } from '@Api/Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 

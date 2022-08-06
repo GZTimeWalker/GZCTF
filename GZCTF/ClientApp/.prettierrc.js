@@ -7,5 +7,13 @@ module.exports = {
   printWidth: 100,
   htmlWhitespaceSensitivity: 'ignore',
   plugins: [require.resolve('@trivago/prettier-plugin-sort-imports')],
-  importOrder: ['^@mantine/(.*)$', '^@mdi/(.*)$', '^[./]'],
+  importOrder: [
+    '^react(.*)$',
+    '^@mantine/(.*)$',
+    '^@mdi/(.*)$',
+    '^@Components/(.*)$',
+    '^@Utils/(.*)$',
+    '^@Api/(.*)$',
+    '^[./]',
+  ],
 }

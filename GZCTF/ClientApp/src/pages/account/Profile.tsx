@@ -1,7 +1,3 @@
-import api, { ProfileUpdateModel } from '@Api/Api'
-import PasswordChangeModal from '@Components/PasswordChangeModal'
-import WithNavBar from '@Components/WithNavbar'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import {
   Box,
@@ -24,6 +20,10 @@ import { Dropzone } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import PasswordChangeModal from '@Components/PasswordChangeModal'
+import WithNavBar from '@Components/WithNavbar'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { ProfileUpdateModel } from '@Api/Api'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)

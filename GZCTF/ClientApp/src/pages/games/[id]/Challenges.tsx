@@ -1,12 +1,12 @@
-import api, { Role } from '@Api/Api'
+import { FC } from 'react'
+import { useParams } from 'react-router-dom'
+import { Group, Stack } from '@mantine/core'
 import ChallengePanel from '@Components/ChallengePanel'
 import TeamRank from '@Components/TeamRank'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
-import { FC } from 'react'
-import { useParams } from 'react-router-dom'
-import { Group, Stack } from '@mantine/core'
+import api, { Role } from '@Api/Api'
 
 const Challenges: FC = () => {
   const { id } = useParams()

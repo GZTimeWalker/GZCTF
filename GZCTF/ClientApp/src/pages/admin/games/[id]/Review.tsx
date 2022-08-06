@@ -1,6 +1,3 @@
-import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api/Api'
-import WithGameEditTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -38,6 +35,9 @@ import {
   mdiPhoneOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api/Api'
 
 const StatusMap = new Map([
   [
@@ -83,17 +83,16 @@ const useStyles = createStyles((theme) => ({
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     border: '1px solid rgba(0,0,0,0.2)',
     position: 'relative',
-    zIndex: 0,
     transition: 'transform 150ms ease',
 
     '&[data-active]': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
       boxShadow: theme.shadows.md,
-      zIndex: 1,
     },
   },
 
   control: {
+    padding: '8px 4px',
     ...theme.fn.hover({ background: 'transparent' }),
   },
 }))
