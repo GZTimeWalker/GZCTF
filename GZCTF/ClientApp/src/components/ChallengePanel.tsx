@@ -112,7 +112,7 @@ const ChallengePanel: FC = () => {
         opened={detailOpened}
         onClose={() => setDetailOpened(false)}
         withCloseButton={false}
-        size="40%"
+        size="35%"
         centered
         gameId={numId}
         tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}

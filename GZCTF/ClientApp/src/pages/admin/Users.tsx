@@ -217,7 +217,7 @@ const Users: FC = () => {
                       <ActionIcon
                         disabled={user.id === currentUser?.userId}
                         onClick={() => onDeleteUser(user)}
-                        color="red"
+                        color="alert"
                       >
                         <Icon path={mdiDeleteOutline} size={1} />
                       </ActionIcon>

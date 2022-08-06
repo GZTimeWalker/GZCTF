@@ -178,7 +178,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               </Text>
               <Box style={{ flexGrow: 1 }}></Box>
               {team.locked && (
-                <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />
+                <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
               )}
               <Tooltip.Group openDelay={300} closeDelay={100}>
                 <Avatar.Group

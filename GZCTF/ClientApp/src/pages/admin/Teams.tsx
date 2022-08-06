@@ -125,7 +125,7 @@ const Teams: FC = () => {
                           <Text>{team.name}</Text>
                         </Group>
                         {team.locked && (
-                          <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />
+                          <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
                         )}
                       </Group>
                     </td>

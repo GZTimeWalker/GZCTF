@@ -45,7 +45,7 @@ const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onP
             <ActionIcon onClick={onEdit}>
               <Icon path={mdiPencilOutline} size={1} />
             </ActionIcon>
-            <ActionIcon onClick={onDelete} color="red">
+            <ActionIcon onClick={onDelete} color="alert">
               <Icon path={mdiDeleteOutline} size={1} />
             </ActionIcon>
           </Group>

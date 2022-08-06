@@ -125,12 +125,39 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
+  const onProlongContainer = () => {
+    if (challengeId) {
+      setDisabled(true)
+      api.game
+        .gameProlongContainer(gameId, challengeId)
+        .then((res) => {
+          mutate({
+            ...challenge,
+            context: {
+              ...challenge?.context,
+              closeTime: res.data.expectStopAt,
+            },
+          })
+        })
+        .catch(showErrorNotification)
+        .finally(() => setDisabled(false))
+    }
+  }
+
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    if (!challengeId || !flag) return
+
+    if (!challengeId || !flag) {
+      showNotification({
+        color: 'red',
+        message: 'Flag 为空不可提交',
+        icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
+      })
+      return
+    }
 
     setOnSubmitting(true)
-
     api.game
       .gameSubmit(gameId, challengeId, flag)
       .then((res) => {
@@ -233,7 +260,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           labelPosition="center"
           label={tagData && <Icon path={tagData.icon} size={1} />}
         />
-        <Stack style={{ position: 'relative', minHeight: '5rem' }}>
+        <Stack justify="space-between" style={{ position: 'relative', minHeight: '20vh' }}>
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <TypographyStylesProvider className={classes.root} style={{ minHeight: '4rem' }}>
@@ -297,8 +324,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 </Text>
                 <Countdown time={challenge?.context?.closeTime ?? '0'} />
               </Group>
-              <Group position="right">
-                <Button color="orange" disabled={instanceLeft > 10}>
+              <Group position="center">
+                <Button color="orange" onClick={onProlongContainer} disabled={instanceLeft > 10}>
                   延长时间
                 </Button>
                 <Button color="red" onClick={onDestoryContainer} disabled={disabled}>
