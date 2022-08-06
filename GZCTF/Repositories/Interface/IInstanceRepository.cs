@@ -42,9 +42,10 @@ public interface IInstanceRepository : IRepository
     /// 创建容器实例
     /// </summary>
     /// <param name="instance">实例对象</param>
+    /// <param name="containerLimit">容器数量限制</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default);
+    public Task<TaskResult<Container>> CreateContainer(Instance instance, int containerLimit = 3, CancellationToken token = default);
 
     /// <summary>
     /// 销毁容器实例

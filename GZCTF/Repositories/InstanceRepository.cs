@@ -99,7 +99,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
     }
 
-    public async Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default)
+    public async Task<TaskResult<Container>> CreateContainer(Instance instance, int containerLimit = 3, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
@@ -109,7 +109,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         if (context.Instances.Count(i => i.Participation == instance.Participation
             && i.Container != null
-            && i.Container.Status == ContainerStatus.Running) == 3)
+            && i.Container.Status == ContainerStatus.Running) > containerLimit)
             return new TaskResult<Container>(TaskStatus.Denied);
 
         if (instance.Container is null)

@@ -35,6 +35,11 @@ public class GameInfoModel
     public int TeamMemberCountLimit { get; set; } = 0;
 
     /// <summary>
+    /// 队伍同时开启的容器数量限制
+    /// </summary>
+    public int ContainerCountLimit { get; set; } = 3;
+
+    /// <summary>
     /// 比赛头图
     /// </summary>
     [JsonPropertyName("poster")]
@@ -63,6 +68,7 @@ public class GameInfoModel
             Content = game.Content,
             PosterUrl = game.PosterUrl,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
+            ContainerCountLimit = game.ContainerCountLimit,
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC
         };

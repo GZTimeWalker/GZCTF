@@ -38,6 +38,11 @@ public class Game
     public int TeamMemberCountLimit { get; set; } = 0;
 
     /// <summary>
+    /// 队伍同时开启的容器数量限制
+    /// </summary>
+    public int ContainerCountLimit { get; set; } = 3;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [Required]
@@ -106,6 +111,7 @@ public class Game
         StartTimeUTC = model.StartTimeUTC;
         EndTimeUTC = model.EndTimeUTC;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
+        ContainerCountLimit = model.ContainerCountLimit;
 
         return this;
     }
