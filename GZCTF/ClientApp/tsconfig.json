@@ -16,6 +16,12 @@
     "jsx": "preserve",
     "incremental": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@Components/*": ["src/components/*"],
+      "@Api/*": ["src/*"],
+      "@Utils/*": ["src/utils/*"]
+    }
   },
   "include": ["vite.config.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
