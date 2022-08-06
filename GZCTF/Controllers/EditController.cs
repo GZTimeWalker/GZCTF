@@ -258,7 +258,7 @@ public class EditController : Controller
     /// <remarks>
     /// 添加比赛公告，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛公告</response>
@@ -289,7 +289,7 @@ public class EditController : Controller
     /// <remarks>
     /// 获取比赛公告，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpGet("Games/{id}/Notices")]
@@ -304,7 +304,7 @@ public class EditController : Controller
     /// <remarks>
     /// 删除比赛公告，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="noticeId">公告Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功删除公告</response>
@@ -333,7 +333,7 @@ public class EditController : Controller
     /// <remarks>
     /// 添加比赛题目，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
@@ -363,7 +363,7 @@ public class EditController : Controller
     /// <remarks>
     /// 获取全部比赛题目，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目</response>
     [HttpGet("Games/{id}/Challenges")]
@@ -377,7 +377,7 @@ public class EditController : Controller
     /// <remarks>
     /// 获取比赛题目，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
@@ -405,7 +405,7 @@ public class EditController : Controller
     /// <remarks>
     /// 修改比赛题目，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="cId">题目Id</param>
     /// <param name="model">题目信息</param>
     /// <param name="token"></param>
@@ -457,7 +457,7 @@ public class EditController : Controller
     /// <remarks>
     /// 删除比赛题目，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
@@ -487,8 +487,8 @@ public class EditController : Controller
     /// <remarks>
     /// 更新比赛题目附件，需要管理员权限，仅用于非动态附件题目
     /// </remarks>
-    /// <param name="id">比赛ID</param>
-    /// <param name="cId">题目ID</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="cId">题目Id</param>
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目数量</response>
@@ -521,8 +521,8 @@ public class EditController : Controller
     /// <remarks>
     /// 添加比赛题目 Flag，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
-    /// <param name="cId">题目ID</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="cId">题目Id</param>
     /// <param name="models"></param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目数量</response>
@@ -552,8 +552,8 @@ public class EditController : Controller
     /// <remarks>
     /// 删除比赛题目 Flag，需要管理员权限
     /// </remarks>
-    /// <param name="id">比赛ID</param>
-    /// <param name="cId">题目ID</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="cId">题目Id</param>
     /// <param name="fId">Flag ID</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>

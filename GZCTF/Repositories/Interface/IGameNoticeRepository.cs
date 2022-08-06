@@ -21,7 +21,7 @@ public interface IGameNoticeRepository : IRepository
     /// <summary>
     /// 获取比赛通知
     /// </summary>
-    /// <param name="gameId">比赛ID</param>
+    /// <param name="gameId">比赛Id</param>
     /// <param name="noticeId">通知ID</param>
     /// <param name="token"></param>
     /// <returns></returns>

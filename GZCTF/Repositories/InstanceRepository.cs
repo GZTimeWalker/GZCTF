@@ -38,7 +38,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         if (instance.IsLoaded)
             return instance;
 
-        var challenge = await context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId, token);
+        var challenge = instance.Challenge;
 
         if (challenge is null || !challenge.IsEnabled)
             return null;
@@ -73,7 +73,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     IsOccupied = true
                 };
             }
-            await context.AddAsync(instance);
+            await context.AddAsync(instance, token);
         }
 
         instance.IsLoaded = true;
