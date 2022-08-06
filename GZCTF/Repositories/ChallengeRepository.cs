@@ -33,7 +33,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             });
         }
 
-        await UpdateAsync(challenge, token);
+        await SaveAsync(token);
     }
 
     public async Task<Challenge> CreateChallenge(Game game, Challenge challenge, CancellationToken token = default)
@@ -54,7 +54,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         foreach (var participation in game.Participations)
             update |= challenge.Teams.Add(participation);
 
-        await UpdateAsync(challenge, token);
+        await SaveAsync(token);
 
         return update;
     }
@@ -85,8 +85,6 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
                     await fileRepository.DeleteFileByHash(
                         flag.Attachment.LocalFile.Hash, token);
                 }
-
-                context.Remove(flag);
             }
         }
         else if (challenge.Attachment is not null &&
@@ -117,6 +115,10 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         }
 
         context.Remove(flag);
+
+        if (challenge.Flags.Count == 0)
+            challenge.IsEnabled = false;
+
         await context.SaveChangesAsync(token);
 
         return TaskStatus.Success;
@@ -148,7 +150,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
         challenge.Attachment = attachment;
 
-        await UpdateAsync(challenge, token);
+        await SaveAsync(token);
     }
 
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)

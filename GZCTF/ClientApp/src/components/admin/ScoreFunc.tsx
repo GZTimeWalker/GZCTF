@@ -17,7 +17,11 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
 }) => {
   const toX = (x: number) => (x * 6 * difficulty) / 100
   const func = (x: number) =>
-    Math.floor(originalScore * (minScoreRate + (1 - minScoreRate) * Math.exp(-x / difficulty)))
+    x <= 1
+      ? originalScore
+      : Math.floor(
+          originalScore * (minScoreRate + (1 - minScoreRate) * Math.exp((1 - x) / difficulty))
+        )
 
   const curScore = func(currentAcceptCount)
   const showCount = currentAcceptCount > 5.8 * difficulty ? 5.8 * difficulty : currentAcceptCount

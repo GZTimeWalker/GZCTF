@@ -10,8 +10,8 @@ import {
   Stack,
   TypographyStylesProvider,
 } from '@mantine/core'
-import { Notice } from '../Api'
-import { useTypographyStyles } from '../utils/ThemeOverride'
+import { useTypographyStyles } from '@Utils/ThemeOverride'
+import { Notice } from '@Api/Api'
 
 const NoticeCard: FC<Notice> = (notice) => {
   const theme = useMantineTheme()

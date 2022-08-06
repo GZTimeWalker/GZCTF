@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { marked } from 'marked'
 import { FC, useEffect, useState } from 'react'
+import React from 'react'
 import {
   ActionIcon,
   Button,
@@ -21,11 +22,11 @@ import {
 } from '@mantine/core'
 import { useClipboard, useDisclosure, useInputState, useInterval } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { AnswerResult, ChallengeType } from '../Api'
-import { showErrorNotification } from '../utils/ApiErrorHandler'
-import { useTypographyStyles } from '../utils/ThemeOverride'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTypographyStyles } from '@Utils/ThemeOverride'
+import api, { AnswerResult, ChallengeType } from '@Api/Api'
 import { ChallengeTagItemProps } from './ChallengeItem'
 
 interface ChallengeDetailModalProps extends ModalProps {
@@ -81,8 +82,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
 
   const [disabled, setDisabled] = useState(false)
   const [onSubmitting, setOnSubmitting] = useState(false)
+  const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
-  const [flagId, setFlagId] = useState(0)
 
   const onCreateContainer = () => {
     if (challengeId) {
@@ -124,75 +125,114 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
-  const checkInterval = useInterval(() => {
-    if (flagId) {
+  const onProlongContainer = () => {
+    if (challengeId) {
+      setDisabled(true)
       api.game
-        .gameStatus(gameId, challengeId, flagId)
+        .gameProlongContainer(gameId, challengeId)
         .then((res) => {
-          console.log(res.data)
-          if (res && res.data !== AnswerResult.FlagSubmitted) {
-            setFlag('')
-            setFlagId(0)
-            if (res.data === AnswerResult.Accepted) {
-              updateNotification({
-                id: 'flag-submitted',
-                color: 'teal',
-                message: 'Flag 正确',
-                icon: <Icon path={mdiCheck} size={1} />,
-                disallowClose: true,
-              })
-              if (isDynamic) onDestoryContainer()
-              props.onClose()
-            } else if (res.data === AnswerResult.WrongAnswer) {
-              updateNotification({
-                id: 'flag-submitted',
-                color: 'red',
-                message: 'Flag 错误',
-                icon: <Icon path={mdiClose} size={1} />,
-                disallowClose: true,
-              })
-            }
-          }
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          checkInterval.stop()
-          setOnSubmitting(false)
-        })
-    }
-  }, 1000)
-
-  useEffect(() => {
-    if (flagId) {
-      checkInterval.start()
-      return checkInterval.stop
-    }
-  }, [flagId])
-
-  const onSubmit = () => {
-    if (challengeId && flag) {
-      setOnSubmitting(true)
-      api.game
-        .gameSubmit(gameId, challengeId, flag)
-        .then((res) => {
-          setFlagId(res.data)
-          showNotification({
-            id: 'flag-submitted',
-            color: 'orange',
-            message: '请等待 flag 检查……',
-            loading: true,
-            autoClose: false,
-            disallowClose: true,
+          mutate({
+            ...challenge,
+            context: {
+              ...challenge?.context,
+              closeTime: res.data.expectStopAt,
+            },
           })
         })
         .catch(showErrorNotification)
-        .finally(() => setOnSubmitting(false))
+        .finally(() => setDisabled(false))
+    }
+  }
+
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+
+    if (!challengeId || !flag) {
+      showNotification({
+        color: 'red',
+        message: 'Flag 为空不可提交',
+        icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
+      })
+      return
+    }
+
+    setOnSubmitting(true)
+    api.game
+      .gameSubmit(gameId, challengeId, flag)
+      .then((res) => {
+        setSubmitId(res.data)
+
+        showNotification({
+          id: 'flag-submitted',
+          color: 'orange',
+          message: '请等待 flag 检查……',
+          loading: true,
+          autoClose: false,
+          disallowClose: true,
+        })
+      })
+      .catch(showErrorNotification)
+  }
+
+  useEffect(() => {
+    // submitId initialization will trigger useEffect
+    if (!submitId) return
+
+    const polling = setInterval(() => {
+      api.game
+        .gameStatus(gameId, challengeId, submitId)
+        .then((res) => {
+          if (res.data !== AnswerResult.FlagSubmitted) {
+            setOnSubmitting(false)
+            setFlag('')
+            checkDataFlag(res.data)
+            clearInterval(polling)
+          }
+        })
+        .catch(showErrorNotification)
+    }, 1000)
+    return () => clearInterval(polling)
+  }, [submitId])
+
+  const checkDataFlag = (data: string) => {
+    if (data === AnswerResult.Accepted) {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'teal',
+        message: 'Flag 正确',
+        icon: <Icon path={mdiCheck} size={1} />,
+        disallowClose: true,
+      })
+      if (isDynamic) onDestoryContainer()
+      mutate()
+      props.onClose()
+    } else if (data === AnswerResult.WrongAnswer) {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'red',
+        message: 'Flag 错误',
+        icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
+      })
+    } else {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'yellow',
+        message: 'Flag 状态未知，后续请求还没写……',
+        icon: <Icon path={mdiLoading} size={1} />,
+        disallowClose: true,
+      })
     }
   }
 
   return (
     <Modal
       {...modalProps}
+      onClose={() => {
+        setFlag('')
+        modalProps.onClose()
+      }}
       styles={{
         ...modalProps.styles,
         header: {
@@ -220,7 +260,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           labelPosition="center"
           label={tagData && <Icon path={tagData.icon} size={1} />}
         />
-        <Stack style={{ position: 'relative', minHeight: '5rem' }}>
+        <Stack justify="space-between" style={{ position: 'relative', minHeight: '20vh' }}>
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <TypographyStylesProvider className={classes.root} style={{ minHeight: '4rem' }}>
@@ -284,8 +324,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 </Text>
                 <Countdown time={challenge?.context?.closeTime ?? '0'} />
               </Group>
-              <Group position="right">
-                <Button color="orange" disabled={instanceLeft > 10}>
+              <Group position="center">
+                <Button color="orange" onClick={onProlongContainer} disabled={instanceLeft > 10}>
                   延长时间
                 </Button>
                 <Button color="red" onClick={onDestoryContainer} disabled={disabled}>
@@ -308,24 +348,26 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           )}
         </Stack>
         <Divider size="sm" variant="dashed" color={tagData.color} />
-        <TextInput
-          placeholder="flag{...}"
-          value={flag}
-          onChange={setFlag}
-          styles={{
-            rightSection: {
-              width: 'auto',
-            },
-            input: {
-              fontFamily: theme.fontFamilyMonospace,
-            },
-          }}
-          rightSection={
-            <Button onClick={onSubmit} disabled={onSubmitting}>
-              提交 flag
-            </Button>
-          }
-        />
+        <form onSubmit={onSubmit}>
+          <TextInput
+            placeholder="flag{...}"
+            value={flag}
+            onChange={setFlag}
+            styles={{
+              rightSection: {
+                width: 'auto',
+              },
+              input: {
+                fontFamily: theme.fontFamilyMonospace,
+              },
+            }}
+            rightSection={
+              <Button type="submit" onClick={onSubmit} disabled={onSubmitting}>
+                提交 flag
+              </Button>
+            }
+          />
+        </form>
       </Stack>
     </Modal>
   )

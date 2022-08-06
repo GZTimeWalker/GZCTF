@@ -438,6 +438,12 @@ export interface GameInfoModel {
    */
   teamMemberCountLimit?: number
 
+  /**
+   * 队伍同时开启的容器数量限制
+   * @format int32
+   */
+  containerCountLimit?: number
+
   /** 比赛头图 */
   poster?: string | null
 

@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeInfoModel, ChallengeTag } from '../../Api'
+import { ChallengeInfoModel, ChallengeTag } from '@Api/Api'
 import { ChallengeTagLabelMap } from '../ChallengeItem'
 
 interface ChallengeEditCardProps {

@@ -40,7 +40,7 @@ public class Submission
     /// 用户
     /// </summary>
     [JsonIgnore]
-    public UserInfo? User { get; set; }
+    public UserInfo User { get; set; } = default!;
 
     /// <summary>
     /// 参与队伍 Id

@@ -17,8 +17,8 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { UserInfoModel, UpdateUserInfoModel, Role } from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { UserInfoModel, UpdateUserInfoModel, Role } from '@Api/Api'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],

@@ -72,8 +72,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Game)
-                .HasForeignKey(e => e.GameId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(e => e.GameId);
 
             entity.HasMany(e => e.Teams)
                 .WithMany(e => e.Games)
@@ -111,8 +110,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Participation)
-                .HasForeignKey(e => e.ParticipationId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(e => e.ParticipationId);
 
             entity.HasMany(e => e.Challenges)
                 .WithMany(e => e.Teams)
@@ -132,7 +130,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         {
             entity.HasOne(e => e.FlagContext)
                 .WithMany()
-                .HasForeignKey(e => e.FlagId);
+                .HasForeignKey(e => e.FlagId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(e => e.Container)
                 .WithOne(e => e.Instance)
@@ -163,8 +162,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Challenge)
-                .HasForeignKey(e => e.ChallengeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(e => e.ChallengeId);
 
             entity.HasOne(e => e.Attachment)
                 .WithMany()

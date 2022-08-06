@@ -6,12 +6,18 @@ import { Card, Stack, Title, Text, Progress, LoadingOverlay, useMantineTheme } f
 import { useInterval } from '@mantine/hooks'
 import { mdiFlagOutline, mdiMedalOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { GameDetailModel } from '../Api'
+import { GameDetailModel, ParticipationStatus } from '@Api/Api'
 import IconTabs from './IconTabs'
 
 const pages = [
-  { icon: mdiFlagOutline, title: '比赛题目', path: 'challenges', color: 'blue' },
-  { icon: mdiMedalOutline, title: '积分总榜', path: 'scoreboard', color: 'yellow' },
+  { icon: mdiFlagOutline, title: '比赛题目', path: 'challenges', color: 'blue', requireJoin: true },
+  {
+    icon: mdiMedalOutline,
+    title: '积分总榜',
+    path: 'scoreboard',
+    color: 'yellow',
+    requireJoin: false,
+  },
 ]
 
 const getTab = (path: string) => pages.findIndex((page) => path.endsWith(page.path))
@@ -20,9 +26,10 @@ dayjs.extend(duration)
 interface WithGameTabProps extends React.PropsWithChildren {
   game?: GameDetailModel
   isLoading?: boolean
+  status?: ParticipationStatus
 }
 
-const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, children }) => {
+const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const location = useLocation()
@@ -74,12 +81,14 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, children }) => {
       <IconTabs
         active={activeTab}
         onTabChange={onChange}
-        tabs={pages.map((p) => ({
-          tabKey: p.path,
-          label: p.title,
-          icon: <Icon path={p.icon} size={1} />,
-          color: p.color,
-        }))}
+        tabs={pages
+          .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
+          .map((p) => ({
+            tabKey: p.path,
+            label: p.title,
+            icon: <Icon path={p.icon} size={1} />,
+            color: p.color,
+          }))}
         left={
           game && (
             <>
@@ -93,7 +102,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, children }) => {
                     : '比赛已结束'}
                 </Text>
                 <Card.Section style={{ marginTop: '2px' }}>
-                  <Progress radius="xs" size="sm" animate value={progress} />
+                  <Progress radius="xs" size="sm" animate={progress < 100} value={progress} />
                 </Card.Section>
               </Card>
             </>

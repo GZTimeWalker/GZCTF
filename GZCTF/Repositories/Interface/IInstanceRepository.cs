@@ -19,8 +19,8 @@ public interface IInstanceRepository : IRepository
     /// </summary>
     /// <param name="submission">当前提交</param>
     /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default);
+    /// <returns>是否更新实例状态</returns>
+    public Task<bool> VerifyAnswer(Submission submission, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目实例
@@ -42,9 +42,10 @@ public interface IInstanceRepository : IRepository
     /// 创建容器实例
     /// </summary>
     /// <param name="instance">实例对象</param>
+    /// <param name="containerLimit">容器数量限制</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default);
+    public Task<TaskResult<Container>> CreateContainer(Instance instance, int containerLimit = 3, CancellationToken token = default);
 
     /// <summary>
     /// 销毁容器实例
@@ -53,14 +54,6 @@ public interface IInstanceRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> DestoryContainer(Container container, CancellationToken token = default);
-
-    /// <summary>
-    /// 尝试将当前队伍状态标记为已解决题目
-    /// </summary>
-    /// <param name="instance">实例</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<bool> TrySolved(Instance instance, CancellationToken token = default);
 
     /// <summary>
     /// 容器延期

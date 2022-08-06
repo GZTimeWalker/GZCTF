@@ -11,7 +11,7 @@ import {
   createStyles,
   Progress,
 } from '@mantine/core'
-import api, { SubmissionType } from '../Api'
+import api, { SubmissionType } from '@Api/Api'
 
 const useStyle = createStyles((theme) => ({
   number: {
@@ -62,7 +62,7 @@ const TeamRank: FC<PaperProps> = (props) => {
             <Text size="sm">攻克数量</Text>
           </Stack>
         </Group>
-        <Progress value={solved * 100}/>
+        <Progress value={solved * 100} />
       </Stack>
     </Card>
   )

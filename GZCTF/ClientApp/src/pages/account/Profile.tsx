@@ -20,10 +20,10 @@ import { Dropzone } from '@mantine/dropzone'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ProfileUpdateModel } from '../../Api'
-import PasswordChangeModal from '../../components/PasswordChangeModal'
-import WithNavBar from '../../components/WithNavbar'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import PasswordChangeModal from '@Components/PasswordChangeModal'
+import WithNavBar from '@Components/WithNavbar'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { ProfileUpdateModel } from '@Api/Api'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)

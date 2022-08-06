@@ -20,8 +20,8 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { FileType } from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { FileType } from '@Api/Api'
 
 export const useUploadStyles = createStyles(() => ({
   uploadButton: {

@@ -20,16 +20,19 @@ public class FlagChecker : IHostedService
 {
     private readonly ILogger<FlagChecker> logger;
     private readonly ChannelReader<Submission> channelReader;
+    private readonly ChannelWriter<Submission> channelWriter;
     private readonly IServiceScopeFactory serviceScopeFactory;
 
     private CancellationTokenSource TokenSource { get; set; } = new CancellationTokenSource();
 
     public FlagChecker(ChannelReader<Submission> _channelReader,
+        ChannelWriter<Submission> _channelWriter,
         ILogger<FlagChecker> _logger,
         IServiceScopeFactory _serviceScopeFactory)
     {
         logger = _logger;
         channelReader = _channelReader;
+        channelWriter = _channelWriter;
         serviceScopeFactory = _serviceScopeFactory;
     }
 
@@ -52,7 +55,7 @@ public class FlagChecker : IHostedService
 
                 try
                 {
-                    var instance = await instanceRepository.VerifyAnswer(item, token);
+                    var firstTime = await instanceRepository.VerifyAnswer(item, token);
 
                     if (item.Status == AnswerResult.NotFound)
                         logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
@@ -65,16 +68,13 @@ public class FlagChecker : IHostedService
                         var result = await instanceRepository.CheckCheat(item, token);
 
                         if (result.AnswerResult == AnswerResult.CheatDetected)
-                        {
                             logger.Log($"[作弊检查] 题目 [{item.Challenge.Title}] 中队伍 [{item.Team.Name}] 疑似作弊，相关队伍 [{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
-                        }
                     }
 
                     await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
 
-                    if (item.Status == AnswerResult.Accepted && await instanceRepository.TrySolved(instance!, token))
+                    if (firstTime)
                     {
-                        item.Challenge.AcceptedCount++;
                         NoticeType type = item.Challenge.AcceptedCount switch
                         {
                             1 => NoticeType.FirstBlood,
@@ -87,7 +87,7 @@ public class FlagChecker : IHostedService
                             await gameNoticeRepository.CreateNotice(GameNotice.FromSubmission(item, type), token);
                     }
 
-                    gameRepository.FlushScoreboard(item.Game);
+                    gameRepository.FlushScoreboard(item.GameId);
                 }
                 catch (Exception e)
                 {
@@ -108,16 +108,25 @@ public class FlagChecker : IHostedService
         }
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         TokenSource = new CancellationTokenSource();
 
         for (int i = 0; i < 4; ++i)
             _ = Checker(i, TokenSource.Token);
 
-        logger.SystemLog("Flag 检查已启用", TaskStatus.Success, LogLevel.Debug);
+        await using var scope = serviceScopeFactory.CreateAsyncScope();
 
-        return Task.CompletedTask;
+        var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
+        var flags = await submissionRepository.GetUncheckedFlags(TokenSource.Token);
+
+        foreach (var item in flags)
+            await channelWriter.WriteAsync(item, TokenSource.Token);
+
+        if (flags.Length > 0)
+            logger.SystemLog($"重新开始检查 {flags.Length} 个 flag", TaskStatus.Pending, LogLevel.Debug);
+
+        logger.SystemLog("Flag 检查已启用", TaskStatus.Success, LogLevel.Debug);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

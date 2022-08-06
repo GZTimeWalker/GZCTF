@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom'
 import { Group, ScrollArea, SimpleGrid, Tabs, Text } from '@mantine/core'
 import { mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '../Api'
+import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api/Api'
 import ChallengeCard from './ChallengeCard'
 import ChallengeDetailModal from './ChallengeDetailModal'
-import { ChallengeTagLabelMap } from './ChallengeItem'
+import { ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -26,6 +26,7 @@ const ChallengePanel: FC = () => {
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
   const [detailOpened, setDetailOpened] = useState(false)
+  const iconMap = SubmissionTypeIconMap(0.8)
 
   return (
     <Group noWrap position="apart" align="flex-start" style={{ width: 'calc(100% - 21rem)' }}>
@@ -73,16 +74,30 @@ const ChallengePanel: FC = () => {
       </Tabs>
       <ScrollArea
         style={{
-          width: 'calc(100% - 10rem)',
+          width: 'calc(100% - 9rem)',
           height: 'calc(100vh - 100px)',
           position: 'relative',
         }}
+        offsetScrollbars
+        scrollbarSize={4}
       >
-        <SimpleGrid cols={3}>
+        <SimpleGrid
+          cols={3}
+          spacing="sm"
+          breakpoints={[
+            { maxWidth: 2900, cols: 6 },
+            { maxWidth: 2500, cols: 5 },
+            { maxWidth: 2100, cols: 4 },
+            { maxWidth: 1700, cols: 3 },
+            { maxWidth: 1300, cols: 2 },
+            { maxWidth: 900, cols: 1 },
+          ]}
+        >
           {currentChallenges.map((chal) => (
             <ChallengeCard
               key={chal.id}
               challenge={chal}
+              iconMap={iconMap}
               onClick={() => {
                 setChallenge(chal)
                 setDetailOpened(true)
@@ -99,10 +114,10 @@ const ChallengePanel: FC = () => {
         opened={detailOpened}
         onClose={() => setDetailOpened(false)}
         withCloseButton={false}
-        size="40%"
+        size="35%"
         centered
         gameId={numId}
-        tagData={ChallengeTagLabelMap.get(challenge?.tag as ChallengeTag ?? ChallengeTag.Misc)!}
+        tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
         title={challenge?.title ?? ''}
         score={challenge?.score ?? 0}
         challengeId={challenge?.id ?? allChallenges.at(0)?.id ?? 0}

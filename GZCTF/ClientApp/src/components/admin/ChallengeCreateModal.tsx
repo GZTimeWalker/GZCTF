@@ -5,8 +5,8 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api/Api'
 import {
   ChallengeTagItem,
   ChallengeTagLabelMap,

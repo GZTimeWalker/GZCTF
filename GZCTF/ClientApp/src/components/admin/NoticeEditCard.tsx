@@ -12,8 +12,8 @@ import {
 } from '@mantine/core'
 import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { Notice } from '../../Api'
-import { useTypographyStyles } from '../../utils/ThemeOverride'
+import { useTypographyStyles } from '@Utils/ThemeOverride'
+import { Notice } from '@Api/Api'
 
 interface NoticeEditCardProps extends PaperProps {
   notice: Notice
@@ -45,7 +45,7 @@ const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onP
             <ActionIcon onClick={onEdit}>
               <Icon path={mdiPencilOutline} size={1} />
             </ActionIcon>
-            <ActionIcon onClick={onDelete} color="red">
+            <ActionIcon onClick={onDelete} color="alert">
               <Icon path={mdiDeleteOutline} size={1} />
             </ActionIcon>
           </Group>

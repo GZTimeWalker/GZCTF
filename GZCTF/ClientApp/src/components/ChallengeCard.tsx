@@ -1,15 +1,9 @@
+import dayjs from 'dayjs'
 import { FC } from 'react'
-import {
-  Card,
-  createStyles,
-  Divider,
-  Group,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core'
+import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
+import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeInfo } from '../Api'
+import { ChallengeInfo, SubmissionType } from '@Api/Api'
 import { ChallengeTagLabelMap } from './ChallengeItem'
 
 const useStyles = createStyles((theme, _param, getRef) => {
@@ -33,24 +27,32 @@ interface ChallengeCardProps {
   challenge: ChallengeInfo
   solved?: boolean
   onClick?: () => void
+  iconMap: Map<SubmissionType, React.ReactNode>
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, onClick }) => {
+const SubmissionTypes = [
+  SubmissionType.FirstBlood,
+  SubmissionType.SecondBlood,
+  SubmissionType.ThirdBlood,
+]
+
+const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onClick }) => {
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
   const { theme } = useStyles()
+
+  const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
 
   return (
     <Card
       onClick={onClick}
-      shadow="sm"
       radius="md"
+      shadow="md"
       sx={(theme) => ({
         transition: 'filter .1s',
-        borderColor: ``,
-        '&:hover': {
+        ...theme.fn.hover({
           filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
           cursor: 'pointer',
-        },
+        }),
       })}
     >
       <Stack spacing={3}>
@@ -58,6 +60,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, onClick }) => {
           <Text lineClamp={1} weight={700} size={theme.fontSizes.lg}>
             {challenge.title}
           </Text>
+          {solved && <Icon path={mdiFlag} size={1} color={colorStr} />}
         </Group>
         <Divider
           size="sm"
@@ -76,13 +79,36 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, onClick }) => {
             {challenge.score} pts
           </Text>
         </Group>
-        <Group position="center" style={{ height: '1.2rem' }}>
-          <Title order={6}>
-            {`${challenge.solved} `}
-            <Text color="dimmed" size="xs" inherit component="span">
-              支队伍攻克
-            </Text>
-          </Title>
+        <Title order={6} align="center">
+          {`${challenge.solved} `}
+          <Text color="dimmed" size="xs" inherit component="span">
+            支队伍攻克
+          </Text>
+        </Title>
+        <Group position="center" spacing="md" style={{ height: 20 }}>
+          {challenge.bloods &&
+            challenge.bloods.map((blood, idx) => (
+              <Tooltip.Floating
+                key={idx}
+                position="bottom"
+                multiline
+                styles={{
+                  tooltip: {
+                    background: theme.colorScheme === 'dark' ? '' : theme.colors.white[1],
+                  },
+                }}
+                label={
+                  <Stack spacing={0}>
+                    <Text color={theme.colorScheme === 'dark' ? '' : 'dark'}>{blood?.name}</Text>
+                    <Text size="xs" color="dimmed">
+                      {dayjs(blood?.submitTimeUTC).format('YY/MM/DD HH:mm:ss')}
+                    </Text>
+                  </Stack>
+                }
+              >
+                {iconMap.get(SubmissionTypes[idx])}
+              </Tooltip.Floating>
+            ))}
         </Group>
       </Stack>
     </Card>

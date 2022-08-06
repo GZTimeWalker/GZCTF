@@ -23,10 +23,10 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { Role, UserInfoModel } from '../../Api'
-import AdminPage from '../../components/admin/AdminPage'
-import UserEditModal, { RoleColorMap } from '../../components/admin/UserEditModal'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import AdminPage from '@Components/admin/AdminPage'
+import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { Role, UserInfoModel } from '@Api/Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -217,7 +217,7 @@ const Users: FC = () => {
                       <ActionIcon
                         disabled={user.id === currentUser?.userId}
                         onClick={() => onDeleteUser(user)}
-                        color="red"
+                        color="alert"
                       >
                         <Icon path={mdiDeleteOutline} size={1} />
                       </ActionIcon>

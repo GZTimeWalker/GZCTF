@@ -12,12 +12,15 @@ public class TeamRepository : RepositoryBase, ITeamRepository
 
     public async Task<bool> AnyActiveGame(Team team, CancellationToken token = default)
     {
-        bool result = await context.Participations.AnyAsync(p => p.Team == team && p.Game.IsActive, token);
+        var current = DateTimeOffset.UtcNow;
+        var result = await context.Participations
+            .Where(p => p.Team == team && p.Game.EndTimeUTC > current)
+            .AnyAsync(token);
 
-        if (team.Locked != result)
+        if (team.Locked && !result)
         {
-            team.Locked = result;
-            await context.SaveChangesAsync(token);
+            team.Locked = false;
+            await SaveAsync(token);
         }
 
         return result;

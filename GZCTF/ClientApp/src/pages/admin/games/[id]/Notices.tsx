@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@mantine/core'
 import { mdiBackburger } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import WithGameEditTab from '../../../../components/admin/WithGameEditTab'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
 
 const GameNoticeEdit: FC = () => {
   const navigate = useNavigate()

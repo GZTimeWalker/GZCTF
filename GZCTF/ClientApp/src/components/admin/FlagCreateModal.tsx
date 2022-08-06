@@ -14,8 +14,8 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api from '@Api/Api'
 
 const FlagCreateModal: FC<ModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)

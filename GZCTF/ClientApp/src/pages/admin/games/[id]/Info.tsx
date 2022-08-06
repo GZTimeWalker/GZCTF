@@ -19,9 +19,9 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameInfoModel } from '../../../../Api'
-import WithGameEditTab from '../../../../components/admin/WithGameEditTab'
-import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { GameInfoModel } from '@Api/Api'
 
 const GameInfoEdit: FC = () => {
   const { id } = useParams()
@@ -127,7 +127,7 @@ const GameInfoEdit: FC = () => {
       }
     >
       <Grid grow>
-        <Grid.Col span={8}>
+        <Grid.Col span={6}>
           <TextInput
             label="比赛标题"
             disabled={disabled}
@@ -136,13 +136,22 @@ const GameInfoEdit: FC = () => {
             onChange={(e) => game && setGame({ ...game, title: e.target.value })}
           />
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col span={3}>
           <NumberInput
-            label="报名队伍人数限制"
+            label="队伍人数限制"
             disabled={disabled}
             min={0}
             value={game?.teamMemberCountLimit}
             onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: e })}
+          />
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <NumberInput
+            label="队伍容器数量限制"
+            disabled={disabled}
+            min={1}
+            value={game?.containerCountLimit}
+            onChange={(e) => game && setGame({ ...game, containerCountLimit: e })}
           />
         </Grid.Col>
       </Grid>

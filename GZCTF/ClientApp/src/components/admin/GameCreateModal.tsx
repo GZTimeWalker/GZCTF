@@ -7,8 +7,8 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameInfoModel } from '../../Api'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { GameInfoModel } from '@Api/Api'
 
 interface GameCreateModalProps extends ModalProps {
   onAddGame: (game: GameInfoModel) => void

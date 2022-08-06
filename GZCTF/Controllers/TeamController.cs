@@ -152,7 +152,7 @@ public class TeamController : ControllerBase
 
         team.UpdateInfo(model);
 
-        await teamRepository.UpdateAsync(team, token);
+        await teamRepository.SaveAsync(token);
 
         return Ok(TeamInfoModel.FromTeam(team));
     }
@@ -258,7 +258,7 @@ public class TeamController : ControllerBase
 
         team.UpdateInviteToken();
 
-        await teamRepository.UpdateAsync(team, token);
+        await teamRepository.SaveAsync(token);
 
         return Ok(team.InviteCode);
     }
@@ -312,7 +312,7 @@ public class TeamController : ControllerBase
             team.Members.RemoveWhere(m => m.Id == userid);
 
             await userManager.UpdateAsync(kickUser);
-            await teamRepository.UpdateAsync(team, token);
+            await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
             logger.Log($"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
@@ -374,7 +374,7 @@ public class TeamController : ControllerBase
 
             team.Members.Add(user);
 
-            await teamRepository.UpdateAsync(team, cancelToken);
+            await teamRepository.SaveAsync(cancelToken);
 
             if (user.ActiveTeam is null)
                 user.ActiveTeam = team;
@@ -434,7 +434,7 @@ public class TeamController : ControllerBase
             team.Members.Remove(user);
 
             await userManager.UpdateAsync(user);
-            await teamRepository.UpdateAsync(team, token);
+            await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
             logger.Log($"离开队伍 {team.Name}", user, TaskStatus.Success);
@@ -489,7 +489,7 @@ public class TeamController : ControllerBase
             return BadRequest(new RequestResponse("未知错误"));
 
         team.AvatarHash = avatar.Hash;
-        await teamRepository.UpdateAsync(team, token);
+        await teamRepository.SaveAsync(token);
 
         logger.Log($"队伍 {team.Name} 更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
 

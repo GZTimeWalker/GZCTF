@@ -1,11 +1,12 @@
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Group, Stack } from '@mantine/core'
-import api from '../../../Api'
-import ChallengePanel from '../../../components/ChallengePanel'
-import TeamRank from '../../../components/TeamRank'
-import WithGameTab from '../../../components/WithGameTab'
-import WithNavBar from '../../../components/WithNavbar'
+import ChallengePanel from '@Components/ChallengePanel'
+import TeamRank from '@Components/TeamRank'
+import WithGameTab from '@Components/WithGameTab'
+import WithNavBar from '@Components/WithNavbar'
+import WithRole from '@Components/WithRole'
+import api, { Role } from '@Api/Api'
 
 const Challenges: FC = () => {
   const { id } = useParams()
@@ -18,15 +19,16 @@ const Challenges: FC = () => {
 
   return (
     <WithNavBar width="90%">
-      <WithGameTab isLoading={!game} game={game}>
-        <Group position="apart" align="flex-start" grow noWrap>
-          <ChallengePanel />
-
-          <Stack style={{ maxWidth: '20rem' }}>
-            <TeamRank />
-          </Stack>
-        </Group>
-      </WithGameTab>
+      <WithRole requiredRole={Role.User}>
+        <WithGameTab isLoading={!game} game={game} status={game?.status}>
+          <Group position="apart" align="flex-start" grow noWrap>
+            <ChallengePanel />
+            <Stack style={{ maxWidth: '20rem' }}>
+              <TeamRank />
+            </Stack>
+          </Group>
+        </WithGameTab>
+      </WithRole>
     </WithNavBar>
   )
 }

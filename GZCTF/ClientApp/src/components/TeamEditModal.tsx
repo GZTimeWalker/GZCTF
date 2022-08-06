@@ -24,8 +24,8 @@ import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { TeamInfoModel, TeamUserInfoModel } from '../Api'
-import { showErrorNotification } from '../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { TeamInfoModel, TeamUserInfoModel } from '@Api/Api'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null

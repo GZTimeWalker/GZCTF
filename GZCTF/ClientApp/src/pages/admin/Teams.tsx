@@ -13,9 +13,9 @@ import {
 import { useInputState } from '@mantine/hooks'
 import { mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { TeamInfoModel } from '../../Api'
-import AdminPage from '../../components/admin/AdminPage'
-import { showErrorNotification } from '../../utils/ApiErrorHandler'
+import AdminPage from '@Components/admin/AdminPage'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { TeamInfoModel } from '@Api/Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -125,7 +125,7 @@ const Teams: FC = () => {
                           <Text>{team.name}</Text>
                         </Group>
                         {team.locked && (
-                          <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />
+                          <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
                         )}
                       </Group>
                     </td>

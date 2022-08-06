@@ -38,7 +38,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         if (instance.IsLoaded)
             return instance;
 
-        var challenge = await context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId, token);
+        var challenge = instance.Challenge;
 
         if (challenge is null || !challenge.IsEnabled)
             return null;
@@ -49,8 +49,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             if (challenge.Type.IsAttachment())
             {
-                var flags = await context.Entry(challenge).Collection(e => e.Flags)
-                        .Query().Where(e => !e.IsOccupied).ToListAsync(token);
+                var flags = await context.FlagContexts
+                    .Where(e => e.Challenge == challenge && !e.IsOccupied)
+                    .ToListAsync(token);
 
                 if (flags.Count == 0)
                 {
@@ -60,7 +61,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
                 var pos = Random.Shared.Next(flags.Count);
                 flags[pos].IsOccupied = true;
-                instance.FlagContext = flags[pos];
+
+                instance.FlagId = flags[pos].Id;
             }
             else
             {
@@ -71,12 +73,11 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     IsOccupied = true
                 };
             }
-            await context.AddAsync(instance);
         }
 
         instance.IsLoaded = true;
 
-        await UpdateAsync(instance, token);
+        await SaveAsync(token);
 
         return instance;
     }
@@ -87,17 +88,17 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             await service.DestoryContainer(container, token);
             await containerRepository.RemoveContainer(container, token);
-            logger.SystemLog($"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()})", TaskStatus.Success);
+            logger.SystemLog($"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()})", TaskStatus.Success);
             return true;
         }
         catch (Exception ex)
         {
-            logger.SystemLog($"销毁容器 {container.ContainerId[..12]} ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Fail, LogLevel.Warning);
             return false;
         }
     }
 
-    public async Task<TaskResult<Container>> CreateContainer(Instance instance, CancellationToken token = default)
+    public async Task<TaskResult<Container>> CreateContainer(Instance instance, int containerLimit = 3, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
@@ -107,7 +108,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         if (context.Instances.Count(i => i.Participation == instance.Participation
             && i.Container != null
-            && i.Container.Status == ContainerStatus.Running) == 3)
+            && i.Container.Status == ContainerStatus.Running) > containerLimit)
             return new TaskResult<Container>(TaskStatus.Denied);
 
         if (instance.Container is null)
@@ -158,12 +159,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             if (instance.FlagContext?.Flag == submission.Answer)
             {
-                await context.Entry(submission).Reference(s => s.User).LoadAsync(token);
-                await context.Entry(submission).Reference(s => s.Participation.Team).LoadAsync(token);
-
                 checkInfo.AnswerResult = AnswerResult.CheatDetected;
                 checkInfo.CheatUser = submission.User;
-                checkInfo.CheatTeam = submission.Participation.Team;
+                checkInfo.CheatTeam = submission.Team;
                 checkInfo.SourceTeam = instance.Participation.Team;
                 checkInfo.Challenge = instance.Challenge;
 
@@ -174,39 +172,47 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return checkInfo;
     }
 
-    public async Task<Instance?> VerifyAnswer(Submission submission, CancellationToken token = default)
+    public async Task<bool> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
         var instance = await context.Instances
-            // avoid conflict caused by tracking 'Challenge'
             .IgnoreAutoIncludes()
             .Include(i => i.FlagContext)
             .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId == submission.ParticipationId, token);
 
+        var updateSub = await context.Submissions
+                .Include(s => s.Challenge)
+                .SingleAsync(s => s.Id == submission.Id, token);
+
         if (instance is null)
-            submission.Status = AnswerResult.NotFound;
+        {
+            updateSub.Status = AnswerResult.NotFound;
+            return false;
+        }
         else if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
-            submission.Status = await context.FlagContexts
+        {
+            updateSub.Status = await context.FlagContexts
                 .AsNoTracking()
                 .AnyAsync(
                     f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
                     token)
                 ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        }
         else
-            submission.Status = instance.FlagContext?.Flag == submission.Answer
+        {
+            updateSub.Status = instance.FlagContext?.Flag == submission.Answer
                 ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        }
 
-        await UpdateAsync(submission);
-        return instance;
-    }
+        bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
+        instance.IsSolved = instance.IsSolved || updateSub.Status == AnswerResult.Accepted;
 
-    public async Task<bool> TrySolved(Instance instance, CancellationToken token = default)
-    {
-        if (instance.IsSolved)
-            return false;
+        if (firstTime)
+            updateSub.Challenge.AcceptedCount++;
 
-        instance.IsSolved = true;
-        await context.SaveChangesAsync(token);
-        return true;
+        await SaveAsync(token);
+        submission.Status = updateSub.Status;
+
+        return firstTime;
     }
 }

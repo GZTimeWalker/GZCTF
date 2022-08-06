@@ -11,10 +11,10 @@ import {
   mdiPlus,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameInfoModel } from '../../../Api'
-import { GameColorMap, getGameStatus } from '../../../components/GameCard'
-import AdminPage from '../../../components/admin/AdminPage'
-import GameCreateModal from '../../../components/admin/GameCreateModal'
+import { GameColorMap, getGameStatus } from '@Components/GameCard'
+import AdminPage from '@Components/admin/AdminPage'
+import GameCreateModal from '@Components/admin/GameCreateModal'
+import api, { GameInfoModel } from '@Api/Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 

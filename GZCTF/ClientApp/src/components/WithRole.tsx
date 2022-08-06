@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Center, Loader } from '@mantine/core'
-import api, { Role } from '../Api'
+import api, { Role } from '@Api/Api'
 
 interface WithRoleProps {
   requiredRole: Role

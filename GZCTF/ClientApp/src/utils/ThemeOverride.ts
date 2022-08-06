@@ -56,7 +56,7 @@ export const ThemeOverride: MantineThemeOverride = {
   headings: {
     fontFamily: "'IBM Plex Sans', sans-serif",
   },
-  loader: 'bars'
+  loader: 'bars',
 }
 
 export const useTypographyStyles = createStyles((theme) => ({
@@ -64,11 +64,11 @@ export const useTypographyStyles = createStyles((theme) => ({
     '& code': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[1],
       padding: `1px ${theme.spacing.xs / 2}px`,
-      border: 'none'
+      border: 'none',
     },
 
     '& pre': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[1],
     },
-  }
+  },
 }))

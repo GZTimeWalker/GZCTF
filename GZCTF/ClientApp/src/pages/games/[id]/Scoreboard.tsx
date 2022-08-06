@@ -1,14 +1,17 @@
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
-import api from '../../../Api'
-import WithGameTab from '../../../components/WithGameTab'
-import WithNavBar from '../../../components/WithNavbar'
+import { Stack } from '@mantine/core'
+import ScoreboardTable from '@Components/ScoreboardTable'
+import TimeLine from '@Components/TimeLine'
+import WithGameTab from '@Components/WithGameTab'
+import WithNavBar from '@Components/WithNavbar'
+import api from '@Api/Api'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const { data } = api.game.useGameScoreboard(numId, {
+  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
     refreshInterval: 0,
   })
 
@@ -16,12 +19,15 @@ const Scoreboard: FC = () => {
     refreshInterval: 0,
     revalidateOnFocus: false,
   })
-  console.log(data)
+  console.log(scoreboard)
 
   return (
     <WithNavBar width="90%">
-      <WithGameTab isLoading={!game} game={game}>
-
+      <WithGameTab isLoading={!game} game={game} status={game?.status}>
+        <Stack>
+          <TimeLine />
+          <ScoreboardTable />
+        </Stack>
       </WithGameTab>
     </WithNavBar>
   )

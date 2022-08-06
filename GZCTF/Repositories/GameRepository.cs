@@ -45,8 +45,8 @@ public class GameRepository : RepositoryBase, IGameRepository
     public void FlushGameInfoCache()
         => cache.Remove(CacheKey.BasicGameInfo);
 
-    public void FlushScoreboard(Game game)
-        => cache.Remove(CacheKey.ScoreBoard(game.Id));
+    public void FlushScoreboard(int gameId)
+        => cache.Remove(CacheKey.ScoreBoard(gameId));
 
     #region Generate Scoreboard
 
@@ -84,13 +84,24 @@ public class GameRepository : RepositoryBase, IGameRepository
         => data.GroupBy(j => j.Instance.Challenge).Select(g => new
         {
             g.Key,
-            Value = g.Select(c => c.Submission is null ? null : new Blood
-            {
-                Id = c.Instance.Participation.TeamId,
-                Avatar = c.Instance.Participation.Team.AvatarUrl,
-                Name = c.Instance.Participation.Team.Name,
-                SubmitTimeUTC = c.Submission.SubmitTimeUTC
-            }).OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow).Take(3).ToArray(),
+            Value = g.GroupBy(c => c.Submission?.TeamId)
+                .Where(t => t.Key is not null)
+                .Select(c =>
+                {
+                    var s = c.OrderBy(t => t.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                        .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
+
+                    return s is null ? null : new Blood
+                    {
+                        Id = s.Instance.Participation.TeamId,
+                        Avatar = s.Instance.Participation.Team.AvatarUrl,
+                        Name = s.Instance.Participation.Team.Name,
+                        SubmitTimeUTC = s.Submission?.SubmitTimeUTC
+                    };
+                })
+                .Where(t => t is not null)
+                .OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                .Take(3).ToArray(),
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
     private static IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
@@ -116,37 +127,42 @@ public class GameRepository : RepositoryBase, IGameRepository
                     Name = j.Key.Team.Name,
                     Avatar = j.Key.Team.AvatarUrl,
                     Rank = 0,
-                    SolvedCount = j.Count(s => s.Submission is not null),
-                    Challenges = j.Select(s =>
-                    {
-                        var cid = s.Instance.ChallengeId;
-                        SubmissionType status = SubmissionType.Normal;
-
-                        if (s.Submission is null)
-                            status = SubmissionType.Unaccepted;
-                        else if (bloods[cid][0] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][0]!.SubmitTimeUTC)
-                            status = SubmissionType.FirstBlood;
-                        else if (bloods[cid][1] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][1]!.SubmitTimeUTC)
-                            status = SubmissionType.SecondBlood;
-                        else if (bloods[cid][2] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][2]!.SubmitTimeUTC)
-                            status = SubmissionType.ThirdBlood;
-
-                        return new ChallengeItem
+                    SolvedCount = j.GroupBy(s => s.Instance.ChallengeId)
+                        .Count(c => c.Any(s => s.Submission?.Status == AnswerResult.Accepted)),
+                    Challenges = j.GroupBy(s => s.Instance.ChallengeId)
+                        .Select(c =>
                         {
-                            Id = s.Instance.Challenge.Id,
-                            Type = status,
-                            SubmitTimeUTC = s.Submission?.SubmitTimeUTC,
-                            Score = status switch
+                            var cid = c.Key;
+                            var s = c.OrderBy(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                                .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
+
+                            SubmissionType status = SubmissionType.Normal;
+
+                            if (s?.Submission is null)
+                                status = SubmissionType.Unaccepted;
+                            else if (bloods[cid][0] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][0]!.SubmitTimeUTC)
+                                status = SubmissionType.FirstBlood;
+                            else if (bloods[cid][1] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][1]!.SubmitTimeUTC)
+                                status = SubmissionType.SecondBlood;
+                            else if (bloods[cid][2] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][2]!.SubmitTimeUTC)
+                                status = SubmissionType.ThirdBlood;
+
+                            return new ChallengeItem
                             {
-                                SubmissionType.Unaccepted => 0,
-                                SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.05f),
-                                SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.03f),
-                                SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.01f),
-                                SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
-                                _ => throw new ArgumentException(nameof(status))
-                            }
-                        };
-                    }).ToList()
+                                Id = cid,
+                                Type = status,
+                                SubmitTimeUTC = s?.Submission?.SubmitTimeUTC,
+                                Score = s is null ? 0 : status switch
+                                {
+                                    SubmissionType.Unaccepted => 0,
+                                    SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.05f),
+                                    SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.03f),
+                                    SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.01f),
+                                    SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
+                                    _ => throw new ArgumentException(nameof(status))
+                                }
+                            };
+                        }).ToList()
                 },
                 LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
                     .OrderByDescending(t => t).FirstOrDefault()

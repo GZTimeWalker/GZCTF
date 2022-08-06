@@ -1,14 +1,14 @@
 import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core'
-import { getHotkeyHandler, useInputState } from '@mantine/hooks'
+import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '../../Api'
-import AccountView from '../../components/AccountView'
-import StrengthPasswordInput from '../../components/StrengthPasswordInput'
-import { useReCaptcha } from '../../utils/Recaptcha'
+import AccountView from '@Components/AccountView'
+import StrengthPasswordInput from '@Components/StrengthPasswordInput'
+import { useReCaptcha } from '@Utils/Recaptcha'
+import api from '@Api/Api'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -20,7 +20,9 @@ const Register: FC = () => {
   const navigate = useNavigate()
   const reCaptcha = useReCaptcha('register')
 
-  const onRegister = async () => {
+  const onRegister = async (event: React.FormEvent) => {
+    event.preventDefault()
+
     if (pwd !== retypedPwd) {
       showNotification({
         color: 'red',
@@ -60,7 +62,7 @@ const Register: FC = () => {
       .accountRegister({
         userName: uname,
         password: pwd,
-        email,
+        email: email,
         gToken: token,
       })
       .then(() => {
@@ -86,61 +88,57 @@ const Register: FC = () => {
       })
   }
 
-  const enterHandler = getHotkeyHandler([['Enter', onRegister]])
-
   return (
     <AccountView>
-      <TextInput
-        required
-        label="邮箱"
-        type="email"
-        placeholder="ctf@example.com"
-        style={{ width: '100%' }}
-        value={email}
-        disabled={disabled}
-        onChange={(event) => setEmail(event.currentTarget.value)}
-        onKeyDown={enterHandler}
-      />
-      <TextInput
-        required
-        label="用户名"
-        type="text"
-        placeholder="ctfer"
-        style={{ width: '100%' }}
-        value={uname}
-        disabled={disabled}
-        onChange={(event) => setUname(event.currentTarget.value)}
-        onKeyDown={enterHandler}
-      />
-      <StrengthPasswordInput
-        value={pwd}
-        onChange={(event) => setPwd(event.currentTarget.value)}
-        disabled={disabled}
-        onKeyDown={enterHandler}
-      />
-      <PasswordInput
-        required
-        value={retypedPwd}
-        onChange={(event) => setRetypedPwd(event.currentTarget.value)}
-        disabled={disabled}
-        label="重复密码"
-        style={{ width: '100%' }}
-        error={pwd !== retypedPwd}
-        onKeyDown={enterHandler}
-      />
-      <Anchor
-        sx={(theme) => ({
-          fontSize: theme.fontSizes.xs,
-          alignSelf: 'end',
-        })}
-        component={Link}
-        to="/account/login"
-      >
-        已经拥有账户？
-      </Anchor>
-      <Button fullWidth onClick={onRegister} disabled={disabled}>
-        注册
-      </Button>
+      <form onSubmit={onRegister}>
+        <TextInput
+          required
+          label="邮箱"
+          type="email"
+          placeholder="ctf@example.com"
+          style={{ width: '100%' }}
+          value={email}
+          disabled={disabled}
+          onChange={(event) => setEmail(event.currentTarget.value)}
+        />
+        <TextInput
+          required
+          label="用户名"
+          type="text"
+          placeholder="ctfer"
+          style={{ width: '100%' }}
+          value={uname}
+          disabled={disabled}
+          onChange={(event) => setUname(event.currentTarget.value)}
+        />
+        <StrengthPasswordInput
+          value={pwd}
+          onChange={(event) => setPwd(event.currentTarget.value)}
+          disabled={disabled}
+        />
+        <PasswordInput
+          required
+          value={retypedPwd}
+          onChange={(event) => setRetypedPwd(event.currentTarget.value)}
+          disabled={disabled}
+          label="重复密码"
+          style={{ width: '100%' }}
+          error={pwd !== retypedPwd}
+        />
+        <Anchor
+          sx={(theme) => ({
+            fontSize: theme.fontSizes.xs,
+            alignSelf: 'end',
+          })}
+          component={Link}
+          to="/account/login"
+        >
+          已经拥有账户？
+        </Anchor>
+        <Button type="submit" fullWidth onClick={onRegister} disabled={disabled}>
+          注册
+        </Button>
+      </form>
     </AccountView>
   )
 }

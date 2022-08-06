@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { ActionIcon, Group, Stack, Text, Card, useMantineTheme, SimpleGrid } from '@mantine/core'
 import { mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { Attachment, FlagInfoModel } from '../../Api'
+import { Attachment, FlagInfoModel } from '@Api/Api'
 
 interface FlagCardProps {
   flag: FlagInfoModel
@@ -50,9 +50,9 @@ const FladEditPanel: FC<FladEditPanelProps> = ({ flags, onDelete, unifiedAttachm
         ]}
       >
         {flags &&
-          flags.map((flag) => (
+          flags.map((flag, i) => (
             <FlagCard
-              key={flag.id}
+              key={i}
               flag={flag}
               onDelete={() => onDelete(flag)}
               unifiedAttachment={unifiedAttachment}

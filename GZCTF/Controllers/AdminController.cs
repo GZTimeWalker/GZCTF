@@ -246,10 +246,10 @@ public class AdminController : ControllerBase
             // will also update participation status
             if (await participationRepository.EnsureInstances(participation, game, token))
                 // flush scoreboard when instances are updated
-                gameRepository.FlushScoreboard(game);
+                gameRepository.FlushScoreboard(game.Id);
         }
         else
-            await participationRepository.UpdateAsync(participation, token);
+            await participationRepository.SaveAsync(token);
 
         return Ok();
     }

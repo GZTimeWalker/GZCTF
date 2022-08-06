@@ -2,10 +2,10 @@ import { FC, useState } from 'react'
 import { SimpleGrid, Stack } from '@mantine/core'
 import { mdiFlag, mdiPackageVariantClosed, mdiProgressClock } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { BasicGameInfoModel } from '../../Api'
-import GameCard, { GameColorMap, GameStatus } from '../../components/GameCard'
-import IconTabs from '../../components/IconTabs'
-import WithNavBar from '../../components/WithNavbar'
+import GameCard, { GameColorMap, GameStatus } from '@Components/GameCard'
+import IconTabs from '@Components/IconTabs'
+import WithNavBar from '@Components/WithNavbar'
+import api, { BasicGameInfoModel } from '@Api/Api'
 
 const Games: FC = () => {
   const { data: allGames } = api.game.useGameGamesAll({

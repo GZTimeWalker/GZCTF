@@ -81,7 +81,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取比赛的详细信息
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="404">比赛未找到</response>
@@ -105,7 +105,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="403">无权操作或操作无效</response>
@@ -142,7 +142,7 @@ public class GameController : ControllerBase
             else
             {
                 part.Status = ParticipationStatus.Pending;
-                await participationRepository.UpdateAsync(part, token);
+                await participationRepository.SaveAsync(token);
 
                 return Ok();
             }
@@ -161,7 +161,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取积分榜数据
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="400">比赛未找到</response>
@@ -187,7 +187,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取比赛事件数据
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛事件</response>
     /// <response code="400">比赛未找到</response>
@@ -213,7 +213,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取比赛提交数据，需要观察者权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
@@ -242,8 +242,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取比赛实例数据，需要观察者权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛提交</response>
     /// <response code="400">比赛未找到</response>
@@ -276,7 +276,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     /// <response code="400">操作无效</response>
@@ -302,7 +302,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     /// <response code="400">操作无效</response>
@@ -330,7 +330,7 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取比赛的全部题目参与信息，需要Admin权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
+    /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛参与信息</response>
     /// <response code="400">操作无效</response>
@@ -357,8 +357,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     /// <response code="400">操作无效</response>
@@ -392,8 +392,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 提交 flag，需要User权限，需要当前激活队伍已经报名
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="flag">提交Flag</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
@@ -415,7 +415,7 @@ public class GameController : ControllerBase
         {
             Answer = flag.Trim(),
             Game = context.Game!,
-            User = context.User,
+            User = context.User!,
             Challenge = context.Challenge!,
             Team = context.Participation!.Team,
             Participation = context.Participation!,
@@ -437,8 +437,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 查询 flag 状态，需要User权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="submitId">提交id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛提交状态</response>
@@ -469,8 +469,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 创建容器，需要User权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     /// <response code="404">题目未找到</response>
@@ -503,10 +503,10 @@ public class GameController : ControllerBase
             await containerRepository.RemoveContainer(instance.Container, token);
         }
 
-        return await instanceRepository.CreateContainer(instance, token) switch
+        return await instanceRepository.CreateContainer(instance, context.Game!.ContainerCountLimit, token) switch
         {
             null or (TaskStatus.Fail, null) => BadRequest(new RequestResponse("题目创建容器失败")),
-            (TaskStatus.Denied, null) => BadRequest(new RequestResponse("队伍容器数目到达上限")),
+            (TaskStatus.Denied, null) => BadRequest(new RequestResponse($"队伍容器数目不能超过 {context.Game.ContainerCountLimit}")),
             (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
             _ => throw new NotImplementedException(),
         };
@@ -518,8 +518,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 获取容器信息，需要User权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目容器信息</response>
     /// <response code="404">题目未找到</response>
@@ -556,8 +556,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目容器信息</response>
     /// <response code="404">题目未找到</response>
@@ -599,8 +599,8 @@ public class GameController : ControllerBase
     /// <remarks>
     /// 删除，需要User权限
     /// </remarks>
-    /// <param name="id">比赛id</param>
-    /// <param name="challengeId">题目id</param>
+    /// <param name="id">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">删除容器成功</response>
     /// <response code="404">题目未找到</response>
@@ -659,7 +659,7 @@ public class GameController : ControllerBase
         };
 
         if (res.Game is null)
-            return res.WithResult(NotFound(new RequestResponse("比赛未找到")));
+            return res.WithResult(NotFound(new RequestResponse("比赛未找到", 404)));
 
         if (res.User?.ActiveTeam is null)
             return res.WithResult(BadRequest(new RequestResponse("请激活一个队伍以参赛")));
@@ -682,7 +682,7 @@ public class GameController : ControllerBase
             var challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
 
             if (challenge is null)
-                return res.WithResult(NotFound(new RequestResponse("题目未找到")));
+                return res.WithResult(NotFound(new RequestResponse("题目未找到", 404)));
 
             res.Challenge = challenge;
         }

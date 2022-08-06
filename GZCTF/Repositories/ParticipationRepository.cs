@@ -33,7 +33,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         foreach (var challenge in game.Challenges)
             update |= part.Challenges.Add(challenge);
 
-        await UpdateAsync(part, token);
+        await SaveAsync(token);
 
         return update;
     }

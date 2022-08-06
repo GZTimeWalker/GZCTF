@@ -16,8 +16,8 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiLockOutline, mdiPower, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { TeamInfoModel } from '../Api'
-import { showErrorNotification } from '../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { TeamInfoModel } from '@Api/Api'
 
 interface TeamCardProps {
   team: TeamInfoModel
@@ -178,7 +178,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               </Text>
               <Box style={{ flexGrow: 1 }}></Box>
               {team.locked && (
-                <Icon path={mdiLockOutline} size={1} color={theme.colors.orange[1]} />
+                <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
               )}
               <Tooltip.Group openDelay={300} closeDelay={100}>
                 <Avatar.Group
