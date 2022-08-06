@@ -1,7 +1,8 @@
 import { ChallengeInfo } from '@Api/Api'
+import dayjs from 'dayjs'
 import { FC } from 'react'
-import { Card, createStyles, Divider, Group, Stack, Text, Title } from '@mantine/core'
-import { mdiFlag } from '@mdi/js'
+import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
+import { mdiFlag, mdiHexagonOutline, mdiHexagonSlice4, mdiHexagonSlice6 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeTagLabelMap } from './ChallengeItem'
 
@@ -71,13 +72,36 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, onClick }) =
             {challenge.score} pts
           </Text>
         </Group>
-        <Group position="center" style={{ height: '1.2rem' }}>
-          <Title order={6}>
-            {`${challenge.solved} `}
-            <Text color="dimmed" size="xs" inherit component="span">
-              支队伍攻克
-            </Text>
-          </Title>
+        <Title order={6} align="center">
+          {`${challenge.solved} `}
+          <Text color="dimmed" size="xs" inherit component="span">
+            支队伍攻克
+          </Text>
+        </Title>
+        <Group position="center" spacing="md" style={{ height: 20 }}>
+          {challenge.bloods &&
+            challenge.bloods.map((blood, idx) => (
+              <Tooltip.Floating
+                position="bottom"
+                multiline
+                label={
+                  <Stack spacing={0}>
+                    <Text>{blood?.name}</Text>
+                    <Text size="xs" color="dimmed">
+                      {dayjs(blood?.submitTimeUTC).format('YY/MM/DD HH:mm:ss')}
+                    </Text>
+                  </Stack>
+                }
+              >
+                <Icon
+                  path={
+                    idx === 0 ? mdiHexagonSlice6 : idx === 1 ? mdiHexagonSlice4 : mdiHexagonOutline
+                  }
+                  color={theme.colors.yellow[theme.colorScheme === 'dark' ? 7 - idx : 5 + idx]}
+                  size={0.8}
+                />
+              </Tooltip.Floating>
+            ))}
         </Group>
       </Stack>
     </Card>
