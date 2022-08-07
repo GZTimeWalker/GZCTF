@@ -1,9 +1,19 @@
 import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
-import { Paper, ScrollArea, createStyles, Table, Group, Text, Avatar } from '@mantine/core'
+import {
+  Paper,
+  ScrollArea,
+  createStyles,
+  Table,
+  Group,
+  Text,
+  Avatar,
+  Box,
+  Stack,
+} from '@mantine/core'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api/Api'
-import { ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
+import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
 
 const useStyles = createStyles((theme) => ({
   table: {
@@ -25,6 +35,13 @@ const useStyles = createStyles((theme) => ({
   theadMono: {
     fontWeight: 'bold',
     fontFamily: theme.fontFamilyMonospace,
+  },
+  legend: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    padding: 12,
+    zIndex: 10,
   },
   noBorder: {
     border: 'none !important',
@@ -125,6 +142,12 @@ const TableRow: FC<{
   )
 }
 
+const BloodData = [
+  { name: '一血', descr: '+5%' },
+  { name: '二血', descr: '+3%' },
+  { name: '三血', descr: '+1%' },
+]
+
 const ScoreboardTable: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
@@ -152,6 +175,24 @@ const ScoreboardTable: FC = () => {
             ))}
           </tbody>
         </Table>
+        <Box className={classes.legend}>
+          <Stack spacing="xs">
+            <Group spacing="lg">
+              {BloodsTypes.map((type, idx) => (
+                <Group position="left" spacing={2}>
+                  {iconMap.get(type)}
+                  <Text size="sm">{BloodData[idx].name}</Text>
+                  <Text size="xs" color="dimmed">
+                    {BloodData[idx].descr}
+                  </Text>
+                </Group>
+              ))}
+            </Group>
+            <Text size="sm" color="dimmed">
+              注：同分队伍以得分时间先后排名
+            </Text>
+          </Stack>
+        </Box>
       </ScrollArea>
     </Paper>
   )

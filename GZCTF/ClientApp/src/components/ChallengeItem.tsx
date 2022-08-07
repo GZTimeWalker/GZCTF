@@ -98,6 +98,12 @@ export const ChallengeTagItem = forwardRef<HTMLDivElement, ChallengeTagItemProps
   }
 )
 
+export const BloodsTypes = [
+  SubmissionType.FirstBlood,
+  SubmissionType.SecondBlood,
+  SubmissionType.ThirdBlood,
+]
+
 export const SubmissionTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
   return new Map([

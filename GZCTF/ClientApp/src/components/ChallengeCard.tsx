@@ -4,9 +4,9 @@ import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from 
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeInfo, SubmissionType } from '@Api/Api'
-import { ChallengeTagLabelMap } from './ChallengeItem'
+import { BloodsTypes, ChallengeTagLabelMap } from './ChallengeItem'
 
-const useStyles = createStyles((theme, _param, getRef) => {
+const useStyles = createStyles((_theme, _param, getRef) => {
   const solved = { ref: getRef('solved') } as const
 
   return {
@@ -29,12 +29,6 @@ interface ChallengeCardProps {
   onClick?: () => void
   iconMap: Map<SubmissionType, React.ReactNode>
 }
-
-const SubmissionTypes = [
-  SubmissionType.FirstBlood,
-  SubmissionType.SecondBlood,
-  SubmissionType.ThirdBlood,
-]
 
 const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onClick }) => {
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
@@ -106,7 +100,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
                   </Stack>
                 }
               >
-                {iconMap.get(SubmissionTypes[idx])}
+                {iconMap.get(BloodsTypes[idx])}
               </Tooltip.Floating>
             ))}
         </Group>
