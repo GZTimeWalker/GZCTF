@@ -7,6 +7,7 @@ import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import api, { Role } from '@Api/Api'
+import ChallengeNoticePanel from '@Components/ChallengeNoticePanel'
 
 const Challenges: FC = () => {
   const { id } = useParams()
@@ -25,6 +26,7 @@ const Challenges: FC = () => {
             <ChallengePanel />
             <Stack style={{ maxWidth: '20rem' }}>
               <TeamRank />
+              <ChallengeNoticePanel />
             </Stack>
           </Group>
         </WithGameTab>

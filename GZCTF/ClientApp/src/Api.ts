@@ -2659,7 +2659,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: { count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
-      this.request<GameEvent[], RequestResponse>({
+      this.request<GameNotice[], RequestResponse>({
         path: `/api/game/${id}/notices`,
         method: 'GET',
         query: query,
@@ -2678,7 +2678,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       id: number,
       query?: { count?: number; skip?: number },
       options?: SWRConfiguration
-    ) => useSWR<GameEvent[], RequestResponse>([`/api/game/${id}/notices`, query], options),
+    ) => useSWR<GameNotice[], RequestResponse>([`/api/game/${id}/notices`, query], options),
 
     /**
      * @description 获取比赛通知数据
@@ -2691,9 +2691,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     mutateGameNotices: (
       id: number,
       query?: { count?: number; skip?: number },
-      data?: GameEvent[] | Promise<GameEvent[]>,
+      data?: GameNotice[] | Promise<GameNotice[]>,
       options?: MutatorOptions
-    ) => mutate<GameEvent[]>([`/api/game/${id}/notices`, query], data, options),
+    ) => mutate<GameNotice[]>([`/api/game/${id}/notices`, query], data, options),
 
     /**
      * @description 获取比赛事件数据，需要Monitor权限

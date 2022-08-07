@@ -194,7 +194,7 @@ public class GameController : ControllerBase
     /// <response code="200">成功获取比赛事件</response>
     /// <response code="400">比赛未找到</response>
     [HttpGet("{id}/Notices")]
-    [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
