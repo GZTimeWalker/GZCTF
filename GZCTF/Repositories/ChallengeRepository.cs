@@ -40,7 +40,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     {
         await context.AddAsync(challenge, token);
         game.Challenges.Add(challenge);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
         return challenge;
     }
 
@@ -97,7 +97,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         }
 
         context.Remove(challenge);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
     }
 
     public async Task<TaskStatus> RemoveFlag(Challenge challenge, int flagId, CancellationToken token = default)
@@ -120,7 +120,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         if (challenge.Flags.Count == 0)
             challenge.IsEnabled = false;
 
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
 
         return TaskStatus.Success;
     }

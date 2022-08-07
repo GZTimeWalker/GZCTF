@@ -24,9 +24,7 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
     public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default)
     {
         await context.AddAsync(notice, token);
-        await context.SaveChangesAsync(token);
-
-        Console.WriteLine($"Update Notice {notice.GameId}: {notice.Content}");
+        await SaveAsync(token);
 
         cache.Remove(CacheKey.GameNotice(notice.GameId));
 
@@ -51,6 +49,6 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
     public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
     {
         context.Remove(notice);
-        return context.SaveChangesAsync(token);
+        return SaveAsync(token);
     }
 }

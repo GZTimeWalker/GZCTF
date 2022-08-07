@@ -16,8 +16,10 @@ public class NoticeRepository : RepositoryBase, INoticeRepository
     public async Task<Notice> CreateNotice(Notice notice, CancellationToken token = default)
     {
         await context.AddAsync(notice, token);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
+
         cache.Remove(CacheKey.Notices);
+
         return notice;
     }
 
@@ -39,7 +41,7 @@ public class NoticeRepository : RepositoryBase, INoticeRepository
     public async Task RemoveNotice(Notice notice, CancellationToken token = default)
     {
         context.Remove(notice);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
 
         cache.Remove(CacheKey.Notices);
     }

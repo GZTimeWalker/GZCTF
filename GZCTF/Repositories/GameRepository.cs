@@ -17,7 +17,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
         await context.AddAsync(game, token);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
         return game;
     }
 
@@ -68,6 +68,7 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     private Task<Data[]> FetchData(Game game, CancellationToken token = default)
         => context.Instances
+            .AsNoTracking() // these data wont be changed with this query
             .Include(i => i.Challenge)
             .Where(i => i.Challenge.Game == game && i.Challenge.IsEnabled && i.Participation.Status == ParticipationStatus.Accepted)
             .Include(i => i.Participation)

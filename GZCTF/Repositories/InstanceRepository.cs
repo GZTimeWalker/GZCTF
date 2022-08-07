@@ -151,7 +151,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     public async Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default)
     {
         container.ExpectStopAt += time;
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
     }
 
     public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default)

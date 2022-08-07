@@ -36,15 +36,15 @@ public class TeamRepository : RepositoryBase, ITeamRepository
         team.Members.Add(user);
 
         await context.AddAsync(team, token);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
 
         return team;
     }
 
-    public Task<int> DeleteTeam(Team team, CancellationToken token = default)
+    public Task DeleteTeam(Team team, CancellationToken token = default)
     {
         context.Remove(team);
-        return context.SaveChangesAsync(token);
+        return SaveAsync(token);
     }
 
     public async Task<Team?> GetActiveTeamWithMembers(UserInfo user, CancellationToken token = default)

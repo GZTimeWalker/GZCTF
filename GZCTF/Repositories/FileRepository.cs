@@ -61,7 +61,7 @@ public class FileRepository : RepositoryBase, IFileRepository
             await tmp.CopyToAsync(fileStream, token);
         }
 
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
 
         return localFile;
     }
@@ -92,14 +92,14 @@ public class FileRepository : RepositoryBase, IFileRepository
         {
             File.Delete(path);
             context.Files.Remove(file);
-            await context.SaveChangesAsync(token);
+            await SaveAsync(token);
 
             return TaskStatus.Success;
         }
         else
         {
             context.Files.Remove(file);
-            await context.SaveChangesAsync(token);
+            await SaveAsync(token);
 
             return TaskStatus.NotFound;
         }

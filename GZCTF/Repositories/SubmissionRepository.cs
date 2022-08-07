@@ -20,7 +20,7 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
     public Task UpdateSubmission(Submission submission, CancellationToken token = default)
     {
         context.Update(submission);
-        return context.SaveChangesAsync(token);
+        return SaveAsync(token);
     }
 
     public Task<Submission[]> GetSubmissions(int count = 100, int skip = 0, CancellationToken token = default)

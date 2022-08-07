@@ -22,5 +22,5 @@ public interface IContainerRepository : IRepository
     /// <param name="container">容器对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<int> RemoveContainer(Container container, CancellationToken token = default);
+    public Task RemoveContainer(Container container, CancellationToken token = default);
 }

@@ -12,7 +12,7 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
     public async Task<GameEvent> AddEvent(GameEvent gameEvent, CancellationToken token = default)
     {
         await context.AddAsync(gameEvent);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
 
         // TODO: send to signalR (for monitor)
         //       ensure Team, User is loaded

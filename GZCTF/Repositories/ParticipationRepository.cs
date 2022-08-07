@@ -18,7 +18,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         };
 
         await context.AddAsync(participation, token);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
 
         return participation;
     }
