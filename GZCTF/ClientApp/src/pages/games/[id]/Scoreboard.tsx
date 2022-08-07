@@ -11,15 +11,10 @@ const Scoreboard: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
-    refreshInterval: 0,
-  })
-
   const { data: game } = api.game.useGameGames(numId, {
     refreshInterval: 0,
     revalidateOnFocus: false,
   })
-  console.log(scoreboard)
 
   return (
     <WithNavBar width="90%">
