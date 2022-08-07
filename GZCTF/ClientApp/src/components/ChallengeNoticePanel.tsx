@@ -47,6 +47,7 @@ const ChallengeNoticePanel: FC = () => {
       connection.on('ReceivedGameNotice', (message: GameNotice) => {
         console.log(message)
         newNotices.current = [message, ...newNotices.current]
+        api.game.mutateGameChallenges(numId)
         update(new Date(message.time!))
       })
 

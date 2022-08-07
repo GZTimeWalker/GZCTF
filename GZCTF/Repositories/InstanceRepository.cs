@@ -10,15 +10,18 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 {
     private readonly IContainerService service;
     private readonly IContainerRepository containerRepository;
+    private readonly IGameEventRepository gameEventRepository;
     private readonly ILogger<InstanceRepository> logger;
 
     public InstanceRepository(AppDbContext _context,
         IContainerService _service,
         IContainerRepository _containerRepository,
+        IGameEventRepository _gameEventRepository,
         ILogger<InstanceRepository> _logger) : base(_context)
     {
         logger = _logger;
         service = _service;
+        gameEventRepository = _gameEventRepository;
         containerRepository = _containerRepository;
     }
 
@@ -98,7 +101,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
     }
 
-    public async Task<TaskResult<Container>> CreateContainer(Instance instance, int containerLimit = 3, CancellationToken token = default)
+    public async Task<TaskResult<Container>> CreateContainer(Instance instance, string userId, int containerLimit = 3, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
@@ -130,7 +133,16 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             }
 
             instance.Container = container;
-            await context.SaveChangesAsync(token);
+
+            // will save instance together
+            await gameEventRepository.AddEvent(new()
+            {
+                Type = EventType.ContainerStart,
+                GameId = instance.Challenge.GameId,
+                TeamId = instance.Participation.TeamId,
+                UserId = userId,
+                Content = $"{instance.Challenge.Title}#{instance.Challenge.Id} 启动容器实例"
+            }, token);
         }
 
         return new TaskResult<Container>(TaskStatus.Success, instance.Container);
@@ -172,7 +184,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return checkInfo;
     }
 
-    public async Task<bool> VerifyAnswer(Submission submission, CancellationToken token = default)
+    public async Task<(SubmissionType, AnswerResult)> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
         var instance = await context.Instances
             .IgnoreAutoIncludes()
@@ -180,14 +192,18 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId == submission.ParticipationId, token);
 
+        // submission is from the queue, do not modify it directly
+        // we need to requery the entity to ensure it is being tracked correctly
         var updateSub = await context.Submissions
                 .Include(s => s.Challenge)
                 .SingleAsync(s => s.Id == submission.Id, token);
 
+        var ret = SubmissionType.Unaccepted;
+
         if (instance is null)
         {
-            updateSub.Status = AnswerResult.NotFound;
-            return false;
+            submission.Status = AnswerResult.NotFound;
+            return (SubmissionType.Unaccepted, AnswerResult.NotFound);
         }
         else if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
         {
@@ -205,14 +221,27 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
 
         bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
-        instance.IsSolved = instance.IsSolved || updateSub.Status == AnswerResult.Accepted;
 
         if (firstTime)
+        {
+            instance.IsSolved = true;
             updateSub.Challenge.AcceptedCount++;
+            ret = updateSub.Challenge.AcceptedCount switch
+            {
+                1 => SubmissionType.FirstBlood,
+                2 => SubmissionType.SecondBlood,
+                3 => SubmissionType.ThirdBlood,
+                _ => SubmissionType.Normal
+            };
+        }
+        else
+        {
+            ret = updateSub.Status == AnswerResult.Accepted ?
+                SubmissionType.Normal : SubmissionType.Unaccepted;
+        }
 
         await SaveAsync(token);
-        submission.Status = updateSub.Status;
 
-        return firstTime;
+        return (ret, updateSub.Status);
     }
 }

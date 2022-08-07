@@ -15,6 +15,7 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
         await context.SaveChangesAsync(token);
 
         // TODO: send to signalR (for monitor)
+        //       ensure Team, User is loaded
 
         return gameEvent;
     }

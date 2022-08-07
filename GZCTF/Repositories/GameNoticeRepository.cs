@@ -4,6 +4,7 @@ using CTFServer.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Serilog.Data;
 
 namespace CTFServer.Repositories;
 
@@ -20,10 +21,12 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         hubContext = hub;
     }
 
-    public async Task<GameNotice> CreateNotice(GameNotice notice, CancellationToken token = default)
+    public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default)
     {
-        await context.AddAsync(notice);
+        await context.AddAsync(notice, token);
         await context.SaveChangesAsync(token);
+
+        Console.WriteLine($"Update Notice {notice.GameId}: {notice.Content}");
 
         cache.Remove(CacheKey.GameNotice(notice.GameId));
 

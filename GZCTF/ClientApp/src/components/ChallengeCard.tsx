@@ -40,7 +40,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
     <Card
       onClick={onClick}
       radius="md"
-      shadow="md"
+      shadow="sm"
       sx={(theme) => ({
         transition: 'filter .1s',
         ...theme.fn.hover({

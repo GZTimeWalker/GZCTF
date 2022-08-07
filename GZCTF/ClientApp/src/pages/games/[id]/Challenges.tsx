@@ -22,7 +22,7 @@ const Challenges: FC = () => {
     <WithNavBar width="90%">
       <WithRole requiredRole={Role.User}>
         <WithGameTab isLoading={!game} game={game} status={game?.status}>
-          <Group position="apart" align="flex-start" grow noWrap>
+          <Group spacing="sm" position="apart" align="flex-start" grow noWrap>
             <ChallengePanel />
             <Stack style={{ maxWidth: '20rem' }}>
               <TeamRank />

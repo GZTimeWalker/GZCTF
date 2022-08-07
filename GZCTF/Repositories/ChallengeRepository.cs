@@ -61,7 +61,8 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
     public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default)
     {
-        var challenges = context.Challenges.Where(c => c.Id == id && c.GameId == gameId);
+        var challenges = context.Challenges
+            .Where(c => c.Id == id && c.GameId == gameId);
 
         if (withFlag)
             challenges = challenges.Include(e => e.Flags);

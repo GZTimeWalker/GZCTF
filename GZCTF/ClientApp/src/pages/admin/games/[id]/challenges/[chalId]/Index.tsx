@@ -63,7 +63,10 @@ const GameChallengeEdit: FC = () => {
     if (challenge) {
       setDisabled(true)
       api.edit
-        .editUpdateGameChallenge(numId, numCId, challenge)
+        .editUpdateGameChallenge(numId, numCId, {
+          ...challenge,
+          isEnabled: undefined
+        })
         .then((data) => {
           showNotification({
             color: 'teal',

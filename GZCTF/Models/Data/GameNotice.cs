@@ -38,10 +38,16 @@ public class GameNotice
     [JsonIgnore]
     public Game? Game { get; set; }
 
-    public static GameNotice FromSubmission(Submission submission, NoticeType type)
+    public static GameNotice FromSubmission(Submission submission, SubmissionType type)
         => new()
         {
-            Type = type,
+            Type = type switch
+            {
+                SubmissionType.FirstBlood => NoticeType.FirstBlood,
+                SubmissionType.SecondBlood => NoticeType.SecondBlood,
+                SubmissionType.ThirdBlood => NoticeType.ThirdBlood,
+                _ => NoticeType.Normal
+            },
             GameId = submission.GameId,
             Content = $"恭喜 {submission.Team.Name} 获得 ⌈{submission.Challenge.Title}⌋ 的{type.ToBloodString()}"
         };

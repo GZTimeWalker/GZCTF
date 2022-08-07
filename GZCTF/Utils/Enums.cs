@@ -155,14 +155,14 @@ public enum NoticeType : byte
     ErrorFix = 6
 }
 
-public static class NoticeTypeExtensions
+public static class SubmissionTypeExtensions
 {
-    public static string ToBloodString(this NoticeType type)
+    public static string ToBloodString(this SubmissionType type)
         => type switch
         {
-            NoticeType.FirstBlood => "一血",
-            NoticeType.SecondBlood => "二血",
-            NoticeType.ThirdBlood => "三血",
+            SubmissionType.FirstBlood => "一血",
+            SubmissionType.SecondBlood => "二血",
+            SubmissionType.ThirdBlood => "三血",
             _ => throw new ArgumentException(type.ToString(), nameof(type))
         };
 }

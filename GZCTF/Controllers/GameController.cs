@@ -33,6 +33,7 @@ public class GameController : ControllerBase
     private readonly IChallengeRepository challengeRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
+    private readonly IGameEventRepository gameEventRepository;
 
     public GameController(
         ILogger<GameController> _logger,
@@ -40,12 +41,13 @@ public class GameController : ControllerBase
         ChannelWriter<Submission> _channelWriter,
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
-        IGameNoticeRepository _noticeRepository,
         IGameEventRepository _eventRepository,
+        IGameNoticeRepository _noticeRepository,
         IInstanceRepository _instanceRepository,
         IChallengeRepository _challengeRepository,
-        ISubmissionRepository _submissionRepository,
         IContainerRepository _containerRepository,
+        IGameEventRepository _gameEventRepository,
+        ISubmissionRepository _submissionRepository,
         IParticipationRepository _participationRepository)
     {
         logger = _logger;
@@ -58,6 +60,7 @@ public class GameController : ControllerBase
         instanceRepository = _instanceRepository;
         challengeRepository = _challengeRepository;
         containerRepository = _containerRepository;
+        gameEventRepository = _gameEventRepository;
         submissionRepository = _submissionRepository;
         participationRepository = _participationRepository;
     }
@@ -534,7 +537,7 @@ public class GameController : ControllerBase
             await containerRepository.RemoveContainer(instance.Container, token);
         }
 
-        return await instanceRepository.CreateContainer(instance, context.Game!.ContainerCountLimit, token) switch
+        return await instanceRepository.CreateContainer(instance, context.User!.Id, context.Game!.ContainerCountLimit, token) switch
         {
             null or (TaskStatus.Fail, null) => BadRequest(new RequestResponse("题目创建容器失败")),
             (TaskStatus.Denied, null) => BadRequest(new RequestResponse($"队伍容器数目不能超过 {context.Game.ContainerCountLimit}")),
@@ -621,11 +624,19 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器"));
 
-        return await instanceRepository.DestoryContainer(instance.Container, token) switch
+        if (!await instanceRepository.DestoryContainer(instance.Container, token))
+            return BadRequest(new RequestResponse("题目删除容器失败"));
+
+        await gameEventRepository.AddEvent(new()
         {
-            true => Ok(),
-            false => BadRequest(new RequestResponse("题目删除容器失败"))
-        };
+            Type = EventType.ContainerDestroy,
+            GameId = context.Game!.Id,
+            TeamId = context.Participation!.TeamId,
+            UserId = context.User!.Id,
+            Content = $"{instance.Challenge.Title}#{instance.Challenge.Id} 销毁容器实例"
+        }, token);
+
+        return Ok();
     }
 
     private class ContextInfo

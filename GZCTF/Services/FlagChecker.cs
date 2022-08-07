@@ -40,52 +40,53 @@ public class FlagChecker : IHostedService
     {
         logger.SystemLog($"检查线程 #{id} 已启动", TaskStatus.Pending, LogLevel.Debug);
 
-        await using var scope = serviceScopeFactory.CreateAsyncScope();
-
-        var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
-        var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
-        var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
-        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-
         try
         {
             await foreach (var item in channelReader.ReadAllAsync(token))
             {
                 logger.SystemLog($"检查线程 #{id} 开始处理提交：{item.Answer}", TaskStatus.Pending, LogLevel.Debug);
 
+                await using var scope = serviceScopeFactory.CreateAsyncScope();
+
+                var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
+                var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
+                var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
+                var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+
                 try
                 {
-                    var firstTime = await instanceRepository.VerifyAnswer(item, token);
+                    var (type, ans) = await instanceRepository.VerifyAnswer(item, token);
 
-                    if (item.Status == AnswerResult.NotFound)
+                    if (ans == AnswerResult.NotFound)
                         logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
-                    else if (item.Status == AnswerResult.Accepted)
+                    else if (ans == AnswerResult.Accepted)
+                    {
                         logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                        await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
+                    }
                     else
                     {
                         logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
+                        await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
 
                         var result = await instanceRepository.CheckCheat(item, token);
 
                         if (result.AnswerResult == AnswerResult.CheatDetected)
-                            logger.Log($"[作弊检查] 题目 [{item.Challenge.Title}] 中队伍 [{item.Team.Name}] 疑似作弊，相关队伍 [{result.SourceTeam!.Name}]", item.User!, TaskStatus.Fail, LogLevel.Warning);
-                    }
-
-                    await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
-
-                    if (firstTime)
-                    {
-                        NoticeType type = item.Challenge.AcceptedCount switch
                         {
-                            1 => NoticeType.FirstBlood,
-                            2 => NoticeType.SecondBlood,
-                            3 => NoticeType.ThirdBlood,
-                            _ => NoticeType.Normal
-                        };
-
-                        if (type != NoticeType.Normal)
-                            await gameNoticeRepository.CreateNotice(GameNotice.FromSubmission(item, type), token);
+                            logger.Log($"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeam!.Name}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                            await eventRepository.AddEvent(new()
+                            {
+                                Type = EventType.CheatDetected,
+                                Content = $"题目 [{item.Challenge.Title}] 疑似发生违规，相关队伍 [{item.Team.Name}] 和 [{result.SourceTeam!.Name}]",
+                                TeamId = item.TeamId,
+                                UserId = item.UserId,
+                                GameId = item.GameId,
+                            }, token);
+                        }
                     }
+
+                    if (type != SubmissionType.Unaccepted && type != SubmissionType.Normal)
+                        await gameNoticeRepository.AddNotice(GameNotice.FromSubmission(item, type), token);
 
                     gameRepository.FlushScoreboard(item.GameId);
                 }

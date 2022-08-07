@@ -272,7 +272,7 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await gameNoticeRepository.CreateNotice(new()
+        var res = await gameNoticeRepository.AddNotice(new()
         {
             Content = model.Content,
             GameId = game.Id,
@@ -434,13 +434,36 @@ public class EditController : Controller
         if (model.FileName is not null && string.IsNullOrWhiteSpace(model.FileName))
             return BadRequest(new RequestResponse("动态附件名不可为空"));
 
+        bool hintUpdated = model.Hints != res.Hints && !string.IsNullOrWhiteSpace(model.Hints);
         res.Update(model);
 
         if (model.IsEnabled == true)
+        {
             // will also update IsEnabled
             await challengeRepository.EnsureInstances(res, game, token);
+
+            if (game.IsActive)
+            {
+                await gameNoticeRepository.AddNotice(new()
+                {
+                    Game = game,
+                    Type = NoticeType.NewChallenge,
+                    Content = $"新增了题目 ⌈{res.Title}⌋",
+                }, token);
+            }
+        }
         else
             await challengeRepository.SaveAsync(token);
+
+        if (game.IsActive && res.IsEnabled && hintUpdated)
+        {
+            await gameNoticeRepository.AddNotice(new()
+            {
+                Game = game,
+                Type = NoticeType.NewHint,
+                Content = $"⌈{res.Title}⌋ 更新了提示",
+            }, token);
+        }
 
         // always flush scoreboard
         gameRepository.FlushScoreboard(game.Id);
