@@ -21,5 +21,7 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
 
     public Task<GameEvent[]> GetEvents(int gameId, int count = 10, int skip = 0, CancellationToken token = default)
         => context.GameEvents.Where(e => e.GameId == gameId)
-            .OrderByDescending(e => e.PublishTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+            .OrderByDescending(e => e.PublishTimeUTC)
+            .Skip(skip).Take(count)
+            .ToArrayAsync(token);
 }

@@ -2259,10 +2259,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛公告
      * @request GET:/api/edit/games/{id}/notices
      */
-    editGetGameNotices: (id: number, params: RequestParams = {}) =>
+    editGetGameNotices: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {}
+    ) =>
       this.request<GameNotice[], RequestResponse>({
         path: `/api/edit/games/${id}/notices`,
         method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),
@@ -2274,8 +2279,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛公告
      * @request GET:/api/edit/games/{id}/notices
      */
-    useEditGetGameNotices: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameNotice[], RequestResponse>(`/api/edit/games/${id}/notices`, options),
+    useEditGetGameNotices: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration
+    ) => useSWR<GameNotice[], RequestResponse>([`/api/edit/games/${id}/notices`, query], options),
 
     /**
      * @description 获取比赛公告，需要管理员权限
@@ -2287,9 +2295,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateEditGetGameNotices: (
       id: number,
+      query?: { count?: number; skip?: number },
       data?: GameNotice[] | Promise<GameNotice[]>,
       options?: MutatorOptions
-    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
+    ) => mutate<GameNotice[]>([`/api/edit/games/${id}/notices`, query], data, options),
 
     /**
      * @description 删除比赛公告，需要管理员权限
@@ -2638,47 +2647,105 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
 
     /**
-     * @description 获取比赛事件数据
+     * @description 获取比赛通知数据
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛事件
+     * @summary 获取比赛通知
      * @request GET:/api/game/{id}/notices
      */
-    gameNotices: (id: number, params: RequestParams = {}) =>
+    gameNotices: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {}
+    ) =>
       this.request<GameEvent[], RequestResponse>({
         path: `/api/game/${id}/notices`,
         method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取比赛事件数据
+     * @description 获取比赛通知数据
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛事件
+     * @summary 获取比赛通知
      * @request GET:/api/game/{id}/notices
      */
-    useGameNotices: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameEvent[], RequestResponse>(`/api/game/${id}/notices`, options),
+    useGameNotices: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration
+    ) => useSWR<GameEvent[], RequestResponse>([`/api/game/${id}/notices`, query], options),
 
     /**
-     * @description 获取比赛事件数据
+     * @description 获取比赛通知数据
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛事件
+     * @summary 获取比赛通知
      * @request GET:/api/game/{id}/notices
      */
     mutateGameNotices: (
       id: number,
+      query?: { count?: number; skip?: number },
       data?: GameEvent[] | Promise<GameEvent[]>,
       options?: MutatorOptions
-    ) => mutate<GameEvent[]>(`/api/game/${id}/notices`, data, options),
+    ) => mutate<GameEvent[]>([`/api/game/${id}/notices`, query], data, options),
 
     /**
-     * @description 获取比赛提交数据，需要观察者权限
+     * @description 获取比赛事件数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameEvents
+     * @summary 获取比赛事件
+     * @request GET:/api/game/{id}/events
+     */
+    gameEvents: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {}
+    ) =>
+      this.request<GameEvent[], RequestResponse>({
+        path: `/api/game/${id}/events`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛事件数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameEvents
+     * @summary 获取比赛事件
+     * @request GET:/api/game/{id}/events
+     */
+    useGameEvents: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration
+    ) => useSWR<GameEvent[], RequestResponse>([`/api/game/${id}/events`, query], options),
+
+    /**
+     * @description 获取比赛事件数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameEvents
+     * @summary 获取比赛事件
+     * @request GET:/api/game/{id}/events
+     */
+    mutateGameEvents: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      data?: GameEvent[] | Promise<GameEvent[]>,
+      options?: MutatorOptions
+    ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),
+
+    /**
+     * @description 获取比赛提交数据，需要Monitor权限
      *
      * @tags Game
      * @name GameSubmissions
@@ -2698,7 +2765,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛提交数据，需要观察者权限
+     * @description 获取比赛提交数据，需要Monitor权限
      *
      * @tags Game
      * @name GameSubmissions
@@ -2712,7 +2779,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<Submission[], RequestResponse>([`/api/game/${id}/submissions`, query], options),
 
     /**
-     * @description 获取比赛提交数据，需要观察者权限
+     * @description 获取比赛提交数据，需要Monitor权限
      *
      * @tags Game
      * @name GameSubmissions
@@ -2727,7 +2794,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
 
     /**
-     * @description 获取比赛实例数据，需要观察者权限
+     * @description 获取比赛实例数据，需要Monitor权限
      *
      * @tags Game
      * @name GameInstances
@@ -2742,7 +2809,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛实例数据，需要观察者权限
+     * @description 获取比赛实例数据，需要Monitor权限
      *
      * @tags Game
      * @name GameInstances
@@ -2756,7 +2823,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       ),
 
     /**
-     * @description 获取比赛实例数据，需要观察者权限
+     * @description 获取比赛实例数据，需要Monitor权限
      *
      * @tags Game
      * @name GameInstances
@@ -3030,50 +3097,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-
-    /**
-     * @description 获取容器信息，需要User权限
-     *
-     * @tags Game
-     * @name GameGetContainer
-     * @summary 获取容器信息
-     * @request GET:/api/game/{id}/container/{challengeId}
-     */
-    gameGetContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取容器信息，需要User权限
-     *
-     * @tags Game
-     * @name GameGetContainer
-     * @summary 获取容器信息
-     * @request GET:/api/game/{id}/container/{challengeId}
-     */
-    useGameGetContainer: (id: number, challengeId: number, options?: SWRConfiguration) =>
-      useSWR<ContainerInfoModel, RequestResponse>(
-        `/api/game/${id}/container/${challengeId}`,
-        options
-      ),
-
-    /**
-     * @description 获取容器信息，需要User权限
-     *
-     * @tags Game
-     * @name GameGetContainer
-     * @summary 获取容器信息
-     * @request GET:/api/game/{id}/container/{challengeId}
-     */
-    mutateGameGetContainer: (
-      id: number,
-      challengeId: number,
-      data?: ContainerInfoModel | Promise<ContainerInfoModel>,
-      options?: MutatorOptions
-    ) => mutate<ContainerInfoModel>(`/api/game/${id}/container/${challengeId}`, data, options),
 
     /**
      * @description 删除，需要User权限

@@ -35,12 +35,13 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default)
         => context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
-    public Task<GameNotice[]> GetNotices(int gameId, CancellationToken token = default)
+    public Task<GameNotice[]> GetNotices(int gameId, int count = 10, int skip = 0, CancellationToken token = default)
         => cache.GetOrCreateAsync(CacheKey.GameNotice(gameId), (entry) =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             return context.GameNotices.Where(e => e.GameId == gameId)
                 .OrderByDescending(e => e.PublishTimeUTC)
+                .Skip(skip).Take(count)
                 .ToArrayAsync(token);
         });
 
