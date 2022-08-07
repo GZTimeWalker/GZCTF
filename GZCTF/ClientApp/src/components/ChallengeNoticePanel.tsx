@@ -1,7 +1,7 @@
 import * as signalR from '@microsoft/signalr'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Card, List } from '@mantine/core'
+import { Card, List, ScrollArea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -47,7 +47,7 @@ const ChallengeNoticePanel: FC = () => {
       connection.on('ReceivedGameNotice', (message: GameNotice) => {
         console.log(message)
         newNotices.current = [message, ...newNotices.current]
-        api.game.mutateGameChallenges(numId)
+        if (message.type === NoticeType.NewChallenge) api.game.mutateGameChallenges(numId)
         update(new Date(message.time!))
       })
 
@@ -77,22 +77,34 @@ const ChallengeNoticePanel: FC = () => {
 
   return (
     <Card shadow="sm">
-      <List
-        size="sm"
-        spacing={3}
-        styles={(theme) => ({
-          item: {
-            fontWeight: 500,
-            color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6]
+      <ScrollArea
+        offsetScrollbars
+        style={{ height: 'calc(100vh - 20rem)' }}
+        sx={{
+          scrollbar: {
+            '&:hover': {
+              backgroundColor: 'transparent',
+            },
           },
-        })}
+        }}
       >
-        {noticesToShow.map((notice) => (
-          <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
-            {notice.content}
-          </List.Item>
-        ))}
-      </List>
+        <List
+          size="sm"
+          spacing={3}
+          styles={(theme) => ({
+            item: {
+              fontWeight: 500,
+              color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
+            },
+          })}
+        >
+          {noticesToShow.map((notice) => (
+            <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
+              {notice.content}
+            </List.Item>
+          ))}
+        </List>
+      </ScrollArea>
     </Card>
   )
 }

@@ -191,7 +191,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           }
         })
         .catch(showErrorNotification)
-    }, 1000)
+    }, 500)
     return () => clearInterval(polling)
   }, [submitId])
 
