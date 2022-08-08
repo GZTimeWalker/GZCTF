@@ -98,7 +98,7 @@ const Teams: FC = () => {
       }
     >
       <Paper shadow="md" p="md">
-        <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height: 'calc(100vh - 190px)' }}>
+        <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 190px)' }}>
           <Table className={classes.table}>
             <thead>
               <tr>
