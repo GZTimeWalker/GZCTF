@@ -13,7 +13,7 @@ module.exports = {
     '^@mdi/(.*)$',
     '^@Components/(.*)$',
     '^@Utils/(.*)$',
-    '^@Api/(.*)$',
+    '^@Api$',
     '^[./]',
   ],
 }

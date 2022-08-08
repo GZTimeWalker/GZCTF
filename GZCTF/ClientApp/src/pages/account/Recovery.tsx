@@ -7,8 +7,8 @@ import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api from '@Api'
 import { usePageTitle } from '@Utils/PageTitle'
+import api from '@Api'
 
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')

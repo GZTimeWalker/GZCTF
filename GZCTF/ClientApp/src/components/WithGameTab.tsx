@@ -1,4 +1,3 @@
-import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
@@ -7,9 +6,10 @@ import { Card, Stack, Title, Text, Progress, LoadingOverlay, useMantineTheme } f
 import { useInterval } from '@mantine/hooks'
 import { mdiFlagOutline, mdiGauge, mdiMedalOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { usePageTitle } from '@Utils/PageTitle'
+import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
-import { usePageTitle } from '@Utils/PageTitle'
 
 const pages = [
   {
@@ -82,7 +82,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
   const progress = (current / total) * 100
   const countdown = dayjs.duration(end.diff(now))
 
-  usePageTitle(game?.title ? `${game.title} - 赛事` : '赛事')
+  usePageTitle(game?.title)
 
   useEffect(() => {
     if (game && dayjs() < dayjs(game.end)) {

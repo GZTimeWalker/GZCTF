@@ -16,8 +16,8 @@ import {
   mdiFileDocumentOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import IconTabs from '../IconTabs'
 import { usePageTitle } from '@Utils/PageTitle'
+import IconTabs from '../IconTabs'
 
 const pages = [
   { icon: mdiBullhornOutline, title: '通知管理', path: 'notices', color: 'blue' },

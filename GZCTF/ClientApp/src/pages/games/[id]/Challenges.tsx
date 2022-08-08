@@ -1,13 +1,13 @@
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Group, Stack } from '@mantine/core'
+import ChallengeNoticePanel from '@Components/ChallengeNoticePanel'
 import ChallengePanel from '@Components/ChallengePanel'
 import TeamRank from '@Components/TeamRank'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import api, { Role } from '@Api'
-import ChallengeNoticePanel from '@Components/ChallengeNoticePanel'
 
 const Challenges: FC = () => {
   const { id } = useParams()

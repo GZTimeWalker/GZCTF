@@ -1,4 +1,3 @@
-import api, { AnswerResult, Submission } from '@Api'
 import * as signalR from '@microsoft/signalr'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -7,6 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose } from '@mdi/js'
 import Icon from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import api, { AnswerResult, Submission } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 50
 

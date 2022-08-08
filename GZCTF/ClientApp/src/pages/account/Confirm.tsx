@@ -5,8 +5,8 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
-import api from '@Api'
 import { usePageTitle } from '@Utils/PageTitle'
+import api from '@Api'
 
 const Confirm: FC = () => {
   const navigate = useNavigate()

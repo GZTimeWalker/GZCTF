@@ -29,7 +29,13 @@ const ChallengePanel: FC = () => {
   const iconMap = SubmissionTypeIconMap(0.8)
 
   return (
-    <Group spacing="sm" noWrap position="apart" align="flex-start" style={{ width: 'calc(100% - 20rem)' }}>
+    <Group
+      spacing="sm"
+      noWrap
+      position="apart"
+      align="flex-start"
+      style={{ width: 'calc(100% - 20rem)' }}
+    >
       <Tabs
         orientation="vertical"
         variant="pills"

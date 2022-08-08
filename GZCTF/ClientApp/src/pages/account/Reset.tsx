@@ -8,8 +8,8 @@ import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api from '@Api'
 import { usePageTitle } from '@Utils/PageTitle'
+import api from '@Api'
 
 const Reset: FC = () => {
   const location = useLocation()

@@ -9,7 +9,7 @@ const Error404: FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  usePageTitle('页面未找到')
+  usePageTitle('the Nowhere')
 
   useEffect(() => {
     if (location.pathname !== '/404') {

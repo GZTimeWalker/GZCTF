@@ -65,7 +65,7 @@ const GameChallengeEdit: FC = () => {
       api.edit
         .editUpdateGameChallenge(numId, numCId, {
           ...challenge,
-          isEnabled: undefined
+          isEnabled: undefined,
         })
         .then((data) => {
           showNotification({

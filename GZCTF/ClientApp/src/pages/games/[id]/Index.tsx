@@ -23,9 +23,9 @@ import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { usePageTitle } from '@Utils/PageTitle'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationStatus } from '@Api'
-import { usePageTitle } from '@Utils/PageTitle'
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -177,7 +177,7 @@ const GameDetail: FC = () => {
     revalidateOnFocus: false,
   })
 
-  usePageTitle(game?.title ? `${game.title} - 赛事` : '赛事')
+  usePageTitle(game?.title)
 
   useEffect(() => {
     if (error) {
@@ -255,7 +255,10 @@ const GameDetail: FC = () => {
             <Stack spacing={2}>
               <Title className={classes.title}>{game?.title}</Title>
               <Text size="sm" color="dimmed">
-                <Text component="span" weight={700}>{game?.teamCount ?? 0}</Text> 支队伍已报名
+                <Text component="span" weight={700}>
+                  {game?.teamCount ?? 0}
+                </Text>{' '}
+                支队伍已报名
               </Text>
             </Stack>
             <Group position="apart">

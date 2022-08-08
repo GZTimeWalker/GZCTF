@@ -190,7 +190,11 @@ const Users: FC = () => {
                   </td>
                   <td>
                     <Group noWrap position="apart">
-                      <Text lineClamp={1} size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
+                      <Text
+                        lineClamp={1}
+                        size="sm"
+                        style={{ fontFamily: theme.fontFamilyMonospace }}
+                      >
                         {user.ip}
                       </Text>
                       <Badge size="xs" color="cyan" variant="outline">

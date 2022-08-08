@@ -190,15 +190,16 @@ const ScoreboardTable: FC = () => {
             <Table className={classes.table}>
               <TableHeader {...scoreboard?.challenges} />
               <tbody>
-                {scoreboard && currentItems?.map((item, idx) => (
-                  <TableRow
-                    key={base + idx}
-                    item={item}
-                    rank={base + idx}
-                    challenges={scoreboard.challenges}
-                    iconMap={iconMap}
-                  />
-                ))}
+                {scoreboard &&
+                  currentItems?.map((item, idx) => (
+                    <TableRow
+                      key={base + idx}
+                      item={item}
+                      rank={base + idx}
+                      challenges={scoreboard.challenges}
+                      iconMap={iconMap}
+                    />
+                  ))}
               </tbody>
             </Table>
           </Box>
