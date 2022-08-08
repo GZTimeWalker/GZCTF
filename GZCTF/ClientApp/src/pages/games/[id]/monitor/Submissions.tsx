@@ -54,7 +54,7 @@ const AnswerResultIconMap = (size: number) => {
     ],
     [
       AnswerResult.CheatDetected,
-      <Icon path={mdiExclamationThick} size={size} color={theme.colors.yellow[colorIdx]} />,
+      <Icon path={mdiExclamationThick} size={size} color={theme.colors.orange[colorIdx]} />,
     ],
     [
       AnswerResult.FlagSubmitted,
@@ -142,7 +142,7 @@ const Submissions: FC = () => {
         })
       }
     }
-  }, [numId])
+  }, [game])
 
   const rows = [...(activePage === 1 ? newSubmissions.current : []), ...(submissions ?? [])].map(
     (item, i) => (

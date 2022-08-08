@@ -361,11 +361,11 @@ public static class AnswerResultExtensions
     public static string ToShortString(this AnswerResult result)
         => result switch
         {
-            AnswerResult.FlagSubmitted => "🟦 成功提交",
-            AnswerResult.Accepted => "🟩 答案正确",
-            AnswerResult.WrongAnswer => "🟥 答案错误",
-            AnswerResult.NotFound => "🟦 实例未知",
-            AnswerResult.CheatDetected => "🟧 作弊检测",
+            AnswerResult.FlagSubmitted => "成功提交",
+            AnswerResult.Accepted => "答案正确",
+            AnswerResult.WrongAnswer => "答案错误",
+            AnswerResult.NotFound => "实例未知",
+            AnswerResult.CheatDetected => "作弊检测",
             _ => "??"
         };
 }
