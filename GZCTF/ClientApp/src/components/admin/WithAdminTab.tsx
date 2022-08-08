@@ -19,11 +19,11 @@ import { Icon } from '@mdi/react'
 import IconTabs from '../IconTabs'
 
 const pages = [
-  { icon: mdiBullhornOutline, title: '通知管理', path: '/admin/notices', color: 'blue' },
-  { icon: mdiFlagOutline, title: '比赛管理', path: '/admin/games', color: 'yellow' },
-  { icon: mdiAccountGroupOutline, title: '队伍管理', path: '/admin/teams', color: 'green' },
-  { icon: mdiAccountCogOutline, title: '用户管理', path: '/admin/users', color: 'cyan' },
-  { icon: mdiFileDocumentOutline, title: '系统日志', path: '/admin/logs', color: 'red' },
+  { icon: mdiBullhornOutline, title: '通知管理', path: 'notices', color: 'blue' },
+  { icon: mdiFlagOutline, title: '比赛管理', path: 'games', color: 'yellow' },
+  { icon: mdiAccountGroupOutline, title: '队伍管理', path: 'teams', color: 'green' },
+  { icon: mdiAccountCogOutline, title: '用户管理', path: 'users', color: 'cyan' },
+  { icon: mdiFileDocumentOutline, title: '系统日志', path: 'logs', color: 'red' },
 ]
 
 export interface AdminTabProps extends React.PropsWithChildren {
@@ -33,7 +33,7 @@ export interface AdminTabProps extends React.PropsWithChildren {
   headProps?: GroupProps
 }
 
-const getTab = (path: string) => pages.findIndex((page) => path.startsWith(page.path))
+const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
 
 const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, children }) => {
   const navigate = useNavigate()
@@ -45,7 +45,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, c
 
   const onChange = (active: number, tabKey: string) => {
     setActiveTab(active)
-    navigate(tabKey)
+    navigate(`/admin/${tabKey}`)
   }
 
   useEffect(() => {

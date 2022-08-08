@@ -250,6 +250,7 @@ public class GameController : ControllerBase
     /// 获取比赛提交数据，需要Monitor权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
+    /// <param name="type">提交类型</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
@@ -259,7 +260,7 @@ public class GameController : ControllerBase
     [HttpGet("{id}/Submissions")]
     [ProducesResponseType(typeof(Submission[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+    public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] AnswerResult? type = null, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -269,41 +270,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok(await submissionRepository.GetSubmissions(game, count, skip, token));
-    }
-
-    /// <summary>
-    /// 获取比赛实例列表
-    /// </summary>
-    /// <remarks>
-    /// 获取比赛实例数据，需要Monitor权限
-    /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="challengeId">题目Id</param>
-    /// <param name="token"></param>
-    /// <response code="200">成功获取比赛提交</response>
-    /// <response code="400">比赛未找到</response>
-    [RequireMonitor]
-    [HttpGet("{id}/Challenges/{challengeId}/Instances")]
-    [ProducesResponseType(typeof(InstanceInfoModel[]), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Instances([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token = default)
-    {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
-
-        if (DateTimeOffset.UtcNow < game.StartTimeUTC)
-            return BadRequest(new RequestResponse("比赛还未开始"));
-
-        var challenge = await challengeRepository.GetChallenge(id, challengeId, token: token);
-
-        if (challenge is null)
-            return NotFound(new RequestResponse("题目未找到"));
-
-        return Ok((await instanceRepository.GetInstances(challenge, token))
-            .Select(i => InstanceInfoModel.FromInstance(i)));
+        return Ok(await submissionRepository.GetSubmissions(game, type, count, skip, token));
     }
 
     /// <summary>

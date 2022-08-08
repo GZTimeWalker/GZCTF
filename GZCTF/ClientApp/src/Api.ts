@@ -1107,55 +1107,6 @@ export enum AnswerResult {
 }
 
 /**
- * 题目实例信息
- */
-export interface InstanceInfoModel {
-  /**
-   * 队伍 Id
-   * @format int32
-   */
-  teamId?: number
-
-  /** 队伍名 */
-  teamName?: string
-
-  /** 题目详情 */
-  challenge?: ChallengeInfoModel
-
-  /** 容器信息 */
-  container?: ContainerInfoModel | null
-}
-
-export interface ContainerInfoModel {
-  /** 容器状态 */
-  status?: ContainerStatus
-
-  /**
-   * 容器创建时间
-   * @format date-time
-   */
-  startedAt?: string
-
-  /**
-   * 容器期望终止时间
-   * @format date-time
-   */
-  expectStopAt?: string
-
-  /** 题目入口 */
-  entry?: string
-}
-
-/**
- * 容器状态
- */
-export enum ContainerStatus {
-  Pending = 'Pending',
-  Running = 'Running',
-  Destoryed = 'Destoryed',
-}
-
-/**
  * 比赛参与对象，用于审核查看（Admin）
  */
 export interface ParticipationInfoModel {
@@ -1254,6 +1205,35 @@ export interface ClientFlagContext {
 
   /** 附件 Url */
   url?: string | null
+}
+
+export interface ContainerInfoModel {
+  /** 容器状态 */
+  status?: ContainerStatus
+
+  /**
+   * 容器创建时间
+   * @format date-time
+   */
+  startedAt?: string
+
+  /**
+   * 容器期望终止时间
+   * @format date-time
+   */
+  expectStopAt?: string
+
+  /** 题目入口 */
+  entry?: string
+}
+
+/**
+ * 容器状态
+ */
+export enum ContainerStatus {
+  Pending = 'Pending',
+  Running = 'Running',
+  Destoryed = 'Destoryed',
 }
 
 /**
@@ -1836,15 +1816,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminLogs
      * @summary 获取全部日志
-     * @request GET:/api/admin/logs/{level}
+     * @request GET:/api/admin/logs
      */
     adminLogs: (
-      level: string | null,
-      query?: { count?: number; skip?: number },
+      query?: { level?: string | null; count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
       this.request<LogMessageModel[], RequestResponse>({
-        path: `/api/admin/logs/${level}`,
+        path: `/api/admin/logs`,
         method: 'GET',
         query: query,
         format: 'json',
@@ -1856,13 +1835,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminLogs
      * @summary 获取全部日志
-     * @request GET:/api/admin/logs/{level}
+     * @request GET:/api/admin/logs
      */
     useAdminLogs: (
-      level: string | null,
-      query?: { count?: number; skip?: number },
+      query?: { level?: string | null; count?: number; skip?: number },
       options?: SWRConfiguration
-    ) => useSWR<LogMessageModel[], RequestResponse>([`/api/admin/logs/${level}`, query], options),
+    ) => useSWR<LogMessageModel[], RequestResponse>([`/api/admin/logs`, query], options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -1870,14 +1848,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminLogs
      * @summary 获取全部日志
-     * @request GET:/api/admin/logs/{level}
+     * @request GET:/api/admin/logs
      */
     mutateAdminLogs: (
-      level: string | null,
-      query?: { count?: number; skip?: number },
+      query?: { level?: string | null; count?: number; skip?: number },
       data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions
-    ) => mutate<LogMessageModel[]>([`/api/admin/logs/${level}`, query], data, options),
+    ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
 
     /**
      * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限
@@ -2773,7 +2750,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     gameSubmissions: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { type?: AnswerResult | null; count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
       this.request<Submission[], RequestResponse>({
@@ -2793,7 +2770,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useGameSubmissions: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { type?: AnswerResult | null; count?: number; skip?: number },
       options?: SWRConfiguration
     ) => useSWR<Submission[], RequestResponse>([`/api/game/${id}/submissions`, query], options),
 
@@ -2807,59 +2784,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameSubmissions: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { type?: AnswerResult | null; count?: number; skip?: number },
       data?: Submission[] | Promise<Submission[]>,
       options?: MutatorOptions
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
-
-    /**
-     * @description 获取比赛实例数据，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameInstances
-     * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
-     */
-    gameInstances: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<InstanceInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/challenges/${challengeId}/instances`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛实例数据，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameInstances
-     * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
-     */
-    useGameInstances: (id: number, challengeId: number, options?: SWRConfiguration) =>
-      useSWR<InstanceInfoModel[], RequestResponse>(
-        `/api/game/${id}/challenges/${challengeId}/instances`,
-        options
-      ),
-
-    /**
-     * @description 获取比赛实例数据，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameInstances
-     * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
-     */
-    mutateGameInstances: (
-      id: number,
-      challengeId: number,
-      data?: InstanceInfoModel[] | Promise<InstanceInfoModel[]>,
-      options?: MutatorOptions
-    ) =>
-      mutate<InstanceInfoModel[]>(
-        `/api/game/${id}/challenges/${challengeId}/instances`,
-        data,
-        options
-      ),
 
     /**
      * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名

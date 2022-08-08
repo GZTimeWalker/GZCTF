@@ -179,6 +179,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.Property(e => e.Status)
                 .HasConversion<string>();
 
+            entity.HasIndex(e => e.Status);
             entity.HasIndex(e => new { e.TeamId, e.ChallengeId, e.GameId });
         });
 

@@ -1,20 +1,12 @@
+import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import {
-  Card,
-  Stack,
-  Title,
-  Text,
-  Progress,
-  LoadingOverlay,
-  useMantineTheme,
-} from '@mantine/core'
+import { Card, Stack, Title, Text, Progress, LoadingOverlay, useMantineTheme } from '@mantine/core'
 import { useInterval } from '@mantine/hooks'
 import { mdiFlagOutline, mdiGauge, mdiMedalOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
 
@@ -23,6 +15,7 @@ const pages = [
     icon: mdiGauge,
     title: '比赛监控',
     path: 'monitor',
+    link: 'monitor/events',
     color: 'green',
     requireJoin: false,
     requireRole: Role.Monitor,
@@ -31,6 +24,7 @@ const pages = [
     icon: mdiFlagOutline,
     title: '比赛题目',
     path: 'challenges',
+    link: 'challenges',
     color: 'blue',
     requireJoin: true,
     requireRole: Role.User,
@@ -39,13 +33,14 @@ const pages = [
     icon: mdiMedalOutline,
     title: '积分总榜',
     path: 'scoreboard',
+    link: 'scoreboard',
     color: 'yellow',
     requireJoin: false,
     requireRole: Role.User,
   },
 ]
 
-const getTab = (path: string) => pages.findIndex((page) => path.endsWith(page.path))
+const getTab = (path: string) => pages.findIndex((page) => path.includes(page.path))
 dayjs.extend(duration)
 
 interface WithGameTabProps extends React.PropsWithChildren {
@@ -116,7 +111,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
           .filter((p) => RoleMap.get(user?.role ?? Role.User)! >= RoleMap.get(p.requireRole)!)
           .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
           .map((p) => ({
-            tabKey: p.path,
+            tabKey: p.link,
             label: p.title,
             icon: <Icon path={p.icon} size={1} />,
             color: p.color,

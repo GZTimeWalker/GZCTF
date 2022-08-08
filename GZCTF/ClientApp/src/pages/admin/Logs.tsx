@@ -45,7 +45,8 @@ const Logs: FC = () => {
 
   useEffect(() => {
     api.admin
-      .adminLogs(level, {
+      .adminLogs({
+        level,
         count: ITEM_COUNT_PER_PAGE,
         skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
       })

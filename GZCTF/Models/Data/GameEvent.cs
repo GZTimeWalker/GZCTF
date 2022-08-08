@@ -62,13 +62,13 @@ public class GameEvent
     [JsonIgnore]
     public Game? Game { get; set; }
 
-    public static GameEvent FromSubmission(Submission submission)
+    public static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans)
         => new()
         {
             TeamId = submission.TeamId,
             UserId = submission.UserId,
             GameId = submission.GameId,
             Type = EventType.FlagSubmit,
-            Content = $"[{submission.Status.ToShortString()}] {submission.Answer}  #{submission.ChallengeId}"
+            Content = $"[{ans.ToShortString()}] {submission.Answer}  {submission.Challenge.Title}#{submission.ChallengeId}"
         };
 }

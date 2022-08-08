@@ -62,14 +62,14 @@ public class FlagChecker : IHostedService
                     else if (ans == AnswerResult.Accepted)
                     {
                         logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
-                        await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
+                        await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
                     }
                     else
                     {
                         logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
-                        await eventRepository.AddEvent(GameEvent.FromSubmission(item), token);
 
                         var result = await instanceRepository.CheckCheat(item, token);
+                        await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, result.AnswerResult), token);
 
                         if (result.AnswerResult == AnswerResult.CheatDetected)
                         {
