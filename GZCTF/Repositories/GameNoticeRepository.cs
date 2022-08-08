@@ -1,5 +1,6 @@
 ﻿using CTFServer.Hubs;
 using CTFServer.Hubs.Clients;
+using CTFServer.Models.Request.Edit;
 using CTFServer.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,11 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         return notice;
     }
 
+    public Task<GameNotice[]> GetNormalNotices(int gameId, CancellationToken token = default)
+        => context.GameNotices
+            .Where(n => n.GameId == gameId && n.Type == NoticeType.Normal)
+            .ToArrayAsync(token);
+
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default)
         => context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
@@ -49,6 +55,18 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
     public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
     {
         context.Remove(notice);
+        cache.Remove(CacheKey.GameNotice(notice.GameId));
+
         return SaveAsync(token);
+    }
+
+    public async Task<GameNotice> UpdateNotice(GameNotice notice, CancellationToken token = default)
+    {
+        notice.PublishTimeUTC = DateTimeOffset.UtcNow;
+        await SaveAsync(token);
+
+        cache.Remove(CacheKey.GameNotice(notice.GameId));
+
+        return notice;
     }
 }

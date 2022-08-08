@@ -148,11 +148,6 @@ public enum NoticeType : byte
     /// 发布新的题目
     /// </summary>
     NewChallenge = 5,
-
-    /// <summary>
-    /// 修复错误
-    /// </summary>
-    ErrorFix = 6
 }
 
 public static class SubmissionTypeExtensions

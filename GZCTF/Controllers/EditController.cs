@@ -259,7 +259,7 @@ public class EditController : Controller
     /// 添加比赛公告，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="model"></param>
+    /// <param name="model">公告内容</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛公告</response>
     [HttpPost("Games/{id}/Notices")]
@@ -290,15 +290,48 @@ public class EditController : Controller
     /// 获取比赛公告，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpGet("Games/{id}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetGameNotices([FromRoute] int id, [FromQuery] int count = 10, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await gameNoticeRepository.GetNotices(id, count, skip, token));
+    public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        return Ok(await gameNoticeRepository.GetNormalNotices(id, token));
+    }
+
+    /// <summary>
+    /// 更新比赛公告
+    /// </summary>
+    /// <remarks>
+    /// 更新比赛公告，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="noticeId">公告Id</param>
+    /// <param name="model">公告内容</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取文件</response>
+    [HttpPut("Games/{id}/Notices/{noticeId}")]
+    [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateGameNotice([FromRoute] int id, [FromRoute] int noticeId, [FromBody] GameNoticeModel model, CancellationToken token = default)
+    {
+        var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
+
+        if (notice is null)
+            return NotFound(new RequestResponse("公告未找到", 404));
+
+        if (notice.Type != NoticeType.Normal)
+            return BadRequest(new RequestResponse("不能更改系统公告"));
+
+        notice.Content = model.Content;
+        return Ok(await gameNoticeRepository.UpdateNotice(notice, token));
+    }
 
     /// <summary>
     /// 删除比赛公告
