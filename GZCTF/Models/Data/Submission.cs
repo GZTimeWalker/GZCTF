@@ -28,6 +28,18 @@ public class Submission
     [JsonPropertyName("time")]
     public DateTimeOffset SubmitTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
+    /// <summary>
+    /// 提交用户
+    /// </summary>
+    [JsonPropertyName("user")]
+    public string UserName => User?.UserName ?? string.Empty;
+
+    /// <summary>
+    /// 提交队伍
+    /// </summary>
+    [JsonPropertyName("team")]
+    public string TeamName => Team?.Name ?? string.Empty;
+
     #region Db Relationship
 
     /// <summary>

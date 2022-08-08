@@ -6,7 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameNotice, NoticeType } from '@Api'
-import { NoticTypeIconMap } from './ChallengeItem'
+import { NoticTypeIconMap } from '../utils/ChallengeItem'
 
 const ChallengeNoticePanel: FC = () => {
   const { id } = useParams()

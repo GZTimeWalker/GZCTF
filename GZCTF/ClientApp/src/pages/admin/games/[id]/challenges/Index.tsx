@@ -15,11 +15,11 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTagItem, ChallengeTagLabelMap } from '@Components/ChallengeItem'
 import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { ChallengeTagItem, ChallengeTagLabelMap } from '@Utils/ChallengeItem'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
 
 const GameChallengeEdit: FC = () => {

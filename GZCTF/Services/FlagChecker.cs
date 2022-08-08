@@ -52,6 +52,7 @@ public class FlagChecker : IHostedService
                 var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
                 var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
                 var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+                var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
 
                 try
                 {
@@ -69,9 +70,11 @@ public class FlagChecker : IHostedService
                         logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
 
                         var result = await instanceRepository.CheckCheat(item, token);
+                        ans = result.AnswerResult;
+
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, result.AnswerResult), token);
 
-                        if (result.AnswerResult == AnswerResult.CheatDetected)
+                        if (ans == AnswerResult.CheatDetected)
                         {
                             logger.Log($"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeam!.Name}]", item.User!, TaskStatus.Success, LogLevel.Information);
                             await eventRepository.AddEvent(new()
@@ -87,6 +90,9 @@ public class FlagChecker : IHostedService
 
                     if (type != SubmissionType.Unaccepted && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(GameNotice.FromSubmission(item, type), token);
+
+                    item.Status = ans;
+                    await submissionRepository.SendSubmission(item);
 
                     gameRepository.FlushScoreboard(item.GameId);
                 }

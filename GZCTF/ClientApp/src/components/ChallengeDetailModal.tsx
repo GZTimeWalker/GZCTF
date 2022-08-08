@@ -27,7 +27,7 @@ import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
 import api, { AnswerResult, ChallengeType } from '@Api'
-import { ChallengeTagItemProps } from './ChallengeItem'
+import { ChallengeTagItemProps } from '../utils/ChallengeItem'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number

@@ -21,9 +21,6 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
         await context.AddAsync(submission, token);
         await context.SaveChangesAsync(token);
 
-        await hubContext.Clients.Group($"Game_{submission.GameId}")
-            .ReceivedSubmissions(submission);
-
         return submission;
     }
 
@@ -60,4 +57,7 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
     public Task<Submission[]> GetSubmissions(Participation team, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default)
         => GetSubmissionsByType(type).Where(s => s.TeamId == team.TeamId)
             .Skip(skip).Take(count).ToArrayAsync(token);
+
+    public Task SendSubmission(Submission submission)
+        => hubContext.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
 }

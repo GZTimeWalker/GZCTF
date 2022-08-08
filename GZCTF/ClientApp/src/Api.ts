@@ -1093,6 +1093,12 @@ export interface Submission {
    * @format date-time
    */
   time?: string
+
+  /** 提交用户 */
+  user?: string
+
+  /** 提交队伍 */
+  team?: string
 }
 
 /**

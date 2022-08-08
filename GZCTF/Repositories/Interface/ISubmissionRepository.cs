@@ -35,6 +35,12 @@ public interface ISubmissionRepository : IRepository
     public Task<Submission[]> GetSubmissions(Challenge challenge, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
+    /// 通过 signalR 发送提交给检查者
+    /// </summary>
+    /// <param name="submission"></param>
+    public Task SendSubmission(Submission submission);
+
+    /// <summary>
     /// 获取队伍的提交，按时间降序
     /// </summary>
     /// <param name="team">队伍参赛对象</param>

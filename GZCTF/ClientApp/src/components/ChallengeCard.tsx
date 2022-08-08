@@ -4,7 +4,7 @@ import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from 
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeInfo, SubmissionType } from '@Api'
-import { BloodsTypes, ChallengeTagLabelMap } from './ChallengeItem'
+import { BloodsTypes, ChallengeTagLabelMap } from '../utils/ChallengeItem'
 
 const useStyles = createStyles((_theme, _param, getRef) => {
   const solved = { ref: getRef('solved') } as const

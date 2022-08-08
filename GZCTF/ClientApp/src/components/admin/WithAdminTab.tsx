@@ -1,13 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import {
-  Group,
-  GroupProps,
-  LoadingOverlay,
-  ScrollArea,
-  Stack,
-  useMantineTheme,
-} from '@mantine/core'
+import { Group, GroupProps, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiBullhornOutline,
@@ -29,14 +22,13 @@ const pages = [
 
 export interface AdminTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
-  scroll?: boolean
   isLoading?: boolean
   headProps?: GroupProps
 }
 
 const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
 
-const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, children }) => {
+const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -78,25 +70,12 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, c
           {head}
         </Group>
       )}
-      {scroll ? (
-        <ScrollArea
-          style={{
-            height: head ? 'calc(100vh - 160px)' : 'calc(100vh - 120px)',
-            position: 'relative',
-          }}
-        >
-          <LoadingOverlay
-            visible={isLoading ?? false}
-            overlayOpacity={1}
-            overlayColor={
-              theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
-            }
-          />
-          {children}
-        </ScrollArea>
-      ) : (
-        children
-      )}
+      <LoadingOverlay
+        visible={isLoading ?? false}
+        overlayOpacity={1}
+        overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+      />
+      {children}
     </Stack>
   )
 }

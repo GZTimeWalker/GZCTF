@@ -1,4 +1,4 @@
-import { createStyles, MantineThemeOverride } from '@mantine/core'
+import { createStyles, keyframes, MantineThemeOverride } from '@mantine/core'
 
 export const ThemeOverride: MantineThemeOverride = {
   colors: {
@@ -80,6 +80,26 @@ export const useTypographyStyles = createStyles((theme) => ({
 
     '& pre': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[1],
+    },
+  },
+}))
+
+export const useTableStyles = createStyles((theme) => ({
+  mono: {
+    fontFamily: theme.fontFamilyMonospace,
+  },
+  fade: {
+    animation: `${keyframes`0% {opacity:0;} 100% {opacity:1;}`} 0.5s linear`,
+  },
+  table: {
+    '& thead tr th': {
+      position: 'sticky',
+      top: 0,
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    },
+
+    '& tbody tr td': {
+      whiteSpace: 'nowrap',
     },
   },
 }))

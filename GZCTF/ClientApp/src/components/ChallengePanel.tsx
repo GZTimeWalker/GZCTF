@@ -4,9 +4,9 @@ import { Group, ScrollArea, SimpleGrid, Tabs, Text } from '@mantine/core'
 import { mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
+import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 import ChallengeCard from './ChallengeCard'
 import ChallengeDetailModal from './ChallengeDetailModal'
-import { ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()

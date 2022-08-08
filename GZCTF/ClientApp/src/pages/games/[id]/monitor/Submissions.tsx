@@ -1,11 +1,29 @@
 import * as signalR from '@microsoft/signalr'
+import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Group, SegmentedControl, ActionIcon } from '@mantine/core'
+import {
+  Group,
+  SegmentedControl,
+  ActionIcon,
+  Paper,
+  Table,
+  ScrollArea,
+  useMantineTheme,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose } from '@mdi/js'
+import {
+  mdiArrowLeftBold,
+  mdiArrowRightBold,
+  mdiCheck,
+  mdiClose,
+  mdiCrosshairsQuestion,
+  mdiDotsHorizontal,
+  mdiExclamationThick,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { AnswerResult, Submission } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 50
@@ -16,6 +34,34 @@ const AnswerResultMap = new Map([
   [AnswerResult.CheatDetected, 'CD'],
   [AnswerResult.NotFound, 'NF'],
 ])
+
+const AnswerResultIconMap = (size: number) => {
+  const theme = useMantineTheme()
+  const colorIdx = theme.colorScheme === 'dark' ? 4 : 7
+
+  return new Map([
+    [
+      AnswerResult.Accepted,
+      <Icon path={mdiCheck} size={size} color={theme.colors.green[colorIdx]} />,
+    ],
+    [
+      AnswerResult.WrongAnswer,
+      <Icon path={mdiClose} size={size} color={theme.colors.red[colorIdx]} />,
+    ],
+    [
+      AnswerResult.NotFound,
+      <Icon path={mdiCrosshairsQuestion} size={size} color={theme.colors.gray[colorIdx]} />,
+    ],
+    [
+      AnswerResult.CheatDetected,
+      <Icon path={mdiExclamationThick} size={size} color={theme.colors.yellow[colorIdx]} />,
+    ],
+    [
+      AnswerResult.FlagSubmitted,
+      <Icon path={mdiDotsHorizontal} size={size} color={theme.colors.gray[colorIdx]} />,
+    ],
+  ])
+}
 
 const Submissions: FC = () => {
   const { id } = useParams()
@@ -32,6 +78,9 @@ const Submissions: FC = () => {
     refreshInterval: 0,
     revalidateOnFocus: false,
   })
+
+  const iconMap = AnswerResultIconMap(0.8)
+  const { classes, cx } = useTableStyles()
 
   useEffect(() => {
     api.game
@@ -95,6 +144,25 @@ const Submissions: FC = () => {
     }
   }, [numId])
 
+  const rows = [...(activePage === 1 ? newSubmissions.current : []), ...(submissions ?? [])].map(
+    (item, i) => (
+      <tr
+        key={`${item.time}@${i}`}
+        className={
+          i === 0 && activePage === 1 && newSubmissions.current.length > 0
+            ? cx(classes.fade)
+            : undefined
+        }
+      >
+        <td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</td>
+        <td className={cx(classes.mono)}>{dayjs(item.time).format('MM/DD HH:mm:ss')}</td>
+        <td>{item.team}</td>
+        <td>{item.user}</td>
+        <td className={cx(classes.mono)}>{item.answer}</td>
+      </tr>
+    )
+  )
+
   return (
     <WithGameMonitorTab>
       <Group position="apart" style={{ width: '100%' }}>
@@ -133,6 +201,22 @@ const Submissions: FC = () => {
           </ActionIcon>
         </Group>
       </Group>
+      <Paper shadow="md" p="md">
+        <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 200px)' }}>
+          <Table className={classes.table}>
+            <thead>
+              <tr>
+                <th>状态</th>
+                <th>时间</th>
+                <th>队伍</th>
+                <th>用户</th>
+                <th className={cx(classes.mono)}>flag</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        </ScrollArea>
+      </Paper>
     </WithGameMonitorTab>
   )
 }

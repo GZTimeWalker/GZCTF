@@ -17,15 +17,15 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import ScoreFunc from '@Components/admin/ScoreFunc'
+import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import {
   ChallengeTypeItem,
   ChallengeTypeLabelMap,
   ChallengeTagItem,
   ChallengeTagLabelMap,
-} from '@Components/ChallengeItem'
-import ScoreFunc from '@Components/admin/ScoreFunc'
-import WithGameEditTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+} from '@Utils/ChallengeItem'
 import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '@Api'
 
 const GameChallengeEdit: FC = () => {

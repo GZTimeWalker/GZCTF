@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
-import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
+import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 
 const useStyles = createStyles((theme) => ({
   table: {

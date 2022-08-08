@@ -12,7 +12,7 @@ import {
   ChallengeTagLabelMap,
   ChallengeTypeItem,
   ChallengeTypeLabelMap,
-} from '../ChallengeItem'
+} from '../../utils/ChallengeItem'
 
 interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void

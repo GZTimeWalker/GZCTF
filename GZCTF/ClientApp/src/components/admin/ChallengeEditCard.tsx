@@ -14,7 +14,7 @@ import {
 import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeInfoModel, ChallengeTag } from '@Api'
-import { ChallengeTagLabelMap } from '../ChallengeItem'
+import { ChallengeTagLabelMap } from '../../utils/ChallengeItem'
 
 interface ChallengeEditCardProps {
   challenge: ChallengeInfoModel
