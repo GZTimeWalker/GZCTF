@@ -39,6 +39,11 @@ public class GameDetailModel
     public int TeamMemberCountLimit { get; set; } = 0;
 
     /// <summary>
+    /// 报名参赛队伍数量
+    /// </summary>
+    public int TeamCount { get; set; } = 0;
+
+    /// <summary>
     /// 队伍参与状态
     /// </summary>
     [JsonPropertyName("status")]
@@ -62,13 +67,14 @@ public class GameDetailModel
         return this;
     }
 
-    public static GameDetailModel FromGame(Models.Game game)
+    public static GameDetailModel FromGame(Models.Game game, int count)
         => new()
         {
             Id = game.Id,
             Title = game.Title,
             Summary = game.Summary,
             Content = game.Content,
+            TeamCount = count,
             PosterUrl = game.PosterUrl,
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC,

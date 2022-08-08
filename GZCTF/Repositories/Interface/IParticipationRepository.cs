@@ -20,6 +20,14 @@ public interface IParticipationRepository : IRepository
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default);
 
     /// <summary>
+    /// 获取比赛的报名队伍数量
+    /// </summary>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<int> GetParticipationCount(Game game, CancellationToken token = default);
+
+    /// <summary>
     /// 确保此队伍 Instance 对象已创建
     /// </summary>
     /// <param name="part"></param>

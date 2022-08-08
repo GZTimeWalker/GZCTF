@@ -98,7 +98,9 @@ public class GameController : ControllerBase
         if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
 
-        return Ok(GameDetailModel.FromGame(context.Game)
+        var count = await participationRepository.GetParticipationCount(context.Game, token);
+
+        return Ok(GameDetailModel.FromGame(context.Game, count)
                       .WithParticipation(context.Participation));
     }
 

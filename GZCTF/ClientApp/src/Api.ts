@@ -864,6 +864,12 @@ export interface GameDetailModel {
    */
   limit?: number
 
+  /**
+   * 报名参赛队伍数量
+   * @format int32
+   */
+  teamCount?: number
+
   /** 队伍参与状态 */
   status?: ParticipationStatus
 

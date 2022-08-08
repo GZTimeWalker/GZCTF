@@ -44,6 +44,9 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
     public Task<Participation?> GetParticipationById(int id, CancellationToken token = default)
         => context.Participations.FirstOrDefaultAsync(p => p.Id == id, token);
 
+    public Task<int> GetParticipationCount(Game game, CancellationToken token = default)
+        => context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);
+
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default)
         => context.Participations.Where(p => p.GameId == game.Id)
             .Include(p => p.Team)
