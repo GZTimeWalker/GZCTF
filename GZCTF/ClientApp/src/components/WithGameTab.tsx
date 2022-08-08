@@ -2,7 +2,15 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { Card, Stack, Title, Text, Progress, LoadingOverlay, useMantineTheme } from '@mantine/core'
+import {
+  Card,
+  Stack,
+  Title,
+  Text,
+  Progress,
+  LoadingOverlay,
+  useMantineTheme,
+} from '@mantine/core'
 import { useInterval } from '@mantine/hooks'
 import { mdiFlagOutline, mdiGauge, mdiMedalOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
