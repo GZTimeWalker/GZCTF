@@ -1,6 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Paper, createStyles, Table, Group, Text, Avatar, Box, Stack } from '@mantine/core'
+import {
+  Paper,
+  createStyles,
+  Table,
+  Group,
+  Text,
+  Avatar,
+  Box,
+  Stack,
+  Pagination,
+} from '@mantine/core'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api/Api'
 import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
@@ -157,54 +167,69 @@ const BloodData = [
   { name: '三血', descr: '+1%' },
 ]
 
+const ITEM_COUNT_PER_PAGE = 30
+
 const ScoreboardTable: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { classes } = useStyles()
-  const base = 0
   const { data: scoreboard } = api.game.useGameScoreboard(numId, {
     refreshInterval: 0,
   })
   const iconMap = SubmissionTypeIconMap(1)
+  const [activePage, setPage] = useState(1)
+
+  const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
+  const currentItems = scoreboard?.items?.slice(base, base + ITEM_COUNT_PER_PAGE)
 
   return (
     <Paper shadow="md" p="md">
-      <Box style={{ position: 'relative' }}>
-        <Box style={{ maxWidth: '100%', overflow: 'scroll' }}>
-          <Table className={classes.table}>
-            <TableHeader {...scoreboard?.challenges} />
-            <tbody>
-              {scoreboard?.items?.map((item, idx) => (
-                <TableRow
-                  key={base + idx}
-                  item={item}
-                  rank={base + idx}
-                  challenges={scoreboard.challenges}
-                  iconMap={iconMap}
-                />
-              ))}
-            </tbody>
-          </Table>
+      <Stack spacing="xs">
+        <Box style={{ position: 'relative' }}>
+          <Box style={{ maxWidth: '100%', overflow: 'scroll' }}>
+            <Table className={classes.table}>
+              <TableHeader {...scoreboard?.challenges} />
+              <tbody>
+                {scoreboard && currentItems?.map((item, idx) => (
+                  <TableRow
+                    key={base + idx}
+                    item={item}
+                    rank={base + idx}
+                    challenges={scoreboard.challenges}
+                    iconMap={iconMap}
+                  />
+                ))}
+              </tbody>
+            </Table>
+          </Box>
+          <Box className={classes.legend}>
+            <Stack spacing="xs">
+              <Group spacing="lg">
+                {BloodsTypes.map((type, idx) => (
+                  <Group position="left" spacing={2}>
+                    {iconMap.get(type)}
+                    <Text size="sm">{BloodData[idx].name}</Text>
+                    <Text size="xs" color="dimmed">
+                      {BloodData[idx].descr}
+                    </Text>
+                  </Group>
+                ))}
+              </Group>
+              <Text size="sm" color="dimmed">
+                注：同分队伍以得分时间先后排名
+              </Text>
+            </Stack>
+          </Box>
         </Box>
-        <Box className={classes.legend}>
-          <Stack spacing="xs">
-            <Group spacing="lg">
-              {BloodsTypes.map((type, idx) => (
-                <Group position="left" spacing={2}>
-                  {iconMap.get(type)}
-                  <Text size="sm">{BloodData[idx].name}</Text>
-                  <Text size="xs" color="dimmed">
-                    {BloodData[idx].descr}
-                  </Text>
-                </Group>
-              ))}
-            </Group>
-            <Text size="sm" color="dimmed">
-              注：同分队伍以得分时间先后排名
-            </Text>
-          </Stack>
-        </Box>
-      </Box>
+        <Group position="right">
+          <Pagination
+            page={activePage}
+            onChange={setPage}
+            total={Math.ceil((scoreboard?.items?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
+            boundaries={2}
+          />
+        </Group>
+      </Stack>
     </Paper>
   )
 }
