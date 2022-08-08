@@ -249,7 +249,12 @@ const GameDetail: FC = () => {
                 {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
               </Badge>
             </Group>
-            <Title className={classes.title}>{game?.title}</Title>
+            <Stack spacing={2}>
+              <Title className={classes.title}>{game?.title}</Title>
+              <Text size="sm" color="dimmed">
+                <Text component="span" weight={700}>{game?.teamCount ?? 0}</Text> 支队伍已报名
+              </Text>
+            </Stack>
             <Group position="apart">
               <Stack spacing={0}>
                 <Text size="sm" className={classes.date}>
