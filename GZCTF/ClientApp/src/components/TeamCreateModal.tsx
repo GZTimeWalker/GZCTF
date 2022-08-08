@@ -15,7 +15,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCloseCircle, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamUpdateModel } from '@Api/Api'
+import api, { TeamUpdateModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean

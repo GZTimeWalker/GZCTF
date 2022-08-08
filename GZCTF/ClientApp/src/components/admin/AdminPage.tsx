@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
-import { Role } from '@Api/Api'
+import { Role } from '@Api'
 import WithAdminTab from './WithAdminTab'
 import { AdminTabProps } from './WithAdminTab'
 

@@ -6,7 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api/Api'
+import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
 import {
   ChallengeTagItem,
   ChallengeTagLabelMap,

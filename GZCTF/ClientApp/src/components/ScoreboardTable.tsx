@@ -12,7 +12,7 @@ import {
   Pagination,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
-import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api/Api'
+import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
 
 const useStyles = createStyles((theme) => ({

@@ -5,7 +5,7 @@ import { Card, List, ScrollArea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameNotice, NoticeType } from '@Api/Api'
+import api, { GameNotice, NoticeType } from '@Api'
 import { NoticTypeIconMap } from './ChallengeItem'
 
 const ChallengeNoticePanel: FC = () => {

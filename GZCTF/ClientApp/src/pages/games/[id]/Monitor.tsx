@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
-import api, { Role } from '@Api/Api'
+import api, { Role } from '@Api'
 import WithGameTab from '@Components/WithGameTab'
 
 const Monitor: FC = () => {

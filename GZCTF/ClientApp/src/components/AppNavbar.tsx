@@ -25,7 +25,7 @@ import {
   mdiWrenchOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { Role } from '@Api/Api'
+import api, { Role } from '@Api'
 import MainIcon from './icon/MainIcon'
 
 const useStyles = createStyles((theme, _param, getRef) => {

@@ -20,7 +20,7 @@ import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { ChallengeInfoModel, ChallengeTag } from '@Api/Api'
+import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const { id } = useParams()

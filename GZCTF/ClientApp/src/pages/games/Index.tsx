@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react'
 import GameCard, { GameColorMap, GameStatus } from '@Components/GameCard'
 import IconTabs from '@Components/IconTabs'
 import WithNavBar from '@Components/WithNavbar'
-import api, { BasicGameInfoModel } from '@Api/Api'
+import api, { BasicGameInfoModel } from '@Api'
 
 const Games: FC = () => {
   const { data: allGames } = api.game.useGameGamesAll({

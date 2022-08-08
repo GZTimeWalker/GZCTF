@@ -26,7 +26,7 @@ import {
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '@Api/Api'
+import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()

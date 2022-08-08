@@ -8,7 +8,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { GameInfoModel } from '@Api/Api'
+import api, { GameInfoModel } from '@Api'
 
 interface GameCreateModalProps extends ModalProps {
   onAddGame: (game: GameInfoModel) => void

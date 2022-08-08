@@ -14,7 +14,7 @@ import {
 import { useInterval } from '@mantine/hooks'
 import { mdiFlagOutline, mdiGauge, mdiMedalOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { GameDetailModel, ParticipationStatus, Role } from '@Api/Api'
+import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
 

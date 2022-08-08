@@ -37,7 +37,7 @@ import {
 import { Icon } from '@mdi/react'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api/Api'
+import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 
 const StatusMap = new Map([
   [

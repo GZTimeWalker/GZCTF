@@ -24,7 +24,7 @@ import { Icon } from '@mdi/react'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import api, { ParticipationStatus } from '@Api/Api'
+import api, { ParticipationStatus } from '@Api'
 
 const useStyles = createStyles((theme) => ({
   root: {

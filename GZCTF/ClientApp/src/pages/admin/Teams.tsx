@@ -15,7 +15,7 @@ import { mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutline } from 
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamInfoModel } from '@Api/Api'
+import api, { TeamInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 

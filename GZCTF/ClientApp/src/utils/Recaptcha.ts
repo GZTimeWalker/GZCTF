@@ -2,7 +2,7 @@
 
 /* tslint:disable */
 import { useEffect, useState } from 'react'
-import api from '../Api'
+import api from '@Api'
 
 declare global {
   interface Window {

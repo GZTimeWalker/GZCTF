@@ -6,7 +6,7 @@ import LogoHeader from '@Components/LogoHeader'
 import NoticeCard from '@Components/NoticeCard'
 import RecentGame from '@Components/RecentGame'
 import WithNavBar from '@Components/WithNavbar'
-import api from '@Api/Api'
+import api from '@Api'
 
 const useStyles = createStyles((theme) => ({
   notices: {

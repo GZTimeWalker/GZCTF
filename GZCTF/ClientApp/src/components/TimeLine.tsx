@@ -3,7 +3,7 @@ import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { useMantineTheme } from '@mantine/core'
-import api from '@Api/Api'
+import api from '@Api'
 
 const TimeLine: FC = () => {
   const { id } = useParams()

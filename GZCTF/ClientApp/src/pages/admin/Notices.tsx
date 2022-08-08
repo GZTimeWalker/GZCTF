@@ -8,7 +8,7 @@ import AdminPage from '@Components/admin/AdminPage'
 import NoticeEditCard from '@Components/admin/NoticeEditCard'
 import NoticeEditModal from '@Components/admin/NoticeEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { Notice } from '@Api/Api'
+import api, { Notice } from '@Api'
 
 const Notices: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({

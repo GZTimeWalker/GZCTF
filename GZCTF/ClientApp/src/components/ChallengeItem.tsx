@@ -20,7 +20,7 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTag, ChallengeType, NoticeType, SubmissionType } from '@Api/Api'
+import { ChallengeTag, ChallengeType, NoticeType, SubmissionType } from '@Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
   [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],

@@ -6,7 +6,7 @@ import TeamRank from '@Components/TeamRank'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
-import api, { Role } from '@Api/Api'
+import api, { Role } from '@Api'
 import ChallengeNoticePanel from '@Components/ChallengeNoticePanel'
 
 const Challenges: FC = () => {

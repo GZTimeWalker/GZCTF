@@ -6,7 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api from '@Api/Api'
+import api from '@Api'
 import StrengthPasswordInput from './StrengthPasswordInput'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {

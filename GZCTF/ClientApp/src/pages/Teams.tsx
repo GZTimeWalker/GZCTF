@@ -22,7 +22,7 @@ import TeamEditModal from '@Components/TeamEditModal'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamInfoModel, Role } from '@Api/Api'
+import api, { TeamInfoModel, Role } from '@Api'
 
 const Teams: FC = () => {
   const { data: user, error: userError } = api.account.useAccountProfile({

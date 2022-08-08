@@ -5,7 +5,7 @@ import ScoreboardTable from '@Components/ScoreboardTable'
 import TimeLine from '@Components/TimeLine'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
-import api from '@Api/Api'
+import api from '@Api'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()

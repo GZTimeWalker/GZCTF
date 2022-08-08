@@ -25,7 +25,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamInfoModel, TeamUserInfoModel } from '@Api/Api'
+import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null

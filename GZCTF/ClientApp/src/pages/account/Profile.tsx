@@ -23,7 +23,7 @@ import { Icon } from '@mdi/react'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { ProfileUpdateModel } from '@Api/Api'
+import api, { ProfileUpdateModel } from '@Api'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
