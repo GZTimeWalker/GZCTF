@@ -1,12 +1,19 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using CTFServer.Hubs;
+using CTFServer.Hubs.Clients;
+using CTFServer.Repositories.Interface;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
 
 public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 {
-    public SubmissionRepository(AppDbContext _context) : base(_context)
+    private IHubContext<MonitorHub, IMonitorClient> hubContext;
+
+    public SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
+        AppDbContext _context) : base(_context)
     {
+        hubContext = hub;
     }
 
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)
@@ -14,13 +21,10 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
         await context.AddAsync(submission, token);
         await context.SaveChangesAsync(token);
 
-        return submission;
-    }
+        await hubContext.Clients.Group($"Game_{submission.GameId}")
+            .ReceivedSubmissions(submission);
 
-    public Task UpdateSubmission(Submission submission, CancellationToken token = default)
-    {
-        context.Update(submission);
-        return SaveAsync(token);
+        return submission;
     }
 
     public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId, CancellationToken token = default)

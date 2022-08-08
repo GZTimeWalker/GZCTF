@@ -29,7 +29,8 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 
         cache.Remove(CacheKey.GameNotice(notice.GameId));
 
-        await hubContext.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
+        await hubContext.Clients.Group($"Game_{notice.GameId}")
+            .ReceivedGameNotice(notice);
 
         return notice;
     }

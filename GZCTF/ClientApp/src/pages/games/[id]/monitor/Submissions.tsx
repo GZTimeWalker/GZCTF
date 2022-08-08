@@ -60,7 +60,7 @@ const Submissions: FC = () => {
   useEffect(() => {
     if (game?.end && new Date() < new Date(game.end)) {
       const connection = new signalR.HubConnectionBuilder()
-        .withUrl(`/hub/user?game=${numId}`)
+        .withUrl(`/hub/monitor?game=${numId}`)
         .withHubProtocol(new signalR.JsonHubProtocol())
         .withAutomaticReconnect()
         .build()

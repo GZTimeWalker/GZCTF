@@ -1,12 +1,20 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using CTFServer.Hubs;
+using CTFServer.Hubs.Clients;
+using CTFServer.Repositories.Interface;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
 
 public class GameEventRepository : RepositoryBase, IGameEventRepository
 {
-    public GameEventRepository(AppDbContext _context) : base(_context)
+    private IHubContext<MonitorHub, IMonitorClient> hubContext;
+
+    public GameEventRepository(
+        IHubContext<MonitorHub, IMonitorClient> hub,
+        AppDbContext _context) : base(_context)
     {
+        hubContext = hub;
     }
 
     public async Task<GameEvent> AddEvent(GameEvent gameEvent, CancellationToken token = default)
@@ -14,8 +22,10 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
         await context.AddAsync(gameEvent);
         await SaveAsync(token);
 
-        // TODO: send to signalR (for monitor)
-        //       ensure Team, User is loaded
+        gameEvent = await context.GameEvents.SingleAsync(s => s.Id == gameEvent.Id, token);
+
+        await hubContext.Clients.Group($"Game_{gameEvent.GameId}")
+                .ReceivedGameEvent(gameEvent);
 
         return gameEvent;
     }

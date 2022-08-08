@@ -54,14 +54,6 @@ public interface ISubmissionRepository : IRepository
     public Task<Submission> AddSubmission(Submission submission, CancellationToken token = default);
 
     /// <summary>
-    /// 更新提交
-    /// </summary>
-    /// <param name="submission">提交对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task UpdateSubmission(Submission submission, CancellationToken token = default);
-
-    /// <summary>
     /// 获取未检查的 flag
     /// </summary>
     /// <param name="token"></param>
