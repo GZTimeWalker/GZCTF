@@ -1,7 +1,6 @@
 import { forwardRef } from 'react'
 import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
 import {
-  mdiAlertCircleOutline,
   mdiBomb,
   mdiBullhornOutline,
   mdiCellphoneCog,
@@ -160,10 +159,6 @@ export const NoticTypeIconMap = (size: number) => {
     [
       NoticeType.NewChallenge,
       <Icon path={mdiPlus} size={size} color={theme.colors.green[colorIdx]} />,
-    ],
-    [
-      NoticeType.ErrorFix,
-      <Icon path={mdiAlertCircleOutline} size={size} color={theme.colors.alert[colorIdx]} />,
     ],
     [NoticeType.FirstBlood, submissionMap.get(SubmissionType.FirstBlood)],
     [NoticeType.SecondBlood, submissionMap.get(SubmissionType.SecondBlood)],
