@@ -8,7 +8,6 @@ import {
   useMantineTheme,
   ActionIcon,
   ScrollArea,
-  Badge,
   Stack,
   Card,
 } from '@mantine/core'
@@ -134,24 +133,24 @@ const Events: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
-        <Stack spacing="xs">
+      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 150px)' }}>
+        <Stack spacing="xs" pr={10}>
           {[...(activePage === 1 ? newEvents.current : []), ...(events ?? [])]?.map((event) => (
             <Card shadow="sm" radius="sm" p="xs">
-              <Stack>
-                <Group position="apart">
-                  <Group position="right">
-                    {iconMap.get(event.type)}
-                    <Text>{event.content}</Text>
-                  </Group>
-                  <Badge size="xs" variant="dot">
-                    {dayjs(event.time).format('MM/DD HH:mm:ss')}
-                  </Badge>
+              <Group align="flex-end" position="apart">
+                <Group align="flex-start" position="right">
+                  {iconMap.get(event.type)}
+                  <Stack spacing={2}>
+                    <Text weight={500}>{event.content}</Text>
+                    <Text size="sm" weight={500} color="dimmed">
+                      {event.team}, {event.user}
+                    </Text>
+                  </Stack>
                 </Group>
-              </Stack>
-              <Text size="sm" weight={500} color="dimmed">
-                {event.team}, {event.user}
-              </Text>
+                <Text size="xs" weight={500} color="dimmed">
+                  {dayjs(event.time).format('MM/DD HH:mm:ss')}
+                </Text>
+              </Group>
             </Card>
           ))}
         </Stack>

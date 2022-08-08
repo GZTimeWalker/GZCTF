@@ -177,6 +177,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 checkInfo.SourceTeam = instance.Participation.Team;
                 checkInfo.Challenge = instance.Challenge;
 
+                var updateSub = await context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+
+                if (updateSub is not null)
+                    updateSub.Status = AnswerResult.CheatDetected;
+
+                await SaveAsync(token);
+
                 return checkInfo;
             }
         }
