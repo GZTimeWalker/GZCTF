@@ -9,6 +9,7 @@ import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api from '@Api'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const Reset: FC = () => {
   const location = useLocation()
@@ -19,6 +20,8 @@ const Reset: FC = () => {
   const [pwd, setPwd] = useInputState('')
   const [retypedPwd, setRetypedPwd] = useInputState('')
   const [disabled, setDisabled] = useState(false)
+
+  usePageTitle('重置密码')
 
   const onReset = () => {
     if (pwd !== retypedPwd) {

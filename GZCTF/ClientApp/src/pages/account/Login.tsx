@@ -7,6 +7,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import api from '@Api'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const Login: FC = () => {
   const params = useParams()
@@ -15,6 +16,8 @@ const Login: FC = () => {
   const [pwd, setPwd] = useInputState('')
   const [uname, setUname] = useInputState('')
   const [disabled, setDisabled] = useState(false)
+
+  usePageTitle('登录')
 
   const onLogin = () => {
     setDisabled(true)

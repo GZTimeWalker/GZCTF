@@ -9,6 +9,7 @@ import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { useReCaptcha } from '@Utils/Recaptcha'
 import api from '@Api'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -19,6 +20,8 @@ const Register: FC = () => {
 
   const navigate = useNavigate()
   const reCaptcha = useReCaptcha('register')
+
+  usePageTitle('注册')
 
   const onRegister = async (event: React.FormEvent) => {
     event.preventDefault()

@@ -17,6 +17,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import IconTabs from '../IconTabs'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const pages = [
   { icon: mdiBullhornOutline, title: '通知管理', path: 'notices', color: 'blue' },
@@ -56,6 +57,8 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, scroll, c
       navigate(pages[0].path)
     }
   }, [location])
+
+  usePageTitle(pages[tabIndex].title)
 
   return (
     <Stack spacing="xs">

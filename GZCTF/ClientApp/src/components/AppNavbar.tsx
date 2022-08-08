@@ -27,6 +27,7 @@ import {
 import { Icon } from '@mdi/react'
 import api, { Role } from '@Api'
 import MainIcon from './icon/MainIcon'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const useStyles = createStyles((theme, _param, getRef) => {
   const active = { ref: getRef('activeItem') } as const
@@ -139,6 +140,8 @@ const AppNavbar: FC = () => {
     revalidateIfStale: false,
     revalidateOnFocus: false,
   })
+
+  usePageTitle(active)
 
   useEffect(() => {
     if (location.pathname == '/') {
