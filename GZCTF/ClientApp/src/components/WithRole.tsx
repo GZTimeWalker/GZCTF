@@ -8,7 +8,7 @@ interface WithRoleProps {
   children?: React.ReactNode
 }
 
-const RoleMap = new Map<Role, number>([
+export const RoleMap = new Map<Role, number>([
   [Role.Admin, 3],
   [Role.Monitor, 1],
   [Role.User, 0],

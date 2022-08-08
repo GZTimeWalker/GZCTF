@@ -131,7 +131,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   ))
 
   return (
-    <Group position="apart" style={{ width: '100%' }}>
+    <Group align="stretch" position="apart" style={{ width: '100%' }}>
       {left}
       {withIcon && (
         <LogoHeader
