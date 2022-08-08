@@ -25,6 +25,7 @@ import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationStatus } from '@Api'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -175,6 +176,8 @@ const GameDetail: FC = () => {
     revalidateIfStale: false,
     revalidateOnFocus: false,
   })
+
+  usePageTitle(game?.title ? `${game.title} - 赛事` : '赛事')
 
   useEffect(() => {
     if (error) {

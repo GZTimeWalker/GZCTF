@@ -17,6 +17,7 @@ import { Icon } from '@mdi/react'
 import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const pages = [
   {
@@ -85,6 +86,8 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
 
   const progress = (current / total) * 100
   const countdown = dayjs.duration(end.diff(now))
+
+  usePageTitle(game?.title ? `${game.title} - 赛事` : '赛事')
 
   useEffect(() => {
     if (game && dayjs() < dayjs(game.end)) {

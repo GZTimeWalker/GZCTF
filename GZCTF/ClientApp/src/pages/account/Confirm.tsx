@@ -6,6 +6,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import api from '@Api'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const Confirm: FC = () => {
   const navigate = useNavigate()
@@ -13,6 +14,8 @@ const Confirm: FC = () => {
   const sp = new URLSearchParams(location.search)
   const token = sp.get('token')
   const email = sp.get('email')
+
+  usePageTitle('邮箱验证')
 
   useEffect(() => {
     if (token && email) {
