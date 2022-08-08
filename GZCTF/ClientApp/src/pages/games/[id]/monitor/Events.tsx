@@ -35,10 +35,7 @@ const EventTypeIconMap = (size: number) => {
   const colorIdx = theme.colorScheme === 'dark' ? 5 : 7
 
   return new Map([
-    [
-      EventType.FlagSubmit,
-      <Icon path={mdiFlag} size={size} color={theme.colors.cyan[colorIdx]} />,
-    ],
+    [EventType.FlagSubmit, <Icon path={mdiFlag} size={size} color={theme.colors.cyan[colorIdx]} />],
     [
       EventType.ContainerStart,
       <Icon path={mdiToggleSwitchOutline} size={size} color={theme.colors.green[colorIdx]} />,
@@ -139,7 +136,7 @@ const Events: FC = () => {
     <WithGameMonitorTab>
       <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
         <Stack spacing="xs">
-          {events?.map((event) => (
+          {[...(activePage === 1 ? newEvents.current : []), ...(events ?? [])]?.map((event) => (
             <Card shadow="sm" radius="sm" p="xs">
               <Stack>
                 <Group position="apart">

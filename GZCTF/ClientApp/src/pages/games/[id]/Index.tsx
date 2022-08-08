@@ -255,7 +255,7 @@ const GameDetail: FC = () => {
             <Stack spacing={2}>
               <Title className={classes.title}>{game?.title}</Title>
               <Text size="sm" color="dimmed">
-                <Text component="span" weight={700}>
+                <Text span weight={700}>
                   {game?.teamCount ?? 0}
                 </Text>{' '}
                 支队伍已报名

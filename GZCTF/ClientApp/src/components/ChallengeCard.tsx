@@ -75,7 +75,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
         </Group>
         <Title order={6} align="center">
           {`${challenge.solved} `}
-          <Text color="dimmed" size="xs" inherit component="span">
+          <Text color="dimmed" size="xs" inherit span>
             支队伍攻克
           </Text>
         </Title>
