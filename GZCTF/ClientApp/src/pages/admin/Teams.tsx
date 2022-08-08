@@ -122,7 +122,7 @@ const Teams: FC = () => {
                           <Avatar src={team.avatar} radius="xl">
                             {team.name?.at(0)}
                           </Avatar>
-                          <Text>{team.name}</Text>
+                          <Text lineClamp={1}>{team.name}</Text>
                         </Group>
                         {team.locked && (
                           <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />

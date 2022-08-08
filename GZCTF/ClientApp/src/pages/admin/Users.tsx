@@ -178,7 +178,7 @@ const Users: FC = () => {
                         <Avatar src={user.avatar} radius="xl" />
                         <Text>{user.userName}</Text>
                       </Group>
-                      <Badge size="md" color={RoleColorMap.get(user.role ?? Role.User)}>
+                      <Badge size="sm" color={RoleColorMap.get(user.role ?? Role.User)}>
                         {user.role}
                       </Badge>
                     </Group>
@@ -189,11 +189,11 @@ const Users: FC = () => {
                     </Text>
                   </td>
                   <td>
-                    <Group position="apart">
-                      <Text size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
+                    <Group noWrap position="apart">
+                      <Text lineClamp={1} size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
                         {user.ip}
                       </Text>
-                      <Badge size="md" color="cyan" variant="outline">
+                      <Badge size="xs" color="cyan" variant="outline">
                         {new Date(user.lastVisitedUTC!).toLocaleString()}
                       </Badge>
                     </Group>
