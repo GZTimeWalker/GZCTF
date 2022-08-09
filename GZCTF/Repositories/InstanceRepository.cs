@@ -91,7 +91,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             await service.DestoryContainer(container, token);
             await containerRepository.RemoveContainer(container, token);
-            logger.SystemLog($"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()})", TaskStatus.Success);
             return true;
         }
         catch (Exception ex)

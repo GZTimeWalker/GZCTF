@@ -246,7 +246,12 @@ const GameDetail: FC = () => {
   return (
     <WithNavBar width="100%" padding={0} isLoading={!game}>
       <div className={classes.root}>
-        <Group noWrap position="apart" style={{ width: '100%', padding: `0 ${theme.spacing.md}px` }} className={classes.container}>
+        <Group
+          noWrap
+          position="apart"
+          style={{ width: '100%', padding: `0 ${theme.spacing.md}px` }}
+          className={classes.container}
+        >
           <Stack spacing="xs" className={classes.flexGrowAtSm}>
             <Group>
               <Badge variant="outline">

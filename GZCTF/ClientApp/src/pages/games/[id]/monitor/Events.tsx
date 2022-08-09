@@ -2,15 +2,7 @@ import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  Group,
-  Text,
-  useMantineTheme,
-  ActionIcon,
-  ScrollArea,
-  Stack,
-  Card,
-} from '@mantine/core'
+import { Group, Text, useMantineTheme, ActionIcon, ScrollArea, Stack, Card } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiFlag,
@@ -25,6 +17,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { EventType, GameEvent } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -69,6 +62,7 @@ const Events: FC = () => {
     revalidateOnFocus: false,
   })
   const iconMap = EventTypeIconMap(1)
+  const { classes } = useTableStyles()
 
   useEffect(() => {
     api.game
@@ -135,8 +129,18 @@ const Events: FC = () => {
     <WithGameMonitorTab>
       <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 150px)' }}>
         <Stack spacing="xs" pr={10}>
-          {[...(activePage === 1 ? newEvents.current : []), ...(events ?? [])]?.map((event) => (
-            <Card shadow="sm" radius="sm" p="xs">
+          {[...(activePage === 1 ? newEvents.current : []), ...(events ?? [])]?.map((event, i) => (
+            <Card
+              shadow="sm"
+              radius="sm"
+              p="xs"
+              key={`${event.time}@${i}`}
+              className={
+                i === 0 && activePage === 1 && newEvents.current.length > 0
+                  ? classes.fade
+                  : undefined
+              }
+            >
               <Group align="flex-end" position="apart">
                 <Group align="flex-start" position="right">
                   {iconMap.get(event.type)}

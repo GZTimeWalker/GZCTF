@@ -129,6 +129,16 @@ public class Challenge
     public Attachment? Attachment { get; set; }
 
     /// <summary>
+    /// 测试容器 Id
+    /// </summary>
+    public string? TestContainerId { get; set; }
+
+    /// <summary>
+    /// 测试容器
+    /// </summary>
+    public Container? TestContainer { get; set; }
+
+    /// <summary>
     /// 题目对应的 Flag 列表
     /// </summary>
     public List<FlagContext> Flags { get; set; } = new();
