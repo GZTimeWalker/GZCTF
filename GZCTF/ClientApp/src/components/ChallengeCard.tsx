@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { Card, useMantineTheme, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
+import { Card, useMantineTheme, Divider, Group, Tooltip, Stack, Text, Title, createStyles } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeInfo, SubmissionType } from '@Api'
@@ -11,11 +11,37 @@ interface ChallengeCardProps {
   solved?: boolean
   onClick?: () => void
   iconMap: Map<SubmissionType, React.ReactNode>
+  teamId?: number
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onClick }) => {
+export const useStyles = createStyles((theme) => ({
+  spike: {
+    position: "absolute",
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%)",
+    filter: "brightness(.8) saturate(.5)",
+    width: "70%",
+    height: "200%",
+    zIndex: 91
+  },
+  blood1: {
+    background: `linear-gradient(0deg, #fff0, ${theme.colors.yellow[5]}, #fff0)`,
+  },
+  blood2: {
+    background: `linear-gradient(0deg, #fff0, ${theme.fn.lighten(theme.colors.gray[2], 0.3)}, #fff0)`,
+  },
+  blood3: {
+    background: `linear-gradient(0deg, #fff0, ${theme.fn.darken(theme.colors.orange[6], theme.colorScheme === 'dark' ? 0.25 : 0.1)}, #fff0)`,
+  }
+}))
+
+const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
+  const { challenge, solved, onClick, iconMap, teamId } = props
+
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
   const theme = useMantineTheme()
+  const { classes, cx } = useStyles()
 
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
 
@@ -81,7 +107,14 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
                       </Stack>
                     }
                   >
-                    {iconMap.get(BloodsTypes[idx])}
+                    <div style={{ position: "relative", height: 20 }}>
+                      <div style={{ position: "relative", zIndex: 92 }}>
+                        {iconMap.get(BloodsTypes[idx])}
+                      </div>
+                      <div className={cx(classes.spike, idx == 0 ? classes.blood1 : idx == 1 ? classes.blood2 : classes.blood3)}
+                        style={{ display: teamId === blood?.id ? "block" : "none" }}
+                      ></div>
+                    </div>
                   </Tooltip.Floating>
                 ))}
             </Group>
@@ -98,7 +131,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
             bottom: 0,
             left: 0,
             transform: 'translateY(35%)',
-            zIndex: 98,
+            zIndex: 90,
           }}
         />
       )}

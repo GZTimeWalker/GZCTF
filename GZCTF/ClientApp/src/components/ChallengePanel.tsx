@@ -113,6 +113,7 @@ const ChallengePanel: FC = () => {
                 myteam &&
                 myteam.challenges?.find((c) => c.id === chal.id)?.type !== SubmissionType.Unaccepted
               }
+              teamId={myteam?.id}
             />
           ))}
         </SimpleGrid>
