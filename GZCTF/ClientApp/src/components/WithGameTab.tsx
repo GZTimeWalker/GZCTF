@@ -133,7 +133,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
                     : '比赛已结束'}
                 </Text>
                 <Card.Section style={{ marginTop: 4 }}>
-                  <CustomProgress percentage={progress} paddingY={0}/>
+                  <CustomProgress percentage={progress} paddingY={0} color={theme.colorScheme === "light" ? theme.colors.brand[5] : undefined}/>
                 </Card.Section>
               </Card>
             </>

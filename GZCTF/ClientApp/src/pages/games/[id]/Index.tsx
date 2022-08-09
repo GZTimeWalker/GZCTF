@@ -285,7 +285,7 @@ const GameDetail: FC = () => {
                 </Text>
               </Stack>
             </Group>
-            <CustomProgress percentage={progress * 100} />
+            <CustomProgress percentage={progress * 100} color={theme.colorScheme === "light" ? theme.colors.brand[5] : undefined} paddingY={theme.spacing.xs / 2} />
             <Group>{ControlButtons}</Group>
           </Stack>
           <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">
