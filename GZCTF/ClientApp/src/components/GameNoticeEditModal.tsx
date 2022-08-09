@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Group, Modal, ModalProps, Stack, Text, Textarea, TextInput } from '@mantine/core'
-import { useInputState } from '@mantine/hooks'
+import { Button, Group, Modal, ModalProps, Stack, Text, Textarea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { GameNotice } from '../Api'
+import api, { GameNotice } from '@Api'
 
 interface GameNoticeEditModalProps extends ModalProps {
   gameNotice?: GameNotice | null
@@ -15,14 +14,11 @@ interface GameNoticeEditModalProps extends ModalProps {
 
 const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   const { id } = useParams()
-  const numId = parseInt(id ?? '-1') // gameId
+  const numId = parseInt(id ?? '-1')
   const { gameNotice, mutateGameNotice, ...modalProps } = props
 
-  // const [content, setContent] = useInputState(gameNotice?.content )
   const [content, setContent] = useState<string | undefined>(gameNotice?.content)
   const [disabled, setDisabled] = useState(false)
-  // to be added
-  // 通知选项
 
   useEffect(() => {
     setContent(gameNotice?.content)

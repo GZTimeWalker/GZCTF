@@ -3,13 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Stack, Button, Text, Group, ScrollArea } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiAccountReactivate, mdiBackburger, mdiCheck, mdiClose, mdiPlus } from '@mdi/js'
+import { mdiBackburger, mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import GameNoticeEditCard from '@Components/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
-import api, { GameNotice } from '../../../../Api'
-import GameNoticeEditCard from '../../../../components/GameNoticeEditCard'
-import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import api, { GameNotice } from '@Api'
 
 const GameNoticeEdit: FC = () => {
   const { id } = useParams()
@@ -20,16 +20,12 @@ const GameNoticeEdit: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const [disabled, setDisabled] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeGameNotice, setActiveGameNotice] = useState<GameNotice | null>(null)
 
   // delete
   const modals = useModals()
   const onDeleteGameNotice = (gameNotice: GameNotice) => {
-    if (disabled) {
-      return
-    }
     modals.openConfirmModal({
       title: '删除通知',
       children: <Text> 你确定要删除通知该通知吗？</Text>,
