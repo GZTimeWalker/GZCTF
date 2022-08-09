@@ -79,6 +79,7 @@ const ChallengeNoticePanel: FC = () => {
     <Card shadow="sm">
       <ScrollArea
         offsetScrollbars
+        scrollbarSize={4}
         style={{ height: 'calc(100vh - 20rem)' }}
         sx={{
           scrollbar: {
