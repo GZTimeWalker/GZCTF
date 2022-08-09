@@ -245,21 +245,18 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       }}
       title={
         <Group style={{ width: '100%' }} position="apart">
-          <Title order={4}>{challenge?.title ?? title}</Title>
+          <Group>
+            {tagData && <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />}
+            <Title order={4}>{challenge?.title ?? title}</Title>
+          </Group>
           <Text weight={700} sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}>
             {challenge?.score ?? score} pts
           </Text>
         </Group>
       }
     >
-      <Stack spacing="sm">
-        <Divider
-          size="sm"
-          variant="dashed"
-          color={tagData?.color}
-          labelPosition="center"
-          label={tagData && <Icon path={tagData.icon} size={1} />}
-        />
+      <Stack spacing="sm" style={{marginTop: theme.spacing.sm}}>
+        <Divider />
         <Stack justify="space-between" style={{ position: 'relative', minHeight: '20vh' }}>
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
@@ -347,7 +344,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             </Stack>
           )}
         </Stack>
-        <Divider size="sm" variant="dashed" color={tagData.color} />
+        <Divider />
         <form onSubmit={onSubmit}>
           <TextInput
             placeholder="flag{...}"
