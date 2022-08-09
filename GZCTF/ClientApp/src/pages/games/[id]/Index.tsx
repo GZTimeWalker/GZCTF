@@ -20,12 +20,12 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import CustomProgress from '@Components/CustomProgress'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/PageTitle'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationStatus } from '@Api'
-import CustomProgress from "@Components/CustomProgress"
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -284,11 +284,7 @@ const GameDetail: FC = () => {
                 </Text>
               </Stack>
             </Group>
-            <CustomProgress
-              percentage={progress * 100}
-              pulsing={progress * 100 < 100}
-              spikeOpacity={progress * 100 >= 100 ? 0 : undefined}
-              color={progress >= 100 ? "blue" : undefined} />
+            <CustomProgress percentage={progress * 100} />
             <Group>{ControlButtons}</Group>
           </Stack>
           <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">

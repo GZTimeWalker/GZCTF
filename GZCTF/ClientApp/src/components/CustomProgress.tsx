@@ -3,32 +3,35 @@ import { BoxProps, Center, createStyles, Group, keyframes, MantineColor } from '
 
 export interface CustomProgressProps extends BoxProps {
   thickness?: number
-  percentage?: number
   spikeLength?: number
-  spikeOpacity?: number
-  pulsing?: boolean
+  percentage: number
   color?: MantineColor
 }
 
 export const useStyles = createStyles(
-  (theme, { spikeLength = 250, spikeOpacity = 1, color, percentage, thickness = 4, pulsing = true }: CustomProgressProps) => {
-    const spikeColor = theme.fn.rgba(
-      theme.colors[theme.colorScheme === 'dark' ? 'white' : color ?? 'brand'][5],
-      0.75
-    )
-    const barColor = theme.colorScheme === 'dark' ? theme.colors.white[9] : theme.colors[color ?? 'brand'][2]
+  (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps) => {
+    const pulsing = percentage < 100
+
+    const _color = pulsing ? (theme.colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'blue'
+    const spikeColor = theme.fn.rgba(theme.colors[_color][5], 0.75)
+    const barColor = theme.colorScheme === 'dark' ? theme.colors.white[9] : theme.colors[_color][2]
     const spikeLengthStr = `${spikeLength}%`
     const negSpikeLengthStr = `-${spikeLength}%`
+    const spikeOpacity = percentage >= 100 ? 0 : 1
 
     return {
       spikesGroup: {
         position: 'relative',
         height: '100%',
         aspectRatio: '1 / 1',
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[color ?? 'brand'][5],
+        backgroundColor:
+          theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[color ?? 'brand'][5],
 
         '& div': {
-          animation: `${keyframes`0% {opacity: ${.3 * spikeOpacity};} 100% {opacity: ${1 * spikeOpacity};}`} 2s linear 0s infinite alternate`,
+          display: pulsing ? 'block' : 'none',
+          animation: `${keyframes`0% {opacity: ${0.3 * spikeOpacity};} 100% {opacity: ${
+            1 * spikeOpacity
+          };}`} 2s linear 0s infinite alternate`,
         },
       },
       progressPulseContainer: {

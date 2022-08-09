@@ -293,8 +293,8 @@ const Profile: FC = () => {
                   title: '文件获取失败',
                   message: '请检查文件格式和大小',
                   icon: <Icon path={mdiClose} size={1} />,
-              disallowClose: true,
-            })
+                  disallowClose: true,
+                })
               }}
               style={{
                 margin: '0 auto 20px auto',
