@@ -5,7 +5,6 @@ export interface CustomProgressProps extends BoxProps {
   thickness?: number
   percentage?: number
   spikeLength?: number
-  paddingY?: number
   color?: string
 }
 

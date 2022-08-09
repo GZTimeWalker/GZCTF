@@ -140,7 +140,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
                     : '比赛已结束'}
                 </Text>
                 <Card.Section style={{ marginTop: 4 }}>
-                  <CustomProgress percentage={progress} py={0} />
+                  <CustomProgress percentage={progress} py={0} spikeLength={150}/>
                 </Card.Section>
               </Card>
             </>
