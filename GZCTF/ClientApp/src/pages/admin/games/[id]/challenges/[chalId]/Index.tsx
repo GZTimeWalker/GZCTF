@@ -12,7 +12,10 @@ import {
   Slider,
   Textarea,
   TextInput,
+  Grid,
+  Code,
 } from '@mantine/core'
+import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiBackburger, mdiCheck } from '@mdi/js'
@@ -48,6 +51,7 @@ const GameChallengeEdit: FC = () => {
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
 
   const modals = useModals()
+  const clipBoard = useClipboard()
 
   useEffect(() => {
     if (challenge) {
@@ -101,6 +105,45 @@ const GameChallengeEdit: FC = () => {
       .finally(() => {
         setDisabled(false)
       })
+  }
+
+  const onToggleTestContainer = () => {
+    if (!challenge) return
+
+    setDisabled(true)
+    if (!challenge?.testContainer) {
+      api.edit
+        .editCreateTestContainer(numId, numCId)
+        .then((res) => {
+          showNotification({
+            color: 'teal',
+            message: '实例已创建',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+          mutate({ ...challenge, testContainer: res.data })
+        })
+        .catch(showErrorNotification)
+        .finally(() => {
+          setDisabled(false)
+        })
+    } else {
+      api.edit
+        .editDestoryTestContainer(numId, numCId)
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            message: '实例已销毁',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+          mutate({ ...challenge, testContainer: undefined })
+        })
+        .catch(showErrorNotification)
+        .finally(() => {
+          setDisabled(false)
+        })
+    }
   }
 
   return (
@@ -299,17 +342,53 @@ const GameChallengeEdit: FC = () => {
           />
         )}
         {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
-          <>
-            <TextInput
-              label="容器镜像"
-              disabled={disabled}
-              value={challengeInfo.containerImage ?? ''}
-              required
-              onChange={(e) =>
-                setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })
-              }
-            />
-            <SimpleGrid cols={3}>
+          <Grid>
+            <Grid.Col span={8}>
+              <TextInput
+                label="容器镜像"
+                disabled={disabled}
+                value={challengeInfo.containerImage ?? ''}
+                required
+                rightSectionWidth={122}
+                rightSection={
+                  <Button
+                    color={challenge?.testContainer ? 'orange' : 'brand'}
+                    disabled={disabled}
+                    onClick={onToggleTestContainer}
+                  >
+                    {challenge?.testContainer ? '关闭' : '开启'}测试容器
+                  </Button>
+                }
+                onChange={(e) =>
+                  setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })
+                }
+              />
+            </Grid.Col>
+            <Grid.Col span={4}>
+              <Group spacing={0} align="center" pt={22} style={{ height: '100%' }}>
+                {challenge?.testContainer ? (
+                  <>
+                    <Text size="sm" weight={600}>
+                      测试容器访问入口：
+                    </Text>
+                    <Code
+                      sx={(theme) => ({
+                        backgroundColor: 'transparent',
+                        fontSize: theme.fontSizes.sm,
+                      })}
+                      onClick={() => clipBoard.copy(challenge?.testContainer?.entry ?? '')}
+                    >
+                      {challenge?.testContainer?.entry ?? ''}
+                    </Code>
+                  </>
+                ) : (
+                  <Text size="sm" weight={600} color="dimmed">
+                    测试容器未开启
+                  </Text>
+                )}
+              </Group>
+            </Grid.Col>
+            <Grid.Col span={4}>
               <NumberInput
                 label="服务端口"
                 min={1}
@@ -321,6 +400,8 @@ const GameChallengeEdit: FC = () => {
                 value={challengeInfo.containerExposePort ?? 1}
                 onChange={(e) => setChallengeInfo({ ...challengeInfo, containerExposePort: e })}
               />
+            </Grid.Col>
+            <Grid.Col span={4}>
               <NumberInput
                 label="CPU 数量限制"
                 min={1}
@@ -332,6 +413,8 @@ const GameChallengeEdit: FC = () => {
                 value={challengeInfo.cpuCount ?? 1}
                 onChange={(e) => setChallengeInfo({ ...challengeInfo, cpuCount: e })}
               />
+            </Grid.Col>
+            <Grid.Col span={4}>
               <NumberInput
                 label="内存限制 (MB)"
                 min={64}
@@ -343,8 +426,8 @@ const GameChallengeEdit: FC = () => {
                 value={challengeInfo.memoryLimit ?? 1}
                 onChange={(e) => setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
               />
-            </SimpleGrid>
-          </>
+            </Grid.Col>
+          </Grid>
         )}
       </Stack>
     </WithGameEditTab>

@@ -520,13 +520,12 @@ public class EditController : Controller
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="cId">题目Id</param>
-    /// <param name="model">题目信息</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
     [HttpPost("Games/{id}/Challenges/{cId}/Container")]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateTestContainer([FromRoute] int id, [FromRoute] int cId, [FromBody] ChallengeUpdateModel model, CancellationToken token)
+    public async Task<IActionResult> CreateTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -570,13 +569,12 @@ public class EditController : Controller
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="cId">题目Id</param>
-    /// <param name="model">题目信息</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
     [HttpDelete("Games/{id}/Challenges/{cId}/Container")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DestoryTestContainer([FromRoute] int id, [FromRoute] int cId, [FromBody] ChallengeUpdateModel model, CancellationToken token)
+    public async Task<IActionResult> DestoryTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 

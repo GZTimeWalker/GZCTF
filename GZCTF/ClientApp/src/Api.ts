@@ -2468,17 +2468,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 测试比赛题目容器
      * @request POST:/api/edit/games/{id}/challenges/{cId}/container
      */
-    editCreateTestContainer: (
-      id: number,
-      cId: number,
-      data: ChallengeUpdateModel,
-      params: RequestParams = {}
-    ) =>
+    editCreateTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
       this.request<ContainerInfoModel, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/container`,
         method: 'POST',
-        body: data,
-        type: ContentType.Json,
         format: 'json',
         ...params,
       }),
@@ -2491,17 +2484,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 关闭测试比赛题目容器
      * @request DELETE:/api/edit/games/{id}/challenges/{cId}/container
      */
-    editDestoryTestContainer: (
-      id: number,
-      cId: number,
-      data: ChallengeUpdateModel,
-      params: RequestParams = {}
-    ) =>
+    editDestoryTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/container`,
         method: 'DELETE',
-        body: data,
-        type: ContentType.Json,
         ...params,
       }),
 
