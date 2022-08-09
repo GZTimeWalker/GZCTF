@@ -1,7 +1,9 @@
 ﻿using CTFServer.Middlewares;
 using CTFServer.Models.Data;
 using CTFServer.Models.Request.Edit;
+using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
+using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -24,18 +26,24 @@ public class EditController : Controller
     private readonly IGameRepository gameRepository;
     private readonly IChallengeRepository challengeRepository;
     private readonly IFileRepository fileService;
+    private readonly IContainerService containerService;
+    private readonly IContainerRepository containerRepository;
 
     public EditController(INoticeRepository _noticeRepository,
+        IContainerRepository _containerRepository,
         IChallengeRepository _challengeRepository,
         IGameNoticeRepository _gameNoticeRepository,
         IGameRepository _gameRepository,
+        IContainerService _containerService,
         IFileRepository _fileService)
     {
-        noticeRepository = _noticeRepository;
-        gameNoticeRepository = _gameNoticeRepository;
-        gameRepository = _gameRepository;
-        challengeRepository = _challengeRepository;
         fileService = _fileService;
+        gameRepository = _gameRepository;
+        noticeRepository = _noticeRepository;
+        containerService = _containerService;
+        challengeRepository = _challengeRepository;
+        containerRepository = _containerRepository;
+        gameNoticeRepository = _gameNoticeRepository;
     }
 
     /// <summary>
@@ -502,6 +510,89 @@ public class EditController : Controller
         gameRepository.FlushScoreboard(game.Id);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
+    }
+
+    /// <summary>
+    /// 测试比赛题目容器
+    /// </summary>
+    /// <remarks>
+    /// 测试比赛题目容器，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="cId">题目Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目</response>
+    [HttpPost("Games/{id}/Challenges/{cId}/Container")]
+    [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CreateTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+
+        if (challenge is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        if (!challenge.Type.IsContainer())
+            return BadRequest(new RequestResponse("题目类型不可创建容器"));
+
+        if (challenge.ContainerImage is null || challenge.ContainerExposePort is null)
+            return BadRequest(new RequestResponse("容器配置错误"));
+
+        var container = await containerService.CreateContainer(new()
+        {
+            CPUCount = challenge.CPUCount ?? 1,
+            Flag = challenge.Type.IsDynamic() ? "flag{GZCTF_dynamic_flag_test}" : null,
+            Image = challenge.ContainerImage,
+            MemoryLimit = challenge.MemoryLimit ?? 64,
+            ExposedPort = challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口"),
+        }, token);
+
+        if (container is null)
+            return BadRequest(new RequestResponse("容器创建失败"));
+
+        challenge.TestContainer = container;
+        await challengeRepository.SaveAsync(token);
+
+        return Ok(ContainerInfoModel.FromContainer(container));
+    }
+
+    /// <summary>
+    /// 关闭测试比赛题目容器
+    /// </summary>
+    /// <remarks>
+    /// 关闭测试比赛题目容器，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="cId">题目Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功添加比赛题目</response>
+    [HttpDelete("Games/{id}/Challenges/{cId}/Container")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DestoryTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+
+        if (challenge is null)
+            return NotFound(new RequestResponse("题目未找到", 404));
+
+        if (challenge.TestContainer is null)
+            return Ok();
+
+        await containerService.DestoryContainer(challenge.TestContainer, token);
+        await containerRepository.RemoveContainer(challenge.TestContainer, token);
+
+        return Ok();
     }
 
     /// <summary>
