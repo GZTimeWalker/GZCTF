@@ -135,12 +135,17 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
                 <Text style={{ fontWeight: 700 }}>
                   {countdown.asSeconds() > 0
                     ? `${countdown.days() * 24 + countdown.hours()} : ${countdown.format(
-                        'mm : ss'
-                      )}`
+                      'mm : ss'
+                    )}`
                     : '比赛已结束'}
                 </Text>
                 <Card.Section style={{ marginTop: 4 }}>
-                  <CustomProgress percentage={progress} py={0} spikeLength={150}/>
+                  <CustomProgress
+                    percentage={progress}
+                    py={0}
+                    pulsing={progress < 100}
+                    spikeOpacity={progress >= 100 ? 0 : undefined}
+                    color={progress >= 100 ? "blue" : undefined} />
                 </Card.Section>
               </Card>
             </>

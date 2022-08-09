@@ -5,16 +5,19 @@ export interface CustomProgressProps extends BoxProps {
   thickness?: number
   percentage?: number
   spikeLength?: number
+  spikeOpacity?: number
+  paddingY?: number
   color?: string
+  pulsing?: boolean
 }
 
 export const useStyles = createStyles(
-  (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps) => {
+  (theme, { spikeLength = 250, spikeOpacity = 1, color, percentage, thickness = 4, pulsing = true }: CustomProgressProps) => {
     const spikeColor = theme.fn.rgba(
       theme.colors[theme.colorScheme === 'dark' ? 'white' : color ?? 'brand'][5],
       0.75
     )
-    const barColor = theme.colors[theme.colorScheme === 'dark' ? 'white' : color ?? 'brand'][0]
+    const barColor = theme.colorScheme === 'dark' ? theme.colors.white[9] : theme.colors[color ?? 'brand'][2]
     const spikeLengthStr = `${spikeLength}%`
     const negSpikeLengthStr = `-${spikeLength}%`
 
@@ -23,18 +26,24 @@ export const useStyles = createStyles(
         position: 'relative',
         height: '100%',
         aspectRatio: '1 / 1',
-        backgroundColor: barColor,
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[color ?? 'brand'][5],
+
+        '& div': {
+          animation: `${keyframes`0% {opacity: ${.3 * spikeOpacity};} 100% {opacity: ${1 * spikeOpacity};}`} 2s linear 0s infinite alternate`,
+        },
       },
       progressPulseContainer: {
+        display: pulsing ? 'block' : 'none',
         position: 'absolute',
         width: '100%',
         height: '100%',
-      },
-      progressPulse: {
-        width: '25%',
-        height: '100%',
-        background: `linear-gradient(-90deg, ${spikeColor}, #fff0)`,
-        animation: `${keyframes`0% { width: 0%;} 80% {opacity: 1; width: 100%;} 100% {opacity: 0; width: 100%;}`} 2s linear 0s infinite normal`,
+
+        '& div': {
+          width: '25%',
+          height: '100%',
+          background: `linear-gradient(-90deg, ${spikeColor}, #fff0)`,
+          animation: `${keyframes`0% { width: 0%;} 80% {opacity: 1; width: 100%;} 100% {opacity: 0; width: 100%;}`} 2s linear 0s infinite normal`,
+        },
       },
       progressBar: {
         position: 'relative',
@@ -49,13 +58,12 @@ export const useStyles = createStyles(
         height: thickness,
         width: '100%',
         backgroundColor: theme.fn.rgba(
-          theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[5],
+          theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[4],
           0.8
         ),
       },
       spike: {
         position: 'absolute',
-        animation: `${keyframes`0% {opcity: .3;} 100% {opcity: 1;}`} 2s linear 0s infinite alternate`,
       },
       spikeLeft: {
         left: 0,
@@ -99,7 +107,7 @@ const CustomProgress: FC<CustomProgressProps> = (props: CustomProgressProps) => 
       <div className={classes.progressBackground}>
         <Group position="right" className={classes.progressBar}>
           <div className={classes.progressPulseContainer}>
-            <div className={classes.progressPulse} />
+            <div />
           </div>
           <div className={classes.spikesGroup}>
             <div className={cx(classes.spike, classes.spikeRight)}></div>
