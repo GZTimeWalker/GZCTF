@@ -215,9 +215,7 @@ const GameChallengeEdit: FC = () => {
               disabled={disabled}
               minRows={4}
               maxRows={4}
-              onChange={(e) =>
-                setChallengeInfo({ ...challengeInfo, content: e.target.value.replace(/\n/g, '') })
-              }
+              onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
             />
             <Textarea
               label={
