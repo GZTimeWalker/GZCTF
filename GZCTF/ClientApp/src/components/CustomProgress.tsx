@@ -24,22 +24,17 @@ export const useStyles = createStyles(
         height: '100%',
         aspectRatio: '1 / 1',
         backgroundColor: barColor,
-
-        '& div': {
-          animation: `${keyframes`0% {opcity: .3;} 100% {opcity: 1;}`} 2s linear 0s infinite alternate`,
-        },
       },
       progressPulseContainer: {
         position: 'absolute',
         width: '100%',
         height: '100%',
-
-        '& div': {
-          width: '25%',
-          height: '100%',
-          background: `linear-gradient(-90deg, ${spikeColor}, #fff0)`,
-          animation: `${keyframes`0% { width: 0%;} 80% {opacity: 1; width: 100%;} 100% {opacity: 0; width: 100%;}`} 2s linear 0s infinite normal`,
-        },
+      },
+      progressPulse: {
+        width: '25%',
+        height: '100%',
+        background: `linear-gradient(-90deg, ${spikeColor}, #fff0)`,
+        animation: `${keyframes`0% { width: 0%;} 80% {opacity: 1; width: 100%;} 100% {opacity: 0; width: 100%;}`} 2s linear 0s infinite normal`,
       },
       progressBar: {
         position: 'relative',
@@ -60,6 +55,7 @@ export const useStyles = createStyles(
       },
       spike: {
         position: 'absolute',
+        animation: `${keyframes`0% {opcity: .3;} 100% {opcity: 1;}`} 2s linear 0s infinite alternate`,
       },
       spikeLeft: {
         left: 0,
@@ -103,7 +99,7 @@ const CustomProgress: FC<CustomProgressProps> = (props: CustomProgressProps) => 
       <div className={classes.progressBackground}>
         <Group position="right" className={classes.progressBar}>
           <div className={classes.progressPulseContainer}>
-            <div />
+            <div className={classes.progressPulse} />
           </div>
           <div className={classes.spikesGroup}>
             <div className={cx(classes.spike, classes.spikeRight)}></div>
