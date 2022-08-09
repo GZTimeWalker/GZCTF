@@ -1,4 +1,4 @@
-<img alt="Banner" src="https://github.com/GZTimeWalker/GZCTF/assets/banner.svg">
+<img alt="Banner" src="https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/assets/banner.svg">
 
 # GZ::CTF
 
@@ -31,10 +31,10 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 ## Demo
 
-![](https://github.com/GZTimeWalker/GZCTF/assets/demo_0.jpg)
-![](https://github.com/GZTimeWalker/GZCTF/assets/demo_1.jpg)
-![](https://github.com/GZTimeWalker/GZCTF/assets/demo_2.jpg)
-![](https://github.com/GZTimeWalker/GZCTF/assets/demo_3.jpg)
+![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/assets/demo_0.jpg)
+![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/demo_1.jpg)
+![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/demo_2.jpg)
+![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/demo_3.jpg)
 
 ## 安装配置
 
