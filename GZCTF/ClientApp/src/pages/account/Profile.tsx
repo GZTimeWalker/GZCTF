@@ -23,7 +23,8 @@ import { Icon } from '@mdi/react'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { ProfileUpdateModel } from '@Api/Api'
+import { usePageTitle } from '@Utils/PageTitle'
+import api, { ProfileUpdateModel } from '@Api'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -48,6 +49,8 @@ const Profile: FC = () => {
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false)
 
   const [email, setEmail] = useState('')
+
+  usePageTitle('个人信息')
 
   useEffect(() => {
     setProfile({

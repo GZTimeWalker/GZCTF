@@ -5,41 +5,51 @@ public interface ISubmissionRepository : IRepository
     /// <summary>
     /// 获取提交，按时间降序
     /// </summary>
+    /// <param name="type">提交类型</param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Submission[]> GetSubmissions(int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 获取比赛的提交，按时间降序
     /// </summary>
     /// <param name="game">比赛对象</param>
+    /// <param name="type">提交类型</param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Submission[]> GetSubmissions(Game game, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(Game game, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目的提交，按时间降序
     /// </summary>
     /// <param name="challenge">题目对象</param>
+    /// <param name="type">提交类型</param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Submission[]> GetSubmissions(Challenge challenge, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(Challenge challenge, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default);
+
+    /// <summary>
+    /// 通过 signalR 发送提交给检查者
+    /// </summary>
+    /// <param name="submission"></param>
+    public Task SendSubmission(Submission submission);
 
     /// <summary>
     /// 获取队伍的提交，按时间降序
     /// </summary>
     /// <param name="team">队伍参赛对象</param>
+    /// <param name="type">提交类型</param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Submission[]> GetSubmissions(Participation team, int count = 100, int skip = 0, CancellationToken token = default);
+    public Task<Submission[]> GetSubmissions(Participation team, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 添加提交
@@ -48,14 +58,6 @@ public interface ISubmissionRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Submission> AddSubmission(Submission submission, CancellationToken token = default);
-
-    /// <summary>
-    /// 更新提交
-    /// </summary>
-    /// <param name="submission">提交对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task UpdateSubmission(Submission submission, CancellationToken token = default);
 
     /// <summary>
     /// 获取未检查的 flag

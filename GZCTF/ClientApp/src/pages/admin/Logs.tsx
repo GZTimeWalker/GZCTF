@@ -1,31 +1,15 @@
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
-import {
-  createStyles,
-  keyframes,
-  Group,
-  SegmentedControl,
-  ActionIcon,
-  Table,
-  Paper,
-} from '@mantine/core'
+import { Group, SegmentedControl, ActionIcon, Table, Paper, ScrollArea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose, mdiCheck, mdiArrowLeftBold, mdiArrowRightBold } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
-import api, { LogMessageModel } from '@Api/Api'
+import { useTableStyles } from '@Utils/ThemeOverride'
+import api, { LogMessageModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
-
-const useStyles = createStyles((theme) => ({
-  mono: {
-    fontFamily: theme.fontFamilyMonospace,
-  },
-  fade: {
-    animation: `${keyframes`0% {opacity:0;} 100% {opacity:1;}`} 0.5s linear`,
-  },
-}))
 
 enum LogLevel {
   Info = 'Information',
@@ -37,7 +21,7 @@ enum LogLevel {
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
-  const { classes, cx } = useStyles()
+  const { classes, cx } = useTableStyles()
 
   const [, update] = useState(new Date())
   const newLogs = useRef<LogMessageModel[]>([])
@@ -45,7 +29,8 @@ const Logs: FC = () => {
 
   useEffect(() => {
     api.admin
-      .adminLogs(level, {
+      .adminLogs({
+        level,
         count: ITEM_COUNT_PER_PAGE,
         skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
       })
@@ -119,7 +104,6 @@ const Logs: FC = () => {
 
   return (
     <AdminPage
-      scroll
       isLoading={!logs}
       head={
         <>
@@ -157,18 +141,20 @@ const Logs: FC = () => {
       }
     >
       <Paper shadow="md" p="md">
-        <Table>
-          <thead>
-            <tr>
-              <th>时间</th>
-              <th>用户名</th>
-              <th>信息</th>
-              <th>状态</th>
-              <th>IP</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </Table>
+        <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height: 'calc(100vh - 190px)' }}>
+          <Table className={classes.table}>
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>用户名</th>
+                <th>信息</th>
+                <th>状态</th>
+                <th>IP</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        </ScrollArea>
       </Paper>
     </AdminPage>
   )

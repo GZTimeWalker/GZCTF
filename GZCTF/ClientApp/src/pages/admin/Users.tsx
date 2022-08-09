@@ -6,9 +6,9 @@ import {
   ActionIcon,
   Badge,
   Avatar,
-  useMantineTheme,
   TextInput,
   Paper,
+  ScrollArea,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -26,7 +26,8 @@ import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { Role, UserInfoModel } from '@Api/Api'
+import { useTableStyles } from '@Utils/ThemeOverride'
+import api, { Role, UserInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -38,7 +39,7 @@ const Users: FC = () => {
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
 
-  const theme = useMantineTheme()
+  const { classes, theme } = useTableStyles()
   const { data: currentUser } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
@@ -127,7 +128,6 @@ const Users: FC = () => {
 
   return (
     <AdminPage
-      scroll
       isLoading={searching || !users}
       head={
         <>
@@ -156,77 +156,83 @@ const Users: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="md">
-        <Table>
-          <thead>
-            <tr>
-              <th>用户</th>
-              <th>邮箱</th>
-              <th>最后一次访问</th>
-              <th>真实姓名</th>
-              <th>学号</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users &&
-              users.map((user) => (
-                <tr key={user.id}>
-                  <td>
-                    <Group position="apart">
-                      <Group position="left">
-                        <Avatar src={user.avatar} radius="xl" />
-                        <Text>{user.userName}</Text>
+      <Paper shadow="md" p="xs">
+        <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height: 'calc(100vh - 190px)' }}>
+          <Table className={classes.table}>
+            <thead>
+              <tr>
+                <th>用户</th>
+                <th>邮箱</th>
+                <th>最后一次访问</th>
+                <th>真实姓名</th>
+                <th>学号</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users &&
+                users.map((user) => (
+                  <tr key={user.id}>
+                    <td>
+                      <Group position="apart">
+                        <Group position="left">
+                          <Avatar src={user.avatar} radius="xl" />
+                          <Text>{user.userName}</Text>
+                        </Group>
+                        <Badge size="sm" color={RoleColorMap.get(user.role ?? Role.User)}>
+                          {user.role}
+                        </Badge>
                       </Group>
-                      <Badge size="md" color={RoleColorMap.get(user.role ?? Role.User)}>
-                        {user.role}
-                      </Badge>
-                    </Group>
-                  </td>
-                  <td>
-                    <Text size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
-                      {user.email}
-                    </Text>
-                  </td>
-                  <td>
-                    <Group position="apart">
+                    </td>
+                    <td>
                       <Text size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
-                        {user.ip}
+                        {user.email}
                       </Text>
-                      <Badge size="md" color="cyan" variant="outline">
-                        {new Date(user.lastVisitedUTC!).toLocaleString()}
-                      </Badge>
-                    </Group>
-                  </td>
-                  <td>{!user.realName ? '用户未填写' : user.realName}</td>
-                  <td>
-                    <Text size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
-                      {!user.stdNumber ? '00000000' : user.stdNumber}
-                    </Text>
-                  </td>
-                  <td>
-                    <Group>
-                      <ActionIcon
-                        onClick={() => {
-                          setActiveUser(user)
-                          setIsEditModalOpen(true)
-                        }}
-                      >
-                        <Icon path={mdiPencilOutline} size={1} />
-                      </ActionIcon>
-                      <ActionIcon
-                        disabled={user.id === currentUser?.userId}
-                        onClick={() => onDeleteUser(user)}
-                        color="alert"
-                      >
-                        <Icon path={mdiDeleteOutline} size={1} />
-                      </ActionIcon>
-                    </Group>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+                    </td>
+                    <td>
+                      <Group noWrap position="apart">
+                        <Text
+                          lineClamp={1}
+                          size="sm"
+                          style={{ fontFamily: theme.fontFamilyMonospace }}
+                        >
+                          {user.ip}
+                        </Text>
+                        <Badge size="xs" color="cyan" variant="outline">
+                          {new Date(user.lastVisitedUTC!).toLocaleString()}
+                        </Badge>
+                      </Group>
+                    </td>
+                    <td>{!user.realName ? '用户未填写' : user.realName}</td>
+                    <td>
+                      <Text size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
+                        {!user.stdNumber ? '00000000' : user.stdNumber}
+                      </Text>
+                    </td>
+                    <td>
+                      <Group>
+                        <ActionIcon
+                          onClick={() => {
+                            setActiveUser(user)
+                            setIsEditModalOpen(true)
+                          }}
+                        >
+                          <Icon path={mdiPencilOutline} size={1} />
+                        </ActionIcon>
+                        <ActionIcon
+                          disabled={user.id === currentUser?.userId}
+                          onClick={() => onDeleteUser(user)}
+                          color="alert"
+                        >
+                          <Icon path={mdiDeleteOutline} size={1} />
+                        </ActionIcon>
+                      </Group>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </ScrollArea>
         <UserEditModal
           centered
           size="30%"

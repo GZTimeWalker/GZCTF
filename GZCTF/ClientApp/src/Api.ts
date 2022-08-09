@@ -491,7 +491,6 @@ export enum NoticeType {
   ThirdBlood = 'ThirdBlood',
   NewHint = 'NewHint',
   NewChallenge = 'NewChallenge',
-  ErrorFix = 'ErrorFix',
 }
 
 /**
@@ -583,6 +582,9 @@ export interface ChallengeEditDetailModel {
   /** 题目附件（动态附件存放于 FlagInfoModel） */
   attachment?: Attachment | null
 
+  /** 测试容器 */
+  testContainer?: ContainerInfoModel | null
+
   /** 题目 Flag 信息 */
   flags: FlagInfoModel[]
 }
@@ -637,6 +639,35 @@ export enum FileType {
   None = 'None',
   Local = 'Local',
   Remote = 'Remote',
+}
+
+export interface ContainerInfoModel {
+  /** 容器状态 */
+  status?: ContainerStatus
+
+  /**
+   * 容器创建时间
+   * @format date-time
+   */
+  startedAt?: string
+
+  /**
+   * 容器期望终止时间
+   * @format date-time
+   */
+  expectStopAt?: string
+
+  /** 题目入口 */
+  entry?: string
+}
+
+/**
+ * 容器状态
+ */
+export enum ContainerStatus {
+  Pending = 'Pending',
+  Running = 'Running',
+  Destoryed = 'Destoryed',
 }
 
 /**
@@ -865,6 +896,12 @@ export interface GameDetailModel {
    */
   limit?: number
 
+  /**
+   * 报名参赛队伍数量
+   * @format int32
+   */
+  teamCount?: number
+
   /** 队伍参与状态 */
   status?: ParticipationStatus
 
@@ -1088,6 +1125,12 @@ export interface Submission {
    * @format date-time
    */
   time?: string
+
+  /** 提交用户 */
+  user?: string
+
+  /** 提交队伍 */
+  team?: string
 }
 
 /**
@@ -1099,55 +1142,6 @@ export enum AnswerResult {
   WrongAnswer = 'WrongAnswer',
   NotFound = 'NotFound',
   CheatDetected = 'CheatDetected',
-}
-
-/**
- * 题目实例信息
- */
-export interface InstanceInfoModel {
-  /**
-   * 队伍 Id
-   * @format int32
-   */
-  teamId?: number
-
-  /** 队伍名 */
-  teamName?: string
-
-  /** 题目详情 */
-  challenge?: ChallengeInfoModel
-
-  /** 容器信息 */
-  container?: ContainerInfoModel | null
-}
-
-export interface ContainerInfoModel {
-  /** 容器状态 */
-  status?: ContainerStatus
-
-  /**
-   * 容器创建时间
-   * @format date-time
-   */
-  startedAt?: string
-
-  /**
-   * 容器期望终止时间
-   * @format date-time
-   */
-  expectStopAt?: string
-
-  /** 题目入口 */
-  entry?: string
-}
-
-/**
- * 容器状态
- */
-export enum ContainerStatus {
-  Pending = 'Pending',
-  Running = 'Running',
-  Destoryed = 'Destoryed',
 }
 
 /**
@@ -1831,15 +1825,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminLogs
      * @summary 获取全部日志
-     * @request GET:/api/admin/logs/{level}
+     * @request GET:/api/admin/logs
      */
     adminLogs: (
-      level: string | null,
-      query?: { count?: number; skip?: number },
+      query?: { level?: string | null; count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
       this.request<LogMessageModel[], RequestResponse>({
-        path: `/api/admin/logs/${level}`,
+        path: `/api/admin/logs`,
         method: 'GET',
         query: query,
         format: 'json',
@@ -1851,13 +1844,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminLogs
      * @summary 获取全部日志
-     * @request GET:/api/admin/logs/{level}
+     * @request GET:/api/admin/logs
      */
     useAdminLogs: (
-      level: string | null,
-      query?: { count?: number; skip?: number },
+      query?: { level?: string | null; count?: number; skip?: number },
       options?: SWRConfiguration
-    ) => useSWR<LogMessageModel[], RequestResponse>([`/api/admin/logs/${level}`, query], options),
+    ) => useSWR<LogMessageModel[], RequestResponse>([`/api/admin/logs`, query], options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -1865,14 +1857,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminLogs
      * @summary 获取全部日志
-     * @request GET:/api/admin/logs/{level}
+     * @request GET:/api/admin/logs
      */
     mutateAdminLogs: (
-      level: string | null,
-      query?: { count?: number; skip?: number },
+      query?: { level?: string | null; count?: number; skip?: number },
       data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions
-    ) => mutate<LogMessageModel[]>([`/api/admin/logs/${level}`, query], data, options),
+    ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
 
     /**
      * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限
@@ -2292,6 +2283,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
 
     /**
+     * @description 更新比赛公告，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditUpdateGameNotice
+     * @summary 更新比赛公告
+     * @request PUT:/api/edit/games/{id}/notices/{noticeId}
+     */
+    editUpdateGameNotice: (
+      id: number,
+      noticeId: number,
+      data: GameNoticeModel,
+      params: RequestParams = {}
+    ) =>
+      this.request<GameNotice, RequestResponse>({
+        path: `/api/edit/games/${id}/notices/${noticeId}`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 删除比赛公告，需要管理员权限
      *
      * @tags Edit
@@ -2442,6 +2456,37 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     editRemoveGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
+     * @description 测试比赛题目容器，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditCreateTestContainer
+     * @summary 测试比赛题目容器
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/container
+     */
+    editCreateTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/container`,
+        method: 'POST',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 关闭测试比赛题目容器，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditDestoryTestContainer
+     * @summary 关闭测试比赛题目容器
+     * @request DELETE:/api/edit/games/{id}/challenges/{cId}/container
+     */
+    editDestoryTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/container`,
         method: 'DELETE',
         ...params,
       }),
@@ -2638,47 +2683,105 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
 
     /**
-     * @description 获取比赛事件数据
+     * @description 获取比赛通知数据
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛事件
+     * @summary 获取比赛通知
      * @request GET:/api/game/{id}/notices
      */
-    gameNotices: (id: number, params: RequestParams = {}) =>
-      this.request<GameEvent[], RequestResponse>({
+    gameNotices: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {}
+    ) =>
+      this.request<GameNotice[], RequestResponse>({
         path: `/api/game/${id}/notices`,
         method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取比赛事件数据
+     * @description 获取比赛通知数据
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛事件
+     * @summary 获取比赛通知
      * @request GET:/api/game/{id}/notices
      */
-    useGameNotices: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameEvent[], RequestResponse>(`/api/game/${id}/notices`, options),
+    useGameNotices: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration
+    ) => useSWR<GameNotice[], RequestResponse>([`/api/game/${id}/notices`, query], options),
 
     /**
-     * @description 获取比赛事件数据
+     * @description 获取比赛通知数据
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛事件
+     * @summary 获取比赛通知
      * @request GET:/api/game/{id}/notices
      */
     mutateGameNotices: (
       id: number,
-      data?: GameEvent[] | Promise<GameEvent[]>,
+      query?: { count?: number; skip?: number },
+      data?: GameNotice[] | Promise<GameNotice[]>,
       options?: MutatorOptions
-    ) => mutate<GameEvent[]>(`/api/game/${id}/notices`, data, options),
+    ) => mutate<GameNotice[]>([`/api/game/${id}/notices`, query], data, options),
 
     /**
-     * @description 获取比赛提交数据，需要观察者权限
+     * @description 获取比赛事件数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameEvents
+     * @summary 获取比赛事件
+     * @request GET:/api/game/{id}/events
+     */
+    gameEvents: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {}
+    ) =>
+      this.request<GameEvent[], RequestResponse>({
+        path: `/api/game/${id}/events`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛事件数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameEvents
+     * @summary 获取比赛事件
+     * @request GET:/api/game/{id}/events
+     */
+    useGameEvents: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration
+    ) => useSWR<GameEvent[], RequestResponse>([`/api/game/${id}/events`, query], options),
+
+    /**
+     * @description 获取比赛事件数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameEvents
+     * @summary 获取比赛事件
+     * @request GET:/api/game/{id}/events
+     */
+    mutateGameEvents: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      data?: GameEvent[] | Promise<GameEvent[]>,
+      options?: MutatorOptions
+    ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),
+
+    /**
+     * @description 获取比赛提交数据，需要Monitor权限
      *
      * @tags Game
      * @name GameSubmissions
@@ -2687,7 +2790,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     gameSubmissions: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { type?: AnswerResult | null; count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
       this.request<Submission[], RequestResponse>({
@@ -2698,7 +2801,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛提交数据，需要观察者权限
+     * @description 获取比赛提交数据，需要Monitor权限
      *
      * @tags Game
      * @name GameSubmissions
@@ -2707,12 +2810,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useGameSubmissions: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { type?: AnswerResult | null; count?: number; skip?: number },
       options?: SWRConfiguration
     ) => useSWR<Submission[], RequestResponse>([`/api/game/${id}/submissions`, query], options),
 
     /**
-     * @description 获取比赛提交数据，需要观察者权限
+     * @description 获取比赛提交数据，需要Monitor权限
      *
      * @tags Game
      * @name GameSubmissions
@@ -2721,59 +2824,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameSubmissions: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { type?: AnswerResult | null; count?: number; skip?: number },
       data?: Submission[] | Promise<Submission[]>,
       options?: MutatorOptions
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
-
-    /**
-     * @description 获取比赛实例数据，需要观察者权限
-     *
-     * @tags Game
-     * @name GameInstances
-     * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
-     */
-    gameInstances: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<InstanceInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/challenges/${challengeId}/instances`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛实例数据，需要观察者权限
-     *
-     * @tags Game
-     * @name GameInstances
-     * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
-     */
-    useGameInstances: (id: number, challengeId: number, options?: SWRConfiguration) =>
-      useSWR<InstanceInfoModel[], RequestResponse>(
-        `/api/game/${id}/challenges/${challengeId}/instances`,
-        options
-      ),
-
-    /**
-     * @description 获取比赛实例数据，需要观察者权限
-     *
-     * @tags Game
-     * @name GameInstances
-     * @summary 获取比赛实例列表
-     * @request GET:/api/game/{id}/challenges/{challengeId}/instances
-     */
-    mutateGameInstances: (
-      id: number,
-      challengeId: number,
-      data?: InstanceInfoModel[] | Promise<InstanceInfoModel[]>,
-      options?: MutatorOptions
-    ) =>
-      mutate<InstanceInfoModel[]>(
-        `/api/game/${id}/challenges/${challengeId}/instances`,
-        data,
-        options
-      ),
 
     /**
      * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
@@ -3030,50 +3084,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-
-    /**
-     * @description 获取容器信息，需要User权限
-     *
-     * @tags Game
-     * @name GameGetContainer
-     * @summary 获取容器信息
-     * @request GET:/api/game/{id}/container/{challengeId}
-     */
-    gameGetContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取容器信息，需要User权限
-     *
-     * @tags Game
-     * @name GameGetContainer
-     * @summary 获取容器信息
-     * @request GET:/api/game/{id}/container/{challengeId}
-     */
-    useGameGetContainer: (id: number, challengeId: number, options?: SWRConfiguration) =>
-      useSWR<ContainerInfoModel, RequestResponse>(
-        `/api/game/${id}/container/${challengeId}`,
-        options
-      ),
-
-    /**
-     * @description 获取容器信息，需要User权限
-     *
-     * @tags Game
-     * @name GameGetContainer
-     * @summary 获取容器信息
-     * @request GET:/api/game/{id}/container/{challengeId}
-     */
-    mutateGameGetContainer: (
-      id: number,
-      challengeId: number,
-      data?: ContainerInfoModel | Promise<ContainerInfoModel>,
-      options?: MutatorOptions
-    ) => mutate<ContainerInfoModel>(`/api/game/${id}/container/${challengeId}`, data, options),
 
     /**
      * @description 删除，需要User权限

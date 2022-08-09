@@ -6,7 +6,7 @@ import LogoHeader from '@Components/LogoHeader'
 import NoticeCard from '@Components/NoticeCard'
 import RecentGame from '@Components/RecentGame'
 import WithNavBar from '@Components/WithNavbar'
-import api from '@Api/Api'
+import api from '@Api'
 
 const useStyles = createStyles((theme) => ({
   notices: {
@@ -95,8 +95,8 @@ const Home: FC = () => {
         </Group>
         <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>
           <Stack className={classes.notices}>
-            {notices?.map((notice) => (
-              <NoticeCard key={notice.id} {...notice} />
+            {notices?.map((notice, idx) => (
+              <NoticeCard key={idx} {...notice} />
             ))}
           </Stack>
           <nav className={classes.wrapper}>

@@ -148,21 +148,16 @@ public enum NoticeType : byte
     /// 发布新的题目
     /// </summary>
     NewChallenge = 5,
-
-    /// <summary>
-    /// 修复错误
-    /// </summary>
-    ErrorFix = 6
 }
 
-public static class NoticeTypeExtensions
+public static class SubmissionTypeExtensions
 {
-    public static string ToBloodString(this NoticeType type)
+    public static string ToBloodString(this SubmissionType type)
         => type switch
         {
-            NoticeType.FirstBlood => "一血",
-            NoticeType.SecondBlood => "二血",
-            NoticeType.ThirdBlood => "三血",
+            SubmissionType.FirstBlood => "一血",
+            SubmissionType.SecondBlood => "二血",
+            SubmissionType.ThirdBlood => "三血",
             _ => throw new ArgumentException(type.ToString(), nameof(type))
         };
 }
@@ -366,11 +361,11 @@ public static class AnswerResultExtensions
     public static string ToShortString(this AnswerResult result)
         => result switch
         {
-            AnswerResult.FlagSubmitted => "🟦 成功提交",
-            AnswerResult.Accepted => "🟩 答案正确",
-            AnswerResult.WrongAnswer => "🟥 答案错误",
-            AnswerResult.NotFound => "🟦 实例未知",
-            AnswerResult.CheatDetected => "🟧 作弊检测",
+            AnswerResult.FlagSubmitted => "成功提交",
+            AnswerResult.Accepted => "答案正确",
+            AnswerResult.WrongAnswer => "答案错误",
+            AnswerResult.NotFound => "实例未知",
+            AnswerResult.CheatDetected => "作弊检测",
             _ => "??"
         };
 }

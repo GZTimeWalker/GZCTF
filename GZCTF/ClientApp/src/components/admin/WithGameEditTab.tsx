@@ -23,8 +23,7 @@ interface GameEditTabProps extends React.PropsWithChildren {
   isLoading?: boolean
 }
 
-const getTab = (path: string) =>
-  pages.find((page) => path.startsWith('/admin/games/') && path.includes(page.path))
+const getTab = (path: string) => pages.find((page) => path.includes(page.path))
 
 const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others }) => {
   const navigate = useNavigate()

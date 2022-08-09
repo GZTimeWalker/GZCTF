@@ -169,7 +169,13 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.AttachmentId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            entity.HasOne(e => e.TestContainer)
+                .WithMany()
+                .HasForeignKey(e => e.TestContainerId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             entity.Navigation(e => e.Attachment).AutoInclude();
+            entity.Navigation(e => e.TestContainer).AutoInclude();
 
             entity.HasIndex(e => e.GameId);
         });
@@ -179,6 +185,10 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.Property(e => e.Status)
                 .HasConversion<string>();
 
+            entity.Navigation(e => e.Team).AutoInclude();
+            entity.Navigation(e => e.User).AutoInclude();
+
+            entity.HasIndex(e => e.Status);
             entity.HasIndex(e => new { e.TeamId, e.ChallengeId, e.GameId });
         });
 

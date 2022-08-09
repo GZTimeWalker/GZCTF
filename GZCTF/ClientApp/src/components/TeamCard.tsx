@@ -17,7 +17,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiLockOutline, mdiPower, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamInfoModel } from '@Api/Api'
+import api, { TeamInfoModel } from '@Api'
 
 interface TeamCardProps {
   team: TeamInfoModel

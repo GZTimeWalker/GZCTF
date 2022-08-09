@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Button, Stack, Text } from '@mantine/core'
+import { Button, ScrollArea, Stack, Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiPlus } from '@mdi/js'
@@ -8,7 +8,7 @@ import AdminPage from '@Components/admin/AdminPage'
 import NoticeEditCard from '@Components/admin/NoticeEditCard'
 import NoticeEditModal from '@Components/admin/NoticeEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { Notice } from '@Api/Api'
+import api, { Notice } from '@Api'
 
 const Notices: FC = () => {
   const { data: notices, mutate } = api.edit.useEditGetNotices({
@@ -74,7 +74,6 @@ const Notices: FC = () => {
 
   return (
     <AdminPage
-      scroll
       isLoading={!notices}
       headProps={{ position: 'center' }}
       head={
@@ -89,43 +88,45 @@ const Notices: FC = () => {
         </Button>
       }
     >
-      <Stack
-        spacing="lg"
-        align="center"
-        style={{
-          margin: '2%',
-        }}
-      >
-        {notices &&
-          notices
-            .sort((x, y) =>
-              (x.isPinned && !y.isPinned) || new Date(x.time) > new Date(y.time) ? -1 : 1
-            )
-            .map((notice) => (
-              <NoticeEditCard
-                key={notice.id}
-                notice={notice}
-                onEdit={() => {
-                  setActiveNotice(notice)
-                  setIsEditModalOpen(true)
-                }}
-                onDelete={() => onDeleteNotice(notice)}
-                onPin={() => onPin(notice)}
-                style={{ width: '80%' }}
-              />
-            ))}
-        <NoticeEditModal
-          centered
-          size="30%"
-          title={activeNotice ? '编辑通知' : '新建通知'}
-          notice={activeNotice}
-          opened={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          mutateNotice={(notice: Notice) => {
-            mutate([notice, ...(notices?.filter((n) => n.id !== notice.id) ?? [])])
+      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
+        <Stack
+          spacing="lg"
+          align="center"
+          style={{
+            margin: '2%',
           }}
-        />
-      </Stack>
+        >
+          {notices &&
+            notices
+              .sort((x, y) =>
+                (x.isPinned && !y.isPinned) || new Date(x.time) > new Date(y.time) ? -1 : 1
+              )
+              .map((notice) => (
+                <NoticeEditCard
+                  key={notice.id}
+                  notice={notice}
+                  onEdit={() => {
+                    setActiveNotice(notice)
+                    setIsEditModalOpen(true)
+                  }}
+                  onDelete={() => onDeleteNotice(notice)}
+                  onPin={() => onPin(notice)}
+                  style={{ width: '80%' }}
+                />
+              ))}
+        </Stack>
+      </ScrollArea>
+      <NoticeEditModal
+        centered
+        size="30%"
+        title={activeNotice ? '编辑通知' : '新建通知'}
+        notice={activeNotice}
+        opened={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        mutateNotice={(notice: Notice) => {
+          mutate([notice, ...(notices?.filter((n) => n.id !== notice.id) ?? [])])
+        }}
+      />
     </AdminPage>
   )
 }

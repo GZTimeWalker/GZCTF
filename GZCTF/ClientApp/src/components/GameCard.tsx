@@ -14,7 +14,7 @@ import {
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { BasicGameInfoModel } from '@Api/Api'
+import { BasicGameInfoModel } from '@Api'
 
 export enum GameStatus {
   Coming = 'coming',

@@ -17,7 +17,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
         await context.AddAsync(game, token);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
         return game;
     }
 
@@ -115,6 +115,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 SolvedCount = c.Key.AcceptedCount,
                 Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
+            .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)

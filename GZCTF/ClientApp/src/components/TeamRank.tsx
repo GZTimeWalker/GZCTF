@@ -11,7 +11,7 @@ import {
   createStyles,
   Progress,
 } from '@mantine/core'
-import api, { SubmissionType } from '@Api/Api'
+import api, { SubmissionType } from '@Api'
 
 const useStyle = createStyles((theme) => ({
   number: {

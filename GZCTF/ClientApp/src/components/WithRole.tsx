@@ -1,14 +1,14 @@
 import React, { FC, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Center, Loader } from '@mantine/core'
-import api, { Role } from '@Api/Api'
+import api, { Role } from '@Api'
 
 interface WithRoleProps {
   requiredRole: Role
   children?: React.ReactNode
 }
 
-const RoleMap = new Map<Role, number>([
+export const RoleMap = new Map<Role, number>([
   [Role.Admin, 3],
   [Role.Monitor, 1],
   [Role.User, 0],

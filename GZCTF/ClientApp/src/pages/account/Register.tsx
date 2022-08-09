@@ -7,8 +7,9 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
+import { usePageTitle } from '@Utils/PageTitle'
 import { useReCaptcha } from '@Utils/Recaptcha'
-import api from '@Api/Api'
+import api from '@Api'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -19,6 +20,8 @@ const Register: FC = () => {
 
   const navigate = useNavigate()
   const reCaptcha = useReCaptcha('register')
+
+  usePageTitle('注册')
 
   const onRegister = async (event: React.FormEvent) => {
     event.preventDefault()

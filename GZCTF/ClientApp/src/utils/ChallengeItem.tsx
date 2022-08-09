@@ -2,6 +2,7 @@ import { forwardRef } from 'react'
 import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
 import {
   mdiBomb,
+  mdiBullhornOutline,
   mdiCellphoneCog,
   mdiChevronTripleLeft,
   mdiChip,
@@ -13,11 +14,13 @@ import {
   mdiHexagonSlice2,
   mdiHexagonSlice4,
   mdiHexagonSlice6,
+  mdiLightbulbOnOutline,
   mdiMatrix,
+  mdiPlus,
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTag, ChallengeType, SubmissionType } from '@Api/Api'
+import { ChallengeTag, ChallengeType, NoticeType, SubmissionType } from '@Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
   [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],
@@ -98,18 +101,35 @@ export const ChallengeTagItem = forwardRef<HTMLDivElement, ChallengeTagItemProps
   }
 )
 
+export const BloodsTypes = [
+  SubmissionType.FirstBlood,
+  SubmissionType.SecondBlood,
+  SubmissionType.ThirdBlood,
+]
+
 export const SubmissionTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
   return new Map([
     [SubmissionType.Unaccepted, undefined],
-    [SubmissionType.Normal, <Icon path={mdiFlag} size={size} color={theme.colors.brand[7]} />],
+    [
+      SubmissionType.Normal,
+      <Icon
+        path={mdiFlag}
+        size={size}
+        color={theme.colors.brand[theme.colorScheme === 'dark' ? 4 : 7]}
+      />,
+    ],
     [
       SubmissionType.FirstBlood,
       <Icon path={mdiHexagonSlice6} size={size} color={theme.colors.yellow[5]} />,
     ],
     [
       SubmissionType.SecondBlood,
-      <Icon path={mdiHexagonSlice4} size={size} color={theme.colors.gray[2]} />,
+      <Icon
+        path={mdiHexagonSlice4}
+        size={size}
+        color={theme.fn.lighten(theme.colors.gray[2], 0.3)}
+      />,
     ],
     [
       SubmissionType.ThirdBlood,
@@ -119,5 +139,29 @@ export const SubmissionTypeIconMap = (size: number) => {
         color={theme.fn.darken(theme.colors.orange[7], theme.colorScheme === 'dark' ? 0.25 : 0.1)}
       />,
     ],
+  ])
+}
+
+export const NoticTypeIconMap = (size: number) => {
+  const theme = useMantineTheme()
+  const submissionMap = SubmissionTypeIconMap(size)
+  const colorIdx = theme.colorScheme === 'dark' ? 4 : 7
+
+  return new Map([
+    [
+      NoticeType.Normal,
+      <Icon path={mdiBullhornOutline} size={size} color={theme.colors.brand[colorIdx]} />,
+    ],
+    [
+      NoticeType.NewHint,
+      <Icon path={mdiLightbulbOnOutline} size={size} color={theme.colors.yellow[colorIdx]} />,
+    ],
+    [
+      NoticeType.NewChallenge,
+      <Icon path={mdiPlus} size={size} color={theme.colors.green[colorIdx]} />,
+    ],
+    [NoticeType.FirstBlood, submissionMap.get(SubmissionType.FirstBlood)],
+    [NoticeType.SecondBlood, submissionMap.get(SubmissionType.SecondBlood)],
+    [NoticeType.ThirdBlood, submissionMap.get(SubmissionType.ThirdBlood)],
   ])
 }

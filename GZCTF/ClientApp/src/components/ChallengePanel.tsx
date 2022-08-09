@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom'
 import { Group, ScrollArea, SimpleGrid, Tabs, Text } from '@mantine/core'
 import { mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api/Api'
+import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
+import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 import ChallengeCard from './ChallengeCard'
 import ChallengeDetailModal from './ChallengeDetailModal'
-import { ChallengeTagLabelMap, SubmissionTypeIconMap } from './ChallengeItem'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -29,7 +29,13 @@ const ChallengePanel: FC = () => {
   const iconMap = SubmissionTypeIconMap(0.8)
 
   return (
-    <Group noWrap position="apart" align="flex-start" style={{ width: 'calc(100% - 21rem)' }}>
+    <Group
+      spacing="sm"
+      noWrap
+      position="apart"
+      align="flex-start"
+      style={{ width: 'calc(100% - 20rem)' }}
+    >
       <Tabs
         orientation="vertical"
         variant="pills"
@@ -84,6 +90,7 @@ const ChallengePanel: FC = () => {
         <SimpleGrid
           cols={3}
           spacing="sm"
+          p="xs"
           breakpoints={[
             { maxWidth: 2900, cols: 6 },
             { maxWidth: 2500, cols: 5 },

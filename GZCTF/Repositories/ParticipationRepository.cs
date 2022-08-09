@@ -18,7 +18,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         };
 
         await context.AddAsync(participation, token);
-        await context.SaveChangesAsync(token);
+        await SaveAsync(token);
 
         return participation;
     }
@@ -43,6 +43,9 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
 
     public Task<Participation?> GetParticipationById(int id, CancellationToken token = default)
         => context.Participations.FirstOrDefaultAsync(p => p.Id == id, token);
+
+    public Task<int> GetParticipationCount(Game game, CancellationToken token = default)
+        => context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);
 
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default)
         => context.Participations.Where(p => p.GameId == game.Id)

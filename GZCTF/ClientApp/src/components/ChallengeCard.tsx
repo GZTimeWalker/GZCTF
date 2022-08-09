@@ -3,10 +3,10 @@ import { FC } from 'react'
 import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeInfo, SubmissionType } from '@Api/Api'
-import { ChallengeTagLabelMap } from './ChallengeItem'
+import { ChallengeInfo, SubmissionType } from '@Api'
+import { BloodsTypes, ChallengeTagLabelMap } from '../utils/ChallengeItem'
 
-const useStyles = createStyles((theme, _param, getRef) => {
+const useStyles = createStyles((_theme, _param, getRef) => {
   const solved = { ref: getRef('solved') } as const
 
   return {
@@ -30,12 +30,6 @@ interface ChallengeCardProps {
   iconMap: Map<SubmissionType, React.ReactNode>
 }
 
-const SubmissionTypes = [
-  SubmissionType.FirstBlood,
-  SubmissionType.SecondBlood,
-  SubmissionType.ThirdBlood,
-]
-
 const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onClick }) => {
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
   const { theme } = useStyles()
@@ -46,7 +40,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
     <Card
       onClick={onClick}
       radius="md"
-      shadow="md"
+      shadow="sm"
       sx={(theme) => ({
         transition: 'filter .1s',
         ...theme.fn.hover({
@@ -81,7 +75,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
         </Group>
         <Title order={6} align="center">
           {`${challenge.solved} `}
-          <Text color="dimmed" size="xs" inherit component="span">
+          <Text color="dimmed" size="xs" inherit span>
             支队伍攻克
           </Text>
         </Title>
@@ -106,7 +100,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
                   </Stack>
                 }
               >
-                {iconMap.get(SubmissionTypes[idx])}
+                {iconMap.get(BloodsTypes[idx])}
               </Tooltip.Floating>
             ))}
         </Group>

@@ -4,23 +4,44 @@ import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Stack, Title, Text, Progress, LoadingOverlay, useMantineTheme } from '@mantine/core'
 import { useInterval } from '@mantine/hooks'
-import { mdiFlagOutline, mdiMedalOutline } from '@mdi/js'
+import { mdiFlagOutline, mdiGauge, mdiMedalOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { GameDetailModel, ParticipationStatus } from '@Api/Api'
+import { usePageTitle } from '@Utils/PageTitle'
+import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import IconTabs from './IconTabs'
+import { RoleMap } from './WithRole'
 
 const pages = [
-  { icon: mdiFlagOutline, title: '比赛题目', path: 'challenges', color: 'blue', requireJoin: true },
+  {
+    icon: mdiGauge,
+    title: '比赛监控',
+    path: 'monitor',
+    link: 'monitor/events',
+    color: 'green',
+    requireJoin: false,
+    requireRole: Role.Monitor,
+  },
+  {
+    icon: mdiFlagOutline,
+    title: '比赛题目',
+    path: 'challenges',
+    link: 'challenges',
+    color: 'blue',
+    requireJoin: true,
+    requireRole: Role.User,
+  },
   {
     icon: mdiMedalOutline,
     title: '积分总榜',
     path: 'scoreboard',
+    link: 'scoreboard',
     color: 'yellow',
     requireJoin: false,
+    requireRole: Role.User,
   },
 ]
 
-const getTab = (path: string) => pages.findIndex((page) => path.endsWith(page.path))
+const getTab = (path: string) => pages.findIndex((page) => path.includes(page.path))
 dayjs.extend(duration)
 
 interface WithGameTabProps extends React.PropsWithChildren {
@@ -44,6 +65,12 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
     navigate(`/games/${numId}/${tabKey}`)
   }
 
+  const { data: user } = api.account.useAccountProfile({
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
+
   const start = dayjs(game?.start ?? new Date())
   const end = dayjs(game?.end ?? new Date())
   const total = end.diff(start)
@@ -54,6 +81,8 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
 
   const progress = (current / total) * 100
   const countdown = dayjs.duration(end.diff(now))
+
+  usePageTitle(game?.title)
 
   useEffect(() => {
     if (game && dayjs() < dayjs(game.end)) {
@@ -82,9 +111,10 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
         active={activeTab}
         onTabChange={onChange}
         tabs={pages
+          .filter((p) => RoleMap.get(user?.role ?? Role.User)! >= RoleMap.get(p.requireRole)!)
           .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
           .map((p) => ({
-            tabKey: p.path,
+            tabKey: p.link,
             label: p.title,
             icon: <Icon path={p.icon} size={1} />,
             color: p.color,

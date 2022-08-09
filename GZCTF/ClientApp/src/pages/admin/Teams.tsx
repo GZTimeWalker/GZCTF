@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
 import {
-  useMantineTheme,
   TextInput,
   Group,
   ActionIcon,
@@ -9,13 +8,15 @@ import {
   Avatar,
   Text,
   Tooltip,
+  ScrollArea,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamInfoModel } from '@Api/Api'
+import { useTableStyles } from '@Utils/ThemeOverride'
+import api, { TeamInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -25,7 +26,7 @@ const Teams: FC = () => {
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
 
-  const theme = useMantineTheme()
+  const { classes, theme } = useTableStyles()
 
   useEffect(() => {
     api.admin
@@ -68,7 +69,6 @@ const Teams: FC = () => {
 
   return (
     <AdminPage
-      scroll
       isLoading={searching || !teams}
       head={
         <>
@@ -98,80 +98,82 @@ const Teams: FC = () => {
       }
     >
       <Paper shadow="md" p="md">
-        <Table>
-          <thead>
-            <tr>
-              <th>队伍</th>
-              <th>签名</th>
-              <th>队员</th>
-            </tr>
-          </thead>
-          <tbody>
-            {teams &&
-              teams.map((team) => {
-                const members = team.members && [
-                  team.members.filter((m) => m.captain).at(0)!,
-                  ...(team.members.filter((m) => !m.captain) ?? []),
-                ]
+        <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 190px)' }}>
+          <Table className={classes.table}>
+            <thead>
+              <tr>
+                <th>队伍</th>
+                <th>签名</th>
+                <th>队员</th>
+              </tr>
+            </thead>
+            <tbody>
+              {teams &&
+                teams.map((team) => {
+                  const members = team.members && [
+                    team.members.filter((m) => m.captain).at(0)!,
+                    ...(team.members.filter((m) => !m.captain) ?? []),
+                  ]
 
-                return (
-                  <tr key={team.id}>
-                    <td>
-                      <Group position="apart">
-                        <Group position="left">
-                          <Avatar src={team.avatar} radius="xl">
-                            {team.name?.at(0)}
-                          </Avatar>
-                          <Text>{team.name}</Text>
-                        </Group>
-                        {team.locked && (
-                          <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
-                        )}
-                      </Group>
-                    </td>
-                    <td>
-                      <Text lineClamp={1} style={{ overflow: 'hidden' }}>
-                        {team.bio}
-                      </Text>
-                    </td>
-                    <td>
-                      <Tooltip.Group openDelay={300} closeDelay={100}>
-                        <Avatar.Group
-                          spacing="md"
-                          styles={{
-                            child: {
-                              border: 'none',
-                            },
-                          }}
-                        >
-                          {members &&
-                            members.slice(0, 8).map((m) => (
-                              <Tooltip key={m.id} label={m.userName} withArrow>
-                                <Avatar radius="xl" src={m.avatar} />
-                              </Tooltip>
-                            ))}
-                          {members && members.length > 8 && (
-                            <Tooltip
-                              label={
-                                <>
-                                  {members.slice(8).map((m) => (
-                                    <Text>{m.userName}</Text>
-                                  ))}
-                                </>
-                              }
-                              withArrow
-                            >
-                              <Avatar radius="xl">+{members.length - 8}</Avatar>
-                            </Tooltip>
+                  return (
+                    <tr key={team.id}>
+                      <td>
+                        <Group position="apart">
+                          <Group position="left">
+                            <Avatar src={team.avatar} radius="xl">
+                              {team.name?.at(0)}
+                            </Avatar>
+                            <Text lineClamp={1}>{team.name}</Text>
+                          </Group>
+                          {team.locked && (
+                            <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
                           )}
-                        </Avatar.Group>
-                      </Tooltip.Group>
-                    </td>
-                  </tr>
-                )
-              })}
-          </tbody>
-        </Table>
+                        </Group>
+                      </td>
+                      <td>
+                        <Text lineClamp={1} style={{ overflow: 'hidden' }}>
+                          {team.bio}
+                        </Text>
+                      </td>
+                      <td>
+                        <Tooltip.Group openDelay={300} closeDelay={100}>
+                          <Avatar.Group
+                            spacing="md"
+                            styles={{
+                              child: {
+                                border: 'none',
+                              },
+                            }}
+                          >
+                            {members &&
+                              members.slice(0, 8).map((m) => (
+                                <Tooltip key={m.id} label={m.userName} withArrow>
+                                  <Avatar radius="xl" src={m.avatar} />
+                                </Tooltip>
+                              ))}
+                            {members && members.length > 8 && (
+                              <Tooltip
+                                label={
+                                  <>
+                                    {members.slice(8).map((m) => (
+                                      <Text>{m.userName}</Text>
+                                    ))}
+                                  </>
+                                }
+                                withArrow
+                              >
+                                <Avatar radius="xl">+{members.length - 8}</Avatar>
+                              </Tooltip>
+                            )}
+                          </Avatar.Group>
+                        </Tooltip.Group>
+                      </td>
+                    </tr>
+                  )
+                })}
+            </tbody>
+          </Table>
+        </ScrollArea>
       </Paper>
     </AdminPage>
   )

@@ -80,6 +80,9 @@ namespace CTFServer.Migrations
                     b.Property<byte>("Tag")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("TestContainerId")
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -92,6 +95,8 @@ namespace CTFServer.Migrations
                     b.HasIndex("AttachmentId");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("TestContainerId");
 
                     b.ToTable("Challenges");
                 });
@@ -509,6 +514,8 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("ParticipationId");
 
+                    b.HasIndex("Status");
+
                     b.HasIndex("UserId");
 
                     b.HasIndex("TeamId", "ChallengeId", "GameId");
@@ -822,9 +829,16 @@ namespace CTFServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CTFServer.Models.Container", "TestContainer")
+                        .WithMany()
+                        .HasForeignKey("TestContainerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Attachment");
 
                     b.Navigation("Game");
+
+                    b.Navigation("TestContainer");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Data.Attachment", b =>

@@ -5,7 +5,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { FileType, FlagCreateModel } from '@Api/Api'
+import api, { FileType, FlagCreateModel } from '@Api'
 
 const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()

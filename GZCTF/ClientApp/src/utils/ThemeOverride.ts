@@ -1,4 +1,4 @@
-import { createStyles, MantineThemeOverride } from '@mantine/core'
+import { createStyles, keyframes, MantineThemeOverride } from '@mantine/core'
 
 export const ThemeOverride: MantineThemeOverride = {
   colors: {
@@ -19,12 +19,23 @@ export const ThemeOverride: MantineThemeOverride = {
       '#25EEBA',
       '#1DE9B6',
       '#0AD7AF',
-      '#03CAAB',
-      '#00BFA5',
+      '#04CAAB',
+      '#02BFA5',
       '#009985',
       '#007F6E',
     ],
-    alert: ['#FF8A8A', '#FF6666', '#FF5252', '#FF3F3F', '#FF2626', '#FF0F0F', '#FF0000'],
+    alert: [
+      '#FF9090',
+      '#FF8080',
+      '#FF7070',
+      '#FF6060',
+      '#FF5050',
+      '#FE4040',
+      '#FE3030',
+      '#FE2020',
+      '#FC1010',
+      '#FC0000',
+    ],
     white: [
       '#FFFFFF',
       '#F8F8F8',
@@ -69,6 +80,26 @@ export const useTypographyStyles = createStyles((theme) => ({
 
     '& pre': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[1],
+    },
+  },
+}))
+
+export const useTableStyles = createStyles((theme) => ({
+  mono: {
+    fontFamily: theme.fontFamilyMonospace,
+  },
+  fade: {
+    animation: `${keyframes`0% {opacity:0;} 100% {opacity:1;}`} 0.5s linear`,
+  },
+  table: {
+    '& thead tr th': {
+      position: 'sticky',
+      top: 0,
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    },
+
+    '& tbody tr td': {
+      whiteSpace: 'nowrap',
     },
   },
 }))

@@ -23,8 +23,9 @@ import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { usePageTitle } from '@Utils/PageTitle'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import api, { ParticipationStatus } from '@Api/Api'
+import api, { ParticipationStatus } from '@Api'
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -176,6 +177,8 @@ const GameDetail: FC = () => {
     revalidateOnFocus: false,
   })
 
+  usePageTitle(game?.title)
+
   useEffect(() => {
     if (error) {
       showErrorNotification(error)
@@ -242,14 +245,27 @@ const GameDetail: FC = () => {
   return (
     <WithNavBar width="100%" padding={0} isLoading={!game}>
       <div className={classes.root}>
-        <Group noWrap position="apart" style={{ width: '100%' }} className={classes.container}>
+        <Group
+          noWrap
+          position="apart"
+          style={{ width: '100%', padding: `0 ${theme.spacing.md}px` }}
+          className={classes.container}
+        >
           <Stack spacing="xs" className={classes.flexGrowAtSm}>
             <Group>
               <Badge variant="outline">
                 {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
               </Badge>
             </Group>
-            <Title className={classes.title}>{game?.title}</Title>
+            <Stack spacing={2}>
+              <Title className={classes.title}>{game?.title}</Title>
+              <Text size="sm" color="dimmed">
+                <Text span weight={700}>
+                  {game?.teamCount ?? 0}
+                </Text>{' '}
+                支队伍已报名
+              </Text>
+            </Stack>
             <Group position="apart">
               <Stack spacing={0}>
                 <Text size="sm" className={classes.date}>

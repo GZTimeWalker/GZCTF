@@ -18,13 +18,13 @@ public class ContainerRepository : RepositoryBase, IContainerRepository
         return context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
     }
 
-    public Task<int> RemoveContainer(Container container, CancellationToken token = default)
+    public Task RemoveContainer(Container container, CancellationToken token = default)
     {
         // Do not remove running container from database
         if (container.Status != ContainerStatus.Destoryed)
             return Task.FromResult(-1);
 
         context.Containers.Remove(container);
-        return context.SaveChangesAsync(token);
+        return SaveAsync(token);
     }
 }

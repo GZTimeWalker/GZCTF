@@ -13,7 +13,7 @@ import {
 import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import { Notice } from '@Api/Api'
+import { Notice } from '@Api'
 
 interface NoticeEditCardProps extends PaperProps {
   notice: Notice

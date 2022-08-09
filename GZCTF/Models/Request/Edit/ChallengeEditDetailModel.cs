@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models.Data;
+using CTFServer.Models.Request.Game;
 using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models.Request.Edit;
@@ -116,6 +117,11 @@ public class ChallengeEditDetailModel
     public Attachment? Attachment { get; set; }
 
     /// <summary>
+    /// 测试容器
+    /// </summary>
+    public ContainerInfoModel? TestContainer { get; set; }
+
+    /// <summary>
     /// 题目 Flag 信息
     /// </summary>
     [Required]
@@ -141,6 +147,8 @@ public class ChallengeEditDetailModel
             FileName = chal.FileName,
             AcceptedCount = chal.AcceptedCount,
             Attachment = chal.Attachment,
+            TestContainer = chal.TestContainer is null ? null :
+                ContainerInfoModel.FromContainer(chal.TestContainer),
             Flags = (from flag in chal.Flags
                      select FlagInfoModel.FromFlagContext(flag))
                     .ToArray()

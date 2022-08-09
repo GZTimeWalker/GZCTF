@@ -5,21 +5,16 @@ import ScoreboardTable from '@Components/ScoreboardTable'
 import TimeLine from '@Components/TimeLine'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
-import api from '@Api/Api'
+import api from '@Api'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
-    refreshInterval: 0,
-  })
-
   const { data: game } = api.game.useGameGames(numId, {
     refreshInterval: 0,
     revalidateOnFocus: false,
   })
-  console.log(scoreboard)
 
   return (
     <WithNavBar width="90%">

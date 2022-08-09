@@ -18,8 +18,8 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
+      "@Api": ["src/Api.ts"],
       "@Components/*": ["src/components/*"],
-      "@Api/*": ["src/*"],
       "@Utils/*": ["src/utils/*"]
     }
   },

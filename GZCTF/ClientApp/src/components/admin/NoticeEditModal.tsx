@@ -5,7 +5,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { Notice } from '@Api/Api'
+import api, { Notice } from '@Api'
 
 interface NoticeEditModalProps extends ModalProps {
   notice?: Notice | null

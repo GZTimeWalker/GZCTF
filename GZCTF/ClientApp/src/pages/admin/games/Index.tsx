@@ -2,7 +2,17 @@ import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ActionIcon, Avatar, Button, Group, Paper, Text, Table, Badge } from '@mantine/core'
+import {
+  ActionIcon,
+  Avatar,
+  Button,
+  Group,
+  Paper,
+  Text,
+  Table,
+  Badge,
+  ScrollArea,
+} from '@mantine/core'
 import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
@@ -14,7 +24,8 @@ import { Icon } from '@mdi/react'
 import { GameColorMap, getGameStatus } from '@Components/GameCard'
 import AdminPage from '@Components/admin/AdminPage'
 import GameCreateModal from '@Components/admin/GameCreateModal'
-import api, { GameInfoModel } from '@Api/Api'
+import { useTableStyles } from '@Utils/ThemeOverride'
+import api, { GameInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -23,6 +34,7 @@ const Games: FC = () => {
   const [createOpened, setCreateOpened] = useState(false)
   const [games, setGames] = useState<GameInfoModel[]>()
   const navigate = useNavigate()
+  const { classes } = useTableStyles()
 
   games?.sort((a, b) => (new Date(b.end) < new Date(a.end) ? -1 : 1))
 
@@ -39,7 +51,6 @@ const Games: FC = () => {
 
   return (
     <AdminPage
-      scroll
       isLoading={!games}
       headProps={{ position: 'apart' }}
       head={
@@ -63,68 +74,70 @@ const Games: FC = () => {
       }
     >
       <Paper shadow="md" p="md">
-        <Table>
-          <thead>
-            <tr>
-              <th>比赛</th>
-              <th>比赛时间</th>
-              <th>简介</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {games &&
-              games.map((game) => {
-                const startTime = new Date(game.start)
-                const endTime = new Date(game.end)
-                const status = getGameStatus(startTime, endTime)
-                const color = GameColorMap.get(status)
+        <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 190px)' }}>
+          <Table className={classes.table}>
+            <thead>
+              <tr>
+                <th>比赛</th>
+                <th>比赛时间</th>
+                <th>简介</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {games &&
+                games.map((game) => {
+                  const startTime = new Date(game.start)
+                  const endTime = new Date(game.end)
+                  const status = getGameStatus(startTime, endTime)
+                  const color = GameColorMap.get(status)
 
-                return (
-                  <tr key={game.id}>
-                    <td>
-                      <Group position="apart">
-                        <Group position="left">
-                          <Avatar src={game.poster} radius={0}>
-                            {game.title?.at(0)}
-                          </Avatar>
-                          <Text weight={700}>{game.title}</Text>
+                  return (
+                    <tr key={game.id}>
+                      <td>
+                        <Group position="apart">
+                          <Group position="left">
+                            <Avatar src={game.poster} radius={0}>
+                              {game.title?.at(0)}
+                            </Avatar>
+                            <Text weight={700}>{game.title}</Text>
+                          </Group>
+                          <Badge color={color}>{status}</Badge>
                         </Group>
-                        <Badge color={color}>{status}</Badge>
-                      </Group>
-                    </td>
-                    <td>
-                      <Group spacing="xs">
-                        <Badge size="xs" color={color} variant="dot">
-                          {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
-                        </Badge>
-                        <Icon path={mdiChevronTripleRight} size={1} />
-                        <Badge size="xs" color={color} variant="dot">
-                          {dayjs(endTime).format('YYYY-MM-DD HH:mm')}
-                        </Badge>
-                      </Group>
-                    </td>
-                    <td>
-                      <Text lineClamp={1} style={{ width: 'calc(50vw - 20rem)' }}>
-                        {game.summary}
-                      </Text>
-                    </td>
-                    <td>
-                      <Group>
-                        <ActionIcon
-                          onClick={() => {
-                            navigate(`/admin/games/${game.id}/info`)
-                          }}
-                        >
-                          <Icon path={mdiPencilOutline} size={1} />
-                        </ActionIcon>
-                      </Group>
-                    </td>
-                  </tr>
-                )
-              })}
-          </tbody>
-        </Table>
+                      </td>
+                      <td>
+                        <Group spacing="xs">
+                          <Badge size="xs" color={color} variant="dot">
+                            {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
+                          </Badge>
+                          <Icon path={mdiChevronTripleRight} size={1} />
+                          <Badge size="xs" color={color} variant="dot">
+                            {dayjs(endTime).format('YYYY-MM-DD HH:mm')}
+                          </Badge>
+                        </Group>
+                      </td>
+                      <td>
+                        <Text lineClamp={1} style={{ width: 'calc(50vw - 20rem)' }}>
+                          {game.summary}
+                        </Text>
+                      </td>
+                      <td>
+                        <Group>
+                          <ActionIcon
+                            onClick={() => {
+                              navigate(`/admin/games/${game.id}/info`)
+                            }}
+                          >
+                            <Icon path={mdiPencilOutline} size={1} />
+                          </ActionIcon>
+                        </Group>
+                      </td>
+                    </tr>
+                  )
+                })}
+            </tbody>
+          </Table>
+        </ScrollArea>
       </Paper>
       <GameCreateModal
         title="新建比赛"

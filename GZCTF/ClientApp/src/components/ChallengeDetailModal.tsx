@@ -26,8 +26,8 @@ import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } fr
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import api, { AnswerResult, ChallengeType } from '@Api/Api'
-import { ChallengeTagItemProps } from './ChallengeItem'
+import api, { AnswerResult, ChallengeType } from '@Api'
+import { ChallengeTagItemProps } from '../utils/ChallengeItem'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
@@ -191,7 +191,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           }
         })
         .catch(showErrorNotification)
-    }, 1000)
+    }, 500)
     return () => clearInterval(polling)
   }, [submitId])
 
