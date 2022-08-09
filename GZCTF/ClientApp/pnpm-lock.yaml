@@ -41,7 +41,6 @@ specifiers:
   vite: ^3.0.5
   vite-plugin-eslint: ^1.7.0
   vite-plugin-pages: ^0.25.0
-  vite-plugin-progress: ^0.0.3
   vite-tsconfig-paths: ^3.5.0
   xterm: ^4.19.0
 
@@ -90,7 +89,6 @@ devDependencies:
   vite: 3.0.5
   vite-plugin-eslint: 1.7.0_eslint@8.21.0+vite@3.0.5
   vite-plugin-pages: 0.25.0_vite@3.0.5
-  vite-plugin-progress: 0.0.3_vite@3.0.5
 
 packages:
 
@@ -965,10 +963,6 @@ packages:
 
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
-    dev: true
-
-  /@types/node/10.17.60:
-    resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
     dev: true
 
   /@types/node/18.6.5:
@@ -2735,11 +2729,6 @@ packages:
     hasBin: true
     dev: true
 
-  /progress/2.0.3:
-    resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
-    engines: {node: '>=0.4.0'}
-    dev: true
-
   /prop-types/15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
     dependencies:
@@ -2758,12 +2747,6 @@ packages:
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
-    dev: true
-
-  /rd/2.0.1:
-    resolution: {integrity: sha512-/XdKU4UazUZTXFmI0dpABt8jSXPWcEyaGdk340KdHnsEOdkTctlX23aAK7ChQDn39YGNlAJr1M5uvaKt4QnpNw==}
-    dependencies:
-      '@types/node': 10.17.60
     dev: true
 
   /react-dom/18.2.0_react@18.2.0:
@@ -3319,18 +3302,6 @@ packages:
       yaml: 2.1.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /vite-plugin-progress/0.0.3_vite@3.0.5:
-    resolution: {integrity: sha512-MrWYs5oJTlr4j6djJEMmW3PX4VVH+mTiJo13xPvGDYdRgUPi/rykYlj2cAB1dj6CDSbc2HMNiOvsxml0vhQhrw==}
-    engines: {node: '>=14', pnpm: '>=7.0.0'}
-    peerDependencies:
-      vite: '>2.0.0-0'
-    dependencies:
-      picocolors: 1.0.0
-      progress: 2.0.3
-      rd: 2.0.1
-      vite: 3.0.5
     dev: true
 
   /vite-tsconfig-paths/3.5.0_vite@3.0.5:
