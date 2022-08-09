@@ -26,6 +26,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/PageTitle'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationStatus } from '@Api'
+import CustomProgress from "@Components/CustomProgress"
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -279,13 +280,7 @@ const GameDetail: FC = () => {
                 </Text>
               </Stack>
             </Group>
-            <Progress
-              size="md"
-              radius="xs"
-              value={progress * 100}
-              animate={progress < 100}
-              color={progress < 100 ? 'brand' : 'yellow'}
-            />
+            <CustomProgress percentage={progress * 100} />
             <Group>{ControlButtons}</Group>
           </Stack>
           <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">

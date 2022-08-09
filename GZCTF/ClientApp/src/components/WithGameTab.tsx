@@ -10,6 +10,7 @@ import { usePageTitle } from '@Utils/PageTitle'
 import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
+import CustomProgress from "./CustomProgress"
 
 const pages = [
   {
@@ -123,16 +124,16 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
           game && (
             <>
               <Title>{game?.title}</Title>
-              <Card style={{ width: '8rem', textAlign: 'center', paddingTop: '4px' }}>
+              <Card style={{ width: '8rem', textAlign: 'center', paddingTop: '4px', overflow: "visible" }}>
                 <Text style={{ fontWeight: 700 }}>
                   {countdown.asSeconds() > 0
                     ? `${countdown.days() * 24 + countdown.hours()} : ${countdown.format(
-                        'mm : ss'
-                      )}`
+                      'mm : ss'
+                    )}`
                     : '比赛已结束'}
                 </Text>
-                <Card.Section style={{ marginTop: '2px' }}>
-                  <Progress radius="xs" size="sm" animate={progress < 100} value={progress} />
+                <Card.Section style={{ marginTop: 4 }}>
+                  <CustomProgress percentage={progress} paddingY={0}/>
                 </Card.Section>
               </Card>
             </>
