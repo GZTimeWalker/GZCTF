@@ -95,6 +95,7 @@ export const useTableStyles = createStyles((theme) => ({
     '& thead tr th': {
       position: 'sticky',
       top: 0,
+      zIndex: 200,
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     },
 
