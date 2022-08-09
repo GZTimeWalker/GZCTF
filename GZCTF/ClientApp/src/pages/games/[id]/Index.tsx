@@ -12,7 +12,6 @@ import {
   Title,
   TypographyStylesProvider,
   Center,
-  Progress,
   Alert,
   Badge,
   BackgroundImage,
@@ -252,7 +251,7 @@ const GameDetail: FC = () => {
           style={{ width: '100%', padding: `0 ${theme.spacing.md}px` }}
           className={classes.container}
         >
-          <Stack spacing="xs" className={classes.flexGrowAtSm}>
+          <Stack spacing={6} className={classes.flexGrowAtSm}>
             <Group>
               <Badge variant="outline">
                 {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
@@ -285,7 +284,7 @@ const GameDetail: FC = () => {
                 </Text>
               </Stack>
             </Group>
-            <CustomProgress percentage={progress * 100} color={theme.colorScheme === "light" ? theme.colors.brand[5] : undefined} paddingY={theme.spacing.xs / 2} />
+            <CustomProgress percentage={progress * 100}/>
             <Group>{ControlButtons}</Group>
           </Stack>
           <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">

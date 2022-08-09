@@ -1,4 +1,4 @@
-<img alt="Banner" src="https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/assets/banner.svg">
+<img alt="Banner" src="assets/banner.svg">
 
 # GZ::CTF
 
@@ -19,7 +19,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
         $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) * exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
       其中 $S$ 为原始分值、 $r$ 为最低分值比例、 $d$ 为难度系数、 $x$ 为提交次数。前三个参数可通过自定义实现绝大部分的动态分值需求。
     - 三血奖励：
-      平台对一二三血分别奖励 $5\%$、$3\%$、$1\%$ 的当前题目分值
+      平台对一二三血分别奖励 5%、3%、1% 的当前题目分值
   - 比赛进行中可启用新题
   - 动态 flag 中启用作弊检测
 - 基于 Docker 或 K8s 的动态容器分发
@@ -31,10 +31,10 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 ## Demo
 
-![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/assets/demo_0.jpg)
-![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/assets/demo_1.jpg)
-![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/assets/demo_2.jpg)
-![](https://raw.githubusercontent.com/GZTimeWalker/GZCTF/main/assets/demo_3.jpg)
+![](assets/demo_0.jpg)
+![](assets/demo_1.jpg)
+![](assets/demo_2.jpg)
+![](assets/demo_3.jpg)
 
 ## 安装配置
 

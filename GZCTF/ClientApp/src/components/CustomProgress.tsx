@@ -1,46 +1,121 @@
-import { FC } from "react";
-import "./CustomProgress.css";
+import { FC } from 'react'
+import { BoxProps, Center, createStyles, Group, keyframes } from '@mantine/core'
 
-export interface CustomProgressProps {
-  thickness?: number,
-  percentage?: number,
-  spikeLengthPrct?: number,
-  paddingY?: number,
-  color?: string,
+export interface CustomProgressProps extends BoxProps {
+  thickness?: number
+  percentage?: number
+  spikeLength?: number
+  paddingY?: number
+  color?: string
 }
 
+export const useStyles = createStyles(
+  (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps) => {
+    const spikeColor = theme.fn.rgba(
+      theme.colors[theme.colorScheme === 'dark' ? 'white' : color ?? 'brand'][5],
+      0.75
+    )
+    const barColor = theme.colors[theme.colorScheme === 'dark' ? 'white' : color ?? 'brand'][0]
+    const spikeLengthStr = `${spikeLength}%`
+    const negSpikeLengthStr = `-${spikeLength}%`
+
+    return {
+      spikesGroup: {
+        position: 'relative',
+        height: '100%',
+        aspectRatio: '1 / 1',
+        backgroundColor: barColor,
+
+        '& div': {
+          animation: `${keyframes`0% {opcity: .3;} 100% {opcity: 1;}`} 2s linear 0s infinite alternate`,
+        },
+      },
+      progressPulseContainer: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+
+        '& div': {
+          width: '25%',
+          height: '100%',
+          background: `linear-gradient(-90deg, ${spikeColor}, #fff0)`,
+          animation: `${keyframes`0% { width: 0%;} 80% {opacity: 1; width: 100%;} 100% {opacity: 0; width: 100%;}`} 2s linear 0s infinite normal`,
+        },
+      },
+      progressBar: {
+        position: 'relative',
+        height: '100%',
+        width: `${percentage}%`,
+        minWidth: thickness,
+        backgroundColor: theme.fn.rgba(barColor, 0.7),
+      },
+      progressBackground: {
+        display: 'flex',
+        alignItems: 'center',
+        height: thickness,
+        width: '100%',
+        backgroundColor: theme.fn.rgba(
+          theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[5],
+          0.8
+        ),
+      },
+      spike: {
+        position: 'absolute',
+      },
+      spikeLeft: {
+        left: 0,
+        top: negSpikeLengthStr,
+        height: spikeLengthStr,
+        width: '100%',
+        background: `linear-gradient(0deg, ${spikeColor}, #fff0)`,
+      },
+      spikeRight: {
+        left: 0,
+        bottom: negSpikeLengthStr,
+        height: spikeLengthStr,
+        width: '100%',
+        background: `linear-gradient(180deg, ${spikeColor}, #fff0)`,
+      },
+      spikeTop: {
+        right: negSpikeLengthStr,
+        top: 0,
+        height: '100%',
+        width: spikeLengthStr,
+        background: `linear-gradient(90deg, ${spikeColor}, #fff0)`,
+      },
+      spikeBottom: {
+        left: negSpikeLengthStr,
+        top: 0,
+        height: '100%',
+        width: spikeLengthStr,
+        background: `linear-gradient(-90deg, ${spikeColor}, #fff0)`,
+      },
+    }
+  }
+)
+
 const CustomProgress: FC<CustomProgressProps> = (props: CustomProgressProps) => {
-  const spikeLength = props.spikeLengthPrct || 250;
-  const thickness = props.thickness || 4;
-  const paddingY = props.paddingY === 0 ? 0 : props.paddingY || thickness * spikeLength / 100;
-  const spikeColor = (props.color || "#ffffff") + "88";
+  const { thickness = 4, spikeLength = 250, ...others } = props
+
+  const { classes, cx } = useStyles(props)
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: paddingY + "px 0" }}>
-      <div style={{ display: "flex", alignItems: "center", height: thickness, width: "100%", backgroundColor: "#80808022" }}>
-        <div style={{
-          position: "relative",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "end",
-          height: "100%",
-          width: (props.percentage === 0 ? 0 : props.percentage || 75) + "%",
-          minWidth: thickness,
-          backgroundColor: (props.color || "#ffffff") + "66"
-        }}>
-          <div className="progress-pulse-container">
-            <div style={{ background: `linear-gradient(-90deg, ${spikeColor}, #fff0)` }}></div>
+    <Center py={(thickness * spikeLength) / 100} {...others}>
+      <div className={classes.progressBackground}>
+        <Group position="right" className={classes.progressBar}>
+          <div className={classes.progressPulseContainer}>
+            <div />
           </div>
-          <div className="spikes-group" style={{ position: "relative", height: "100%", aspectRatio: "1 / 1", backgroundColor: props.color || "#fff" }}>
-            <div style={{ position: "absolute", left: 0, top: "-" + spikeLength + "%", height: spikeLength + "%", width: "100%", background: `linear-gradient(0deg, ${spikeColor}, #fff0)` }}></div>
-            <div style={{ position: "absolute", left: 0, bottom: "-" + spikeLength + "%", height: spikeLength + "%", width: "100%", background: `linear-gradient(180deg, ${spikeColor}, #fff0)` }}></div>
-            <div style={{ position: "absolute", left: "-" + spikeLength + "%", top: 0, height: "100%", width: spikeLength + "%", background: `linear-gradient(-90deg, ${spikeColor}, #fff0)` }}></div>
-            <div style={{ position: "absolute", right: "-" + spikeLength + "%", top: 0, height: "100%", width: spikeLength + "%", background: `linear-gradient(90deg, ${spikeColor}, #fff0)` }}></div>
+          <div className={classes.spikesGroup}>
+            <div className={cx(classes.spike, classes.spikeRight)}></div>
+            <div className={cx(classes.spike, classes.spikeLeft)}></div>
+            <div className={cx(classes.spike, classes.spikeTop)}></div>
+            <div className={cx(classes.spike, classes.spikeBottom)}></div>
           </div>
-        </div>
+        </Group>
       </div>
-    </div>
+    </Center>
   )
 }
 
-export default CustomProgress;
+export default CustomProgress

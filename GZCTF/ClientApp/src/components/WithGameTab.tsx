@@ -2,15 +2,15 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { Card, Stack, Title, Text, Progress, LoadingOverlay, useMantineTheme } from '@mantine/core'
+import { Card, Stack, Title, Text, LoadingOverlay, useMantineTheme } from '@mantine/core'
 import { useInterval } from '@mantine/hooks'
 import { mdiFlagOutline, mdiGauge, mdiMedalOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/PageTitle'
 import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
+import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
-import CustomProgress from "./CustomProgress"
 
 const pages = [
   {
@@ -124,16 +124,23 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
           game && (
             <>
               <Title>{game?.title}</Title>
-              <Card style={{ width: '8rem', textAlign: 'center', paddingTop: '4px', overflow: "visible" }}>
+              <Card
+                style={{
+                  width: '8rem',
+                  textAlign: 'center',
+                  paddingTop: '4px',
+                  overflow: 'visible',
+                }}
+              >
                 <Text style={{ fontWeight: 700 }}>
                   {countdown.asSeconds() > 0
                     ? `${countdown.days() * 24 + countdown.hours()} : ${countdown.format(
-                      'mm : ss'
-                    )}`
+                        'mm : ss'
+                      )}`
                     : '比赛已结束'}
                 </Text>
                 <Card.Section style={{ marginTop: 4 }}>
-                  <CustomProgress percentage={progress} paddingY={0} color={theme.colorScheme === "light" ? theme.colors.brand[5] : undefined}/>
+                  <CustomProgress percentage={progress} py={0} />
                 </Card.Section>
               </Card>
             </>
