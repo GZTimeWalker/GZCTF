@@ -1,14 +1,13 @@
 import { FC } from 'react'
-import { BoxProps, Center, createStyles, Group, keyframes } from '@mantine/core'
+import { BoxProps, Center, createStyles, Group, keyframes, MantineColor } from '@mantine/core'
 
 export interface CustomProgressProps extends BoxProps {
   thickness?: number
   percentage?: number
   spikeLength?: number
   spikeOpacity?: number
-  paddingY?: number
-  color?: string
   pulsing?: boolean
+  color?: MantineColor
 }
 
 export const useStyles = createStyles(
