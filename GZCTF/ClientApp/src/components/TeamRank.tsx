@@ -24,9 +24,7 @@ const TeamRank: FC<PaperProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const { data: myteam } = api.game.useGameMyTeam(numId, {
-    refreshInterval: 0,
-  })
+  const { data: myteam } = api.game.useGameMyTeam(numId)
 
   const { classes } = useStyle()
 

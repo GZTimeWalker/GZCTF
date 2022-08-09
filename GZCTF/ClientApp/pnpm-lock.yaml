@@ -12,7 +12,7 @@ specifiers:
   '@mantine/notifications': ^5.1.1
   '@mdi/js': ^7.0.96
   '@mdi/react': ^1.6.1
-  '@microsoft/signalr': ^6.0.7
+  '@microsoft/signalr': ^6.0.8
   '@trivago/prettier-plugin-sort-imports': ^3.3.0
   '@types/marked': ^4.0.3
   '@types/node': 18.6.5
@@ -38,7 +38,7 @@ specifiers:
   swr: ^1.3.0
   tslib: ^2.4.0
   typescript: 4.7.4
-  vite: ^3.0.4
+  vite: ^3.0.5
   vite-plugin-eslint: ^1.7.0
   vite-plugin-pages: ^0.25.0
   vite-plugin-progress: ^0.0.3
@@ -57,7 +57,7 @@ dependencies:
   '@mantine/notifications': 5.1.1_2suowmaou4zrczdwao7o7f3jte
   '@mdi/js': 7.0.96
   '@mdi/react': 1.6.1
-  '@microsoft/signalr': 6.0.7
+  '@microsoft/signalr': 6.0.8
   dayjs: 1.11.4
   echarts: 5.3.3
   echarts-for-react: 3.0.2_echarts@5.3.3+react@18.2.0
@@ -67,7 +67,7 @@ dependencies:
   react-router: 6.3.0_react@18.2.0
   react-router-dom: 6.3.0_biqbaboplfbrettd7655fr4n2y
   swr: 1.3.0_react@18.2.0
-  vite-tsconfig-paths: 3.5.0_vite@3.0.4
+  vite-tsconfig-paths: 3.5.0_vite@3.0.5
   xterm: 4.19.0
 
 devDependencies:
@@ -78,7 +78,7 @@ devDependencies:
   '@types/react-dom': 18.0.6
   '@typescript-eslint/eslint-plugin': 5.33.0_njno5y7ry2l2lcmiu4tywxkwnq
   '@typescript-eslint/parser': 5.33.0_qugx7qdu5zevzvxaiqyxfiwquq
-  '@vitejs/plugin-react': 2.0.0_vite@3.0.4
+  '@vitejs/plugin-react': 2.0.0_vite@3.0.5
   axios: 0.27.2
   eslint: 8.21.0
   form-data: 4.0.0
@@ -87,10 +87,10 @@ devDependencies:
   swagger-typescript-api: 9.3.1
   tslib: 2.4.0
   typescript: 4.7.4
-  vite: 3.0.4
-  vite-plugin-eslint: 1.7.0_eslint@8.21.0+vite@3.0.4
-  vite-plugin-pages: 0.25.0_vite@3.0.4
-  vite-plugin-progress: 0.0.3_vite@3.0.4
+  vite: 3.0.5
+  vite-plugin-eslint: 1.7.0_eslint@8.21.0+vite@3.0.5
+  vite-plugin-pages: 0.25.0_vite@3.0.5
+  vite-plugin-progress: 0.0.3_vite@3.0.5
 
 packages:
 
@@ -766,8 +766,8 @@ packages:
       prop-types: 15.8.1
     dev: false
 
-  /@microsoft/signalr/6.0.7:
-    resolution: {integrity: sha512-CoIz8K0IpaCGbI4rr2W8RHYA8Yq0KqY8DNsJzHw3UEWTJ3KqhWqeVCE8R24czzcsoUrE28xltEQ6qNTXZDHf3g==}
+  /@microsoft/signalr/6.0.8:
+    resolution: {integrity: sha512-TgvNf8opondnX6nqN2AvWThOMl+CjPwxonhAbBpmLveECcnTuBibJQdiCUA4iwjBz26k2HIiiJ25DYgqXIJVQw==}
     dependencies:
       abort-controller: 3.0.0
       eventsource: 1.1.2
@@ -1127,7 +1127,7 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vitejs/plugin-react/2.0.0_vite@3.0.4:
+  /@vitejs/plugin-react/2.0.0_vite@3.0.5:
     resolution: {integrity: sha512-zHkRR+X4zqEPNBbKV2FvWSxK7Q6crjMBVIAYroSU8Nbb4M3E5x4qOiLoqJBHtXgr27kfednXjkwr3lr8jS6Wrw==}
     engines: {node: '>=14.18.0'}
     peerDependencies:
@@ -1140,7 +1140,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.18.6_@babel+core@7.18.10
       magic-string: 0.26.2
       react-refresh: 0.14.0
-      vite: 3.0.4
+      vite: 3.0.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1273,7 +1273,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001374
-      electron-to-chromium: 1.4.212
+      electron-to-chromium: 1.4.213
       node-releases: 2.0.6
       update-browserslist-db: 1.0.5_browserslist@4.21.3
 
@@ -1482,8 +1482,8 @@ packages:
       zrender: 5.3.2
     dev: false
 
-  /electron-to-chromium/1.4.212:
-    resolution: {integrity: sha512-LjQUg1SpLj2GfyaPDVBUHdhmlDU1vDB4f0mJWSGkISoXQrn5/lH3ECPCuo2Bkvf6Y30wO+b69te+rZK/llZmjg==}
+  /electron-to-chromium/1.4.213:
+    resolution: {integrity: sha512-+3DbGHGOCHTVB/Ms63bGqbyC1b8y7Fk86+7ltssB8NQrZtSCvZG6eooSl9U2Q0yw++fL2DpHKOdTU0NVEkFObg==}
 
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3285,7 +3285,7 @@ packages:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
     dev: true
 
-  /vite-plugin-eslint/1.7.0_eslint@8.21.0+vite@3.0.4:
+  /vite-plugin-eslint/1.7.0_eslint@8.21.0+vite@3.0.5:
     resolution: {integrity: sha512-Kz2HwBeAArmsE0QmWSm+e7CaEQrfMkEZpFw4hngoy6JmERjw7WUH8HLbG1OkreOKX4iIUReOss9N1Mkw4wEk8g==}
     peerDependencies:
       eslint: '>=7'
@@ -3295,10 +3295,10 @@ packages:
       '@types/eslint': 8.4.5
       eslint: 8.21.0
       rollup: 2.77.2
-      vite: 3.0.4
+      vite: 3.0.5
     dev: true
 
-  /vite-plugin-pages/0.25.0_vite@3.0.4:
+  /vite-plugin-pages/0.25.0_vite@3.0.5:
     resolution: {integrity: sha512-q0SX2iSw0UrTnivkzsPb19ZxamShq1nE/e/CKOe8+uVg70/e14uJuzKnw7dZ2omPjmV9Lhks38nzJL6RDRGmeA==}
     peerDependencies:
       '@vue/compiler-sfc': ^2.7.0 || ^3.0.0
@@ -3315,13 +3315,13 @@ packages:
       json5: 2.2.1
       local-pkg: 0.4.2
       picocolors: 1.0.0
-      vite: 3.0.4
+      vite: 3.0.5
       yaml: 2.1.1
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite-plugin-progress/0.0.3_vite@3.0.4:
+  /vite-plugin-progress/0.0.3_vite@3.0.5:
     resolution: {integrity: sha512-MrWYs5oJTlr4j6djJEMmW3PX4VVH+mTiJo13xPvGDYdRgUPi/rykYlj2cAB1dj6CDSbc2HMNiOvsxml0vhQhrw==}
     engines: {node: '>=14', pnpm: '>=7.0.0'}
     peerDependencies:
@@ -3330,10 +3330,10 @@ packages:
       picocolors: 1.0.0
       progress: 2.0.3
       rd: 2.0.1
-      vite: 3.0.4
+      vite: 3.0.5
     dev: true
 
-  /vite-tsconfig-paths/3.5.0_vite@3.0.4:
+  /vite-tsconfig-paths/3.5.0_vite@3.0.5:
     resolution: {integrity: sha512-NKIubr7gXgh/3uniQaOytSg+aKWPrjquP6anAy+zCWEn6h9fB8z2/qdlfQrTgZWaXJ2pHVlllrSdRZltHn9P4g==}
     peerDependencies:
       vite: '>2.0.0-0'
@@ -3342,13 +3342,13 @@ packages:
       globrex: 0.1.2
       recrawl-sync: 2.2.2
       tsconfig-paths: 4.1.0
-      vite: 3.0.4
+      vite: 3.0.5
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /vite/3.0.4:
-    resolution: {integrity: sha512-NU304nqnBeOx2MkQnskBQxVsa0pRAH5FphokTGmyy8M3oxbvw7qAXts2GORxs+h/2vKsD+osMhZ7An6yK6F1dA==}
+  /vite/3.0.5:
+    resolution: {integrity: sha512-bRvrt9Tw8EGW4jj64aYFTnVg134E8hgDxyl/eEHnxiGqYk7/pTPss6CWlurqPOUzqvEoZkZ58Ws+Iu8MB87iMA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:

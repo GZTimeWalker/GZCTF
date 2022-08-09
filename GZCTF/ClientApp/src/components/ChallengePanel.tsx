@@ -13,9 +13,7 @@ const ChallengePanel: FC = () => {
   const numId = parseInt(id ?? '-1')
 
   const { data: challenges } = api.game.useGameChallenges(numId)
-  const { data: myteam } = api.game.useGameMyTeam(numId, {
-    refreshInterval: 0,
-  })
+  const { data: myteam } = api.game.useGameMyTeam(numId)
 
   const tags = Object.keys(challenges ?? {})
   const [activeTab, setActiveTab] = React.useState<ChallengeTag | 'All'>('All')
