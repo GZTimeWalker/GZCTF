@@ -1,27 +1,10 @@
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { Card, createStyles, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
+import { Card, useMantineTheme, Divider, Group, Tooltip, Stack, Text, Title } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import { BloodsTypes, ChallengeTagLabelMap } from '../utils/ChallengeItem'
-
-const useStyles = createStyles((_theme, _param, getRef) => {
-  const solved = { ref: getRef('solved') } as const
-
-  return {
-    solved,
-    indicator: {
-      display: 'none',
-      background: 'transparent',
-      transform: 'translateY(-8px) translateX(30px) rotate(30deg)',
-
-      [`&.${solved.ref}`]: {
-        display: 'flex',
-      },
-    },
-  }
-})
 
 interface ChallengeCardProps {
   challenge: ChallengeInfo
@@ -32,7 +15,7 @@ interface ChallengeCardProps {
 
 const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onClick }) => {
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
-  const { theme } = useStyles()
+  const theme = useMantineTheme()
 
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
 
