@@ -314,6 +314,7 @@ const GameTeamReview: FC = () => {
         color: 'red',
         message: `比赛 Id 错误：${id}`,
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       navigate('/admin/games')
       return

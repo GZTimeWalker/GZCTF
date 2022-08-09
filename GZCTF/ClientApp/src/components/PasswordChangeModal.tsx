@@ -23,6 +23,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
         title: '密码不能为空',
         message: '请检查你的输入',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
     } else if (pwd === retypedPwd) {
       api.account
@@ -48,6 +49,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
         title: '密码不一致',
         message: '请检查你的输入',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
     }
   }

@@ -112,6 +112,7 @@ const Users: FC = () => {
         color: 'orange',
         message: '不可以删除自己',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       return
     }

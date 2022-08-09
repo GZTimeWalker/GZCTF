@@ -29,6 +29,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         title: '输入不合法',
         message: '请输入标题和时间信息',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       return
     }

@@ -40,6 +40,7 @@ const GameInfoEdit: FC = () => {
         color: 'red',
         message: `比赛 Id 错误：${id}`,
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       navigate('/admin/games')
       return
@@ -219,6 +220,7 @@ const GameInfoEdit: FC = () => {
                   title: '文件获取失败',
                   message: '请检查文件格式和大小',
                   icon: <Icon path={mdiClose} size={1} />,
+                  disallowClose: true,
                 })
               }}
               maxSize={3 * 1024 * 1024}

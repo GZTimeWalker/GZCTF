@@ -61,6 +61,7 @@ const Teams: FC = () => {
         title: '遇到了问题',
         message: '队伍邀请码格式不正确',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       return
     }

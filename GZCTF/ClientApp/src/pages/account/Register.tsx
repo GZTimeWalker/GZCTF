@@ -32,6 +32,7 @@ const Register: FC = () => {
         title: '请检查输入',
         message: '重复密码有误',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       return
     }

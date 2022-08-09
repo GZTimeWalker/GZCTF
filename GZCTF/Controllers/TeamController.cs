@@ -109,8 +109,7 @@ public class TeamController : ControllerBase
 
         user.OwnTeam = team;
 
-        if (user.ActiveTeam is null)
-            user.ActiveTeam = team;
+        user.ActiveTeam ??= team;
 
         await userManager.UpdateAsync(user);
 
@@ -376,8 +375,7 @@ public class TeamController : ControllerBase
 
             await teamRepository.SaveAsync(cancelToken);
 
-            if (user.ActiveTeam is null)
-                user.ActiveTeam = team;
+            user.ActiveTeam ??= team;
 
             await trans.CommitAsync(cancelToken);
 

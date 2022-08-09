@@ -31,6 +31,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         title: '输入不能为空',
         message: '请输入标题和内容',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       return
     }
@@ -39,6 +40,7 @@ const NoticeEditModal: FC<NoticeEditModalProps> = (props) => {
         color: 'orange',
         message: '似乎没有变化哦',
         icon: <Icon path={mdiClose} size={1} />,
+        disallowClose: true,
       })
       return
     }

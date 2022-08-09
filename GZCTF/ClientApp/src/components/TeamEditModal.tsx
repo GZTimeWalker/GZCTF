@@ -185,8 +185,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           // Updated TeamInfoModel
           showNotification({
             color: 'teal',
-            title: '你改变了一些东西',
-            message: '但值得吗？',
+            message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
@@ -326,6 +325,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               title: '文件获取失败',
               message: '请检查文件格式和大小',
               icon: <Icon path={mdiClose} size={1} />,
+              disallowClose: true,
             })
           }}
           style={{
