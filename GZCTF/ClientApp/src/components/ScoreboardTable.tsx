@@ -81,7 +81,11 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
           return (
             <th key={key} colSpan={table[key].length}>
               <Group spacing={4} noWrap position="center" style={{ width: '100%' }}>
-                <Icon path={tag.icon} size={1} color={theme.colors[tag.color][8]} />
+                <Icon
+                  path={tag.icon}
+                  size={1}
+                  color={theme.colors[tag.color][theme.colorScheme === 'dark' ? 8 : 6]}
+                />
                 <Text color={tag.color}>{key}</Text>
               </Group>
             </th>
