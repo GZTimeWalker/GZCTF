@@ -1,0 +1,36 @@
+version: '3.0'
+services:
+  gzctf:
+    container_name: GZCTF
+    image: ghcr.io/gztimewalker/gzctf/gzctf:develop
+    restart: always
+    ports:
+      - "54433:80"
+    networks:
+      default:
+    volumes:
+      - "./data/files:/app/uploads"
+      - "./appsettings.json:/app/appsettings.json:ro"
+      - "./logs:/app/log"
+      - "./data/keys:/root/.aspnet/DataProtection-Keys"
+      # - "/var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - db
+
+  db:
+    container_name: pgsql
+    image: postgres:alpine
+    restart: always
+    environment:
+      - "POSTGRES_PASSWORD=Fyjd0HtrL00QD555W1b6WLKbLl62cHT0"
+    networks:
+      default:
+    volumes:
+      - "./data/db:/var/lib/postgresql/data"
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.12.0/24
