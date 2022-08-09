@@ -1,27 +1,24 @@
 import React, { FC, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Stack, Button, Text, Group, ScrollArea} from '@mantine/core'
-import { mdiAccountReactivate, mdiBackburger, mdiCheck, mdiClose, mdiPlus } from '@mdi/js'
-import { Icon } from '@mdi/react'
-import WithGameTab from '@Components/admin/WithGameEditTab'
-import api, { GameNotice } from '../../../../Api'
+import { Stack, Button, Text, Group, ScrollArea } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import GameNoticeEditCard from '../../../../components/GameNoticeEditCard'
+import { mdiAccountReactivate, mdiBackburger, mdiCheck, mdiClose, mdiPlus } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import GameNoticeEditModal from '@Components/GameNoticeEditModal'
+import WithGameTab from '@Components/admin/WithGameEditTab'
+import api, { GameNotice } from '../../../../Api'
+import GameNoticeEditCard from '../../../../components/GameNoticeEditCard'
 import { showErrorNotification } from '../../../../utils/ApiErrorHandler'
 
-
 const GameNoticeEdit: FC = () => {
-  const { id } = useParams();
+  const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { data: gameNotices, mutate } = api.edit.useEditGetGameNotices(
-    numId,
-    {
-      refreshInterval: 0,
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-    });
+  const { data: gameNotices, mutate } = api.edit.useEditGetGameNotices(numId, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
 
   const [disabled, setDisabled] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -41,7 +38,6 @@ const GameNoticeEdit: FC = () => {
       labels: { confirm: '删除通知', cancel: '取消' },
       confirmProps: { color: 'red' },
     })
-
   }
   const onConfirmDelete = (gameNotice: GameNotice) => {
     api.edit
@@ -72,46 +68,42 @@ const GameNoticeEdit: FC = () => {
           </Button>
 
           <Group position="center">
-          <Button
-            leftIcon={<Icon path={mdiPlus} size={1} />}
-            onClick={() => {
-              setActiveGameNotice(null)
-              setIsEditModalOpen(true)
-            } }
-          >
-            新建通知
-          </Button>
+            <Button
+              leftIcon={<Icon path={mdiPlus} size={1} />}
+              onClick={() => {
+                setActiveGameNotice(null)
+                setIsEditModalOpen(true)
+              }}
+            >
+              新建通知
+            </Button>
           </Group>
         </>
       }
     >
-      <ScrollArea
-        style={{ height: 'calc(100vh-180px)', position: 'relative'} }
-        offsetScrollbars
-      >
+      <ScrollArea style={{ height: 'calc(100vh-180px)', position: 'relative' }} offsetScrollbars>
         <Stack
           spacing="lg"
           align="center"
           style={{
-            margin:'2%',
-          } }
+            margin: '2%',
+          }}
         >
           {gameNotices &&
-            gameNotices
-              .map((gameNotice) => (
-                <GameNoticeEditCard
-                  key={gameNotice.id}
-                  gameNotice={gameNotice}
-                  onDelete={() => {
-                    onDeleteGameNotice(gameNotice)
-                  }}
-                  onEdit={() => {
-                    setActiveGameNotice(gameNotice)
-                    setIsEditModalOpen(true)
-                  }}
-                  style={{width: '90%'} }
-                />
-              ))}
+            gameNotices.map((gameNotice) => (
+              <GameNoticeEditCard
+                key={gameNotice.id}
+                gameNotice={gameNotice}
+                onDelete={() => {
+                  onDeleteGameNotice(gameNotice)
+                }}
+                onEdit={() => {
+                  setActiveGameNotice(gameNotice)
+                  setIsEditModalOpen(true)
+                }}
+                style={{ width: '90%' }}
+              />
+            ))}
         </Stack>
       </ScrollArea>
       <GameNoticeEditModal
@@ -123,7 +115,8 @@ const GameNoticeEdit: FC = () => {
         gameNotice={activeGameNotice}
         mutateGameNotice={(gameNotice: GameNotice) => {
           mutate([gameNotice, ...(gameNotices?.filter((n) => n.id !== gameNotice.id) ?? [])])
-        }} />
+        }}
+      />
     </WithGameTab>
   )
 }

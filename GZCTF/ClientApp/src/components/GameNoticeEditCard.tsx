@@ -21,15 +21,18 @@ interface GameNoticeEditCardProps {
   onEdit: () => void
 }
 
-const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({ gameNotice, onDelete, onEdit, ...props }) => {
+const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
+  gameNotice,
+  onDelete,
+  onEdit,
+  ...props
+}) => {
   const theme = useMantineTheme()
   return (
     <Card shadow="sm" p="lg" {...props}>
       <Group position="apart">
         <Group position="left">
-          <Text weight="500">
-            {gameNotice.content}
-          </Text>
+          <Text weight="500">{gameNotice.content}</Text>
         </Group>
         <Group position="right">
           <ActionIcon onClick={onEdit}>
@@ -43,6 +46,5 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({ gameNotice, onDelete,
     </Card>
   )
 }
-
 
 export default GameNoticeEditCard

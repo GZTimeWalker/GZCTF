@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, Stack, Text, Textarea, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -6,7 +7,6 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { GameNotice } from '../Api'
-import { useParams } from 'react-router-dom'
 
 interface GameNoticeEditModalProps extends ModalProps {
   gameNotice?: GameNotice | null
@@ -14,7 +14,7 @@ interface GameNoticeEditModalProps extends ModalProps {
 }
 
 const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
-  const { id } = useParams();
+  const { id } = useParams()
   const numId = parseInt(id ?? '-1') // gameId
   const { gameNotice, mutateGameNotice, ...modalProps } = props
 
@@ -34,7 +34,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         color: 'red',
         title: '输入不能为空',
         message: '请输入内容',
-        icon: <Icon path={mdiClose} size={1} />
+        icon: <Icon path={mdiClose} size={1} />,
       })
       return
     }
@@ -105,20 +105,16 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           autosize
           minRows={5}
           maxRows={16}
-          onChange={(e) => setContent(e.currentTarget.value) }
+          onChange={(e) => setContent(e.currentTarget.value)}
         />
-        <Group grow style={{margin:'auto', width:'100%'} }>
-          <Button
-            fullWidth
-            disabled={disabled}
-            onClick={onConfirm }
-            >
-            {"确认" }
+        <Group grow style={{ margin: 'auto', width: '100%' }}>
+          <Button fullWidth disabled={disabled} onClick={onConfirm}>
+            {'确认'}
           </Button>
         </Group>
       </Stack>
     </Modal>
-    )
+  )
 }
 
 export default GameNoticeEditModal

@@ -115,6 +115,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 SolvedCount = c.Key.AcceptedCount,
                 Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
+            .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
