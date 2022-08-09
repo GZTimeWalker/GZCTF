@@ -175,6 +175,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Attachment).AutoInclude();
+            entity.Navigation(e => e.TestContainer).AutoInclude();
 
             entity.HasIndex(e => e.GameId);
         });
