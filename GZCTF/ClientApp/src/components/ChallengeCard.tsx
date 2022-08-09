@@ -32,34 +32,27 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
         }),
       })}
     >
-      <Stack spacing="sm" style={{ position: "relative", zIndex: 99 }}>
+      <Stack spacing="sm" style={{ position: 'relative', zIndex: 99 }}>
         <Group noWrap position="apart" spacing="xs">
-          <Text lineClamp={1} weight={700} size={theme.fontSizes.lg} color={tagData?.color}>
+          <Text lineClamp={1} weight={700} size={theme.fontSizes.lg}>
             {challenge.title}
           </Text>
           {solved && <Icon path={mdiFlag} size={1} color={colorStr} />}
         </Group>
-        {/* <Divider
-          size="sm"
-          variant="dashed"
-          color={tagData?.color}
-          labelPosition="center"
-          label={tagData && <Icon path={tagData.icon} size={1} />}
-        /> */}
         <Divider />
-        <Group position="apart" align="start">
-          <Group position="center">
+        <Group noWrap position="apart" align="start">
+          <Group noWrap position="center">
             <Text
               align="center"
               weight={700}
-              size={20}
+              size={18}
               sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
             >
               {challenge.score} pts
             </Text>
           </Group>
           <Stack spacing="xs">
-            <Title order={6} align="center" style={{marginTop: theme.spacing.xs / 2}}>
+            <Title order={6} align="center" style={{ marginTop: theme.spacing.xs / 2 }}>
               {`${challenge.solved} `}
               <Text color="dimmed" size="xs" inherit span>
                 支队伍攻克
@@ -79,7 +72,9 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
                     }}
                     label={
                       <Stack spacing={0}>
-                        <Text color={theme.colorScheme === 'dark' ? '' : 'dark'}>{blood?.name}</Text>
+                        <Text color={theme.colorScheme === 'dark' ? '' : 'dark'}>
+                          {blood?.name}
+                        </Text>
                         <Text size="xs" color="dimmed">
                           {dayjs(blood?.submitTimeUTC).format('YY/MM/DD HH:mm:ss')}
                         </Text>
@@ -93,7 +88,20 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, solved, iconMap, onC
           </Stack>
         </Group>
       </Stack>
-      {tagData && <Icon path={tagData.icon} size={4} color={theme.fn.rgba(theme.colors[tagData?.color][7], .3)} style={{ position: "absolute", bottom: 0, left: 0, transform: "translateY(35%)", zIndex: 98 }} />}
+      {tagData && (
+        <Icon
+          path={tagData.icon}
+          size={4}
+          color={theme.fn.rgba(theme.colors[tagData?.color][7], 0.3)}
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            transform: 'translateY(35%)',
+            zIndex: 98,
+          }}
+        />
+      )}
     </Card>
   )
 }

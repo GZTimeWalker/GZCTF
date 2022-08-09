@@ -234,6 +234,7 @@ _Pvt_Extensions
 **/appsettings.json
 **/appsettings.*.json
 !**/appsettings.Template.json
+!/appsettings.json
 
 **/k8sconfig.yaml
 

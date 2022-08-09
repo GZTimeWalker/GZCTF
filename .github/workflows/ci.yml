@@ -3,6 +3,7 @@ name: Build & Publish Image
 on:
   push:
     branches: [ "main", "develop" ]
+    tags: [ "v*" ]
   workflow_dispatch:
 
 jobs:
@@ -47,6 +48,6 @@ jobs:
             ^v(.)*
           keep-last: 5
           untagged: true
-      
+
       - name: Print full Image URL
         run: echo ${{ steps.publish.outputs.imageURL }}:${{ github.sha }}

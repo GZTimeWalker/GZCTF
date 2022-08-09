@@ -1,7 +1,17 @@
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { Text, Stack, Badge, Group, HoverCard, Title, createStyles, Anchor } from '@mantine/core'
-import LogoHeader from '@Components/LogoHeader'
+import {
+  Text,
+  Stack,
+  Badge,
+  Group,
+  HoverCard,
+  Title,
+  createStyles,
+  Anchor,
+  keyframes,
+  Center,
+} from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 
@@ -11,13 +21,30 @@ const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23T12:00:
 const builtdate = dayjs(import.meta.env.DEV ? new Date() : new Date(timestamp))
 
 const useStyles = createStyles((theme) => ({
-  brand: {
-    color: theme.colors[theme.primaryColor][4],
-  },
   title: {
     marginLeft: '-20px',
     marginBottom: '-5px',
     color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+  },
+  brand: {
+    color: theme.colors[theme.primaryColor][4],
+  },
+  bio: {
+    fontFamily: theme.fontFamilyMonospace,
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    color: theme.colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.dark[4],
+  },
+  blink: {
+    animation: `${keyframes`0%, 100% {opacity:0;} 50% {opacity:1;}`} 1s infinite steps(1,start)`,
+  },
+  watermark: {
+    position: 'absolute',
+    fontSize: '12rem',
+    fontWeight: 'bold',
+    opacity: 0.05,
+    transform: 'scale(1.5)',
+    userSelect: 'none',
   },
 }))
 
@@ -27,10 +54,17 @@ const About: FC = () => {
   return (
     <WithNavBar>
       <Stack justify="space-between" style={{ height: 'calc(100vh - 32px)' }}>
-        <LogoHeader />
-        <Stack style={{ height: 'calc(100vh - 48px)' }}>
-          <Text>About</Text>
-        </Stack>
+        <Center style={{ height: 'calc(100vh - 32px)' }}>
+          <Title order={2} className={classes.watermark}>
+            GZ::CTF
+          </Title>
+          <Text className={classes.bio}>
+            &gt; Hack for fun not for profit
+            <Text span className={classes.blink}>
+              _
+            </Text>
+          </Text>
+        </Center>
         <Group position="right">
           <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
             <HoverCard.Target>
