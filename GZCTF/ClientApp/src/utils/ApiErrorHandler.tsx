@@ -3,6 +3,7 @@ import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 
 export const showErrorNotification = (err: any) => {
+  console.warn(err)
   showNotification({
     color: 'red',
     title: '遇到了问题',

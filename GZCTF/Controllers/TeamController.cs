@@ -337,13 +337,13 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("Accept/{code}")]
+    [HttpPost("Accept")]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Accept(string code, CancellationToken cancelToken)
+    public async Task<IActionResult> Accept([FromBody] string code, CancellationToken cancelToken)
     {
         if (!Regex.IsMatch(code, @":\d+:[0-9a-f]{32}"))
             return BadRequest(new RequestResponse($"Code 无效"));
