@@ -349,11 +349,11 @@ public class TeamController : ControllerBase
             return BadRequest(new RequestResponse($"Code 无效"));
 
         var inviteCode = code[^32..];
-        code = code[..^33];
+        var preCode = code[..^33];
 
-        var lastColon = code.LastIndexOf(':');
-        var teamId = int.Parse(code[(lastColon + 1)..]);
-        var teamName = code[..lastColon];
+        var lastColon = preCode.LastIndexOf(':');
+        var teamId = int.Parse(preCode[(lastColon + 1)..]);
+        var teamName = preCode[..lastColon];
 
         var trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
