@@ -24,7 +24,7 @@ const ChallengePanel: FC = () => {
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
   const [detailOpened, setDetailOpened] = useState(false)
-  const iconMap = SubmissionTypeIconMap(0.8)
+  const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
 
   return (
     <Group
@@ -103,6 +103,7 @@ const ChallengePanel: FC = () => {
               key={chal.id}
               challenge={chal}
               iconMap={iconMap}
+              colorMap={colorMap}
               onClick={() => {
                 setChallenge(chal)
                 setDetailOpened(true)

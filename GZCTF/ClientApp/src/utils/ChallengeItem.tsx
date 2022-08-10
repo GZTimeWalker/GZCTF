@@ -107,44 +107,68 @@ export const BloodsTypes = [
   SubmissionType.ThirdBlood,
 ]
 
-export const SubmissionTypeIconMap = (size: number) => {
+export const SubmissionTypeColorMap = () => {
   const theme = useMantineTheme()
   return new Map([
     [SubmissionType.Unaccepted, undefined],
-    [
-      SubmissionType.Normal,
-      <Icon
-        path={mdiFlag}
-        size={size}
-        color={theme.colors.brand[theme.colorScheme === 'dark' ? 4 : 7]}
-      />,
-    ],
-    [
-      SubmissionType.FirstBlood,
-      <Icon path={mdiHexagonSlice6} size={size} color={theme.colors.yellow[5]} />,
-    ],
+    [SubmissionType.Normal, theme.colors.brand[theme.colorScheme === 'dark' ? 5 : 7]],
+    [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
       SubmissionType.SecondBlood,
-      <Icon
-        path={mdiHexagonSlice4}
-        size={size}
-        color={theme.fn.lighten(theme.colors.gray[2], 0.3)}
-      />,
+      theme.colorScheme === 'dark'
+        ? theme.fn.lighten(theme.colors.gray[2], 0.3)
+        : theme.fn.darken(theme.colors.gray[1], 0.2),
     ],
     [
       SubmissionType.ThirdBlood,
-      <Icon
-        path={mdiHexagonSlice2}
-        size={size}
-        color={theme.fn.darken(theme.colors.orange[7], theme.colorScheme === 'dark' ? 0.25 : 0.1)}
-      />,
+      theme.colorScheme === 'dark'
+        ? theme.fn.darken(theme.colors.orange[7], 0.25)
+        : theme.fn.lighten(theme.colors.orange[7], 0.2),
     ],
   ])
 }
 
+export const SubmissionTypeIconMap = (size: number) => {
+  const colorMap = SubmissionTypeColorMap()
+  return {
+    iconMap: new Map([
+      [SubmissionType.Unaccepted, undefined],
+      [
+        SubmissionType.Normal,
+        <Icon path={mdiFlag} size={size} color={colorMap.get(SubmissionType.Normal)} />,
+      ],
+      [
+        SubmissionType.FirstBlood,
+        <Icon
+          path={mdiHexagonSlice6}
+          size={size}
+          color={colorMap.get(SubmissionType.FirstBlood)}
+        />,
+      ],
+      [
+        SubmissionType.SecondBlood,
+        <Icon
+          path={mdiHexagonSlice4}
+          size={size}
+          color={colorMap.get(SubmissionType.SecondBlood)}
+        />,
+      ],
+      [
+        SubmissionType.ThirdBlood,
+        <Icon
+          path={mdiHexagonSlice2}
+          size={size}
+          color={colorMap.get(SubmissionType.ThirdBlood)}
+        />,
+      ],
+    ]),
+    colorMap,
+  }
+}
+
 export const NoticTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
-  const submissionMap = SubmissionTypeIconMap(size)
+  const { iconMap } = SubmissionTypeIconMap(size)
   const colorIdx = theme.colorScheme === 'dark' ? 4 : 7
 
   return new Map([
@@ -160,8 +184,8 @@ export const NoticTypeIconMap = (size: number) => {
       NoticeType.NewChallenge,
       <Icon path={mdiPlus} size={size} color={theme.colors.green[colorIdx]} />,
     ],
-    [NoticeType.FirstBlood, submissionMap.get(SubmissionType.FirstBlood)],
-    [NoticeType.SecondBlood, submissionMap.get(SubmissionType.SecondBlood)],
-    [NoticeType.ThirdBlood, submissionMap.get(SubmissionType.ThirdBlood)],
+    [NoticeType.FirstBlood, iconMap.get(SubmissionType.FirstBlood)],
+    [NoticeType.SecondBlood, iconMap.get(SubmissionType.SecondBlood)],
+    [NoticeType.ThirdBlood, iconMap.get(SubmissionType.ThirdBlood)],
   ])
 }

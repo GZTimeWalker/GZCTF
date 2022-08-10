@@ -21,10 +21,11 @@ interface ChallengeCardProps {
   solved?: boolean
   onClick?: () => void
   iconMap: Map<SubmissionType, React.ReactNode>
+  colorMap: Map<SubmissionType, string | undefined>
   teamId?: number
 }
 
-export const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) => ({
   spike: {
     position: 'absolute',
     left: '50%',
@@ -36,19 +37,13 @@ export const useStyles = createStyles((theme) => ({
     zIndex: 91,
   },
   blood1: {
-    background: `linear-gradient(0deg, #fff0, ${theme.colors.yellow[5]}, #fff0)`,
+    background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,
   },
   blood2: {
-    background: `linear-gradient(0deg, #fff0, ${theme.fn.lighten(
-      theme.colors.gray[2],
-      0.3
-    )}, #fff0)`,
+    background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.SecondBlood)}, #fff0)`,
   },
   blood3: {
-    background: `linear-gradient(0deg, #fff0, ${theme.fn.darken(
-      theme.colors.orange[6],
-      theme.colorScheme === 'dark' ? 0.25 : 0.1
-    )}, #fff0)`,
+    background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.ThirdBlood)}, #fff0)`,
   },
 }))
 
@@ -57,7 +52,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
 
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
   const theme = useMantineTheme()
-  const { classes, cx } = useStyles()
+  const { classes, cx } = useStyles(props)
 
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
 

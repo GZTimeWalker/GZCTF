@@ -10,14 +10,13 @@ export interface CustomProgressProps extends BoxProps {
 
 export const useStyles = createStyles(
   (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps) => {
-    const pulsing = percentage < 100
-
-    const _color = pulsing ? (theme.colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'blue'
+    const _color =
+      percentage < 100 ? (theme.colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'blue'
     const spikeColor = theme.fn.rgba(theme.colors[_color][5], 0.75)
     const barColor = theme.colorScheme === 'dark' ? theme.colors.white[9] : theme.colors[_color][2]
     const spikeLengthStr = `${spikeLength}%`
     const negSpikeLengthStr = `-${spikeLength}%`
-    const spikeOpacity = percentage >= 100 ? 0 : 1
+    const pulsing = percentage < 100
 
     return {
       spikesGroup: {
@@ -25,13 +24,11 @@ export const useStyles = createStyles(
         height: '100%',
         aspectRatio: '1 / 1',
         backgroundColor:
-          theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[color ?? 'brand'][5],
+          theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[_color][5],
 
         '& div': {
           display: pulsing ? 'block' : 'none',
-          animation: `${keyframes`0% {opacity: ${0.3 * spikeOpacity};} 100% {opacity: ${
-            1 * spikeOpacity
-          };}`} 2s linear 0s infinite alternate`,
+          animation: `${keyframes`0% {opacity: .3;} 100% {opacity: 1;}`} 2s linear 0s infinite alternate`,
         },
       },
       progressPulseContainer: {

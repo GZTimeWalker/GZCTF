@@ -75,7 +75,7 @@ const TimeLine: FC = () => {
           splitLine: {
             show: true,
             lineStyle: {
-              color: [theme.colors.gray[5]],
+              color: [theme.colorScheme === 'dark' ? theme.colors.gray[5] : theme.colors.gray[8]],
               type: 'dashed',
             },
           },

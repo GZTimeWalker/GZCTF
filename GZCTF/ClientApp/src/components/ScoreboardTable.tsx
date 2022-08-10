@@ -180,7 +180,7 @@ const ScoreboardTable: FC = () => {
   const { data: scoreboard } = api.game.useGameScoreboard(numId, {
     refreshInterval: 0,
   })
-  const iconMap = SubmissionTypeIconMap(1)
+  const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
