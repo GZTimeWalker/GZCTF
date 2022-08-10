@@ -19,7 +19,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
     - 动态容器：自动生成并通过容器环境变量进行 flag 下发，每个队伍 flag 唯一。
   - 动态分值
     - 分值曲线：
-        $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) * exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
+        $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
       其中 $S$ 为原始分值、 $r$ 为最低分值比例、 $d$ 为难度系数、 $x$ 为提交次数。前三个参数可通过自定义实现绝大部分的动态分值需求。
     - 三血奖励：
       平台对一二三血分别奖励 5%、3%、1% 的当前题目分值
@@ -100,3 +100,13 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
 ## 关于 i18n
 
 暂不考虑进行多语言适配。
+
+<!--
+
+TO BE PUBLISHED
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg)](https://starchart.cc/GZTimeWalker/GZCTF)
+
+-->
