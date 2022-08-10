@@ -79,7 +79,7 @@ const Teams: FC = () => {
         api.team.mutateTeamGetTeamsInfo()
         if (!user?.activeTeamId) {
           api.account.mutateAccountProfile({
-            activeTeamId: parseInt(joinTeamCode.split(':')[1]),
+            activeTeamId: parseInt(joinTeamCode.split(':').slice(-2)[0]),
             ...user,
           })
         }
