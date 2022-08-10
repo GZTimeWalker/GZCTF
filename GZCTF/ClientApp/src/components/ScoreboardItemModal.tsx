@@ -124,14 +124,16 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                     const info = challengeIdMap.get(chal.id!)
                     return (
                       <tr>
-                        <td>{chal.userName}</td>
+                        <td style={{ fontWeight: 500 }}>{chal.userName}</td>
                         <td>{info?.title}</td>
                         <td className={classes.mono}>{info?.tag}</td>
                         <td className={classes.mono}>
                           {chal.score}
-                          <Text span color="dimmed" className={classes.mono}>
-                            {BloodsMap.get(chal.type)}
-                          </Text>
+                          {chal.score! > info?.score! && (
+                            <Text span color="dimmed" className={classes.mono}>
+                              {` (${BloodsMap.get(chal.type)})`}
+                            </Text>
+                          )}
                         </td>
                         <td>{dayjs(chal.time).format('MM/DD HH:mm:ss')}</td>
                       </tr>
