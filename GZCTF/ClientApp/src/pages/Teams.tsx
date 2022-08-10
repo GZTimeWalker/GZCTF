@@ -52,10 +52,10 @@ const Teams: FC = () => {
     setEditOpened(true)
   }
 
-  const onJoinTeam = () => {
-    const parts = joinTeamCode.split(':')
+  const codePartten = /:\d+:[0-9a-f]{32}$/
 
-    if (parts.length !== 3 || parts[2].length !== 32) {
+  const onJoinTeam = () => {
+    if (!codePartten.test(joinTeamCode)) {
       showNotification({
         color: 'red',
         title: '遇到了问题',

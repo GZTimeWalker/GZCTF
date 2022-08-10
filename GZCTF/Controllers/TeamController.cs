@@ -4,6 +4,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 using System.Net.Mime;
 
 namespace CTFServer.Controllers;
@@ -344,27 +345,30 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Accept(string code, CancellationToken cancelToken)
     {
-        var items = code.Split(':');
-
-        if (items.Length != 3 || !int.TryParse(items[1], out int id))
-        {
+        if (!Regex.IsMatch(code, @":\d+:[0-9a-f]{32}"))
             return BadRequest(new RequestResponse($"Code 无效"));
-        }
+
+        var inviteCode = code[^32..];
+        code = code[..^33];
+
+        var lastColon = code.LastIndexOf(':');
+        var teamId = int.Parse(code[(lastColon + 1)..]);
+        var teamName = code[..lastColon];
 
         var trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
         try
         {
-            var team = await teamRepository.GetTeamById(id, cancelToken);
+            var team = await teamRepository.GetTeamById(teamId, cancelToken);
 
             if (team is null)
-                return BadRequest(new RequestResponse($"{items[0]} 队伍未找到"));
+                return BadRequest(new RequestResponse($"{teamName} 队伍未找到"));
 
             if (team.InviteCode != code)
-                return BadRequest(new RequestResponse($"{items[0]} 邀请无效"));
+                return BadRequest(new RequestResponse($"{teamName} 邀请无效"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
-                return BadRequest(new RequestResponse($"{items[0]} 队伍已锁定"));
+                return BadRequest(new RequestResponse($"{teamName} 队伍已锁定"));
 
             var user = await userManager.GetUserAsync(User);
 
