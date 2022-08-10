@@ -16,7 +16,7 @@ import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 
 const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
-const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'develop'
+const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'v0.0.0'
 const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23T12:00:00Z'
 const builtdate = dayjs(import.meta.env.DEV ? new Date() : new Date(timestamp))
 
@@ -102,7 +102,7 @@ const About: FC = () => {
                         gradient={{ from: 'teal', to: 'blue', deg: 60 }}
                         size="xs"
                       >
-                        {`#${sha.substring(0, 6)}:${tag}`}
+                        {`${tag}#${sha.substring(0, 6)}`}
                       </Badge>
                     </Group>
                   </Stack>

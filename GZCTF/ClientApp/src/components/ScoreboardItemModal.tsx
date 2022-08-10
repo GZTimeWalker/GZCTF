@@ -47,7 +47,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
     challenges &&
     Object.keys(challenges).map((tag) => ({
       name: tag,
-      maxScore: challenges[tag].reduce((sum, chal) => sum + (!chal.solved ? 0 : chal.score!), 0),
+      scoreSum: challenges[tag].reduce((sum, chal) => sum + (!chal.solved ? 0 : chal.score!), 0),
       max: 1,
     }))
 
@@ -58,12 +58,10 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       const challenge = challengeIdMap.get(chal.id!)
       const index = challenge && indicator?.findIndex((ch) => ch.name == challenge.tag)
       if (chal?.score && challenge?.score && index !== undefined && index !== -1) {
-        values[index] += challenge?.score / indicator[index].maxScore
+        values[index] += challenge?.score / indicator[index].scoreSum
       }
     }
   })
-
-  item?.challenges?.sort((a, b) => (dayjs(a.time) < dayjs(b.time) ? 1 : -1))
 
   return (
     <Modal {...modalProps}>
@@ -118,6 +116,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                 {item?.challenges &&
                   challengeIdMap &&
                   item.challenges
+                    .sort((a, b) => (dayjs(a.time) < dayjs(b.time) ? 1 : -1))
                     .filter((c) => c.type !== SubmissionType.Unaccepted)
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)
