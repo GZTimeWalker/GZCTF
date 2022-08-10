@@ -10,6 +10,7 @@ import {
   Text,
   Title,
   createStyles,
+  keyframes,
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -31,10 +32,11 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',
-    filter: 'brightness(.8) saturate(.5)',
+    filter: theme.colorScheme === 'dark' ? 'brightness(.8) saturate(.5)' : 'brightness(1.2) saturate(.8)',
     width: '70%',
     height: '200%',
     zIndex: 91,
+    animation: `${keyframes`0% {opacity: .3;} 100% {opacity: 1;}`} 2s linear 0s infinite alternate`,
   },
   blood1: {
     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,
