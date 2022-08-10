@@ -16,6 +16,7 @@ import {
   Badge,
   BackgroundImage,
 } from '@mantine/core'
+import { useScrollIntoView } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
@@ -186,6 +187,10 @@ const GameDetail: FC = () => {
     }
   }, [error])
 
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>()
+
+  useEffect(() => scrollIntoView({ alignment: 'center' }), [])
+
   const status = game?.status ?? ParticipationStatus.Unsubmitted
   const modals = useModals()
 
@@ -244,7 +249,7 @@ const GameDetail: FC = () => {
 
   return (
     <WithNavBar width="100%" padding={0} isLoading={!game}>
-      <div className={classes.root}>
+      <div ref={targetRef} className={classes.root}>
         <Group
           noWrap
           position="apart"
