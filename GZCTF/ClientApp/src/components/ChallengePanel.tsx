@@ -89,6 +89,7 @@ const ChallengePanel: FC = () => {
           cols={3}
           spacing="sm"
           p="xs"
+          style={{paddingTop: 0}}
           breakpoints={[
             { maxWidth: 2900, cols: 6 },
             { maxWidth: 2500, cols: 5 },
