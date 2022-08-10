@@ -111,7 +111,7 @@ export const SubmissionTypeColorMap = () => {
   const theme = useMantineTheme()
   return new Map([
     [SubmissionType.Unaccepted, undefined],
-    [SubmissionType.Normal, theme.colors.brand[theme.colorScheme === 'dark' ? 5 : 7]],
+    [SubmissionType.Normal, theme.colors.brand[theme.colorScheme === 'dark' ? 8 : 6]],
     [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
       SubmissionType.SecondBlood,
