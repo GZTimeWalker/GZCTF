@@ -11,8 +11,6 @@ interface TeamRadarMapProps {
 const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
   const theme = useMantineTheme()
 
-  console.log(indicator, value)
-
   return (
     <ReactEcharts
       theme={theme.colorScheme}

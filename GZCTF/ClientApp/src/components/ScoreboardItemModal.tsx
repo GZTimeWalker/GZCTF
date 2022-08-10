@@ -21,6 +21,13 @@ interface ScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null
 }
 
+const BloodsMap = new Map([
+  [undefined, undefined],
+  [SubmissionType.FirstBlood, '+5%'],
+  [SubmissionType.SecondBlood, '+3%'],
+  [SubmissionType.ThirdBlood, '+1%'],
+])
+
 const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
@@ -120,7 +127,12 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                         <td>{chal.userName}</td>
                         <td>{info?.title}</td>
                         <td className={classes.mono}>{info?.tag}</td>
-                        <td className={classes.mono}>{chal.score}</td>
+                        <td className={classes.mono}>
+                          {chal.score}
+                          <Text span color="dimmed" className={classes.mono}>
+                            {BloodsMap.get(chal.type)}
+                          </Text>
+                        </td>
                         <td>{dayjs(chal.time).format('MM/DD HH:mm:ss')}</td>
                       </tr>
                     )

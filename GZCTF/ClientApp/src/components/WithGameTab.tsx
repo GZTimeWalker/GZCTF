@@ -42,7 +42,6 @@ const pages = [
   },
 ]
 
-const getTab = (path: string) => pages.findIndex((page) => path.includes(page.path))
 dayjs.extend(duration)
 
 interface WithGameTabProps extends React.PropsWithChildren {
@@ -58,6 +57,17 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
   const navigate = useNavigate()
 
   const theme = useMantineTheme()
+  const { data: user } = api.account.useAccountProfile({
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
+  
+  const filteredPages = pages
+    .filter((p) => RoleMap.get(user?.role ?? Role.User)! >= RoleMap.get(p.requireRole)!)
+    .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
+
+  const getTab = (path: string) => filteredPages.findIndex((page) => path.includes(page.path))
   const tabIndex = getTab(location.pathname)
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
@@ -65,12 +75,6 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
     setActiveTab(active)
     navigate(`/games/${numId}/${tabKey}`)
   }
-
-  const { data: user } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
 
   const start = dayjs(game?.start ?? new Date())
   const end = dayjs(game?.end ?? new Date())
@@ -111,15 +115,12 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
       <IconTabs
         active={activeTab}
         onTabChange={onChange}
-        tabs={pages
-          .filter((p) => RoleMap.get(user?.role ?? Role.User)! >= RoleMap.get(p.requireRole)!)
-          .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
-          .map((p) => ({
-            tabKey: p.link,
-            label: p.title,
-            icon: <Icon path={p.icon} size={1} />,
-            color: p.color,
-          }))}
+        tabs={filteredPages.map((p) => ({
+          tabKey: p.link,
+          label: p.title,
+          icon: <Icon path={p.icon} size={1} />,
+          color: p.color,
+        }))}
         left={
           game && (
             <>
