@@ -67,6 +67,8 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
     }
   })
 
+  item?.challenges?.sort((a, b) => (dayjs(a.time) < dayjs(b.time) ? 1 : -1))
+
   return (
     <Modal {...modalProps}>
       <Stack align="center" spacing="xs">
@@ -105,44 +107,47 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           <Progress value={solved * 100} />
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
-        <ScrollArea style={{ maxHeight: '16rem', width: '100%' }}>
-          <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th>用户</th>
-                <th>题目</th>
-                <th>类型</th>
-                <th>得分</th>
-                <th>时间</th>
-              </tr>
-            </thead>
-            <tbody>
-              {item?.challenges &&
-                challengeIdMap &&
-                item.challenges
-                  .filter((c) => c.type !== SubmissionType.Unaccepted)
-                  .map((chal) => {
-                    const info = challengeIdMap.get(chal.id!)
-                    return (
-                      <tr>
-                        <td style={{ fontWeight: 500 }}>{chal.userName}</td>
-                        <td>{info?.title}</td>
-                        <td className={classes.mono}>{info?.tag}</td>
-                        <td className={classes.mono}>
-                          {chal.score}
-                          {chal.score! > info?.score! && (
-                            <Text span color="dimmed" className={classes.mono}>
-                              {` (${BloodsMap.get(chal.type)})`}
-                            </Text>
-                          )}
-                        </td>
-                        <td className={classes.mono}>{dayjs(chal.time).format('MM/DD HH:mm:ss')}</td>
-                      </tr>
-                    )
-                  })}
-            </tbody>
-          </Table>
-        </ScrollArea>) : (
+          <ScrollArea scrollbarSize={6} style={{ height: '12rem', width: '100%' }}>
+            <Table className={classes.table}>
+              <thead>
+                <tr>
+                  <th>用户</th>
+                  <th>题目</th>
+                  <th>类型</th>
+                  <th>得分</th>
+                  <th>时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                {item?.challenges &&
+                  challengeIdMap &&
+                  item.challenges
+                    .filter((c) => c.type !== SubmissionType.Unaccepted)
+                    .map((chal) => {
+                      const info = challengeIdMap.get(chal.id!)
+                      return (
+                        <tr>
+                          <td style={{ fontWeight: 500 }}>{chal.userName}</td>
+                          <td>{info?.title}</td>
+                          <td className={classes.mono}>{info?.tag}</td>
+                          <td className={classes.mono}>
+                            {chal.score}
+                            {chal.score! > info?.score! && (
+                              <Text span color="dimmed" className={classes.mono}>
+                                {` (${BloodsMap.get(chal.type)})`}
+                              </Text>
+                            )}
+                          </td>
+                          <td className={classes.mono}>
+                            {dayjs(chal.time).format('MM/DD HH:mm:ss')}
+                          </td>
+                        </tr>
+                      )
+                    })}
+              </tbody>
+            </Table>
+          </ScrollArea>
+        ) : (
           <Text py="1rem" weight={700}>
             Ouch! 这支队伍还没有解出题目呢……
           </Text>

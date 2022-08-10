@@ -125,18 +125,17 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
 }
 
 const TableRow: FC<{
-  rank: number
   item: ScoreboardItem
   onOpenDetail: () => void
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
-}> = ({ rank, item, challenges, onOpenDetail, iconMap }) => {
+}> = ({ item, challenges, onOpenDetail, iconMap }) => {
   const { classes, cx } = useStyles()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
     <tr>
       <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
-        {rank + 1}
+        {item.rank}
       </td>
       <td className={cx(classes.theadFixLeft)} style={{ left: Lefts[1] }}>
         <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
@@ -226,7 +225,6 @@ const ScoreboardTable: FC = () => {
                     <TableRow
                       key={base + idx}
                       item={item}
-                      rank={base + idx}
                       onOpenDetail={() => {
                         setCurrentItem(item)
                         setItemDetailOpened(true)
@@ -279,7 +277,8 @@ const ScoreboardTable: FC = () => {
         }
         opened={itemDetailOpened}
         centered
-        size="40%"
+        withCloseButton={false}
+        size="40rem"
         onClose={() => setItemDetailOpened(false)}
         item={currentItem}
       />
