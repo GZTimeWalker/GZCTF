@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { useParams } from 'react-router-dom'
 import {
   Group,
   Text,
@@ -14,11 +13,12 @@ import {
   LoadingOverlay,
 } from '@mantine/core'
 import { useTableStyles } from '@Utils/ThemeOverride'
-import api, { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
+import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
 import TeamRadarMap from './TeamRadarMap'
 
 interface ScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null
+  challenges?: Record<string, ChallengeInfo[]>
 }
 
 const BloodsMap = new Map([
@@ -29,11 +29,7 @@ const BloodsMap = new Map([
 ])
 
 const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
-  const { id } = useParams()
-  const numId = parseInt(id ?? '-1')
-  const { item, ...modalProps } = props
-
-  const { data: challenges } = api.game.useGameChallenges(numId)
+  const { item, challenges, ...modalProps } = props
   const { classes } = useTableStyles()
 
   const challengeIdMap =

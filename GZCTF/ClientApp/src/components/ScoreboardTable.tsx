@@ -275,6 +275,7 @@ const ScoreboardTable: FC = () => {
             </Title>
           </Group>
         }
+        challenges={scoreboard?.challenges}
         opened={itemDetailOpened}
         centered
         withCloseButton={false}
