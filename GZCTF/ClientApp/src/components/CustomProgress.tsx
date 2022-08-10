@@ -11,7 +11,7 @@ export interface CustomProgressProps extends BoxProps {
 export const useStyles = createStyles(
   (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps) => {
     const _color =
-      percentage < 100 ? (theme.colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'blue'
+      percentage < 100 ? (theme.colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'gray'
     const spikeColor = theme.fn.rgba(theme.colors[_color][5], 0.75)
     const barColor = theme.colorScheme === 'dark' ? theme.colors.white[9] : theme.colors[_color][2]
     const spikeLengthStr = `${spikeLength}%`
@@ -20,6 +20,7 @@ export const useStyles = createStyles(
 
     return {
       spikesGroup: {
+        display: pulsing ? 'block' : 'none',
         position: 'relative',
         height: '100%',
         aspectRatio: '1 / 1',
@@ -27,7 +28,6 @@ export const useStyles = createStyles(
           theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[_color][5],
 
         '& div': {
-          display: pulsing ? 'block' : 'none',
           animation: `${keyframes`0% {opacity: .3;} 100% {opacity: 1;}`} 2s linear 0s infinite alternate`,
         },
       },
