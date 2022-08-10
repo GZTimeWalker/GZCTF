@@ -116,9 +116,14 @@ public class ChallengeItem
     public SubmissionType Type { get; set; }
 
     /// <summary>
+    /// 解题用户名
+    /// </summary>
+    public string? UserName { get; set; }
+
+    /// <summary>
     /// 题目提交的时间，为了计算时间线
     /// </summary>
-    [JsonIgnore]
+    [JsonPropertyName("time")]
     public DateTimeOffset? SubmitTimeUTC { get; set; }
 }
 

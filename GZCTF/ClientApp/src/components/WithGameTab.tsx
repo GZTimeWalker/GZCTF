@@ -97,7 +97,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
     if (tab >= 0) {
       setActiveTab(tab)
     } else {
-      navigate(pages[0].path)
+      navigate(pages[2].path)
     }
   }, [location])
 

@@ -11,7 +11,7 @@ import {
   createStyles,
   Progress,
 } from '@mantine/core'
-import api, { SubmissionType } from '@Api'
+import api from '@Api'
 
 const useStyle = createStyles((theme) => ({
   number: {
@@ -28,9 +28,7 @@ const TeamRank: FC<PaperProps> = (props) => {
 
   const { classes } = useStyle()
 
-  const solved =
-    (myteam?.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted).length ?? 0) /
-    (myteam?.challenges?.length ?? 1)
+  const solved = (myteam?.solvedCount ?? 0) / (myteam?.challenges?.length ?? 1)
 
   return (
     <Card shadow="sm" {...props}>

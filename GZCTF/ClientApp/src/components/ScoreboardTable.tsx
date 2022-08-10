@@ -10,10 +10,12 @@ import {
   Box,
   Stack,
   Pagination,
+  Title,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
+import ScoreboardItemModal from './ScoreboardItemModal'
 
 const useStyles = createStyles((theme) => ({
   table: {
@@ -125,9 +127,10 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
 const TableRow: FC<{
   rank: number
   item: ScoreboardItem
+  onOpenDetail: () => void
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
-}> = ({ rank, item, challenges, iconMap }) => {
+}> = ({ rank, item, challenges, onOpenDetail, iconMap }) => {
   const { classes, cx } = useStyles()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
@@ -136,11 +139,32 @@ const TableRow: FC<{
         {rank + 1}
       </td>
       <td className={cx(classes.theadFixLeft)} style={{ left: Lefts[1] }}>
-        <Group position="left" spacing={5} noWrap>
-          <Avatar src={item.avatar} radius="xl" size={30} color="brand">
+        <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
+          <Avatar
+            src={item.avatar}
+            radius="xl"
+            size={30}
+            color="brand"
+            sx={(theme) => ({
+              ...theme.fn.hover({
+                cursor: 'pointer',
+              }),
+            })}
+          >
             {item.name?.at(0) ?? 'T'}
           </Avatar>
-          <Text lineClamp={1} align="left" style={{ fontWeight: 700 }}>
+          <Text
+            lineClamp={1}
+            align="left"
+            weight={500}
+            sx={(theme) => ({
+              userSelect: 'none',
+
+              ...theme.fn.hover({
+                cursor: 'pointer',
+              }),
+            })}
+          >
             {item.name}
           </Text>
         </Group>
@@ -186,6 +210,9 @@ const ScoreboardTable: FC = () => {
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
   const currentItems = scoreboard?.items?.slice(base, base + ITEM_COUNT_PER_PAGE)
 
+  const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
+  const [itemDetailOpened, setItemDetailOpened] = useState(false)
+
   return (
     <Paper shadow="md" p="md">
       <Stack spacing="xs">
@@ -200,6 +227,10 @@ const ScoreboardTable: FC = () => {
                       key={base + idx}
                       item={item}
                       rank={base + idx}
+                      onOpenDetail={() => {
+                        setCurrentItem(item)
+                        setItemDetailOpened(true)
+                      }}
                       challenges={scoreboard.challenges}
                       iconMap={iconMap}
                     />
@@ -211,7 +242,7 @@ const ScoreboardTable: FC = () => {
             <Stack spacing="xs">
               <Group spacing="lg">
                 {BloodsTypes.map((type, idx) => (
-                  <Group position="left" spacing={2}>
+                  <Group key={idx} position="left" spacing={2}>
                     {iconMap.get(type)}
                     <Text size="sm">{BloodData[idx].name}</Text>
                     <Text size="xs" color="dimmed">
@@ -235,6 +266,23 @@ const ScoreboardTable: FC = () => {
           />
         </Group>
       </Stack>
+      <ScoreboardItemModal
+        title={
+          <Group position="left" spacing={5} noWrap>
+            <Avatar src={currentItem?.avatar} size="md" radius="md" color="brand">
+              {currentItem?.name?.at(0) ?? 'T'}
+            </Avatar>
+            <Title align="left" order={4}>
+              {currentItem?.name}
+            </Title>
+          </Group>
+        }
+        opened={itemDetailOpened}
+        centered
+        size="40%"
+        onClose={() => setItemDetailOpened(false)}
+        item={currentItem}
+      />
     </Paper>
   )
 }

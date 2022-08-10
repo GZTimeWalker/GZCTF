@@ -152,6 +152,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                             {
                                 Id = cid,
                                 Type = status,
+                                UserName = s?.Submission?.UserName,
                                 SubmitTimeUTC = s?.Submission?.SubmitTimeUTC,
                                 Score = s is null ? 0 : status switch
                                 {

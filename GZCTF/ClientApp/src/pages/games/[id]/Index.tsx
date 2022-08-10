@@ -266,8 +266,8 @@ const GameDetail: FC = () => {
               <Title className={classes.title}>{game?.title}</Title>
               <Text size="sm" color="dimmed">
                 <Text span weight={700}>
-                  {game?.teamCount ?? 0}
-                </Text>{' '}
+                  {`${game?.teamCount ?? 0} `}
+                </Text>
                 支队伍已报名
               </Text>
             </Stack>

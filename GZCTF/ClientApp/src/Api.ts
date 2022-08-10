@@ -1016,6 +1016,15 @@ export interface ChallengeItem {
 
   /** 未解出、一血、二血、三血或者其他 */
   type?: SubmissionType
+
+  /** 解题用户名 */
+  userName?: string | null
+
+  /**
+   * 题目提交的时间，为了计算时间线
+   * @format date-time
+   */
+  time?: string | null
 }
 
 /**
