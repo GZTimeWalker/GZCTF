@@ -4,20 +4,28 @@ import LogoHeader from './LogoHeader'
 
 const useStyles = createStyles(() => ({
   input: {
-    width: '20%',
+    width: '25vw',
     minWidth: '250px',
     maxWidth: '300px',
   },
 }))
 
-const AccountView: FC<React.PropsWithChildren> = ({ children }) => {
-  const { classes, cx } = useStyles()
+interface AccountViewProps extends React.PropsWithChildren {
+  onSubmit?: (event: React.FormEvent) => Promise<void>
+}
+
+const AccountView: FC<AccountViewProps> = ({ onSubmit, children }) => {
+  const { classes } = useStyles()
 
   return (
     <Center style={{ height: '100vh' }}>
-      <Stack align="center" justify="center" className={cx(classes.input)}>
+      <Stack align="center" justify="center">
         <LogoHeader />
-        {children}
+        <form className={classes.input} onSubmit={onSubmit}>
+          <Stack spacing="xs" align="center" justify="center">
+            {children}
+          </Stack>
+        </form>
       </Stack>
     </Center>
   )

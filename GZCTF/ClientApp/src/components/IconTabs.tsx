@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Box, createStyles, Group, GroupPosition, GroupProps, MantineColor } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import LogoHeader from './LogoHeader'
@@ -117,6 +117,10 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   const [_activeTab, setActiveTab] = useState(active ?? 0)
 
   const activeTab = clamp(_activeTab, 0, tabs.length - 1)
+
+  useEffect(() => {
+    setActiveTab(active ?? 0)
+  }, [active])
 
   const panes = tabs.map((tab, index) => (
     <Tab

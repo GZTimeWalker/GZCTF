@@ -93,56 +93,54 @@ const Register: FC = () => {
   }
 
   return (
-    <AccountView>
-      <form onSubmit={onRegister}>
-        <TextInput
-          required
-          label="邮箱"
-          type="email"
-          placeholder="ctf@example.com"
-          style={{ width: '100%' }}
-          value={email}
-          disabled={disabled}
-          onChange={(event) => setEmail(event.currentTarget.value)}
-        />
-        <TextInput
-          required
-          label="用户名"
-          type="text"
-          placeholder="ctfer"
-          style={{ width: '100%' }}
-          value={uname}
-          disabled={disabled}
-          onChange={(event) => setUname(event.currentTarget.value)}
-        />
-        <StrengthPasswordInput
-          value={pwd}
-          onChange={(event) => setPwd(event.currentTarget.value)}
-          disabled={disabled}
-        />
-        <PasswordInput
-          required
-          value={retypedPwd}
-          onChange={(event) => setRetypedPwd(event.currentTarget.value)}
-          disabled={disabled}
-          label="重复密码"
-          style={{ width: '100%' }}
-          error={pwd !== retypedPwd}
-        />
-        <Anchor
-          sx={(theme) => ({
-            fontSize: theme.fontSizes.xs,
-            alignSelf: 'end',
-          })}
-          component={Link}
-          to="/account/login"
-        >
-          已经拥有账户？
-        </Anchor>
-        <Button type="submit" fullWidth onClick={onRegister} disabled={disabled}>
-          注册
-        </Button>
-      </form>
+    <AccountView onSubmit={onRegister}>
+      <TextInput
+        required
+        label="邮箱"
+        type="email"
+        placeholder="ctf@example.com"
+        style={{ width: '100%' }}
+        value={email}
+        disabled={disabled}
+        onChange={(event) => setEmail(event.currentTarget.value)}
+      />
+      <TextInput
+        required
+        label="用户名"
+        type="text"
+        placeholder="ctfer"
+        style={{ width: '100%' }}
+        value={uname}
+        disabled={disabled}
+        onChange={(event) => setUname(event.currentTarget.value)}
+      />
+      <StrengthPasswordInput
+        value={pwd}
+        onChange={(event) => setPwd(event.currentTarget.value)}
+        disabled={disabled}
+      />
+      <PasswordInput
+        required
+        value={retypedPwd}
+        onChange={(event) => setRetypedPwd(event.currentTarget.value)}
+        disabled={disabled}
+        label="重复密码"
+        style={{ width: '100%' }}
+        error={pwd !== retypedPwd}
+      />
+      <Anchor
+        sx={(theme) => ({
+          fontSize: theme.fontSizes.xs,
+          alignSelf: 'end',
+        })}
+        component={Link}
+        to="/account/login"
+      >
+        已经拥有账户？
+      </Anchor>
+      <Button type="submit" fullWidth onClick={onRegister} disabled={disabled}>
+        注册
+      </Button>
     </AccountView>
   )
 }

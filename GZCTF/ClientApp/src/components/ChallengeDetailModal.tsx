@@ -20,7 +20,7 @@ import {
   Title,
   TypographyStylesProvider,
 } from '@mantine/core'
-import { useClipboard, useDisclosure, useInputState, useInterval } from '@mantine/hooks'
+import { useClipboard, useDisclosure, useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -42,15 +42,12 @@ dayjs.extend(duration)
 const Countdown: FC<{ time: string }> = ({ time }) => {
   const end = dayjs(time)
   const [now, setNow] = useState(dayjs())
-  const interval = useInterval(() => setNow(dayjs()), 1000)
-
   const countdown = dayjs.duration(end.diff(now))
 
   useEffect(() => {
-    if (dayjs() < end) {
-      interval.start()
-      return interval.stop
-    }
+    if (dayjs() > end) return
+    const interval = setInterval(() => setNow(dayjs()), 1000)
+    return () => clearInterval(interval)
   }, [])
 
   return (

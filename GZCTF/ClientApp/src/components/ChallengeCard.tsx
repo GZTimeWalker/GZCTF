@@ -32,7 +32,8 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',
-    filter: theme.colorScheme === 'dark' ? 'brightness(.8) saturate(.5)' : 'brightness(1.2) saturate(.8)',
+    filter:
+      theme.colorScheme === 'dark' ? 'brightness(.8) saturate(.5)' : 'brightness(1.2) saturate(.8)',
     width: '70%',
     height: '200%',
     zIndex: 91,

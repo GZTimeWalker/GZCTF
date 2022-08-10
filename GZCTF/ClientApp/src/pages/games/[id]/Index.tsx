@@ -238,7 +238,7 @@ const GameDetail: FC = () => {
           })
         }}
       >
-        {finished ? '比赛结束' : GameActionMap.get(status)}
+        {finished ? '比赛结束' : !user ? '请先登录' : GameActionMap.get(status)}
       </Button>
       {started && <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>}
       {status === ParticipationStatus.Accepted && (
