@@ -104,6 +104,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           </Group>
           <Progress value={solved * 100} />
         </Stack>
+        {item?.solvedCount && item?.solvedCount > 0 ? (
         <ScrollArea style={{ maxHeight: '16rem', width: '100%' }}>
           <Table className={classes.table}>
             <thead>
@@ -135,13 +136,17 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                             </Text>
                           )}
                         </td>
-                        <td>{dayjs(chal.time).format('MM/DD HH:mm:ss')}</td>
+                        <td className={classes.mono}>{dayjs(chal.time).format('MM/DD HH:mm:ss')}</td>
                       </tr>
                     )
                   })}
             </tbody>
           </Table>
-        </ScrollArea>
+        </ScrollArea>) : (
+          <Text py="1rem" weight={700}>
+            Ouch! 这支队伍还没有解出题目呢……
+          </Text>
+        )}
       </Stack>
     </Modal>
   )
