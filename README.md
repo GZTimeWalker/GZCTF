@@ -1,4 +1,7 @@
-<img alt="Banner" src="assets/banner.svg">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner.dark.svg">
+  <img alt="Banner" src="assets/banner.light.svg">
+</picture>
 
 # GZ::CTF
 
