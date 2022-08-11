@@ -107,7 +107,7 @@ const Home: FC = () => {
                   <Title order={3}>近期活动</Title>
                 </Group>
                 {recentGames?.map((game) => (
-                  <RecentGame game={game} />
+                  <RecentGame key={game.id} game={game} />
                 ))}
               </Stack>
             </div>
