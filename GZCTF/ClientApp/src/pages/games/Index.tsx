@@ -6,6 +6,7 @@ import GameCard, { GameColorMap, GameStatus } from '@Components/GameCard'
 import IconTabs from '@Components/IconTabs'
 import WithNavBar from '@Components/WithNavbar'
 import api, { BasicGameInfoModel } from '@Api'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const Games: FC = () => {
   const { data: allGames } = api.game.useGameGamesAll({
@@ -31,6 +32,8 @@ const Games: FC = () => {
     ],
     [GameStatus.Ended, allGames?.filter((game) => new Date(game.end!) < now)],
   ])
+
+  usePageTitle('赛事')
 
   return (
     <WithNavBar>

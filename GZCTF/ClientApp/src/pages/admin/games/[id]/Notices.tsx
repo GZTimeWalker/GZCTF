@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Stack, Button, Text, Group, ScrollArea } from '@mantine/core'
+import { Stack, Button, Text, Group, ScrollArea, Center, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiKeyboardBackspace, mdiCheck, mdiPlus } from '@mdi/js'
@@ -78,15 +78,22 @@ const GameNoticeEdit: FC = () => {
       }
     >
       <ScrollArea style={{ height: 'calc(100vh-180px)', position: 'relative' }} offsetScrollbars>
-        <Stack
-          spacing="lg"
-          align="center"
-          style={{
-            margin: '2%',
-          }}
-        >
-          {gameNotices &&
-            gameNotices.map((gameNotice) => (
+        {!gameNotices || gameNotices?.length === 0 ? (
+          <Center style={{ height: 'calc(100vh - 180px)' }}>
+            <Stack spacing={0}>
+              <Title order={2}>Ouch! 这个比赛还没有通知</Title>
+              <Text>安然无事真好！</Text>
+            </Stack>
+          </Center>
+        ) : (
+          <Stack
+            spacing="lg"
+            align="center"
+            style={{
+              margin: '2%',
+            }}
+          >
+            {gameNotices.map((gameNotice) => (
               <GameNoticeEditCard
                 key={gameNotice.id}
                 gameNotice={gameNotice}
@@ -100,7 +107,8 @@ const GameNoticeEdit: FC = () => {
                 style={{ width: '90%' }}
               />
             ))}
-        </Stack>
+          </Stack>
+        )}
       </ScrollArea>
       <GameNoticeEditModal
         centered

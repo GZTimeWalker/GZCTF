@@ -18,7 +18,7 @@ import {
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck } from '@mdi/js'
+import { mdiBackburger, mdiCheck, mdiContentSaveOutline, mdiDatabaseEditOutline, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
@@ -162,6 +162,7 @@ const GameChallengeEdit: FC = () => {
             <Button
               disabled={disabled}
               color="red"
+              leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
               variant="outline"
               onClick={() =>
                 modals.openConfirmModal({
@@ -178,12 +179,14 @@ const GameChallengeEdit: FC = () => {
             </Button>
             <Button
               disabled={disabled}
+              leftIcon={<Icon path={mdiDatabaseEditOutline} size={1} />}
               onClick={() => navigate(`/admin/games/${numId}/challenges/${numCId}/flags`)}
             >
               编辑附件及 flag
             </Button>
             <Button
               disabled={disabled}
+              leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
               onClick={() =>
                 onUpdate({
                   ...challengeInfo,

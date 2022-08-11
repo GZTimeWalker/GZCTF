@@ -349,7 +349,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         <Divider />
         {solved ? (
           <Text align="center" weight={700}>
-            你已经取得了本题目的 flag
+            该题目已被解出
           </Text>
         ) : (
           <form onSubmit={onSubmit}>

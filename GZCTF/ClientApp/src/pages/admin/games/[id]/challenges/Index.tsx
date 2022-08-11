@@ -155,7 +155,6 @@ const GameChallengeEdit: FC = () => {
           </SimpleGrid>
         )}
       </ScrollArea>
-
       <ChallengeCreateModal
         title="新建题目"
         centered

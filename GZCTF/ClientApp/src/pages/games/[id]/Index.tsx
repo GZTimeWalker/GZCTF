@@ -217,6 +217,12 @@ const GameDetail: FC = () => {
     user.ownTeamId &&
     user.activeTeamId === user.ownTeamId
 
+  const teamRequire =
+    !canSubmit &&
+    started &&
+    !finished &&
+    (!user?.activeTeamId || user?.activeTeamId !== user?.ownTeamId)
+
   const ControlButtons = (
     <>
       <Button
@@ -305,7 +311,7 @@ const GameDetail: FC = () => {
       <Container className={classes.content}>
         <Stack spacing="xs">
           {GetAlert(status)}
-          {!canSubmit && (!user?.activeTeamId || user?.activeTeamId !== user?.ownTeamId) && (
+          {teamRequire && (
             <Alert color="yellow" icon={<Icon path={mdiAlertCircle} />} title="当前无法报名">
               你不是当前所激活队伍的队长，请在{' '}
               <Anchor component={Link} to="/teams">
