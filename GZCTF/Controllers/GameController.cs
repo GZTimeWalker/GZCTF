@@ -1,5 +1,6 @@
 ﻿using CTFServer.Middlewares;
 using CTFServer.Models.Request.Admin;
+using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
@@ -407,7 +408,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] string flag, CancellationToken token)
+    public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] FlagSubmitModel model, CancellationToken token)
     {
         var context = await GetContextInfo(id, challengeId, false, token);
 
@@ -416,7 +417,7 @@ public class GameController : ControllerBase
 
         Submission submission = new()
         {
-            Answer = flag.Trim(),
+            Answer = model.Flag.Trim(),
             Game = context.Game!,
             User = context.User!,
             Challenge = context.Challenge!,

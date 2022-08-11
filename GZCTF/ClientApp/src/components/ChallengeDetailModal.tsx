@@ -157,7 +157,9 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
 
     setOnSubmitting(true)
     api.game
-      .gameSubmit(gameId, challengeId, flag)
+      .gameSubmit(gameId, challengeId, {
+        flag,
+      })
       .then((res) => {
         setSubmitId(res.data)
 
@@ -345,14 +347,14 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           )}
         </Stack>
         <Divider />
-        {/* {solved ? (
+        {solved ? (
           <Text align="center" weight={700}>
             你已经取得了本题目的 flag
           </Text>
-        ) : ( */}
+        ) : (
           <form onSubmit={onSubmit}>
             <TextInput
-              placeholder={solved ? "flag{flag_in_your_hand}" : "flag{...}"}
+              placeholder="flag{...}"
               value={flag}
               onChange={setFlag}
               styles={{
@@ -364,13 +366,13 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 },
               }}
               rightSection={
-                <Button type="submit" color={solved ? "orange" : "brand"} onClick={onSubmit} disabled={onSubmitting}>
-                  {solved ? "验证 flag" : "提交 flag"}
+                <Button type="submit" onClick={onSubmit} disabled={onSubmitting}>
+                  "提交 flag"
                 </Button>
               }
             />
           </form>
-        {/* )} */}
+        )}
       </Stack>
     </Modal>
   )

@@ -1255,6 +1255,17 @@ export interface ClientFlagContext {
 }
 
 /**
+ * flag 提交
+ */
+export interface FlagSubmitModel {
+  /**
+   * flag 内容
+   * fix: 防止前端的意外提交 (number/float/null) 可能被错误转换
+   */
+  flag: string
+}
+
+/**
  * 队伍信息更新
  */
 export interface TeamUpdateModel {
@@ -3013,7 +3024,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 提交 flag
      * @request POST:/api/game/{id}/challenges/{challengeId}
      */
-    gameSubmit: (id: number, challengeId: number, data: string, params: RequestParams = {}) =>
+    gameSubmit: (
+      id: number,
+      challengeId: number,
+      data: FlagSubmitModel,
+      params: RequestParams = {}
+    ) =>
       this.request<number, RequestResponse>({
         path: `/api/game/${id}/challenges/${challengeId}`,
         method: 'POST',

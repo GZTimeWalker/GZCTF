@@ -118,22 +118,25 @@ const ChallengePanel: FC = () => {
           ))}
         </SimpleGrid>
       </ScrollArea>
-      <ChallengeDetailModal
-        opened={detailOpened}
-        onClose={() => setDetailOpened(false)}
-        withCloseButton={false}
-        size="35%"
-        centered
-        gameId={numId}
-        solved={
-          myteam &&
-          myteam.challenges?.find((c) => c.id === challenge?.id)?.type !== SubmissionType.Unaccepted
-        }
-        tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
-        title={challenge?.title ?? ''}
-        score={challenge?.score ?? 0}
-        challengeId={challenge?.id ?? allChallenges.at(0)?.id ?? 0}
-      />
+      {challenge?.id && (
+        <ChallengeDetailModal
+          opened={detailOpened}
+          onClose={() => setDetailOpened(false)}
+          withCloseButton={false}
+          size="35%"
+          centered
+          gameId={numId}
+          solved={
+            myteam &&
+            myteam.challenges?.find((c) => c.id === challenge?.id)?.type !==
+              SubmissionType.Unaccepted
+          }
+          tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
+          title={challenge?.title ?? ''}
+          score={challenge?.score ?? 0}
+          challengeId={challenge.id}
+        />
+      )}
     </Group>
   )
 }
