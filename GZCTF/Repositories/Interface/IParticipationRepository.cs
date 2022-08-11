@@ -37,6 +37,15 @@ public interface IParticipationRepository : IRepository
     public Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default);
 
     /// <summary>
+    /// 检查重复加入
+    /// </summary>
+    /// <param name="team">参赛队伍</param>
+    /// <param name="game">比赛</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> CheckRepeatParticipation(Team team, Game game, CancellationToken token = default);
+
+    /// <summary>
     /// 通过 Id 更改参与状态
     /// </summary>
     /// <param name="id">参与对象Id</param>

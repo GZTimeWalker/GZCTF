@@ -52,4 +52,14 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             .Include(p => p.Team)
             .ThenInclude(t => t.Members)
             .OrderBy(p => p.TeamId).ToArrayAsync(token);
+
+    public Task<bool> CheckRepeatParticipation(Team team, Game game, CancellationToken token = default)
+        => context.Participations.Where(p => p.GameId == game.Id)
+            .Include(p => p.Team)
+            .ThenInclude(t => t.Members)
+            .AnyAsync(p => p.Team.Members.Any(u =>
+                context.Teams.Where(t => t.Id == team.Id)
+                    .Any(m => m.Members.Any(m => m == u))
+                )
+            , token);
 }

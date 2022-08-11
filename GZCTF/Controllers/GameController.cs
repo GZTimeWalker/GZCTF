@@ -154,6 +154,9 @@ public class GameController : ControllerBase
             }
         }
 
+        if (await participationRepository.CheckRepeatParticipation(team!, game, token))
+            return BadRequest(new RequestResponse("队伍中有成员重复报名"));
+
         await participationRepository.CreateParticipation(team!, game, token);
 
         logger.Log($"{team!.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
@@ -398,7 +401,7 @@ public class GameController : ControllerBase
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="challengeId">题目Id</param>
-    /// <param name="flag">提交Flag</param>
+    /// <param name="model">提交Flag</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目信息</response>
     /// <response code="400">操作无效</response>
