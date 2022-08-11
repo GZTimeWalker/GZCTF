@@ -367,7 +367,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               }}
               rightSection={
                 <Button type="submit" onClick={onSubmit} disabled={onSubmitting}>
-                  "提交 flag"
+                  提交 flag
                 </Button>
               }
             />
