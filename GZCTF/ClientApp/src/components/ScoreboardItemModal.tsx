@@ -69,7 +69,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
         <Stack style={{ width: '60%', minWidth: '20rem' }}>
           <Center style={{ height: '14rem' }}>
             <LoadingOverlay visible={!indicator || !values} />
-            {indicator && values && (
+            {item && indicator && values && (
               <TeamRadarMap indicator={indicator} value={values} name={item?.name ?? ''} />
             )}
           </Center>
@@ -121,7 +121,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)
                       return (
-                        <tr>
+                        <tr key={chal.id}>
                           <td style={{ fontWeight: 500 }}>{chal.userName}</td>
                           <td>{info?.title}</td>
                           <td className={classes.mono}>{info?.tag}</td>
