@@ -1,6 +1,3 @@
-/* eslint-disable */
-
-/* tslint:disable */
 import { useEffect, useState } from 'react'
 import api from '@Api'
 
@@ -20,7 +17,9 @@ export class reCAPTCHA {
     this.action = action
   }
 
-  async getToken(): Promise<string | undefined> {
+  async getToken(): Promise<'NOTOKEN' | string | undefined> {
+    if (this.siteKey === 'NOTOKEN') return 'NOTOKEN'
+
     let token = ''
     await window.grecaptcha.execute(this.siteKey, { action: this.action }).then((res: string) => {
       token = res
@@ -42,6 +41,7 @@ const removeReCaptcha = () => {
 }
 
 const loadReCaptcha = (siteKey: string) => {
+  if (!siteKey || siteKey === 'NOTOKEN') return
   const script = document.createElement('script')
   script.id = 'grecaptcha-script'
   script.src = `https://www.recaptcha.net/recaptcha/api.js?render=${siteKey}`
@@ -63,7 +63,7 @@ export const useReCaptcha = (action: string) => {
   const [reCaptcha, setReCaptcha] = useState<reCAPTCHA | null>(null)
 
   useEffect(() => {
-    setReCaptcha(sitekey && !error ? new reCAPTCHA(sitekey!, action) : null)
+    setReCaptcha(sitekey && !error ? new reCAPTCHA(sitekey, action) : null)
     return removeReCaptcha
   }, [sitekey, error, action])
 

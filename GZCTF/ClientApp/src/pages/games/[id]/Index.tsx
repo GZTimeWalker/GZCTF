@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { marked } from 'marked'
 import { FC, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   Container,
@@ -15,6 +15,7 @@ import {
   Alert,
   Badge,
   BackgroundImage,
+  Anchor,
 } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -304,6 +305,15 @@ const GameDetail: FC = () => {
       <Container className={classes.content}>
         <Stack spacing="xs">
           {GetAlert(status)}
+          {!canSubmit && (!user?.activeTeamId || user?.activeTeamId !== user?.ownTeamId) && (
+            <Alert color="yellow" icon={<Icon path={mdiAlertCircle} />} title="当前无法报名">
+              你不是当前所激活队伍的队长，请在{' '}
+              <Anchor component={Link} to="/teams">
+                队伍管理
+              </Anchor>{' '}
+              页面创建、加入或切换队伍状态。
+            </Alert>
+          )}
           <TypographyStylesProvider className={typographyClasses.root}>
             <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
           </TypographyStylesProvider>

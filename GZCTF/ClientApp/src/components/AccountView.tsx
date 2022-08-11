@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Stack, Center, createStyles } from '@mantine/core'
 import LogoHeader from './LogoHeader'
 
@@ -16,11 +17,12 @@ interface AccountViewProps extends React.PropsWithChildren {
 
 const AccountView: FC<AccountViewProps> = ({ onSubmit, children }) => {
   const { classes } = useStyles()
+  const navigate = useNavigate()
 
   return (
     <Center style={{ height: '100vh' }}>
       <Stack align="center" justify="center">
-        <LogoHeader />
+        <LogoHeader onClick={() => navigate('/')} />
         <form className={classes.input} onSubmit={onSubmit}>
           <Stack spacing="xs" align="center" justify="center">
             {children}

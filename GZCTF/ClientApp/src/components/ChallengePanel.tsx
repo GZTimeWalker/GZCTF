@@ -125,6 +125,10 @@ const ChallengePanel: FC = () => {
         size="35%"
         centered
         gameId={numId}
+        solved={
+          myteam &&
+          myteam.challenges?.find((c) => c.id === challenge?.id)?.type !== SubmissionType.Unaccepted
+        }
         tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
         title={challenge?.title ?? ''}
         score={challenge?.score ?? 0}

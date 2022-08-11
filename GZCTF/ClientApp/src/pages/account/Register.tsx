@@ -67,7 +67,7 @@ const Register: FC = () => {
         userName: uname,
         password: pwd,
         email: email,
-        gToken: token,
+        gToken: token === 'NOTOKEN' ? undefined : token,
       })
       .then(() => {
         updateNotification({

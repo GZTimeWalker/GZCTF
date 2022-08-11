@@ -35,6 +35,7 @@ interface ChallengeDetailModalProps extends ModalProps {
   title: string
   score: number
   challengeId: number
+  solved?: boolean
 }
 
 dayjs.extend(duration)
@@ -60,7 +61,7 @@ const Countdown: FC<{ time: string }> = ({ time }) => {
 }
 
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
-  const { gameId, challengeId, tagData, title, score, ...modalProps } = props
+  const { gameId, challengeId, tagData, title, score, solved, ...modalProps } = props
   const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
@@ -344,26 +345,32 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           )}
         </Stack>
         <Divider />
-        <form onSubmit={onSubmit}>
-          <TextInput
-            placeholder="flag{...}"
-            value={flag}
-            onChange={setFlag}
-            styles={{
-              rightSection: {
-                width: 'auto',
-              },
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-              },
-            }}
-            rightSection={
-              <Button type="submit" onClick={onSubmit} disabled={onSubmitting}>
-                提交 flag
-              </Button>
-            }
-          />
-        </form>
+        {/* {solved ? (
+          <Text align="center" weight={700}>
+            你已经取得了本题目的 flag
+          </Text>
+        ) : ( */}
+          <form onSubmit={onSubmit}>
+            <TextInput
+              placeholder={solved ? "flag{flag_in_your_hand}" : "flag{...}"}
+              value={flag}
+              onChange={setFlag}
+              styles={{
+                rightSection: {
+                  width: 'auto',
+                },
+                input: {
+                  fontFamily: theme.fontFamilyMonospace,
+                },
+              }}
+              rightSection={
+                <Button type="submit" color={solved ? "orange" : "brand"} onClick={onSubmit} disabled={onSubmitting}>
+                  {solved ? "验证 flag" : "提交 flag"}
+                </Button>
+              }
+            />
+          </form>
+        {/* )} */}
       </Stack>
     </Modal>
   )
