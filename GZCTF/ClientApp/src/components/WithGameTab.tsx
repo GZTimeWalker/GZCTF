@@ -3,7 +3,7 @@ import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Stack, Title, Text, LoadingOverlay, useMantineTheme } from '@mantine/core'
-import { mdiFlagOutline, mdiGauge, mdiMedalOutline } from '@mdi/js'
+import { mdiFlagOutline, mdiMonitorEye , mdiChartLine } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/PageTitle'
 import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
@@ -13,7 +13,7 @@ import { RoleMap } from './WithRole'
 
 const pages = [
   {
-    icon: mdiMedalOutline,
+    icon: mdiChartLine,
     title: '积分总榜',
     path: 'scoreboard',
     link: 'scoreboard',
@@ -31,7 +31,7 @@ const pages = [
     requireRole: Role.User,
   },
   {
-    icon: mdiGauge,
+    icon: mdiMonitorEye ,
     title: '比赛监控',
     path: 'monitor',
     link: 'monitor/events',

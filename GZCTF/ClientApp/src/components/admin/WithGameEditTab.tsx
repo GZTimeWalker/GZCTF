@@ -2,19 +2,19 @@ import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Group, GroupProps, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import {
-  mdiAccountCogOutline,
-  mdiBullhornOutline,
   mdiAccountGroupOutline,
-  mdiPencilOutline,
+  mdiBullhornOutline,
+  mdiFlagOutline,
+  mdiTextBoxOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AdminPage from './AdminPage'
 
 const pages = [
-  { icon: mdiPencilOutline, title: '信息编辑', path: 'info' },
+  { icon: mdiTextBoxOutline, title: '信息编辑', path: 'info' },
   { icon: mdiBullhornOutline, title: '比赛通知', path: 'notices' },
-  { icon: mdiAccountGroupOutline, title: '题目编辑', path: 'challenges' },
-  { icon: mdiAccountCogOutline, title: '队伍审核', path: 'review' },
+  { icon: mdiFlagOutline, title: '题目编辑', path: 'challenges' },
+  { icon: mdiAccountGroupOutline, title: '队伍审核', path: 'review' },
 ]
 
 interface GameEditTabProps extends React.PropsWithChildren {

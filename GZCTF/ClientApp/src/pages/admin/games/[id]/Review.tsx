@@ -24,7 +24,7 @@ import {
 import { showNotification } from '@mantine/notifications'
 import {
   mdiAccountOutline,
-  mdiBackburger,
+  mdiKeyboardBackspace,
   mdiBadgeAccountHorizontalOutline,
   mdiCancel,
   mdiCheck,
@@ -332,7 +332,7 @@ const GameTeamReview: FC = () => {
       head={
         <>
           <Button
-            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate('/admin/games')}
           >
             返回上级

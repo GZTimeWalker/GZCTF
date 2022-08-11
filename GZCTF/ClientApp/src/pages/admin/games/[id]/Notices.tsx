@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Stack, Button, Text, Group, ScrollArea } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck, mdiPlus } from '@mdi/js'
+import { mdiKeyboardBackspace, mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import GameNoticeEditCard from '@Components/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/GameNoticeEditModal'
@@ -57,7 +57,7 @@ const GameNoticeEdit: FC = () => {
       head={
         <>
           <Button
-            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate('/admin/games')}
           >
             返回上级

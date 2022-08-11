@@ -17,7 +17,7 @@ import { DatePicker, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiKeyboardBackspace, mdiCheck, mdiClose, mdiContentSaveOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
@@ -116,12 +116,16 @@ const GameInfoEdit: FC = () => {
       head={
         <>
           <Button
-            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate('/admin/games')}
           >
             返回上级
           </Button>
-          <Button disabled={disabled} onClick={onUpdateInfo}>
+          <Button
+            leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+            disabled={disabled}
+            onClick={onUpdateInfo}
+          >
             保存更改
           </Button>
         </>
