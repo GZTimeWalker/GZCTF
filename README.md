@@ -89,6 +89,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
     "PublicIP": "127.0.0.1"
   },
   "GoogleRecaptcha": {
+    "IsEnable": false,
     "VefiyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
     "Sitekey": "",
     "Secretkey": "",
