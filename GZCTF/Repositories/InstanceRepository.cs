@@ -108,9 +108,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             return new TaskResult<Container>(TaskStatus.Fail);
         }
 
-        if (context.Instances.Count(i => i.Participation == instance.Participation
-            && i.Container != null
-            && i.Container.Status == ContainerStatus.Running) > containerLimit)
+        if (await context.Instances.CountAsync(i => i.Participation == instance.Participation
+                && i.Container != null
+                && i.Container.Status == ContainerStatus.Running, token) >= containerLimit)
             return new TaskResult<Container>(TaskStatus.Denied);
 
         if (instance.Container is null)
