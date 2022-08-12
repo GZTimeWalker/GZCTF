@@ -152,7 +152,7 @@ const AppNavbar: FC = () => {
     refreshInterval: 0,
     revalidateIfStale: false,
     onErrorRetry: (err, _key, _config, revalidate, { retryCount }) => {
-      if (err.response?.status === 403) {
+      if (err?.status === 403) {
         api.account.accountLogOut().then(() => {
           navigate('/')
           showNotification({
@@ -166,7 +166,7 @@ const AppNavbar: FC = () => {
         return
       }
 
-      if (err.response?.status === 401) return
+      if (err?.status === 401) return
 
       if (retryCount >= 10) return
 

@@ -40,7 +40,9 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
 
         if (user.Role < RequiredPrivilege)
         {
-            logger.Log($"尝试访问未经授权的接口 {context.HttpContext.Request.Path}", user, TaskStatus.Denied);
+            if (RequiredPrivilege > Role.User)
+                logger.Log($"尝试访问未经授权的接口 {context.HttpContext.Request.Path}", user, TaskStatus.Denied);
+
             var result = new JsonResult(new RequestResponse("无权访问", 403))
             {
                 StatusCode = 403

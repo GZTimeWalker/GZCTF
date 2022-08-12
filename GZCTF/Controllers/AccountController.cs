@@ -413,6 +413,7 @@ public class AccountController : ControllerBase
     [RequireUser]
     [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Profile()
     {
         var user = await userManager.GetUserAsync(User);
