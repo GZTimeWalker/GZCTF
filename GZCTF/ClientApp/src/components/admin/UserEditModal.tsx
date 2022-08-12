@@ -1,6 +1,8 @@
+import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
+  Text,
   Button,
   Center,
   Grid,
@@ -151,6 +153,36 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           maxRows={4}
           onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
         />
+
+        <Stack spacing={2}>
+          <Group position="apart">
+            <Text size="sm" weight={500}>
+              用户 IP
+            </Text>
+            <Text
+              size="sm"
+              span
+              weight={500}
+              sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
+            >
+              {user.ip}
+            </Text>
+          </Group>
+          <Group position="apart">
+            <Text size="sm" weight={500}>
+              最后访问时间
+            </Text>
+            <Text
+              size="sm"
+              span
+              weight={500}
+              sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
+            >
+              {dayjs(user.lastVisitedUTC).format('YYYY-MM-DD HH:mm:ss')}
+            </Text>
+          </Group>
+        </Stack>
+
         <Group grow style={{ margin: 'auto', width: '100%' }}>
           <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
             保存信息

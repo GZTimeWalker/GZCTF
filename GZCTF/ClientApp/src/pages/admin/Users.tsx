@@ -164,7 +164,7 @@ const Users: FC = () => {
               <tr>
                 <th>用户</th>
                 <th>邮箱</th>
-                <th>最后一次访问</th>
+                <th>用户 IP</th>
                 <th>真实姓名</th>
                 <th>学号</th>
                 <th>操作</th>
@@ -199,9 +199,6 @@ const Users: FC = () => {
                         >
                           {user.ip}
                         </Text>
-                        <Badge size="xs" color="cyan" variant="outline">
-                          {new Date(user.lastVisitedUTC!).toLocaleString()}
-                        </Badge>
                       </Group>
                     </td>
                     <td>{!user.realName ? '用户未填写' : user.realName}</td>
@@ -236,7 +233,7 @@ const Users: FC = () => {
         </ScrollArea>
         <UserEditModal
           centered
-          size="30%"
+          size="35%"
           title="编辑用户"
           user={activeUser}
           opened={isEditModalOpen}
