@@ -235,9 +235,6 @@ public class AdminController : ControllerBase
         var game = participation.Game;
         var team = participation.Team;
 
-        if (game.TeamMemberCountLimit > 0 && team.Members.Count > game.TeamMemberCountLimit)
-            return BadRequest(new RequestResponse("参赛队伍不符合人数限制"));
-
         team.Locked = true;
         participation.Status = status;
 

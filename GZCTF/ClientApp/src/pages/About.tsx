@@ -14,6 +14,7 @@ import {
 } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
+import { usePageTitle } from '@Utils/PageTitle'
 
 const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
 const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'v0.0.0'
@@ -50,6 +51,7 @@ const useStyles = createStyles((theme) => ({
 
 const About: FC = () => {
   const { classes } = useStyles()
+  usePageTitle('关于')
 
   return (
     <WithNavBar>

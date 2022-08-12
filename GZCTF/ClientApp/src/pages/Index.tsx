@@ -6,6 +6,7 @@ import LogoHeader from '@Components/LogoHeader'
 import NoticeCard from '@Components/NoticeCard'
 import RecentGame from '@Components/RecentGame'
 import WithNavBar from '@Components/WithNavbar'
+import { usePageTitle } from '@Utils/PageTitle'
 import api from '@Api'
 
 const useStyles = createStyles((theme) => ({
@@ -74,6 +75,7 @@ const Home: FC = () => {
   ].slice(0, 3)
 
   const { classes, theme } = useStyles()
+  usePageTitle()
 
   return (
     <WithNavBar>

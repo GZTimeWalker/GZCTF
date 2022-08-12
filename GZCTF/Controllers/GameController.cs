@@ -138,7 +138,6 @@ public class GameController : ControllerBase
             };
 
         var team = await teamRepository.GetActiveTeamWithMembers(user, token);
-
         var part = await participationRepository.GetParticipation(team!, game, token);
 
         if (part is not null)
@@ -154,12 +153,15 @@ public class GameController : ControllerBase
             }
         }
 
+        if (game.TeamMemberCountLimit > 0 && team!.Members.Count > game.TeamMemberCountLimit)
+            return BadRequest(new RequestResponse("队伍不符合比赛人数限制"));
+
         if (await participationRepository.CheckRepeatParticipation(team!, game, token))
             return BadRequest(new RequestResponse("队伍中有成员重复报名"));
 
         await participationRepository.CreateParticipation(team!, game, token);
 
-        logger.Log($"{team!.Name} 报名了比赛 {game.Title}", user, TaskStatus.Success);
+        logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 
         return Ok();
     }

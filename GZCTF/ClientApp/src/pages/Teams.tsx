@@ -22,6 +22,7 @@ import TeamEditModal from '@Components/TeamEditModal'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { usePageTitle } from '@Utils/PageTitle'
 import api, { TeamInfoModel, Role } from '@Api'
 
 const Teams: FC = () => {
@@ -43,7 +44,7 @@ const Teams: FC = () => {
   const [createOpened, setCreateOpened] = useState(false)
 
   const [editOpened, setEditOpened] = useState(false)
-  const [editTeam, setEditTeam] = useState(null as TeamInfoModel | null)
+  const [editTeam, setEditTeam] = useState<TeamInfoModel | null>(null)
 
   const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id == user?.userId))
 
@@ -90,6 +91,8 @@ const Teams: FC = () => {
         setJoinOpened(false)
       })
   }
+
+  usePageTitle('队伍管理')
 
   //Divide teams into Active & Inactive
   const activeTeam = teams?.filter((t) => t.id === user?.activeTeamId)[0]

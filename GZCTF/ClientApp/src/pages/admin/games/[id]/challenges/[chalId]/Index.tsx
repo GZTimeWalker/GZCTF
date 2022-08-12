@@ -18,7 +18,13 @@ import {
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck, mdiContentSaveOutline, mdiDatabaseEditOutline, mdiDeleteOutline } from '@mdi/js'
+import {
+  mdiBackburger,
+  mdiCheck,
+  mdiContentSaveOutline,
+  mdiDatabaseEditOutline,
+  mdiDeleteOutline,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'

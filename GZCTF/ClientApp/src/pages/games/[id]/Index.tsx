@@ -218,8 +218,7 @@ const GameDetail: FC = () => {
     user.activeTeamId === user.ownTeamId
 
   const teamRequire =
-    !canSubmit &&
-    started &&
+    status === ParticipationStatus.Unsubmitted &&
     !finished &&
     (!user?.activeTeamId || user?.activeTeamId !== user?.ownTeamId)
 
