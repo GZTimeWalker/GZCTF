@@ -20,12 +20,7 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading }
   const theme = useMantineTheme()
 
   return (
-    <AppShell
-      padding={padding ?? 'md'}
-      fixed
-      navbar={<AppNavbar />}
-      header={<AppHeader />}
-    >
+    <AppShell padding={padding ?? 'md'} fixed navbar={<AppNavbar />} header={<AppHeader />}>
       <Center style={{ width: '100%' }}>
         <LoadingOverlay
           visible={isLoading ?? false}

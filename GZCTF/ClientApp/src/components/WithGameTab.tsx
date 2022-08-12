@@ -80,7 +80,7 @@ const GameCountdown: FC<{ game?: GameDetailModel }> = ({ game }) => {
         {countdown.asHours() > 999
           ? '∞'
           : countdown.asSeconds() > 0
-          ? `${countdown.asHours()} : ${countdown.format('mm : ss')}`
+          ? `${Math.floor(countdown.asHours())} : ${countdown.format('mm : ss')}`
           : '比赛已结束'}
       </Text>
       <Card.Section style={{ marginTop: 4 }}>
