@@ -1,11 +1,12 @@
+import dayjs, { Dayjs } from 'dayjs'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import {
+  BackgroundImage,
   Badge,
   Card,
   Center,
   Group,
-  Image,
   MantineColor,
   Stack,
   Text,
@@ -32,17 +33,19 @@ interface GameCardProps {
   game: BasicGameInfoModel
 }
 
-export const getGameStatus = (start: Date, end: Date) => {
-  const now = new Date()
+export const getGameStatus = (start: Dayjs, end: Dayjs) => {
+  const now = dayjs()
   return end < now ? GameStatus.Ended : start > now ? GameStatus.Coming : GameStatus.OnGoing
 }
 
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
 
-  const { summary, title, poster, start, end } = game
-  const startTime = new Date(start!)
-  const endTime = new Date(end!)
+  const { summary, title, poster, start, end, limit } = game
+  const startTime = dayjs(start!)
+  const endTime = dayjs(end!)
+
+  const duration = endTime.diff(startTime, 'hours')
 
   const status = getGameStatus(startTime, endTime)
   const color = GameColorMap.get(status)
@@ -55,39 +58,53 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
       to={`/games/${game.id}`}
       sx={(theme) => ({
         transition: 'filter .2s',
+        width: '100%',
         '&:hover': {
           filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
         },
       })}
     >
       <Card.Section>
-        {poster ? (
-          <Image src={poster} height={160} alt="poster" />
-        ) : (
-          <Center style={{ height: 160 }}>
-            <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
-          </Center>
-        )}
-      </Card.Section>
-
-      <Stack style={{ flexGrow: 1, marginTop: theme.spacing.sm }}>
-        <Title order={2} align="left">
-          {title}
-        </Title>
-        <Group spacing="xs">
-          <Badge size="xs" color={color} variant="light">
-            {startTime.toLocaleString()}
-          </Badge>
-          <Icon path={mdiChevronTripleRight} size={1} />
-          <Badge size="xs" color={color} variant="light">
-            {endTime.toLocaleString()}
-          </Badge>
+        <Group noWrap align="flex-start">
+          <BackgroundImage
+            src={poster ?? ''}
+            style={{ height: '10rem', maxWidth: '20rem', minWidth: '20rem' }}
+          >
+            <Center style={{ height: '100%' }}>
+              {!poster && <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />}
+            </Center>
+          </BackgroundImage>
+          <Stack spacing="sm" p="md" style={{ width: '100%' }}>
+            <Group noWrap position="apart" align="flex-start">
+              <Stack spacing={2}>
+                <Group noWrap spacing="xs">
+                  <Badge size="xs" color={color}>
+                    {limit === 0 ? '多' : limit === 1 ? '个' : limit}人赛
+                  </Badge>
+                  <Badge size="xs" color={color}>
+                    {`${duration} 小时`}
+                  </Badge>
+                </Group>
+                <Title order={2} align="left">
+                  {title}
+                </Title>
+              </Stack>
+              <Group mt={4} noWrap spacing={3}>
+                <Badge size="xs" color={color}>
+                  {startTime.format('YYYY/MM/DD HH:mm:ss')}
+                </Badge>
+                <Icon path={mdiChevronTripleRight} size={1} />
+                <Badge size="xs" color={color}>
+                  {endTime.format('YYYY/MM/DD HH:mm:ss')}
+                </Badge>
+              </Group>
+            </Group>
+            <Text weight={500} size="sm" lineClamp={3}>
+              {summary}
+            </Text>
+          </Stack>
         </Group>
-
-        <Text size="md" lineClamp={3} style={{ height: '4.9rem' }}>
-          {summary}
-        </Text>
-      </Stack>
+      </Card.Section>
     </Card>
   )
 }

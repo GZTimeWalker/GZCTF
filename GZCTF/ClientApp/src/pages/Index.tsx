@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { createStyles, Group, keyframes, Stack, Title } from '@mantine/core'
+import { createStyles, Group, keyframes, Stack, Title, Text } from '@mantine/core'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import LogoHeader from '@Components/LogoHeader'
@@ -92,7 +92,10 @@ const Home: FC = () => {
         >
           <LogoHeader />
           <Title className={classes.subtitle} order={3}>
-            &gt; Hack for fun not for profit<span className={classes.blink}>_</span>
+            &gt; Hack for fun not for profit
+            <Text span className={classes.blink}>
+              _
+            </Text>
           </Title>
         </Group>
         <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>

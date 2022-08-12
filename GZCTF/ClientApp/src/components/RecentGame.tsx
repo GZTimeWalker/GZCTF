@@ -28,16 +28,14 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
 
   const { title, poster, start, end } = game
 
-  const startTime = new Date(start!)
-  const endTime = new Date(end!)
+  const startTime = dayjs(start!)
+  const endTime = dayjs(end!)
 
   const status = getGameStatus(startTime, endTime)
   const color = GameColorMap.get(status)
 
   const duration =
-    status === GameStatus.OnGoing
-      ? dayjs(endTime.getTime()).diff(new Date(), 'h')
-      : dayjs(endTime.getTime()).diff(startTime.getTime(), 'h')
+    status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
 
   return (
     <Card
@@ -109,7 +107,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
             {status === GameStatus.OnGoing ? '剩余时间' : '持续时间'}
           </Text>
           <Badge size="xs" color={color} variant="light">
-            {duration}小时
+            {`${duration} 小时`}
           </Badge>
         </Group>
       </Stack>

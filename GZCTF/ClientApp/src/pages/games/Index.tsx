@@ -1,12 +1,10 @@
-import { FC, useState } from 'react'
-import { SimpleGrid, Stack } from '@mantine/core'
-import { mdiFlag, mdiPackageVariantClosed, mdiProgressClock } from '@mdi/js'
-import { Icon } from '@mdi/react'
-import GameCard, { GameColorMap, GameStatus } from '@Components/GameCard'
-import IconTabs from '@Components/IconTabs'
+import { FC } from 'react'
+import { Group, Stack } from '@mantine/core'
+import GameCard from '@Components/GameCard'
+import LogoHeader from '@Components/LogoHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { usePageTitle } from '@Utils/PageTitle'
-import api, { BasicGameInfoModel } from '@Api'
+import api from '@Api'
 
 const Games: FC = () => {
   const { data: allGames } = api.game.useGameGamesAll({
@@ -15,66 +13,41 @@ const Games: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const [activeTab, setActiveTab] = useState(0)
-  const [gameType, setGameType] = useState('ongoing')
-
-  const onChange = (active: number, tabKey: string) => {
-    setActiveTab(active)
-    setGameType(tabKey)
-  }
+  allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
 
   const now = new Date()
-  const games = new Map<string, BasicGameInfoModel[] | undefined>([
-    [GameStatus.Coming, allGames?.filter((game) => new Date(game.start!) > now)],
-    [
-      GameStatus.OnGoing,
-      allGames?.filter((game) => new Date(game.start!) <= now && new Date(game.end!) >= now),
-    ],
-    [GameStatus.Ended, allGames?.filter((game) => new Date(game.end!) < now)],
-  ])
+  const games = [
+    ...(allGames?.filter((g) => now < new Date(g.end ?? '')) ?? []),
+    ...(allGames?.filter((g) => now >= new Date(g.end ?? '')).reverse() ?? []),
+  ]
 
   usePageTitle('赛事')
 
   return (
     <WithNavBar>
+      <Group
+        position="apart"
+        align="flex-end"
+        py={8}
+        sx={(theme) => ({
+          width: '100%',
+          top: 0,
+          position: 'sticky',
+          zIndex: 50,
+          backgroundColor:
+            theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
+
+          [theme.fn.smallerThan('xs')]: {
+            display: 'none',
+          },
+        })}
+      >
+        <LogoHeader />
+      </Group>
       <Stack>
-        <IconTabs
-          withIcon
-          active={activeTab}
-          onTabChange={onChange}
-          tabs={[
-            {
-              tabKey: GameStatus.OnGoing,
-              label: '进行中',
-              icon: <Icon path={mdiFlag} size={1} />,
-              color: GameColorMap.get(GameStatus.OnGoing)!,
-            },
-            {
-              tabKey: GameStatus.Coming,
-              label: '未开始',
-              icon: <Icon path={mdiProgressClock} size={1} />,
-              color: GameColorMap.get(GameStatus.Coming)!,
-            },
-            {
-              tabKey: GameStatus.Ended,
-              label: '已结束',
-              icon: <Icon path={mdiPackageVariantClosed} size={1} />,
-              color: GameColorMap.get(GameStatus.Ended)!,
-            },
-          ]}
-        />
-        <SimpleGrid
-          cols={3}
-          spacing="lg"
-          breakpoints={[
-            { maxWidth: 1200, cols: 2, spacing: 'md' },
-            { maxWidth: 800, cols: 1, spacing: 'sm' },
-          ]}
-        >
-          {games.get(gameType)?.map((g) => (
-            <GameCard key={g.id} game={g} />
-          ))}
-        </SimpleGrid>
+        {games.map((g) => (
+          <GameCard key={g.id} game={g} />
+        ))}
       </Stack>
     </WithNavBar>
   )

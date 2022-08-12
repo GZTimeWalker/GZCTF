@@ -67,6 +67,7 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
       styles={{
         dropdown: {
           marginLeft: '2rem',
+          width: '10rem',
         },
       }}
       withArrow
