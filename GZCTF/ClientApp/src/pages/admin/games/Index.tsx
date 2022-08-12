@@ -87,8 +87,8 @@ const Games: FC = () => {
             <tbody>
               {games &&
                 games.map((game) => {
-                  const startTime = new Date(game.start)
-                  const endTime = new Date(game.end)
+                  const startTime = dayjs(game.start)
+                  const endTime = dayjs(game.end)
                   const status = getGameStatus(startTime, endTime)
                   const color = GameColorMap.get(status)
 
