@@ -218,6 +218,7 @@ const GameDetail: FC = () => {
     user.activeTeamId === user.ownTeamId
 
   const teamRequire =
+    user &&
     status === ParticipationStatus.Unsubmitted &&
     !finished &&
     (!user?.activeTeamId || user?.activeTeamId !== user?.ownTeamId)
@@ -247,7 +248,7 @@ const GameDetail: FC = () => {
         {finished ? '比赛结束' : !user ? '请先登录' : GameActionMap.get(status)}
       </Button>
       {started && <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>}
-      {status === ParticipationStatus.Accepted && (
+      {status === ParticipationStatus.Accepted && started && (
         <Button onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</Button>
       )}
     </>
@@ -317,6 +318,11 @@ const GameDetail: FC = () => {
                 队伍管理
               </Anchor>{' '}
               页面创建、加入或切换队伍状态。
+            </Alert>
+          )}
+          {status === ParticipationStatus.Accepted && !started && (
+            <Alert color="teal" icon={<Icon path={mdiCheck} />} title="比赛尚未开始">
+              当前激活队伍已经成功报名，请耐心等待比赛开始。
             </Alert>
           )}
           <TypographyStylesProvider className={typographyClasses.root}>

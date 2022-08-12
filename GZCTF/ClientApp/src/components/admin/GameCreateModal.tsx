@@ -19,8 +19,8 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
   const [title, setTitle] = useInputState('')
-  const [start, setStart] = useInputState(new Date())
-  const [end, setEnd] = useInputState(dayjs(new Date()).add(2, 'hours').toDate())
+  const [start, setStart] = useInputState(dayjs())
+  const [end, setEnd] = useInputState(dayjs().add(2, 'h'))
 
   const onCreate = () => {
     if (!title || end < start) {
@@ -74,12 +74,16 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           <DatePicker
             label="开始日期"
             placeholder="Start Date"
-            value={start}
+            value={start.toDate()}
             clearable={false}
             onChange={(e) => {
-              setStart(e)
-              if (e && end < e) {
-                setEnd(dayjs(new Date()).add(2, 'hours').toDate())
+              const newDate = dayjs(e)
+                .hour(start.hour())
+                .minute(start.minute())
+                .second(start.second())
+              setStart(newDate)
+              if (newDate && end < newDate) {
+                setEnd(newDate.add(2, 'h'))
               }
             }}
             required
@@ -87,11 +91,12 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           <TimeInput
             label="开始时间"
             placeholder="Start Time"
-            value={start}
+            value={start.toDate()}
             onChange={(e) => {
-              setStart(e)
-              if (e && end < e) {
-                setEnd(dayjs(new Date()).add(2, 'hours').toDate())
+              const newDate = dayjs(e).date(start.date()).month(start.month()).year(start.year())
+              setStart(newDate)
+              if (newDate && end < newDate) {
+                setEnd(newDate.add(2, 'h'))
               }
             }}
             withSeconds
@@ -102,19 +107,25 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         <Group grow position="apart">
           <DatePicker
             label="结束日期"
-            minDate={start}
+            minDate={start.toDate()}
             placeholder="End time"
-            value={end}
+            value={end.toDate()}
             clearable={false}
-            onChange={(e) => setEnd(e)}
+            onChange={(e) => {
+              const newDate = dayjs(e).hour(end.hour()).minute(end.minute()).second(end.second())
+              setEnd(newDate)
+            }}
             error={end < start}
             required
           />
           <TimeInput
             label="结束时间"
             placeholder="End time"
-            value={end}
-            onChange={(e) => setEnd(e)}
+            value={end.toDate()}
+            onChange={(e) => {
+              const newDate = dayjs(e).date(end.date()).month(end.month()).year(end.year())
+              setEnd(newDate)
+            }}
             error={end < start}
             withSeconds
             required

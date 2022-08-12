@@ -19,10 +19,11 @@ const AppHeader: FC = () => {
   const { classes, theme } = useStyles()
   const view = useViewportSize()
 
-  const showHeader = view.width < theme.breakpoints.xs
+  // temporary solution before the next patch of @mantine/core
+  const showHeader = view.width > 0 && view.width < theme.breakpoints.xs
 
   return (
-    <Header height={showHeader ? 70 : 0} className={classes.header}>
+    <Header height={showHeader ? 70 : 0} fixed style={{ width: '100%' }} className={classes.header}>
       <Group style={{ height: '100%' }} p="0 1rem">
         <LogoHeader />
       </Group>

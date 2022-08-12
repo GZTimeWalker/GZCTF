@@ -3,7 +3,8 @@ import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Stack, Title, Text, LoadingOverlay, useMantineTheme } from '@mantine/core'
-import { mdiFlagOutline, mdiMonitorEye, mdiChartLine } from '@mdi/js'
+import { showNotification } from '@mantine/notifications'
+import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/PageTitle'
 import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
@@ -76,8 +77,10 @@ const GameCountdown: FC<{ game?: GameDetailModel }> = ({ game }) => {
       }}
     >
       <Text style={{ fontWeight: 700 }}>
-        {countdown.asSeconds() > 0
-          ? `${countdown.days() * 24 + countdown.hours()} : ${countdown.format('mm : ss')}`
+        {countdown.asHours() > 999
+          ? '∞'
+          : countdown.asSeconds() > 0
+          ? `${countdown.asHours()} : ${countdown.format('mm : ss')}`
           : '比赛已结束'}
       </Text>
       <Card.Section style={{ marginTop: 4 }}>
@@ -128,6 +131,18 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
     setActiveTab(tab)
     console.log(tab)
   })
+
+  useEffect(() => {
+    if (dayjs() < dayjs(game?.start)) {
+      navigate(`/games/${numId}`)
+      showNotification({
+        color: 'yellow',
+        message: '比赛尚未开始',
+        icon: <Icon path={mdiExclamationThick} size={1} />,
+        disallowClose: true,
+      })
+    }
+  }, [game])
 
   return (
     <Stack style={{ position: 'relative' }}>

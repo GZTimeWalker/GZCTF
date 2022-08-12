@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -29,8 +30,8 @@ const GameInfoEdit: FC = () => {
   const [game, setGame] = useState<GameInfoModel>()
 
   const [disabled, setDisabled] = useState(false)
-  const [start, setStart] = useInputState(new Date())
-  const [end, setEnd] = useInputState(new Date())
+  const [start, setStart] = useInputState(dayjs())
+  const [end, setEnd] = useInputState(dayjs())
 
   useEffect(() => {
     const numId = parseInt(id ?? '-1')
@@ -50,8 +51,8 @@ const GameInfoEdit: FC = () => {
       .editGetGame(numId)
       .then((data) => {
         setGame(data.data)
-        setStart(new Date(data.data.start))
-        setEnd(new Date(data.data.end))
+        setStart(dayjs(data.data.start))
+        setEnd(dayjs(data.data.end))
       })
       .catch((err) => {
         if (err.status === 404) {
@@ -163,39 +164,56 @@ const GameInfoEdit: FC = () => {
       <Group grow position="apart">
         <DatePicker
           label="开始日期"
-          disabled={disabled}
           placeholder="Start Date"
-          value={start}
+          value={start.toDate()}
           clearable={false}
-          onChange={(e) => setStart(e)}
+          onChange={(e) => {
+            const newDate = dayjs(e)
+              .hour(start.hour())
+              .minute(start.minute())
+              .second(start.second())
+            setStart(newDate)
+            if (newDate && end < newDate) {
+              setEnd(newDate.add(2, 'h'))
+            }
+          }}
           required
         />
         <TimeInput
           label="开始时间"
-          disabled={disabled}
           placeholder="Start Time"
-          value={start}
-          onChange={(e) => setStart(e)}
+          value={start.toDate()}
+          onChange={(e) => {
+            const newDate = dayjs(e).date(start.date()).month(start.month()).year(start.year())
+            setStart(newDate)
+            if (newDate && end < newDate) {
+              setEnd(newDate.add(2, 'h'))
+            }
+          }}
           withSeconds
           required
         />
         <DatePicker
           label="结束日期"
-          disabled={disabled}
-          minDate={start}
+          minDate={start.toDate()}
           placeholder="End time"
-          value={end}
+          value={end.toDate()}
           clearable={false}
-          onChange={(e) => setEnd(e)}
+          onChange={(e) => {
+            const newDate = dayjs(e).hour(end.hour()).minute(end.minute()).second(end.second())
+            setEnd(newDate)
+          }}
           error={end < start}
           required
         />
         <TimeInput
           label="结束时间"
-          disabled={disabled}
           placeholder="End time"
-          value={end}
-          onChange={(e) => setEnd(e)}
+          value={end.toDate()}
+          onChange={(e) => {
+            const newDate = dayjs(e).date(end.date()).month(end.month()).year(end.year())
+            setEnd(newDate)
+          }}
           error={end < start}
           withSeconds
           required
