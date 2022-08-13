@@ -90,7 +90,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
   },
   "GoogleRecaptcha": {
     "IsEnable": false,
-    "VefiyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
+    "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
     "Sitekey": "",
     "Secretkey": "",
     "RecaptchaThreshold": "0.5"
