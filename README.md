@@ -98,16 +98,18 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
 }
 ```
 
+## 初始管理员
+
+生产环境中默认不存在管理员权限用户，需要手动更改数据库条目。当管理员注册完成并成功登录后，进入所选数据库表格后执行：
+
+```sql
+update "AspNetUsers" set "Role"=3 where "UserName"='GZTime';
+```
+
 ## 关于 i18n
 
 暂不考虑进行多语言适配。
 
-<!--
-
-TO BE PUBLISHED
-
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg)](https://starchart.cc/GZTimeWalker/GZCTF)
-
--->
