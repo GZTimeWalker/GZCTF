@@ -19,7 +19,6 @@ const AppHeader: FC = () => {
   const { classes, theme } = useStyles()
   const view = useViewportSize()
 
-  // temporary solution before the next patch of @mantine/core
   const showHeader = view.width > 0 && view.width < theme.breakpoints.xs
 
   return (

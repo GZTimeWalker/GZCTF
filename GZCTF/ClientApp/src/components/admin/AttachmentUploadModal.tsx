@@ -95,8 +95,10 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
                   icon: <Icon path={mdiCheck} size={1} />,
                   disallowClose: true,
                 })
+                setTimeout(() => {
+                  api.edit.mutateEditGetGameChallenge(numId, numCId)
+                }, 1000)
                 props.onClose()
-                api.edit.mutateEditGetGameChallenge(numId, numCId)
               })
               .catch((err) => showErrorNotification(err))
               .finally(() => {
@@ -163,7 +165,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
           </FileButton>
           <Button
             className={classes.uploadButton}
-            disabled={disabled}
+            disabled={disabled || files.length < 1}
             onClick={onUpload}
             color={progress !== 0 ? 'cyan' : theme.primaryColor}
           >

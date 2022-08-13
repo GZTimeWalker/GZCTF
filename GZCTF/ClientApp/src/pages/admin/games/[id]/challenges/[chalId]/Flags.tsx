@@ -370,6 +370,7 @@ const GameChallengeEdit: FC = () => {
   const onDeleteFlag = (flag: FlagInfoModel) => {
     modals.openConfirmModal({
       title: '删除 flag',
+      size: '35%',
       children: (
         <Stack>
           <Text>确定删除下列 flag 吗？</Text>
