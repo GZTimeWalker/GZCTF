@@ -67,7 +67,7 @@ const Register: FC = () => {
         userName: uname,
         password: pwd,
         email: email,
-        gToken: token === 'NOTOKEN' ? undefined : token,
+        gToken: token,
       })
       .then(() => {
         updateNotification({
@@ -88,6 +88,7 @@ const Register: FC = () => {
           message: `${err.response.data.title}`,
           icon: <Icon path={mdiClose} size={1} />,
         })
+      }).finally(() => {
         setDisabled(false)
       })
   }

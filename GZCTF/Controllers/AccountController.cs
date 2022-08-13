@@ -60,7 +60,7 @@ public class AccountController : ControllerBase
     {
         if (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
             !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString()))
-            return BadRequest(new RequestResponse("校验失败"));
+            return BadRequest(new RequestResponse("Google reCAPTCHA 校验失败"));
 
         var user = new UserInfo
         {
@@ -118,6 +118,10 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Recovery([FromBody] RecoveryModel model)
     {
+        if (model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
+            !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString()))
+            return BadRequest(new RequestResponse("Google reCAPTCHA 校验失败"));
+
         var user = await userManager.FindByEmailAsync(model.Email);
         if (user is null)
             return NotFound(new RequestResponse("用户不存在", 404));

@@ -55,6 +55,9 @@ export interface RecoveryModel {
    * @format email
    */
   email: string
+
+  /** Google Recaptcha Token */
+  gToken?: string | null
 }
 
 /**
