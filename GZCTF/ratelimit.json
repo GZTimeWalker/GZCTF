@@ -7,7 +7,7 @@
     "HttpStatusCode": 429,
     "GeneralRules": [
       {
-        "Endpoint": "*:/api/Challenges/submit/*",
+        "Endpoint": "*:/api/challenges/submit/*",
         "Period": "60s",
         "Limit": 3
       },
@@ -18,7 +18,7 @@
       },
       {
         "Endpoint": "*:/api/*",
-        "Period": "30s",
+        "Period": "60s",
         "Limit": 120
       },
       {

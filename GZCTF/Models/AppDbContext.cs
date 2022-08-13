@@ -40,17 +40,17 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(e => e.ActiveTeam)
                 .WithMany()
                 .HasForeignKey(e => e.ActiveTeamId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(e => e.OwnTeam)
-                .WithMany()
-                .HasForeignKey(e => e.OwnTeamId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .WithOne(e => e.Captain)
+                .HasForeignKey<Team>(e => e.CaptainId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.Navigation(e => e.ActiveTeam).AutoInclude();
             entity.Navigation(e => e.OwnTeam).AutoInclude();
@@ -93,8 +93,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithMany(e => e.Teams);
 
             entity.HasOne(e => e.Captain)
-                .WithMany()
-                .HasForeignKey(e => e.CaptainId)
+                .WithOne(e => e.OwnTeam)
+                .HasForeignKey<UserInfo>(u => u.OwnTeamId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
@@ -121,7 +121,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                     e => e.HasOne(e => e.Participation)
                         .WithMany(e => e.Instances)
                         .HasForeignKey(e => e.ParticipationId)
-                        .OnDelete(DeleteBehavior.SetNull),
+                        .OnDelete(DeleteBehavior.Cascade),
                     e => e.HasKey(e => new { e.ChallengeId, e.ParticipationId })
                 );
         });
@@ -209,7 +209,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
             entity.HasOne(e => e.LocalFile)
                 .WithMany()
                 .HasForeignKey(e => e.LocalFileId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.LocalFile).AutoInclude();
         });

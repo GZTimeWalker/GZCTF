@@ -12,14 +12,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220806021312_InitDb")]
+    [Migration("20220813142108_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -82,6 +82,9 @@ namespace CTFServer.Migrations
                     b.Property<byte>("Tag")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("TestContainerId")
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -94,6 +97,8 @@ namespace CTFServer.Migrations
                     b.HasIndex("AttachmentId");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("TestContainerId");
 
                     b.ToTable("Challenges");
                 });
@@ -511,6 +516,8 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("ParticipationId");
 
+                    b.HasIndex("Status");
+
                     b.HasIndex("UserId");
 
                     b.HasIndex("TeamId", "ChallengeId", "GameId");
@@ -550,8 +557,6 @@ namespace CTFServer.Migrations
                         .HasColumnType("character varying(16)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CaptainId");
 
                     b.ToTable("Teams");
                 });
@@ -659,7 +664,8 @@ namespace CTFServer.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("OwnTeamId");
+                    b.HasIndex("OwnTeamId")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -824,9 +830,16 @@ namespace CTFServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CTFServer.Models.Container", "TestContainer")
+                        .WithMany()
+                        .HasForeignKey("TestContainerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Attachment");
 
                     b.Navigation("Game");
+
+                    b.Navigation("TestContainer");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Data.Attachment", b =>
@@ -834,7 +847,7 @@ namespace CTFServer.Migrations
                     b.HasOne("CTFServer.Models.LocalFile", "LocalFile")
                         .WithMany()
                         .HasForeignKey("LocalFileId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("LocalFile");
                 });
@@ -914,7 +927,7 @@ namespace CTFServer.Migrations
                     b.HasOne("CTFServer.Models.Participation", "Participation")
                         .WithMany("Instances")
                         .HasForeignKey("ParticipationId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Challenge");
@@ -974,7 +987,7 @@ namespace CTFServer.Migrations
                     b.HasOne("CTFServer.Models.UserInfo", "User")
                         .WithMany("Submissions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Challenge");
@@ -988,27 +1001,16 @@ namespace CTFServer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CTFServer.Models.Team", b =>
-                {
-                    b.HasOne("CTFServer.Models.UserInfo", "Captain")
-                        .WithMany()
-                        .HasForeignKey("CaptainId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.Navigation("Captain");
-                });
-
             modelBuilder.Entity("CTFServer.Models.UserInfo", b =>
                 {
                     b.HasOne("CTFServer.Models.Team", "ActiveTeam")
                         .WithMany()
                         .HasForeignKey("ActiveTeamId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CTFServer.Models.Team", "OwnTeam")
-                        .WithMany()
-                        .HasForeignKey("OwnTeamId")
+                        .WithOne("Captain")
+                        .HasForeignKey("CTFServer.Models.UserInfo", "OwnTeamId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ActiveTeam");
@@ -1118,6 +1120,8 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.Team", b =>
                 {
+                    b.Navigation("Captain");
+
                     b.Navigation("Participations");
                 });
 

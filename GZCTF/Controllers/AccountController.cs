@@ -190,11 +190,9 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> Verify([FromBody] AccountVerifyModel model)
     {
         var user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
-        if (user is null)
-            return BadRequest(new RequestResponse("无效的邮件地址"));
 
-        if (user.EmailConfirmed)
-            return Ok();
+        if (user is null || user.EmailConfirmed)
+            return BadRequest(new RequestResponse("无效的邮件地址"));
 
         var result = await userManager.ConfirmEmailAsync(user, Codec.Base64.Decode(model.Token));
 
@@ -233,8 +231,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> LogIn([FromBody] LoginModel model)
     {
         var user = await userManager.FindByNameAsync(model.UserName);
-        if (user is null)
-            user = await userManager.FindByEmailAsync(model.UserName);
+        user ??= await userManager.FindByEmailAsync(model.UserName);
 
         if (user is null)
             return Unauthorized(new RequestResponse("用户名或密码错误", 401));
