@@ -8,7 +8,7 @@ namespace CTFServer.Utils;
 public static class ExcelHelper
 {
     private static readonly string[] CommonScoreboardHeader = { "排名", "战队", "解题数量", "得分时间", "总分" };
-    private static readonly string[] CommonTeamHeader = { "排名", "战队", "总分", "队伍人数", "队员信息" };
+    private static readonly string[] CommonTeamHeader = { "排名", "战队", "总分", "队伍人数", "队长" };
 
     public static MemoryStream GetExcel(ScoreboardModel scoreboard, Game game)
     {
@@ -111,7 +111,24 @@ public static class ExcelHelper
             colIndex++;
         }
 
-        sheet.AddMergedRegion(new CellRangeAddress(0, 0, colIndex - 1, colIndex - 1 + teamMemberCount));
+        if (teamMemberCount == 1)
+            return;
+
+        var titleCell = row.CreateCell(colIndex);
+        titleCell.SetCellValue("队员信息");
+        titleCell.CellStyle = style;
+
+        var teamMemberStart = colIndex;
+        colIndex++;
+
+        for (var i = 0; i < teamMemberCount - 2; ++i)
+        {
+            var cell = row.CreateCell(colIndex);
+            cell.CellStyle = style;
+            colIndex++;
+        }
+
+        sheet.AddMergedRegion(new CellRangeAddress(0, 0, teamMemberStart, teamMemberStart + teamMemberCount - 2));
     }
 
     private static void WriteTeamContent(ISheet sheet, ScoreboardModel scoreboard)
@@ -128,14 +145,14 @@ public static class ExcelHelper
             row.CreateCell(3).SetCellValue(team.Members!.Count);
 
             var captain = team.Members!.First(u => u.Captain);
-            row.CreateCell(4).SetCellValue($"[{captain.StudentNumber}]{captain.UserName}({captain.RealName})");
+            row.CreateCell(4).SetCellValue($"{captain.UserName}({captain.RealName})[{captain.StudentNumber}]");
 
             var others = team.Members.Where(u => u.Id != captain.Id);
 
             var colIndex = 5;
             foreach (var u in others)
             {
-                row.CreateCell(colIndex).SetCellValue($"[{captain.StudentNumber}]{u.UserName}({u.RealName})");
+                row.CreateCell(colIndex).SetCellValue($"{u.UserName}({u.RealName})[{captain.StudentNumber}]");
                 colIndex++;
             }
 
