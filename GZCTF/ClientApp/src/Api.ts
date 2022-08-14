@@ -2961,6 +2961,45 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
 
     /**
+     * @description 下载比赛积分榜，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameScoreboardSheet
+     * @summary 下载比赛积分榜
+     * @request GET:/api/game/{id}/scoreboardsheet
+     */
+    gameScoreboardSheet: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}/scoreboardsheet`,
+        method: 'GET',
+        ...params,
+      }),
+    /**
+     * @description 下载比赛积分榜，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameScoreboardSheet
+     * @summary 下载比赛积分榜
+     * @request GET:/api/game/{id}/scoreboardsheet
+     */
+    useGameScoreboardSheet: (id: number, options?: SWRConfiguration) =>
+      useSWR<void, RequestResponse>(`/api/game/${id}/scoreboardsheet`, options),
+
+    /**
+     * @description 下载比赛积分榜，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameScoreboardSheet
+     * @summary 下载比赛积分榜
+     * @request GET:/api/game/{id}/scoreboardsheet
+     */
+    mutateGameScoreboardSheet: (
+      id: number,
+      data?: void | Promise<void>,
+      options?: MutatorOptions
+    ) => mutate<void>(`/api/game/${id}/scoreboardsheet`, data, options),
+
+    /**
      * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
      *
      * @tags Game

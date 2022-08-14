@@ -1,4 +1,6 @@
-﻿namespace CTFServer.Models.Request.Teams;
+﻿using System.Text.Json.Serialization;
+
+namespace CTFServer.Models.Request.Teams;
 
 /// <summary>
 /// 队员信息
@@ -29,4 +31,16 @@ public class TeamUserInfoModel
     /// 是否是队长
     /// </summary>
     public bool Captain { get; set; }
+
+    /// <summary>
+    /// 真实姓名，用于生成积分榜
+    /// </summary>
+    [JsonIgnore]
+    public string? RealName { get; set; }
+
+    /// <summary>
+    /// 学号，用于生成积分榜
+    /// </summary>
+    [JsonIgnore]
+    public string? StudentNumber { get; set; }
 }

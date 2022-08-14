@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models.Request.Game;
+using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -70,7 +71,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         => context.Instances
             .Include(i => i.Challenge)
             .Where(i => i.Challenge.Game == game && i.Challenge.IsEnabled && i.Participation.Status == ParticipationStatus.Accepted)
-            .Include(i => i.Participation)
+            .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
                 context.Submissions.Where(s => s.Status == AnswerResult.Accepted),
                 i => new { i.ChallengeId, i.ParticipationId },
@@ -120,60 +121,61 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(j => j.Instance.Participation)
-            .Select(j => new
+            .Select(j =>
             {
-                Item = new ScoreboardItem
+                var challengeGroup = j.GroupBy(s => s.Instance.ChallengeId);
+
+                return new ScoreboardItem
                 {
                     Id = j.Key.Team.Id,
                     Name = j.Key.Team.Name,
                     Avatar = j.Key.Team.AvatarUrl,
                     Rank = 0,
-                    SolvedCount = j.GroupBy(s => s.Instance.ChallengeId)
-                        .Count(c => c.Any(s => s.Submission?.Status == AnswerResult.Accepted)),
-                    Challenges = j.GroupBy(s => s.Instance.ChallengeId)
-                        .Select(c =>
-                        {
-                            var cid = c.Key;
-                            var s = c.OrderBy(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
-                                .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
-
-                            SubmissionType status = SubmissionType.Normal;
-
-                            if (s?.Submission is null)
-                                status = SubmissionType.Unaccepted;
-                            else if (bloods[cid][0] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][0]!.SubmitTimeUTC)
-                                status = SubmissionType.FirstBlood;
-                            else if (bloods[cid][1] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][1]!.SubmitTimeUTC)
-                                status = SubmissionType.SecondBlood;
-                            else if (bloods[cid][2] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][2]!.SubmitTimeUTC)
-                                status = SubmissionType.ThirdBlood;
-
-                            return new ChallengeItem
+                    Team = TeamInfoModel.FromTeam(j.Key.Team, true),
+                    LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                        .OrderByDescending(t => t).FirstOrDefault(),
+                    SolvedCount = challengeGroup.Count(c => c.Any(s => s.Submission?.Status == AnswerResult.Accepted)),
+                    Challenges = challengeGroup
+                            .Select(c =>
                             {
-                                Id = cid,
-                                Type = status,
-                                UserName = s?.Submission?.UserName,
-                                SubmitTimeUTC = s?.Submission?.SubmitTimeUTC,
-                                Score = s is null ? 0 : status switch
+                                var cid = c.Key;
+                                var s = c.OrderBy(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                                    .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
+
+                                SubmissionType status = SubmissionType.Normal;
+
+                                if (s?.Submission is null)
+                                    status = SubmissionType.Unaccepted;
+                                else if (bloods[cid][0] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][0]!.SubmitTimeUTC)
+                                    status = SubmissionType.FirstBlood;
+                                else if (bloods[cid][1] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][1]!.SubmitTimeUTC)
+                                    status = SubmissionType.SecondBlood;
+                                else if (bloods[cid][2] is not null && s.Submission.SubmitTimeUTC <= bloods[cid][2]!.SubmitTimeUTC)
+                                    status = SubmissionType.ThirdBlood;
+
+                                return new ChallengeItem
                                 {
-                                    SubmissionType.Unaccepted => 0,
-                                    SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.05f),
-                                    SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.03f),
-                                    SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.01f),
-                                    SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
-                                    _ => throw new ArgumentException(nameof(status))
-                                }
-                            };
-                        }).ToList()
-                },
-                LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
-                    .OrderByDescending(t => t).FirstOrDefault()
-            }).OrderByDescending(j => j.Item.Score) //成绩倒序，最后提交时间正序
-            .ThenBy(j => j.LastSubmissionTime)
+                                    Id = cid,
+                                    Type = status,
+                                    UserName = s?.Submission?.UserName,
+                                    SubmitTimeUTC = s?.Submission?.SubmitTimeUTC,
+                                    Score = s is null ? 0 : status switch
+                                    {
+                                        SubmissionType.Unaccepted => 0,
+                                        SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.05f),
+                                        SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.03f),
+                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * 1.01f),
+                                        SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
+                                        _ => throw new ArgumentException(nameof(status))
+                                    }
+                                };
+                            }).ToList()
+                };
+            }).OrderByDescending(j => j.Score).ThenBy(j => j.LastSubmissionTime) //成绩倒序，最后提交时间正序
             .Select((j, i) =>
             {
-                j.Item.Rank = i + 1;
-                return j.Item;
+                j.Rank = i + 1;
+                return j;
             }).ToArray();
 
     private static IEnumerable<TopTimeLine> GenTopTimeLines(IEnumerable<ScoreboardItem> items)

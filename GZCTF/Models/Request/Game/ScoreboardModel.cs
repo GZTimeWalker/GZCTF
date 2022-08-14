@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using CTFServer.Models.Request.Teams;
+using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Game;
 
@@ -90,6 +91,18 @@ public class ScoreboardItem
     /// 已解出的题目数量
     /// </summary>
     public int SolvedCount { get; set; }
+
+    /// <summary>
+    /// 队伍信息，用于生成 Excel
+    /// </summary>
+    [JsonIgnore]
+    public TeamInfoModel? Team { get; set; }
+
+    /// <summary>
+    /// 得分时间，用于生成 Excel 及排序
+    /// </summary>
+    [JsonIgnore]
+    public DateTimeOffset LastSubmissionTime { get; set; }
 
     /// <summary>
     /// 题目情况列表

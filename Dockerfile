@@ -11,7 +11,7 @@ RUN apt update && \
     apt install -y wget && \
     apt install -y gnupg2 && \
     wget -qO- https://deb.nodesource.com/setup_18.x | bash - && \
-    apt install -y build-essential nodejs
+    apt install -y build-essential nodejs libgdiplus libc6-dev
 
 COPY ["GZCTF", "/src/GZCTF/"]
 WORKDIR "/src/GZCTF"
@@ -24,5 +24,6 @@ RUN dotnet publish "CTFServer.csproj" -c Release -o /app/publish -r linux-x64 --
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 EXPOSE 80
+COPY --from=build /usr/lib/libgdiplus.so /usr/lib/gdiplus.dll
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "CTFServer.dll"]

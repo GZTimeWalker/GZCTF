@@ -361,6 +361,42 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
+    /// 下载比赛积分榜
+    /// </summary>
+    /// <remarks>
+    /// 下载比赛积分榜，需要Monitor权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功下载比赛积分榜</response>
+    /// <response code="400">操作无效</response>
+    /// <response code="404">比赛未找到</response>
+    [RequireMonitor]
+    [HttpGet("{id}/ScoreboardSheet")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ScoreboardSheet([FromRoute] int id, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到"));
+
+        if (DateTimeOffset.UtcNow < game.StartTimeUTC)
+            return BadRequest(new RequestResponse("比赛还未开始"));
+
+        var scoreboard = await gameRepository.GetScoreboard(game, token);
+
+        var stream = ExcelHelper.GetExcel(scoreboard, game);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return File(stream,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"{game.Title}_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
+    }
+
+    /// <summary>
     /// 获取比赛题目信息
     /// </summary>
     /// <remarks>

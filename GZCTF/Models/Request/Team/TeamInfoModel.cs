@@ -49,7 +49,9 @@ public class TeamInfoModel
                 Bio = m.Bio,
                 UserName = m.UserName,
                 Avatar = m.AvatarUrl,
-                Captain = m.Id == team.CaptainId
+                Captain = m.Id == team.CaptainId,
+                RealName = m.RealName,
+                StudentNumber = m.StdNumber
             }).ToList() : null
         };
 }

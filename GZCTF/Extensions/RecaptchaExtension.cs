@@ -23,7 +23,7 @@ public interface IRecaptchaExtension
 
 public class RecaptchaOptions
 {
-    public bool IsEnable { get; set; } = true;
+    public bool IsEnable { get; set; } = false;
     public string? Secretkey { get; set; }
     public string? SiteKey { get; set; }
     public string VerifyAPIAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
