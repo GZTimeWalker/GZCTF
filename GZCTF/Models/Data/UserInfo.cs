@@ -64,12 +64,12 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 创建的队伍
     /// </summary>
-    public Team? OwnTeam { get; set; }
+    public Team? OwnedTeam { get; set; }
 
     /// <summary>
     /// 创建的队伍Id
     /// </summary>
-    public int? OwnTeamId { get; set; } = null;
+    public int? OwnedTeamId { get; set; } = null;
 
     /// <summary>
     /// 当前激活队伍

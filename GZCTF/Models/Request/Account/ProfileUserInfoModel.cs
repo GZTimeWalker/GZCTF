@@ -71,7 +71,7 @@ public class ProfileUserInfoModel
             Phone = user.PhoneNumber,
             Avatar = user.AvatarUrl,
             ActiveTeamId = user.ActiveTeamId,
-            OwnTeamId = user.OwnTeamId,
+            OwnTeamId = user.OwnedTeamId,
             StdNumber = user.StdNumber,
             Role = user.Role
         };

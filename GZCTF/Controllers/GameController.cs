@@ -130,7 +130,7 @@ public class GameController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
-        if (user.OwnTeamId is null || user.OwnTeamId != user.ActiveTeamId)
+        if (user.OwnedTeamId is null || user.OwnedTeamId != user.ActiveTeamId)
             // (user.ActiveTeamId is null) is impossible
             return new JsonResult(new RequestResponse("您不是当前激活队伍的队长", 403))
             {

@@ -49,7 +49,6 @@ public class Team
     /// <summary>
     /// 队长用户ID
     /// </summary>
-    [Required]
     public string CaptainId { get; set; } = string.Empty;
 
     /// <summary>

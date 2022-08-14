@@ -97,7 +97,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        if (user.OwnTeamId is not null)
+        if (user.OwnedTeamId is not null)
             return BadRequest(new RequestResponse("不允许创建多个队伍"));
 
         if (model.Name is null)
@@ -108,8 +108,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍创建失败"));
 
-        user.OwnTeam = team;
-
+        user.OwnedTeam = team;
         user.ActiveTeam ??= team;
 
         await userManager.UpdateAsync(user);
@@ -142,7 +141,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        if (user.OwnTeamId != id)
+        if (user.OwnedTeamId != id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         var team = await teamRepository.GetTeamById(id, token);
@@ -215,7 +214,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        if (user.OwnTeamId != id)
+        if (user.OwnedTeamId != id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         var team = await teamRepository.GetTeamById(id, token);
@@ -248,7 +247,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        if (user.OwnTeamId != id)
+        if (user.OwnedTeamId != id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         var team = await teamRepository.GetTeamById(id, token);
@@ -286,7 +285,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        if (user.OwnTeamId != id)
+        if (user.OwnedTeamId != id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         var trans = await teamRepository.BeginTransactionAsync(token);

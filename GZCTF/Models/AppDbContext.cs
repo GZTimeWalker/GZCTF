@@ -47,13 +47,13 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.ActiveTeamId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            entity.HasOne(e => e.OwnTeam)
-                .WithOne(e => e.Captain)
-                .HasForeignKey<Team>(e => e.CaptainId)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.OwnedTeam)
+                .WithMany()
+                .HasForeignKey(e => e.OwnedTeamId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.ActiveTeam).AutoInclude();
-            entity.Navigation(e => e.OwnTeam).AutoInclude();
+            entity.Navigation(e => e.OwnedTeam).AutoInclude();
         });
 
         builder.Entity<Game>(entity =>
@@ -93,9 +93,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithMany(e => e.Teams);
 
             entity.HasOne(e => e.Captain)
-                .WithOne(e => e.OwnTeam)
-                .HasForeignKey<UserInfo>(u => u.OwnTeamId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .WithMany()
+                .HasForeignKey(e => e.CaptainId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<Participation>(entity =>

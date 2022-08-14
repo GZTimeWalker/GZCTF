@@ -1828,21 +1828,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ProfileUserInfoModel>(`/api/admin/users/${userid}`, data, options),
 
     /**
-     * @description 使用此接口删除用户，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDeleteUser
-     * @summary 删除用户
-     * @request DELETE:/api/admin/users/{userid}
-     */
-    adminDeleteUser: (userid: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/users/${userid}`,
-        method: 'DELETE',
-        ...params,
-      }),
-
-    /**
      * @description 使用此接口获取全部日志，需要Admin权限
      *
      * @tags Admin

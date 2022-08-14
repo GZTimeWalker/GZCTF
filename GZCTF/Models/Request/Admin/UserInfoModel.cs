@@ -94,8 +94,8 @@ public class UserInfoModel
             StdNumber = user.StdNumber,
             LastVisitedUTC = user.LastVisitedUTC,
             RegisterTimeUTC = user.RegisterTimeUTC,
-            OwnTeamId = user.OwnTeamId,
-            OwnTeamName = user.OwnTeam?.Name,
+            OwnTeamId = user.OwnedTeamId,
+            OwnTeamName = user.OwnedTeam?.Name,
             ActiveTeamId = user.ActiveTeamId,
             ActiveTeamName = user.ActiveTeam?.Name
         };

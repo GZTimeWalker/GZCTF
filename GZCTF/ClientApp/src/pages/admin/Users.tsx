@@ -11,17 +11,7 @@ import {
   ScrollArea,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
-import { useModals } from '@mantine/modals'
-import { showNotification } from '@mantine/notifications'
-import {
-  mdiArrowLeftBold,
-  mdiArrowRightBold,
-  mdiCheck,
-  mdiMagnify,
-  mdiClose,
-  mdiDeleteOutline,
-  mdiPencilOutline,
-} from '@mdi/js'
+import { mdiArrowLeftBold, mdiArrowRightBold, mdiMagnify, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
@@ -40,11 +30,6 @@ const Users: FC = () => {
   const [searching, setSearching] = useState(false)
 
   const { classes, theme } = useTableStyles()
-  const { data: currentUser } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
 
   useEffect(() => {
     api.admin
@@ -83,48 +68,6 @@ const Users: FC = () => {
       .finally(() => {
         setSearching(false)
       })
-  }
-
-  const modals = useModals()
-
-  const onConfirmDelete = (user: UserInfoModel) => {
-    api.admin
-      .adminDeleteUser(user.id!)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: '用户已删除',
-          icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
-        })
-        setUsers(users?.filter((t) => t.id !== user.id) ?? [])
-      })
-      .catch(showErrorNotification)
-  }
-
-  const onDeleteUser = (user: UserInfoModel) => {
-    if (!user) {
-      return
-    }
-
-    if (user.id === currentUser?.userId) {
-      showNotification({
-        color: 'orange',
-        message: '不可以删除自己',
-        icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
-      })
-      return
-    }
-
-    modals.openConfirmModal({
-      title: '删除用户',
-      children: <Text size="sm">你确定要删除用户 "{user.userName}" 吗？</Text>,
-      onConfirm: () => onConfirmDelete(user),
-      centered: true,
-      labels: { confirm: '删除用户', cancel: '取消' },
-      confirmProps: { color: 'red' },
-    })
   }
 
   return (
@@ -216,13 +159,6 @@ const Users: FC = () => {
                           }}
                         >
                           <Icon path={mdiPencilOutline} size={1} />
-                        </ActionIcon>
-                        <ActionIcon
-                          disabled={user.id === currentUser?.userId}
-                          onClick={() => onDeleteUser(user)}
-                          color="alert"
-                        >
-                          <Icon path={mdiDeleteOutline} size={1} />
                         </ActionIcon>
                       </Group>
                     </td>

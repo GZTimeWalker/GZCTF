@@ -57,5 +57,5 @@ public class RecaptchaExtension : IRecaptchaExtension
         return true;
     }
 
-    public string SiteKey() => options.SiteKey ?? "NOTOKEN";
+    public string SiteKey() => options.IsEnable ? options.SiteKey ?? "NOTOKEN" : "NOTOKEN";
 }

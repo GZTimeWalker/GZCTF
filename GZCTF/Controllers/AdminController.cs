@@ -171,35 +171,6 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
-    /// 删除用户
-    /// </summary>
-    /// <remarks>
-    /// 使用此接口删除用户，需要Admin权限
-    /// </remarks>
-    /// <response code="200">用户对象</response>
-    /// <response code="401">未授权用户</response>
-    /// <response code="403">禁止访问</response>
-    [HttpDelete("Users/{userid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteUser(string userid)
-    {
-        var user = await userManager.FindByIdAsync(userid);
-
-        if (user is null)
-            return NotFound(new RequestResponse("用户未找到", 404));
-
-        var self = await userManager.GetUserAsync(User);
-
-        if (self.Id == userid)
-            return BadRequest(new RequestResponse("不能删除自己"));
-
-        await userManager.DeleteAsync(user);
-
-        return Ok();
-    }
-
-    /// <summary>
     /// 获取全部日志
     /// </summary>
     /// <remarks>

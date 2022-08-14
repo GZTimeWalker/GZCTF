@@ -556,6 +556,8 @@ namespace CTFServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CaptainId");
+
                     b.ToTable("Teams");
                 });
 
@@ -613,7 +615,7 @@ namespace CTFServer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<int?>("OwnTeamId")
+                    b.Property<int?>("OwnedTeamId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PasswordHash")
@@ -662,8 +664,7 @@ namespace CTFServer.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("OwnTeamId")
-                        .IsUnique();
+                    b.HasIndex("OwnedTeamId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -999,6 +1000,17 @@ namespace CTFServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("CTFServer.Models.Team", b =>
+                {
+                    b.HasOne("CTFServer.Models.UserInfo", "Captain")
+                        .WithMany()
+                        .HasForeignKey("CaptainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Captain");
+                });
+
             modelBuilder.Entity("CTFServer.Models.UserInfo", b =>
                 {
                     b.HasOne("CTFServer.Models.Team", "ActiveTeam")
@@ -1006,14 +1018,14 @@ namespace CTFServer.Migrations
                         .HasForeignKey("ActiveTeamId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("CTFServer.Models.Team", "OwnTeam")
-                        .WithOne("Captain")
-                        .HasForeignKey("CTFServer.Models.UserInfo", "OwnTeamId")
+                    b.HasOne("CTFServer.Models.Team", "OwnedTeam")
+                        .WithMany()
+                        .HasForeignKey("OwnedTeamId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ActiveTeam");
 
-                    b.Navigation("OwnTeam");
+                    b.Navigation("OwnedTeam");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1118,8 +1130,6 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.Team", b =>
                 {
-                    b.Navigation("Captain");
-
                     b.Navigation("Participations");
                 });
 
