@@ -111,7 +111,7 @@ public static class ExcelHelper
             colIndex++;
         }
 
-        sheet.AddMergedRegion(CellRangeAddress.ValueOf($"A{colIndex - 1}:A{colIndex - 1 + teamMemberCount}"));
+        sheet.AddMergedRegion(new CellRangeAddress(0, 0, colIndex - 1, colIndex - 1 + teamMemberCount));
     }
 
     private static void WriteTeamContent(ISheet sheet, ScoreboardModel scoreboard)
