@@ -189,7 +189,13 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     },
                   }}
                 >
-                  <Tooltip label={captain?.userName} withArrow>
+                  <Tooltip label={captain?.userName} withArrow
+                  styles={{
+                    tooltip: {
+                      background: theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[0],
+                      color:theme.colorScheme === 'dark' ? theme.colors.gray[1] : theme.colors.gray[7]
+                    },
+                  }}>
                     <Avatar radius="xl" src={captain?.avatar} />
                   </Tooltip>
                   {members &&
