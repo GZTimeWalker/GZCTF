@@ -118,11 +118,11 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                           backgroundColor:
                             theme.colorScheme === 'dark'
                               ? theme.colors[theme.primaryColor][8] + '40'
-                              : theme.colors[theme.primaryColor][2],
+                              : theme.colors[theme.primaryColor][6],
                           color:
                             theme.colorScheme === 'dark'
                               ? theme.colors[theme.primaryColor][4]
-                              : theme.colors.gray[8],
+                              : theme.colors.white[0],
                         },
                       })}
                       position="left"
@@ -139,9 +139,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                             color:
                               theme.colorScheme === 'dark'
                                 ? theme.colors[theme.primaryColor][2]
-                                : theme.colors[theme.primaryColor][7],
+                                : theme.colors[theme.primaryColor][6],
                             backgroundColor:
-                              theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+                              theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[1],
                           },
                         })}
                       >
