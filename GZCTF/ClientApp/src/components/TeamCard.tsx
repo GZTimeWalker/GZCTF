@@ -9,7 +9,6 @@ import {
   Card,
   Stack,
   Box,
-  useMantineTheme,
   ActionIcon,
   Tooltip,
 } from '@mantine/core'
@@ -17,6 +16,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiLockOutline, mdiPower, mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { TeamInfoModel } from '@Api'
 
 interface TeamCardProps {
@@ -33,7 +33,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
   const captain = team.members?.filter((m) => m?.captain).at(0)
   const members = team.members?.filter((m) => !m?.captain)
 
-  const theme = useMantineTheme()
+  const { classes: tooltipClasses, theme } = useTooltipStyles()
   const [cardClickable, setCardClickable] = useState(true)
 
   const onActive = () => {
@@ -112,7 +112,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                   <Box>
                     <Tooltip
                       label={'激活'}
-                      styles={(theme) => ({
+                      sx={(theme) => ({
                         tooltip: {
                           margin: 4,
                           backgroundColor:
@@ -192,17 +192,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                   <Tooltip
                     label={captain?.userName}
                     withArrow
-                    styles={{
-                      tooltip: {
-                        background:
-                          theme.colorScheme === 'dark'
-                            ? theme.colors.gray[6]
-                            : theme.colors.gray[0],
-                        color:
-                          theme.colorScheme === 'dark'
-                            ? theme.colors.gray[1]
-                            : theme.colors.gray[7],
-                      },
+                    classNames={{
+                      tooltip: tooltipClasses.tooltip,
                     }}
                   >
                     <Avatar radius="xl" src={captain?.avatar} />
@@ -213,17 +204,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                         key={m.id}
                         label={m.userName}
                         withArrow
-                        styles={{
-                          tooltip: {
-                            background:
-                              theme.colorScheme === 'dark'
-                                ? theme.colors.gray[6]
-                                : theme.colors.gray[0],
-                            color:
-                              theme.colorScheme === 'dark'
-                                ? theme.colors.gray[1]
-                                : theme.colors.gray[7],
-                          },
+                        classNames={{
+                          tooltip: tooltipClasses.tooltip,
                         }}
                       >
                         <Avatar radius="xl" src={m.avatar} />
@@ -231,25 +213,10 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     ))}
                   {members && members.length > avatarLimit && (
                     <Tooltip
-                      label={
-                        <>
-                          {members.slice(avatarLimit).map((m) => (
-                            <Text>{m.userName}</Text>
-                          ))}
-                        </>
-                      }
+                      label={<Text>{members.slice(avatarLimit).join(',')}</Text>}
                       withArrow
-                      styles={{
-                        tooltip: {
-                          background:
-                            theme.colorScheme === 'dark'
-                              ? theme.colors.gray[6]
-                              : theme.colors.gray[0],
-                          color:
-                            theme.colorScheme === 'dark'
-                              ? theme.colors.gray[1]
-                              : theme.colors.gray[7],
-                        },
+                      classNames={{
+                        tooltip: tooltipClasses.tooltip,
                       }}
                     >
                       <Avatar radius="xl">+{members.length - avatarLimit}</Avatar>

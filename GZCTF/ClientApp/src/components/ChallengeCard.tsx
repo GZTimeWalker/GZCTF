@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import { FC } from 'react'
 import {
   Card,
-  useMantineTheme,
   Divider,
   Group,
   Tooltip,
@@ -14,6 +13,7 @@ import {
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import { BloodsTypes, ChallengeTagLabelMap } from '../utils/ChallengeItem'
 
@@ -54,9 +54,8 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { challenge, solved, onClick, iconMap, teamId } = props
 
   const tagData = ChallengeTagLabelMap.get(challenge.tag!)
-  const theme = useMantineTheme()
-  const { classes, cx } = useStyles(props)
-
+  const { classes, cx, theme } = useStyles(props)
+  const { classes: tooltipClasses } = useTooltipStyles()
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
 
   return (
@@ -105,10 +104,8 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                     key={idx}
                     position="bottom"
                     multiline
-                    styles={{
-                      tooltip: {
-                        background: theme.colorScheme === 'dark' ? '' : theme.colors.white[1],
-                      },
+                    classNames={{
+                      tooltip: tooltipClasses.tooltip,
                     }}
                     label={
                       <Stack spacing={0}>

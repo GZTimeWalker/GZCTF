@@ -15,7 +15,7 @@ import { mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutline } from 
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTableStyles } from '@Utils/ThemeOverride'
+import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { TeamInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -27,6 +27,7 @@ const Teams: FC = () => {
   const [searching, setSearching] = useState(false)
 
   const { classes, theme } = useTableStyles()
+  const { classes: tooltipClasses } = useTooltipStyles()
 
   useEffect(() => {
     api.admin
@@ -147,21 +148,19 @@ const Teams: FC = () => {
                           >
                             {members &&
                               members.slice(0, 8).map((m) => (
-                                <Tooltip key={m.id} label={m.userName} withArrow>
+                                <Tooltip
+                                  key={m.id}
+                                  label={m.userName}
+                                  withArrow
+                                  classNames={{
+                                    tooltip: tooltipClasses.tooltip,
+                                  }}
+                                >
                                   <Avatar radius="xl" src={m.avatar} />
                                 </Tooltip>
                               ))}
                             {members && members.length > 8 && (
-                              <Tooltip
-                                label={
-                                  <>
-                                    {members.slice(8).map((m) => (
-                                      <Text>{m.userName}</Text>
-                                    ))}
-                                  </>
-                                }
-                                withArrow
-                              >
+                              <Tooltip label={<Text>{members.slice(8).join(',')}</Text>} withArrow>
                                 <Avatar radius="xl">+{members.length - 8}</Avatar>
                               </Tooltip>
                             )}

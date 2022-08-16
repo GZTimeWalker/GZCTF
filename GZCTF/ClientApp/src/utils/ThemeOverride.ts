@@ -104,3 +104,11 @@ export const useTableStyles = createStyles((theme) => ({
     },
   },
 }))
+
+export const useTooltipStyles = createStyles((theme) => ({
+  tooltip: {
+    fontWeight: 500,
+    background: theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[2],
+    color: theme.colorScheme === 'dark' ? theme.colors.white[2] : theme.colors.gray[7],
+  },
+}))
