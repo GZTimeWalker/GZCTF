@@ -88,7 +88,8 @@ const Register: FC = () => {
           message: `${err.response.data.title}`,
           icon: <Icon path={mdiClose} size={1} />,
         })
-      }).finally(() => {
+      })
+      .finally(() => {
         setDisabled(false)
       })
   }

@@ -189,24 +189,43 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     },
                   }}
                 >
-                  <Tooltip label={captain?.userName} withArrow
+                  <Tooltip
+                    label={captain?.userName}
+                    withArrow
                     styles={{
                       tooltip: {
-                        background: theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[0],
-                        color: theme.colorScheme === 'dark' ? theme.colors.gray[1] : theme.colors.gray[7]
+                        background:
+                          theme.colorScheme === 'dark'
+                            ? theme.colors.gray[6]
+                            : theme.colors.gray[0],
+                        color:
+                          theme.colorScheme === 'dark'
+                            ? theme.colors.gray[1]
+                            : theme.colors.gray[7],
                       },
-                    }}>
+                    }}
+                  >
                     <Avatar radius="xl" src={captain?.avatar} />
                   </Tooltip>
                   {members &&
                     members.slice(0, avatarLimit).map((m) => (
-                      <Tooltip key={m.id} label={m.userName} withArrow
+                      <Tooltip
+                        key={m.id}
+                        label={m.userName}
+                        withArrow
                         styles={{
                           tooltip: {
-                            background: theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[0],
-                            color: theme.colorScheme === 'dark' ? theme.colors.gray[1] : theme.colors.gray[7]
+                            background:
+                              theme.colorScheme === 'dark'
+                                ? theme.colors.gray[6]
+                                : theme.colors.gray[0],
+                            color:
+                              theme.colorScheme === 'dark'
+                                ? theme.colors.gray[1]
+                                : theme.colors.gray[7],
                           },
-                        }}>
+                        }}
+                      >
                         <Avatar radius="xl" src={m.avatar} />
                       </Tooltip>
                     ))}
@@ -222,8 +241,14 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                       withArrow
                       styles={{
                         tooltip: {
-                          background: theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[0],
-                          color: theme.colorScheme === 'dark' ? theme.colors.gray[1] : theme.colors.gray[7]
+                          background:
+                            theme.colorScheme === 'dark'
+                              ? theme.colors.gray[6]
+                              : theme.colors.gray[0],
+                          color:
+                            theme.colorScheme === 'dark'
+                              ? theme.colors.gray[1]
+                              : theme.colors.gray[7],
                         },
                       }}
                     >
