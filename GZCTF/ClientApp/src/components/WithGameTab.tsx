@@ -129,7 +129,6 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
     const tab = getTab(location.pathname)
     if (!tab || tab < 0) return
     setActiveTab(tab)
-    console.log(tab)
   })
 
   useEffect(() => {

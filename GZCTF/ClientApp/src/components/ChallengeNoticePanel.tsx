@@ -40,6 +40,7 @@ const ChallengeNoticePanel: FC = () => {
         .withUrl(`/hub/user?game=${numId}`)
         .withHubProtocol(new signalR.JsonHubProtocol())
         .withAutomaticReconnect()
+        .configureLogging(signalR.LogLevel.None)
         .build()
 
       connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 2
@@ -54,7 +55,7 @@ const ChallengeNoticePanel: FC = () => {
       connection
         .start()
         .then(() => {
-          console.log('实时比赛通知已连接')
+          console.log('> 实时比赛通知已连接')
         })
         .catch((error) => {
           console.error(error)

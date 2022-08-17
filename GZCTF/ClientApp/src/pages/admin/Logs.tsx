@@ -56,6 +56,7 @@ const Logs: FC = () => {
       .withUrl('/hub/admin')
       .withHubProtocol(new signalR.JsonHubProtocol())
       .withAutomaticReconnect()
+      .configureLogging(signalR.LogLevel.None)
       .build()
 
     connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 24

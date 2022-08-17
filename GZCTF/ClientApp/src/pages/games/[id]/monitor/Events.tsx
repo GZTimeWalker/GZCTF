@@ -93,6 +93,7 @@ const Events: FC = () => {
         .withUrl(`/hub/monitor?game=${numId}`)
         .withHubProtocol(new signalR.JsonHubProtocol())
         .withAutomaticReconnect()
+        .configureLogging(signalR.LogLevel.None)
         .build()
 
       connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 2
