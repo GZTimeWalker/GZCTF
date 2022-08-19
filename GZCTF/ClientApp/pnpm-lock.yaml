@@ -33,7 +33,6 @@ specifiers:
   prettier: ~2.7.1
   react: ^18.2.0
   react-dom: ^18.2.0
-  react-dropzone: ^14.2.2
   react-router: ^6.3.0
   react-router-dom: ^6.3.0
   swagger-typescript-api: ^10.0.1
@@ -63,7 +62,6 @@ dependencies:
   marked: 4.0.18
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
-  react-dropzone: 14.2.2_react@18.2.0
   react-router: 6.3.0_react@18.2.0
   react-router-dom: 6.3.0_biqbaboplfbrettd7655fr4n2y
   swr: 1.3.0_react@18.2.0
@@ -2744,18 +2742,6 @@ packages:
 
   /react-dropzone/14.2.1_react@18.2.0:
     resolution: {integrity: sha512-jzX6wDtAjlfwZ+Fbg+G17EszWUkQVxhMTWMfAC9qSUq7II2pKglHA8aarbFKl0mLpRPDaNUcy+HD/Sf4gkf76Q==}
-    engines: {node: '>= 10.13'}
-    peerDependencies:
-      react: '>= 16.8 || 18.0.0'
-    dependencies:
-      attr-accept: 2.2.2
-      file-selector: 0.6.0
-      prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
-
-  /react-dropzone/14.2.2_react@18.2.0:
-    resolution: {integrity: sha512-5oyGN/B5rNhop2ggUnxztXBQ6q6zii+OMEftPzsxAR2hhpVWz0nAV+3Ktxo2h5bZzdcCKrpd8bfWAVsveIBM+w==}
     engines: {node: '>= 10.13'}
     peerDependencies:
       react: '>= 16.8 || 18.0.0'
