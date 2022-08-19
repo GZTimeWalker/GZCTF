@@ -246,3 +246,4 @@ _Pvt_Extensions
 **/log/**
 **/*.key
 **/*.db*
+**/.DS_Store
