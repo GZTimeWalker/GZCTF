@@ -1,12 +1,13 @@
 import React, { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Group, ScrollArea, SimpleGrid, Tabs, Text } from '@mantine/core'
-import { mdiPuzzle } from '@mdi/js'
+import { Center, Group, ScrollArea, SimpleGrid, Tabs, Text } from '@mantine/core'
+import { mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 import ChallengeCard from './ChallengeCard'
 import ChallengeDetailModal from './ChallengeDetailModal'
+import Empty from './Empty'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -26,7 +27,7 @@ const ChallengePanel: FC = () => {
   const [detailOpened, setDetailOpened] = useState(false)
   const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
 
-  return (
+  return allChallenges.length ? (
     <Group
       spacing="sm"
       noWrap
@@ -138,6 +139,16 @@ const ChallengePanel: FC = () => {
         />
       )}
     </Group>
+  ) : (
+    <Center sx={{ width: 'calc(100% - 20rem)' }}>
+      <Empty
+        bordered={true}
+        description="Ouch! 这个比赛还没有可用题目呢……"
+        fontSize="xl"
+        mdiPath={mdiFlagOutline}
+        iconSize={8}
+      />
+    </Center>
   )
 }
 

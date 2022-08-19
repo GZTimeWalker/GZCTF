@@ -7,6 +7,7 @@ import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { GameNotice, NoticeType } from '@Api'
 import { NoticTypeIconMap } from '../utils/ChallengeItem'
+import Empty from './Empty'
 
 const ChallengeNoticePanel: FC = () => {
   const { id } = useParams()
@@ -100,11 +101,15 @@ const ChallengeNoticePanel: FC = () => {
             },
           })}
         >
-          {noticesToShow.map((notice) => (
-            <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
-              {notice.content}
-            </List.Item>
-          ))}
+          {noticesToShow.length ? (
+            noticesToShow.map((notice) => (
+              <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
+                {notice.content}
+              </List.Item>
+            ))
+          ) : (
+            <Empty description="暂无通知" />
+          )}
         </List>
       </ScrollArea>
     </Card>
