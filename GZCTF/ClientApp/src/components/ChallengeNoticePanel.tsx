@@ -36,6 +36,10 @@ const ChallengeNoticePanel: FC = () => {
   }, [numId])
 
   useEffect(() => {
+    newNotices.current = []
+  }, [notices])
+
+  useEffect(() => {
     if (id) {
       const connection = new signalR.HubConnectionBuilder()
         .withUrl(`/hub/user?game=${numId}`)

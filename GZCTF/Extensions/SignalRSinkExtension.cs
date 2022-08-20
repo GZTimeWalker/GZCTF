@@ -32,16 +32,21 @@ public class SignalRSink : ILogEventSink
 
         if (logEvent.Level >= LogEventLevel.Information)
         {
-            hubContext.Clients.All.ReceivedLog(
-                new LogMessageModel
-                {
-                    Time = logEvent.Timestamp,
-                    Level = logEvent.Level.ToString(),
-                    UserName = logEvent.Properties["UserName"].ToString()[1..^1],
-                    IP = logEvent.Properties["IP"].ToString()[1..^1],
-                    Msg = logEvent.RenderMessage(),
-                    Status = logEvent.Properties["Status"].ToString()
-                }).Wait();
+            try
+            {
+                hubContext.Clients.All.ReceivedLog(
+                    new LogMessageModel
+                    {
+                        Time = logEvent.Timestamp,
+                        Level = logEvent.Level.ToString(),
+                        UserName = logEvent.Properties["UserName"].ToString()[1..^1],
+                        IP = logEvent.Properties["IP"].ToString()[1..^1],
+                        Msg = logEvent.RenderMessage(),
+                        Status = logEvent.Properties["Status"].ToString()
+                    }).Wait();
+            }
+            catch
+            { }
         }
     }
 }
