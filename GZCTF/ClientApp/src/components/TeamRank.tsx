@@ -10,6 +10,7 @@ import {
   PaperProps,
   createStyles,
   Progress,
+  Skeleton,
 } from '@mantine/core'
 import api from '@Api'
 
@@ -37,7 +38,9 @@ const TeamRank: FC<PaperProps> = (props) => {
           <Avatar color="cyan" size="md" radius="md" src={myteam?.avatar}>
             {myteam?.name?.at(0) ?? 'T'}
           </Avatar>
-          <Title order={4}>{myteam?.name}</Title>
+          <Skeleton width="8rem" visible={!myteam?.name}>
+            <Title order={4}>{myteam?.name ?? 'Loading'}</Title>
+          </Skeleton>
         </Group>
         <Group
           grow
@@ -46,15 +49,21 @@ const TeamRank: FC<PaperProps> = (props) => {
           }}
         >
           <Stack spacing={2}>
-            <Text className={classes.number}>{myteam?.rank}</Text>
+            <Skeleton visible={!myteam?.rank}>
+              <Text className={classes.number}>{myteam?.rank ?? 'Loading'}</Text>
+            </Skeleton>
             <Text size="sm">排名</Text>
           </Stack>
           <Stack spacing={2}>
-            <Text className={classes.number}>{myteam?.score}</Text>
+            <Skeleton visible={!myteam?.score}>
+              <Text className={classes.number}>{myteam?.score ?? 'Loading'}</Text>
+            </Skeleton>
             <Text size="sm">得分</Text>
           </Stack>
           <Stack spacing={2}>
-            <Text className={classes.number}>{myteam?.solvedCount}</Text>
+            <Skeleton visible={!myteam?.solvedCount}>
+              <Text className={classes.number}>{myteam?.solvedCount ?? 'Loading'}</Text>
+            </Skeleton>
             <Text size="sm">攻克数量</Text>
           </Stack>
         </Group>

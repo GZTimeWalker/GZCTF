@@ -1,7 +1,7 @@
 import * as signalR from '@microsoft/signalr'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Card, List, ScrollArea } from '@mantine/core'
+import { Card, List, ScrollArea, Stack } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -79,39 +79,41 @@ const ChallengeNoticePanel: FC = () => {
 
   return (
     <Card shadow="sm">
-      <ScrollArea
-        offsetScrollbars
-        scrollbarSize={4}
-        style={{ height: 'calc(100vh - 20rem)' }}
-        sx={{
-          scrollbar: {
-            '&:hover': {
-              backgroundColor: 'transparent',
+      {noticesToShow.length ? (
+        <ScrollArea
+          offsetScrollbars
+          scrollbarSize={4}
+          style={{ height: 'calc(100vh - 20rem)' }}
+          sx={{
+            scrollbar: {
+              '&:hover': {
+                backgroundColor: 'transparent',
+              },
             },
-          },
-        }}
-      >
-        <List
-          size="sm"
-          spacing={3}
-          styles={(theme) => ({
-            item: {
-              fontWeight: 500,
-              color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
-            },
-          })}
+          }}
         >
-          {noticesToShow.length ? (
-            noticesToShow.map((notice) => (
+          <List
+            size="sm"
+            spacing={3}
+            styles={(theme) => ({
+              item: {
+                fontWeight: 500,
+                color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
+              },
+            })}
+          >
+            {noticesToShow.map((notice) => (
               <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
                 {notice.content}
               </List.Item>
-            ))
-          ) : (
-            <Empty description="暂无通知" />
-          )}
-        </List>
-      </ScrollArea>
+            ))}
+          </List>
+        </ScrollArea>
+      ) : (
+        <Stack justify="center" style={{ height: 'calc(100vh - 20rem)' }}>
+          <Empty description="暂无通知" />
+        </Stack>
+      )}
     </Card>
   )
 }
