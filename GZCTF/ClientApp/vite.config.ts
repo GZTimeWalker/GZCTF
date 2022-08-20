@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
 import Pages from 'vite-plugin-pages'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import eslintPlugin from '@nabla/vite-plugin-eslint'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
@@ -36,6 +37,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
+      eslintPlugin(), // only for development
       Pages({
         dirs: [{ dir: 'src/pages', baseRoute: '' }],
       }),
