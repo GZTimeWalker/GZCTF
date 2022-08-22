@@ -72,7 +72,7 @@ const GameChallengeEdit: FC = () => {
   const onUpdate = (challenge: ChallengeUpdateModel) => {
     if (challenge) {
       setDisabled(true)
-      api.edit
+      return api.edit
         .editUpdateGameChallenge(numId, numCId, {
           ...challenge,
           isEnabled: undefined,
@@ -113,26 +113,35 @@ const GameChallengeEdit: FC = () => {
       })
   }
 
+  const onCreateTestContainer = () => {
+    api.edit
+      .editCreateTestContainer(numId, numCId)
+      .then((res) => {
+        showNotification({
+          color: 'teal',
+          message: '实例已创建',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        })
+        if (challenge) mutate({ ...challenge, testContainer: res.data })
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
   const onToggleTestContainer = () => {
     if (!challenge) return
 
     setDisabled(true)
     if (!challenge?.testContainer) {
-      api.edit
-        .editCreateTestContainer(numId, numCId)
-        .then((res) => {
-          showNotification({
-            color: 'teal',
-            message: '实例已创建',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
-          mutate({ ...challenge, testContainer: res.data })
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setDisabled(false)
-        })
+      if (
+        challenge.containerImage !== challengeInfo.containerImage ||
+        challenge.containerExposePort !== challengeInfo.containerExposePort
+      )
+        onUpdate(challengeInfo)?.then(onCreateTestContainer)
+      else onCreateTestContainer()
     } else {
       api.edit
         .editDestoryTestContainer(numId, numCId)
