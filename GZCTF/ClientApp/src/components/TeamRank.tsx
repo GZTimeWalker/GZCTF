@@ -49,19 +49,19 @@ const TeamRank: FC<PaperProps> = (props) => {
           }}
         >
           <Stack spacing={2}>
-            <Skeleton visible={!myteam?.rank}>
+            <Skeleton visible={!myteam}>
               <Text className={classes.number}>{myteam?.rank ?? 'Loading'}</Text>
             </Skeleton>
             <Text size="sm">排名</Text>
           </Stack>
           <Stack spacing={2}>
-            <Skeleton visible={!myteam?.score}>
+            <Skeleton visible={!myteam}>
               <Text className={classes.number}>{myteam?.score ?? 'Loading'}</Text>
             </Skeleton>
             <Text size="sm">得分</Text>
           </Stack>
           <Stack spacing={2}>
-            <Skeleton visible={!myteam?.solvedCount}>
+            <Skeleton visible={!myteam}>
               <Text className={classes.number}>{myteam?.solvedCount ?? 'Loading'}</Text>
             </Skeleton>
             <Text size="sm">攻克数量</Text>
