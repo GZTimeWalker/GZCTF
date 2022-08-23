@@ -10,8 +10,6 @@
 ![license](https://img.shields.io/github/license/GZTimeWalker/GZCTF?color=FF5531)
 [![Telegram Group](https://img.shields.io/endpoint?color=blue&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fgzctf)](https://telegram.dog/gzctf)
 
-
-
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 ## 特性
@@ -53,6 +51,8 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
 ```
 
 也可使用根目录下的 `docker-compose.yml` 文件进行配置。
+
+题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
 
 ### `appsettings.json` 配置
 
