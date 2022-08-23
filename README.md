@@ -5,7 +5,12 @@
 
 # GZ::CTF
 
-[![Build & Publish Image](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml/badge.svg)](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml)
+[![publish](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml/badge.svg)](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml)
+![version](https://img.shields.io/github/v/release/GZTimeWalker/GZCTF?include_prereleases&label=version)
+![license](https://img.shields.io/github/license/GZTimeWalker/GZCTF?color=FF5531)
+[![Telegram Group](https://img.shields.io/endpoint?color=blue&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fgzctf)](https://telegram.dog/gzctf)
+
+
 
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
@@ -105,6 +110,12 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
 ```sql
 update "AspNetUsers" set "Role"=3 where "UserName"='GZTime';
 ```
+
+## 贡献者
+
+<a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=GZTimeWalker/GZCTF" />
+</a>
 
 ## 关于 i18n
 

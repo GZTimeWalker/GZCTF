@@ -5,7 +5,7 @@ services:
     image: ghcr.io/gztimewalker/gzctf/gzctf:latest
     restart: always
     ports:
-      - "54433:80"
+      - "80:80"
     networks:
       default:
     volumes:
@@ -13,6 +13,7 @@ services:
       - "./appsettings.json:/app/appsettings.json:ro"
       - "./logs:/app/log"
       - "./data/keys:/root/.aspnet/DataProtection-Keys"
+      # - "./k8sconfig.yaml:/app/k8sconfig.yaml:ro"
       # - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
       - db
