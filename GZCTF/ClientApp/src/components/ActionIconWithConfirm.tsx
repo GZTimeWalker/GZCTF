@@ -27,11 +27,14 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown>
-        <Stack align="center">
-          <Text size="sm">{props.message}</Text>
-          <Group>
+        <Stack align="center" spacing={6}>
+          <Text size="sm" weight={500}>
+            {props.message}
+          </Text>
+          <Group style={{ width: '100%', justifyContent: 'space-evenly' }}>
             <Button
               size="xs"
+              py={2}
               color={props.color}
               disabled={props.disabled && !loading}
               loading={loading}
@@ -47,6 +50,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
             </Button>
             <Button
               size="xs"
+              py={2}
               variant="outline"
               disabled={props.disabled}
               onClick={() => setOpened(false)}

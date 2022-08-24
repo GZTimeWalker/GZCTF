@@ -115,8 +115,9 @@ const Users: FC = () => {
       const res = await api.admin.adminResetPassword(user.id!)
 
       modals.openModal({
-        title: '重置密码',
+        title: `为 ${user.userName} 重置密码`,
         centered: true,
+        withCloseButton: false,
         children: (
           <Stack>
             <Text>
@@ -126,7 +127,11 @@ const Users: FC = () => {
               </Text>
               。
             </Text>
-            <Text align="center" sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}>
+            <Text
+              weight={700}
+              align="center"
+              sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
+            >
               {res.data}
             </Text>
             <Button onClick={() => clipboard.copy(res.data)}>
@@ -231,8 +236,9 @@ const Users: FC = () => {
                       </Text>
                     </td>
                     <td>
-                      <Group>
+                      <Group noWrap spacing="sm">
                         <ActionIcon
+                          color="blue"
                           onClick={() => {
                             setActiveUser(user)
                             setIsEditModalOpen(true)
@@ -243,7 +249,7 @@ const Users: FC = () => {
                         <ActionIconWithConfirm
                           iconPath={mdiLockReset}
                           color="orange"
-                          message={`确定要重置“${user.userName}”的密码吗？`}
+                          message={`确定要重置 “${user.userName}” 的密码吗？`}
                           disabled={disabled}
                           onClick={() => onResetPassword(user)}
                         />
