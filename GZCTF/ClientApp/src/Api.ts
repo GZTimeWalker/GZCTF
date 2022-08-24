@@ -328,6 +328,9 @@ export interface UpdateUserInfoModel {
   /** 学工号 */
   stdNumber?: string | null
 
+  /** 用户是否通过邮箱验证（可登录） */
+  emailConfirmed?: boolean | null
+
   /** 用户角色 */
   role?: Role | null
 }
