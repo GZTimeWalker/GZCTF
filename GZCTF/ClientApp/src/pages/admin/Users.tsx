@@ -9,6 +9,7 @@ import {
   TextInput,
   Paper,
   ScrollArea,
+  Switch,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { mdiArrowLeftBold, mdiArrowRightBold, mdiMagnify, mdiPencilOutline } from '@mdi/js'
@@ -28,6 +29,7 @@ const Users: FC = () => {
   const [users, setUsers] = useState<UserInfoModel[]>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   const { classes, theme } = useTableStyles()
 
@@ -70,6 +72,31 @@ const Users: FC = () => {
       })
   }
 
+  const onToggleActive = (user: UserInfoModel) => {
+    setDisabled(true)
+    api.admin
+      .adminUpdateUserInfo(user.id!, {
+        emailConfirmed: !user.emailConfirmed,
+      })
+      .then(() => {
+        users &&
+          setUsers(
+            users.map((u) =>
+              u.id === user.id
+                ? {
+                    ...u,
+                    emailConfirmed: !u.emailConfirmed,
+                  }
+                : u
+            )
+          )
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
   return (
     <AdminPage
       isLoading={searching || !users}
@@ -105,6 +132,7 @@ const Users: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
+                <th>激活</th>
                 <th>用户</th>
                 <th>邮箱</th>
                 <th>用户 IP</th>
@@ -118,10 +146,17 @@ const Users: FC = () => {
                 users.map((user) => (
                   <tr key={user.id}>
                     <td>
+                      <Switch
+                        disabled={disabled}
+                        checked={user.emailConfirmed ?? false}
+                        onChange={() => onToggleActive(user)}
+                      />
+                    </td>
+                    <td>
                       <Group position="apart">
                         <Group position="left">
                           <Avatar src={user.avatar} radius="xl" />
-                          <Text>{user.userName}</Text>
+                          <Text weight={500}>{user.userName}</Text>
                         </Group>
                         <Badge size="sm" color={RoleColorMap.get(user.role ?? Role.User)}>
                           {user.role}
