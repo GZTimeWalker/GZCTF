@@ -241,6 +241,9 @@ export interface UserInfoModel {
   /** 用户角色 */
   role?: Role | null
 
+  /** 用户是否通过邮箱验证（可登录） */
+  emailConfirmed?: boolean | null
+
   /** 所拥有的队伍 */
   ownTeamName?: string | null
 

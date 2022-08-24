@@ -66,6 +66,11 @@ public class UserInfoModel
     public Role? Role { get; set; }
 
     /// <summary>
+    /// 用户是否通过邮箱验证（可登录）
+    /// </summary>
+    public bool? EmailConfirmed { get; set; }
+
+    /// <summary>
     /// 所拥有的队伍
     /// </summary>
     public string? OwnTeamName { get; set; }
@@ -94,6 +99,7 @@ public class UserInfoModel
             StdNumber = user.StdNumber,
             LastVisitedUTC = user.LastVisitedUTC,
             RegisterTimeUTC = user.RegisterTimeUTC,
+            EmailConfirmed = user.EmailConfirmed,
             OwnTeamId = user.OwnedTeamId,
             OwnTeamName = user.OwnedTeam?.Name,
             ActiveTeamId = user.ActiveTeamId,
