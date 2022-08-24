@@ -38,7 +38,7 @@ public class GameNotice
     [JsonIgnore]
     public Game? Game { get; set; }
 
-    public static GameNotice FromSubmission(Submission submission, SubmissionType type)
+    internal static GameNotice FromSubmission(Submission submission, SubmissionType type)
         => new()
         {
             Type = type switch

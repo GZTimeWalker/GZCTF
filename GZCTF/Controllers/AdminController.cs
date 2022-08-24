@@ -135,14 +135,7 @@ public class AdminController : ControllerBase
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
 
-        user.UserName = model.UserName ?? user.UserName;
-        user.Email = model.Email ?? user.Email;
-        user.Bio = model.Bio ?? user.Bio;
-        user.Role = model.Role ?? user.Role;
-        user.StdNumber = model.StdNumber ?? user.StdNumber;
-        user.RealName = model.RealName ?? user.RealName;
-        user.PhoneNumber = model.Phone ?? user.PhoneNumber;
-
+        user.UpdateUserInfo(model);
         await userManager.UpdateAsync(user);
 
         return Ok();

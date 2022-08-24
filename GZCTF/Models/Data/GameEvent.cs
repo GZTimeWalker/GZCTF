@@ -62,7 +62,7 @@ public class GameEvent
     [JsonIgnore]
     public Game? Game { get; set; }
 
-    public static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans)
+    internal static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans)
         => new()
         {
             TeamId = submission.TeamId,

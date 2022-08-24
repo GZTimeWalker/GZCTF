@@ -45,7 +45,7 @@ public class BasicGameInfoModel
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
-    public static BasicGameInfoModel FromGame(Models.Game game)
+    internal static BasicGameInfoModel FromGame(Models.Game game)
         => new()
         {
             Id = game.Id,

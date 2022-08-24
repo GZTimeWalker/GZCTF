@@ -27,7 +27,7 @@ public class ParticipationInfoModel
     /// </summary>
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 
-    public static ParticipationInfoModel FromParticipation(Participation part)
+    internal static ParticipationInfoModel FromParticipation(Participation part)
         => new()
         {
             Id = part.Id,

@@ -22,7 +22,7 @@ public class ContainerInfoModel
     /// </summary>
     public string Entry { get; set; } = string.Empty;
 
-    public static ContainerInfoModel FromContainer(Container container)
+    internal static ContainerInfoModel FromContainer(Container container)
         => new()
         {
             Status = container.Status,

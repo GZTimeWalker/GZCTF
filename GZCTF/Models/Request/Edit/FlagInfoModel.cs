@@ -22,7 +22,7 @@ public class FlagInfoModel
     /// </summary>
     public Attachment? Attachment { get; set; }
 
-    public static FlagInfoModel FromFlagContext(FlagContext context)
+    internal static FlagInfoModel FromFlagContext(FlagContext context)
         => new()
         {
             Id = context.Id,

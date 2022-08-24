@@ -79,7 +79,7 @@ public class UserInfoModel
 
     public int? ActiveTeamId { get; set; }
 
-    public static UserInfoModel FromUserInfo(UserInfo user)
+    internal static UserInfoModel FromUserInfo(UserInfo user)
         => new()
         {
             Id = user.Id,

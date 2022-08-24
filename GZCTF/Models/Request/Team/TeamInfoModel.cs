@@ -35,7 +35,7 @@ public class TeamInfoModel
     /// </summary>
     public List<TeamUserInfoModel>? Members { get; set; } = new();
 
-    public static TeamInfoModel FromTeam(Team team, bool includeMembers = true)
+    internal static TeamInfoModel FromTeam(Team team, bool includeMembers = true)
         => new()
         {
             Id = team.Id,

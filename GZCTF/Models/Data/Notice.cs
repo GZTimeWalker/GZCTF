@@ -35,7 +35,7 @@ public class Notice
     [JsonPropertyName("time")]
     public DateTimeOffset PublishTimeUTC { get; set; } = DateTimeOffset.UtcNow;
 
-    public void UpdateInfo(NoticeModel model)
+    internal void UpdateInfo(NoticeModel model)
     {
         Title = model.Title;
         Content = model.Content;

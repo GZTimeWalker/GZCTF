@@ -170,7 +170,7 @@ public class Challenge
 
     #endregion Db Relationship
 
-    public Challenge Update(ChallengeUpdateModel model)
+    internal Challenge Update(ChallengeUpdateModel model)
     {
         Title = model.Title ?? Title;
         Content = model.Content ?? Content;

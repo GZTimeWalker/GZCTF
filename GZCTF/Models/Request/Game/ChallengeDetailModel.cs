@@ -45,7 +45,7 @@ public class ChallengeDetailModel
     /// </summary>
     public ClientFlagContext Context { get; set; } = default!;
 
-    public static ChallengeDetailModel FromInstance(Instance instance)
+    internal static ChallengeDetailModel FromInstance(Instance instance)
         => new()
         {
             Id = instance.Challenge.Id,

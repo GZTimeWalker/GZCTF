@@ -78,7 +78,7 @@ public class Team
 
     public void UpdateInviteToken() => InviteToken = Guid.NewGuid().ToString("N");
 
-    public void UpdateInfo(TeamUpdateModel model)
+    internal void UpdateInfo(TeamUpdateModel model)
     {
         Name = model.Name ?? Name;
         Bio = model.Bio;

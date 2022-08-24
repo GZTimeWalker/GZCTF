@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CTFServer.Models.Request.Account;
+using CTFServer.Models.Request.Admin;
+using k8s.KubeConfigModels;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -106,4 +109,25 @@ public class UserInfo : IdentityUser
 
     [NotMapped]
     public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
+
+    internal void UpdateUserInfo(UpdateUserInfoModel model)
+    {
+        UserName = model.UserName ?? UserName;
+        Email = model.Email ?? Email;
+        Bio = model.Bio ?? Bio;
+        Role = model.Role ?? Role;
+        StdNumber = model.StdNumber ?? StdNumber;
+        RealName = model.RealName ?? RealName;
+        PhoneNumber = model.Phone ?? PhoneNumber;
+        EmailConfirmed = model.EmailConfirmed ?? EmailConfirmed;
+    }
+
+    internal void UpdateUserInfo(ProfileUpdateModel model)
+    {
+        UserName = model.UserName ?? UserName;
+        Bio = model.Bio ?? Bio;
+        PhoneNumber = model.Phone ?? PhoneNumber;
+        RealName = model.RealName ?? RealName;
+        StdNumber = model.StdNumber ?? StdNumber;
+    }
 }

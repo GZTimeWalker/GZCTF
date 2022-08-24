@@ -103,7 +103,7 @@ public class Game
     [NotMapped]
     public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
 
-    public Game Update(GameInfoModel model)
+    internal Game Update(GameInfoModel model)
     {
         Title = model.Title;
         Content = model.Content;

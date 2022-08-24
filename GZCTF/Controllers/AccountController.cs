@@ -288,19 +288,17 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
     {
+        if (model is null)
+           return BadRequest(new RequestResponse("数据不可为空"));
+
         var user = await userManager.GetUserAsync(User);
         var oname = user.UserName;
 
-        user.UserName = model.UserName ?? user.UserName;
-        user.Bio = model.Bio ?? user.Bio;
-        user.PhoneNumber = model.Phone ?? user.PhoneNumber;
-        user.RealName = model.RealName ?? user.RealName;
-        user.StdNumber = model.StdNumber ?? user.StdNumber;
-
+        user.UpdateUserInfo(model);
         var result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "Unknown"));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
 
         if (oname != user.UserName)
             logger.Log($"用户更新：{oname} => {model.UserName}", user, TaskStatus.Success);

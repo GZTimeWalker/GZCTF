@@ -45,6 +45,11 @@ public class UpdateUserInfoModel
     public string? StdNumber { get; set; }
 
     /// <summary>
+    /// 用户是否通过邮箱验证（可登录）
+    /// </summary>
+    public bool? EmailConfirmed { get; set; }
+
+    /// <summary>
     /// 用户角色
     /// </summary>
     public Role? Role { get; set; }

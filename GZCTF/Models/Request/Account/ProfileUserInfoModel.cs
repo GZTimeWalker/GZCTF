@@ -60,7 +60,7 @@ public class ProfileUserInfoModel
     /// </summary>
     public Role? Role { get; set; }
 
-    public static ProfileUserInfoModel FromUserInfo(UserInfo user)
+    internal static ProfileUserInfoModel FromUserInfo(UserInfo user)
         => new()
         {
             UserId = user.Id,

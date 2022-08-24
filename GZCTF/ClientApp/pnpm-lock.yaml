@@ -17,7 +17,7 @@ specifiers:
   '@nabla/vite-plugin-eslint': ^1.4.1
   '@trivago/prettier-plugin-sort-imports': ^3.3.0
   '@types/marked': ^4.0.6
-  '@types/node': 18.7.11
+  '@types/node': 18.7.13
   '@types/react': ^18.0.17
   '@types/react-dom': ^18.0.6
   '@typescript-eslint/eslint-plugin': ^5.34.0
@@ -73,7 +73,7 @@ devDependencies:
   '@nabla/vite-plugin-eslint': 1.4.1_eslint@8.22.0+vite@3.0.9
   '@trivago/prettier-plugin-sort-imports': 3.3.0_prettier@2.7.1
   '@types/marked': 4.0.6
-  '@types/node': 18.7.11
+  '@types/node': 18.7.13
   '@types/react': 18.0.17
   '@types/react-dom': 18.0.6
   '@typescript-eslint/eslint-plugin': 5.34.0_euudt5oqhhodkyae5tf6wjmsda
@@ -459,8 +459,8 @@ packages:
       stylis: 4.0.13
     dev: false
 
-  /@emotion/cache/11.10.2:
-    resolution: {integrity: sha512-GPR4PovENRvYDbCEnDRecPZYJzWdNMsM+Jn+13MC5uImVNbMyKwzv95DUHy5PDcgfPtKoDtfLU6emF1grrbQDg==}
+  /@emotion/cache/11.10.3:
+    resolution: {integrity: sha512-Psmp/7ovAa8appWh3g51goxu/z3iVms7JXOreq136D8Bbn6dYraPnmL6mdM8GThEx9vwSn92Fz+mGSjBzN8UPQ==}
     dependencies:
       '@emotion/memoize': 0.8.0
       '@emotion/sheet': 1.2.0
@@ -492,7 +492,7 @@ packages:
       '@babel/core': 7.18.13
       '@babel/runtime': 7.18.9
       '@emotion/babel-plugin': 11.10.2_@babel+core@7.18.13
-      '@emotion/cache': 11.10.2
+      '@emotion/cache': 11.10.3
       '@emotion/serialize': 1.1.0
       '@emotion/utils': 1.2.0
       '@emotion/weak-memoize': 0.3.0
@@ -983,8 +983,8 @@ packages:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: true
 
-  /@types/node/18.7.11:
-    resolution: {integrity: sha512-KZhFpSLlmK/sdocfSAjqPETTMd0ug6HIMIAwkwUpU79olnZdQtMxpQP+G1wDzCH7na+FltSIhbaZuKdwZ8RDrw==}
+  /@types/node/18.7.13:
+    resolution: {integrity: sha512-46yIhxSe5xEaJZXWdIBP7GU4HDTG8/eo0qd9atdiL+lFpA03y8KS+lkTN834TWJj5767GbWv4n/P6efyTFt1Dw==}
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -1285,7 +1285,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001382
-      electron-to-chromium: 1.4.227
+      electron-to-chromium: 1.4.228
       node-releases: 2.0.6
       update-browserslist-db: 1.0.5_browserslist@4.21.3
 
@@ -1494,8 +1494,8 @@ packages:
       zrender: 5.3.2
     dev: false
 
-  /electron-to-chromium/1.4.227:
-    resolution: {integrity: sha512-I9VVajA3oswIJOUFg2PSBqrHLF5Y+ahIfjOV9+v6uYyBqFZutmPxA6fxocDUUmgwYevRWFu1VjLyVG3w45qa/g==}
+  /electron-to-chromium/1.4.228:
+    resolution: {integrity: sha512-XfDHCvou7CsDMlFwb0WZ1tWmW48e7Sn7VBRyPfZsZZila9esRsJl1trO+OqDNV97GggFSt0ISbWslKXfQkG//g==}
 
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}

@@ -42,7 +42,7 @@ public class TeamWithDetailedUserInfo
     /// </summary>
     public ProfileUserInfoModel[]? Members { get; set; }
 
-    public static TeamWithDetailedUserInfo FromTeam(Team team)
+    internal static TeamWithDetailedUserInfo FromTeam(Team team)
         => new()
         {
             Id = team.Id,

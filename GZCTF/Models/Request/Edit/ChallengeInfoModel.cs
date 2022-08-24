@@ -49,7 +49,7 @@ public class ChallengeInfoModel
     /// </summary>
     public int OriginalScore { get; set; } = 500;
 
-    public static ChallengeInfoModel FromChallenge(Challenge challenge)
+    internal static ChallengeInfoModel FromChallenge(Challenge challenge)
         => new()
         {
             Id = challenge.Id,

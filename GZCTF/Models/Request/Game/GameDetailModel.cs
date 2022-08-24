@@ -67,7 +67,7 @@ public class GameDetailModel
         return this;
     }
 
-    public static GameDetailModel FromGame(Models.Game game, int count)
+    internal static GameDetailModel FromGame(Models.Game game, int count)
         => new()
         {
             Id = game.Id,
