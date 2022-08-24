@@ -9,7 +9,31 @@ import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { usePageTitle } from '@Utils/PageTitle'
 import { useReCaptcha } from '@Utils/Recaptcha'
-import api from '@Api'
+import api, { RegisterStatus } from '@Api'
+
+const RegisterStatusMap = new Map([
+  [
+    RegisterStatus.LoggedIn,
+    {
+      message: '注册成功',
+    },
+  ],
+  [
+    RegisterStatus.EmailConfirmationRequired,
+    {
+      title: '注册请求已发送',
+      message: '请等待管理员审核激活~',
+    },
+  ],
+  [
+    RegisterStatus.EmailConfirmationRequired,
+    {
+      title: '一封注册邮件已发送',
+      message: '请检查你的邮箱及垃圾邮件~',
+    },
+  ],
+  [undefined, undefined],
+])
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -69,16 +93,21 @@ const Register: FC = () => {
         email: email,
         gToken: token,
       })
-      .then(() => {
-        updateNotification({
-          id: 'register-status',
-          color: 'teal',
-          title: '一封注册邮件已发送',
-          message: '请检查你的邮箱及垃圾邮件~',
-          icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
-        })
-        navigate('/account/login')
+      .then((res) => {
+        const data = RegisterStatusMap.get(res.data.data)
+        if (data) {
+          updateNotification({
+            id: 'register-status',
+            color: 'teal',
+            title: data.title,
+            message: data.message,
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+
+          if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
+          else navigate('/account/login')
+        }
       })
       .catch((err) => {
         updateNotification({

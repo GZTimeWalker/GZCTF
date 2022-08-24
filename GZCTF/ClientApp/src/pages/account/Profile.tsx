@@ -108,14 +108,18 @@ const Profile: FC = () => {
         .accountChangeEmail({
           newMail: email,
         })
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            title: '验证邮件已发送',
-            message: '请检查你的邮箱及垃圾邮件~',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
+        .then((res) => {
+          if (res.data.data) {
+            showNotification({
+              color: 'teal',
+              title: '验证邮件已发送',
+              message: '请检查你的邮箱及垃圾邮件~',
+              icon: <Icon path={mdiCheck} size={1} />,
+              disallowClose: true,
+            })
+          } else {
+            mutate({ ...data, email: email })
+          }
           setMailEditOpened(false)
         })
         .catch(showErrorNotification)

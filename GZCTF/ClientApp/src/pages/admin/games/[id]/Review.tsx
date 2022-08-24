@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Accordion,
-  ActionIcon,
   Avatar,
   Badge,
   Box,
@@ -11,9 +10,7 @@ import {
   createStyles,
   Group,
   Indicator,
-  MantineColor,
   Paper,
-  Popover,
   ScrollArea,
   Select,
   Stack,
@@ -35,6 +32,7 @@ import {
   mdiPhoneOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
@@ -96,64 +94,6 @@ const useStyles = createStyles((theme) => ({
     ...theme.fn.hover({ background: 'transparent' }),
   },
 }))
-
-interface ActionIconWithConfirmProps {
-  iconPath: string
-  color?: MantineColor
-  message: string
-  disabled?: boolean
-  onClick: () => Promise<void>
-}
-
-const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
-  const [opened, setOpened] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  return (
-    <Popover shadow="md" width="max-content" position="top" opened={opened} onChange={setOpened}>
-      <Popover.Target>
-        <ActionIcon
-          color={props.color}
-          onClick={() => setOpened(true)}
-          disabled={props.disabled && !loading}
-          loading={loading}
-        >
-          <Icon path={props.iconPath} size={1} />
-        </ActionIcon>
-      </Popover.Target>
-      <Popover.Dropdown>
-        <Stack align="center">
-          <Text size="sm">{props.message}</Text>
-          <Group>
-            <Button
-              size="xs"
-              color={props.color}
-              disabled={props.disabled && !loading}
-              loading={loading}
-              onClick={() => {
-                setLoading(true)
-                props.onClick().finally(() => {
-                  setLoading(false)
-                  setOpened(false)
-                })
-              }}
-            >
-              确定
-            </Button>
-            <Button
-              size="xs"
-              variant="outline"
-              disabled={props.disabled}
-              onClick={() => setOpened(false)}
-            >
-              取消
-            </Button>
-          </Group>
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
-  )
-}
 
 interface MemberItemProps {
   user: ProfileUserInfoModel

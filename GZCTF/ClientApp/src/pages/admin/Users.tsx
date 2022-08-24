@@ -10,10 +10,20 @@ import {
   Paper,
   ScrollArea,
   Switch,
+  Stack,
+  Button,
 } from '@mantine/core'
-import { useInputState } from '@mantine/hooks'
-import { mdiArrowLeftBold, mdiArrowRightBold, mdiMagnify, mdiPencilOutline } from '@mdi/js'
+import { useClipboard, useInputState } from '@mantine/hooks'
+import { useModals } from '@mantine/modals'
+import {
+  mdiArrowLeftBold,
+  mdiArrowRightBold,
+  mdiLockReset,
+  mdiMagnify,
+  mdiPencilOutline,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
@@ -31,6 +41,8 @@ const Users: FC = () => {
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
 
+  const modals = useModals()
+  const clipboard = useClipboard()
   const { classes, theme } = useTableStyles()
 
   useEffect(() => {
@@ -95,6 +107,39 @@ const Users: FC = () => {
       .finally(() => {
         setDisabled(false)
       })
+  }
+
+  const onResetPassword = async (user: UserInfoModel) => {
+    setDisabled(true)
+    try {
+      const res = await api.admin.adminResetPassword(user.id!)
+
+      modals.openModal({
+        title: '重置密码',
+        centered: true,
+        children: (
+          <Stack>
+            <Text>
+              用户密码已重置，
+              <Text span weight={700}>
+                此密码只会显示一次
+              </Text>
+              。
+            </Text>
+            <Text align="center" sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}>
+              {res.data}
+            </Text>
+            <Button onClick={() => clipboard.copy(res.data)}>
+              {clipboard.copied ? '已复制' : '复制到剪贴板'}
+            </Button>
+          </Stack>
+        ),
+      })
+    } catch (err: any) {
+      showErrorNotification(err)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (
@@ -195,6 +240,13 @@ const Users: FC = () => {
                         >
                           <Icon path={mdiPencilOutline} size={1} />
                         </ActionIcon>
+                        <ActionIconWithConfirm
+                          iconPath={mdiLockReset}
+                          color="orange"
+                          message={`确定要重置“${user.userName}”的密码吗？`}
+                          disabled={disabled}
+                          onClick={() => onResetPassword(user)}
+                        />
                       </Group>
                     </td>
                   </tr>
