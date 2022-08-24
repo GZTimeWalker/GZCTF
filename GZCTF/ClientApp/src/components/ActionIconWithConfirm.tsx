@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { MantineColor, Popover, ActionIcon, Stack, Group, Button, Text } from '@mantine/core'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 
 export interface ActionIconWithConfirmProps {
   iconPath: string
