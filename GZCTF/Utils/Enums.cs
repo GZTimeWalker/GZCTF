@@ -30,6 +30,28 @@ public enum Role : byte
 }
 
 /// <summary>
+/// 登录响应状态
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum RegisterStatus : byte
+{
+    /// <summary>
+    /// 注册成功已经登录
+    /// </summary>
+    LoggedIn = 0,
+
+    /// <summary>
+    /// 等待管理员确认
+    /// </summary>
+    AdminConfirmationRequired = 1,
+
+    /// <summary>
+    /// 等待邮箱确认
+    /// </summary>
+    EmailConfirmationRequired = 2
+}
+
+/// <summary>
 /// 任务执行状态
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]

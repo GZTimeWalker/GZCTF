@@ -142,6 +142,33 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
+    /// 重置用户密码
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口重置用户密码，需要Admin权限
+    /// </remarks>
+    /// <response code="200">成功获取</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">用户未找到</response>
+    [HttpDelete("Users/{userid}/Password")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ResetPassword(string userid, CancellationToken token = default)
+    {
+        var user = await userManager.FindByIdAsync(userid);
+
+        if (user is null)
+            return NotFound(new RequestResponse("用户未找到", 404));
+
+        var pwd = Codec.RandomPassword(16);
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
+        await userManager.ResetPasswordAsync(user, code, pwd);
+
+        return Ok(pwd);
+    }
+
+    /// <summary>
     /// 获取用户信息
     /// </summary>
     /// <remarks>

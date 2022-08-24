@@ -23,16 +23,15 @@ public interface IRecaptchaExtension
 
 public class RecaptchaOptions
 {
-    public bool IsEnable { get; set; } = false;
     public string? Secretkey { get; set; }
     public string? SiteKey { get; set; }
     public string VerifyAPIAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
-    public float? RecaptchaThreshold { get; set; } = 0.5f;
+    public float RecaptchaThreshold { get; set; } = 0.5f;
 }
 
 public class RecaptchaExtension : IRecaptchaExtension
 {
-    private readonly RecaptchaOptions options;
+    private readonly RecaptchaOptions? options;
     private readonly HttpClient httpClient;
 
     public RecaptchaExtension(IOptions<RecaptchaOptions> options)
@@ -43,7 +42,7 @@ public class RecaptchaExtension : IRecaptchaExtension
 
     public async Task<bool> VerifyAsync(string token, string ip)
     {
-        if (!options.IsEnable)
+        if (options is null)
             return true;
 
         if (string.IsNullOrEmpty(token))
@@ -57,5 +56,5 @@ public class RecaptchaExtension : IRecaptchaExtension
         return true;
     }
 
-    public string SiteKey() => options.IsEnable ? options.SiteKey ?? "NOTOKEN" : "NOTOKEN";
+    public string SiteKey() => options?.SiteKey ?? "NOTOKEN";
 }

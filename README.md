@@ -73,34 +73,39 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
   },
   "Logging": {
     "LogLevel": {
-      "Default": "Trace",
+      "Default": "Information",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
+  "AccountPolicy": {
+    "ActiveOnRegister": false,
+    "UseGoogleRecaptcha": true,
+    "EmailConfirmationRequired": true
+  },
   "EmailConfig": {
-    "SendMailAddress": "",
+    "SendMailAddress": "a@a.com",
     "UserName": "",
     "Password": "",
     "Smtp": {
-      "Host": "",
+      "Host": "localhost",
       "Port": 587,
       "EnableSsl": true
     }
   },
-  "ContainerProvider": "Docker",
+  "ContainerProvider": "Docker", // or K8s
   "DockerConfig": {
     "Uri": "",
-    "PublicIP": "127.0.0.1"
+    "PublicIP": ""
   },
   "GoogleRecaptcha": {
-    "IsEnable": false,
     "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
     "Sitekey": "",
     "Secretkey": "",
     "RecaptchaThreshold": "0.5"
   }
 }
+
 ```
 
 ## 初始管理员

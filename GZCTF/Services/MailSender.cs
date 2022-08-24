@@ -10,32 +10,36 @@ namespace CTFServer.Services;
 
 public class SmtpOptions
 {
-    public string Host { get; set; } = default!;
-    public ushort Port { get; set; } = default;
+    public string? Host { get; set; } = default!;
+    public ushort? Port { get; set; } = default;
 }
 
 public class EmailOptions
 {
-    public string UserName { get; set; } = default!;
-    public string Password { get; set; } = default!;
-    public string SendMailAddress { get; set; } = default!;
-    public SmtpOptions Smtp { get; set; } = default!;
+    public string? UserName { get; set; } = default!;
+    public string? Password { get; set; } = default!;
+    public string? SendMailAddress { get; set; } = default!;
+    public SmtpOptions? Smtp { get; set; } = default!;
 }
 
 public class MailSender : IMailSender
 {
-    private readonly EmailOptions options;
+    private readonly EmailOptions? options;
     private readonly ILogger<MailSender> logger;
-    private readonly SmtpClient smtp;
+    private readonly SmtpClient? smtp;
 
     public MailSender(IOptions<EmailOptions> options, ILogger<MailSender> logger)
     {
         this.options = options.Value;
         this.logger = logger;
+
+        if (this.options?.Smtp?.Host is null || this.options?.Smtp?.Port is null)
+            return;
+
         smtp = new()
         {
             Host = this.options.Smtp.Host,
-            Port = this.options.Smtp.Port,
+            Port = (int)this.options.Smtp.Port,
             EnableSsl = true,
             UseDefaultCredentials = false,
             Credentials = new NetworkCredential(this.options.UserName, this.options.Password)
@@ -44,6 +48,9 @@ public class MailSender : IMailSender
 
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
     {
+        if (smtp is null || options?.SendMailAddress is null)
+            return true;
+
         var msg = new MailMessage
         {
             From = new MailAddress(options.SendMailAddress),
@@ -81,6 +88,7 @@ public class MailSender : IMailSender
             logger.SystemLog("无效的邮件发送调用！", TaskStatus.Fail);
             return;
         }
+
         string _namespace = MethodBase.GetCurrentMethod()!.DeclaringType!.Namespace!;
         Assembly _assembly = Assembly.GetExecutingAssembly();
         string resourceName = $"{_namespace}.Assets.URLEmailTemplate.html";
@@ -99,23 +107,32 @@ public class MailSender : IMailSender
             logger.SystemLog("邮件发送失败！", TaskStatus.Fail);
     }
 
-    public void SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)
-        => SendUrl("验证你的注册邮箱",
+    private bool SendUrlIfPossible(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
+    {
+        if (smtp is null || options?.SendMailAddress is null)
+            return false;
+
+        SendUrl(title, infomation, btnmsg, userName, email, url);
+        return true;
+    }
+
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)
+        => SendUrlIfPossible("验证你的注册邮箱",
             "需要验证你的邮箱：" + email,
             "确认邮箱", userName, email, confirmLink);
 
-    public void SendResetPwdUrl(string? userName, string? email, string? resetLink)
-        => SendUrl("重置密码",
+    public bool SendResetPwdUrl(string? userName, string? email, string? resetLink)
+        => SendUrlIfPossible("重置密码",
             "点击下方按钮重置你的密码。",
             "重置密码", userName, email, resetLink);
 
-    public void SendChangeEmailUrl(string? userName, string? email, string? resetLink)
-        => SendUrl("更改邮箱",
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink)
+        => SendUrlIfPossible("更改邮箱",
             "点击下方按钮更改你的邮箱。",
             "更改邮箱", userName, email, resetLink);
 
-    public void SendResetPasswordUrl(string? userName, string? email, string? resetLink)
-        => SendUrl("重置密码",
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink)
+        => SendUrlIfPossible("重置密码",
             "点击下方按钮重置你的密码。",
             "重置密码", userName, email, resetLink);
 }

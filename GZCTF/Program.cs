@@ -1,5 +1,6 @@
 global using CTFServer.Models;
 using AspNetCoreRateLimit;
+using CTFServer.Controllers;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
@@ -165,6 +166,8 @@ else
     builder.Services.AddSingleton<IContainerService, DockerService>()
         .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
 }
+
+builder.Services.Configure<AccountPolicy>(options => builder.Configuration.GetSection("AccountPolicy").Bind(options));
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();

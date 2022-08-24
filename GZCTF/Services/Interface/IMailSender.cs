@@ -28,7 +28,7 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">用户新注册的Email</param>
     /// <param name="confirmLink">确认链接</param>
-    public void SendConfirmEmailUrl(string? userName, string? email, string? confirmLink);
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink);
 
     /// <summary>
     /// 发送密码重置邮件
@@ -36,7 +36,7 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">用户的电子邮件</param>
     /// <param name="resetLink">重置链接</param>
-    public void SendResetPwdUrl(string? userName, string? email, string? resetLink);
+    public bool SendResetPwdUrl(string? userName, string? email, string? resetLink);
 
     /// <summary>
     /// 发送邮箱重置邮件
@@ -44,7 +44,7 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">用户的电子邮件</param>
     /// <param name="resetLink">重置链接</param>
-    public void SendChangeEmailUrl(string? userName, string? email, string? resetLink);
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink);
 
     /// <summary>
     /// 发送密码重置邮件
@@ -52,5 +52,5 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">用户的电子邮件</param>
     /// <param name="resetLink">重置链接</param>
-    public void SendResetPasswordUrl(string? userName, string? email, string? resetLink);
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink);
 }

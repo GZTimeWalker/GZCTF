@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CTFServer.Utils;
 
@@ -39,6 +40,27 @@ public class Codec
                 return string.Empty;
             }
         }
+    }
+
+    /// <summary>
+    /// 生成随机密码
+    /// </summary>
+    /// <param name="length">密码长度</param>
+    /// <returns></returns>
+    public static string RandomPassword(int length)
+    {
+        var random = new Random();
+        const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
+
+        string pwd;
+        do
+        {
+            pwd = new string(Enumerable.Repeat(chars, length < 8 ? 8 : length)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        while (!Regex.IsMatch(pwd, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+]).{8,}$"));
+
+        return pwd;
     }
 
     /// <summary>
