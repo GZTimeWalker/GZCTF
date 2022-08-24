@@ -15,6 +15,32 @@ import useSWR, { mutate, MutatorOptions, SWRConfiguration } from 'swr'
 /**
  * 请求响应
  */
+export interface RequestResponseOfRegisterStatus {
+  /** 响应信息 */
+  title?: string
+
+  /** 数据 */
+  data?: RegisterStatus
+
+  /**
+   * 状态码
+   * @format int32
+   */
+  status?: number
+}
+
+/**
+ * 登录响应状态
+ */
+export enum RegisterStatus {
+  LoggedIn = 'LoggedIn',
+  AdminConfirmationRequired = 'AdminConfirmationRequired',
+  EmailConfirmationRequired = 'EmailConfirmationRequired',
+}
+
+/**
+ * 请求响应
+ */
 export interface RequestResponse {
   /** 响应信息 */
   title?: string
@@ -128,6 +154,23 @@ export interface PasswordChangeModel {
 
   /** 新密码 */
   new: string
+}
+
+/**
+ * 请求响应
+ */
+export interface RequestResponseOfBoolean {
+  /** 响应信息 */
+  title?: string
+
+  /** 数据 */
+  data?: boolean
+
+  /**
+   * 状态码
+   * @format int32
+   */
+  status?: number
 }
 
 /**
@@ -1442,11 +1485,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/account/register
      */
     accountRegister: (data: RegisterModel, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
+      this.request<RequestResponseOfRegisterStatus, RequestResponse>({
         path: `/api/account/register`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
+        format: 'json',
         ...params,
       }),
 
@@ -1577,11 +1621,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/account/changeemail
      */
     accountChangeEmail: (data: MailChangeModel, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
+      this.request<RequestResponseOfBoolean, RequestResponse>({
         path: `/api/account/changeemail`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,
+        format: 'json',
         ...params,
       }),
 
@@ -1832,6 +1877,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>,
       options?: MutatorOptions
     ) => mutate<ProfileUserInfoModel>(`/api/admin/users/${userid}`, data, options),
+
+    /**
+     * @description 使用此接口重置用户密码，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminResetPassword
+     * @summary 重置用户密码
+     * @request DELETE:/api/admin/users/{userid}/password
+     */
+    adminResetPassword: (userid: string, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/admin/users/${userid}/password`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
