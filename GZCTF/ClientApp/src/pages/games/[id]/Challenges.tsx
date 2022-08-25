@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Group, Stack } from '@mantine/core'
-import ChallengeNoticePanel from '@Components/ChallengeNoticePanel'
+import GameNoticePanel from '@Components/GameNoticePanel'
 import ChallengePanel from '@Components/ChallengePanel'
 import TeamRank from '@Components/TeamRank'
 import WithGameTab from '@Components/WithGameTab'
@@ -26,7 +26,7 @@ const Challenges: FC = () => {
             <ChallengePanel />
             <Stack style={{ maxWidth: '20rem' }}>
               <TeamRank />
-              <ChallengeNoticePanel />
+              <GameNoticePanel />
             </Stack>
           </Group>
         </WithGameTab>
