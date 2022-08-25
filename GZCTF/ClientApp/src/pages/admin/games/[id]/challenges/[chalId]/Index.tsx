@@ -19,11 +19,11 @@ import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
-  mdiBackburger,
   mdiCheck,
   mdiContentSaveOutline,
   mdiDatabaseEditOutline,
   mdiDeleteOutline,
+  mdiKeyboardBackspace,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import ScoreFunc from '@Components/admin/ScoreFunc'
@@ -168,7 +168,7 @@ const GameChallengeEdit: FC = () => {
       head={
         <>
           <Button
-            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate(`/admin/games/${id}/challenges`)}
           >
             返回上级

@@ -19,7 +19,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiBackburger, mdiCheck, mdiPuzzleEditOutline } from '@mdi/js'
+import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
 import AttachmentUploadModal, { useUploadStyles } from '@Components/admin/AttachmentUploadModal'
@@ -410,7 +410,7 @@ const GameChallengeEdit: FC = () => {
       head={
         <>
           <Button
-            leftIcon={<Icon path={mdiBackburger} size={1} />}
+            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate(`/admin/games/${id}/challenges`)}
           >
             返回上级

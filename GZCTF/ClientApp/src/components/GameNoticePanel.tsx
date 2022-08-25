@@ -85,22 +85,20 @@ const GameNoticePanel: FC = () => {
         console.log(message)
         newNotices.current = [message, ...newNotices.current]
 
-        if (message.type === NoticeType.NewChallenge || message.type === NoticeType.NewHint)
-        {
+        if (message.type === NoticeType.NewChallenge || message.type === NoticeType.NewHint) {
           showNotification({
             color: 'yellow',
             message: message.content,
-            autoClose: 60000
+            autoClose: 60000,
           })
           api.game.mutateGameChallenges(numId)
         }
 
-        if(message.type === NoticeType.Normal)
-        {
+        if (message.type === NoticeType.Normal) {
           showNotification({
             color: 'brand',
             message: message.content,
-            autoClose: 60000
+            autoClose: 60000,
           })
         }
 
