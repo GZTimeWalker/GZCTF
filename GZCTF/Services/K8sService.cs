@@ -67,7 +67,7 @@ public class K8sService : IContainerService
                     {
                         Name = name,
                         Image = config.Image,
-                        Env = new[]
+                        Env = config.Flag is null ? new List<V1EnvVar>() : new[]
                         {
                             new V1EnvVar("GZCTF_FLAG", config.Flag)
                         },
