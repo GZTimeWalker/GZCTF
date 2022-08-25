@@ -9,9 +9,12 @@ import {
   SimpleGrid,
   Skeleton,
   Stack,
+  Switch,
   Tabs,
   Text,
+  Title,
 } from '@mantine/core'
+import { useLocalStorage } from '@mantine/hooks'
 import { mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
@@ -28,11 +31,18 @@ const ChallengePanel: FC = () => {
   const { data: myteam } = api.game.useGameMyTeam(numId)
 
   const tags = Object.keys(challenges ?? {})
-  const [activeTab, setActiveTab] = React.useState<ChallengeTag | 'All'>('All')
+  const [activeTab, setActiveTab] = useState<ChallengeTag | 'All'>('All')
+  const [hideSolved, setHideSolved] = useLocalStorage({
+    key: 'hideSolved',
+    defaultValue: false,
+  })
 
   const allChallenges = Object.values(challenges ?? {}).flat()
   const currentChallenges =
-    challenges && activeTab !== 'All' ? challenges[activeTab] ?? [] : allChallenges
+    challenges &&
+    (activeTab !== 'All' ? challenges[activeTab] ?? [] : allChallenges).filter(
+      (challenge) => !hideSolved || !challenge.solved
+    )
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
   const [detailOpened, setDetailOpened] = useState(false)
@@ -126,48 +136,59 @@ const ChallengePanel: FC = () => {
       align="flex-start"
       style={{ width: 'calc(100% - 20rem)' }}
     >
-      <Tabs
-        orientation="vertical"
-        variant="pills"
-        value={activeTab}
-        onTabChange={(value) => setActiveTab(value as ChallengeTag)}
-        styles={{
-          tabsList: {
-            minWidth: '10rem',
-          },
-          tab: {
-            fontWeight: 700,
-          },
-          tabLabel: {
-            width: '100%',
-          },
-        }}
-      >
-        <Tabs.List>
-          <Tabs.Tab value={'All'} icon={<Icon path={mdiPuzzle} size={1} />}>
-            <Group position="apart">
-              <Text>All</Text>
-              <Text>{allChallenges.length}</Text>
-            </Group>
-          </Tabs.Tab>
-          {tags.map((tab) => {
-            const data = ChallengeTagLabelMap.get(tab as ChallengeTag)!
-            return (
-              <Tabs.Tab
-                key={tab}
-                value={tab}
-                icon={<Icon path={data?.icon} size={1} />}
-                color={data?.color}
-              >
-                <Group position="apart">
-                  <Text>{data?.label}</Text>
-                  <Text>{challenges && challenges[tab].length}</Text>
-                </Group>
-              </Tabs.Tab>
-            )
-          })}
-        </Tabs.List>
-      </Tabs>
+      <Stack style={{ minWidth: '10rem' }}>
+        <Switch
+          checked={hideSolved}
+          onChange={(e) => setHideSolved(e.target.checked)}
+          label={
+            <Text size="md" weight={700}>
+              隐藏已解出
+            </Text>
+          }
+        />
+        <Tabs
+          orientation="vertical"
+          variant="pills"
+          value={activeTab}
+          onTabChange={(value) => setActiveTab(value as ChallengeTag)}
+          styles={{
+            tabsList: {
+              minWidth: '10rem',
+            },
+            tab: {
+              fontWeight: 700,
+            },
+            tabLabel: {
+              width: '100%',
+            },
+          }}
+        >
+          <Tabs.List>
+            <Tabs.Tab value={'All'} icon={<Icon path={mdiPuzzle} size={1} />}>
+              <Group position="apart">
+                <Text>All</Text>
+                <Text>{allChallenges.length}</Text>
+              </Group>
+            </Tabs.Tab>
+            {tags.map((tab) => {
+              const data = ChallengeTagLabelMap.get(tab as ChallengeTag)!
+              return (
+                <Tabs.Tab
+                  key={tab}
+                  value={tab}
+                  icon={<Icon path={data?.icon} size={1} />}
+                  color={data?.color}
+                >
+                  <Group position="apart">
+                    <Text>{data?.label}</Text>
+                    <Text>{challenges && challenges[tab].length}</Text>
+                  </Group>
+                </Tabs.Tab>
+              )
+            })}
+          </Tabs.List>
+        </Tabs>
+      </Stack>
       <ScrollArea
         style={{
           width: 'calc(100% - 9rem)',
@@ -177,38 +198,46 @@ const ChallengePanel: FC = () => {
         offsetScrollbars
         scrollbarSize={4}
       >
-        <SimpleGrid
-          cols={3}
-          spacing="sm"
-          p="xs"
-          style={{ paddingTop: 0 }}
-          breakpoints={[
-            { maxWidth: 2900, cols: 6 },
-            { maxWidth: 2500, cols: 5 },
-            { maxWidth: 2100, cols: 4 },
-            { maxWidth: 1700, cols: 3 },
-            { maxWidth: 1300, cols: 2 },
-            { maxWidth: 900, cols: 1 },
-          ]}
-        >
-          {currentChallenges.map((chal) => (
-            <ChallengeCard
-              key={chal.id}
-              challenge={chal}
-              iconMap={iconMap}
-              colorMap={colorMap}
-              onClick={() => {
-                setChallenge(chal)
-                setDetailOpened(true)
-              }}
-              solved={
-                myteam &&
-                myteam.challenges?.find((c) => c.id === chal.id)?.type !== SubmissionType.Unaccepted
-              }
-              teamId={myteam?.id}
-            />
-          ))}
-        </SimpleGrid>
+        {currentChallenges && currentChallenges.length ? (
+          <SimpleGrid
+            cols={3}
+            spacing="sm"
+            p="xs"
+            style={{ paddingTop: 0 }}
+            breakpoints={[
+              { maxWidth: 2900, cols: 6 },
+              { maxWidth: 2500, cols: 5 },
+              { maxWidth: 2100, cols: 4 },
+              { maxWidth: 1700, cols: 3 },
+              { maxWidth: 1300, cols: 2 },
+              { maxWidth: 900, cols: 1 },
+            ]}
+          >
+            {currentChallenges?.map((chal) => (
+              <ChallengeCard
+                key={chal.id}
+                challenge={chal}
+                iconMap={iconMap}
+                colorMap={colorMap}
+                onClick={() => {
+                  setChallenge(chal)
+                  setDetailOpened(true)
+                }}
+                solved={
+                  myteam &&
+                  myteam.challenges?.find((c) => c.id === chal.id)?.type !==
+                    SubmissionType.Unaccepted
+                }
+                teamId={myteam?.id}
+              />
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Stack spacing={0} pt="20vh" style={{ width: '20em', margin: 'auto' }}>
+            <Title order={2}>题目都被解出啦！</Title>
+            <Text>或许还有更难的挑战在等着你……</Text>
+          </Stack>
+        )}
       </ScrollArea>
       {challenge?.id && (
         <ChallengeDetailModal
