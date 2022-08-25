@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import React, { FC, useState } from 'react'
 import { Button, ScrollArea, Stack, Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
@@ -98,9 +99,8 @@ const Notices: FC = () => {
         >
           {notices &&
             notices
-              .sort((x, y) =>
-                (x.isPinned && !y.isPinned) || new Date(x.time) > new Date(y.time) ? -1 : 1
-              )
+              .sort((x, y) => (dayjs(x.time) < dayjs(y.time) ? -1 : 1))
+              .sort((x, y) => (x.isPinned && y.isPinned ? 0 : x.isPinned ? -1 : 1))
               .map((notice) => (
                 <NoticeEditCard
                   key={notice.id}
