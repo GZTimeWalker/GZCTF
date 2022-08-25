@@ -70,10 +70,13 @@ public class GameRepository : RepositoryBase, IGameRepository
     private Task<Data[]> FetchData(Game game, CancellationToken token = default)
         => context.Instances
             .Include(i => i.Challenge)
-            .Where(i => i.Challenge.Game == game && i.Challenge.IsEnabled && i.Participation.Status == ParticipationStatus.Accepted)
+            .Where(i => i.Challenge.Game == game
+                && i.Challenge.IsEnabled
+                && i.Participation.Status == ParticipationStatus.Accepted)
             .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
-                context.Submissions.Where(s => s.Status == AnswerResult.Accepted),
+                context.Submissions.Where(s => s.Status == AnswerResult.Accepted
+                    && s.SubmitTimeUTC < game.EndTimeUTC),
                 i => new { i.ChallengeId, i.ParticipationId },
                 s => new { s.ChallengeId, s.ParticipationId },
                 (i, s) => new { Instance = i, Submissions = s }
