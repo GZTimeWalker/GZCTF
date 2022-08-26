@@ -30,11 +30,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Config>(entity =>
-        {
-            entity.HasKey(e => e.Key);
-        });
-
         builder.Entity<UserInfo>(entity =>
         {
             entity.Property(e => e.Role)
