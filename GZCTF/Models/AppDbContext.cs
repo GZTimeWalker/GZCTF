@@ -24,10 +24,16 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<FlagContext> FlagContexts { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
     public DbSet<Attachment> Attachments { get; set; } = default!;
+    public DbSet<Config> Configs { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Config>(entity =>
+        {
+            entity.HasKey(e => e.Key);
+        });
 
         builder.Entity<UserInfo>(entity =>
         {

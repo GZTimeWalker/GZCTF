@@ -32,21 +32,6 @@ if (!Directory.Exists(uploadPath))
 
 #endregion Directory
 
-#region Configuration
-
-builder.Host.ConfigureAppConfiguration((host, config) =>
-{
-    config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
-});
-
-#endregion Configuration
-
-#region SignalR
-
-builder.Services.AddSignalR().AddJsonProtocol();
-
-#endregion SignalR
-
 #region Logging
 
 builder.Logging.ClearProviders();
@@ -80,6 +65,28 @@ else
 }
 
 #endregion AppDbContext
+
+#region Configuration
+
+builder.Host.ConfigureAppConfiguration((host, config) =>
+{
+    config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
+    config.AddEntityConfiguration(options =>
+    {
+        if (builder.Configuration.GetSection("ConnectionStrings").Exists())
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+        else
+            options.UseInMemoryDatabase("TestDb");
+    });
+});
+
+#endregion Configuration
+
+#region SignalR
+
+builder.Services.AddSignalR().AddJsonProtocol();
+
+#endregion SignalR
 
 #region OpenApiDocument
 
@@ -138,10 +145,8 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #region IP Rate Limit
 
-//从appsettings.json获取相应配置
 builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
 
-//注入计数器和规则存储
 builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
 builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
 builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
@@ -152,10 +157,10 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 #region Services and Repositories
 
 builder.Services.AddTransient<IMailSender, MailSender>()
-    .Configure<EmailOptions>(options => builder.Configuration.GetSection("EmailConfig").Bind(options));
+    .Configure<EmailOptions>(builder.Configuration.GetSection("EmailConfig"));
 
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
-    .Configure<RecaptchaOptions>(options => builder.Configuration.GetSection("GoogleRecaptcha").Bind(options));
+    .Configure<RecaptchaOptions>(builder.Configuration.GetSection("GoogleRecaptcha"));
 
 if (builder.Configuration.GetSection("ContainerProvider").Value == "K8s")
 {
@@ -164,10 +169,10 @@ if (builder.Configuration.GetSection("ContainerProvider").Value == "K8s")
 else
 {
     builder.Services.AddSingleton<IContainerService, DockerService>()
-        .Configure<DockerOptions>(options => builder.Configuration.GetSection("DockerConfig").Bind(options));
+        .Configure<DockerOptions>(builder.Configuration.GetSection("DockerConfig"));
 }
 
-builder.Services.Configure<AccountPolicy>(options => builder.Configuration.GetSection("AccountPolicy").Bind(options));
+builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection("AccountPolicy"));
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
@@ -299,7 +304,7 @@ var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    logger.SystemLog("服务器初始化");
+    logger.SystemLog("服务器初始化", CTFServer.TaskStatus.Pending, LogLevel.Debug);
     await app.RunAsync();
 }
 catch (Exception exception)
@@ -309,6 +314,6 @@ catch (Exception exception)
 }
 finally
 {
-    logger.SystemLog("服务器已退出", CTFServer.TaskStatus.Exit);
+    logger.SystemLog("服务器已退出", CTFServer.TaskStatus.Exit, LogLevel.Debug);
     Log.CloseAndFlush();
 }
