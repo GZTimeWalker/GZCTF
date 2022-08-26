@@ -32,6 +32,11 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
 
         var context = new AppDbContext(builder.Options);
 
+        if (context.Database.IsRelational())
+            await context.Database.MigrateAsync();
+
+        await context.Database.EnsureCreatedAsync();
+
         if (context is null || !context.Configs.Any())
         {
             Data = DefaultConfigs;
@@ -44,7 +49,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
             return;
         }
 
-        Data = await context.Configs.ToDictionaryAsync(c => c.Key, c => c.Value, StringComparer.OrdinalIgnoreCase);
+        Data = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value, StringComparer.OrdinalIgnoreCase);
     }
 
     public override async void Set(string key, string value)
@@ -58,7 +63,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
         if (context is null)
             return;
 
-        var config = await context.Configs.FirstOrDefaultAsync(c => c.Key == key, token);
+        var config = await context.Configs.FirstOrDefaultAsync(c => c.ConfigKey == key, token);
         if (config is null)
             return;
 

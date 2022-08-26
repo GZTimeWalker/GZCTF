@@ -175,14 +175,14 @@ namespace CTFServer.Migrations
 
             modelBuilder.Entity("CTFServer.Models.Data.Config", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("ConfigKey")
                         .HasColumnType("text");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Key");
+                    b.HasKey("ConfigKey");
 
                     b.ToTable("Configs");
                 });

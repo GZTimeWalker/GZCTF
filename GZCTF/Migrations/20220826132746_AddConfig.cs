@@ -12,12 +12,12 @@ namespace CTFServer.Migrations
                 name: "Configs",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "text", nullable: false),
+                    ConfigKey = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Configs", x => x.Key);
+                    table.PrimaryKey("PK_Configs", x => x.ConfigKey);
                 });
         }
 
