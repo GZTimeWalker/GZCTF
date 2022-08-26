@@ -47,7 +47,9 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 应用已编译打包成 Docker 镜像，可通过以下方式获取：
 
 ```bash
-docker pull ghcr.io/gztimewalker/gzctf/gzctf:develop
+docker pull gztime/gzctf:latest
+# or
+docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 ```
 
 也可使用根目录下的 `docker-compose.yml` 文件进行配置。

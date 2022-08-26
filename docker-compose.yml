@@ -2,7 +2,7 @@ version: '3.0'
 services:
   gzctf:
     container_name: GZCTF
-    image: ghcr.io/gztimewalker/gzctf/gzctf:latest
+    image: gztime/gzctf:latest
     restart: always
     ports:
       - "80:80"
