@@ -1,8 +1,7 @@
-name: Image for arm64
+name: Build & Publish Image
 
 on:
   push:
-    branches: [ "develop", "ci-test*" ]
     tags: [ "v*" ]
   workflow_dispatch:
 
@@ -58,7 +57,7 @@ jobs:
         with:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
