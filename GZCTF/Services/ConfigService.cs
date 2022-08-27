@@ -1,27 +1,22 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.Reflection;
+﻿using System.ComponentModel;
 using CTFServer.Models.Data;
-using IdentityModel.OidcClient;
+using CTFServer.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using NPOI.SS.Formula.Functions;
+using YamlDotNet.Core.Tokens;
 
 namespace CTFServer.Services;
 
-public class ConfigService : IHostedService
+public class ConfigService : IConfigService
 {
-    private readonly ILogger<ConfigService> logger;
-    private readonly IServiceScopeFactory serviceScopeFactory;
-    private HashSet<Config> Data = new();
+    private readonly IConfigurationRoot? configuration;
+    private readonly AppDbContext context;
 
-    public ConfigService(IServiceScopeFactory provider, ILogger<ConfigService> _logger)
+    public ConfigService(AppDbContext _context,
+            IConfiguration _configuration)
     {
-        serviceScopeFactory = provider;
-        logger = _logger;
+        context = _context;
+        configuration = _configuration as IConfigurationRoot;
     }
 
     private static void GetConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
@@ -44,6 +39,16 @@ public class ConfigService : IHostedService
         }
     }
 
+    public static HashSet<Config> GetConfigs(Type type, object? value)
+    {
+        HashSet<Config> configs = new();
+
+        foreach (var item in type.GetProperties())
+            GetConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
+
+        return configs;
+    }
+
     public static HashSet<Config> GetConfigs<T>(T config) where T : class
     {
         HashSet<Config> configs = new();
@@ -55,20 +60,31 @@ public class ConfigService : IHostedService
         return configs;
     }
 
-    public void SaveConfig<T>(T config) where T : class
+    public Task SaveConfig(Type type, object? value, CancellationToken token = default)
+        => SaveConfigInternal(GetConfigs(type, value), token);
+
+    public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class
+        => SaveConfigInternal(GetConfigs(config), token);
+
+    private async Task SaveConfigInternal(HashSet<Config> configs, CancellationToken token = default)
     {
+        var dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
+        foreach (var conf in configs)
+        {
+            if (dbConfigs.TryGetValue(conf.ConfigKey, out var dbConf))
+            {
+                if (dbConf.Value != conf.Value)
+                    dbConf.Value = conf.Value;
+            }
+            else
+            {
+                await context.Configs.AddAsync(conf, token);
+            }
+        }
+
+        await context.SaveChangesAsync(token);
+        configuration?.Reload();
     }
-
-    public async Task StartAsync(CancellationToken cancellationToken)
-    {
-        await using var scope = serviceScopeFactory.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        var configs = await context.Configs.AsNoTracking().ToListAsync(cancellationToken);
-        Data = configs.ToHashSet();
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     private static bool IsArrayLikeInterface(Type type)
     {

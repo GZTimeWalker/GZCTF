@@ -13,17 +13,14 @@ namespace CTFServer.Controllers;
 [ApiController]
 public class InfoController : ControllerBase
 {
-    private readonly ILogger<InfoController> logger;
-    private readonly IOptions<AccountPolicy> accountPolicy;
+    private readonly IOptionsSnapshot<AccountPolicy> accountPolicy;
     private readonly INoticeRepository noticeRepository;
     private readonly IRecaptchaExtension recaptchaExtension;
 
     public InfoController(INoticeRepository _noticeRepository,
         IRecaptchaExtension _recaptchaExtension,
-        IOptions<AccountPolicy> _accountPolicy,
-        ILogger<InfoController> _logger)
+        IOptionsSnapshot<AccountPolicy> _accountPolicy)
     {
-        logger = _logger;
         accountPolicy = _accountPolicy;
         noticeRepository = _noticeRepository;
         recaptchaExtension = _recaptchaExtension;

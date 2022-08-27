@@ -4,6 +4,7 @@ using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
+using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,24 +28,24 @@ public class AdminController : ControllerBase
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileService;
-    private readonly IConfiguration configuration;
+    private readonly IConfigService configService;
     private readonly ITeamRepository teamRepository;
     private readonly IGameRepository gameRepository;
-    private readonly IServiceScopeFactory serviceProvider;
+    private readonly IServiceProvider serviceProvider;
     private readonly IParticipationRepository participationRepository;
 
     public AdminController(UserManager<UserInfo> _userManager,
         IFileRepository _FileService,
         ILogRepository _logRepository,
-        IConfiguration _configuration,
+        IConfigService _configService,
         ITeamRepository _teamRepository,
         IGameRepository _gameRepository,
-        IServiceScopeFactory _serviceProvider,
+        IServiceProvider _serviceProvider,
         IParticipationRepository _participationRepository)
     {
         userManager = _userManager;
         fileService = _FileService;
-        configuration = _configuration;
+        configService = _configService;
         logRepository = _logRepository;
         teamRepository = _teamRepository;
         gameRepository = _gameRepository;
@@ -53,25 +54,45 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
+    /// 获取配置
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口获取全局设置，需要Admin权限
+    /// </remarks>
+    /// <response code="200">全局配置</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpGet("Config")]
+    [ProducesResponseType(typeof(GlobalConfig), StatusCodes.Status200OK)]
+    public IActionResult GetConfigs()
+    {
+        GlobalConfig config = new()
+        {
+            AccoutPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value
+        };
+
+        return Ok(config);
+    }
+
+    /// <summary>
     /// 更改配置
     /// </summary>
     /// <remarks>
     /// 使用此接口更改全局设置，需要Admin权限
     /// </remarks>
-    /// <response code="200">用户列表</response>
+    /// <response code="200">更新成功</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpPut("Config")]
-    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateConfigs(/*[FromBody] GlobalConfig model*/)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateConfigs([FromBody] GlobalConfig model, CancellationToken token)
     {
-        await using var scope = serviceProvider.CreateAsyncScope();
-
-        var accountPolicy = scope.ServiceProvider.GetRequiredService<IOptions<AccountPolicy>>();
-
-        Console.WriteLine($"Active={accountPolicy.Value.ActiveOnRegister}");
-        accountPolicy.Value.ActiveOnRegister = false;
-        Console.WriteLine($"Active={accountPolicy.Value.ActiveOnRegister}");
+        foreach(var prop in typeof(GlobalConfig).GetProperties())
+        {
+            var value = prop.GetValue(model);
+            if (value is not null)
+                await configService.SaveConfig(prop.PropertyType, value, token);
+        }
 
         return Ok();
     }

@@ -187,6 +187,7 @@ builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IConfigService, ConfigService>();
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddHostedService<FlagChecker>();

@@ -22,9 +22,7 @@ public class ConfigServiceTest
         Assert.True(configs.Count > 0);
 
         foreach (var config in configs)
-        {
             output.WriteLine($"{config.ConfigKey,-32}={config.Value}");
-        }
     }
 }
 
