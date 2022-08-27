@@ -14,9 +14,6 @@ RUN apt update && \
     apt install -y build-essential nodejs libgdiplus libc6-dev
 
 COPY ["GZCTF", "/src/GZCTF/"]
-WORKDIR "/src/GZCTF/ClientApp"
-RUN npm install --verbose
-
 WORKDIR "/src/GZCTF"
 RUN dotnet restore "CTFServer.csproj"
 RUN dotnet build "CTFServer.csproj" -c Release -o /app/build --no-restore
