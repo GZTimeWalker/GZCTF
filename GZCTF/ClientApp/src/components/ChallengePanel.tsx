@@ -33,7 +33,7 @@ const ChallengePanel: FC = () => {
   const tags = Object.keys(challenges ?? {})
   const [activeTab, setActiveTab] = useState<ChallengeTag | 'All'>('All')
   const [hideSolved, setHideSolved] = useLocalStorage({
-    key: 'hideSolved',
+    key: 'hide-solved',
     defaultValue: false,
   })
 

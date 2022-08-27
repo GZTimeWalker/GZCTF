@@ -26,6 +26,7 @@ import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/j
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
+import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -334,7 +335,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             minHeight: '220px',
           }}
           maxSize={3 * 1024 * 1024}
-          accept={['image/png', 'image/gif', 'image/jpeg']}
+          accept={ACCEPT_IMAGE_MIME_TYPE}
         >
           <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
             {avatarFile ? (

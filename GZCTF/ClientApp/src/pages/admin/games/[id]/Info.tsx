@@ -23,6 +23,7 @@ import { Icon } from '@mdi/react'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { GameInfoModel } from '@Api'
+import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 
 const GameInfoEdit: FC = () => {
   const { id } = useParams()
@@ -246,7 +247,7 @@ const GameInfoEdit: FC = () => {
                 })
               }}
               maxSize={3 * 1024 * 1024}
-              accept={['image/png', 'image/gif', 'image/jpeg']}
+              accept={ACCEPT_IMAGE_MIME_TYPE}
               disabled={disabled}
               styles={{
                 root: {

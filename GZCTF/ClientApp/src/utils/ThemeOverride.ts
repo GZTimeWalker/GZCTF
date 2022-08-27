@@ -112,3 +112,5 @@ export const useTooltipStyles = createStyles((theme) => ({
     color: theme.colorScheme === 'dark' ? theme.colors.white[2] : theme.colors.gray[7],
   },
 }))
+
+export declare const ACCEPT_IMAGE_MIME_TYPE: ("image/png" | "image/gif" | "image/jpeg" | "image/webp")[];

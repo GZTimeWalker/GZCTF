@@ -25,6 +25,7 @@ import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/PageTitle'
 import api, { ProfileUpdateModel } from '@Api'
+import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -306,7 +307,7 @@ const Profile: FC = () => {
                 minHeight: '220px',
               }}
               maxSize={3 * 1024 * 1024}
-              accept={['image/png', 'image/gif', 'image/jpeg']}
+              accept={ACCEPT_IMAGE_MIME_TYPE}
             >
               <Group
                 position="center"
