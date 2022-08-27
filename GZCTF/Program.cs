@@ -4,6 +4,7 @@ using CTFServer.Controllers;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
+using CTFServer.Models.Internal;
 using CTFServer.Repositories;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services;
@@ -172,7 +173,7 @@ else
         .Configure<DockerOptions>(builder.Configuration.GetSection("DockerConfig"));
 }
 
-builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection("AccountPolicy"));
+builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameof(AccountPolicy)));
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
@@ -207,7 +208,7 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     options.InvalidModelStateResponseFactory = context =>
     {
         var errmsg = context.ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage;
-        return new JsonResult(new RequestResponse(errmsg ?? "验证失败，请检查输入"))
+        return new JsonResult(new RequestResponse(errmsg ?? "验证失败，请检查输入。"))
         {
             StatusCode = 400
         };
@@ -233,7 +234,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
         {
             PublishTimeUTC = DateTimeOffset.UtcNow,
             Title = "Welcome to GZ::CTF!",
-            Content = "一个开源的CTF比赛平台"
+            Content = "一个开源的CTF比赛平台。"
         });
 
         await context.SaveChangesAsync();

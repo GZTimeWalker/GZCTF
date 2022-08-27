@@ -1,4 +1,5 @@
 ﻿using CTFServer.Extensions;
+using CTFServer.Models.Internal;
 using CTFServer.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -13,7 +14,7 @@ namespace CTFServer.Controllers;
 public class InfoController : ControllerBase
 {
     private readonly ILogger<InfoController> logger;
-    private readonly AccountPolicy accountPolicy;
+    private readonly IOptions<AccountPolicy> accountPolicy;
     private readonly INoticeRepository noticeRepository;
     private readonly IRecaptchaExtension recaptchaExtension;
 
@@ -23,7 +24,7 @@ public class InfoController : ControllerBase
         ILogger<InfoController> _logger)
     {
         logger = _logger;
-        accountPolicy = _accountPolicy.Value ?? new();
+        accountPolicy = _accountPolicy;
         noticeRepository = _noticeRepository;
         recaptchaExtension = _recaptchaExtension;
     }
@@ -51,5 +52,5 @@ public class InfoController : ControllerBase
     [HttpGet("SiteKey")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public IActionResult GetRecaptchaSiteKey()
-        => Ok(accountPolicy.UseGoogleRecaptcha ? recaptchaExtension.SiteKey() : "NOTOKEN");
+        => Ok(accountPolicy.Value.UseGoogleRecaptcha ? recaptchaExtension.SiteKey() : "NOTOKEN");
 }

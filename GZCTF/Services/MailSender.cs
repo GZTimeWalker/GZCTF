@@ -1,4 +1,5 @@
-﻿using CTFServer.Services.Interface;
+﻿using CTFServer.Models.Internal;
+using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.Extensions.Options;
 using System.Net;
@@ -7,20 +8,6 @@ using System.Reflection;
 using System.Text;
 
 namespace CTFServer.Services;
-
-public class SmtpOptions
-{
-    public string? Host { get; set; } = default!;
-    public ushort? Port { get; set; } = default;
-}
-
-public class EmailOptions
-{
-    public string? UserName { get; set; } = default!;
-    public string? Password { get; set; } = default!;
-    public string? SendMailAddress { get; set; } = default!;
-    public SmtpOptions? Smtp { get; set; } = default!;
-}
 
 public class MailSender : IMailSender
 {

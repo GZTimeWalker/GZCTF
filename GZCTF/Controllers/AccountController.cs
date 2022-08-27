@@ -1,5 +1,6 @@
 ﻿using CTFServer.Extensions;
 using CTFServer.Middlewares;
+using CTFServer.Models.Internal;
 using CTFServer.Models.Request.Account;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
@@ -10,13 +11,6 @@ using Microsoft.Extensions.Options;
 using System.Net.Mime;
 
 namespace CTFServer.Controllers;
-
-public class AccountPolicy
-{
-    public bool ActiveOnRegister { get; set; } = false;
-    public bool UseGoogleRecaptcha { get; set; } = true;
-    public bool EmailConfirmationRequired { get; set; } = true;
-}
 
 /// <summary>
 /// 用户账户相关接口
@@ -33,14 +27,14 @@ public class AccountController : ControllerBase
     private readonly IFileRepository fileService;
     private readonly IRecaptchaExtension recaptcha;
     private readonly IHostEnvironment environment;
-    private readonly AccountPolicy options;
+    private readonly IOptions<AccountPolicy> accountPolicy;
 
     public AccountController(
         IMailSender _mailSender,
         IFileRepository _FileService,
         IHostEnvironment _environment,
         IRecaptchaExtension _recaptcha,
-        IOptions<AccountPolicy> _options,
+        IOptions<AccountPolicy> _accountPolicy,
         UserManager<UserInfo> _userManager,
         SignInManager<UserInfo> _signInManager,
         ILogger<AccountController> _logger)
@@ -51,7 +45,7 @@ public class AccountController : ControllerBase
         userManager = _userManager;
         signInManager = _signInManager;
         fileService = _FileService;
-        options = _options.Value ?? new();
+        accountPolicy = _accountPolicy;
         logger = _logger;
     }
 
@@ -69,7 +63,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        if (options.UseGoogleRecaptcha && (
+        if (accountPolicy.Value.UseGoogleRecaptcha && (
                 model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
                 !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())
             ))
@@ -99,7 +93,7 @@ public class AccountController : ControllerBase
             user = current;
         }
 
-        if(options.ActiveOnRegister)
+        if(accountPolicy.Value.ActiveOnRegister)
         {
             user.EmailConfirmed = true;
             await userManager.UpdateAsync(user);
@@ -109,7 +103,7 @@ public class AccountController : ControllerBase
             return Ok(new RequestResponse<RegisterStatus>("注册成功。", RegisterStatus.LoggedIn, 200));
         }
 
-        if(!options.EmailConfirmationRequired)
+        if(!accountPolicy.Value.EmailConfirmationRequired)
         {
             logger.Log("用户成功注册，待审核。", user, TaskStatus.Success);
             return Ok(new RequestResponse<RegisterStatus>("注册成功，等待管理员审核。",
@@ -150,7 +144,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Recovery([FromBody] RecoveryModel model)
     {
-        if (options.UseGoogleRecaptcha && (
+        if (accountPolicy.Value.UseGoogleRecaptcha && (
                 model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
                 !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())
             ))
@@ -160,7 +154,7 @@ public class AccountController : ControllerBase
         if (user is null)
             return NotFound(new RequestResponse("用户不存在。", 404));
 
-        if(!options.EmailConfirmationRequired)
+        if(!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse("请联系管理员重置密码。"));
 
         logger.Log("发送用户密码重置邮件。", user.UserName, HttpContext, TaskStatus.Pending);
@@ -390,7 +384,7 @@ public class AccountController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
-        if(!options.EmailConfirmationRequired)
+        if(!accountPolicy.Value.EmailConfirmationRequired)
         {
             await userManager.SetEmailAsync(user, model.NewMail);
             return Ok(new RequestResponse<bool>("邮箱已更新。", false, 200));

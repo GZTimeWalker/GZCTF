@@ -1,4 +1,5 @@
 ﻿using CTFServer.Middlewares;
+using CTFServer.Models.Internal;
 using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Teams;
@@ -7,6 +8,7 @@ using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Net.Mime;
 
 namespace CTFServer.Controllers;
@@ -25,23 +27,53 @@ public class AdminController : ControllerBase
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileService;
+    private readonly IConfiguration configuration;
     private readonly ITeamRepository teamRepository;
     private readonly IGameRepository gameRepository;
+    private readonly IServiceScopeFactory serviceProvider;
     private readonly IParticipationRepository participationRepository;
 
     public AdminController(UserManager<UserInfo> _userManager,
+        IFileRepository _FileService,
         ILogRepository _logRepository,
+        IConfiguration _configuration,
         ITeamRepository _teamRepository,
         IGameRepository _gameRepository,
-        IParticipationRepository _participationRepository,
-        IFileRepository _FileService)
+        IServiceScopeFactory _serviceProvider,
+        IParticipationRepository _participationRepository)
     {
         userManager = _userManager;
         fileService = _FileService;
+        configuration = _configuration;
         logRepository = _logRepository;
         teamRepository = _teamRepository;
         gameRepository = _gameRepository;
+        serviceProvider = _serviceProvider;
         participationRepository = _participationRepository;
+    }
+
+    /// <summary>
+    /// 更改配置
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口更改全局设置，需要Admin权限
+    /// </remarks>
+    /// <response code="200">用户列表</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpPut("Config")]
+    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateConfigs(/*[FromBody] GlobalConfig model*/)
+    {
+        await using var scope = serviceProvider.CreateAsyncScope();
+
+        var accountPolicy = scope.ServiceProvider.GetRequiredService<IOptions<AccountPolicy>>();
+
+        Console.WriteLine($"Active={accountPolicy.Value.ActiveOnRegister}");
+        accountPolicy.Value.ActiveOnRegister = false;
+        Console.WriteLine($"Active={accountPolicy.Value.ActiveOnRegister}");
+
+        return Ok();
     }
 
     /// <summary>

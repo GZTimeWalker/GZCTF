@@ -8,12 +8,6 @@ using System.Text;
 
 namespace CTFServer.Services;
 
-public class DockerOptions
-{
-    public string Uri { get; set; } = default!;
-    public string PublicIP { get; set; } = default!;
-}
-
 public class DockerService : IContainerService
 {
     private readonly ILogger<DockerService> logger;

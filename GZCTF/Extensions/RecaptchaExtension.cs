@@ -21,14 +21,6 @@ public interface IRecaptchaExtension
     string SiteKey();
 }
 
-public class RecaptchaOptions
-{
-    public string? Secretkey { get; set; }
-    public string? SiteKey { get; set; }
-    public string VerifyAPIAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
-    public float RecaptchaThreshold { get; set; } = 0.5f;
-}
-
 public class RecaptchaExtension : IRecaptchaExtension
 {
     private readonly RecaptchaOptions? options;
