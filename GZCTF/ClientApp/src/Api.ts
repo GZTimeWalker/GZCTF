@@ -239,6 +239,19 @@ export enum Role {
 }
 
 /**
+ * 全局配置更新对象
+ */
+export interface GlobalConfig {
+  accoutPolicy?: AccountPolicy | null
+}
+
+export interface AccountPolicy {
+  activeOnRegister?: boolean
+  useGoogleRecaptcha?: boolean
+  emailConfirmationRequired?: boolean
+}
+
+/**
  * 用户信息（Admin）
  */
 export interface UserInfoModel {
@@ -1705,6 +1718,62 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
   }
   admin = {
+    /**
+     * @description 使用此接口获取全局设置，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminGetConfigs
+     * @summary 获取配置
+     * @request GET:/api/admin/config
+     */
+    adminGetConfigs: (params: RequestParams = {}) =>
+      this.request<GlobalConfig, RequestResponse>({
+        path: `/api/admin/config`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 使用此接口获取全局设置，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminGetConfigs
+     * @summary 获取配置
+     * @request GET:/api/admin/config
+     */
+    useAdminGetConfigs: (options?: SWRConfiguration) =>
+      useSWR<GlobalConfig, RequestResponse>(`/api/admin/config`, options),
+
+    /**
+     * @description 使用此接口获取全局设置，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminGetConfigs
+     * @summary 获取配置
+     * @request GET:/api/admin/config
+     */
+    mutateAdminGetConfigs: (
+      data?: GlobalConfig | Promise<GlobalConfig>,
+      options?: MutatorOptions
+    ) => mutate<GlobalConfig>(`/api/admin/config`, data, options),
+
+    /**
+     * @description 使用此接口更改全局设置，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminUpdateConfigs
+     * @summary 更改配置
+     * @request PUT:/api/admin/config
+     */
+    adminUpdateConfigs: (data: GlobalConfig, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/config`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
     /**
      * @description 使用此接口获取全部用户，需要Admin权限
      *
