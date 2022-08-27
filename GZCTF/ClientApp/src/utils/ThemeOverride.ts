@@ -1,4 +1,5 @@
 import { createStyles, keyframes, MantineThemeOverride } from '@mantine/core'
+import { MIME_TYPES } from '@mantine/dropzone'
 
 export const ThemeOverride: MantineThemeOverride = {
   colors: {
@@ -113,4 +114,9 @@ export const useTooltipStyles = createStyles((theme) => ({
   },
 }))
 
-export declare const ACCEPT_IMAGE_MIME_TYPE: ("image/png" | "image/gif" | "image/jpeg" | "image/webp")[];
+export const ACCEPT_IMAGE_MIME_TYPE = [
+  MIME_TYPES.png,
+  MIME_TYPES.webp,
+  MIME_TYPES.jpeg,
+  MIME_TYPES.gif,
+];

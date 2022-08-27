@@ -141,7 +141,7 @@ const Logs: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="md">
+      <Paper shadow="md" p="md" style={{ width: '100%' }}>
         <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height: 'calc(100vh - 190px)' }}>
           <Table className={classes.table}>
             <thead>

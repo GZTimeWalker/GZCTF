@@ -177,7 +177,7 @@ const Users: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="xs">
+      <Paper shadow="md" p="xs" style={{ width: '100%' }}>
         <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height: 'calc(100vh - 190px)' }}>
           <Table className={classes.table}>
             <thead>
