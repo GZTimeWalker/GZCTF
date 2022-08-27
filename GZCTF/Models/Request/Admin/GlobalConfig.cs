@@ -8,5 +8,8 @@ namespace CTFServer.Models.Request.Admin;
 /// </summary>
 public class GlobalConfig
 {
+    /// <summary>
+    /// 用户策略
+    /// </summary>
     public AccountPolicy? AccoutPolicy { get; set; }
 }

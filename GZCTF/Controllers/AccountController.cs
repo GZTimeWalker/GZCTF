@@ -63,6 +63,9 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
+        if(!accountPolicy.Value.AllowRegister)
+            return BadRequest(new RequestResponse("注册功能已禁用。"));
+
         if (accountPolicy.Value.UseGoogleRecaptcha && (
                 model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
                 !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())

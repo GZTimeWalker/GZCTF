@@ -2,10 +2,26 @@
 
 namespace CTFServer.Models.Internal;
 
+/// <summary>
+/// 账户策略
+/// </summary>
 public class AccountPolicy
 {
+    /// <summary>
+    /// 允许用户注册
+    /// </summary>
+    public bool AllowRegister { get; set; } = true;
+    /// <summary>
+    /// 注册时直接激活账户
+    /// </summary>
     public bool ActiveOnRegister { get; set; } = false;
+    /// <summary>
+    /// 使用谷歌验证码校验
+    /// </summary>
     public bool UseGoogleRecaptcha { get; set; } = true;
+    /// <summary>
+    /// 注册、更换邮箱、找回密码需要邮件确认
+    /// </summary>
     public bool EmailConfirmationRequired { get; set; } = true;
 }
 

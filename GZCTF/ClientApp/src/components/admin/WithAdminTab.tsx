@@ -7,6 +7,7 @@ import {
   mdiFlagOutline,
   mdiAccountGroupOutline,
   mdiFileDocumentOutline,
+  mdiCogOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/PageTitle'
@@ -17,6 +18,7 @@ const pages = [
   { icon: mdiFlagOutline, title: '比赛管理', path: 'games', color: 'yellow' },
   { icon: mdiAccountGroupOutline, title: '队伍管理', path: 'teams', color: 'green' },
   { icon: mdiAccountCogOutline, title: '用户管理', path: 'users', color: 'cyan' },
+  { icon: mdiCogOutline, title: '全局设置', path: 'configs', color: 'white' },
   { icon: mdiFileDocumentOutline, title: '系统日志', path: 'logs', color: 'red' },
 ]
 
@@ -53,7 +55,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   usePageTitle(pages[tabIndex].title)
 
   return (
-    <Stack spacing="xs">
+    <Stack spacing="xs" align="center">
       <IconTabs
         withIcon
         active={activeTab}

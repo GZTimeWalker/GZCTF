@@ -1,5 +1,7 @@
 ﻿using System;
 using CTFServer.Models.Data;
+using CTFServer.Models.Internal;
+using CTFServer.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Providers;
@@ -13,13 +15,14 @@ public class EntityConfigurationProvider : ConfigurationProvider
         source = _source;
     }
 
-    private static IDictionary<string, string> DefaultConfigs
-        => new Dictionary<string, string>
-        {
-            ["AccountPolicy:EmailConfirmationRequired"] = bool.TrueString,
-            ["AccountPolicy:ActiveOnRegister"] = bool.FalseString,
-            ["AccountPolicy:UseGoogleRecaptcha"] = bool.FalseString,
-        };
+    private HashSet<Config> DefaultConfigs()
+    {
+        HashSet<Config> configs = new();
+
+        configs.UnionWith(ConfigService.GetConfigs(new AccountPolicy()));
+
+        return configs;
+    }
 
     public override void Load()
     {
@@ -35,13 +38,15 @@ public class EntityConfigurationProvider : ConfigurationProvider
 
         if (context is null || !context.Configs.Any())
         {
-            Data = DefaultConfigs;
+            var configs = DefaultConfigs();
 
             if (context is not null)
             {
-                context.Configs.AddRange(Data.Select(kvp => new Config(kvp.Key, kvp.Value)).ToArray());
+                context.Configs.AddRange(configs);
                 context.SaveChanges();
             }
+
+            Data = configs.ToDictionary(c => c.ConfigKey, c => c.Value, StringComparer.OrdinalIgnoreCase);
             return;
         }
 
