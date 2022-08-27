@@ -1,11 +1,7 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 using CTFServer.Services;
 using CTFServer.Models.Internal;
 using Xunit.Abstractions;
-using CTFServer.Services.Interface;
-using k8s.Models;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CTFServer.Test;
 
@@ -21,11 +17,20 @@ public class ConfigServiceTest
     [Fact]
     public void TestGetConfigs()
     {
-        EmailOptions policy = new();
-        var configs = ConfigService.GetConfigs(policy);
+        var configs = ConfigService.GetConfigs(new TestConfig());
+        Assert.True(configs is not null);
+        Assert.True(configs.Count > 0);
 
-        foreach(var config in configs)
-            output.WriteLine($"{config.ConfigKey,16}:{config.Value}");
+        foreach (var config in configs)
+        {
+            output.WriteLine($"{config.ConfigKey,-32}={config.Value}");
+        }
     }
 }
 
+public class TestConfig
+{
+    public AccountPolicy AccoutPolicy { get; set; } = new();
+    public DockerConfig DockerConfig { get; set; } = new();
+    public EmailConfig EmailConfig { get; set; } = new();
+}

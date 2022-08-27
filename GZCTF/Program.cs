@@ -158,10 +158,10 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 #region Services and Repositories
 
 builder.Services.AddTransient<IMailSender, MailSender>()
-    .Configure<EmailOptions>(builder.Configuration.GetSection("EmailConfig"));
+    .Configure<EmailConfig>(builder.Configuration.GetSection(nameof(EmailConfig)));
 
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
-    .Configure<RecaptchaOptions>(builder.Configuration.GetSection("GoogleRecaptcha"));
+    .Configure<RecaptchaConfig>(builder.Configuration.GetSection("GoogleRecaptcha"));
 
 if (builder.Configuration.GetSection("ContainerProvider").Value == "K8s")
 {
@@ -170,7 +170,7 @@ if (builder.Configuration.GetSection("ContainerProvider").Value == "K8s")
 else
 {
     builder.Services.AddSingleton<IContainerService, DockerService>()
-        .Configure<DockerOptions>(builder.Configuration.GetSection("DockerConfig"));
+        .Configure<DockerConfig>(builder.Configuration.GetSection(nameof(DockerConfig)));
 }
 
 builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameof(AccountPolicy)));

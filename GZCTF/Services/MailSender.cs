@@ -11,11 +11,11 @@ namespace CTFServer.Services;
 
 public class MailSender : IMailSender
 {
-    private readonly EmailOptions? options;
+    private readonly EmailConfig? options;
     private readonly ILogger<MailSender> logger;
     private readonly SmtpClient? smtp;
 
-    public MailSender(IOptions<EmailOptions> options, ILogger<MailSender> logger)
+    public MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger)
     {
         this.options = options.Value;
         this.logger = logger;

@@ -23,10 +23,10 @@ public interface IRecaptchaExtension
 
 public class RecaptchaExtension : IRecaptchaExtension
 {
-    private readonly RecaptchaOptions? options;
+    private readonly RecaptchaConfig? options;
     private readonly HttpClient httpClient;
 
-    public RecaptchaExtension(IOptions<RecaptchaOptions> options)
+    public RecaptchaExtension(IOptions<RecaptchaConfig> options)
     {
         this.options = options.Value;
         httpClient = new();

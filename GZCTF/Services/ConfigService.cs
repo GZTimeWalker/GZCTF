@@ -24,24 +24,23 @@ public class ConfigService : IHostedService
         logger = _logger;
     }
 
-    private static void GetConfigsInternal<T>(string key, HashSet<Config> configs, T value)
+    private static void GetConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
     {
-        Type type = typeof(T);
+        if (value is null || type is null)
+            return;
+
         if (type.IsArray || IsArrayLikeInterface(type))
             throw new InvalidOperationException("不支持的配置项类型");
-
-        if (value is null)
-            return;
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
         if (type == typeof(string) || type.IsValueType)
         {
             configs.Add(new(key, converter.ConvertToString(value) ?? String.Empty));
         }
-        else if (type == typeof(object))
+        else if (type.IsClass)
         {
             foreach (var item in type.GetProperties())
-                GetConfigsInternal($"{key}:{item.Name}", configs, item.GetValue(value));
+                GetConfigsInternal($"{key}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
         }
     }
 
@@ -50,15 +49,14 @@ public class ConfigService : IHostedService
         HashSet<Config> configs = new();
         var type = typeof(T);
 
-        foreach(var item in type.GetProperties())
-            GetConfigsInternal($"{type.Name}:{item.Name}", configs, item.GetValue(config));
+        foreach (var item in type.GetProperties())
+            GetConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(config));
 
         return configs;
     }
 
     public void SaveConfig<T>(T config) where T : class
     {
-
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -84,4 +82,3 @@ public class ConfigService : IHostedService
             || genericTypeDefinition == typeof(ISet<>);
     }
 }
-

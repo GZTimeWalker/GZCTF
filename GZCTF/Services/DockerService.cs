@@ -11,10 +11,10 @@ namespace CTFServer.Services;
 public class DockerService : IContainerService
 {
     private readonly ILogger<DockerService> logger;
-    private readonly DockerOptions options;
+    private readonly DockerConfig options;
     private readonly DockerClient dockerClient;
 
-    public DockerService(IOptions<DockerOptions> options, ILogger<DockerService> logger)
+    public DockerService(IOptions<DockerConfig> options, ILogger<DockerService> logger)
     {
         this.options = options.Value;
         this.logger = logger;

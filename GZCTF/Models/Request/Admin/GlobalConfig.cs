@@ -10,4 +10,3 @@ public class GlobalConfig
 {
     public AccountPolicy? AccoutPolicy { get; set; }
 }
-
