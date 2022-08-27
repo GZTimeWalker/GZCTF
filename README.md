@@ -80,11 +80,6 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
-  "AccountPolicy": {
-    "ActiveOnRegister": false,
-    "UseGoogleRecaptcha": true,
-    "EmailConfirmationRequired": true
-  },
   "EmailConfig": {
     "SendMailAddress": "a@a.com",
     "UserName": "",
