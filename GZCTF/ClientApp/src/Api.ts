@@ -242,12 +242,24 @@ export enum Role {
  * 全局配置更新对象
  */
 export interface GlobalConfig {
+  /** 用户策略 */
   accoutPolicy?: AccountPolicy | null
 }
 
+/**
+ * 账户策略
+ */
 export interface AccountPolicy {
+  /** 允许用户注册 */
+  allowRegister?: boolean
+
+  /** 注册时直接激活账户 */
   activeOnRegister?: boolean
+
+  /** 使用谷歌验证码校验 */
   useGoogleRecaptcha?: boolean
+
+  /** 注册、更换邮箱、找回密码需要邮件确认 */
   emailConfirmationRequired?: boolean
 }
 
