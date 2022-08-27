@@ -1,4 +1,4 @@
-name: Image for amd64
+name: Build & Publish Image (amd64)
 
 on:
   push:
