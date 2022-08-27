@@ -34,7 +34,7 @@ public static class ExcelHelper
 
         boldFontStyle.IsBold = true;
         style.SetFont(boldFontStyle);
-        style.BorderBottom = BorderStyle.Thick;
+        style.BorderBottom = BorderStyle.Medium;
         style.VerticalAlignment = VerticalAlignment.Center;
         style.Alignment = HorizontalAlignment.Center;
 
@@ -128,7 +128,8 @@ public static class ExcelHelper
             colIndex++;
         }
 
-        sheet.AddMergedRegion(new CellRangeAddress(0, 0, teamMemberStart, teamMemberStart + teamMemberCount - 2));
+        if (teamMemberCount > 2)
+            sheet.AddMergedRegion(new CellRangeAddress(0, 0, teamMemberStart, teamMemberStart + teamMemberCount - 2));
     }
 
     private static void WriteTeamContent(ISheet sheet, ScoreboardModel scoreboard)
