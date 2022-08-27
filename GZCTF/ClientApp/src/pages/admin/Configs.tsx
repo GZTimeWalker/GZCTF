@@ -49,11 +49,11 @@ const Configs: FC = () => {
             label={SwitchLabel('允许新用户注册', '是否允许用户注册新账户')}
             onChange={(e) =>
               updateConfig({
-                accoutPolicy: {
-                  allowRegister: e.target.checked,
-                  ...configs?.accoutPolicy,
-                },
                 ...configs,
+                accoutPolicy: {
+                  ...configs?.accoutPolicy,
+                  allowRegister: e.currentTarget.checked,
+                },
               })
             }
           />
@@ -63,11 +63,11 @@ const Configs: FC = () => {
             label={SwitchLabel('需要邮箱确认', '用户注册、更换邮箱、找回密码是否需要邮件确认')}
             onChange={(e) =>
               updateConfig({
-                accoutPolicy: {
-                  emailConfirmationRequired: e.target.checked,
-                  ...configs?.accoutPolicy,
-                },
                 ...configs,
+                accoutPolicy: {
+                  ...configs?.accoutPolicy,
+                  emailConfirmationRequired: e.currentTarget.checked,
+                },
               })
             }
           />
@@ -77,11 +77,11 @@ const Configs: FC = () => {
             label={SwitchLabel('注册后自动激活', '是否在新用户注册后自动激活账户')}
             onChange={(e) =>
               updateConfig({
-                accoutPolicy: {
-                  activeOnRegister: e.target.checked,
-                  ...configs?.accoutPolicy,
-                },
                 ...configs,
+                accoutPolicy: {
+                  ...configs?.accoutPolicy,
+                  activeOnRegister: e.currentTarget.checked,
+                },
               })
             }
           />
@@ -91,11 +91,11 @@ const Configs: FC = () => {
             label={SwitchLabel('使用谷歌验证码', '是否在用户发送验证邮件时检查谷歌验证码有效性')}
             onChange={(e) =>
               updateConfig({
-                accoutPolicy: {
-                  useGoogleRecaptcha: e.target.checked,
-                  ...configs?.accoutPolicy,
-                },
                 ...configs,
+                accoutPolicy: {
+                  ...configs?.accoutPolicy,
+                  useGoogleRecaptcha: e.currentTarget.checked,
+                },
               })
             }
           />

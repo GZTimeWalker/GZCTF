@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using CTFServer.Models.Data;
 using CTFServer.Services.Interface;
+using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.Formula.Functions;
 using YamlDotNet.Core.Tokens;
@@ -9,13 +10,16 @@ namespace CTFServer.Services;
 
 public class ConfigService : IConfigService
 {
+    private readonly ILogger<ConfigService> logger;
     private readonly IConfigurationRoot? configuration;
     private readonly AppDbContext context;
 
     public ConfigService(AppDbContext _context,
-            IConfiguration _configuration)
+        ILogger<ConfigService> _logger,
+        IConfiguration _configuration)
     {
         context = _context;
+        logger = _logger;
         configuration = _configuration as IConfigurationRoot;
     }
 
@@ -74,10 +78,14 @@ public class ConfigService : IConfigService
             if (dbConfigs.TryGetValue(conf.ConfigKey, out var dbConf))
             {
                 if (dbConf.Value != conf.Value)
+                {
                     dbConf.Value = conf.Value;
+                    logger.SystemLog($"更新全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
+                }
             }
             else
             {
+                logger.SystemLog($"添加全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
                 await context.Configs.AddAsync(conf, token);
             }
         }
