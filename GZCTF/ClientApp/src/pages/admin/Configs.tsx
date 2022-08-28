@@ -1,8 +1,9 @@
 import { FC, useState } from 'react'
-import { Divider, SimpleGrid, Stack, Switch, Title, Text } from '@mantine/core'
+import { Divider, SimpleGrid, Stack, Switch, Title } from '@mantine/core'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { GlobalConfig } from '@Api'
+import { SwitchLabel } from '@Components/admin/SwitchLabel'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs({
@@ -25,17 +26,6 @@ const Configs: FC = () => {
         setDisabled(false)
       })
   }
-
-  const SwitchLabel = (title: string, desrc: string) => (
-    <Stack spacing={1}>
-      <Text size="md" weight={500}>
-        {title}
-      </Text>
-      <Text size="xs" color="dimmed">
-        {desrc}
-      </Text>
-    </Stack>
-  )
 
   return (
     <AdminPage isLoading={!configs}>

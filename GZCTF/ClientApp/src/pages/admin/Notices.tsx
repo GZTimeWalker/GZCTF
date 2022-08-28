@@ -89,7 +89,7 @@ const Notices: FC = () => {
         </Button>
       }
     >
-      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
+      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)', width: '100%' }}>
         <Stack
           spacing="lg"
           align="center"

@@ -13,17 +13,36 @@ import {
   TextInput,
   Image,
   Text,
+  MultiSelect,
+  ActionIcon,
+  Switch,
 } from '@mantine/core'
 import { DatePicker, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiKeyboardBackspace, mdiCheck, mdiClose, mdiContentSaveOutline } from '@mdi/js'
+import {
+  mdiKeyboardBackspace,
+  mdiCheck,
+  mdiClose,
+  mdiContentSaveOutline,
+  mdiRefresh,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { GameInfoModel } from '@Api'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
+import api, { GameInfoModel } from '@Api'
+
+const GenerateRandomCode = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  let code = ''
+  for (let i = 0; i < 24; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return code
+}
 
 const GameInfoEdit: FC = () => {
   const { id } = useParams()
@@ -31,6 +50,7 @@ const GameInfoEdit: FC = () => {
   const [game, setGame] = useState<GameInfoModel>()
 
   const [disabled, setDisabled] = useState(false)
+  const [organizations, setOrganizations] = useState<string[]>([])
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
 
@@ -52,6 +72,7 @@ const GameInfoEdit: FC = () => {
       .editGetGame(numId)
       .then((data) => {
         setGame(data.data)
+        setOrganizations(data.data.organizations || [])
         setStart(dayjs(data.data.start))
         setEnd(dayjs(data.data.end))
       })
@@ -92,6 +113,7 @@ const GameInfoEdit: FC = () => {
       api.edit
         .editUpdateGame(game.id!, {
           ...game,
+          inviteCode: game.inviteCode?.length ?? 0 > 6 ? game.inviteCode : null,
           start: start.toJSON(),
           end: end.toJSON(),
         })
@@ -167,6 +189,7 @@ const GameInfoEdit: FC = () => {
           label="开始日期"
           placeholder="Start Date"
           value={start.toDate()}
+          disabled={disabled}
           clearable={false}
           onChange={(e) => {
             const newDate = dayjs(e)
@@ -182,6 +205,7 @@ const GameInfoEdit: FC = () => {
         />
         <TimeInput
           label="开始时间"
+          disabled={disabled}
           placeholder="Start Time"
           value={start.toDate()}
           onChange={(e) => {
@@ -196,6 +220,7 @@ const GameInfoEdit: FC = () => {
         />
         <DatePicker
           label="结束日期"
+          disabled={disabled}
           minDate={start.toDate()}
           placeholder="End time"
           value={end.toDate()}
@@ -209,6 +234,7 @@ const GameInfoEdit: FC = () => {
         />
         <TimeInput
           label="结束时间"
+          disabled={disabled}
           placeholder="End time"
           value={end.toDate()}
           onChange={(e) => {
@@ -221,16 +247,102 @@ const GameInfoEdit: FC = () => {
         />
       </Group>
       <Grid grow>
-        <Grid.Col span={8}>
+        <Grid.Col span={6}>
           <Textarea
             label="比赛简介"
             value={game?.summary}
             style={{ width: '100%' }}
             autosize
             disabled={disabled}
-            minRows={4}
-            maxRows={4}
+            minRows={6}
+            maxRows={6}
             onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Stack>
+            <Group grow>
+              <TextInput
+                label={
+                  <Group spacing="sm">
+                    <Text size="sm">邀请码</Text>
+                    <Text size="xs" color="dimmed">
+                      留空以不启用
+                    </Text>
+                  </Group>
+                }
+                value={game?.inviteCode || ''}
+                disabled={disabled}
+                onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
+                rightSection={
+                  <ActionIcon
+                    onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
+                  >
+                    <Icon path={mdiRefresh} size={1} />
+                  </ActionIcon>
+                }
+              />
+              <Switch
+                style={{ marginTop: '1rem' }}
+                disabled={disabled}
+                checked={game?.acceptWithoutReview ?? false}
+                label={SwitchLabel('队伍报名免审核', '队伍报名后直接设置为 Accept 状态')}
+                onChange={(e) =>
+                  game && setGame({ ...game, acceptWithoutReview: e.target.checked })
+                }
+              />
+            </Group>
+            <MultiSelect
+              label={
+                <Group spacing="sm">
+                  <Text size="sm">参赛可选组织列表</Text>
+                  <Text size="xs" color="dimmed">
+                    留空以允许无组织参赛
+                  </Text>
+                </Group>
+              }
+              searchable
+              creatable
+              disabled={disabled}
+              placeholder="无指定可选参赛组织，将允许无组织队伍参赛"
+              maxDropdownHeight={300}
+              value={game?.organizations ?? []}
+              styles={{
+                input: {
+                  minHeight: 77,
+                  maxHeight: 77,
+                },
+              }}
+              onChange={(e) => game && setGame({ ...game, organizations: e })}
+              data={organizations.map((o) => ({ value: o, label: o })) || []}
+              getCreateLabel={(query) => `+ 添加组织 "${query}"`}
+              onCreate={(query) => {
+                const item = { value: query, label: query }
+                setOrganizations([...organizations, query])
+                return item
+              }}
+            />
+          </Stack>
+        </Grid.Col>
+      </Grid>
+      <Grid grow>
+        <Grid.Col span={8}>
+          <Textarea
+            label={
+              <Group spacing="sm">
+                <Text size="sm">比赛详情</Text>
+                <Text size="xs" color="dimmed">
+                  支持 markdown 语法
+                </Text>
+              </Group>
+            }
+            value={game?.content}
+            style={{ width: '100%' }}
+            autosize
+            disabled={disabled}
+            minRows={8}
+            maxRows={8}
+            onChange={(e) => game && setGame({ ...game, content: e.target.value })}
           />
         </Grid.Col>
         <Grid.Col span={4}>
@@ -251,16 +363,16 @@ const GameInfoEdit: FC = () => {
               disabled={disabled}
               styles={{
                 root: {
-                  height: '110px',
+                  height: '198px',
                   padding: game?.poster ? '0' : '16px',
                 },
               }}
             >
               <Center style={{ pointerEvents: 'none' }}>
                 {game?.poster ? (
-                  <Image height="105px" fit="contain" src={game.poster} />
+                  <Image height="195px" fit="contain" src={game.poster} />
                 ) : (
-                  <Center style={{ height: '74px' }}>
+                  <Center style={{ height: '160px' }}>
                     <Stack spacing={0}>
                       <Text size="xl" inline>
                         拖放图片或点击此处以选择海报
@@ -276,23 +388,6 @@ const GameInfoEdit: FC = () => {
           </Input.Wrapper>
         </Grid.Col>
       </Grid>
-      <Textarea
-        label={
-          <Group spacing="sm">
-            <Text size="sm">比赛详情</Text>
-            <Text size="xs" color="dimmed">
-              支持 markdown 语法
-            </Text>
-          </Group>
-        }
-        value={game?.content}
-        style={{ width: '100%' }}
-        autosize
-        disabled={disabled}
-        minRows={6}
-        maxRows={7}
-        onChange={(e) => game && setGame({ ...game, content: e.target.value })}
-      />
     </WithGameEditTab>
   )
 }

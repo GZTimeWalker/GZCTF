@@ -293,7 +293,7 @@ const GameChallengeEdit: FC = () => {
               disabled={disabled}
               minRows={1}
               maxRows={1}
-              onChange={(e) => setChallengeInfo({ ...challengeInfo, hints: e.target.value })}
+              // onChange={(e) => setChallengeInfo({ ...challengeInfo, hints: e.target.value })}
             />
           </Stack>
           <Stack spacing="sm">

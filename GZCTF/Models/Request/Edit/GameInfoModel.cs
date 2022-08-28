@@ -85,6 +85,7 @@ public class GameInfoModel
             Content = game.Content,
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
+            Organizations = game.Organizations,
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
