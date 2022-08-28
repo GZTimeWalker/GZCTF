@@ -27,6 +27,11 @@ public class GameDetailModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 参赛所属单位列表
+    /// </summary>
+    public List<string>? Organizations { get; set; }
+
+    /// <summary>
     /// 是否需要邀请码
     /// </summary>
     public bool InviteCodeRequired { get; set; } = false;
@@ -79,6 +84,7 @@ public class GameDetailModel
             Title = game.Title,
             Summary = game.Summary,
             Content = game.Content,
+            Organizations = game.Organizations,
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             TeamCount = count,
             PosterUrl = game.PosterUrl,

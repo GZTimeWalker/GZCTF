@@ -973,6 +973,9 @@ export interface GameDetailModel {
   /** 比赛详细介绍 */
   content?: string
 
+  /** 参赛所属单位列表 */
+  organizations?: string[] | null
+
   /** 是否需要邀请码 */
   inviteCodeRequired?: boolean
 
