@@ -11,8 +11,8 @@ public class RegisterModel
     /// 用户名
     /// </summary>
     [Required(ErrorMessage = "用户名是必需的")]
-    [MinLength(5, ErrorMessage = "用户名过短")]
-    [MaxLength(10, ErrorMessage = "用户名过长")]
+    [MinLength(3, ErrorMessage = "用户名过短")]
+    [MaxLength(15, ErrorMessage = "用户名过长")]
     public string? UserName { get; set; }
 
     /// <summary>

@@ -18,6 +18,7 @@ namespace CTFServer.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
+[ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class GameController : ControllerBase
@@ -112,6 +113,7 @@ public class GameController : ControllerBase
     /// 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
+    /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="403">无权操作或操作无效</response>
@@ -121,12 +123,20 @@ public class GameController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> JoinGame(int id, CancellationToken token)
+    public async Task<IActionResult> JoinGame(int id, [FromBody]GameJoinModel model, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到"));
+
+        if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
+            return BadRequest(new RequestResponse("比赛邀请码错误"));
+
+        if (model.Organization is not null &&
+            game.Organizations is not null &&
+            !game.Organizations.Any(o => o == model.Organization))
+            return BadRequest(new RequestResponse("无效的参赛单位"));
 
         var user = await userManager.GetUserAsync(User);
 

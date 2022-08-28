@@ -73,6 +73,11 @@ public class ScoreboardItem
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// 参赛所属组织
+    /// </summary>
+    public string? Organization { get; set; }
+
+    /// <summary>
     /// 队伍头像
     /// </summary>
     public string? Avatar { get; set; } = string.Empty;

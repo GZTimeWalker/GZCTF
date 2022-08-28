@@ -10,8 +10,8 @@ public class ProfileUpdateModel
     /// <summary>
     /// 用户名
     /// </summary>
-    [MinLength(5, ErrorMessage = "用户名过短")]
-    [MaxLength(10, ErrorMessage = "用户名过长")]
+    [MinLength(3, ErrorMessage = "用户名过短")]
+    [MaxLength(15, ErrorMessage = "用户名过长")]
     public string? UserName { get; set; }
 
     /// <summary>

@@ -33,6 +33,16 @@ public class Game
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 比赛邀请码
+    /// </summary>
+    public string InviteCode { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 参赛所属单位列表
+    /// </summary>
+    public List<string>? Organizations { get; set; }
+
+    /// <summary>
     /// 队员数量限制, 0 为无上限
     /// </summary>
     public int TeamMemberCountLimit { get; set; } = 0;
@@ -108,8 +118,10 @@ public class Game
         Title = model.Title;
         Content = model.Content;
         Summary = model.Summary;
-        StartTimeUTC = model.StartTimeUTC;
+        InviteCode = model.InviteCode ?? InviteCode;
+        Organizations = model.Organizations ?? Organizations;
         EndTimeUTC = model.EndTimeUTC;
+        StartTimeUTC = model.StartTimeUTC;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
         ContainerCountLimit = model.ContainerCountLimit;
 

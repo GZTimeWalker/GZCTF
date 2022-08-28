@@ -27,6 +27,11 @@ public class GameDetailModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 是否需要邀请码
+    /// </summary>
+    public bool InviteCodeRequired { get; set; } = false;
+
+    /// <summary>
     /// 比赛头图
     /// </summary>
     [JsonPropertyName("poster")]
@@ -74,6 +79,7 @@ public class GameDetailModel
             Title = game.Title,
             Summary = game.Summary,
             Content = game.Content,
+            InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             TeamCount = count,
             PosterUrl = game.PosterUrl,
             StartTimeUTC = game.StartTimeUTC,

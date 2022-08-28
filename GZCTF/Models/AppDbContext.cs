@@ -1,6 +1,8 @@
 ﻿using CTFServer.Models.Data;
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CTFServer.Models;
 
@@ -30,13 +32,19 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     {
         base.OnModelCreating(builder);
 
+        var options = new JsonSerializerOptions() { WriteIndented = false, };
+        var jsonConverter = new ValueConverter<List<string>?, string>(
+                v => JsonSerializer.Serialize<List<string>>(v ?? new(), options),
+                v => JsonSerializer.Deserialize<List<string>>(v, options)
+            );
+
         builder.Entity<UserInfo>(entity =>
         {
             entity.Property(e => e.Role)
                 .HasConversion<int>();
 
             entity.Property(e => e.UserName)
-                .HasMaxLength(12);
+                .HasMaxLength(16);
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
@@ -59,6 +67,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<Game>(entity =>
         {
+            entity.Property(e => e.Organizations)
+                .HasConversion(jsonConverter);
+
             entity.HasMany(e => e.GameEvents)
                 .WithOne(e => e.Game)
                 .HasForeignKey(e => e.GameId);
@@ -157,6 +168,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         builder.Entity<Challenge>(entity =>
         {
+            entity.Property(e => e.Hints)
+                .HasConversion(jsonConverter);
+
             entity.HasMany(e => e.Flags)
                .WithOne(e => e.Challenge)
                .HasForeignKey(e => e.ChallengeId);

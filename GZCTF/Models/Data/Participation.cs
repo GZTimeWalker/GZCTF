@@ -16,6 +16,11 @@ public class Participation
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 
     /// <summary>
+    /// 参赛所属组织
+    /// </summary>
+    public string? Organization;
+
+    /// <summary>
     /// 当前分数
     /// </summary>
     [Required]

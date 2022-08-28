@@ -30,6 +30,18 @@ public class GameInfoModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 比赛邀请码
+    /// </summary>
+    [MinLength(6, ErrorMessage = "邀请码过短")]
+    [MaxLength(32, ErrorMessage = "邀请码过长")]
+    public string? InviteCode { get; set; }
+
+    /// <summary>
+    /// 参赛所属单位列表
+    /// </summary>
+    public List<string>? Organizations { get; set; }
+
+    /// <summary>
     /// 队员数量限制, 0 为无上限
     /// </summary>
     public int TeamMemberCountLimit { get; set; } = 0;
@@ -67,6 +79,7 @@ public class GameInfoModel
             Summary = game.Summary,
             Content = game.Content,
             PosterUrl = game.PosterUrl,
+            InviteCode = game.InviteCode,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
             StartTimeUTC = game.StartTimeUTC,

@@ -28,7 +28,7 @@ public class ChallengeDetailModel
     /// <summary>
     /// 题目提示，用";"分隔
     /// </summary>
-    public string Hints { get; set; } = string.Empty;
+    public List<string>? Hints { get; set; }
 
     /// <summary>
     /// 题目当前分值

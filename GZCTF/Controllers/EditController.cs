@@ -1,4 +1,5 @@
-﻿using CTFServer.Middlewares;
+﻿using CTFServer.Extensions;
+using CTFServer.Middlewares;
 using CTFServer.Models.Data;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
@@ -475,7 +476,10 @@ public class EditController : Controller
         if (model.FileName is not null && string.IsNullOrWhiteSpace(model.FileName))
             return BadRequest(new RequestResponse("动态附件名不可为空"));
 
-        bool hintUpdated = model.Hints != res.Hints && !string.IsNullOrWhiteSpace(model.Hints);
+        bool hintUpdated = model.Hints is not null &&
+                model.Hints.Count > 0 &&
+                model.Hints.GetSetHashCode() != res.Hints?.GetSetHashCode();
+
         res.Update(model);
 
         if (model.IsEnabled == true)

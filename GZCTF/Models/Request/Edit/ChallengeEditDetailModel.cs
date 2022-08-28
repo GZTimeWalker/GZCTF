@@ -41,7 +41,7 @@ public class ChallengeEditDetailModel
     /// <summary>
     /// 题目提示，用";"分隔
     /// </summary>
-    public string Hints { get; set; } = string.Empty;
+    public string[] Hints { get; set; } = Array.Empty<string>();
 
     /// <summary>
     /// 是否启用题目
@@ -135,7 +135,7 @@ public class ChallengeEditDetailModel
             Content = chal.Content,
             Tag = chal.Tag,
             Type = chal.Type,
-            Hints = chal.Hints,
+            Hints = chal.Hints?.ToArray() ?? Array.Empty<string>(),
             IsEnabled = chal.IsEnabled,
             ContainerImage = chal.ContainerImage,
             MemoryLimit = chal.MemoryLimit,

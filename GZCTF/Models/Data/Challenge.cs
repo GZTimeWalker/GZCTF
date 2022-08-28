@@ -45,9 +45,9 @@ public class Challenge
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     /// <summary>
-    /// 题目提示，用";"分隔
+    /// 题目提示
     /// </summary>
-    public string Hints { get; set; } = string.Empty;
+    public List<string>? Hints { get; set; }
 
     /// <summary>
     /// 镜像名称与标签

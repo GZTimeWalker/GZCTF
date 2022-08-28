@@ -27,7 +27,7 @@ public class ChallengeUpdateModel
     /// <summary>
     /// 题目提示，用";"分隔
     /// </summary>
-    public string? Hints { get; set; }
+    public List<string>? Hints { get; set; }
 
     /// <summary>
     /// 是否启用题目

@@ -133,6 +133,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                     Id = j.Key.Team.Id,
                     Name = j.Key.Team.Name,
                     Avatar = j.Key.Team.AvatarUrl,
+                    Organization = j.Key.Organization,
                     Rank = 0,
                     Team = TeamInfoModel.FromTeam(j.Key.Team, true),
                     LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
