@@ -9,12 +9,14 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
     {
     }
 
-    public async Task<Participation> CreateParticipation(Team team, Game game, CancellationToken token = default)
+    public async Task<Participation> CreateParticipation(Team team, Game game, string? organization, CancellationToken token = default)
     {
         Participation participation = new()
         {
             Game = game,
-            Team = team
+            Team = team,
+            Organization = organization,
+            Status = game.AcceptWithoutReview ? ParticipationStatus.Accepted : ParticipationStatus.Pending
         };
 
         await context.AddAsync(participation, token);

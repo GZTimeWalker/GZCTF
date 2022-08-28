@@ -33,6 +33,11 @@ public class Game
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 报名队伍免审核
+    /// </summary>
+    public bool AcceptWithoutReview { get; set; } = false;
+
+    /// <summary>
     /// 比赛邀请码
     /// </summary>
     public string InviteCode { get; set; } = string.Empty;
@@ -118,6 +123,7 @@ public class Game
         Title = model.Title;
         Content = model.Content;
         Summary = model.Summary;
+        AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode ?? InviteCode;
         Organizations = model.Organizations ?? Organizations;
         EndTimeUTC = model.EndTimeUTC;

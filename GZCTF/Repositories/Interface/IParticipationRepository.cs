@@ -7,9 +7,10 @@ public interface IParticipationRepository : IRepository
     /// </summary>
     /// <param name="team">队伍</param>
     /// <param name="game">比赛</param>
+    /// <param name="organization">参赛所属组织</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Participation> CreateParticipation(Team team, Game game, CancellationToken token = default);
+    public Task<Participation> CreateParticipation(Team team, Game game, string? organization, CancellationToken token = default);
 
     /// <summary>
     /// 获取比赛的全部参与对象

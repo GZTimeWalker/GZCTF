@@ -30,6 +30,11 @@ public class GameInfoModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 报名队伍免审核
+    /// </summary>
+    public bool AcceptWithoutReview { get; set; } = false;
+
+    /// <summary>
     /// 比赛邀请码
     /// </summary>
     [MinLength(6, ErrorMessage = "邀请码过短")]
@@ -80,6 +85,7 @@ public class GameInfoModel
             Content = game.Content,
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
+            AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
             StartTimeUTC = game.StartTimeUTC,

@@ -133,9 +133,7 @@ public class GameController : ControllerBase
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse("比赛邀请码错误"));
 
-        if (model.Organization is not null &&
-            game.Organizations is not null &&
-            !game.Organizations.Any(o => o == model.Organization))
+        if (game.Organizations is not null && !game.Organizations.Any(o => o == model.Organization))
             return BadRequest(new RequestResponse("无效的参赛单位"));
 
         var user = await userManager.GetUserAsync(User);
@@ -169,7 +167,7 @@ public class GameController : ControllerBase
         if (await participationRepository.CheckRepeatParticipation(team!, game, token))
             return BadRequest(new RequestResponse("队伍中有成员重复报名"));
 
-        await participationRepository.CreateParticipation(team!, game, token);
+        await participationRepository.CreateParticipation(team!, game, model.Organization, token);
 
         logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 
