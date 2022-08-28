@@ -1028,6 +1028,9 @@ export interface ScoreboardModel {
    */
   updateTimeUTC?: string
 
+  /** 参赛组织 */
+  organizations?: string[] | null
+
   /** 前十名的时间线 */
   timeLine?: TopTimeLine[]
 
@@ -1260,6 +1263,9 @@ export enum AnswerResult {
  * 比赛参与对象，用于审核查看（Admin）
  */
 export interface ParticipationInfoModel {
+  /** 参赛所属组织 */
+  organization?: string | null
+
   /**
    * 参与对象 Id
    * @format int32
