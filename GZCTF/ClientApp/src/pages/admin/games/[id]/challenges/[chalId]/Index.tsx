@@ -36,6 +36,7 @@ import {
   ChallengeTagLabelMap,
 } from '@Utils/ChallengeItem'
 import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '@Api'
+import HintList from '@Components/HintList'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -260,8 +261,8 @@ const GameChallengeEdit: FC = () => {
               return { value: tag[1], ...data }
             })}
           />
-          <Stack spacing="sm">
-            <Textarea
+          </SimpleGrid>
+          <Textarea
               label={
                 <Group spacing="sm">
                   <Text size="sm">题目描述</Text>
@@ -274,26 +275,18 @@ const GameChallengeEdit: FC = () => {
               style={{ width: '100%' }}
               autosize
               disabled={disabled}
-              minRows={4}
-              maxRows={4}
+              minRows={3}
+              maxRows={3}
               onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
             />
-            <Textarea
-              label={
-                <Group spacing="sm">
-                  <Text size="sm">题目提示</Text>
-                  <Text size="xs" color="dimmed">
-                    请以分号 ; 分隔每个提示
-                  </Text>
-                </Group>
-              }
-              value={challengeInfo.hints ?? ''}
-              style={{ width: '100%' }}
-              autosize
+          <SimpleGrid cols={3}>
+          <Stack spacing="sm">
+            <HintList
+              label="题目提示"
+              hints={challengeInfo?.hints ?? []}
               disabled={disabled}
-              minRows={1}
-              maxRows={1}
-              // onChange={(e) => setChallengeInfo({ ...challengeInfo, hints: e.target.value })}
+              height={180}
+              onChangeHint={(hints) => setChallengeInfo({ ...challengeInfo, hints })}
             />
           </Stack>
           <Stack spacing="sm">
