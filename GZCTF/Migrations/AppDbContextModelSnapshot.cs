@@ -238,7 +238,6 @@ namespace CTFServer.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("InviteCode")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Organizations")

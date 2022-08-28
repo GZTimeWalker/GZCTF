@@ -23,6 +23,11 @@ public class ParticipationInfoModel
     public TeamWithDetailedUserInfo Team { get; set; } = default!;
 
     /// <summary>
+    /// 参赛所属组织
+    /// </summary>
+    public string? Organization;
+
+    /// <summary>
     /// 参与状态
     /// </summary>
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
@@ -33,6 +38,7 @@ public class ParticipationInfoModel
             Id = part.Id,
             Score = part.Score,
             Status = part.Status,
+            Organization = part.Organization,
             Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };
 }

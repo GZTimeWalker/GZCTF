@@ -40,7 +40,7 @@ public class Game
     /// <summary>
     /// 比赛邀请码
     /// </summary>
-    public string InviteCode { get; set; } = string.Empty;
+    public string? InviteCode { get; set; }
 
     /// <summary>
     /// 参赛所属单位列表
@@ -124,7 +124,7 @@ public class Game
         Content = model.Content;
         Summary = model.Summary;
         AcceptWithoutReview = model.AcceptWithoutReview;
-        InviteCode = model.InviteCode ?? InviteCode;
+        InviteCode = model.InviteCode;
         Organizations = model.Organizations ?? Organizations;
         EndTimeUTC = model.EndTimeUTC;
         StartTimeUTC = model.StartTimeUTC;

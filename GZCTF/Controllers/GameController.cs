@@ -123,7 +123,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> JoinGame(int id, [FromBody]GameJoinModel model, CancellationToken token)
+    public async Task<IActionResult> JoinGame(int id, [FromBody] GameJoinModel model, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 

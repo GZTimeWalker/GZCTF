@@ -19,7 +19,7 @@ namespace CTFServer.Migrations
                 name: "InviteCode",
                 table: "Games",
                 type: "text",
-                nullable: false,
+                nullable: true,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(

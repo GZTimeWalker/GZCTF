@@ -297,7 +297,7 @@ const GameInfoEdit: FC = () => {
                 <Group spacing="sm">
                   <Text size="sm">参赛可选组织列表</Text>
                   <Text size="xs" color="dimmed">
-                    留空以允许无组织参赛
+                    添加参赛组织以开启分组榜单
                   </Text>
                 </Group>
               }

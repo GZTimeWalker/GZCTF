@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { marked } from 'marked'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
@@ -23,11 +23,12 @@ import { showNotification } from '@mantine/notifications'
 import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import CustomProgress from '@Components/CustomProgress'
+import GameJoinModal from '@Components/GameJoinModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/PageTitle'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import api, { ParticipationStatus } from '@Api'
+import api, { GameJoinModel, ParticipationStatus } from '@Api'
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -195,9 +196,11 @@ const GameDetail: FC = () => {
   const status = game?.status ?? ParticipationStatus.Unsubmitted
   const modals = useModals()
 
-  const onSubmit = () => {
-    api.game
-      .gameJoinGame(numId ?? 0)
+  const [joinModalOpen, setJoinModalOpen] = useState(false)
+
+  const onSubmitJoin = (info: GameJoinModel) => {
+    return api.game
+      .gameJoinGame(numId ?? 0, info)
       .then(() => {
         showNotification({
           color: 'teal',
@@ -238,7 +241,14 @@ const GameDetail: FC = () => {
                 </Text>
               </Stack>
             ),
-            onConfirm: onSubmit,
+            onConfirm: () => {
+              if (
+                game?.inviteCodeRequired ||
+                (game?.organizations && game?.organizations.length > 0)
+              )
+                setJoinModalOpen(true)
+              else onSubmitJoin({})
+            },
             centered: true,
             labels: { confirm: '确认报名', cancel: '取消' },
             confirmProps: { color: 'brand' },
@@ -329,6 +339,14 @@ const GameDetail: FC = () => {
             <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
           </TypographyStylesProvider>
         </Stack>
+        <GameJoinModal
+          title="补全报名信息"
+          opened={joinModalOpen}
+          centered
+          withCloseButton={false}
+          onClose={() => setJoinModalOpen(false)}
+          onSubmitJoin={onSubmitJoin}
+        />
       </Container>
     </WithNavBar>
   )

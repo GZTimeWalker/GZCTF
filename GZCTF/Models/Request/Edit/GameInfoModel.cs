@@ -37,7 +37,6 @@ public class GameInfoModel
     /// <summary>
     /// 比赛邀请码
     /// </summary>
-    [MinLength(6, ErrorMessage = "邀请码过短")]
     [MaxLength(32, ErrorMessage = "邀请码过长")]
     public string? InviteCode { get; set; }
 

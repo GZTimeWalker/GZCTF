@@ -180,6 +180,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                   {!participation.team?.bio ? '（未设置签名）' : participation.team.bio}
                 </Text>
               </Box>
+              <Text>{/* org here */}</Text>
             </Group>
             <Badge color={StatusMap.get(participation.status!)?.color}>
               {StatusMap.get(participation.status!)?.title}

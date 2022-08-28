@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models.Request.Game;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
@@ -15,8 +16,8 @@ public static class ExcelHelper
         var workbook = new XSSFWorkbook();
         var boardSheet = workbook.CreateSheet("排行榜");
         var headerStyle = GetHeaderStyle(workbook);
-        var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard);
-        WriteBoardContent(boardSheet, scoreboard, challIds);
+        var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, game);
+        WriteBoardContent(boardSheet, scoreboard, challIds, game);
 
         var teamSheet = workbook.CreateSheet("战队信息");
         WriteTeamHeader(teamSheet, headerStyle, scoreboard, game);
@@ -41,7 +42,7 @@ public static class ExcelHelper
         return style;
     }
 
-    private static int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard)
+    private static int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
     {
         var row = sheet.CreateRow(0);
         var colIndex = 0;
@@ -49,30 +50,36 @@ public static class ExcelHelper
 
         foreach (var col in CommonScoreboardHeader)
         {
-            var cell = row.CreateCell(colIndex);
+            var cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);
             cell.CellStyle = style;
-            colIndex++;
+        }
+
+        if(game.Organizations is not null && game.Organizations.Count > 0)
+        {
+            var cell = row.CreateCell(colIndex++);
+            cell.SetCellValue("所属组织");
+            cell.CellStyle = style;
         }
 
         foreach (var type in scoreboard.Challenges)
         {
             foreach (var chall in type.Value)
             {
-                var cell = row.CreateCell(colIndex);
+                var cell = row.CreateCell(colIndex++);
                 cell.SetCellValue(chall.Title);
                 cell.CellStyle = style;
                 challIds.Add(chall.Id);
-                colIndex++;
             }
         }
 
         return challIds.ToArray();
     }
 
-    private static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds)
+    private static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
     {
         var rowIndex = 1;
+        var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
         foreach (var item in scoreboard.Items)
         {
             var row = sheet.CreateRow(rowIndex);
@@ -83,11 +90,13 @@ public static class ExcelHelper
             row.CreateCell(4).SetCellValue(item.Score);
 
             var colIndex = 5;
+            if (withOrg)
+                row.CreateCell(colIndex++).SetCellValue(item.Organization);
+
             foreach (var challId in challIds)
             {
                 var chall = item.Challenges.Single(c => c.Id == challId);
-                row.CreateCell(colIndex).SetCellValue(chall.Score);
-                colIndex++;
+                row.CreateCell(colIndex++).SetCellValue(chall.Score);
             }
 
             rowIndex++;

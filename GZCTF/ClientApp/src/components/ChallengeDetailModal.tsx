@@ -335,7 +335,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           )}
           {challenge?.hints && (
             <Stack spacing={2}>
-              {challenge.hints.split(';').map((hint) => (
+              {challenge.hints.map((hint) => (
                 <Group spacing="xs" align="flex-start" noWrap>
                   <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
                   <Text key={hint} size="sm" style={{ maxWidth: 'calc(100% - 2rem)' }}>
