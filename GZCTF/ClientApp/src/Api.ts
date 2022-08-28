@@ -509,6 +509,15 @@ export interface GameInfoModel {
   /** 比赛详细介绍 */
   content?: string
 
+  /** 报名队伍免审核 */
+  acceptWithoutReview?: boolean
+
+  /** 比赛邀请码 */
+  inviteCode?: string | null
+
+  /** 参赛所属单位列表 */
+  organizations?: string[] | null
+
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
@@ -601,7 +610,7 @@ export interface ChallengeEditDetailModel {
   type: ChallengeType
 
   /** 题目提示，用";"分隔 */
-  hints?: string
+  hints?: string[]
 
   /** 是否启用题目 */
   isEnabled: boolean
@@ -819,7 +828,7 @@ export interface ChallengeUpdateModel {
   tag?: ChallengeTag | null
 
   /** 题目提示，用";"分隔 */
-  hints?: string | null
+  hints?: string[] | null
 
   /** 是否启用题目 */
   isEnabled?: boolean | null
@@ -964,6 +973,9 @@ export interface GameDetailModel {
   /** 比赛详细介绍 */
   content?: string
 
+  /** 是否需要邀请码 */
+  inviteCodeRequired?: boolean
+
   /** 比赛头图 */
   poster?: string | null
 
@@ -993,6 +1005,14 @@ export interface GameDetailModel {
    * @format date-time
    */
   end?: string
+}
+
+export interface GameJoinModel {
+  /** 参赛单位 */
+  organization?: string | null
+
+  /** 参赛邀请码 */
+  inviteCode?: string | null
 }
 
 /**
@@ -1052,6 +1072,9 @@ export interface ScoreboardItem {
 
   /** 队伍名称 */
   name?: string
+
+  /** 参赛所属组织 */
+  organization?: string | null
 
   /** 队伍头像 */
   avatar?: string | null
@@ -1302,7 +1325,7 @@ export interface ChallengeDetailModel {
   tag?: ChallengeTag
 
   /** 题目提示，用";"分隔 */
-  hints?: string
+  hints?: string[] | null
 
   /**
    * 题目当前分值
@@ -2791,10 +2814,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 加入一个比赛
      * @request POST:/api/game/{id}
      */
-    gameJoinGame: (id: number, params: RequestParams = {}) =>
+    gameJoinGame: (id: number, data: GameJoinModel, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/game/${id}`,
         method: 'POST',
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 
