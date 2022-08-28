@@ -306,6 +306,18 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               <div dangerouslySetInnerHTML={{ __html: marked(challenge?.content ?? '') }} />
             </TypographyStylesProvider>
           </Group>
+          {challenge?.hints && challenge.hints.length > 0 && (
+            <Stack spacing={2}>
+              {challenge.hints.map((hint) => (
+                <Group spacing="xs" align="flex-start" noWrap>
+                  <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
+                  <Text key={hint} size="sm" style={{ maxWidth: 'calc(100% - 2rem)' }}>
+                    {hint}
+                  </Text>
+                </Group>
+              ))}
+            </Stack>
+          )}
           {isDynamic && !challenge?.context?.instanceEntry && (
             <Group position="center" spacing={2}>
               <Button onClick={onCreateContainer} disabled={disabled} loading={disabled}>
@@ -338,18 +350,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                   销毁实例
                 </Button>
               </Group>
-            </Stack>
-          )}
-          {challenge?.hints && (
-            <Stack spacing={2}>
-              {challenge.hints.map((hint) => (
-                <Group spacing="xs" align="flex-start" noWrap>
-                  <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-                  <Text key={hint} size="sm" style={{ maxWidth: 'calc(100% - 2rem)' }}>
-                    {hint}
-                  </Text>
-                </Group>
-              ))}
             </Stack>
           )}
         </Stack>

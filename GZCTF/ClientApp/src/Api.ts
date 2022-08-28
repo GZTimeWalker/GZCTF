@@ -609,7 +609,7 @@ export interface ChallengeEditDetailModel {
   /** 题目类型 */
   type: ChallengeType
 
-  /** 题目提示，用";"分隔 */
+  /** 题目提示 */
   hints?: string[]
 
   /** 是否启用题目 */
@@ -827,7 +827,7 @@ export interface ChallengeUpdateModel {
   /** 题目标签 */
   tag?: ChallengeTag | null
 
-  /** 题目提示，用";"分隔 */
+  /** 题目提示 */
   hints?: string[] | null
 
   /** 是否启用题目 */
@@ -1333,7 +1333,7 @@ export interface ChallengeDetailModel {
   /** 题目标签 */
   tag?: ChallengeTag
 
-  /** 题目提示，用";"分隔 */
+  /** 题目提示 */
   hints?: string[] | null
 
   /**

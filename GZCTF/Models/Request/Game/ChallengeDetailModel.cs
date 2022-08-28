@@ -26,7 +26,7 @@ public class ChallengeDetailModel
     public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
 
     /// <summary>
-    /// 题目提示，用";"分隔
+    /// 题目提示
     /// </summary>
     public List<string>? Hints { get; set; }
 
