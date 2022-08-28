@@ -2,7 +2,7 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: [ "main", "develop", "ci-test*" ]
+    branches: [ "develop", "ci-test*" ]
     tags: [ "v*" ]
   workflow_dispatch:
 
