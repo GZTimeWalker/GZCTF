@@ -1,4 +1,5 @@
 ﻿using CTFServer.Middlewares;
+using CTFServer.Models;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
@@ -155,6 +156,7 @@ public class GameController : ControllerBase
             else
             {
                 part.Status = ParticipationStatus.Pending;
+                part.Organization = model.Organization;
                 await participationRepository.SaveAsync(token);
 
                 return Ok();
@@ -167,7 +169,17 @@ public class GameController : ControllerBase
         if (await participationRepository.CheckRepeatParticipation(team!, game, token))
             return BadRequest(new RequestResponse("队伍中有成员重复报名"));
 
-        await participationRepository.CreateParticipation(team!, game, model.Organization, token);
+        part = await participationRepository.CreateParticipation(team!, game, model.Organization, token);
+
+        if (part is not null && game.AcceptWithoutReview)
+        {
+            part.Status = ParticipationStatus.Accepted;
+
+            // will also update participation status
+            if (await participationRepository.EnsureInstances(part, game, token))
+                // flush scoreboard when instances are updated
+                gameRepository.FlushScoreboard(game.Id);
+        }
 
         logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 

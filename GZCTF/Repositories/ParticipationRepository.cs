@@ -15,8 +15,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         {
             Game = game,
             Team = team,
-            Organization = organization,
-            Status = game.AcceptWithoutReview ? ParticipationStatus.Accepted : ParticipationStatus.Pending
+            Organization = organization
         };
 
         await context.AddAsync(participation, token);

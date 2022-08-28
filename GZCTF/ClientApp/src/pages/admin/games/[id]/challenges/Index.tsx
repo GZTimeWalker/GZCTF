@@ -109,7 +109,7 @@ const GameChallengeEdit: FC = () => {
               nothingFound="没有找到标签"
               clearButtonLabel="显示全部"
               value={category}
-              onChange={(value) => setCategory(value as ChallengeTag)}
+              onChange={(value: ChallengeTag) => setCategory(value)}
               itemComponent={ChallengeTagItem}
               data={Object.entries(ChallengeTag).map((tag) => {
                 const data = ChallengeTagLabelMap.get(tag[1])

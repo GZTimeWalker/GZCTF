@@ -188,9 +188,16 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             setFlag('')
             checkDataFlag(res.data)
             clearInterval(polling)
+            setDisabled(false)
           }
         })
-        .catch(showErrorNotification)
+        .catch((err) => {
+          setOnSubmitting(false)
+          setFlag('')
+          showErrorNotification(err)
+          clearInterval(polling)
+          setDisabled(false)
+        })
     }, 500)
     return () => clearInterval(polling)
   }, [submitId])
@@ -219,7 +226,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       updateNotification({
         id: 'flag-submitted',
         color: 'yellow',
-        message: 'Flag 状态未知，后续请求还没写……',
+        message: 'Flag 状态未知',
         icon: <Icon path={mdiLoading} size={1} />,
         disallowClose: true,
       })

@@ -11,6 +11,7 @@ import {
   Stack,
   Pagination,
   Title,
+  Select,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
@@ -54,8 +55,8 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-const Lefts = [0, 40, 190, 260, 315]
-const Widths = Array(4).fill(0)
+const Lefts = [0, 40, 80, 230, 300, 355]
+const Widths = Array(5).fill(0)
 Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
 })
@@ -63,7 +64,7 @@ Lefts.forEach((val, idx) => {
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const { classes, cx, theme } = useStyles()
 
-  const hiddenCol = [...Array(4).keys()].map((i) => (
+  const hiddenCol = [...Array(5).keys()].map((i) => (
     <th
       key={i}
       className={cx(classes.theadFixLeft, classes.noBorder)}
@@ -103,7 +104,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       </tr>
       {/* Headers & Score */}
       <tr>
-        {['排名', '战队', '解题数量', '总分'].map((header, idx) => (
+        {['总排名', '排名', '战队', '解题数量', '总分'].map((header, idx) => (
           <th
             key={idx}
             className={cx(classes.theadFixLeft, classes.theadHeader)}
@@ -126,10 +127,11 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
 
 const TableRow: FC<{
   item: ScoreboardItem
+  orgRank: number
   onOpenDetail: () => void
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
-}> = ({ item, challenges, onOpenDetail, iconMap }) => {
+}> = ({ item, challenges, onOpenDetail, iconMap, orgRank }) => {
   const { classes, cx } = useStyles()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
@@ -137,7 +139,10 @@ const TableRow: FC<{
       <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
         {item.rank}
       </td>
-      <td className={cx(classes.theadFixLeft)} style={{ left: Lefts[1] }}>
+      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[1] }}>
+        {orgRank}
+      </td>
+      <td className={cx(classes.theadFixLeft)} style={{ left: Lefts[2] }}>
         <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
           <Avatar
             src={item.avatar}
@@ -168,10 +173,10 @@ const TableRow: FC<{
           </Text>
         </Group>
       </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[2] }}>
+      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
         {solved?.length}
       </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
+      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[4] }}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
       </td>
       {challenges &&
@@ -205,9 +210,14 @@ const ScoreboardTable: FC = () => {
   })
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
+  const [organization, setOrganization] = useState<string | null>('')
+
+  const filtered = !organization
+    ? scoreboard?.items
+    : scoreboard?.items?.filter((s) => s.organization === organization)
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
-  const currentItems = scoreboard?.items?.slice(base, base + ITEM_COUNT_PER_PAGE)
+  const currentItems = filtered?.slice(base, base + ITEM_COUNT_PER_PAGE)
 
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
@@ -215,6 +225,24 @@ const ScoreboardTable: FC = () => {
   return (
     <Paper shadow="md" p="md">
       <Stack spacing="xs">
+        {scoreboard?.organizations && scoreboard.organizations.length > 0 && (
+          <Group>
+            <Select
+              defaultValue=""
+              data={[
+                { value: '', label: '总排行' },
+                ...scoreboard.organizations.map((o) => ({ value: o, label: o })),
+              ]}
+              value={organization}
+              onChange={setOrganization}
+              styles={{
+                input: {
+                  width: 300,
+                },
+              }}
+            />
+          </Group>
+        )}
         <Box style={{ position: 'relative' }}>
           <Box style={{ maxWidth: '100%', overflow: 'scroll' }}>
             <Table className={classes.table}>
@@ -224,6 +252,7 @@ const ScoreboardTable: FC = () => {
                   currentItems?.map((item, idx) => (
                     <TableRow
                       key={base + idx}
+                      orgRank={base + idx + 1}
                       item={item}
                       onOpenDetail={() => {
                         setCurrentItem(item)
