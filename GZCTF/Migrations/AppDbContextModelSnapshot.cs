@@ -473,6 +473,9 @@ namespace CTFServer.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Organization")
+                        .HasColumnType("text");
+
                     b.Property<int>("Score")
                         .HasColumnType("integer");
 

@@ -18,7 +18,7 @@ public class Participation
     /// <summary>
     /// 参赛所属组织
     /// </summary>
-    public string? Organization;
+    public string? Organization { get; set; }
 
     /// <summary>
     /// 当前分数

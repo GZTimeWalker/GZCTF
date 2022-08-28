@@ -8,6 +8,12 @@ namespace CTFServer.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "Organization",
+                table: "Participations",
+                type: "text",
+                nullable: true);
+
             migrationBuilder.AddColumn<bool>(
                 name: "AcceptWithoutReview",
                 table: "Games",
@@ -19,8 +25,7 @@ namespace CTFServer.Migrations
                 name: "InviteCode",
                 table: "Games",
                 type: "text",
-                nullable: true,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Organizations",
@@ -50,6 +55,10 @@ namespace CTFServer.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Organization",
+                table: "Participations");
+
             migrationBuilder.DropColumn(
                 name: "AcceptWithoutReview",
                 table: "Games");

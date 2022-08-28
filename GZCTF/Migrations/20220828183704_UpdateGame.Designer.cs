@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220828144352_UpdateGame")]
+    [Migration("20220828183704_UpdateGame")]
     partial class UpdateGame
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -240,7 +240,6 @@ namespace CTFServer.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("InviteCode")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Organizations")
@@ -475,6 +474,9 @@ namespace CTFServer.Migrations
 
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Organization")
+                        .HasColumnType("text");
 
                     b.Property<int>("Score")
                         .HasColumnType("integer");
