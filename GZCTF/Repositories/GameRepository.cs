@@ -61,6 +61,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         var items = GenScoreboardItems(data, bloods);
         return new()
         {
+            Organizations = game.Organizations,
             Challenges = GenChallenges(data, bloods),
             Items = items,
             TimeLine = GenTopTimeLines(items)

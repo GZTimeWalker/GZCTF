@@ -11,7 +11,12 @@ public class ScoreboardModel
     /// <summary>
     /// 更新时间
     /// </summary>
-    public DateTimeOffset UpdateTimeUTC = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdateTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// 参赛组织
+    /// </summary>
+    public IEnumerable<string>? Organizations { get; set; }
 
     /// <summary>
     /// 前十名的时间线
