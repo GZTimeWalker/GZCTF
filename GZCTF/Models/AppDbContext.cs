@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CTFServer.Models;
 
@@ -32,11 +33,16 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     {
         base.OnModelCreating(builder);
 
-        var options = new JsonSerializerOptions() { WriteIndented = false, };
-        var jsonConverter = new ValueConverter<List<string>?, string>(
+        var options = new JsonSerializerOptions() { WriteIndented = false };
+        var stringListConverter = new ValueConverter<List<string>?, string>(
                 v => JsonSerializer.Serialize<List<string>>(v ?? new(), options),
                 v => JsonSerializer.Deserialize<List<string>>(v, options)
             );
+        var stringListComparer = new ValueComparer<List<string>>(
+            (c1, c2) => (c1 == null && c2 == null) ? true
+                : c2 == null || c1 == null ? false
+                : c1.SequenceEqual(c2),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -68,7 +74,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         builder.Entity<Game>(entity =>
         {
             entity.Property(e => e.Organizations)
-                .HasConversion(jsonConverter);
+                .HasConversion(stringListConverter)
+                .Metadata
+                .SetValueComparer(stringListComparer);
 
             entity.HasMany(e => e.GameEvents)
                 .WithOne(e => e.Game)
@@ -169,7 +177,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>
         builder.Entity<Challenge>(entity =>
         {
             entity.Property(e => e.Hints)
-                .HasConversion(jsonConverter);
+                .HasConversion(stringListConverter)
+                .Metadata
+                .SetValueComparer(stringListComparer);
 
             entity.HasMany(e => e.Flags)
                .WithOne(e => e.Challenge)
