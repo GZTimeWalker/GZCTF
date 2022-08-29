@@ -174,6 +174,7 @@ public class GameController : ControllerBase
         if (part is not null && game.AcceptWithoutReview)
         {
             part.Status = ParticipationStatus.Accepted;
+            team.Locked = true;
 
             // will also update participation status
             if (await participationRepository.EnsureInstances(part, game, token))
