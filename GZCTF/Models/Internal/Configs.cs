@@ -14,15 +14,15 @@ public class AccountPolicy
     /// <summary>
     /// 注册时直接激活账户
     /// </summary>
-    public bool ActiveOnRegister { get; set; } = false;
+    public bool ActiveOnRegister { get; set; } = true;
     /// <summary>
     /// 使用谷歌验证码校验
     /// </summary>
-    public bool UseGoogleRecaptcha { get; set; } = true;
+    public bool UseGoogleRecaptcha { get; set; } = false;
     /// <summary>
     /// 注册、更换邮箱、找回密码需要邮件确认
     /// </summary>
-    public bool EmailConfirmationRequired { get; set; } = true;
+    public bool EmailConfirmationRequired { get; set; } = false;
 }
 
 public class SmtpConfig

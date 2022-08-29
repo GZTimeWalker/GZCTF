@@ -48,7 +48,7 @@ const Configs: FC = () => {
             }
           />
           <Switch
-            checked={configs?.accoutPolicy?.emailConfirmationRequired ?? true}
+            checked={configs?.accoutPolicy?.emailConfirmationRequired ?? false}
             disabled={disabled}
             label={SwitchLabel('需要邮箱确认', '用户注册、更换邮箱、找回密码是否需要邮件确认')}
             onChange={(e) =>
@@ -62,7 +62,7 @@ const Configs: FC = () => {
             }
           />
           <Switch
-            checked={configs?.accoutPolicy?.activeOnRegister ?? false}
+            checked={configs?.accoutPolicy?.activeOnRegister ?? true}
             disabled={disabled}
             label={SwitchLabel('注册后自动激活', '是否在新用户注册后自动激活账户')}
             onChange={(e) =>
