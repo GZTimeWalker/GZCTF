@@ -172,15 +172,7 @@ public class GameController : ControllerBase
         part = await participationRepository.CreateParticipation(team!, game, model.Organization, token);
 
         if (part is not null && game.AcceptWithoutReview)
-        {
-            part.Status = ParticipationStatus.Accepted;
-            team.Locked = true;
-
-            // will also update participation status
-            if (await participationRepository.EnsureInstances(part, game, token))
-                // flush scoreboard when instances are updated
-                gameRepository.FlushScoreboard(game.Id);
-        }
+            await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
         logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 

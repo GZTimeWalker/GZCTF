@@ -276,21 +276,7 @@ public class AdminController : ControllerBase
         if (participation is null)
             return NotFound(new RequestResponse("参与状态未找到", 404));
 
-        var game = participation.Game;
-        var team = participation.Team;
-
-        team.Locked = true;
-        participation.Status = status;
-
-        if (status == ParticipationStatus.Accepted)
-        {
-            // will also update participation status
-            if (await participationRepository.EnsureInstances(participation, game, token))
-                // flush scoreboard when instances are updated
-                gameRepository.FlushScoreboard(game.Id);
-        }
-        else
-            await participationRepository.SaveAsync(token);
+        await participationRepository.UpdateParticipationStatus(participation, status, token);
 
         return Ok();
     }

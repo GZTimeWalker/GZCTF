@@ -1,12 +1,18 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using CTFServer.Models;
+using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
 
 public class ParticipationRepository : RepositoryBase, IParticipationRepository
 {
-    public ParticipationRepository(AppDbContext _context) : base(_context)
+    private readonly IGameRepository gameRepository;
+
+    public ParticipationRepository(
+        IGameRepository _gameRepository,
+        AppDbContext _context) : base(_context)
     {
+        gameRepository = _gameRepository;
     }
 
     public async Task<Participation> CreateParticipation(Team team, Game game, string? organization, CancellationToken token = default)
@@ -63,4 +69,23 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
                     .Any(m => m.Members.Any(m => m == u))
                 )
             , token);
+
+    public async Task UpdateParticipationStatus(Participation part, ParticipationStatus status, CancellationToken token = default)
+    {
+        part.Status = status;
+
+        if (status == ParticipationStatus.Accepted)
+        {
+            part.Team.Locked = true;
+
+            // will also update participation status, update team lock
+            // will call SaveAsync
+            if (await EnsureInstances(part, part.Game, token))
+                // flush scoreboard when instances are updated
+                gameRepository.FlushScoreboard(part.Game.Id);
+        }
+        // team will unlock automatically when request occur
+        else
+            await SaveAsync(token);
+    }
 }
