@@ -67,6 +67,7 @@ public interface IParticipationRepository : IRepository
     /// 更新比赛参与状态
     /// </summary>
     /// <param name="part">参与对象</param>
+    /// <param name="status">参与状态</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task UpdateParticipationStatus(Participation part, ParticipationStatus status, CancellationToken token = default);
