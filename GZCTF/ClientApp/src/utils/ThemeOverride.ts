@@ -73,6 +73,12 @@ export const ThemeOverride: MantineThemeOverride = {
 
 export const useTypographyStyles = createStyles((theme) => ({
   root: {
+    '& p': {
+      wordBreak: 'break-word',
+      wordWrap: 'break-word',
+      overflow: 'hidden',
+    },
+
     '& code': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[1],
       padding: `1px ${theme.spacing.xs / 2}px`,
