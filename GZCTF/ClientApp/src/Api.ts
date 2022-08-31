@@ -533,6 +533,9 @@ export interface GameInfoModel {
   /** 比赛头图 */
   poster?: string | null
 
+  /** 比赛签名公钥 */
+  publicKey: string
+
   /**
    * 开始时间
    * @format date-time
@@ -611,6 +614,9 @@ export interface ChallengeEditDetailModel {
 
   /** 题目提示 */
   hints?: string[]
+
+  /** Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag */
+  flagTemplate?: string | null
 
   /** 是否启用题目 */
   isEnabled: boolean
@@ -823,6 +829,12 @@ export interface ChallengeUpdateModel {
 
   /** 题目内容 */
   content?: string | null
+
+  /**
+   * Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+   * @pattern (?=\[TEAM_HASH\])
+   */
+  flagTemplate?: string | null
 
   /** 题目标签 */
   tag?: ChallengeTag | null

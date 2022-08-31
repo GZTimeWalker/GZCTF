@@ -33,6 +33,9 @@
     "swr": "^1.3.0",
     "vite-tsconfig-paths": "^3.5.0"
   },
+  "resolutions": {
+    "typescript": "4.7.4"
+  },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.9",
     "@nabla/vite-plugin-eslint": "^1.4.1",
