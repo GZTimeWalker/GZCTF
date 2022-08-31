@@ -534,7 +534,7 @@ export interface GameInfoModel {
   poster?: string | null
 
   /** 比赛签名公钥 */
-  publicKey: string
+  publicKey?: string
 
   /**
    * 开始时间

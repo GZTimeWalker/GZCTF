@@ -64,7 +64,6 @@ public class GameInfoModel
     /// <summary>
     /// 比赛签名公钥
     /// </summary>
-    [Required]
     public string PublicKey { get; set; } = string.Empty;
 
     /// <summary>
