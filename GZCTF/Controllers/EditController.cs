@@ -35,6 +35,7 @@ public class EditController : Controller
         IChallengeRepository _challengeRepository,
         IGameNoticeRepository _gameNoticeRepository,
         IGameRepository _gameRepository,
+        IConfiguration _configuration,
         IContainerService _containerService,
         IFileRepository _fileService)
     {

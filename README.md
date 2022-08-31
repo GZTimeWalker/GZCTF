@@ -90,6 +90,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
       "EnableSsl": true
     }
   },
+  "XorKey": "Q22yg09A91YWm1GsOf9VIMiw",
   "ContainerProvider": "Docker", // or K8s
   "DockerConfig": {
     "Uri": "",

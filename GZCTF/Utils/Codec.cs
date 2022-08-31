@@ -40,6 +40,22 @@ public class Codec
                 return string.Empty;
             }
         }
+
+        public static byte[] DecodeToBytes(string? str)
+        {
+            if (str is null)
+                return Array.Empty<byte>();
+
+            try
+            {
+                return Convert.FromBase64String(str);
+            }
+            catch (Exception)
+            {
+                return Array.Empty<byte>();
+            }
+        }
+        
     }
 
     /// <summary>

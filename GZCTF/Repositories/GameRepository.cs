@@ -1,6 +1,8 @@
-﻿using CTFServer.Models.Request.Game;
+﻿using System.Text;
+using CTFServer.Models.Request.Game;
 using CTFServer.Models.Request.Teams;
 using CTFServer.Repositories.Interface;
+using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -9,18 +11,34 @@ namespace CTFServer.Repositories;
 public class GameRepository : RepositoryBase, IGameRepository
 {
     private readonly IMemoryCache cache;
+    private readonly byte[]? xorkey;
+    private readonly ILogger<GameRepository> logger;
 
-    public GameRepository(IMemoryCache memoryCache, AppDbContext _context) : base(_context)
+    public GameRepository(IMemoryCache memoryCache,
+        IConfiguration _configuration,
+        ILogger<GameRepository> _logger,
+        AppDbContext _context) : base(_context)
     {
         cache = memoryCache;
+        logger = _logger;
+        xorkey = string.IsNullOrEmpty(_configuration["XorKey"]) ? null
+            : Encoding.UTF8.GetBytes(_configuration["XorKey"]);
     }
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
+        game.GenerateKeyPair(xorkey);
+
+        if (xorkey is null)
+            logger.SystemLog("配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。", TaskStatus.Pending, LogLevel.Warning);
+
         await context.AddAsync(game, token);
         await SaveAsync(token);
         return game;
     }
+
+    public string GetToken(Game game, Team team)
+        => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", xorkey)}";
 
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);

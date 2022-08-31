@@ -1,4 +1,10 @@
 ﻿using CTFServer.Models.Request.Edit;
+using CTFServer.Utils;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities.Encoders;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -16,6 +22,18 @@ public class Game
     /// </summary>
     [Required]
     public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Token 签名公钥
+    /// </summary>
+    [Required]
+    public string PublicKey { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Token 签名私钥
+    /// </summary>
+    [Required]
+    public string PrivateKey { get; set; } = string.Empty;
 
     /// <summary>
     /// 头图哈希
@@ -117,6 +135,41 @@ public class Game
 
     [NotMapped]
     public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
+
+    internal void GenerateKeyPair(byte[]? xorkey)
+    {
+        SecureRandom sr = new();
+        Ed25519KeyPairGenerator kpg = new();
+        kpg.Init(new Ed25519KeyGenerationParameters(sr));
+        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        Ed25519PrivateKeyParameters privateKey = (Ed25519PrivateKeyParameters)kp.Private;
+        Ed25519PublicKeyParameters publicKey = (Ed25519PublicKeyParameters)kp.Public;
+
+        if (xorkey is null)
+            PrivateKey = Base64.ToBase64String(privateKey.GetEncoded());
+        else
+            PrivateKey = Base64.ToBase64String(Codec.Xor(privateKey.GetEncoded(), xorkey));
+
+        PublicKey = Base64.ToBase64String(publicKey.GetEncoded());
+    }
+
+    internal string Sign(string str, byte[]? xorkey)
+    {
+        Ed25519PrivateKeyParameters privateKey;
+        if (xorkey is null)
+            privateKey = new(Codec.Base64.DecodeToBytes(PrivateKey), 0);
+        else
+            privateKey = new(Codec.Xor(Codec.Base64.DecodeToBytes(PrivateKey), xorkey), 0);
+
+        return DigitalSignature.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
+    }
+
+    internal bool Verify(string data, string sign)
+    {
+        Ed25519PublicKeyParameters publicKey = new(Codec.Base64.DecodeToBytes(PublicKey), 0);
+
+        return DigitalSignature.VerifySignature(data, sign, publicKey, SignAlgorithm.Ed25519);
+    }
 
     internal Game Update(GameInfoModel model)
     {

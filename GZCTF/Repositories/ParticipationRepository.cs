@@ -21,7 +21,8 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         {
             Game = game,
             Team = team,
-            Organization = organization
+            Organization = organization,
+            Token = gameRepository.GetToken(game, team)
         };
 
         await context.AddAsync(participation, token);

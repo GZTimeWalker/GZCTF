@@ -62,6 +62,12 @@ public class GameInfoModel
     public string? PosterUrl { get; set; } = string.Empty;
 
     /// <summary>
+    /// 比赛签名公钥
+    /// </summary>
+    [Required]
+    public string PublicKey { get; set; } = string.Empty;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [Required]
@@ -84,6 +90,7 @@ public class GameInfoModel
             Content = game.Content,
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
+            PublicKey = game.PublicKey,
             Organizations = game.Organizations,
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
