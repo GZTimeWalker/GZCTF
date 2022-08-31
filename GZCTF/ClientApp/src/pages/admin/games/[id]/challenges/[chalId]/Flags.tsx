@@ -16,10 +16,11 @@ import {
   ScrollArea,
   Overlay,
   Center,
+  Code,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
 import AttachmentUploadModal, { useUploadStyles } from '@Components/admin/AttachmentUploadModal'
@@ -52,12 +53,16 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
 
   const [disabled, setDisabled] = useState(false)
   const [type, setType] = useState<FileType>(challenge?.attachment?.type ?? FileType.None)
+  const [remoteUrl, setRemoteUrl] = useState(challenge?.attachment?.remoteUrl ?? '')
+  const [flagTemplate, setFlagTemplate] = useState(challenge?.flagTemplate ?? '')
 
   const modals = useModals()
 
   useEffect(() => {
     if (challenge) {
       setType(challenge.attachment?.type ?? FileType.None)
+      setRemoteUrl(challenge.attachment?.remoteUrl ?? '')
+      setFlagTemplate(challenge.flagTemplate ?? '')
     }
   }, [challenge])
 
@@ -88,8 +93,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const { classes, theme } = useUploadStyles()
   const [progress, setProgress] = useState(0)
   const [flagCreateModalOpen, setFlagCreateModalOpen] = useState(false)
-
-  const [remoteUrl, setRemoteUrl] = useState(challenge?.attachment?.remoteUrl ?? '')
 
   const onUpload = (file: File) => {
     setProgress(0)
@@ -156,6 +159,42 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           })
         })
         .catch((err) => showErrorNotification(err))
+        .finally(() => {
+          setDisabled(false)
+        })
+    }
+  }
+
+  const onChangeFlagTemplate = () => {
+    if (flagTemplate !== challenge?.flagTemplate) {
+      if (flagTemplate.length > 0 && !flagTemplate.includes('[TEAM_HASH]')) {
+        showNotification({
+          color: 'red',
+          message: (
+            <Text>
+              flag 模板中必须包含<Code>[TEAM_HASH]</Code>
+            </Text>
+          ),
+          icon: <Icon path={mdiClose} size={1} />,
+          disallowClose: true,
+        })
+        return
+      }
+
+      setDisabled(true)
+      api.edit
+        // allow empty flag template to be set
+        .editUpdateGameChallenge(numId, numCId, { flagTemplate })
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            message: 'flag 模板已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+          challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
+        })
+        .catch(showErrorNotification)
         .finally(() => {
           setDisabled(false)
         })
@@ -247,45 +286,66 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         )}
       </Group>
       <Group position="apart" mt={20}>
-        <Title order={2}>flag 管理</Title>{' '}
-        <Button
-          disabled={disabled || challenge?.type === ChallengeType.DynamicContainer}
-          style={{ width: '122px' }}
-          onClick={() => setFlagCreateModalOpen(true)}
-        >
-          添加 flag
-        </Button>
+        <Title order={2}>flag 管理</Title>
+        {challenge?.type === ChallengeType.DynamicContainer ? (
+          <Button disabled={disabled} onClick={onChangeFlagTemplate}>
+            保存 flag 模版
+          </Button>
+        ) : (
+          <Button
+            disabled={disabled}
+            style={{ width: '122px' }}
+            onClick={() => setFlagCreateModalOpen(true)}
+          >
+            添加 flag
+          </Button>
+        )}
       </Group>
       <Divider />
-      <ScrollArea sx={{ height: 'calc(100vh - 430px)', position: 'relative' }}>
-        {challenge?.type === ChallengeType.DynamicContainer && (
-          <>
-            <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
-            <Center style={{ height: 'calc(100vh - 430px)' }}>
-              <Stack spacing={0}>
-                <Title order={2}>动态容器类型不需要配置 flag</Title>
-                <Text>flag 将会被自动生成并下发</Text>
+      {challenge?.type === ChallengeType.DynamicContainer ? (
+        <Stack>
+          <TextInput
+            label={
+              <Stack spacing={0} pb={8}>
+                <Text size="sm">flag 模版</Text>
+                <Text size="xs" color="dimmed">
+                  请输入 flag 模版字符串，其中 <Code>[TEAM_HASH]</Code> 将会被自动替换为队伍 Token 与相关信息所生成的哈希值
+                </Text>
+                <Text size="xs" color="dimmed">
+                  留空以生成随机 UUID 作为 flag
+                </Text>
               </Stack>
-            </Center>
-          </>
-        )}
-        {!challenge?.flags.length && (
-          <>
-            <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
-            <Center style={{ height: 'calc(100vh - 430px)' }}>
-              <Stack spacing={0}>
-                <Title order={2}>flag 列表为空</Title>
-                <Text>请通过右上角添加 flag</Text>
-              </Stack>
-            </Center>
-          </>
-        )}
-        <FlagEditPanel
-          flags={challenge?.flags}
-          onDelete={onDelete}
-          unifiedAttachment={challenge?.attachment}
-        />
-      </ScrollArea>
+            }
+            value={flagTemplate}
+            placeholder="flag{random_uuid}"
+            onChange={(e) => setFlagTemplate(e.target.value)}
+            styles={{
+              input: {
+                fontFamily: theme.fontFamilyMonospace,
+              },
+            }}
+          />
+        </Stack>
+      ) : (
+        <ScrollArea sx={{ height: 'calc(100vh - 430px)', position: 'relative' }}>
+          {!challenge?.flags.length && (
+            <>
+              <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
+              <Center style={{ height: 'calc(100vh - 430px)' }}>
+                <Stack spacing={0}>
+                  <Title order={2}>flag 列表为空</Title>
+                  <Text>请通过右上角添加 flag</Text>
+                </Stack>
+              </Center>
+            </>
+          )}
+          <FlagEditPanel
+            flags={challenge?.flags}
+            onDelete={onDelete}
+            unifiedAttachment={challenge?.attachment}
+          />
+        </ScrollArea>
+      )}
       <FlagCreateModal
         title="添加 flag"
         centered

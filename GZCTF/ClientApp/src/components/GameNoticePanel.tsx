@@ -155,7 +155,7 @@ const GameNoticePanel: FC = () => {
           <ScrollArea
             offsetScrollbars
             scrollbarSize={4}
-            style={{ height: 'calc(100vh - 23rem)' }}
+            style={{ height: 'calc(100vh - 25rem)' }}
             sx={(theme) => ({
               scrollbar: {
                 '&:hover': {
@@ -187,7 +187,7 @@ const GameNoticePanel: FC = () => {
             </List>
           </ScrollArea>
         ) : (
-          <Stack justify="center" style={{ height: 'calc(100vh - 23rem)' }}>
+          <Stack justify="center" style={{ height: 'calc(100vh - 25rem)' }}>
             <Empty description="暂无通知" />
           </Stack>
         )}

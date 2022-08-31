@@ -22,7 +22,7 @@ public class ChallengeUpdateModel
     /// <summary>
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
     /// </summary>
-    [RegularExpression(@"(?=\[TEAM_HASH\])")]
+    [RegularExpression(@".*(\[TEAM_HASH\])+.*")]
     public string? FlagTemplate { get; set; }
 
     /// <summary>

@@ -16,10 +16,11 @@ import {
   MultiSelect,
   ActionIcon,
   Switch,
+  PasswordInput,
 } from '@mantine/core'
 import { DatePicker, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
-import { useInputState } from '@mantine/hooks'
+import { useClipboard, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiKeyboardBackspace,
@@ -53,6 +54,8 @@ const GameInfoEdit: FC = () => {
   const [organizations, setOrganizations] = useState<string[]>([])
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
+
+  const clipboard = useClipboard()
 
   useEffect(() => {
     const numId = parseInt(id ?? '-1')
@@ -248,16 +251,39 @@ const GameInfoEdit: FC = () => {
       </Group>
       <Grid grow>
         <Grid.Col span={6}>
-          <Textarea
-            label="比赛简介"
-            value={game?.summary}
-            style={{ width: '100%' }}
-            autosize
-            disabled={disabled}
-            minRows={6}
-            maxRows={6}
-            onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
-          />
+          <Stack>
+            <PasswordInput
+              value={game?.publicKey || ''}
+              label={
+                <Group spacing="sm">
+                  <Text size="sm">比赛签名公钥</Text>
+                  <Text size="xs" color="dimmed">
+                    用于验证队伍 Token
+                  </Text>
+                </Group>
+              }
+              readOnly
+              onClick={() => {
+                clipboard.copy(game?.publicKey || '')
+                showNotification({
+                  color: 'teal',
+                  message: '公钥已复制到剪贴板',
+                  icon: <Icon path={mdiCheck} size={1} />,
+                  disallowClose: true,
+                })
+              }}
+            />
+            <Textarea
+              label="比赛简介"
+              value={game?.summary}
+              style={{ width: '100%' }}
+              autosize
+              disabled={disabled}
+              minRows={4}
+              maxRows={4}
+              onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
+            />
+          </Stack>
         </Grid.Col>
         <Grid.Col span={6}>
           <Stack>
@@ -309,8 +335,8 @@ const GameInfoEdit: FC = () => {
               value={game?.organizations ?? []}
               styles={{
                 input: {
-                  minHeight: 77,
-                  maxHeight: 77,
+                  minHeight: 110,
+                  maxHeight: 110,
                 },
               }}
               onChange={(e) => game && setGame({ ...game, organizations: e })}

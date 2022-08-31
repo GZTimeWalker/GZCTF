@@ -11,7 +11,12 @@ import {
   createStyles,
   Progress,
   Skeleton,
+  PasswordInput,
 } from '@mantine/core'
+import { useClipboard } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiKey } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import api from '@Api'
 
 const useStyle = createStyles((theme) => ({
@@ -27,18 +32,20 @@ const TeamRank: FC<PaperProps> = (props) => {
 
   const { data: myteam } = api.game.useGameMyTeam(numId)
 
-  const { classes } = useStyle()
+  const { classes, theme } = useStyle()
+
+  const clipboard = useClipboard()
 
   const solved = (myteam?.rank.solvedCount ?? 0) / (myteam?.rank.challenges?.length ?? 1)
 
   return (
     <Card shadow="sm" {...props}>
-      <Stack>
+      <Stack spacing={8}>
         <Group>
           <Avatar color="cyan" size="md" radius="md" src={myteam?.rank.avatar}>
             {myteam?.rank.name?.at(0) ?? 'T'}
           </Avatar>
-          <Skeleton width="8rem" visible={!myteam?.rank.name}>
+          <Skeleton width="8rem" visible={!myteam}>
             <Title order={4}>{myteam?.rank.name ?? 'Loading'}</Title>
           </Skeleton>
         </Group>
@@ -68,6 +75,26 @@ const TeamRank: FC<PaperProps> = (props) => {
           </Stack>
         </Group>
         <Progress value={solved * 100} />
+        <PasswordInput
+          value={myteam?.teamToken}
+          readOnly
+          icon={<Icon path={mdiKey} size={1} />}
+          variant="unstyled"
+          onClick={() => {
+            clipboard.copy(myteam?.teamToken)
+            showNotification({
+              color: 'teal',
+              message: '队伍Token已复制到剪贴板',
+              icon: <Icon path={mdiCheck} size={1} />,
+              disallowClose: true,
+            })
+          }}
+          styles={{
+            innerInput: {
+              fontFamily: theme.fontFamilyMonospace,
+            },
+          }}
+        />
       </Stack>
     </Card>
   )
