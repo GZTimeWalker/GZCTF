@@ -30,7 +30,6 @@ public class AdminController : ControllerBase
     private readonly IFileRepository fileService;
     private readonly IConfigService configService;
     private readonly ITeamRepository teamRepository;
-    private readonly IGameRepository gameRepository;
     private readonly IServiceProvider serviceProvider;
     private readonly IParticipationRepository participationRepository;
 
@@ -39,7 +38,6 @@ public class AdminController : ControllerBase
         ILogRepository _logRepository,
         IConfigService _configService,
         ITeamRepository _teamRepository,
-        IGameRepository _gameRepository,
         IServiceProvider _serviceProvider,
         IParticipationRepository _participationRepository)
     {
@@ -48,7 +46,6 @@ public class AdminController : ControllerBase
         configService = _configService;
         logRepository = _logRepository;
         teamRepository = _teamRepository;
-        gameRepository = _gameRepository;
         serviceProvider = _serviceProvider;
         participationRepository = _participationRepository;
     }
@@ -87,7 +84,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateConfigs([FromBody] GlobalConfig model, CancellationToken token)
     {
-        foreach(var prop in typeof(GlobalConfig).GetProperties())
+        foreach (var prop in typeof(GlobalConfig).GetProperties())
         {
             var value = prop.GetValue(model);
             if (value is not null)

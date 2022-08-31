@@ -105,4 +105,6 @@ public class ConfigService : IConfigService
             || genericTypeDefinition == typeof(IDictionary<,>)
             || genericTypeDefinition == typeof(ISet<>);
     }
+
+    public void ReloadConfig() => configuration?.Reload();
 }

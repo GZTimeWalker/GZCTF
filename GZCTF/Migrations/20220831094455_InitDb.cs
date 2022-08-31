@@ -25,6 +25,18 @@ namespace CTFServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Configs",
+                columns: table => new
+                {
+                    ConfigKey = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Configs", x => x.ConfigKey);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Containers",
                 columns: table => new
                 {
@@ -68,9 +80,14 @@ namespace CTFServer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
+                    PublicKey = table.Column<string>(type: "text", nullable: false),
+                    PrivateKey = table.Column<string>(type: "text", nullable: false),
                     PosterHash = table.Column<string>(type: "text", nullable: true),
                     Summary = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
+                    AcceptWithoutReview = table.Column<bool>(type: "boolean", nullable: false),
+                    InviteCode = table.Column<string>(type: "text", nullable: true),
+                    Organizations = table.Column<string>(type: "text", nullable: true),
                     TeamMemberCountLimit = table.Column<int>(type: "integer", nullable: false),
                     ContainerCountLimit = table.Column<int>(type: "integer", nullable: false),
                     StartTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -192,7 +209,8 @@ namespace CTFServer.Migrations
                     IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     Tag = table.Column<byte>(type: "smallint", nullable: false),
                     Type = table.Column<byte>(type: "smallint", nullable: false),
-                    Hints = table.Column<string>(type: "text", nullable: false),
+                    Hints = table.Column<string>(type: "text", nullable: true),
+                    FlagTemplate = table.Column<string>(type: "text", nullable: true),
                     ContainerImage = table.Column<string>(type: "text", nullable: true),
                     MemoryLimit = table.Column<int>(type: "integer", nullable: true),
                     CPUCount = table.Column<int>(type: "integer", nullable: true),
@@ -321,7 +339,7 @@ namespace CTFServer.Migrations
                     AvatarHash = table.Column<string>(type: "text", nullable: true),
                     OwnedTeamId = table.Column<int>(type: "integer", nullable: true),
                     ActiveTeamId = table.Column<int>(type: "integer", nullable: true),
-                    UserName = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: true),
+                    UserName = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -427,7 +445,8 @@ namespace CTFServer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Status = table.Column<string>(type: "text", nullable: false),
-                    Score = table.Column<int>(type: "integer", nullable: false),
+                    Token = table.Column<string>(type: "text", nullable: false),
+                    Organization = table.Column<string>(type: "text", nullable: true),
                     GameId = table.Column<int>(type: "integer", nullable: false),
                     TeamId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -480,6 +499,7 @@ namespace CTFServer.Migrations
                     ParticipationId = table.Column<int>(type: "integer", nullable: false),
                     IsSolved = table.Column<bool>(type: "boolean", nullable: false),
                     IsLoaded = table.Column<bool>(type: "boolean", nullable: false),
+                    Score = table.Column<int>(type: "integer", nullable: false),
                     FlagId = table.Column<int>(type: "integer", nullable: true),
                     ContainerId = table.Column<string>(type: "text", nullable: true)
                 },
@@ -796,6 +816,9 @@ namespace CTFServer.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Configs");
 
             migrationBuilder.DropTable(
                 name: "GameEvents");

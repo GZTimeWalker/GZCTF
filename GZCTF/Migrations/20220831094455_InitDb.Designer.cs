@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220814090839_InitDb")]
+    [Migration("20220831094455_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,11 +57,13 @@ namespace CTFServer.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("text");
 
+                    b.Property<string>("FlagTemplate")
+                        .HasColumnType("text");
+
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Hints")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsEnabled")
@@ -175,6 +177,20 @@ namespace CTFServer.Migrations
                     b.ToTable("Attachments");
                 });
 
+            modelBuilder.Entity("CTFServer.Models.Data.Config", b =>
+                {
+                    b.Property<string>("ConfigKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ConfigKey");
+
+                    b.ToTable("Configs");
+                });
+
             modelBuilder.Entity("CTFServer.Models.FlagContext", b =>
                 {
                     b.Property<int>("Id")
@@ -213,6 +229,9 @@ namespace CTFServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("AcceptWithoutReview")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("ContainerCountLimit")
                         .HasColumnType("integer");
 
@@ -223,7 +242,21 @@ namespace CTFServer.Migrations
                     b.Property<DateTimeOffset>("EndTimeUTC")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("InviteCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Organizations")
+                        .HasColumnType("text");
+
                     b.Property<string>("PosterHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrivateKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("StartTimeUTC")
@@ -330,6 +363,9 @@ namespace CTFServer.Migrations
 
                     b.Property<bool>("IsSolved")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
 
                     b.HasKey("ChallengeId", "ParticipationId");
 
@@ -453,8 +489,8 @@ namespace CTFServer.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("integer");
+                    b.Property<string>("Organization")
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -462,6 +498,10 @@ namespace CTFServer.Migrations
 
                     b.Property<int>("TeamId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -652,8 +692,8 @@ namespace CTFServer.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(12)
-                        .HasColumnType("character varying(12)");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.HasKey("Id");
 

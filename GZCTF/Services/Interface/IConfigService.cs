@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace CTFServer.Services.Interface;
 
 public interface IConfigService
@@ -20,5 +21,9 @@ public interface IConfigService
     /// <param name="token"></param>
     /// <returns></returns>
     public Task SaveConfig(Type type, object? value, CancellationToken token = default);
-}
 
+    /// <summary>
+    /// 重载配置
+    /// </summary>
+    public void ReloadConfig();
+}
