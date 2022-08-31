@@ -224,10 +224,10 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 {
     var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    await context.Database.EnsureCreatedAsync();
-
     if (context.Database.IsRelational())
         await context.Database.MigrateAsync();
+
+    await context.Database.EnsureCreatedAsync();
 
     if (!await context.Notices.AnyAsync())
     {

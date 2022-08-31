@@ -31,10 +31,10 @@ public class EntityConfigurationProvider : ConfigurationProvider
 
         var context = new AppDbContext(builder.Options);
 
-        context.Database.EnsureCreated();
-
         if (context.Database.IsRelational())
             context.Database.Migrate();
+
+        context.Database.EnsureCreated();
 
         if (context is null || !context.Configs.Any())
         {
