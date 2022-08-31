@@ -225,10 +225,10 @@ const ChallengePanel: FC = () => {
                 }}
                 solved={
                   myteam &&
-                  myteam.challenges?.find((c) => c.id === chal.id)?.type !==
+                  myteam.rank.challenges?.find((c) => c.id === chal.id)?.type !==
                     SubmissionType.Unaccepted
                 }
-                teamId={myteam?.id}
+                teamId={myteam?.rank.id}
               />
             ))}
           </SimpleGrid>
@@ -249,7 +249,7 @@ const ChallengePanel: FC = () => {
           gameId={numId}
           solved={
             myteam &&
-            myteam.challenges?.find((c) => c.id === challenge?.id)?.type !==
+            myteam.rank.challenges?.find((c) => c.id === challenge?.id)?.type !==
               SubmissionType.Unaccepted
           }
           tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}

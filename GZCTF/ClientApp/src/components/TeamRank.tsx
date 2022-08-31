@@ -29,17 +29,17 @@ const TeamRank: FC<PaperProps> = (props) => {
 
   const { classes } = useStyle()
 
-  const solved = (myteam?.solvedCount ?? 0) / (myteam?.challenges?.length ?? 1)
+  const solved = (myteam?.rank.solvedCount ?? 0) / (myteam?.rank.challenges?.length ?? 1)
 
   return (
     <Card shadow="sm" {...props}>
       <Stack>
         <Group>
-          <Avatar color="cyan" size="md" radius="md" src={myteam?.avatar}>
-            {myteam?.name?.at(0) ?? 'T'}
+          <Avatar color="cyan" size="md" radius="md" src={myteam?.rank.avatar}>
+            {myteam?.rank.name?.at(0) ?? 'T'}
           </Avatar>
-          <Skeleton width="8rem" visible={!myteam?.name}>
-            <Title order={4}>{myteam?.name ?? 'Loading'}</Title>
+          <Skeleton width="8rem" visible={!myteam?.rank.name}>
+            <Title order={4}>{myteam?.rank.name ?? 'Loading'}</Title>
           </Skeleton>
         </Group>
         <Group
@@ -50,19 +50,19 @@ const TeamRank: FC<PaperProps> = (props) => {
         >
           <Stack spacing={2}>
             <Skeleton visible={!myteam}>
-              <Text className={classes.number}>{myteam?.rank ?? 'Loading'}</Text>
+              <Text className={classes.number}>{myteam?.rank.rank ?? 'Loading'}</Text>
             </Skeleton>
             <Text size="sm">排名</Text>
           </Stack>
           <Stack spacing={2}>
             <Skeleton visible={!myteam}>
-              <Text className={classes.number}>{myteam?.score ?? 'Loading'}</Text>
+              <Text className={classes.number}>{myteam?.rank.score ?? 'Loading'}</Text>
             </Skeleton>
             <Text size="sm">得分</Text>
           </Stack>
           <Stack spacing={2}>
             <Skeleton visible={!myteam}>
-              <Text className={classes.number}>{myteam?.solvedCount ?? 'Loading'}</Text>
+              <Text className={classes.number}>{myteam?.rank.solvedCount ?? 'Loading'}</Text>
             </Skeleton>
             <Text size="sm">攻克数量</Text>
           </Stack>

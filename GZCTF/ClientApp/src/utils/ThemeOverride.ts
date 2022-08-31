@@ -119,4 +119,4 @@ export const ACCEPT_IMAGE_MIME_TYPE = [
   MIME_TYPES.webp,
   MIME_TYPES.jpeg,
   MIME_TYPES.gif,
-];
+]

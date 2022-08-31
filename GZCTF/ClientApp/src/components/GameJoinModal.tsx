@@ -31,7 +31,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
           <TextInput
             required
             label="请输入邀请码"
-						description="本场比赛开启了邀请参赛，报名参赛需提供邀请码"
+            description="本场比赛开启了邀请参赛，报名参赛需提供邀请码"
             value={inviteCode}
             onChange={(e) => setInviteCode(e.target.value)}
             disabled={disabled}
@@ -39,9 +39,9 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
         )}
         {game?.organizations && game.organizations.length > 0 && (
           <Select
-						required
+            required
             label="选择你的参赛组织"
-						description="本场比赛具有多个参赛组织，请选择你的参赛组织"
+            description="本场比赛具有多个参赛组织，请选择你的参赛组织"
             data={game.organizations}
             disabled={disabled}
             value={organization}
@@ -78,8 +78,8 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
               organization:
                 game?.organizations && game.organizations.length > 0 ? organization : undefined,
             }).finally(() => {
-							setInviteCode('')
-							setOrganization('')
+              setInviteCode('')
+              setOrganization('')
               setDisabled(false)
               props.onClose()
             })

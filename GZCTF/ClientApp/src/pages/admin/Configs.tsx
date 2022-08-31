@@ -1,9 +1,9 @@
 import { FC, useState } from 'react'
 import { Divider, SimpleGrid, Stack, Switch, Title } from '@mantine/core'
 import AdminPage from '@Components/admin/AdminPage'
+import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { GlobalConfig } from '@Api'
-import { SwitchLabel } from '@Components/admin/SwitchLabel'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs({

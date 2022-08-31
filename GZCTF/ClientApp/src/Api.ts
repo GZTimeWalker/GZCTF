@@ -1259,6 +1259,14 @@ export enum AnswerResult {
   CheatDetected = 'CheatDetected',
 }
 
+export interface GameTeamDetailModel {
+  /** 积分榜信息 */
+  rank: ScoreboardItem
+
+  /** 队伍 Token */
+  teamToken: string
+}
+
 /**
  * 比赛参与对象，用于审核查看（Admin）
  */
@@ -1271,12 +1279,6 @@ export interface ParticipationInfoModel {
    * @format int32
    */
   id?: number
-
-  /**
-   * 队伍分值
-   * @format int32
-   */
-  score?: number
 
   /** 参与队伍 */
   team?: TeamWithDetailedUserInfo
@@ -3071,7 +3073,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/game/{id}/myteam
      */
     gameMyTeam: (id: number, params: RequestParams = {}) =>
-      this.request<ScoreboardItem, RequestResponse>({
+      this.request<GameTeamDetailModel, RequestResponse>({
         path: `/api/game/${id}/myteam`,
         method: 'GET',
         format: 'json',
@@ -3086,7 +3088,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/game/{id}/myteam
      */
     useGameMyTeam: (id: number, options?: SWRConfiguration) =>
-      useSWR<ScoreboardItem, RequestResponse>(`/api/game/${id}/myteam`, options),
+      useSWR<GameTeamDetailModel, RequestResponse>(`/api/game/${id}/myteam`, options),
 
     /**
      * @description 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
@@ -3098,9 +3100,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameMyTeam: (
       id: number,
-      data?: ScoreboardItem | Promise<ScoreboardItem>,
+      data?: GameTeamDetailModel | Promise<GameTeamDetailModel>,
       options?: MutatorOptions
-    ) => mutate<ScoreboardItem>(`/api/game/${id}/myteam`, data, options),
+    ) => mutate<GameTeamDetailModel>(`/api/game/${id}/myteam`, data, options),
 
     /**
      * @description 获取比赛的全部题目参与信息，需要Admin权限

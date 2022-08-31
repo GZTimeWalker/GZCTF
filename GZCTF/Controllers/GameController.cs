@@ -331,7 +331,7 @@ public class GameController : ControllerBase
     /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpGet("{id}/MyTeam")]
-    [ProducesResponseType(typeof(ScoreboardItem), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GameTeamDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> MyTeam([FromRoute] int id, CancellationToken token)
@@ -344,7 +344,7 @@ public class GameController : ControllerBase
         var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
         var boarditem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
-        
+
         return Ok(new GameTeamDetailModel() { ScoreboardItem = boarditem!, TeamToken = context.Participation!.Token });
     }
 

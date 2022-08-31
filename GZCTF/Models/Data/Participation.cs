@@ -19,7 +19,7 @@ public class Participation
     /// 队伍 Token
     /// </summary>
     [Required]
-    public string Token { get; set; } = Guid.NewGuid().ToString();
+    public string Token { get; set; } = Guid.NewGuid().ToString("u");
 
     /// <summary>
     /// 参赛所属组织
