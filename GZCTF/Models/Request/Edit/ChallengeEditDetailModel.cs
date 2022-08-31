@@ -44,6 +44,11 @@ public class ChallengeEditDetailModel
     public string[] Hints { get; set; } = Array.Empty<string>();
 
     /// <summary>
+    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// </summary>
+    public string? FlagTemplate { get; set; }
+
+    /// <summary>
     /// 是否启用题目
     /// </summary>
     [Required]
@@ -135,6 +140,7 @@ public class ChallengeEditDetailModel
             Content = chal.Content,
             Tag = chal.Tag,
             Type = chal.Type,
+            FlagTemplate = chal.FlagTemplate,
             Hints = chal.Hints?.ToArray() ?? Array.Empty<string>(),
             IsEnabled = chal.IsEnabled,
             ContainerImage = chal.ContainerImage,

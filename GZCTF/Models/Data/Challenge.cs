@@ -1,5 +1,6 @@
 ﻿using CTFServer.Models.Data;
 using CTFServer.Models.Request.Edit;
+using CTFServer.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -48,6 +49,11 @@ public class Challenge
     /// 题目提示
     /// </summary>
     public List<string>? Hints { get; set; }
+
+    /// <summary>
+    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// </summary>
+    public string? FlagTemplate { get; set; }
 
     /// <summary>
     /// 镜像名称与标签
@@ -170,12 +176,22 @@ public class Challenge
 
     #endregion Db Relationship
 
+    internal string GenerateFlag(Participation part)
+    {
+        if (string.IsNullOrEmpty(FlagTemplate) || !FlagTemplate.Contains("[TEAM_HASH]"))
+            return $"flag{Guid.NewGuid():B}";
+
+        var hash = Codec.StrSHA256($"{part.Token}:{part.Game.PublicKey}:{Id}");
+        return FlagTemplate.Replace("[TEAM_HASH]", hash[12..24]);
+    }
+
     internal Challenge Update(ChallengeUpdateModel model)
     {
         Title = model.Title ?? Title;
         Content = model.Content ?? Content;
         Tag = model.Tag ?? Tag;
         Hints = model.Hints ?? Hints;
+        FlagTemplate = model.FlagTemplate ?? FlagTemplate;
         IsEnabled = model.IsEnabled ?? IsEnabled;
         ContainerImage = model.ContainerImage ?? ContainerImage;
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;

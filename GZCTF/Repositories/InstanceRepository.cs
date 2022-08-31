@@ -25,16 +25,16 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         containerRepository = _containerRepository;
     }
 
-    public async Task<Instance?> GetInstance(Participation team, int challengeId, CancellationToken token = default)
+    public async Task<Instance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
         var instance = await context.Instances
             .Include(i => i.FlagContext)
-            .Where(e => e.ChallengeId == challengeId && e.Participation == team)
+            .Where(e => e.ChallengeId == challengeId && e.Participation == part)
             .SingleOrDefaultAsync(token);
 
         if (instance is null)
         {
-            logger.SystemLog($"队伍对应参与对象为空，这可能是非预期的情况 [{team.Id}, {challengeId}]", TaskStatus.NotFound, LogLevel.Warning);
+            logger.SystemLog($"队伍对应参与对象为空，这可能是非预期的情况 [{part.Id}, {challengeId}]", TaskStatus.NotFound, LogLevel.Warning);
             return null;
         }
 
@@ -72,7 +72,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 instance.FlagContext = new()
                 {
                     Challenge = challenge,
-                    Flag = $"flag{Guid.NewGuid():B}",
+                    Flag = challenge.GenerateFlag(part),
                     IsOccupied = true
                 };
             }

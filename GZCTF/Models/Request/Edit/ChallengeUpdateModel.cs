@@ -20,6 +20,12 @@ public class ChallengeUpdateModel
     public string? Content { get; set; }
 
     /// <summary>
+    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// </summary>
+    [RegularExpression(@"(?=\[TEAM_HASH\])")]
+    public string? FlagTemplate { get; set; }
+
+    /// <summary>
     /// 题目标签
     /// </summary>
     public ChallengeTag? Tag { get; set; }
