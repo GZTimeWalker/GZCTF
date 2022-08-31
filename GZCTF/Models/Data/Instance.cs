@@ -14,6 +14,11 @@ public class Instance
     /// </summary>
     public bool IsLoaded { get; set; } = false;
 
+    /// <summary>
+    /// 自定义成绩
+    /// </summary>
+    public int Score { get; set; } = 0;
+
     #region Db Relationship
 
     public int? FlagId { get; set; }

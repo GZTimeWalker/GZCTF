@@ -26,6 +26,7 @@ import {
   mdiKeyboardBackspace,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import HintList from '@Components/HintList'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
@@ -36,7 +37,6 @@ import {
   ChallengeTagLabelMap,
 } from '@Utils/ChallengeItem'
 import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '@Api'
-import HintList from '@Components/HintList'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -261,25 +261,25 @@ const GameChallengeEdit: FC = () => {
               return { value: tag[1], ...data }
             })}
           />
-          </SimpleGrid>
-          <Textarea
-              label={
-                <Group spacing="sm">
-                  <Text size="sm">题目描述</Text>
-                  <Text size="xs" color="dimmed">
-                    支持 markdown 语法
-                  </Text>
-                </Group>
-              }
-              value={challengeInfo?.content ?? ''}
-              style={{ width: '100%' }}
-              autosize
-              disabled={disabled}
-              minRows={3}
-              maxRows={3}
-              onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
-            />
-          <SimpleGrid cols={3}>
+        </SimpleGrid>
+        <Textarea
+          label={
+            <Group spacing="sm">
+              <Text size="sm">题目描述</Text>
+              <Text size="xs" color="dimmed">
+                支持 markdown 语法
+              </Text>
+            </Group>
+          }
+          value={challengeInfo?.content ?? ''}
+          style={{ width: '100%' }}
+          autosize
+          disabled={disabled}
+          minRows={3}
+          maxRows={3}
+          onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
+        />
+        <SimpleGrid cols={3}>
           <Stack spacing="sm">
             <HintList
               label="题目提示"

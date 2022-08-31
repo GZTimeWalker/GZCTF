@@ -16,15 +16,15 @@ public class Participation
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 
     /// <summary>
+    /// 队伍 Token
+    /// </summary>
+    [Required]
+    public string Token { get; set; } = Guid.NewGuid().ToString();
+
+    /// <summary>
     /// 参赛所属组织
     /// </summary>
     public string? Organization { get; set; }
-
-    /// <summary>
-    /// 当前分数
-    /// </summary>
-    [Required]
-    public int Score { get; set; } = 0;
 
     #region Db Relationship
 

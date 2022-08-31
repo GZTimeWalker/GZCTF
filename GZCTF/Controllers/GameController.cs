@@ -343,7 +343,9 @@ public class GameController : ControllerBase
 
         var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
-        return Ok(scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId));
+        var boarditem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
+        
+        return Ok(new GameTeamDetailModel() { ScoreboardItem = boarditem!, TeamToken = context.Participation!.Token });
     }
 
     /// <summary>
