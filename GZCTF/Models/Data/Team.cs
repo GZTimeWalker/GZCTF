@@ -80,7 +80,7 @@ public class Team
 
     internal void UpdateInfo(TeamUpdateModel model)
     {
-        Name = model.Name ?? Name;
+        Name = string.IsNullOrEmpty(model.Name) ? Name : model.Name;
         Bio = model.Bio;
     }
 }

@@ -832,7 +832,7 @@ export interface ChallengeUpdateModel {
 
   /**
    * Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
-   * @pattern (?=\[TEAM_HASH\])
+   * @pattern .*(\[TEAM_HASH\])+.*
    */
   flagTemplate?: string | null
 

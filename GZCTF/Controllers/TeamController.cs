@@ -100,7 +100,7 @@ public class TeamController : ControllerBase
         if (user.OwnedTeamId is not null)
             return BadRequest(new RequestResponse("不允许创建多个队伍"));
 
-        if (model.Name is null)
+        if (string.IsNullOrEmpty(model.Name))
             return BadRequest(new RequestResponse("队伍名不能为空"));
 
         var team = await teamRepository.CreateTeam(model, user, token);
