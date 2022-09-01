@@ -204,7 +204,7 @@ const GameDetail: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '成功报名，请等待审核',
+          message: '报名成功',
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
