@@ -3,8 +3,10 @@ using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Docker.DotNet.Models;
 using k8s;
+using k8s.Autorest;
 using k8s.Models;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Text;
 
 namespace CTFServer.Services;
@@ -47,7 +49,8 @@ public class K8sService : IContainerService
 
     public async Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
     {
-        var name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}-{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}";
+        // use uuid avoid Conflict
+        var name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}-{Guid.NewGuid().ToString("N")[..16]}";
         name = name.Replace('_', '-'); // Ensure name is available
         var pod = new V1Pod("v1", "Pod")
         {
@@ -99,6 +102,12 @@ public class K8sService : IContainerService
         {
             pod = await kubernetesClient.CreateNamespacedPodAsync(pod, "gzctf", cancellationToken: token);
         }
+        catch(HttpOperationException e)
+        {
+            logger.SystemLog($"容器 {name} 创建失败, 状态：{e.Response.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"容器 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Fail, LogLevel.Error);
+            return null;
+        }
         catch (Exception e)
         {
             logger.LogError(e, "创建容器失败");
@@ -146,7 +155,7 @@ public class K8sService : IContainerService
 
         try
         {
-            service = await kubernetesClient.CreateNamespacedServiceAsync(service, "gzctf", cancellationToken: token);
+            service = await kubernetesClient.CoreV1.CreateNamespacedServiceAsync(service, "gzctf", cancellationToken: token);
         }
         catch (Exception e)
         {

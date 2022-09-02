@@ -59,7 +59,7 @@ public class ChallengeDetailModel
             {
                 InstanceEntry = instance.Container?.Entry,
                 CloseTime = instance.Container?.ExpectStopAt,
-                Url = instance.Challenge.Type.IsDynamic() ?
+                Url = instance.Challenge.Type == ChallengeType.DynamicAttachment ?
                   instance.FlagContext?.Attachment?.UrlWithName(instance.Challenge.FileName) :
                   instance.Challenge.Attachment?.UrlWithName()
             }
