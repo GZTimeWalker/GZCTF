@@ -29,6 +29,7 @@ import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { EventType, GameEvent } from '@Api'
+import { useLocalStorage } from '@mantine/hooks'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -61,7 +62,10 @@ const Events: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const [hideConatinerEvents, setHideConatinerEvents] = useState(true)
+  const [hideConatinerEvents, setHideConatinerEvents] = useLocalStorage({
+    key: 'hide-conatiner-events',
+    defaultValue: true,
+  })
   const [activePage, setPage] = useState(1)
 
   const [, update] = useState(new Date())

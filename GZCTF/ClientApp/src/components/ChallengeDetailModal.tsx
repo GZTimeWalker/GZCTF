@@ -337,7 +337,15 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                       backgroundColor: 'transparent',
                       fontSize: theme.fontSizes.sm,
                     }}
-                    onClick={() => clipBoard.copy(challenge.context?.instanceEntry ?? '')}
+                    onClick={() => {
+                      clipBoard.copy(challenge.context?.instanceEntry ?? '')
+                      showNotification({
+                        color: 'teal',
+                        message: '实例入口已复制到剪贴板',
+                        icon: <Icon path={mdiCheck} size={1} />,
+                        disallowClose: true,
+                      })
+                    }}
                   >
                     {challenge?.context?.instanceEntry}
                   </Code>
