@@ -30,9 +30,13 @@ public class GameEventRepository : RepositoryBase, IGameEventRepository
         return gameEvent;
     }
 
-    public Task<GameEvent[]> GetEvents(int gameId, int count = 50, int skip = 0, CancellationToken token = default)
-        => context.GameEvents.Where(e => e.GameId == gameId)
-            .OrderByDescending(e => e.PublishTimeUTC)
-            .Skip(skip).Take(count)
-            .ToArrayAsync(token);
+    public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0, CancellationToken token = default)
+    {
+        var data = context.GameEvents.Where(e => e.GameId == gameId);
+
+        if (hideContainer)
+            data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);
+
+        return data.OrderByDescending(e => e.PublishTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+    }
 }
