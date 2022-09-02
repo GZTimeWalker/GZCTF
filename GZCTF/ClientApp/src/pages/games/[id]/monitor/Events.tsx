@@ -2,7 +2,16 @@ import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Group, Text, useMantineTheme, ActionIcon, ScrollArea, Stack, Card } from '@mantine/core'
+import {
+  Group,
+  Text,
+  useMantineTheme,
+  ActionIcon,
+  ScrollArea,
+  Stack,
+  Card,
+  Switch,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiFlag,
@@ -17,6 +26,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { EventType, GameEvent } from '@Api'
 
@@ -51,6 +61,7 @@ const Events: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
+  const [hideConatinerEvents, setHideConatinerEvents] = useState(true)
   const [activePage, setPage] = useState(1)
 
   const [, update] = useState(new Date())
@@ -67,6 +78,7 @@ const Events: FC = () => {
   useEffect(() => {
     api.game
       .gameEvents(numId, {
+        hideContainer: hideConatinerEvents,
         count: ITEM_COUNT_PER_PAGE,
         skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
       })
@@ -85,7 +97,7 @@ const Events: FC = () => {
     if (activePage === 1) {
       newEvents.current = []
     }
-  }, [activePage])
+  }, [activePage, hideConatinerEvents])
 
   useEffect(() => {
     if (game?.end && new Date() < new Date(game.end)) {
@@ -128,7 +140,26 @@ const Events: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 150px)' }}>
+      <Group position="apart" style={{ width: '100%' }}>
+        <Switch
+          label={SwitchLabel('隐藏容器事件', '隐藏容器启动/销毁事件')}
+          checked={hideConatinerEvents}
+          onChange={(e) => setHideConatinerEvents(e.currentTarget.checked)}
+        />
+        <Group position="right">
+          <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
+            <Icon path={mdiArrowLeftBold} size={1} />
+          </ActionIcon>
+          <ActionIcon
+            size="lg"
+            disabled={events && events.length < ITEM_COUNT_PER_PAGE}
+            onClick={() => setPage(activePage + 1)}
+          >
+            <Icon path={mdiArrowRightBold} size={1} />
+          </ActionIcon>
+        </Group>
+      </Group>
+      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
         <Stack spacing="xs" pr={10}>
           {[...(activePage === 1 ? newEvents.current : []), ...(events ?? [])]?.map((event, i) => (
             <Card
@@ -160,18 +191,6 @@ const Events: FC = () => {
           ))}
         </Stack>
       </ScrollArea>
-      <Group position="right" style={{ width: '100%' }}>
-        <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
-          <Icon path={mdiArrowLeftBold} size={1} />
-        </ActionIcon>
-        <ActionIcon
-          size="lg"
-          disabled={events && events.length < ITEM_COUNT_PER_PAGE}
-          onClick={() => setPage(activePage + 1)}
-        >
-          <Icon path={mdiArrowRightBold} size={1} />
-        </ActionIcon>
-      </Group>
     </WithGameMonitorTab>
   )
 }
