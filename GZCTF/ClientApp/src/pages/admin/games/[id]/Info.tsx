@@ -100,7 +100,7 @@ const GameInfoEdit: FC = () => {
         .then((res) => {
           showNotification({
             color: 'teal',
-            message: '修改头像成功',
+            message: '成功修改比赛海报',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
