@@ -202,7 +202,7 @@ public class GameRepository : RepositoryBase, IGameRepository
             }).ToArray();
 
     private static IEnumerable<TopTimeLine> GenTopTimeLines(IEnumerable<ScoreboardItem> items)
-        => items.Select(team => new TopTimeLine
+        => items.Take(10).Select(team => new TopTimeLine
         {
             Id = team.Id,
             Name = team.Name,
