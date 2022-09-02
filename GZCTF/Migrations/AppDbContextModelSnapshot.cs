@@ -520,8 +520,8 @@ namespace CTFServer.Migrations
 
                     b.Property<string>("Answer")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(127)
+                        .HasColumnType("character varying(127)");
 
                     b.Property<int>("ChallengeId")
                         .HasColumnType("integer");
