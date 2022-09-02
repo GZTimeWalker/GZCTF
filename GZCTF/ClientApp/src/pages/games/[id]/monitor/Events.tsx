@@ -112,8 +112,12 @@ const Events: FC = () => {
 
       connection.on('ReceivedGameEvent', (message: GameEvent) => {
         console.log(message)
-        newEvents.current = [message, ...newEvents.current]
-        update(new Date(message.time!))
+        if (!hideConatinerEvents ||
+          (message.type !== EventType.ContainerStart
+            && message.type !== EventType.ContainerDestroy)) {
+          newEvents.current = [message, ...newEvents.current]
+          update(new Date(message.time!))
+        }
       })
 
       connection
