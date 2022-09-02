@@ -18,7 +18,7 @@ public class ContainerChecker : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(3));
         logger.SystemLog("容器生命周期检查已启动", TaskStatus.Success, LogLevel.Debug);
         return Task.CompletedTask;
     }
@@ -32,9 +32,9 @@ public class ContainerChecker : IHostedService, IDisposable
 
         foreach (var container in await containerRepo.GetDyingContainers())
         {
-            logger.SystemLog($"移除到期容器 [{container.ContainerId[..12]}]");
             await containerService.DestoryContainer(container);
             await containerRepo.RemoveContainer(container);
+            logger.SystemLog($"移除到期容器 [{container.ContainerId[..12]}]");
         }
     }
 

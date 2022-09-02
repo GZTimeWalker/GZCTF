@@ -177,6 +177,14 @@ public class K8sService : IContainerService
             await kubernetesClient.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, "gzctf", cancellationToken: token);
             await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(container.ContainerId, "gzctf", cancellationToken: token);
         }
+        catch(HttpOperationException e)
+        {
+            if (e.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                container.Status = ContainerStatus.Destoryed;
+                return;
+            }
+        }
         catch (Exception e)
         {
             logger.LogError(e, "删除容器失败");
