@@ -189,6 +189,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             checkDataFlag(res.data)
             clearInterval(polling)
             setDisabled(false)
+            api.game.mutateGameChallenges(gameId)
+            api.game.mutateGameMyTeam(gameId)
           }
         })
         .catch((err) => {

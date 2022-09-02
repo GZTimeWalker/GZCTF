@@ -7,9 +7,14 @@
     "HttpStatusCode": 429,
     "GeneralRules": [
       {
-        "Endpoint": "*:/api/challenges/submit/*",
+        "Endpoint": "post:/api/*/challenges/*",
         "Period": "60s",
         "Limit": 3
+      },
+      {
+        "Endpoint": "*:/api/*/container/*",
+        "Period": "10s",
+        "Limit": 4
       },
       {
         "Endpoint": "*:/api/account/register",
