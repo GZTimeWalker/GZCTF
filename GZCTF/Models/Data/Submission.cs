@@ -14,7 +14,6 @@ public class Submission
     /// <summary>
     /// 提交的答案字符串
     /// </summary>
-    [MaxLength(50)]
     public string Answer { get; set; } = string.Empty;
 
     /// <summary>
