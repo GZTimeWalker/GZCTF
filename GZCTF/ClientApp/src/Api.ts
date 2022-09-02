@@ -2945,7 +2945,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     gameEvents: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { hideContainer?: boolean; count?: number; skip?: number },
       params: RequestParams = {}
     ) =>
       this.request<GameEvent[], RequestResponse>({
@@ -2965,7 +2965,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useGameEvents: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { hideContainer?: boolean; count?: number; skip?: number },
       options?: SWRConfiguration
     ) => useSWR<GameEvent[], RequestResponse>([`/api/game/${id}/events`, query], options),
 
@@ -2979,7 +2979,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameEvents: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: { hideContainer?: boolean; count?: number; skip?: number },
       data?: GameEvent[] | Promise<GameEvent[]>,
       options?: MutatorOptions
     ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),

@@ -241,6 +241,7 @@ public class GameController : ControllerBase
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="count"></param>
+    /// <param name="hideContainer">隐藏容器</param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛事件</response>
@@ -249,7 +250,7 @@ public class GameController : ControllerBase
     [HttpGet("{id}/Events")]
     [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Events([FromRoute] int id,[FromQuery] bool hideContainer = false, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+    public async Task<IActionResult> Events([FromRoute] int id, [FromQuery] bool hideContainer = false, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -259,7 +260,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛还未开始"));
 
-        return Ok(await eventRepository.GetEvents(game.Id, count, skip, token));
+        return Ok(await eventRepository.GetEvents(game.Id, hideContainer, count, skip, token));
     }
 
     /// <summary>
