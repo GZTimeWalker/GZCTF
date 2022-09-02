@@ -27,20 +27,25 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
     - 三血奖励：
       平台对一二三血分别奖励 5%、3%、1% 的当前题目分值
   - 比赛进行中可启用新题
-  - 动态 flag 中启用作弊检测
+  - 动态 flag 中启用作弊检测，可选的 flag 模版
 - 基于 Docker 或 K8s 的动态容器分发
 - 动态展示可缩放的前十名队伍得分时间线、动态隐藏的积分榜
 - 基于 signalR 的实时比赛通知、比赛事件和 flag 提交监控及日志监控
 - SMTP 注册邮件发送、基于 Google ReCaptchav3 的恶意注册防护
 - 用户封禁、用户三级权限管理
+- 可选的队伍审核、邀请码、分组排行
+- 比赛期间裁判监控、提交和主要事件日志
+- 应用内全局设置
 - 以及更多……
 
 ## Demo
 
-![](assets/demo_0.jpg)
-![](assets/demo_1.jpg)
-![](assets/demo_2.jpg)
-![](assets/demo_3.jpg)
+![](assets/demo-1.jpg)
+![](assets/demo-2.jpg)
+![](assets/demo-3.jpg)
+![](assets/demo-4.jpg)
+![](assets/demo-5.jpg)
+![](assets/demo-6.jpg)
 
 ## 安装配置
 
