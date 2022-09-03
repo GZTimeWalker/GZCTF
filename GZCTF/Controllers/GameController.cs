@@ -346,6 +346,16 @@ public class GameController : ControllerBase
 
         var boarditem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
 
+        // make sure team info is not null
+        boarditem ??= new ScoreboardItem()
+        {
+            Avatar = context.Participation!.Team.AvatarUrl,
+            SolvedCount = 0,
+            Rank = 0,
+            Name = context.Participation!.Team.Name,
+            Id = context.Participation!.TeamId
+        };
+
         return Ok(new GameTeamDetailModel() { ScoreboardItem = boarditem, TeamToken = context.Participation!.Token });
     }
 

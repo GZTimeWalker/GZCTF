@@ -46,7 +46,7 @@ const TeamRank: FC<PaperProps> = (props) => {
             {myteam?.rank?.name?.at(0) ?? 'T'}
           </Avatar>
           <Skeleton width="8rem" visible={!myteam}>
-            <Title order={4}>{myteam?.rank?.name ?? 'Loading'}</Title>
+            <Title order={4}>{myteam?.rank?.name ?? 'Team'}</Title>
           </Skeleton>
         </Group>
         <Group
@@ -57,19 +57,19 @@ const TeamRank: FC<PaperProps> = (props) => {
         >
           <Stack spacing={2}>
             <Skeleton visible={!myteam}>
-              <Text className={classes.number}>{myteam?.rank?.rank ?? 'Loading'}</Text>
+              <Text className={classes.number}>{myteam?.rank?.rank ?? '0'}</Text>
             </Skeleton>
             <Text size="sm">排名</Text>
           </Stack>
           <Stack spacing={2}>
             <Skeleton visible={!myteam}>
-              <Text className={classes.number}>{myteam?.rank?.score ?? 'Loading'}</Text>
+              <Text className={classes.number}>{myteam?.rank?.score ?? '0'}</Text>
             </Skeleton>
             <Text size="sm">得分</Text>
           </Stack>
           <Stack spacing={2}>
             <Skeleton visible={!myteam}>
-              <Text className={classes.number}>{myteam?.rank?.solvedCount ?? 'Loading'}</Text>
+              <Text className={classes.number}>{myteam?.rank?.solvedCount ?? '0'}</Text>
             </Skeleton>
             <Text size="sm">攻克数量</Text>
           </Stack>
