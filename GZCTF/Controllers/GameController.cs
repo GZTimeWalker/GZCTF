@@ -346,7 +346,7 @@ public class GameController : ControllerBase
 
         var boarditem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
 
-        return Ok(new GameTeamDetailModel() { ScoreboardItem = boarditem!, TeamToken = context.Participation!.Token });
+        return Ok(new GameTeamDetailModel() { ScoreboardItem = boarditem, TeamToken = context.Participation!.Token });
     }
 
     /// <summary>

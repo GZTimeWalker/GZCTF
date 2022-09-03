@@ -1273,7 +1273,7 @@ export enum AnswerResult {
 
 export interface GameTeamDetailModel {
   /** 积分榜信息 */
-  rank: ScoreboardItem
+  rank: ScoreboardItem | null
 
   /** 队伍 Token */
   teamToken: string

@@ -11,7 +11,7 @@ public class GameTeamDetailModel
     /// </summary>
     [Required]
     [JsonPropertyName("rank")]
-    public ScoreboardItem ScoreboardItem { get; set; } = default!;
+    public ScoreboardItem? ScoreboardItem { get; set; }
 
     /// <summary>
     /// 队伍 Token
