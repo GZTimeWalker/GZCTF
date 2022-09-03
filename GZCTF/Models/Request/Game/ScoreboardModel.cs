@@ -117,7 +117,7 @@ public class ScoreboardItem
     /// <summary>
     /// 题目情况列表
     /// </summary>
-    public IEnumerable<ChallengeItem> Challenges { get; set; } = default!;
+    public IEnumerable<ChallengeItem> Challenges { get; set; } = Array.Empty<ChallengeItem>();
 }
 
 public class ChallengeItem
