@@ -83,9 +83,9 @@ public class AdminController : ControllerBase
     /// <response code="403">禁止访问</response>
     [HttpPut("Config")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateConfigs([FromBody] GlobalConfig model, CancellationToken token)
+    public async Task<IActionResult> UpdateConfigs([FromBody] ConfigEditModel model, CancellationToken token)
     {
-        foreach (var prop in typeof(GlobalConfig).GetProperties())
+        foreach (var prop in typeof(ConfigEditModel).GetProperties())
         {
             var value = prop.GetValue(model);
             if (value is not null)

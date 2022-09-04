@@ -1872,7 +1872,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 更改配置
      * @request PUT:/api/admin/config
      */
-    adminUpdateConfigs: (data: GlobalConfig, params: RequestParams = {}) =>
+    adminUpdateConfigs: (data: ConfigEditModel, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/admin/config`,
         method: 'PUT',
