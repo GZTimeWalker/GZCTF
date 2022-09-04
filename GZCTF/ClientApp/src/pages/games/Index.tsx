@@ -28,14 +28,25 @@ const Games: FC = () => {
       <Group
         position="apart"
         align="flex-end"
-        py={8}
         sx={(theme) => ({
           width: '100%',
-          top: 0,
+          top: 16,
+          paddingBottom: 8,
           position: 'sticky',
           zIndex: 50,
           backgroundColor:
             theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
+
+          '::before': {
+            content: '""',
+            position: 'absolute',
+            top: -16,
+            right: 0,
+            left: 0,
+            backgroundColor:
+              theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
+            paddingTop: 16,
+          },
 
           [theme.fn.smallerThan('xs')]: {
             display: 'none',

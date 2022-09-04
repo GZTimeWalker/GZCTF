@@ -210,7 +210,7 @@ const ChallengePanel: FC = () => {
               { maxWidth: 2100, cols: 4 },
               { maxWidth: 1700, cols: 3 },
               { maxWidth: 1300, cols: 2 },
-              { maxWidth: 900, cols: 1 },
+              { maxWidth: 1080, cols: 1 },
             ]}
           >
             {currentChallenges?.map((chal) => (

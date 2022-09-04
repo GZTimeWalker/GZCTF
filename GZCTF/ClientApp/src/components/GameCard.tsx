@@ -75,7 +75,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
             </Center>
           </BackgroundImage>
           <Stack spacing="sm" p="md" style={{ width: '100%' }}>
-            <Group noWrap position="apart" align="flex-start">
+            <Group spacing={0} position="apart" align="flex-start">
               <Stack spacing={2}>
                 <Group noWrap spacing="xs">
                   <Badge size="xs" color={color}>

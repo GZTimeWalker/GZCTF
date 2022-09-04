@@ -4,7 +4,6 @@ import {
   Group,
   Badge,
   Card,
-  useMantineTheme,
   Blockquote,
   Title,
   Stack,
@@ -14,14 +13,12 @@ import { useTypographyStyles } from '@Utils/ThemeOverride'
 import { Notice } from '@Api'
 
 const NoticeCard: FC<Notice> = (notice) => {
-  const theme = useMantineTheme()
-  const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]
-  const { classes } = useTypographyStyles()
+  const { classes, theme } = useTypographyStyles()
 
   return (
     <Card shadow="sm" p="lg">
       <Blockquote
-        color={secondaryColor}
+        color={theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]}
         cite={
           <Group position="right" style={{ margin: 'auto', fontStyle: 'normal' }}>
             <Badge color="brand" variant="light">
