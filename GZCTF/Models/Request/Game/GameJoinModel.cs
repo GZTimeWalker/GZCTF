@@ -1,5 +1,4 @@
-﻿using System;
-namespace CTFServer.Models.Request.Game;
+﻿namespace CTFServer.Models.Request.Game;
 
 public class GameJoinModel
 {
@@ -13,4 +12,3 @@ public class GameJoinModel
     /// </summary>
     public string? InviteCode { get; set; }
 }
-

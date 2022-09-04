@@ -1,5 +1,4 @@
-﻿using k8s.KubeConfigModels;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models.Request.Edit;
 

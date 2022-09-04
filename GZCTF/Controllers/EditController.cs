@@ -1,13 +1,11 @@
 ﻿using CTFServer.Extensions;
 using CTFServer.Middlewares;
-using CTFServer.Models.Data;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
 using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;

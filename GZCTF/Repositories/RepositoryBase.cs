@@ -1,6 +1,6 @@
 ﻿using CTFServer.Repositories.Interface;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CTFServer.Repositories;
 

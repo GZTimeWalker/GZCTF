@@ -1,5 +1,4 @@
-﻿using System;
-using CTFServer.Models.Data;
+﻿using CTFServer.Models.Data;
 using CTFServer.Models.Internal;
 using CTFServer.Services;
 using Microsoft.EntityFrameworkCore;

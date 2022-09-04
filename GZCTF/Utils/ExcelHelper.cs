@@ -1,5 +1,4 @@
 ﻿using CTFServer.Models.Request.Game;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
@@ -55,7 +54,7 @@ public static class ExcelHelper
             cell.CellStyle = style;
         }
 
-        if(game.Organizations is not null && game.Organizations.Count > 0)
+        if (game.Organizations is not null && game.Organizations.Count > 0)
         {
             var cell = row.CreateCell(colIndex++);
             cell.SetCellValue("所属组织");

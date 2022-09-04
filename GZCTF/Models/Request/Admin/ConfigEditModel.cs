@@ -1,5 +1,4 @@
-﻿using System;
-using CTFServer.Models.Internal;
+﻿using CTFServer.Models.Internal;
 
 namespace CTFServer.Models.Request.Admin;
 

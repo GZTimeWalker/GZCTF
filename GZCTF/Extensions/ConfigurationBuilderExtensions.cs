@@ -1,5 +1,4 @@
-﻿using System;
-using CTFServer.Providers;
+﻿using CTFServer.Providers;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Extensions;

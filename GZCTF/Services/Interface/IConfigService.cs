@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CTFServer.Services.Interface;
+﻿namespace CTFServer.Services.Interface;
 
 public interface IConfigService
 {

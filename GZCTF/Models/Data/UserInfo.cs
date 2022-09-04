@@ -1,6 +1,5 @@
 ﻿using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
-using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

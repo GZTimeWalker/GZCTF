@@ -1,6 +1,4 @@
-﻿using CTFServer.Models.Request.Info;
-
-namespace CTFServer.Models.Request.Admin;
+﻿namespace CTFServer.Models.Request.Admin;
 
 /// <summary>
 /// 比赛参与对象，用于审核查看（Admin）

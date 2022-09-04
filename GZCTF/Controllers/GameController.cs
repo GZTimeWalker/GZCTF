@@ -1,5 +1,4 @@
 ﻿using CTFServer.Middlewares;
-using CTFServer.Models;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;

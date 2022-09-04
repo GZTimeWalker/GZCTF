@@ -1,6 +1,6 @@
-﻿using Xunit;
+﻿using CTFServer.Models.Internal;
 using CTFServer.Services;
-using CTFServer.Models.Internal;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace CTFServer.Test;

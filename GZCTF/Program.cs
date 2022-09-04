@@ -1,6 +1,5 @@
 global using CTFServer.Models;
 using AspNetCoreRateLimit;
-using CTFServer.Controllers;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;

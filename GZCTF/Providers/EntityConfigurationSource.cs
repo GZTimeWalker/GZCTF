@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Providers;
 
 public class EntityConfigurationSource : IConfigurationSource
 {
-    public EntityConfigurationSource(Action<DbContextOptionsBuilder>  _optionsAction)
+    public EntityConfigurationSource(Action<DbContextOptionsBuilder> _optionsAction)
     {
         OptionsAction = _optionsAction;
     }
@@ -15,4 +14,3 @@ public class EntityConfigurationSource : IConfigurationSource
     public IConfigurationProvider Build(IConfigurationBuilder builder)
         => new EntityConfigurationProvider(this);
 }
-

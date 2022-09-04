@@ -1,14 +1,12 @@
-﻿using System;
-using CTFServer.Utils;
+﻿using CTFServer.Utils;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities.Encoders;
 using System.Text;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
-using Org.BouncyCastle.Utilities.Encoders;
 
 namespace CTFServer.Test;
 
@@ -34,7 +32,6 @@ public class SignatureTest
         AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
         Ed25519PrivateKeyParameters privateKey = (Ed25519PrivateKeyParameters)kp.Private;
         Ed25519PublicKeyParameters publicKey = (Ed25519PublicKeyParameters)kp.Public;
-
 
         output.WriteLine("私钥：");
         output.WriteLine(Base64.ToBase64String(privateKey.GetEncoded()));
@@ -102,7 +99,6 @@ public class SignatureTest
         Ed25519PrivateKeyParameters privateKey = (Ed25519PrivateKeyParameters)kp.Private;
         Ed25519PublicKeyParameters publicKey = (Ed25519PublicKeyParameters)kp.Public;
 
-
         output.WriteLine("私钥：");
         output.WriteLine(Base64.ToBase64String(privateKey.GetEncoded()));
         output.WriteLine("公钥：");
@@ -132,7 +128,6 @@ public class SignatureTest
         Ed448PrivateKeyParameters privateKey = (Ed448PrivateKeyParameters)kp.Private;
         Ed448PublicKeyParameters publicKey = (Ed448PublicKeyParameters)kp.Public;
 
-
         output.WriteLine("私钥：");
         output.WriteLine(Base64.ToBase64String(privateKey.GetEncoded()));
         output.WriteLine("公钥：");
@@ -148,8 +143,6 @@ public class SignatureTest
         Assert.True(verified);
     }
 
-
-
     [Fact]
     public void SHA512withRSATest()
     {
@@ -163,7 +156,6 @@ public class SignatureTest
         AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
         RsaKeyParameters privateKey = (RsaKeyParameters)kp.Private;
         RsaKeyParameters publicKey = (RsaKeyParameters)kp.Public;
-
 
         output.WriteLine("私钥：");
         output.WriteLine(privateKey.Exponent.ToString());
@@ -179,6 +171,4 @@ public class SignatureTest
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
         Assert.True(verified);
     }
-
 }
-

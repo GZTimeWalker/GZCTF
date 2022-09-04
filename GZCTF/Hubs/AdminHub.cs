@@ -1,9 +1,6 @@
 ﻿using CTFServer.Hubs.Client;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace CTFServer.Hubs;
 

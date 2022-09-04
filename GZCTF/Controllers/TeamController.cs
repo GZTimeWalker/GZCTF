@@ -4,8 +4,8 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 using System.Net.Mime;
+using System.Text.RegularExpressions;
 
 namespace CTFServer.Controllers;
 

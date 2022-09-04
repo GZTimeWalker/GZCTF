@@ -55,7 +55,6 @@ public class Codec
                 return Array.Empty<byte>();
             }
         }
-        
     }
 
     /// <summary>

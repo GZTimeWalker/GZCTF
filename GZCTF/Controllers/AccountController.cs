@@ -63,7 +63,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        if(!accountPolicy.Value.AllowRegister)
+        if (!accountPolicy.Value.AllowRegister)
             return BadRequest(new RequestResponse("注册功能已禁用。"));
 
         if (accountPolicy.Value.UseGoogleRecaptcha && (
@@ -96,7 +96,7 @@ public class AccountController : ControllerBase
             user = current;
         }
 
-        if(accountPolicy.Value.ActiveOnRegister)
+        if (accountPolicy.Value.ActiveOnRegister)
         {
             user.EmailConfirmed = true;
             await userManager.UpdateAsync(user);
@@ -106,7 +106,7 @@ public class AccountController : ControllerBase
             return Ok(new RequestResponse<RegisterStatus>("注册成功。", RegisterStatus.LoggedIn, 200));
         }
 
-        if(!accountPolicy.Value.EmailConfirmationRequired)
+        if (!accountPolicy.Value.EmailConfirmationRequired)
         {
             logger.Log("用户成功注册，待审核。", user, TaskStatus.Success);
             return Ok(new RequestResponse<RegisterStatus>("注册成功，等待管理员审核。",
@@ -122,7 +122,7 @@ public class AccountController : ControllerBase
         }
         else
         {
-            if(!mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
+            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
                 $"https://{HttpContext.Request.Host}/account/verify?token={token}&email={Codec.Base64.Encode(model.Email)}"))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员。"));
         }
@@ -157,7 +157,7 @@ public class AccountController : ControllerBase
         if (user is null)
             return NotFound(new RequestResponse("用户不存在。", 404));
 
-        if(!accountPolicy.Value.EmailConfirmationRequired)
+        if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse("请联系管理员重置密码。"));
 
         logger.Log("发送用户密码重置邮件。", user.UserName, HttpContext, TaskStatus.Pending);
@@ -170,7 +170,7 @@ public class AccountController : ControllerBase
         }
         else
         {
-            if(!mailSender.SendResetPasswordUrl(user.UserName, user.Email,
+            if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email,
                 $"https://{HttpContext.Request.Host}/account/reset?token={token}&email={Codec.Base64.Encode(model.Email)}"))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员。"));
         }
@@ -387,7 +387,7 @@ public class AccountController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
-        if(!accountPolicy.Value.EmailConfirmationRequired)
+        if (!accountPolicy.Value.EmailConfirmationRequired)
         {
             await userManager.SetEmailAsync(user, model.NewMail);
             return Ok(new RequestResponse<bool>("邮箱已更新。", false, 200));
@@ -403,7 +403,7 @@ public class AccountController : ControllerBase
         }
         else
         {
-            if(!mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
+            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
                 $"https://{HttpContext.Request.Host}/account/confirm?token={token}&email={Codec.Base64.Encode(model.NewMail)}"))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员。"));
         }

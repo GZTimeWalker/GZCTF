@@ -1,11 +1,9 @@
 ﻿using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using Docker.DotNet.Models;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
-using Microsoft.Extensions.Options;
 using System.Net;
 using System.Text;
 
@@ -102,7 +100,7 @@ public class K8sService : IContainerService
         {
             pod = await kubernetesClient.CreateNamespacedPodAsync(pod, "gzctf", cancellationToken: token);
         }
-        catch(HttpOperationException e)
+        catch (HttpOperationException e)
         {
             logger.SystemLog($"容器 {name} 创建失败, 状态：{e.Response.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
             logger.SystemLog($"容器 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Fail, LogLevel.Error);
@@ -177,7 +175,7 @@ public class K8sService : IContainerService
             await kubernetesClient.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, "gzctf", cancellationToken: token);
             await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(container.ContainerId, "gzctf", cancellationToken: token);
         }
-        catch(HttpOperationException e)
+        catch (HttpOperationException e)
         {
             if (e.Response.StatusCode == HttpStatusCode.NotFound)
             {
