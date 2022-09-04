@@ -1,4 +1,4 @@
-﻿using CTFServer.Models.Request.Teams;
+﻿using CTFServer.Models.Request.Info;
 using CTFServer.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

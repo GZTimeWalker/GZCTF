@@ -76,7 +76,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 {
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "DefaultConnection": "Host=db:5432;Database=ctf;Username=postgres;Password=Fyjd0HtrL00QD555W1b6WLKbLl62cHT0"
+    "DefaultConnection": "Host=db:5432;Database=gzctf;Username=postgres;Password=Fyjd0HtrL00QD555W1b6WLKbLl62cHT0"
   },
   "Logging": {
     "LogLevel": {

@@ -3,9 +3,12 @@ using CTFServer.Middlewares;
 using CTFServer.Models.Data;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
+using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
+using k8s.KubeConfigModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -22,7 +25,8 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class EditController : Controller
 {
-    private readonly INoticeRepository noticeRepository;
+    private readonly UserManager<UserInfo> userManager;
+    private readonly IPostRepository postRepository;
     private readonly IGameNoticeRepository gameNoticeRepository;
     private readonly IGameRepository gameRepository;
     private readonly IChallengeRepository challengeRepository;
@@ -30,18 +34,19 @@ public class EditController : Controller
     private readonly IContainerService containerService;
     private readonly IContainerRepository containerRepository;
 
-    public EditController(INoticeRepository _noticeRepository,
+    public EditController(UserManager<UserInfo> _userManager,
+        IPostRepository _postRepository,
         IContainerRepository _containerRepository,
         IChallengeRepository _challengeRepository,
         IGameNoticeRepository _gameNoticeRepository,
         IGameRepository _gameRepository,
-        IConfiguration _configuration,
         IContainerService _containerService,
         IFileRepository _fileService)
     {
         fileService = _fileService;
+        userManager = _userManager;
         gameRepository = _gameRepository;
-        noticeRepository = _noticeRepository;
+        postRepository = _postRepository;
         containerService = _containerService;
         challengeRepository = _challengeRepository;
         containerRepository = _containerRepository;
@@ -49,89 +54,93 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 添加公告
+    /// 添加文章
     /// </summary>
     /// <remarks>
-    /// 添加公告，需要管理员权限
+    /// 添加文章，需要管理员权限
     /// </remarks>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加公告</response>
-    [HttpPost("Notices")]
-    [ProducesResponseType(typeof(Notice), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddNotice([FromBody] NoticeModel model, CancellationToken token)
+    /// <response code="200">成功添加文章</response>
+    [HttpPost("Posts")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    public async Task<IActionResult> AddPost([FromBody] PostEditModel model, CancellationToken token)
     {
-        var res = await noticeRepository.CreateNotice(new()
+        var res = await postRepository.CreatePost(new()
         {
-            Content = model.Content,
             Title = model.Title,
-            IsPinned = model.IsPinned,
-            PublishTimeUTC = DateTimeOffset.UtcNow
+            UpdateTimeUTC = DateTimeOffset.UtcNow,
+            Auther = await userManager.GetUserAsync(User),
         }, token);
-        return Ok(res);
+        return Ok(res.Id);
     }
 
     /// <summary>
-    /// 获取所有公告
+    /// 获取所有文章
     /// </summary>
     /// <remarks>
-    /// 获取所有公告，需要管理员权限
+    /// 获取所有文章，需要管理员权限
     /// </remarks>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
-    [HttpGet("Notices")]
-    [ProducesResponseType(typeof(Notice[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetNotices(CancellationToken token)
-        => Ok(await noticeRepository.GetNotices(token));
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <response code="200">成功获取文章</response>
+    [HttpGet("Posts")]
+    [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPosts([FromQuery] int count = 30, [FromQuery] int skip = 0, CancellationToken token = default)
+        => Ok((await postRepository.GetPosts(count, skip, token))
+            .Select(p => PostInfoModel.FromPost(p)));
 
     /// <summary>
-    /// 修改公告
+    /// 修改文章
     /// </summary>
     /// <remarks>
-    /// 修改公告，需要管理员权限
+    /// 修改文章，需要管理员权限
     /// </remarks>
-    /// <param name="id">公告Id</param>
+    /// <param name="id">文章Id</param>
     /// <param name="token"></param>
     /// <param name="model"></param>
-    /// <response code="200">成功修改公告</response>
-    /// <response code="404">未找到公告</response>
-    [HttpPut("Notices/{id}")]
-    [ProducesResponseType(typeof(Notice), StatusCodes.Status200OK)]
+    /// <response code="200">成功修改文章</response>
+    /// <response code="404">未找到文章</response>
+    [HttpPut("Posts/{id}")]
+    [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateNotice(int id, [FromBody] NoticeModel model, CancellationToken token)
+    public async Task<IActionResult> UpdatePost(string id, [FromBody] PostEditModel model, CancellationToken token)
     {
-        var notice = await noticeRepository.GetNoticeById(id, token);
+        var post = await postRepository.GetPostById(id, token);
 
-        if (notice is null)
-            return NotFound(new RequestResponse("公告未找到", 404));
+        if (post is null)
+            return NotFound(new RequestResponse("文章未找到", 404));
 
-        notice.UpdateInfo(model);
-        await noticeRepository.UpdateNotice(notice, token);
+        var user = await userManager.GetUserAsync(User);
 
-        return Ok(notice);
+        post.Update(model, user);
+        await postRepository.UpdatePost(post, token);
+
+        return Ok(PostDetailModel.FromPost(post));
     }
 
     /// <summary>
-    /// 删除公告
+    /// 删除文章
     /// </summary>
     /// <remarks>
-    /// 删除公告，需要管理员权限
+    /// 删除文章，需要管理员权限
     /// </remarks>
-    /// <param name="id">公告Id</param>
+    /// <param name="id">文章Id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除公告</response>
-    /// <response code="404">未找到公告</response>
-    [HttpDelete("Notices/{id}")]
+    /// <response code="200">成功删除文章</response>
+    /// <response code="404">未找到文章</response>
+    [HttpDelete("Posts/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteNotice(int id, CancellationToken token)
+    public async Task<IActionResult> DeletePost(string id, CancellationToken token)
     {
-        var notice = await noticeRepository.GetNoticeById(id, token);
+        var post = await postRepository.GetPostById(id, token);
 
-        if (notice is null)
-            return NotFound(new RequestResponse("公告未找到", 404));
+        if (post is null)
+            return NotFound(new RequestResponse("文章未找到", 404));
 
-        await noticeRepository.RemoveNotice(notice, token);
+        await postRepository.RemovePost(post, token);
 
         return Ok();
     }
@@ -237,7 +246,7 @@ public class EditController : Controller
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateGamePoster([FromRoute] int id, IFormFile file, CancellationToken token)
+    public async Task<IActionResult> UpdateGameNoticeer([FromRoute] int id, IFormFile file, CancellationToken token)
     {
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
@@ -263,16 +272,16 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 添加比赛公告
+    /// 添加比赛文章
     /// </summary>
     /// <remarks>
-    /// 添加比赛公告，需要管理员权限
+    /// 添加比赛文章，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="model">公告内容</param>
+    /// <param name="model">文章内容</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛公告</response>
-    [HttpPost("Games/{id}/Notices")]
+    /// <response code="200">成功添加比赛文章</response>
+    [HttpPost("Games/{id}/Posts")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGameNotice([FromRoute] int id, [FromBody] GameNoticeModel model, CancellationToken token)
@@ -294,15 +303,15 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 获取比赛公告
+    /// 获取比赛文章
     /// </summary>
     /// <remarks>
-    /// 获取比赛公告，需要管理员权限
+    /// 获取比赛文章，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
-    [HttpGet("Games/{id}/Notices")]
+    [HttpGet("Games/{id}/Posts")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token = default)
@@ -316,17 +325,17 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 更新比赛公告
+    /// 更新比赛文章
     /// </summary>
     /// <remarks>
-    /// 更新比赛公告，需要管理员权限
+    /// 更新比赛文章，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="noticeId">公告Id</param>
-    /// <param name="model">公告内容</param>
+    /// <param name="noticeId">文章Id</param>
+    /// <param name="model">文章内容</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
-    [HttpPut("Games/{id}/Notices/{noticeId}")]
+    [HttpPut("Games/{id}/Posts/{noticeId}")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGameNotice([FromRoute] int id, [FromRoute] int noticeId, [FromBody] GameNoticeModel model, CancellationToken token = default)
@@ -334,27 +343,27 @@ public class EditController : Controller
         var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
-            return NotFound(new RequestResponse("公告未找到", 404));
+            return NotFound(new RequestResponse("文章未找到", 404));
 
         if (notice.Type != NoticeType.Normal)
-            return BadRequest(new RequestResponse("不能更改系统公告"));
+            return BadRequest(new RequestResponse("不能更改系统文章"));
 
         notice.Content = model.Content;
         return Ok(await gameNoticeRepository.UpdateNotice(notice, token));
     }
 
     /// <summary>
-    /// 删除比赛公告
+    /// 删除比赛文章
     /// </summary>
     /// <remarks>
-    /// 删除比赛公告，需要管理员权限
+    /// 删除比赛文章，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="noticeId">公告Id</param>
+    /// <param name="noticeId">文章Id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除公告</response>
-    /// <response code="404">未找到公告</response>
-    [HttpDelete("Games/{id}/Notices/{noticeId}")]
+    /// <response code="200">成功删除文章</response>
+    /// <response code="404">未找到文章</response>
+    [HttpDelete("Games/{id}/Posts/{noticeId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGameNotice([FromRoute] int id, [FromRoute] int noticeId, CancellationToken token)
@@ -362,10 +371,10 @@ public class EditController : Controller
         var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
-            return NotFound(new RequestResponse("公告未找到", 404));
+            return NotFound(new RequestResponse("文章未找到", 404));
 
         if (notice.Type != NoticeType.Normal)
-            return BadRequest(new RequestResponse("不能删除系统公告"));
+            return BadRequest(new RequestResponse("不能删除系统文章"));
 
         await gameNoticeRepository.RemoveNotice(notice, token);
 

@@ -413,7 +413,7 @@ public static class CacheKey
     public const string BasicGameInfo = "_BasicGameInfo";
 
     /// <summary>
-    /// 公告
+    /// 文章
     /// </summary>
-    public const string Notices = "_Notices";
+    public const string Posts = "_Posts";
 }

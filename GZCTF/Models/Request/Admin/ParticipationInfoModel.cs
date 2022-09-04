@@ -1,4 +1,4 @@
-﻿using CTFServer.Models.Request.Teams;
+﻿using CTFServer.Models.Request.Info;
 
 namespace CTFServer.Models.Request.Admin;
 

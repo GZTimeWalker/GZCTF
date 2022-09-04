@@ -3,9 +3,9 @@
 namespace CTFServer.Models.Request.Edit;
 
 /// <summary>
-/// 全局通知（Edit）
+/// 文章对象（Edit）
 /// </summary>
-public class NoticeModel
+public class PostEditModel
 {
     /// <summary>
     /// 通知标题
@@ -15,9 +15,13 @@ public class NoticeModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 通知内容
+    /// 文章总结
     /// </summary>
-    [Required(ErrorMessage = "内容是必需的")]
+    public string Summary { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 文章内容
+    /// </summary>
     public string Content { get; set; } = string.Empty;
 
     /// <summary>

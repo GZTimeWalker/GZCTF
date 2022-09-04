@@ -1,6 +1,8 @@
 ﻿using CTFServer.Extensions;
 using CTFServer.Models.Internal;
+using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
+using CTFServer.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -15,32 +17,55 @@ public class InfoController : ControllerBase
 {
     private readonly IOptions<AccountPolicy> accountPolicy;
     private readonly IOptions<GlobalConfig> globalConfig;
-    private readonly INoticeRepository noticeRepository;
+    private readonly IPostRepository postRepository;
     private readonly IRecaptchaExtension recaptchaExtension;
 
-    public InfoController(INoticeRepository _noticeRepository,
+    public InfoController(IPostRepository _postRepository,
         IRecaptchaExtension _recaptchaExtension,
         IOptions<GlobalConfig> _globalConfig,
         IOptions<AccountPolicy> _accountPolicy)
     {
         globalConfig = _globalConfig;
         accountPolicy = _accountPolicy;
-        noticeRepository = _noticeRepository;
+        postRepository = _postRepository;
         recaptchaExtension = _recaptchaExtension;
     }
 
     /// <summary>
-    /// 获取最新公告
+    /// 获取最新文章
     /// </summary>
     /// <remarks>
-    /// 获取最新公告
+    /// 获取最新文章
     /// </remarks>
     /// <param name="token"></param>
     /// <response code="200">成功获取公告</response>
-    [HttpGet("Notices")]
-    [ProducesResponseType(typeof(Notice[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetNotices(CancellationToken token)
-        => Ok(await noticeRepository.GetLatestNotices(token));
+    [HttpGet("Posts")]
+    [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPosts(CancellationToken token)
+        => Ok((await postRepository.GetLatestPosts(token))
+            .Select(p => PostInfoModel.FromPost(p)));
+
+    /// <summary>
+    /// 获取文章详情
+    /// </summary>
+    /// <remarks>
+    /// 获取文章详情
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取文章详情</response>
+    [HttpGet("Posts/{id}")]
+    [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPost(string id, CancellationToken token)
+    {
+        var post = await postRepository.GetPostById(id, token);
+
+        if (post is null)
+            return NotFound(new RequestResponse("文章未找到", 404));
+
+        return Ok(PostDetailModel.FromPost(post));
+    }
 
     /// <summary>
     /// 获取全局设置

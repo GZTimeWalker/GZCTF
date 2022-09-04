@@ -9,7 +9,6 @@ public class GameTeamDetailModel
     /// <summary>
     /// 积分榜信息
     /// </summary>
-    [Required]
     [JsonPropertyName("rank")]
     public ScoreboardItem? ScoreboardItem { get; set; }
 

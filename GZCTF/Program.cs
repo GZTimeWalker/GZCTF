@@ -182,7 +182,7 @@ builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
 builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
-builder.Services.AddScoped<INoticeRepository, NoticeRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
@@ -230,11 +230,11 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 
     await context.Database.EnsureCreatedAsync();
 
-    if (!await context.Notices.AnyAsync())
+    if (!await context.Posts.AnyAsync())
     {
-        await context.Notices.AddAsync(new()
+        await context.Posts.AddAsync(new()
         {
-            PublishTimeUTC = DateTimeOffset.UtcNow,
+            UpdateTimeUTC = DateTimeOffset.UtcNow,
             Title = "Welcome to GZ::CTF!",
             Content = "一个开源的CTF比赛平台。"
         });

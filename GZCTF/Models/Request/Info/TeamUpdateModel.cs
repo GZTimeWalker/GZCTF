@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request.Teams;
+namespace CTFServer.Models.Request.Info;
 
 /// <summary>
 /// 队伍信息更新

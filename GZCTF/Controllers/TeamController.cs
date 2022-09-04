@@ -1,5 +1,5 @@
 ﻿using CTFServer.Middlewares;
-using CTFServer.Models.Request.Teams;
+using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;

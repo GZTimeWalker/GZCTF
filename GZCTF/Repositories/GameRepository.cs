@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using CTFServer.Models.Request.Game;
-using CTFServer.Models.Request.Teams;
+using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;

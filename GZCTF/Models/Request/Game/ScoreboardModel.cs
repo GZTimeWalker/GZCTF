@@ -1,4 +1,4 @@
-﻿using CTFServer.Models.Request.Teams;
+﻿using CTFServer.Models.Request.Info;
 using System.Text.Json.Serialization;
 
 namespace CTFServer.Models.Request.Game;

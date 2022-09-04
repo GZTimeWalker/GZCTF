@@ -2,7 +2,7 @@
 using CTFServer.Models.Internal;
 using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
-using CTFServer.Models.Request.Teams;
+using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;

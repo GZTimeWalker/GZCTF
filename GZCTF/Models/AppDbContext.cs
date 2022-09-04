@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Namotion.Reflection;
 
 namespace CTFServer.Models;
 
@@ -16,7 +17,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<LogModel> Logs { get; set; } = default!;
     public DbSet<Submission> Submissions { get; set; } = default!;
     public DbSet<Challenge> Challenges { get; set; } = default!;
-    public DbSet<Notice> Notices { get; set; } = default!;
+    public DbSet<Post> Posts { get; set; } = default!;
     public DbSet<GameNotice> GameNotices { get; set; } = default!;
     public DbSet<GameEvent> GameEvents { get; set; } = default!;
     public DbSet<LocalFile> Files { get; set; } = default!;
@@ -35,13 +36,11 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
         var options = new JsonSerializerOptions() { WriteIndented = false };
         var stringListConverter = new ValueConverter<List<string>?, string>(
-                v => JsonSerializer.Serialize<List<string>>(v ?? new(), options),
+                v => JsonSerializer.Serialize(v ?? new(), options),
                 v => JsonSerializer.Deserialize<List<string>>(v, options)
             );
         var stringListComparer = new ValueComparer<List<string>>(
-            (c1, c2) => (c1 == null && c2 == null) ? true
-                : c2 == null || c1 == null ? false
-                : c1.SequenceEqual(c2),
+            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
         builder.Entity<UserInfo>(entity =>
@@ -105,6 +104,16 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                         .HasForeignKey(e => e.GameId),
                     e => e.HasIndex(e => new { e.TeamId, e.GameId })
                 );
+        });
+
+        builder.Entity<Post>(entity =>
+        {
+            entity.HasOne(e => e.Auther)
+                .WithMany()
+                .HasForeignKey(e => e.AutherId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Navigation(e => e.Auther).AutoInclude();
         });
 
         builder.Entity<Team>(entity =>

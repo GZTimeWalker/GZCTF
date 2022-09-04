@@ -241,9 +241,12 @@ export enum Role {
 /**
  * 全局配置更新对象
  */
-export interface GlobalConfig {
+export interface ConfigEditModel {
   /** 用户策略 */
   accoutPolicy?: AccountPolicy | null
+
+  /** 全局配置项 */
+  globalConfig?: GlobalConfig | null
 }
 
 /**
@@ -261,6 +264,14 @@ export interface AccountPolicy {
 
   /** 注册、更换邮箱、找回密码需要邮件确认 */
   emailConfirmationRequired?: boolean
+}
+
+/**
+ * 全局设置
+ */
+export interface GlobalConfig {
+  /** 标题前缀名称 */
+  title?: string
 }
 
 /**
@@ -456,38 +467,76 @@ export interface ProblemDetails {
   instance?: string | null
 }
 
-export interface Notice {
-  /** @format int32 */
-  id: number
-
+/**
+ * 文章对象（Edit）
+ */
+export interface PostEditModel {
   /** 通知标题 */
   title: string
 
-  /** 通知内容 */
-  content: string
+  /** 文章总结 */
+  summary?: string
+
+  /** 文章内容 */
+  content?: string
+
+  /** 是否置顶 */
+  isPinned?: boolean
+}
+
+/**
+ * 文章信息
+ */
+export interface PostInfoModel {
+  /** 文章 Id */
+  id: string
+
+  /** 文章标题 */
+  title: string
+
+  /** 文章总结 */
+  summary: string
 
   /** 是否置顶 */
   isPinned: boolean
 
+  /** 作者头像 */
+  autherAvatar?: string | null
+
+  /** 作者名称 */
+  autherName?: string | null
+
   /**
-   * 发布时间
+   * 更新时间
    * @format date-time
    */
   time: string
 }
 
 /**
- * 全局通知（Edit）
+ * 文章详细内容
  */
-export interface NoticeModel {
+export interface PostDetailModel {
+  /** 文章 Id */
+  id: string
+
   /** 通知标题 */
   title: string
 
-  /** 通知内容 */
+  /** 文章内容 */
   content: string
 
-  /** 是否置顶 */
-  isPinned?: boolean
+  /** 作者头像 */
+  autherAvatar?: string | null
+
+  /** 作者名称 */
+  autherName?: string | null
+
+  /**
+   * 发布时间
+   * @format date-time
+   */
+  time: string
 }
 
 /**
@@ -1273,7 +1322,7 @@ export enum AnswerResult {
 
 export interface GameTeamDetailModel {
   /** 积分榜信息 */
-  rank: ScoreboardItem | null
+  rank?: ScoreboardItem | null
 
   /** 队伍 Token */
   teamToken: string
@@ -1785,7 +1834,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/config
      */
     adminGetConfigs: (params: RequestParams = {}) =>
-      this.request<GlobalConfig, RequestResponse>({
+      this.request<ConfigEditModel, RequestResponse>({
         path: `/api/admin/config`,
         method: 'GET',
         format: 'json',
@@ -1800,7 +1849,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/config
      */
     useAdminGetConfigs: (options?: SWRConfiguration) =>
-      useSWR<GlobalConfig, RequestResponse>(`/api/admin/config`, options),
+      useSWR<ConfigEditModel, RequestResponse>(`/api/admin/config`, options),
 
     /**
      * @description 使用此接口获取全局设置，需要Admin权限
@@ -1811,9 +1860,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/config
      */
     mutateAdminGetConfigs: (
-      data?: GlobalConfig | Promise<GlobalConfig>,
+      data?: ConfigEditModel | Promise<ConfigEditModel>,
       options?: MutatorOptions
-    ) => mutate<GlobalConfig>(`/api/admin/config`, data, options),
+    ) => mutate<ConfigEditModel>(`/api/admin/config`, data, options),
 
     /**
      * @description 使用此接口更改全局设置，需要Admin权限
@@ -2204,16 +2253,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   }
   edit = {
     /**
-     * @description 添加公告，需要管理员权限
+     * @description 添加文章，需要管理员权限
      *
      * @tags Edit
-     * @name EditAddNotice
-     * @summary 添加公告
-     * @request POST:/api/edit/notices
+     * @name EditAddPost
+     * @summary 添加文章
+     * @request POST:/api/edit/posts
      */
-    editAddNotice: (data: NoticeModel, params: RequestParams = {}) =>
-      this.request<Notice, RequestResponse>({
-        path: `/api/edit/notices`,
+    editAddPost: (data: PostEditModel, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/edit/posts`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
@@ -2222,53 +2271,57 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取所有公告，需要管理员权限
+     * @description 获取所有文章，需要管理员权限
      *
      * @tags Edit
-     * @name EditGetNotices
-     * @summary 获取所有公告
-     * @request GET:/api/edit/notices
+     * @name EditGetPosts
+     * @summary 获取所有文章
+     * @request GET:/api/edit/posts
      */
-    editGetNotices: (params: RequestParams = {}) =>
-      this.request<Notice[], RequestResponse>({
-        path: `/api/edit/notices`,
+    editGetPosts: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
+      this.request<PostInfoModel[], RequestResponse>({
+        path: `/api/edit/posts`,
         method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取所有公告，需要管理员权限
+     * @description 获取所有文章，需要管理员权限
      *
      * @tags Edit
-     * @name EditGetNotices
-     * @summary 获取所有公告
-     * @request GET:/api/edit/notices
+     * @name EditGetPosts
+     * @summary 获取所有文章
+     * @request GET:/api/edit/posts
      */
-    useEditGetNotices: (options?: SWRConfiguration) =>
-      useSWR<Notice[], RequestResponse>(`/api/edit/notices`, options),
+    useEditGetPosts: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
+      useSWR<PostInfoModel[], RequestResponse>([`/api/edit/posts`, query], options),
 
     /**
-     * @description 获取所有公告，需要管理员权限
+     * @description 获取所有文章，需要管理员权限
      *
      * @tags Edit
-     * @name EditGetNotices
-     * @summary 获取所有公告
-     * @request GET:/api/edit/notices
+     * @name EditGetPosts
+     * @summary 获取所有文章
+     * @request GET:/api/edit/posts
      */
-    mutateEditGetNotices: (data?: Notice[] | Promise<Notice[]>, options?: MutatorOptions) =>
-      mutate<Notice[]>(`/api/edit/notices`, data, options),
+    mutateEditGetPosts: (
+      query?: { count?: number; skip?: number },
+      data?: PostInfoModel[] | Promise<PostInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<PostInfoModel[]>([`/api/edit/posts`, query], data, options),
 
     /**
-     * @description 修改公告，需要管理员权限
+     * @description 修改文章，需要管理员权限
      *
      * @tags Edit
-     * @name EditUpdateNotice
-     * @summary 修改公告
-     * @request PUT:/api/edit/notices/{id}
+     * @name EditUpdatePost
+     * @summary 修改文章
+     * @request PUT:/api/edit/posts/{id}
      */
-    editUpdateNotice: (id: number, data: NoticeModel, params: RequestParams = {}) =>
-      this.request<Notice, RequestResponse>({
-        path: `/api/edit/notices/${id}`,
+    editUpdatePost: (id: string, data: PostEditModel, params: RequestParams = {}) =>
+      this.request<PostDetailModel, RequestResponse>({
+        path: `/api/edit/posts/${id}`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,
@@ -2277,16 +2330,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除公告，需要管理员权限
+     * @description 删除文章，需要管理员权限
      *
      * @tags Edit
-     * @name EditDeleteNotice
-     * @summary 删除公告
-     * @request DELETE:/api/edit/notices/{id}
+     * @name EditDeletePost
+     * @summary 删除文章
+     * @request DELETE:/api/edit/posts/{id}
      */
-    editDeleteNotice: (id: number, params: RequestParams = {}) =>
+    editDeletePost: (id: string, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
-        path: `/api/edit/notices/${id}`,
+        path: `/api/edit/posts/${id}`,
         method: 'DELETE',
         ...params,
       }),
@@ -2412,11 +2465,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 使用此接口更新比赛头图，需要Admin权限
      *
      * @tags Edit
-     * @name EditUpdateGamePoster
+     * @name EditUpdateGameNoticeer
      * @summary 更新比赛头图
      * @request PUT:/api/edit/games/{id}/poster
      */
-    editUpdateGamePoster: (id: number, data: { file?: File }, params: RequestParams = {}) =>
+    editUpdateGameNoticeer: (id: number, data: { file?: File }, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
         path: `/api/edit/games/${id}/poster`,
         method: 'PUT',
@@ -2427,16 +2480,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 添加比赛公告，需要管理员权限
+     * @description 添加比赛文章，需要管理员权限
      *
      * @tags Edit
      * @name EditAddGameNotice
-     * @summary 添加比赛公告
-     * @request POST:/api/edit/games/{id}/notices
+     * @summary 添加比赛文章
+     * @request POST:/api/edit/games/{id}/posts
      */
     editAddGameNotice: (id: number, data: GameNoticeModel, params: RequestParams = {}) =>
       this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/notices`,
+        path: `/api/edit/games/${id}/posts`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
@@ -2445,52 +2498,52 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛公告，需要管理员权限
+     * @description 获取比赛文章，需要管理员权限
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛公告
-     * @request GET:/api/edit/games/{id}/notices
+     * @summary 获取比赛文章
+     * @request GET:/api/edit/games/{id}/posts
      */
     editGetGameNotices: (id: number, params: RequestParams = {}) =>
       this.request<GameNotice[], RequestResponse>({
-        path: `/api/edit/games/${id}/notices`,
+        path: `/api/edit/games/${id}/posts`,
         method: 'GET',
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取比赛公告，需要管理员权限
+     * @description 获取比赛文章，需要管理员权限
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛公告
-     * @request GET:/api/edit/games/{id}/notices
+     * @summary 获取比赛文章
+     * @request GET:/api/edit/games/{id}/posts
      */
     useEditGetGameNotices: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameNotice[], RequestResponse>(`/api/edit/games/${id}/notices`, options),
+      useSWR<GameNotice[], RequestResponse>(`/api/edit/games/${id}/posts`, options),
 
     /**
-     * @description 获取比赛公告，需要管理员权限
+     * @description 获取比赛文章，需要管理员权限
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛公告
-     * @request GET:/api/edit/games/{id}/notices
+     * @summary 获取比赛文章
+     * @request GET:/api/edit/games/{id}/posts
      */
     mutateEditGetGameNotices: (
       id: number,
       data?: GameNotice[] | Promise<GameNotice[]>,
       options?: MutatorOptions
-    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
+    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/posts`, data, options),
 
     /**
-     * @description 更新比赛公告，需要管理员权限
+     * @description 更新比赛文章，需要管理员权限
      *
      * @tags Edit
      * @name EditUpdateGameNotice
-     * @summary 更新比赛公告
-     * @request PUT:/api/edit/games/{id}/notices/{noticeId}
+     * @summary 更新比赛文章
+     * @request PUT:/api/edit/games/{id}/posts/{noticeId}
      */
     editUpdateGameNotice: (
       id: number,
@@ -2499,7 +2552,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {}
     ) =>
       this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/notices/${noticeId}`,
+        path: `/api/edit/games/${id}/posts/${noticeId}`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,
@@ -2508,16 +2561,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除比赛公告，需要管理员权限
+     * @description 删除比赛文章，需要管理员权限
      *
      * @tags Edit
      * @name EditDeleteGameNotice
-     * @summary 删除比赛公告
-     * @request DELETE:/api/edit/games/{id}/notices/{noticeId}
+     * @summary 删除比赛文章
+     * @request DELETE:/api/edit/games/{id}/posts/{noticeId}
      */
     editDeleteGameNotice: (id: number, noticeId: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/notices/${noticeId}`,
+        path: `/api/edit/games/${id}/posts/${noticeId}`,
         method: 'DELETE',
         ...params,
       }),
@@ -3366,41 +3419,122 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   }
   info = {
     /**
-     * @description 获取最新公告
+     * @description 获取最新文章
      *
      * @tags Info
-     * @name InfoGetNotices
-     * @summary 获取最新公告
-     * @request GET:/api/notices
+     * @name InfoGetPosts
+     * @summary 获取最新文章
+     * @request GET:/api/posts
      */
-    infoGetNotices: (params: RequestParams = {}) =>
-      this.request<Notice[], any>({
-        path: `/api/notices`,
+    infoGetPosts: (params: RequestParams = {}) =>
+      this.request<PostInfoModel[], any>({
+        path: `/api/posts`,
         method: 'GET',
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取最新公告
+     * @description 获取最新文章
      *
      * @tags Info
-     * @name InfoGetNotices
-     * @summary 获取最新公告
-     * @request GET:/api/notices
+     * @name InfoGetPosts
+     * @summary 获取最新文章
+     * @request GET:/api/posts
      */
-    useInfoGetNotices: (options?: SWRConfiguration) =>
-      useSWR<Notice[], any>(`/api/notices`, options),
+    useInfoGetPosts: (options?: SWRConfiguration) =>
+      useSWR<PostInfoModel[], any>(`/api/posts`, options),
 
     /**
-     * @description 获取最新公告
+     * @description 获取最新文章
      *
      * @tags Info
-     * @name InfoGetNotices
-     * @summary 获取最新公告
-     * @request GET:/api/notices
+     * @name InfoGetPosts
+     * @summary 获取最新文章
+     * @request GET:/api/posts
      */
-    mutateInfoGetNotices: (data?: Notice[] | Promise<Notice[]>, options?: MutatorOptions) =>
-      mutate<Notice[]>(`/api/notices`, data, options),
+    mutateInfoGetPosts: (
+      data?: PostInfoModel[] | Promise<PostInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<PostInfoModel[]>(`/api/posts`, data, options),
+
+    /**
+     * @description 获取文章详情
+     *
+     * @tags Info
+     * @name InfoGetPost
+     * @summary 获取文章详情
+     * @request GET:/api/posts/{id}
+     */
+    infoGetPost: (id: string, params: RequestParams = {}) =>
+      this.request<PostDetailModel, RequestResponse>({
+        path: `/api/posts/${id}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取文章详情
+     *
+     * @tags Info
+     * @name InfoGetPost
+     * @summary 获取文章详情
+     * @request GET:/api/posts/{id}
+     */
+    useInfoGetPost: (id: string, options?: SWRConfiguration) =>
+      useSWR<PostDetailModel, RequestResponse>(`/api/posts/${id}`, options),
+
+    /**
+     * @description 获取文章详情
+     *
+     * @tags Info
+     * @name InfoGetPost
+     * @summary 获取文章详情
+     * @request GET:/api/posts/{id}
+     */
+    mutateInfoGetPost: (
+      id: string,
+      data?: PostDetailModel | Promise<PostDetailModel>,
+      options?: MutatorOptions
+    ) => mutate<PostDetailModel>(`/api/posts/${id}`, data, options),
+
+    /**
+     * @description 获取全局设置
+     *
+     * @tags Info
+     * @name InfoGetGlobalConfig
+     * @summary 获取全局设置
+     * @request GET:/api/config
+     */
+    infoGetGlobalConfig: (params: RequestParams = {}) =>
+      this.request<GlobalConfig, any>({
+        path: `/api/config`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取全局设置
+     *
+     * @tags Info
+     * @name InfoGetGlobalConfig
+     * @summary 获取全局设置
+     * @request GET:/api/config
+     */
+    useInfoGetGlobalConfig: (options?: SWRConfiguration) =>
+      useSWR<GlobalConfig, any>(`/api/config`, options),
+
+    /**
+     * @description 获取全局设置
+     *
+     * @tags Info
+     * @name InfoGetGlobalConfig
+     * @summary 获取全局设置
+     * @request GET:/api/config
+     */
+    mutateInfoGetGlobalConfig: (
+      data?: GlobalConfig | Promise<GlobalConfig>,
+      options?: MutatorOptions
+    ) => mutate<GlobalConfig>(`/api/config`, data, options),
 
     /**
      * @description 获取 Recaptcha SiteKey
