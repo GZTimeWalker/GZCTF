@@ -1790,8 +1790,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取用户信息接口
      * @request GET:/api/account/profile
      */
-    useAccountProfile: (options?: SWRConfiguration) =>
-      useSWR<ProfileUserInfoModel, RequestResponse>(`/api/account/profile`, options),
+    useAccountProfile: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ProfileUserInfoModel, RequestResponse>(
+        doFetch ? `/api/account/profile` : null,
+        options
+      ),
 
     /**
      * @description 使用此接口获取用户信息，需要User权限
@@ -1848,8 +1851,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取配置
      * @request GET:/api/admin/config
      */
-    useAdminGetConfigs: (options?: SWRConfiguration) =>
-      useSWR<ConfigEditModel, RequestResponse>(`/api/admin/config`, options),
+    useAdminGetConfigs: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ConfigEditModel, RequestResponse>(doFetch ? `/api/admin/config` : null, options),
 
     /**
      * @description 使用此接口获取全局设置，需要Admin权限
@@ -1905,8 +1908,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部用户
      * @request GET:/api/admin/users
      */
-    useAdminUsers: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
-      useSWR<UserInfoModel[], RequestResponse>([`/api/admin/users`, query], options),
+    useAdminUsers: (
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<UserInfoModel[], RequestResponse>(
+        doFetch ? [`/api/admin/users`, query] : null,
+        options
+      ),
 
     /**
      * @description 使用此接口获取全部用户，需要Admin权限
@@ -1963,8 +1973,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部队伍信息
      * @request GET:/api/admin/teams
      */
-    useAdminTeams: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
-      useSWR<TeamInfoModel[], RequestResponse>([`/api/admin/teams`, query], options),
+    useAdminTeams: (
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<TeamInfoModel[], RequestResponse>(
+        doFetch ? [`/api/admin/teams`, query] : null,
+        options
+      ),
 
     /**
      * @description 使用此接口获取全部队伍，需要Admin权限
@@ -2037,8 +2054,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取用户信息
      * @request GET:/api/admin/users/{userid}
      */
-    useAdminUserInfo: (userid: string, options?: SWRConfiguration) =>
-      useSWR<ProfileUserInfoModel, RequestResponse>(`/api/admin/users/${userid}`, options),
+    useAdminUserInfo: (userid: string, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ProfileUserInfoModel, RequestResponse>(
+        doFetch ? `/api/admin/users/${userid}` : null,
+        options
+      ),
 
     /**
      * @description 使用此接口获取用户信息，需要Admin权限
@@ -2099,8 +2119,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useAdminLogs: (
       query?: { level?: string | null; count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) => useSWR<LogMessageModel[], RequestResponse>([`/api/admin/logs`, query], options),
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<LogMessageModel[], RequestResponse>(
+        doFetch ? [`/api/admin/logs`, query] : null,
+        options
+      ),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -2155,8 +2180,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部文件
      * @request GET:/api/admin/files
      */
-    useAdminFiles: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
-      useSWR<LocalFile[], RequestResponse>([`/api/admin/files`, query], options),
+    useAdminFiles: (
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<LocalFile[], RequestResponse>(doFetch ? [`/api/admin/files`, query] : null, options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -2195,8 +2224,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取文件接口
      * @request GET:/assets/{hash}/{filename}
      */
-    useAssetsGetFile: (hash: string, filename: string, options?: SWRConfiguration) =>
-      useSWR<void, RequestResponse>(`/assets/${hash}/${filename}`, options),
+    useAssetsGetFile: (
+      hash: string,
+      filename: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) => useSWR<void, RequestResponse>(doFetch ? `/assets/${hash}/${filename}` : null, options),
 
     /**
      * @description 根据哈希获取文件，不匹配文件名
@@ -2294,8 +2327,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取所有文章
      * @request GET:/api/edit/posts
      */
-    useEditGetPosts: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
-      useSWR<PostInfoModel[], RequestResponse>([`/api/edit/posts`, query], options),
+    useEditGetPosts: (
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<PostInfoModel[], RequestResponse>(
+        doFetch ? [`/api/edit/posts`, query] : null,
+        options
+      ),
 
     /**
      * @description 获取所有文章，需要管理员权限
@@ -2386,8 +2426,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛列表
      * @request GET:/api/edit/games
      */
-    useEditGetGames: (query?: { count?: number; skip?: number }, options?: SWRConfiguration) =>
-      useSWR<GameInfoModel[], RequestResponse>([`/api/edit/games`, query], options),
+    useEditGetGames: (
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<GameInfoModel[], RequestResponse>(
+        doFetch ? [`/api/edit/games`, query] : null,
+        options
+      ),
 
     /**
      * @description 获取比赛列表，需要管理员权限
@@ -2426,8 +2473,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛
      * @request GET:/api/edit/games/{id}
      */
-    useEditGetGame: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameInfoModel, RequestResponse>(`/api/edit/games/${id}`, options),
+    useEditGetGame: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GameInfoModel, RequestResponse>(doFetch ? `/api/edit/games/${id}` : null, options),
 
     /**
      * @description 获取比赛，需要管理员权限
@@ -2520,8 +2567,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛文章
      * @request GET:/api/edit/games/{id}/posts
      */
-    useEditGetGameNotices: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameNotice[], RequestResponse>(`/api/edit/games/${id}/posts`, options),
+    useEditGetGameNotices: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GameNotice[], RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/posts` : null,
+        options
+      ),
 
     /**
      * @description 获取比赛文章，需要管理员权限
@@ -2616,8 +2666,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛题目
      * @request GET:/api/edit/games/{id}/challenges
      */
-    useEditGetGameChallenges: (id: number, options?: SWRConfiguration) =>
-      useSWR<ChallengeInfoModel[], RequestResponse>(`/api/edit/games/${id}/challenges`, options),
+    useEditGetGameChallenges: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ChallengeInfoModel[], RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/challenges` : null,
+        options
+      ),
 
     /**
      * @description 获取全部比赛题目，需要管理员权限
@@ -2656,9 +2709,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛题目
      * @request GET:/api/edit/games/{id}/challenges/{cId}
      */
-    useEditGetGameChallenge: (id: number, cId: number, options?: SWRConfiguration) =>
+    useEditGetGameChallenge: (
+      id: number,
+      cId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
       useSWR<ChallengeEditDetailModel, RequestResponse>(
-        `/api/edit/games/${id}/challenges/${cId}`,
+        doFetch ? `/api/edit/games/${id}/challenges/${cId}` : null,
         options
       ),
 
@@ -2826,8 +2884,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取最新的比赛
      * @request GET:/api/game
      */
-    useGameGamesAll: (options?: SWRConfiguration) =>
-      useSWR<BasicGameInfoModel[], RequestResponse>(`/api/game`, options),
+    useGameGamesAll: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<BasicGameInfoModel[], RequestResponse>(doFetch ? `/api/game` : null, options),
 
     /**
      * @description 获取最近十个比赛
@@ -2865,8 +2923,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛详细信息
      * @request GET:/api/game/{id}
      */
-    useGameGames: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameDetailModel, RequestResponse>(`/api/game/${id}`, options),
+    useGameGames: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GameDetailModel, RequestResponse>(doFetch ? `/api/game/${id}` : null, options),
 
     /**
      * @description 获取比赛的详细信息
@@ -2922,8 +2980,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取积分榜
      * @request GET:/api/game/{id}/scoreboard
      */
-    useGameScoreboard: (id: number, options?: SWRConfiguration) =>
-      useSWR<ScoreboardModel, RequestResponse>(`/api/game/${id}/scoreboard`, options),
+    useGameScoreboard: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ScoreboardModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/scoreboard` : null,
+        options
+      ),
 
     /**
      * @description 获取积分榜数据
@@ -2970,8 +3031,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useGameNotices: (
       id: number,
       query?: { count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) => useSWR<GameNotice[], RequestResponse>([`/api/game/${id}/notices`, query], options),
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<GameNotice[], RequestResponse>(
+        doFetch ? [`/api/game/${id}/notices`, query] : null,
+        options
+      ),
 
     /**
      * @description 获取比赛通知数据
@@ -3019,8 +3085,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useGameEvents: (
       id: number,
       query?: { hideContainer?: boolean; count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) => useSWR<GameEvent[], RequestResponse>([`/api/game/${id}/events`, query], options),
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<GameEvent[], RequestResponse>(
+        doFetch ? [`/api/game/${id}/events`, query] : null,
+        options
+      ),
 
     /**
      * @description 获取比赛事件数据，需要Monitor权限
@@ -3068,8 +3139,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     useGameSubmissions: (
       id: number,
       query?: { type?: AnswerResult | null; count?: number; skip?: number },
-      options?: SWRConfiguration
-    ) => useSWR<Submission[], RequestResponse>([`/api/game/${id}/submissions`, query], options),
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<Submission[], RequestResponse>(
+        doFetch ? [`/api/game/${id}/submissions`, query] : null,
+        options
+      ),
 
     /**
      * @description 获取比赛提交数据，需要Monitor权限
@@ -3109,9 +3185,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛题目信息
      * @request GET:/api/game/{id}/challenges
      */
-    useGameChallenges: (id: number, options?: SWRConfiguration) =>
+    useGameChallenges: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<Record<string, ChallengeInfo[]>, RequestResponse>(
-        `/api/game/${id}/challenges`,
+        doFetch ? `/api/game/${id}/challenges` : null,
         options
       ),
 
@@ -3152,8 +3228,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取当前队伍比赛信息
      * @request GET:/api/game/{id}/myteam
      */
-    useGameMyTeam: (id: number, options?: SWRConfiguration) =>
-      useSWR<GameTeamDetailModel, RequestResponse>(`/api/game/${id}/myteam`, options),
+    useGameMyTeam: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GameTeamDetailModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/myteam` : null,
+        options
+      ),
 
     /**
      * @description 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
@@ -3192,8 +3271,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部比赛参与信息
      * @request GET:/api/game/{id}/participations
      */
-    useGameParticipations: (id: number, options?: SWRConfiguration) =>
-      useSWR<ParticipationInfoModel[], RequestResponse>(`/api/game/${id}/participations`, options),
+    useGameParticipations: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ParticipationInfoModel[], RequestResponse>(
+        doFetch ? `/api/game/${id}/participations` : null,
+        options
+      ),
 
     /**
      * @description 获取比赛的全部题目参与信息，需要Admin权限
@@ -3231,8 +3313,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 下载比赛积分榜
      * @request GET:/api/game/{id}/scoreboardsheet
      */
-    useGameScoreboardSheet: (id: number, options?: SWRConfiguration) =>
-      useSWR<void, RequestResponse>(`/api/game/${id}/scoreboardsheet`, options),
+    useGameScoreboardSheet: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<void, RequestResponse>(doFetch ? `/api/game/${id}/scoreboardsheet` : null, options),
 
     /**
      * @description 下载比赛积分榜，需要Monitor权限
@@ -3271,9 +3353,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛题目信息
      * @request GET:/api/game/{id}/challenges/{challengeId}
      */
-    useGameGetChallenge: (id: number, challengeId: number, options?: SWRConfiguration) =>
+    useGameGetChallenge: (
+      id: number,
+      challengeId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
       useSWR<ChallengeDetailModel, RequestResponse>(
-        `/api/game/${id}/challenges/${challengeId}`,
+        doFetch ? `/api/game/${id}/challenges/${challengeId}` : null,
         options
       ),
 
@@ -3342,10 +3429,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       id: number,
       challengeId: number,
       submitId: number,
-      options?: SWRConfiguration
+      options?: SWRConfiguration,
+      doFetch: boolean = true
     ) =>
       useSWR<AnswerResult, RequestResponse>(
-        `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
+        doFetch ? `/api/game/${id}/challenges/${challengeId}/status/${submitId}` : null,
         options
       ),
 
@@ -3441,8 +3529,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取最新文章
      * @request GET:/api/posts
      */
-    useInfoGetPosts: (options?: SWRConfiguration) =>
-      useSWR<PostInfoModel[], any>(`/api/posts`, options),
+    useInfoGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<PostInfoModel[], any>(doFetch ? `/api/posts` : null, options),
 
     /**
      * @description 获取最新文章
@@ -3480,8 +3568,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取文章详情
      * @request GET:/api/posts/{id}
      */
-    useInfoGetPost: (id: string, options?: SWRConfiguration) =>
-      useSWR<PostDetailModel, RequestResponse>(`/api/posts/${id}`, options),
+    useInfoGetPost: (id: string, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<PostDetailModel, RequestResponse>(doFetch ? `/api/posts/${id}` : null, options),
 
     /**
      * @description 获取文章详情
@@ -3520,8 +3608,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全局设置
      * @request GET:/api/config
      */
-    useInfoGetGlobalConfig: (options?: SWRConfiguration) =>
-      useSWR<GlobalConfig, any>(`/api/config`, options),
+    useInfoGetGlobalConfig: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GlobalConfig, any>(doFetch ? `/api/config` : null, options),
 
     /**
      * @description 获取全局设置
@@ -3559,8 +3647,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取 Recaptcha SiteKey
      * @request GET:/api/sitekey
      */
-    useInfoGetRecaptchaSiteKey: (options?: SWRConfiguration) =>
-      useSWR<string, any>(`/api/sitekey`, options),
+    useInfoGetRecaptchaSiteKey: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<string, any>(doFetch ? `/api/sitekey` : null, options),
 
     /**
      * @description 获取 Recaptcha SiteKey
@@ -3597,8 +3685,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取队伍信息
      * @request GET:/api/team/{id}
      */
-    useTeamGetBasicInfo: (id: number, options?: SWRConfiguration) =>
-      useSWR<TeamInfoModel, RequestResponse>(`/api/team/${id}`, options),
+    useTeamGetBasicInfo: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<TeamInfoModel, RequestResponse>(doFetch ? `/api/team/${id}` : null, options),
 
     /**
      * @description 根据 id 获取一个队伍的基本信息
@@ -3671,8 +3759,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取当前自己队伍信息
      * @request GET:/api/team
      */
-    useTeamGetTeamsInfo: (options?: SWRConfiguration) =>
-      useSWR<TeamInfoModel[], RequestResponse>(`/api/team`, options),
+    useTeamGetTeamsInfo: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<TeamInfoModel[], RequestResponse>(doFetch ? `/api/team` : null, options),
 
     /**
      * @description 根据用户获取一个队伍的基本信息
@@ -3744,8 +3832,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取邀请信息
      * @request GET:/api/team/{id}/invite
      */
-    useTeamInviteCode: (id: number, options?: SWRConfiguration) =>
-      useSWR<string, RequestResponse>(`/api/team/${id}/invite`, options),
+    useTeamInviteCode: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<string, RequestResponse>(doFetch ? `/api/team/${id}/invite` : null, options),
 
     /**
      * @description 获取队伍邀请信息，需要为队伍创建者

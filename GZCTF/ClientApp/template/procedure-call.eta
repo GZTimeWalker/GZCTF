@@ -11,6 +11,13 @@ const queryName = (query && query.name) || "query";
 const pathParams = _.values(parameters);
 const pathParamsNames = _.map(pathParams, "name");
 
+const FetchCondition = {
+    name: "doFetch",
+    optional: true,
+    type: "boolean",
+    defaultValue: true,
+}
+
 const SWRConfigParam = {
     name: "options",
     optional: true,
@@ -55,7 +62,7 @@ const mutateArgs = _
     .join(', ')
 
 const wrapperArgs = _
-    .sortBy(_.compact([...rawWrapperArgs, SWRConfigParam]), [o => o.optional])
+    .sortBy(_.compact([...rawWrapperArgs, SWRConfigParam, FetchCondition]), [o => o.optional])
     .map(argToTmpl)
     .join(', ')
 
@@ -72,8 +79,8 @@ const queryTmpl = (query != null && queryName) || null;
 
  */
   use<%~ route.routeName.usage.charAt(0).toUpperCase() %><%~ route.routeName.usage.slice(1) %><%~ route.namespace ? ': ' : ' = ' %>(<%~ wrapperArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %> =>
-    useSWR<<%~ type %>, <%~  errorType %>>(
-        <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %>, options),
+    useSWR<<%~ type %>, <%~  errorType %>>(doFetch ?
+        <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %> : null, options),
 
 /**
 <%~ routeDocs.description %>
