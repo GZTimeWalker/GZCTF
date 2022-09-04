@@ -60,12 +60,13 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Config")]
-    [ProducesResponseType(typeof(GlobalConfig), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ConfigEditModel), StatusCodes.Status200OK)]
     public IActionResult GetConfigs()
     {
-        GlobalConfig config = new()
+        ConfigEditModel config = new()
         {
-            AccoutPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value
+            AccoutPolicy = serviceProvider.GetRequiredService<IOptions<AccountPolicy>>().Value,
+            GlobalConfig = serviceProvider.GetRequiredService<IOptions<GlobalConfig>>().Value
         };
 
         return Ok(config);

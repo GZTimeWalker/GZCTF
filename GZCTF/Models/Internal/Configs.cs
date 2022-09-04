@@ -25,6 +25,17 @@ public class AccountPolicy
     public bool EmailConfirmationRequired { get; set; } = false;
 }
 
+/// <summary>
+/// 全局设置
+/// </summary>
+public class GlobalConfig
+{
+    /// <summary>
+    /// 标题前缀名称
+    /// </summary>
+    public string Title { get; set; } = "GZ";
+}
+
 public class SmtpConfig
 {
     public string? Host { get; set; } = "127.0.0.1";

@@ -13,14 +13,17 @@ namespace CTFServer.Controllers;
 [ApiController]
 public class InfoController : ControllerBase
 {
-    private readonly IOptionsSnapshot<AccountPolicy> accountPolicy;
+    private readonly IOptions<AccountPolicy> accountPolicy;
+    private readonly IOptions<GlobalConfig> globalConfig;
     private readonly INoticeRepository noticeRepository;
     private readonly IRecaptchaExtension recaptchaExtension;
 
     public InfoController(INoticeRepository _noticeRepository,
         IRecaptchaExtension _recaptchaExtension,
-        IOptionsSnapshot<AccountPolicy> _accountPolicy)
+        IOptions<GlobalConfig> _globalConfig,
+        IOptions<AccountPolicy> _accountPolicy)
     {
+        globalConfig = _globalConfig;
         accountPolicy = _accountPolicy;
         noticeRepository = _noticeRepository;
         recaptchaExtension = _recaptchaExtension;
@@ -38,6 +41,17 @@ public class InfoController : ControllerBase
     [ProducesResponseType(typeof(Notice[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetNotices(CancellationToken token)
         => Ok(await noticeRepository.GetLatestNotices(token));
+
+    /// <summary>
+    /// 获取全局设置
+    /// </summary>
+    /// <remarks>
+    /// 获取全局设置
+    /// </remarks>
+    /// <response code="200">成功获取配置信息</response>
+    [HttpGet("Config")]
+    [ProducesResponseType(typeof(GlobalConfig), StatusCodes.Status200OK)]
+    public IActionResult GetGlobalConfig() => Ok(globalConfig.Value);
 
     /// <summary>
     /// 获取 Recaptcha SiteKey
