@@ -41,7 +41,7 @@ public class PostDetailModel
     [Required]
     public DateTimeOffset Time { get; set; } = DateTimeOffset.UtcNow;
 
-    public static PostDetailModel FromPost(Post post)
+    internal static PostDetailModel FromPost(Post post)
         => new()
         {
             Id = post.Id,

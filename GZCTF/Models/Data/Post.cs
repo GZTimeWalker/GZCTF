@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models.Request.Edit;
+using CTFServer.Utils;
 using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models;
@@ -58,4 +59,6 @@ public class Post
         AutherId = user.Id;
         UpdateTimeUTC = DateTimeOffset.UtcNow;
     }
+
+    internal void UpdateKeyWithHash() => Id = Codec.StrSHA256($"{Title}:{UpdateTimeUTC:s}:{Guid.NewGuid()}")[4..12];
 }

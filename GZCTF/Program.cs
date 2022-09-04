@@ -235,7 +235,8 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
         {
             UpdateTimeUTC = DateTimeOffset.UtcNow,
             Title = "Welcome to GZ::CTF!",
-            Content = "一个开源的CTF比赛平台。"
+            Summary = "一个开源的CTF比赛平台。",
+            Content = "项目基于 AGPL-3.0 许可证，开源于 [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF)。"
         });
 
         await context.SaveChangesAsync();

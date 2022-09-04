@@ -15,15 +15,15 @@ namespace CTFServer.Controllers;
 [ApiController]
 public class InfoController : ControllerBase
 {
-    private readonly IOptions<AccountPolicy> accountPolicy;
-    private readonly IOptions<GlobalConfig> globalConfig;
+    private readonly IOptionsSnapshot<AccountPolicy> accountPolicy;
+    private readonly IOptionsSnapshot<GlobalConfig> globalConfig;
     private readonly IPostRepository postRepository;
     private readonly IRecaptchaExtension recaptchaExtension;
 
     public InfoController(IPostRepository _postRepository,
         IRecaptchaExtension _recaptchaExtension,
-        IOptions<GlobalConfig> _globalConfig,
-        IOptions<AccountPolicy> _accountPolicy)
+        IOptionsSnapshot<GlobalConfig> _globalConfig,
+        IOptionsSnapshot<AccountPolicy> _accountPolicy)
     {
         globalConfig = _globalConfig;
         accountPolicy = _accountPolicy;

@@ -32,7 +32,7 @@ public class AccountPolicy
 public class GlobalConfig
 {
     /// <summary>
-    /// 标题前缀名称
+    /// 平台前缀名称
     /// </summary>
     public string Title { get; set; } = "GZ";
 }

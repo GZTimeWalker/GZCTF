@@ -65,8 +65,8 @@ public class AdminController : ControllerBase
     {
         ConfigEditModel config = new()
         {
-            AccoutPolicy = serviceProvider.GetRequiredService<IOptions<AccountPolicy>>().Value,
-            GlobalConfig = serviceProvider.GetRequiredService<IOptions<GlobalConfig>>().Value
+            AccoutPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value,
+            GlobalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value
         };
 
         return Ok(config);

@@ -13,30 +13,30 @@ import {
 import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import { Notice } from '@Api'
+import { PostInfoModel } from '@Api'
 
-interface NoticeEditCardProps extends PaperProps {
-  notice: Notice
+interface PostEditCardProps extends PaperProps {
+  post: PostInfoModel
   onDelete: () => void
   onEdit: () => void
   onPin: () => void
 }
 
-const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onPin, ...props }) => {
+const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ...props }) => {
   const { classes, theme } = useTypographyStyles()
   return (
     <Card shadow="sm" p="lg" {...props}>
       <Stack>
         <Group position="apart">
           <Group position="left">
-            {notice.isPinned && (
+            {post.isPinned && (
               <Icon color={theme.colors.orange[4]} path={mdiPinOutline} size={1}></Icon>
             )}
-            <Title order={3}>{notice.title}</Title>
+            <Title order={3}>{post.title}</Title>
           </Group>
           <Group position="right">
             <ActionIcon onClick={onPin}>
-              {notice.isPinned ? (
+              {post.isPinned ? (
                 <Icon path={mdiPinOffOutline} size={1} />
               ) : (
                 <Icon path={mdiPinOutline} size={1} />
@@ -51,11 +51,11 @@ const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onP
           </Group>
         </Group>
         <TypographyStylesProvider className={classes.root}>
-          <div dangerouslySetInnerHTML={{ __html: marked(notice.content) }} />
+          <div dangerouslySetInnerHTML={{ __html: marked(post.summary) }} />
         </TypographyStylesProvider>
         <Group position="right">
           <Badge color="brand" variant="light">
-            {new Date(notice.time).toLocaleString()}
+            {new Date(post.time).toLocaleString()}
           </Badge>
         </Group>
       </Stack>
@@ -63,4 +63,4 @@ const NoticeEditCard: FC<NoticeEditCardProps> = ({ notice, onDelete, onEdit, onP
   )
 }
 
-export default NoticeEditCard
+export default PostEditCard

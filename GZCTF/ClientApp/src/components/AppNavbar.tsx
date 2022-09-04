@@ -23,6 +23,7 @@ import {
   mdiLogout,
   mdiCheck,
   mdiWrenchOutline,
+  mdiNoteTextOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { Role } from '@Api'
@@ -86,10 +87,11 @@ interface NavbarItem {
 
 const items: NavbarItem[] = [
   { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
+  { icon: mdiNoteTextOutline, label: '文章', link: '/posts' },
   { icon: mdiFlagOutline, label: '赛事', link: '/games' },
   { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
   { icon: mdiInformationOutline, label: '关于', link: '/about' },
-  { icon: mdiWrenchOutline, label: '管理', link: '/admin/notices', admin: true },
+  { icon: mdiWrenchOutline, label: '管理', link: '/admin/games', admin: true },
 ]
 
 export interface NavbarLinkProps {

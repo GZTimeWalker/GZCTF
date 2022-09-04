@@ -77,6 +77,7 @@ export const useTypographyStyles = createStyles((theme) => ({
       wordBreak: 'break-word',
       wordWrap: 'break-word',
       overflow: 'hidden',
+      marginBottom: theme.spacing.md,
     },
 
     '& code': {
@@ -126,3 +127,68 @@ export const ACCEPT_IMAGE_MIME_TYPE = [
   MIME_TYPES.jpeg,
   MIME_TYPES.gif,
 ]
+
+export const useBannerStyles = createStyles((theme) => ({
+  root: {
+    position: 'relative',
+    display: 'flex',
+    background: theme.colorScheme === 'dark' ? ` rgba(0,0,0,0.2)` : theme.white,
+    justifyContent: 'center',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center center',
+    padding: `${theme.spacing.xl * 3}px 0`,
+
+    [theme.fn.smallerThan('sm')]: {
+      justifyContent: 'start',
+    },
+  },
+  container: {
+    position: 'relative',
+    maxWidth: '960px',
+    width: '100%',
+    zIndex: 1,
+
+    [theme.fn.smallerThan('md')]: {
+      padding: `${theme.spacing.md}px ${theme.spacing.md * 2}px`,
+    },
+  },
+  flexGrowAtSm: {
+    flexGrow: 0,
+
+    [theme.fn.smallerThan('sm')]: {
+      flexGrow: 1,
+    },
+  },
+  description: {
+    color: theme.white,
+    maxWidth: 600,
+  },
+  title: {
+    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+    fontSize: 50,
+    fontWeight: 900,
+    lineHeight: 1.1,
+
+    [theme.fn.smallerThan('md')]: {
+      maxWidth: '100%',
+      fontSize: 34,
+      lineHeight: 1.15,
+    },
+  },
+  content: {
+    minHeight: '100vh',
+    paddingTop: '1rem',
+  },
+  banner: {
+    maxWidth: '50%',
+    height: '100%',
+    width: '40vw',
+
+    [theme.fn.smallerThan('sm')]: {
+      display: 'none',
+    },
+  },
+  date: {
+    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+  },
+}))

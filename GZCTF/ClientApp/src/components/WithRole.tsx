@@ -1,7 +1,8 @@
 import React, { FC, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Center, Loader } from '@mantine/core'
-import api, { Role } from '@Api'
+import { useUserRole } from '@Utils/useUserRole'
+import { Role } from '@Api'
 
 interface WithRoleProps {
   requiredRole: Role
@@ -15,13 +16,11 @@ export const RoleMap = new Map<Role, number>([
   [Role.Banned, -1],
 ])
 
-const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
-  const { data: user, error } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
+export const RequireRole = (role: Role, requiredRole: Role) =>
+  RoleMap.get(role)! >= RoleMap.get(requiredRole)!
 
+const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
+  const { role, error } = useUserRole()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -31,14 +30,12 @@ const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
     if (error && error.status === 401)
       navigate(`/account/login?from=${location.pathname}`, { replace: true })
 
-    if (!user?.role) return
-
-    const current = RoleMap.get(user?.role ?? Role.User)!
+    const current = RoleMap.get(role)!
 
     if (current < required) navigate('/404')
-  }, [user, error, required, navigate])
+  }, [role, error, required, navigate])
 
-  if (!user || RoleMap.get(user?.role ?? Role.User)! < required /* show loader before redirect */) {
+  if (RoleMap.get(role)! < required /* show loader before redirect */) {
     return (
       <Center style={{ height: 'calc(100vh - 32px)' }}>
         <Loader />

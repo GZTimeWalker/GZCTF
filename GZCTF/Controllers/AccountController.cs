@@ -27,14 +27,14 @@ public class AccountController : ControllerBase
     private readonly IFileRepository fileService;
     private readonly IRecaptchaExtension recaptcha;
     private readonly IHostEnvironment environment;
-    private readonly IOptions<AccountPolicy> accountPolicy;
+    private readonly IOptionsSnapshot<AccountPolicy> accountPolicy;
 
     public AccountController(
         IMailSender _mailSender,
         IFileRepository _FileService,
         IHostEnvironment _environment,
         IRecaptchaExtension _recaptcha,
-        IOptions<AccountPolicy> _accountPolicy,
+        IOptionsSnapshot<AccountPolicy> _accountPolicy,
         UserManager<UserInfo> _userManager,
         SignInManager<UserInfo> _signInManager,
         ILogger<AccountController> _logger)

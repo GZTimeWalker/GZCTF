@@ -1,16 +1,16 @@
 import { FC } from 'react'
-import { createStyles, Group, keyframes, Stack, Title, Text } from '@mantine/core'
+import { createStyles, Group, Stack, Title } from '@mantine/core'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import LogoHeader from '@Components/LogoHeader'
-import NoticeCard from '@Components/NoticeCard'
+import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
+import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { usePageTitle } from '@Utils/PageTitle'
 import api from '@Api'
 
 const useStyles = createStyles((theme) => ({
-  notices: {
+  posts: {
     width: '78%',
 
     [`@media (max-width: 1080px)`]: {
@@ -21,7 +21,7 @@ const useStyles = createStyles((theme) => ({
     boxSizing: 'border-box',
     paddingLeft: theme.spacing.md,
     position: 'sticky',
-    top: theme.spacing.xs,
+    top: theme.spacing.xs + 74,
     right: 0,
     paddingTop: 10,
     flex: `0 0`,
@@ -40,21 +40,10 @@ const useStyles = createStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
-  blink: {
-    animation: `${keyframes`0%, 100% {opacity:0;} 50% {opacity:1;}`} 1s infinite steps(1,start)`,
-  },
-  subtitle: {
-    fontFamily: theme.fontFamilyMonospace,
-    color: theme.colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.dark[4],
-
-    [`@media (max-width: 900px)`]: {
-      display: 'none',
-    },
-  },
 }))
 
 const Home: FC = () => {
-  const { data: notices } = api.info.useInfoGetNotices({
+  const { data: posts } = api.info.useInfoGetPosts({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -79,29 +68,12 @@ const Home: FC = () => {
 
   return (
     <WithNavBar>
+      <StickyHeader />
       <Stack align="center">
-        <Group
-          position="apart"
-          align="flex-end"
-          sx={{
-            width: '100%',
-            [theme.fn.smallerThan('xs')]: {
-              display: 'none',
-            },
-          }}
-        >
-          <LogoHeader />
-          <Title className={classes.subtitle} order={3}>
-            &gt; Hack for fun not for profit
-            <Text span className={classes.blink}>
-              _
-            </Text>
-          </Title>
-        </Group>
         <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>
-          <Stack className={classes.notices}>
-            {notices?.map((notice, idx) => (
-              <NoticeCard key={idx} {...notice} />
+          <Stack className={classes.posts}>
+            {posts?.map((notice, idx) => (
+              <PostCard key={idx} {...notice} />
             ))}
           </Stack>
           <nav className={classes.wrapper}>

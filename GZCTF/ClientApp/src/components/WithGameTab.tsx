@@ -7,10 +7,11 @@ import { showNotification } from '@mantine/notifications'
 import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/PageTitle'
-import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
+import { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
+import { useUserRole } from '@Utils/useUserRole'
 
 const pages = [
   {
@@ -97,14 +98,10 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
   const navigate = useNavigate()
 
   const theme = useMantineTheme()
-  const { data: user } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
+  const { role } = useUserRole()
 
   const filteredPages = pages
-    .filter((p) => RoleMap.get(user?.role ?? Role.User!)! >= RoleMap.get(p.requireRole)!)
+    .filter((p) => RoleMap.get(role)! >= RoleMap.get(p.requireRole)!)
     .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
 
   const tabs = filteredPages.map((p) => ({

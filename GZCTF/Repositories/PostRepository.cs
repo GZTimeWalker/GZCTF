@@ -1,6 +1,7 @@
 ﻿using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using YamlDotNet.Core.Tokens;
 
 namespace CTFServer.Repositories;
 
@@ -15,6 +16,7 @@ public class PostRepository : RepositoryBase, IPostRepository
 
     public async Task<Post> CreatePost(Post post, CancellationToken token = default)
     {
+        post.UpdateKeyWithHash();
         await context.AddAsync(post, token);
         await SaveAsync(token);
 
@@ -32,7 +34,11 @@ public class PostRepository : RepositoryBase, IPostRepository
         });
 
     public Task<Post?> GetPostById(string id, CancellationToken token = default)
-        => context.Posts.FirstOrDefaultAsync(post => post.Id == id, token);
+        => cache.GetOrCreateAsync(CacheKey.Post(id), entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
+            return context.Posts.FirstOrDefaultAsync(post => post.Id == id, token);
+        });
 
     public Task<Post[]> GetPosts(int count = 30, int skip = 0, CancellationToken token = default)
         => context.Posts.OrderByDescending(e => e.UpdateTimeUTC)
@@ -43,12 +49,15 @@ public class PostRepository : RepositoryBase, IPostRepository
         context.Remove(post);
         await SaveAsync(token);
 
+        cache.Remove(CacheKey.Post(post.Id));
         cache.Remove(CacheKey.Posts);
     }
 
     public async Task UpdatePost(Post post, CancellationToken token = default)
     {
         await SaveAsync(token);
+
+        cache.Remove(CacheKey.Post(post.Id));
         cache.Remove(CacheKey.Posts);
     }
 }

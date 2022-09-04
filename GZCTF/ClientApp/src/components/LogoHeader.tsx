@@ -1,6 +1,7 @@
 import { forwardRef } from 'react'
 import { Group, Title, createStyles, GroupProps } from '@mantine/core'
 import MainIcon from './icon/MainIcon'
+import { useConfig } from '@Utils/useConfig'
 
 const useStyles = createStyles((theme) => ({
   brand: {
@@ -19,11 +20,12 @@ const useStyles = createStyles((theme) => ({
 
 export const LogoHeader = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {
   const { classes } = useStyles()
+  const { config } = useConfig()
   return (
     <Group ref={ref} noWrap {...props}>
       <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
       <Title className={classes.title}>
-        GZ<span className={classes.brand}>::</span>CTF
+        {config?.title ?? 'GZ'}<span className={classes.brand}>::</span>CTF
       </Title>
     </Group>
   )

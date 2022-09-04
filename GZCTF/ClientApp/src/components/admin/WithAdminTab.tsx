@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Group, GroupProps, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
 import {
   mdiAccountCogOutline,
-  mdiBullhornOutline,
   mdiFlagOutline,
   mdiAccountGroupOutline,
   mdiFileDocumentOutline,
@@ -14,7 +13,6 @@ import { usePageTitle } from '@Utils/PageTitle'
 import IconTabs from '../IconTabs'
 
 const pages = [
-  { icon: mdiBullhornOutline, title: '通知管理', path: 'notices', color: 'blue' },
   { icon: mdiFlagOutline, title: '比赛管理', path: 'games', color: 'yellow' },
   { icon: mdiAccountGroupOutline, title: '队伍管理', path: 'teams', color: 'green' },
   { icon: mdiAccountCogOutline, title: '用户管理', path: 'users', color: 'cyan' },
