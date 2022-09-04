@@ -18,6 +18,7 @@ import { useModals } from '@mantine/modals'
 import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
+  mdiCheck,
   mdiLockReset,
   mdiMagnify,
   mdiPencilOutline,
@@ -29,6 +30,7 @@ import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { Role, UserInfoModel } from '@Api'
+import { showNotification } from '@mantine/notifications'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -134,8 +136,18 @@ const Users: FC = () => {
             >
               {res.data}
             </Text>
-            <Button onClick={() => clipboard.copy(res.data)}>
-              {clipboard.copied ? '已复制' : '复制到剪贴板'}
+            <Button
+              onClick={() => {
+                clipboard.copy(res.data)
+                showNotification({
+                  message: '密码已复制到剪贴板',
+                  color: 'teal',
+                  icon: <Icon path={mdiCheck} size={1} />,
+                  disallowClose: true
+                })
+              }}
+            >
+              复制到剪贴板
             </Button>
           </Stack>
         ),

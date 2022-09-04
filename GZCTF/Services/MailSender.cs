@@ -27,9 +27,9 @@ public class MailSender : IMailSender
         {
             Host = this.options.Smtp.Host,
             Port = (int)this.options.Smtp.Port,
-            EnableSsl = true,
+            EnableSsl = this.options?.Smtp?.EnableSsl ?? true,
             UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(this.options.UserName, this.options.Password)
+            Credentials = new NetworkCredential(this.options?.UserName, this.options?.Password)
         };
     }
 
