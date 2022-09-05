@@ -34,8 +34,7 @@ public class PostInfoModel
     /// <summary>
     /// 文章标签
     /// </summary>
-    [Required]
-    public List<string> Tags { get; set; } = new();
+    public List<string>? Tags { get; set; }
 
     /// <summary>
     /// 作者头像
@@ -60,6 +59,7 @@ public class PostInfoModel
             Title = post.Title,
             Summary = post.Summary,
             IsPinned = post.IsPinned,
+            Tags = post.Tags,
             Time = post.UpdateTimeUTC,
             AutherAvatar = post.Auther?.AvatarUrl,
             AutherName = post.Auther?.UserName,

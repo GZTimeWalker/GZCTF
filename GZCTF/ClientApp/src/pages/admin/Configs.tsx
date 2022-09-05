@@ -1,5 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { Button, Divider, Group, SimpleGrid, Stack, Switch, TextInput, Title } from '@mantine/core'
+import { mdiContentSaveOutline } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
@@ -37,10 +39,11 @@ const Configs: FC = () => {
 
   return (
     <AdminPage isLoading={!configs}>
-      <Stack style={{ width: '80%', minWidth: '70vw' }}>
+      <Stack style={{ width: '100%' }}>
         <Group position="apart">
           <Title order={2}>平台设置</Title>
           <Button
+            leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
             onClick={() => {
               updateConfig({ globalConfig })
             }}

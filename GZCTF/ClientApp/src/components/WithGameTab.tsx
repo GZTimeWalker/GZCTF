@@ -7,11 +7,11 @@ import { showNotification } from '@mantine/notifications'
 import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/usePageTitle'
+import { useUserRole } from '@Utils/useUser'
 import { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'
 import { RoleMap } from './WithRole'
-import { useUserRole } from '@Utils/useUserRole'
 
 const pages = [
   {

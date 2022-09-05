@@ -26,6 +26,7 @@ import {
   mdiNoteTextOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useUser } from '@Utils/useUser'
 import api, { Role } from '@Api'
 import MainIcon from './icon/MainIcon'
 
@@ -150,31 +151,7 @@ const AppNavbar: FC = () => {
     })
   }
 
-  const { data: user, error } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    onErrorRetry: (err, _key, _config, revalidate, { retryCount }) => {
-      if (err?.status === 403) {
-        api.account.accountLogOut().then(() => {
-          navigate('/')
-          showNotification({
-            color: 'teal',
-            title: '账户已被禁用',
-            message: '',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
-        })
-        return
-      }
-
-      if (err?.status === 401) return
-
-      if (retryCount >= 10) return
-
-      setTimeout(() => revalidate({ retryCount: retryCount }), 5000)
-    },
-  })
+  const { user, error } = useUser()
 
   useEffect(() => {
     if (location.pathname == '/') {

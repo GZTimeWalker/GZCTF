@@ -3,7 +3,6 @@ import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 
 export const showErrorNotification = (err: any) => {
-
   if (err?.response?.status === 429) {
     showNotification({
       color: 'red',

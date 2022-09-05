@@ -23,24 +23,21 @@ import { Icon } from '@mdi/react'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { usePageTitle } from '@Utils/usePageTitle'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
+import { usePageTitle } from '@Utils/usePageTitle'
+import { useUser } from '@Utils/useUser'
 import api, { ProfileUpdateModel } from '@Api'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
-  const { data, mutate } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
+  const { user, mutate } = useUser()
 
   const [profile, setProfile] = useState<ProfileUpdateModel>({
-    userName: data?.userName,
-    bio: data?.bio,
-    stdNumber: data?.stdNumber,
-    phone: data?.phone,
-    realName: data?.realName,
+    userName: user?.userName,
+    bio: user?.bio,
+    stdNumber: user?.stdNumber,
+    phone: user?.phone,
+    realName: user?.realName,
   })
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
@@ -55,13 +52,13 @@ const Profile: FC = () => {
 
   useEffect(() => {
     setProfile({
-      userName: data?.userName,
-      bio: data?.bio,
-      stdNumber: data?.stdNumber,
-      phone: data?.phone,
-      realName: data?.realName,
+      userName: user?.userName,
+      bio: user?.bio,
+      stdNumber: user?.stdNumber,
+      phone: user?.phone,
+      realName: user?.realName,
     })
-  }, [data])
+  }, [user])
 
   const onChangeAvatar = () => {
     if (avatarFile) {
@@ -76,7 +73,7 @@ const Profile: FC = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
-          mutate({ ...data })
+          mutate({ ...user })
           setAvatarFile(null)
           setDropzoneOpened(false)
         })
@@ -98,7 +95,7 @@ const Profile: FC = () => {
           icon: <Icon path={mdiCheck} size={1} />,
           disallowClose: true,
         })
-        mutate({ ...data })
+        mutate({ ...user })
       })
       .catch(showErrorNotification)
   }
@@ -119,7 +116,7 @@ const Profile: FC = () => {
               disallowClose: true,
             })
           } else {
-            mutate({ ...data, email: email })
+            mutate({ ...user, email: email })
           }
           setMailEditOpened(false)
         })
@@ -155,7 +152,7 @@ const Profile: FC = () => {
                   <Avatar
                     radius="xl"
                     size={70}
-                    src={data?.avatar}
+                    src={user?.avatar}
                     onClick={() => setDropzoneOpened(true)}
                   />
                 </Center>
@@ -165,7 +162,7 @@ const Profile: FC = () => {
               label="邮箱"
               type="email"
               style={{ width: '100%' }}
-              value={data?.email ?? 'ctfer@gzti.me'}
+              value={user?.email ?? 'ctfer@gzti.me'}
               disabled
               readOnly
             />
@@ -262,7 +259,7 @@ const Profile: FC = () => {
                 label="新邮箱"
                 type="email"
                 style={{ width: '100%' }}
-                placeholder={data?.email ?? 'ctfer@gzti.me'}
+                placeholder={user?.email ?? 'ctfer@gzti.me'}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
@@ -270,7 +267,7 @@ const Profile: FC = () => {
                 <Button
                   variant="default"
                   onClick={() => {
-                    setEmail(data?.email ?? '')
+                    setEmail(user?.email ?? '')
                     setMailEditOpened(false)
                   }}
                 >

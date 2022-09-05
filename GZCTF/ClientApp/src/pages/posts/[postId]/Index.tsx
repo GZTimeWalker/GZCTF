@@ -14,8 +14,8 @@ import {
   TypographyStylesProvider,
 } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
-import { usePageTitle } from '@Utils/usePageTitle'
 import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
+import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
 dayjs.extend(LocalizedFormat)

@@ -40,8 +40,7 @@ public class PostDetailModel
     /// <summary>
     /// 文章标签
     /// </summary>
-    [Required]
-    public List<string> Tags { get; set; } = new();
+    public List<string>? Tags { get; set; }
 
     /// <summary>
     /// 作者头像
@@ -64,6 +63,7 @@ public class PostDetailModel
         {
             Id = post.Id,
             Title = post.Title,
+            Tags = post.Tags,
             IsPinned = post.IsPinned,
             Summary = post.Summary,
             Content = post.Content,

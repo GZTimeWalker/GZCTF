@@ -19,10 +19,10 @@ const Error404: FC = () => {
 
   return (
     <WithNavBar>
-      <Stack  spacing={0} align="center" justify="center" style={{ height: 'calc(100vh - 32px)' }}>
-          <Icon404 />
-          <Title order={2}>这是一处荒芜的地方</Title>
-          <Text>你为何会到这里来呢</Text>
+      <Stack spacing={0} align="center" justify="center" style={{ height: 'calc(100vh - 32px)' }}>
+        <Icon404 />
+        <Title order={2}>这是一处荒芜的地方</Title>
+        <Text>你为何会到这里来呢</Text>
       </Stack>
     </WithNavBar>
   )

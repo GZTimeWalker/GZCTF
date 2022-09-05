@@ -60,6 +60,7 @@ public class Post
         Title = model.Title;
         Content = model.Content;
         IsPinned = model.IsPinned;
+        Tags = model.Tags.ToList();
         Auther = user;
         AutherId = user.Id;
         UpdateTimeUTC = DateTimeOffset.UtcNow;

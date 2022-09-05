@@ -17,7 +17,7 @@ import {
 import { mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import { useUserRole } from '@Utils/useUserRole'
+import { useUserRole } from '@Utils/useUser'
 import { PostInfoModel, Role } from '@Api'
 import { RequireRole } from './WithRole'
 

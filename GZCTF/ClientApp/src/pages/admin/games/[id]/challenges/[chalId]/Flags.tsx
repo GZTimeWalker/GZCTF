@@ -309,7 +309,8 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               <Stack spacing={0} pb={8}>
                 <Text size="sm">flag 模版</Text>
                 <Text size="xs" color="dimmed">
-                  请输入 flag 模版字符串，其中 <Code>[TEAM_HASH]</Code> 将会被自动替换为队伍 Token 与相关信息所生成的哈希值
+                  请输入 flag 模版字符串，其中 <Code>[TEAM_HASH]</Code> 将会被自动替换为队伍 Token
+                  与相关信息所生成的哈希值
                 </Text>
                 <Text size="xs" color="dimmed">
                   留空以生成随机 UUID 作为 flag

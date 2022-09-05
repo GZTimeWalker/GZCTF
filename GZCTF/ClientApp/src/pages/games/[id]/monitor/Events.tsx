@@ -12,6 +12,7 @@ import {
   Card,
   Switch,
 } from '@mantine/core'
+import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiFlag,
@@ -29,7 +30,6 @@ import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { EventType, GameEvent } from '@Api'
-import { useLocalStorage } from '@mantine/hooks'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -116,9 +116,10 @@ const Events: FC = () => {
 
       connection.on('ReceivedGameEvent', (message: GameEvent) => {
         console.log(message)
-        if (!hideConatinerEvents ||
-          (message.type !== EventType.ContainerStart
-            && message.type !== EventType.ContainerDestroy)) {
+        if (
+          !hideConatinerEvents ||
+          (message.type !== EventType.ContainerStart && message.type !== EventType.ContainerDestroy)
+        ) {
           newEvents.current = [message, ...newEvents.current]
           update(new Date(message.time!))
         }

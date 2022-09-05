@@ -25,8 +25,9 @@ import CustomProgress from '@Components/CustomProgress'
 import GameJoinModal from '@Components/GameJoinModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { usePageTitle } from '@Utils/usePageTitle'
 import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
+import { usePageTitle } from '@Utils/usePageTitle'
+import { useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
 
 const GameAlertMap = new Map([
@@ -108,11 +109,7 @@ const GameDetail: FC = () => {
   const started = current > 0
   const progress = started ? (finished ? 100 : current / duriation) : 0
 
-  const { data: user } = api.account.useAccountProfile({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
+  const { user } = useUser()
 
   usePageTitle(game?.title)
 

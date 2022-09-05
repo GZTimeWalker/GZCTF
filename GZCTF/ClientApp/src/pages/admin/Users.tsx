@@ -15,6 +15,7 @@ import {
 } from '@mantine/core'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
+import { showNotification } from '@mantine/notifications'
 import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
@@ -30,7 +31,6 @@ import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { Role, UserInfoModel } from '@Api'
-import { showNotification } from '@mantine/notifications'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -143,7 +143,7 @@ const Users: FC = () => {
                   message: '密码已复制到剪贴板',
                   color: 'teal',
                   icon: <Icon path={mdiCheck} size={1} />,
-                  disallowClose: true
+                  disallowClose: true,
                 })
               }}
             >
