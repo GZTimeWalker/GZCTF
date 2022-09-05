@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220831094455_InitDb")]
+    [Migration("20220905103212_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -451,33 +451,6 @@ namespace CTFServer.Migrations
                     b.ToTable("Logs");
                 });
 
-            modelBuilder.Entity("CTFServer.Models.Notice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsPinned")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset>("PublishTimeUTC")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notices");
-                });
-
             modelBuilder.Entity("CTFServer.Models.Participation", b =>
                 {
                     b.Property<int>("Id")
@@ -510,6 +483,43 @@ namespace CTFServer.Migrations
                     b.HasIndex("TeamId", "GameId");
 
                     b.ToTable("Participations");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.Post", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.Property<string>("AutherId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsPinned")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("UpdateTimeUTC")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutherId");
+
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Submission", b =>
@@ -997,6 +1007,16 @@ namespace CTFServer.Migrations
                     b.Navigation("Game");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("CTFServer.Models.Post", b =>
+                {
+                    b.HasOne("CTFServer.Models.UserInfo", "Auther")
+                        .WithMany()
+                        .HasForeignKey("AutherId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Auther");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Submission", b =>

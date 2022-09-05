@@ -119,22 +119,6 @@ namespace CTFServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    IsPinned = table.Column<bool>(type: "boolean", nullable: false),
-                    PublishTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Notices", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -377,6 +361,30 @@ namespace CTFServer.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Summary = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    IsPinned = table.Column<bool>(type: "boolean", nullable: false),
+                    Tags = table.Column<string>(type: "text", nullable: true),
+                    AutherId = table.Column<string>(type: "text", nullable: true),
+                    UpdateTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_AspNetUsers_AutherId",
+                        column: x => x.AutherId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -716,6 +724,11 @@ namespace CTFServer.Migrations
                 columns: new[] { "TeamId", "GameId" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Posts_AutherId",
+                table: "Posts",
+                column: "AutherId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Submissions_ChallengeId",
                 table: "Submissions",
                 column: "ChallengeId");
@@ -833,7 +846,7 @@ namespace CTFServer.Migrations
                 name: "Logs");
 
             migrationBuilder.DropTable(
-                name: "Notices");
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Submissions");

@@ -504,7 +504,7 @@ export interface PostInfoModel {
   isPinned: boolean
 
   /** 文章标签 */
-  tags: string[]
+  tags?: string[] | null
 
   /** 作者头像 */
   autherAvatar?: string | null
@@ -539,7 +539,7 @@ export interface PostDetailModel {
   isPinned: boolean
 
   /** 文章标签 */
-  tags: string[]
+  tags?: string[] | null
 
   /** 作者头像 */
   autherAvatar?: string | null
