@@ -270,7 +270,7 @@ export interface AccountPolicy {
  * 全局设置
  */
 export interface GlobalConfig {
-  /** 标题前缀名称 */
+  /** 平台前缀名称 */
   title?: string
 }
 
@@ -526,11 +526,11 @@ export interface PostDetailModel {
   /** 文章总结 */
   summary: string
 
-  /** 是否置顶 */
-  isPinned: boolean
-
   /** 文章内容 */
   content: string
+
+  /** 是否置顶 */
+  isPinned: boolean
 
   /** 作者头像 */
   autherAvatar?: string | null
@@ -2317,11 +2317,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取所有文章
      * @request GET:/api/edit/posts
      */
-    editGetPosts: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
+    editGetPosts: (params: RequestParams = {}) =>
       this.request<PostInfoModel[], RequestResponse>({
         path: `/api/edit/posts`,
         method: 'GET',
-        query: query,
         format: 'json',
         ...params,
       }),
@@ -2333,15 +2332,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取所有文章
      * @request GET:/api/edit/posts
      */
-    useEditGetPosts: (
-      query?: { count?: number; skip?: number },
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) =>
-      useSWR<PostInfoModel[], RequestResponse>(
-        doFetch ? [`/api/edit/posts`, query] : null,
-        options
-      ),
+    useEditGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<PostInfoModel[], RequestResponse>(doFetch ? `/api/edit/posts` : null, options),
 
     /**
      * @description 获取所有文章，需要管理员权限
@@ -2352,10 +2344,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/posts
      */
     mutateEditGetPosts: (
-      query?: { count?: number; skip?: number },
       data?: PostInfoModel[] | Promise<PostInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<PostInfoModel[]>([`/api/edit/posts`, query], data, options),
+    ) => mutate<PostInfoModel[]>(`/api/edit/posts`, data, options),
 
     /**
      * @description 修改文章，需要管理员权限
