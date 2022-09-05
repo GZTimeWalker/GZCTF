@@ -241,7 +241,7 @@ public class EditController : Controller
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateGameNoticeer([FromRoute] int id, IFormFile file, CancellationToken token)
+    public async Task<IActionResult> UpdateGamePoster([FromRoute] int id, IFormFile file, CancellationToken token)
     {
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
