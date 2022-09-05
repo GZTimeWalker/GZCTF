@@ -1,4 +1,3 @@
-import { marked } from 'marked'
 import { FC } from 'react'
 import {
   ActionIcon,
@@ -7,12 +6,12 @@ import {
   Badge,
   Card,
   Title,
-  TypographyStylesProvider,
   PaperProps,
+  useMantineTheme,
 } from '@mantine/core'
 import { mdiPinOffOutline, mdiPinOutline, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { useTypographyStyles } from '@Utils/ThemeOverride'
+import MarkdownRender from '@Components/MarkdownRender'
 import { PostInfoModel } from '@Api'
 
 interface PostEditCardProps extends PaperProps {
@@ -23,7 +22,7 @@ interface PostEditCardProps extends PaperProps {
 }
 
 const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ...props }) => {
-  const { classes, theme } = useTypographyStyles()
+  const theme = useMantineTheme()
   return (
     <Card shadow="sm" p="lg" {...props}>
       <Stack>
@@ -50,9 +49,7 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
             </ActionIcon>
           </Group>
         </Group>
-        <TypographyStylesProvider className={classes.root}>
-          <div dangerouslySetInnerHTML={{ __html: marked(post.summary) }} />
-        </TypographyStylesProvider>
+        <MarkdownRender source={post.summary} />
         <Group position="right">
           <Badge color="brand" variant="light">
             {new Date(post.time).toLocaleString()}

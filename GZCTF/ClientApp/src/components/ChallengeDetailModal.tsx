@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { marked } from 'marked'
 import { FC, useEffect, useState } from 'react'
 import React from 'react'
 import {
   ActionIcon,
+  Box,
   Button,
   Card,
   Code,
@@ -18,16 +18,16 @@ import {
   Text,
   TextInput,
   Title,
-  TypographyStylesProvider,
 } from '@mantine/core'
 import { useClipboard, useDisclosure, useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTypographyStyles } from '@Utils/ThemeOverride'
+import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
 import { ChallengeTagItemProps } from '../utils/ChallengeItem'
+import MarkdownRender from './MarkdownRender'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
@@ -271,7 +271,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         <Stack justify="space-between" style={{ position: 'relative', minHeight: '20vh' }}>
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
-            <TypographyStylesProvider className={classes.root} style={{ minHeight: '4rem' }}>
+            <Box className={classes.root} style={{ minHeight: '4rem' }}>
               {challenge?.context?.url && (
                 <Popover
                   opened={downloadOpened}
@@ -305,8 +305,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                   </Popover.Dropdown>
                 </Popover>
               )}
-              <div dangerouslySetInnerHTML={{ __html: marked(challenge?.content ?? '') }} />
-            </TypographyStylesProvider>
+              <MarkdownRender source={challenge?.content ?? ''} />
+            </Box>
           </Group>
           {challenge?.hints && challenge.hints.length > 0 && (
             <Stack spacing={2}>

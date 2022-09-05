@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import { marked } from 'marked'
 import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
@@ -9,7 +8,6 @@ import {
   Stack,
   Text,
   Title,
-  TypographyStylesProvider,
   Center,
   Alert,
   Badge,
@@ -23,9 +21,10 @@ import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import CustomProgress from '@Components/CustomProgress'
 import GameJoinModal from '@Components/GameJoinModal'
+import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
+import { useBannerStyles } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
@@ -97,7 +96,6 @@ const GameDetail: FC = () => {
   })
 
   const { classes, theme } = useBannerStyles()
-  const { classes: typographyClasses } = useTypographyStyles()
 
   const startTime = dayjs(game?.start) ?? dayjs()
   const endTime = dayjs(game?.end) ?? dayjs()
@@ -266,9 +264,7 @@ const GameDetail: FC = () => {
               当前激活队伍已经成功报名，请耐心等待比赛开始。
             </Alert>
           )}
-          <TypographyStylesProvider className={typographyClasses.root}>
-            <div dangerouslySetInnerHTML={{ __html: marked(game?.content ?? '') }} />
-          </TypographyStylesProvider>
+          <MarkdownRender source={game?.content ?? ''} />
         </Stack>
         <GameJoinModal
           title="补全报名信息"

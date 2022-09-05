@@ -71,27 +71,6 @@ export const ThemeOverride: MantineThemeOverride = {
   loader: 'bars',
 }
 
-export const useTypographyStyles = createStyles((theme) => ({
-  root: {
-    '& p': {
-      wordBreak: 'break-word',
-      wordWrap: 'break-word',
-      overflow: 'hidden',
-      marginBottom: theme.spacing.md,
-    },
-
-    '& code': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[1],
-      padding: `1px ${theme.spacing.xs / 2}px`,
-      border: 'none',
-    },
-
-    '& pre': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[1],
-    },
-  },
-}))
-
 export const useTableStyles = createStyles((theme) => ({
   mono: {
     fontFamily: theme.fontFamilyMonospace,

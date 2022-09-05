@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import { marked } from 'marked'
 import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -9,16 +8,16 @@ import {
   Title,
   Text,
   Stack,
-  TypographyStylesProvider,
   Avatar,
   Anchor,
   ActionIcon,
+  useMantineTheme,
 } from '@mantine/core'
 import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { useTypographyStyles } from '@Utils/ThemeOverride'
 import { useUserRole } from '@Utils/useUser'
 import { PostInfoModel, Role } from '@Api'
+import MarkdownRender from './MarkdownRender'
 import { RequireRole } from './WithRole'
 
 interface PostCardProps {
@@ -27,7 +26,7 @@ interface PostCardProps {
 }
 
 const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
-  const { classes, theme } = useTypographyStyles()
+  const theme = useMantineTheme()
   const navigate = useNavigate()
   const { role } = useUserRole()
   const [disabled, setDisabled] = useState(false)
@@ -92,9 +91,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               {post.title}
             </Title>
           )}
-          <TypographyStylesProvider className={classes.root}>
-            <div dangerouslySetInnerHTML={{ __html: marked(post.summary) }} />
-          </TypographyStylesProvider>
+          <MarkdownRender source={post.summary} />
           {post.tags && (
             <Group>
               {post.tags.map((tag) => (

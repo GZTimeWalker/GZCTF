@@ -21,12 +21,14 @@ specifiers:
   '@trivago/prettier-plugin-sort-imports': ^3.3.0
   '@types/marked': ^4.0.6
   '@types/node': 18.7.15
+  '@types/prismjs': ^1.26.0
   '@types/react': ^18.0.18
   '@types/react-dom': ^18.0.6
   '@typescript-eslint/eslint-plugin': ^5.36.1
   '@typescript-eslint/parser': ^5.36.1
   '@vitejs/plugin-react': ^2.1.0
   axios: ^0.27.2
+  babel-plugin-prismjs: ^2.1.0
   dayjs: ^1.11.5
   echarts: ^5.3.3
   echarts-for-react: ^3.0.2
@@ -35,16 +37,19 @@ specifiers:
   lodash: ^4.17.21
   marked: ^4.1.0
   prettier: ~2.7.1
+  prismjs: ^1.29.0
   react: ^18.2.0
   react-dom: ^18.2.0
   react-router: ^6.3.0
   react-router-dom: ^6.3.0
+  rollup: ^2.79.0
   swagger-typescript-api: ^10.0.1
   swr: ^1.3.0
   tslib: ^2.4.0
   typescript: 4.7.4
   vite: ^3.1.0
   vite-plugin-pages: ^0.26.0
+  vite-plugin-prismjs: ^0.0.8
   vite-tsconfig-paths: ^3.5.0
 
 dependencies:
@@ -64,6 +69,7 @@ dependencies:
   echarts: 5.3.3
   echarts-for-react: 3.0.2_echarts@5.3.3+react@18.2.0
   marked: 4.1.0
+  prismjs: 1.29.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-router: 6.3.0_react@18.2.0
@@ -77,21 +83,25 @@ devDependencies:
   '@trivago/prettier-plugin-sort-imports': 3.3.0_prettier@2.7.1
   '@types/marked': 4.0.6
   '@types/node': 18.7.15
+  '@types/prismjs': 1.26.0
   '@types/react': 18.0.18
   '@types/react-dom': 18.0.6
   '@typescript-eslint/eslint-plugin': 5.36.1_uoznksvaqimddkvahx6c3yyzku
   '@typescript-eslint/parser': 5.36.1_sorwav4hsh5vncerguqybud76i
   '@vitejs/plugin-react': 2.1.0_vite@3.1.0
   axios: 0.27.2
+  babel-plugin-prismjs: 2.1.0_prismjs@1.29.0
   eslint: 8.23.0
   form-data: 4.0.0
   lodash: 4.17.21
   prettier: 2.7.1
+  rollup: 2.79.0
   swagger-typescript-api: 10.0.1
   tslib: 2.4.0
   typescript: 4.7.4
   vite: 3.1.0
   vite-plugin-pages: 0.26.0_vite@3.1.0
+  vite-plugin-prismjs: 0.0.8_prismjs@1.29.0
 
 packages:
 
@@ -1007,6 +1017,10 @@ packages:
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
 
+  /@types/prismjs/1.26.0:
+    resolution: {integrity: sha512-ZTaqn/qSqUuAq1YwvOFQfVW1AR/oQJlLSZVustdjwI+GZ8kr0MSHBj0tsXPW1EqHubx50gtBEjbPGsdZwQwCjQ==}
+    dev: true
+
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
 
@@ -1278,6 +1292,14 @@ packages:
       cosmiconfig: 7.0.1
       resolve: 1.22.1
     dev: false
+
+  /babel-plugin-prismjs/2.1.0_prismjs@1.29.0:
+    resolution: {integrity: sha512-ehzSKYfeAz4U78zi/sfwsjDPlq0LvDKxNefcZTJ/iKBu+plsHsLqZhUeGf1+82LAcA35UZGbU6ksEx2Utphc/g==}
+    peerDependencies:
+      prismjs: ^1.18.0
+    dependencies:
+      prismjs: 1.29.0
+    dev: true
 
   /balanced-match/1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -2761,6 +2783,10 @@ packages:
     hasBin: true
     dev: true
 
+  /prismjs/1.29.0:
+    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
+    engines: {node: '>=6'}
+
   /prop-types/15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
     dependencies:
@@ -2942,6 +2968,14 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
+
+  /rollup/2.79.0:
+    resolution: {integrity: sha512-x4KsrCgwQ7ZJPcFA/SUu6QVcYlO7uRLfLAy0DSA4NS2eG8japdbpM50ToH7z4iObodRYOJ0soneF0iaQRJ6zhA==}
+    engines: {node: '>=10.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
 
   /run-parallel/1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -3332,6 +3366,17 @@ packages:
       vite: 3.1.0
       yaml: 2.1.1
     transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /vite-plugin-prismjs/0.0.8_prismjs@1.29.0:
+    resolution: {integrity: sha512-mBPPMS/hwVUArdqCtp/oajZT7iq1qwJDDCciNZ3R5+Q5tQUuUHXtDKuZHYnklPLElNbENf2FyuOtC4FrgxQRAA==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@babel/core': 7.18.13
+      babel-plugin-prismjs: 2.1.0_prismjs@1.29.0
+    transitivePeerDependencies:
+      - prismjs
       - supports-color
     dev: true
 

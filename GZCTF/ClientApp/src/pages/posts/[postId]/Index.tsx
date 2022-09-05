@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
-import { marked } from 'marked'
 import { FC, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -11,13 +10,13 @@ import {
   Title,
   Text,
   Group,
-  TypographyStylesProvider,
 } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
-import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
+import { useBannerStyles } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 import { useScrollIntoView } from '@mantine/hooks'
+import MarkdownRender from '@Components/MarkdownRender'
 
 dayjs.extend(LocalizedFormat)
 
@@ -26,7 +25,6 @@ const Post: FC = () => {
   const navigate = useNavigate()
 
   const { classes, theme } = useBannerStyles()
-  const { classes: typographyClasses } = useTypographyStyles()
 
   useEffect(() => {
     if (postId?.length != 8) {
@@ -73,9 +71,7 @@ const Post: FC = () => {
         </Stack>
       </div>
       <Container className={classes.content}>
-        <TypographyStylesProvider className={typographyClasses.root}>
-          <div dangerouslySetInnerHTML={{ __html: marked(post?.content ?? '') }} />
-        </TypographyStylesProvider>
+        <MarkdownRender source={post?.content ?? ''}/>
         <Group position="right">
           {post?.tags?.map((tag) => (
             <Text weight={700} span color="brand">
