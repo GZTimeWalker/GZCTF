@@ -46,6 +46,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 ![](assets/demo-4.png)
 ![](assets/demo-5.png)
 ![](assets/demo-6.png)
+![](assets/demo-7.png)
 
 ## 安装配置
 
