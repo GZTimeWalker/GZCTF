@@ -488,38 +488,6 @@ export interface PostEditModel {
 }
 
 /**
- * 文章信息
- */
-export interface PostInfoModel {
-  /** 文章 Id */
-  id: string
-
-  /** 文章标题 */
-  title: string
-
-  /** 文章总结 */
-  summary: string
-
-  /** 是否置顶 */
-  isPinned: boolean
-
-  /** 文章标签 */
-  tags?: string[] | null
-
-  /** 作者头像 */
-  autherAvatar?: string | null
-
-  /** 作者名称 */
-  autherName?: string | null
-
-  /**
-   * 更新时间
-   * @format date-time
-   */
-  time: string
-}
-
-/**
  * 文章详细内容
  */
 export interface PostDetailModel {
@@ -1453,6 +1421,38 @@ export interface FlagSubmitModel {
 }
 
 /**
+ * 文章信息
+ */
+export interface PostInfoModel {
+  /** 文章 Id */
+  id: string
+
+  /** 文章标题 */
+  title: string
+
+  /** 文章总结 */
+  summary: string
+
+  /** 是否置顶 */
+  isPinned: boolean
+
+  /** 文章标签 */
+  tags?: string[] | null
+
+  /** 作者头像 */
+  autherAvatar?: string | null
+
+  /** 作者名称 */
+  autherName?: string | null
+
+  /**
+   * 更新时间
+   * @format date-time
+   */
+  time: string
+}
+
+/**
  * 队伍信息更新
  */
 export interface TeamUpdateModel {
@@ -2317,45 +2317,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-
-    /**
-     * @description 获取所有文章，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetPosts
-     * @summary 获取所有文章
-     * @request GET:/api/edit/posts
-     */
-    editGetPosts: (params: RequestParams = {}) =>
-      this.request<PostInfoModel[], RequestResponse>({
-        path: `/api/edit/posts`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取所有文章，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetPosts
-     * @summary 获取所有文章
-     * @request GET:/api/edit/posts
-     */
-    useEditGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<PostInfoModel[], RequestResponse>(doFetch ? `/api/edit/posts` : null, options),
-
-    /**
-     * @description 获取所有文章，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetPosts
-     * @summary 获取所有文章
-     * @request GET:/api/edit/posts
-     */
-    mutateEditGetPosts: (
-      data?: PostInfoModel[] | Promise<PostInfoModel[]>,
-      options?: MutatorOptions
-    ) => mutate<PostInfoModel[]>(`/api/edit/posts`, data, options),
 
     /**
      * @description 修改文章，需要管理员权限
@@ -3516,8 +3477,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取最新文章
      *
      * @tags Info
-     * @name InfoGetPosts
+     * @name InfoGetLatestPosts
      * @summary 获取最新文章
+     * @request GET:/api/posts/latest
+     */
+    infoGetLatestPosts: (params: RequestParams = {}) =>
+      this.request<PostInfoModel[], any>({
+        path: `/api/posts/latest`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取最新文章
+     *
+     * @tags Info
+     * @name InfoGetLatestPosts
+     * @summary 获取最新文章
+     * @request GET:/api/posts/latest
+     */
+    useInfoGetLatestPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<PostInfoModel[], any>(doFetch ? `/api/posts/latest` : null, options),
+
+    /**
+     * @description 获取最新文章
+     *
+     * @tags Info
+     * @name InfoGetLatestPosts
+     * @summary 获取最新文章
+     * @request GET:/api/posts/latest
+     */
+    mutateInfoGetLatestPosts: (
+      data?: PostInfoModel[] | Promise<PostInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<PostInfoModel[]>(`/api/posts/latest`, data, options),
+
+    /**
+     * @description 获取全部文章
+     *
+     * @tags Info
+     * @name InfoGetPosts
+     * @summary 获取全部文章
      * @request GET:/api/posts
      */
     infoGetPosts: (params: RequestParams = {}) =>
@@ -3528,22 +3528,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取最新文章
+     * @description 获取全部文章
      *
      * @tags Info
      * @name InfoGetPosts
-     * @summary 获取最新文章
+     * @summary 获取全部文章
      * @request GET:/api/posts
      */
     useInfoGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<PostInfoModel[], any>(doFetch ? `/api/posts` : null, options),
 
     /**
-     * @description 获取最新文章
+     * @description 获取全部文章
      *
      * @tags Info
      * @name InfoGetPosts
-     * @summary 获取最新文章
+     * @summary 获取全部文章
      * @request GET:/api/posts
      */
     mutateInfoGetPosts: (
