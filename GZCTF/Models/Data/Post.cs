@@ -58,6 +58,7 @@ public class Post
     internal void Update(PostEditModel model, UserInfo user)
     {
         Title = model.Title;
+        Summary = model.Summary;
         Content = model.Content;
         IsPinned = model.IsPinned;
         Tags = model.Tags.ToList();
