@@ -39,9 +39,12 @@ public class PostRepository : RepositoryBase, IPostRepository
                     .ThenByDescending(n => n.UpdateTimeUTC).ToArrayAsync(token);
         });
 
-    public Task RemovePost(Post post, CancellationToken token = default)
+    public async Task RemovePost(Post post, CancellationToken token = default)
     {
-        throw new NotImplementedException();
+        context.Remove(post);
+        await SaveAsync(token);
+
+        cache.Remove(CacheKey.Posts);
     }
 
     public async Task UpdatePost(Post post, CancellationToken token = default)

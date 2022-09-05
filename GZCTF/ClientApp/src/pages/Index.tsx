@@ -44,7 +44,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const Home: FC = () => {
-  const { data: posts, mutate } = api.info.useInfoGetPosts({
+  const { data: posts, mutate } = api.info.useInfoGetLatestPosts({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -76,6 +76,7 @@ const Home: FC = () => {
             ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
           ])
         }
+        api.info.mutateInfoGetPosts()
       })
       .catch(showErrorNotification)
       .finally(() => {

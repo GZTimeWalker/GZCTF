@@ -45,6 +45,7 @@ const Posts: FC = () => {
             ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
           ])
         }
+        api.info.mutateInfoGetLatestPosts()
       })
       .catch(showErrorNotification)
       .finally(() => {

@@ -17,6 +17,7 @@ import { mdiCheck, mdiContentSaveOutline, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { PostEditModel } from '@Api'
 
 const PostEdit: FC = () => {
@@ -59,6 +60,8 @@ const PostEdit: FC = () => {
       api.edit
         .editAddPost(post)
         .then((res) => {
+          api.info.mutateInfoGetLatestPosts()
+          api.info.mutateInfoGetPosts()
           showNotification({
             color: 'teal',
             message: '文章已创建',
@@ -76,7 +79,8 @@ const PostEdit: FC = () => {
         .editUpdatePost(postId, post)
         .then((res) => {
           api.info.mutateInfoGetPost(postId, res.data)
-          
+          api.info.mutateInfoGetLatestPosts()
+          api.info.mutateInfoGetPosts()
           showNotification({
             color: 'teal',
             message: '文章已保存',
@@ -96,8 +100,11 @@ const PostEdit: FC = () => {
       api.edit
         .editDeletePost(postId)
         .then(() => {
+          api.info.mutateInfoGetPosts()
+          api.info.mutateInfoGetLatestPosts()
           navigate('/posts')
         })
+        .catch(showErrorNotification)
         .finally(() => {
           setDisabled(false)
         })
