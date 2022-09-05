@@ -1,3 +1,5 @@
+import katex from 'katex'
+import 'katex/dist/katex.min.css'
 import { marked } from 'marked'
 import Prism from 'prismjs'
 import { forwardRef } from 'react'
@@ -8,9 +10,36 @@ interface MarkdownProps extends React.ComponentPropsWithoutRef<'div'> {
   source: string
 }
 
+const RenderReplacer = (func: any, replacer: (text: string) => string) => {
+  const original = func
+  return (...args: any[]) => {
+    args[0] = replacer(args[0])
+    return original(args)
+  }
+}
+
 export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, ref) => {
   const { classes, cx } = useTypographyStyles()
   const { source, ...others } = props
+
+  const renderer = new marked.Renderer()
+
+  const replacer = ((blockRegex, inlineRegex) => (text: string) => {
+    text = text.replace(blockRegex, (match, expression) => {
+      return katex.renderToString(expression, { displayMode: true })
+    })
+
+    text = text.replace(inlineRegex, (match, expression) => {
+      return katex.renderToString(expression, { displayMode: false })
+    })
+
+    return text
+  })(/\$\$([\s\S]+?)\$\$/g, /\$([^\n\s]+?)\$/g)
+
+  renderer.listitem = RenderReplacer(renderer.listitem, replacer)
+  renderer.paragraph = RenderReplacer(renderer.paragraph, replacer)
+  renderer.tablecell = RenderReplacer(renderer.tablecell, replacer)
+  renderer.text = RenderReplacer(renderer.text, replacer)
 
   marked.setOptions({
     highlight(code, lang) {
@@ -20,6 +49,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
         return code
       }
     },
+    renderer,
   })
 
   return (
