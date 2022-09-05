@@ -23,6 +23,7 @@ namespace CTFServer.Migrations
                     Content = table.Column<string>(type: "text", nullable: false),
                     IsPinned = table.Column<bool>(type: "boolean", nullable: false),
                     AutherId = table.Column<string>(type: "text", nullable: true),
+                    Tags = table.Column<string>(type: "text", nullable: true),
                     UpdateTimeUTC = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

@@ -38,6 +38,12 @@ public class PostDetailModel
     public bool IsPinned { get; set; } = false;
 
     /// <summary>
+    /// 文章标签
+    /// </summary>
+    [Required]
+    public List<string> Tags { get; set; } = new();
+
+    /// <summary>
     /// 作者头像
     /// </summary>
     public string? AutherAvatar { get; set; }

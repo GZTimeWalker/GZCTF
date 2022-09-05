@@ -35,6 +35,11 @@ public class Post
     public bool IsPinned { get; set; } = false;
 
     /// <summary>
+    /// 文章标签
+    /// </summary>
+    public List<string>? Tags { get; set; } = new();
+
+    /// <summary>
     /// 作者信息
     /// </summary>
     public string? AutherId { get; set; }

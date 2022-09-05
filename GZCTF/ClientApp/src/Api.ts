@@ -480,6 +480,9 @@ export interface PostEditModel {
   /** 文章内容 */
   content?: string
 
+  /** 文章标签 */
+  tags?: string[]
+
   /** 是否置顶 */
   isPinned?: boolean
 }
@@ -499,6 +502,9 @@ export interface PostInfoModel {
 
   /** 是否置顶 */
   isPinned: boolean
+
+  /** 文章标签 */
+  tags: string[]
 
   /** 作者头像 */
   autherAvatar?: string | null
@@ -531,6 +537,9 @@ export interface PostDetailModel {
 
   /** 是否置顶 */
   isPinned: boolean
+
+  /** 文章标签 */
+  tags: string[]
 
   /** 作者头像 */
   autherAvatar?: string | null

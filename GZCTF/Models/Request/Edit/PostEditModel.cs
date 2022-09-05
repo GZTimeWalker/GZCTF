@@ -25,6 +25,11 @@ public class PostEditModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 文章标签
+    /// </summary>
+    public string[] Tags { get; set; } = Array.Empty<string>();
+
+    /// <summary>
     /// 是否置顶
     /// </summary>
     public bool IsPinned { get; set; } = false;

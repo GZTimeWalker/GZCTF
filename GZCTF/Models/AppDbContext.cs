@@ -112,6 +112,11 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .HasForeignKey(e => e.AutherId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            entity.Property(e => e.Tags)
+                .HasConversion(stringListConverter)
+                .Metadata
+                .SetValueComparer(stringListComparer);
+
             entity.Navigation(e => e.Auther).AutoInclude();
         });
 

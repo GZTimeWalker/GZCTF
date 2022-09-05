@@ -486,6 +486,7 @@ namespace CTFServer.Migrations
             modelBuilder.Entity("CTFServer.Models.Post", b =>
                 {
                     b.Property<string>("Id")
+                        .HasMaxLength(8)
                         .HasColumnType("character varying(8)");
 
                     b.Property<string>("AutherId")
@@ -500,6 +501,9 @@ namespace CTFServer.Migrations
 
                     b.Property<string>("Summary")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Tags")
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
