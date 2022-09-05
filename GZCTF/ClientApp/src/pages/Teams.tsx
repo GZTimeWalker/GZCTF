@@ -22,7 +22,7 @@ import TeamEditModal from '@Components/TeamEditModal'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import api, { TeamInfoModel, Role } from '@Api'
 
 const Teams: FC = () => {

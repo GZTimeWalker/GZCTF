@@ -14,7 +14,7 @@ import {
   TypographyStylesProvider,
 } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
 import api from '@Api'
 

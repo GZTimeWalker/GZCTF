@@ -9,7 +9,7 @@ import {
   mdiCogOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import IconTabs from '../IconTabs'
 
 const pages = [

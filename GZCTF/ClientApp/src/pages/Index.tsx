@@ -6,7 +6,7 @@ import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
 const useStyles = createStyles((theme) => ({

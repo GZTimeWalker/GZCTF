@@ -6,7 +6,7 @@ import { Card, Stack, Title, Text, LoadingOverlay, useMantineTheme } from '@mant
 import { showNotification } from '@mantine/notifications'
 import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'

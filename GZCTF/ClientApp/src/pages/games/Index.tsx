@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Stack } from '@mantine/core'
 import GameCard from '@Components/GameCard'
 import WithNavBar from '@Components/WithNavbar'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 import StickyHeader from '@Components/StickyHeader'
 

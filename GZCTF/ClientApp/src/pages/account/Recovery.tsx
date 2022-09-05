@@ -6,8 +6,8 @@ import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
-import { usePageTitle } from '@Utils/PageTitle'
-import { useReCaptcha } from '@Utils/Recaptcha'
+import { usePageTitle } from '@Utils/usePageTitle'
+import { useReCaptcha } from '@Utils/useRecaptcha'
 import api from '@Api'
 
 const Recovery: FC = () => {

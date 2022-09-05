@@ -7,8 +7,8 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
-import { usePageTitle } from '@Utils/PageTitle'
-import { useReCaptcha } from '@Utils/Recaptcha'
+import { usePageTitle } from '@Utils/usePageTitle'
+import { useReCaptcha } from '@Utils/useRecaptcha'
 import api, { RegisterStatus } from '@Api'
 
 const RegisterStatusMap = new Map([

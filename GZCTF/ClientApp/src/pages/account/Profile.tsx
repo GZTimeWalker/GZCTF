@@ -23,7 +23,7 @@ import { Icon } from '@mdi/react'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import api, { ProfileUpdateModel } from '@Api'
 

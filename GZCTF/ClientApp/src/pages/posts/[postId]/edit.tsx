@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { Group, Stack, TextInput, Text } from '@mantine/core'
+import { Group, Stack, TextInput, Text, Title } from '@mantine/core'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import api, { PostEditModel } from '@Api'
@@ -33,29 +33,27 @@ const PostEdit: FC = () => {
     isPinned: curPost?.isPinned ?? false,
   })
 
+  useEffect(() => {
+    if (curPost) {
+      setPost({
+        title: curPost.title,
+        content: curPost.content,
+        summary: curPost.summary,
+        isPinned: curPost.isPinned,
+      })
+    }
+  }, [curPost])
+
   return (
     <WithNavBar>
       <StickyHeader />
       <Stack>
-        <Group position="apart" style={{ width: '100%' }}>
-          <Text weight={700} size={40}>
-            #
-          </Text>
-          <TextInput
-            value={post.title}
-            onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
-            styles={{
-              root: {
-                width: 'calc(100% - 3rem)',
-              },
-              input: {
-                height: 60,
-                fontSize: 32,
-                fontWeight: 500,
-              },
-            }}
-          />
-        </Group>
+        <Title align='center' order={1}>编辑文章</Title>
+        <TextInput
+          label="文章标题"
+          value={post.title}
+          onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
+        />
       </Stack>
     </WithNavBar>
   )

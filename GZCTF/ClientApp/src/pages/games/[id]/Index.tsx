@@ -25,7 +25,7 @@ import CustomProgress from '@Components/CustomProgress'
 import GameJoinModal from '@Components/GameJoinModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { usePageTitle } from '@Utils/PageTitle'
+import { usePageTitle } from '@Utils/usePageTitle'
 import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
 
