@@ -12,7 +12,8 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
-import { mdiContentSaveOutline, mdiDeleteOutline } from '@mdi/js'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiContentSaveOutline, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
@@ -24,7 +25,7 @@ const PostEdit: FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (postId?.length != 8) {
+    if (postId?.length != 8 && postId !== 'new') {
       navigate('/404')
       return
     }
@@ -53,12 +54,35 @@ const PostEdit: FC = () => {
   const modals = useModals()
 
   const onUpdate = () => {
-    if (postId) {
+    if (postId === 'new') {
+      setDisabled(true)
+      api.edit
+        .editAddPost(post)
+        .then((res) => {
+          showNotification({
+            color: 'teal',
+            message: '文章已创建',
+            icon: <Icon path={mdiCheck} size={24} />,
+            disallowClose: true,
+          })
+          navigate(`/posts/${res.data}/edit`)
+        })
+        .finally(() => {
+          setDisabled(false)
+        })
+    } else if (postId?.length === 8) {
       setDisabled(true)
       api.edit
         .editUpdatePost(postId, post)
-        .then(() => {
-          api.info.mutateInfoGetPost(postId)
+        .then((res) => {
+          api.info.mutateInfoGetPost(postId, res.data)
+          
+          showNotification({
+            color: 'teal',
+            message: '文章已保存',
+            icon: <Icon path={mdiCheck} size={24} />,
+            disallowClose: true,
+          })
         })
         .finally(() => {
           setDisabled(false)
@@ -87,9 +111,9 @@ const PostEdit: FC = () => {
         content: curPost.content,
         summary: curPost.summary,
         isPinned: curPost.isPinned,
-        tags: curPost.tags,
+        tags: curPost.tags ?? [],
       })
-      setTags(curPost.tags)
+      setTags(curPost.tags ?? [])
     }
   }, [curPost])
 
@@ -107,33 +131,35 @@ const PostEdit: FC = () => {
               ),
             }}
           >
-            &gt; 编辑文章
+            {`> ${postId === 'new' ? '新建' : '编辑'}文章`}
           </Title>
           <Group position="right">
-            <Button
-              disabled={disabled}
-              color="red"
-              leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
-              variant="outline"
-              onClick={() =>
-                modals.openConfirmModal({
-                  title: `删除文章`,
-                  children: <Text size="sm">你确定要删除文章 "{post.title}" 吗？</Text>,
-                  centered: true,
-                  onConfirm: onDelete,
-                  labels: { confirm: '确认', cancel: '取消' },
-                  confirmProps: { color: 'red' },
-                })
-              }
-            >
-              删除文章
-            </Button>
+            {postId?.length === 8 && (
+              <Button
+                disabled={disabled}
+                color="red"
+                leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+                variant="outline"
+                onClick={() =>
+                  modals.openConfirmModal({
+                    title: `删除文章`,
+                    children: <Text size="sm">你确定要删除文章 "{post.title}" 吗？</Text>,
+                    centered: true,
+                    onConfirm: onDelete,
+                    labels: { confirm: '确认', cancel: '取消' },
+                    confirmProps: { color: 'red' },
+                  })
+                }
+              >
+                删除文章
+              </Button>
+            )}
             <Button
               disabled={disabled}
               leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
               onClick={onUpdate}
             >
-              保存更改
+              {`${postId === 'new' ? '创建' : '保存'}文章`}
             </Button>
           </Group>
         </Group>

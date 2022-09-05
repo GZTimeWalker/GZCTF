@@ -6,8 +6,9 @@ import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/usePageTitle'
-import api from '@Api'
+import api, { PostInfoModel } from '@Api'
 
 const useStyles = createStyles((theme) => ({
   posts: {
@@ -43,7 +44,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const Home: FC = () => {
-  const { data: posts } = api.info.useInfoGetPosts({
+  const { data: posts, mutate } = api.info.useInfoGetPosts({
     refreshInterval: 0,
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -57,6 +58,31 @@ const Home: FC = () => {
 
   allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
 
+  const onTogglePinned = (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
+    setDisabled(true)
+    api.edit
+      .editUpdatePost(post.id, { title: post.title, isPinned: !post.isPinned })
+      .then((res) => {
+        if (post.isPinned) {
+          mutate([
+            ...(posts?.filter((p) => p.id !== post.id && p.isPinned) ?? []),
+            { ...res.data },
+            ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
+          ])
+        } else {
+          mutate([
+            { ...res.data },
+            ...(posts?.filter((p) => p.id !== post.id && p.isPinned) ?? []),
+            ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
+          ])
+        }
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
   const now = new Date()
   const recentGames = [
     ...(allGames?.filter((g) => now < new Date(g.end ?? '')) ?? []),
@@ -64,6 +90,7 @@ const Home: FC = () => {
   ].slice(0, 3)
 
   const { classes, theme } = useStyles()
+
   usePageTitle()
 
   return (
@@ -72,8 +99,8 @@ const Home: FC = () => {
       <Stack align="center">
         <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>
           <Stack className={classes.posts}>
-            {posts?.map((notice, idx) => (
-              <PostCard key={idx} {...notice} />
+            {posts?.map((post) => (
+              <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
             ))}
           </Stack>
           <nav className={classes.wrapper}>

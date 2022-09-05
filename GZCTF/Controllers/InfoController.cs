@@ -39,10 +39,23 @@ public class InfoController : ControllerBase
     /// </remarks>
     /// <param name="token"></param>
     /// <response code="200">成功获取公告</response>
+    [HttpGet("Posts/Latest")]
+    [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetLatestPosts(CancellationToken token)
+        => Ok((await postRepository.GetPosts(token)).Take(20).Select(p => PostInfoModel.FromPost(p)));
+
+    /// <summary>
+    /// 获取全部文章
+    /// </summary>
+    /// <remarks>
+    /// 获取全部文章
+    /// </remarks>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取公告</response>
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token)
-        => Ok((await postRepository.GetPosts(token)).Take(20).Select(p => PostInfoModel.FromPost(p)));
+        => Ok((await postRepository.GetPosts(token)).Select(p => PostInfoModel.FromPost(p)));
 
     /// <summary>
     /// 获取文章详情
@@ -58,7 +71,7 @@ public class InfoController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost(string id, CancellationToken token)
     {
-        var post = await postRepository.GetPostById(id, token);
+        var post = await postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse("文章未找到", 404));

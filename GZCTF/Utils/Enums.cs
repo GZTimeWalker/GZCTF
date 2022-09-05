@@ -413,11 +413,6 @@ public static class CacheKey
     public const string BasicGameInfo = "_BasicGameInfo";
 
     /// <summary>
-    /// 文章缓存
-    /// </summary>
-    public static string Post(string id) => $"_Post_{id}";
-
-    /// <summary>
     /// 文章
     /// </summary>
     public const string Posts = "_Posts";

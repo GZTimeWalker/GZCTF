@@ -17,6 +17,7 @@ import WithNavBar from '@Components/WithNavbar'
 import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
+import { useScrollIntoView } from '@mantine/hooks'
 
 dayjs.extend(LocalizedFormat)
 
@@ -44,29 +45,30 @@ const Post: FC = () => {
     postId?.length === 8
   )
 
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>()
+  useEffect(() => scrollIntoView({ alignment: 'center' }), [])
+
   usePageTitle(post?.title ?? 'Post')
 
   return (
     <WithNavBar width="100%" padding={0} isLoading={!post}>
-      <div className={classes.root}>
+      <div ref={targetRef} className={classes.root}>
         <Stack
           spacing={6}
           align="center"
-          style={{ width: '100%', padding: `0 ${theme.spacing.md}px` }}
+          style={{ width: '100%', padding: `0 ${theme.spacing.xs}px` }}
           className={classes.container}
         >
-          <Title order={2} pb="2rem" className={classes.title} style={{ fontSize: 36 }}>
+          <Title order={2} pb="1.5rem" className={classes.title} style={{ fontSize: 36 }}>
             {post?.title}
           </Title>
-          <Avatar src={post?.autherAvatar} color="brand" radius="xl" size="md">
+          <Avatar src={post?.autherAvatar} color="brand" radius="xl" size="lg">
             {post?.autherName?.at(0) ?? 'A'}
           </Avatar>
           <Text weight={700}>{post?.autherName ?? 'Anonym'}</Text>
           <Stack spacing={2}>
-            <Divider color="white" />
-            <Group>
-              <Text weight={500}>{dayjs(post?.time).format('LLL')}</Text>
-            </Group>
+            <Divider color={theme.colorScheme === 'dark' ? 'white' : 'gray'} />
+            <Text weight={500}>{dayjs(post?.time).format('LLL')}</Text>
           </Stack>
         </Stack>
       </div>
@@ -74,6 +76,21 @@ const Post: FC = () => {
         <TypographyStylesProvider className={typographyClasses.root}>
           <div dangerouslySetInnerHTML={{ __html: marked(post?.content ?? '') }} />
         </TypographyStylesProvider>
+        <Group position="right">
+          {post?.tags?.map((tag) => (
+            <Text weight={700} span color="brand">
+              {`#${tag}`}
+            </Text>
+          ))}
+        </Group>
+        <Group spacing={5} pb={100} position="right">
+          <Avatar src={post?.autherAvatar} size="sm">
+            {post?.autherName?.at(0) ?? 'A'}
+          </Avatar>
+          <Text weight={700}>
+            {post?.autherName ?? 'Anonym'} 发布于 {dayjs(post?.time).format('HH:mm, YY/MM/DD')}
+          </Text>
+        </Group>
       </Container>
     </WithNavBar>
   )

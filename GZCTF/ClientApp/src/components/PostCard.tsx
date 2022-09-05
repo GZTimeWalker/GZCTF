@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { marked } from 'marked'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Group,
@@ -14,17 +14,23 @@ import {
   Anchor,
   ActionIcon,
 } from '@mantine/core'
-import { mdiPencilOutline } from '@mdi/js'
+import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
 import { useUserRole } from '@Utils/useUser'
 import { PostInfoModel, Role } from '@Api'
 import { RequireRole } from './WithRole'
 
-const PostCard: FC<PostInfoModel> = (post) => {
+interface PostCardProps {
+  post: PostInfoModel
+  onTogglePinned?: (post: PostInfoModel, setDisabled: (value: boolean) => void) => void
+}
+
+const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const { classes, theme } = useTypographyStyles()
   const navigate = useNavigate()
   const { role } = useUserRole()
+  const [disabled, setDisabled] = useState(false)
 
   return (
     <Card shadow="sm" p="xs">
@@ -62,6 +68,15 @@ const PostCard: FC<PostInfoModel> = (post) => {
                 {post.title}
               </Title>
               <Group position="right">
+                {onTogglePinned && (
+                  <ActionIcon disabled={disabled} onClick={() => onTogglePinned(post, setDisabled)}>
+                    {post.isPinned ? (
+                      <Icon path={mdiPinOffOutline} size={1} />
+                    ) : (
+                      <Icon path={mdiPinOutline} size={1} />
+                    )}
+                  </ActionIcon>
+                )}
                 <ActionIcon onClick={() => navigate(`/posts/${post.id}/edit`)}>
                   <Icon path={mdiPencilOutline} size={1} />
                 </ActionIcon>
@@ -80,6 +95,15 @@ const PostCard: FC<PostInfoModel> = (post) => {
           <TypographyStylesProvider className={classes.root}>
             <div dangerouslySetInnerHTML={{ __html: marked(post.summary) }} />
           </TypographyStylesProvider>
+          {post.tags && (
+            <Group>
+              {post.tags.map((tag) => (
+                <Text size="sm" weight={700} span color="brand">
+                  {`#${tag}`}
+                </Text>
+              ))}
+            </Group>
+          )}
         </Stack>
       </Blockquote>
     </Card>

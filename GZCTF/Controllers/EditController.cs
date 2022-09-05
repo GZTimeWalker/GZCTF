@@ -74,19 +74,6 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 获取所有文章
-    /// </summary>
-    /// <remarks>
-    /// 获取所有文章，需要管理员权限
-    /// </remarks>
-    /// <param name="token"></param>
-    /// <response code="200">成功获取文章</response>
-    [HttpGet("Posts")]
-    [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPosts(CancellationToken token = default)
-        => Ok((await postRepository.GetPosts(token)).Select(p => PostInfoModel.FromPost(p)));
-
-    /// <summary>
     /// 修改文章
     /// </summary>
     /// <remarks>

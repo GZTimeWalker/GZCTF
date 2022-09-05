@@ -26,34 +26,29 @@ public class PostRepository : RepositoryBase, IPostRepository
     }
 
     public Task<Post?> GetPostById(string id, CancellationToken token = default)
-        => cache.GetOrCreateAsync(CacheKey.Post(id), entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-            return context.Posts.FirstOrDefaultAsync(post => post.Id == id, token);
-        });
+        => context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
+
+    public async Task<Post?> GetPostByIdFromCache(string id, CancellationToken token = default)
+        => (await GetPosts(token)).FirstOrDefault(p => p.Id == id);
 
     public Task<Post[]> GetPosts(CancellationToken token = default)
         => cache.GetOrCreateAsync(CacheKey.Posts, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-            return context.Posts.OrderByDescending(n => n.IsPinned)
+            return context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
                     .ThenByDescending(n => n.UpdateTimeUTC).ToArrayAsync(token);
         });
 
-    public async Task RemovePost(Post post, CancellationToken token = default)
+    public Task RemovePost(Post post, CancellationToken token = default)
     {
-        context.Remove(post);
-        await SaveAsync(token);
-
-        cache.Remove(CacheKey.Post(post.Id));
-        cache.Remove(CacheKey.Posts);
+        throw new NotImplementedException();
     }
 
     public async Task UpdatePost(Post post, CancellationToken token = default)
     {
+        context.Update(post);
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.Post(post.Id));
         cache.Remove(CacheKey.Posts);
     }
 }
