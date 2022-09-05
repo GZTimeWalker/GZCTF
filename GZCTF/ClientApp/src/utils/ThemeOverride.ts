@@ -176,7 +176,6 @@ export const useBannerStyles = createStyles((theme) => ({
     },
   },
   content: {
-    minHeight: '100vh',
     paddingTop: '1rem',
   },
   banner: {

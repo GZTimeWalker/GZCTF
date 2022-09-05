@@ -29,18 +29,9 @@ public interface IPostRepository : IRepository
     /// <summary>
     /// 获取指定文章
     /// </summary>
-    /// <param name="count"></param>
-    /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Post[]> GetPosts(int count = 30, int skip = 0, CancellationToken token = default);
-
-    /// <summary>
-    /// 获取最新文章（20条）
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Post[]> GetLatestPosts(CancellationToken token = default);
+    public Task<Post[]> GetPosts(CancellationToken token = default);
 
     /// <summary>
     /// 根据 Id 返回文章

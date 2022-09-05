@@ -42,8 +42,7 @@ public class InfoController : ControllerBase
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token)
-        => Ok((await postRepository.GetLatestPosts(token))
-            .Select(p => PostInfoModel.FromPost(p)));
+        => Ok((await postRepository.GetPosts(token)).Take(20).Select(p => PostInfoModel.FromPost(p)));
 
     /// <summary>
     /// 获取文章详情

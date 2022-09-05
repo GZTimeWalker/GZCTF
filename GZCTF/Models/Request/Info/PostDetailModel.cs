@@ -20,10 +20,22 @@ public class PostDetailModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
+    /// 文章总结
+    /// </summary>
+    [Required]
+    public string Summary { get; set; } = string.Empty;
+
+    /// <summary>
     /// 文章内容
     /// </summary>
     [Required]
     public string Content { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 是否置顶
+    /// </summary>
+    [Required]
+    public bool IsPinned { get; set; } = false;
 
     /// <summary>
     /// 作者头像
@@ -46,6 +58,8 @@ public class PostDetailModel
         {
             Id = post.Id,
             Title = post.Title,
+            IsPinned = post.IsPinned,
+            Summary = post.Summary,
             Content = post.Content,
             Time = post.UpdateTimeUTC,
             AutherAvatar = post.Auther?.AvatarUrl,

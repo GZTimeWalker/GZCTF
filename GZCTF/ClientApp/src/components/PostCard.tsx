@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { marked } from 'marked'
 import { FC } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   Group,
   Card,
@@ -12,12 +12,19 @@ import {
   TypographyStylesProvider,
   Avatar,
   Anchor,
+  ActionIcon,
 } from '@mantine/core'
+import { mdiPencilOutline } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import { useTypographyStyles } from '@Utils/ThemeOverride'
-import { PostInfoModel } from '@Api'
+import { useUserRole } from '@Utils/useUserRole'
+import { PostInfoModel, Role } from '@Api'
+import { RequireRole } from './WithRole'
 
 const PostCard: FC<PostInfoModel> = (post) => {
   const { classes, theme } = useTypographyStyles()
+  const navigate = useNavigate()
+  const { role } = useUserRole()
 
   return (
     <Card shadow="sm" p="xs">
@@ -44,14 +51,32 @@ const PostCard: FC<PostInfoModel> = (post) => {
         }
       >
         <Stack spacing="xs">
-          <Title order={3}>
-            {post.isPinned && (
-              <Text span color="brand">
-                {'[置顶] '}
-              </Text>
-            )}
-            {post.title}
-          </Title>
+          {RequireRole(role, Role.Admin) ? (
+            <Group position="apart">
+              <Title order={3}>
+                {post.isPinned && (
+                  <Text span color="brand">
+                    {'[置顶] '}
+                  </Text>
+                )}
+                {post.title}
+              </Title>
+              <Group position="right">
+                <ActionIcon onClick={() => navigate(`/posts/${post.id}/edit`)}>
+                  <Icon path={mdiPencilOutline} size={1} />
+                </ActionIcon>
+              </Group>
+            </Group>
+          ) : (
+            <Title order={3}>
+              {post.isPinned && (
+                <Text span color="brand">
+                  {'[置顶] '}
+                </Text>
+              )}
+              {post.title}
+            </Title>
+          )}
           <TypographyStylesProvider className={classes.root}>
             <div dangerouslySetInnerHTML={{ __html: marked(post.summary) }} />
           </TypographyStylesProvider>

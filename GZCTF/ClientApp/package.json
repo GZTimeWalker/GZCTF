@@ -19,6 +19,7 @@
     "@mantine/hooks": "^5.2.5",
     "@mantine/modals": "^5.2.5",
     "@mantine/notifications": "^5.2.5",
+    "@mantine/rte": "^5.2.5",
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^6.0.8",

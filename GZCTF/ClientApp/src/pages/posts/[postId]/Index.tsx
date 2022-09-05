@@ -1,8 +1,7 @@
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import { marked } from 'marked'
-import useSWR from 'swr'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   Avatar,
@@ -15,10 +14,9 @@ import {
   TypographyStylesProvider,
 } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/PageTitle'
 import { useBannerStyles, useTypographyStyles } from '@Utils/ThemeOverride'
-import api, { PostDetailModel, RequestResponse } from '@Api'
+import api from '@Api'
 
 dayjs.extend(LocalizedFormat)
 

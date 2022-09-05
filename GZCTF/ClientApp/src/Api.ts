@@ -523,6 +523,12 @@ export interface PostDetailModel {
   /** 通知标题 */
   title: string
 
+  /** 文章总结 */
+  summary: string
+
+  /** 是否置顶 */
+  isPinned: boolean
+
   /** 文章内容 */
   content: string
 
