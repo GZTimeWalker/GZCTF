@@ -2518,11 +2518,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 使用此接口更新比赛头图，需要Admin权限
      *
      * @tags Edit
-     * @name EditUpdateGameNoticeer
+     * @name EditUpdateGamePoster
      * @summary 更新比赛头图
      * @request PUT:/api/edit/games/{id}/poster
      */
-    editUpdateGameNoticeer: (id: number, data: { file?: File }, params: RequestParams = {}) =>
+    editUpdateGamePoster: (id: number, data: { file?: File }, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
         path: `/api/edit/games/${id}/poster`,
         method: 'PUT',
