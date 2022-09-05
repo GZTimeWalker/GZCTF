@@ -64,12 +64,8 @@ public class EditController : Controller
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddPost([FromBody] PostEditModel model, CancellationToken token)
     {
-        var res = await postRepository.CreatePost(new()
-        {
-            Title = model.Title,
-            UpdateTimeUTC = DateTimeOffset.UtcNow,
-            Auther = await userManager.GetUserAsync(User),
-        }, token);
+        var user = await userManager.GetUserAsync(User);
+        var res = await postRepository.CreatePost(new Post().Update(model, user!), token);
         return Ok(res.Id);
     }
 
@@ -96,8 +92,7 @@ public class EditController : Controller
 
         var user = await userManager.GetUserAsync(User);
 
-        post.Update(model, user);
-        await postRepository.UpdatePost(post, token);
+        await postRepository.UpdatePost(post.Update(model, user), token);
 
         return Ok(PostDetailModel.FromPost(post));
     }

@@ -55,7 +55,7 @@ public class Post
     [Required]
     public DateTimeOffset UpdateTimeUTC { get; set; } = DateTimeOffset.UtcNow;
 
-    internal void Update(PostEditModel model, UserInfo user)
+    internal Post Update(PostEditModel model, UserInfo user)
     {
         Title = model.Title;
         Summary = model.Summary;
@@ -65,6 +65,8 @@ public class Post
         Auther = user;
         AutherId = user.Id;
         UpdateTimeUTC = DateTimeOffset.UtcNow;
+
+        return this;
     }
 
     internal void UpdateKeyWithHash() => Id = Codec.StrSHA256($"{Title}:{UpdateTimeUTC:s}:{Guid.NewGuid()}")[4..12];
