@@ -37,7 +37,6 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
   })(/\$\$([\s\S]+?)\$\$/g, /\$([^\n\s]+?)\$/g)
 
   renderer.paragraph = RenderReplacer(renderer.paragraph, replacer)
-  renderer.tablecell = RenderReplacer(renderer.tablecell, replacer)
   renderer.text = RenderReplacer(renderer.text, replacer)
 
   Prism.manual = true
