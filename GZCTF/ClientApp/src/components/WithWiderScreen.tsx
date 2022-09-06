@@ -10,7 +10,7 @@ interface WithWiderScreenProps extends React.PropsWithChildren {
 const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 1080 }) => {
   const view = useViewportSize()
 
-  const tooSmall = minWidth > 0 && view.width < minWidth
+  const tooSmall = minWidth > 0 && view.width > 0 && view.width < minWidth
 
   return tooSmall ? (
     <Stack spacing={0} align="center" justify="center" style={{ height: 'calc(100vh - 32px)' }}>
