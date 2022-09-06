@@ -26,11 +26,11 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
 
   const replacer = ((blockRegex, inlineRegex) => (text: string) => {
     text = text.replace(blockRegex, (match, expression) => {
-      return katex.renderToString(expression, { displayMode: true })
+      return katex.renderToString(expression, { displayMode: true, throwOnError: false })
     })
 
     text = text.replace(inlineRegex, (match, expression) => {
-      return katex.renderToString(expression, { displayMode: false })
+      return katex.renderToString(expression, { displayMode: false, throwOnError: false })
     })
 
     return text
