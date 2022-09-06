@@ -7,7 +7,7 @@ import { AdminTabProps } from './WithAdminTab'
 
 const AdminPage: FC<AdminTabProps> = (props) => {
   return (
-    <WithNavBar width="90%">
+    <WithNavBar width="90%" minWidth={1080}>
       <WithRole requiredRole={Role.Admin}>
         <WithAdminTab {...props} />
       </WithRole>

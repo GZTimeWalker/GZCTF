@@ -126,7 +126,7 @@ const PostEdit: FC = () => {
   }, [curPost])
 
   return (
-    <WithNavBar>
+    <WithNavBar minWidth={900}>
       <WithRole requiredRole={Role.Admin}>
         <StickyHeader />
         <Stack mt={30}>

@@ -95,7 +95,7 @@ const Home: FC = () => {
   usePageTitle()
 
   return (
-    <WithNavBar>
+    <WithNavBar minWidth={0}>
       <StickyHeader />
       <Stack align="center">
         <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>

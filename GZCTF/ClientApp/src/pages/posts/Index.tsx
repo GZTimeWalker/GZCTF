@@ -54,7 +54,7 @@ const Posts: FC = () => {
   }
 
   return (
-    <WithNavBar isLoading={!posts}>
+    <WithNavBar isLoading={!posts} minWidth={0}>
       <Stack justify="space-between">
         <StickyHeader />
         <Stack>

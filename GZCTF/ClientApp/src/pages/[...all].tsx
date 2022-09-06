@@ -18,11 +18,11 @@ const Error404: FC = () => {
   }, [location])
 
   return (
-    <WithNavBar>
+    <WithNavBar minWidth={0}>
       <Stack spacing={0} align="center" justify="center" style={{ height: 'calc(100vh - 32px)' }}>
         <Icon404 />
-        <Title order={2}>这是一处荒芜的地方</Title>
-        <Text>你为何会到这里来呢</Text>
+        <Title order={1} color="#00bfa5" style={{ fontWeight: "lighter" }}>页面不存在</Title>
+        <Text style={{ fontWeight: "bold" }}>一处荒芜，为何于此驻足</Text>
       </Stack>
     </WithNavBar>
   )
