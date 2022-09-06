@@ -36,10 +36,11 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
     return text
   })(/\$\$([\s\S]+?)\$\$/g, /\$([^\n\s]+?)\$/g)
 
-  renderer.listitem = RenderReplacer(renderer.listitem, replacer)
   renderer.paragraph = RenderReplacer(renderer.paragraph, replacer)
   renderer.tablecell = RenderReplacer(renderer.tablecell, replacer)
   renderer.text = RenderReplacer(renderer.text, replacer)
+
+  Prism.manual = true
 
   marked.setOptions({
     highlight(code, lang) {
@@ -58,7 +59,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
       className={others.className ? cx(classes.root, others.className) : classes.root}
       {...others}
     >
-      <div dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
+      <div className='line-numbers' dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
     </TypographyStylesProvider>
   )
 })

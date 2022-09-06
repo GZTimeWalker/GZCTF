@@ -73,8 +73,8 @@ const Post: FC = () => {
       <Container className={classes.content}>
         <MarkdownRender source={post?.content ?? ''}/>
         <Group position="right">
-          {post?.tags?.map((tag) => (
-            <Text weight={700} span color="brand">
+          {post?.tags?.map((tag, idx) => (
+            <Text key={idx} weight={700} span color="brand">
               {`#${tag}`}
             </Text>
           ))}

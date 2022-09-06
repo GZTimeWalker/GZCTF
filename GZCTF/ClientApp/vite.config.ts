@@ -45,7 +45,8 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths(),
       prismjs({
         languages: 'all',
-        plugins: ['line-numbers', 'show-language'],
+        plugins: ['line-numbers'],
+        css: true
       })
     ],
   }

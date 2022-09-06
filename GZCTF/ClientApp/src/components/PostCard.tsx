@@ -94,8 +94,8 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           <MarkdownRender source={post.summary} />
           {post.tags && (
             <Group>
-              {post.tags.map((tag) => (
-                <Text size="sm" weight={700} span color="brand">
+              {post.tags.map((tag, idx) => (
+                <Text key={idx} size="sm" weight={700} span color="brand">
                   {`#${tag}`}
                 </Text>
               ))}

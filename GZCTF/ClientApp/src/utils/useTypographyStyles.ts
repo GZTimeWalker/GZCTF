@@ -15,7 +15,8 @@ export const useTypographyStyles = createStyles((theme) => {
 
       '& :not(pre) > code': {
         whiteSpace: 'normal',
-        backgroundColor: sc(cs.dark[6], cs.gray[1]),
+        fontSize: '1em',
+        backgroundColor: sc(cs.dark[6], cs.white[3]),
         padding: `1px ${theme.spacing.xs / 2}px`,
         border: 'none',
       },
@@ -32,8 +33,9 @@ export const useTypographyStyles = createStyles((theme) => {
         fontWeight: 500,
         textAlign: 'left',
         whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
         wordBreak: 'normal',
-        fontSize: theme.fontSizes.sm,
+        fontSize: '0.97em',
         lineHeight: 1.5,
         tabSize: 4,
         hyphens: 'none',
