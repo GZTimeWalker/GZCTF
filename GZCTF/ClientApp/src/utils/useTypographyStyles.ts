@@ -6,11 +6,21 @@ export const useTypographyStyles = createStyles((theme) => {
 
   return {
     root: {
+      overflowX: 'auto',
+
       '& p': {
         wordBreak: 'break-word',
         wordWrap: 'break-word',
         overflow: 'hidden',
         marginBottom: theme.spacing.md,
+      },
+
+      '& ul, & ol': {
+        paddingLeft: theme.fontSizes.lg * 1.5,
+
+        [theme.fn.smallerThan('xs')]: {
+          paddingLeft: theme.fontSizes.xs * 1.5,
+        }
       },
 
       '& :not(pre) > code': {
