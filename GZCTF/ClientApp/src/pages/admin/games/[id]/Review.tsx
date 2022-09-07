@@ -97,6 +97,7 @@ const useStyles = createStyles((theme) => ({
 
 interface MemberItemProps {
   user: ProfileUserInfoModel
+  isRegistered: boolean
   isCaptain: boolean
 }
 
@@ -106,53 +107,58 @@ const iconProps = {
 }
 
 const MemberItem: FC<MemberItemProps> = (props) => {
-  const { user, isCaptain } = props
+  const { user, isCaptain, isRegistered } = props
   const theme = useMantineTheme()
 
   return (
-    <Group spacing="xl">
-      {isCaptain ? (
-        <Indicator
-          inline
-          size={16}
-          label={<Icon path={mdiCrown} size={0.8} color={theme.colors.yellow[4]} />}
-          styles={{
-            indicator: {
-              backgroundColor: 'transparent',
-              marginTop: '-0.8rem',
-              marginRight: '1.5rem',
-              transform: 'rotate(-30deg)',
-            },
-          }}
-        >
+    <Group spacing="xl" position="apart">
+      <Group>
+        {isCaptain ? (
+          <Indicator
+            inline
+            size={16}
+            label={<Icon path={mdiCrown} size={0.8} color={theme.colors.yellow[4]} />}
+            styles={{
+              indicator: {
+                backgroundColor: 'transparent',
+                marginTop: '-0.8rem',
+                marginRight: '1.5rem',
+                transform: 'rotate(-30deg)',
+              },
+            }}
+          >
+            <Avatar src={user.avatar} />
+          </Indicator>
+        ) : (
           <Avatar src={user.avatar} />
-        </Indicator>
-      ) : (
-        <Avatar src={user.avatar} />
-      )}
-      <Box>
-        <Group noWrap spacing="xs">
-          <Icon path={mdiAccountOutline} {...iconProps} />
-          <Group>
-            <Text weight={700}>{user.userName}</Text>
-            <Text>{!user.realName ? '' : user.realName}</Text>
+        )}
+        <Box>
+          <Group noWrap spacing="xs">
+            <Icon path={mdiAccountOutline} {...iconProps} />
+            <Group>
+              <Text weight={700}>{user.userName}</Text>
+              <Text>{!user.realName ? '' : user.realName}</Text>
+            </Group>
           </Group>
-        </Group>
-        <Group noWrap spacing="xs">
-          <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
-          <Text>{!user.stdNumber ? '未填写' : user.stdNumber}</Text>
-        </Group>
-      </Box>
-      <Box>
-        <Group noWrap spacing="xs">
-          <Icon path={mdiEmailOutline} {...iconProps} />
-          <Text>{!user.email ? '未填写' : user.email}</Text>
-        </Group>
-        <Group noWrap spacing="xs">
-          <Icon path={mdiPhoneOutline} {...iconProps} />
-          <Text>{!user.phone ? '未填写' : user.phone}</Text>
-        </Group>
-      </Box>
+          <Group noWrap spacing="xs">
+            <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
+            <Text>{!user.stdNumber ? '未填写' : user.stdNumber}</Text>
+          </Group>
+        </Box>
+        <Box>
+          <Group noWrap spacing="xs">
+            <Icon path={mdiEmailOutline} {...iconProps} />
+            <Text>{!user.email ? '未填写' : user.email}</Text>
+          </Group>
+          <Group noWrap spacing="xs">
+            <Icon path={mdiPhoneOutline} {...iconProps} />
+            <Text>{!user.phone ? '未填写' : user.phone}</Text>
+          </Group>
+        </Box>
+      </Group>
+      <Text size="sm" weight={500} color={isRegistered ? 'teal' : 'yellow'}>
+        {isRegistered ? '已报名' : '未报名'}
+      </Text>
     </Group>
   )
 }
@@ -175,16 +181,26 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             <Group>
               <Avatar src={participation.team?.avatar} />
               <Box>
-                <Text>{!participation.team?.name ? '（无名队伍）' : participation.team.name}</Text>
+                <Text weight={500}>
+                  {!participation.team?.name ? '（无名队伍）' : participation.team.name}
+                </Text>
                 <Text size="sm" color="dimmed">
                   {!participation.team?.bio ? '（未设置签名）' : participation.team.bio}
                 </Text>
               </Box>
-              <Text>{/* org here */}</Text>
             </Group>
-            <Badge color={StatusMap.get(participation.status!)?.color}>
-              {StatusMap.get(participation.status!)?.title}
-            </Badge>
+            <Group position="apart" style={{ width: 'calc(30%)' }}>
+              <Box>
+                <Text>{participation.organization}</Text>
+                <Text size="sm" color="dimmed" weight={700}>
+                  {participation.registeredMembers?.length ?? 0}/
+                  {participation.team?.members?.length ?? 0} 已报名
+                </Text>
+              </Box>
+              <Badge color={StatusMap.get(participation.status!)?.color}>
+                {StatusMap.get(participation.status!)?.title}
+              </Badge>
+            </Group>
           </Group>
         </Accordion.Control>
         <Group
@@ -211,6 +227,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
           <MemberItem
             key={user.userId}
             user={user}
+            isRegistered={participation.registeredMembers?.some((u) => u === user.userId) ?? false}
             isCaptain={participation.team?.captainId === user.userId}
           />
         ))}

@@ -37,6 +37,7 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const Users: FC = () => {
   const [page, setPage] = useState(1)
+  const [update, setUpdate] = useState(new Date())
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
   const [users, setUsers] = useState<UserInfoModel[]>()
@@ -57,7 +58,7 @@ const Users: FC = () => {
       .then((res) => {
         setUsers(res.data)
       })
-  }, [page])
+  }, [page, update])
 
   const onSearch = () => {
     if (!hint) {
@@ -173,6 +174,7 @@ const Users: FC = () => {
         disallowClose: true,
       })
       setUsers(users?.filter((x) => x.id !== user.id))
+      setUpdate(new Date())
     } catch (e: any) {
       showErrorNotification(e)
     } finally {

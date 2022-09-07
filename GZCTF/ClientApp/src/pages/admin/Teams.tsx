@@ -31,6 +31,7 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const Teams: FC = () => {
   const [page, setPage] = useState(1)
+  const [update, setUpdate] = useState(new Date())
   const [teams, setTeams] = useState<TeamInfoModel[]>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
@@ -48,7 +49,7 @@ const Teams: FC = () => {
       .then((res) => {
         setTeams(res.data)
       })
-  }, [page])
+  }, [page, update])
 
   const onSearch = () => {
     if (!hint) {
@@ -91,6 +92,7 @@ const Teams: FC = () => {
         disallowClose: true,
       })
       setTeams(teams?.filter((x) => x.id !== team.id))
+      setUpdate(new Date())
     } catch (e: any) {
       showErrorNotification(e)
     } finally {
