@@ -212,18 +212,6 @@ export interface ProfileUserInfoModel {
   /** 头像链接 */
   avatar?: string | null
 
-  /**
-   * 当前队伍
-   * @format int32
-   */
-  activeTeamId?: number | null
-
-  /**
-   * 当前所有队伍
-   * @format int32
-   */
-  ownTeamId?: number | null
-
   /** 用户角色 */
   role?: Role | null
 }
@@ -322,18 +310,6 @@ export interface UserInfoModel {
 
   /** 用户是否通过邮箱验证（可登录） */
   emailConfirmed?: boolean | null
-
-  /** 所拥有的队伍 */
-  ownTeamName?: string | null
-
-  /** @format int32 */
-  ownTeamId?: number | null
-
-  /** 激活的队伍 */
-  activeTeamName?: string | null
-
-  /** @format int32 */
-  activeTeamId?: number | null
 }
 
 /**
@@ -1055,6 +1031,12 @@ export interface GameDetailModel {
 }
 
 export interface GameJoinModel {
+  /**
+   * 参赛队伍 Id
+   * @format int32
+   */
+  teamId?: number
+
   /** 参赛单位 */
   organization?: string | null
 
@@ -1315,9 +1297,6 @@ export interface GameTeamDetailModel {
  * 比赛参与对象，用于审核查看（Admin）
  */
 export interface ParticipationInfoModel {
-  /** 参赛所属组织 */
-  organization?: string | null
-
   /**
    * 参与对象 Id
    * @format int32
@@ -1326,6 +1305,12 @@ export interface ParticipationInfoModel {
 
   /** 参与队伍 */
   team?: TeamWithDetailedUserInfo
+
+  /** 注册的成员 */
+  registeredMembers?: string[]
+
+  /** 参赛所属组织 */
+  organization?: string | null
 
   /** 参与状态 */
   status?: ParticipationStatus
@@ -1461,6 +1446,11 @@ export interface TeamUpdateModel {
 
   /** 队伍签名 */
   bio?: string | null
+}
+
+export interface TeamTransferModel {
+  /** 新队长 Id */
+  newCaptainId: string
 }
 
 export type QueryParamsType = Record<string | number, any>
@@ -3800,17 +3790,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 设置队伍为当前激活队伍接口，需要为用户
+     * @description 移交队伍所有权接口，需要为队伍创建者
      *
      * @tags Team
-     * @name TeamSetActive
-     * @summary 设置队伍为当前激活队伍
-     * @request PUT:/api/team/{id}/setactive
+     * @name TeamTransfer
+     * @summary 移交队伍所有权
+     * @request PUT:/api/team/{id}/transfer
      */
-    teamSetActive: (id: number, params: RequestParams = {}) =>
+    teamTransfer: (id: number, data: TeamTransferModel, params: RequestParams = {}) =>
       this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}/setactive`,
+        path: `/api/team/${id}/transfer`,
         method: 'PUT',
+        body: data,
+        type: ContentType.Json,
         format: 'json',
         ...params,
       }),
