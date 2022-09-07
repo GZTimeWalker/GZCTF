@@ -1014,6 +1014,9 @@ export interface GameDetailModel {
    */
   teamCount?: number
 
+  /** 参赛队伍名称 */
+  teamName?: string | null
+
   /** 队伍参与状态 */
   status?: ParticipationStatus
 
@@ -2898,7 +2901,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<GameDetailModel>(`/api/game/${id}`, data, options),
 
     /**
-     * @description 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
+     * @description 加入一场比赛，需要User权限
      *
      * @tags Game
      * @name GameJoinGame
