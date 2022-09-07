@@ -110,7 +110,7 @@ public class GameController : ControllerBase
     /// 加入一个比赛
     /// </summary>
     /// <remarks>
-    /// 加入一场比赛，需要User权限，需要当前激活队伍的队长权限
+    /// 加入一场比赛，需要User权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="model"></param>
@@ -216,7 +216,7 @@ public class GameController : ControllerBase
     /// <param name="count"></param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛事件</response>
+    /// <response code="200">成功获取比赛通知</response>
     /// <response code="400">比赛未找到</response>
     [HttpGet("{id}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
@@ -626,7 +626,7 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器"));
 
-        if (instance.Container.ExpectStopAt <= DateTimeOffset.UtcNow.AddMinutes(-10))
+        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow < TimeSpan.FromMinutes(10))
             return BadRequest(new RequestResponse("容器时间尚不可延长"));
 
         await instanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);

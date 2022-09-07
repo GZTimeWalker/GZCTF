@@ -6,7 +6,6 @@ import {
   Center,
   Grid,
   Group,
-  Title,
   Image,
   Modal,
   ModalProps,
@@ -18,11 +17,13 @@ import {
   PasswordInput,
   ActionIcon,
   ScrollArea,
+  Tooltip,
 } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
+import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiCloseCircle, mdiRefresh, mdiCrown } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
@@ -36,25 +37,39 @@ interface TeamEditModalProps extends ModalProps {
 interface TeamMemberInfoProps {
   user: TeamUserInfoModel
   isCaptain: boolean
+  onTransferCaptain: (user: TeamUserInfoModel) => void
   onKick: (user: TeamUserInfoModel) => void
 }
 
 const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
-  const { user, isCaptain, onKick } = props
-
-  const [showKick, setShowKick] = useState(false)
+  const { user, isCaptain, onKick, onTransferCaptain } = props
+  const theme = useMantineTheme()
+  const [showBtns, setShowBtns] = useState(false)
 
   return (
     <Group
       position="apart"
-      onMouseEnter={() => setShowKick(true)}
-      onMouseLeave={() => setShowKick(false)}
+      onMouseEnter={() => setShowBtns(true)}
+      onMouseLeave={() => setShowBtns(false)}
     >
       <Group position="left">
         <Avatar src={user.avatar} radius="xl" />
-        <Text>{user.userName}</Text>
+        <Text weight={500}>{user.userName}</Text>
       </Group>
-      {isCaptain && showKick && <Button onClick={() => onKick(user)}>Kick</Button>}
+      {isCaptain && showBtns && (
+        <Group spacing="xs" position="right">
+          <Tooltip label="移交队长">
+            <ActionIcon variant="transparent" onClick={() => onTransferCaptain(user)}>
+              <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="移除成员">
+            <ActionIcon variant="transparent" onClick={() => onKick(user)}>
+              <Icon path={mdiClose} size={1} color={theme.colors.alert[4]} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      )}
     </Group>
   )
 }
@@ -67,18 +82,14 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const [teamInfo, setTeamInfo] = useState<TeamInfoModel | null>(team)
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
-
-  const [leaveOpened, setLeaveOpened] = useState(false)
-  const [kickUserOpened, setKickUserOpened] = useState(false)
+  const [inviteCode, setInviteCode] = useState('')
 
   const theme = useMantineTheme()
-  const clipboard = useClipboard({ timeout: 500 })
-
-  const [inviteCode, setInviteCode] = useState('')
-  const [kickUser, setKickUser] = useState<TeamUserInfoModel | null>(null)
-
+  const clipboard = useClipboard()
   const captain = teamInfo?.members?.filter((x) => x.captain).at(0)
   const crew = teamInfo?.members?.filter((x) => !x.captain)
+
+  const modals = useModals()
 
   useEffect(() => {
     setTeamInfo(team)
@@ -105,35 +116,69 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             disallowClose: true,
           })
           api.team.mutateTeamGetTeamsInfo()
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setLeaveOpened(false)
           props.onClose()
         })
+        .catch(showErrorNotification)
     }
   }
 
-  const onConfirmKickUser = () => {
-    if (kickUser) {
+  const onConfirmDisbandTeam = () => {
+    if (teamInfo && isCaptain) {
       api.team
-        .teamKickUser(teamInfo?.id!, kickUser.id!)
-        .then((data) => {
+        .teamDeleteTeam(teamInfo.id!)
+        .then(() => {
           showNotification({
             color: 'teal',
-            title: '踢出成员成功',
+            title: '解散队伍成功',
+            message: '队伍信息已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+          setInviteCode('')
+          setTeamInfo(null)
+          api.team.mutateTeamGetTeamsInfo()
+          props.onClose()
+        })
+        .catch(showErrorNotification)
+    }
+  }
+
+  const onTransferCaptain = (userId: string) => {
+    if (teamInfo && isCaptain) {
+      api.team
+        .teamTransfer(teamInfo.id!, {
+          newCaptainId: userId,
+        })
+        .then((team) => {
+          showNotification({
+            color: 'teal',
+            title: '队伍成功',
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
           api.team.mutateTeamGetTeamsInfo()
-          setTeamInfo(data.data)
+          setTeamInfo(team.data)
         })
         .catch(showErrorNotification)
-        .finally(() => {
-          setKickUserOpened(false)
-        })
     }
+  }
+
+  const onConfirmKickUser = (userId: string) => {
+    api.team
+      .teamKickUser(teamInfo?.id!, userId)
+      .then((data) => {
+        showNotification({
+          color: 'teal',
+          title: '踢出成员成功',
+          message: '队伍信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        })
+        api.team.mutateTeamGetTeamsInfo()
+        setTeamInfo(data.data)
+      })
+      .catch(showErrorNotification)
   }
 
   const onRefreshInviteCode = () => {
@@ -281,9 +326,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               <Group position="apart">
                 <Group position="left">
                   <Avatar src={captain.avatar} radius="xl" />
-                  <Text>{captain.userName}</Text>
+                  <Text weight={500}>{captain.userName}</Text>
                 </Group>
-                <Icon path={mdiCrown} size={1} color={theme.colors.yellow[4]} />
+                <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />
               </Group>
             )}
             {crew &&
@@ -292,9 +337,31 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   key={user.id}
                   isCaptain={isCaptain}
                   user={user}
+                  onTransferCaptain={(user: TeamUserInfoModel) => {
+                    modals.openConfirmModal({
+                      title: '确认转移队长',
+                      centered: true,
+                      children: (
+                        <Text size="sm">
+                          你确定要将队伍 "{teamInfo?.name}" 的队长移交给 "{user.userName}" 吗？
+                        </Text>
+                      ),
+                      onConfirm: () => onTransferCaptain(user.id!),
+                      labels: { confirm: '确认', cancel: '取消' },
+                      confirmProps: { color: 'orange' },
+                      zIndex: 10000,
+                    })
+                  }}
                   onKick={(user: TeamUserInfoModel) => {
-                    setKickUser(user)
-                    setKickUserOpened(true)
+                    modals.openConfirmModal({
+                      title: '确认删除',
+                      centered: true,
+                      children: <Text size="sm">你确定要踢出队员 "{user.userName}" 吗？</Text>,
+                      onConfirm: () => onConfirmKickUser(user.id!),
+                      labels: { confirm: '确认', cancel: '取消' },
+                      confirmProps: { color: 'orange' },
+                      zIndex: 10000,
+                    })
                   }}
                 />
               ))}
@@ -302,8 +369,27 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         </ScrollArea>
 
         <Group grow style={{ margin: 'auto', width: '100%' }}>
-          <Button fullWidth color="red" variant="outline" onClick={() => setLeaveOpened(true)}>
-            {isCaptain ? '删除队伍' : '退出队伍'}
+          <Button
+            fullWidth
+            color="red"
+            variant="outline"
+            onClick={() => {
+              modals.openConfirmModal({
+                title: isCaptain ? '确认解散' : '确认退出',
+                centered: true,
+                children: isCaptain ? (
+                  <Text size="sm">你确定要解散队伍吗？</Text>
+                ) : (
+                  <Text size="sm">你确定要退出队伍吗？</Text>
+                ),
+                onConfirm: isCaptain ? onConfirmDisbandTeam : onConfirmLeaveTeam,
+                labels: { confirm: '确认', cancel: '取消' },
+                confirmProps: { color: 'red' },
+                zIndex: 10000,
+              })
+            }}
+          >
+            {isCaptain ? '解散队伍' : '退出队伍'}
           </Button>
           <Button fullWidth disabled={!isCaptain} onClick={onSaveChange}>
             更新信息
@@ -355,61 +441,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         <Button fullWidth variant="outline" onClick={onChangeAvatar}>
           更新头像
         </Button>
-      </Modal>
-
-      {/* 删除队伍浮窗 */}
-      <Modal
-        opened={leaveOpened}
-        centered
-        title={isCaptain ? '删除队伍' : '离开队伍'}
-        onClose={() => setLeaveOpened(false)}
-      >
-        {isCaptain ? (
-          <Stack spacing="lg" p={40} style={{ textAlign: 'center' }}>
-            <Center>
-              <Icon color={theme.colors.red[7]} path={mdiCloseCircle} size={4} />
-            </Center>
-            <Title order={3}>暂不允许删除战队</Title>
-            <Text>
-              为保证数据完整性
-              <br />
-              删除战队功能已被禁用
-            </Text>
-          </Stack>
-        ) : (
-          <Stack>
-            <Text size="sm">你确定要离开 {teamInfo?.name} 吗？</Text>
-            <Group position="right">
-              <Button variant="default" onClick={() => setLeaveOpened(false)}>
-                取消
-              </Button>
-              <Button color="red" onClick={onConfirmLeaveTeam}>
-                确认离开
-              </Button>
-            </Group>
-          </Stack>
-        )}
-      </Modal>
-
-      {/* 删除用户浮窗 */}
-      <Modal
-        opened={kickUserOpened}
-        onClose={() => setKickUserOpened(false)}
-        centered
-        title="踢出用户"
-        withCloseButton={false}
-      >
-        <Stack>
-          <Text size="sm">你确定要踢出 {kickUser?.userName ?? ''} 吗？</Text>
-          <Group position="right">
-            <Button variant="default" onClick={() => setKickUserOpened(false)}>
-              取消
-            </Button>
-            <Button color="red" onClick={onConfirmKickUser}>
-              确认踢出
-            </Button>
-          </Group>
-        </Stack>
       </Modal>
     </Modal>
   )

@@ -9,8 +9,8 @@ import {
   Modal,
   TextInput,
   Text,
-  Title,
   useMantineTheme,
+  Title,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js'
@@ -75,12 +75,6 @@ const Teams: FC = () => {
           disallowClose: true,
         })
         api.team.mutateTeamGetTeamsInfo()
-        if (!user?.activeTeamId) {
-          api.account.mutateAccountProfile({
-            activeTeamId: parseInt(joinTeamCode.split(':').slice(-2)[0]),
-            ...user,
-          })
-        }
       })
       .catch(showErrorNotification)
       .finally(() => {
@@ -90,10 +84,6 @@ const Teams: FC = () => {
   }
 
   usePageTitle('队伍管理')
-
-  //Divide teams into Active & Inactive
-  const activeTeam = teams?.filter((t) => t.id === user?.activeTeamId)[0]
-  const teamsInactive = teams?.filter((t) => t.id !== user?.activeTeamId)
 
   return (
     <WithNavBar>
@@ -120,79 +110,38 @@ const Teams: FC = () => {
           </Group>
           {teams && !teamsError && user && !userError ? (
             <>
-              {activeTeam && (
-                <>
-                  <Title
-                    order={2}
-                    style={{
-                      fontSize: '6rem',
-                      fontWeight: 'bold',
-                      opacity: 0.15,
-                      height: '4.5rem',
-                      paddingLeft: '1rem',
-                      color: theme.colors.brand[theme.colorScheme === 'dark' ? 2 : 6],
-                      userSelect: 'none',
-                      marginTop: '-1.5rem',
-                    }}
-                  >
-                    ACTIVE
-                  </Title>
+              <Title
+                order={2}
+                style={{
+                  fontSize: '6rem',
+                  fontWeight: 'bold',
+                  opacity: 0.15,
+                  height: '4.5rem',
+                  paddingLeft: '1rem',
+                  color: theme.colors.brand[theme.colorScheme === 'dark' ? 2 : 6],
+                  userSelect: 'none',
+                  marginTop: '-1.5rem',
+                }}
+              >
+                TEAMS
+              </Title>
+              <SimpleGrid
+                cols={3}
+                spacing="lg"
+                breakpoints={[
+                  { maxWidth: 1600, cols: 2, spacing: 'md' },
+                  { maxWidth: 800, cols: 1, spacing: 'sm' },
+                ]}
+              >
+                {teams.map((t, i) => (
                   <TeamCard
-                    team={activeTeam}
-                    isActive={true}
-                    isCaptain={
-                      activeTeam.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
-                    }
-                    onEdit={() => onEditTeam(activeTeam)}
+                    key={i}
+                    team={t}
+                    isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
+                    onEdit={() => onEditTeam(t)}
                   />
-                </>
-              )}
-              {teamsInactive && teamsInactive.length > 0 && (
-                <>
-                  <Title
-                    order={2}
-                    style={{
-                      fontSize: '6rem',
-                      fontWeight: 'bold',
-                      opacity: 0.1,
-                      height: '4.5rem',
-                      paddingLeft: '1rem',
-                      userSelect: 'none',
-                    }}
-                  >
-                    INACTIVE
-                  </Title>
-                  <SimpleGrid
-                    cols={3}
-                    spacing="lg"
-                    breakpoints={[
-                      { maxWidth: 1600, cols: 2, spacing: 'md' },
-                      { maxWidth: 800, cols: 1, spacing: 'sm' },
-                    ]}
-                  >
-                    {teams.map(
-                      (t, i) =>
-                        t.id !== user?.activeTeamId && (
-                          <TeamCard
-                            key={i}
-                            team={t}
-                            isActive={t.id === user?.activeTeamId}
-                            isCaptain={
-                              t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false
-                            }
-                            onEdit={() => onEditTeam(t)}
-                            mutateActive={() => {
-                              api.account.mutateAccountProfile({
-                                activeTeamId: t.id!,
-                                ...user,
-                              })
-                            }}
-                          />
-                        )
-                    )}
-                  </SimpleGrid>
-                </>
-              )}
+                ))}
+              </SimpleGrid>
             </>
           ) : (
             <Center style={{ width: '100%', height: '80wh' }}>
@@ -229,14 +178,6 @@ const Teams: FC = () => {
           title="创建新队伍"
           isOwnTeam={ownTeam ?? false}
           onClose={() => setCreateOpened(false)}
-          mutateActive={(id) => {
-            if (!user?.activeTeamId) {
-              api.account.mutateAccountProfile({
-                activeTeamId: id,
-                ...user,
-              })
-            }
-          }}
         />
 
         <TeamEditModal

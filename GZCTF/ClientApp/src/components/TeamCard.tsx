@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC } from 'react'
 import {
   Group,
   Title,
@@ -9,73 +9,33 @@ import {
   Card,
   Stack,
   Box,
-  ActionIcon,
   Tooltip,
 } from '@mantine/core'
-import { showNotification } from '@mantine/notifications'
-import { mdiLockOutline, mdiPower, mdiCheck } from '@mdi/js'
+import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
-import api, { TeamInfoModel } from '@Api'
+import { TeamInfoModel } from '@Api'
 
 interface TeamCardProps {
   team: TeamInfoModel
   isCaptain: boolean
-  isActive: boolean
   onEdit: () => void
-  mutateActive?: () => void
 }
 
+const AVATAR_LIMIT = 5
+
 const TeamCard: FC<TeamCardProps> = (props) => {
-  const { team, isCaptain, isActive, onEdit, mutateActive } = props
+  const { team, isCaptain, onEdit } = props
 
   const captain = team.members?.filter((m) => m?.captain).at(0)
   const members = team.members?.filter((m) => !m?.captain)
 
   const { classes: tooltipClasses, theme } = useTooltipStyles()
-  const [cardClickable, setCardClickable] = useState(true)
-
-  const onActive = () => {
-    if (isActive) {
-      return
-    } else {
-      setCardClickable(false)
-      api.team
-        .teamSetActive(team.id!)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            title: '激活队伍成功',
-            message: '队伍信息已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
-          mutateActive && mutateActive()
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setCardClickable(true)
-        })
-    }
-  }
-
-  const ref = useRef<HTMLDivElement | null>(null)
-  const [cardSzY, setCardSzY] = useState('180px')
-  const avatarLimit = isActive ? 8 : 4
-
-  useEffect(() => {
-    setCardSzY(window.getComputedStyle(ref.current!).getPropertyValue('height'))
-  }, [])
 
   return (
     <Card
       shadow="sm"
-      onClick={() => {
-        if (cardClickable) {
-          onEdit()
-        }
-      }}
+      onClick={onEdit}
       sx={(theme) => ({
         cursor: 'pointer',
         transition: 'filter .2s',
@@ -85,71 +45,17 @@ const TeamCard: FC<TeamCardProps> = (props) => {
       })}
     >
       <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
-        {isActive && (
-          <Avatar
-            color="cyan"
-            size="xl"
-            radius="md"
-            src={team.avatar}
-            style={{ height: cardSzY, width: 'auto', aspectRatio: '1 / 1', flexShrink: 0 }}
-          >
-            {team.name?.at(0) ?? 'T'}
-          </Avatar>
-        )}
-        <Stack style={{ flexGrow: 1 }} ref={ref}>
+        <Stack style={{ flexGrow: 1 }}>
           <Group align="stretch" position="apart">
-            {!isActive && (
-              <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
-                {team.name?.at(0) ?? 'T'}
-              </Avatar>
-            )}
+            <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
+              {team.name?.at(0) ?? 'T'}
+            </Avatar>
+
             <Stack spacing={0} style={{ width: 'calc(100% - 72px)' }}>
-              <Group style={{ width: '100%' }} position="apart">
+              <Group style={{ width: '100%' }} position="left">
                 <Title order={2} align="left">
                   {team.name}
                 </Title>
-                {!isActive && (
-                  <Box>
-                    <Tooltip
-                      label={'激活'}
-                      sx={(theme) => ({
-                        tooltip: {
-                          margin: 4,
-                          backgroundColor:
-                            theme.colorScheme === 'dark'
-                              ? theme.colors[theme.primaryColor][8] + '40'
-                              : theme.colors[theme.primaryColor][2],
-                          color:
-                            theme.colorScheme === 'dark'
-                              ? theme.colors[theme.primaryColor][4]
-                              : theme.colors.gray[8],
-                        },
-                      })}
-                      position="left"
-                      transition="pop-bottom-right"
-                      color="brand"
-                    >
-                      <ActionIcon
-                        size="lg"
-                        onMouseEnter={() => setCardClickable(false)}
-                        onMouseLeave={() => setCardClickable(true)}
-                        onClick={onActive}
-                        sx={(theme) => ({
-                          '&:hover': {
-                            color:
-                              theme.colorScheme === 'dark'
-                                ? theme.colors[theme.primaryColor][2]
-                                : theme.colors[theme.primaryColor][7],
-                            backgroundColor:
-                              theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-                          },
-                        })}
-                      >
-                        <Icon path={mdiPower} size={1} />
-                      </ActionIcon>
-                    </Tooltip>
-                  </Box>
-                )}
               </Group>
               <Text size="sm" lineClamp={2} style={{ overflow: 'hidden' }}>
                 {team.bio}
@@ -199,7 +105,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     <Avatar radius="xl" src={captain?.avatar} />
                   </Tooltip>
                   {members &&
-                    members.slice(0, avatarLimit).map((m) => (
+                    members.slice(0, AVATAR_LIMIT).map((m) => (
                       <Tooltip
                         key={m.id}
                         label={m.userName}
@@ -211,15 +117,15 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                         <Avatar radius="xl" src={m.avatar} />
                       </Tooltip>
                     ))}
-                  {members && members.length > avatarLimit && (
+                  {members && members.length > AVATAR_LIMIT && (
                     <Tooltip
-                      label={<Text>{members.slice(avatarLimit).join(',')}</Text>}
+                      label={<Text>{members.slice(AVATAR_LIMIT).join(',')}</Text>}
                       withArrow
                       classNames={{
                         tooltip: tooltipClasses.tooltip,
                       }}
                     >
-                      <Avatar radius="xl">+{members.length - avatarLimit}</Avatar>
+                      <Avatar radius="xl">+{members.length - AVATAR_LIMIT}</Avatar>
                     </Tooltip>
                   )}
                 </Avatar.Group>

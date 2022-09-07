@@ -19,11 +19,10 @@ import api, { TeamUpdateModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean
-  mutateActive: (id: number) => void
 }
 
 const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
-  const { isOwnTeam, mutateActive, ...modalProps } = props
+  const { isOwnTeam, ...modalProps } = props
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' })
   const theme = useMantineTheme()
 
@@ -39,7 +38,6 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           disallowClose: true,
         })
         api.team.mutateTeamGetTeamsInfo()
-        mutateActive(res.data.id!)
       })
       .catch(showErrorNotification)
       .finally(() => {
