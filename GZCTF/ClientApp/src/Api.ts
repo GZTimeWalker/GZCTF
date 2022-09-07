@@ -2040,6 +2040,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 使用此接口删除用户，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDeleteUser
+     * @summary 删除用户
+     * @request DELETE:/api/admin/users/{userid}
+     */
+    adminDeleteUser: (userid: string, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/admin/users/${userid}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 使用此接口获取用户信息，需要Admin权限
      *
      * @tags Admin
@@ -2093,6 +2109,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     adminResetPassword: (userid: string, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
         path: `/api/admin/users/${userid}/password`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口删除队伍，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDeleteTeam
+     * @summary 删除队伍
+     * @request DELETE:/api/admin/teams/{id}
+     */
+    adminDeleteTeam: (id: number, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/admin/teams/${id}`,
         method: 'DELETE',
         format: 'json',
         ...params,
