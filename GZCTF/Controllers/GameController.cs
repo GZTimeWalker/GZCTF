@@ -158,6 +158,9 @@ public class GameController : ControllerBase
             part = await participationRepository.CreateParticipation(user, team, game, model.Organization, token);
         }
 
+        if(!await participationRepository.RemoveDeniedParticipation(user, game, token))
+            return BadRequest(new RequestResponse("您已经在其他队伍报名参赛"));
+
         if (!part.Members.Any(p => p.UserId == user.Id))
             part.Members.Add(new(user, game, team));
 
