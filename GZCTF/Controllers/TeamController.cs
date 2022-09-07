@@ -185,6 +185,9 @@ public class TeamController : ControllerBase
         if (team.CaptainId != user.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
+        if (team.Locked && await teamRepository.AnyActiveGame(team, token))
+            return BadRequest(new RequestResponse("队伍已锁定"));
+
         var newCaptain = await userManager.Users.SingleOrDefaultAsync(u => u.Id == model.NewCaptainId);
 
         if (newCaptain is null)
@@ -463,15 +466,14 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Avatar([FromRoute] int id, IFormFile file, CancellationToken token)
     {
+        var user = await userManager.GetUserAsync(User);
         var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        var user = await userManager.GetUserAsync(User);
-
-        if (!team.Members.Any(m => m.Id == user.Id))
-            return new JsonResult(new RequestResponse("无权操作", 403)) { StatusCode = 403 };
+        if (team.CaptainId != user.Id)
+            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
@@ -521,6 +523,9 @@ public class TeamController : ControllerBase
 
         if (team.CaptainId != user.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+
+        if (team.Locked && await teamRepository.AnyActiveGame(team, token))
+            return BadRequest(new RequestResponse("队伍已锁定"));
 
         await teamRepository.DeleteTeam(team!, token);
 

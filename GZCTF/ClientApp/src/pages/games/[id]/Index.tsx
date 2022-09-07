@@ -26,7 +26,7 @@ import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useBannerStyles } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
-import { useUser } from '@Utils/useUser'
+import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
 
 const GameAlertMap = new Map([
@@ -35,7 +35,7 @@ const GameAlertMap = new Map([
     {
       color: 'yellow',
       icon: mdiTimerSand,
-      label: '您的队伍已成功报名',
+      label: '您的队伍 "{TEAM}" 已成功报名',
       content: '请耐心等待审核结果',
     },
   ],
@@ -46,7 +46,7 @@ const GameAlertMap = new Map([
       color: 'red',
       icon: mdiAlertCircle,
       label: '您的参赛申请未通过',
-      content: '请确保参赛资格和要求后重新报名',
+      content: '请确保具备参赛资格和满足参赛要求后重新报名',
     },
   ],
   [
@@ -54,7 +54,7 @@ const GameAlertMap = new Map([
     {
       color: 'red',
       icon: mdiAlertCircle,
-      label: '您的队伍已被禁赛',
+      label: '您的队伍 "{TEAM}" 已被禁赛',
       content: '如有异议，请联系管理员进行申诉',
     },
   ],
@@ -69,12 +69,12 @@ const GameActionMap = new Map([
   [ParticipationStatus.Unsubmitted, '报名参赛'],
 ])
 
-const GetAlert = (status: ParticipationStatus) => {
+const GetAlert = (status: ParticipationStatus, team: string) => {
   const data = GameAlertMap.get(status)
   if (data) {
     return (
       <Alert color={data.color} icon={<Icon path={data.icon} />} title={data.label}>
-        {data.content}
+        {data.content.replace("{TEAM}", team)}
       </Alert>
     )
   }
@@ -108,6 +108,7 @@ const GameDetail: FC = () => {
   const progress = started ? (finished ? 100 : current / duriation) : 0
 
   const { user } = useUser()
+  const { teams } = useTeams()
 
   usePageTitle(game?.title)
 
@@ -146,14 +147,11 @@ const GameDetail: FC = () => {
     (status === ParticipationStatus.Unsubmitted || status === ParticipationStatus.Denied) &&
     !finished &&
     user &&
-    user.ownTeamId &&
-    user.activeTeamId === user.ownTeamId
+    teams &&
+    teams.length > 0
 
   const teamRequire =
-    user &&
-    status === ParticipationStatus.Unsubmitted &&
-    !finished &&
-    (!user?.activeTeamId || user?.activeTeamId !== user?.ownTeamId)
+    user && status === ParticipationStatus.Unsubmitted && !finished && teams && teams.length === 0
 
   const ControlButtons = (
     <>
@@ -166,18 +164,21 @@ const GameDetail: FC = () => {
               <Stack spacing="xs">
                 <Text size="sm">你确定要报名此比赛吗？</Text>
                 <Text size="sm">
-                  报名参赛后当前队伍将被锁定，不能再进行人员变动。即邀请、踢出队员。队伍将在比赛结束后或驳回请求时解锁。
+                  报名参赛后参赛队伍将被锁定，不能再进行人员变动。
+                  <Text span weight={700}>
+                    即邀请、踢出队员。
+                  </Text>
+                  队伍将在比赛结束后或驳回请求时解锁。
+                </Text>
+                <Text size="sm">
+                  比赛队伍人数要求以选择队伍的成员数为准，
+                  <Text span weight={700}>
+                    不论队员是否以此队伍身份参加比赛。
+                  </Text>
                 </Text>
               </Stack>
             ),
-            onConfirm: () => {
-              if (
-                game?.inviteCodeRequired ||
-                (game?.organizations && game?.organizations.length > 0)
-              )
-                setJoinModalOpen(true)
-              else onSubmitJoin({})
-            },
+            onConfirm: () => setJoinModalOpen(true),
             centered: true,
             labels: { confirm: '确认报名', cancel: '取消' },
             confirmProps: { color: 'brand' },
@@ -249,19 +250,19 @@ const GameDetail: FC = () => {
       </div>
       <Container className={classes.content}>
         <Stack spacing="xs">
-          {GetAlert(status)}
+          {GetAlert(status, game?.teamName)}
           {teamRequire && (
             <Alert color="yellow" icon={<Icon path={mdiAlertCircle} />} title="当前无法报名">
-              你不是当前所激活队伍的队长，请在{' '}
+              你没有加入任何队伍，请在
               <Anchor component={Link} to="/teams">
                 队伍管理
-              </Anchor>{' '}
-              页面创建、加入或切换队伍状态。
+              </Anchor>
+              页面创建、加入队伍。
             </Alert>
           )}
           {status === ParticipationStatus.Accepted && !started && (
             <Alert color="teal" icon={<Icon path={mdiCheck} />} title="比赛尚未开始">
-              当前激活队伍已经成功报名，请耐心等待比赛开始。
+              你已经以队伍 "{game.teamName}" 成员身份成功报名，请耐心等待比赛开始。
             </Alert>
           )}
           <MarkdownRender source={game?.content ?? ''} />

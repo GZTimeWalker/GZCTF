@@ -87,14 +87,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
               )}
               <Tooltip.Group openDelay={300} closeDelay={100}>
-                <Avatar.Group
-                  spacing="md"
-                  styles={{
-                    child: {
-                      border: 'none',
-                    },
-                  }}
-                >
+                <Avatar.Group spacing="md">
                   <Tooltip
                     label={captain?.userName}
                     withArrow
@@ -102,7 +95,13 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                       tooltip: tooltipClasses.tooltip,
                     }}
                   >
-                    <Avatar radius="xl" src={captain?.avatar} />
+                    <Avatar
+                      radius="xl"
+                      src={captain?.avatar}
+                      style={{
+                        border: 'none',
+                      }}
+                    />
                   </Tooltip>
                   {members &&
                     members.slice(0, AVATAR_LIMIT).map((m) => (
@@ -114,7 +113,13 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                           tooltip: tooltipClasses.tooltip,
                         }}
                       >
-                        <Avatar radius="xl" src={m.avatar} />
+                        <Avatar
+                          radius="xl"
+                          src={m.avatar}
+                          style={{
+                            border: 'none',
+                          }}
+                        />
                       </Tooltip>
                     ))}
                   {members && members.length > AVATAR_LIMIT && (

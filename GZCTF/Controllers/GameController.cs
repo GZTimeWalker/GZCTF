@@ -159,21 +159,18 @@ public class GameController : ControllerBase
         }
 
         if (!part.Members.Any(p => p.UserId == user.Id))
-        {
             part.Members.Add(new(user, game, team));
-            await participationRepository.SaveAsync(token);
-        }
 
         if (part.Status == ParticipationStatus.Denied)
         {
             part.Status = ParticipationStatus.Pending;
             part.Organization = model.Organization;
-            await participationRepository.SaveAsync(token);
         }
-        else if (game.AcceptWithoutReview)
-        {
+
+        await participationRepository.SaveAsync(token);
+
+        if (game.AcceptWithoutReview)
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
-        }
 
         logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 

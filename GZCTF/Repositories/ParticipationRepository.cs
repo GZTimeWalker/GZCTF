@@ -82,6 +82,12 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
                 // flush scoreboard when instances are updated
                 gameRepository.FlushScoreboard(part.Game.Id);
         }
+        else if (status == ParticipationStatus.Denied)
+        {
+            // ensure to clean user participation
+            context.UserParticipations.RemoveRange(part.Members);
+            await SaveAsync(token);
+        }
         // team will unlock automatically when request occur
         else
             await SaveAsync(token);

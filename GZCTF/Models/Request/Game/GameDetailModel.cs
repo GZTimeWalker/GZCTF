@@ -54,6 +54,11 @@ public class GameDetailModel
     public int TeamCount { get; set; } = 0;
 
     /// <summary>
+    /// 参赛队伍名称
+    /// </summary>
+    public string? TeamName { get; set; }
+
+    /// <summary>
     /// 队伍参与状态
     /// </summary>
     [JsonPropertyName("status")]
@@ -74,6 +79,7 @@ public class GameDetailModel
     public GameDetailModel WithParticipation(Participation? part)
     {
         Status = part?.Status ?? ParticipationStatus.Unsubmitted;
+        TeamName = part?.Team.Name;
         return this;
     }
 

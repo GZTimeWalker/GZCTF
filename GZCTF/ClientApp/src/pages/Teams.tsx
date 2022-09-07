@@ -23,15 +23,12 @@ import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/usePageTitle'
-import { useUser } from '@Utils/useUser'
+import { useTeams, useUser } from '@Utils/useUser'
 import api, { TeamInfoModel, Role } from '@Api'
 
 const Teams: FC = () => {
   const { user, error: userError } = useUser()
-
-  const { data: teams, error: teamsError } = api.team.useTeamGetTeamsInfo({
-    refreshInterval: 120000,
-  })
+  const { teams, error: teamsError } = useTeams()
 
   const theme = useMantineTheme()
 
