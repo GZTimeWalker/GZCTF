@@ -64,26 +64,6 @@ public class UserInfo : IdentityUser
     public List<Submission> Submissions { get; set; } = new();
 
     /// <summary>
-    /// 创建的队伍
-    /// </summary>
-    public Team? OwnedTeam { get; set; }
-
-    /// <summary>
-    /// 创建的队伍Id
-    /// </summary>
-    public int? OwnedTeamId { get; set; } = null;
-
-    /// <summary>
-    /// 当前激活队伍
-    /// </summary>
-    public Team? ActiveTeam { get; set; }
-
-    /// <summary>
-    /// 当前激活队伍 Id
-    /// </summary>
-    public int? ActiveTeamId { get; set; } = null;
-
-    /// <summary>
     /// 参与的队伍
     /// </summary>
     public List<Team> Teams { get; set; } = new();

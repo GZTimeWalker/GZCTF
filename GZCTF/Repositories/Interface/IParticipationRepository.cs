@@ -5,20 +5,13 @@ public interface IParticipationRepository : IRepository
     /// <summary>
     /// 创建比赛对象
     /// </summary>
+    /// <param name="user">用户</param>
     /// <param name="team">队伍</param>
     /// <param name="game">比赛</param>
     /// <param name="organization">参赛所属组织</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Participation> CreateParticipation(Team team, Game game, string? organization, CancellationToken token = default);
-
-    /// <summary>
-    /// 获取比赛的全部参与对象
-    /// </summary>
-    /// <param name="game">比赛对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default);
+    public Task<Participation> CreateParticipation(UserInfo user, Team team, Game game, string? organization, CancellationToken token = default);
 
     /// <summary>
     /// 获取比赛的报名队伍数量
@@ -27,6 +20,14 @@ public interface IParticipationRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<int> GetParticipationCount(Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取比赛参与列表
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default);
 
     /// <summary>
     /// 确保此队伍 Instance 对象已创建
@@ -40,11 +41,11 @@ public interface IParticipationRepository : IRepository
     /// <summary>
     /// 检查重复加入
     /// </summary>
-    /// <param name="team">参赛队伍</param>
+    /// <param name="user">参赛用户</param>
     /// <param name="game">比赛</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<bool> CheckRepeatParticipation(Team team, Game game, CancellationToken token = default);
+    public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default);
 
     /// <summary>
     /// 通过 Id 更改参与状态
@@ -57,7 +58,16 @@ public interface IParticipationRepository : IRepository
     /// <summary>
     /// 获取比赛参与对象以及其对应题目列表
     /// </summary>
-    /// <param name="team">队伍对象</param>
+    /// <param name="user">用户对象</param>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取比赛参与对象以及其对应题目列表
+    /// </summary>
+    /// <param name="team">比赛对象</param>
     /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
     /// <returns></returns>

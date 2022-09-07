@@ -63,7 +63,7 @@ public class Team
     /// <summary>
     /// 比赛对象
     /// </summary>
-    public ICollection<Game>? Games { get; set; }
+    public HashSet<Game>? Games { get; set; }
 
     /// <summary>
     /// 队员

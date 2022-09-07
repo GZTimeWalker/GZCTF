@@ -16,9 +16,14 @@ public class ParticipationInfoModel
     public TeamWithDetailedUserInfo Team { get; set; } = default!;
 
     /// <summary>
+    /// 注册的成员
+    /// </summary>
+    public string[] RegisteredMembers { get; set; } = Array.Empty<string>();
+
+    /// <summary>
     /// 参赛所属组织
     /// </summary>
-    public string? Organization;
+    public string? Organization { get; set; }
 
     /// <summary>
     /// 参与状态
@@ -31,6 +36,7 @@ public class ParticipationInfoModel
             Id = part.Id,
             Status = part.Status,
             Organization = part.Organization,
+            RegisteredMembers = part.Members.Select(m => m.UserId).ToArray(),
             Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };
 }

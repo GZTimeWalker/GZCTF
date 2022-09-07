@@ -28,6 +28,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Container> Containers { get; set; } = default!;
     public DbSet<Attachment> Attachments { get; set; } = default!;
     public DbSet<Config> Configs { get; set; } = default!;
+    public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -54,19 +55,6 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(e => e.ActiveTeam)
-                .WithMany()
-                .HasForeignKey(e => e.ActiveTeamId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(e => e.OwnedTeam)
-                .WithMany()
-                .HasForeignKey(e => e.OwnedTeamId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.Navigation(e => e.ActiveTeam).AutoInclude();
-            entity.Navigation(e => e.OwnedTeam).AutoInclude();
         });
 
         builder.Entity<Game>(entity =>
@@ -127,6 +115,10 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasOne(e => e.Captain)
                 .WithMany()
+                .HasForeignKey(e => e.CaptainId);
+
+            entity.HasOne(e => e.Captain)
+                .WithMany()
                 .HasForeignKey(e => e.CaptainId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
@@ -138,13 +130,18 @@ public class AppDbContext : IdentityDbContext<UserInfo>
 
             entity.HasMany(e => e.Instances).WithOne();
 
-            entity.Navigation(e => e.Game).AutoInclude();
-            entity.Navigation(e => e.Team).AutoInclude();
-
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId);
 
+            entity.HasMany(e => e.Members)
+                .WithOne(e => e.Participation)
+                .HasForeignKey(e => e.ParticipationId);
+
+            entity.Navigation(e => e.Game).AutoInclude();
+            entity.Navigation(e => e.Team).AutoInclude();
+            entity.Navigation(e => e.Members).AutoInclude();
+            
             entity.HasMany(e => e.Challenges)
                 .WithMany(e => e.Teams)
                 .UsingEntity<Instance>(
@@ -157,6 +154,25 @@ public class AppDbContext : IdentityDbContext<UserInfo>
                         .OnDelete(DeleteBehavior.Cascade),
                     e => e.HasKey(e => new { e.ChallengeId, e.ParticipationId })
                 );
+        });
+
+        builder.Entity<UserParticipation>(entity =>
+        {
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId);
+
+            entity.HasOne(e => e.Team)
+                .WithMany()
+                .HasForeignKey(e => e.TeamId);
+
+            entity.HasOne(e => e.Game)
+                .WithMany()
+                .HasForeignKey(e => e.GameId);
+
+            entity.HasKey(e => new { e.GameId, e.TeamId, e.UserId });
+
+            entity.HasIndex(e => new { e.UserId, e.GameId });
         });
 
         builder.Entity<Instance>(entity =>

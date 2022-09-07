@@ -14,11 +14,12 @@ public class EntityConfigurationProvider : ConfigurationProvider
         source = _source;
     }
 
-    private HashSet<Config> DefaultConfigs()
+    private static HashSet<Config> DefaultConfigs()
     {
         HashSet<Config> configs = new();
 
         configs.UnionWith(ConfigService.GetConfigs(new AccountPolicy()));
+        configs.UnionWith(ConfigService.GetConfigs(new GlobalConfig()));
 
         return configs;
     }

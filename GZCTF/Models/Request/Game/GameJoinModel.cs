@@ -3,6 +3,11 @@
 public class GameJoinModel
 {
     /// <summary>
+    /// 参赛队伍 Id
+    /// </summary>
+    public int TeamId { get; set; }
+
+    /// <summary>
     /// 参赛单位
     /// </summary>
     public string? Organization { get; set; }

@@ -14,7 +14,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         gameRepository = _gameRepository;
     }
 
-    public async Task<Participation> CreateParticipation(Team team, Game game, string? organization, CancellationToken token = default)
+    public async Task<Participation> CreateParticipation(UserInfo user, Team team, Game game, string? organization, CancellationToken token = default)
     {
         Participation participation = new()
         {
@@ -23,6 +23,8 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             Organization = organization,
             Token = gameRepository.GetToken(game, team)
         };
+
+        participation.Members.Add(new(user, game, team));
 
         await context.AddAsync(participation, token);
         await SaveAsync(token);
@@ -45,11 +47,14 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         return update;
     }
 
+    public Task<Participation?> GetParticipationById(int id, CancellationToken token = default)
+        => context.Participations.FirstOrDefaultAsync(p => p.Id == id, token);
+
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default)
         => context.Participations.FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
 
-    public Task<Participation?> GetParticipationById(int id, CancellationToken token = default)
-        => context.Participations.FirstOrDefaultAsync(p => p.Id == id, token);
+    public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default)
+        => context.Participations.FirstOrDefaultAsync(p => p.Members.Any(m => m.Game == game && m.User == user));
 
     public Task<int> GetParticipationCount(Game game, CancellationToken token = default)
         => context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);
@@ -60,15 +65,8 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             .ThenInclude(t => t.Members)
             .OrderBy(p => p.TeamId).ToArrayAsync(token);
 
-    public Task<bool> CheckRepeatParticipation(Team team, Game game, CancellationToken token = default)
-        => context.Participations.Where(p => p.GameId == game.Id)
-            .Include(p => p.Team)
-            .ThenInclude(t => t.Members)
-            .AnyAsync(p => p.Team.Members.Any(u =>
-                context.Teams.Where(t => t.Id == team.Id)
-                    .Any(m => m.Members.Any(m => m == u))
-                )
-            , token);
+    public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default)
+        => context.UserParticipations.AnyAsync(p => p.User == user && p.Game == game, token);
 
     public async Task UpdateParticipationStatus(Participation part, ParticipationStatus status, CancellationToken token = default)
     {

@@ -38,7 +38,7 @@ public interface ITeamRepository : IRepository
     public Task<Team[]> SearchTeams(string hint, CancellationToken token = default);
 
     /// <summary>
-    /// 通过用户获取队伍对象，含队员信息
+    /// 获取队伍对象，含队员信息
     /// </summary>
     /// <param name="count">队伍数量</param>
     /// <param name="skip">跳过数量</param>
@@ -47,20 +47,21 @@ public interface ITeamRepository : IRepository
     public Task<Team[]> GetTeams(int count = 100, int skip = 0, CancellationToken token = default);
 
     /// <summary>
-    /// 获取当前用户激活的队伍对象，含队员信息
-    /// </summary>
-    /// <param name="user">用户对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Team?> GetActiveTeamWithMembers(UserInfo user, CancellationToken token = default);
-
-    /// <summary>
     /// 是否有正在进行的比赛，比赛期间不允许进行人员变动
     /// </summary>
     /// <param name="team"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> AnyActiveGame(Team team, CancellationToken token = default);
+
+    /// <summary>
+    /// 移交队伍所有权
+    /// </summary>
+    /// <param name="team">队伍</param>
+    /// <param name="user">新队长</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task Transfer(Team team, UserInfo user, CancellationToken token = default);
 
     /// <summary>
     /// 验证Token

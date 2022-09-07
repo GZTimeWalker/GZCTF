@@ -29,14 +29,19 @@ public class Participation
     #region Db Relationship
 
     /// <summary>
-    /// 赛题实例
+    /// 队伍参与的队员
     /// </summary>
-    public List<Instance> Instances { get; set; } = new();
+    public HashSet<UserParticipation> Members { get; set; } = new();
 
     /// <summary>
     /// 队伍激活的题目
     /// </summary>
     public HashSet<Challenge> Challenges { get; set; } = new();
+
+        /// <summary>
+    /// 赛题实例
+    /// </summary>
+    public List<Instance> Instances { get; set; } = new();
 
     /// <summary>
     /// 提交

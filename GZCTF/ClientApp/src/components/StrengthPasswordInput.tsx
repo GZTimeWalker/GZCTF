@@ -19,7 +19,7 @@ const requirements = [
   { re: /[0-9]/, label: '包含数字' },
   { re: /[a-z]/, label: '包含小写字母' },
   { re: /[A-Z]/, label: '包含大写字母' },
-  { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: '包含特殊字符' },
+  { re: /[$&+,:;=?@#|'<>.^*()%!-`]/, label: '包含特殊字符' },
 ]
 
 const getStrength = (password: string) => {

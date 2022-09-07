@@ -128,7 +128,7 @@ public class GameController : ControllerBase
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
+            return NotFound(new RequestResponse("比赛未找到", 404));
 
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse("比赛邀请码错误"));
@@ -137,41 +137,43 @@ public class GameController : ControllerBase
             return BadRequest(new RequestResponse("无效的参赛单位"));
 
         var user = await userManager.GetUserAsync(User);
+        var team = await teamRepository.GetTeamById(model.TeamId, token);
 
-        if (user.OwnedTeamId is null || user.OwnedTeamId != user.ActiveTeamId)
-            // (user.ActiveTeamId is null) is impossible
-            return new JsonResult(new RequestResponse("您不是当前激活队伍的队长", 403))
-            {
-                StatusCode = 403
-            };
+        if (team is null)
+            return NotFound(new RequestResponse("队伍未找到", 404));
 
-        var team = await teamRepository.GetActiveTeamWithMembers(user, token);
-        var part = await participationRepository.GetParticipation(team!, game, token);
+        if (!team.Members.Any(u => u.Id == user.Id))
+            return BadRequest(new RequestResponse("您不是此队伍的队员"));
 
-        if (part is not null)
+        var part = await participationRepository.GetParticipation(team, game, token);
+
+        if (part is null)
         {
-            if (part.Status != ParticipationStatus.Denied)
-                return BadRequest(new RequestResponse("您已经报名该比赛"));
-            else
-            {
-                part.Status = ParticipationStatus.Pending;
-                part.Organization = model.Organization;
-                await participationRepository.SaveAsync(token);
+            if (game.TeamMemberCountLimit > 0 && team.Members.Count > game.TeamMemberCountLimit)
+                return BadRequest(new RequestResponse("队伍不符合比赛人数限制"));
 
-                return Ok();
-            }
+            if (await participationRepository.CheckRepeatParticipation(user, game, token))
+                return BadRequest(new RequestResponse("您已经在其他队伍报名参赛"));
+
+            part = await participationRepository.CreateParticipation(user, team, game, model.Organization, token);
         }
 
-        if (game.TeamMemberCountLimit > 0 && team!.Members.Count > game.TeamMemberCountLimit)
-            return BadRequest(new RequestResponse("队伍不符合比赛人数限制"));
+        if (!part.Members.Any(p => p.UserId == user.Id))
+        {
+            part.Members.Add(new(user, game, team));
+            await participationRepository.SaveAsync(token);
+        }
 
-        if (await participationRepository.CheckRepeatParticipation(team!, game, token))
-            return BadRequest(new RequestResponse("队伍中有成员重复报名"));
-
-        part = await participationRepository.CreateParticipation(team!, game, model.Organization, token);
-
-        if (part is not null && game.AcceptWithoutReview)
+        if (part.Status == ParticipationStatus.Denied)
+        {
+            part.Status = ParticipationStatus.Pending;
+            part.Organization = model.Organization;
+            await participationRepository.SaveAsync(token);
+        }
+        else if (game.AcceptWithoutReview)
+        {
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
+        }
 
         logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 
@@ -550,6 +552,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status429TooManyRequests)]
     public async Task<IActionResult> CreateContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
         var context = await GetContextInfo(id, token: token);
@@ -564,6 +567,12 @@ public class GameController : ControllerBase
 
         if (!instance.Challenge.Type.IsContainer())
             return BadRequest(new RequestResponse("题目不可创建容器"));
+
+        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(15))
+            return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
+            {
+                StatusCode = 429
+            };
 
         if (instance.Container is not null)
         {
@@ -642,6 +651,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status429TooManyRequests)]
     public async Task<IActionResult> DeleteContainer([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
         var context = await GetContextInfo(id, token: token);
@@ -660,8 +670,16 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器"));
 
+        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(15))
+            return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
+            {
+                StatusCode = 429
+            };
+
         if (!await instanceRepository.DestoryContainer(instance.Container, token))
             return BadRequest(new RequestResponse("题目删除容器失败"));
+
+        instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
         await gameEventRepository.AddEvent(new()
         {
@@ -701,10 +719,7 @@ public class GameController : ControllerBase
         if (res.Game is null)
             return res.WithResult(NotFound(new RequestResponse("比赛未找到", 404)));
 
-        if (res.User?.ActiveTeam is null)
-            return res.WithResult(BadRequest(new RequestResponse("请激活一个队伍以参赛")));
-
-        var part = await participationRepository.GetParticipation(res.User.ActiveTeam, res.Game, token);
+        var part = await participationRepository.GetParticipation(res.User, res.Game, token);
 
         if (part is null)
             return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));

@@ -70,20 +70,6 @@ public class UserInfoModel
     /// </summary>
     public bool? EmailConfirmed { get; set; }
 
-    /// <summary>
-    /// 所拥有的队伍
-    /// </summary>
-    public string? OwnTeamName { get; set; }
-
-    public int? OwnTeamId { get; set; }
-
-    /// <summary>
-    /// 激活的队伍
-    /// </summary>
-    public string? ActiveTeamName { get; set; }
-
-    public int? ActiveTeamId { get; set; }
-
     internal static UserInfoModel FromUserInfo(UserInfo user)
         => new()
         {
@@ -99,10 +85,6 @@ public class UserInfoModel
             StdNumber = user.StdNumber,
             LastVisitedUTC = user.LastVisitedUTC,
             RegisterTimeUTC = user.RegisterTimeUTC,
-            EmailConfirmed = user.EmailConfirmed,
-            OwnTeamId = user.OwnedTeamId,
-            OwnTeamName = user.OwnedTeam?.Name,
-            ActiveTeamId = user.ActiveTeamId,
-            ActiveTeamName = user.ActiveTeam?.Name
+            EmailConfirmed = user.EmailConfirmed
         };
 }

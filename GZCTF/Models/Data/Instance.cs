@@ -15,9 +15,14 @@ public class Instance
     public bool IsLoaded { get; set; } = false;
 
     /// <summary>
-    /// 自定义成绩
+    /// 自定义成绩 (unused)
     /// </summary>
     public int Score { get; set; } = 0;
+
+    /// <summary>
+    /// 最后一次容器操作的时间，确保单题目容器操作不会过于频繁
+    /// </summary>
+    public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;
 
     #region Db Relationship
 

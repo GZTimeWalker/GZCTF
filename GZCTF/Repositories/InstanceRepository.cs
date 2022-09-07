@@ -1,4 +1,5 @@
-﻿using CTFServer.Models.Internal;
+﻿using CTFServer.Models;
+using CTFServer.Models.Internal;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
@@ -132,6 +133,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             }
 
             instance.Container = container;
+            instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
             // will save instance together
             await gameEventRepository.AddEvent(new()

@@ -389,7 +389,10 @@ public class AccountController : ControllerBase
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
         {
-            await userManager.SetEmailAsync(user, model.NewMail);
+            var result = await userManager.SetEmailAsync(user, model.NewMail);
+
+            if (!result.Succeeded)
+                return BadRequest(new RequestResponse<bool>(result.Errors.FirstOrDefault()?.Description ?? "邮箱更新失败。", false));
             return Ok(new RequestResponse<bool>("邮箱已更新。", false, 200));
         }
 
