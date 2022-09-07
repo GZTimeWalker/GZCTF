@@ -220,6 +220,56 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
+    /// 删除用户
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口删除用户，需要Admin权限
+    /// </remarks>
+    /// <response code="200">成功获取</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">用户未找到</response>
+    [HttpDelete("Users/{userid}")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUser(string userid, CancellationToken token = default)
+    {
+        var user = await userManager.FindByIdAsync(userid);
+
+        if (user is null)
+            return NotFound(new RequestResponse("用户未找到", 404));
+
+        await userManager.DeleteAsync(user);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// 删除队伍
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口删除队伍，需要Admin权限
+    /// </remarks>
+    /// <response code="200">成功获取</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">用户未找到</response>
+    [HttpDelete("Teams/{id}")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteTeam(int id, CancellationToken token = default)
+    {
+        var team = await teamRepository.GetTeamById(id);
+
+        if (team is null)
+            return NotFound(new RequestResponse("队伍未找到", 404));
+
+        await teamRepository.DeleteTeam(team, token);
+
+        return Ok();
+    }
+
+    /// <summary>
     /// 获取用户信息
     /// </summary>
     /// <remarks>
