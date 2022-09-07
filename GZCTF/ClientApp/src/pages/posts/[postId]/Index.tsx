@@ -2,21 +2,13 @@ import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import { FC, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import {
-  Avatar,
-  Container,
-  Divider,
-  Stack,
-  Title,
-  Text,
-  Group,
-} from '@mantine/core'
+import { Avatar, Container, Divider, Stack, Title, Text, Group } from '@mantine/core'
+import { useScrollIntoView } from '@mantine/hooks'
+import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { useBannerStyles } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
-import { useScrollIntoView } from '@mantine/hooks'
-import MarkdownRender from '@Components/MarkdownRender'
 
 dayjs.extend(LocalizedFormat)
 
@@ -71,7 +63,7 @@ const Post: FC = () => {
         </Stack>
       </div>
       <Container className={classes.content}>
-        <MarkdownRender source={post?.content ?? ''}/>
+        <MarkdownRender source={post?.content ?? ''} />
         <Group position="right">
           {post?.tags?.map((tag, idx) => (
             <Text key={idx} weight={700} span color="brand">

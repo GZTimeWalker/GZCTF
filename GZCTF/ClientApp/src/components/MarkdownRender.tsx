@@ -58,7 +58,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
       className={others.className ? cx(classes.root, others.className) : classes.root}
       {...others}
     >
-      <div className='line-numbers' dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
+      <div className="line-numbers" dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
     </TypographyStylesProvider>
   )
 })

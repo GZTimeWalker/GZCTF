@@ -141,28 +141,27 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
   }, [game])
 
   return (
-
-      <Stack style={{ position: 'relative' }}>
-        <LoadingOverlay
-          visible={isLoading ?? false}
-          overlayOpacity={1}
-          overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
-        />
-        <IconTabs
-          active={activeTab}
-          onTabChange={onChange}
-          tabs={tabs}
-          left={
-            game && (
-              <>
-                <Title>{game?.title}</Title>
-                <GameCountdown game={game} />
-              </>
-            )
-          }
-        />
-        {children}
-      </Stack>
+    <Stack style={{ position: 'relative' }}>
+      <LoadingOverlay
+        visible={isLoading ?? false}
+        overlayOpacity={1}
+        overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+      />
+      <IconTabs
+        active={activeTab}
+        onTabChange={onChange}
+        tabs={tabs}
+        left={
+          game && (
+            <>
+              <Title>{game?.title}</Title>
+              <GameCountdown game={game} />
+            </>
+          )
+        }
+      />
+      {children}
+    </Stack>
   )
 }
 

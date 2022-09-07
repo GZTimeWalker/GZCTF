@@ -11,8 +11,17 @@ import {
   ScrollArea,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
-import { mdiMagnify, mdiArrowLeftBold, mdiArrowRightBold, mdiLockOutline } from '@mdi/js'
+import { showNotification } from '@mantine/notifications'
+import {
+  mdiMagnify,
+  mdiArrowLeftBold,
+  mdiArrowRightBold,
+  mdiLockOutline,
+  mdiDeleteOutline,
+  mdiCheck,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
@@ -25,6 +34,7 @@ const Teams: FC = () => {
   const [teams, setTeams] = useState<TeamInfoModel[]>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   const { classes, theme } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
@@ -68,6 +78,26 @@ const Teams: FC = () => {
       })
   }
 
+  const onDelete = async (team: TeamInfoModel) => {
+    try {
+      setDisabled(true)
+      if (!team.id) return
+
+      await api.admin.adminDeleteTeam(team.id)
+      showNotification({
+        message: `${team.name} 已删除`,
+        color: 'teal',
+        icon: <Icon path={mdiCheck} size={1} />,
+        disallowClose: true,
+      })
+      setTeams(teams?.filter((x) => x.id !== team.id))
+    } catch (e: any) {
+      showErrorNotification(e)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
   return (
     <AdminPage
       isLoading={searching || !teams}
@@ -106,6 +136,7 @@ const Teams: FC = () => {
                 <th>队伍</th>
                 <th>签名</th>
                 <th>队员</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -166,6 +197,15 @@ const Teams: FC = () => {
                             )}
                           </Avatar.Group>
                         </Tooltip.Group>
+                      </td>
+                      <td align="right">
+                        <ActionIconWithConfirm
+                          iconPath={mdiDeleteOutline}
+                          color="alert"
+                          message={`确定要删除 “${team.name}” 吗？`}
+                          disabled={disabled}
+                          onClick={() => onDelete(team)}
+                        />
                       </td>
                     </tr>
                   )

@@ -45,7 +45,11 @@ export const useUserRole = () => {
 }
 
 export const useTeams = () => {
-  const { data: teams, error, mutate } = api.team.useTeamGetTeamsInfo({
+  const {
+    data: teams,
+    error,
+    mutate,
+  } = api.team.useTeamGetTeamsInfo({
     refreshInterval: 120000,
   })
   return { teams, error, mutate }

@@ -20,7 +20,7 @@ export const useTypographyStyles = createStyles((theme) => {
 
         [theme.fn.smallerThan('xs')]: {
           paddingLeft: theme.fontSizes.xs * 1.5,
-        }
+        },
       },
 
       '& :not(pre) > code': {

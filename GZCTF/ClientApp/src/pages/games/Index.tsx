@@ -24,14 +24,14 @@ const Games: FC = () => {
   usePageTitle('赛事')
 
   return (
-      <WithNavBar>
-        <StickyHeader />
-        <Stack>
-          {games.map((g) => (
-            <GameCard key={g.id} game={g} />
-          ))}
-        </Stack>
-      </WithNavBar>
+    <WithNavBar>
+      <StickyHeader />
+      <Stack>
+        {games.map((g) => (
+          <GameCard key={g.id} game={g} />
+        ))}
+      </Stack>
+    </WithNavBar>
   )
 }
 
