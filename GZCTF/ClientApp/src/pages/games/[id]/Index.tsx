@@ -35,7 +35,7 @@ const GameAlertMap = new Map([
     {
       color: 'yellow',
       icon: mdiTimerSand,
-      label: '您的队伍 "{TEAM}" 已成功报名',
+      label: '你已经以队伍 {TEAM} 成员身份成功报名',
       content: '请耐心等待审核结果',
     },
   ],
@@ -54,7 +54,7 @@ const GameAlertMap = new Map([
     {
       color: 'red',
       icon: mdiAlertCircle,
-      label: '您的队伍 "{TEAM}" 已被禁赛',
+      label: '您的队伍 {TEAM} 已被禁赛',
       content: '如有异议，请联系管理员进行申诉',
     },
   ],
@@ -73,8 +73,12 @@ const GetAlert = (status: ParticipationStatus, team: string) => {
   const data = GameAlertMap.get(status)
   if (data) {
     return (
-      <Alert color={data.color} icon={<Icon path={data.icon} />} title={data.label}>
-        {data.content.replace("{TEAM}", team)}
+      <Alert
+        color={data.color}
+        icon={<Icon path={data.icon} />}
+        title={data.label.replace('{TEAM}', team)}
+      >
+        {data.content}
       </Alert>
     )
   }
@@ -250,7 +254,7 @@ const GameDetail: FC = () => {
       </div>
       <Container className={classes.content}>
         <Stack spacing="xs">
-          {GetAlert(status, game?.teamName)}
+          {GetAlert(status, game?.teamName ?? '')}
           {teamRequire && (
             <Alert color="yellow" icon={<Icon path={mdiAlertCircle} />} title="当前无法报名">
               你没有加入任何队伍，请在
@@ -262,7 +266,7 @@ const GameDetail: FC = () => {
           )}
           {status === ParticipationStatus.Accepted && !started && (
             <Alert color="teal" icon={<Icon path={mdiCheck} />} title="比赛尚未开始">
-              你已经以队伍 "{game.teamName}" 成员身份成功报名，请耐心等待比赛开始。
+              你已经以队伍 "{game?.teamName}" 成员身份成功报名，请耐心等待比赛开始。
             </Alert>
           )}
           <MarkdownRender source={game?.content ?? ''} />

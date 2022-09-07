@@ -82,14 +82,21 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
                 // flush scoreboard when instances are updated
                 gameRepository.FlushScoreboard(part.Game.Id);
         }
-        else if (status == ParticipationStatus.Denied)
-        {
-            // ensure to clean user participation
-            context.UserParticipations.RemoveRange(part.Members);
-            await SaveAsync(token);
-        }
         // team will unlock automatically when request occur
         else
             await SaveAsync(token);
+    }
+
+    public async Task<bool> RemoveDeniedParticipation(UserInfo user, Game game, CancellationToken token = default)
+    {
+        // any successful participation in the game
+        if (await context.UserParticipations
+            .Where(p => p.User == user && p.Game == game)
+            .Include(p => p.Participation).AnyAsync(p => p.Participation.Status != ParticipationStatus.Denied, token))
+            return false;
+
+        // clear participation
+        context.RemoveRange(await context.UserParticipations.Where(p => p.User == user && p.Game == game).ToArrayAsync(token));
+        return true;
     }
 }

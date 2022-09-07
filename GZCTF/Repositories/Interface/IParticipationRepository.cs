@@ -48,6 +48,15 @@ public interface IParticipationRepository : IRepository
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default);
 
     /// <summary>
+    /// 移除被拒绝的参与对象
+    /// </summary>
+    /// <param name="user">参赛用户</param>
+    /// <param name="game">比赛</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> RemoveDeniedParticipation(UserInfo user, Game game, CancellationToken token = default);
+
+    /// <summary>
     /// 通过 Id 更改参与状态
     /// </summary>
     /// <param name="id">参与对象Id</param>
