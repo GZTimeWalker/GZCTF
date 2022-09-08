@@ -10,7 +10,7 @@ public class ConfigEditModel
     /// <summary>
     /// 用户策略
     /// </summary>
-    public AccountPolicy? AccoutPolicy { get; set; }
+    public AccountPolicy? AccountPolicy { get; set; }
 
     /// <summary>
     /// 全局配置项

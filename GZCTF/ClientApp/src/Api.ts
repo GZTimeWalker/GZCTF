@@ -231,7 +231,7 @@ export enum Role {
  */
 export interface ConfigEditModel {
   /** 用户策略 */
-  accoutPolicy?: AccountPolicy | null
+  accountPolicy?: AccountPolicy | null
 
   /** 全局配置项 */
   globalConfig?: GlobalConfig | null
