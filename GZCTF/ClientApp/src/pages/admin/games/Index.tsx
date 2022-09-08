@@ -36,8 +36,6 @@ const Games: FC = () => {
   const navigate = useNavigate()
   const { classes } = useTableStyles()
 
-  games?.sort((a, b) => (new Date(b.end) < new Date(a.end) ? -1 : 1))
-
   useEffect(() => {
     api.edit
       .editGetGames({

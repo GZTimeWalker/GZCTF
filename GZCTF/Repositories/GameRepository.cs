@@ -59,7 +59,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         });
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token)
-        => context.Games.OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+        => context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
 
     public void FlushGameInfoCache()
         => cache.Remove(CacheKey.BasicGameInfo);
