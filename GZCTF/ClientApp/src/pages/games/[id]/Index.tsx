@@ -278,6 +278,7 @@ const GameDetail: FC = () => {
           withCloseButton={false}
           onClose={() => setJoinModalOpen(false)}
           onSubmitJoin={onSubmitJoin}
+          currentOrganization={game?.organization}
         />
       </Container>
     </WithNavBar>

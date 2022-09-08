@@ -9,12 +9,13 @@ import api, { GameJoinModel } from '@Api'
 
 interface GameJoinModalProps extends ModalProps {
   onSubmitJoin: (info: GameJoinModel) => Promise<void>
+  currentOrganization?: string | null
 }
 
 const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { onSubmitJoin, ...modalProps } = props
+  const { onSubmitJoin, currentOrganization, ...modalProps } = props
   const { teams } = useTeams()
 
   const { data: game } = api.game.useGameGames(numId, {
@@ -23,7 +24,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   })
 
   const [inviteCode, setInviteCode] = useState('')
-  const [organization, setOrganization] = useState('')
+  const [organization, setOrganization] = useState(currentOrganization ?? '')
   const [team, setTeam] = useState('')
   const [disabled, setDisabled] = useState(false)
 
