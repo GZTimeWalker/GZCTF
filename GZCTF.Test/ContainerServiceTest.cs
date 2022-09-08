@@ -21,7 +21,7 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
         output = _output;
     }
 
-    //[Fact]
+    [Fact]
     public async void BasicInfo()
     {
         var info = await service.GetHostInfo();
@@ -29,7 +29,7 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
         output.WriteLine(info);
     }
 
-    //[Fact]
+    [Fact]
     public async void CreateThenDestory()
     {
         var config = new ContainerConfig()
