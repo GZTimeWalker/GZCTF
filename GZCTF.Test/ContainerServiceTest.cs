@@ -10,18 +10,18 @@ using Xunit.Abstractions;
 
 namespace CTFServer.Test;
 
-public class ContainerServiceTest : IClassFixture<WebApplicationFactory<Program>>
+public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
 {
     private readonly IContainerService service;
     private readonly ITestOutputHelper output;
 
-    public ContainerServiceTest(ITestOutputHelper _output, WebApplicationFactory<Program> _factory)
+    public ContainerServiceTest(ITestOutputHelper _output, TestWebAppFactory _factory)
     {
         service = _factory.Services.GetRequiredService<IContainerService>();
         output = _output;
     }
 
-    [Fact]
+    //[Fact]
     public async void BasicInfo()
     {
         var info = await service.GetHostInfo();
@@ -29,7 +29,7 @@ public class ContainerServiceTest : IClassFixture<WebApplicationFactory<Program>
         output.WriteLine(info);
     }
 
-    [Fact]
+    //[Fact]
     public async void CreateThenDestory()
     {
         var config = new ContainerConfig()

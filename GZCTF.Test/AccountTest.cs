@@ -11,12 +11,12 @@ using Xunit.Abstractions;
 
 namespace CTFServer.Test
 {
-    public class AccountTest : IClassFixture<WebApplicationFactory<Program>>
+    public class AccountTest : IClassFixture<TestWebAppFactory>
     {
-        private readonly WebApplicationFactory<Program> _factory;
+        private readonly TestWebAppFactory _factory;
         private readonly ITestOutputHelper _output;
 
-        public AccountTest(WebApplicationFactory<Program> factory,
+        public AccountTest(TestWebAppFactory factory,
                            ITestOutputHelper output)
         {
             _factory = factory;

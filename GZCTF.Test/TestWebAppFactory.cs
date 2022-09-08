@@ -8,9 +8,13 @@ namespace CTFServer.Test;
 
 public class TestWebAppFactory : WebApplicationFactory<Program>
 {
+    static TestWebAppFactory()
+    {
+        Program.IsTesting = true;
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        base.ConfigureWebHost(builder);
         builder.ConfigureServices(services =>
         {
             services.Remove(services.Single(

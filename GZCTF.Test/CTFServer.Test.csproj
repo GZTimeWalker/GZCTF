@@ -32,9 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GZCTF\CTFServer.csproj">
-      <Properties>DefineConstants=TESTING</Properties>
-    </ProjectReference>
+    <ProjectReference Include="..\GZCTF\CTFServer.csproj" />
     <None Include="..\GZCTF\appsettings*" />
   </ItemGroup>
 
