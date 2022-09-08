@@ -16,8 +16,8 @@ export const RoleMap = new Map<Role, number>([
   [Role.Banned, -1],
 ])
 
-export const RequireRole = (role: Role, requiredRole: Role) =>
-  RoleMap.get(role)! >= RoleMap.get(requiredRole)!
+export const RequireRole = (requiredRole: Role, role?: Role | null) =>
+  RoleMap.get(role ?? Role.User)! >= RoleMap.get(requiredRole)!
 
 const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
   const { role, error } = useUserRole()
@@ -30,12 +30,15 @@ const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
     if (error && error.status === 401)
       navigate(`/account/login?from=${location.pathname}`, { replace: true })
 
+    if (!role)
+      return
+
     const current = RoleMap.get(role)!
 
     if (current < required) navigate('/404')
   }, [role, error, required, navigate])
 
-  if (RoleMap.get(role)! < required /* show loader before redirect */) {
+  if (role && RoleMap.get(role)! < required /* show loader before redirect */) {
     return (
       <Center style={{ height: 'calc(100vh - 32px)' }}>
         <Loader />

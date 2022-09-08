@@ -74,7 +74,7 @@ const Posts: FC = () => {
           />
         )}
       </Stack>
-      {RequireRole(role, Role.Admin) && (
+      {RequireRole(Role.Admin, role) && (
         <ActionIcon
           style={{
             position: 'fixed',

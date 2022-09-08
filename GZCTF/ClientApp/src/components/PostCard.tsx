@@ -56,7 +56,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
         }
       >
         <Stack spacing="xs">
-          {RequireRole(role, Role.Admin) ? (
+          {RequireRole(Role.Admin, role) ? (
             <Group position="apart">
               <Title order={3}>
                 {post.isPinned && (

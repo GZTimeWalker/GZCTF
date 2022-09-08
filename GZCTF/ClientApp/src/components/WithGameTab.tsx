@@ -101,7 +101,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
   const { role } = useUserRole()
 
   const filteredPages = pages
-    .filter((p) => RoleMap.get(role)! >= RoleMap.get(p.requireRole)!)
+    .filter((p) => RoleMap.get(role ?? Role.User)! >= RoleMap.get(p.requireRole)!)
     .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
 
   const tabs = filteredPages.map((p) => ({

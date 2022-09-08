@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { Role } from '@Api'
+import api from '@Api'
 
 export const useUser = () => {
   const navigate = useNavigate()
@@ -41,7 +41,7 @@ export const useUser = () => {
 
 export const useUserRole = () => {
   const { user, error } = useUser()
-  return { role: user?.role ?? Role.User, error }
+  return { role: user?.role, error }
 }
 
 export const useTeams = () => {
