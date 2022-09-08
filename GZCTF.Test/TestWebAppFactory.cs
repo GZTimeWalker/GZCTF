@@ -1,36 +1,22 @@
-﻿using CTFServer.Models;
+﻿using CTFServer.Services.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
 namespace CTFServer.Test;
 
-internal class TestWebAppFactory<TStartup>
-    : WebApplicationFactory<TStartup> where TStartup : class
+public class TestWebAppFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        base.ConfigureWebHost(builder);
         builder.ConfigureServices(services =>
         {
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
-
-            if (descriptor is not null)
-                services.Remove(descriptor);
-
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("InMemoryDbForTesting");
-            });
-
-            var sp = services.BuildServiceProvider();
-
-            using var scope = sp.CreateScope();
-
-            var scopedServices = scope.ServiceProvider;
-            var db = scopedServices.GetRequiredService<AppDbContext>().Database.EnsureCreated();
+            services.Remove(services.Single(
+                d => d.ServiceType ==
+                    typeof(IMailSender)));
+            services.AddTransient<IMailSender, TestMailSender>();
         });
-        base.ConfigureWebHost(builder);
     }
 }

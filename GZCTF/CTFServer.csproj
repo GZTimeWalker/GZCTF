@@ -74,6 +74,7 @@
   <ItemGroup>
     <None Update="k8sconfig.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 
