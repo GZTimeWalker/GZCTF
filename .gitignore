@@ -32,6 +32,9 @@ Obj/
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
+# xUnit
+coverage.json
+
 # NUNIT
 *.VisualState.xml
 TestResult.xml
