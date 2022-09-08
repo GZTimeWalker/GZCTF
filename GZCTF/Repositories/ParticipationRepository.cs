@@ -16,12 +16,14 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
 
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
-        await context.Entry(part).Collection(p => p.Challenges).LoadAsync(token);
-        await context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
+        var challenges = await context.Challenges.Where(c => c.Game == game).ToArrayAsync(token);
 
+        // requery instead of Entry
+        part = await context.Participations.Include(p => p.Challenges).AsSplitQuery().SingleAsync(p => p.Id == part.Id, token);
+        
         bool update = false;
 
-        foreach (var challenge in game.Challenges)
+        foreach (var challenge in challenges)
             update |= part.Challenges.Add(challenge);
 
         await SaveAsync(token);
