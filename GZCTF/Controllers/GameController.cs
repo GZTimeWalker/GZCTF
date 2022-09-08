@@ -170,6 +170,8 @@ public class GameController : ControllerBase
                 Organization = model.Organization,
                 Token = gameRepository.GetToken(game, team)
             };
+
+            participationRepository.Add(part);
         }
 
         // 报名当前成员
