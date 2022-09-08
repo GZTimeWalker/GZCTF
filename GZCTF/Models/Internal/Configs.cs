@@ -40,7 +40,7 @@ public class GlobalConfig
 public class SmtpConfig
 {
     public string? Host { get; set; } = "127.0.0.1";
-    public ushort? Port { get; set; } = 587;
+    public int? Port { get; set; } = 587;
     public bool? EnableSsl { get; set; } = true;
 }
 

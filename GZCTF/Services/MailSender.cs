@@ -2,10 +2,10 @@
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.Extensions.Options;
-using System.Net;
-using System.Net.Mail;
 using System.Reflection;
 using System.Text;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace CTFServer.Services;
 
@@ -13,47 +13,36 @@ public class MailSender : IMailSender
 {
     private readonly EmailConfig? options;
     private readonly ILogger<MailSender> logger;
-    private readonly SmtpClient? smtp;
 
     public MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger)
     {
         this.options = options.Value;
         this.logger = logger;
-
-        if (this.options?.Smtp?.Host is null || this.options?.Smtp?.Port is null)
-            return;
-
-        smtp = new()
-        {
-            Host = this.options.Smtp.Host,
-            Port = (int)this.options.Smtp.Port,
-            EnableSsl = this.options?.Smtp?.EnableSsl ?? true,
-            UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(this.options?.UserName, this.options?.Password)
-        };
     }
 
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
     {
-        if (smtp is null || options?.SendMailAddress is null)
+        if (options?.SendMailAddress is null ||
+            this.options?.Smtp?.Host is null ||
+            this.options?.Smtp?.Port is null)
             return true;
 
-        var msg = new MailMessage
-        {
-            From = new MailAddress(options.SendMailAddress),
-            Subject = subject,
-            SubjectEncoding = Encoding.UTF8,
-            Body = content,
-            BodyEncoding = Encoding.UTF8,
-            IsBodyHtml = true,
-        };
-
-        msg.To.Add(to);
+        var msg = new MimeMessage();
+        msg.From.Add(new MailboxAddress(options.SendMailAddress, options.SendMailAddress));
+        msg.To.Add(new MailboxAddress(to, to));
+        msg.Subject = subject;
+        msg.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = content };
 
         bool isSuccess;
         try
         {
-            await smtp.SendMailAsync(msg);
+            using var client = new SmtpClient();
+
+            await client.ConnectAsync(options.Smtp.Host, options.Smtp.Port.Value);
+            client.AuthenticationMechanisms.Remove("XOAUTH2");
+            await client.AuthenticateAsync(options.UserName, options.Password);
+            await client.SendAsync(msg);
+            await client.DisconnectAsync(true);
 
             isSuccess = true;
 
@@ -96,7 +85,7 @@ public class MailSender : IMailSender
 
     private bool SendUrlIfPossible(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
     {
-        if (smtp is null || options?.SendMailAddress is null)
+        if (options?.SendMailAddress is null)
             return false;
 
         SendUrl(title, infomation, btnmsg, userName, email, url);
