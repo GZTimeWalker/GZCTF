@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   gzctf:
-    container_name: GZCTF
+    # container_name: GZCTF
     image: gztime/gzctf:latest
     restart: always
     ports:
@@ -19,7 +19,7 @@ services:
       - db
 
   db:
-    container_name: pgsql
+    # container_name: pgsql
     image: postgres:alpine
     restart: always
     environment:
