@@ -38,7 +38,7 @@ public class Participation
     /// </summary>
     public HashSet<Challenge> Challenges { get; set; } = new();
 
-        /// <summary>
+    /// <summary>
     /// 赛题实例
     /// </summary>
     public List<Instance> Instances { get; set; } = new();

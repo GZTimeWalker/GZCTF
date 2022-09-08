@@ -13,8 +13,8 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
-import { fetcher } from './utils/Fetcher'
-import { ThemeOverride } from './utils/ThemeOverride'
+import { fetcher } from '@Utils/Fetcher'
+import { ThemeOverride } from '@Utils/ThemeOverride'
 
 export const App: FC = () => {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({

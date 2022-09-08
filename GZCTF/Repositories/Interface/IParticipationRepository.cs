@@ -3,17 +3,6 @@
 public interface IParticipationRepository : IRepository
 {
     /// <summary>
-    /// 创建比赛对象
-    /// </summary>
-    /// <param name="user">用户</param>
-    /// <param name="team">队伍</param>
-    /// <param name="game">比赛</param>
-    /// <param name="organization">参赛所属组织</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Participation> CreateParticipation(UserInfo user, Team team, Game game, string? organization, CancellationToken token = default);
-
-    /// <summary>
     /// 获取比赛的报名队伍数量
     /// </summary>
     /// <param name="game">比赛对象</param>
@@ -48,13 +37,13 @@ public interface IParticipationRepository : IRepository
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 移除被拒绝的参与对象
+    /// 移除用户的全部参与对象
     /// </summary>
     /// <param name="user">参赛用户</param>
     /// <param name="game">比赛</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<bool> RemoveDeniedParticipation(UserInfo user, Game game, CancellationToken token = default);
+    public Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default);
 
     /// <summary>
     /// 通过 Id 更改参与状态

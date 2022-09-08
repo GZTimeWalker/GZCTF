@@ -1,4 +1,5 @@
 ﻿using CTFServer.Middlewares;
+using CTFServer.Models;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
@@ -145,30 +146,39 @@ public class GameController : ControllerBase
         if (!team.Members.Any(u => u.Id == user.Id))
             return BadRequest(new RequestResponse("您不是此队伍的队员"));
 
+        // 如果已经报名（非拒绝状态）
+        if (await participationRepository.CheckRepeatParticipation(user, game, token))
+            return BadRequest(new RequestResponse("您已经在其他队伍报名参赛"));
+
+        // 移除所有的已经存在的报名
+        await participationRepository.RemoveUserParticipations(user, game, token);
+
+        // 根据队伍获取报名信息
         var part = await participationRepository.GetParticipation(team, game, token);
 
+        // 如果队伍未报名
         if (part is null)
         {
             if (game.TeamMemberCountLimit > 0 && team.Members.Count > game.TeamMemberCountLimit)
                 return BadRequest(new RequestResponse("队伍不符合比赛人数限制"));
 
-            if (await participationRepository.CheckRepeatParticipation(user, game, token))
-                return BadRequest(new RequestResponse("您已经在其他队伍报名参赛"));
-
-            part = await participationRepository.CreateParticipation(user, team, game, model.Organization, token);
+            // 创建新的队伍参与对象，不添加三元组
+            part = new()
+            {
+                Game = game,
+                Team = team,
+                Organization = model.Organization,
+                Token = gameRepository.GetToken(game, team)
+            };
         }
 
-        if(!await participationRepository.RemoveDeniedParticipation(user, game, token))
-            return BadRequest(new RequestResponse("您已经在其他队伍报名参赛"));
+        // 报名当前成员
+        part.Members.Add(new(user, game, team));
 
-        if (!part.Members.Any(p => p.UserId == user.Id))
-            part.Members.Add(new(user, game, team));
+        part.Organization = model.Organization;
 
         if (part.Status == ParticipationStatus.Denied)
-        {
             part.Status = ParticipationStatus.Pending;
-            part.Organization = model.Organization;
-        }
 
         await participationRepository.SaveAsync(token);
 

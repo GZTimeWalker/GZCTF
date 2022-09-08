@@ -54,6 +54,11 @@ public class GameDetailModel
     public int TeamCount { get; set; } = 0;
 
     /// <summary>
+    /// 当前报名的组织
+    /// </summary>
+    public string? Organization { get; set; }
+
+    /// <summary>
     /// 参赛队伍名称
     /// </summary>
     public string? TeamName { get; set; }
@@ -80,6 +85,7 @@ public class GameDetailModel
     {
         Status = part?.Status ?? ParticipationStatus.Unsubmitted;
         TeamName = part?.Team.Name;
+        Organization = part?.Organization;
         return this;
     }
 

@@ -14,24 +14,6 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         gameRepository = _gameRepository;
     }
 
-    public async Task<Participation> CreateParticipation(UserInfo user, Team team, Game game, string? organization, CancellationToken token = default)
-    {
-        Participation participation = new()
-        {
-            Game = game,
-            Team = team,
-            Organization = organization,
-            Token = gameRepository.GetToken(game, team)
-        };
-
-        participation.Members.Add(new(user, game, team));
-
-        await context.AddAsync(participation, token);
-        await SaveAsync(token);
-
-        return participation;
-    }
-
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
         await context.Entry(part).Collection(p => p.Challenges).LoadAsync(token);
@@ -66,7 +48,9 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             .OrderBy(p => p.TeamId).ToArrayAsync(token);
 
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default)
-        => context.UserParticipations.AnyAsync(p => p.User == user && p.Game == game, token);
+        => context.UserParticipations.Include(p => p.Participation)
+            .AnyAsync(p => p.User == user && p.Game == game
+                && p.Participation.Status != ParticipationStatus.Denied, token);
 
     public async Task UpdateParticipationStatus(Participation part, ParticipationStatus status, CancellationToken token = default)
     {
@@ -87,16 +71,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             await SaveAsync(token);
     }
 
-    public async Task<bool> RemoveDeniedParticipation(UserInfo user, Game game, CancellationToken token = default)
-    {
-        // any successful participation in the game
-        if (await context.UserParticipations
-            .Where(p => p.User == user && p.Game == game)
-            .Include(p => p.Participation).AnyAsync(p => p.Participation.Status != ParticipationStatus.Denied, token))
-            return false;
-
-        // clear participation
-        context.RemoveRange(await context.UserParticipations.Where(p => p.User == user && p.Game == game).ToArrayAsync(token));
-        return true;
-    }
+    public async Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default)
+        => context.RemoveRange(await context.UserParticipations
+                .Where(p => p.User == user && p.Game == game).ToArrayAsync(token));
 }
