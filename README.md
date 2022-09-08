@@ -64,7 +64,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 
 ### `appsettings.json` 配置
 
-为了使注册功能正常使用，请补全 `EmailConfig` 及 `GoogleRecaptcha` 部分，其中验证码请借由 [recaptcha](https://www.google.com/recaptcha/admin) 处注册。
+为了使注册功能正常使用，请补全 `EmailConfig` 及 `GoogleRecaptcha` 部分，其中验证码请借由 [recaptcha](https://www.google.com/recaptcha/admin) 处注册，并使用 reCAPTCHAv3。
 
 当 `ContainerProvider` 为 `Docker` 时：
   - 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
