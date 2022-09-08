@@ -1014,6 +1014,9 @@ export interface GameDetailModel {
    */
   teamCount?: number
 
+  /** 当前报名的组织 */
+  organization?: string | null
+
   /** 参赛队伍名称 */
   teamName?: string | null
 
