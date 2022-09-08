@@ -73,7 +73,7 @@ public class AccountController : ControllerBase
             return BadRequest(new RequestResponse("Google reCAPTCHA 校验失败"));
 
         var mailDomain = model.Email!.Split('@')[1];
-        if (accountPolicy.Value.EmailDomainRequired &&
+        if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
             !accountPolicy.Value.EmailDomainList.Split(',').Any(d => d == mailDomain))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 

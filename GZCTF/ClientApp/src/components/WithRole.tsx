@@ -30,8 +30,7 @@ const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
     if (error && error.status === 401)
       navigate(`/account/login?from=${location.pathname}`, { replace: true })
 
-    if (!role)
-      return
+    if (!role) return
 
     const current = RoleMap.get(role)!
 

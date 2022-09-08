@@ -253,9 +253,6 @@ export interface AccountPolicy {
   /** 注册、更换邮箱、找回密码需要邮件确认 */
   emailConfirmationRequired?: boolean
 
-  /** 需要满足指定邮箱域名 */
-  emailDomainRequired?: boolean
-
   /** 邮箱后缀域名，以逗号分割 */
   emailDomainList?: string
 }

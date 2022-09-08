@@ -26,11 +26,6 @@ public class AccountPolicy
     public bool EmailConfirmationRequired { get; set; } = false;
 
     /// <summary>
-    /// 需要满足指定邮箱域名
-    /// </summary>
-    public bool EmailDomainRequired { get; set; } = false;
-
-    /// <summary>
     /// 邮箱后缀域名，以逗号分割
     /// </summary>
     public string EmailDomainList { get; set; } = string.Empty;
