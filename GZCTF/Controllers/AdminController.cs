@@ -234,10 +234,18 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(string userid, CancellationToken token = default)
     {
-        var user = await userManager.FindByIdAsync(userid);
+        var user = await userManager.GetUserAsync(User);
+
+        if (user.Id == userid)
+            return BadRequest(new RequestResponse("不可以删除自己"));
+
+        user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
+
+        if (await teamRepository.CheckIsCaptain(user, token))
+            return BadRequest(new RequestResponse("不可以删除队长"));
 
         await userManager.DeleteAsync(user);
 

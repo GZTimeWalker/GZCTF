@@ -31,6 +31,7 @@ import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles } from '@Utils/ThemeOverride'
+import { useUser } from '@Utils/useUser'
 import api, { Role, UserInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -46,6 +47,7 @@ const Users: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const modals = useModals()
+  const { user: currentUser } = useUser()
   const clipboard = useClipboard()
   const { classes, theme } = useTableStyles()
 
@@ -292,7 +294,7 @@ const Users: FC = () => {
                           iconPath={mdiDeleteOutline}
                           color="alert"
                           message={`确定要删除 “${user.userName}” 吗？`}
-                          disabled={disabled}
+                          disabled={disabled || user.id == currentUser?.userId}
                           onClick={() => onDelete(user)}
                         />
                       </Group>

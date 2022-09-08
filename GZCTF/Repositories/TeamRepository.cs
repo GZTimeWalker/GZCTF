@@ -26,6 +26,9 @@ public class TeamRepository : RepositoryBase, ITeamRepository
         return result;
     }
 
+    public Task<bool> CheckIsCaptain(UserInfo user, CancellationToken token = default)
+        => context.Teams.AnyAsync(t => t.Captain == user, token);
+
     public async Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
     {
         if (model.Name is null)

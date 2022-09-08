@@ -30,6 +30,14 @@ public interface ITeamRepository : IRepository
     public Task<Team[]> GetUserTeams(UserInfo user, CancellationToken token = default);
 
     /// <summary>
+    /// 检查是否为任意队伍的队长
+    /// </summary>
+    /// <param name="user">用户对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> CheckIsCaptain(UserInfo user, CancellationToken token = default);
+
+    /// <summary>
     /// 搜索队伍
     /// </summary>
     /// <param name="hint">搜索字符串</param>
