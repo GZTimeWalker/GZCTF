@@ -2978,6 +2978,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 退出一场比赛，需要User权限
+     *
+     * @tags Game
+     * @name GameLeaveGame
+     * @summary 退出一个比赛
+     * @request DELETE:/api/game/{id}
+     */
+    gameLeaveGame: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
      * @description 获取积分榜数据
      *
      * @tags Game
