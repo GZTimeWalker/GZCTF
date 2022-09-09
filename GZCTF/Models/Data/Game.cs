@@ -36,6 +36,12 @@ public class Game
     public string PrivateKey { get; set; } = string.Empty;
 
     /// <summary>
+    /// 是否隐藏
+    /// </summary>
+    [Required]
+    public bool Hidden { get; set; } = false;
+
+    /// <summary>
     /// 头图哈希
     /// </summary>
     public string? PosterHash { get; set; }
@@ -176,6 +182,7 @@ public class Game
         Title = model.Title;
         Content = model.Content;
         Summary = model.Summary;
+        Hidden = model.Hidden;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
         Organizations = model.Organizations ?? Organizations;

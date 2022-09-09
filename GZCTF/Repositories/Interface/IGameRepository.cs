@@ -55,6 +55,14 @@ public interface IGameRepository : IRepository
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default);
 
     /// <summary>
+    /// 删除比赛
+    /// </summary>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task DeleteGame(Game game, CancellationToken token = default);
+
+    /// <summary>
     /// 刷新排行榜
     /// </summary>
     /// <param name="gameId">比赛Id</param>

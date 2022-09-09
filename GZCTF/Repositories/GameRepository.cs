@@ -1,4 +1,5 @@
-﻿using CTFServer.Models.Request.Game;
+﻿using CTFServer.Models;
+using CTFServer.Models.Request.Game;
 using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
@@ -47,7 +48,8 @@ public class GameRepository : RepositoryBase, IGameRepository
         => (await cache.GetOrCreateAsync(CacheKey.BasicGameInfo, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-            return context.Games.OrderByDescending(g => g.StartTimeUTC)
+            return context.Games.Where(g => !g.Hidden)
+                .OrderByDescending(g => g.StartTimeUTC)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
         })).Skip(skip).Take(count).ToArray();
 
@@ -57,6 +59,16 @@ public class GameRepository : RepositoryBase, IGameRepository
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
             return GenScoreboard(game, token);
         });
+
+
+    public async Task DeleteGame(Game game, CancellationToken token = default)
+    {
+        context.Remove(game);
+        cache.Remove(CacheKey.BasicGameInfo);
+        cache.Remove(CacheKey.ScoreBoard(game.Id));
+
+        await SaveAsync(token);
+    }
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token)
         => context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);

@@ -130,7 +130,7 @@ public class EditController : Controller
     /// </remarks>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
+    /// <response code="200">成功添加比赛</response>
     [HttpPost("Games")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -208,6 +208,30 @@ public class EditController : Controller
         gameRepository.FlushGameInfoCache();
 
         return Ok(GameInfoModel.FromGame(game));
+    }
+
+    /// <summary>
+    /// 删除比赛
+    /// </summary>
+    /// <remarks>
+    /// 删除比赛，需要管理员权限
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功删除文件</response>
+    [HttpDelete("Games/{id}")]
+    [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteGame([FromRoute] int id, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        await gameRepository.DeleteGame(game, token);
+
+        return Ok();
     }
 
     /// <summary>

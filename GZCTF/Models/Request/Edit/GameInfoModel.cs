@@ -20,6 +20,11 @@ public class GameInfoModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
+    /// 是否隐藏
+    /// </summary>
+    public bool Hidden { get; set; } = false;
+
+    /// <summary>
     /// 比赛描述
     /// </summary>
     public string Summary { get; set; } = string.Empty;
@@ -87,6 +92,7 @@ public class GameInfoModel
             Title = game.Title,
             Summary = game.Summary,
             Content = game.Content,
+            Hidden = game.Hidden,
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,

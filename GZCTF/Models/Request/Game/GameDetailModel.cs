@@ -27,6 +27,11 @@ public class GameDetailModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
+    /// 是否为隐藏比赛
+    /// </summary>
+    public bool Hidden { get; set; } = false;
+
+    /// <summary>
     /// 参赛所属单位列表
     /// </summary>
     public List<string>? Organizations { get; set; }
@@ -94,6 +99,7 @@ public class GameDetailModel
         {
             Id = game.Id,
             Title = game.Title,
+            Hidden = game.Hidden,
             Summary = game.Summary,
             Content = game.Content,
             Organizations = game.Organizations,
