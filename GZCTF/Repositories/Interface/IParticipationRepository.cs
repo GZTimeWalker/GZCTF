@@ -81,6 +81,14 @@ public interface IParticipationRepository : IRepository
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default);
 
     /// <summary>
+    /// 删除参与对象
+    /// </summary>
+    /// <param name="part">参与对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task RemoveParticipation(Participation part, CancellationToken token = default);
+
+    /// <summary>
     /// 更新比赛参与状态
     /// </summary>
     /// <param name="part">参与对象</param>

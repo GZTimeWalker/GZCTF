@@ -81,4 +81,10 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
     public async Task RemoveUserParticipations(UserInfo user, Team team, CancellationToken token = default)
         => context.RemoveRange(await context.UserParticipations
                 .Where(p => p.User == user && p.Team == team).ToArrayAsync(token));
+
+    public Task RemoveParticipation(Participation part, CancellationToken token = default)
+    {
+        context.Remove(part);
+        return SaveAsync(token);
+    }
 }

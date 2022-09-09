@@ -117,7 +117,7 @@ public class GameController : ControllerBase
     /// <param name="id">比赛Id</param>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛信息</response>
+    /// <response code="200">成功加入比赛</response>
     /// <response code="403">无权操作或操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
@@ -162,9 +162,6 @@ public class GameController : ControllerBase
         // 如果队伍未报名
         if (part is null)
         {
-            if (game.TeamMemberCountLimit > 0 && team.Members.Count > game.TeamMemberCountLimit)
-                return BadRequest(new RequestResponse("队伍不符合比赛人数限制"));
-
             // 创建新的队伍参与对象，不添加三元组
             part = new()
             {
@@ -176,6 +173,9 @@ public class GameController : ControllerBase
 
             participationRepository.Add(part);
         }
+
+        if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)
+            return BadRequest(new RequestResponse("队伍参与人数超过比赛限制"));
 
         // 报名当前成员
         part.Members.Add(new(user, game, team));
@@ -193,6 +193,48 @@ public class GameController : ControllerBase
         logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 
         return Ok();
+    }
+
+    /// <summary>
+    /// 退出一个比赛
+    /// </summary>
+    /// <remarks>
+    /// 退出一场比赛，需要User权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="model"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功退出比赛</response>
+    /// <response code="403">无权操作或操作无效</response>
+    /// <response code="404">比赛未找到</response>
+    [RequireUser]
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> LeaveGame(int id, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var user = await userManager.GetUserAsync(User);
+
+        var part = await participationRepository.GetParticipation(user, game, token);
+
+        if (part is null || !part.Members.Any(u => u.UserId == user.Id))
+            return BadRequest(new RequestResponse("无法退出未报名的比赛"));
+
+        part.Members.RemoveWhere(u => u.UserId == user.Id);
+
+        if (part.Members.Count == 0)
+            await participationRepository.RemoveParticipation(part, token);
+        else
+            await participationRepository.SaveAsync(token);
+
+        return Ok();
+
     }
 
     /// <summary>
