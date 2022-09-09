@@ -1,9 +1,10 @@
+import eslintPlugin from '@nabla/vite-plugin-eslint'
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
 import Pages from 'vite-plugin-pages'
+import prismjs from 'vite-plugin-prismjs'
+import webfontDownload from 'vite-plugin-webfont-dl'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import prismjs from 'vite-plugin-prismjs';
-import eslintPlugin from '@nabla/vite-plugin-eslint'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
@@ -39,6 +40,10 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       eslintPlugin(), // only for development
+      webfontDownload([
+        'https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap',
+        'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&display=swap',
+      ]),
       Pages({
         dirs: [{ dir: 'src/pages', baseRoute: '' }],
       }),
@@ -46,8 +51,8 @@ export default defineConfig(({ mode }) => {
       prismjs({
         languages: 'all',
         plugins: ['line-numbers'],
-        css: true
-      })
+        css: true,
+      }),
     ],
   }
 })
