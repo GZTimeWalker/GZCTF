@@ -226,6 +226,11 @@ public class GameController : ControllerBase
         if (part is null || !part.Members.Any(u => u.UserId == user.Id))
             return BadRequest(new RequestResponse("无法退出未报名的比赛"));
 
+        if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Denied)
+            return BadRequest(new RequestResponse("审核通过后无法退出比赛"));
+
+        // FIXME: 审核通过后可以添加新用户、但不能退出？
+
         part.Members.RemoveWhere(u => u.UserId == user.Id);
 
         if (part.Members.Count == 0)

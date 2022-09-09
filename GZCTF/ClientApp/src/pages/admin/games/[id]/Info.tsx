@@ -176,7 +176,7 @@ const GameInfoEdit: FC = () => {
               variant="outline"
               onClick={() =>
                 modals.openConfirmModal({
-                  title: `删除题目`,
+                  title: `删除比赛`,
                   children: <Text size="sm">你确定要删除比赛 "{game?.title}" 吗？</Text>,
                   onConfirm: () => onConfirmDelete(),
                   centered: true,

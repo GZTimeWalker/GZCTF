@@ -134,10 +134,29 @@ const GameDetail: FC = () => {
 
   const onSubmitJoin = async (info: GameJoinModel) => {
     try {
-      await api.game.gameJoinGame(numId ?? 0, info)
+      if (!numId) return
+
+      await api.game.gameJoinGame(numId, info)
       showNotification({
         color: 'teal',
         message: '报名成功',
+        icon: <Icon path={mdiCheck} size={1} />,
+        disallowClose: true,
+      })
+      mutate()
+    } catch (err) {
+      return showErrorNotification(err)
+    }
+  }
+
+  const onSubmitLeave = async () => {
+    try {
+      if (!numId) return
+      await api.game.gameLeaveGame(numId)
+
+      showNotification({
+        color: 'teal',
+        message: '退出成功',
         icon: <Icon path={mdiCheck} size={1} />,
         disallowClose: true,
       })
@@ -157,41 +176,59 @@ const GameDetail: FC = () => {
   const teamRequire =
     user && status === ParticipationStatus.Unsubmitted && !finished && teams && teams.length === 0
 
+  const onJoin = () =>
+    modals.openConfirmModal({
+      title: '确认报名',
+      children: (
+        <Stack spacing="xs">
+          <Text size="sm">你确定要报名此比赛吗？</Text>
+          <Text size="sm">
+            报名参赛后参赛队伍将被锁定，不能再进行人员变动。
+            <Text span weight={700}>
+              即邀请、踢出队员。
+            </Text>
+            队伍将在比赛结束后或驳回请求时解锁。
+          </Text>
+          <Text size="sm">
+            比赛队伍人数要求以选择队伍的成员数为准，
+            <Text span weight={700}>
+              不论队员是否以此队伍身份参加比赛。
+            </Text>
+          </Text>
+        </Stack>
+      ),
+      onConfirm: () => setJoinModalOpen(true),
+      centered: true,
+      labels: { confirm: '确认报名', cancel: '取消' },
+      confirmProps: { color: 'brand' },
+    })
+
+  const onLeave = () =>
+    modals.openConfirmModal({
+      title: '确认退出比赛',
+      children: (
+        <Stack spacing="xs">
+          <Text size="sm">你确定要退出此比赛吗？</Text>
+          <Text size="sm">退出后如果队伍报名人数为空，队伍参与信息将被删除。</Text>
+        </Stack>
+      ),
+      onConfirm: onSubmitLeave,
+      centered: true,
+      labels: { confirm: '确认退出', cancel: '取消' },
+      confirmProps: { color: 'brand' },
+    })
+
   const ControlButtons = (
     <>
-      <Button
-        disabled={!canSubmit}
-        onClick={() => {
-          modals.openConfirmModal({
-            title: '确认报名',
-            children: (
-              <Stack spacing="xs">
-                <Text size="sm">你确定要报名此比赛吗？</Text>
-                <Text size="sm">
-                  报名参赛后参赛队伍将被锁定，不能再进行人员变动。
-                  <Text span weight={700}>
-                    即邀请、踢出队员。
-                  </Text>
-                  队伍将在比赛结束后或驳回请求时解锁。
-                </Text>
-                <Text size="sm">
-                  比赛队伍人数要求以选择队伍的成员数为准，
-                  <Text span weight={700}>
-                    不论队员是否以此队伍身份参加比赛。
-                  </Text>
-                </Text>
-              </Stack>
-            ),
-            onConfirm: () => setJoinModalOpen(true),
-            centered: true,
-            labels: { confirm: '确认报名', cancel: '取消' },
-            confirmProps: { color: 'brand' },
-          })
-        }}
-      >
+      <Button disabled={!canSubmit} onClick={onJoin}>
         {finished ? '比赛结束' : !user ? '请先登录' : GameActionMap.get(status)}
       </Button>
       {started && <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>}
+      {(status === ParticipationStatus.Pending || status === ParticipationStatus.Denied) && (
+        <Button color="red" variant="outline" onClick={onLeave}>
+          退出比赛
+        </Button>
+      )}
       {status === ParticipationStatus.Accepted && started && (
         <Button onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</Button>
       )}
