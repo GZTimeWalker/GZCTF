@@ -10,7 +10,6 @@ const useStyles = createStyles((theme) => ({
         ? theme.colors[theme.primaryColor][4]
         : theme.colors[theme.primaryColor][6],
     display: 'inline-block',
-    transform: 'translateY(-.12ch)',
   },
   title: {
     color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],

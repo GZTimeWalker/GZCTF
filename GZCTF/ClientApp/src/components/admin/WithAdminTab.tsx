@@ -6,7 +6,7 @@ import {
   mdiFlagOutline,
   mdiAccountGroupOutline,
   mdiFileDocumentOutline,
-  mdiCogOutline,
+  mdiSitemapOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/usePageTitle'
@@ -17,7 +17,7 @@ const pages = [
   { icon: mdiAccountGroupOutline, title: '队伍管理', path: 'teams', color: 'green' },
   { icon: mdiAccountCogOutline, title: '用户管理', path: 'users', color: 'cyan' },
   { icon: mdiFileDocumentOutline, title: '系统日志', path: 'logs', color: 'red' },
-  { icon: mdiCogOutline, title: '全局设置', path: 'configs', color: 'orange' },
+  { icon: mdiSitemapOutline, title: '全局设置', path: 'configs', color: 'orange' },
 ]
 
 export interface AdminTabProps extends React.PropsWithChildren {

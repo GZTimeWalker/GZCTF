@@ -96,28 +96,30 @@ const Home: FC = () => {
 
   return (
     <WithNavBar minWidth={0}>
-      <StickyHeader />
-      <Stack align="center">
-        <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>
-          <Stack className={classes.posts}>
-            {posts?.map((post) => (
-              <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
-            ))}
-          </Stack>
-          <nav className={classes.wrapper}>
-            <div className={classes.inner}>
-              <Stack>
-                <Group>
-                  <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
-                  <Title order={3}>近期活动</Title>
-                </Group>
-                {recentGames?.map((game) => (
-                  <RecentGame key={game.id} game={game} />
-                ))}
-              </Stack>
-            </div>
-          </nav>
-        </Group>
+      <Stack justify="space-between">
+        <StickyHeader />
+        <Stack align="center">
+          <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>
+            <Stack className={classes.posts}>
+              {posts?.map((post) => (
+                <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
+              ))}
+            </Stack>
+            <nav className={classes.wrapper}>
+              <div className={classes.inner}>
+                <Stack>
+                  <Group>
+                    <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
+                    <Title order={3}>近期活动</Title>
+                  </Group>
+                  {recentGames?.map((game) => (
+                    <RecentGame key={game.id} game={game} />
+                  ))}
+                </Stack>
+              </div>
+            </nav>
+          </Group>
+        </Stack>
       </Stack>
     </WithNavBar>
   )

@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { ActionIcon, Pagination, Stack } from '@mantine/core'
+import { ActionIcon, Button, Pagination, Stack } from '@mantine/core'
 import { mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import PostCard from '@Components/PostCard'
@@ -75,20 +75,22 @@ const Posts: FC = () => {
         )}
       </Stack>
       {RequireRole(Role.Admin, role) && (
-        <ActionIcon
+        <Button
           style={{
             position: 'fixed',
             bottom: '2rem',
-            right: 'calc(0.1 * (100vw - 70px) + 2rem)',
+            right: 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
+            boxShadow: '0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 28px 23px -7px, rgb(0 0 0 / 4%) 0px 12px 12px -7px',
+            zIndex: 1000
           }}
-          size="xl"
-          radius="xl"
-          color="brand"
           variant="filled"
+          radius="xl"
+          size="md"
+          leftIcon={<Icon path={mdiPlus} size={1} />}
           onClick={() => navigate('/posts/new/edit')}
         >
-          <Icon path={mdiPlus} size={1} />
-        </ActionIcon>
+          新建文章
+        </Button>
       )}
     </WithNavBar>
   )

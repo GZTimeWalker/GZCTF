@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react'
-import { Button, Divider, Group, SimpleGrid, Stack, Switch, TextInput, Title } from '@mantine/core'
-import { mdiContentSaveOutline } from '@mdi/js'
+import { Button, Divider, SimpleGrid, Stack, Switch, TextInput, Title } from '@mantine/core'
+import { mdiCheck, mdiContentSaveOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
@@ -17,6 +17,7 @@ const Configs: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
+  const [saveState, setSaveState] = useState("")
 
   useEffect(() => {
     if (configs) {
@@ -41,20 +42,35 @@ const Configs: FC = () => {
 
   return (
     <AdminPage isLoading={!configs}>
-      <Stack style={{ width: '100%' }}>
-        <Group position="apart">
-          <Title order={2}>平台设置</Title>
-          <Button
-            leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
-            onClick={() => {
-              updateConfig({ globalConfig })
-            }}
-          >
-            保存配置
-          </Button>
-        </Group>
-        <Divider />
+      <Button
+        style={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
+          boxShadow: '0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 28px 23px -7px, rgb(0 0 0 / 4%) 0px 12px 12px -7px',
+          zIndex: 1000
+        }}
+        variant="filled"
+        radius="xl"
+        size="md"
+        leftIcon={saveState === "saved"
+          ? <Icon path={mdiCheck} size={1} />
+          : <Icon path={mdiContentSaveOutline} size={1} />
+        }
+        onClick={() => {
+          updateConfig({ globalConfig })
+          setSaveState("saved")
+          setTimeout(() => setSaveState(""), 2000)
+        }}
+        disabled={saveState !== ""}
+      >
+        保存配置
+      </Button>
+      <Stack style={{ width: '100%' }} spacing="xl">
+
         <Stack>
+          <Title order={2}>平台设置</Title>
+          <Divider />
           <SimpleGrid cols={2}>
             <TextInput
               label="平台名称"
@@ -65,17 +81,10 @@ const Configs: FC = () => {
               }}
             />
           </SimpleGrid>
-          <Group position="apart">
-            <Title order={2}>账户策略</Title>
-            <Button
-              leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
-              onClick={() => {
-                updateConfig({ accountPolicy })
-              }}
-            >
-              保存配置
-            </Button>
-          </Group>
+        </Stack>
+
+        <Stack>
+          <Title order={2}>账户策略</Title>
           <Divider />
           <SimpleGrid cols={2}>
             <Switch
@@ -133,6 +142,7 @@ const Configs: FC = () => {
             }}
           />
         </Stack>
+
       </Stack>
     </AdminPage>
   )
