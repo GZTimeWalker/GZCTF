@@ -41,7 +41,11 @@ const ChallengePanel: FC = () => {
   const currentChallenges =
     challenges &&
     (activeTab !== 'All' ? challenges[activeTab] ?? [] : allChallenges).filter(
-      (challenge) => !hideSolved || !challenge.solved
+      (chal) =>
+        !hideSolved ||
+        (myteam &&
+          myteam.rank?.challenges?.find((c) => c.id === chal.id)?.type ===
+            SubmissionType.Unaccepted)
     )
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
