@@ -313,7 +313,7 @@ const GameTeamReview: FC = () => {
         type="auto"
       >
         {!participations || participations.length === 0 ? (
-          <Center style={{ height: 'calc(100vh - 180px)' }}>
+          <Center style={{ height: 'calc(100vh - 200px)' }}>
             <Stack spacing={0}>
               <Title order={2}>Ouch! 还没有队伍报名这个比赛</Title>
               <Text>在路上了……别急！</Text>

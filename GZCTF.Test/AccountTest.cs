@@ -16,8 +16,7 @@ namespace CTFServer.Test
         private readonly TestWebAppFactory _factory;
         private readonly ITestOutputHelper _output;
 
-        public AccountTest(TestWebAppFactory factory,
-                           ITestOutputHelper output)
+        public AccountTest(TestWebAppFactory factory, ITestOutputHelper output)
         {
             _factory = factory;
             _output = output;
@@ -34,6 +33,7 @@ namespace CTFServer.Test
                 email = "foo@example.com",
             });
             Assert.Equal(HttpStatusCode.BadRequest, registerResult.StatusCode);
+
             registerResult = await client.PostAsJsonAsync("/api/account/register", new
             {
                 userName = "foo",
@@ -41,12 +41,14 @@ namespace CTFServer.Test
                 email = "foo@example.com",
             });
             Assert.True(registerResult.IsSuccessStatusCode);
+
             var loginResult = await client.PostAsJsonAsync("/api/account/login", new
             {
                 userName = "foo",
                 password = "foo12345##"
             });
             Assert.False(loginResult.IsSuccessStatusCode);
+
             loginResult = await client.PostAsJsonAsync("/api/account/login", new
             {
                 userName = "foo",

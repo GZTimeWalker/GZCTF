@@ -12,18 +12,19 @@ namespace CTFServer.Test;
 
 public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
 {
-    private readonly IContainerService service;
+    private readonly TestWebAppFactory factory;
     private readonly ITestOutputHelper output;
 
     public ContainerServiceTest(ITestOutputHelper _output, TestWebAppFactory _factory)
     {
-        service = _factory.Services.GetRequiredService<IContainerService>();
+        factory = _factory;
         output = _output;
     }
 
     [Fact]
     public async void BasicInfo()
     {
+        var service = factory.Services.GetRequiredService<IContainerService>();
         var info = await service.GetHostInfo();
 
         output.WriteLine(info);
@@ -32,6 +33,7 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
     [Fact]
     public async void CreateThenDestory()
     {
+        var service = factory.Services.GetRequiredService<IContainerService>();
         var config = new ContainerConfig()
         {
             Image = "ghcr.io/gztimewalker/gzctf/test",

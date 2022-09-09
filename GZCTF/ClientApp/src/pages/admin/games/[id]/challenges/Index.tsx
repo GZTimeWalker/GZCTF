@@ -133,7 +133,7 @@ const GameChallengeEdit: FC = () => {
         type="auto"
       >
         {!filteredChallenges || filteredChallenges.length === 0 ? (
-          <Center style={{ height: 'calc(100vh - 180px)' }}>
+          <Center style={{ height: 'calc(100vh - 200px)' }}>
             <Stack spacing={0}>
               <Title order={2}>Ouch! 这个比赛还没有题目</Title>
               <Text>点击右上角创建第一个题目</Text>

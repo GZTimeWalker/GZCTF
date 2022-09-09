@@ -17,9 +17,7 @@ public class TestWebAppFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            services.Remove(services.Single(
-                d => d.ServiceType ==
-                    typeof(IMailSender)));
+            services.Remove(services.Single(d => d.ServiceType == typeof(IMailSender)));
             services.AddTransient<IMailSender, TestMailSender>();
         });
     }
