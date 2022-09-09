@@ -30,6 +30,7 @@ public class ContainerChecker : IHostedService, IDisposable
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
         var containerService = scope.ServiceProvider.GetRequiredService<IContainerService>();
 
+
         foreach (var container in await containerRepo.GetDyingContainers())
         {
             await containerService.DestoryContainer(container);

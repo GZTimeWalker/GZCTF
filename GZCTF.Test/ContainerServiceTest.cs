@@ -37,6 +37,7 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
         var config = new ContainerConfig()
         {
             Image = "ghcr.io/gztimewalker/gzctf/test",
+            TeamInfo = "Test",
             ExposedPort = 70,
             CPUCount = 1,
             Flag = "flag{the_test_flag}",

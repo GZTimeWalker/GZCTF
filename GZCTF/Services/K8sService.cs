@@ -43,9 +43,9 @@ public class K8sService : IContainerService
             && !string.IsNullOrWhiteSpace(_registry.Value.Password))
         {
             var padding = Codec.StrMD5($"{_registry.Value.UserName}@{_registry.Value.Password}@{_registry.Value.ServerAddress}");
-            SecretName = $"{_registry.Value.UserName}_{padding}";
+            SecretName = $"{_registry.Value.UserName}-{padding}";
 
-            var secret = Codec.Base64.EncodeToBytes($"{{\"{_registry.Value.ServerAddress}\":{{\"username\":\"{_registry.Value.UserName}\",\"password\":\"{_registry.Value.Password}\"}}");
+            var secret = Codec.Base64.EncodeToBytes($"{{\"{_registry.Value.ServerAddress}\":{{\"username\":\"{_registry.Value.UserName}\",\"password\":\"{_registry.Value.Password}\"}}}}");
 
             kubernetesClient.CoreV1.CreateNamespacedSecret(new()
             {
@@ -78,7 +78,8 @@ public class K8sService : IContainerService
                 NamespaceProperty = "gzctf",
                 Labels = new Dictionary<string, string>()
                 {
-                    { "ctf.gzti.me/ResourceId", name }
+                    { "ctf.gzti.me/ResourceId", name },
+                    { "ctf.gzti.me/TeamInfo", config.TeamInfo }
                 }
             },
             Spec = new V1PodSpec()

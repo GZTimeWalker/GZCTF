@@ -12,7 +12,7 @@ const AppHeader: FC = () => {
   return (
     <Header
       hidden={!showHeader}
-      height={70}
+      height={showHeader ? 70 : 0}
       fixed
       sx={(theme) => ({ width: '100%', backgroundColor: theme.colors.gray[8] })}
     >

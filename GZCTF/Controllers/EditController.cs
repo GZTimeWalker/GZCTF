@@ -561,6 +561,7 @@ public class EditController : Controller
         var container = await containerService.CreateContainer(new()
         {
             CPUCount = challenge.CPUCount ?? 1,
+            TeamInfo = "AdminTest",
             Flag = challenge.Type.IsDynamic() ? "flag{GZCTF_dynamic_flag_test}" : null,
             Image = challenge.ContainerImage,
             MemoryLimit = challenge.MemoryLimit ?? 64,

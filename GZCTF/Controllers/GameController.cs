@@ -597,7 +597,7 @@ public class GameController : ControllerBase
             await containerRepository.RemoveContainer(instance.Container, token);
         }
 
-        return await instanceRepository.CreateContainer(instance, context.User!.Id, context.Game!.ContainerCountLimit, token) switch
+        return await instanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!.Id, context.Game!.ContainerCountLimit, token) switch
         {
             null or (TaskStatus.Fail, null) => BadRequest(new RequestResponse("题目创建容器失败")),
             (TaskStatus.Denied, null) => BadRequest(new RequestResponse($"队伍容器数目不能超过 {context.Game.ContainerCountLimit}")),

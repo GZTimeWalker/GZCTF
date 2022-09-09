@@ -101,7 +101,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
     }
 
-    public async Task<TaskResult<Container>> CreateContainer(Instance instance, string userId, int containerLimit = 3, CancellationToken token = default)
+    public async Task<TaskResult<Container>> CreateContainer(Instance instance, Team team, string userId, int containerLimit = 3, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
@@ -120,6 +120,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             var container = await service.CreateContainer(new ContainerConfig()
             {
                 CPUCount = instance.Challenge.CPUCount ?? 1,
+                TeamInfo = $"{team.Name}:{team.Id}:{userId}",
                 Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
                 Image = instance.Challenge.ContainerImage,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,

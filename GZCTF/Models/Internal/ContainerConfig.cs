@@ -8,6 +8,11 @@ public class ContainerConfig
     public string Image { get; set; } = string.Empty;
 
     /// <summary>
+    /// 队伍信息
+    /// </summary>
+    public string TeamInfo { get; set; } = string.Empty;
+
+    /// <summary>
     /// 容器需要暴露的端口
     /// </summary>
     public int ExposedPort { get; set; }
