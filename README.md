@@ -99,7 +99,8 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
   "XorKey": "Q22yg09A91YWm1GsOf9VIMiw",
   "ContainerProvider": "Docker", // or K8s
   "DockerConfig": {
-    "Uri": "",
+    "SwarmMode": false,
+    "Uri": "unix:///var/run/docker.sock",
     "PublicIP": "127.0.0.1"
   },
   "RegistryConfig": {

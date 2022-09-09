@@ -36,20 +36,43 @@ public class DockerService : IContainerService
             };
         }
 
-        if (string.IsNullOrEmpty(this.options.Uri))
-            logger.SystemLog($"Docker 服务已启动 (localhost)", TaskStatus.Success, LogLevel.Debug);
-        else
-            logger.SystemLog($"Docker 服务已启动 ({this.options.Uri})", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog($"Docker 服务已启动 ({(string.IsNullOrEmpty(this.options.Uri) ? "localhost" : this.options.Uri)})", TaskStatus.Success, LogLevel.Debug);
     }
 
     public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
+        => options.SwarmMode ? CreateContainerWithSwarm(config, token) : CreateContainerWithSingle(config, token);
+
+    public async Task DestoryContainer(Container container, CancellationToken token = default)
     {
-        // TODO: Add Health Check
-        var parameters = new CreateContainerParameters()
+        try
+        {
+            if (options.SwarmMode)
+                await dockerClient.Swarm.RemoveServiceAsync(container.Id, token);
+            else
+                await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
+        }
+        catch (DockerContainerNotFoundException) // FIXME: what exceptions will RemoveServiceAsync throw?
+        {
+            logger.SystemLog($"容器 {container.ContainerId[..12]} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "删除容器失败");
+            return;
+        }
+
+        container.Status = ContainerStatus.Destoryed;
+    }
+
+    private static string GetName(ContainerConfig config)
+        => $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}";
+
+    private CreateContainerParameters GetCreateContainerParameters(ContainerConfig config)
+        => new()
         {
             Image = config.Image,
             Labels = new Dictionary<string, string> { { "TeamInfo", config.TeamInfo } },
-            Name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}",
+            Name = GetName(config),
             Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" },
             ExposedPorts = new Dictionary<string, EmptyStruct>() {
                 { config.ExposedPort.ToString(), new EmptyStruct() }
@@ -62,23 +85,102 @@ public class DockerService : IContainerService
             }
         };
 
-        return CreateContainerByParams(parameters, token);
-    }
+    private ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config)
+        => new()
+        {
+            RegistryAuth = authConfig,
+            Service = new()
+            {
+                Name = GetName(config),
+                Labels = new Dictionary<string, string> { { "TeamInfo", config.TeamInfo } },
+                Mode = new () { Replicated = new () { Replicas = 1 } },
+                EndpointSpec = new()
+                {
+                    Ports = new PortConfig[1] { new() {
+                        PublishMode = "global", 
+                        TargetPort = (uint)config.ExposedPort, 
+                    } },
+                },
+                TaskTemplate = new()
+                {
+                    RestartPolicy = new () { Condition = "no" },
+                    ContainerSpec = new ()
+                    {
+                        Image = config.Image,
+                        Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" }
+                    },
+                    Resources = new()
+                    {
+                        Limits = new()
+                        {
+                            MemoryBytes = config.MemoryLimit * 1024 * 1024,
+                            NanoCPUs = config.CPUCount * 1000_0000, // do some math here?
+                        }
+                    },
+                }
+            }
+        };
 
-    private async Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default)
+    public async Task<Container?> CreateContainerWithSwarm(ContainerConfig config, CancellationToken token = default)
     {
-        CreateContainerResponse? res = null;
+        var parameters = GetServiceCreateParameters(config);
+        ServiceCreateResponse? serviceRes = null;
         try
         {
-            res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+            serviceRes = await dockerClient.Swarm.CreateServiceAsync(parameters, token);
+        }
+        catch (Exception e) // FIXME: will CreateServiceAsync throw any processible error?
+        {
+            logger.LogError(e.Message, e);
+            return null;
+        }
+
+        // FIXME: will service start automatically?
+
+        Container container = new()
+        {
+            ContainerId = serviceRes.ID,
+            Image = config.Image,
+        };
+
+        var res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
+
+        var port = res.Endpoint.Ports.FirstOrDefault();
+
+        if (port is null)
+        {
+            logger.SystemLog($"未获取到容器暴露端口信息，这可能是意料外的行为", TaskStatus.Fail, LogLevel.Warning);
+            return null;
+        }
+
+        container.StartedAt = res.CreatedAt; // FIXME: time zone?
+        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
+
+        container.Port = (int)port.PublishedPort;
+        container.Status = ContainerStatus.Running; // FIXME: how to get status
+
+        // FIXME: how to get IP?
+        if (!string.IsNullOrEmpty(options.PublicIP))
+            container.PublicIP = options.PublicIP;
+
+        return container;
+    }
+
+    public async Task<Container?> CreateContainerWithSingle(ContainerConfig config, CancellationToken token = default)
+    {
+        var parameters = GetCreateContainerParameters(config);
+        CreateContainerResponse? containerRes = null;
+        try
+        {
+           containerRes = await dockerClient.Containers.CreateContainerAsync(parameters, token);
         }
         catch (DockerImageNotFoundException)
         {
-            logger.SystemLog($"拉取容器镜像 {parameters.Image}", TaskStatus.Pending, LogLevel.Information);
+            logger.SystemLog($"拉取容器镜像 {config.Image}", TaskStatus.Pending, LogLevel.Information);
 
             await dockerClient.Images.CreateImageAsync(new()
             {
-                FromImage = parameters.Image
+                FromImage = config.Image
             }, authConfig, new Progress<JSONMessage>(msg =>
             {
                 Console.WriteLine($"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
@@ -90,11 +192,11 @@ public class DockerService : IContainerService
             return null;
         }
 
-        if (res is null)
+        if (containerRes is null)
         {
             try
             {
-                res = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+                containerRes = await dockerClient.Containers.CreateContainerAsync(parameters, token);
             }
             catch (Exception e)
             {
@@ -105,8 +207,8 @@ public class DockerService : IContainerService
 
         Container container = new()
         {
-            ContainerId = res.ID,
-            Image = parameters.Image,
+            ContainerId = containerRes.ID,
+            Image = config.Image,
         };
 
         var retry = 0;
@@ -114,11 +216,11 @@ public class DockerService : IContainerService
 
         do
         {
-            started = await dockerClient.Containers.StartContainerAsync(res.ID, new(), token);
+            started = await dockerClient.Containers.StartContainerAsync(containerRes.ID, new(), token);
             retry++;
             if (retry == 3)
             {
-                logger.SystemLog($"启动容器实例 {container.Id[..12]} ({parameters.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"启动容器实例 {container.Id[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
                 return null;
             }
             if (!started)
@@ -132,7 +234,7 @@ public class DockerService : IContainerService
 
         if (container.Status != ContainerStatus.Running)
         {
-            logger.SystemLog($"创建 {parameters.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"创建 {config.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Fail, LogLevel.Warning);
             return null;
         }
 
@@ -140,81 +242,13 @@ public class DockerService : IContainerService
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
         container.Port = int.Parse(info.NetworkSettings.Ports
             .FirstOrDefault(p =>
-                p.Key.StartsWith(parameters.ExposedPorts.First().Key)
+                p.Key.StartsWith(config.ExposedPort.ToString())
             ).Value.First().HostPort);
+
+        container.IP = info.NetworkSettings.IPAddress;
 
         if (!string.IsNullOrEmpty(options.PublicIP))
             container.PublicIP = options.PublicIP;
-
-        return container;
-    }
-
-    public async Task DestoryContainer(Container container, CancellationToken token = default)
-    {
-        try
-        {
-            await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
-        }
-        catch (DockerContainerNotFoundException)
-        {
-            logger.SystemLog($"容器 {container.ContainerId[..12]} 已被销毁", TaskStatus.Success, LogLevel.Debug);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "删除容器失败");
-            return;
-        }
-
-        container.Status = ContainerStatus.Destoryed;
-    }
-
-    public async Task<string> GetHostInfo(CancellationToken token = default)
-    {
-        var info = await dockerClient.System.GetSystemInfoAsync(token);
-        var ver = await dockerClient.System.GetVersionAsync(token);
-
-        StringBuilder output = new();
-
-        output.AppendLine("[[ Version ]]");
-        foreach (var item in ver.GetType().GetProperties())
-        {
-            var val = item.GetValue(ver);
-            if (val is IEnumerable<object> vals)
-                val = string.Join(", ", vals);
-            output.AppendLine($"{item.Name,-20}: {val}");
-        }
-
-        output.AppendLine("[[ Info ]]");
-        foreach (var item in info.GetType().GetProperties())
-        {
-            var val = item.GetValue(info);
-            if (val is IEnumerable<object> vals)
-                val = string.Join(", ", vals);
-            output.AppendLine($"{item.Name,-20}: {val}");
-        }
-
-        return output.ToString();
-    }
-
-    public async Task<IList<ContainerInfo>> GetContainers(CancellationToken token)
-    {
-        var containers = await dockerClient.Containers.ListContainersAsync(new() { All = true }, token);
-        return (from c in containers
-                select new ContainerInfo()
-                {
-                    Id = c.ID,
-                    Image = c.Image,
-                    State = c.State,
-                    Name = c.Names[0]
-                }).ToArray();
-    }
-
-    public async Task<Container> QueryContainer(Container container, CancellationToken token = default)
-    {
-        var info = await dockerClient.Containers.InspectContainerAsync(container.ContainerId, token);
-
-        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Destoryed :
-                info.State.Running ? ContainerStatus.Running : ContainerStatus.Pending;
 
         return container;
     }

@@ -60,6 +60,7 @@ public class EmailConfig
 public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
+    public bool SwarmMode { get; set; } = false;
     public string PublicIP { get; set; } = "127.0.0.1";
 }
 

@@ -21,64 +21,64 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
         output = _output;
     }
 
-    [Fact]
-    public async void BasicInfo()
-    {
-        var service = factory.Services.GetRequiredService<IContainerService>();
-        var info = await service.GetHostInfo();
+    //[Fact]
+    //public async void BasicInfo()
+    //{
+    //    var service = factory.Services.GetRequiredService<IContainerService>();
+    //    var info = await service.GetHostInfo();
 
-        output.WriteLine(info);
-    }
+    //    output.WriteLine(info);
+    //}
 
-    [Fact]
-    public async void CreateThenDestory()
-    {
-        var service = factory.Services.GetRequiredService<IContainerService>();
-        var config = new ContainerConfig()
-        {
-            Image = "ghcr.io/gztimewalker/gzctf/test",
-            TeamInfo = "Test",
-            ExposedPort = 70,
-            CPUCount = 1,
-            Flag = "flag{the_test_flag}",
-            MemoryLimit = 64
-        };
+    //[Fact]
+    //public async void CreateThenDestory()
+    //{
+    //    var service = factory.Services.GetRequiredService<IContainerService>();
+    //    var config = new ContainerConfig()
+    //    {
+    //        Image = "ghcr.io/gztimewalker/gzctf/test",
+    //        TeamInfo = "Test",
+    //        ExposedPort = 70,
+    //        CPUCount = 1,
+    //        Flag = "flag{the_test_flag}",
+    //        MemoryLimit = 64
+    //    };
 
-        var container = await service.CreateContainer(config);
+    //    var container = await service.CreateContainer(config);
 
-        Assert.NotNull(container);
-        output.WriteLine($"[{DateTime.Now:u}] Container created.");
+    //    Assert.NotNull(container);
+    //    output.WriteLine($"[{DateTime.Now:u}] Container created.");
 
-        int times = 0;
+    //    int times = 0;
 
-        do
-        {
-            await Task.Delay(1000);
-            times += 1;
-            output.WriteLine($"[{DateTime.Now:u}] Query: {times} times.");
+    //    do
+    //    {
+    //        await Task.Delay(1000);
+    //        times += 1;
+    //        output.WriteLine($"[{DateTime.Now:u}] Query: {times} times.");
 
-            container = await service.QueryContainer(container!);
+    //        container = await service.QueryContainer(container!);
 
-            if (container!.Status == ContainerStatus.Destoryed)
-            {
-                output.WriteLine($"[{DateTime.Now:u}] Container destroyed unexpected.");
-                return;
-            }
-        } while (container!.Status != ContainerStatus.Running);
+    //        if (container!.Status == ContainerStatus.Destoryed)
+    //        {
+    //            output.WriteLine($"[{DateTime.Now:u}] Container destroyed unexpected.");
+    //            return;
+    //        }
+    //    } while (container!.Status != ContainerStatus.Running);
 
-        output.WriteLine("[[ Container Info ]]");
-        foreach (var item in container!.GetType().GetProperties())
-        {
-            var val = item.GetValue(container);
-            if (val is IEnumerable<object> vals)
-                val = string.Join(", ", vals);
-            output.WriteLine($"{item.Name,-20}: {val}");
-        }
+    //    output.WriteLine("[[ Container Info ]]");
+    //    foreach (var item in container!.GetType().GetProperties())
+    //    {
+    //        var val = item.GetValue(container);
+    //        if (val is IEnumerable<object> vals)
+    //            val = string.Join(", ", vals);
+    //        output.WriteLine($"{item.Name,-20}: {val}");
+    //    }
 
-        await service.DestoryContainer(container);
+    //    await service.DestoryContainer(container);
 
-        Assert.Equal(ContainerStatus.Destoryed, container.Status);
+    //    Assert.Equal(ContainerStatus.Destoryed, container.Status);
 
-        output.WriteLine($"[{DateTime.Now:u}] Container destoryed.");
-    }
+    //    output.WriteLine($"[{DateTime.Now:u}] Container destoryed.");
+    //}
 }

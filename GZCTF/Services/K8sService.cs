@@ -14,9 +14,11 @@ namespace CTFServer.Services;
 
 public class K8sService : IContainerService
 {
+    private const string Namespace = "gzctf";
+
     private readonly ILogger<K8sService> logger;
     private readonly Kubernetes kubernetesClient;
-    private readonly string HostIP;
+    private readonly string hostIP;
     private readonly string? SecretName;
 
     public K8sService(IOptions<RegistryConfig> _registry, ILogger<K8sService> logger)
@@ -31,12 +33,12 @@ public class K8sService : IContainerService
 
         var config = KubernetesClientConfiguration.BuildConfigFromConfigFile("k8sconfig.yaml");
 
-        HostIP = config.Host[(config.Host.LastIndexOf('/') + 1)..config.Host.LastIndexOf(':')];
+        hostIP = config.Host[(config.Host.LastIndexOf('/') + 1)..config.Host.LastIndexOf(':')];
 
         kubernetesClient = new Kubernetes(config);
 
-        if (!kubernetesClient.CoreV1.ListNamespace().Items.Any(ns => ns.Metadata.Name == "gzctf"))
-            kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = "gzctf" } });
+        if (!kubernetesClient.CoreV1.ListNamespace().Items.Any(ns => ns.Metadata.Name == Namespace))
+            kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = Namespace } });
 
         if (!string.IsNullOrWhiteSpace(_registry.Value.ServerAddress)
             && !string.IsNullOrWhiteSpace(_registry.Value.UserName)
@@ -51,7 +53,7 @@ public class K8sService : IContainerService
                 Metadata = new V1ObjectMeta()
                 {
                     Name = SecretName,
-                    NamespaceProperty = "gzctf",
+                    NamespaceProperty = Namespace,
                 },
                 Data = new Dictionary<string, byte[]>() {
                     {".dockerconfigjson", dockerjson}
@@ -61,11 +63,11 @@ public class K8sService : IContainerService
 
             try
             {
-                kubernetesClient.CoreV1.CreateNamespacedSecretAsync(secret, "gzctf");
+                kubernetesClient.CoreV1.CreateNamespacedSecretAsync(secret, Namespace);
             }
             catch (Exception)
             {
-                kubernetesClient.CoreV1.ReplaceNamespacedSecretAsync(secret, SecretName, "gzctf");
+                kubernetesClient.CoreV1.ReplaceNamespacedSecretAsync(secret, SecretName, Namespace);
             }
         }
 
@@ -83,7 +85,7 @@ public class K8sService : IContainerService
             Metadata = new V1ObjectMeta()
             {
                 Name = name,
-                NamespaceProperty = "gzctf",
+                NamespaceProperty = Namespace,
                 Labels = new Dictionary<string, string>()
                 {
                     { "ctf.gzti.me/ResourceId", name },
@@ -131,7 +133,7 @@ public class K8sService : IContainerService
 
         try
         {
-            pod = await kubernetesClient.CreateNamespacedPodAsync(pod, "gzctf", cancellationToken: token);
+            pod = await kubernetesClient.CreateNamespacedPodAsync(pod, Namespace, cancellationToken: token);
         }
         catch (HttpOperationException e)
         {
@@ -164,7 +166,7 @@ public class K8sService : IContainerService
             Metadata = new V1ObjectMeta()
             {
                 Name = name,
-                NamespaceProperty = "gzctf",
+                NamespaceProperty = Namespace,
                 Labels = new Dictionary<string, string>()
                 {
                     { "ctf.gzti.me/ResourceId", name }
@@ -186,7 +188,7 @@ public class K8sService : IContainerService
 
         try
         {
-            service = await kubernetesClient.CoreV1.CreateNamespacedServiceAsync(service, "gzctf", cancellationToken: token);
+            service = await kubernetesClient.CoreV1.CreateNamespacedServiceAsync(service, Namespace, cancellationToken: token);
         }
         catch (Exception e)
         {
@@ -195,7 +197,7 @@ public class K8sService : IContainerService
         }
 
         container.PublicPort = service.Spec.Ports[0].NodePort;
-        container.PublicIP = HostIP;
+        container.PublicIP = hostIP;
         container.StartedAt = DateTimeOffset.UtcNow;
 
         return container;
@@ -205,8 +207,8 @@ public class K8sService : IContainerService
     {
         try
         {
-            await kubernetesClient.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, "gzctf", cancellationToken: token);
-            await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(container.ContainerId, "gzctf", cancellationToken: token);
+            await kubernetesClient.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, Namespace, cancellationToken: token);
+            await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(container.ContainerId, Namespace, cancellationToken: token);
         }
         catch (HttpOperationException e)
         {
@@ -225,59 +227,59 @@ public class K8sService : IContainerService
         container.Status = ContainerStatus.Destoryed;
     }
 
-    public async Task<IList<ContainerInfo>> GetContainers(CancellationToken token = default)
-    {
-        var pods = await kubernetesClient.ListNamespacedPodAsync("gzctf", cancellationToken: token);
-        return (from pod in pods.Items
-                select new ContainerInfo
-                {
-                    Id = pod.Metadata.Name,
-                    Name = pod.Metadata.Name,
-                    Image = pod.Spec.Containers[0].Image,
-                    State = pod.Status.Message
-                }).ToArray();
-    }
+    //public async Task<IList<ContainerInfo>> GetContainers(CancellationToken token = default)
+    //{
+    //    var pods = await kubernetesClient.ListNamespacedPodAsync(Namespace, cancellationToken: token);
+    //    return (from pod in pods.Items
+    //            select new ContainerInfo
+    //            {
+    //                Id = pod.Metadata.Name,
+    //                Name = pod.Metadata.Name,
+    //                Image = pod.Spec.Containers[0].Image,
+    //                State = pod.Status.Message
+    //            }).ToArray();
+    //}
 
-    public async Task<string> GetHostInfo(CancellationToken token = default)
-    {
-        var nodes = await kubernetesClient.ListNodeAsync(cancellationToken: token);
-        StringBuilder builder = new();
+    //public async Task<string> GetHostInfo(CancellationToken token = default)
+    //{
+    //    var nodes = await kubernetesClient.ListNodeAsync(cancellationToken: token);
+    //    StringBuilder builder = new();
 
-        builder.AppendLine("[[ K8s Nodes ]]");
-        foreach (var node in nodes.Items)
-        {
-            builder.AppendLine($"[{node.Metadata.Name}]");
-            foreach (var item in node.Status.Capacity)
-            {
-                builder.AppendLine($"{item.Key,-20}: {item.Value}");
-            }
-            foreach (var item in node.Status.Conditions)
-            {
-                builder.AppendLine($"{item.Type,-20}: {item.Status}");
-            }
-            builder.AppendLine($"{"Addresses",-20}: ");
-            foreach (var item in node.Status.Addresses)
-            {
-                builder.AppendLine($"{"",-22}{item.Address}({item.Type})");
-            }
-        }
+    //    builder.AppendLine("[[ K8s Nodes ]]");
+    //    foreach (var node in nodes.Items)
+    //    {
+    //        builder.AppendLine($"[{node.Metadata.Name}]");
+    //        foreach (var item in node.Status.Capacity)
+    //        {
+    //            builder.AppendLine($"{item.Key,-20}: {item.Value}");
+    //        }
+    //        foreach (var item in node.Status.Conditions)
+    //        {
+    //            builder.AppendLine($"{item.Type,-20}: {item.Status}");
+    //        }
+    //        builder.AppendLine($"{"Addresses",-20}: ");
+    //        foreach (var item in node.Status.Addresses)
+    //        {
+    //            builder.AppendLine($"{"",-22}{item.Address}({item.Type})");
+    //        }
+    //    }
 
-        return builder.ToString();
-    }
+    //    return builder.ToString();
+    //}
 
-    public async Task<Container> QueryContainer(Container container, CancellationToken token = default)
-    {
-        var pod = await kubernetesClient.ReadNamespacedPodAsync(container.ContainerId, "gzctf", cancellationToken: token);
+    //public async Task<Container> QueryContainer(Container container, CancellationToken token = default)
+    //{
+    //    var pod = await kubernetesClient.ReadNamespacedPodAsync(container.ContainerId, Namespace, cancellationToken: token);
 
-        if (pod is null)
-        {
-            container.Status = ContainerStatus.Destoryed;
-            return container;
-        }
+    //    if (pod is null)
+    //    {
+    //        container.Status = ContainerStatus.Destoryed;
+    //        return container;
+    //    }
 
-        container.Status = (pod.Status.Phase == "Succeeded" || pod.Status.Phase == "Running") ? ContainerStatus.Running : ContainerStatus.Pending;
-        container.IP = pod.Status.PodIP;
+    //    container.Status = (pod.Status.Phase == "Succeeded" || pod.Status.Phase == "Running") ? ContainerStatus.Running : ContainerStatus.Pending;
+    //    container.IP = pod.Status.PodIP;
 
-        return container;
-    }
+    //    return container;
+    //}
 }
