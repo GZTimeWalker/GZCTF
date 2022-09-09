@@ -112,7 +112,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
 
   return (
     <Group spacing="xl" position="apart">
-      <Group>
+      <Group style={{ width: 'calc(100% - 10rem)' }}>
         {isCaptain ? (
           <Indicator
             inline
@@ -132,29 +132,31 @@ const MemberItem: FC<MemberItemProps> = (props) => {
         ) : (
           <Avatar src={user.avatar} />
         )}
-        <Box>
-          <Group noWrap spacing="xs">
-            <Icon path={mdiAccountOutline} {...iconProps} />
-            <Group>
-              <Text weight={700}>{user.userName}</Text>
-              <Text>{!user.realName ? '' : user.realName}</Text>
+        <Group noWrap>
+          <Stack spacing={2} style={{ width: '12rem' }}>
+            <Group noWrap spacing="xs">
+              <Icon path={mdiAccountOutline} {...iconProps} />
+              <Group>
+                <Text weight={700}>{user.userName}</Text>
+                <Text>{!user.realName ? '' : user.realName}</Text>
+              </Group>
             </Group>
-          </Group>
-          <Group noWrap spacing="xs">
-            <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
-            <Text>{!user.stdNumber ? '未填写' : user.stdNumber}</Text>
-          </Group>
-        </Box>
-        <Box>
-          <Group noWrap spacing="xs">
-            <Icon path={mdiEmailOutline} {...iconProps} />
-            <Text>{!user.email ? '未填写' : user.email}</Text>
-          </Group>
-          <Group noWrap spacing="xs">
-            <Icon path={mdiPhoneOutline} {...iconProps} />
-            <Text>{!user.phone ? '未填写' : user.phone}</Text>
-          </Group>
-        </Box>
+            <Group noWrap spacing="xs">
+              <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
+              <Text>{!user.stdNumber ? '未填写' : user.stdNumber}</Text>
+            </Group>
+          </Stack>
+          <Stack spacing={2}>
+            <Group noWrap spacing="xs">
+              <Icon path={mdiEmailOutline} {...iconProps} />
+              <Text>{!user.email ? '未填写' : user.email}</Text>
+            </Group>
+            <Group noWrap spacing="xs">
+              <Icon path={mdiPhoneOutline} {...iconProps} />
+              <Text>{!user.phone ? '未填写' : user.phone}</Text>
+            </Group>
+          </Stack>
+        </Group>
       </Group>
       <Text size="sm" weight={500} color={isRegistered ? 'teal' : 'yellow'}>
         {isRegistered ? '已报名' : '未报名'}
