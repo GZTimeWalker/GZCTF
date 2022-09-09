@@ -514,6 +514,9 @@ export interface GameInfoModel {
   /** 比赛标题 */
   title: string
 
+  /** 是否隐藏 */
+  hidden?: boolean
+
   /** 比赛描述 */
   summary?: string
 
@@ -995,6 +998,9 @@ export interface GameDetailModel {
 
   /** 比赛详细介绍 */
   content?: string
+
+  /** 是否为隐藏比赛 */
+  hidden?: boolean
 
   /** 参赛所属单位列表 */
   organizations?: string[] | null
@@ -2502,6 +2508,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'PUT',
         body: data,
         type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 删除比赛，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditDeleteGame
+     * @summary 删除比赛
+     * @request DELETE:/api/edit/games/{id}
+     */
+    editDeleteGame: (id: number, params: RequestParams = {}) =>
+      this.request<GameInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}`,
+        method: 'DELETE',
         format: 'json',
         ...params,
       }),
