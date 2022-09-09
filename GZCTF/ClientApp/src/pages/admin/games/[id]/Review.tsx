@@ -133,10 +133,10 @@ const MemberItem: FC<MemberItemProps> = (props) => {
           <Avatar src={user.avatar} />
         )}
         <Group noWrap>
-          <Stack spacing={2} style={{ width: '12rem' }}>
+          <Stack spacing={2} style={{ width: '15rem' }}>
             <Group noWrap spacing="xs">
               <Icon path={mdiAccountOutline} {...iconProps} />
-              <Group>
+              <Group noWrap>
                 <Text weight={700}>{user.userName}</Text>
                 <Text>{!user.realName ? '' : user.realName}</Text>
               </Group>

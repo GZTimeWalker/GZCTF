@@ -21,17 +21,20 @@ public class TeamController : ControllerBase
     private readonly UserManager<UserInfo> userManager;
     private readonly IFileRepository FileService;
     private readonly ITeamRepository teamRepository;
+    private readonly IParticipationRepository participationRepository;
     private readonly ILogger<TeamController> logger;
 
     public TeamController(UserManager<UserInfo> _userManager,
         IFileRepository _FileService,
+        ILogger<TeamController> _logger,
         ITeamRepository _teamRepository,
-        ILogger<TeamController> _logger)
+        IParticipationRepository _participationRepository)
     {
+        logger = _logger;
         userManager = _userManager;
         FileService = _FileService;
         teamRepository = _teamRepository;
-        logger = _logger;
+        participationRepository = _participationRepository;
     }
 
     /// <summary>
@@ -316,8 +319,8 @@ public class TeamController : ControllerBase
                 return BadRequest(new RequestResponse("用户不在队伍中"));
 
             team.Members.Remove(kickUser);
+            await participationRepository.RemoveUserParticipations(user, team, token);
 
-            await userManager.UpdateAsync(kickUser);
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 

@@ -1,4 +1,5 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using CTFServer.Models;
+using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
@@ -76,4 +77,8 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
     public async Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default)
         => context.RemoveRange(await context.UserParticipations
                 .Where(p => p.User == user && p.Game == game).ToArrayAsync(token));
+
+    public async Task RemoveUserParticipations(UserInfo user, Team team, CancellationToken token = default)
+        => context.RemoveRange(await context.UserParticipations
+                .Where(p => p.User == user && p.Team == team).ToArrayAsync(token));
 }
