@@ -12,6 +12,7 @@ import {
   Table,
   Badge,
   ScrollArea,
+  Switch,
 } from '@mantine/core'
 import {
   mdiArrowLeftBold,
@@ -24,6 +25,7 @@ import { Icon } from '@mdi/react'
 import { GameColorMap, getGameStatus } from '@Components/GameCard'
 import AdminPage from '@Components/admin/AdminPage'
 import GameCreateModal from '@Components/admin/GameCreateModal'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { GameInfoModel } from '@Api'
 
@@ -32,9 +34,27 @@ const ITEM_COUNT_PER_PAGE = 30
 const Games: FC = () => {
   const [page, setPage] = useState(1)
   const [createOpened, setCreateOpened] = useState(false)
+
+  const [disabled, setDisabled] = useState(false)
   const [games, setGames] = useState<GameInfoModel[]>()
   const navigate = useNavigate()
   const { classes } = useTableStyles()
+
+  const onToggleHidden = (game: GameInfoModel) => {
+    if (game.id) {
+      setDisabled(true)
+      api.edit
+        .editUpdateGame(game.id, {
+          ...game,
+          hidden: !game.hidden,
+        })
+        .then(() => {
+          setGames(games?.map((g) => (g.id == game.id ? { ...g, hidden: !g.hidden } : g)))
+        })
+        .catch(showErrorNotification)
+        .finally(() => setDisabled(false))
+    }
+  }
 
   useEffect(() => {
     api.edit
@@ -76,10 +96,11 @@ const Games: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
+                <th>隐藏</th>
                 <th>比赛</th>
                 <th>比赛时间</th>
                 <th>简介</th>
-                <th>操作</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +113,13 @@ const Games: FC = () => {
 
                   return (
                     <tr key={game.id}>
+                      <td>
+                        <Switch
+                          disabled={disabled}
+                          checked={game.hidden ?? false}
+                          onChange={() => onToggleHidden(game)}
+                        />
+                      </td>
                       <td>
                         <Group position="apart">
                           <Group position="left">
@@ -120,7 +148,7 @@ const Games: FC = () => {
                         </Text>
                       </td>
                       <td>
-                        <Group>
+                        <Group position="right">
                           <ActionIcon
                             onClick={() => {
                               navigate(`/admin/games/${game.id}/info`)

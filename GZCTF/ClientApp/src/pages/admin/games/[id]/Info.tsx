@@ -21,6 +21,7 @@ import {
 import { DatePicker, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
+import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiKeyboardBackspace,
@@ -28,6 +29,7 @@ import {
   mdiClose,
   mdiContentSaveOutline,
   mdiRefresh,
+  mdiDeleteOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
@@ -55,6 +57,7 @@ const GameInfoEdit: FC = () => {
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
 
+  const modals = useModals()
   const clipboard = useClipboard()
 
   useEffect(() => {
@@ -136,6 +139,23 @@ const GameInfoEdit: FC = () => {
     }
   }
 
+  const onConfirmDelete = () => {
+    if (game) {
+      api.edit
+        .editDeleteGame(game.id!)
+        .then(() => {
+          showNotification({
+            color: 'teal',
+            message: '比赛已删除',
+            icon: <Icon path={mdiCheck} size={1} />,
+            disallowClose: true,
+          })
+          navigate('/admin/games')
+        })
+        .catch(showErrorNotification)
+    }
+  }
+
   return (
     <WithGameEditTab
       headProps={{ position: 'apart' }}
@@ -148,13 +168,33 @@ const GameInfoEdit: FC = () => {
           >
             返回上级
           </Button>
-          <Button
-            leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
-            disabled={disabled}
-            onClick={onUpdateInfo}
-          >
-            保存更改
-          </Button>
+          <Group position="right">
+            <Button
+              disabled={disabled}
+              color="red"
+              leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+              variant="outline"
+              onClick={() =>
+                modals.openConfirmModal({
+                  title: `删除题目`,
+                  children: <Text size="sm">你确定要删除比赛 "{game?.title}" 吗？</Text>,
+                  onConfirm: () => onConfirmDelete(),
+                  centered: true,
+                  labels: { confirm: '确认', cancel: '取消' },
+                  confirmProps: { color: 'red' },
+                })
+              }
+            >
+              删除比赛
+            </Button>
+            <Button
+              leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+              disabled={disabled}
+              onClick={onUpdateInfo}
+            >
+              保存更改
+            </Button>
+          </Group>
         </>
       }
     >

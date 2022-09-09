@@ -132,19 +132,19 @@ const GameDetail: FC = () => {
 
   const [joinModalOpen, setJoinModalOpen] = useState(false)
 
-  const onSubmitJoin = (info: GameJoinModel) => {
-    return api.game
-      .gameJoinGame(numId ?? 0, info)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: '报名成功',
-          icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
-        })
-        mutate()
+  const onSubmitJoin = async (info: GameJoinModel) => {
+    try {
+      await api.game.gameJoinGame(numId ?? 0, info)
+      showNotification({
+        color: 'teal',
+        message: '报名成功',
+        icon: <Icon path={mdiCheck} size={1} />,
+        disallowClose: true,
       })
-      .catch(showErrorNotification)
+      mutate()
+    } catch (err) {
+      return showErrorNotification(err)
+    }
   }
 
   const canSubmit =
@@ -212,6 +212,7 @@ const GameDetail: FC = () => {
               <Badge variant="outline">
                 {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
               </Badge>
+              {game?.hidden && <Badge variant="outline">比赛已隐藏</Badge>}
             </Group>
             <Stack spacing={2}>
               <Title className={classes.title}>{game?.title}</Title>

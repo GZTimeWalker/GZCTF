@@ -81,8 +81,8 @@ const Teams: FC = () => {
 
   const onDelete = async (team: TeamInfoModel) => {
     try {
-      setDisabled(true)
       if (!team.id) return
+      setDisabled(true)
 
       await api.admin.adminDeleteTeam(team.id)
       showNotification({

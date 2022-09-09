@@ -49,9 +49,9 @@ public class GameRepository : RepositoryBase, IGameRepository
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
             return context.Games.Where(g => !g.Hidden)
-                .OrderByDescending(g => g.StartTimeUTC)
+                .OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
-        })).Skip(skip).Take(count).ToArray();
+        })).ToArray();
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry =>
