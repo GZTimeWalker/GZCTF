@@ -41,8 +41,7 @@ builder.Host.UseSerilog(dispose: true);
 #endregion Logging
 
 #region AppDbContext
-
-if (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("ConnectionStrings").Exists())
+if (IsTesting || (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("ConnectionStrings").Exists()))
 {
     builder.Services.AddDbContext<AppDbContext>(
         options => options.UseInMemoryDatabase("TestDb")
@@ -63,23 +62,23 @@ else
         }
     );
 }
-
 #endregion AppDbContext
 
 #region Configuration
-
-builder.Host.ConfigureAppConfiguration((host, config) =>
+if (!IsTesting)
 {
-    config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
-    config.AddEntityConfiguration(options =>
+    builder.Host.ConfigureAppConfiguration((host, config) =>
     {
-        if (builder.Configuration.GetSection("ConnectionStrings").Exists())
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-        else
-            options.UseInMemoryDatabase("TestDb");
+        config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
+        config.AddEntityConfiguration(options =>
+        {
+            if (builder.Configuration.GetSection("ConnectionStrings").Exists())
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+            else
+                options.UseInMemoryDatabase("TestDb");
+        });
     });
-});
-
+}
 #endregion Configuration
 
 #region SignalR
@@ -144,14 +143,15 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 #endregion Identity
 
 #region IP Rate Limit
+if (!IsTesting)
+{
+    builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
 
-builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
-
-builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
-builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
-builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-
+    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+    builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+    builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+    builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+}
 #endregion IP Rate Limit
 
 #region Services and Repositories
@@ -282,7 +282,11 @@ else
 }
 
 app.UseMiddleware<ProxyMiddleware>();
-app.UseIpRateLimiting();
+
+if (!IsTesting)
+{
+    app.UseIpRateLimiting();
+}
 
 app.UseStaticFiles();
 
@@ -319,4 +323,9 @@ finally
 {
     logger.SystemLog("服务器已退出", CTFServer.TaskStatus.Exit, LogLevel.Debug);
     Log.CloseAndFlush();
+}
+
+public partial class Program
+{
+    public static bool IsTesting { get; set; }
 }

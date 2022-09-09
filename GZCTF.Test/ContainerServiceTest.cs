@@ -1,5 +1,6 @@
 using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -9,15 +10,14 @@ using Xunit.Abstractions;
 
 namespace CTFServer.Test;
 
-public class ContainerServiceTest
+public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
 {
     private readonly IContainerService service;
     private readonly ITestOutputHelper output;
 
-    public ContainerServiceTest(ITestOutputHelper _output)
+    public ContainerServiceTest(ITestOutputHelper _output, TestWebAppFactory _factory)
     {
-        var app = new TestWebAppFactory<Program>();
-        service = app.Services.GetRequiredService<IContainerService>();
+        service = _factory.Services.GetRequiredService<IContainerService>();
         output = _output;
     }
 
