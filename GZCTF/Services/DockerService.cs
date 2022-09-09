@@ -13,6 +13,7 @@ public class DockerService : IContainerService
     private readonly ILogger<DockerService> logger;
     private readonly DockerConfig options;
     private readonly DockerClient dockerClient;
+    private readonly AuthConfig? authConfig;
 
     public DockerService(IOptions<DockerConfig> _options, IOptions<RegistryConfig> _registry, ILogger<DockerService> _logger)
     {
@@ -26,15 +27,13 @@ public class DockerService : IContainerService
         dockerClient = cfg.CreateClient();
 
         // Auth for registry
-        if (!string.IsNullOrWhiteSpace(_registry.Value.ServerAddress)
-            && !string.IsNullOrWhiteSpace(_registry.Value.UserName)
-            && !string.IsNullOrWhiteSpace(_registry.Value.Password))
+        if (!string.IsNullOrWhiteSpace(_registry.Value.UserName) && !string.IsNullOrWhiteSpace(_registry.Value.Password))
         {
-            dockerClient.System.AuthenticateAsync(new() {
+            authConfig = new AuthConfig()
+            {
                 Username = _registry.Value.UserName,
                 Password = _registry.Value.Password,
-                ServerAddress = _registry.Value.ServerAddress,
-            }).Wait();
+            };
         }
 
         if (string.IsNullOrEmpty(this.options.Uri))
@@ -80,7 +79,7 @@ public class DockerService : IContainerService
             await dockerClient.Images.CreateImageAsync(new()
             {
                 FromImage = parameters.Image
-            }, null, new Progress<JSONMessage>(msg =>
+            }, authConfig, new Progress<JSONMessage>(msg =>
             {
                 Console.WriteLine($"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
             }), token);
