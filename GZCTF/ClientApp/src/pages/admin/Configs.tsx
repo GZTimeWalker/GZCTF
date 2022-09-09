@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import api, { AccountPolicy, ConfigEditModel, GlobalConfig } from '@Api'
 
 const Configs: FC = () => {
@@ -17,7 +18,8 @@ const Configs: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
-  const [saveState, setSaveState] = useState("")
+  const [saved, setSaved] = useState(true)
+  const { classes: btnClasses } = useFixedButtonStyles()
 
   useEffect(() => {
     if (configs) {
@@ -43,31 +45,21 @@ const Configs: FC = () => {
   return (
     <AdminPage isLoading={!configs}>
       <Button
-        style={{
-          position: 'fixed',
-          bottom: '2rem',
-          right: 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
-          boxShadow: '0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 28px 23px -7px, rgb(0 0 0 / 4%) 0px 12px 12px -7px',
-          zIndex: 1000
-        }}
+        className={btnClasses.fixedButton}
         variant="filled"
         radius="xl"
         size="md"
-        leftIcon={saveState === "saved"
-          ? <Icon path={mdiCheck} size={1} />
-          : <Icon path={mdiContentSaveOutline} size={1} />
-        }
+        leftIcon={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
         onClick={() => {
-          updateConfig({ globalConfig })
-          setSaveState("saved")
-          setTimeout(() => setSaveState(""), 2000)
+          updateConfig({ globalConfig, accountPolicy })
+          setSaved(false)
+          setTimeout(() => setSaved(true), 500)
         }}
-        disabled={saveState !== ""}
+        disabled={!saved}
       >
         保存配置
       </Button>
       <Stack style={{ width: '100%' }} spacing="xl">
-
         <Stack>
           <Title order={2}>平台设置</Title>
           <Divider />
@@ -142,7 +134,6 @@ const Configs: FC = () => {
             }}
           />
         </Stack>
-
       </Stack>
     </AdminPage>
   )

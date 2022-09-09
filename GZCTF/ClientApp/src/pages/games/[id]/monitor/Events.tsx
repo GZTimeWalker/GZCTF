@@ -64,8 +64,10 @@ const Events: FC = () => {
 
   const [hideConatinerEvents, setHideConatinerEvents] = useLocalStorage({
     key: 'hide-conatiner-events',
-    defaultValue: true,
+    defaultValue: false,
+    getInitialValueInEffect: false,
   })
+
   const [activePage, setPage] = useState(1)
 
   const [, update] = useState(new Date())
@@ -76,6 +78,7 @@ const Events: FC = () => {
     refreshInterval: 0,
     revalidateOnFocus: false,
   })
+
   const iconMap = EventTypeIconMap(1)
   const { classes } = useTableStyles()
 
@@ -182,19 +185,21 @@ const Events: FC = () => {
                   : undefined
               }
             >
-              <Group align="flex-end" position="apart">
-                <Group align="flex-start" position="right">
-                  {iconMap.get(event.type)}
-                  <Stack spacing={2}>
-                    <Text weight={500}>{event.content}</Text>
+              <Group noWrap align="flex-start" position="right" style={{ width: '100%' }}>
+                {iconMap.get(event.type)}
+                <Stack spacing={2} style={{ width: '100%' }}>
+                  <Text weight={500} lineClamp={1}>
+                    {event.content}
+                  </Text>
+                  <Group noWrap position="apart">
                     <Text size="sm" weight={500} color="dimmed">
                       {event.team}, {event.user}
                     </Text>
-                  </Stack>
-                </Group>
-                <Text size="xs" weight={500} color="dimmed">
-                  {dayjs(event.time).format('MM/DD HH:mm:ss')}
-                </Text>
+                    <Text size="xs" weight={500} color="dimmed">
+                      {dayjs(event.time).format('MM/DD HH:mm:ss')}
+                    </Text>
+                  </Group>
+                </Stack>
               </Group>
             </Card>
           ))}

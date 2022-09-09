@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { ActionIcon, Button, Pagination, Stack } from '@mantine/core'
+import { Button, Pagination, Stack } from '@mantine/core'
 import { mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import PostCard from '@Components/PostCard'
@@ -11,6 +11,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { PostInfoModel, Role } from '@Api'
+import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 
 const ITEMS_PER_PAGE = 10
 
@@ -21,6 +22,7 @@ const Posts: FC = () => {
     revalidateOnFocus: false,
   })
 
+  const { classes: btnClasses } = useFixedButtonStyles()
   const [activePage, setPage] = useState(1)
   const navigate = useNavigate()
   const { role } = useUserRole()
@@ -76,13 +78,7 @@ const Posts: FC = () => {
       </Stack>
       {RequireRole(Role.Admin, role) && (
         <Button
-          style={{
-            position: 'fixed',
-            bottom: '2rem',
-            right: 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
-            boxShadow: '0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 28px 23px -7px, rgb(0 0 0 / 4%) 0px 12px 12px -7px',
-            zIndex: 1000
-          }}
+          className={btnClasses.fixedButton}
           variant="filled"
           radius="xl"
           size="md"

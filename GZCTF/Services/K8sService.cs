@@ -45,9 +45,8 @@ public class K8sService : IContainerService
             var padding = Codec.StrMD5($"{_registry.Value.UserName}@{_registry.Value.Password}@{_registry.Value.ServerAddress}");
             SecretName = $"{_registry.Value.UserName}-{padding}";
 
-            var secret = Codec.Base64.EncodeToBytes($"{{\"{_registry.Value.ServerAddress}\":{{\"username\":\"{_registry.Value.UserName}\",\"password\":\"{_registry.Value.Password}\"}}}}");
-
-            kubernetesClient.CoreV1.CreateNamespacedSecret(new()
+            var dockerjson = Codec.Base64.EncodeToBytes($"{{\"{_registry.Value.ServerAddress}\":{{\"username\":\"{_registry.Value.UserName}\",\"password\":\"{_registry.Value.Password}\"}}}}");
+            var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()
                 {
@@ -55,10 +54,19 @@ public class K8sService : IContainerService
                     NamespaceProperty = "gzctf",
                 },
                 Data = new Dictionary<string, byte[]>() {
-                    {".dockerconfigjson", secret}
+                    {".dockerconfigjson", dockerjson}
                 },
                 Type = "kubernetes.io/dockerconfigjson"
-            }, "gzctf");
+            };
+
+            try
+            {
+                kubernetesClient.CoreV1.CreateNamespacedSecretAsync(secret, "gzctf");
+            }
+            catch (Exception)
+            {
+                kubernetesClient.CoreV1.ReplaceNamespacedSecretAsync(secret, SecretName, "gzctf");
+            }
         }
 
         logger.SystemLog($"K8s 服务已启动 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
