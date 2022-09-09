@@ -162,6 +162,9 @@ public class AccountController : ControllerBase
         if (user is null)
             return NotFound(new RequestResponse("用户不存在", 404));
 
+        if (!user.EmailConfirmed)
+            return NotFound(new RequestResponse("账户未激活，请重新注册", 404));
+
         if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse("请联系管理员重置密码"));
 

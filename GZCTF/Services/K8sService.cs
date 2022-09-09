@@ -1,9 +1,12 @@
 ﻿using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
+using Docker.DotNet;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
+using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using System.Net;
 using System.Text;
 
@@ -14,8 +17,9 @@ public class K8sService : IContainerService
     private readonly ILogger<K8sService> logger;
     private readonly Kubernetes kubernetesClient;
     private readonly string HostIP;
+    private readonly string? SecretName;
 
-    public K8sService(ILogger<K8sService> logger)
+    public K8sService(IOptions<RegistryConfig> _registry, ILogger<K8sService> logger)
     {
         this.logger = logger;
 
@@ -32,14 +36,29 @@ public class K8sService : IContainerService
         kubernetesClient = new Kubernetes(config);
 
         if (!kubernetesClient.CoreV1.ListNamespace().Items.Any(ns => ns.Metadata.Name == "gzctf"))
+            kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = "gzctf" } });
+
+        if (!string.IsNullOrWhiteSpace(_registry.Value.ServerAddress)
+            && !string.IsNullOrWhiteSpace(_registry.Value.UserName)
+            && !string.IsNullOrWhiteSpace(_registry.Value.Password))
         {
-            kubernetesClient.CoreV1.CreateNamespace(new()
+            var padding = Codec.StrMD5($"{_registry.Value.UserName}@{_registry.Value.Password}@{_registry.Value.ServerAddress}");
+            SecretName = $"{_registry.Value.UserName}_{padding}";
+
+            var secret = Codec.Base64.EncodeToBytes($"{{\"{_registry.Value.ServerAddress}\":{{\"username\":\"{_registry.Value.UserName}\",\"password\":\"{_registry.Value.Password}\"}}");
+
+            kubernetesClient.CoreV1.CreateNamespacedSecret(new()
             {
-                Metadata = new()
+                Metadata = new V1ObjectMeta()
                 {
-                    Name = "gzctf"
-                }
-            });
+                    Name = SecretName,
+                    NamespaceProperty = "gzctf",
+                },
+                Data = new Dictionary<string, byte[]>() {
+                    {".dockerconfigjson", secret}
+                },
+                Type = "kubernetes.io/dockerconfigjson"
+            }, "gzctf");
         }
 
         logger.SystemLog($"K8s 服务已启动 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
@@ -47,9 +66,10 @@ public class K8sService : IContainerService
 
     public async Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
     {
-        // use uuid avoid Conflict
-        var name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}-{Guid.NewGuid().ToString("N")[..16]}";
-        name = name.Replace('_', '-'); // Ensure name is available
+        // use uuid avoid conflict
+        var name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}-{Guid.NewGuid().ToString("N")[..16]}"
+            .Replace('_', '-'); // ensure name is available
+
         var pod = new V1Pod("v1", "Pod")
         {
             Metadata = new V1ObjectMeta()
@@ -63,12 +83,16 @@ public class K8sService : IContainerService
             },
             Spec = new V1PodSpec()
             {
+                ImagePullSecrets = SecretName is null ?
+                    Array.Empty<V1LocalObjectReference>() :
+                    new List<V1LocalObjectReference>() { new() { Name = SecretName } },
                 Containers = new[]
                 {
                     new V1Container()
                     {
                         Name = name,
                         Image = config.Image,
+                        ImagePullPolicy = "Always",
                         Env = config.Flag is null ? new List<V1EnvVar>() : new[]
                         {
                             new V1EnvVar("GZCTF_FLAG", config.Flag)

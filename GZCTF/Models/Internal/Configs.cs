@@ -63,6 +63,13 @@ public class DockerConfig
     public string PublicIP { get; set; } = "127.0.0.1";
 }
 
+public class RegistryConfig
+{
+    public string? ServerAddress { get; set; }
+    public string? UserName { get; set; }
+    public string? Password { get; set; }
+}
+
 public class RecaptchaConfig
 {
     public string? Secretkey { get; set; }

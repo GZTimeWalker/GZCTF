@@ -162,6 +162,11 @@ builder.Services.AddTransient<IMailSender, MailSender>()
 builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
     .Configure<RecaptchaConfig>(builder.Configuration.GetSection("GoogleRecaptcha"));
 
+builder.Services.Configure<RegistryConfig>(builder.Configuration.GetSection(nameof(RegistryConfig)));
+builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameof(AccountPolicy)));
+builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof(GlobalConfig)));
+
+
 if (builder.Configuration.GetSection("ContainerProvider").Value == "K8s")
 {
     builder.Services.AddSingleton<IContainerService, K8sService>();
@@ -171,9 +176,6 @@ else
     builder.Services.AddSingleton<IContainerService, DockerService>()
         .Configure<DockerConfig>(builder.Configuration.GetSection(nameof(DockerConfig)));
 }
-
-builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameof(AccountPolicy)));
-builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof(GlobalConfig)));
 
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();

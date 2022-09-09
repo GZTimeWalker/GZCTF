@@ -100,7 +100,12 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
   "ContainerProvider": "Docker", // or K8s
   "DockerConfig": {
     "Uri": "",
-    "PublicIP": ""
+    "PublicIP": "127.0.0.1"
+  },
+  "RegistryConfig": {
+    "UserName": "",
+    "Password": "",
+    "ServerAddress": ""
   },
   "GoogleRecaptcha": {
     "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
@@ -109,7 +114,6 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
     "RecaptchaThreshold": "0.5"
   }
 }
-
 ```
 
 ## 初始管理员
@@ -117,7 +121,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 生产环境中默认不存在管理员权限用户，需要手动更改数据库条目。当管理员注册完成并成功登录后，进入所选数据库表格后执行：
 
 ```sql
-update "AspNetUsers" set "Role"=3 where "UserName"='GZTime';
+update "AspNetUsers" set "Role"=3;
 ```
 
 ## 贡献者

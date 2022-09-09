@@ -41,6 +41,21 @@ public class Codec
             }
         }
 
+        public static byte[] EncodeToBytes(string? str, string type = "utf-8")
+        {
+            if (str is null)
+                return Array.Empty<byte>();
+
+            try
+            {
+                return Encoding.GetEncoding(type).GetBytes(str);
+            }
+            catch (Exception)
+            {
+                return Array.Empty<byte>();
+            }
+        }
+
         public static byte[] DecodeToBytes(string? str)
         {
             if (str is null)

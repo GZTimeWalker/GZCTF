@@ -14,16 +14,28 @@ public class DockerService : IContainerService
     private readonly DockerConfig options;
     private readonly DockerClient dockerClient;
 
-    public DockerService(IOptions<DockerConfig> options, ILogger<DockerService> logger)
+    public DockerService(IOptions<DockerConfig> _options, IOptions<RegistryConfig> _registry, ILogger<DockerService> _logger)
     {
-        this.options = options.Value;
-        this.logger = logger;
+        options = _options.Value;
+        logger = _logger;
         DockerClientConfiguration cfg = string.IsNullOrEmpty(this.options.Uri) ? new() : new(new Uri(this.options.Uri));
 
         // TODO: Docker Auth Required
         // TODO: Docker Swarm Support
 
         dockerClient = cfg.CreateClient();
+
+        // Auth for registry
+        if (!string.IsNullOrWhiteSpace(_registry.Value.ServerAddress)
+            && !string.IsNullOrWhiteSpace(_registry.Value.UserName)
+            && !string.IsNullOrWhiteSpace(_registry.Value.Password))
+        {
+            dockerClient.System.AuthenticateAsync(new() {
+                Username = _registry.Value.UserName,
+                Password = _registry.Value.Password,
+                ServerAddress = _registry.Value.ServerAddress,
+            }).Wait();
+        }
 
         if (string.IsNullOrEmpty(this.options.Uri))
             logger.SystemLog($"Docker 服务已启动 (localhost)", TaskStatus.Success, LogLevel.Debug);
@@ -55,7 +67,6 @@ public class DockerService : IContainerService
 
     private async Task<Container?> CreateContainerByParams(CreateContainerParameters parameters, CancellationToken token = default)
     {
-        // TODO: Docker Registry Auth Required
         CreateContainerResponse? res = null;
         try
         {
