@@ -240,10 +240,12 @@ const Users: FC = () => {
                       />
                     </td>
                     <td>
-                      <Group position="apart">
-                        <Group position="left">
+                      <Group noWrap position="apart" spacing="xs">
+                        <Group noWrap position="left">
                           <Avatar src={user.avatar} radius="xl" />
-                          <Text weight={500}>{user.userName}</Text>
+                          <Text weight={500} lineClamp={1}>
+                            {user.userName}
+                          </Text>
                         </Group>
                         <Badge size="sm" color={RoleColorMap.get(user.role ?? Role.User)}>
                           {user.role}
@@ -251,7 +253,11 @@ const Users: FC = () => {
                       </Group>
                     </td>
                     <td>
-                      <Text size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
+                      <Text
+                        size="sm"
+                        style={{ fontFamily: theme.fontFamilyMonospace }}
+                        lineClamp={1}
+                      >
                         {user.email}
                       </Text>
                     </td>
