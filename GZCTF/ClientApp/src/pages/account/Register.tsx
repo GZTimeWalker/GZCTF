@@ -19,7 +19,7 @@ const RegisterStatusMap = new Map([
     },
   ],
   [
-    RegisterStatus.EmailConfirmationRequired,
+    RegisterStatus.AdminConfirmationRequired,
     {
       title: '注册请求已发送',
       message: '请等待管理员审核激活~',
