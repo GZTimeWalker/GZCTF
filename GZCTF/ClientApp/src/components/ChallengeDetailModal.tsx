@@ -103,7 +103,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
-  const onDestoryContainer = () => {
+  const onDestroyContainer = () => {
     if (challengeId) {
       setDisabled(true)
       api.game
@@ -213,7 +213,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         icon: <Icon path={mdiCheck} size={1} />,
         disallowClose: true,
       })
-      if (isDynamic) onDestoryContainer()
+      if (isDynamic) onDestroyContainer()
       mutate()
       props.onClose()
     } else if (data === AnswerResult.WrongAnswer) {
@@ -358,7 +358,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 <Button color="orange" onClick={onProlongContainer} disabled={instanceLeft > 10}>
                   延长时间
                 </Button>
-                <Button color="red" onClick={onDestoryContainer} disabled={disabled}>
+                <Button color="red" onClick={onDestroyContainer} disabled={disabled}>
                   销毁实例
                 </Button>
               </Group>

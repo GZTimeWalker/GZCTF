@@ -132,7 +132,7 @@ public enum ContainerStatus : byte
     /// <summary>
     /// 已销毁
     /// </summary>
-    Destoryed = 2
+    Destroyed = 2
 }
 
 /// <summary>

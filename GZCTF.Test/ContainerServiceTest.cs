@@ -31,7 +31,7 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
     //}
 
     //[Fact]
-    //public async void CreateThenDestory()
+    //public async void CreateThenDestroy()
     //{
     //    var service = factory.Services.GetRequiredService<IContainerService>();
     //    var config = new ContainerConfig()
@@ -59,7 +59,7 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
 
     //        container = await service.QueryContainer(container!);
 
-    //        if (container!.Status == ContainerStatus.Destoryed)
+    //        if (container!.Status == ContainerStatus.Destroyed)
     //        {
     //            output.WriteLine($"[{DateTime.Now:u}] Container destroyed unexpected.");
     //            return;
@@ -75,9 +75,9 @@ public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
     //        output.WriteLine($"{item.Name,-20}: {val}");
     //    }
 
-    //    await service.DestoryContainer(container);
+    //    await service.DestroyContainer(container);
 
-    //    Assert.Equal(ContainerStatus.Destoryed, container.Status);
+    //    Assert.Equal(ContainerStatus.Destroyed, container.Status);
 
     //    output.WriteLine($"[{DateTime.Now:u}] Container destoryed.");
     //}

@@ -86,11 +86,11 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return instance;
     }
 
-    public async Task<bool> DestoryContainer(Container container, CancellationToken token = default)
+    public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)
     {
         try
         {
-            await service.DestoryContainer(container, token);
+            await service.DestroyContainer(container, token);
             await containerRepository.RemoveContainer(container, token);
             return true;
         }

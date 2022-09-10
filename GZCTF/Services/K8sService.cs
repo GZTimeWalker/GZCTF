@@ -72,7 +72,7 @@ public class K8sService : IContainerService
             {
                 kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, SecretName, Namespace);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 kubernetesClient.CoreV1.CreateNamespacedSecret(secret, Namespace);
             }
@@ -211,7 +211,7 @@ public class K8sService : IContainerService
         return container;
     }
 
-    public async Task DestoryContainer(Container container, CancellationToken token = default)
+    public async Task DestroyContainer(Container container, CancellationToken token = default)
     {
         try
         {
@@ -222,7 +222,7 @@ public class K8sService : IContainerService
         {
             if (e.Response.StatusCode == HttpStatusCode.NotFound)
             {
-                container.Status = ContainerStatus.Destoryed;
+                container.Status = ContainerStatus.Destroyed;
                 return;
             }
             logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.Response.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
@@ -234,6 +234,6 @@ public class K8sService : IContainerService
             return;
         }
 
-        container.Status = ContainerStatus.Destoryed;
+        container.Status = ContainerStatus.Destroyed;
     }
 }

@@ -21,7 +21,7 @@ public class ContainerRepository : RepositoryBase, IContainerRepository
     public Task RemoveContainer(Container container, CancellationToken token = default)
     {
         // Do not remove running container from database
-        if (container.Status != ContainerStatus.Destoryed)
+        if (container.Status != ContainerStatus.Destroyed)
             return Task.FromResult(-1);
 
         context.Containers.Remove(container);

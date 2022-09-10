@@ -145,7 +145,7 @@ const GameChallengeEdit: FC = () => {
       else onCreateTestContainer()
     } else {
       api.edit
-        .editDestoryTestContainer(numId, numCId)
+        .editDestroyTestContainer(numId, numCId)
         .then(() => {
           showNotification({
             color: 'teal',

@@ -44,7 +44,7 @@ public class DockerService : IContainerService
     public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
         => options.SwarmMode ? CreateContainerWithSwarm(config, token) : CreateContainerWithSingle(config, token);
 
-    public async Task DestoryContainer(Container container, CancellationToken token = default)
+    public async Task DestroyContainer(Container container, CancellationToken token = default)
     {
         try
         {
@@ -61,7 +61,7 @@ public class DockerService : IContainerService
         {
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
-                container.Status = ContainerStatus.Destoryed;
+                container.Status = ContainerStatus.Destroyed;
                 return;
             }
             logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
@@ -73,7 +73,7 @@ public class DockerService : IContainerService
             return;
         }
 
-        container.Status = ContainerStatus.Destoryed;
+        container.Status = ContainerStatus.Destroyed;
     }
 
     private static string GetName(ContainerConfig config)
@@ -105,18 +105,18 @@ public class DockerService : IContainerService
             {
                 Name = GetName(config),
                 Labels = new Dictionary<string, string> { { "TeamId", config.TeamId }, { "UserId", config.UserId } },
-                Mode = new () { Replicated = new () { Replicas = 1 } },
+                Mode = new() { Replicated = new() { Replicas = 1 } },
                 EndpointSpec = new()
                 {
                     Ports = new PortConfig[1] { new() {
                         PublishMode = "global",
-                        TargetPort = (uint)config.ExposedPort, 
+                        TargetPort = (uint)config.ExposedPort,
                     } },
                 },
                 TaskTemplate = new()
                 {
-                    RestartPolicy = new () { Condition = "none" },
-                    ContainerSpec = new ()
+                    RestartPolicy = new() { Condition = "none" },
+                    ContainerSpec = new()
                     {
                         Image = config.Image,
                         Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" }
@@ -188,7 +188,7 @@ public class DockerService : IContainerService
         CreateContainerResponse? containerRes = null;
         try
         {
-           containerRes = await dockerClient.Containers.CreateContainerAsync(parameters, token);
+            containerRes = await dockerClient.Containers.CreateContainerAsync(parameters, token);
         }
         catch (DockerImageNotFoundException)
         {
@@ -245,7 +245,7 @@ public class DockerService : IContainerService
 
         var info = await dockerClient.Containers.InspectContainerAsync(container.ContainerId, token);
 
-        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Destoryed :
+        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Destroyed :
                 info.State.Running ? ContainerStatus.Running : ContainerStatus.Pending;
 
         if (container.Status != ContainerStatus.Running)

@@ -598,7 +598,7 @@ public class EditController : Controller
     [HttpDelete("Games/{id}/Challenges/{cId}/Container")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DestoryTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
+    public async Task<IActionResult> DestroyTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -613,7 +613,7 @@ public class EditController : Controller
         if (challenge.TestContainer is null)
             return Ok();
 
-        await containerService.DestoryContainer(challenge.TestContainer, token);
+        await containerService.DestroyContainer(challenge.TestContainer, token);
         await containerRepository.RemoveContainer(challenge.TestContainer, token);
 
         return Ok();

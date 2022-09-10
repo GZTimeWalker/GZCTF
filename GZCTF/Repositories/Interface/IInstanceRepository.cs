@@ -55,7 +55,7 @@ public interface IInstanceRepository : IRepository
     /// <param name="container">容器实例对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<bool> DestoryContainer(Container container, CancellationToken token = default);
+    public Task<bool> DestroyContainer(Container container, CancellationToken token = default);
 
     /// <summary>
     /// 容器延期

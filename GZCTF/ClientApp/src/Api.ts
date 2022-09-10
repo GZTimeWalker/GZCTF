@@ -773,7 +773,7 @@ export interface ContainerInfoModel {
 export enum ContainerStatus {
   Pending = 'Pending',
   Running = 'Running',
-  Destoryed = 'Destoryed',
+  Destroyed = 'Destroyed',
 }
 
 /**
@@ -844,9 +844,7 @@ export interface ChallengeUpdateModel {
   /** 题目内容 */
   content?: string | null
 
-  /**
-   * Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
-   */
+  /** Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag */
   flagTemplate?: string | null
 
   /** 题目标签 */
@@ -2812,11 +2810,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 关闭测试比赛题目容器，需要管理员权限
      *
      * @tags Edit
-     * @name EditDestoryTestContainer
+     * @name EditDestroyTestContainer
      * @summary 关闭测试比赛题目容器
      * @request DELETE:/api/edit/games/{id}/challenges/{cId}/container
      */
-    editDestoryTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
+    editDestroyTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/container`,
         method: 'DELETE',

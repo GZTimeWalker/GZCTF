@@ -239,7 +239,6 @@ public class GameController : ControllerBase
             await participationRepository.SaveAsync(token);
 
         return Ok();
-
     }
 
     /// <summary>
@@ -738,7 +737,7 @@ public class GameController : ControllerBase
                 StatusCode = 429
             };
 
-        if (!await instanceRepository.DestoryContainer(instance.Container, token))
+        if (!await instanceRepository.DestroyContainer(instance.Container, token))
             return BadRequest(new RequestResponse("题目删除容器失败"));
 
         instance.LastContainerOperation = DateTimeOffset.UtcNow;
