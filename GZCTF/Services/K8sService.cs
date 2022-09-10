@@ -89,7 +89,8 @@ public class K8sService : IContainerService
                 Labels = new Dictionary<string, string>()
                 {
                     { "ctf.gzti.me/ResourceId", name },
-                    { "ctf.gzti.me/TeamInfo", config.TeamInfo }
+                    { "ctf.gzti.me/TeamInfo", config.TeamId },
+                    { "ctf.gzti.me/UserId", config.UserId }
                 }
             },
             Spec = new V1PodSpec()
@@ -226,60 +227,4 @@ public class K8sService : IContainerService
 
         container.Status = ContainerStatus.Destoryed;
     }
-
-    //public async Task<IList<ContainerInfo>> GetContainers(CancellationToken token = default)
-    //{
-    //    var pods = await kubernetesClient.ListNamespacedPodAsync(Namespace, cancellationToken: token);
-    //    return (from pod in pods.Items
-    //            select new ContainerInfo
-    //            {
-    //                Id = pod.Metadata.Name,
-    //                Name = pod.Metadata.Name,
-    //                Image = pod.Spec.Containers[0].Image,
-    //                State = pod.Status.Message
-    //            }).ToArray();
-    //}
-
-    //public async Task<string> GetHostInfo(CancellationToken token = default)
-    //{
-    //    var nodes = await kubernetesClient.ListNodeAsync(cancellationToken: token);
-    //    StringBuilder builder = new();
-
-    //    builder.AppendLine("[[ K8s Nodes ]]");
-    //    foreach (var node in nodes.Items)
-    //    {
-    //        builder.AppendLine($"[{node.Metadata.Name}]");
-    //        foreach (var item in node.Status.Capacity)
-    //        {
-    //            builder.AppendLine($"{item.Key,-20}: {item.Value}");
-    //        }
-    //        foreach (var item in node.Status.Conditions)
-    //        {
-    //            builder.AppendLine($"{item.Type,-20}: {item.Status}");
-    //        }
-    //        builder.AppendLine($"{"Addresses",-20}: ");
-    //        foreach (var item in node.Status.Addresses)
-    //        {
-    //            builder.AppendLine($"{"",-22}{item.Address}({item.Type})");
-    //        }
-    //    }
-
-    //    return builder.ToString();
-    //}
-
-    //public async Task<Container> QueryContainer(Container container, CancellationToken token = default)
-    //{
-    //    var pod = await kubernetesClient.ReadNamespacedPodAsync(container.ContainerId, Namespace, cancellationToken: token);
-
-    //    if (pod is null)
-    //    {
-    //        container.Status = ContainerStatus.Destoryed;
-    //        return container;
-    //    }
-
-    //    container.Status = (pod.Status.Phase == "Succeeded" || pod.Status.Phase == "Running") ? ContainerStatus.Running : ContainerStatus.Pending;
-    //    container.IP = pod.Status.PodIP;
-
-    //    return container;
-    //}
 }

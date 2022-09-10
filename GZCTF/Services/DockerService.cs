@@ -71,7 +71,7 @@ public class DockerService : IContainerService
         => new()
         {
             Image = config.Image,
-            Labels = new Dictionary<string, string> { { "TeamInfo", config.TeamInfo } },
+            Labels = new Dictionary<string, string> { { "TeamId", config.TeamId }, { "UserId", config.UserId } },
             Name = GetName(config),
             Env = config.Flag is null ? new() : new List<string> { $"GZCTF_FLAG={config.Flag}" },
             ExposedPorts = new Dictionary<string, EmptyStruct>() {
@@ -92,7 +92,7 @@ public class DockerService : IContainerService
             Service = new()
             {
                 Name = GetName(config),
-                Labels = new Dictionary<string, string> { { "TeamInfo", config.TeamInfo } },
+                Labels = new Dictionary<string, string> { { "TeamId", config.TeamId }, { "UserId", config.UserId } },
                 Mode = new () { Replicated = new () { Replicas = 1 } },
                 EndpointSpec = new()
                 {
@@ -103,7 +103,7 @@ public class DockerService : IContainerService
                 },
                 TaskTemplate = new()
                 {
-                    RestartPolicy = new () { Condition = "no" },
+                    RestartPolicy = new () { Condition = "never" },
                     ContainerSpec = new ()
                     {
                         Image = config.Image,

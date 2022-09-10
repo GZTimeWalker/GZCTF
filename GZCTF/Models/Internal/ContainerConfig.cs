@@ -8,9 +8,14 @@ public class ContainerConfig
     public string Image { get; set; } = string.Empty;
 
     /// <summary>
-    /// 队伍信息
+    /// 队伍 Id
     /// </summary>
-    public string TeamInfo { get; set; } = string.Empty;
+    public string TeamId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 用户 Id
+    /// </summary>
+    public string UserId { get; set; } = string.Empty;
 
     /// <summary>
     /// 容器需要暴露的端口

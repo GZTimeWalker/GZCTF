@@ -120,7 +120,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             var container = await service.CreateContainer(new ContainerConfig()
             {
                 CPUCount = instance.Challenge.CPUCount ?? 1,
-                TeamInfo = $"{team.Name}:{team.Id}:{userId}",
+                TeamId = team.Id.ToString(),
+                UserId = userId,
                 Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
                 Image = instance.Challenge.ContainerImage,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
