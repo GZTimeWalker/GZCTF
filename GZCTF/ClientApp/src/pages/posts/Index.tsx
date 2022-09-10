@@ -22,7 +22,10 @@ const Posts: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const { classes: btnClasses } = useFixedButtonStyles()
+  const { classes: btnClasses } = useFixedButtonStyles({
+    right: 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
+    bottom: '2rem',
+  })
   const [activePage, setPage] = useState(1)
   const navigate = useNavigate()
   const { role } = useUserRole()

@@ -107,11 +107,16 @@ export const ACCEPT_IMAGE_MIME_TYPE = [
   MIME_TYPES.gif,
 ]
 
-export const useFixedButtonStyles = createStyles(() => ({
+interface FixedButtonProps {
+  right?: string,
+  bottom?: string,
+}
+
+export const useFixedButtonStyles = createStyles((theme, { right, bottom }: FixedButtonProps) => ({
   fixedButton: {
     position: 'fixed',
-    bottom: '2rem',
-    right: 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
+    bottom: bottom,
+    right: right,
     boxShadow:
       '0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 28px 23px -7px, rgb(0 0 0 / 4%) 0px 12px 12px -7px',
     zIndex: 1000,

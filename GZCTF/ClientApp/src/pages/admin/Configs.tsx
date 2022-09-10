@@ -19,7 +19,10 @@ const Configs: FC = () => {
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
   const [saved, setSaved] = useState(true)
-  const { classes: btnClasses } = useFixedButtonStyles()
+  const { classes: btnClasses } = useFixedButtonStyles({
+    right: 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
+    bottom: '2rem',
+  })
 
   useEffect(() => {
     if (configs) {
