@@ -82,7 +82,16 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
         {Object.keys(table).map((key) => {
           const tag = ChallengeTagLabelMap.get(key as ChallengeTag)!
           return (
-            <th key={key} colSpan={table[key].length}>
+            <th
+              key={key}
+              colSpan={table[key].length}
+              style={{
+                backgroundColor: theme.fn.rgba(
+                  theme.colors[tag.color][theme.colorScheme === 'dark' ? 8 : 6],
+                  theme.colorScheme === 'dark' ? 0.15 : 0.2
+                ),
+              }}
+            >
               <Group spacing={4} noWrap position="center" style={{ width: '100%' }}>
                 <Icon
                   path={tag.icon}

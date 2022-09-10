@@ -20,7 +20,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
+import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
 import AttachmentUploadModal, { useUploadStyles } from '@Components/admin/AttachmentUploadModal'
@@ -167,20 +167,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
 
   const onChangeFlagTemplate = () => {
     if (flagTemplate !== challenge?.flagTemplate) {
-      if (flagTemplate.length > 0 && !flagTemplate.includes('[TEAM_HASH]')) {
-        showNotification({
-          color: 'red',
-          message: (
-            <Text>
-              flag 模板中必须包含<Code>[TEAM_HASH]</Code>
-            </Text>
-          ),
-          icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
-        })
-        return
-      }
-
       setDisabled(true)
       api.edit
         // allow empty flag template to be set
@@ -305,18 +291,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       {challenge?.type === ChallengeType.DynamicContainer ? (
         <Stack>
           <TextInput
-            label={
-              <Stack spacing={0} pb={8}>
-                <Text size="sm">flag 模版</Text>
-                <Text size="xs" color="dimmed">
-                  请输入 flag 模版字符串，其中 <Code>[TEAM_HASH]</Code> 将会被自动替换为队伍 Token
-                  与相关信息所生成的哈希值
-                </Text>
-                <Text size="xs" color="dimmed">
-                  留空以生成随机 UUID 作为 flag
-                </Text>
-              </Stack>
-            }
+            label="flag 模板"
             value={flagTemplate}
             placeholder="flag{random_uuid}"
             onChange={(e) => setFlagTemplate(e.target.value)}
@@ -326,6 +301,27 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               },
             }}
           />
+          <Stack spacing={6} pb={8}>
+            <Text size="xs">
+              请输入 flag 模版字符串，留空以生成随机 UUID 作为 flag
+            </Text>
+            <Text size="xs">
+              若指定 <Code>[TEAM_HASH]</Code> 则它将会被自动替换为队伍 Token
+              与相关信息所生成的哈希值
+            </Text>
+            <Text size="xs">
+              若未指定 <Code>[TEAM_HASH]</Code> 则将启用 Leet
+              字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高
+            </Text>
+            <Text size="xs">
+              若需要在指定 <Code>[TEAM_HASH]</Code> 的情况下启用 Leet 字符串功能，请在 flag
+              模版字符串
+              <Text span weight={700}>
+                之前
+              </Text>
+              添加 <Code>[LEET]</Code> 标记，此时不会检查 flag 模版字符串的熵
+            </Text>
+          </Stack>
         </Stack>
       ) : (
         <ScrollArea sx={{ height: 'calc(100vh - 430px)', position: 'relative' }}>

@@ -178,11 +178,20 @@ public class Challenge
 
     internal string GenerateFlag(Participation part)
     {
-        if (string.IsNullOrEmpty(FlagTemplate) || !FlagTemplate.Contains("[TEAM_HASH]"))
+        if (string.IsNullOrEmpty(FlagTemplate))
             return $"flag{Guid.NewGuid():B}";
 
-        var hash = Codec.StrSHA256($"{part.Token}:{part.Game.PublicKey}:{Id}");
-        return FlagTemplate.Replace("[TEAM_HASH]", hash[12..24]);
+        if (FlagTemplate.Contains("[TEAM_HASH]"))
+        {
+            var flag = FlagTemplate;
+            if (FlagTemplate.StartsWith("[LEET]"))
+                flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
+            
+            var hash = Codec.StrSHA256($"{part.Token}::{part.Game.PrivateKey}::{Id}");
+            return flag.Replace("[TEAM_HASH]", hash[12..24]);
+        }
+
+        return Codec.Leet.LeetFlag(FlagTemplate);
     }
 
     internal Challenge Update(ChallengeUpdateModel model)

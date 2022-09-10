@@ -73,6 +73,59 @@ public class Codec
     }
 
     /// <summary>
+    /// Leet
+    /// </summary>
+    public static class Leet
+    {
+        private readonly static Dictionary<char, string> CharMap = new()
+        {
+            { 'A', "Aa4@" }, { 'B', "Bb68" }, { 'C', "Cc" }, { 'D', "Dd" }, { 'E', "Ee3" }, { 'F', "Ff1" },
+            { 'G', "Gg69" }, { 'H', "Hh" }, { 'I', "Ii1l!" }, { 'J', "Jj" }, { 'K', "Kk" }, { 'L', "Ll1I" },
+            { 'M', "Mm" }, { 'N', "Nn" }, { 'O', "Oo0" }, { 'P', "Pp" }, { 'Q', "Qq9" }, { 'R', "Rr" },
+            { 'S', "Ss5$" }, { 'T', "Tt7" }, { 'U', "Uu" }, { 'V', "Vv" }, { 'W', "Ww" }, { 'X', "Xx" },
+            { 'Y', "Yy" }, { 'Z', "Zz2" }, { '0', "0oO" }, { '1', "1!lI" }, { '2', "2zZ" }, { '3', "3eE" },
+            { '4', "4aA" }, { '5', "5Ss" }, { '6', "6G" }, { '9', "9g" }
+        };
+
+        public static double LeetEntropy(string flag)
+        {
+            double entropy = 0;
+            foreach (char c in flag)
+            {
+                if (CharMap.ContainsKey(c))
+                    entropy += Math.Log2(CharMap[c].Length);
+            }
+            return entropy;
+        }
+
+        public static string LeetFlag(string original)
+        {
+            StringBuilder sb = new(original.Length);
+            Random random = new();
+
+            bool doLeet = false;
+            // note: only leet 'X' in flag{XXXX_XXX_[TEAM_HASH]_XXX}
+            foreach (var c in original)
+            {
+                if (c == '{' || c == ']')
+                    doLeet = true;
+                else if (doLeet && (c == '}' || c == '['))
+                    doLeet = false;
+                else if (doLeet && CharMap.TryGetValue(char.ToUpper(c), out string? table) && table is not null)
+                {
+                    var nc = table.ElementAt(random.Next(table.Length));
+                    sb.Append(nc);
+                    continue;
+                }
+
+                sb.Append(c);
+            }
+
+            return sb.ToString();
+        }
+    }
+
+    /// <summary>
     /// 生成随机密码
     /// </summary>
     /// <param name="length">密码长度</param>

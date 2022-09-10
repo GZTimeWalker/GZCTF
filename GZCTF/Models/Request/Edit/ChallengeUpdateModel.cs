@@ -21,7 +21,6 @@ public class ChallengeUpdateModel
     /// <summary>
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
     /// </summary>
-    [RegularExpression(@".*(\[TEAM_HASH\])+.*")]
     [MaxLength(120, ErrorMessage = "flag 字符串过长")]
     public string? FlagTemplate { get; set; }
 
