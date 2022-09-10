@@ -558,10 +558,13 @@ public class EditController : Controller
         if (challenge.ContainerImage is null || challenge.ContainerExposePort is null)
             return BadRequest(new RequestResponse("容器配置错误"));
 
+        var user = await userManager.GetUserAsync(User);
+
         var container = await containerService.CreateContainer(new()
         {
             CPUCount = challenge.CPUCount ?? 1,
-            TeamId = "AdminTest",
+            TeamId = "admin",
+            UserId = user.Id,
             Flag = challenge.Type.IsDynamic() ? "flag{GZCTF_dynamic_flag_test}" : null,
             Image = challenge.ContainerImage,
             MemoryLimit = challenge.MemoryLimit ?? 64,

@@ -5,6 +5,7 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Options;
 using System.Text;
+using System.Text.Json;
 
 namespace CTFServer.Services;
 
@@ -97,7 +98,7 @@ public class DockerService : IContainerService
                 EndpointSpec = new()
                 {
                     Ports = new PortConfig[1] { new() {
-                        PublishMode = "global", 
+                        PublishMode = "global",
                         TargetPort = (uint)config.ExposedPort, 
                     } },
                 },
@@ -114,7 +115,7 @@ public class DockerService : IContainerService
                         Limits = new()
                         {
                             MemoryBytes = config.MemoryLimit * 1024 * 1024,
-                            NanoCPUs = config.CPUCount * 1000_0000, // do some math here?
+                            NanoCPUs = config.CPUCount * 10_0000_0000, // do some math here?
                         }
                     },
                 }
@@ -137,6 +138,9 @@ public class DockerService : IContainerService
 
         // FIXME: will service start automatically?
 
+        logger.SystemLog($"ServiceCreateParameters: {JsonSerializer.Serialize(parameters)}", TaskStatus.Pending, LogLevel.Debug);
+        logger.SystemLog($"ServiceCreateResponse: {JsonSerializer.Serialize(serviceRes)}", TaskStatus.Pending, LogLevel.Debug);
+
         Container container = new()
         {
             ContainerId = serviceRes.ID,
@@ -144,6 +148,7 @@ public class DockerService : IContainerService
         };
 
         var res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
+        logger.SystemLog($"InspectService: {JsonSerializer.Serialize(res)}", TaskStatus.Pending, LogLevel.Debug);
 
         var port = res.Endpoint.Ports.FirstOrDefault();
 
