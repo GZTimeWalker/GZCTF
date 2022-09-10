@@ -47,7 +47,14 @@ public class K8sService : IContainerService
             var padding = Codec.StrMD5($"{_registry.Value.UserName}@{_registry.Value.Password}@{_registry.Value.ServerAddress}");
             SecretName = $"{_registry.Value.UserName}-{padding}";
 
-            var dockerjson = Codec.Base64.EncodeToBytes($"{{\"{_registry.Value.ServerAddress}\":{{\"username\":\"{_registry.Value.UserName}\",\"password\":\"{_registry.Value.Password}\"}}}}");
+            var auth = Codec.Base64.Encode($"{_registry.Value.UserName}:{_registry.Value.Password}");
+            var dockerjson = Codec.Base64.EncodeToBytes(
+                $"{{\"auths\":" +
+                    $"{{\"{_registry.Value.ServerAddress}\":" +
+                        $"{{\"auth\":\"{auth}\"," +
+                        $"\"username\":\"{_registry.Value.UserName}\"," +
+                        $"\"password\":\"{_registry.Value.Password}\"" +
+                $"}}}}}}");
             var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()
@@ -63,11 +70,11 @@ public class K8sService : IContainerService
 
             try
             {
-                kubernetesClient.CoreV1.ReplaceNamespacedSecretAsync(secret, SecretName, Namespace);
+                kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, SecretName, Namespace);
             }
-            catch (Exception)
+            catch(Exception)
             {
-                kubernetesClient.CoreV1.CreateNamespacedSecretAsync(secret, Namespace);
+                kubernetesClient.CoreV1.CreateNamespacedSecret(secret, Namespace);
             }
         }
 
