@@ -9,7 +9,6 @@ import {
   Center,
   createStyles,
   Group,
-  Indicator,
   Paper,
   ScrollArea,
   Select,
@@ -26,10 +25,10 @@ import {
   mdiCancel,
   mdiCheck,
   mdiClose,
-  mdiCrown,
   mdiEmailOutline,
   mdiHelpCircleOutline,
   mdiPhoneOutline,
+  mdiStar,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
@@ -102,7 +101,7 @@ interface MemberItemProps {
 }
 
 const iconProps = {
-  size: 0.8,
+  size: 0.9,
   color: 'gray',
 }
 
@@ -113,25 +112,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
   return (
     <Group spacing="xl" position="apart">
       <Group style={{ width: 'calc(100% - 10rem)' }}>
-        {isCaptain ? (
-          <Indicator
-            inline
-            size={16}
-            label={<Icon path={mdiCrown} size={0.8} color={theme.colors.yellow[4]} />}
-            styles={{
-              indicator: {
-                backgroundColor: 'transparent',
-                marginTop: '-0.8rem',
-                marginRight: '1.5rem',
-                transform: 'rotate(-30deg)',
-              },
-            }}
-          >
-            <Avatar src={user.avatar} />
-          </Indicator>
-        ) : (
-          <Avatar src={user.avatar} />
-        )}
+        <Avatar src={user.avatar} />
         <Group noWrap>
           <Stack spacing={2} style={{ width: '15rem' }}>
             <Group noWrap spacing="xs">
@@ -158,9 +139,19 @@ const MemberItem: FC<MemberItemProps> = (props) => {
           </Stack>
         </Group>
       </Group>
-      <Text size="sm" weight={500} color={isRegistered ? 'teal' : 'yellow'}>
-        {isRegistered ? '已报名' : '未报名'}
-      </Text>
+      <Group position="right">
+        {isCaptain && (
+          <Group spacing={0}>
+            <Icon path={mdiStar} color={theme.colors.yellow[4]} size={0.9} />
+            <Text size="sm" weight={500} color="yellow">
+              队长
+            </Text>
+          </Group>
+        )}
+        <Text size="sm" weight={700} color={isRegistered ? 'teal' : 'orange'}>
+          {isRegistered ? '已报名' : '未报名'}
+        </Text>
+      </Group>
     </Group>
   )
 }
@@ -225,14 +216,18 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
         </Group>
       </Box>
       <Accordion.Panel>
-        {participation.team?.members?.map((user) => (
-          <MemberItem
-            key={user.userId}
-            user={user}
-            isRegistered={participation.registeredMembers?.some((u) => u === user.userId) ?? false}
-            isCaptain={participation.team?.captainId === user.userId}
-          />
-        ))}
+        <Stack>
+          {participation.team?.members?.map((user) => (
+            <MemberItem
+              key={user.userId}
+              user={user}
+              isRegistered={
+                participation.registeredMembers?.some((u) => u === user.userId) ?? false
+              }
+              isCaptain={participation.team?.captainId === user.userId}
+            />
+          ))}
+        </Stack>
       </Accordion.Panel>
     </Accordion.Item>
   )
