@@ -80,7 +80,7 @@ function generateSvg(
   const textEl = `<text fill='${textColor}' x='50%' y='50%' font-size='${textSize}' text-anchor='middle' font-family='${fontFamily}' transform='rotate(${rotate} ${center} ${center})' opacity='${opacity}'>${textContent}</text>`
 
   return `<svg width='${size}' height='${
-    size / 2.5
+    size / 3
   }' xmlns='http://www.w3.org/2000/svg'>${textEl}</svg>`
 }
 
