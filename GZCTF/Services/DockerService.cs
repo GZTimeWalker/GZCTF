@@ -4,6 +4,7 @@ using CTFServer.Utils;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -52,9 +53,19 @@ public class DockerService : IContainerService
             else
                 await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
         }
-        catch (DockerContainerNotFoundException) // FIXME: what exceptions will RemoveServiceAsync throw?
+        catch (DockerContainerNotFoundException)
         {
             logger.SystemLog($"容器 {container.ContainerId[..12]} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+        }
+        catch (DockerApiException e)
+        {
+            if (e.StatusCode == HttpStatusCode.NotFound)
+            {
+                container.Status = ContainerStatus.Destoryed;
+                return;
+            }
+            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
         }
         catch (Exception e)
         {
@@ -129,6 +140,12 @@ public class DockerService : IContainerService
         try
         {
             serviceRes = await dockerClient.Swarm.CreateServiceAsync(parameters, token);
+        }
+        catch (DockerApiException e)
+        {
+            logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
+            return null;
         }
         catch (Exception e) // FIXME: will CreateServiceAsync throw any processible error?
         {
