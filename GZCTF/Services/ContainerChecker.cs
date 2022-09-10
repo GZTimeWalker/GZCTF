@@ -35,7 +35,7 @@ public class ContainerChecker : IHostedService, IDisposable
         {
             await containerService.DestoryContainer(container);
             await containerRepo.RemoveContainer(container);
-            logger.SystemLog($"移除到期容器 [{container.ContainerId[..12]}]");
+            logger.SystemLog($"移除到期容器 [{container.ContainerId}]");
         }
     }
 

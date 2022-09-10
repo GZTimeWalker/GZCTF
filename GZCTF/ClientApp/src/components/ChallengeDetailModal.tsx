@@ -293,6 +293,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                           color: theme.colors[tagData.color][5],
                         }),
                         float: 'right',
+                        marginRight: '0.3rem',
+                        marginTop: '0.3rem',
                       })}
                     >
                       <Icon path={mdiDownload} size={1} />

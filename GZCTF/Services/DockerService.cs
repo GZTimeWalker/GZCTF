@@ -103,7 +103,7 @@ public class DockerService : IContainerService
                 },
                 TaskTemplate = new()
                 {
-                    RestartPolicy = new () { Condition = "never" },
+                    RestartPolicy = new () { Condition = "none" },
                     ContainerSpec = new ()
                     {
                         Image = config.Image,

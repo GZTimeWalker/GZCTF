@@ -89,7 +89,7 @@ public class K8sService : IContainerService
                 Labels = new Dictionary<string, string>()
                 {
                     { "ctf.gzti.me/ResourceId", name },
-                    { "ctf.gzti.me/TeamInfo", config.TeamId },
+                    { "ctf.gzti.me/TeamId", config.TeamId },
                     { "ctf.gzti.me/UserId", config.UserId }
                 }
             },
