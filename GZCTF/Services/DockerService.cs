@@ -147,13 +147,12 @@ public class DockerService : IContainerService
             logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
             return null;
         }
-        catch (Exception e) // FIXME: will CreateServiceAsync throw any processible error?
+        catch (Exception e)
         {
             logger.LogError(e.Message, e);
             return null;
         }
 
-        // FIXME: will service start automatically?
         Container container = new()
         {
             ContainerId = serviceRes.ID,
@@ -170,11 +169,11 @@ public class DockerService : IContainerService
             return null;
         }
 
-        container.StartedAt = res.CreatedAt; // FIXME: time zone?
+        container.StartedAt = res.CreatedAt;
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
 
         container.Port = (int)port.PublishedPort;
-        container.Status = ContainerStatus.Running; // FIXME: how to get status
+        container.Status = ContainerStatus.Running;
 
         // FIXME: how to get IP?
         if (!string.IsNullOrEmpty(options.PublicIP))
