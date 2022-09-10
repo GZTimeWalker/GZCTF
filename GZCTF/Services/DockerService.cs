@@ -48,7 +48,7 @@ public class DockerService : IContainerService
         try
         {
             if (options.SwarmMode)
-                await dockerClient.Swarm.RemoveServiceAsync(container.Id, token);
+                await dockerClient.Swarm.RemoveServiceAsync(container.ContainerId, token);
             else
                 await dockerClient.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
         }
@@ -137,10 +137,6 @@ public class DockerService : IContainerService
         }
 
         // FIXME: will service start automatically?
-
-        logger.SystemLog($"ServiceCreateParameters: {JsonSerializer.Serialize(parameters)}", TaskStatus.Pending, LogLevel.Debug);
-        logger.SystemLog($"ServiceCreateResponse: {JsonSerializer.Serialize(serviceRes)}", TaskStatus.Pending, LogLevel.Debug);
-
         Container container = new()
         {
             ContainerId = serviceRes.ID,
@@ -148,7 +144,6 @@ public class DockerService : IContainerService
         };
 
         var res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
-        logger.SystemLog($"InspectService: {JsonSerializer.Serialize(res)}", TaskStatus.Pending, LogLevel.Debug);
 
         var port = res.Endpoint.Ports.FirstOrDefault();
 
