@@ -52,8 +52,8 @@ else
     builder.Services.AddDbContext<AppDbContext>(
         options =>
         {
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             if (builder.Environment.IsDevelopment())
             {
                 options.EnableSensitiveDataLogging();
