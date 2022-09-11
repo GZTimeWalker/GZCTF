@@ -89,7 +89,9 @@ public class FlagChecker : IHostedService
                         }
                     }
 
-                    if (type != SubmissionType.Unaccepted && type != SubmissionType.Normal)
+                    if (item.Game.EndTimeUTC > DateTimeOffset.UtcNow
+                        && type != SubmissionType.Unaccepted
+                        && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(GameNotice.FromSubmission(item, type), token);
 
                     item.Status = ans;
