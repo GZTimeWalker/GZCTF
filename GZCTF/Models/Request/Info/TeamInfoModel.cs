@@ -54,4 +54,26 @@ public class TeamInfoModel
                 StudentNumber = m.StdNumber
             }).ToList() : null
         };
+
+    internal static TeamInfoModel FromParticipation(Participation part)
+        => new()
+        {
+            Id = part.Team.Id,
+            Name = part.Team.Name,
+            Bio = part.Team.Bio,
+            Avatar = part.Team.AvatarUrl,
+            Locked = part.Team.Locked,
+            Members = part.Members
+            .Select(m => part.Team.Members.Single(u => u.Id == m.UserId))
+            .Select(m => new TeamUserInfoModel()
+            {
+                Id = m.Id,
+                Bio = m.Bio,
+                UserName = m.UserName,
+                Avatar = m.AvatarUrl,
+                Captain = m.Id == part.Team.CaptainId,
+                RealName = m.RealName,
+                StudentNumber = m.StdNumber
+            }).ToList()
+        };
 }

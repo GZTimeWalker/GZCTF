@@ -166,7 +166,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                     Avatar = j.Key.Team.AvatarUrl,
                     Organization = j.Key.Organization,
                     Rank = 0,
-                    Team = TeamInfoModel.FromTeam(j.Key.Team, true),
+                    Team = TeamInfoModel.FromParticipation(j.Key),
                     LastSubmissionTime = j
                         .Where(s => s.Submission?.SubmitTimeUTC < game.EndTimeUTC)
                         .Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
