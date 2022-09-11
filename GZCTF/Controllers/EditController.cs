@@ -541,7 +541,7 @@ public class EditController : Controller
     /// <param name="id">比赛Id</param>
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">成功开启比赛题目容器</response>
     [HttpPost("Games/{id}/Challenges/{cId}/Container")]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
