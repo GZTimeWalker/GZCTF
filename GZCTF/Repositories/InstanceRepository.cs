@@ -232,7 +232,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
 
-        if (firstTime)
+        if (firstTime && submission.Game.EndTimeUTC > submission.SubmitTimeUTC)
         {
             instance.IsSolved = true;
             updateSub.Challenge.AcceptedCount++;
