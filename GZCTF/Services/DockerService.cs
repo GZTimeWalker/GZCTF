@@ -169,13 +169,13 @@ public class DockerService : IContainerService
 
         var res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
 
-        var port = res.Endpoint.Ports.FirstOrDefault();
-
-        if (port is null)
+        if (res?.Endpoint?.Ports is null || res.Endpoint.Ports.Count > 0)
         {
             logger.SystemLog($"未获取到容器暴露端口信息，这可能是意料外的行为", TaskStatus.Fail, LogLevel.Warning);
             return null;
         }
+
+        var port = res.Endpoint.Ports.First();
 
         container.StartedAt = res.CreatedAt;
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
