@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <AssemblyVersion>0.10.0</AssemblyVersion>
+    <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>

@@ -18,6 +18,7 @@ using Serilog;
 using Serilog.Events;
 using System.Text;
 using System.Text.Json;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -313,7 +314,9 @@ var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    logger.SystemLog("服务器初始化", CTFServer.TaskStatus.Pending, LogLevel.Debug);
+    var version = Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
+    logger.SystemLog($"服务器初始化: {version}", CTFServer.TaskStatus.Pending, LogLevel.Debug);
     await app.RunAsync();
 }
 catch (Exception exception)
