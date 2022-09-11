@@ -139,7 +139,12 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
           icon: <Icon path={mdiExclamationThick} size={1} />,
           disallowClose: true,
         })
-      } else if (!game.practiceMode && now > dayjs(game.end) && !RequireRole(Role.Monitor)) {
+      } else if (
+        !location.pathname.includes('scoreboard') &&
+        !game.practiceMode &&
+        now > dayjs(game.end) &&
+        !RequireRole(Role.Monitor, role)
+      ) {
         navigate(`/games/${numId}`)
         showNotification({
           color: 'yellow',
@@ -149,7 +154,7 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
         })
       }
     }
-  }, [game])
+  }, [game, role, location])
 
   return (
     <Stack style={{ position: 'relative' }}>

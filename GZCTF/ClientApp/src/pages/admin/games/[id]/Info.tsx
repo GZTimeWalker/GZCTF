@@ -338,7 +338,7 @@ const GameInfoEdit: FC = () => {
           label={SwitchLabel('队伍报名免审核', '队伍报名后直接设置为 Accept 状态')}
           onChange={(e) => game && setGame({ ...game, acceptWithoutReview: e.target.checked })}
         />
-                <Switch
+        <Switch
           style={{ marginTop: '1rem' }}
           disabled={disabled}
           checked={game?.practiceMode ?? true}
