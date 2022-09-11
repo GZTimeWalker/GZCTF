@@ -6,8 +6,8 @@ import IconWiderScreenRequired from './icon/WiderScreenRequiredIcon'
 interface WithWiderScreenProps extends React.PropsWithChildren {
   minWidth?: number
 }
-
-const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 1080 }) => {
+// 580 可以在桌面模式下完成注册流程
+const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 580 }) => {
   const view = useViewportSize()
 
   const tooSmall = minWidth > 0 && view.width > 0 && view.width < minWidth
@@ -18,7 +18,7 @@ const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 1080 }
       <Title order={1} color="#00bfa5" style={{ fontWeight: 'lighter' }}>
         页面宽度不足
       </Title>
-      <Text style={{ fontWeight: 'bold' }}>请使用更宽的设备浏览本页面</Text>
+      <Text style={{ fontWeight: 'bold' }}>请使用更宽的设备或桌面模式浏览本页面</Text>
     </Stack>
   ) : (
     <>{children}</>
