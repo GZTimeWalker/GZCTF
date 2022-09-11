@@ -122,7 +122,11 @@ const Games: FC = () => {
                       </td>
                       <td>
                         <Group position="apart">
-                          <Group position="left">
+                          <Group
+                            position="left"
+                            onClick={() => navigate(`/games/${game.id}`)}
+                            sx={{ cursor: 'pointer' }}
+                          >
                             <Avatar src={game.poster} radius={0}>
                               {game.title?.at(0)}
                             </Avatar>
