@@ -97,7 +97,7 @@ public class Codec
                     doLeet = true;
                 else if (doLeet && (c == '}' || c == '['))
                     doLeet = false;
-                else if (doLeet && CharMap.TryGetValue(char.ToUpper(c), out string? table) && table is not null)
+                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out string? table) && table is not null)
                     entropy += Math.Log(table.Length, 2);
             }
             return entropy;
@@ -116,7 +116,7 @@ public class Codec
                     doLeet = true;
                 else if (doLeet && (c == '}' || c == '['))
                     doLeet = false;
-                else if (doLeet && CharMap.TryGetValue(char.ToUpper(c), out string? table) && table is not null)
+                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out string? table) && table is not null)
                 {
                     var nc = table.ElementAt(random.Next(table.Length));
                     sb.Append(nc);
