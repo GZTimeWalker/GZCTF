@@ -11,7 +11,7 @@ import { useUserRole } from '@Utils/useUser'
 import { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'
-import { RoleMap } from './WithRole'
+import { RequireRole, RoleMap } from './WithRole'
 
 const pages = [
   {
@@ -129,14 +129,25 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
   })
 
   useEffect(() => {
-    if (dayjs() < dayjs(game?.start)) {
-      navigate(`/games/${numId}`)
-      showNotification({
-        color: 'yellow',
-        message: '比赛尚未开始',
-        icon: <Icon path={mdiExclamationThick} size={1} />,
-        disallowClose: true,
-      })
+    if (game) {
+      const now = dayjs()
+      if (now < dayjs(game.start)) {
+        navigate(`/games/${numId}`)
+        showNotification({
+          color: 'yellow',
+          message: '比赛尚未开始',
+          icon: <Icon path={mdiExclamationThick} size={1} />,
+          disallowClose: true,
+        })
+      } else if (!game.practiceMode && now > dayjs(game.end) && !RequireRole(Role.Monitor)) {
+        navigate(`/games/${numId}`)
+        showNotification({
+          color: 'yellow',
+          message: '比赛已经结束',
+          icon: <Icon path={mdiExclamationThick} size={1} />,
+          disallowClose: true,
+        })
+      }
     }
   }, [game])
 
