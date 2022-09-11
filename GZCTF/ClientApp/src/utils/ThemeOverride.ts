@@ -69,6 +69,15 @@ export const ThemeOverride: MantineThemeOverride = {
     fontFamily: "'IBM Plex Sans', sans-serif",
   },
   loader: 'bars',
+  components: {
+    Switch: {
+      styles: {
+        body: {
+          alignItems: 'center',
+        }
+      }
+    },
+  },
 }
 
 export const useTableStyles = createStyles((theme) => ({
