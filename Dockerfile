@@ -21,7 +21,7 @@ RUN dotnet build "CTFServer.csproj" -c Release -o /app/build --no-restore
 FROM build AS publish
 RUN dotnet publish "CTFServer.csproj" -c Release -o /app/publish -r linux-x64 --no-self-contained /p:PublishReadyToRun=true /p:UseNpm=true
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /usr/lib/libgdiplus.so /usr/lib/gdiplus.dll

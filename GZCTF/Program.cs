@@ -316,7 +316,7 @@ try
 {
     var version = Assembly.GetExecutingAssembly()
         .GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
-    logger.SystemLog(version, CTFServer.TaskStatus.Pending, LogLevel.Debug);
+    logger.SystemLog(version ?? "GZ::CTF", CTFServer.TaskStatus.Pending, LogLevel.Debug);
     await app.RunAsync();
 }
 catch (Exception exception)
