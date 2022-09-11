@@ -137,6 +137,11 @@ public class Game
     [JsonIgnore]
     public ICollection<Team>? Teams { get; set; }
 
+    /// <summary>
+    /// 比赛是否为练习模式（比赛结束够依然可以访问）
+    /// </summary>
+    public bool PracticeMode { get; set; } = true;
+
     #endregion Db Relationship
 
     [NotMapped]
@@ -183,6 +188,7 @@ public class Game
         Content = model.Content;
         Summary = model.Summary;
         Hidden = model.Hidden;
+        PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
         Organizations = model.Organizations ?? Organizations;

@@ -132,6 +132,9 @@ public class GameController : ControllerBase
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
+        if (!game.PracticeMode && game.EndTimeUTC < DateTimeOffset.UtcNow)
+            return BadRequest(new RequestResponse("比赛已结束"));
+
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse("比赛邀请码错误"));
 
@@ -202,7 +205,6 @@ public class GameController : ControllerBase
     /// 退出一场比赛，需要User权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功退出比赛</response>
     /// <response code="403">无权操作或操作无效</response>
@@ -262,7 +264,7 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到"));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
-            return BadRequest(new RequestResponse("比赛还未开始"));
+            return BadRequest(new RequestResponse("比赛未开始"));
 
         return Ok(await gameRepository.GetScoreboard(game, token));
     }
@@ -290,7 +292,7 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到"));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
-            return BadRequest(new RequestResponse("比赛还未开始"));
+            return BadRequest(new RequestResponse("比赛未开始"));
 
         return Ok(await noticeRepository.GetNotices(game.Id, count, skip, token));
     }
@@ -320,7 +322,7 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到"));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
-            return BadRequest(new RequestResponse("比赛还未开始"));
+            return BadRequest(new RequestResponse("比赛未开始"));
 
         return Ok(await eventRepository.GetEvents(game.Id, hideContainer, count, skip, token));
     }
@@ -350,7 +352,7 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到"));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
-            return BadRequest(new RequestResponse("比赛还未开始"));
+            return BadRequest(new RequestResponse("比赛未开始"));
 
         return Ok(await submissionRepository.GetSubmissions(game, type, count, skip, token));
     }
@@ -472,7 +474,7 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到"));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
-            return BadRequest(new RequestResponse("比赛还未开始"));
+            return BadRequest(new RequestResponse("比赛未开始"));
 
         var scoreboard = await gameRepository.GetScoreboard(game, token);
 
@@ -791,7 +793,10 @@ public class GameController : ControllerBase
             return res.WithResult(BadRequest(new RequestResponse("您的参赛申请尚未通过或被禁赛")));
 
         if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
-            return res.WithResult(BadRequest(new RequestResponse("比赛还未开始")));
+            return res.WithResult(BadRequest(new RequestResponse("比赛未开始")));
+
+        if (!res.Game.PracticeMode && res.Game.EndTimeUTC < DateTimeOffset.UtcNow)
+            return res.WithResult(BadRequest(new RequestResponse("比赛已结束")));
 
         if (challengeId > 0)
         {

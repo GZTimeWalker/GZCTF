@@ -72,6 +72,11 @@ public class GameInfoModel
     public string PublicKey { get; set; } = string.Empty;
 
     /// <summary>
+    /// 比赛是否为练习模式（比赛结束够依然可以访问）
+    /// </summary>
+    public bool PracticeMode { get; set; } = true;
+
+    /// <summary>
     /// 开始时间
     /// </summary>
     [Required]
