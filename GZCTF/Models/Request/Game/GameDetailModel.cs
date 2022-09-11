@@ -69,6 +69,11 @@ public class GameDetailModel
     public string? TeamName { get; set; }
 
     /// <summary>
+    /// 比赛是否为练习模式（比赛结束够依然可以访问）
+    /// </summary>
+    public bool PracticeMode { get; set; } = true;
+
+    /// <summary>
     /// 队伍参与状态
     /// </summary>
     [JsonPropertyName("status")]
@@ -102,6 +107,7 @@ public class GameDetailModel
             Hidden = game.Hidden,
             Summary = game.Summary,
             Content = game.Content,
+            PracticeMode = game.PracticeMode,
             Organizations = game.Organizations,
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             TeamCount = count,
