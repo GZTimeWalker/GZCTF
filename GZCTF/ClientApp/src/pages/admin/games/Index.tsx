@@ -121,18 +121,23 @@ const Games: FC = () => {
                         />
                       </td>
                       <td>
-                        <Group position="apart">
-                          <Group position="left">
+                        <Group noWrap position="apart">
+                          <Group
+                            noWrap
+                            position="left"
+                            onClick={() => navigate(`/games/${game.id}`)}
+                            sx={{ cursor: 'pointer' }}
+                          >
                             <Avatar src={game.poster} radius={0}>
                               {game.title?.at(0)}
                             </Avatar>
-                            <Text weight={700}>{game.title}</Text>
+                            <Text weight={700} lineClamp={1}>{game.title}</Text>
                           </Group>
                           <Badge color={color}>{status}</Badge>
                         </Group>
                       </td>
                       <td>
-                        <Group spacing="xs">
+                        <Group noWrap spacing="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
                           </Badge>

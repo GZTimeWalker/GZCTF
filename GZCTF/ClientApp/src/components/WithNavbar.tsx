@@ -33,7 +33,7 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
           rotate={-9}
           textSize={15}
           gutter={20}
-          opacity={theme.colorScheme == 'dark' ? 0.004 : 0.010}
+          opacity={theme.colorScheme == 'dark' ? 0.004 : 0.01}
           fontFamily="JetBrains Mono"
         >
           <Center style={{ width: '100%' }}>

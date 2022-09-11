@@ -88,7 +88,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     {
         var data = await FetchData(game, token);
         var bloods = GenBloods(data);
-        var items = GenScoreboardItems(data, bloods);
+        var items = GenScoreboardItems(data, game, bloods);
         return new()
         {
             Organizations = game.Organizations,
@@ -153,7 +153,7 @@ public class GameRepository : RepositoryBase, IGameRepository
             .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
-    private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
+    private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(j => j.Instance.Participation)
             .Select(j =>
             {
@@ -167,9 +167,13 @@ public class GameRepository : RepositoryBase, IGameRepository
                     Organization = j.Key.Organization,
                     Rank = 0,
                     Team = TeamInfoModel.FromTeam(j.Key.Team, true),
-                    LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
-                        .OrderByDescending(t => t).FirstOrDefault(),
-                    SolvedCount = challengeGroup.Count(c => c.Any(s => s.Submission?.Status == AnswerResult.Accepted)),
+                    LastSubmissionTime = j
+                        .Where(s => s.Submission?.SubmitTimeUTC < game.EndTimeUTC)
+                        .Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                        .OrderBy(t => t).LastOrDefault(),
+                    SolvedCount = challengeGroup.Count(c => c.Any(
+                        s => s.Submission?.Status == AnswerResult.Accepted
+                        && s.Submission?.SubmitTimeUTC < game.EndTimeUTC)),
                     Challenges = challengeGroup
                             .Select(c =>
                             {

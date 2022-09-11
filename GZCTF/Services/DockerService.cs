@@ -126,7 +126,7 @@ public class DockerService : IContainerService
                         Limits = new()
                         {
                             MemoryBytes = config.MemoryLimit * 1024 * 1024,
-                            NanoCPUs = config.CPUCount * 10_0000_0000, // do some math here?
+                            NanoCPUs = config.CPUCount * 10_0000_0000,
                         }
                     },
                 }
@@ -143,9 +143,17 @@ public class DockerService : IContainerService
         }
         catch (DockerApiException e)
         {
-            logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
-            logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
-            return null;
+            if(e.StatusCode == HttpStatusCode.Conflict)
+            {
+                await dockerClient.Swarm.RemoveServiceAsync(parameters.Service.Name, token);
+                serviceRes = await dockerClient.Swarm.CreateServiceAsync(parameters, token);
+            }
+            else
+            {
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
+                return null;
+            }
         }
         catch (Exception e)
         {
