@@ -98,6 +98,7 @@ public class GameInfoModel
             Summary = game.Summary,
             Content = game.Content,
             Hidden = game.Hidden,
+            PracticeMode = game.PracticeMode,
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,
