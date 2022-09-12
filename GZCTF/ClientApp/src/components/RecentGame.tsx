@@ -86,7 +86,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
           alignItems: 'center',
         }}
       >
-        <Title order={4} align="left" style={{ color: theme.colors.gray[0] }}>
+        <Title lineClamp={1} order={4} align="left" style={{ color: theme.colors.gray[0] }}>
           &gt; {title}
         </Title>
       </Card.Section>
