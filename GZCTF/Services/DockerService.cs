@@ -24,8 +24,6 @@ public class DockerService : IContainerService
         DockerClientConfiguration cfg = string.IsNullOrEmpty(this.options.Uri) ? new() : new(new Uri(this.options.Uri));
 
         // TODO: Docker Auth Required
-        // TODO: Docker Swarm Support
-
         dockerClient = cfg.CreateClient();
 
         // Auth for registry
@@ -72,7 +70,7 @@ public class DockerService : IContainerService
         }
         catch (Exception e)
         {
-            logger.LogError(e, "删除容器失败");
+            logger.LogError(e, $"容器 {container.ContainerId} 删除失败");
             return;
         }
 
@@ -164,7 +162,7 @@ public class DockerService : IContainerService
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message, e);
+            logger.LogError(e, $"容器 {parameters.Service.Name} 删除失败"); 
             return null;
         }
 
@@ -174,13 +172,20 @@ public class DockerService : IContainerService
             Image = config.Image,
         };
 
-        var res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
-
-        if (res?.Endpoint?.Ports is null || res.Endpoint.Ports.Count == 0)
+        retry = 0;
+        SwarmService? res;
+        do
         {
-            logger.SystemLog($"容器 {parameters.Service.Name} 创建后未获取到端口暴露信息，这可能是意料外的行为", TaskStatus.Fail, LogLevel.Warning);
-            return null;
-        }
+            res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
+            retry++;
+            if (retry == 3)
+            {
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建后未获取到端口暴露信息，创建失败", TaskStatus.Fail, LogLevel.Warning);
+                return null;
+            }
+            if (res is not { Endpoint.Ports.Count: > 0 })
+                await Task.Delay(500, token);
+        } while (res is not { Endpoint.Ports.Count: > 0 });
 
         var port = res.Endpoint.Ports.First();
 
@@ -222,17 +227,14 @@ public class DockerService : IContainerService
             return null;
         }
 
-        if (containerRes is null)
+        try
         {
-            try
-            {
-                containerRes = await dockerClient.Containers.CreateContainerAsync(parameters, token);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message, e);
-                return null;
-            }
+            containerRes ??= await dockerClient.Containers.CreateContainerAsync(parameters, token);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message, e);
+            return null;
         }
 
         Container container = new()
@@ -250,7 +252,7 @@ public class DockerService : IContainerService
             retry++;
             if (retry == 3)
             {
-                logger.SystemLog($"启动容器实例 {container.Id[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"启动容器实例 {container.Id} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
                 return null;
             }
             if (!started)

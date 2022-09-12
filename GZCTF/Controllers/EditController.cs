@@ -1,5 +1,6 @@
 ﻿using CTFServer.Extensions;
 using CTFServer.Middlewares;
+using CTFServer.Models;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
 using CTFServer.Models.Request.Info;
@@ -23,6 +24,7 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class EditController : Controller
 {
+    private readonly ILogger<EditController> logger;
     private readonly UserManager<UserInfo> userManager;
     private readonly IPostRepository postRepository;
     private readonly IGameNoticeRepository gameNoticeRepository;
@@ -33,6 +35,7 @@ public class EditController : Controller
     private readonly IContainerRepository containerRepository;
 
     public EditController(UserManager<UserInfo> _userManager,
+        ILogger<EditController> _logger,
         IPostRepository _postRepository,
         IContainerRepository _containerRepository,
         IChallengeRepository _challengeRepository,
@@ -41,6 +44,7 @@ public class EditController : Controller
         IContainerService _containerService,
         IFileRepository _fileService)
     {
+        logger = _logger;
         fileService = _fileService;
         userManager = _userManager;
         gameRepository = _gameRepository;
@@ -581,6 +585,8 @@ public class EditController : Controller
 
         challenge.TestContainer = container;
         await challengeRepository.SaveAsync(token);
+
+        logger.Log($"成功创建测试容器 {container.ContainerId}", user, TaskStatus.Success);
 
         return Ok(ContainerInfoModel.FromContainer(container));
     }
