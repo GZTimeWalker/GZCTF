@@ -55,17 +55,20 @@ public class DockerService : IContainerService
         }
         catch (DockerContainerNotFoundException)
         {
-            logger.SystemLog($"容器 {container.ContainerId[..12]} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog($"容器 {container.ContainerId} 已被销毁", TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
         {
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
-                container.Status = ContainerStatus.Destroyed;
+                logger.SystemLog($"容器 {container.ContainerId} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+            }
+            else
+            {
+                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
                 return;
             }
-            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
-            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
         }
         catch (Exception e)
         {
@@ -137,16 +140,20 @@ public class DockerService : IContainerService
     {
         var parameters = GetServiceCreateParameters(config);
         ServiceCreateResponse? serviceRes = null;
+        int retry = 0;
+        CreateContainer:
         try
         {
             serviceRes = await dockerClient.Swarm.CreateServiceAsync(parameters, token);
         }
         catch (DockerApiException e)
         {
-            if(e.StatusCode == HttpStatusCode.Conflict)
+            if(e.StatusCode == HttpStatusCode.Conflict && retry < 3)
             {
+                logger.SystemLog($"容器 {parameters.Service.Name} 已存在，尝试移除后重新创建", TaskStatus.Duplicate, LogLevel.Warning);
                 await dockerClient.Swarm.RemoveServiceAsync(parameters.Service.Name, token);
-                serviceRes = await dockerClient.Swarm.CreateServiceAsync(parameters, token);
+                retry++;
+                goto CreateContainer;
             }
             else
             {
@@ -169,9 +176,9 @@ public class DockerService : IContainerService
 
         var res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
 
-        if (res?.Endpoint?.Ports is null || res.Endpoint.Ports.Count > 0)
+        if (res?.Endpoint?.Ports is null || res.Endpoint.Ports.Count == 0)
         {
-            logger.SystemLog($"未获取到容器暴露端口信息，这可能是意料外的行为", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"容器 {parameters.Service.Name} 创建后未获取到端口暴露信息，这可能是意料外的行为", TaskStatus.Fail, LogLevel.Warning);
             return null;
         }
 
@@ -183,7 +190,6 @@ public class DockerService : IContainerService
         container.Port = (int)port.PublishedPort;
         container.Status = ContainerStatus.Running;
 
-        // FIXME: how to get IP?
         if (!string.IsNullOrEmpty(options.PublicIP))
             container.PublicIP = options.PublicIP;
 
