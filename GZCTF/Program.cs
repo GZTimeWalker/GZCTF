@@ -115,10 +115,13 @@ if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("RedisCa
 }
 else
 {
+    var constr = builder.Configuration.GetConnectionString("RedisCache");
     builder.Services.AddDistributedRedisCache(options =>
     {
-        options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+        options.Configuration = constr;
     });
+
+    builder.Services.AddDataProtection().Services.AddDistributedMemoryCache();
 }
 
 #endregion Cache

@@ -54,6 +54,7 @@
     <PackageReference Include="MailKit" Version="3.4.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.8" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.66" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,6 +73,8 @@
     <None Remove="MailKit" />
     <None Remove="Microsoft.Extensions.Caching.Redis" />
     <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
+    <None Remove="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" />
+    <None Remove="StackExchange.Redis" />
   </ItemGroup>
 
   <ItemGroup>
