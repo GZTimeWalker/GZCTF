@@ -83,12 +83,6 @@ if (!IsTesting)
 }
 #endregion Configuration
 
-#region SignalR
-
-builder.Services.AddSignalR().AddJsonProtocol();
-
-#endregion SignalR
-
 #region OpenApiDocument
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -108,6 +102,12 @@ builder.Services.AddOpenApiDocument(settings =>
 
 #endregion OpenApiDocument
 
+#region SignalR
+
+var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
+
+#endregion SignalR
+
 #region Cache
 
 if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("RedisCache")))
@@ -117,10 +117,12 @@ if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("RedisCa
 else
 {
     var constr = builder.Configuration.GetConnectionString("RedisCache");
-    builder.Services.AddDistributedRedisCache(options =>
+    builder.Services.AddStackExchangeRedisCache(options =>
     {
         options.Configuration = constr;
     });
+
+    signalrBuilder.AddStackExchangeRedis(constr);
 }
 
 #endregion Cache
