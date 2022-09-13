@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models.Data;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -7,7 +8,7 @@ using System.Text.Json;
 
 namespace CTFServer.Models;
 
-public class AppDbContext : IdentityDbContext<UserInfo>
+public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -29,6 +30,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>
     public DbSet<Attachment> Attachments { get; set; } = default!;
     public DbSet<Config> Configs { get; set; } = default!;
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

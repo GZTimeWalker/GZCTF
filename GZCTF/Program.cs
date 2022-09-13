@@ -19,6 +19,7 @@ using Serilog.Events;
 using System.Text;
 using System.Text.Json;
 using System.Reflection;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,13 +121,13 @@ else
     {
         options.Configuration = constr;
     });
-
-    builder.Services.AddDataProtection().Services.AddDistributedMemoryCache();
 }
 
 #endregion Cache
 
 #region Identity
+
+builder.Services.AddDataProtection().PersistKeysToDbContext<AppDbContext>();
 
 builder.Services.AddAuthentication(o =>
 {
