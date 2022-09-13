@@ -53,7 +53,7 @@ else
     builder.Services.AddDbContext<AppDbContext>(
         options =>
         {
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+            options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
                 o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             if (builder.Environment.IsDevelopment())
             {
@@ -74,7 +74,7 @@ if (!IsTesting)
         config.AddEntityConfiguration(options =>
         {
             if (builder.Configuration.GetSection("ConnectionStrings").Exists())
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
             else
                 options.UseInMemoryDatabase("TestDb");
         });
@@ -107,11 +107,21 @@ builder.Services.AddOpenApiDocument(settings =>
 
 #endregion OpenApiDocument
 
-#region MemoryCache
+#region Cache
 
-builder.Services.AddMemoryCache();
+if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("RedisCache")))
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+else
+{
+    builder.Services.AddDistributedRedisCache(options =>
+    {
+        options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+    });
+}
 
-#endregion MemoryCache
+#endregion Cache
 
 #region Identity
 

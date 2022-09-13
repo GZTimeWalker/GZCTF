@@ -17,7 +17,7 @@ public class ProfileUpdateModel
     /// <summary>
     /// 描述
     /// </summary>
-    [MaxLength(50, ErrorMessage = "描述过长")]
+    [MaxLength(55, ErrorMessage = "描述过长")]
     public string? Bio { get; set; }
 
     /// <summary>
@@ -29,12 +29,12 @@ public class ProfileUpdateModel
     /// <summary>
     /// 真实姓名
     /// </summary>
-    [MaxLength(6, ErrorMessage = "真实姓名过长")]
+    [MaxLength(7, ErrorMessage = "真实姓名过长")]
     public string? RealName { get; set; }
 
     /// <summary>
     /// 学工号
     /// </summary>
-    [MaxLength(10, ErrorMessage = "学工号过长")]
+    [MaxLength(15, ErrorMessage = "学工号过长")]
     public string? StdNumber { get; set; }
 }

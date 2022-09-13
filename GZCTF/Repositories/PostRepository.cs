@@ -1,17 +1,22 @@
 ﻿using CTFServer.Repositories.Interface;
+using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 using YamlDotNet.Core.Tokens;
 
 namespace CTFServer.Repositories;
 
 public class PostRepository : RepositoryBase, IPostRepository
 {
-    private readonly IMemoryCache cache;
+    private readonly IDistributedCache cache;
+    private readonly ILogger<PostRepository> logger;
 
-    public PostRepository(IMemoryCache memoryCache, AppDbContext _context) : base(_context)
+    public PostRepository(IDistributedCache _cache,
+        ILogger<PostRepository> _logger,
+        AppDbContext _context) : base(_context)
     {
-        cache = memoryCache;
+        cache = _cache;
+        logger = _logger;
     }
 
     public async Task<Post> CreatePost(Post post, CancellationToken token = default)
@@ -32,7 +37,7 @@ public class PostRepository : RepositoryBase, IPostRepository
         => (await GetPosts(token)).FirstOrDefault(p => p.Id == id);
 
     public Task<Post[]> GetPosts(CancellationToken token = default)
-        => cache.GetOrCreateAsync(CacheKey.Posts, entry =>
+        => cache.GetOrCreateAsync(logger, CacheKey.Posts, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
             return context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)

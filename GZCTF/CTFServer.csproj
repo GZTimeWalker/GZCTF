@@ -30,12 +30,10 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
     <PackageReference Include="Npgsql" Version="6.0.6" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.6" />
     <PackageReference Include="NPOI" Version="2.5.6" />
@@ -53,7 +51,9 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.2" />
     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
-    <PackageReference Include="MailKit" Version="3.4.0" />
+    <PackageReference Include="MailKit" Version="3.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,6 +70,8 @@
     <None Remove="Services\Assets\URLEmailTemplate.html" />
     <None Remove="NETCore.MailKit" />
     <None Remove="MailKit" />
+    <None Remove="Microsoft.Extensions.Caching.Redis" />
+    <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
   </ItemGroup>
 
   <ItemGroup>

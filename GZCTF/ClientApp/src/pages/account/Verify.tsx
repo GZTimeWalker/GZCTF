@@ -22,6 +22,7 @@ const Verify: FC = () => {
       api.account
         .accountVerify({ token, email })
         .then(() => {
+          navigate('/account/login')
           showNotification({
             color: 'teal',
             title: '账户已验证，请登录',
@@ -29,7 +30,6 @@ const Verify: FC = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
-          navigate('/account/login')
         })
         .catch(() => {
           showNotification({
@@ -40,14 +40,6 @@ const Verify: FC = () => {
             disallowClose: true,
           })
         })
-    } else {
-      showNotification({
-        color: 'red',
-        title: '账户验证失败',
-        message: '参数错误，请检查',
-        icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
-      })
     }
   })
 

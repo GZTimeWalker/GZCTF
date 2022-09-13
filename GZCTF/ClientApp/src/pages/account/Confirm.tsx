@@ -22,6 +22,7 @@ const Confirm: FC = () => {
       api.account
         .accountMailChangeConfirm({ token, email })
         .then(() => {
+          navigate('/')
           showNotification({
             color: 'teal',
             title: '邮箱已验证',
@@ -29,7 +30,6 @@ const Confirm: FC = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
-          navigate('/')
         })
         .catch(() => {
           showNotification({
@@ -40,14 +40,6 @@ const Confirm: FC = () => {
             disallowClose: true,
           })
         })
-    } else {
-      showNotification({
-        color: 'red',
-        title: '邮箱验证失败',
-        message: '参数错误，请检查',
-        icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
-      })
     }
   })
 

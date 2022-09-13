@@ -16,6 +16,7 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 用户最近访问IP
     /// </summary>
+    [ProtectedPersonalData]
     public string IP { get; set; } = "0.0.0.0";
 
     /// <summary>
@@ -36,19 +37,21 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 个性签名
     /// </summary>
-    [MaxLength(50)]
+    [MaxLength(63)]
     public string Bio { get; set; } = string.Empty;
 
     /// <summary>
     /// 真实姓名
     /// </summary>
-    [MaxLength(6)]
+    [MaxLength(7)]
+    [ProtectedPersonalData]
     public string RealName { get; set; } = string.Empty;
 
     /// <summary>
     /// 学工号
     /// </summary>
-    [MaxLength(10)]
+    [MaxLength(31)]
+    [ProtectedPersonalData]
     public string StdNumber { get; set; } = string.Empty;
 
     #region 数据库关系
@@ -56,6 +59,7 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 头像哈希
     /// </summary>
+    [MaxLength(64)]
     public string? AvatarHash { get; set; }
 
     /// <summary>

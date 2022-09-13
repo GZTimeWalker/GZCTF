@@ -1,22 +1,26 @@
 ﻿using CTFServer.Hubs;
 using CTFServer.Hubs.Clients;
 using CTFServer.Repositories.Interface;
+using CTFServer.Utils;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace CTFServer.Repositories;
 
 public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 {
-    private readonly IMemoryCache cache;
+    private readonly IDistributedCache cache;
+    private readonly ILogger<GameEventRepository> logger;
     private IHubContext<UserHub, IUserClient> hubContext;
 
-    public GameNoticeRepository(IMemoryCache memoryCache,
+    public GameNoticeRepository(IDistributedCache _cache,
+        ILogger<GameEventRepository> _logger,
         IHubContext<UserHub, IUserClient> hub,
         AppDbContext _context) : base(_context)
     {
-        cache = memoryCache;
+        cache = _cache;
+        logger = _logger;
         hubContext = hub;
     }
 
@@ -42,7 +46,7 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         => context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
     public Task<GameNotice[]> GetNotices(int gameId, int count = 10, int skip = 0, CancellationToken token = default)
-        => cache.GetOrCreateAsync(CacheKey.GameNotice(gameId), (entry) =>
+        => cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), (entry) =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             return context.GameNotices.Where(e => e.GameId == gameId)

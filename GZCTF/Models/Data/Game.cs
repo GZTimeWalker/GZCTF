@@ -44,6 +44,7 @@ public class Game
     /// <summary>
     /// 头图哈希
     /// </summary>
+    [MaxLength(64)]
     public string? PosterHash { get; set; }
 
     /// <summary>
