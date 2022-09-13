@@ -122,7 +122,10 @@ else
         options.Configuration = constr;
     });
 
-    signalrBuilder.AddStackExchangeRedis(constr);
+    signalrBuilder.AddStackExchangeRedis(constr, options =>
+    {
+        options.Configuration.ChannelPrefix = "GZCTF";
+    });
 }
 
 #endregion Cache
