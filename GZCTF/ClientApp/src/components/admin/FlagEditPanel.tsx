@@ -1,8 +1,19 @@
 import { FC } from 'react'
-import { ActionIcon, Group, Stack, Text, Card, useMantineTheme, SimpleGrid } from '@mantine/core'
-import { mdiDeleteOutline } from '@mdi/js'
+import {
+  ActionIcon,
+  Group,
+  Stack,
+  Text,
+  Card,
+  useMantineTheme,
+  SimpleGrid,
+  Input,
+} from '@mantine/core'
+import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Attachment, FlagInfoModel } from '@Api'
+import { useClipboard } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
 
 interface FlagCardProps {
   flag: FlagInfoModel
@@ -12,14 +23,36 @@ interface FlagCardProps {
 
 const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
   const theme = useMantineTheme()
+  const clipboard = useClipboard()
   const attachment = unifiedAttachment ?? flag.attachment
   const shortURL = attachment?.url?.split('/').slice(-2)[0].slice(0, 8)
 
   return (
     <Card>
-      <Group position="apart">
-        <Stack align="flex-start" spacing={0}>
-          <Text style={{ fontFamily: theme.fontFamilyMonospace }}>{flag.flag}</Text>
+      <Group noWrap position="apart" spacing={3}>
+        <Stack align="flex-start" spacing={0} style={{ width: '100%' }}>
+          <Input
+            variant="unstyled"
+            value={flag.flag}
+            size="md"
+            onClick={() => {
+              clipboard.copy(flag.flag)
+              showNotification({
+                message: 'flag 已复制到剪贴板',
+                color: 'teal',
+                icon: <Icon path={mdiCheck} size={1} />,
+                disallowClose: true,
+              })
+            }}
+            styles={{
+              input: {
+                fontFamily: theme.fontFamilyMonospace,
+              },
+              wrapper: {
+                width: '100%',
+              }
+            }}
+          />
           <Text color="dimmed" size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
             {attachment?.type} {shortURL}
           </Text>

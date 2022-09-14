@@ -11,6 +11,7 @@ public class FlagCreateModel
     /// Flag文本
     /// </summary>
     [Required]
+    [MaxLength(125, ErrorMessage = "flag 字符串过长")]
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>
