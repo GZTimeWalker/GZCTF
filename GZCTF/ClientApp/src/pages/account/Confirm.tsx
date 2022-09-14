@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -14,15 +14,16 @@ const Confirm: FC = () => {
   const sp = new URLSearchParams(location.search)
   const token = sp.get('token')
   const email = sp.get('email')
+  const runOnce = useRef(false);
 
   usePageTitle('邮箱验证')
 
   useEffect(() => {
-    if (token && email) {
+    if (token && email && !runOnce.current) {
+      runOnce.current = true
       api.account
         .accountMailChangeConfirm({ token, email })
         .then(() => {
-          navigate('/')
           showNotification({
             color: 'teal',
             title: '邮箱已验证',
@@ -40,8 +41,11 @@ const Confirm: FC = () => {
             disallowClose: true,
           })
         })
+        .finally(() => {
+          navigate('/')
+        })
     }
-  })
+  }, [])
 
   return (
     <AccountView>

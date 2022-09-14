@@ -116,6 +116,7 @@ const Register: FC = () => {
           title: '遇到了问题',
           message: `${err.response.data.title}`,
           icon: <Icon path={mdiClose} size={1} />,
+          disallowClose: true,
         })
       })
       .finally(() => {
