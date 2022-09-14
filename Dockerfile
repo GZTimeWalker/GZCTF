@@ -7,7 +7,8 @@ ENV VITE_APP_BUILD_TIMESTAMP=$TIMESTAMP
 ENV VITE_APP_GIT_SHA=$GIT_SHA
 ENV VITE_APP_GIT_NAME=$GIT_NAME
 
-RUN apt update && \
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
+    apt update && \
     apt install -y wget && \
     apt install -y gnupg2 && \
     wget -qO- https://deb.nodesource.com/setup_18.x | bash - && \
