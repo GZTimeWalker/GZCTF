@@ -69,6 +69,15 @@ export const ThemeOverride: MantineThemeOverride = {
     fontFamily: "'IBM Plex Sans', sans-serif",
   },
   loader: 'bars',
+  components: {
+    Switch: {
+      styles: {
+        body: {
+          alignItems: 'center',
+        },
+      },
+    },
+  },
 }
 
 export const useTableStyles = createStyles((theme) => ({
@@ -108,8 +117,8 @@ export const ACCEPT_IMAGE_MIME_TYPE = [
 ]
 
 interface FixedButtonProps {
-  right?: string,
-  bottom?: string,
+  right?: string
+  bottom?: string
 }
 
 export const useFixedButtonStyles = createStyles((theme, { right, bottom }: FixedButtonProps) => ({

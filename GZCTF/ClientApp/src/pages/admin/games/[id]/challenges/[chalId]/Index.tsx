@@ -378,20 +378,16 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={4}>
               <Group spacing={0} align="center" pt={22} style={{ height: '100%' }}>
                 {challenge?.testContainer ? (
-                  <>
-                    <Text size="sm" weight={600}>
-                      测试容器访问入口：
-                    </Text>
-                    <Code
-                      sx={(theme) => ({
-                        backgroundColor: 'transparent',
-                        fontSize: theme.fontSizes.sm,
-                      })}
-                      onClick={() => clipBoard.copy(challenge?.testContainer?.entry ?? '')}
-                    >
-                      {challenge?.testContainer?.entry ?? ''}
-                    </Code>
-                  </>
+                  <Code
+                    sx={(theme) => ({
+                      backgroundColor: 'transparent',
+                      fontSize: theme.fontSizes.sm,
+                      fontWeight: 'bold'
+                    })}
+                    onClick={() => clipBoard.copy(challenge?.testContainer?.entry ?? '')}
+                  >
+                    {challenge?.testContainer?.entry ?? ''}
+                  </Code>
                 ) : (
                   <Text size="sm" weight={600} color="dimmed">
                     测试容器未开启

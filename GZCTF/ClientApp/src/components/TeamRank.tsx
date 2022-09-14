@@ -1,5 +1,5 @@
-import { FC } from 'react'
-import { useParams } from 'react-router-dom'
+import { FC, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   Avatar,
   Group,
@@ -15,7 +15,7 @@ import {
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiKey } from '@mdi/js'
+import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '@Api'
 
@@ -29,14 +29,26 @@ const useStyle = createStyles((theme) => ({
 const TeamRank: FC<PaperProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-
-  const { data: myteam } = api.game.useGameMyTeam(numId)
+  const navigate = useNavigate()
+  const { data: myteam, error } = api.game.useGameMyTeam(numId)
 
   const { classes, theme } = useStyle()
 
   const clipboard = useClipboard()
 
   const solved = (myteam?.rank?.solvedCount ?? 0) / (myteam?.rank?.challenges?.length ?? 1)
+
+  useEffect(() => {
+    if (error?.title?.includes('已结束')) {
+      navigate(`/games/${numId}`)
+      showNotification({
+        color: 'yellow',
+        message: '比赛已经结束',
+        icon: <Icon path={mdiExclamationThick} size={1} />,
+        disallowClose: true,
+      })
+    }
+  }, [error])
 
   return (
     <Card shadow="sm" {...props}>

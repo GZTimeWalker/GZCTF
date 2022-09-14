@@ -90,10 +90,15 @@ public class Codec
         public static double LeetEntropy(string flag)
         {
             double entropy = 0;
+            bool doLeet = false;
             foreach (char c in flag)
             {
-                if (CharMap.ContainsKey(c))
-                    entropy += Math.Log2(CharMap[c].Length);
+                if (c == '{' || c == ']')
+                    doLeet = true;
+                else if (doLeet && (c == '}' || c == '['))
+                    doLeet = false;
+                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out string? table) && table is not null)
+                    entropy += Math.Log(table.Length, 2);
             }
             return entropy;
         }
@@ -111,14 +116,14 @@ public class Codec
                     doLeet = true;
                 else if (doLeet && (c == '}' || c == '['))
                     doLeet = false;
-                else if (doLeet && CharMap.TryGetValue(char.ToUpper(c), out string? table) && table is not null)
+                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out string? table) && table is not null)
                 {
                     var nc = table.ElementAt(random.Next(table.Length));
                     sb.Append(nc);
                     continue;
                 }
 
-                sb.Append(c);
+                sb.Append(c == ' ' ? '_' : c); // replace blank to underline
             }
 
             return sb.ToString();

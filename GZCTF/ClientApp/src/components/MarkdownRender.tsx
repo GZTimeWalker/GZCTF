@@ -34,7 +34,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
     })
 
     return text
-  })(/\$\$([\s\S]+?)\$\$/g, /\$([^\n\s]+?)\$/g)
+  })(/\$\$([\s\S]+?)\$\$/g, /\$([\s\S]+?)\$/g)
 
   renderer.paragraph = RenderReplacer(renderer.paragraph, replacer)
   renderer.text = RenderReplacer(renderer.text, replacer)

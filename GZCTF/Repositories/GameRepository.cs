@@ -4,23 +4,23 @@ using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text;
 
 namespace CTFServer.Repositories;
 
 public class GameRepository : RepositoryBase, IGameRepository
 {
-    private readonly IMemoryCache cache;
+    private readonly IDistributedCache cache;
     private readonly byte[]? xorkey;
     private readonly ILogger<GameRepository> logger;
 
-    public GameRepository(IMemoryCache memoryCache,
+    public GameRepository(IDistributedCache _cache,
         IConfiguration _configuration,
         ILogger<GameRepository> _logger,
         AppDbContext _context) : base(_context)
     {
-        cache = memoryCache;
+        cache = _cache;
         logger = _logger;
         xorkey = string.IsNullOrEmpty(_configuration["XorKey"]) ? null
             : Encoding.UTF8.GetBytes(_configuration["XorKey"]);
@@ -45,7 +45,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default)
-        => (await cache.GetOrCreateAsync(CacheKey.BasicGameInfo, entry =>
+        => (await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
             return context.Games.Where(g => !g.Hidden)
@@ -54,7 +54,7 @@ public class GameRepository : RepositoryBase, IGameRepository
         })).ToArray();
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
-        => cache.GetOrCreateAsync(CacheKey.ScoreBoard(game.Id), entry =>
+        => cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
             return GenScoreboard(game, token);
@@ -88,7 +88,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     {
         var data = await FetchData(game, token);
         var bloods = GenBloods(data);
-        var items = GenScoreboardItems(data, bloods);
+        var items = GenScoreboardItems(data, game, bloods);
         return new()
         {
             Organizations = game.Organizations,
@@ -153,7 +153,7 @@ public class GameRepository : RepositoryBase, IGameRepository
             .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
-    private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, IDictionary<int, Blood?[]> bloods)
+    private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(j => j.Instance.Participation)
             .Select(j =>
             {
@@ -166,10 +166,14 @@ public class GameRepository : RepositoryBase, IGameRepository
                     Avatar = j.Key.Team.AvatarUrl,
                     Organization = j.Key.Organization,
                     Rank = 0,
-                    Team = TeamInfoModel.FromTeam(j.Key.Team, true),
-                    LastSubmissionTime = j.Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
-                        .OrderByDescending(t => t).FirstOrDefault(),
-                    SolvedCount = challengeGroup.Count(c => c.Any(s => s.Submission?.Status == AnswerResult.Accepted)),
+                    Team = TeamInfoModel.FromParticipation(j.Key),
+                    LastSubmissionTime = j
+                        .Where(s => s.Submission?.SubmitTimeUTC < game.EndTimeUTC)
+                        .Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                        .OrderBy(t => t).LastOrDefault(),
+                    SolvedCount = challengeGroup.Count(c => c.Any(
+                        s => s.Submission?.Status == AnswerResult.Accepted
+                        && s.Submission?.SubmitTimeUTC < game.EndTimeUTC)),
                     Challenges = challengeGroup
                             .Select(c =>
                             {

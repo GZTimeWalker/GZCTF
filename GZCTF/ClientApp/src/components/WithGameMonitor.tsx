@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import { mdiFileTableOutline, mdiFlag, mdiLightningBolt } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api, { Role } from '@Api'
+import { Role } from '@Api'
 import WithGameTab from './WithGameTab'
 import WithNavBar from './WithNavbar'
 import WithRole from './WithRole'
@@ -28,11 +28,6 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const theme = useMantineTheme()
   const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
 
-  const { data: game } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
-
   useEffect(() => {
     const tab = getTab(location.pathname)
     if (tab) {
@@ -45,7 +40,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   return (
     <WithNavBar width="90%">
       <WithRole requiredRole={Role.Monitor}>
-        <WithGameTab isLoading={!game} game={game} status={game?.status}>
+        <WithGameTab>
           <Group position="apart" align="flex-start">
             <Stack>
               <Button

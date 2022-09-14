@@ -229,7 +229,7 @@ const GameDetail: FC = () => {
           退出比赛
         </Button>
       )}
-      {status === ParticipationStatus.Accepted && started && (
+      {status === ParticipationStatus.Accepted && started && (!finished || game?.practiceMode) && (
         <Button onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</Button>
       )}
     </>

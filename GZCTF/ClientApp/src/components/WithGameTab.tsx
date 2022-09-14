@@ -8,21 +8,12 @@ import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
-import { GameDetailModel, ParticipationStatus, Role } from '@Api'
+import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
 import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'
-import { RoleMap } from './WithRole'
+import { RequireRole } from './WithRole'
 
 const pages = [
-  {
-    icon: mdiChartLine,
-    title: '积分总榜',
-    path: 'scoreboard',
-    link: 'scoreboard',
-    color: 'yellow',
-    requireJoin: false,
-    requireRole: Role.User,
-  },
   {
     icon: mdiFlagOutline,
     title: '比赛题目',
@@ -30,6 +21,15 @@ const pages = [
     link: 'challenges',
     color: 'blue',
     requireJoin: true,
+    requireRole: Role.User,
+  },
+  {
+    icon: mdiChartLine,
+    title: '积分总榜',
+    path: 'scoreboard',
+    link: 'scoreboard',
+    color: 'yellow',
+    requireJoin: false,
     requireRole: Role.User,
   },
   {
@@ -44,12 +44,6 @@ const pages = [
 ]
 
 dayjs.extend(duration)
-
-interface WithGameTabProps extends React.PropsWithChildren {
-  game?: GameDetailModel
-  isLoading?: boolean
-  status?: ParticipationStatus
-}
 
 const GameCountdown: FC<{ game?: GameDetailModel }> = ({ game }) => {
   const start = dayjs(game?.start ?? new Date())
@@ -91,7 +85,7 @@ const GameCountdown: FC<{ game?: GameDetailModel }> = ({ game }) => {
   )
 }
 
-const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }) => {
+const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const location = useLocation()
@@ -99,10 +93,15 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
 
   const theme = useMantineTheme()
   const { role } = useUserRole()
+  const { data: game } = api.game.useGameGames(numId, {
+    refreshInterval: 0,
+  })
 
+  const finished = dayjs() > dayjs(game?.end ?? new Date())
   const filteredPages = pages
-    .filter((p) => RoleMap.get(role ?? Role.User)! >= RoleMap.get(p.requireRole)!)
-    .filter((p) => !p.requireJoin || status === ParticipationStatus.Accepted)
+    .filter((p) => RequireRole(p.requireRole, role))
+    .filter((p) => !p.requireJoin || game?.status === ParticipationStatus.Accepted)
+    .filter((p) => !p.requireJoin || !finished || game?.practiceMode)
 
   const tabs = filteredPages.map((p) => ({
     tabKey: p.link,
@@ -129,21 +128,37 @@ const WithGameTab: FC<WithGameTabProps> = ({ game, isLoading, status, children }
   })
 
   useEffect(() => {
-    if (dayjs() < dayjs(game?.start)) {
-      navigate(`/games/${numId}`)
-      showNotification({
-        color: 'yellow',
-        message: '比赛尚未开始',
-        icon: <Icon path={mdiExclamationThick} size={1} />,
-        disallowClose: true,
-      })
+    if (game) {
+      const now = dayjs()
+      if (now < dayjs(game.start)) {
+        navigate(`/games/${numId}`)
+        showNotification({
+          color: 'yellow',
+          message: '比赛尚未开始',
+          icon: <Icon path={mdiExclamationThick} size={1} />,
+          disallowClose: true,
+        })
+      } else if (
+        !location.pathname.includes('scoreboard') &&
+        !game.practiceMode &&
+        now > dayjs(game.end) &&
+        !RequireRole(Role.Monitor, role)
+      ) {
+        navigate(`/games/${numId}`)
+        showNotification({
+          color: 'yellow',
+          message: '比赛已经结束',
+          icon: <Icon path={mdiExclamationThick} size={1} />,
+          disallowClose: true,
+        })
+      }
     }
-  }, [game])
+  }, [game, role, location])
 
   return (
     <Stack style={{ position: 'relative' }}>
       <LoadingOverlay
-        visible={isLoading ?? false}
+        visible={!game}
         overlayOpacity={1}
         overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
       />

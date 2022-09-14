@@ -63,6 +63,10 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(ConfigEditModel), StatusCodes.Status200OK)]
     public IActionResult GetConfigs()
     {
+        // always reload before
+        // ensure latest
+        configService.ReloadConfig();
+
         ConfigEditModel config = new()
         {
             AccountPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value,

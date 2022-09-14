@@ -308,9 +308,6 @@ public class TeamController : ControllerBase
 
         try
         {
-            if (team is null)
-                return BadRequest(new RequestResponse("队伍未找到"));
-
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))
                 return BadRequest(new RequestResponse("队伍已锁定"));
 

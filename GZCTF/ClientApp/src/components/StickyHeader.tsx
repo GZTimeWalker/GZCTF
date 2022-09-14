@@ -32,7 +32,7 @@ const useStyles = createStyles((theme) => ({
     fontFamily: theme.fontFamilyMonospace,
     color: theme.colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.dark[4],
 
-    [`@media (max-width: 900px)`]: {
+    [theme.fn.smallerThan(900)]: {
       display: 'none',
     },
   },

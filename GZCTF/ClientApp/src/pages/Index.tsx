@@ -12,9 +12,9 @@ import api, { PostInfoModel } from '@Api'
 
 const useStyles = createStyles((theme) => ({
   posts: {
-    width: '78%',
+    width: '75%',
 
-    [`@media (max-width: 1080px)`]: {
+    [theme.fn.smallerThan(900)]: {
       width: '100%',
     },
   },
@@ -22,12 +22,12 @@ const useStyles = createStyles((theme) => ({
     boxSizing: 'border-box',
     paddingLeft: theme.spacing.md,
     position: 'sticky',
-    top: theme.spacing.xs + 74,
+    top: theme.spacing.xs + 90,
     right: 0,
     paddingTop: 10,
     flex: `0 0`,
 
-    [`@media (max-width: 1080px)`]: {
+    [theme.fn.smallerThan(900)]: {
       display: 'none',
     },
   },
@@ -35,7 +35,7 @@ const useStyles = createStyles((theme) => ({
     paddingTop: 0,
     paddingBottom: theme.spacing.xl,
     paddingLeft: theme.spacing.md,
-    width: '15vw',
+    width: '18vw',
     minWidth: '230px',
     display: 'flex',
     flexDirection: 'column',

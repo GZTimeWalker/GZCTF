@@ -13,18 +13,19 @@ public class Team
     /// 队伍名称
     /// </summary>
     [Required]
-    [MaxLength(16)]
+    [MaxLength(15)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// 队伍 Bio
     /// </summary>
-    [MaxLength(32)]
+    [MaxLength(31)]
     public string? Bio { get; set; } = string.Empty;
 
     /// <summary>
     /// 头像哈希
     /// </summary>
+    [MaxLength(64)]
     public string? AvatarHash { get; set; }
 
     /// <summary>

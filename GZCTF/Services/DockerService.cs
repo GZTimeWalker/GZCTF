@@ -24,8 +24,6 @@ public class DockerService : IContainerService
         DockerClientConfiguration cfg = string.IsNullOrEmpty(this.options.Uri) ? new() : new(new Uri(this.options.Uri));
 
         // TODO: Docker Auth Required
-        // TODO: Docker Swarm Support
-
         dockerClient = cfg.CreateClient();
 
         // Auth for registry
@@ -55,21 +53,24 @@ public class DockerService : IContainerService
         }
         catch (DockerContainerNotFoundException)
         {
-            logger.SystemLog($"容器 {container.ContainerId[..12]} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog($"容器 {container.ContainerId} 已被销毁", TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
         {
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
-                container.Status = ContainerStatus.Destroyed;
+                logger.SystemLog($"容器 {container.ContainerId} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+            }
+            else
+            {
+                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
                 return;
             }
-            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
-            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "删除容器失败");
+            logger.LogError(e, $"容器 {container.ContainerId} 删除失败");
             return;
         }
 
@@ -126,7 +127,7 @@ public class DockerService : IContainerService
                         Limits = new()
                         {
                             MemoryBytes = config.MemoryLimit * 1024 * 1024,
-                            NanoCPUs = config.CPUCount * 10_0000_0000, // do some math here?
+                            NanoCPUs = config.CPUCount * 10_0000_0000,
                         }
                     },
                 }
@@ -137,19 +138,31 @@ public class DockerService : IContainerService
     {
         var parameters = GetServiceCreateParameters(config);
         ServiceCreateResponse? serviceRes = null;
+        int retry = 0;
+        CreateContainer:
         try
         {
             serviceRes = await dockerClient.Swarm.CreateServiceAsync(parameters, token);
         }
         catch (DockerApiException e)
         {
-            logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
-            logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
-            return null;
+            if(e.StatusCode == HttpStatusCode.Conflict && retry < 3)
+            {
+                logger.SystemLog($"容器 {parameters.Service.Name} 已存在，尝试移除后重新创建", TaskStatus.Duplicate, LogLevel.Warning);
+                await dockerClient.Swarm.RemoveServiceAsync(parameters.Service.Name, token);
+                retry++;
+                goto CreateContainer;
+            }
+            else
+            {
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
+                return null;
+            }
         }
         catch (Exception e)
         {
-            logger.LogError(e.Message, e);
+            logger.LogError(e, $"容器 {parameters.Service.Name} 删除失败"); 
             return null;
         }
 
@@ -159,15 +172,22 @@ public class DockerService : IContainerService
             Image = config.Image,
         };
 
-        var res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
-
-        var port = res.Endpoint.Ports.FirstOrDefault();
-
-        if (port is null)
+        retry = 0;
+        SwarmService? res;
+        do
         {
-            logger.SystemLog($"未获取到容器暴露端口信息，这可能是意料外的行为", TaskStatus.Fail, LogLevel.Warning);
-            return null;
-        }
+            res = await dockerClient.Swarm.InspectServiceAsync(serviceRes.ID, token);
+            retry++;
+            if (retry == 3)
+            {
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建后未获取到端口暴露信息，创建失败", TaskStatus.Fail, LogLevel.Warning);
+                return null;
+            }
+            if (res is not { Endpoint.Ports.Count: > 0 })
+                await Task.Delay(500, token);
+        } while (res is not { Endpoint.Ports.Count: > 0 });
+
+        var port = res.Endpoint.Ports.First();
 
         container.StartedAt = res.CreatedAt;
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
@@ -175,7 +195,6 @@ public class DockerService : IContainerService
         container.Port = (int)port.PublishedPort;
         container.Status = ContainerStatus.Running;
 
-        // FIXME: how to get IP?
         if (!string.IsNullOrEmpty(options.PublicIP))
             container.PublicIP = options.PublicIP;
 
@@ -208,17 +227,14 @@ public class DockerService : IContainerService
             return null;
         }
 
-        if (containerRes is null)
+        try
         {
-            try
-            {
-                containerRes = await dockerClient.Containers.CreateContainerAsync(parameters, token);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message, e);
-                return null;
-            }
+            containerRes ??= await dockerClient.Containers.CreateContainerAsync(parameters, token);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message, e);
+            return null;
         }
 
         Container container = new()
@@ -236,7 +252,7 @@ public class DockerService : IContainerService
             retry++;
             if (retry == 3)
             {
-                logger.SystemLog($"启动容器实例 {container.Id[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"启动容器实例 {container.Id} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
                 return null;
             }
             if (!started)

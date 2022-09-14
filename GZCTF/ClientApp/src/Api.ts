@@ -550,6 +550,9 @@ export interface GameInfoModel {
   /** 比赛签名公钥 */
   publicKey?: string
 
+  /** 比赛是否为练习模式（比赛结束够依然可以访问） */
+  practiceMode?: boolean
+
   /**
    * 开始时间
    * @format date-time
@@ -1025,6 +1028,9 @@ export interface GameDetailModel {
 
   /** 参赛队伍名称 */
   teamName?: string | null
+
+  /** 比赛是否为练习模式（比赛结束够依然可以访问） */
+  practiceMode?: boolean
 
   /** 队伍参与状态 */
   status?: ParticipationStatus

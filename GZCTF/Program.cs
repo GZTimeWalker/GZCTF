@@ -18,6 +18,8 @@ using Serilog;
 using Serilog.Events;
 using System.Text;
 using System.Text.Json;
+using System.Reflection;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +54,7 @@ else
     builder.Services.AddDbContext<AppDbContext>(
         options =>
         {
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+            options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
                 o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             if (builder.Environment.IsDevelopment())
             {
@@ -73,19 +75,13 @@ if (!IsTesting)
         config.AddEntityConfiguration(options =>
         {
             if (builder.Configuration.GetSection("ConnectionStrings").Exists())
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
             else
                 options.UseInMemoryDatabase("TestDb");
         });
     });
 }
 #endregion Configuration
-
-#region SignalR
-
-builder.Services.AddSignalR().AddJsonProtocol();
-
-#endregion SignalR
 
 #region OpenApiDocument
 
@@ -106,13 +102,37 @@ builder.Services.AddOpenApiDocument(settings =>
 
 #endregion OpenApiDocument
 
-#region MemoryCache
+#region SignalR
 
-builder.Services.AddMemoryCache();
+var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
 
-#endregion MemoryCache
+#endregion SignalR
+
+#region Cache
+
+if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("RedisCache")))
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+else
+{
+    var constr = builder.Configuration.GetConnectionString("RedisCache");
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = constr;
+    });
+
+    signalrBuilder.AddStackExchangeRedis(constr, options =>
+    {
+        options.Configuration.ChannelPrefix = "GZCTF";
+    });
+}
+
+#endregion Cache
 
 #region Identity
+
+builder.Services.AddDataProtection().PersistKeysToDbContext<AppDbContext>();
 
 builder.Services.AddAuthentication(o =>
 {
@@ -313,7 +333,9 @@ var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    logger.SystemLog("服务器初始化", CTFServer.TaskStatus.Pending, LogLevel.Debug);
+    var version = Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
+    logger.SystemLog(version ?? "GZ::CTF", CTFServer.TaskStatus.Pending, LogLevel.Debug);
     await app.RunAsync();
 }
 catch (Exception exception)

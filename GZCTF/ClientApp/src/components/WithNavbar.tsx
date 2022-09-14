@@ -33,7 +33,7 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
           rotate={-9}
           textSize={15}
           gutter={20}
-          opacity={theme.colorScheme == 'dark' ? 0.004 : 0.010}
+          opacity={theme.colorScheme == 'dark' ? 0.004 : 0.01}
           fontFamily="JetBrains Mono"
         >
           <Center style={{ width: '100%' }}>
@@ -44,7 +44,17 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
                 theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
               }
             />
-            <Box style={{ width: width ?? '80%' }}>{children}</Box>
+            <Box
+              sx={(theme) => ({
+                width: width ?? '80%',
+
+                [theme.fn.smallerThan('xs')]: {
+                  width: '97%',
+                },
+              })}
+            >
+              {children}
+            </Box>
           </Center>
         </Watermark>
       </AppShell>

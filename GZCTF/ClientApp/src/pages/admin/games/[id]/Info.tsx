@@ -289,108 +289,105 @@ const GameInfoEdit: FC = () => {
           required
         />
       </Group>
-      <Grid grow>
-        <Grid.Col span={6}>
-          <Stack>
-            <PasswordInput
-              value={game?.publicKey || ''}
-              label={
-                <Group spacing="sm">
-                  <Text size="sm">比赛签名公钥</Text>
-                  <Text size="xs" color="dimmed">
-                    用于验证队伍 Token
-                  </Text>
-                </Group>
-              }
-              readOnly
-              onClick={() => {
-                clipboard.copy(game?.publicKey || '')
-                showNotification({
-                  color: 'teal',
-                  message: '公钥已复制到剪贴板',
-                  icon: <Icon path={mdiCheck} size={1} />,
-                  disallowClose: true,
-                })
-              }}
-            />
-            <Textarea
-              label="比赛简介"
-              value={game?.summary}
-              style={{ width: '100%' }}
-              autosize
-              disabled={disabled}
-              minRows={4}
-              maxRows={4}
-              onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
-            />
-          </Stack>
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Stack>
-            <Group grow>
-              <TextInput
-                label={
-                  <Group spacing="sm">
-                    <Text size="sm">邀请码</Text>
-                    <Text size="xs" color="dimmed">
-                      留空以不启用
-                    </Text>
-                  </Group>
-                }
-                value={game?.inviteCode || ''}
-                disabled={disabled}
-                onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
-                rightSection={
-                  <ActionIcon
-                    onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
-                  >
-                    <Icon path={mdiRefresh} size={1} />
-                  </ActionIcon>
-                }
-              />
-              <Switch
-                style={{ marginTop: '1rem' }}
-                disabled={disabled}
-                checked={game?.acceptWithoutReview ?? false}
-                label={SwitchLabel('队伍报名免审核', '队伍报名后直接设置为 Accept 状态')}
-                onChange={(e) =>
-                  game && setGame({ ...game, acceptWithoutReview: e.target.checked })
-                }
-              />
+      <Group grow position="apart">
+        <PasswordInput
+          value={game?.publicKey || ''}
+          label={
+            <Group spacing="sm">
+              <Text size="sm">比赛签名公钥</Text>
+              <Text size="xs" color="dimmed">
+                用于验证队伍 Token
+              </Text>
             </Group>
-            <MultiSelect
-              label={
-                <Group spacing="sm">
-                  <Text size="sm">参赛可选组织列表</Text>
-                  <Text size="xs" color="dimmed">
-                    添加参赛组织以开启分组榜单
-                  </Text>
-                </Group>
-              }
-              searchable
-              creatable
-              disabled={disabled}
-              placeholder="无指定可选参赛组织，将允许无组织队伍参赛"
-              maxDropdownHeight={300}
-              value={game?.organizations ?? []}
-              styles={{
-                input: {
-                  minHeight: 110,
-                  maxHeight: 110,
-                },
-              }}
-              onChange={(e) => game && setGame({ ...game, organizations: e })}
-              data={organizations.map((o) => ({ value: o, label: o })) || []}
-              getCreateLabel={(query) => `+ 添加组织 "${query}"`}
-              onCreate={(query) => {
-                const item = { value: query, label: query }
-                setOrganizations([...organizations, query])
-                return item
-              }}
-            />
-          </Stack>
-        </Grid.Col>
-      </Grid>
+          }
+          readOnly
+          onClick={() => {
+            clipboard.copy(game?.publicKey || '')
+            showNotification({
+              color: 'teal',
+              message: '公钥已复制到剪贴板',
+              icon: <Icon path={mdiCheck} size={1} />,
+              disallowClose: true,
+            })
+          }}
+        />
+        <TextInput
+          label={
+            <Group spacing="sm">
+              <Text size="sm">邀请码</Text>
+              <Text size="xs" color="dimmed">
+                留空以不启用
+              </Text>
+            </Group>
+          }
+          value={game?.inviteCode || ''}
+          disabled={disabled}
+          onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
+          rightSection={
+            <ActionIcon
+              onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
+            >
+              <Icon path={mdiRefresh} size={1} />
+            </ActionIcon>
+          }
+        />
+        <Switch
+          style={{ marginTop: '1rem' }}
+          disabled={disabled}
+          checked={game?.acceptWithoutReview ?? false}
+          label={SwitchLabel('队伍报名免审核', '队伍报名后直接设置为 Accept 状态')}
+          onChange={(e) => game && setGame({ ...game, acceptWithoutReview: e.target.checked })}
+        />
+        <Switch
+          style={{ marginTop: '1rem' }}
+          disabled={disabled}
+          checked={game?.practiceMode ?? true}
+          label={SwitchLabel('练习模式', '比赛结束后仍然可以查看和提交 Flag')}
+          onChange={(e) => game && setGame({ ...game, practiceMode: e.target.checked })}
+        />
+      </Group>
+      <Group grow position="apart">
+        <Textarea
+          label="比赛简介"
+          value={game?.summary}
+          style={{ width: '100%' }}
+          autosize
+          disabled={disabled}
+          minRows={4}
+          maxRows={4}
+          onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
+        />
+        <MultiSelect
+          label={
+            <Group spacing="sm">
+              <Text size="sm">参赛可选组织列表</Text>
+              <Text size="xs" color="dimmed">
+                添加参赛组织以开启分组榜单
+              </Text>
+            </Group>
+          }
+          searchable
+          creatable
+          disabled={disabled}
+          placeholder="无指定可选参赛组织，将允许无组织队伍参赛"
+          maxDropdownHeight={300}
+          value={game?.organizations ?? []}
+          styles={{
+            input: {
+              minHeight: 110,
+              maxHeight: 110,
+            },
+          }}
+          onChange={(e) => game && setGame({ ...game, organizations: e })}
+          data={organizations.map((o) => ({ value: o, label: o })) || []}
+          getCreateLabel={(query) => `+ 添加组织 "${query}"`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            setOrganizations([...organizations, query])
+            return item
+          }}
+        />
+      </Group>
       <Grid grow>
         <Grid.Col span={8}>
           <Textarea
