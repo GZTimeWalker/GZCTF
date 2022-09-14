@@ -122,7 +122,7 @@ public static class LogHelper
         hooks: new ArchiveHooks(CompressionLevel.Optimal, "log/archive/{UtcDate:yyyy-MM}")
     ))
     .WriteTo.Async(t => t.PostgreSQL(
-        connectionString: configuration.GetConnectionString("DefaultConnection"),
+        connectionString: configuration.GetConnectionString("Database"),
         tableName: "Logs",
         respectCase: true,
         columnOptions: ColumnWriters,
