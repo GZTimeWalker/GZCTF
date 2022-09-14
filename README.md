@@ -130,12 +130,16 @@ update "AspNetUsers" set "Role"=3;
 - Docker 部署：
   - `sudo nano /etc/sysctl.conf`
   - 添加如下内容，指定 `service-node-port-range`：
+
     ```
     net.ipv4.ip_local_port_range = 20000 50000
     ```
+
   - 执行 `sudo sysctl -p` 使配置生效
   - 重启 Docker 服务
+
 - K3s 部署：
+
   - `sudo nano /etc/systemd/system/k3s.service`
   - 编辑如下设置中的 `ExecStart`，指定`service-node-port-range`
 
@@ -146,7 +150,9 @@ update "AspNetUsers" set "Role"=3;
     ```
   - `sudo systemctl daemon-reload`
   - `sudo systemctl restart k3s`
+
 - K8s 及 Docker Swarm 部署：
+
   - 笔者尚未尝试，如有成功的朋友欢迎提 PR 补充
 
 ### Q&A
@@ -162,15 +168,25 @@ update "AspNetUsers" set "Role"=3;
 - **Q: 平台支持哪些部署形式？**
 
   平台支持的部署形式有：
+  
     - Docker 单机部署：
+
       GZCTF、数据库、题目容器均在同一 Docker 实例中
+
     - Docker 分离部署：
+
       GZCTF、数据库在一个 Docker 实例中，并使用远程另一 Docker/Docker Swarm 作为题目容器平台
+
     - Docker Swarm 集群部署：
+
       GZCTF、数据库、题目容器均在 Docker Swarm 集群中
+
     - Docker + K8s 分离部署：
+
       GZCTF、数据库在一个 Docker 实例中，并使用远程 k8s 作为题目容器平台
+
     - K8s 集群部署：
+
       GZCTF、数据库、题目容器均在同一 k8s 集群中，使用命名空间进行隔离
 
 - **Q: 关于部署的建议？**
