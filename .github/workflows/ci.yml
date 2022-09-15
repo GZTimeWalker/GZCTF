@@ -27,7 +27,7 @@ jobs:
           dotnet-version: '7.0.x'
           include-prerelease: true
 
-      - uses: actions/setup-node@v3g
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
 
