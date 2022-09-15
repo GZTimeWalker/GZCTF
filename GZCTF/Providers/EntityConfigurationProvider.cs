@@ -41,7 +41,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
             try
             {
                 await Task.Delay(source.PollingInterval, token);
-                IDictionary<string, string> actualData = await GetDataAsync(token);
+                IDictionary<string, string?> actualData = await GetDataAsync(token);
 
                 byte[] computedHash = ConfigHash(actualData);
                 if (!computedHash.SequenceEqual(lastHash))
@@ -66,14 +66,14 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
         return new AppDbContext(builder.Options);
     }
 
-    private async Task<IDictionary<string, string>> GetDataAsync(CancellationToken token = default)
+    private async Task<IDictionary<string, string?>> GetDataAsync(CancellationToken token = default)
     {
         var context = CreateAppDbContext();
         return await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value,
             StringComparer.OrdinalIgnoreCase, token);
     }
 
-    private byte[] ConfigHash(IDictionary<string, string> configs)
+    private static byte[] ConfigHash(IDictionary<string, string?> configs)
     {
         using var sha256 = SHA256.Create();
         return sha256.ComputeHash(
@@ -95,7 +95,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
 
         var context = CreateAppDbContext();
 
-        if (context.Database.IsRelational())
+        if (!context.Database.IsInMemory())
             context.Database.Migrate();
 
         context.Database.EnsureCreated();
@@ -131,5 +131,6 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
         cancellationTokenSource.Cancel();
         cancellationTokenSource.Dispose();
         disposed = true;
+        GC.SuppressFinalize(this);
     }
 }

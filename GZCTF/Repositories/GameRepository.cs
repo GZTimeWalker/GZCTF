@@ -22,8 +22,8 @@ public class GameRepository : RepositoryBase, IGameRepository
     {
         cache = _cache;
         logger = _logger;
-        xorkey = string.IsNullOrEmpty(_configuration["XorKey"]) ? null
-            : Encoding.UTF8.GetBytes(_configuration["XorKey"]);
+        var xorkeyStr = _configuration["XorKey"];
+        xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
     }
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)

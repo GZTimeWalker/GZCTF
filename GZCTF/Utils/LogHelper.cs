@@ -32,8 +32,8 @@ public static class LogHelper
     /// <param name="user">用户对象</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> _logger, string msg, UserInfo user, TaskStatus status, LogLevel? level = null)
-        => Log(_logger, msg, user.UserName, user.IP, status, level);
+    public static void Log<T>(this ILogger<T> _logger, string msg, UserInfo? user, TaskStatus status, LogLevel? level = null)
+        => Log(_logger, msg, user?.UserName ?? "Anonym", user?.IP ?? "0.0.0.0", status, level);
 
     /// <summary>
     /// 登记一条 Log 记录

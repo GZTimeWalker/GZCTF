@@ -96,7 +96,7 @@ public class EditController : Controller
 
         var user = await userManager.GetUserAsync(User);
 
-        await postRepository.UpdatePost(post.Update(model, user), token);
+        await postRepository.UpdatePost(post.Update(model, user!), token);
 
         return Ok(PostDetailModel.FromPost(post));
     }
@@ -573,7 +573,7 @@ public class EditController : Controller
         {
             CPUCount = challenge.CPUCount ?? 1,
             TeamId = "admin",
-            UserId = user.Id,
+            UserId = user!.Id,
             Flag = challenge.Type.IsDynamic() ? "flag{GZCTF_dynamic_flag_test}" : null,
             Image = challenge.ContainerImage,
             MemoryLimit = challenge.MemoryLimit ?? 64,

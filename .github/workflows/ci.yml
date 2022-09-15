@@ -2,7 +2,7 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: [ "develop", "ci-test*" ]
+    branches: [ "develop", "ci-test*", "preview" ]
     tags: [ "v*" ]
   workflow_dispatch:
 
@@ -71,7 +71,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/gzctf/gzctf
             gztime/gzctf
           tags: |
-            latest
+            latest,enable={{ startsWith(github.ref, 'refs/tags/v') }}
             type=ref,event=branch
             type=semver,pattern={{raw}}
             type=sha,enable=true,priority=100,prefix=,suffix=,format=short

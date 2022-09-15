@@ -69,17 +69,14 @@ else
 #region Configuration
 if (!IsTesting)
 {
-    builder.Host.ConfigureAppConfiguration((host, config) =>
-    {
-        config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
-        config.AddEntityConfiguration(options =>
+    builder.Configuration.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true)
+        .AddEntityConfiguration(options =>
         {
             if (builder.Configuration.GetSection("ConnectionStrings").Exists())
                 options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
             else
                 options.UseInMemoryDatabase("TestDb");
         });
-    });
 }
 #endregion Configuration
 
@@ -110,19 +107,19 @@ var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
 
 #region Cache
 
-if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("RedisCache")))
+var redisConStr = builder.Configuration.GetConnectionString("RedisCache");
+if (string.IsNullOrWhiteSpace(redisConStr))
 {
     builder.Services.AddDistributedMemoryCache();
 }
 else
 {
-    var constr = builder.Configuration.GetConnectionString("RedisCache");
     builder.Services.AddStackExchangeRedisCache(options =>
     {
-        options.Configuration = constr;
+        options.Configuration = redisConStr;
     });
 
-    signalrBuilder.AddStackExchangeRedis(constr, options =>
+    signalrBuilder.AddStackExchangeRedis(redisConStr, options =>
     {
         options.Configuration.ChannelPrefix = "GZCTF";
     });
@@ -140,7 +137,7 @@ builder.Services.AddAuthentication(o =>
     o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 }).AddIdentityCookies(options =>
 {
-    options.ApplicationCookie.Configure(cookie =>
+    options.ApplicationCookie?.Configure(cookie =>
     {
         cookie.Cookie.Name = "GZCTF_Token";
     });
@@ -246,7 +243,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 {
     var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (context.Database.IsRelational())
+    if (!context.Database.IsInMemory())
         await context.Database.MigrateAsync();
 
     await context.Database.EnsureCreatedAsync();
@@ -319,14 +316,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    endpoints.MapHub<UserHub>("/hub/user");
-    endpoints.MapHub<MonitorHub>("/hub/monitor");
-    endpoints.MapHub<AdminHub>("/hub/admin");
-    endpoints.MapFallbackToFile("index.html");
-});
+app.MapControllers();
+app.MapHub<UserHub>("/hub/user");
+app.MapHub<MonitorHub>("/hub/monitor");
+app.MapHub<AdminHub>("/hub/admin");
+app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();

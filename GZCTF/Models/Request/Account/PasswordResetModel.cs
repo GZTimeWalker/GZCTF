@@ -12,13 +12,13 @@ public class PasswordResetModel
     /// </summary>
     [MinLength(6, ErrorMessage = "密码过短")]
     [Required(ErrorMessage = "密码是必需的")]
-    public string? Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     /// <summary>
     /// 邮箱
     /// </summary>
     [Required(ErrorMessage = "邮箱是必需的")]
-    public string? Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// 邮箱接收到的Base64格式Token
