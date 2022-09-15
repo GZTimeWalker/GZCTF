@@ -4011,3 +4011,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 const api = new Api()
 export default api
+
+export const fetcher = async (path: string, query?: Record<string, unknown>) => {
+  return await api
+    .request({ path, query })
+    .then((res) => res.data)
+    .catch((err) => {
+      throw err.response.data
+    })
+}
