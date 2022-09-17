@@ -8,6 +8,7 @@ using CTFServer.Utils;
 using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Channels;
@@ -536,6 +537,7 @@ public class GameController : ControllerBase
     /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpPost("{id}/Challenges/{challengeId}")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Submit))]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -612,6 +614,7 @@ public class GameController : ControllerBase
     /// <response code="400">题目不可创建容器</response>
     [RequireUser]
     [HttpPost("{id}/Container/{challengeId}")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -631,7 +634,7 @@ public class GameController : ControllerBase
         if (!instance.Challenge.Type.IsContainer())
             return BadRequest(new RequestResponse("题目不可创建容器"));
 
-        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(15))
+        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
             return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
             {
                 StatusCode = 429
@@ -668,6 +671,7 @@ public class GameController : ControllerBase
     /// <response code="400">容器未创建或无法延期</response>
     [RequireUser]
     [HttpPost("{id}/Container/{challengeId}/Prolong")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -711,6 +715,7 @@ public class GameController : ControllerBase
     /// <response code="400">题目不可创建容器</response>
     [RequireUser]
     [HttpDelete("{id}/Container/{challengeId}")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -733,7 +738,7 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器"));
 
-        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(15))
+        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
             return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
             {
                 StatusCode = 429

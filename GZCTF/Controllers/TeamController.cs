@@ -4,6 +4,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
@@ -93,6 +94,7 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     [HttpPost]
     [RequireUser]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Concurrency))]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]

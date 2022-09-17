@@ -36,7 +36,6 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AspNetCoreRateLimit" Version="4.0.2" />
     <PackageReference Include="Docker.DotNet" Version="3.125.11" />
     <PackageReference Include="KubernetesClient" Version="8.0.68" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0-rc.1.22427.2" />

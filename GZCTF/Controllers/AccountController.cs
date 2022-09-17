@@ -7,6 +7,7 @@ using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using System.Net.Mime;
 
@@ -59,6 +60,7 @@ public class AccountController : ControllerBase
     /// <response code="200">注册成功</response>
     /// <response code="400">校验失败或用户已存在</response>
     [HttpPost]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse<RegisterStatus>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
@@ -147,6 +149,7 @@ public class AccountController : ControllerBase
     /// <response code="400">校验失败</response>
     /// <response code="404">用户不存在</response>
     [HttpPost]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -196,6 +199,7 @@ public class AccountController : ControllerBase
     /// <response code="200">用户成功重置密码</response>
     /// <response code="400">校验失败</response>
     [HttpPost]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PasswordReset([FromBody] PasswordResetModel model)
@@ -385,6 +389,7 @@ public class AccountController : ControllerBase
     /// <response code="401">无权访问</response>
     [HttpPut]
     [RequireUser]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]

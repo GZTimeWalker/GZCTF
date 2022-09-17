@@ -1,5 +1,4 @@
 global using CTFServer.Models;
-using AspNetCoreRateLimit;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
@@ -9,6 +8,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Services;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -19,7 +19,6 @@ using Serilog.Events;
 using System.Text;
 using System.Text.Json;
 using System.Reflection;
-using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -159,18 +158,6 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #endregion Identity
 
-#region IP Rate Limit
-if (!IsTesting)
-{
-    builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
-
-    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-    builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
-    builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
-    builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-}
-#endregion IP Rate Limit
-
 #region Services and Repositories
 
 builder.Services.AddTransient<IMailSender, MailSender>()
@@ -300,14 +287,9 @@ else
     app.UseHsts();
 }
 
-app.UseMiddleware<ProxyMiddleware>();
-
-if (!IsTesting)
-{
-    app.UseIpRateLimiting();
-}
-
 app.UseStaticFiles();
+
+app.UseMiddleware<ProxyMiddleware>();
 
 app.UseResponseCompression();
 
@@ -315,6 +297,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseConfiguredRateLimiter();
 
 app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
