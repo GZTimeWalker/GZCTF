@@ -64,14 +64,16 @@ const Post: FC = () => {
       </div>
       <Container className={classes.content}>
         <MarkdownRender source={post?.content ?? ''} />
-        <Group position="right">
-          {post?.tags?.map((tag, idx) => (
-            <Text key={idx} weight={700} span color="brand">
-              {`#${tag}`}
-            </Text>
-          ))}
-        </Group>
-        <Group spacing={5} pb={100} position="right">
+        {post?.tags && post.tags.length > 0 && (
+          <Group position="right">
+            {post.tags.map((tag, idx) => (
+              <Text key={idx} weight={700} span color="brand">
+                {`#${tag}`}
+              </Text>
+            ))}
+          </Group>
+        )}
+        <Group spacing={5} mb={100} position="right">
           <Avatar src={post?.autherAvatar} size="sm">
             {post?.autherName?.at(0) ?? 'A'}
           </Avatar>
