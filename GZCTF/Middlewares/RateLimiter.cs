@@ -35,9 +35,8 @@ public class RateLimiter
         Submit
     }
 
-    public static IApplicationBuilder UseConfiguredRateLimiter(this IApplicationBuilder builder)
-    {
-        var rateLimiterOption = new RateLimiterOptions()
+    public static RateLimiterOptions GetRateLimiterOptions()
+        => new RateLimiterOptions()
         {
             RejectionStatusCode = StatusCodes.Status429TooManyRequests,
             GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
@@ -68,12 +67,11 @@ public class RateLimiter
                     ((int)retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo);
                 }
 
-                var username = context?.HttpContext?.User?.Identity?.Name ?? "Anonymous";
-
                 context?.HttpContext?.RequestServices?
-                        .GetService<ILoggerFactory>()?
-                        .CreateLogger<RateLimiter>()
-                        .Log($"请求过于频繁：", username, context.HttpContext, TaskStatus.Denied, LogLevel.Debug);
+                    .GetService<ILoggerFactory>()?
+                    .CreateLogger<RateLimiter>()
+                    .Log($"请求过于频繁：{context.HttpContext.Request.Path}",
+                        context.HttpContext, TaskStatus.Denied, LogLevel.Debug);
 
                 return new ValueTask();
             }
@@ -98,8 +96,11 @@ public class RateLimiter
             options.TokenLimit = 3;
             options.ReplenishmentPeriod = TimeSpan.FromSeconds(60);
         });
+}
 
-        return builder.UseRateLimiter(rateLimiterOption);
-    }
+public static class RateLimiterExtensions
+{
+    public static IApplicationBuilder UseConfiguredRateLimiter(this IApplicationBuilder builder)
+        => builder.UseRateLimiter(RateLimiter.GetRateLimiterOptions());
 }
 

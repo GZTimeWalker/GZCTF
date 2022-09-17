@@ -8,6 +8,7 @@ using Serilog.Sinks.PostgreSQL;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
 using System.IO.Compression;
+using System.Net;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace CTFServer.Utils;
@@ -33,23 +34,20 @@ public static class LogHelper
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
     public static void Log<T>(this ILogger<T> _logger, string msg, UserInfo? user, TaskStatus status, LogLevel? level = null)
-        => Log(_logger, msg, user?.UserName ?? "Anonym", user?.IP ?? "0.0.0.0", status, level);
+        => Log(_logger, msg, user?.UserName ?? "Anonymous", user?.IP ?? "0.0.0.0", status, level);
 
     /// <summary>
     /// 登记一条 Log 记录
     /// </summary>
     /// <param name="_logger">传入的 Nlog.Logger</param>
     /// <param name="msg">Log 消息</param>
-    /// <param name="username">用户名</param>
     /// <param name="context">Http上下文</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> _logger, string msg, string username, HttpContext context, TaskStatus status, LogLevel? level = null)
+    public static void Log<T>(this ILogger<T> _logger, string msg, HttpContext? context, TaskStatus status, LogLevel? level = null)
     {
-        var ip = context.Connection.RemoteIpAddress?.ToString();
-
-        if (ip is null)
-            return;
+        var ip = context?.Connection?.RemoteIpAddress?.ToString() ?? IPAddress.Loopback.ToString();
+        var username = context?.User?.Identity?.Name ?? "Anonymous";
 
         Log(_logger, msg, username, ip, status, level);
     }

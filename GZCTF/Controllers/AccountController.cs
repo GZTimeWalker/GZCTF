@@ -171,7 +171,7 @@ public class AccountController : ControllerBase
         if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse("请联系管理员重置密码"));
 
-        logger.Log("发送用户密码重置邮件", user.UserName!, HttpContext, TaskStatus.Pending);
+        logger.Log("发送用户密码重置邮件", HttpContext, TaskStatus.Pending);
 
         var token = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
 

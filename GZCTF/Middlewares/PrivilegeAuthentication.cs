@@ -41,7 +41,7 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
         if (user.Role < RequiredPrivilege)
         {
             if (RequiredPrivilege > Role.User)
-                logger.Log($"尝试访问未经授权的接口 {context.HttpContext.Request.Path}", user, TaskStatus.Denied);
+                logger.Log($"未经授权的访问：{context.HttpContext.Request.Path}", user, TaskStatus.Denied);
 
             var result = new JsonResult(new RequestResponse("无权访问", 403))
             {
