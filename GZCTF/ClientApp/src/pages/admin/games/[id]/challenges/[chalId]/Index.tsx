@@ -14,6 +14,7 @@ import {
   TextInput,
   Grid,
   Code,
+  Switch,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -28,6 +29,7 @@ import {
 import { Icon } from '@mdi/react'
 import HintList from '@Components/HintList'
 import ScoreFunc from '@Components/admin/ScoreFunc'
+import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import {
@@ -139,7 +141,10 @@ const GameChallengeEdit: FC = () => {
     if (!challenge?.testContainer) {
       if (
         challenge.containerImage !== challengeInfo.containerImage ||
-        challenge.containerExposePort !== challengeInfo.containerExposePort
+        challenge.containerExposePort !== challengeInfo.containerExposePort ||
+        challenge.memoryLimit !== challengeInfo.memoryLimit ||
+        challenge.cpuCount !== challengeInfo.cpuCount ||
+        challenge.privilegedContainer !== challengeInfo.privilegedContainer
       )
         onUpdate(challengeInfo)?.then(onCreateTestContainer)
       else onCreateTestContainer()
@@ -353,8 +358,8 @@ const GameChallengeEdit: FC = () => {
           />
         )}
         {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
-          <Grid>
-            <Grid.Col span={8}>
+          <Grid columns={9}>
+            <Grid.Col span={6}>
               <TextInput
                 label="容器镜像"
                 disabled={disabled}
@@ -375,14 +380,14 @@ const GameChallengeEdit: FC = () => {
                 }
               />
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={3}>
               <Group spacing={0} align="center" pt={22} style={{ height: '100%' }}>
                 {challenge?.testContainer ? (
                   <Code
                     sx={(theme) => ({
                       backgroundColor: 'transparent',
                       fontSize: theme.fontSizes.sm,
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
                     })}
                     onClick={() => clipBoard.copy(challenge?.testContainer?.entry ?? '')}
                   >
@@ -395,7 +400,7 @@ const GameChallengeEdit: FC = () => {
                 )}
               </Group>
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={2}>
               <NumberInput
                 label="服务端口"
                 min={1}
@@ -408,7 +413,7 @@ const GameChallengeEdit: FC = () => {
                 onChange={(e) => setChallengeInfo({ ...challengeInfo, containerExposePort: e })}
               />
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={2}>
               <NumberInput
                 label="CPU 数量限制"
                 min={1}
@@ -421,7 +426,7 @@ const GameChallengeEdit: FC = () => {
                 onChange={(e) => setChallengeInfo({ ...challengeInfo, cpuCount: e })}
               />
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={2}>
               <NumberInput
                 label="内存限制 (MB)"
                 min={64}
@@ -432,6 +437,17 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.memoryLimit ?? 1}
                 onChange={(e) => setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
+              />
+            </Grid.Col>
+            <Grid.Col span={3}>
+              <Switch
+                style={{ marginTop: '1rem' }}
+                disabled={disabled}
+                checked={challengeInfo.privilegedContainer ?? false}
+                label={SwitchLabel('特权容器', '以特权模式运行容器，Swarm 不受支持')}
+                onChange={(e) =>
+                  setChallengeInfo({ ...challengeInfo, privilegedContainer: e.target.checked })
+                }
               />
             </Grid.Col>
           </Grid>

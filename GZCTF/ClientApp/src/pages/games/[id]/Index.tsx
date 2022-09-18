@@ -307,7 +307,7 @@ const GameDetail: FC = () => {
               你已经以队伍 "{game?.teamName}" 成员身份成功报名，请耐心等待比赛开始。
             </Alert>
           )}
-          <MarkdownRender source={game?.content ?? ''} style={{ marginBottom: 100 }}/>
+          <MarkdownRender source={game?.content ?? ''} style={{ marginBottom: 100 }} />
         </Stack>
         <GameJoinModal
           title="补全报名信息"

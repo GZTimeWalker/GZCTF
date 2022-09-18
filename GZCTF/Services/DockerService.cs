@@ -94,7 +94,8 @@ public class DockerService : IContainerService
             {
                 PublishAllPorts = true,
                 Memory = config.MemoryLimit * 1024 * 1024,
-                CPUCount = 1
+                CPUCount = 1,
+                Privileged = config.PrivilegedContainer
             }
         };
 
@@ -128,7 +129,7 @@ public class DockerService : IContainerService
                         {
                             MemoryBytes = config.MemoryLimit * 1024 * 1024,
                             NanoCPUs = config.CPUCount * 10_0000_0000,
-                        }
+                        },
                     },
                 }
             }
