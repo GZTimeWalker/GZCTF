@@ -11,6 +11,7 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 用户角色
     /// </summary>
+    [ProtectedPersonalData]
     public Role Role { get; set; } = Role.User;
 
     /// <summary>
