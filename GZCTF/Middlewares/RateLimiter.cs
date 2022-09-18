@@ -89,12 +89,14 @@ public class RateLimiter
         .AddTokenBucketLimiter(nameof(LimitPolicy.Container), options =>
         {
             options.TokenLimit = 4;
+            options.TokensPerPeriod = 2;
             options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
         })
         .AddTokenBucketLimiter(nameof(LimitPolicy.Submit), options =>
         {
             options.TokenLimit = 3;
-            options.ReplenishmentPeriod = TimeSpan.FromSeconds(60);
+            options.TokensPerPeriod = 1;
+            options.ReplenishmentPeriod = TimeSpan.FromSeconds(20);
         });
 }
 
