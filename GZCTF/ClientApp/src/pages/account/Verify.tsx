@@ -14,12 +14,12 @@ const Verify: FC = () => {
   const token = sp.get('token')
   const email = sp.get('email')
   const navigate = useNavigate()
-  const runOnce = useRef(false);
+  const runOnce = useRef(false)
 
   usePageTitle('账户验证')
 
   useEffect(() => {
-    if (token && email && !runOnce.current ) {
+    if (token && email && !runOnce.current) {
       runOnce.current = true
       api.account
         .accountVerify({ token, email })
@@ -40,7 +40,8 @@ const Verify: FC = () => {
             icon: <Icon path={mdiClose} size={1} />,
             disallowClose: true,
           })
-        }).finally(() => {
+        })
+        .finally(() => {
           navigate('/account/login')
         })
     }

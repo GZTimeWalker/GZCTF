@@ -9,11 +9,11 @@ import {
   SimpleGrid,
   Input,
 } from '@mantine/core'
+import { useClipboard } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Attachment, FlagInfoModel } from '@Api'
-import { useClipboard } from '@mantine/hooks'
-import { showNotification } from '@mantine/notifications'
 
 interface FlagCardProps {
   flag: FlagInfoModel
@@ -50,7 +50,7 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
               },
               wrapper: {
                 width: '100%',
-              }
+              },
             }}
           />
           <Text color="dimmed" size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>

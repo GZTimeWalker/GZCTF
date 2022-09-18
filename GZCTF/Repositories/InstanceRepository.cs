@@ -119,12 +119,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             await context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
             var container = await service.CreateContainer(new ContainerConfig()
             {
-                CPUCount = instance.Challenge.CPUCount ?? 1,
                 TeamId = team.Id.ToString(),
                 UserId = userId,
                 Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
                 Image = instance.Challenge.ContainerImage,
+                CPUCount = instance.Challenge.CPUCount ?? 1,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
+                PrivilegedContainer = instance.Challenge.PrivilegedContainer ?? false,
                 ExposedPort = instance.Challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口"),
             }, token);
 

@@ -14,7 +14,7 @@ const Confirm: FC = () => {
   const sp = new URLSearchParams(location.search)
   const token = sp.get('token')
   const email = sp.get('email')
-  const runOnce = useRef(false);
+  const runOnce = useRef(false)
 
   usePageTitle('邮箱验证')
 

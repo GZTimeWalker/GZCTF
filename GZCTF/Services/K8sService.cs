@@ -112,6 +112,10 @@ public class K8sService : IContainerService
                         Name = name,
                         Image = config.Image,
                         ImagePullPolicy = "Always",
+                        SecurityContext = new()
+                        {
+                            Privileged = config.PrivilegedContainer
+                        },
                         Env = config.Flag is null ? new List<V1EnvVar>() : new[]
                         {
                             new V1EnvVar("GZCTF_FLAG", config.Flag)
