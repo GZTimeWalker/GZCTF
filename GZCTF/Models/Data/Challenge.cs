@@ -76,6 +76,11 @@ public class Challenge
     public int? ContainerExposePort { get; set; } = 80;
 
     /// <summary>
+    /// 是否为特权容器
+    /// </summary>
+    public bool? PrivilegedContainer { get; set; } = false;
+
+    /// <summary>
     /// 解决题目人数
     /// </summary>
     [Required]
@@ -200,11 +205,12 @@ public class Challenge
         Content = model.Content ?? Content;
         Tag = model.Tag ?? Tag;
         Hints = model.Hints ?? Hints;
-        FlagTemplate = model.FlagTemplate ?? FlagTemplate;
         IsEnabled = model.IsEnabled ?? IsEnabled;
-        ContainerImage = model.ContainerImage ?? ContainerImage;
-        MemoryLimit = model.MemoryLimit ?? MemoryLimit;
+        FlagTemplate = model.FlagTemplate ?? FlagTemplate;
         CPUCount = model.CPUCount ?? CPUCount;
+        MemoryLimit = model.MemoryLimit ?? MemoryLimit;
+        ContainerImage = model.ContainerImage ?? ContainerImage;
+        PrivilegedContainer = model.PrivilegedContainer ?? PrivilegedContainer;
         ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
         OriginalScore = model.OriginalScore ?? OriginalScore;
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;

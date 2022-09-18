@@ -61,6 +61,11 @@ public class ChallengeUpdateModel
     /// </summary>
     public int? ContainerExposePort { get; set; }
 
+    /// <summary>
+    /// 是否为特权容器
+    /// </summary>
+    public bool? PrivilegedContainer { get; set; } = false;
+
     #endregion Container
 
     #region Score

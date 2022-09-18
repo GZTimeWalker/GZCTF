@@ -80,6 +80,11 @@ public class ChallengeEditDetailModel
     [Required]
     public int? ContainerExposePort { get; set; } = 80;
 
+    /// <summary>
+    /// 是否为特权容器
+    /// </summary>
+    public bool? PrivilegedContainer { get; set; } = false;
+
     #endregion Container
 
     #region Score
@@ -147,6 +152,7 @@ public class ChallengeEditDetailModel
             MemoryLimit = chal.MemoryLimit,
             CPUCount = chal.CPUCount,
             ContainerExposePort = chal.ContainerExposePort,
+            PrivilegedContainer = chal.PrivilegedContainer,
             OriginalScore = chal.OriginalScore,
             MinScoreRate = chal.MinScoreRate,
             Difficulty = chal.Difficulty,
