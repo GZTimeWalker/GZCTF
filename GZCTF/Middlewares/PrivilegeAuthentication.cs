@@ -40,11 +40,8 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
             return;
         }
 
-        if (DateTimeOffset.UtcNow - user.LastVisitedUTC > TimeSpan.FromSeconds(5))
-        {
-            user.UpdateByHttpContext(context.HttpContext);
-            await userManager.UpdateAsync(user);
-        }
+        user.UpdateByHttpContext(context.HttpContext);
+        await userManager.UpdateAsync(user);
 
         if (user.Role < RequiredPrivilege)
         {
