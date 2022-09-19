@@ -97,12 +97,15 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
     }
   },
   "XorKey": "Q22yg09A91YWm1GsOf9VIMiw",
-  "ContainerProvider": "Docker", // or K8s
-  "DockerConfig": {
-    "SwarmMode": false,
-    "Uri": "unix:///var/run/docker.sock",
-    "PublicIP": "127.0.0.1"
-  },
+  "DisableRateLimit": false,
+  "ContainerProvider": {
+    "Type": "Docker", // or "Kubernetes"
+      "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+      "DockerConfig": { // optional
+         "SwarmMode": false,
+         "Uri": "unix:///var/run/docker.sock"
+      }
+   },
   "RegistryConfig": {
     "UserName": "",
     "Password": "",
