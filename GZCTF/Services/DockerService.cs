@@ -14,12 +14,14 @@ public class DockerService : IContainerService
 {
     private readonly ILogger<DockerService> logger;
     private readonly DockerConfig options;
+    private readonly string publicEntry;
     private readonly DockerClient dockerClient;
     private readonly AuthConfig? authConfig;
 
-    public DockerService(IOptions<DockerConfig> _options, IOptions<RegistryConfig> _registry, ILogger<DockerService> _logger)
+    public DockerService(IOptions<ContainerProvider> _options, IOptions<RegistryConfig> _registry, ILogger<DockerService> _logger)
     {
-        options = _options.Value;
+        options = _options.Value.DockerConfig ?? new DockerConfig();
+        publicEntry = _options.Value.PublicEntry;
         logger = _logger;
         DockerClientConfiguration cfg = string.IsNullOrEmpty(this.options.Uri) ? new() : new(new Uri(this.options.Uri));
 
@@ -196,8 +198,8 @@ public class DockerService : IContainerService
         container.Port = (int)port.PublishedPort;
         container.Status = ContainerStatus.Running;
 
-        if (!string.IsNullOrEmpty(options.PublicIP))
-            container.PublicIP = options.PublicIP;
+        if (!string.IsNullOrEmpty(publicEntry))
+            container.PublicIP = publicEntry;
 
         return container;
     }
@@ -280,8 +282,8 @@ public class DockerService : IContainerService
 
         container.IP = info.NetworkSettings.IPAddress;
 
-        if (!string.IsNullOrEmpty(options.PublicIP))
-            container.PublicIP = options.PublicIP;
+        if (!string.IsNullOrEmpty(publicEntry))
+            container.PublicIP = publicEntry;
 
         return container;
     }

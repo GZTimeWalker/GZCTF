@@ -1,4 +1,6 @@
-﻿namespace CTFServer.Models.Internal;
+﻿using System.Text.Json.Serialization;
+
+namespace CTFServer.Models.Internal;
 
 /// <summary>
 /// 账户策略
@@ -56,11 +58,25 @@ public class EmailConfig
     public SmtpConfig? Smtp { get; set; } = new();
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ContainerProviderType
+{
+    Docker,
+    Kubernetes
+}
+
+public class ContainerProvider
+{
+    public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
+    public string PublicEntry { get; set; } = string.Empty;
+
+    public DockerConfig? DockerConfig { get; set; }
+}
+
 public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
     public bool SwarmMode { get; set; } = false;
-    public string PublicIP { get; set; } = "127.0.0.1";
 }
 
 public class RegistryConfig
