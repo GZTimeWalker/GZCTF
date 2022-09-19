@@ -60,7 +60,7 @@ const ChallengePanel: FC = () => {
         noWrap
         position="apart"
         align="flex-start"
-        style={{ width: 'calc(100% - 20rem)' }}
+        style={{ minWidth: 'calc(100% - 20rem)' }}
       >
         <Stack sx={{ minWidth: '10rem' }} spacing={6}>
           {Array(8)
@@ -138,7 +138,7 @@ const ChallengePanel: FC = () => {
       noWrap
       position="apart"
       align="flex-start"
-      style={{ width: 'calc(100% - 20rem)' }}
+      style={{ minWidth: 'calc(100% - 20rem)', maxWidth: 'calc(100% - 20rem)' }}
     >
       <Stack style={{ minWidth: '10rem' }}>
         <Switch
