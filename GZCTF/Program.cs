@@ -172,7 +172,7 @@ builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof
 builder.Services.Configure<ContainerProvider>(builder.Configuration.GetSection(nameof(ContainerProvider)));
 
 if (builder.Configuration.GetSection(nameof(ContainerProvider))
-    .GetValue(typeof(ContainerProviderType), nameof(ContainerProvider.Type))
+    .GetValue<ContainerProviderType>(nameof(ContainerProvider.Type))
     is ContainerProviderType.Kubernetes)
 {
     builder.Services.AddSingleton<IContainerService, K8sService>();
@@ -299,7 +299,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseConfiguredRateLimiter();
+if (!app.Configuration.GetValue<bool>("DisableRateLimit") is true)
+{
+    app.UseConfiguredRateLimiter();
+}
 
 app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
