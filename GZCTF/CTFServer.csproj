@@ -23,6 +23,7 @@
     <ReleaseVersion>0.11.2</ReleaseVersion>
     <WarningLevel>4</WarningLevel>
     <LangVersion>preview</LangVersion>
+    <TieredPgo>true</TieredPgo>
   </PropertyGroup>
 
   <ItemGroup>
