@@ -104,7 +104,6 @@ public static class LogHelper
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
     .WriteTo.Async(t => t.Console(
         formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
         restrictedToMinimumLevel: LogEventLevel.Debug
