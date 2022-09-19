@@ -1,7 +1,9 @@
-﻿using CTFServer.Utils;
+﻿using System.Security.Claims;
+using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Middlewares;
 
@@ -28,11 +30,13 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
-        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<UserInfo>>();
+        var dbcontext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+
         UserInfo? user = null;
 
         if (context.HttpContext.User.Identity?.IsAuthenticated is true)
-            user = await userManager.GetUserAsync(context.HttpContext.User);
+            user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Id ==
+                context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         if (user is null)
         {
@@ -43,10 +47,7 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
         if (DateTimeOffset.UtcNow - user.LastVisitedUTC > TimeSpan.FromSeconds(5))
         {
             user.UpdateByHttpContext(context.HttpContext);
-            await userManager.UpdateAsync(user);
-
-            var dbcontext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
-            await dbcontext.SaveChangesAsync();
+            await dbcontext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
         }
 
         if (user.Role < RequiredPrivilege)
