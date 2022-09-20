@@ -76,7 +76,8 @@ public class WebhookPushService : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        for (var i = 0; i < 4; i++)
+        var concurrencyLevel = Environment.ProcessorCount <= 0 ? 1 : Environment.ProcessorCount;
+        for (var i = 0; i < concurrencyLevel; i++)
         {
             WorkerTask(_cancellationTokenSource.Token);
         }
