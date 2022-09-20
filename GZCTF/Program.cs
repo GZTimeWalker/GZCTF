@@ -306,14 +306,14 @@ else
 
 app.UseMiddleware<ProxyMiddleware>();
 
-if (!IsTesting && app.Configuration.GetValue<bool>("DisableRateLimit") is false)
+if (!IsTesting && app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
 {
     app.UseIpRateLimiting();
 }
 
-app.UseStaticFiles();
-
 app.UseResponseCompression();
+
+app.UseStaticFiles();
 
 app.UseRouting();
 
