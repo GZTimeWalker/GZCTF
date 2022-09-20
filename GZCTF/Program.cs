@@ -306,7 +306,7 @@ else
 
 app.UseMiddleware<ProxyMiddleware>();
 
-if (!IsTesting && app.Configuration.GetValue<bool>("DisableRateLimit") is true)
+if (!IsTesting && app.Configuration.GetValue<bool>("DisableRateLimit") is false)
 {
     app.UseIpRateLimiting();
 }
@@ -352,5 +352,5 @@ finally
 
 public partial class Program
 {
-    public static bool IsTesting { get; set; }
+    public static bool IsTesting { get; set; } = false;
 }
