@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HttpMethod = System.Net.Http.HttpMethod;
 
 namespace CTFServer.Models.Data;
 
@@ -11,8 +12,7 @@ public class Webhook
     public required string TargetUrl { get; set; }
     public required string Scope { get; set; }
     public required string Event { get; set; }
-    [MaxLength(5)]
-    public string Method { get; set; } = "POST";
+    public HttpMethod Method { get; set; } = HttpMethod.Post;
     public required string Body { get; set; }
     public bool Enabled { get; set; }
 }

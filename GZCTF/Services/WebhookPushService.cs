@@ -6,7 +6,7 @@ namespace CTFServer.Services;
 public class WebhookPushService : IHostedService
 {
     private readonly ILogger<WebhookPushService> _logger;
-    private readonly static ConcurrentQueue<(string Body, string TargetUri, string Method)>
+    private readonly static ConcurrentQueue<(string Body, string TargetUri, HttpMethod Method)>
         _messageQueue = new();
     private readonly static SemaphoreSlim _semaphore = new(0, 4);
     private readonly static CancellationTokenSource _cancellationTokenSource = new();
@@ -17,19 +17,12 @@ public class WebhookPushService : IHostedService
         _logger = logger;
     }
 
-    private static async ValueTask PushWebhookAsync(string body, string targetUri, string method, CancellationToken cancellationToken)
+    private static async ValueTask PushWebhookAsync(string body, string targetUri, HttpMethod method, CancellationToken cancellationToken)
     {
         using var content = new StringContent(body, Encoding.UTF8, "application/json");
         using var message = new HttpRequestMessage
         {
-            Method = method.Trim().ToLowerInvariant() switch
-            {
-                "get" => HttpMethod.Get,
-                "put" => HttpMethod.Put,
-                "delete" => HttpMethod.Delete,
-                "patch" => HttpMethod.Patch,
-                _ => HttpMethod.Post
-            },
+            Method = method,
             RequestUri = new Uri(targetUri)
         };
 
@@ -41,7 +34,7 @@ public class WebhookPushService : IHostedService
         await _httpClient.SendAsync(message, cancellationToken);
     }
 
-    public static void QueueWebhook(string body, string targetUri, string method)
+    public static void QueueWebhook(string body, string targetUri, HttpMethod method)
     {
         _messageQueue.Enqueue((body, targetUri, method));
         if (_semaphore.CurrentCount < 4)
