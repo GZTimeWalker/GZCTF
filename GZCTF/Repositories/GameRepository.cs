@@ -12,7 +12,7 @@ namespace CTFServer.Repositories;
 public class GameRepository : RepositoryBase, IGameRepository
 {
     private readonly IDistributedCache cache;
-    private readonly byte[]? xorkey;
+    private static byte[]? xorkey;
     private readonly ILogger<GameRepository> logger;
 
     public GameRepository(IDistributedCache _cache,
@@ -22,8 +22,11 @@ public class GameRepository : RepositoryBase, IGameRepository
     {
         cache = _cache;
         logger = _logger;
-        var xorkeyStr = _configuration["XorKey"];
-        xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
+        if (xorkey is null)
+        {
+            var xorkeyStr = _configuration["XorKey"];
+            xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
+        }
     }
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)

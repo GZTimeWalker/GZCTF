@@ -31,6 +31,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
     public DbSet<Config> Configs { get; set; } = default!;
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
+    public DbSet<Webhook> Webhooks { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
