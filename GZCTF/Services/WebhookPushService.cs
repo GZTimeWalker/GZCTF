@@ -17,7 +17,7 @@ public class WebhookPushService : IHostedService
         _logger = logger;
     }
 
-    private static async ValueTask PushWebhookAsync(string body, string targetUri, HttpMethod method, CancellationToken cancellationToken)
+    private static async Task PushWebhookAsync(string body, string targetUri, HttpMethod method, CancellationToken cancellationToken)
     {
         using var content = new StringContent(body, Encoding.UTF8, "application/json");
         using var message = new HttpRequestMessage
