@@ -288,18 +288,18 @@ else
     app.UseHsts();
 }
 
+app.UseResponseCompression();
+
 app.UseStaticFiles();
 
 app.UseMiddleware<ProxyMiddleware>();
-
-app.UseResponseCompression();
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (!app.Configuration.GetValue<bool>("DisableRateLimit") is true)
+if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
 {
     app.UseConfiguredRateLimiter();
 }
@@ -333,5 +333,5 @@ finally
 
 public partial class Program
 {
-    public static bool IsTesting { get; set; }
+    public static bool IsTesting { get; set; } = false;
 }
