@@ -17,7 +17,7 @@ import { Icon } from '@mdi/react'
 import { BasicGameInfoModel } from '@Api'
 import { getGameStatus, GameColorMap, GameStatus } from './GameCard'
 
-interface RecentGameProps {
+export interface RecentGameProps {
   game: BasicGameInfoModel
 }
 

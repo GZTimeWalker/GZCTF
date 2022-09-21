@@ -2,11 +2,14 @@ import { FC } from 'react'
 import { createStyles, Group, Stack, Title } from '@mantine/core'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import MobilePostCard from '@Components/MobilePostCard'
 import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
+import RecentGameCarousel from '@Components/RecentGameCarousel'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { PostInfoModel } from '@Api'
 
@@ -91,6 +94,7 @@ const Home: FC = () => {
   ].slice(0, 3)
 
   const { classes, theme } = useStyles()
+  const { isMobile } = useIsMobile(900)
 
   usePageTitle()
 
@@ -98,12 +102,19 @@ const Home: FC = () => {
     <WithNavBar minWidth={0}>
       <Stack justify="space-between">
         <StickyHeader />
+        {isMobile && recentGames && recentGames.length > 0 && (
+          <RecentGameCarousel games={recentGames} />
+        )}
         <Stack align="center">
           <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>
             <Stack className={classes.posts}>
-              {posts?.map((post) => (
-                <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
-              ))}
+              {isMobile
+                ? posts?.map((post) => (
+                    <MobilePostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
+                  ))
+                : posts?.map((post) => (
+                    <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
+                  ))}
             </Stack>
             <nav className={classes.wrapper}>
               <div className={classes.inner}>

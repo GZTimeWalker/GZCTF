@@ -24,7 +24,7 @@ import GameJoinModal from '@Components/GameJoinModal'
 import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useBannerStyles } from '@Utils/ThemeOverride'
+import { useBannerStyles, useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
@@ -129,6 +129,7 @@ const GameDetail: FC = () => {
 
   const status = game?.status ?? ParticipationStatus.Unsubmitted
   const modals = useModals()
+  const { isMobile } = useIsMobile()
 
   const [joinModalOpen, setJoinModalOpen] = useState(false)
 
@@ -223,20 +224,25 @@ const GameDetail: FC = () => {
       <Button disabled={!canSubmit} onClick={onJoin}>
         {finished ? '比赛结束' : !user ? '请先登录' : GameActionMap.get(status)}
       </Button>
-      {started && <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>}
+      {started && !isMobile && (
+        <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>
+      )}
       {(status === ParticipationStatus.Pending || status === ParticipationStatus.Denied) && (
         <Button color="red" variant="outline" onClick={onLeave}>
           退出比赛
         </Button>
       )}
-      {status === ParticipationStatus.Accepted && started && (!finished || game?.practiceMode) && (
-        <Button onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</Button>
-      )}
+      {status === ParticipationStatus.Accepted &&
+        started &&
+        !isMobile &&
+        (!finished || game?.practiceMode) && (
+          <Button onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</Button>
+        )}
     </>
   )
 
   return (
-    <WithNavBar width="100%" padding={0} isLoading={!game}>
+    <WithNavBar width="100%" padding={0} isLoading={!game} minWidth={0}>
       <div ref={targetRef} className={classes.root}>
         <Group
           noWrap
@@ -305,6 +311,7 @@ const GameDetail: FC = () => {
           {status === ParticipationStatus.Accepted && !started && (
             <Alert color="teal" icon={<Icon path={mdiCheck} />} title="比赛尚未开始">
               你已经以队伍 "{game?.teamName}" 成员身份成功报名，请耐心等待比赛开始。
+              {isMobile && '请使用电脑端参与比赛及查看比赛详情。'}
             </Alert>
           )}
           <MarkdownRender source={game?.content ?? ''} style={{ marginBottom: 100 }} />

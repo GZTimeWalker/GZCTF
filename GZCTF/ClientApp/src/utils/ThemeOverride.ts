@@ -1,5 +1,6 @@
-import { createStyles, keyframes, MantineThemeOverride } from '@mantine/core'
+import { createStyles, keyframes, MantineThemeOverride, useMantineTheme } from '@mantine/core'
 import { MIME_TYPES } from '@mantine/dropzone'
+import { useViewportSize } from '@mantine/hooks'
 
 export const ThemeOverride: MantineThemeOverride = {
   colors: {
@@ -108,15 +109,19 @@ export const useTooltipStyles = createStyles((theme) => ({
       theme.colorScheme === 'dark'
         ? theme.fn.darken(theme.colors.gray[6], 0.4)
         : theme.colors.white[0],
-    // border: theme.colorScheme === 'dark' ? 'none' : `1px solid ${theme.colors.gray[3]}`,
     boxShadow: theme.shadows.md,
     color: theme.colorScheme === 'dark' ? theme.colors.white[2] : theme.colors.gray[7],
   },
   arrow: {
     boxShadow: theme.shadows.md,
-    // border: theme.colorScheme === 'dark' ? 'none' : `1px solid ${theme.colors.gray[3]}`,
   },
 }))
+
+export const useIsMobile = (limit?: number) => {
+  const view = useViewportSize()
+  const theme = useMantineTheme()
+  return { loaded: view.width > 0, isMobile: view.width < (limit ?? theme.breakpoints.xs) }
+}
 
 export const ACCEPT_IMAGE_MIME_TYPE = [
   MIME_TYPES.png,

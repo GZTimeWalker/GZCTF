@@ -19,6 +19,7 @@ import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import api, { PostEditModel, Role } from '@Api'
 
 const PostEdit: FC = () => {
@@ -54,6 +55,8 @@ const PostEdit: FC = () => {
   const [tags, setTags] = useState<string[]>([])
   const [disabled, setDisabled] = useState(false)
   const modals = useModals()
+
+  const { isMobile } = useIsMobile()
 
   const onUpdate = () => {
     if (postId === 'new') {
@@ -125,23 +128,50 @@ const PostEdit: FC = () => {
     }
   }, [curPost])
 
+  const titlePart = (
+    <>
+      <TextInput
+        label="文章标题"
+        value={post.title}
+        onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
+      />
+      <MultiSelect
+        label="文章标签"
+        data={tags.map((o) => ({ value: o, label: o })) || []}
+        getCreateLabel={(query) => `+ 添加标签 "${query}"`}
+        maxSelectedValues={5}
+        value={post?.tags ?? []}
+        onChange={(values) => setPost({ ...post, tags: values })}
+        onCreate={(query) => {
+          const item = { value: query, label: query }
+          setTags([...tags, query])
+          return item
+        }}
+        searchable
+        creatable
+      />
+    </>
+  )
+
   return (
-    <WithNavBar minWidth={900}>
+    <WithNavBar minWidth={0}>
       <WithRole requiredRole={Role.Admin}>
         <StickyHeader />
-        <Stack mt={30}>
-          <Group position="apart">
-            <Title
-              order={1}
-              style={{
-                color: theme.fn.rgba(
-                  theme.colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
-                  0.5
-                ),
-              }}
-            >
-              {`> ${postId === 'new' ? '新建' : '编辑'}文章`}
-            </Title>
+        <Stack mt={isMobile ? 5 : 30}>
+          <Group position={isMobile ? 'right' : 'apart'}>
+            {!isMobile && (
+              <Title
+                order={1}
+                style={{
+                  color: theme.fn.rgba(
+                    theme.colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
+                    0.5
+                  ),
+                }}
+              >
+                {`> ${postId === 'new' ? '新建' : '编辑'}文章`}
+              </Title>
+            )}
             <Group position="right">
               {postId?.length === 8 && (
                 <Button
@@ -172,28 +202,7 @@ const PostEdit: FC = () => {
               </Button>
             </Group>
           </Group>
-          <Group grow>
-            <TextInput
-              label="文章标题"
-              value={post.title}
-              onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
-            />
-            <MultiSelect
-              label="文章标签"
-              data={tags.map((o) => ({ value: o, label: o })) || []}
-              getCreateLabel={(query) => `+ 添加标签 "${query}"`}
-              maxSelectedValues={5}
-              value={post?.tags ?? []}
-              onChange={(values) => setPost({ ...post, tags: values })}
-              onCreate={(query) => {
-                const item = { value: query, label: query }
-                setTags([...tags, query])
-                return item
-              }}
-              searchable
-              creatable
-            />
-          </Group>
+          {isMobile ? titlePart : <Group grow>titlePart</Group>}
           <Textarea
             label={
               <Group spacing="sm">
@@ -219,8 +228,8 @@ const PostEdit: FC = () => {
             }
             value={post.content}
             onChange={(e) => setPost({ ...post, content: e.currentTarget.value })}
-            minRows={16}
-            maxRows={16}
+            minRows={isMobile ? 14 : 16}
+            maxRows={isMobile ? 14 : 16}
           />
         </Stack>
       </WithRole>

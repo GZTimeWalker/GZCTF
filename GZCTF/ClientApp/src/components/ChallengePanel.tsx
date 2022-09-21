@@ -44,8 +44,7 @@ const ChallengePanel: FC = () => {
       (chal) =>
         !hideSolved ||
         (data &&
-          data.rank?.challenges?.find((c) => c.id === chal.id)?.type ===
-            SubmissionType.Unaccepted)
+          data.rank?.challenges?.find((c) => c.id === chal.id)?.type === SubmissionType.Unaccepted)
     )
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)

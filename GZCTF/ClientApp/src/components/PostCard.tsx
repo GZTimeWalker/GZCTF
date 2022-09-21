@@ -20,7 +20,7 @@ import { PostInfoModel, Role } from '@Api'
 import MarkdownRender from './MarkdownRender'
 import { RequireRole } from './WithRole'
 
-interface PostCardProps {
+export interface PostCardProps {
   post: PostInfoModel
   onTogglePinned?: (post: PostInfoModel, setDisabled: (value: boolean) => void) => void
 }
