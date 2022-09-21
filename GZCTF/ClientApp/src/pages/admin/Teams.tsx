@@ -187,6 +187,7 @@ const Teams: FC = () => {
                                   withArrow
                                   classNames={{
                                     tooltip: tooltipClasses.tooltip,
+                                    arrow: tooltipClasses.arrow,
                                   }}
                                 >
                                   <Avatar radius="xl" src={m.avatar} />

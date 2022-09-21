@@ -294,6 +294,8 @@ app.UseStaticFiles();
 
 app.UseMiddleware<ProxyMiddleware>();
 
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthentication();

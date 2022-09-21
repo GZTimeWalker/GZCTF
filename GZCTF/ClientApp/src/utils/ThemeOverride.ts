@@ -104,8 +104,17 @@ export const useTableStyles = createStyles((theme) => ({
 export const useTooltipStyles = createStyles((theme) => ({
   tooltip: {
     fontWeight: 500,
-    background: theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[2],
+    background:
+      theme.colorScheme === 'dark'
+        ? theme.fn.darken(theme.colors.gray[6], 0.4)
+        : theme.colors.white[0],
+    // border: theme.colorScheme === 'dark' ? 'none' : `1px solid ${theme.colors.gray[3]}`,
+    boxShadow: theme.shadows.md,
     color: theme.colorScheme === 'dark' ? theme.colors.white[2] : theme.colors.gray[7],
+  },
+  arrow: {
+    boxShadow: theme.shadows.md,
+    // border: theme.colorScheme === 'dark' ? 'none' : `1px solid ${theme.colors.gray[3]}`,
   },
 }))
 
