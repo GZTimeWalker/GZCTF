@@ -50,6 +50,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
       }
     },
     renderer,
+    silent: true,
   })
 
   return (

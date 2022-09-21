@@ -21,9 +21,12 @@ export default defineConfig(({ mode }) => {
         '/hub': { target: TARGET.replace('http', 'ws'), ws: true },
       },
     },
+    preview: {
+      port: 64000
+    },
     build: {
       outDir: 'build',
-      target: ['es2018', 'chrome80'],
+      target: ['es2020', 'chrome86'],
       assetsDir: 'static',
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
