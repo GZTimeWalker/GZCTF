@@ -139,7 +139,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 .Take(3).ToArray(),
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
-    private static IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
+    private static Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(g => g.Instance.Challenge)
             .Select(c => new ChallengeInfo
             {

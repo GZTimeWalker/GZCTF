@@ -94,7 +94,7 @@ public class GameController : ControllerBase
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="404">比赛未找到</response>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(GameDetailModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DetailedGameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Games(int id, CancellationToken token)
     {
@@ -105,7 +105,7 @@ public class GameController : ControllerBase
 
         var count = await participationRepository.GetParticipationCount(context.Game, token);
 
-        return Ok(GameDetailModel.FromGame(context.Game, count)
+        return Ok(DetailedGameInfoModel.FromGame(context.Game, count)
                       .WithParticipation(context.Participation));
     }
 
@@ -359,7 +359,7 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
-    /// 获取全部比赛题目信息
+    /// 获取全部比赛题目信息及当前队伍信息
     /// </summary>
     /// <remarks>
     /// 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
@@ -370,37 +370,11 @@ public class GameController : ControllerBase
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpGet("{id}/Challenges")]
-    [ProducesResponseType(typeof(IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>>), StatusCodes.Status200OK)]
+    [HttpGet("{id}/Details")]
+    [ProducesResponseType(typeof(GameDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Challenges([FromRoute] int id, CancellationToken token)
-    {
-        var context = await GetContextInfo(id, token: token);
-
-        if (context.Result is not null)
-            return context.Result;
-
-        return Ok((await gameRepository.GetScoreboard(context.Game!, token)).Challenges);
-    }
-
-    /// <summary>
-    /// 获取当前队伍比赛信息
-    /// </summary>
-    /// <remarks>
-    /// 获取当前队伍的比赛信息，需要User权限，需要当前激活队伍已经报名
-    /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目信息</response>
-    /// <response code="400">操作无效</response>
-    /// <response code="404">比赛未找到</response>
-    [RequireUser]
-    [HttpGet("{id}/MyTeam")]
-    [ProducesResponseType(typeof(GameTeamDetailModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> MyTeam([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> ChallengesWithTeamInfo([FromRoute] int id, CancellationToken token)
     {
         var context = await GetContextInfo(id, token: token);
 
@@ -421,7 +395,12 @@ public class GameController : ControllerBase
             Id = context.Participation!.TeamId
         };
 
-        return Ok(new GameTeamDetailModel() { ScoreboardItem = boarditem, TeamToken = context.Participation!.Token });
+        return Ok(new GameDetailModel()
+        {
+            ScoreboardItem = boarditem,
+            TeamToken = context.Participation!.Token,
+            Challenges = scoreboard.Challenges
+        });
     }
 
     /// <summary>

@@ -158,6 +158,24 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 );
         });
 
+        builder.Entity<Instance>(entity =>
+        {
+            entity.HasOne(e => e.FlagContext)
+                .WithMany()
+                .HasForeignKey(e => e.FlagId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.Container)
+                .WithOne(e => e.Instance)
+                .HasForeignKey<Container>(e => e.InstanceId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.Navigation(e => e.Container).AutoInclude();
+            entity.Navigation(e => e.Challenge).AutoInclude();
+
+            entity.HasIndex(e => e.FlagId).IsUnique();
+        });
+
         builder.Entity<UserParticipation>(entity =>
         {
             entity.HasOne(e => e.User)
@@ -174,25 +192,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
 
             entity.HasKey(e => new { e.GameId, e.TeamId, e.UserId });
 
-            entity.HasIndex(e => new { e.UserId, e.GameId });
-        });
-
-        builder.Entity<Instance>(entity =>
-        {
-            entity.HasOne(e => e.FlagContext)
-                .WithMany()
-                .HasForeignKey(e => e.FlagId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(e => e.Container)
-                .WithOne(e => e.Instance)
-                .HasForeignKey<Container>(e => e.InstanceId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            entity.Navigation(e => e.Container).AutoInclude();
-            entity.Navigation(e => e.Challenge).AutoInclude();
-
-            entity.HasIndex(e => new { e.ParticipationId, e.ChallengeId });
+            entity.HasIndex(e => new { e.UserId, e.GameId }).IsUnique();
         });
 
         builder.Entity<Container>(entity =>

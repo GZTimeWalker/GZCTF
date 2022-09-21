@@ -31,7 +31,7 @@ public class ScoreboardModel
     /// <summary>
     /// 题目信息
     /// </summary>
-    public IDictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
+    public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
 }
 
 public class TopTimeLine

@@ -48,25 +48,50 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             return null;
 
         if (challenge.Type.IsStatic())
+        {
             instance.FlagContext = null; // use challenge to verify
+            instance.IsLoaded = true;
+
+            await SaveAsync(token);
+        }
         else
         {
             if (challenge.Type.IsAttachment())
             {
-                var flags = await context.FlagContexts
-                    .Where(e => e.Challenge == challenge && !e.IsOccupied)
-                    .ToListAsync(token);
-
-                if (flags.Count == 0)
+                bool saved = false;
+                int retry = 0;
+                do
                 {
-                    logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Fail, LogLevel.Warning);
-                    return null;
-                }
+                    var flags = await context.FlagContexts
+                        .Where(e => e.Challenge == challenge && !e.IsOccupied)
+                        .ToListAsync(token);
 
-                var pos = Random.Shared.Next(flags.Count);
-                flags[pos].IsOccupied = true;
+                    if (flags.Count == 0)
+                    {
+                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Fail, LogLevel.Warning);
+                        return null;
+                    }
 
-                instance.FlagId = flags[pos].Id;
+                    var pos = Random.Shared.Next(flags.Count);
+                    flags[pos].IsOccupied = true;
+
+                    instance.FlagId = flags[pos].Id;
+
+                    try
+                    {
+                        // FlagId need to be unique
+                        await SaveAsync(token);
+                        saved = true;
+                    }
+                    catch
+                    {
+                        retry++;
+                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 分配的动态附件保存失败，重试中：{retry} 次", TaskStatus.Fail, LogLevel.Warning);
+                        if (retry >= 3)
+                            return null;
+                        await Task.Delay(100, token);
+                    }
+                } while (!saved);
             }
             else
             {
@@ -78,10 +103,6 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 };
             }
         }
-
-        instance.IsLoaded = true;
-
-        await SaveAsync(token);
 
         return instance;
     }
