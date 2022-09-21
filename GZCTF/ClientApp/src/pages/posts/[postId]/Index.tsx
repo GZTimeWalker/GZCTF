@@ -53,7 +53,7 @@ const Post: FC = () => {
             {post?.title}
           </Title>
           <Avatar src={post?.autherAvatar} color="brand" radius="xl" size="lg">
-            {post?.autherName?.at(0) ?? 'A'}
+            {post?.autherName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text weight={700}>{post?.autherName ?? 'Anonym'}</Text>
           <Stack spacing={2}>
@@ -75,7 +75,7 @@ const Post: FC = () => {
         )}
         <Group spacing={5} mb={100} position="right">
           <Avatar src={post?.autherAvatar} size="sm">
-            {post?.autherName?.at(0) ?? 'A'}
+            {post?.autherName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text weight={700}>
             {post?.autherName ?? 'Anonym'} 发布于 {dayjs(post?.time).format('HH:mm, YY/MM/DD')}

@@ -155,7 +155,7 @@ const Teams: FC = () => {
                         <Group position="apart">
                           <Group position="left">
                             <Avatar src={team.avatar} radius="xl">
-                              {team.name?.at(0)}
+                              {team.name?.slice(0, 1)}
                             </Avatar>
                             <Text lineClamp={1}>{team.name}</Text>
                           </Group>

@@ -55,7 +55,7 @@ const TeamRank: FC<PaperProps> = (props) => {
       <Stack spacing={8}>
         <Group>
           <Avatar color="cyan" size="md" radius="md" src={data?.rank?.avatar}>
-            {data?.rank?.name?.at(0) ?? 'T'}
+            {data?.rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Skeleton width="8rem" visible={!data}>
             <Title order={4}>{data?.rank?.name ?? 'Team'}</Title>

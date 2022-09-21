@@ -129,7 +129,7 @@ const Games: FC = () => {
                             sx={{ cursor: 'pointer' }}
                           >
                             <Avatar src={game.poster} radius={0}>
-                              {game.title?.at(0)}
+                              {game.title?.slice(0, 1)}
                             </Avatar>
                             <Text weight={700} lineClamp={1}>
                               {game.title}

@@ -20,7 +20,7 @@ import { PostInfoModel, Role } from '@Api'
 import MarkdownRender from './MarkdownRender'
 import { RequireRole } from './WithRole'
 
-interface PostCardProps {
+export interface PostCardProps {
   post: PostInfoModel
   onTogglePinned?: (post: PostInfoModel, setDisabled: (value: boolean) => void) => void
 }
@@ -39,7 +39,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           <Group position="apart" style={{ margin: 'auto', fontStyle: 'normal' }}>
             <Group spacing={5} position="right">
               <Avatar src={post.autherAvatar} size="sm">
-                {post.autherName?.at(0) ?? 'A'}
+                {post.autherName?.slice(0, 1) ?? 'A'}
               </Avatar>
               <Text weight={700}>
                 {post.autherName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}

@@ -13,13 +13,16 @@ export default defineConfig(({ mode }) => {
 
   return {
     server: {
-      port: 3000,
+      port: 63000,
       proxy: {
         '/api': TARGET,
         '/swagger': TARGET,
         '/assets': TARGET,
         '/hub': { target: TARGET.replace('http', 'ws'), ws: true },
       },
+    },
+    preview: {
+      port: 64000
     },
     build: {
       outDir: 'build',

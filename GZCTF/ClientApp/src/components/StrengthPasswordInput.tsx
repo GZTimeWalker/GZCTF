@@ -3,6 +3,7 @@ import { Text, Box, Center, PasswordInput, Popover, Progress } from '@mantine/co
 import { useDisclosure } from '@mantine/hooks'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useIsMobile } from '@Utils/ThemeOverride'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {
   return (
@@ -45,6 +46,7 @@ interface StrengthPasswordInputProps {
 const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
   const [opened, { close, open }] = useDisclosure(false)
   const pwd = props.value
+  const { isMobile } = useIsMobile()
 
   const checks = [
     <PasswordRequirement key={0} label="至少 6 个字符" meets={pwd.length >= 6} />,
@@ -63,11 +65,11 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
   return (
     <Popover
       opened={opened}
-      position="right"
+      position={isMobile ? 'top' : 'right'}
       styles={{
         dropdown: {
           marginLeft: '2rem',
-          width: '10rem',
+          width: isMobile ? '50vw' : '10rem',
         },
       }}
       withArrow

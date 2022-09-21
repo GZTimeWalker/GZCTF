@@ -7,6 +7,7 @@ import {
   MantineNumberSize,
   useMantineTheme,
 } from '@mantine/core'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { useUser } from '@Utils/useUser'
 import AppHeader from './AppHeader'
 import AppNavbar from './AppNavbar'
@@ -23,6 +24,7 @@ interface WithNavBarProps extends React.PropsWithChildren {
 const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, minWidth }) => {
   const theme = useMantineTheme()
   const { user } = useUser()
+  const { loaded } = useIsMobile()
 
   return (
     <WithWiderScreen minWidth={minWidth}>
@@ -38,7 +40,7 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
         >
           <Center style={{ width: '100%' }}>
             <LoadingOverlay
-              visible={isLoading ?? false}
+              visible={(isLoading ?? false) || !loaded}
               overlayOpacity={1}
               overlayColor={
                 theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
