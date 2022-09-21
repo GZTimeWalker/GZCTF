@@ -383,9 +383,10 @@ namespace CTFServer.Migrations
                     b.HasIndex("ContainerId")
                         .IsUnique();
 
-                    b.HasIndex("FlagId");
+                    b.HasIndex("FlagId")
+                        .IsUnique();
 
-                    b.HasIndex("ParticipationId", "ChallengeId");
+                    b.HasIndex("ParticipationId");
 
                     b.ToTable("Instances");
                 });
@@ -744,7 +745,8 @@ namespace CTFServer.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.HasIndex("UserId", "GameId");
+                    b.HasIndex("UserId", "GameId")
+                        .IsUnique();
 
                     b.ToTable("UserParticipations");
                 });
