@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     server: {
-      port: 3000,
+      port: 63000,
       proxy: {
         '/api': TARGET,
         '/swagger': TARGET,
@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'build',
-      target: ['es2020', 'chrome86'],
+      target: ['es2018', 'chrome80'],
       assetsDir: 'static',
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
