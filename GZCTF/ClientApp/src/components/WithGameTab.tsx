@@ -8,7 +8,7 @@ import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from
 import { Icon } from '@mdi/react'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
-import api, { GameDetailModel, ParticipationStatus, Role } from '@Api'
+import api, { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
 import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'
 import { RequireRole } from './WithRole'
@@ -45,7 +45,7 @@ const pages = [
 
 dayjs.extend(duration)
 
-const GameCountdown: FC<{ game?: GameDetailModel }> = ({ game }) => {
+const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   const start = dayjs(game?.start ?? new Date())
   const end = dayjs(game?.end ?? new Date())
   const total = end.diff(start)

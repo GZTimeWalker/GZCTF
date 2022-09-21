@@ -91,7 +91,7 @@ const GameNoticePanel: FC = () => {
             message: message.content,
             autoClose: 60000,
           })
-          api.game.mutateGameChallenges(numId)
+          api.game.mutateGameChallengesWithTeamInfo(numId)
         }
 
         if (message.type === NoticeType.Normal) {
