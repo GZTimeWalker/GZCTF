@@ -19,7 +19,7 @@ const useStyles = createStyles((theme) => ({
   title: {
     fontWeight: 700,
     color: theme.white,
-    lineHeight: 1.2,
+    lineHeight: 1.4,
     fontSize: 24,
     marginTop: theme.spacing.xs,
     textShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
@@ -51,7 +51,7 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       sx={{ backgroundImage: `url(${poster})` }}
       className={classes.card}
     >
-      <Stack spacing={2}>
+      <Stack style={{ height: '100%' }} spacing={2} justify="space-between">
         <Group spacing={4}>
           <Badge size="sm" variant="filled">
             {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
@@ -60,7 +60,7 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
             {`${status === GameStatus.OnGoing ? '剩余' : '共'} ${duration} 小时`}
           </Badge>
         </Group>
-        <Title order={3} className={classes.title}>
+        <Title pb={10} order={3} className={classes.title}>
           {title}
         </Title>
       </Stack>

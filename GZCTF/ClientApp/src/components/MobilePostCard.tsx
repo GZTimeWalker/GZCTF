@@ -1,6 +1,7 @@
+import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Group, Card, Title, Text, Stack, ActionIcon, Box } from '@mantine/core'
+import { Group, Card, Title, Text, Stack, ActionIcon, Box, Avatar } from '@mantine/core'
 import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useUserRole } from '@Utils/useUser'
@@ -15,7 +16,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const [disabled, setDisabled] = useState(false)
 
   return (
-    <Card shadow="sm" p="xs">
+    <Card shadow="sm" p="sm">
       <Stack spacing="xs">
         <Box onClick={() => navigate(`/posts/${post.id}`)}>
           <Title order={3} pb={4}>
@@ -52,6 +53,14 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               </ActionIcon>
             </Group>
           )}
+        </Group>
+        <Group spacing={5} position="left">
+          <Avatar src={post.autherAvatar} size="sm">
+            {post.autherName?.slice(0, 1) ?? 'A'}
+          </Avatar>
+          <Text weight={500} size="sm">
+            {post.autherName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
+          </Text>
         </Group>
       </Stack>
     </Card>

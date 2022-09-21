@@ -8,6 +8,7 @@ import {
   mdiAccountCircleOutline,
   mdiLogout,
   mdiCheck,
+  mdiAccountGroupOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -69,6 +70,13 @@ const AppHeader: FC = () => {
           <Menu.Dropdown>
             {user && !error ? (
               <>
+                <Menu.Item
+                  component={Link}
+                  to="/teams"
+                  icon={<Icon path={mdiAccountGroupOutline} size={1} />}
+                >
+                  队伍管理
+                </Menu.Item>
                 <Menu.Item
                   component={Link}
                   to="/account/profile"

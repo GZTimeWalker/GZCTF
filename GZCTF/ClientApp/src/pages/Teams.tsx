@@ -22,6 +22,7 @@ import TeamEditModal from '@Components/TeamEditModal'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { TeamInfoModel, Role } from '@Api'
@@ -41,6 +42,8 @@ const Teams: FC = () => {
   const [editTeam, setEditTeam] = useState<TeamInfoModel | null>(null)
 
   const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id == user?.userId))
+
+  const { isMobile } = useIsMobile()
 
   const onEditTeam = (team: TeamInfoModel) => {
     setEditTeam(team)
@@ -82,28 +85,38 @@ const Teams: FC = () => {
 
   usePageTitle('队伍管理')
 
+  const btns = (
+    <>
+      <Button
+        leftIcon={<Icon path={mdiHumanGreetingVariant} size={1} />}
+        variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
+        onClick={() => setJoinOpened(true)}
+      >
+        加入队伍
+      </Button>
+      <Button
+        leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
+        variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
+        onClick={() => setCreateOpened(true)}
+      >
+        创建队伍
+      </Button>
+    </>
+  )
+
   return (
-    <WithNavBar>
+    <WithNavBar minWidth={0}>
       <WithRole requiredRole={Role.User}>
         <Stack>
-          <Group position="apart">
-            <LogoHeader />
-            <Group position="right">
-              <Button
-                leftIcon={<Icon path={mdiHumanGreetingVariant} size={1} />}
-                variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
-                onClick={() => setJoinOpened(true)}
-              >
-                加入队伍
-              </Button>
-              <Button
-                leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
-                variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
-                onClick={() => setCreateOpened(true)}
-              >
-                创建队伍
-              </Button>
-            </Group>
+          <Group position={isMobile ? "center" : "apart"} grow={isMobile}>
+            {isMobile ? (
+              btns
+            ) : (
+              <>
+                <LogoHeader />
+                <Group position="right">{btns}</Group>
+              </>
+            )}
           </Group>
           {teams && !teamsError && user && !userError ? (
             <>
