@@ -93,6 +93,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     withArrow
                     classNames={{
                       tooltip: tooltipClasses.tooltip,
+                      arrow: tooltipClasses.arrow,
                     }}
                   >
                     <Avatar
@@ -111,6 +112,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                         withArrow
                         classNames={{
                           tooltip: tooltipClasses.tooltip,
+                          arrow: tooltipClasses.arrow,
                         }}
                       >
                         <Avatar
@@ -128,6 +130,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                       withArrow
                       classNames={{
                         tooltip: tooltipClasses.tooltip,
+                        arrow: tooltipClasses.arrow,
                       }}
                     >
                       <Avatar radius="xl">+{members.length - AVATAR_LIMIT}</Avatar>
