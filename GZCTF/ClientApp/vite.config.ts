@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'build',
+      target: ['es2020', 'chrome86'],
       assetsDir: 'static',
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
