@@ -86,7 +86,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
   const theme = useMantineTheme()
   const clipboard = useClipboard()
-  const captain = teamInfo?.members?.filter((x) => x.captain).at(0)
+  const captain = teamInfo?.members?.filter((x) => x.captain)[0]
   const crew = teamInfo?.members?.filter((x) => !x.captain)
 
   const modals = useModals()

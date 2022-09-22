@@ -27,7 +27,7 @@ const AVATAR_LIMIT = 5
 const TeamCard: FC<TeamCardProps> = (props) => {
   const { team, isCaptain, onEdit } = props
 
-  const captain = team.members?.filter((m) => m?.captain).at(0)
+  const captain = team.members?.filter((m) => m?.captain)[0]
   const members = team.members?.filter((m) => !m?.captain)
 
   const { classes: tooltipClasses, theme } = useTooltipStyles()

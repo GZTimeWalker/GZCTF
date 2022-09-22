@@ -145,7 +145,7 @@ const Teams: FC = () => {
               {teams &&
                 teams.map((team) => {
                   const members = team.members && [
-                    team.members.filter((m) => m.captain).at(0)!,
+                    team.members.filter((m) => m.captain)[0]!,
                     ...(team.members.filter((m) => !m.captain) ?? []),
                   ]
 
