@@ -32,7 +32,7 @@ const TimeLine: FC = () => {
     data: [
       [startTime, 0],
       ...(team.items?.map((item) => [item.time, item.score]) ?? []),
-      [last, team.items?.at(team.items.length - 1)?.score ?? 0],
+      [last, (team.items && team.items[team.items.length - 1]?.score) ?? 0],
     ],
     markLine:
       now > endTime
