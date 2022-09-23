@@ -94,7 +94,9 @@ const GameChallengeEdit: FC = () => {
         })
         .catch(showErrorNotification)
         .finally(() => {
-          setDisabled(false)
+          if (!noFeedback) {
+            setDisabled(false)
+          }
         })
     }
   }
@@ -136,33 +138,36 @@ const GameChallengeEdit: FC = () => {
       })
   }
 
+  const onDestroyTestContainer = () => {
+    api.edit
+      .editDestroyTestContainer(numId, numCId)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '实例已销毁',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        })
+        if (challenge) mutate({ ...challenge, testContainer: undefined })
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
   const onToggleTestContainer = () => {
     if (!challenge) return
 
     setDisabled(true)
-    if (!challenge?.testContainer) {
-      onUpdate({
+    onUpdate(
+      {
         ...challengeInfo,
         tag: tag as ChallengeTag,
         minScoreRate: minRate / 100,
-      }, true)?.then(onCreateTestContainer)
-    } else {
-      api.edit
-        .editDestroyTestContainer(numId, numCId)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: '实例已销毁',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
-          mutate({ ...challenge, testContainer: undefined })
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+      },
+      true
+    )?.then(challenge?.testContainer ? onDestroyTestContainer : onCreateTestContainer)
   }
 
   return (
