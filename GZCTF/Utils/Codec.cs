@@ -79,12 +79,12 @@ public class Codec
     {
         private readonly static Dictionary<char, string> CharMap = new()
         {
-            { 'A', "Aa4@" }, { 'B', "Bb68" }, { 'C', "Cc" }, { 'D', "Dd" }, { 'E', "Ee3" }, { 'F', "Ff1" },
-            { 'G', "Gg69" }, { 'H', "Hh" }, { 'I', "Ii1l!" }, { 'J', "Jj" }, { 'K', "Kk" }, { 'L', "Ll1I" },
-            { 'M', "Mm" }, { 'N', "Nn" }, { 'O', "Oo0" }, { 'P', "Pp" }, { 'Q', "Qq9" }, { 'R', "Rr" },
-            { 'S', "Ss5$" }, { 'T', "Tt7" }, { 'U', "Uu" }, { 'V', "Vv" }, { 'W', "Ww" }, { 'X', "Xx" },
-            { 'Y', "Yy" }, { 'Z', "Zz2" }, { '0', "0oO" }, { '1', "1!lI" }, { '2', "2zZ" }, { '3', "3eE" },
-            { '4', "4aA" }, { '5', "5Ss" }, { '6', "6G" }, { '9', "9g" }
+            ['A'] = "Aa4", ['B'] = "Bb68", ['C'] = "Cc", ['D'] = "Dd", ['E'] = "Ee3", ['F'] = "Ff1",
+            ['G'] = "Gg69", ['H'] = "Hh", ['I'] = "Ii1l", ['J'] = "Jj", ['K'] = "Kk", ['L'] = "Ll1I",
+            ['M'] = "Mm", ['N'] = "Nn", ['O'] = "Oo0", ['P'] = "Pp", ['Q'] = "Qq9", ['R'] = "Rr",
+            ['S'] = "Ss5", ['T'] = "Tt7", ['U'] = "Uu", ['V'] = "Vv", ['W'] = "Ww", ['X'] = "Xx",
+            ['Y'] = "Yy", ['Z'] = "Zz2", ['0'] = "0oO", ['1'] = "1lI", ['2'] = "2zZ", ['3'] = "3eE",
+            ['4'] = "4aA", ['5'] = "5Ss", ['6'] = "6Gb", ['7'] = "7T", ['8'] = "8bB", ['9'] = "9g"
         };
 
         public static double LeetEntropy(string flag)
@@ -118,7 +118,7 @@ public class Codec
                     doLeet = false;
                 else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out string? table) && table is not null)
                 {
-                    var nc = table.ElementAt(random.Next(table.Length));
+                    var nc = table[random.Next(table.Length)];
                     sb.Append(nc);
                     continue;
                 }
@@ -160,7 +160,7 @@ public class Codec
     public static string BytesToHex(byte[] bytes, bool useLower = true)
     {
         string output = BitConverter.ToString(bytes).Replace("-", "");
-        return useLower ? output.ToLower() : output.ToUpper();
+        return useLower ? output.ToLowerInvariant() : output.ToUpperInvariant();
     }
 
     /// <summary>
@@ -222,8 +222,7 @@ public class Codec
     /// <returns></returns>
     public static string StrMD5(string str, bool useBase64 = false)
     {
-        MD5 md5 = MD5.Create();
-        byte[] output = md5.ComputeHash(Encoding.Default.GetBytes(str));
+        byte[] output = MD5.HashData(Encoding.Default.GetBytes(str));
         if (useBase64)
             return Convert.ToBase64String(output);
         else
@@ -238,8 +237,7 @@ public class Codec
     /// <returns></returns>
     public static string StrSHA256(string str, bool useBase64 = false)
     {
-        SHA256 sha256 = SHA256.Create();
-        byte[] output = sha256.ComputeHash(Encoding.Default.GetBytes(str));
+        byte[] output = SHA256.HashData(Encoding.Default.GetBytes(str));
         if (useBase64)
             return Convert.ToBase64String(output);
         else
@@ -252,7 +250,7 @@ public class Codec
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] BytesMD5(string str)
-        => MD5.Create().ComputeHash(Encoding.Default.GetBytes(str));
+        => MD5.HashData(Encoding.Default.GetBytes(str));
 
     /// <summary>
     /// 获取SHA256哈希字节摘要
@@ -260,5 +258,5 @@ public class Codec
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] BytesSHA256(string str)
-        => SHA256.Create().ComputeHash(Encoding.Default.GetBytes(str));
+        => SHA256.HashData(Encoding.Default.GetBytes(str));
 }

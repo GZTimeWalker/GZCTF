@@ -28,6 +28,7 @@ import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
 import { ChallengeTagItemProps } from '../utils/ChallengeItem'
 import MarkdownRender from './MarkdownRender'
+import { useRef } from 'react'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
@@ -59,6 +60,30 @@ const Countdown: FC<{ time: string }> = ({ time }) => {
     </Card>
   )
 }
+
+const FlagPlaceholders: string[] = [
+  '横看成岭侧成峰，flag 高低各不同',
+  'flag 当关，万夫莫开',
+  '寻寻觅觅，冷冷清清，flag 惨惨戚戚',
+  '问君能有几多愁？恰似一江 flag 向东流',
+  '人生得意须尽欢，莫使 flag 空对月',
+  '汉皇重色思 flag，御宇多年求不得',
+  'flag 几时有？把酒问青天',
+  '羽扇纶巾，谈笑间，flag 灰飞烟灭',
+  '浊酒一杯家万里，flag 未勒归无计',
+  '孤帆远影碧空尽，唯见 flag 天际流',
+  '安得 flag 千万间，大庇天下 ctfer 俱欢颜！',
+  '两个黄鹂鸣翠柳，一行 flag 上青天',
+  'flag 一场大梦，人生几度秋凉？',
+  '剪不断，理还乱，是 flag',
+  '蓦然回首，flag 却在，灯火阑珊处',
+  '稻花香里说丰年，听取 flag 一片',
+  '采菊东篱下，悠然见 flag',
+  '不畏 flag 遮望眼，自缘身在最高层',
+  '便纵有千种 flag，更与何人说？',
+  '人生自古谁无死？留取 flag 照汗青',
+  '借问 flag 何处有？牧童遥指杏花村'
+]
 
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { gameId, challengeId, tagData, title, score, solved, ...modalProps } = props
@@ -234,6 +259,12 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
+  const placeholder = useRef('')
+
+  if (props.opened) {
+    placeholder.current = FlagPlaceholders[Math.floor(Math.random() * FlagPlaceholders.length)]
+  }
+
   return (
     <Modal
       {...modalProps}
@@ -372,7 +403,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         ) : (
           <form onSubmit={onSubmit}>
             <TextInput
-              placeholder="flag{...}"
+              placeholder={placeholder.current}
               value={flag}
               onChange={setFlag}
               styles={{
