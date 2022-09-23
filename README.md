@@ -100,11 +100,11 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
   "DisableRateLimit": false,
   "ContainerProvider": {
     "Type": "Docker", // or "Kubernetes"
-      "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
-      "DockerConfig": { // optional
-         "SwarmMode": false,
-         "Uri": "unix:///var/run/docker.sock"
-      }
+    "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+    "DockerConfig": { // optional
+        "SwarmMode": false,
+        "Uri": "unix:///var/run/docker.sock"
+    }
    },
   "RegistryConfig": {
     "UserName": "",

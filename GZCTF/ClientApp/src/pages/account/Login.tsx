@@ -8,6 +8,7 @@ import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 
 const Login: FC = () => {
   const params = useParams()
@@ -51,14 +52,8 @@ const Login: FC = () => {
         const from = params['from']
         navigate(from ? (from as string) : '/')
       })
-      .catch(() => {
-        showNotification({
-          color: 'red',
-          title: '登录失败',
-          message: '无效的用户名或密码',
-          icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
-        })
+      .catch((err) => {
+        showErrorNotification(err)
         setDisabled(false)
       })
   }

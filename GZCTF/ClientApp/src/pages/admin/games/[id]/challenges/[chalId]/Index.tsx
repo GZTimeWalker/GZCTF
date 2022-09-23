@@ -280,8 +280,8 @@ const GameChallengeEdit: FC = () => {
           style={{ width: '100%' }}
           autosize
           disabled={disabled}
-          minRows={3}
-          maxRows={3}
+          minRows={6}
+          maxRows={6}
           onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
         />
         <SimpleGrid cols={3}>
