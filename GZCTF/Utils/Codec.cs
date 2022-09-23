@@ -84,7 +84,7 @@ public class Codec
             ['M'] = "Mm", ['N'] = "Nn", ['O'] = "Oo0", ['P'] = "Pp", ['Q'] = "Qq9", ['R'] = "Rr",
             ['S'] = "Ss5", ['T'] = "Tt7", ['U'] = "Uu", ['V'] = "Vv", ['W'] = "Ww", ['X'] = "Xx",
             ['Y'] = "Yy", ['Z'] = "Zz2", ['0'] = "0oO", ['1'] = "1lI", ['2'] = "2zZ", ['3'] = "3eE",
-            ['4'] = "4aA", ['5'] = "5Ss", ['6'] = "6G", ['9'] = "9g"
+            ['4'] = "4aA", ['5'] = "5Ss", ['6'] = "6Gb", ['7'] = "7T", ['8'] = "8bB", ['9'] = "9g"
         };
 
         public static double LeetEntropy(string flag)
