@@ -116,7 +116,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                 {item?.challenges &&
                   challengeIdMap &&
                   item.challenges
-                    .sort((a, b) => (dayjs(a.time) < dayjs(b.time) ? 1 : -1))
+                    .sort((a, b) => dayjs(a.time).diff(dayjs(b.time)))
                     .filter((c) => c.type !== SubmissionType.Unaccepted)
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)
