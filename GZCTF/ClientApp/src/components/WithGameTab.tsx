@@ -73,7 +73,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
     >
       <Text style={{ fontWeight: 700 }}>
         {countdown.asHours() > 999
-          ? '∞'
+          ? '比赛还会很久'
           : countdown.asSeconds() > 0
           ? `${Math.floor(countdown.asHours())} : ${countdown.format('mm : ss')}`
           : '比赛已结束'}
