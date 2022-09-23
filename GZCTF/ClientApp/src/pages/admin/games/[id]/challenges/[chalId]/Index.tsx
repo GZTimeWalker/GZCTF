@@ -72,7 +72,7 @@ const GameChallengeEdit: FC = () => {
     }
   }, [challenge])
 
-  const onUpdate = (challenge: ChallengeUpdateModel) => {
+  const onUpdate = (challenge: ChallengeUpdateModel, noFeedback?: boolean) => {
     if (challenge) {
       setDisabled(true)
       return api.edit
@@ -81,18 +81,22 @@ const GameChallengeEdit: FC = () => {
           isEnabled: undefined,
         })
         .then((data) => {
-          showNotification({
-            color: 'teal',
-            message: '题目已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
+          if (!noFeedback) {
+            showNotification({
+              color: 'teal',
+              message: '题目已更新',
+              icon: <Icon path={mdiCheck} size={1} />,
+              disallowClose: true,
+            })
+          }
           mutate(data.data)
           api.edit.mutateEditGetGameChallenges(numId)
         })
         .catch(showErrorNotification)
         .finally(() => {
-          setDisabled(false)
+          if (!noFeedback) {
+            setDisabled(false)
+          }
         })
     }
   }
@@ -134,37 +138,36 @@ const GameChallengeEdit: FC = () => {
       })
   }
 
+  const onDestroyTestContainer = () => {
+    api.edit
+      .editDestroyTestContainer(numId, numCId)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '实例已销毁',
+          icon: <Icon path={mdiCheck} size={1} />,
+          disallowClose: true,
+        })
+        if (challenge) mutate({ ...challenge, testContainer: undefined })
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
   const onToggleTestContainer = () => {
     if (!challenge) return
 
     setDisabled(true)
-    if (!challenge?.testContainer) {
-      if (
-        challenge.containerImage !== challengeInfo.containerImage ||
-        challenge.containerExposePort !== challengeInfo.containerExposePort ||
-        challenge.memoryLimit !== challengeInfo.memoryLimit ||
-        challenge.cpuCount !== challengeInfo.cpuCount ||
-        challenge.privilegedContainer !== challengeInfo.privilegedContainer
-      )
-        onUpdate(challengeInfo)?.then(onCreateTestContainer)
-      else onCreateTestContainer()
-    } else {
-      api.edit
-        .editDestroyTestContainer(numId, numCId)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: '实例已销毁',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
-          mutate({ ...challenge, testContainer: undefined })
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+    onUpdate(
+      {
+        ...challengeInfo,
+        tag: tag as ChallengeTag,
+        minScoreRate: minRate / 100,
+      },
+      true
+    )?.then(challenge?.testContainer ? onDestroyTestContainer : onCreateTestContainer)
   }
 
   return (
