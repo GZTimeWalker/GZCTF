@@ -72,7 +72,7 @@ const GameChallengeEdit: FC = () => {
     }
   }, [challenge])
 
-  const onUpdate = (challenge: ChallengeUpdateModel) => {
+  const onUpdate = (challenge: ChallengeUpdateModel, noFeedback?: boolean) => {
     if (challenge) {
       setDisabled(true)
       return api.edit
@@ -81,12 +81,14 @@ const GameChallengeEdit: FC = () => {
           isEnabled: undefined,
         })
         .then((data) => {
-          showNotification({
-            color: 'teal',
-            message: '题目已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
-          })
+          if (!noFeedback) {
+            showNotification({
+              color: 'teal',
+              message: '题目已更新',
+              icon: <Icon path={mdiCheck} size={1} />,
+              disallowClose: true,
+            })
+          }
           mutate(data.data)
           api.edit.mutateEditGetGameChallenges(numId)
         })
@@ -139,15 +141,11 @@ const GameChallengeEdit: FC = () => {
 
     setDisabled(true)
     if (!challenge?.testContainer) {
-      if (
-        challenge.containerImage !== challengeInfo.containerImage ||
-        challenge.containerExposePort !== challengeInfo.containerExposePort ||
-        challenge.memoryLimit !== challengeInfo.memoryLimit ||
-        challenge.cpuCount !== challengeInfo.cpuCount ||
-        challenge.privilegedContainer !== challengeInfo.privilegedContainer
-      )
-        onUpdate(challengeInfo)?.then(onCreateTestContainer)
-      else onCreateTestContainer()
+      onUpdate({
+        ...challengeInfo,
+        tag: tag as ChallengeTag,
+        minScoreRate: minRate / 100,
+      }, true)?.then(onCreateTestContainer)
     } else {
       api.edit
         .editDestroyTestContainer(numId, numCId)
