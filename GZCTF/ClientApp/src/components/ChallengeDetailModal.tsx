@@ -25,11 +25,11 @@ import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
 import { ChallengeTagItemProps } from '../utils/ChallengeItem'
 import MarkdownRender from './MarkdownRender'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
