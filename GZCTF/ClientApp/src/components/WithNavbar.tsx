@@ -28,7 +28,13 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
 
   return (
     <WithWiderScreen minWidth={minWidth}>
-      <AppShell padding={padding ?? 'md'} fixed navbar={<AppNavbar />} header={<AppHeader />}>
+      <AppShell
+        padding={padding ?? 'md'}
+        fixed
+        navbar={<AppNavbar />}
+        header={<AppHeader />}
+        styles={{ body: { overflow: 'hidden' } }}
+      >
         <Watermark
           text={user?.userId ?? ''}
           textColor={theme.colorScheme == 'dark' ? theme.colors.gray[3] : theme.colors.gray[8]}

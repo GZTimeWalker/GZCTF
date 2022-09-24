@@ -45,6 +45,24 @@ export const App: FC = () => {
                 padding: 0,
                 margin: 0,
               },
+
+              '::-webkit-scrollbar': {
+                height: 6,
+                width: 6,
+              },
+
+              '::-webkit-scrollbar-thumb': {
+                background: 'var(--mantine-color-dark-3)',
+                borderRadius: 3,
+              },
+
+              '::-webkit-scrollbar-track': {
+                backgroundColor: 'transparent',
+              },
+
+              '::-webkit-scrollbar-corner': {
+                backgroundColor: 'transparent',
+              },
             })}
           />
           <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>

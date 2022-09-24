@@ -147,7 +147,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 Title = c.Key.Title,
                 Tag = c.Key.Tag,
                 Score = c.Key.CurrentScore,
-                SolvedCount = c.Key.AcceptedCount,
+                SolvedCount = c.Key.AcceptedCount, // Concurrence!
                 Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
             .OrderBy(i => i.Key)
