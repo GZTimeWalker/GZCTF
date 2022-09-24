@@ -185,10 +185,7 @@ const Teams: FC = () => {
                                   key={m.id}
                                   label={m.userName}
                                   withArrow
-                                  classNames={{
-                                    tooltip: tooltipClasses.tooltip,
-                                    arrow: tooltipClasses.arrow,
-                                  }}
+                                  classNames={tooltipClasses}
                                 >
                                   <Avatar radius="xl" src={m.avatar} />
                                 </Tooltip>

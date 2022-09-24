@@ -35,6 +35,7 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
             variant="unstyled"
             value={flag.flag}
             size="md"
+            readOnly
             onClick={() => {
               clipboard.copy(flag.flag)
               showNotification({

@@ -88,14 +88,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               )}
               <Tooltip.Group openDelay={300} closeDelay={100}>
                 <Avatar.Group spacing="md">
-                  <Tooltip
-                    label={captain?.userName}
-                    withArrow
-                    classNames={{
-                      tooltip: tooltipClasses.tooltip,
-                      arrow: tooltipClasses.arrow,
-                    }}
-                  >
+                  <Tooltip label={captain?.userName} withArrow classNames={tooltipClasses}>
                     <Avatar
                       radius="xl"
                       src={captain?.avatar}
@@ -106,15 +99,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                   </Tooltip>
                   {members &&
                     members.slice(0, AVATAR_LIMIT).map((m) => (
-                      <Tooltip
-                        key={m.id}
-                        label={m.userName}
-                        withArrow
-                        classNames={{
-                          tooltip: tooltipClasses.tooltip,
-                          arrow: tooltipClasses.arrow,
-                        }}
-                      >
+                      <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
                         <Avatar
                           radius="xl"
                           src={m.avatar}
@@ -128,10 +113,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     <Tooltip
                       label={<Text>{members.slice(AVATAR_LIMIT).join(',')}</Text>}
                       withArrow
-                      classNames={{
-                        tooltip: tooltipClasses.tooltip,
-                        arrow: tooltipClasses.arrow,
-                      }}
+                      classNames={tooltipClasses}
                     >
                       <Avatar radius="xl">+{members.length - AVATAR_LIMIT}</Avatar>
                     </Tooltip>

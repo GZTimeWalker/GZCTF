@@ -104,9 +104,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                     key={idx}
                     position="bottom"
                     multiline
-                    classNames={{
-                      tooltip: tooltipClasses.tooltip,
-                    }}
+                    classNames={tooltipClasses}
                     label={
                       <Stack spacing={0}>
                         <Text color={theme.colorScheme === 'dark' ? '' : 'dark'}>
