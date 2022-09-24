@@ -6,9 +6,9 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
 
 const Login: FC = () => {
   const params = useParams()
