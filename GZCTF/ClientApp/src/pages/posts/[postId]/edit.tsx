@@ -202,7 +202,7 @@ const PostEdit: FC = () => {
               </Button>
             </Group>
           </Group>
-          {isMobile ? titlePart : <Group grow>titlePart</Group>}
+          {isMobile ? titlePart : <Group grow>{titlePart}</Group>}
           <Textarea
             label={
               <Group spacing="sm">
