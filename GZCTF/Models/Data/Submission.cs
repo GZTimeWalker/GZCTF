@@ -40,6 +40,12 @@ public class Submission
     [JsonPropertyName("team")]
     public string TeamName => Team?.Name ?? string.Empty;
 
+    /// <summary>
+    /// 提交题目
+    /// </summary>
+    [JsonPropertyName("challenge")]
+    public string ChallengeName => Challenge?.Title ?? string.Empty;
+
     #region Db Relationship
 
     /// <summary>
