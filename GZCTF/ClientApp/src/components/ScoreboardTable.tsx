@@ -213,9 +213,7 @@ const TableRow: FC<{
             return (
               <td key={item.id} className={classes.theadMono}>
                 <Tooltip
-                  classNames={{
-                    tooltip: tooltipClasses.tooltip,
-                  }}
+                  classNames={tooltipClasses}
                   transition="pop"
                   label={
                     <Stack align="flex-start" spacing={0} style={{ maxWidth: '20rem' }}>

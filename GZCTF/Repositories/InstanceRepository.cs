@@ -228,9 +228,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         // submission is from the queue, do not modify it directly
         // we need to requery the entity to ensure it is being tracked correctly
-        var updateSub = await context.Submissions
-                .Include(s => s.Challenge)
-                .SingleAsync(s => s.Id == submission.Id, token);
+        var updateSub = await context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
         var ret = SubmissionType.Unaccepted;
 

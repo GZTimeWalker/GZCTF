@@ -8,7 +8,7 @@ namespace CTFServer.Repositories;
 
 public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 {
-    private IHubContext<MonitorHub, IMonitorClient> hubContext;
+    private readonly IHubContext<MonitorHub, IMonitorClient> hubContext;
 
     public SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
         AppDbContext _context) : base(_context)
@@ -30,9 +30,7 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default)
         => context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
-            .AsNoTracking()
-            .Include(s => s.User).Include(s => s.Team).Include(s => s.Challenge)
-            .ToArrayAsync(token);
+            .AsNoTracking().Include(e => e.Game).ToArrayAsync(token);
 
     private IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {

@@ -1296,6 +1296,9 @@ export interface Submission {
 
   /** 提交队伍 */
   team?: string
+
+  /** 提交题目 */
+  challenge?: string
 }
 
 /**

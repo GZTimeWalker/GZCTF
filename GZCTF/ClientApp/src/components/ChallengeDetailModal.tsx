@@ -18,6 +18,7 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core'
 import { useClipboard, useDisclosure, useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
@@ -28,7 +29,7 @@ import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
 import { ChallengeTagItemProps } from '../utils/ChallengeItem'
 import MarkdownRender from './MarkdownRender'
-import { useRef } from 'react'
+import { useTooltipStyles } from '@Utils/ThemeOverride'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
@@ -82,7 +83,7 @@ const FlagPlaceholders: string[] = [
   '不畏 flag 遮望眼，自缘身在最高层',
   '便纵有千种 flag，更与何人说？',
   '人生自古谁无死？留取 flag 照汗青',
-  '借问 flag 何处有？牧童遥指杏花村'
+  '借问 flag 何处有？牧童遥指杏花村',
 ]
 
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
@@ -94,6 +95,12 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     revalidateOnFocus: false,
   })
 
+  const [placeholder, setPlaceholder] = useState('')
+
+  useEffect(() => {
+    setPlaceholder(FlagPlaceholders[Math.floor(Math.random() * FlagPlaceholders.length)])
+  }, [challengeId])
+
   const instanceCloseTime = dayjs(challenge?.context?.closeTime ?? 0)
   const instanceLeft = instanceCloseTime.diff(dayjs(), 'minute')
 
@@ -101,6 +108,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     challenge?.type === ChallengeType.StaticContainer ||
     challenge?.type === ChallengeType.DynamicContainer
   const { classes, theme } = useTypographyStyles()
+  const { classes: tooltipClasses } = useTooltipStyles()
   const clipBoard = useClipboard()
 
   const [disabled, setDisabled] = useState(false)
@@ -259,12 +267,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     }
   }
 
-  const placeholder = useRef('')
-
-  if (props.opened) {
-    placeholder.current = FlagPlaceholders[Math.floor(Math.random() * FlagPlaceholders.length)]
-  }
-
   return (
     <Modal
       {...modalProps}
@@ -364,23 +366,26 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               <Group>
                 <Text size="sm" weight={600}>
                   实例访问入口：
-                  <Code
-                    style={{
-                      backgroundColor: 'transparent',
-                      fontSize: theme.fontSizes.sm,
-                    }}
-                    onClick={() => {
-                      clipBoard.copy(challenge.context?.instanceEntry ?? '')
-                      showNotification({
-                        color: 'teal',
-                        message: '实例入口已复制到剪贴板',
-                        icon: <Icon path={mdiCheck} size={1} />,
-                        disallowClose: true,
-                      })
-                    }}
-                  >
-                    {challenge?.context?.instanceEntry}
-                  </Code>
+                  <Tooltip label="点击复制" withArrow classNames={tooltipClasses}>
+                    <Code
+                      style={{
+                        backgroundColor: 'transparent',
+                        fontSize: theme.fontSizes.sm,
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        clipBoard.copy(challenge.context?.instanceEntry ?? '')
+                        showNotification({
+                          color: 'teal',
+                          message: '实例入口已复制到剪贴板',
+                          icon: <Icon path={mdiCheck} size={1} />,
+                          disallowClose: true,
+                        })
+                      }}
+                    >
+                      {challenge?.context?.instanceEntry}
+                    </Code>
+                  </Tooltip>
                 </Text>
                 <Countdown time={challenge?.context?.closeTime ?? '0'} />
               </Group>
@@ -403,7 +408,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         ) : (
           <form onSubmit={onSubmit}>
             <TextInput
-              placeholder={placeholder.current}
+              placeholder={placeholder}
               value={flag}
               onChange={setFlag}
               styles={{

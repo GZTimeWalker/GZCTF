@@ -10,6 +10,7 @@ import {
   Table,
   ScrollArea,
   useMantineTheme,
+  Input,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -20,6 +21,7 @@ import {
   mdiCrosshairsQuestion,
   mdiDotsHorizontal,
   mdiExclamationThick,
+  mdiFlag,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
@@ -157,9 +159,30 @@ const Submissions: FC = () => {
       >
         <td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</td>
         <td className={cx(classes.mono)}>{dayjs(item.time).format('MM/DD HH:mm:ss')}</td>
-        <td>{item.team}</td>
-        <td>{item.user}</td>
-        <td className={cx(classes.mono)}>{item.answer}</td>
+        <td>{item.team ?? 'Team'}</td>
+        <td>{item.user ?? 'User'}</td>
+        <td>{item.challenge ?? 'Challenge'}</td>
+        <td
+          style={{
+            width: '36vw',
+            maxWidth: '100%'
+          }}
+        >
+          <Input
+            variant="unstyled"
+            value={item.answer}
+            readOnly
+            size="sm"
+            sx={(theme) => ({
+              input: {
+                fontFamily: theme.fontFamilyMonospace,
+              },
+              wrapper: {
+                width: '100%',
+              },
+            })}
+          />
+        </td>
       </tr>
     )
   )
@@ -207,10 +230,15 @@ const Submissions: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th>状态</th>
+                <th>
+                  <Group align="center">
+                    <Icon path={mdiFlag} size={0.8} />
+                  </Group>
+                </th>
                 <th>时间</th>
                 <th>队伍</th>
                 <th>用户</th>
+                <th>题目</th>
                 <th className={cx(classes.mono)}>flag</th>
               </tr>
             </thead>

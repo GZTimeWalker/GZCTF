@@ -243,6 +243,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
 
             entity.Navigation(e => e.Team).AutoInclude();
             entity.Navigation(e => e.User).AutoInclude();
+            entity.Navigation(e => e.Challenge).AutoInclude();
 
             entity.HasIndex(e => e.Status);
             entity.HasIndex(e => new { e.TeamId, e.ChallengeId, e.GameId });
