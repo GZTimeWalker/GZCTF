@@ -34,6 +34,9 @@ const useStyles = createStyles((theme) => ({
       fontSize: 12,
     },
   },
+  thead: {
+    zIndex: 5,
+  },
   theadFixLeft: {
     position: 'sticky',
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
@@ -51,14 +54,14 @@ const useStyles = createStyles((theme) => ({
     left: 0,
     padding: 12,
     float: 'left',
-    zIndex: 10,
+    zIndex: 20,
   },
   noBorder: {
     border: 'none !important',
   },
 }))
 
-const Lefts = [0, 55, 95, 245, 315, 370]
+const Lefts = [0, 55, 95, 265, 335, 390]
 const Widths = Array(5).fill(0)
 Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
@@ -78,7 +81,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   ))
 
   return (
-    <thead>
+    <thead className={classes.thead}>
       {/* Challenge Tag */}
       <tr>
         {hiddenCol}
@@ -287,7 +290,15 @@ const ScoreboardTable: FC = () => {
           </Group>
         )}
         <Box style={{ position: 'relative' }}>
-          <Box style={{ maxWidth: '100%', overflow: 'scroll' }}>
+          <Box
+            sx={{
+              maxWidth: '100%',
+              overflow: 'scroll',
+              '::-webkit-scrollbar': {
+                height: 0,
+              },
+            }}
+          >
             <Table className={classes.table}>
               <TableHeader {...scoreboard?.challenges} />
               <tbody>
@@ -327,11 +338,14 @@ const ScoreboardTable: FC = () => {
             </Stack>
           </Box>
         </Box>
-        <Group position="right">
+        <Group position="apart">
+          <Text size="sm" color="dimmed">
+            Tip: 可以按左右方向键滚动题目列表哦~
+          </Text>
           <Pagination
             page={activePage}
             onChange={setPage}
-            total={Math.ceil((scoreboard?.items?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
+            total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
             boundaries={2}
           />
         </Group>

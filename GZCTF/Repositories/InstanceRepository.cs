@@ -98,6 +98,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 instance.FlagContext = new()
                 {
                     Challenge = challenge,
+                    // tiny probability will produce the same FLAG,
+                    // but this will not affect the correctness of the answer
                     Flag = challenge.GenerateFlag(part),
                     IsOccupied = true
                 };
