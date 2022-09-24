@@ -166,6 +166,7 @@ const Submissions: FC = () => {
           style={{
             width: '36vw',
             maxWidth: '100%',
+            padding: 0
           }}
         >
           <Input
