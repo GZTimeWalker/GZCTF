@@ -8,9 +8,9 @@ namespace CTFServer.Utils;
 public static class ExcelHelper
 {
     private static readonly string[] CommonScoreboardHeader = { "排名", "战队", "解题数量", "得分时间", "总分" };
-    private static readonly string[] CommonTeamHeader = { "排名", "战队", "总分", "队伍人数", "队长" };
+    private static readonly string[] CommonSubmissionHeader = { "提交状态", "战队", "用户", "题目", "提交时间", "提交内容", "用户邮箱" };
 
-    public static MemoryStream GetExcel(ScoreboardModel scoreboard, Game game)
+    public static MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
     {
         var workbook = new XSSFWorkbook();
         var boardSheet = workbook.CreateSheet("排行榜");
@@ -18,9 +18,18 @@ public static class ExcelHelper
         var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, game);
         WriteBoardContent(boardSheet, scoreboard, challIds, game);
 
-        var teamSheet = workbook.CreateSheet("战队信息");
-        WriteTeamHeader(teamSheet, headerStyle, scoreboard, game);
-        WriteTeamContent(teamSheet, scoreboard);
+        var stream = new MemoryStream();
+        workbook.Write(stream, true);
+        return stream;
+    }
+
+    public static MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions, Game game)
+    {
+        var workbook = new XSSFWorkbook();
+        var subSheet = workbook.CreateSheet("全部提交");
+        var headerStyle = GetHeaderStyle(workbook);
+        WriteSubmissionHeader(subSheet, headerStyle);
+        WriteSubmissionContent(subSheet, submissions);
 
         var stream = new MemoryStream();
         workbook.Write(stream, true);
@@ -39,6 +48,38 @@ public static class ExcelHelper
         style.Alignment = HorizontalAlignment.Center;
 
         return style;
+    }
+
+    private static void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
+    {
+        var row = sheet.CreateRow(0);
+        var colIndex = 0;
+
+        foreach (var col in CommonSubmissionHeader)
+        {
+            var cell = row.CreateCell(colIndex++);
+            cell.SetCellValue(col);
+            cell.CellStyle = style;
+        }
+    }
+
+    private static void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions)
+    {
+        var rowIndex = 1;
+
+        foreach (var item in submissions)
+        {
+            var row = sheet.CreateRow(rowIndex);
+            row.CreateCell(0).SetCellValue(item.Status.ToShortString());
+            row.CreateCell(1).SetCellValue(item.SubmitTimeUTC.ToString("u"));
+            row.CreateCell(2).SetCellValue(item.TeamName);
+            row.CreateCell(3).SetCellValue(item.UserName);
+            row.CreateCell(4).SetCellValue(item.ChallengeName);
+            row.CreateCell(5).SetCellValue(item.Answer);
+            row.CreateCell(6).SetCellValue(item.User.Email);
+
+            rowIndex++;
+        }
     }
 
     private static int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
@@ -96,73 +137,6 @@ public static class ExcelHelper
             {
                 var chall = item.Challenges.Single(c => c.Id == challId);
                 row.CreateCell(colIndex++).SetCellValue(chall.Score);
-            }
-
-            rowIndex++;
-        }
-    }
-
-    private static void WriteTeamHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
-    {
-        var teamMemberCount = game.TeamMemberCountLimit;
-        if (teamMemberCount == 0)
-            teamMemberCount = scoreboard.Items.Max(i => i.Team?.Members?.Count ?? 1);
-
-        var row = sheet.CreateRow(0);
-        var colIndex = 0;
-
-        foreach (var col in CommonTeamHeader)
-        {
-            var cell = row.CreateCell(colIndex);
-            cell.SetCellValue(col);
-            cell.CellStyle = style;
-            colIndex++;
-        }
-
-        if (teamMemberCount == 1)
-            return;
-
-        var titleCell = row.CreateCell(colIndex);
-        titleCell.SetCellValue("队员信息");
-        titleCell.CellStyle = style;
-
-        var teamMemberStart = colIndex;
-        colIndex++;
-
-        for (var i = 0; i < teamMemberCount - 2; ++i)
-        {
-            var cell = row.CreateCell(colIndex);
-            cell.CellStyle = style;
-            colIndex++;
-        }
-
-        if (teamMemberCount > 2)
-            sheet.AddMergedRegion(new CellRangeAddress(0, 0, teamMemberStart, teamMemberStart + teamMemberCount - 2));
-    }
-
-    private static void WriteTeamContent(ISheet sheet, ScoreboardModel scoreboard)
-    {
-        var rowIndex = 1;
-        foreach (var item in scoreboard.Items)
-        {
-            var row = sheet.CreateRow(rowIndex);
-            var team = item.Team!;
-
-            row.CreateCell(0).SetCellValue(item.Rank);
-            row.CreateCell(1).SetCellValue(item.Name);
-            row.CreateCell(2).SetCellValue(item.Score);
-            row.CreateCell(3).SetCellValue(team.Members!.Count);
-
-            var captain = team.Members!.First(u => u.Captain);
-            row.CreateCell(4).SetCellValue($"{captain.UserName}({captain.RealName})[{captain.StudentNumber}]");
-
-            var others = team.Members.Where(u => u.Id != captain.Id);
-
-            var colIndex = 5;
-            foreach (var u in others)
-            {
-                row.CreateCell(colIndex).SetCellValue($"{u.UserName}({u.RealName})[{captain.StudentNumber}]");
-                colIndex++;
             }
 
             rowIndex++;

@@ -1,8 +1,10 @@
-﻿using CTFServer.Hubs;
+﻿using CTFServer.Extensions;
+using CTFServer.Hubs;
 using CTFServer.Hubs.Clients;
 using CTFServer.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.Formula.Functions;
 
 namespace CTFServer.Repositories;
 
@@ -26,7 +28,7 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 
     public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId, CancellationToken token = default)
         => context.Submissions.Where(s => s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
-            .FirstOrDefaultAsync(token);
+            .SingleOrDefaultAsync(token);
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default)
         => context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
@@ -41,20 +43,14 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
         return subs.OrderByDescending(s => s.SubmitTimeUTC);
     }
 
-    public Task<Submission[]> GetSubmissions(AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default)
-        => GetSubmissionsByType(type).Skip(skip).Take(count).ToArrayAsync(token);
-
     public Task<Submission[]> GetSubmissions(Game game, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default)
-        => GetSubmissionsByType(type).Where(s => s.Game == game)
-            .Skip(skip).Take(count).ToArrayAsync(token);
+        => GetSubmissionsByType(type).Where(s => s.Game == game).TakeAllIfZero(count, skip).ToArrayAsync(token);
 
     public Task<Submission[]> GetSubmissions(Challenge challenge, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default)
-        => GetSubmissionsByType(type).Where(s => s.Challenge == challenge)
-            .Skip(skip).Take(count).ToArrayAsync(token);
+        => GetSubmissionsByType(type).Where(s => s.Challenge == challenge).TakeAllIfZero(count, skip).ToArrayAsync(token);
 
     public Task<Submission[]> GetSubmissions(Participation team, AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default)
-        => GetSubmissionsByType(type).Where(s => s.TeamId == team.TeamId)
-            .Skip(skip).Take(count).ToArrayAsync(token);
+        => GetSubmissionsByType(type).Where(s => s.TeamId == team.TeamId).TakeAllIfZero(count, skip).ToArrayAsync(token);
 
     public Task SendSubmission(Submission submission)
         => hubContext.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);

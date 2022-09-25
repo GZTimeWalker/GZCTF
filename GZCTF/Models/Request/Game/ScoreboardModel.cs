@@ -103,15 +103,8 @@ public class ScoreboardItem
     public int SolvedCount { get; set; }
 
     /// <summary>
-    /// 队伍信息，用于生成 Excel
+    /// 得分时间
     /// </summary>
-    [JsonIgnore]
-    public TeamInfoModel? Team { get; set; }
-
-    /// <summary>
-    /// 得分时间，用于生成 Excel 及排序
-    /// </summary>
-    [JsonIgnore]
     public DateTimeOffset LastSubmissionTime { get; set; }
 
     /// <summary>

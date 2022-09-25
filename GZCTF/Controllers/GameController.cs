@@ -457,12 +457,48 @@ public class GameController : ControllerBase
 
         var scoreboard = await gameRepository.GetScoreboard(game, token);
 
-        var stream = ExcelHelper.GetExcel(scoreboard, game);
+        var stream = ExcelHelper.GetScoreboardExcel(scoreboard, game);
         stream.Seek(0, SeekOrigin.Begin);
 
         return File(stream,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                $"{game.Title}_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
+                $"{game.Title}_Scoreboard_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
+    }
+
+    /// <summary>
+    /// 下载比赛全部提交
+    /// </summary>
+    /// <remarks>
+    /// 下载比赛全部提交，需要Monitor权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功下载比赛全部提交</response>
+    /// <response code="400">操作无效</response>
+    /// <response code="404">比赛未找到</response>
+    [RequireMonitor]
+    [HttpGet("{id}/SubmissionSheet")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> SubmissionSheet([FromRoute] int id, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到"));
+
+        if (DateTimeOffset.UtcNow < game.StartTimeUTC)
+            return BadRequest(new RequestResponse("比赛未开始"));
+
+        var submissions = await submissionRepository.GetSubmissions(game, count: 0, token: token);
+
+        var stream = ExcelHelper.GetSubmissionExcel(submissions, game);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return File(stream,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"{game.Title}_Submissions_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
     }
 
     /// <summary>

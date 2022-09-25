@@ -94,7 +94,7 @@ public class GameRepository : RepositoryBase, IGameRepository
             Organizations = game.Organizations,
             Challenges = GenChallenges(data, bloods),
             Items = items,
-            TimeLine = GenTopTimeLines(items)
+            TimeLine = GenTopTimeLines(items),
         };
     }
 
@@ -153,6 +153,9 @@ public class GameRepository : RepositoryBase, IGameRepository
             .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
+    private static IEnumerable<TeamInfoModel> GenTeams(Data[] data)
+        => data.GroupBy(j => j.Instance.Participation).Select(j => TeamInfoModel.FromParticipation(j.Key));
+
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
         => data.GroupBy(j => j.Instance.Participation)
             .Select(j =>
@@ -166,11 +169,10 @@ public class GameRepository : RepositoryBase, IGameRepository
                     Avatar = j.Key.Team.AvatarUrl,
                     Organization = j.Key.Organization,
                     Rank = 0,
-                    Team = TeamInfoModel.FromParticipation(j.Key),
                     LastSubmissionTime = j
                         .Where(s => s.Submission?.SubmitTimeUTC < game.EndTimeUTC)
                         .Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
-                        .OrderBy(t => t).LastOrDefault(),
+                        .OrderBy(t => t).LastOrDefault(game.StartTimeUTC),
                     SolvedCount = challengeGroup.Count(c => c.Any(
                         s => s.Submission?.Status == AnswerResult.Accepted
                         && s.Submission?.SubmitTimeUTC < game.EndTimeUTC)),

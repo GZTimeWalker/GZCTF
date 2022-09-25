@@ -8,7 +8,7 @@ namespace CTFServer.Repositories;
 
 public class GameEventRepository : RepositoryBase, IGameEventRepository
 {
-    private IHubContext<MonitorHub, IMonitorClient> hubContext;
+    private readonly IHubContext<MonitorHub, IMonitorClient> hubContext;
 
     public GameEventRepository(
         IHubContext<MonitorHub, IMonitorClient> hub,
