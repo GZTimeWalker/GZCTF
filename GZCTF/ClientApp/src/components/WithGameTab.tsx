@@ -65,13 +65,13 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   return (
     <Card
       style={{
-        width: '8rem',
+        width: '9rem',
         textAlign: 'center',
         paddingTop: '4px',
         overflow: 'visible',
       }}
     >
-      <Text style={{ fontWeight: 700 }}>
+      <Text style={{ fontWeight: 700 }} lineClamp={1}>
         {countdown.asHours() > 999
           ? '比赛还会很久'
           : countdown.asSeconds() > 0

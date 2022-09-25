@@ -168,7 +168,7 @@ const ChallengePanel: FC = () => {
         >
           <Tabs.List>
             <Tabs.Tab value={'All'} icon={<Icon path={mdiPuzzle} size={1} />}>
-              <Group position="apart">
+              <Group position="apart" noWrap spacing={2}>
                 <Text>All</Text>
                 <Text>{allChallenges.length}</Text>
               </Group>
@@ -182,7 +182,7 @@ const ChallengePanel: FC = () => {
                   icon={<Icon path={data?.icon} size={1} />}
                   color={data?.color}
                 >
-                  <Group position="apart">
+                  <Group position="apart" noWrap spacing={2}>
                     <Text>{data?.label}</Text>
                     <Text>{challenges && challenges[tab].length}</Text>
                   </Group>

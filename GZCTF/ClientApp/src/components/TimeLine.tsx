@@ -43,6 +43,8 @@ const TimeLine: FC = () => {
               {
                 xAxis: last,
                 label: {
+                  textBorderWidth: 0,
+                  fontWeight: 500,
                   formatter: (time: any) => dayjs(time.value).format('YYYY-MM-DD HH:mm'),
                 },
               },
@@ -55,6 +57,14 @@ const TimeLine: FC = () => {
       theme={theme.colorScheme}
       option={{
         backgroundColor: 'transparent',
+        toolbox: {
+          show: true,
+          feature: {
+            dataZoom: {},
+            restore: {},
+            saveAsImage: {}
+          }
+        },
         xAxis: {
           type: 'time',
           name: '时间',
@@ -70,29 +80,32 @@ const TimeLine: FC = () => {
           boundaryGap: [0, '100%'],
           axisLabel: {
             formatter: '{value} 分',
+            color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
           max: (value: any) => (Math.floor(value.max / 1000) + 1) * 1000,
           splitLine: {
             show: true,
             lineStyle: {
-              color: [theme.colorScheme === 'dark' ? theme.colors.gray[5] : theme.colors.gray[8]],
+              color: [theme.colorScheme === 'dark' ? theme.colors.gray[5] : theme.colors.gray[3]],
               type: 'dashed',
             },
           },
         },
         tooltip: {
           trigger: 'axis',
+          borderWidth: 0,
           textStyle: {
             fontSize: 10,
-            color: theme.colors.white[1],
+            color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
-          backgroundColor: theme.colors.gray[6],
+          backgroundColor:
+            theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[1],
         },
         legend: {
           orient: 'horizontal',
           bottom: 50,
           textStyle: {
-            fontSize: 10,
+            fontSize: 12,
             color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
         },
@@ -137,7 +150,7 @@ const TimeLine: FC = () => {
       }}
       style={{
         width: '100%',
-        height: '400px',
+        height: '450px',
         display: 'flex',
       }}
     />
