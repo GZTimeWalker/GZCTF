@@ -11,6 +11,7 @@ import {
   ScrollArea,
   useMantineTheme,
   Input,
+  Tooltip,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -20,6 +21,7 @@ import {
   mdiClose,
   mdiCrosshairsQuestion,
   mdiDotsHorizontal,
+  mdiDownloadOutline,
   mdiExclamationThick,
   mdiFlag,
 } from '@mdi/js'
@@ -217,6 +219,14 @@ const Submissions: FC = () => {
           ]}
         />
         <Group position="right">
+          <Tooltip label="下载全部提交" position='left'>
+            <ActionIcon
+              size="lg"
+              onClick={() => window.open(`/api/game/${numId}/submissionsheet`, '_blank')}
+            >
+              <Icon path={mdiDownloadOutline} size={1} />
+            </ActionIcon>
+          </Tooltip>
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
             <Icon path={mdiArrowLeftBold} size={1} />
           </ActionIcon>
