@@ -8,7 +8,6 @@ public static class CacheHelper
 {
     public static async Task<T> GetOrCreateAsync<T, L>(this IDistributedCache cache, ILogger<L> logger, string key, Func<DistributedCacheEntryOptions, Task<T>> func) where T : class
     {
-
         var value = await cache.GetAsync(key);
         T? result = null;
 
@@ -26,9 +25,9 @@ public static class CacheHelper
 
         logger.SystemLog($"重建缓存：{key}", TaskStatus.Pending, LogLevel.Debug);
 
-        var options = new DistributedCacheEntryOptions();
-        result = await func(options);
-        await cache.SetAsync(key, JsonSerializer.SerializeToUtf8Bytes(result), options);
+        var cacheOptions = new DistributedCacheEntryOptions();
+        result = await func(cacheOptions);
+        await cache.SetAsync(key, JsonSerializer.SerializeToUtf8Bytes(result), cacheOptions);
         return result;
     }
 }

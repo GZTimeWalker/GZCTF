@@ -3,16 +3,6 @@
 public interface ISubmissionRepository : IRepository
 {
     /// <summary>
-    /// 获取提交，按时间降序
-    /// </summary>
-    /// <param name="type">提交类型</param>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过数量</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<Submission[]> GetSubmissions(AnswerResult? type = null, int count = 100, int skip = 0, CancellationToken token = default);
-
-    /// <summary>
     /// 获取比赛的提交，按时间降序
     /// </summary>
     /// <param name="game">比赛对象</param>

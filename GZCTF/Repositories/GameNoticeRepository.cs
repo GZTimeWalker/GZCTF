@@ -12,7 +12,7 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 {
     private readonly IDistributedCache cache;
     private readonly ILogger<GameEventRepository> logger;
-    private IHubContext<UserHub, IUserClient> hubContext;
+    private readonly IHubContext<UserHub, IUserClient> hubContext;
 
     public GameNoticeRepository(IDistributedCache _cache,
         ILogger<GameEventRepository> _logger,
@@ -45,7 +45,7 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default)
         => context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
-    public Task<GameNotice[]> GetNotices(int gameId, int count = 10, int skip = 0, CancellationToken token = default)
+    public Task<GameNotice[]> GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default)
         => cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), (entry) =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);

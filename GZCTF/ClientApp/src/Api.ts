@@ -1153,6 +1153,12 @@ export interface ScoreboardItem {
    */
   solvedCount?: number
 
+  /**
+   * 得分时间
+   * @format date-time
+   */
+  lastSubmissionTime?: string
+
   /** 题目情况列表 */
   challenges?: ChallengeItem[]
 }
@@ -3337,6 +3343,45 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: void | Promise<void>,
       options?: MutatorOptions
     ) => mutate<void>(`/api/game/${id}/scoreboardsheet`, data, options),
+
+    /**
+     * @description 下载比赛全部提交，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameSubmissionSheet
+     * @summary 下载比赛全部提交
+     * @request GET:/api/game/{id}/submissionsheet
+     */
+    gameSubmissionSheet: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}/submissionsheet`,
+        method: 'GET',
+        ...params,
+      }),
+    /**
+     * @description 下载比赛全部提交，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameSubmissionSheet
+     * @summary 下载比赛全部提交
+     * @request GET:/api/game/{id}/submissionsheet
+     */
+    useGameSubmissionSheet: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<void, RequestResponse>(doFetch ? `/api/game/${id}/submissionsheet` : null, options),
+
+    /**
+     * @description 下载比赛全部提交，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameSubmissionSheet
+     * @summary 下载比赛全部提交
+     * @request GET:/api/game/{id}/submissionsheet
+     */
+    mutateGameSubmissionSheet: (
+      id: number,
+      data?: void | Promise<void>,
+      options?: MutatorOptions
+    ) => mutate<void>(`/api/game/${id}/submissionsheet`, data, options),
 
     /**
      * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
