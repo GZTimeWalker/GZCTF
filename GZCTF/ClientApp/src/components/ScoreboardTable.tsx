@@ -278,7 +278,10 @@ const ScoreboardTable: FC = () => {
                 ...scoreboard.organizations.map((o) => ({ value: o, label: o })),
               ]}
               value={organization}
-              onChange={setOrganization}
+              onChange={(org) => {
+                setOrganization(org)
+                setPage(1)
+              }}
               styles={{
                 input: {
                   width: 300,

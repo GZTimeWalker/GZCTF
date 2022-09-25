@@ -166,7 +166,7 @@ const Submissions: FC = () => {
           style={{
             width: '36vw',
             maxWidth: '100%',
-            padding: 0
+            padding: 0,
           }}
         >
           <Input
@@ -199,7 +199,10 @@ const Submissions: FC = () => {
               background: 'transparent',
             },
           }}
-          onChange={(value: AnswerResult | 'All') => setType(value)}
+          onChange={(value: AnswerResult | 'All') => {
+            setType(value)
+            setPage(1)
+          }}
           data={[
             {
               label: 'All',
