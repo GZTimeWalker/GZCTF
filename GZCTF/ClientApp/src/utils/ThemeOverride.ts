@@ -120,7 +120,7 @@ export const useTooltipStyles = createStyles((theme) => ({
 export const useIsMobile = (limit?: number) => {
   const view = useViewportSize()
   const theme = useMantineTheme()
-  return { loaded: view.width > 0, isMobile: view.width < (limit ?? theme.breakpoints.xs) }
+  return { loaded: view.width > 0, isMobile: view.width > 0 && view.width < (limit ?? theme.breakpoints.xs) }
 }
 
 export const ACCEPT_IMAGE_MIME_TYPE = [
