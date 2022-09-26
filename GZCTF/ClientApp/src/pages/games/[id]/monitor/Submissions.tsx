@@ -21,13 +21,13 @@ import {
   mdiClose,
   mdiCrosshairsQuestion,
   mdiDotsHorizontal,
-  mdiDownloadOutline,
+  mdiDownload,
   mdiExclamationThick,
   mdiFlag,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
-import { useTableStyles } from '@Utils/ThemeOverride'
+import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { AnswerResult, Submission } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 50
@@ -85,6 +85,7 @@ const Submissions: FC = () => {
 
   const iconMap = AnswerResultIconMap(0.8)
   const { classes, cx } = useTableStyles()
+  const { classes: tooltipClasses } = useTooltipStyles()
 
   useEffect(() => {
     api.game
@@ -219,12 +220,12 @@ const Submissions: FC = () => {
           ]}
         />
         <Group position="right">
-          <Tooltip label="下载全部提交" position="left">
+          <Tooltip label="下载全部提交" position="left" classNames={tooltipClasses}>
             <ActionIcon
               size="lg"
               onClick={() => window.open(`/api/game/${numId}/submissionsheet`, '_blank')}
             >
-              <Icon path={mdiDownloadOutline} size={1} />
+              <Icon path={mdiDownload} size={1} />
             </ActionIcon>
           </Tooltip>
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>

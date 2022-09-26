@@ -119,13 +119,8 @@ const Events: FC = () => {
 
       connection.on('ReceivedGameEvent', (message: GameEvent) => {
         console.log(message)
-        if (
-          !hideConatinerEvents ||
-          (message.type !== EventType.ContainerStart && message.type !== EventType.ContainerDestroy)
-        ) {
-          newEvents.current = [message, ...newEvents.current]
-          update(new Date(message.time!))
-        }
+        newEvents.current = [message, ...newEvents.current]
+        update(new Date(message.time!))
       })
 
       connection
@@ -173,7 +168,16 @@ const Events: FC = () => {
       </Group>
       <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
         <Stack spacing="xs" pr={10}>
-          {[...(activePage === 1 ? newEvents.current : []), ...(events ?? [])]?.map((event, i) => (
+          {[
+            ...(activePage === 1
+              ? newEvents.current.filter(
+                  (e) =>
+                    !hideConatinerEvents ||
+                    (e.type !== EventType.ContainerStart && e.type !== EventType.ContainerDestroy)
+                )
+              : []),
+            ...(events ?? []),
+          ]?.map((event, i) => (
             <Card
               shadow="sm"
               radius="sm"
