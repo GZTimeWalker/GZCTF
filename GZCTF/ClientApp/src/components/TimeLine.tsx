@@ -62,8 +62,8 @@ const TimeLine: FC = () => {
           feature: {
             dataZoom: {},
             restore: {},
-            saveAsImage: {}
-          }
+            saveAsImage: {},
+          },
         },
         xAxis: {
           type: 'time',
