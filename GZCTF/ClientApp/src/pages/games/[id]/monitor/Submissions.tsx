@@ -219,7 +219,7 @@ const Submissions: FC = () => {
           ]}
         />
         <Group position="right">
-          <Tooltip label="下载全部提交" position='left'>
+          <Tooltip label="下载全部提交" position="left">
             <ActionIcon
               size="lg"
               onClick={() => window.open(`/api/game/${numId}/submissionsheet`, '_blank')}

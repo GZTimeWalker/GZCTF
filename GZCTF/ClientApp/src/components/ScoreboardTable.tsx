@@ -14,6 +14,7 @@ import {
   Title,
   Select,
   Tooltip,
+  Center,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
@@ -227,7 +228,7 @@ const TableRow: FC<{
                     </Stack>
                   }
                 >
-                  {icon}
+                  <Center>{icon}</Center>
                 </Tooltip>
               </td>
             )
