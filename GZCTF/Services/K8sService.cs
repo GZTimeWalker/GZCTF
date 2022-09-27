@@ -14,13 +14,14 @@ namespace CTFServer.Services;
 
 public class K8sService : IContainerService
 {
-    private const string Namespace = "gzctf";
+    private const string Namespace = "gzctf-challenges";
+    private const string NetworkPolicy = "gzctf-policy";
 
     private readonly ILogger<K8sService> logger;
     private readonly Kubernetes kubernetesClient;
     private readonly string hostIP;
     private readonly string publicEntry;
-    private readonly string? SecretName;
+    private readonly string? AuthSecretName;
 
     public K8sService(IOptions<RegistryConfig> _registry, IOptions<ContainerProvider> _provider, ILogger<K8sService> _logger)
     {
@@ -39,46 +40,18 @@ public class K8sService : IContainerService
 
         kubernetesClient = new Kubernetes(config);
 
-        if (!kubernetesClient.CoreV1.ListNamespace().Items.Any(ns => ns.Metadata.Name == Namespace))
-            kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = Namespace } });
+        var registry = _registry.Value;
+        var withAuth = !string.IsNullOrWhiteSpace(registry.ServerAddress)
+            && !string.IsNullOrWhiteSpace(registry.UserName)
+            && !string.IsNullOrWhiteSpace(registry.Password);
 
-        if (!string.IsNullOrWhiteSpace(_registry.Value.ServerAddress)
-            && !string.IsNullOrWhiteSpace(_registry.Value.UserName)
-            && !string.IsNullOrWhiteSpace(_registry.Value.Password))
+        if (withAuth)
         {
-            var padding = Codec.StrMD5($"{_registry.Value.UserName}@{_registry.Value.Password}@{_registry.Value.ServerAddress}");
-            SecretName = $"{_registry.Value.UserName}-{padding}";
-
-            var auth = Codec.Base64.Encode($"{_registry.Value.UserName}:{_registry.Value.Password}");
-            var dockerjson = Codec.Base64.EncodeToBytes(
-                $"{{\"auths\":" +
-                    $"{{\"{_registry.Value.ServerAddress}\":" +
-                        $"{{\"auth\":\"{auth}\"," +
-                        $"\"username\":\"{_registry.Value.UserName}\"," +
-                        $"\"password\":\"{_registry.Value.Password}\"" +
-                $"}}}}}}");
-            var secret = new V1Secret()
-            {
-                Metadata = new V1ObjectMeta()
-                {
-                    Name = SecretName,
-                    NamespaceProperty = Namespace,
-                },
-                Data = new Dictionary<string, byte[]>() {
-                    {".dockerconfigjson", dockerjson}
-                },
-                Type = "kubernetes.io/dockerconfigjson"
-            };
-
-            try
-            {
-                kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, SecretName, Namespace);
-            }
-            catch (Exception)
-            {
-                kubernetesClient.CoreV1.CreateNamespacedSecret(secret, Namespace);
-            }
+            var padding = Codec.StrMD5($"{registry.UserName}@{registry.Password}@{registry.ServerAddress}");
+            AuthSecretName = $"{registry.UserName}-{padding}";
         }
+
+        InitK8s(withAuth, registry);
 
         logger.SystemLog($"K8s 服务已启动 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
     }
@@ -97,16 +70,21 @@ public class K8sService : IContainerService
                 NamespaceProperty = Namespace,
                 Labels = new Dictionary<string, string>()
                 {
-                    { "ctf.gzti.me/ResourceId", name },
-                    { "ctf.gzti.me/TeamId", config.TeamId },
-                    { "ctf.gzti.me/UserId", config.UserId }
+                    ["ctf.gzti.me/ResourceId"] = name,
+                    ["ctf.gzti.me/TeamId"] = config.TeamId,
+                    ["ctf.gzti.me/UserId"] = config.UserId
                 }
             },
             Spec = new V1PodSpec()
             {
-                ImagePullSecrets = SecretName is null ?
+                ImagePullSecrets = AuthSecretName is null ?
                     Array.Empty<V1LocalObjectReference>() :
-                    new List<V1LocalObjectReference>() { new() { Name = SecretName } },
+                    new List<V1LocalObjectReference>() { new() { Name = AuthSecretName } },
+                DnsPolicy = "None",
+                DnsConfig = new()
+                {
+                    Nameservers = new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" },
+                },
                 Containers = new[]
                 {
                     new V1Container()
@@ -114,30 +92,24 @@ public class K8sService : IContainerService
                         Name = name,
                         Image = config.Image,
                         ImagePullPolicy = "Always",
-                        SecurityContext = new()
-                        {
-                            Privileged = config.PrivilegedContainer
-                        },
+                        SecurityContext = new() { Privileged = config.PrivilegedContainer },
                         Env = config.Flag is null ? new List<V1EnvVar>() : new[]
                         {
                             new V1EnvVar("GZCTF_FLAG", config.Flag)
                         },
-                        Ports = new[]
-                        {
-                            new V1ContainerPort(config.ExposedPort)
-                        },
+                        Ports = new[] { new V1ContainerPort(config.ExposedPort) },
                         Resources = new V1ResourceRequirements()
                         {
                             Limits = new Dictionary<string, ResourceQuantity>()
                             {
-                                { "cpu", new ResourceQuantity($"{config.CPUCount}")},
-                                { "memory", new ResourceQuantity($"{config.MemoryLimit}Mi") }
+                                ["cpu"] = new ResourceQuantity($"{config.CPUCount}"),
+                                ["memory"] = new ResourceQuantity($"{config.MemoryLimit}Mi")
                             },
                             Requests = new Dictionary<string, ResourceQuantity>()
                             {
-                                { "cpu", new ResourceQuantity("1")},
-                                { "memory", new ResourceQuantity("32Mi") }
-                            },
+                                ["cpu"] = new ResourceQuantity($"1"),
+                                ["memory"] = new ResourceQuantity($"32Mi")
+                            }
                         }
                     }
                 },
@@ -181,10 +153,7 @@ public class K8sService : IContainerService
             {
                 Name = name,
                 NamespaceProperty = Namespace,
-                Labels = new Dictionary<string, string>()
-                {
-                    { "ctf.gzti.me/ResourceId", name }
-                }
+                Labels = new Dictionary<string, string>() { ["ctf.gzti.me/ResourceId"] = name }
             },
             Spec = new V1ServiceSpec()
             {
@@ -195,7 +164,7 @@ public class K8sService : IContainerService
                 },
                 Selector = new Dictionary<string, string>()
                 {
-                    { "ctf.gzti.me/ResourceId", name }
+                    ["ctf.gzti.me/ResourceId"] = name
                 }
             }
         };
@@ -242,5 +211,82 @@ public class K8sService : IContainerService
         }
 
         container.Status = ContainerStatus.Destroyed;
+    }
+
+    private void InitK8s(bool withAuth, RegistryConfig? registry)
+    {
+        if (!kubernetesClient.CoreV1.ListNamespace().Items.Any(ns => ns.Metadata.Name == Namespace))
+            kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = Namespace } });
+
+        if (!kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(Namespace).Items.Any(np => np.Metadata.Name == NetworkPolicy))
+        {
+            kubernetesClient.NetworkingV1.CreateNamespacedNetworkPolicy(new()
+            {
+                Metadata = new() { Name = NetworkPolicy },
+                Spec = new()
+                {
+                    PodSelector = new(),
+                    PolicyTypes = new[] { "Egress" },
+                    Egress = new[]
+                    {
+                        new V1NetworkPolicyEgressRule()
+                        {
+                            To = new[]
+                            {
+                                new V1NetworkPolicyPeer() { IpBlock = new() { Cidr = "0.0.0.0/0", Except = new[] { "10.0.0.0/8" } } },
+                            }
+                        },
+                        //new V1NetworkPolicyEgressRule()
+                        //{
+                        //    To = new[]
+                        //    {
+                        //        new V1NetworkPolicyPeer() {
+                        //            NamespaceSelector = new() { MatchLabels = new Dictionary<string, string> {
+                        //                ["kubernetes.io/metadata.name"] = "kube-system"
+                        //            } },
+                        //            PodSelector = new() { MatchLabels = new Dictionary<string, string> {
+                        //                ["k8s-app"] = "kube-dns"
+                        //            } }
+                        //        }
+                        //    },
+                        //    Ports = new[] {
+                        //        new V1NetworkPolicyPort() { Port = 53, Protocol = "UDP" }
+                        //    }
+                        //}
+                    }
+                }
+            }, Namespace);
+        }
+
+        if (withAuth && registry is not null)
+        {
+            var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
+            var dockerjson = Codec.Base64.EncodeToBytes(
+                $"{{\"auths\":" +
+                    $"{{\"{registry.ServerAddress}\":" +
+                        $"{{\"auth\":\"{auth}\"," +
+                        $"\"username\":\"{registry.UserName}\"," +
+                        $"\"password\":\"{registry.Password}\"" +
+                $"}}}}}}");
+            var secret = new V1Secret()
+            {
+                Metadata = new V1ObjectMeta()
+                {
+                    Name = AuthSecretName,
+                    NamespaceProperty = Namespace,
+                },
+                Data = new Dictionary<string, byte[]>() { [".dockerconfigjson"] = dockerjson },
+                Type = "kubernetes.io/dockerconfigjson"
+            };
+
+            try
+            {
+                kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, AuthSecretName, Namespace);
+            }
+            catch (Exception)
+            {
+                kubernetesClient.CoreV1.CreateNamespacedSecret(secret, Namespace);
+            }
+        }
     }
 }
