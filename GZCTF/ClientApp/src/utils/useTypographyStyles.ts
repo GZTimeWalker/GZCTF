@@ -25,7 +25,7 @@ export const useTypographyStyles = createStyles((theme) => {
 
       '& :not(pre) > code': {
         whiteSpace: 'normal',
-        fontSize: '1em',
+        fontSize: '0.95em',
         backgroundColor: theme.fn.rgba(theme.black, sc(0.1, 0.05)),
         padding: `1px ${theme.spacing.xs / 2}px`,
         border: 'none',
