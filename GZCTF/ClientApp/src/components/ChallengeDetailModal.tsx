@@ -416,7 +416,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                   width: 'auto',
                 },
                 input: {
-                  fontFamily: theme.fontFamilyMonospace,
+                  fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
                 },
               }}
               rightSection={

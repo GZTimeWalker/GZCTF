@@ -53,11 +53,11 @@ const TeamRank: FC<PaperProps> = (props) => {
   return (
     <Card shadow="sm" {...props}>
       <Stack spacing={8}>
-        <Group>
+        <Group spacing="sm" noWrap>
           <Avatar color="cyan" size="md" radius="md" src={data?.rank?.avatar}>
             {data?.rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Skeleton width="8rem" visible={!data}>
+          <Skeleton visible={!data}>
             <Title order={4}>{data?.rank?.name ?? 'Team'}</Title>
           </Skeleton>
         </Group>
