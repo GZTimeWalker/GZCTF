@@ -145,6 +145,12 @@ const Events: FC = () => {
     }
   }, [game])
 
+  const filteredEvents = newEvents.current.filter(
+    (e) =>
+      !hideConatinerEvents ||
+      (e.type !== EventType.ContainerStart && e.type !== EventType.ContainerDestroy)
+  )
+
   return (
     <WithGameMonitorTab>
       <Group position="apart" style={{ width: '100%' }}>
@@ -168,25 +174,14 @@ const Events: FC = () => {
       </Group>
       <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
         <Stack spacing="xs" pr={10}>
-          {[
-            ...(activePage === 1
-              ? newEvents.current.filter(
-                  (e) =>
-                    !hideConatinerEvents ||
-                    (e.type !== EventType.ContainerStart && e.type !== EventType.ContainerDestroy)
-                )
-              : []),
-            ...(events ?? []),
-          ]?.map((event, i) => (
+          {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card
               shadow="sm"
               radius="sm"
               p="xs"
               key={`${event.time}@${i}`}
               className={
-                i === 0 && activePage === 1 && newEvents.current.length > 0
-                  ? classes.fade
-                  : undefined
+                i === 0 && activePage === 1 && filteredEvents.length > 0 ? classes.fade : undefined
               }
             >
               <Group noWrap align="flex-start" position="right" style={{ width: '100%' }}>
