@@ -80,7 +80,11 @@ public class K8sService : IContainerService
                 ImagePullSecrets = AuthSecretName is null ?
                     Array.Empty<V1LocalObjectReference>() :
                     new List<V1LocalObjectReference>() { new() { Name = AuthSecretName } },
-                
+                DnsPolicy = "None",
+                DnsConfig = new()
+                {
+                    Nameservers = new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" },
+                },
                 Containers = new[]
                 {
                     new V1Container()
