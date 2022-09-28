@@ -70,7 +70,7 @@ public class Game
     /// <summary>
     /// 参赛所属单位列表
     /// </summary>
-    public List<string>? Organizations { get; set; }
+    public HashSet<string>? Organizations { get; set; }
 
     /// <summary>
     /// 队员数量限制, 0 为无上限

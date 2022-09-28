@@ -34,7 +34,7 @@ public class DetailedGameInfoModel
     /// <summary>
     /// 参赛所属单位列表
     /// </summary>
-    public List<string>? Organizations { get; set; }
+    public HashSet<string>? Organizations { get; set; }
 
     /// <summary>
     /// 是否需要邀请码

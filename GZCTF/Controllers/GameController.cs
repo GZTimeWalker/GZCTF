@@ -138,9 +138,7 @@ public class GameController : ControllerBase
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse("比赛邀请码错误"));
 
-        if (game.Organizations is not null
-            && game.Organizations.Count > 0
-            && !game.Organizations.Any(o => o == model.Organization))
+        if (game.Organizations is { Count: > 0 } && !game.Organizations.Any(o => o == model.Organization))
             return BadRequest(new RequestResponse("无效的参赛单位"));
 
         var user = await userManager.GetUserAsync(User);
