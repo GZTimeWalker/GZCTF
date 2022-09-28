@@ -154,15 +154,8 @@ const GameNoticePanel: FC = () => {
         {filteredNotices.length ? (
           <ScrollArea
             offsetScrollbars
-            scrollbarSize={4}
+            scrollbarSize={0}
             style={{ height: 'calc(100vh - 25rem)' }}
-            sx={(theme) => ({
-              scrollbar: {
-                '&:hover': {
-                  backgroundColor: theme.fn.rgba(theme.colors.grape[6], 0.1),
-                },
-              },
-            })}
           >
             <List
               size="sm"
@@ -171,7 +164,7 @@ const GameNoticePanel: FC = () => {
                 item: {
                   fontWeight: 500,
                   color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
-                },
+                }
               })}
             >
               {filteredNotices.map((notice) => (

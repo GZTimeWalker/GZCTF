@@ -54,11 +54,20 @@ const TeamRank: FC<PaperProps> = (props) => {
     <Card shadow="sm" {...props}>
       <Stack spacing={8}>
         <Group spacing="sm" noWrap>
-          <Avatar color="cyan" size="md" radius="md" src={data?.rank?.avatar}>
+          <Avatar color="cyan" size={50} radius="md" src={data?.rank?.avatar}>
             {data?.rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Skeleton visible={!data}>
-            <Title order={4}>{data?.rank?.name ?? 'Team'}</Title>
+            <Stack spacing={0}>
+              <Title order={4} lineClamp={1}>
+                {data?.rank?.name ?? 'Team'}
+              </Title>
+              {data?.rank?.organization && (
+                <Text size="sm" lineClamp={1}>
+                  {data.rank.organization}
+                </Text>
+              )}
+            </Stack>
           </Skeleton>
         </Group>
         <Group
@@ -71,19 +80,27 @@ const TeamRank: FC<PaperProps> = (props) => {
             <Skeleton visible={!data}>
               <Text className={classes.number}>{data?.rank?.rank ?? '0'}</Text>
             </Skeleton>
-            <Text size="sm">排名</Text>
+            <Text size="xs">总排名</Text>
           </Stack>
+          {data?.rank?.organization && (
+            <Stack spacing={2}>
+              <Skeleton visible={!data}>
+                <Text className={classes.number}>{data?.rank?.organizationRank ?? '0'}</Text>
+              </Skeleton>
+              <Text size="xs">排名</Text>
+            </Stack>
+          )}
           <Stack spacing={2}>
             <Skeleton visible={!data}>
               <Text className={classes.number}>{data?.rank?.score ?? '0'}</Text>
             </Skeleton>
-            <Text size="sm">得分</Text>
+            <Text size="xs">得分</Text>
           </Stack>
           <Stack spacing={2}>
             <Skeleton visible={!data}>
               <Text className={classes.number}>{data?.rank?.solvedCount ?? '0'}</Text>
             </Skeleton>
-            <Text size="sm">攻克数量</Text>
+            <Text size="xs">攻克数量</Text>
           </Stack>
         </Group>
         <Progress value={solved * 100} />
