@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import React, { FC, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   Paper,
   createStyles,
@@ -17,7 +18,7 @@ import {
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
-import { ChallengeInfo, ChallengeTag, ScoreboardItem, ScoreboardModel, SubmissionType } from '@Api'
+import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 import ScoreboardItemModal from './ScoreboardItemModal'
 
@@ -247,15 +248,20 @@ const BloodData = [
 const ITEM_COUNT_PER_PAGE = 30
 
 interface ScoreboardProps {
-  scoreboard?: ScoreboardModel
   organization: string | null
   setOrganization: (org: string | null) => void
 }
 
-const ScoreboardTable: FC<ScoreboardProps> = ({ scoreboard, organization, setOrganization }) => {
+const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization }) => {
+  const { id } = useParams()
+  const numId = parseInt(id ?? '-1')
   const { classes } = useStyles()
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
+
+  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
+    refreshInterval: 0,
+  })
 
   const filtered =
     organization === 'all'

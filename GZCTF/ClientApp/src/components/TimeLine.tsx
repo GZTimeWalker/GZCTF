@@ -1,18 +1,22 @@
 import dayjs from 'dayjs'
 import ReactEcharts from 'echarts-for-react'
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useMantineTheme } from '@mantine/core'
-import api, { TopTimeLine } from '@Api'
+import api from '@Api'
 
 interface TimeLineProps {
-  timeLine?: TopTimeLine[]
+  organization: string | null
 }
 
-const TimeLine: FC<TimeLineProps> = ({ timeLine }) => {
+const TimeLine: FC<TimeLineProps> = ({ organization }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const theme = useMantineTheme()
+
+  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
+    refreshInterval: 0,
+  })
 
   const { data: game } = api.game.useGameGames(numId, {
     refreshInterval: 0,
@@ -24,36 +28,50 @@ const TimeLine: FC<TimeLineProps> = ({ timeLine }) => {
   const now = new Date()
 
   const last = now < endTime ? now : endTime
+  const [chartData, setChartData] = useState<any>()
+  const [time, setTime] = useState<number>(Date.now())
 
-  const chartData = timeLine?.map((team) => ({
-    type: 'line',
-    step: 'end',
-    name: team.name,
-    data: [
-      [startTime, 0],
-      ...(team.items?.map((item) => [item.time, item.score]) ?? []),
-      [last, (team.items && team.items[team.items.length - 1]?.score) ?? 0],
-    ],
-    markLine:
-      now > endTime
-        ? undefined
-        : {
-            symbol: 'none',
-            data: [
-              {
-                xAxis: last,
-                label: {
-                  textBorderWidth: 0,
-                  fontWeight: 500,
-                  formatter: (time: any) => dayjs(time.value).format('YYYY-MM-DD HH:mm'),
-                },
+  useEffect(() => {
+    if (!scoreboard?.timeLines || !organization) return
+
+    const timeLine = scoreboard?.timeLines[organization] ?? []
+    console.log(timeLine)
+
+    setChartData(
+      timeLine?.map((team) => ({
+        type: 'line',
+        step: 'end',
+        name: team.name,
+        data: [
+          [startTime, 0],
+          ...(team.items?.map((item) => [item.time, item.score]) ?? []),
+          [last, (team.items && team.items[team.items.length - 1]?.score) ?? 0],
+        ],
+        markLine:
+          now > endTime
+            ? undefined
+            : {
+                symbol: 'none',
+                data: [
+                  {
+                    xAxis: last,
+                    label: {
+                      textBorderWidth: 0,
+                      fontWeight: 500,
+                      formatter: (time: any) => dayjs(time.value).format('YYYY-MM-DD HH:mm'),
+                    },
+                  },
+                ],
               },
-            ],
-          },
-  }))
+      }))
+    )
+    setTime(Date.now())
+  }, [scoreboard, organization])
 
   return (
     <ReactEcharts
+      key={time}
+      showLoading={!scoreboard}
       theme={theme.colorScheme}
       option={{
         backgroundColor: 'transparent',
