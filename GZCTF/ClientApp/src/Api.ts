@@ -1078,11 +1078,8 @@ export interface ScoreboardModel {
    */
   updateTimeUTC?: string
 
-  /** 参赛组织 */
-  organizations?: string[] | null
-
   /** 前十名的时间线 */
-  timeLine?: TopTimeLine[]
+  timeLines?: Record<string, TopTimeLine[]>
 
   /** 队伍信息 */
   items?: ScoreboardItem[]
@@ -1146,6 +1143,12 @@ export interface ScoreboardItem {
    * @format int32
    */
   rank?: number
+
+  /**
+   * 参赛所属组织排名
+   * @format int32
+   */
+  organizationRank?: number | null
 
   /**
    * 已解出的题目数量

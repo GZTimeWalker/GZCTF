@@ -1,4 +1,6 @@
-﻿namespace CTFServer.Extensions;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+namespace CTFServer.Extensions;
 
 public static class ListHashExtensions
 {

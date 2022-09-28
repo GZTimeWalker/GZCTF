@@ -14,14 +14,9 @@ public class ScoreboardModel
     public DateTimeOffset UpdateTimeUTC { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// 参赛组织
-    /// </summary>
-    public IEnumerable<string>? Organizations { get; set; }
-
-    /// <summary>
     /// 前十名的时间线
     /// </summary>
-    public IEnumerable<TopTimeLine> TimeLine { get; set; } = default!;
+    public Dictionary<string, IEnumerable<TopTimeLine>> TimeLines { get; set; } = default!;
 
     /// <summary>
     /// 队伍信息
@@ -96,6 +91,11 @@ public class ScoreboardItem
     /// 排名
     /// </summary>
     public int Rank { get; set; }
+
+    /// <summary>
+    /// 参赛所属组织排名
+    /// </summary>
+    public int? OrganizationRank { get; set; }
 
     /// <summary>
     /// 已解出的题目数量

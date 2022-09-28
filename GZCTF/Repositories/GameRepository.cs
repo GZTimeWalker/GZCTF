@@ -91,10 +91,9 @@ public class GameRepository : RepositoryBase, IGameRepository
         var items = GenScoreboardItems(data, game, bloods);
         return new()
         {
-            Organizations = game.Organizations,
             Challenges = GenChallenges(data, bloods),
             Items = items,
-            TimeLine = GenTopTimeLines(items),
+            TimeLines = GenTopTimeLines(items, game),
         };
     }
 
@@ -157,7 +156,9 @@ public class GameRepository : RepositoryBase, IGameRepository
         => data.GroupBy(j => j.Instance.Participation).Select(j => TeamInfoModel.FromParticipation(j.Key));
 
     private static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
-        => data.GroupBy(j => j.Instance.Participation)
+    {
+        Dictionary<string, int> Ranks = new();
+        return data.GroupBy(j => j.Instance.Participation)
             .Select(j =>
             {
                 var challengeGroup = j.GroupBy(s => s.Instance.ChallengeId);
@@ -216,31 +217,61 @@ public class GameRepository : RepositoryBase, IGameRepository
             .Select((j, i) =>
             {
                 j.Rank = i + 1;
+
+                if (j.Organization is not null)
+                {
+                    if (Ranks.TryGetValue(j.Organization, out int rank))
+                    {
+                        j.OrganizationRank = rank + 1;
+                        Ranks[j.Organization]++;
+                    }
+                    else
+                    {
+                        j.OrganizationRank = 1;
+                        Ranks[j.Organization] = 1;
+                    }
+                }
+
                 return j;
             }).ToArray();
+    }
 
-    private static IEnumerable<TopTimeLine> GenTopTimeLines(IEnumerable<ScoreboardItem> items)
-        => items.Take(10).Select(team => new TopTimeLine
-        {
-            Id = team.Id,
-            Name = team.Name,
-            Items = GenTimeLine(team.Challenges)
-        }).ToArray();
+    private static Dictionary<string, IEnumerable<TopTimeLine>> GenTopTimeLines(IEnumerable<ScoreboardItem> items, Game game)
+    {
+        var timelines = game.Organizations is { Count: > 0 } ? items
+            .GroupBy(i => i.Organization ?? "all")
+            .ToDictionary(i => i.Key, i => i.Take(10)
+                .Select(team => new TopTimeLine
+                {
+                    Id = team.Id,
+                    Name = team.Name,
+                    Items = GenTimeLine(team.Challenges)
+                }).ToArray().AsEnumerable()) : new();
+
+        timelines["all"] = items.Take(10).Select(team => new TopTimeLine
+            {
+                Id = team.Id,
+                Name = team.Name,
+                Items = GenTimeLine(team.Challenges)
+            }).ToArray();
+
+        return timelines;
+    }
 
     private static IEnumerable<TimeLine> GenTimeLine(IEnumerable<ChallengeItem> items)
     {
         var score = 0;
-        List<TimeLine> timeline = new();
-        foreach (var item in items.Where(i => i.SubmitTimeUTC is not null).OrderBy(i => i.SubmitTimeUTC))
-        {
-            score += item.Score;
-            timeline.Add(new()
+        return items.Where(i => i.SubmitTimeUTC is not null)
+            .OrderBy(i => i.SubmitTimeUTC)
+            .Select(i =>
             {
-                Score = score,
-                Time = item.SubmitTimeUTC!.Value // 此处不为 null
+                score += i.Score;
+                return new TimeLine()
+                {
+                    Score = score,
+                    Time = i.SubmitTimeUTC!.Value // 此处不为 null
+                };
             });
-        }
-        return timeline.ToArray();
     }
 
     #endregion Generate Scoreboard

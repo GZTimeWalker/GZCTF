@@ -1,10 +1,11 @@
-﻿using CTFServer.Models.Data;
+﻿using System.Text.Json;
+using CTFServer.Extensions;
+using CTFServer.Models.Data;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Text.Json;
 
 namespace CTFServer.Models;
 
@@ -13,6 +14,22 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
+
+    private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
+    {
+        var options = new JsonSerializerOptions() { WriteIndented = false };
+        return new ValueConverter<T?, string>(
+                    v => JsonSerializer.Serialize(v ?? new(), options),
+                    v => JsonSerializer.Deserialize<T>(v, options)
+               );
+    }
+
+    private static ValueComparer<TList> GetEnumerableComparer<TList, T>()
+        where T : notnull
+        where TList : IEnumerable<T>, new()
+        => new ValueComparer<TList>(
+            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
     public DbSet<LogModel> Logs { get; set; } = default!;
     public DbSet<Submission> Submissions { get; set; } = default!;
@@ -36,14 +53,10 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
     {
         base.OnModelCreating(builder);
 
-        var options = new JsonSerializerOptions() { WriteIndented = false };
-        var stringListConverter = new ValueConverter<List<string>?, string>(
-                v => JsonSerializer.Serialize(v ?? new(), options),
-                v => JsonSerializer.Deserialize<List<string>>(v, options)
-            );
-        var stringListComparer = new ValueComparer<List<string>>(
-            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
-            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
+        var listConverter = GetJsonConverter<List<string>>();
+        var setConverter = GetJsonConverter<HashSet<string>>();
+        var listComparer = GetEnumerableComparer<List<string>, string>();
+        var setComparer = GetEnumerableComparer<HashSet<string>, string>();
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -62,9 +75,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
         builder.Entity<Game>(entity =>
         {
             entity.Property(e => e.Organizations)
-                .HasConversion(stringListConverter)
+                .HasConversion(setConverter)
                 .Metadata
-                .SetValueComparer(stringListComparer);
+                .SetValueComparer(setComparer);
 
             entity.HasMany(e => e.GameEvents)
                 .WithOne(e => e.Game)
@@ -103,9 +116,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(e => e.Tags)
-                .HasConversion(stringListConverter)
+                .HasConversion(listConverter)
                 .Metadata
-                .SetValueComparer(stringListComparer);
+                .SetValueComparer(listComparer);
 
             entity.Navigation(e => e.Auther).AutoInclude();
         });
@@ -208,9 +221,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
         builder.Entity<Challenge>(entity =>
         {
             entity.Property(e => e.Hints)
-                .HasConversion(stringListConverter)
+                .HasConversion(listConverter)
                 .Metadata
-                .SetValueComparer(stringListComparer);
+                .SetValueComparer(listComparer);
 
             entity.HasMany(e => e.Flags)
                .WithOne(e => e.Challenge)
