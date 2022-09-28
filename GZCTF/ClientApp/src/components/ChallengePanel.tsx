@@ -35,7 +35,7 @@ const ChallengePanel: FC = () => {
   const [hideSolved, setHideSolved] = useLocalStorage({
     key: 'hide-solved',
     defaultValue: false,
-    getInitialValueInEffect: false
+    getInitialValueInEffect: false,
   })
 
   const allChallenges = Object.values(challenges ?? {}).flat()

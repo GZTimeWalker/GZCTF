@@ -3,16 +3,16 @@ import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { useMantineTheme } from '@mantine/core'
-import api from '@Api'
+import api, { TopTimeLine } from '@Api'
 
-const TimeLine: FC = () => {
+interface TimeLineProps {
+  timeLine?: TopTimeLine[]
+}
+
+const TimeLine: FC<TimeLineProps> = ({ timeLine }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const theme = useMantineTheme()
-
-  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
-    refreshInterval: 0,
-  })
 
   const { data: game } = api.game.useGameGames(numId, {
     refreshInterval: 0,
@@ -25,7 +25,7 @@ const TimeLine: FC = () => {
 
   const last = now < endTime ? now : endTime
 
-  const chartData = scoreboard?.timeLine?.map((team) => ({
+  const chartData = timeLine?.map((team) => ({
     type: 'line',
     step: 'end',
     name: team.name,
