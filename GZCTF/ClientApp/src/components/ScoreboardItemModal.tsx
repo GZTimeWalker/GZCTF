@@ -11,6 +11,8 @@ import {
   Progress,
   Center,
   LoadingOverlay,
+  Avatar,
+  Title,
 } from '@mantine/core'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
@@ -64,7 +66,26 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   })
 
   return (
-    <Modal {...modalProps}>
+    <Modal
+      {...modalProps}
+      title={
+        <Group position="left" spacing="md" noWrap>
+          <Avatar src={item?.avatar} size={50} radius="md" color="brand">
+            {item?.name?.slice(0, 1) ?? 'T'}
+          </Avatar>
+          <Stack spacing={0}>
+            <Title order={4} lineClamp={1}>
+              {item?.name ?? 'Team'}
+            </Title>
+            {item?.organization && (
+              <Text size="sm" lineClamp={1}>
+                {item.organization}
+              </Text>
+            )}
+          </Stack>
+        </Group>
+      }
+    >
       <Stack align="center" spacing="xs">
         <Stack style={{ width: '60%', minWidth: '20rem' }}>
           <Center style={{ height: '14rem' }}>
@@ -83,19 +104,27 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
               <Text weight={700} size="sm" className={classes.mono}>
                 {item?.rank}
               </Text>
-              <Text size="sm">排名</Text>
+              <Text size="xs">总排名</Text>
             </Stack>
+            {item?.organization && (
+              <Stack spacing={2}>
+                <Text weight={700} size="sm" className={classes.mono}>
+                  {item?.organizationRank}
+                </Text>
+                <Text size="xs">排名</Text>
+              </Stack>
+            )}
             <Stack spacing={2}>
               <Text weight={700} size="sm" className={classes.mono}>
                 {item?.score}
               </Text>
-              <Text size="sm">得分</Text>
+              <Text size="xs">得分</Text>
             </Stack>
             <Stack spacing={2}>
               <Text weight={700} size="sm" className={classes.mono}>
                 {item?.solvedCount}
               </Text>
-              <Text size="sm">攻克数量</Text>
+              <Text size="xs">攻克数量</Text>
             </Stack>
           </Group>
           <Progress value={solved * 100} />

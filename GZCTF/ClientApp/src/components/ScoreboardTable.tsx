@@ -11,7 +11,6 @@ import {
   Box,
   Stack,
   Pagination,
-  Title,
   Select,
   Tooltip,
   Center,
@@ -361,16 +360,6 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
         </Group>
       </Stack>
       <ScoreboardItemModal
-        title={
-          <Group position="left" spacing={5} noWrap>
-            <Avatar src={currentItem?.avatar} size="md" radius="md" color="brand">
-              {currentItem?.name?.slice(0, 1) ?? 'T'}
-            </Avatar>
-            <Title align="left" order={4}>
-              {currentItem?.name}
-            </Title>
-          </Group>
-        }
         challenges={scoreboard?.challenges}
         opened={itemDetailOpened}
         centered
