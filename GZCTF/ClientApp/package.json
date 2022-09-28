@@ -10,7 +10,7 @@
     "genapi": "swagger-typescript-api -p template/swagger.json -t template -o src --module-name-first-tag"
   },
   "dependencies": {
-    "@babel/core": "^7.19.1",
+    "@babel/core": "^7.19.3",
     "@emotion/react": "^11.10.4",
     "@mantine/carousel": "^5.4.1",
     "@mantine/core": "^5.4.1",
@@ -52,8 +52,8 @@
     "@types/prismjs": "^1.26.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.38.0",
-    "@typescript-eslint/parser": "^5.38.0",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
     "@vitejs/plugin-react": "^2.1.0",
     "axios": "^0.27.2",
     "babel-plugin-prismjs": "^2.1.0",
