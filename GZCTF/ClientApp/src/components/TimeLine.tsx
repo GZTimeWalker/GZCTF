@@ -23,38 +23,35 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
     revalidateOnFocus: false,
   })
 
-  const endTime = new Date(game?.end ?? '')
-  const startTime = new Date(game?.start ?? '')
-  const now = new Date()
-
-  const last = now < endTime ? now : endTime
+  const [now, setNow] = useState<Date>(new Date())
   const [chartData, setChartData] = useState<any>()
-  const [time, setTime] = useState<number>(Date.now())
 
   useEffect(() => {
-    if (!scoreboard?.timeLines || !organization) return
+    if (!scoreboard?.timeLines || !game) return
 
-    const timeLine = scoreboard?.timeLines[organization] ?? []
-    console.log(timeLine)
+    const timeLine = scoreboard?.timeLines[organization ?? 'all'] ?? []
+    const endTime = dayjs(game.end)
+    const current = dayjs()
+    const last = endTime.diff(current, 's') < 0 ? endTime : current
 
-    setChartData(
-      timeLine?.map((team) => ({
+    setChartData([
+      {
         type: 'line',
         step: 'end',
-        name: team.name,
-        data: [
-          [startTime, 0],
-          ...(team.items?.map((item) => [item.time, item.score]) ?? []),
-          [last, (team.items && team.items[team.items.length - 1]?.score) ?? 0],
-        ],
+        data: [],
         markLine:
-          now > endTime
+          dayjs(game.end).diff(dayjs(), 's') < 0
             ? undefined
             : {
                 symbol: 'none',
                 data: [
                   {
-                    xAxis: last,
+                    xAxis: last.toDate(),
+                    lineStyle: {
+                      color:
+                        theme.colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6],
+                      wight: 2,
+                    },
                     label: {
                       textBorderWidth: 0,
                       fontWeight: 500,
@@ -63,15 +60,25 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
                   },
                 ],
               },
-      }))
-    )
-    setTime(Date.now())
-  }, [scoreboard, organization])
+      },
+      ...(timeLine?.map((team) => ({
+        type: 'line',
+        step: 'end',
+        name: team.name,
+        data: [
+          [dayjs(game.start).toDate(), 0],
+          ...(team.items?.map((item) => [item.time, item.score]) ?? []),
+          [last.toDate(), (team.items && team.items[team.items.length - 1]?.score) ?? 0],
+        ],
+      })) ?? []),
+    ])
+
+    setNow(new Date())
+  }, [scoreboard, organization, game])
 
   return (
     <ReactEcharts
-      key={time}
-      showLoading={!scoreboard}
+      key={now.toUTCString()}
       theme={theme.colorScheme}
       option={{
         backgroundColor: 'transparent',
@@ -86,8 +93,8 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
         xAxis: {
           type: 'time',
           name: '时间',
-          min: startTime,
-          max: endTime,
+          min: dayjs(game?.start).toDate(),
+          max: dayjs(game?.end).toDate(),
           splitLine: {
             show: false,
           },
