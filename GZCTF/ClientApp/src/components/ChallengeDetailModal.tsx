@@ -300,7 +300,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     >
       <Stack spacing="sm" style={{ marginTop: theme.spacing.sm }}>
         <Divider />
-        <Stack justify="space-between" style={{ position: 'relative', minHeight: '20vh' }}>
+        <Stack spacing="sm" justify="space-between" style={{ position: 'relative', minHeight: '20vh' }}>
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} style={{ minHeight: '4rem' }}>
@@ -317,17 +317,15 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 >
                   <Popover.Target>
                     <ActionIcon
+                      variant='filled'
+                      size="lg"
+                      color="brand"
                       onMouseEnter={downloadOpen}
                       onMouseLeave={downloadClose}
                       onClick={() => window.open(challenge.context?.url ?? '#')}
-                      sx={(theme) => ({
-                        ...theme.fn.hover({
-                          color: theme.colors[tagData.color][5],
-                        }),
-                        float: 'right',
-                        marginRight: '0.3rem',
-                        marginTop: '0.3rem',
-                      })}
+                      style={{
+                        float: 'right'
+                      }}
                     >
                       <Icon path={mdiDownload} size={1} />
                     </ActionIcon>
