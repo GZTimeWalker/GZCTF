@@ -18,7 +18,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
   - 题目类型：静态附件、动态附件、静态容器、动态容器
     - 静态附件：共用附件，任意添加的 flag 均可提交。
     - 动态附件：需要至少满足队伍数量的 flag 和附件，附件及 flag 按照队伍进行分发。
-    - 静态容器：共用容器，任意添加的 flag 均可提交。
+    - 静态容器：共用容器模版，不下发 flag，任意添加的 flag 均可提交。
     - 动态容器：自动生成并通过容器环境变量进行 flag 下发，每个队伍 flag 唯一。
   - 动态分值
     - 分值曲线：
@@ -27,13 +27,14 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
     - 三血奖励：
       平台对一二三血分别奖励 5%、3%、1% 的当前题目分值
   - 比赛进行中可启用新题
-  - 动态 flag 中启用作弊检测，可选的 flag 模版
+  - 动态 flag 中启用作弊检测，可选的 flag 模版，leet flag 功能
 - 基于 Docker 或 K8s 的动态容器分发
-- 动态展示可缩放的前十名队伍得分时间线、动态隐藏的积分榜
+- 分组队伍得分时间线、分组积分榜
 - 基于 signalR 的实时比赛通知、比赛事件和 flag 提交监控及日志监控
 - SMTP 注册邮件发送、基于 Google ReCaptchav3 的恶意注册防护
 - 用户封禁、用户三级权限管理
-- 可选的队伍审核、邀请码、分组排行
+- 可选的队伍审核、邀请码、注册邮箱限制
+- 实时事件监控、下载积分榜、下载全部提交记录
 - 比赛期间裁判监控、提交和主要事件日志
 - 应用内全局设置
 - 以及更多……
@@ -58,13 +59,11 @@ docker pull gztime/gzctf:latest
 docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 ```
 
-也可使用根目录下的 `docker-compose.yml` 文件进行配置。
+也可使用 `scripts` 目录下的 `docker-compose.yml` 文件进行配置。
 
 题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
 
 ### `appsettings.json` 配置
-
-为了使注册功能正常使用，请补全 `EmailConfig` 及 `GoogleRecaptcha` 部分，其中验证码请借由 [recaptcha](https://www.google.com/recaptcha/admin) 处注册，并使用 reCAPTCHAv3。
 
 当 `ContainerProvider` 为 `Docker` 时：
   - 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
@@ -87,7 +86,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
-  "EmailConfig": {
+  "EmailConfig": { // optional
     "SendMailAddress": "a@a.com",
     "UserName": "",
     "Password": "",
@@ -106,12 +105,12 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
         "Uri": "unix:///var/run/docker.sock"
     }
    },
-  "RegistryConfig": {
+  "RegistryConfig": { // optional
     "UserName": "",
     "Password": "",
     "ServerAddress": ""
   },
-  "GoogleRecaptcha": {
+  "GoogleRecaptcha": { // optional, recaptcha v3
     "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
     "Sitekey": "",
     "Secretkey": "",
@@ -178,25 +177,25 @@ update "AspNetUsers" set "Role"=3;
 
   平台支持的部署形式有：
 
+    - K8s 集群部署：
+
+      GZCTF、数据库、题目容器均在同一 k8s 集群中，使用命名空间进行隔离
+
+    - Docker + K8s 分离部署：
+
+      GZCTF、数据库在一个 Docker 实例中，并使用远程 k8s 作为题目容器平台
+
     - Docker 单机部署：
 
       GZCTF、数据库、题目容器均在同一 Docker 实例中
 
     - Docker 分离部署：
 
-      GZCTF、数据库在一个 Docker 实例中，并使用远程另一 Docker/Docker Swarm 作为题目容器平台
+      GZCTF、数据库在一个 Docker 实例中，并使用远程另一 Docker/Docker Swarm 作为题目容器平台（不推荐）
 
     - Docker Swarm 集群部署：
 
-      GZCTF、数据库、题目容器均在 Docker Swarm 集群中
-
-    - Docker + K8s 分离部署：
-
-      GZCTF、数据库在一个 Docker 实例中，并使用远程 k8s 作为题目容器平台
-
-    - K8s 集群部署：
-
-      GZCTF、数据库、题目容器均在同一 k8s 集群中，使用命名空间进行隔离
+      GZCTF、数据库、题目容器均在 Docker Swarm 集群中（不推荐）
 
 - **Q: 关于部署的建议？**
 
