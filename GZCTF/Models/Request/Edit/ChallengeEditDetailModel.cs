@@ -75,6 +75,12 @@ public class ChallengeEditDetailModel
     public int? CPUCount { get; set; } = 1;
 
     /// <summary>
+    /// 存储限制 (MB)
+    /// </summary>
+    [Required]
+    public int? StorageLimit { get; set; } = 256;
+
+    /// <summary>
     /// 镜像暴露端口
     /// </summary>
     [Required]
@@ -151,6 +157,7 @@ public class ChallengeEditDetailModel
             ContainerImage = chal.ContainerImage,
             MemoryLimit = chal.MemoryLimit,
             CPUCount = chal.CPUCount,
+            StorageLimit = chal.StorageLimit,
             ContainerExposePort = chal.ContainerExposePort,
             PrivilegedContainer = chal.PrivilegedContainer,
             OriginalScore = chal.OriginalScore,

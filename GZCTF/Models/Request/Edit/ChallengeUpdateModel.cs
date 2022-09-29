@@ -49,12 +49,20 @@ public class ChallengeUpdateModel
     /// <summary>
     /// 运行内存限制 (MB)
     /// </summary>
+    [Range(32, 1048576, ErrorMessage = "{0} 的值必须介于 {1} - {2}")]
     public int? MemoryLimit { get; set; }
 
     /// <summary>
     /// CPU 运行数量限制
     /// </summary>
+    [Range(1, 1024, ErrorMessage = "{0} 的值必须介于 {1} - {2}")]
     public int? CPUCount { get; set; }
+
+    /// <summary>
+    /// 存储限制 (MB)
+    /// </summary>
+    [Range(128, 1048576, ErrorMessage = "{0} 的值必须介于 {1} - {2}")]
+    public int? StorageLimit { get; set; }
 
     /// <summary>
     /// 镜像暴露端口

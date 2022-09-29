@@ -41,4 +41,9 @@ public class ContainerConfig
     /// CPU 数量
     /// </summary>
     public int CPUCount { get; set; } = 1;
+
+    /// <summary>
+    /// 存储写入限制
+    /// </summary>
+    public int StorageLimit { get; set; } = 256;
 }

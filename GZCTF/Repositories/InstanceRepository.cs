@@ -148,6 +148,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 Image = instance.Challenge.ContainerImage,
                 CPUCount = instance.Challenge.CPUCount ?? 1,
                 MemoryLimit = instance.Challenge.MemoryLimit ?? 64,
+                StorageLimit = instance.Challenge.StorageLimit ?? 256,
                 PrivilegedContainer = instance.Challenge.PrivilegedContainer ?? false,
                 ExposedPort = instance.Challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口"),
             }, token);

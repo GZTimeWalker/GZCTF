@@ -103,12 +103,14 @@ public class K8sService : IContainerService
                             Limits = new Dictionary<string, ResourceQuantity>()
                             {
                                 ["cpu"] = new ResourceQuantity($"{config.CPUCount}"),
-                                ["memory"] = new ResourceQuantity($"{config.MemoryLimit}Mi")
+                                ["memory"] = new ResourceQuantity($"{config.MemoryLimit}Mi"),
+                                ["ephemeral-storage"] = new ResourceQuantity($"{config.StorageLimit}Mi")
                             },
                             Requests = new Dictionary<string, ResourceQuantity>()
                             {
-                                ["cpu"] = new ResourceQuantity($"1"),
-                                ["memory"] = new ResourceQuantity($"32Mi")
+                                ["cpu"] = new ResourceQuantity("100m"),
+                                ["memory"] = new ResourceQuantity("32Mi"),
+                                ["ephemeral-storage"] = new ResourceQuantity("128Mi")
                             }
                         }
                     }

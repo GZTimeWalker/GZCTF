@@ -571,12 +571,13 @@ public class EditController : Controller
 
         var container = await containerService.CreateContainer(new()
         {
-            CPUCount = challenge.CPUCount ?? 1,
             TeamId = "admin",
             UserId = user.Id,
             Flag = challenge.Type.IsDynamic() ? "flag{GZCTF_dynamic_flag_test}" : null,
             Image = challenge.ContainerImage,
+            CPUCount = challenge.CPUCount ?? 1,
             MemoryLimit = challenge.MemoryLimit ?? 64,
+            StorageLimit = challenge.StorageLimit ?? 256,
             ExposedPort = challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口"),
         }, token);
 
