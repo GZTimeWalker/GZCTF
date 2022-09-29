@@ -65,7 +65,7 @@ function generateSvg(
 ) {
   const { text, textColor, textSize, fontFamily, lineHeight, multiline, opacity, gutter, rotate } =
     options
-  const rect = calcTextRenderedRect(text, textSize, lineHeight, fontFamily)
+  const rect = calcTextRenderedRect(text, textSize, fontFamily)
   const size = Math.sqrt(rect.width * rect.width + rect.height * rect.height) + gutter * 2
   const center = size / 2
 
@@ -79,17 +79,12 @@ function generateSvg(
 
   const textEl = `<text fill='${textColor}' x='50%' y='50%' font-size='${textSize}' text-anchor='middle' font-family='${fontFamily}' transform='rotate(${rotate} ${center} ${center})' opacity='${opacity}'>${textContent}</text>`
 
-  return `<svg width='${size}' height='${
+  return `<svg width='${size}' height='${Math.ceil(
     size / 3
-  }' xmlns='http://www.w3.org/2000/svg'>${textEl}</svg>`
+  )}' xmlns='http://www.w3.org/2000/svg'>${textEl}</svg>`
 }
 
-function calcTextRenderedRect(
-  text: string,
-  fontSize: number,
-  lineHeight: string,
-  fontFamily: string
-): DOMRect {
+function calcTextRenderedRect(text: string, fontSize: number, fontFamily: string): DOMRect {
   const span = document.createElement('span')
   span.innerText = text
   span.style.fontSize = fontSize + 'px'
@@ -99,10 +94,6 @@ function calcTextRenderedRect(
   const rect = span.getBoundingClientRect()
   document.body.removeChild(span)
   return rect
-}
-
-const watermarkWrapperStyle: CSSProperties = {
-  position: 'relative',
 }
 
 const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
@@ -134,8 +125,7 @@ const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
       multiline,
       lineHeight,
     })
-    const convertedSvg = encodeURIComponent(svg).replace(/'/g, '%27').replace(/"/g, '%22')
-    setBackgroundImage(`url("data:image/svg+xml,${convertedSvg}")`)
+    setBackgroundImage(`url("data:image/svg+xml;base64,${window.btoa(svg)}")`)
   }, [show, text, textColor, textSize, opacity, gutter, rotate])
 
   const Wrapper = wrapperElement
@@ -165,6 +155,16 @@ const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
   const wrapperRef = useRef<HTMLDivElement>()
   const watermarkRef = useRef<HTMLDivElement>()
 
+  const watermarkBox: (layers: number, child: HTMLDivElement) => HTMLDivElement = (layers, child) => {
+    if (layers > 0) {
+      const box = document.createElement('div')
+      box.appendChild(child)
+      return watermarkBox(layers - 1, box)
+    } else {
+      return child
+    }
+  }
+
   const updateWatermark = () => {
     const wrapper = wrapperRef.current
     if (!wrapper) return
@@ -175,7 +175,7 @@ const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
       const div = document.createElement('div')
       div.setAttribute('style', watermarkCSS)
       watermarkRef.current = div
-      wrapper.appendChild(div)
+      wrapper.appendChild(watermarkBox(Math.ceil(Math.random() * 8), div))
     } else if (watermark.getAttribute('style') !== watermarkCSS) {
       watermark.setAttribute('style', watermarkCSS)
     }
@@ -188,7 +188,6 @@ const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
     if (!show) return
 
     updateWatermark()
-
     const wrapper = wrapperRef.current
 
     if (wrapper) {
@@ -203,7 +202,7 @@ const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
   }, [show, backgroundImage])
 
   return (
-    <Wrapper style={{ ...watermarkWrapperStyle, ...wrapperStyle }} ref={wrapperRef}>
+    <Wrapper style={{ position: 'relative', ...wrapperStyle }} ref={wrapperRef}>
       {children}
     </Wrapper>
   )
