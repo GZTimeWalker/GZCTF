@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 
 /**
  * props for Watermark component
@@ -138,24 +138,72 @@ const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
     setBackgroundImage(`url("data:image/svg+xml,${convertedSvg}")`)
   }, [show, text, textColor, textSize, opacity, gutter, rotate])
 
-  const watermarkStyle: CSSProperties = {
-    pointerEvents: 'none',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    content: '',
-    backgroundRepeat: 'repeat',
-    zIndex: 10000,
-    backgroundImage,
-  }
-
   const Wrapper = wrapperElement
 
+  const watermarkStyle = useMemo(
+    () => ({
+      pointerEvents: 'none',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundRepeat: 'repeat',
+      zIndex: Math.floor(Math.random() * 10000) + 50000,
+      backgroundImage,
+    }),
+    [backgroundImage]
+  )
+
+  const MutationObserver = window.MutationObserver
+  const kebabCase = (str: string) => str.replace(new RegExp(/[A-Z]/g), (v) => `-${v.toLowerCase()}`)
+
+  const watermarkCSS = Object.entries(watermarkStyle)
+    .map(([key, value]) => `${kebabCase(key)}:${value}`)
+    .join(';')
+
+  const wrapperRef = useRef<HTMLDivElement>()
+  const watermarkRef = useRef<HTMLDivElement>()
+
+  const updateWatermark = () => {
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
+
+    const watermark = watermarkRef.current
+
+    if (!watermark || !wrapper.contains(watermark)) {
+      const div = document.createElement('div')
+      div.setAttribute('style', watermarkCSS)
+      watermarkRef.current = div
+      wrapper.appendChild(div)
+    } else if (watermark.getAttribute('style') !== watermarkCSS) {
+      watermark.setAttribute('style', watermarkCSS)
+    }
+  }
+
+  const observer = new MutationObserver(updateWatermark)
+
+  // add listener to wrapper element
+  useEffect(() => {
+    if (!show) return
+
+    updateWatermark()
+
+    const wrapper = wrapperRef.current
+
+    if (wrapper) {
+      observer.observe(wrapper, {
+        childList: true,
+        attributes: true,
+        subtree: true,
+      })
+    }
+
+    return () => observer.disconnect()
+  }, [show, backgroundImage])
+
   return (
-    <Wrapper style={{ ...watermarkWrapperStyle, ...wrapperStyle }}>
-      {show && <div style={watermarkStyle} />}
+    <Wrapper style={{ ...watermarkWrapperStyle, ...wrapperStyle }} ref={wrapperRef}>
       {children}
     </Wrapper>
   )
