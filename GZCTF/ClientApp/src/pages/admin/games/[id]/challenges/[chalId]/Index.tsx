@@ -406,7 +406,7 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={2}>
               <NumberInput
                 label="服务端口"
-                description="容器内待暴露服务端口"
+                description="容器内服务暴露的端口"
                 min={1}
                 max={65535}
                 required
