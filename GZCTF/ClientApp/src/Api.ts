@@ -654,6 +654,12 @@ export interface ChallengeEditDetailModel {
   cpuCount: number
 
   /**
+   * 存储限制 (MB)
+   * @format int32
+   */
+  storageLimit: number
+
+  /**
    * 镜像暴露端口
    * @format int32
    */
@@ -868,14 +874,26 @@ export interface ChallengeUpdateModel {
   /**
    * 运行内存限制 (MB)
    * @format int32
+   * @min 32
+   * @max 1048576
    */
   memoryLimit?: number | null
 
   /**
    * CPU 运行数量限制
    * @format int32
+   * @min 1
+   * @max 1024
    */
   cpuCount?: number | null
+
+  /**
+   * 存储限制 (MB)
+   * @format int32
+   * @min 128
+   * @max 1048576
+   */
+  storageLimit?: number | null
 
   /**
    * 镜像暴露端口
