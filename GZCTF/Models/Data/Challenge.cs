@@ -66,6 +66,11 @@ public class Challenge
     public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
+    /// 存储限制 (MB)
+    /// </summary>
+    public int? StorageLimit { get; set; } = 256;
+
+    /// <summary>
     /// CPU 运行数量限制
     /// </summary>
     public int? CPUCount { get; set; } = 1;
@@ -191,10 +196,21 @@ public class Challenge
             var flag = FlagTemplate;
             if (FlagTemplate.StartsWith("[LEET]"))
                 flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
-            
+
             var hash = Codec.StrSHA256($"{part.Token}::{part.Game.PrivateKey}::{Id}");
             return flag.Replace("[TEAM_HASH]", hash[12..24]);
         }
+
+        return Codec.Leet.LeetFlag(FlagTemplate);
+    }
+
+    internal string GenerateTestFlag()
+    {
+        if (string.IsNullOrEmpty(FlagTemplate))
+            return "flag{GZCTF_dynamic_flag_test}";
+
+        if (FlagTemplate.StartsWith("[LEET]"))
+            return Codec.Leet.LeetFlag(FlagTemplate[6..]);
 
         return Codec.Leet.LeetFlag(FlagTemplate);
     }
@@ -209,6 +225,7 @@ public class Challenge
         FlagTemplate = model.FlagTemplate ?? FlagTemplate;
         CPUCount = model.CPUCount ?? CPUCount;
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
+        StorageLimit = model.StorageLimit ?? StorageLimit;
         ContainerImage = model.ContainerImage ?? ContainerImage;
         PrivilegedContainer = model.PrivilegedContainer ?? PrivilegedContainer;
         ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
