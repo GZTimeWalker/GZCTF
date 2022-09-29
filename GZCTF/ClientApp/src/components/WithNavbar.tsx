@@ -28,21 +28,21 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
 
   return (
     <WithWiderScreen minWidth={minWidth}>
-      <AppShell
-        padding={padding ?? 'md'}
-        fixed
-        navbar={<AppNavbar />}
-        header={<AppHeader />}
-        styles={{ body: { overflow: 'hidden' } }}
+      <Watermark
+        text={user?.userId ?? ''}
+        textColor={theme.colorScheme == 'dark' ? theme.colors.gray[3] : theme.colors.gray[7]}
+        rotate={-9}
+        textSize={15}
+        gutter={20}
+        opacity={theme.colorScheme == 'dark' ? 0.006 : 0.012}
+        fontFamily="JetBrains Mono"
       >
-        <Watermark
-          text={user?.userId ?? ''}
-          textColor={theme.colorScheme == 'dark' ? theme.colors.gray[3] : theme.colors.gray[8]}
-          rotate={-9}
-          textSize={15}
-          gutter={20}
-          opacity={theme.colorScheme == 'dark' ? 0.004 : 0.01}
-          fontFamily="JetBrains Mono"
+        <AppShell
+          padding={padding ?? 'md'}
+          fixed
+          navbar={<AppNavbar />}
+          header={<AppHeader />}
+          styles={{ body: { overflow: 'hidden' } }}
         >
           <Center style={{ width: '100%' }}>
             <LoadingOverlay
@@ -64,8 +64,8 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
               {children}
             </Box>
           </Center>
-        </Watermark>
-      </AppShell>
+        </AppShell>
+      </Watermark>
     </WithWiderScreen>
   )
 }
