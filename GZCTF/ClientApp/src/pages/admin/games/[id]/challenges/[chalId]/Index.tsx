@@ -283,8 +283,8 @@ const GameChallengeEdit: FC = () => {
           style={{ width: '100%' }}
           autosize
           disabled={disabled}
-          minRows={6}
-          maxRows={6}
+          minRows={5}
+          maxRows={5}
           onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
         />
         <SimpleGrid cols={3}>
@@ -361,8 +361,8 @@ const GameChallengeEdit: FC = () => {
           />
         )}
         {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
-          <Grid columns={9}>
-            <Grid.Col span={6}>
+          <Grid columns={12}>
+            <Grid.Col span={8}>
               <TextInput
                 label="容器镜像"
                 disabled={disabled}
@@ -383,7 +383,7 @@ const GameChallengeEdit: FC = () => {
                 }
               />
             </Grid.Col>
-            <Grid.Col span={3}>
+            <Grid.Col span={4}>
               <Group spacing={0} align="center" pt={22} style={{ height: '100%' }}>
                 {challenge?.testContainer ? (
                   <Code
@@ -406,6 +406,7 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={2}>
               <NumberInput
                 label="服务端口"
+                description="容器内待暴露服务端口"
                 min={1}
                 max={65535}
                 required
@@ -419,8 +420,9 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={2}>
               <NumberInput
                 label="CPU 数量限制"
+                description="限制容器使用的 CPU"
                 min={1}
-                max={16}
+                max={1024}
                 required
                 disabled={disabled}
                 stepHoldDelay={500}
@@ -432,19 +434,33 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={2}>
               <NumberInput
                 label="内存限制 (MB)"
-                min={64}
-                max={8192}
+                description="限制容器使用的 RAM"
+                min={32}
+                max={1048576}
                 required
                 disabled={disabled}
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                value={challengeInfo.memoryLimit ?? 1}
+                value={challengeInfo.memoryLimit ?? 32}
                 onChange={(e) => setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
               />
             </Grid.Col>
-            <Grid.Col span={3}>
+            <Grid.Col span={2}>
+              <NumberInput
+                label="存储限制 (MB)"
+                description="限制存储空间，含镜像大小"
+                min={128}
+                max={1048576}
+                required
+                disabled={disabled}
+                stepHoldDelay={500}
+                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                value={challengeInfo.storageLimit ?? 128}
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, storageLimit: e })}
+              />
+            </Grid.Col>
+            <Grid.Col span={4} style={{ alignItems: 'center', display: 'flex' }}>
               <Switch
-                style={{ marginTop: '1rem' }}
                 disabled={disabled}
                 checked={challengeInfo.privilegedContainer ?? false}
                 label={SwitchLabel('特权容器', '以特权模式运行容器，Swarm 不受支持')}
