@@ -573,7 +573,7 @@ public class EditController : Controller
         {
             TeamId = "admin",
             UserId = user.Id,
-            Flag = challenge.Type.IsDynamic() ? "flag{GZCTF_dynamic_flag_test}" : null,
+            Flag = challenge.Type.IsDynamic() ? challenge.GenerateTestFlag() : null,
             Image = challenge.ContainerImage,
             CPUCount = challenge.CPUCount ?? 1,
             MemoryLimit = challenge.MemoryLimit ?? 64,

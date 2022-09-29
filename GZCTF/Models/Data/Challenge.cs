@@ -204,6 +204,17 @@ public class Challenge
         return Codec.Leet.LeetFlag(FlagTemplate);
     }
 
+    internal string GenerateTestFlag()
+    {
+        if (string.IsNullOrEmpty(FlagTemplate))
+            return "flag{GZCTF_dynamic_flag_test}";
+
+        if (FlagTemplate.StartsWith("[LEET]"))
+            return Codec.Leet.LeetFlag(FlagTemplate[6..]);
+
+        return Codec.Leet.LeetFlag(FlagTemplate);
+    }
+
     internal Challenge Update(ChallengeUpdateModel model)
     {
         Title = model.Title ?? Title;
