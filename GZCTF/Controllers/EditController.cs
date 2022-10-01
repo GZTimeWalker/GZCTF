@@ -496,7 +496,7 @@ public class EditController : Controller
                 model.Hints.Count > 0 &&
                 model.Hints.GetSetHashCode() != res.Hints?.GetSetHashCode();
 
-        if (model.FlagTemplate is not null && !model.FlagTemplate.IsNullOrEmpty() 
+        if (!string.IsNullOrWhiteSpace(model.FlagTemplate)
             && res.Type == ChallengeType.DynamicContainer
             && !model.FlagTemplate.Contains("[TEAM_HASH]")
             && Codec.Leet.LeetEntropy(model.FlagTemplate) < 32.0)
