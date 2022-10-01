@@ -30,7 +30,7 @@
     "embla-carousel-autoplay": "^7.0.3",
     "embla-carousel-react": "^7.0.3",
     "katex": "^0.16.2",
-    "marked": "^4.1.0",
+    "marked": "^4.1.1",
     "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
