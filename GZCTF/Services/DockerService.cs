@@ -5,8 +5,6 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Options;
 using System.Net;
-using System.Text;
-using System.Text.Json;
 
 namespace CTFServer.Services;
 
@@ -90,7 +88,7 @@ public class DockerService : IContainerService
             Name = GetName(config),
             Env = config.Flag is null ? Array.Empty<string>() : new string[] { $"GZCTF_FLAG={config.Flag}" },
             ExposedPorts = new Dictionary<string, EmptyStruct>() {
-                [config.ExposedPort.ToString()] = new EmptyStruct() 
+                [config.ExposedPort.ToString()] = new EmptyStruct()
             },
             HostConfig = new()
             {
@@ -166,7 +164,7 @@ public class DockerService : IContainerService
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"容器 {parameters.Service.Name} 删除失败"); 
+            logger.LogError(e, $"容器 {parameters.Service.Name} 删除失败");
             return null;
         }
 

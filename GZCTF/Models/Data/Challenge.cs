@@ -222,7 +222,7 @@ public class Challenge
         Tag = model.Tag ?? Tag;
         Hints = model.Hints ?? Hints;
         IsEnabled = model.IsEnabled ?? IsEnabled;
-        FlagTemplate = model.FlagTemplate ?? FlagTemplate;
+        FlagTemplate = string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : FlagTemplate;
         CPUCount = model.CPUCount ?? CPUCount;
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;

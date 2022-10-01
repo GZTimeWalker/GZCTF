@@ -2,7 +2,6 @@
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using YamlDotNet.Core.Tokens;
 
 namespace CTFServer.Repositories;
 

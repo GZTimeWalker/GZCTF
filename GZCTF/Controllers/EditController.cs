@@ -1,6 +1,5 @@
 ﻿using CTFServer.Extensions;
 using CTFServer.Middlewares;
-using CTFServer.Models;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
 using CTFServer.Models.Request.Info;
@@ -495,7 +494,8 @@ public class EditController : Controller
                 model.Hints.Count > 0 &&
                 model.Hints.GetSetHashCode() != res.Hints?.GetSetHashCode();
 
-        if (model.FlagTemplate is not null && res.Type == ChallengeType.DynamicContainer
+        if (!string.IsNullOrWhiteSpace(model.FlagTemplate)
+            && res.Type == ChallengeType.DynamicContainer
             && !model.FlagTemplate.Contains("[TEAM_HASH]")
             && Codec.Leet.LeetEntropy(model.FlagTemplate) < 32.0)
             return BadRequest(new RequestResponse("flag 复杂度不足，请考虑添加队伍哈希或增加长度"));
