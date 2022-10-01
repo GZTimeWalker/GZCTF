@@ -3,7 +3,6 @@ using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.Extensions.Options;
 using System.Reflection;
-using System.Text;
 using MailKit.Net.Smtp;
 using MimeKit;
 

@@ -4,7 +4,6 @@ using CTFServer.Hubs.Clients;
 using CTFServer.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using NPOI.SS.Formula.Functions;
 
 namespace CTFServer.Repositories;
 

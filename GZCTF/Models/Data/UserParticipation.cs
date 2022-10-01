@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
 
 namespace CTFServer.Models;
 
@@ -61,4 +59,3 @@ public class UserParticipation
     /// </summary>
     public Participation Participation = default!;
 }
-

@@ -1,14 +1,11 @@
 ﻿using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using Docker.DotNet;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
 using Microsoft.Extensions.Options;
-using Microsoft.Win32;
 using System.Net;
-using System.Text;
 
 namespace CTFServer.Services;
 

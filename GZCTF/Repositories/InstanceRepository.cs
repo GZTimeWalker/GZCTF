@@ -1,5 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Models.Internal;
+﻿using CTFServer.Models.Internal;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
