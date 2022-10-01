@@ -11,11 +11,11 @@ namespace CTFServer.Repositories;
 public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 {
     private readonly IDistributedCache cache;
-    private readonly ILogger<GameEventRepository> logger;
+    private readonly ILogger<GameNoticeRepository> logger;
     private readonly IHubContext<UserHub, IUserClient> hubContext;
 
     public GameNoticeRepository(IDistributedCache _cache,
-        ILogger<GameEventRepository> _logger,
+        ILogger<GameNoticeRepository> _logger,
         IHubContext<UserHub, IUserClient> hub,
         AppDbContext _context) : base(_context)
     {

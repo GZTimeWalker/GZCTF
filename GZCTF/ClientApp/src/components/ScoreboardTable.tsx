@@ -280,10 +280,15 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           <Group>
             <Select
               defaultValue="all"
-              data={Object.keys(scoreboard.timeLines).map((o) => ({
-                value: o,
-                label: o === 'all' ? '总排行' : o,
-              }))}
+              data={[
+                { value: 'all', label: '总排行' },
+                ...Object.keys(scoreboard.timeLines)
+                  .filter((k) => k !== 'all')
+                  .map((o) => ({
+                    value: o,
+                    label: o === 'all' ? '总排行' : o,
+                  })),
+              ]}
               value={organization}
               onChange={(org) => {
                 setOrganization(org)
