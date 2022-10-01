@@ -1,5 +1,4 @@
-﻿using CTFServer.Models;
-using CTFServer.Repositories.Interface;
+﻿using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
@@ -21,7 +20,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
 
         // requery instead of Entry
         part = await context.Participations.Include(p => p.Challenges).AsSplitQuery().SingleAsync(p => p.Id == part.Id, token);
-        
+
         bool update = false;
 
         foreach (var challenge in challenges)

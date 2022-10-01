@@ -1,6 +1,5 @@
 ﻿using CTFServer.Extensions;
 using CTFServer.Middlewares;
-using CTFServer.Models;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
 using CTFServer.Models.Request.Info;
@@ -10,7 +9,6 @@ using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CTFServer.Controllers;
 
