@@ -572,7 +572,7 @@ public class EditController : Controller
         var container = await containerService.CreateContainer(new()
         {
             TeamId = "admin",
-            UserId = user.Id,
+            UserId = user!.Id,
             Flag = challenge.Type.IsDynamic() ? challenge.GenerateTestFlag() : null,
             Image = challenge.ContainerImage,
             CPUCount = challenge.CPUCount ?? 1,
