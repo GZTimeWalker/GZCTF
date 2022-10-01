@@ -10,6 +10,7 @@ using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CTFServer.Controllers;
 
@@ -495,7 +496,8 @@ public class EditController : Controller
                 model.Hints.Count > 0 &&
                 model.Hints.GetSetHashCode() != res.Hints?.GetSetHashCode();
 
-        if (model.FlagTemplate is not null && res.Type == ChallengeType.DynamicContainer
+        if (model.FlagTemplate is not null && !model.FlagTemplate.IsNullOrEmpty() 
+            && res.Type == ChallengeType.DynamicContainer
             && !model.FlagTemplate.Contains("[TEAM_HASH]")
             && Codec.Leet.LeetEntropy(model.FlagTemplate) < 32.0)
             return BadRequest(new RequestResponse("flag 复杂度不足，请考虑添加队伍哈希或增加长度"));
