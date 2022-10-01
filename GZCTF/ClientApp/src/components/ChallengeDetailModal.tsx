@@ -245,7 +245,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         icon: <Icon path={mdiCheck} size={1} />,
         disallowClose: true,
       })
-      if (isDynamic) onDestroyContainer()
+      if (isDynamic && challenge.context?.instanceEntry) onDestroyContainer()
       mutate()
       props.onClose()
     } else if (data === AnswerResult.WrongAnswer) {
@@ -300,7 +300,11 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     >
       <Stack spacing="sm" style={{ marginTop: theme.spacing.sm }}>
         <Divider />
-        <Stack spacing="sm" justify="space-between" style={{ position: 'relative', minHeight: '20vh' }}>
+        <Stack
+          spacing="sm"
+          justify="space-between"
+          style={{ position: 'relative', minHeight: '20vh' }}
+        >
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} style={{ minHeight: '4rem' }}>
@@ -317,14 +321,14 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                 >
                   <Popover.Target>
                     <ActionIcon
-                      variant='filled'
+                      variant="filled"
                       size="lg"
                       color="brand"
                       onMouseEnter={downloadOpen}
                       onMouseLeave={downloadClose}
                       onClick={() => window.open(challenge.context?.url ?? '#')}
                       style={{
-                        float: 'right'
+                        float: 'right',
                       }}
                     >
                       <Icon path={mdiDownload} size={1} />
