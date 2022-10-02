@@ -23,17 +23,18 @@
     <ReleaseVersion>0.11.2</ReleaseVersion>
     <WarningLevel>4</WarningLevel>
     <LangVersion>preview</LangVersion>
+    <EnablePreviewFeatures>True</EnablePreviewFeatures>
     <TieredPgo>true</TieredPgo>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.12" />
     <PackageReference Include="KubernetesClient" Version="9.0.28" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0-rtm.22477.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.0-rtm.22477.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-rtm.22477.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-rtm.22477.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0-rtm.22477.1">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0-rtm.22501.6" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.0-rtm.22501.6" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-rtm.22501.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-rtm.22501.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0-rtm.22501.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -45,8 +46,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0-dev-00281" />
-    <PackageReference Include="Serilog.Expressions" Version="3.4.1-dev-00095" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0-dev-00285" />
+    <PackageReference Include="Serilog.Expressions" Version="3.4.1-dev-00109" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
     <PackageReference Include="Serilog.Sinks.AspNetCore.SignalR" Version="0.4.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -54,10 +55,10 @@
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.2" />
     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
     <PackageReference Include="MailKit" Version="3.4.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0-rtm.22477.1" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.0-rtm.22477.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.0-rtm.22477.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0-rtm.22477.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0-rtm.22501.1" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.0-rtm.22501.6" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.0-rtm.22501.6" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0-rtm.22501.6" />
   </ItemGroup>
 
   <ItemGroup>
