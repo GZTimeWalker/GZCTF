@@ -95,8 +95,7 @@ public class DockerService : IContainerService
                 PublishAllPorts = true,
                 Memory = config.MemoryLimit * 1024 * 1024,
                 CPUCount = 1,
-                Privileged = config.PrivilegedContainer,
-                StorageOpt = new Dictionary<string, string>() { ["size"] = $"{config.StorageLimit}M" }
+                Privileged = config.PrivilegedContainer
             }
         };
 
