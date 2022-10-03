@@ -27,7 +27,7 @@ public enum SignAlgorithm
     SHA512withECDSA,
 }
 
-public class DigitalSignature
+public static class DigitalSignature
 {
     public static string GenerateSignature(string data, AsymmetricKeyParameter privateKey, SignAlgorithm signAlgorithm)
     {
