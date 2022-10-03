@@ -250,3 +250,5 @@ _Pvt_Extensions
 **/*.key
 **/*.db*
 **/.DS_Store
+
+.idea/**
