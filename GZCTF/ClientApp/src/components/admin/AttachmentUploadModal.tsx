@@ -70,7 +70,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
           { filename: uploadFileName },
           {
             onUploadProgress: (e) => {
-              setProgress((e.loaded / e.total) * 90)
+              setProgress((e.loaded / (e.total ?? 1)) * 90)
             },
           }
         )

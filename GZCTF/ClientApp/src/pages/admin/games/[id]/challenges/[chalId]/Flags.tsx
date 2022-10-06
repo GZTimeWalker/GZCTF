@@ -106,7 +106,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         undefined,
         {
           onUploadProgress: (e) => {
-            setProgress((e.loaded / e.total) * 90)
+            setProgress((e.loaded / (e.total ?? 1)) * 90)
           },
         }
       )
