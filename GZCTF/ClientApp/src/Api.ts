@@ -1638,10 +1638,11 @@ export class HttpClient<SecurityDataType = unknown> {
 
     return this.instance.request({
       ...requestParams,
-      headers: {
-        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
-        ...(requestParams.headers || {}),
-      },
+      headers: Object.assign(
+        {},
+        requestParams.headers,
+        type && type !== ContentType.FormData ? { 'Content-Type': type } : {}
+      ),
       params: query,
       responseType: responseFormat,
       data: body,

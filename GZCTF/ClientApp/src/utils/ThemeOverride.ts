@@ -76,6 +76,9 @@ export const ThemeOverride: MantineThemeOverride = {
         body: {
           alignItems: 'center',
         },
+        labelWrapper: {
+          display: 'flex',
+        }
       },
     },
   },
