@@ -276,16 +276,16 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 添加比赛文章
+    /// 添加比赛通知
     /// </summary>
     /// <remarks>
-    /// 添加比赛文章，需要管理员权限
+    /// 添加比赛通知，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="model">文章内容</param>
+    /// <param name="model">通知内容</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛文章</response>
-    [HttpPost("Games/{id}/Posts")]
+    /// <response code="200">成功添加比赛通知</response>
+    [HttpPost("Games/{id}/Notices")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGameNotice([FromRoute] int id, [FromBody] GameNoticeModel model, CancellationToken token)
@@ -307,15 +307,15 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 获取比赛文章
+    /// 获取比赛通知
     /// </summary>
     /// <remarks>
-    /// 获取比赛文章，需要管理员权限
+    /// 获取比赛通知，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
-    [HttpGet("Games/{id}/Posts")]
+    /// <response code="200">成功获取比赛通知</response>
+    [HttpGet("Games/{id}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token = default)
@@ -329,17 +329,17 @@ public class EditController : Controller
     }
 
     /// <summary>
-    /// 更新比赛文章
+    /// 更新比赛通知
     /// </summary>
     /// <remarks>
-    /// 更新比赛文章，需要管理员权限
+    /// 更新比赛通知，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
-    /// <param name="noticeId">文章Id</param>
-    /// <param name="model">文章内容</param>
+    /// <param name="noticeId">通知Id</param>
+    /// <param name="model">通知内容</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
-    [HttpPut("Games/{id}/Posts/{noticeId}")]
+    /// <response code="200">成功更新通知</response>
+    [HttpPut("Games/{id}/Notices/{noticeId}")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGameNotice([FromRoute] int id, [FromRoute] int noticeId, [FromBody] GameNoticeModel model, CancellationToken token = default)
@@ -347,27 +347,27 @@ public class EditController : Controller
         var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
-            return NotFound(new RequestResponse("文章未找到", 404));
+            return NotFound(new RequestResponse("通知未找到", 404));
 
         if (notice.Type != NoticeType.Normal)
-            return BadRequest(new RequestResponse("不能更改系统文章"));
+            return BadRequest(new RequestResponse("不能更改系统通知"));
 
         notice.Content = model.Content;
         return Ok(await gameNoticeRepository.UpdateNotice(notice, token));
     }
 
     /// <summary>
-    /// 删除比赛文章
+    /// 删除比赛通知
     /// </summary>
     /// <remarks>
-    /// 删除比赛文章，需要管理员权限
+    /// 删除比赛通知，需要管理员权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="noticeId">文章Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功删除文章</response>
     /// <response code="404">未找到文章</response>
-    [HttpDelete("Games/{id}/Posts/{noticeId}")]
+    [HttpDelete("Games/{id}/Notices/{noticeId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGameNotice([FromRoute] int id, [FromRoute] int noticeId, CancellationToken token)
@@ -375,10 +375,10 @@ public class EditController : Controller
         var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
-            return NotFound(new RequestResponse("文章未找到", 404));
+            return NotFound(new RequestResponse("通知未找到", 404));
 
         if (notice.Type != NoticeType.Normal)
-            return BadRequest(new RequestResponse("不能删除系统文章"));
+            return BadRequest(new RequestResponse("不能删除系统通知"));
 
         await gameNoticeRepository.RemoveNotice(notice, token);
 

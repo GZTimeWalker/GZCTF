@@ -2590,16 +2590,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 添加比赛文章，需要管理员权限
+     * @description 添加比赛通知，需要管理员权限
      *
      * @tags Edit
      * @name EditAddGameNotice
-     * @summary 添加比赛文章
-     * @request POST:/api/edit/games/{id}/posts
+     * @summary 添加比赛通知
+     * @request POST:/api/edit/games/{id}/notices
      */
     editAddGameNotice: (id: number, data: GameNoticeModel, params: RequestParams = {}) =>
       this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/posts`,
+        path: `/api/edit/games/${id}/notices`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
@@ -2608,55 +2608,55 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛文章，需要管理员权限
+     * @description 获取比赛通知，需要管理员权限
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛文章
-     * @request GET:/api/edit/games/{id}/posts
+     * @summary 获取比赛通知
+     * @request GET:/api/edit/games/{id}/notices
      */
     editGetGameNotices: (id: number, params: RequestParams = {}) =>
       this.request<GameNotice[], RequestResponse>({
-        path: `/api/edit/games/${id}/posts`,
+        path: `/api/edit/games/${id}/notices`,
         method: 'GET',
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取比赛文章，需要管理员权限
+     * @description 获取比赛通知，需要管理员权限
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛文章
-     * @request GET:/api/edit/games/{id}/posts
+     * @summary 获取比赛通知
+     * @request GET:/api/edit/games/{id}/notices
      */
     useEditGetGameNotices: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<GameNotice[], RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/posts` : null,
+        doFetch ? `/api/edit/games/${id}/notices` : null,
         options
       ),
 
     /**
-     * @description 获取比赛文章，需要管理员权限
+     * @description 获取比赛通知，需要管理员权限
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛文章
-     * @request GET:/api/edit/games/{id}/posts
+     * @summary 获取比赛通知
+     * @request GET:/api/edit/games/{id}/notices
      */
     mutateEditGetGameNotices: (
       id: number,
       data?: GameNotice[] | Promise<GameNotice[]>,
       options?: MutatorOptions
-    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/posts`, data, options),
+    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
 
     /**
-     * @description 更新比赛文章，需要管理员权限
+     * @description 更新比赛通知，需要管理员权限
      *
      * @tags Edit
      * @name EditUpdateGameNotice
-     * @summary 更新比赛文章
-     * @request PUT:/api/edit/games/{id}/posts/{noticeId}
+     * @summary 更新比赛通知
+     * @request PUT:/api/edit/games/{id}/notices/{noticeId}
      */
     editUpdateGameNotice: (
       id: number,
@@ -2665,7 +2665,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {}
     ) =>
       this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/posts/${noticeId}`,
+        path: `/api/edit/games/${id}/notices/${noticeId}`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,
@@ -2674,16 +2674,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除比赛文章，需要管理员权限
+     * @description 删除比赛通知，需要管理员权限
      *
      * @tags Edit
      * @name EditDeleteGameNotice
-     * @summary 删除比赛文章
-     * @request DELETE:/api/edit/games/{id}/posts/{noticeId}
+     * @summary 删除比赛通知
+     * @request DELETE:/api/edit/games/{id}/notices/{noticeId}
      */
     editDeleteGameNotice: (id: number, noticeId: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/posts/${noticeId}`,
+        path: `/api/edit/games/${id}/notices/${noticeId}`,
         method: 'DELETE',
         ...params,
       }),
