@@ -50,9 +50,8 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             return context.GameNotices.Where(e => e.GameId == gameId)
-                .OrderByDescending(e => e.PublishTimeUTC)
-                .Skip(skip).Take(count)
-                .ToArrayAsync(token);
+                .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUTC)
+                .Skip(skip).Take(count).ToArrayAsync(token);
         });
 
     public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
