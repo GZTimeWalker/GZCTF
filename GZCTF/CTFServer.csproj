@@ -30,11 +30,11 @@
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.12" />
     <PackageReference Include="KubernetesClient" Version="9.0.28" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0-rtm.22501.6" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.0-rtm.22501.6" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-rtm.22501.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-rtm.22501.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0-rtm.22501.1">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0-rtm.22504.29" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.0-rtm.22504.29" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-rtm.22504.29" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-rtm.22506.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0-rtm.22506.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -55,10 +55,10 @@
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.2" />
     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
     <PackageReference Include="MailKit" Version="3.4.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0-rtm.22501.1" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.0-rtm.22501.6" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.0-rtm.22501.6" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0-rtm.22501.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0-rtm.22506.5" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.0-rtm.22504.29" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.0-rtm.22504.29" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0-rtm.22504.29" />
   </ItemGroup>
 
   <ItemGroup>
