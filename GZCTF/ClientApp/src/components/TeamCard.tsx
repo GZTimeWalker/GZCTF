@@ -82,7 +82,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               <Text transform="uppercase" color="dimmed">
                 队员列表:
               </Text>
-              <Box style={{ flexGrow: 1 }}></Box>
+              <Box style={{ flexGrow: 1 }} />
               {team.locked && (
                 <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
               )}
