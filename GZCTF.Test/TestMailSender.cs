@@ -30,9 +30,9 @@ namespace CTFServer.Test
             return true;
         }
 
-        public void SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
+        public Task SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
         {
-
+            return Task.CompletedTask;
         }
     }
 }

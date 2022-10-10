@@ -162,7 +162,7 @@ public class EditController : Controller
     [HttpGet("Games")]
     [ProducesResponseType(typeof(GameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token)
-        => Ok((await gameRepository.GetGames(count, skip, token)).Select(g => GameInfoModel.FromGame(g)));
+        => Ok((await gameRepository.GetGames(count, skip, token)).Select(GameInfoModel.FromGame));
 
     /// <summary>
     /// 获取比赛
@@ -427,7 +427,7 @@ public class EditController : Controller
     [HttpGet("Games/{id}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
-        => Ok((await challengeRepository.GetChallenges(id, token)).Select(c => ChallengeInfoModel.FromChallenge(c)));
+        => Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
     /// 获取比赛题目

@@ -21,7 +21,7 @@ public class ConfigService : IConfigService
         configuration = _configuration as IConfigurationRoot;
     }
 
-    private static void GetConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
+    private static void MapConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
     {
         if (value is null || type is null)
             return;
@@ -37,7 +37,7 @@ public class ConfigService : IConfigService
         else if (type.IsClass)
         {
             foreach (var item in type.GetProperties())
-                GetConfigsInternal($"{key}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
+                MapConfigsInternal($"{key}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
         }
     }
 
@@ -46,7 +46,7 @@ public class ConfigService : IConfigService
         HashSet<Config> configs = new();
 
         foreach (var item in type.GetProperties())
-            GetConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
+            MapConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
 
         return configs;
     }
@@ -57,7 +57,7 @@ public class ConfigService : IConfigService
         var type = typeof(T);
 
         foreach (var item in type.GetProperties())
-            GetConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(config));
+            MapConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(config));
 
         return configs;
     }

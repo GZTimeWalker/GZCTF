@@ -74,7 +74,7 @@ public class AccountController : ControllerBase
 
         var mailDomain = model.Email!.Split('@')[1];
         if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
-            !accountPolicy.Value.EmailDomainList.Split(',').Any(d => d == mailDomain))
+            accountPolicy.Value.EmailDomainList.Split(',').All(d => d != mailDomain))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
         var user = new UserInfo

@@ -136,7 +136,7 @@ public class GameController : ControllerBase
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse("比赛邀请码错误"));
 
-        if (game.Organizations is { Count: > 0 } && !game.Organizations.Any(o => o == model.Organization))
+        if (game.Organizations is { Count: > 0 } && game.Organizations.All(o => o != model.Organization))
             return BadRequest(new RequestResponse("无效的参赛单位"));
 
         var user = await userManager.GetUserAsync(User);
@@ -145,7 +145,7 @@ public class GameController : ControllerBase
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", 404));
 
-        if (!team.Members.Any(u => u.Id == user.Id))
+        if (team.Members.All(u => u.Id != user.Id))
             return BadRequest(new RequestResponse("您不是此队伍的队员"));
 
         // 如果已经报名（非拒绝状态）
@@ -221,7 +221,7 @@ public class GameController : ControllerBase
 
         var part = await participationRepository.GetParticipation(user, game, token);
 
-        if (part is null || !part.Members.Any(u => u.UserId == user.Id))
+        if (part is null || part.Members.All(u => u.UserId != user.Id))
             return BadRequest(new RequestResponse("无法退出未报名的比赛"));
 
         if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Denied)
@@ -422,7 +422,7 @@ public class GameController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到"));
 
         return Ok((await participationRepository.GetParticipations(context.Game!, token))
-                    .Select(p => ParticipationInfoModel.FromParticipation(p)));
+                    .Select(ParticipationInfoModel.FromParticipation));
     }
 
     /// <summary>

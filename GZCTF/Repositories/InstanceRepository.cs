@@ -237,7 +237,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             submission.Status = AnswerResult.NotFound;
             return (SubmissionType.Unaccepted, AnswerResult.NotFound);
         }
-        else if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
+
+        if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
         {
             updateSub.Status = await context.FlagContexts
                 .AsNoTracking()

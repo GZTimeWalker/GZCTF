@@ -42,7 +42,7 @@ public class InfoController : ControllerBase
     [HttpGet("Posts/Latest")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLatestPosts(CancellationToken token)
-        => Ok((await postRepository.GetPosts(token)).Take(20).Select(p => PostInfoModel.FromPost(p)));
+        => Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取全部文章
@@ -55,7 +55,7 @@ public class InfoController : ControllerBase
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token)
-        => Ok((await postRepository.GetPosts(token)).Select(p => PostInfoModel.FromPost(p)));
+        => Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取文章详情
