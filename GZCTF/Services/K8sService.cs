@@ -261,12 +261,12 @@ public class K8sService : IContainerService
         {
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
             var dockerjson = Codec.Base64.EncodeToBytes(
-"{{\\\"auths\\\":"+
+                "{{\\\"auths\\\":" +
                     $"{{\"{registry.ServerAddress}\":" +
                         $"{{\"auth\":\"{auth}\"," +
                         $"\"username\":\"{registry.UserName}\"," +
                         $"\"password\":\"{registry.Password}\"" +
-"}}}}}}");
+                "}}}}}}");
             var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()
