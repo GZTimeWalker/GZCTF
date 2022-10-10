@@ -202,7 +202,7 @@ const TableRow: FC<{
             const chal = solved?.find((c) => c.id === item.id)
             const icon = iconMap.get(chal?.type ?? SubmissionType.Unaccepted)
 
-            if (!icon) return <td key={item.id} className={classes.theadMono}></td>
+            if (!icon) return <td key={item.id} className={classes.theadMono} />
 
             const tag = ChallengeTagLabelMap.get(item.tag as ChallengeTag)!
             const textStyle = {

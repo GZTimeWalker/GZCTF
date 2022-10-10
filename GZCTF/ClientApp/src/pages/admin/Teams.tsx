@@ -138,7 +138,7 @@ const Teams: FC = () => {
                 <th>队伍</th>
                 <th>签名</th>
                 <th>队员</th>
-                <th></th>
+                <th />
               </tr>
             </thead>
             <tbody>

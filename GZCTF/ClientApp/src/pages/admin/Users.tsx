@@ -225,7 +225,7 @@ const Users: FC = () => {
                 <th>用户 IP</th>
                 <th>真实姓名</th>
                 <th>学号</th>
-                <th></th>
+                <th />
               </tr>
             </thead>
             <tbody>

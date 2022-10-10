@@ -100,7 +100,7 @@ const Games: FC = () => {
                 <th>比赛</th>
                 <th>比赛时间</th>
                 <th>简介</th>
-                <th></th>
+                <th />
               </tr>
             </thead>
             <tbody>
