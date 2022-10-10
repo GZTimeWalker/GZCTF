@@ -261,7 +261,7 @@ public class K8sService : IContainerService
         {
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
             var dockerjson = Codec.Base64.EncodeToBytes(
-"{{\\\"auths\\\":"+
+"{{\\\"auths\\\":" +
                     $"{{\"{registry.ServerAddress}\":" +
                         $"{{\"auth\":\"{auth}\"," +
                         $"\"username\":\"{registry.UserName}\"," +
