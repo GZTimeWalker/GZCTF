@@ -1,4 +1,4 @@
-﻿using CTFServer.Middlewares;
+using CTFServer.Middlewares;
 using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
@@ -352,7 +352,7 @@ public class TeamController : ControllerBase
     public async Task<IActionResult> Accept([FromBody] string code, CancellationToken cancelToken)
     {
         if (!Regex.IsMatch(code, @":\d+:[0-9a-f]{32}"))
-            return BadRequest(new RequestResponse($"Code 无效"));
+            return BadRequest(new RequestResponse("Code 无效"));
 
         var inviteCode = code[^32..];
         var preCode = code[..^33];
