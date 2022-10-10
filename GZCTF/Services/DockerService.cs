@@ -87,7 +87,8 @@ public class DockerService : IContainerService
             Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
             Name = GetName(config),
             Env = config.Flag is null ? Array.Empty<string>() : new string[] { $"GZCTF_FLAG={config.Flag}" },
-            ExposedPorts = new Dictionary<string, EmptyStruct>() {
+            ExposedPorts = new Dictionary<string, EmptyStruct>()
+            {
                 [config.ExposedPort.ToString()] = new EmptyStruct()
             },
             HostConfig = new()
@@ -140,14 +141,14 @@ public class DockerService : IContainerService
         var parameters = GetServiceCreateParameters(config);
         ServiceCreateResponse? serviceRes = null;
         int retry = 0;
-        CreateContainer:
+    CreateContainer:
         try
         {
             serviceRes = await dockerClient.Swarm.CreateServiceAsync(parameters, token);
         }
         catch (DockerApiException e)
         {
-            if(e.StatusCode == HttpStatusCode.Conflict && retry < 3)
+            if (e.StatusCode == HttpStatusCode.Conflict && retry < 3)
             {
                 logger.SystemLog($"容器 {parameters.Service.Name} 已存在，尝试移除后重新创建", TaskStatus.Duplicate, LogLevel.Warning);
                 await dockerClient.Swarm.RemoveServiceAsync(parameters.Service.Name, token);

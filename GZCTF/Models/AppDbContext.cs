@@ -156,7 +156,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
             entity.Navigation(e => e.Game).AutoInclude();
             entity.Navigation(e => e.Team).AutoInclude();
             entity.Navigation(e => e.Members).AutoInclude();
-            
+
             entity.HasMany(e => e.Challenges)
                 .WithMany(e => e.Teams)
                 .UsingEntity<Instance>(

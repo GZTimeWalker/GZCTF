@@ -177,7 +177,7 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Transfer([FromRoute] int id, [FromBody] TeamTransferModel model ,CancellationToken token)
+    public async Task<IActionResult> Transfer([FromRoute] int id, [FromBody] TeamTransferModel model, CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
         var team = await teamRepository.GetTeamById(id, token);
