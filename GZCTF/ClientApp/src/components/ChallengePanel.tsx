@@ -122,7 +122,7 @@ const ChallengePanel: FC = () => {
     return (
       <Center sx={{ width: 'calc(100% - 20rem)', height: 'calc(100vh - 100px)' }}>
         <Empty
-          bordered={true}
+          bordered
           description="Ouch! 这个比赛还没有可用题目呢……"
           fontSize="xl"
           mdiPath={mdiFlagOutline}
