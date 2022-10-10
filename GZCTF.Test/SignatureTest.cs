@@ -1,4 +1,4 @@
-﻿using CTFServer.Utils;
+using CTFServer.Utils;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -55,8 +55,8 @@ public class SignatureTest
         var s = "Hello " + sAlgorithm.ToString();
         output.WriteLine(s);
 
-        Ed25519PrivateKeyParameters privateKey = new Ed25519PrivateKeyParameters(Codec.Base64.DecodeToBytes("Qu4G33WZ7DYTUEdlf3P5amVg7f8yXcOmFcG0EJvfQEY="), 0);
-        Ed25519PublicKeyParameters publicKey = new Ed25519PublicKeyParameters(Codec.Base64.DecodeToBytes("t4zduq4LGA1hEYhkCVK19xRACXuDxm/W72v4PBN1EXY="), 0);
+        Ed25519PrivateKeyParameters privateKey = new(Codec.Base64.DecodeToBytes("Qu4G33WZ7DYTUEdlf3P5amVg7f8yXcOmFcG0EJvfQEY="), 0);
+        Ed25519PublicKeyParameters publicKey = new(Codec.Base64.DecodeToBytes("t4zduq4LGA1hEYhkCVK19xRACXuDxm/W72v4PBN1EXY="), 0);
 
         output.WriteLine("私钥：");
         output.WriteLine(Base64.ToBase64String(privateKey.GetEncoded()));
