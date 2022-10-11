@@ -79,12 +79,42 @@ public class Codec
     {
         private readonly static Dictionary<char, string> CharMap = new()
         {
-            ['A'] = "Aa4", ['B'] = "Bb68", ['C'] = "Cc", ['D'] = "Dd", ['E'] = "Ee3", ['F'] = "Ff1",
-            ['G'] = "Gg69", ['H'] = "Hh", ['I'] = "Ii1l", ['J'] = "Jj", ['K'] = "Kk", ['L'] = "Ll1I",
-            ['M'] = "Mm", ['N'] = "Nn", ['O'] = "Oo0", ['P'] = "Pp", ['Q'] = "Qq9", ['R'] = "Rr",
-            ['S'] = "Ss5", ['T'] = "Tt7", ['U'] = "Uu", ['V'] = "Vv", ['W'] = "Ww", ['X'] = "Xx",
-            ['Y'] = "Yy", ['Z'] = "Zz2", ['0'] = "0oO", ['1'] = "1lI", ['2'] = "2zZ", ['3'] = "3eE",
-            ['4'] = "4aA", ['5'] = "5Ss", ['6'] = "6Gb", ['7'] = "7T", ['8'] = "8bB", ['9'] = "9g"
+            ['A'] = "Aa4",
+            ['B'] = "Bb68",
+            ['C'] = "Cc",
+            ['D'] = "Dd",
+            ['E'] = "Ee3",
+            ['F'] = "Ff1",
+            ['G'] = "Gg69",
+            ['H'] = "Hh",
+            ['I'] = "Ii1l",
+            ['J'] = "Jj",
+            ['K'] = "Kk",
+            ['L'] = "Ll1I",
+            ['M'] = "Mm",
+            ['N'] = "Nn",
+            ['O'] = "Oo0",
+            ['P'] = "Pp",
+            ['Q'] = "Qq9",
+            ['R'] = "Rr",
+            ['S'] = "Ss5",
+            ['T'] = "Tt7",
+            ['U'] = "Uu",
+            ['V'] = "Vv",
+            ['W'] = "Ww",
+            ['X'] = "Xx",
+            ['Y'] = "Yy",
+            ['Z'] = "Zz2",
+            ['0'] = "0oO",
+            ['1'] = "1lI",
+            ['2'] = "2zZ",
+            ['3'] = "3eE",
+            ['4'] = "4aA",
+            ['5'] = "5Ss",
+            ['6'] = "6Gb",
+            ['7'] = "7T",
+            ['8'] = "8bB",
+            ['9'] = "9g"
         };
 
         public static double LeetEntropy(string flag)
@@ -225,8 +255,7 @@ public class Codec
         byte[] output = MD5.HashData(Encoding.Default.GetBytes(str));
         if (useBase64)
             return Convert.ToBase64String(output);
-        else
-            return BitConverter.ToString(output).Replace("-", "").ToLower();
+        return BitConverter.ToString(output).Replace("-", "").ToLower();
     }
 
     /// <summary>
@@ -240,8 +269,7 @@ public class Codec
         byte[] output = SHA256.HashData(Encoding.Default.GetBytes(str));
         if (useBase64)
             return Convert.ToBase64String(output);
-        else
-            return BitConverter.ToString(output).Replace("-", "").ToLower();
+        return BitConverter.ToString(output).Replace("-", "").ToLower();
     }
 
     /// <summary>

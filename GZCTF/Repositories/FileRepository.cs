@@ -94,13 +94,11 @@ public class FileRepository : RepositoryBase, IFileRepository
 
             return TaskStatus.Success;
         }
-        else
-        {
-            context.Files.Remove(file);
-            await SaveAsync(token);
 
-            return TaskStatus.NotFound;
-        }
+        context.Files.Remove(file);
+        await SaveAsync(token);
+
+        return TaskStatus.NotFound;
     }
 
     public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)

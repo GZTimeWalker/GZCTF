@@ -248,11 +248,11 @@ public class GameRepository : RepositoryBase, IGameRepository
                 }).ToArray().AsEnumerable()) : new();
 
         timelines["all"] = items.Take(10).Select(team => new TopTimeLine
-            {
-                Id = team.Id,
-                Name = team.Name,
-                Items = GenTimeLine(team.Challenges)
-            }).ToArray();
+        {
+            Id = team.Id,
+            Name = team.Name,
+            Items = GenTimeLine(team.Challenges)
+        }).ToArray();
 
         return timelines;
     }

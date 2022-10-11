@@ -56,7 +56,7 @@ public class MailSender : IMailSender
         return isSuccess;
     }
 
-    public async void SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
+    public async Task SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
     {
         if (email is null || userName is null || title is null)
         {
@@ -87,7 +87,7 @@ public class MailSender : IMailSender
         if (options?.SendMailAddress is null)
             return false;
 
-        SendUrl(title, infomation, btnmsg, userName, email, url);
+        SendUrl(title, infomation, btnmsg, userName, email, url).Start();
         return true;
     }
 

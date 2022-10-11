@@ -1,4 +1,4 @@
-﻿using CTFServer.Middlewares;
+using CTFServer.Middlewares;
 using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
@@ -78,8 +78,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        return Ok((await teamRepository.GetUserTeams(user!, token))
-            .Select(team => TeamInfoModel.FromTeam(team)));
+        return Ok((await teamRepository.GetUserTeams(user, token)).Select(t => TeamInfoModel.FromTeam(t)));
     }
 
     /// <summary>
@@ -179,7 +178,7 @@ public class TeamController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Transfer([FromRoute] int id, [FromBody] TeamTransferModel model ,CancellationToken token)
+    public async Task<IActionResult> Transfer([FromRoute] int id, [FromBody] TeamTransferModel model, CancellationToken token)
     {
         var user = await userManager.GetUserAsync(User);
         var team = await teamRepository.GetTeamById(id, token);
@@ -354,7 +353,7 @@ public class TeamController : ControllerBase
     public async Task<IActionResult> Accept([FromBody] string code, CancellationToken cancelToken)
     {
         if (!Regex.IsMatch(code, @":\d+:[0-9a-f]{32}"))
-            return BadRequest(new RequestResponse($"Code 无效"));
+            return BadRequest(new RequestResponse("Code 无效"));
 
         var inviteCode = code[^32..];
         var preCode = code[..^33];
@@ -429,7 +428,7 @@ public class TeamController : ControllerBase
 
             var user = await userManager.GetUserAsync(User);
 
-            if (!team.Members.Any(m => m.Id == user!.Id))
+            if (team.Members.All(m => m.Id != user.Id))
                 return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))

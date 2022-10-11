@@ -1,4 +1,4 @@
-﻿using CTFServer.Models.Internal;
+using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using k8s;
@@ -214,10 +214,10 @@ public class K8sService : IContainerService
 
     private void InitK8s(bool withAuth, RegistryConfig? registry)
     {
-        if (!kubernetesClient.CoreV1.ListNamespace().Items.Any(ns => ns.Metadata.Name == Namespace))
+        if (kubernetesClient.CoreV1.ListNamespace().Items.All(ns => ns.Metadata.Name != Namespace))
             kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = Namespace } });
 
-        if (!kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(Namespace).Items.Any(np => np.Metadata.Name == NetworkPolicy))
+        if (kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(Namespace).Items.All(np => np.Metadata.Name != NetworkPolicy))
         {
             kubernetesClient.NetworkingV1.CreateNamespacedNetworkPolicy(new()
             {
@@ -261,12 +261,12 @@ public class K8sService : IContainerService
         {
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
             var dockerjson = Codec.Base64.EncodeToBytes(
-                $"{{\"auths\":" +
+                "{{\\\"auths\\\":" +
                     $"{{\"{registry.ServerAddress}\":" +
                         $"{{\"auth\":\"{auth}\"," +
                         $"\"username\":\"{registry.UserName}\"," +
                         $"\"password\":\"{registry.Password}\"" +
-                $"}}}}}}");
+                "}}}}}}");
             var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()

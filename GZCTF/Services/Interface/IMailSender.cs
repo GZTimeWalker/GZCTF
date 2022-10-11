@@ -20,7 +20,7 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">电子邮件地址</param>
     /// <param name="url">链接</param>
-    public void SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url);
+    public Task SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url);
 
     /// <summary>
     /// 发送新用户验证URL

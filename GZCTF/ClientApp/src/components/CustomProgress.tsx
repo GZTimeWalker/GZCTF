@@ -109,10 +109,10 @@ const CustomProgress: FC<CustomProgressProps> = (props: CustomProgressProps) => 
             <div />
           </div>
           <div className={classes.spikesGroup}>
-            <div className={cx(classes.spike, classes.spikeRight)}></div>
-            <div className={cx(classes.spike, classes.spikeLeft)}></div>
-            <div className={cx(classes.spike, classes.spikeTop)}></div>
-            <div className={cx(classes.spike, classes.spikeBottom)}></div>
+            <div className={cx(classes.spike, classes.spikeRight)} />
+            <div className={cx(classes.spike, classes.spikeLeft)} />
+            <div className={cx(classes.spike, classes.spikeTop)} />
+            <div className={cx(classes.spike, classes.spikeBottom)} />
           </div>
         </Group>
       </div>

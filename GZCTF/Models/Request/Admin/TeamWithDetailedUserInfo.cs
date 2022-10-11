@@ -51,6 +51,6 @@ public class TeamWithDetailedUserInfo
             Avatar = team.AvatarUrl,
             Locked = team.Locked,
             CaptainId = team.CaptainId,
-            Members = team.Members.Select(u => ProfileUserInfoModel.FromUserInfo(u)).ToArray()
+            Members = team.Members.Select(ProfileUserInfoModel.FromUserInfo).ToArray()
         };
 }
