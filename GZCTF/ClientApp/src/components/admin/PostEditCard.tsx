@@ -28,9 +28,7 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
       <Stack>
         <Group position="apart">
           <Group position="left">
-            {post.isPinned && (
-              <Icon color={theme.colors.orange[4]} path={mdiPinOutline} size={1} />
-            )}
+            {post.isPinned && <Icon color={theme.colors.orange[4]} path={mdiPinOutline} size={1} />}
             <Title order={3}>{post.title}</Title>
           </Group>
           <Group position="right">

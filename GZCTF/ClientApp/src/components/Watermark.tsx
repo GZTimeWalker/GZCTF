@@ -155,7 +155,10 @@ const Watermark: React.FC<WatermarkProps & React.PropsWithChildren> = ({
   const wrapperRef = useRef<HTMLDivElement>()
   const watermarkRef = useRef<HTMLDivElement>()
 
-  const watermarkBox: (layers: number, child: HTMLDivElement) => HTMLDivElement = (layers, child) => {
+  const watermarkBox: (layers: number, child: HTMLDivElement) => HTMLDivElement = (
+    layers,
+    child
+  ) => {
     if (layers > 0) {
       const box = document.createElement('div')
       box.appendChild(child)
