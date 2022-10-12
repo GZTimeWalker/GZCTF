@@ -13,7 +13,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main", "develop", "preview", "work" ]
+    branches: [ "main", "develop", "preview"]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "main" ]
@@ -31,7 +31,7 @@ jobs:
     defaults:
       run:
         working-directory: GZCTF
-        
+
     strategy:
       fail-fast: false
       matrix:
@@ -55,7 +55,7 @@ jobs:
         # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
 
@@ -63,20 +63,9 @@ jobs:
       with:
         node-version: 18
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    # - name: Autobuild
-    #   uses: github/codeql-action/autobuild@v2
-
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-
-    #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
-
     - name: Build with dotnet
       run: |
-        dotnet build "CTFServer.csproj" -c Release -o build
+        dotnet build "CTFServer.csproj" -c Release -o build /p:UseNpm=true
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
