@@ -64,7 +64,8 @@ export const ThemeOverride: MantineThemeOverride = {
     ],
   },
   primaryColor: 'brand',
-  fontFamily: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif",
+  fontFamily:
+    "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif",
   fontFamilyMonospace: "'JetBrains Mono', monospace",
   headings: {
     fontFamily: "'IBM Plex Sans', sans-serif",
@@ -78,7 +79,7 @@ export const ThemeOverride: MantineThemeOverride = {
         },
         labelWrapper: {
           display: 'flex',
-        }
+        },
       },
     },
   },

@@ -126,7 +126,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                           idx == 0 ? classes.blood1 : idx == 1 ? classes.blood2 : classes.blood3
                         )}
                         style={{ display: teamId === blood?.id ? 'block' : 'none' }}
-                       />
+                      />
                     </div>
                   </Tooltip.Floating>
                 ))}

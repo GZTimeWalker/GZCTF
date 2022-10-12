@@ -56,15 +56,9 @@ const AppHeader: FC = () => {
     <Header fixed hidden={!isMobile} height={isMobile ? 60 : 0} className={headerClasses.header}>
       <Group style={{ height: '100%' }} p="0 1rem" position="apart">
         <LogoHeader onClick={() => navigate('/')} />
-        <Menu
-          shadow="md"
-          opened={opened}
-          onClose={() => setOpened(false)}
-          width={200}
-          offset={13}
-        >
+        <Menu shadow="md" opened={opened} onClose={() => setOpened(false)} width={200} offset={13}>
           <Menu.Target>
-            <Burger opened={opened} onClick={() => setOpened((o) => !o)}/>
+            <Burger opened={opened} onClick={() => setOpened((o) => !o)} />
           </Menu.Target>
 
           <Menu.Dropdown>
