@@ -59,12 +59,12 @@ const AppHeader: FC = () => {
         <Menu
           shadow="md"
           opened={opened}
-          onChange={() => setOpened((o) => !o)}
+          onClose={() => setOpened(false)}
           width={200}
           offset={13}
         >
           <Menu.Target>
-            <Burger opened={opened} />
+            <Burger opened={opened} onClick={() => setOpened((o) => !o)}/>
           </Menu.Target>
 
           <Menu.Dropdown>
