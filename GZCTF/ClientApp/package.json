@@ -22,7 +22,7 @@
     "@mantine/notifications": "^5.5.5",
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
-    "@microsoft/signalr": "^6.0.9",
+    "@microsoft/signalr": "^6.0.10",
     "dayjs": "^1.11.5",
     "echarts": "^5.4.0",
     "echarts-for-react": "^3.0.2",
