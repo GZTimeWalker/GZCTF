@@ -78,7 +78,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        return Ok((await teamRepository.GetUserTeams(user, token)).Select(t => TeamInfoModel.FromTeam(t)));
+        return Ok((await teamRepository.GetUserTeams(user!, token)).Select(t => TeamInfoModel.FromTeam(t)));
     }
 
     /// <summary>
@@ -428,7 +428,7 @@ public class TeamController : ControllerBase
 
             var user = await userManager.GetUserAsync(User);
 
-            if (team.Members.All(m => m.Id != user.Id))
+            if (team.Members.All(m => m.Id != user!.Id))
                 return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))

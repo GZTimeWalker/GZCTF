@@ -146,7 +146,7 @@ public class GameController : ControllerBase
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", 404));
 
-        if (team.Members.All(u => u.Id != user.Id))
+        if (team.Members.All(u => u.Id != user!.Id))
             return BadRequest(new RequestResponse("您不是此队伍的队员"));
 
         // 如果已经报名（非拒绝状态）
@@ -222,7 +222,7 @@ public class GameController : ControllerBase
 
         var part = await participationRepository.GetParticipation(user!, game, token);
 
-        if (part is null || part.Members.All(u => u.UserId != user.Id))
+        if (part is null || part.Members.All(u => u.UserId != user!.Id))
             return BadRequest(new RequestResponse("无法退出未报名的比赛"));
 
         if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Denied)
