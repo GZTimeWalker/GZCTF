@@ -57,7 +57,8 @@ jobs:
 
     - uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        include-prerelease: true
 
     - uses: actions/setup-node@v3
       with:
