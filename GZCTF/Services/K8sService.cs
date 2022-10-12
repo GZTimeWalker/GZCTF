@@ -260,9 +260,9 @@ public class K8sService : IContainerService
         if (withAuth && registry is not null)
         {
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
-            var dockerjson = Codec.Base64.EncodeToBytes(
-                $"{{\\\"auths\\\":{{\"{registry.ServerAddress}\":{{\"auth\":\"{auth}\"," +
-                $"\"username\":\"{registry.UserName}\",\"password\":\"{registry.Password}\"}}}}}}");
+            var dockerjson = $"{{\"auths\":{{\"{registry.ServerAddress}\":{{\"auth\":\"{auth}\"," +
+                $"\"username\":\"{registry.UserName}\",\"password\":\"{registry.Password}\"}}}}}}";
+            var dockerjsonBytes = Codec.Base64.EncodeToBytes(dockerjson);
             var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()
@@ -270,7 +270,7 @@ public class K8sService : IContainerService
                     Name = AuthSecretName,
                     NamespaceProperty = Namespace,
                 },
-                Data = new Dictionary<string, byte[]>() { [".dockerconfigjson"] = dockerjson },
+                Data = new Dictionary<string, byte[]>() { [".dockerconfigjson"] = dockerjsonBytes },
                 Type = "kubernetes.io/dockerconfigjson"
             };
 
