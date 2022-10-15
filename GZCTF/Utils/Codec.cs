@@ -255,7 +255,7 @@ public class Codec
         byte[] output = MD5.HashData(Encoding.Default.GetBytes(str));
         if (useBase64)
             return Convert.ToBase64String(output);
-        return BitConverter.ToString(output).Replace("-", "").ToLower();
+        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>
@@ -269,7 +269,7 @@ public class Codec
         byte[] output = SHA256.HashData(Encoding.Default.GetBytes(str));
         if (useBase64)
             return Convert.ToBase64String(output);
-        return BitConverter.ToString(output).Replace("-", "").ToLower();
+        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>
