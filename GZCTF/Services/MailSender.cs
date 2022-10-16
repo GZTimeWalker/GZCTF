@@ -32,7 +32,6 @@ public class MailSender : IMailSender
         msg.Subject = subject;
         msg.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = content };
 
-        bool isSuccess;
         try
         {
             using var client = new SmtpClient();
@@ -43,17 +42,14 @@ public class MailSender : IMailSender
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            isSuccess = true;
-
             logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
+            return true;
         }
         catch (Exception e)
         {
             logger.LogError(e, "邮件发送遇到问题");
-            isSuccess = false;
+            return false;
         }
-
-        return isSuccess;
     }
 
     public async Task SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
@@ -87,7 +83,7 @@ public class MailSender : IMailSender
         if (options?.SendMailAddress is null)
             return false;
 
-        SendUrl(title, infomation, btnmsg, userName, email, url).Start();
+        var _ = SendUrl(title, infomation, btnmsg, userName, email, url);
         return true;
     }
 
