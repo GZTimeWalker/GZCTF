@@ -3,6 +3,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Controllers;
 
@@ -43,7 +44,7 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public IActionResult GetFile(string hash, string filename)
+    public IActionResult GetFile([RegularExpression("[0-9a-f]{64}")] string hash, string filename)
     {
         var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
         path = Path.GetFullPath(Path.Combine(basepath, path));

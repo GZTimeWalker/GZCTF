@@ -234,24 +234,7 @@ public class K8sService : IContainerService
                             {
                                 new V1NetworkPolicyPeer() { IpBlock = new() { Cidr = "0.0.0.0/0", Except = new[] { "10.0.0.0/8" } } },
                             }
-                        },
-                        //new V1NetworkPolicyEgressRule()
-                        //{
-                        //    To = new[]
-                        //    {
-                        //        new V1NetworkPolicyPeer() {
-                        //            NamespaceSelector = new() { MatchLabels = new Dictionary<string, string> {
-                        //                ["kubernetes.io/metadata.name"] = "kube-system"
-                        //            } },
-                        //            PodSelector = new() { MatchLabels = new Dictionary<string, string> {
-                        //                ["k8s-app"] = "kube-dns"
-                        //            } }
-                        //        }
-                        //    },
-                        //    Ports = new[] {
-                        //        new V1NetworkPolicyPort() { Port = 53, Protocol = "UDP" }
-                        //    }
-                        //}
+                        }
                     }
                 }
             }, Namespace);
