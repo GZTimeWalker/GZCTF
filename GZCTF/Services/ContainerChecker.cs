@@ -32,7 +32,7 @@ public class ContainerChecker : IHostedService, IDisposable
 
         foreach (var container in await containerRepo.GetDyingContainers())
         {
-            await containerService.DestroyContainer(container);
+            await containerService.DestroyContainerAsync(container);
             await containerRepo.RemoveContainer(container);
             logger.SystemLog($"移除到期容器 [{container.ContainerId}]");
         }
@@ -45,5 +45,9 @@ public class ContainerChecker : IHostedService, IDisposable
         return Task.CompletedTask;
     }
 
-    public void Dispose() => timer?.Dispose();
+    public void Dispose()
+    {
+        timer?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }
