@@ -1,38 +1,37 @@
 ﻿using CTFServer.Services.Interface;
 using System.Threading.Tasks;
 
-namespace CTFServer.Test
+namespace CTFServer.Test;
+
+public class TestMailSender : IMailSender
 {
-    public class TestMailSender : IMailSender
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink)
     {
-        public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink)
-        {
-            return true;
-        }
+        return true;
+    }
 
-        public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)
-        {
-            return true;
-        }
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)
+    {
+        return true;
+    }
 
-        public Task<bool> SendEmailAsync(string subject, string content, string to)
-        {
-            return Task.FromResult(true);
-        }
+    public Task<bool> SendEmailAsync(string subject, string content, string to)
+    {
+        return Task.FromResult(true);
+    }
 
-        public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink)
-        {
-            return true;
-        }
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink)
+    {
+        return true;
+    }
 
-        public bool SendResetPwdUrl(string? userName, string? email, string? resetLink)
-        {
-            return true;
-        }
+    public bool SendResetPwdUrl(string? userName, string? email, string? resetLink)
+    {
+        return true;
+    }
 
-        public Task SendUrl(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
-        {
-            return Task.CompletedTask;
-        }
+    public Task SendUrlAsync(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
+    {
+        return Task.CompletedTask;
     }
 }

@@ -359,9 +359,11 @@ public class TeamController : ControllerBase
         var preCode = code[..^33];
 
         var lastColon = preCode.LastIndexOf(':');
-        var teamId = int.Parse(preCode[(lastColon + 1)..]);
-        var teamName = preCode[..lastColon];
 
+        if(!int.TryParse(preCode[(lastColon + 1)..], out var teamId))
+            return BadRequest(new RequestResponse($"队伍 Id 转换错误：{preCode[(lastColon + 1)..]}"));
+
+        var teamName = preCode[..lastColon];
         var trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
         try

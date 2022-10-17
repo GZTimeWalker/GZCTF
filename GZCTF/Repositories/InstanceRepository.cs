@@ -112,7 +112,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     {
         try
         {
-            await service.DestroyContainer(container, token);
+            await service.DestroyContainerAsync(container, token);
             await containerRepository.RemoveContainer(container, token);
             return true;
         }
@@ -139,7 +139,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         if (instance.Container is null)
         {
             await context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
-            var container = await service.CreateContainer(new ContainerConfig()
+            var container = await service.CreateContainerAsync(new ContainerConfig()
             {
                 TeamId = team.Id.ToString(),
                 UserId = userId,

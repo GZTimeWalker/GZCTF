@@ -39,10 +39,10 @@ public class DockerService : IContainerService
         logger.SystemLog($"Docker 服务已启动 ({(string.IsNullOrEmpty(this.options.Uri) ? "localhost" : this.options.Uri)})", TaskStatus.Success, LogLevel.Debug);
     }
 
-    public Task<Container?> CreateContainer(ContainerConfig config, CancellationToken token = default)
+    public Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
         => options.SwarmMode ? CreateContainerWithSwarm(config, token) : CreateContainerWithSingle(config, token);
 
-    public async Task DestroyContainer(Container container, CancellationToken token = default)
+    public async Task DestroyContainerAsync(Container container, CancellationToken token = default)
     {
         try
         {
@@ -274,10 +274,16 @@ public class DockerService : IContainerService
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.Port = int.Parse(info.NetworkSettings.Ports
+
+        var port = info.NetworkSettings.Ports
             .FirstOrDefault(p =>
                 p.Key.StartsWith(config.ExposedPort.ToString())
-            ).Value.First().HostPort);
+            ).Value.First().HostPort;
+
+        if (int.TryParse(port, out var numport))
+            container.Port = numport;
+        else
+            logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Fail, LogLevel.Warning);
 
         container.IP = info.NetworkSettings.IPAddress;
 

@@ -4,52 +4,51 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CTFServer.Test
+namespace CTFServer.Test;
+
+public class AccountTest : IClassFixture<TestWebAppFactory>
 {
-    public class AccountTest : IClassFixture<TestWebAppFactory>
+    private readonly TestWebAppFactory _factory;
+    private readonly ITestOutputHelper _output;
+
+    public AccountTest(TestWebAppFactory factory, ITestOutputHelper output)
     {
-        private readonly TestWebAppFactory _factory;
-        private readonly ITestOutputHelper _output;
+        _factory = factory;
+        _output = output;
+    }
 
-        public AccountTest(TestWebAppFactory factory, ITestOutputHelper output)
+    [Fact]
+    public async Task TestCreateUser()
+    {
+        using var client = _factory.CreateClient();
+        var registerResult = await client.PostAsJsonAsync("/api/account/register", new
         {
-            _factory = factory;
-            _output = output;
-        }
+            userName = "foo",
+            password = "foo12345",
+            email = "foo@example.com",
+        });
+        Assert.Equal(HttpStatusCode.BadRequest, registerResult.StatusCode);
 
-        [Fact]
-        public async Task TestCreateUser()
+        registerResult = await client.PostAsJsonAsync("/api/account/register", new
         {
-            using var client = _factory.CreateClient();
-            var registerResult = await client.PostAsJsonAsync("/api/account/register", new
-            {
-                userName = "foo",
-                password = "foo12345",
-                email = "foo@example.com",
-            });
-            Assert.Equal(HttpStatusCode.BadRequest, registerResult.StatusCode);
+            userName = "foo",
+            password = "foo12345##Foo",
+            email = "foo@example.com",
+        });
+        Assert.True(registerResult.IsSuccessStatusCode);
 
-            registerResult = await client.PostAsJsonAsync("/api/account/register", new
-            {
-                userName = "foo",
-                password = "foo12345##Foo",
-                email = "foo@example.com",
-            });
-            Assert.True(registerResult.IsSuccessStatusCode);
+        var loginResult = await client.PostAsJsonAsync("/api/account/login", new
+        {
+            userName = "foo",
+            password = "foo12345##"
+        });
+        Assert.False(loginResult.IsSuccessStatusCode);
 
-            var loginResult = await client.PostAsJsonAsync("/api/account/login", new
-            {
-                userName = "foo",
-                password = "foo12345##"
-            });
-            Assert.False(loginResult.IsSuccessStatusCode);
-
-            loginResult = await client.PostAsJsonAsync("/api/account/login", new
-            {
-                userName = "foo",
-                password = "foo12345##Foo"
-            });
-            Assert.True(loginResult.IsSuccessStatusCode);
-        }
+        loginResult = await client.PostAsJsonAsync("/api/account/login", new
+        {
+            userName = "foo",
+            password = "foo12345##Foo"
+        });
+        Assert.True(loginResult.IsSuccessStatusCode);
     }
 }

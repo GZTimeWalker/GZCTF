@@ -569,7 +569,7 @@ public class EditController : Controller
 
         var user = await userManager.GetUserAsync(User);
 
-        var container = await containerService.CreateContainer(new()
+        var container = await containerService.CreateContainerAsync(new()
         {
             TeamId = "admin",
             UserId = user!.Id,
@@ -620,7 +620,7 @@ public class EditController : Controller
         if (challenge.TestContainer is null)
             return Ok();
 
-        await containerService.DestroyContainer(challenge.TestContainer, token);
+        await containerService.DestroyContainerAsync(challenge.TestContainer, token);
         await containerRepository.RemoveContainer(challenge.TestContainer, token);
 
         return Ok();

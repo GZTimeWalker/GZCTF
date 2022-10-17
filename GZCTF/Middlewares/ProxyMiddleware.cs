@@ -11,9 +11,9 @@ public class ProxyMiddleware
     public Task Invoke(HttpContext context)
     {
         var headers = context.Request.Headers;
-        if (headers.ContainsKey("X-Forwarded-For"))
+        if (headers.TryGetValue("X-Forwarded-For", out var value))
         {
-            var ipAddresses = headers["X-Forwarded-For"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var ipAddresses = value.ToString().Split(',', StringSplitOptions.RemoveEmptyEntries);
             context.Connection.RemoteIpAddress = IPAddress.Parse(ipAddresses.FirstOrDefault() ?? "0.0.0.0");
         }
         return _next(context);
