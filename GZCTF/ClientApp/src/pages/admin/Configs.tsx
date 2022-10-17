@@ -70,9 +70,19 @@ const Configs: FC = () => {
             <TextInput
               label="平台名称"
               description="平台名称将显示在网页标题、页面顶部等位置，后跟 ::CTF 字段"
+              placeholder='GZ'
               value={globalConfig?.title ?? ''}
               onChange={(e) => {
                 setGlobalConfig({ ...(globalConfig ?? {}), title: e.currentTarget.value })
+              }}
+            />
+            <TextInput
+              label="平台标语"
+              description="平台标语将显示在页面顶部和关于页面"
+              placeholder='Hack for fun not for profit'
+              value={globalConfig?.slogan ?? ''}
+              onChange={(e) => {
+                setGlobalConfig({ ...(globalConfig ?? {}), slogan: e.currentTarget.value })
               }}
             />
           </SimpleGrid>
