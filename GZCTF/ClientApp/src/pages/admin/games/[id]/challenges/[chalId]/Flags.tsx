@@ -169,7 +169,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
     if (flagTemplate !== challenge?.flagTemplate) {
       setDisabled(true)
       api.edit
-        // allow empty flag template to be set
+        // allow empty flag template to be set (but not null or undefined)
         .editUpdateGameChallenge(numId, numCId, { flagTemplate })
         .then(() => {
           showNotification({
