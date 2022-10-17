@@ -14,8 +14,8 @@ import {
 } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
-import { usePageTitle } from '@Utils/usePageTitle'
 import { useConfig } from '@Utils/useConfig'
+import { usePageTitle } from '@Utils/usePageTitle'
 
 const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
 const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'v0.0.0'
