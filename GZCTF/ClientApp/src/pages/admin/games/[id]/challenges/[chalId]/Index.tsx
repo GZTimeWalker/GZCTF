@@ -15,6 +15,7 @@ import {
   Grid,
   Code,
   Switch,
+  Title,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -176,12 +177,15 @@ const GameChallengeEdit: FC = () => {
       headProps={{ position: 'apart' }}
       head={
         <>
-          <Button
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-            onClick={() => navigate(`/admin/games/${id}/challenges`)}
-          >
-            返回上级
-          </Button>
+          <Group position="left">
+            <Button
+              leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
+              onClick={() => navigate(`/admin/games/${id}/challenges`)}
+            >
+              返回上级
+            </Button>
+            <Title># {challengeInfo?.title}</Title>
+          </Group>
           <Group position="right">
             <Button
               disabled={disabled}

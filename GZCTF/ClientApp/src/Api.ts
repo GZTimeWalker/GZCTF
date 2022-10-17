@@ -263,6 +263,8 @@ export interface AccountPolicy {
 export interface GlobalConfig {
   /** 平台前缀名称 */
   title?: string
+  /** 平台标语 */
+  slogan?: string
 }
 
 /**

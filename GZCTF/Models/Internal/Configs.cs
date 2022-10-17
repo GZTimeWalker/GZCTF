@@ -42,6 +42,11 @@ public class GlobalConfig
     /// 平台前缀名称
     /// </summary>
     public string Title { get; set; } = "GZ";
+
+    /// <summary>
+    /// 平台标语
+    /// </summary>
+    public string Slogan { get; set; } = "Hack for fun not for profit";
 }
 
 public class SmtpConfig
