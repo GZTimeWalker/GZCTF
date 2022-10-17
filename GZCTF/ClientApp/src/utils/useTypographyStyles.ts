@@ -25,7 +25,7 @@ export const useTypographyStyles = createStyles((theme) => {
 
       '& blockquote': {
         borderLeft: `4px solid ${sc(cs.dark[0], cs.gray[5])}`,
-        padding: `${theme.spacing.md/2}px ${theme.spacing.md}px`,
+        padding: `${theme.spacing.md / 2}px ${theme.spacing.md}px`,
         color: theme.fn.rgba(sc(cs.dark[0], cs.gray[7]), 0.9),
         backgroundColor: theme.fn.rgba(theme.black, sc(0.1, 0.05)),
         marginBottom: theme.spacing.md,
@@ -36,8 +36,8 @@ export const useTypographyStyles = createStyles((theme) => {
         },
 
         '& pre': {
-          backgroundColor: theme.fn.rgba(sc(cs.dark[6], cs.white[1]), 0.8)
-        }
+          backgroundColor: theme.fn.rgba(sc(cs.dark[6], cs.white[1]), 0.8),
+        },
       },
 
       '& :not(pre) > code': {
