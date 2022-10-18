@@ -1,4 +1,3 @@
-global using CTFServer.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -6,6 +5,7 @@ using AspNetCoreRateLimit;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
+global using CTFServer.Models;
 using CTFServer.Models.Internal;
 using CTFServer.Repositories;
 using CTFServer.Repositories.Interface;
