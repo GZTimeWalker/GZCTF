@@ -1,4 +1,3 @@
-global using CTFServer.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -6,6 +5,7 @@ using AspNetCoreRateLimit;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
+global using CTFServer.Models;
 using CTFServer.Models.Internal;
 using CTFServer.Repositories;
 using CTFServer.Repositories.Interface;
@@ -288,7 +288,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseOpenApi(options => options.PostProcess += (document, _) => { document.Servers.Clear(); } );
+    app.UseOpenApi(options => options.PostProcess += (document, _) => { document.Servers.Clear(); });
     app.UseSerilogRequestLogging(options =>
     {
         options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
