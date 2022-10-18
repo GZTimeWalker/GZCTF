@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Edit;
+﻿using System.ComponentModel.DataAnnotations;
+using CTFServer.Models.Request.Edit;
 using CTFServer.Utils;
-using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Models;
 

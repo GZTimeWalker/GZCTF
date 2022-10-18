@@ -1,4 +1,5 @@
-﻿using CTFServer.Middlewares;
+﻿using System.Net.Mime;
+using CTFServer.Middlewares;
 using CTFServer.Models.Internal;
 using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Net.Mime;
 
 namespace CTFServer.Controllers;
 

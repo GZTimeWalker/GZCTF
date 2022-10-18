@@ -1,4 +1,7 @@
-﻿using CTFServer.Middlewares;
+﻿using System.Net.Mime;
+using System.Security.Claims;
+using System.Threading.Channels;
+using CTFServer.Middlewares;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
@@ -6,9 +9,6 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
-using System.Security.Claims;
-using System.Threading.Channels;
 
 namespace CTFServer.Controllers;
 

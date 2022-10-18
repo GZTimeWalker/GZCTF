@@ -1,4 +1,7 @@
 global using CTFServer.Models;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
 using AspNetCoreRateLimit;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
@@ -9,6 +12,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Services;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -16,10 +20,6 @@ using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Generation;
 using Serilog;
 using Serilog.Events;
-using System.Text;
-using System.Text.Json;
-using System.Reflection;
-using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 

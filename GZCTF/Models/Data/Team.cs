@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Info;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CTFServer.Models.Request.Info;
 
 namespace CTFServer.Models;
 

@@ -1,8 +1,8 @@
-﻿using CTFServer.Models.Data;
+﻿using System.ComponentModel;
+using CTFServer.Models.Data;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 
 namespace CTFServer.Services;
 
@@ -94,7 +94,8 @@ public class ConfigService : IConfigService
 
     private static bool IsArrayLikeInterface(Type type)
     {
-        if (!type.IsInterface || !type.IsConstructedGenericType) { return false; }
+        if (!type.IsInterface || !type.IsConstructedGenericType)
+        { return false; }
 
         Type genericTypeDefinition = type.GetGenericTypeDefinition();
         return genericTypeDefinition == typeof(IEnumerable<>)

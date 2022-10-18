@@ -1,3 +1,4 @@
+using System.Net;
 using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
@@ -5,7 +6,6 @@ using k8s;
 using k8s.Autorest;
 using k8s.Models;
 using Microsoft.Extensions.Options;
-using System.Net;
 
 namespace CTFServer.Services;
 

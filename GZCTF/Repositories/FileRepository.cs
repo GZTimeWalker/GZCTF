@@ -1,7 +1,7 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using System.Security.Cryptography;
+using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace CTFServer.Repositories;
 

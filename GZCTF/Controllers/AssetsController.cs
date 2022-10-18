@@ -1,9 +1,9 @@
-﻿using CTFServer.Middlewares;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
+using CTFServer.Middlewares;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
-using System.ComponentModel.DataAnnotations;
 
 namespace CTFServer.Controllers;
 

@@ -1,7 +1,7 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using System.Text;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.Encoders;
-using System.Text;
 
 namespace CTFServer.Utils;
 

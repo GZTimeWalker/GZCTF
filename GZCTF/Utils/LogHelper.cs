@@ -1,4 +1,5 @@
-﻿using CTFServer.Extensions;
+﻿using System.IO.Compression;
+using CTFServer.Extensions;
 using NpgsqlTypes;
 using Serilog;
 using Serilog.Core;
@@ -7,7 +8,6 @@ using Serilog.Sinks.File.Archive;
 using Serilog.Sinks.PostgreSQL;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
-using System.IO.Compression;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace CTFServer.Utils;
