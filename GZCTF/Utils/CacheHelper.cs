@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using MemoryPack;
+﻿using MemoryPack;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace CTFServer.Utils;
 

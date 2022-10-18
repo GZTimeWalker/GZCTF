@@ -1,3 +1,5 @@
+using System.Net.Mime;
+using System.Text.RegularExpressions;
 using CTFServer.Middlewares;
 using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
@@ -6,8 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Mime;
-using System.Text.RegularExpressions;
 
 namespace CTFServer.Controllers;
 
@@ -360,7 +360,7 @@ public class TeamController : ControllerBase
 
         var lastColon = preCode.LastIndexOf(':');
 
-        if(!int.TryParse(preCode[(lastColon + 1)..], out var teamId))
+        if (!int.TryParse(preCode[(lastColon + 1)..], out var teamId))
             return BadRequest(new RequestResponse($"队伍 Id 转换错误：{preCode[(lastColon + 1)..]}"));
 
         var teamName = preCode[..lastColon];

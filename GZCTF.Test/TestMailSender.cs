@@ -1,5 +1,5 @@
-﻿using CTFServer.Services.Interface;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using CTFServer.Services.Interface;
 
 namespace CTFServer.Test;
 

@@ -1,9 +1,9 @@
-﻿using CTFServer.Models.Internal;
+﻿using System.Reflection;
+using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
-using Microsoft.Extensions.Options;
-using System.Reflection;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace CTFServer.Services;

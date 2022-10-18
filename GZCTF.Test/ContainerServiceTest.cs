@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 

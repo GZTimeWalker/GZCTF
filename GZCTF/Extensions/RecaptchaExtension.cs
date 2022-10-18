@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Internal;
+﻿using System.Text.Json;
+using CTFServer.Models.Internal;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
 
 namespace CTFServer.Extensions;
 

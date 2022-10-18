@@ -1,5 +1,5 @@
-﻿using CTFServer.Models.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using CTFServer.Models.Data;
 
 namespace CTFServer.Models;
 

@@ -1,8 +1,8 @@
-﻿using CTFServer.Services.Interface;
+﻿using System.Linq;
+using CTFServer.Services.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 
 namespace CTFServer.Test;
 

@@ -1,9 +1,9 @@
 ﻿using System;
-using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
-using System.Net;
 using System.Globalization;
+using System.Net;
+using System.Threading.RateLimiting;
 using CTFServer.Utils;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CTFServer.Middlewares;
 

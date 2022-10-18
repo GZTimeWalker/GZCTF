@@ -1,6 +1,6 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using System.Threading.Channels;
+using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using System.Threading.Channels;
 
 namespace CTFServer.Services;
 

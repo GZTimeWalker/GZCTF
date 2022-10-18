@@ -1,9 +1,9 @@
-﻿using CTFServer.Models.Data;
-using CTFServer.Models.Request.Edit;
-using CTFServer.Utils;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using CTFServer.Models.Data;
+using CTFServer.Models.Request.Edit;
+using CTFServer.Utils;
 
 namespace CTFServer.Models;
 

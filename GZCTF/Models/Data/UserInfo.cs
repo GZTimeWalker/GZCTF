@@ -1,9 +1,9 @@
-﻿using CTFServer.Models.Request.Account;
-using CTFServer.Models.Request.Admin;
-using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CTFServer.Models.Request.Account;
+using CTFServer.Models.Request.Admin;
 using MemoryPack;
+using Microsoft.AspNetCore.Identity;
 
 namespace CTFServer.Models;
 

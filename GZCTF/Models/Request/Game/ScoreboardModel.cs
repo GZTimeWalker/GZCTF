@@ -1,5 +1,5 @@
-﻿using CTFServer.Models.Request.Info;
 using System.Text.Json.Serialization;
+using CTFServer.Models.Request.Info;
 using MemoryPack;
 
 namespace CTFServer.Models.Request.Game;

@@ -1,4 +1,7 @@
 global using CTFServer.Models;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
@@ -16,9 +19,6 @@ using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Generation;
 using Serilog;
 using Serilog.Events;
-using System.Text;
-using System.Text.Json;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
