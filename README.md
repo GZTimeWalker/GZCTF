@@ -73,7 +73,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 当 `ContainerProvider` 为 `K8s` 时：
   - 请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下
 
-```json
+```json5
 {
   "AllowedHosts": "*",
   "ConnectionStrings": {
@@ -96,7 +96,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
       "Port": 587
     }
   },
-  "XorKey": "Q22yg09A91YWm1GsOf9VIMiw",
+  "XorKey": "Q22yg09A91YWm1GsOf9VIMiw", // some random key
   "DisableRateLimit": false,
   "ContainerProvider": {
     "Type": "Docker", // or "Kubernetes"
@@ -122,13 +122,15 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 
 ### 初始管理员
 
-生产环境中默认不存在管理员权限用户，需要手动更改数据库条目。当管理员注册完成并成功登录后，进入所选数据库表格后执行：
+生产环境中默认不存在管理员权限用户，需要手动更改数据库条目。当管理员注册完成并成功登录后，进入所选数据库表后执行：
 
 ```sql
 update "AspNetUsers" set "Role"=3;
 ```
 
 ### 端口暴露范围设置
+
+以下方式均为经验做法，可能因不同的系统环境有所出入，如不能正常生效，请自行查找相关资料及解决方案。
 
 - Docker 部署：
   - `sudo nano /etc/sysctl.conf`
