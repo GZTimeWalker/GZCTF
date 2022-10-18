@@ -1,12 +1,14 @@
 ﻿using CTFServer.Models.Request.Info;
 using System.Text.Json.Serialization;
+using MemoryPack;
 
 namespace CTFServer.Models.Request.Game;
 
 /// <summary>
 /// 排行榜
 /// </summary>
-public class ScoreboardModel
+[MemoryPackable]
+public partial class ScoreboardModel
 {
     /// <summary>
     /// 更新时间
@@ -29,7 +31,8 @@ public class ScoreboardModel
     public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
 }
 
-public class TopTimeLine
+[MemoryPackable]
+public partial class TopTimeLine
 {
     /// <summary>
     /// 队伍Id
@@ -47,7 +50,8 @@ public class TopTimeLine
     public IEnumerable<TimeLine> Items { get; set; } = default!;
 }
 
-public class TimeLine
+[MemoryPackable]
+public partial class TimeLine
 {
     /// <summary>
     /// 时间
@@ -60,7 +64,8 @@ public class TimeLine
     public int Score { get; set; }
 }
 
-public class ScoreboardItem
+[MemoryPackable]
+public partial class ScoreboardItem
 {
     /// <summary>
     /// 队伍Id
@@ -113,7 +118,8 @@ public class ScoreboardItem
     public IEnumerable<ChallengeItem> Challenges { get; set; } = Array.Empty<ChallengeItem>();
 }
 
-public class ChallengeItem
+[MemoryPackable]
+public partial class ChallengeItem
 {
     /// <summary>
     /// 题目 Id
@@ -143,7 +149,8 @@ public class ChallengeItem
     public DateTimeOffset? SubmitTimeUTC { get; set; }
 }
 
-public class ChallengeInfo
+[MemoryPackable]
+public partial class ChallengeInfo
 {
     /// <summary>
     /// 题目Id
@@ -177,7 +184,8 @@ public class ChallengeInfo
     public Blood?[] Bloods { get; set; } = default!;
 }
 
-public class Blood
+[MemoryPackable]
+public partial class Blood
 {
     /// <summary>
     /// 队伍Id
