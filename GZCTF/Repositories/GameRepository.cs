@@ -175,7 +175,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                         .OrderBy(t => t).LastOrDefault(game.StartTimeUTC),
                     SolvedCount = challengeGroup.Count(c => c.Any(
                         s => s.Submission?.Status == AnswerResult.Accepted
-                        && s.Submission?.SubmitTimeUTC < game.EndTimeUTC)),
+                        && s.Submission.SubmitTimeUTC < game.EndTimeUTC)),
                     Challenges = challengeGroup
                             .Select(c =>
                             {
