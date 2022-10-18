@@ -288,7 +288,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseOpenApi(options => { options.PostProcess += (document, _) => { document.Servers.Clear(); }; });
+    app.UseOpenApi(options => options.PostProcess += (document, _) => { document.Servers.Clear(); } );
     app.UseSerilogRequestLogging(options =>
     {
         options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
@@ -334,8 +334,7 @@ var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    var version = Assembly.GetExecutingAssembly()
-        .GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
+    var version = typeof(Program).Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
     logger.SystemLog(version ?? "GZ::CTF", CTFServer.TaskStatus.Pending, LogLevel.Debug);
     await app.RunAsync();
 }
