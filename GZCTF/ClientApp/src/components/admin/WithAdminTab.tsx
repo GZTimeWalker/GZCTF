@@ -66,7 +66,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
         }))}
       />
       {head && (
-        <Group position="apart" style={{ height: '40px', width: '100%' }} {...headProps}>
+        <Group noWrap position="apart" style={{ height: '40px', width: '100%' }} {...headProps}>
           {head}
         </Group>
       )}

@@ -8,7 +8,6 @@ import {
   Input,
   NumberInput,
   Select,
-  SimpleGrid,
   Slider,
   Textarea,
   TextInput,
@@ -25,10 +24,12 @@ import {
   mdiContentSaveOutline,
   mdiDatabaseEditOutline,
   mdiDeleteOutline,
+  mdiEyeOutline,
   mdiKeyboardBackspace,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import HintList from '@Components/HintList'
+import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
@@ -39,7 +40,7 @@ import {
   ChallengeTagItem,
   ChallengeTagLabelMap,
 } from '@Utils/ChallengeItem'
-import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType } from '@Api'
+import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType, FileType } from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -59,6 +60,7 @@ const GameChallengeEdit: FC = () => {
   const [tag, setTag] = useState<string | null>(challenge?.tag ?? ChallengeTag.Misc)
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
+  const [previewOpend, setPreviewOpend] = useState(false)
 
   const modals = useModals()
   const clipBoard = useClipboard()
@@ -177,16 +179,18 @@ const GameChallengeEdit: FC = () => {
       headProps={{ position: 'apart' }}
       head={
         <>
-          <Group position="left">
+          <Group noWrap position="left">
             <Button
               leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
               onClick={() => navigate(`/admin/games/${id}/challenges`)}
             >
               返回上级
             </Button>
-            <Title># {challengeInfo?.title}</Title>
+            <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
+              # {challengeInfo?.title}
+            </Title>
           </Group>
-          <Group position="right">
+          <Group noWrap position="right">
             <Button
               disabled={disabled}
               color="red"
@@ -204,6 +208,13 @@ const GameChallengeEdit: FC = () => {
               }
             >
               删除题目
+            </Button>
+            <Button
+              disabled={disabled}
+              leftIcon={<Icon path={mdiEyeOutline} size={1} />}
+              onClick={() => setPreviewOpend(true)}
+            >
+              题目预览
             </Button>
             <Button
               disabled={disabled}
@@ -230,131 +241,143 @@ const GameChallengeEdit: FC = () => {
       }
     >
       <Stack>
-        <SimpleGrid cols={3}>
-          <TextInput
-            label="题目标题"
-            disabled={disabled}
-            value={challengeInfo.title ?? ''}
-            required
-            onChange={(e) => setChallengeInfo({ ...challengeInfo, title: e.target.value })}
-          />
-          <Select
-            label={
-              <Group spacing="sm">
-                <Text size="sm">题目类型</Text>
-                <Text size="xs" color="dimmed">
-                  创建后不可更改
-                </Text>
-              </Group>
-            }
-            placeholder="Type"
-            value={type}
-            disabled={disabled}
-            readOnly
-            itemComponent={ChallengeTypeItem}
-            data={Object.entries(ChallengeType).map((type) => {
-              const data = ChallengeTypeLabelMap.get(type[1])
-              return { value: type[1], ...data }
-            })}
-          />
-          <Select
-            required
-            label="题目标签"
-            placeholder="Tag"
-            value={tag}
-            disabled={disabled}
-            onChange={(e) => {
-              setTag(e)
-              setChallengeInfo({ ...challengeInfo, tag: e as ChallengeTag })
-            }}
-            itemComponent={ChallengeTagItem}
-            data={Object.entries(ChallengeTag).map((tag) => {
-              const data = ChallengeTagLabelMap.get(tag[1])
-              return { value: tag[1], ...data }
-            })}
-          />
-        </SimpleGrid>
-        <Textarea
-          label={
-            <Group spacing="sm">
-              <Text size="sm">题目描述</Text>
-              <Text size="xs" color="dimmed">
-                支持 markdown 语法
-              </Text>
-            </Group>
-          }
-          value={challengeInfo?.content ?? ''}
-          style={{ width: '100%' }}
-          autosize
-          disabled={disabled}
-          minRows={5}
-          maxRows={5}
-          onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
-        />
-        <SimpleGrid cols={3}>
-          <Stack spacing="sm">
-            <HintList
-              label="题目提示"
-              hints={challengeInfo?.hints ?? []}
+        <Grid columns={3}>
+          <Grid.Col span={1}>
+            <TextInput
+              label="题目标题"
               disabled={disabled}
-              height={180}
-              onChangeHint={(hints) => setChallengeInfo({ ...challengeInfo, hints })}
-            />
-          </Stack>
-          <Stack spacing="sm">
-            <NumberInput
-              label="题目分值"
-              min={0}
+              value={challengeInfo.title ?? ''}
               required
-              disabled={disabled}
-              stepHoldDelay={500}
-              stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-              value={challengeInfo?.originalScore ?? 500}
-              onChange={(e) => setChallengeInfo({ ...challengeInfo, originalScore: e })}
+              onChange={(e) => setChallengeInfo({ ...challengeInfo, title: e.target.value })}
             />
-            <NumberInput
-              label="难度系数"
-              precision={1}
-              step={0.2}
-              min={0.1}
+          </Grid.Col>
+          <Grid.Col span={1}>
+            <Select
+              label={
+                <Group spacing="sm">
+                  <Text size="sm">题目类型</Text>
+                  <Text size="xs" color="dimmed">
+                    创建后不可更改
+                  </Text>
+                </Group>
+              }
+              placeholder="Type"
+              value={type}
+              disabled={disabled}
+              readOnly
+              itemComponent={ChallengeTypeItem}
+              data={Object.entries(ChallengeType).map((type) => {
+                const data = ChallengeTypeLabelMap.get(type[1])
+                return { value: type[1], ...data }
+              })}
+            />
+          </Grid.Col>
+          <Grid.Col span={1}>
+            <Select
               required
+              label="题目标签"
+              placeholder="Tag"
+              value={tag}
               disabled={disabled}
-              value={challengeInfo?.difficulty ?? 100}
-              stepHoldDelay={500}
-              stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-              onChange={(e) => setChallengeInfo({ ...challengeInfo, difficulty: e })}
+              onChange={(e) => {
+                setTag(e)
+                setChallengeInfo({ ...challengeInfo, tag: e as ChallengeTag })
+              }}
+              itemComponent={ChallengeTagItem}
+              data={Object.entries(ChallengeTag).map((tag) => {
+                const data = ChallengeTagLabelMap.get(tag[1])
+                return { value: tag[1], ...data }
+              })}
             />
-            <Input.Wrapper label="题目最低分值比例" required>
-              <Slider
-                label={(value) =>
-                  `最低分值: ${((value / 100) * (challengeInfo?.originalScore ?? 500)).toFixed(
-                    0
-                  )}pts`
-                }
+          </Grid.Col>
+          <Grid.Col span={3}>
+            <Textarea
+              label={
+                <Group spacing="sm">
+                  <Text size="sm">题目描述</Text>
+                  <Text size="xs" color="dimmed">
+                    支持 markdown 语法
+                  </Text>
+                </Group>
+              }
+              value={challengeInfo?.content ?? ''}
+              style={{ width: '100%' }}
+              autosize
+              disabled={disabled}
+              minRows={5}
+              maxRows={5}
+              onChange={(e) => setChallengeInfo({ ...challengeInfo, content: e.target.value })}
+            />
+          </Grid.Col>
+          <Grid.Col span={1}>
+            <Stack spacing="sm">
+              <HintList
+                label="题目提示"
+                hints={challengeInfo?.hints ?? []}
                 disabled={disabled}
-                value={minRate}
-                marks={[
-                  { value: 20, label: '20%' },
-                  { value: 50, label: '50%' },
-                  { value: 80, label: '80%' },
-                ]}
-                onChange={setMinRate}
-                styles={(theme) => ({
-                  label: {
-                    background:
-                      theme.colorScheme === 'dark' ? theme.colors.dark[4] : 'rgba(0, 0, 0, 0.8)',
-                  },
-                })}
+                height={180}
+                onChangeHint={(hints) => setChallengeInfo({ ...challengeInfo, hints })}
               />
-            </Input.Wrapper>
-          </Stack>
-          <ScoreFunc
-            currentAcceptCount={currentAcceptCount}
-            originalScore={challengeInfo.originalScore ?? 500}
-            minScoreRate={minRate / 100}
-            difficulty={challengeInfo.difficulty ?? 30}
-          />
-        </SimpleGrid>
+            </Stack>
+          </Grid.Col>
+          <Grid.Col span={1}>
+            <Stack spacing="sm">
+              <NumberInput
+                label="题目分值"
+                min={0}
+                required
+                disabled={disabled}
+                stepHoldDelay={500}
+                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                value={challengeInfo?.originalScore ?? 500}
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, originalScore: e })}
+              />
+              <NumberInput
+                label="难度系数"
+                precision={1}
+                step={0.2}
+                min={0.1}
+                required
+                disabled={disabled}
+                value={challengeInfo?.difficulty ?? 100}
+                stepHoldDelay={500}
+                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, difficulty: e })}
+              />
+              <Input.Wrapper label="题目最低分值比例" required>
+                <Slider
+                  label={(value) =>
+                    `最低分值: ${((value / 100) * (challengeInfo?.originalScore ?? 500)).toFixed(
+                      0
+                    )}pts`
+                  }
+                  disabled={disabled}
+                  value={minRate}
+                  marks={[
+                    { value: 20, label: '20%' },
+                    { value: 50, label: '50%' },
+                    { value: 80, label: '80%' },
+                  ]}
+                  onChange={setMinRate}
+                  styles={(theme) => ({
+                    label: {
+                      background:
+                        theme.colorScheme === 'dark' ? theme.colors.dark[4] : 'rgba(0, 0, 0, 0.8)',
+                    },
+                  })}
+                />
+              </Input.Wrapper>
+            </Stack>
+          </Grid.Col>
+          <Grid.Col span={1}>
+            <ScoreFunc
+              currentAcceptCount={currentAcceptCount}
+              originalScore={challengeInfo.originalScore ?? 500}
+              minScoreRate={minRate / 100}
+              difficulty={challengeInfo.difficulty ?? 30}
+            />
+          </Grid.Col>
+        </Grid>
         {type === ChallengeType.DynamicAttachment && (
           <TextInput
             label="全局附件名"
@@ -476,6 +499,19 @@ const GameChallengeEdit: FC = () => {
           </Grid>
         )}
       </Stack>
+      <ChallengePreviewModal
+        challenge={challengeInfo}
+        opened={previewOpend}
+        onClose={() => setPreviewOpend(false)}
+        withCloseButton={false}
+        size="40%"
+        centered
+        type={challenge?.type ?? ChallengeType.StaticAttachment}
+        tagData={
+          ChallengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
+        }
+        attachmentType={challenge?.attachment?.type ?? FileType.None}
+      />
     </WithGameEditTab>
   )
 }

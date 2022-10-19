@@ -43,7 +43,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
 
   return (
     <AdminPage {...others}>
-      <Group position="apart" align="flex-start" style={{ width: '100%' }}>
+      <Group noWrap position="apart" align="flex-start" style={{ width: '100%' }}>
         <Tabs
           orientation="vertical"
           value={activeTab}
