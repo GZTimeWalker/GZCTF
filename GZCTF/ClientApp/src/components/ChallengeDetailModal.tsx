@@ -42,7 +42,7 @@ interface ChallengeDetailModalProps extends ModalProps {
 
 dayjs.extend(duration)
 
-const Countdown: FC<{ time: string }> = ({ time }) => {
+export const Countdown: FC<{ time: string }> = ({ time }) => {
   const end = dayjs(time)
   const [now, setNow] = useState(dayjs())
   const countdown = dayjs.duration(end.diff(now))
@@ -62,7 +62,7 @@ const Countdown: FC<{ time: string }> = ({ time }) => {
   )
 }
 
-const FlagPlaceholders: string[] = [
+export const FlagPlaceholders: string[] = [
   '横看成岭侧成峰，flag 高低各不同',
   'flag 当关，万夫莫开',
   '寻寻觅觅，冷冷清清，flag 惨惨戚戚',
@@ -412,6 +412,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             <TextInput
               placeholder={placeholder}
               value={flag}
+              disabled={disabled}
               onChange={setFlag}
               styles={{
                 rightSection: {
