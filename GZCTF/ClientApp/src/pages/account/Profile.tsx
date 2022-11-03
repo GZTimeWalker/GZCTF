@@ -150,8 +150,8 @@ const Profile: FC = () => {
           <Grid.Col span={4}>
             <Center>
               <Avatar
-                radius="xl"
-                size={70}
+                radius={40}
+                size={80}
                 src={user?.avatar}
                 onClick={() => setDropzoneOpened(true)}
               />

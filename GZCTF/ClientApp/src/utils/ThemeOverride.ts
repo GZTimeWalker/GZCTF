@@ -1,5 +1,4 @@
 import { createStyles, keyframes, MantineThemeOverride, useMantineTheme } from '@mantine/core'
-import { MIME_TYPES } from '@mantine/dropzone'
 import { useViewportSize } from '@mantine/hooks'
 
 export const ThemeOverride: MantineThemeOverride = {
@@ -130,12 +129,9 @@ export const useIsMobile = (limit?: number) => {
   }
 }
 
-export const ACCEPT_IMAGE_MIME_TYPE = [
-  MIME_TYPES.png,
-  MIME_TYPES.webp,
-  MIME_TYPES.jpeg,
-  MIME_TYPES.gif,
-]
+export const ACCEPT_IMAGE_MIME_TYPE = {
+  'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp'],
+}
 
 interface FixedButtonProps {
   right?: string
@@ -190,13 +186,13 @@ export const useBannerStyles = createStyles((theme) => ({
   },
   title: {
     color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
-    fontSize: 50,
+    fontSize: theme.fontSizes.xl * 2.2,
     fontWeight: 900,
     lineHeight: 1.1,
 
     [theme.fn.smallerThan('md')]: {
       maxWidth: '100%',
-      fontSize: 34,
+      fontSize: theme.fontSizes.xl * 1.8,
       lineHeight: 1.15,
     },
   },
