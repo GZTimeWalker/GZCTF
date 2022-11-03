@@ -60,7 +60,7 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
             {`${status === GameStatus.OnGoing ? '剩余' : '共'} ${duration} 小时`}
           </Badge>
         </Group>
-        <Title pb={10} order={3} className={classes.title}>
+        <Title pb={10} order={3} lineClamp={1} className={classes.title}>
           {title}
         </Title>
       </Stack>
