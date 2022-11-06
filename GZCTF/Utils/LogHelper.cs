@@ -94,6 +94,20 @@ public static class LogHelper
 
     private const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
 
+    public static Logger GetInitLogger()
+        => new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
+            .WriteTo.Async(t => t.Console(
+                formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+                restrictedToMinimumLevel: LogEventLevel.Debug
+            ))
+            .CreateLogger();
+
     public static Logger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
         => new LoggerConfiguration()
     .Enrich.FromLogContext()

@@ -122,10 +122,12 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 
 ### 初始管理员
 
-生产环境中默认不存在管理员权限用户，需要手动更改数据库条目。当管理员注册完成并成功登录后，进入所选数据库表后执行：
+生产环境中默认不存在管理员权限用户，需要在首次启动时设置 `GZCTF_ADMIN_PASSWORD` 环境变量来设置初始管理员密码，并通过 `Admin` 账号登录。
+
+你也可以通过手动更改数据库条目来将当前已注册的用户设置为管理员。当管理员注册完成并成功登录后，进入所选数据库表后执行：
 
 ```sql
-update "AspNetUsers" set "Role"=3;
+UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 ```
 
 ### 端口暴露范围设置
