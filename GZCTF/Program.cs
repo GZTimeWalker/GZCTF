@@ -25,6 +25,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+Banner();
+
 #region Directory
 
 var uploadPath = Path.Combine(builder.Configuration.GetSection("UploadFolder").Value ?? "uploads");
@@ -39,6 +41,10 @@ if (!Directory.Exists(uploadPath))
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseSerilog(dispose: true);
+builder.Configuration.AddEnvironmentVariables("GZCTF_");
+Log.Logger = LogHelper.GetInitLogger();
+
+Log.Logger.Debug("GZCTF 正在启动中……");
 
 #endregion Logging
 
@@ -51,6 +57,13 @@ if (IsTesting || (builder.Environment.IsDevelopment() && !builder.Configuration.
 }
 else
 {
+    if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
+    {
+        Log.Logger.Fatal("未找到数据库连接字符串字段 ConnectionStrings，请检查 appsettings.json 是否正常挂载及配置");
+        Thread.Sleep(30000);
+        Environment.Exit(1);
+    }
+
     builder.Services.AddDbContext<AppDbContext>(
         options =>
         {
@@ -72,19 +85,27 @@ if (!IsTesting)
     builder.Host.ConfigureAppConfiguration((host, config) =>
     {
         config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
-        config.AddEntityConfiguration(options =>
+        try
         {
-            if (builder.Configuration.GetSection("ConnectionStrings").Exists())
-                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
-            else
-                options.UseInMemoryDatabase("TestDb");
-        });
+            config.AddEntityConfiguration(options =>
+            {
+                if (builder.Configuration.GetSection("ConnectionStrings").Exists())
+                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+                else
+                    options.UseInMemoryDatabase("TestDb");
+            });
+        }
+        catch
+        {
+            Log.Logger.Fatal("数据库连接失败，请检查 Database 连接字符串配置");
+            Thread.Sleep(30000);
+            Environment.Exit(1);
+        }
     });
 }
 #endregion Configuration
 
 #region OpenApiDocument
-
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddOpenApiDocument(settings =>
 {
@@ -99,7 +120,6 @@ builder.Services.AddOpenApiDocument(settings =>
     });
     settings.DefaultReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull;
 });
-
 #endregion OpenApiDocument
 
 #region SignalR
@@ -265,13 +285,16 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
         await context.SaveChangesAsync();
     }
 
-    // only for testing
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment() || app.Configuration.GetSection("ADMIN_PASSWORD").Exists())
     {
         var usermanager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
         var admin = await usermanager.FindByNameAsync("Admin");
+
         if (admin is null)
         {
+            var password = app.Environment.IsDevelopment() ? "Admin@2022" :
+                app.Configuration.GetValue<string>("ADMIN_PASSWORD");
+
             admin = new UserInfo
             {
                 UserName = "Admin",
@@ -280,7 +303,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
                 EmailConfirmed = true,
                 RegisterTimeUTC = DateTimeOffset.UtcNow
             };
-            await usermanager.CreateAsync(admin, "Admin@2022");
+            await usermanager.CreateAsync(admin, password);
         }
     }
 }
@@ -340,7 +363,7 @@ try
 }
 catch (Exception exception)
 {
-    logger.LogError(exception, "因异常，应用程序意外停止");
+    logger.LogError(exception, "因异常，应用程序意外终止");
     throw;
 }
 finally
@@ -352,4 +375,28 @@ finally
 public partial class Program
 {
     public static bool IsTesting { get; set; } = false;
+
+    public static void Banner()
+    {
+        const string banner =
+            @"      ___           ___           ___                       ___   " + "\n" +
+            @"     /  /\         /  /\         /  /\          ___        /  /\  " + "\n" +
+            @"    /  /:/_       /  /::|       /  /:/         /  /\      /  /:/_ " + "\n" +
+            @"   /  /:/ /\     /  /:/:|      /  /:/         /  /:/     /  /:/ /\" + "\n" +
+            @"  /  /:/_/::\   /  /:/|:|__   /  /:/  ___    /  /:/     /  /:/ /:/" + "\n" +
+            @" /__/:/__\/\:\ /__/:/ |:| /\ /__/:/  /  /\  /  /::\    /__/:/ /:/ " + "\n" +
+            @" \  \:\ /~~/:/ \__\/  |:|/:/ \  \:\ /  /:/ /__/:/\:\   \  \:\/:/  " + "\n" +
+            @"  \  \:\  /:/      |  |:/:/   \  \:\  /:/  \__\/  \:\   \  \::/   " + "\n" +
+            @"   \  \:\/:/       |  |::/     \  \:\/:/        \  \:\   \  \:\   " + "\n" +
+            @"    \  \::/        |  |:/       \  \::/          \__\/    \  \:\  " + "\n" +
+            @"     \__\/         |__|/         \__\/                     \__\/  " + "\n";
+        Console.WriteLine(banner);
+
+        var versionStr = "";
+        var version = typeof(Codec).Assembly.GetName().Version;
+        if (version is not null)
+            versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
+
+        Console.WriteLine($"GZCTF © 2022-present GZTimeWalker {versionStr,33}\n");
+    }
 }

@@ -3,6 +3,8 @@ services:
   gzctf:
     image: gztime/gzctf:latest
     restart: always
+    # environment:
+    #   - "GZCTF_ADMIN_PASSWORD=Your_Password_Here"
     ports:
       - "80:80"
     networks:
