@@ -23,7 +23,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
     - 动态容器：自动生成并通过容器环境变量进行 flag 下发，每个队伍 flag 唯一。
   - 动态分值
     - 分值曲线：
-        $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
+      $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
       其中 $S$ 为原始分值、 $r$ 为最低分值比例、 $d$ 为难度系数、 $x$ 为提交次数。前三个参数可通过自定义实现绝大部分的动态分值需求。
     - 三血奖励：
       平台对一二三血分别奖励 5%、3%、1% 的当前题目分值
@@ -67,56 +67,62 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 ### `appsettings.json` 配置
 
 当 `ContainerProvider` 为 `Docker` 时：
-  - 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
-  - 如需使用外部 docker，请将 Uri 指向对应 docker API Server
+
+- 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
+- 如需使用外部 docker，请将 Uri 指向对应 docker API Server
 
 当 `ContainerProvider` 为 `K8s` 时：
-  - 请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下
+
+- 请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下
 
 ```json5
 {
-  "AllowedHosts": "*",
-  "ConnectionStrings": {
-    "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=another_p4sswr0d",
-    "RedisCache": "cache:6379,password=some_password" // optional
+  AllowedHosts: "*",
+  ConnectionStrings: {
+    Database: "Host=db:5432;Database=gzctf;Username=postgres;Password=another_p4sswr0d",
+    RedisCache: "cache:6379,password=some_password", // optional
   },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
-    }
+  Logging: {
+    LogLevel: {
+      Default: "Information",
+      Microsoft: "Warning",
+      "Microsoft.Hosting.Lifetime": "Information",
+    },
   },
-  "EmailConfig": { // optional
-    "SendMailAddress": "a@a.com",
-    "UserName": "",
-    "Password": "",
-    "Smtp": {
-      "Host": "localhost",
-      "Port": 587
-    }
+  EmailConfig: {
+    // optional
+    SendMailAddress: "a@a.com",
+    UserName: "",
+    Password: "",
+    Smtp: {
+      Host: "localhost",
+      Port: 587,
+    },
   },
-  "XorKey": "Q22yg09A91YWm1GsOf9VIMiw", // some random key
-  "DisableRateLimit": false,
-  "ContainerProvider": {
-    "Type": "Docker", // or "Kubernetes"
-    "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
-    "DockerConfig": { // optional
-        "SwarmMode": false,
-        "Uri": "unix:///var/run/docker.sock"
-    }
-   },
-  "RegistryConfig": { // optional
-    "UserName": "",
-    "Password": "",
-    "ServerAddress": ""
+  XorKey: "Q22yg09A91YWm1GsOf9VIMiw", // some random key
+  DisableRateLimit: false,
+  ContainerProvider: {
+    Type: "Docker", // or "Kubernetes"
+    PublicEntry: "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+    DockerConfig: {
+      // optional
+      SwarmMode: false,
+      Uri: "unix:///var/run/docker.sock",
+    },
   },
-  "GoogleRecaptcha": { // optional, recaptcha v3
-    "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
-    "Sitekey": "",
-    "Secretkey": "",
-    "RecaptchaThreshold": "0.5"
-  }
+  RegistryConfig: {
+    // optional
+    UserName: "",
+    Password: "",
+    ServerAddress: "",
+  },
+  GoogleRecaptcha: {
+    // optional, recaptcha v3
+    VerifyAPIAddress: "https://www.recaptcha.net/recaptcha/api/siteverify",
+    Sitekey: "",
+    Secretkey: "",
+    RecaptchaThreshold: "0.5",
+  },
 }
 ```
 
@@ -135,6 +141,7 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 以下方式均为经验做法，可能因不同的系统环境有所出入，如不能正常生效，请自行查找相关资料及解决方案。
 
 - Docker 部署：
+
   - `sudo nano /etc/sysctl.conf`
   - 添加如下内容，指定 `ip_local_port_range`：
 
@@ -155,6 +162,7 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
         server \
         --kube-apiserver-arg service-node-port-range=20000-50000
     ```
+
   - `sudo systemctl daemon-reload`
   - `sudo systemctl restart k3s`
 
@@ -182,25 +190,25 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 
   平台支持的部署形式有：
 
-    - K8s 集群部署：
+  - K8s 集群部署：
 
-      GZCTF、数据库、题目容器均在同一 k8s 集群中，使用命名空间进行隔离
+    GZCTF、数据库、题目容器均在同一 k8s 集群中，使用命名空间进行隔离
 
-    - Docker + K8s 分离部署：
+  - Docker + K8s 分离部署：
 
-      GZCTF、数据库在一个 Docker 实例中，并使用远程 k8s 作为题目容器平台
+    GZCTF、数据库在一个 Docker 实例中，并使用远程 k8s 作为题目容器平台
 
-    - Docker 单机部署：
+  - Docker 单机部署：
 
-      GZCTF、数据库、题目容器均在同一 Docker 实例中
+    GZCTF、数据库、题目容器均在同一 Docker 实例中
 
-    - Docker 分离部署：
+  - Docker 分离部署：
 
-      GZCTF、数据库在一个 Docker 实例中，并使用远程另一 Docker/Docker Swarm 作为题目容器平台（不推荐）
+    GZCTF、数据库在一个 Docker 实例中，并使用远程另一 Docker/Docker Swarm 作为题目容器平台（不推荐）
 
-    - Docker Swarm 集群部署：
+  - Docker Swarm 集群部署：
 
-      GZCTF、数据库、题目容器均在 Docker Swarm 集群中（不推荐）
+    GZCTF、数据库、题目容器均在 Docker Swarm 集群中（不推荐）
 
 - **Q: 关于部署的建议？**
 
