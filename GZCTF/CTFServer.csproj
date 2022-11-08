@@ -59,7 +59,7 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.0-rc.2.22476.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.0-rc.2.22476.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0-rc.2.22476.2" />
-    <PackageReference Include="MemoryPack" Version="1.4.3" />
+    <PackageReference Include="MemoryPack" Version="1.4.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -77,27 +77,24 @@ else
 #endregion AppDbContext
 
 #region Configuration
-if (!IsTesting)
+if(!IsTesting)
 {
-    builder.Host.ConfigureAppConfiguration((host, config) =>
+    try
     {
-        try
+        builder.Configuration.AddEntityConfiguration(options =>
         {
-            config.AddEntityConfiguration(options =>
-            {
-                if (builder.Configuration.GetSection("ConnectionStrings").Exists())
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
-                else
-                    options.UseInMemoryDatabase("TestDb");
-            });
-        }
-        catch
-        {
-            Log.Logger.Fatal("数据库连接失败，请检查 Database 连接字符串配置");
-            Thread.Sleep(30000);
-            Environment.Exit(1);
-        }
-    });
+            if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
+                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+            else
+                options.UseInMemoryDatabase("TestDb");
+        });
+    }
+    catch
+    {
+        Log.Logger.Fatal("数据库连接失败，请检查 Database 连接字符串配置");
+        Thread.Sleep(30000);
+        Environment.Exit(1);
+    }
 }
 #endregion Configuration
 
@@ -273,12 +270,11 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
     {
         var usermanager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
         var admin = await usermanager.FindByNameAsync("Admin");
+        var password = app.Environment.IsDevelopment() ? "Admin@2022" :
+            app.Configuration.GetValue<string>("ADMIN_PASSWORD");
 
-        if (admin is null)
+        if (admin is null && password is not null)
         {
-            var password = app.Environment.IsDevelopment() ? "Admin@2022" :
-                app.Configuration.GetValue<string>("ADMIN_PASSWORD");
-
             admin = new UserInfo
             {
                 UserName = "Admin",
