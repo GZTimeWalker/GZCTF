@@ -43,8 +43,6 @@ builder.Host.UseSerilog(dispose: true);
 builder.Configuration.AddEnvironmentVariables("GZCTF_");
 Log.Logger = LogHelper.GetInitLogger();
 
-Log.Logger.Debug("GZCTF 正在启动中……");
-
 #endregion Logging
 
 #region AppDbContext
