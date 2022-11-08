@@ -23,6 +23,10 @@ export const useTypographyStyles = createStyles((theme) => {
         },
       },
 
+      '& strong': {
+        color: cs.brand[sc(6, 7)],
+      },
+
       '& blockquote': {
         borderLeft: `4px solid ${sc(cs.dark[0], cs.gray[5])}`,
         padding: `${theme.spacing.md / 2}px ${theme.spacing.md}px`,
