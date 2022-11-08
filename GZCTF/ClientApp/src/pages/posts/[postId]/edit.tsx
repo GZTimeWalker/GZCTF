@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiContentSaveOutline, mdiDeleteOutline } from '@mdi/js'
+import { mdiCheck, mdiContentSaveOutline, mdiDeleteOutline, mdiFileCheckOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
@@ -128,6 +128,12 @@ const PostEdit: FC = () => {
     }
   }, [curPost])
 
+  const isChanged = () =>
+    post.title !== curPost?.title ||
+    post.content !== curPost?.content ||
+    post.summary !== curPost?.summary ||
+    (post.tags?.some((tag) => !curPost?.tags?.includes(tag)) ?? false)
+
   const titlePart = (
     <>
       <TextInput
@@ -174,24 +180,48 @@ const PostEdit: FC = () => {
             )}
             <Group position="right">
               {postId?.length === 8 && (
-                <Button
-                  disabled={disabled}
-                  color="red"
-                  leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
-                  variant="outline"
-                  onClick={() =>
-                    modals.openConfirmModal({
-                      title: '删除文章',
-                      children: <Text size="sm">你确定要删除文章 "{post.title}" 吗？</Text>,
-                      centered: true,
-                      onConfirm: onDelete,
-                      labels: { confirm: '确认', cancel: '取消' },
-                      confirmProps: { color: 'red' },
-                    })
-                  }
-                >
-                  删除文章
-                </Button>
+                <>
+                  <Button
+                    disabled={disabled}
+                    color="red"
+                    leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+                    variant="outline"
+                    onClick={() =>
+                      modals.openConfirmModal({
+                        title: '删除文章',
+                        children: <Text size="sm">你确定要删除文章 "{post.title}" 吗？</Text>,
+                        centered: true,
+                        onConfirm: onDelete,
+                        labels: { confirm: '确认', cancel: '取消' },
+                        confirmProps: { color: 'red' },
+                      })
+                    }
+                  >
+                    删除文章
+                  </Button>
+                  <Button
+                    disabled={disabled}
+                    leftIcon={<Icon path={mdiFileCheckOutline} size={1} />}
+                    onClick={() => {
+                      if (isChanged()) {
+                        modals.openConfirmModal({
+                          title: '文章已更改',
+                          children: <Text size="sm">文章内容已更改，是否保存？</Text>,
+                          centered: true,
+                          labels: { confirm: '确认', cancel: '取消' },
+                          onConfirm: () => {
+                            onUpdate()
+                            navigate(`/posts/${postId}`)
+                          },
+                        })
+                      } else {
+                        navigate(`/posts/${postId}`)
+                      }
+                    }}
+                  >
+                    转到文章
+                  </Button>
+                </>
               )}
               <Button
                 disabled={disabled}

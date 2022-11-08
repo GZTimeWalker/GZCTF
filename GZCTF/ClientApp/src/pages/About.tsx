@@ -56,7 +56,8 @@ const About: FC = () => {
 
   usePageTitle('关于')
 
-  const valid = timestamp.length === 25 && builtdate.isValid() && sha.length === 40 && tag.length > 0
+  const valid =
+    timestamp.length === 25 && builtdate.isValid() && sha.length === 40 && tag.length > 0
 
   return (
     <WithNavBar>
@@ -121,7 +122,9 @@ const About: FC = () => {
                     color="dimmed"
                     sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
                   >
-                    {valid ? `Built at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}` : 'This release is not officially built'}
+                    {valid
+                      ? `Built at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}`
+                      : 'This release is not officially built'}
                   </Text>
                 </Group>
               </Stack>

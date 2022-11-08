@@ -51,7 +51,7 @@ const TeamRank: FC<PaperProps> = (props) => {
   }, [error])
 
   return (
-    <Card shadow="sm" {...props}>
+    <Card {...props} shadow="sm" p="md">
       <Stack spacing={8}>
         <Group spacing="sm" noWrap>
           <Avatar color="cyan" size={50} radius="md" src={data?.rank?.avatar}>
@@ -120,6 +120,7 @@ const TeamRank: FC<PaperProps> = (props) => {
           }}
           styles={{
             innerInput: {
+              cursor: 'copy',
               fontFamily: theme.fontFamilyMonospace,
             },
           }}

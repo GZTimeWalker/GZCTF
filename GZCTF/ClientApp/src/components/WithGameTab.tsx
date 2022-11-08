@@ -166,7 +166,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         active={activeTab}
         onTabChange={onChange}
         tabs={tabs}
-        left={
+        aside={
           game && (
             <>
               <Title>{game?.title}</Title>
