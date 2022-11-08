@@ -28,7 +28,7 @@ const PostEdit: FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (postId?.length != 8 && postId !== 'new') {
+    if (postId?.length !== 8 && postId !== 'new') {
       navigate('/404')
       return
     }
@@ -189,7 +189,7 @@ const PostEdit: FC = () => {
                     onClick={() =>
                       modals.openConfirmModal({
                         title: '删除文章',
-                        children: <Text size="sm">你确定要删除文章 "{post.title}" 吗？</Text>,
+                        children: <Text size="sm">你确定要删除文章 &quot;{post.title}&quot; 吗？</Text>,
                         centered: true,
                         onConfirm: onDelete,
                         labels: { confirm: '确认', cancel: '取消' },

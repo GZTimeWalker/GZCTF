@@ -300,7 +300,7 @@ const Users: FC = () => {
                           iconPath={mdiDeleteOutline}
                           color="alert"
                           message={`确定要删除 “${user.userName}” 吗？`}
-                          disabled={disabled || user.id == currentUser?.userId}
+                          disabled={disabled || user.id === currentUser?.userId}
                           onClick={() => onDelete(user)}
                         />
                       </Group>

@@ -30,11 +30,11 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
     <WithWiderScreen minWidth={minWidth}>
       <Watermark
         text={user?.userId ?? ''}
-        textColor={theme.colorScheme == 'dark' ? theme.colors.gray[3] : theme.colors.gray[7]}
+        textColor={theme.colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[7]}
         rotate={-9}
         textSize={15}
         gutter={20}
-        opacity={theme.colorScheme == 'dark' ? 0.006 : 0.012}
+        opacity={theme.colorScheme === 'dark' ? 0.006 : 0.012}
         fontFamily="JetBrains Mono"
       >
         <AppShell

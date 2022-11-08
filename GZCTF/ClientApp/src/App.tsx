@@ -31,7 +31,7 @@ export const App: FC = () => {
       <MantineProvider
         withGlobalStyles
         withCSSVariables
-        theme={{ ...ThemeOverride, colorScheme: colorScheme }}
+        theme={{ ...ThemeOverride, colorScheme }}
       >
         <NotificationsProvider zIndex={5000}>
           {StyledGlobal}

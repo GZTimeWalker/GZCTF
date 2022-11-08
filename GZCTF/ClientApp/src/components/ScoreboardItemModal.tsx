@@ -58,7 +58,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   item?.challenges?.forEach((chal) => {
     if (indicator && challengeIdMap && chal) {
       const challenge = challengeIdMap.get(chal.id!)
-      const index = challenge && indicator?.findIndex((ch) => ch.name == challenge.tag)
+      const index = challenge && indicator?.findIndex((ch) => ch.name === challenge.tag)
       if (chal?.score && challenge?.score && index !== undefined && index !== -1) {
         values[index] += challenge?.score / indicator[index].scoreSum
       }
