@@ -131,7 +131,7 @@ const Games: FC = () => {
                             <Avatar src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
                             </Avatar>
-                            <Text weight={700} lineClamp={1}>
+                            <Text weight={700} lineClamp={1} style={{ maxWidth: 'calc(10vw)' }}>
                               {game.title}
                             </Text>
                           </Group>

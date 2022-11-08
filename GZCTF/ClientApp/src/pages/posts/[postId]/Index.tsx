@@ -46,7 +46,7 @@ const Post: FC = () => {
     right: '2rem',
     bottom: '2rem',
   })
-  
+
   const { role } = useUserRole()
 
   usePageTitle(post?.title ?? 'Post')

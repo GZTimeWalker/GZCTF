@@ -34,37 +34,7 @@ export const App: FC = () => {
         theme={{ ...ThemeOverride, colorScheme: colorScheme }}
       >
         <NotificationsProvider zIndex={5000}>
-          <Global
-            styles={(theme) => ({
-              body: {
-                ...theme.fn.fontStyles(),
-                backgroundColor:
-                  theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
-                color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
-                lineHeight: theme.lineHeight,
-                padding: 0,
-                margin: 0,
-              },
-
-              '::-webkit-scrollbar': {
-                height: 6,
-                width: 6,
-              },
-
-              '::-webkit-scrollbar-thumb': {
-                background: 'var(--mantine-color-dark-3)',
-                borderRadius: 3,
-              },
-
-              '::-webkit-scrollbar-track': {
-                backgroundColor: 'transparent',
-              },
-
-              '::-webkit-scrollbar-corner': {
-                backgroundColor: 'transparent',
-              },
-            })}
-          />
+          {StyledGlobal}
           <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>
             <SWRConfig
               value={{
@@ -88,3 +58,41 @@ export const App: FC = () => {
     </ColorSchemeProvider>
   )
 }
+
+const StyledGlobal = (
+  <Global
+    styles={(theme) => ({
+      body: {
+        ...theme.fn.fontStyles(),
+        backgroundColor:
+          theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
+        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+        lineHeight: theme.lineHeight,
+        padding: 0,
+        margin: 0,
+
+        '@media print': {
+          backgroundColor: theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.white,
+        },
+      },
+
+      '::-webkit-scrollbar': {
+        height: 6,
+        width: 6,
+      },
+
+      '::-webkit-scrollbar-thumb': {
+        background: 'var(--mantine-color-dark-3)',
+        borderRadius: 3,
+      },
+
+      '::-webkit-scrollbar-track': {
+        backgroundColor: 'transparent',
+      },
+
+      '::-webkit-scrollbar-corner': {
+        backgroundColor: 'transparent',
+      },
+    })}
+  />
+)
