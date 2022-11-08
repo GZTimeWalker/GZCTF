@@ -13,7 +13,7 @@
 
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
-## 特性
+## 特性 🛠️
 
 - 创建高度可自定义的题目
   - 题目类型：静态附件、动态附件、静态容器、动态容器
@@ -40,7 +40,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - 应用内全局设置
 - 以及更多……
 
-## Demo
+## Demo 🗿
 
 ![](assets/demo-1.png)
 ![](assets/demo-2.png)
@@ -50,7 +50,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 ![](assets/demo-6.png)
 ![](assets/demo-7.png)
 
-## 安装配置
+## 安装配置 🚀
 
 应用已编译打包成 Docker 镜像，可通过以下方式获取：
 
@@ -216,20 +216,38 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 
   同时，为了确保 SignalR 基于 websocket 的正常运行，需要在负载均衡器中配置 Sticky Session。
 
-- **Q: 也没有更详细的部署教程？**
+- **Q: 有没有更详细的部署教程？**
 
   在写了，v1.0.0 的时候就发出来（
 
-## 贡献者
+## 关于 i18n 🌐
+
+暂不考虑进行多语言适配。
+
+## 贡献者 👋
 
 <a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=GZTimeWalker/GZCTF" />
 </a>
 
-## 关于 i18n
+## 赛事案例 🏆
 
-暂不考虑进行多语言适配。
+已经有一些赛事的举办者选择了 GZCTF 并圆满完赛，他们的信任、支持和及时的反馈是 GZCTF 不断完善的第一推动力。
 
-## Stargazers over time
+- **清华大学网络安全技术挑战赛 THUCTF 2022**
+- **浙江大学 ZJUCTF 2022**
+- **东南大学第三届大学生网络安全挑战赛**
+- **甘肃政法大学 DIDCTF 2022**
+- **山东科技大学第一届网络安全实践大赛 woodpecker**
+- **西北工业大学 NPUCTF 2022**
+- **SkyNICO 网络空间安全三校联赛 (厦门理工学院、福建师范大学、齐鲁工业大学)**
+
+*排名不分先后，欢迎提交 PR 进行补充。*
+
+## 特别感谢 ❤️‍🔥
+
+感谢 THUCTF 2022 的组织者提供的阿里云公网并发压力测试，帮助验证了 GZCTF 单机实例在千级并发、三分钟 134w 请求压力下的服务稳定性。
+
+## Stars ✨
 
 [![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg)](https://starchart.cc/GZTimeWalker/GZCTF)
