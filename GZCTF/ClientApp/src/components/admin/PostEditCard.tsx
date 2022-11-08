@@ -24,7 +24,7 @@ interface PostEditCardProps extends PaperProps {
 const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ...props }) => {
   const theme = useMantineTheme()
   return (
-    <Card shadow="sm" p="lg" {...props}>
+    <Card {...props} shadow="sm" p="lg" >
       <Stack>
         <Group position="apart">
           <Group position="left">

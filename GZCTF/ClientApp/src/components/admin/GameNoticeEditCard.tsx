@@ -17,7 +17,7 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
   ...props
 }) => {
   return (
-    <Card shadow="sm" p="lg" {...props}>
+    <Card {...props} shadow="sm" p="lg">
       <Group position="apart">
         <Group position="left">
           <Text weight="500">{gameNotice.content}</Text>

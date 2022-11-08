@@ -20,7 +20,7 @@ interface IconTabsProps extends GroupProps {
   grow?: boolean
   active?: number
   withIcon?: boolean
-  left?: React.ReactNode
+  aside?: React.ReactNode
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
@@ -113,7 +113,7 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
 }
 
 const IconTabs: FC<IconTabsProps> = (props) => {
-  const { active, onTabChange, tabs, withIcon, left, ...others } = props
+  const { active, onTabChange, tabs, withIcon, aside, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
 
   const activeTab = clamp(_activeTab, 0, tabs.length - 1)
@@ -136,7 +136,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
 
   return (
     <Group spacing={0} position="apart" style={{ width: '100%' }}>
-      {left}
+      {aside}
       {withIcon && (
         <LogoHeader
           sx={(theme) => ({
