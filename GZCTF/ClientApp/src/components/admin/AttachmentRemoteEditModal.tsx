@@ -22,9 +22,9 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
     const list: FlagCreateModel[] = []
     text.split('\n').forEach((line) => {
       let part = line.split(' ')
-      part = part.length == 1 ? line.split('\t') : part
+      part = part.length === 1 ? line.split('\t') : part
 
-      if (part.length != 2) return
+      if (part.length !== 2) return
 
       list.push({
         flag: part[0],

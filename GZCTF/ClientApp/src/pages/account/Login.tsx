@@ -23,7 +23,7 @@ const Login: FC = () => {
   const onLogin = () => {
     setDisabled(true)
 
-    if (uname.length == 0 || pwd.length < 6) {
+    if (uname.length === 0 || pwd.length < 6) {
       showNotification({
         color: 'red',
         title: '请检查输入',

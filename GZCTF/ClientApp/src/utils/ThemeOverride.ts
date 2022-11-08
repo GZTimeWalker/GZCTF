@@ -141,8 +141,8 @@ interface FixedButtonProps {
 export const useFixedButtonStyles = createStyles((theme, { right, bottom }: FixedButtonProps) => ({
   fixedButton: {
     position: 'fixed',
-    bottom: bottom,
-    right: right,
+    bottom,
+    right,
     boxShadow:
       '0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 28px 23px -7px, rgb(0 0 0 / 4%) 0px 12px 12px -7px',
     zIndex: 1000,

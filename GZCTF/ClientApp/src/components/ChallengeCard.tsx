@@ -123,7 +123,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                       <div
                         className={cx(
                           classes.spike,
-                          idx == 0 ? classes.blood1 : idx == 1 ? classes.blood2 : classes.blood3
+                          idx === 0 ? classes.blood1 : idx === 1 ? classes.blood2 : classes.blood3
                         )}
                         style={{ display: teamId === blood?.id ? 'block' : 'none' }}
                       />

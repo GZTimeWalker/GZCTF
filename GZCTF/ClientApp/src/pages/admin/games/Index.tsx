@@ -49,7 +49,7 @@ const Games: FC = () => {
           hidden: !game.hidden,
         })
         .then(() => {
-          setGames(games?.map((g) => (g.id == game.id ? { ...g, hidden: !g.hidden } : g)))
+          setGames(games?.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
         })
         .catch(showErrorNotification)
         .finally(() => setDisabled(false))

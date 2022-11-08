@@ -23,7 +23,7 @@ const Post: FC = () => {
   const { classes, theme } = useBannerStyles()
 
   useEffect(() => {
-    if (postId?.length != 8) {
+    if (postId?.length !== 8) {
       navigate('/404')
       return
     }

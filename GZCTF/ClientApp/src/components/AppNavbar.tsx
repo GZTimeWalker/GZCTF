@@ -154,7 +154,7 @@ const AppNavbar: FC = () => {
   const { user, error } = useUser()
 
   useEffect(() => {
-    if (location.pathname == '/') {
+    if (location.pathname === '/') {
       setActive(items[0].label)
     }
     setActive(getLabel(location.pathname) ?? '')

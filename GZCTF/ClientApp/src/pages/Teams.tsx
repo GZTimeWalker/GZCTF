@@ -41,7 +41,7 @@ const Teams: FC = () => {
   const [editOpened, setEditOpened] = useState(false)
   const [editTeam, setEditTeam] = useState<TeamInfoModel | null>(null)
 
-  const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id == user?.userId))
+  const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id === user?.userId))
 
   const { isMobile } = useIsMobile()
 
@@ -147,7 +147,7 @@ const Teams: FC = () => {
                   <TeamCard
                     key={i}
                     team={t}
-                    isCaptain={t.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
+                    isCaptain={t.members?.some((m) => m?.captain && m.id === user?.userId) ?? false}
                     onEdit={() => onEditTeam(t)}
                   />
                 ))}
@@ -196,7 +196,7 @@ const Teams: FC = () => {
           title="队伍详情"
           onClose={() => setEditOpened(false)}
           team={editTeam}
-          isCaptain={editTeam?.members?.some((m) => m?.captain && m.id == user?.userId) ?? false}
+          isCaptain={editTeam?.members?.some((m) => m?.captain && m.id === user?.userId) ?? false}
         />
       </WithRole>
     </WithNavBar>
