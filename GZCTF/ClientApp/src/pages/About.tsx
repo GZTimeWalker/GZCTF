@@ -17,10 +17,10 @@ import MainIcon from '@Components/icon/MainIcon'
 import { useConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 
-const sha = import.meta.env.VITE_APP_GIT_SHA ?? '000000'
-const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'v0.0.0'
-const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '2022-07-23T12:00:00Z'
-const builtdate = dayjs(import.meta.env.DEV ? new Date() : new Date(timestamp))
+const sha = import.meta.env.VITE_APP_GIT_SHA ?? 'unknown'
+const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'unknown'
+const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? ''
+const builtdate = import.meta.env.DEV ? dayjs() : dayjs(timestamp)
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -56,6 +56,8 @@ const About: FC = () => {
 
   usePageTitle('关于')
 
+  const valid = timestamp.length === 25 && builtdate.isValid() && sha.length === 40 && tag.length > 0
+
   return (
     <WithNavBar>
       <Stack justify="space-between" style={{ height: 'calc(100vh - 32px)' }}>
@@ -81,7 +83,7 @@ const About: FC = () => {
                 size="lg"
                 variant="outline"
               >
-                © 2022 GZTime {`#${sha.substring(0, 6)}`}
+                © 2022 GZTime {valid ? `#${sha.substring(0, 6)}` : ''}
               </Badge>
             </HoverCard.Target>
             <HoverCard.Dropdown>
@@ -107,7 +109,7 @@ const About: FC = () => {
                         gradient={{ from: 'teal', to: 'blue', deg: 60 }}
                         size="xs"
                       >
-                        {`${tag}#${sha.substring(0, 6)}`}
+                        {valid ? `${tag}#${sha.substring(0, 6)}` : 'Unofficial'}
                       </Badge>
                     </Group>
                   </Stack>
@@ -119,7 +121,7 @@ const About: FC = () => {
                     color="dimmed"
                     sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
                   >
-                    built at {builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}
+                    {valid ? `Built at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}` : 'This release is not officially built'}
                   </Text>
                 </Group>
               </Stack>
