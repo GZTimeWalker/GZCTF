@@ -44,8 +44,6 @@ builder.Host.UseSerilog(dispose: true);
 builder.Configuration.AddEnvironmentVariables("GZCTF_");
 Log.Logger = LogHelper.GetInitLogger();
 
-Log.Logger.Debug("GZCTF 正在启动中……");
-
 #endregion Logging
 
 #region AppDbContext
@@ -130,7 +128,7 @@ var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
 
 #region Cache
 
-if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("RedisCache")))
+if(!builder.Configuration.GetSection("ConnectionStrings").GetSection("RedisCache").Exists())
 {
     builder.Services.AddDistributedMemoryCache();
 }

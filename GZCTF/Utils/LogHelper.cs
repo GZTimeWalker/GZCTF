@@ -95,6 +95,7 @@ public static class LogHelper
     };
 
     private const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
+    private const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
     public static Logger GetInitLogger()
         => new LoggerConfiguration()
@@ -105,7 +106,7 @@ public static class LogHelper
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
-                formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+                formatter: new ExpressionTemplate(InitLogTemplate, theme: TemplateTheme.Literate),
                 restrictedToMinimumLevel: LogEventLevel.Debug
             ))
             .CreateLogger();
