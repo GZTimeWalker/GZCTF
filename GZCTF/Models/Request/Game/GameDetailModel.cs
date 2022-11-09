@@ -21,4 +21,11 @@ public class GameDetailModel
     /// </summary>
     [Required]
     public string TeamToken { get; set; } = string.Empty;
+
+    /// <summary>
+    /// WriteUp 提交截止时间
+    /// </summary>
+    [Required]
+    [JsonPropertyName("wpddl")]
+    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 }

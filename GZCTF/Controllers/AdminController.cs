@@ -29,6 +29,7 @@ public class AdminController : ControllerBase
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileService;
     private readonly IConfigService configService;
+    private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
     private readonly IServiceProvider serviceProvider;
     private readonly IParticipationRepository participationRepository;
@@ -37,6 +38,7 @@ public class AdminController : ControllerBase
         IFileRepository _FileService,
         ILogRepository _logRepository,
         IConfigService _configService,
+        IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
         IServiceProvider _serviceProvider,
         IParticipationRepository _participationRepository)
@@ -46,6 +48,7 @@ public class AdminController : ControllerBase
         configService = _configService;
         logRepository = _logRepository;
         teamRepository = _teamRepository;
+        gameRepository = _gameRepository;
         serviceProvider = _serviceProvider;
         participationRepository = _participationRepository;
     }
@@ -326,6 +329,7 @@ public class AdminController : ControllerBase
     /// <response code="200">更新成功</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
+    /// <response code="404">参与对象未找到</response>
     [HttpPut("Participation/{id}/{status}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -339,6 +343,29 @@ public class AdminController : ControllerBase
         await participationRepository.UpdateParticipationStatus(participation, status, token);
 
         return Ok();
+    }
+
+    /// <summary>
+    /// 获取全部 Writeup 基本信息
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口获取 Writeup 基本信息，需要Admin权限
+    /// </remarks>
+    /// <response code="200">更新成功</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">比赛未找到</response>
+    [HttpPut("Writeups/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        return Ok(await participationRepository.GetWriteups(game, token));
     }
 
     /// <summary>

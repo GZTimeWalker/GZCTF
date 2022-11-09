@@ -1,4 +1,6 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using CTFServer.Models;
+using CTFServer.Models.Request.Admin;
+using CTFServer.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Repositories;
@@ -86,4 +88,10 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         context.Remove(part);
         return SaveAsync(token);
     }
+
+    public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default)
+        => context.Participations.Where(p => p.Game == game && p.WriteUp != null)
+                .OrderByDescending(p => p.WriteUp!.UploadTimeUTC)
+                .Select(p => WriteupInfoModel.FromParticipation(p))
+                .ToArrayAsync(token);
 }

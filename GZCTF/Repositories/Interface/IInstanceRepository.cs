@@ -44,10 +44,10 @@ public interface IInstanceRepository : IRepository
     /// <param name="instance">实例对象</param>
     /// <param name="team">队伍信息</param>
     /// <param name="containerLimit">容器数量限制</param>
-    /// <param name="userId">用户Id，用于记录</param>
+    /// <param name="user">用户对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> CreateContainer(Instance instance, Team team, string userId, int containerLimit = 3, CancellationToken token = default);
+    public Task<TaskResult<Container>> CreateContainer(Instance instance, Team team, UserInfo user, int containerLimit = 3, CancellationToken token = default);
 
     /// <summary>
     /// 销毁容器实例

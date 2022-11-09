@@ -38,8 +38,8 @@ public class FileRepository : RepositoryBase, IFileRepository
 
         if (localFile is not null)
         {
-            localFile.Name = fileName ?? file.FileName;
-
+            localFile.Name = fileName ?? file.FileName; // allow rename
+            localFile.UploadTimeUTC = DateTimeOffset.UtcNow; // update upload time
             localFile.ReferenceCount++; // same hash, add ref count
 
             logger.SystemLog($"文件引用计数 [{localFile.Hash[..8]}] {localFile.Name} => {localFile.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
@@ -67,13 +67,8 @@ public class FileRepository : RepositoryBase, IFileRepository
         return localFile;
     }
 
-    public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token = default)
+    public async Task<TaskStatus> DeleteFile(LocalFile file, CancellationToken token = default)
     {
-        var file = await GetFileByHash(fileHash, token);
-
-        if (file is null)
-            return TaskStatus.NotFound;
-
         var path = Path.Combine(uploadPath, file.Location, file.Hash);
 
         if (file.ReferenceCount > 1)
@@ -102,6 +97,16 @@ public class FileRepository : RepositoryBase, IFileRepository
         await SaveAsync(token);
 
         return TaskStatus.NotFound;
+    }
+
+    public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token = default)
+    {
+        var file = await GetFileByHash(fileHash, token);
+
+        if (file is null)
+            return TaskStatus.NotFound;
+
+        return await DeleteFile(file, token);
     }
 
     public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)

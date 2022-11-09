@@ -90,6 +90,13 @@ public class GameInfoModel
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
+    /// <summary>
+    /// WriteUp 提交截止时间
+    /// </summary>
+    [Required]
+    [JsonPropertyName("wpddl")]
+    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+
     internal static GameInfoModel FromGame(Models.Game game)
         => new()
         {
@@ -107,6 +114,7 @@ public class GameInfoModel
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
             StartTimeUTC = game.StartTimeUTC,
-            EndTimeUTC = game.EndTimeUTC
+            EndTimeUTC = game.EndTimeUTC,
+            WriteupDeadline = game.WriteupDeadline
         };
 }

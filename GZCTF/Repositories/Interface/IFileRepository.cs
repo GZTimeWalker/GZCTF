@@ -14,6 +14,14 @@ public interface IFileRepository : IRepository
     /// <summary>
     /// 删除一个文件
     /// </summary>
+    /// <param name="file">文件对象</param>
+    /// <param name="token">取消Token</param>
+    /// <returns>任务状态</returns>
+    public Task<TaskStatus> DeleteFile(LocalFile file, CancellationToken token = default);
+
+    /// <summary>
+    /// 根据哈希删除一个文件
+    /// </summary>
     /// <param name="fileHash">文件哈希</param>
     /// <param name="token">取消Token</param>
     /// <returns>任务状态</returns>

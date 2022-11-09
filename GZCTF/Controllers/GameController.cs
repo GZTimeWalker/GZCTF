@@ -2,11 +2,13 @@
 using System.Security.Claims;
 using System.Threading.Channels;
 using CTFServer.Middlewares;
+using CTFServer.Models;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
+using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +28,7 @@ public class GameController : ControllerBase
     private readonly ILogger<GameController> logger;
     private readonly UserManager<UserInfo> userManager;
     private readonly ChannelWriter<Submission> checkerChannelWriter;
+    private readonly IFileRepository fileService;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
     private readonly IContainerRepository containerRepository;
@@ -41,6 +44,7 @@ public class GameController : ControllerBase
         ILogger<GameController> _logger,
         UserManager<UserInfo> _userManager,
         ChannelWriter<Submission> _channelWriter,
+        IFileRepository _fileService,
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
         IGameEventRepository _eventRepository,
@@ -55,6 +59,7 @@ public class GameController : ControllerBase
         logger = _logger;
         userManager = _userManager;
         checkerChannelWriter = _channelWriter;
+        fileService = _fileService;
         gameRepository = _gameRepository;
         teamRepository = _teamRepository;
         eventRepository = _eventRepository;
@@ -552,7 +557,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] FlagSubmitModel model, CancellationToken token)
     {
-        var context = await GetContextInfo(id, challengeId, false, token);
+        var context = await GetContextInfo(id, challengeId, false, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -610,6 +615,62 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
+    /// 提交 Writeup
+    /// </summary>
+    /// <remarks>
+    /// 提交赛后题解，需要User权限
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="file">文件</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功提交 Writeup </response>
+    /// <response code="400">提交不符合要求</response>
+    /// <response code="404">比赛未找到</response>
+    [RequireUser]
+    [HttpPost("{id}/Writeup")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SubmitWriteup([FromRoute] int id, IFormFile file, CancellationToken token)
+    {
+        if (file.Length == 0)
+            return BadRequest(new RequestResponse("文件非法"));
+
+        if (file.Length > 20 * 1024 * 1024)
+            return BadRequest(new RequestResponse("文件过大"));
+
+        var context = await GetContextInfo(id, denyAfterEnded: false, token: token);
+
+        if (context.Result is not null)
+            return context.Result;
+
+        var game = context.Game!;
+        var part = context.Participation!;
+        var team = part.Team;
+
+        if (DateTimeOffset.UtcNow > game.WriteupDeadline)
+            return BadRequest(new RequestResponse("提交截止时间已过"));
+
+        var wp = context.Participation!.WriteUp;
+
+        if (wp is not null)
+            await fileService.DeleteFile(wp, token);
+
+        wp = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.UtcNow:s}", token);
+
+        if (wp is null)
+            return BadRequest(new RequestResponse("保存文件失败"));
+
+        part.WriteUp = wp;
+
+        await participationRepository.SaveAsync(token);
+
+        logger.Log($"{team.Name} 成功提交 {game.Title} 的 Writeup", context.User!, TaskStatus.Success);
+
+        return Ok();
+    }
+
+    /// <summary>
     /// 创建容器
     /// </summary>
     /// <remarks>
@@ -656,7 +717,7 @@ public class GameController : ControllerBase
             await containerRepository.RemoveContainer(instance.Container, token);
         }
 
-        return await instanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!.Id, context.Game!.ContainerCountLimit, token) switch
+        return await instanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!, context.Game!.ContainerCountLimit, token) switch
         {
             null or (TaskStatus.Fail, null) => BadRequest(new RequestResponse("题目创建容器失败")),
             (TaskStatus.Denied, null) => BadRequest(new RequestResponse($"队伍容器数目不能超过 {context.Game.ContainerCountLimit}")),
@@ -764,6 +825,8 @@ public class GameController : ControllerBase
             Content = $"{instance.Challenge.Title}#{instance.Challenge.Id} 销毁容器实例"
         }, token);
 
+        logger.Log($"{context.Participation!.Team.Name} 销毁题目 {instance.Challenge.Title} 的容器实例 [{instance.Container.Id}]", context.User, TaskStatus.Success);
+
         return Ok();
     }
 
@@ -782,7 +845,7 @@ public class GameController : ControllerBase
         }
     };
 
-    private async Task<ContextInfo> GetContextInfo(int id, int challengeId = 0, bool withFlag = false, CancellationToken token = default)
+    private async Task<ContextInfo> GetContextInfo(int id, int challengeId = 0, bool withFlag = false, bool denyAfterEnded = true, CancellationToken token = default)
     {
         ContextInfo res = new()
         {
@@ -806,7 +869,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < res.Game.StartTimeUTC)
             return res.WithResult(BadRequest(new RequestResponse("比赛未开始")));
 
-        if (!res.Game.PracticeMode && res.Game.EndTimeUTC < DateTimeOffset.UtcNow)
+        if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUTC < DateTimeOffset.UtcNow)
             return res.WithResult(BadRequest(new RequestResponse("比赛已结束")));
 
         if (challengeId > 0)

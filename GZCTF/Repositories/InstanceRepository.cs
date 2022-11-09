@@ -123,7 +123,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
     }
 
-    public async Task<TaskResult<Container>> CreateContainer(Instance instance, Team team, string userId, int containerLimit = 3, CancellationToken token = default)
+    public async Task<TaskResult<Container>> CreateContainer(Instance instance, Team team, UserInfo user, int containerLimit = 3, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
@@ -142,7 +142,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             var container = await service.CreateContainerAsync(new ContainerConfig()
             {
                 TeamId = team.Id.ToString(),
-                UserId = userId,
+                UserId = user.Id,
                 Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
                 Image = instance.Challenge.ContainerImage,
                 CPUCount = instance.Challenge.CPUCount ?? 1,
@@ -161,13 +161,15 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             instance.Container = container;
             instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
+            logger.Log($"{team.Name} 启动题目 {instance.Challenge.Title} 的容器实例 [{container.Id}]", user, TaskStatus.Success);
+
             // will save instance together
             await gameEventRepository.AddEvent(new()
             {
                 Type = EventType.ContainerStart,
                 GameId = instance.Challenge.GameId,
                 TeamId = instance.Participation.TeamId,
-                UserId = userId,
+                UserId = user.Id,
                 Content = $"{instance.Challenge.Title}#{instance.Challenge.Id} 启动容器实例"
             }, token);
         }

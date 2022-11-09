@@ -153,9 +153,13 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId);
 
+            entity.HasOne(e => e.WriteUp)
+                .WithMany();
+
             entity.Navigation(e => e.Game).AutoInclude();
             entity.Navigation(e => e.Team).AutoInclude();
             entity.Navigation(e => e.Members).AutoInclude();
+            entity.Navigation(e => e.WriteUp).AutoInclude();
 
             entity.HasMany(e => e.Challenges)
                 .WithMany(e => e.Teams)

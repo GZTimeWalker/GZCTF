@@ -26,6 +26,11 @@ public class Participation
     /// </summary>
     public string? Organization { get; set; }
 
+    /// <summary>
+    /// 队伍题解
+    /// </summary>
+    public LocalFile? WriteUp { get; set; }
+
     #region Db Relationship
 
     /// <summary>

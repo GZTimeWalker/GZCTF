@@ -1,4 +1,6 @@
-﻿namespace CTFServer.Repositories.Interface;
+﻿using CTFServer.Models.Request.Admin;
+
+namespace CTFServer.Repositories.Interface;
 
 public interface IParticipationRepository : IRepository
 {
@@ -17,6 +19,14 @@ public interface IParticipationRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取比赛 Writeup 列表
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default);
 
     /// <summary>
     /// 确保此队伍 Instance 对象已创建

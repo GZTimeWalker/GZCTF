@@ -19,6 +19,12 @@ public class LocalFile
     public string Hash { get; set; } = string.Empty;
 
     /// <summary>
+    /// 上传时间
+    /// </summary>
+    [JsonIgnore]
+    public DateTimeOffset UploadTimeUTC = DateTimeOffset.UtcNow;
+
+    /// <summary>
     /// 文件名
     /// </summary>
     [Required]

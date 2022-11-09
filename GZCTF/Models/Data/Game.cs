@@ -96,6 +96,13 @@ public class Game
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
+    /// <summary>
+    /// WriteUp 提交截止时间
+    /// </summary>
+    [Required]
+    [JsonPropertyName("wpddl")]
+    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+
     [NotMapped]
     [JsonIgnore]
     public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
@@ -139,7 +146,7 @@ public class Game
     public ICollection<Team>? Teams { get; set; }
 
     /// <summary>
-    /// 比赛是否为练习模式（比赛结束够依然可以访问）
+    /// 比赛是否为练习模式（比赛结束够依然可以进行大部分操作）
     /// </summary>
     public bool PracticeMode { get; set; } = true;
 
@@ -195,6 +202,7 @@ public class Game
         Organizations = model.Organizations ?? Organizations;
         EndTimeUTC = model.EndTimeUTC;
         StartTimeUTC = model.StartTimeUTC;
+        WriteupDeadline = model.WriteupDeadline;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
         ContainerCountLimit = model.ContainerCountLimit;
 
