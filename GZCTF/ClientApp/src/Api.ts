@@ -680,6 +680,11 @@ export interface Attachment {
   type: FileType
   /** 文件默认 Url */
   url?: string | null
+  /**
+   * 获取附件大小
+   * @format int64
+   */
+  fileSize?: number | null
 }
 
 export enum FileType {
@@ -1263,6 +1268,11 @@ export interface ClientFlagContext {
   instanceEntry?: string | null
   /** 附件 Url */
   url?: string | null
+  /**
+   * 附件文件大小
+   * @format int64
+   */
+  fileSize?: number | null
 }
 
 /** flag 提交 */
@@ -1274,6 +1284,19 @@ export interface FlagSubmitModel {
    * @maxLength 126
    */
   flag: string
+}
+
+/** 比赛 Writeup 提交信息 */
+export interface BasicWriteupInfoModel {
+  /** 是否已经提交 */
+  submitted?: boolean
+  /** 文件名称 */
+  name?: string
+  /**
+   * 文件上传时间
+   * @format date-time
+   */
+  uploadTimeUTC?: string
 }
 
 /** 文章信息 */
@@ -2205,14 +2228,35 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminWriteups
      * @summary 获取全部 Writeup 基本信息
-     * @request PUT:/api/admin/writeups/{id}
+     * @request GET:/api/admin/writeups/{id}
      */
     adminWriteups: (id: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/admin/writeups/${id}`,
-        method: 'PUT',
+        method: 'GET',
         ...params,
       }),
+    /**
+     * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminWriteups
+     * @summary 获取全部 Writeup 基本信息
+     * @request GET:/api/admin/writeups/{id}
+     */
+    useAdminWriteups: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<void, RequestResponse>(doFetch ? `/api/admin/writeups/${id}` : null, options),
+
+    /**
+     * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminWriteups
+     * @summary 获取全部 Writeup 基本信息
+     * @request GET:/api/admin/writeups/{id}
+     */
+    mutateAdminWriteups: (id: number, data?: void | Promise<void>, options?: MutatorOptions) =>
+      mutate<void>(`/api/admin/writeups/${id}`, data, options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
@@ -3681,6 +3725,49 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         data,
         options
       ),
+
+    /**
+     * @description 获取赛后题解提交情况，需要User权限
+     *
+     * @tags Game
+     * @name GameGetWriteup
+     * @summary 获取 Writeup 信息
+     * @request GET:/api/game/{id}/writeup
+     */
+    gameGetWriteup: (id: number, params: RequestParams = {}) =>
+      this.request<BasicWriteupInfoModel, RequestResponse>({
+        path: `/api/game/${id}/writeup`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取赛后题解提交情况，需要User权限
+     *
+     * @tags Game
+     * @name GameGetWriteup
+     * @summary 获取 Writeup 信息
+     * @request GET:/api/game/{id}/writeup
+     */
+    useGameGetWriteup: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<BasicWriteupInfoModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/writeup` : null,
+        options
+      ),
+
+    /**
+     * @description 获取赛后题解提交情况，需要User权限
+     *
+     * @tags Game
+     * @name GameGetWriteup
+     * @summary 获取 Writeup 信息
+     * @request GET:/api/game/{id}/writeup
+     */
+    mutateGameGetWriteup: (
+      id: number,
+      data?: BasicWriteupInfoModel | Promise<BasicWriteupInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<BasicWriteupInfoModel>(`/api/game/${id}/writeup`, data, options),
 
     /**
      * @description 提交赛后题解，需要User权限

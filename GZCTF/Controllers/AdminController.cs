@@ -355,7 +355,7 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">比赛未找到</response>
-    [HttpPut("Writeups/{id}")]
+    [HttpGet("Writeups/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
