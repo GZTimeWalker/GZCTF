@@ -41,6 +41,12 @@ public class Attachment
     public string? Url => UrlWithName();
 
     /// <summary>
+    /// 获取附件大小
+    /// </summary>
+    [NotMapped]
+    public ulong? FileSize => LocalFile?.FileSize;
+    
+    /// <summary>
     /// 附件访问链接
     /// </summary>
     public string? UrlWithName(string? filename = null) => Type switch

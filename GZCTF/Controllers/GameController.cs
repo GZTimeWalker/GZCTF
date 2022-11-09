@@ -615,6 +615,32 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
+    /// 获取 Writeup 信息
+    /// </summary>
+    /// <remarks>
+    /// 获取赛后题解提交情况，需要User权限
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功提交 Writeup </response>
+    /// <response code="400">提交不符合要求</response>
+    /// <response code="404">比赛未找到</response>
+    [RequireUser]
+    [HttpGet("{id}/Writeup")]
+    [ProducesResponseType(typeof(BasicWriteupInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetWriteup([FromRoute] int id, CancellationToken token)
+    {
+        var context = await GetContextInfo(id, denyAfterEnded: false, token: token);
+
+        if (context.Result is not null)
+            return context.Result;
+
+        return Ok(BasicWriteupInfoModel.FromParticipation(context.Participation!));
+    }
+
+    /// <summary>
     /// 提交 Writeup
     /// </summary>
     /// <remarks>
@@ -638,6 +664,9 @@ public class GameController : ControllerBase
 
         if (file.Length > 20 * 1024 * 1024)
             return BadRequest(new RequestResponse("文件过大"));
+
+        if (file.ContentType != "application/pdf" || Path.GetExtension(file.FileName) != ".pdf")
+            return BadRequest(new RequestResponse("请上传 pdf 文件"));
 
         var context = await GetContextInfo(id, denyAfterEnded: false, token: token);
 

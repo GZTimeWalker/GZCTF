@@ -59,9 +59,8 @@ public class ChallengeDetailModel
             {
                 InstanceEntry = instance.Container?.Entry,
                 CloseTime = instance.Container?.ExpectStopAt,
-                Url = instance.Challenge.Type == ChallengeType.DynamicAttachment ?
-                  instance.FlagContext?.Attachment?.UrlWithName(instance.Challenge.FileName) :
-                  instance.Challenge.Attachment?.UrlWithName()
+                Url = instance.AttachmentUrl,
+                FileSize = instance.Attachment?.FileSize,
             }
         };
 }
@@ -82,4 +81,9 @@ public class ClientFlagContext
     /// 附件 Url
     /// </summary>
     public string? Url { get; set; } = null;
+
+    /// <summary>
+    /// 附件文件大小
+    /// </summary>
+    public ulong? FileSize { get; set; } = null;
 }

@@ -22,7 +22,13 @@ public class LocalFile
     /// 上传时间
     /// </summary>
     [JsonIgnore]
-    public DateTimeOffset UploadTimeUTC = DateTimeOffset.UtcNow;
+    public DateTimeOffset UploadTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// 文件大小
+    /// </summary>
+    [JsonIgnore]
+    public ulong FileSize { get; set; } = 0;
 
     /// <summary>
     /// 文件名

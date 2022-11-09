@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CTFServer.Models.Data;
 
 namespace CTFServer.Models;
 
@@ -57,4 +58,17 @@ public class Instance
     public Participation Participation { get; set; } = default!;
 
     #endregion Db Relationship
+
+    /// <summary>
+    /// 获取实例附件
+    /// </summary>
+    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment ?
+        FlagContext?.Attachment : Challenge.Attachment;
+
+    /// <summary>
+    /// 获取实例附件链接
+    /// </summary>
+    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment ?
+        FlagContext?.Attachment?.UrlWithName(Challenge.FileName) :
+        Challenge.Attachment?.UrlWithName();
 }

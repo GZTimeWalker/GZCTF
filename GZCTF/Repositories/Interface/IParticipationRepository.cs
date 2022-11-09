@@ -1,4 +1,5 @@
 ﻿using CTFServer.Models.Request.Admin;
+using CTFServer.Models.Request.Game;
 
 namespace CTFServer.Repositories.Interface;
 
