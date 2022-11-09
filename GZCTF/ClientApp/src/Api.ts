@@ -12,16 +12,12 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from 'axios'
 import useSWR, { mutate, MutatorOptions, SWRConfiguration } from 'swr'
 
-/**
- * 请求响应
- */
+/** 请求响应 */
 export interface RequestResponseOfRegisterStatus {
   /** 响应信息 */
   title?: string
-
   /** 数据 */
   data?: RegisterStatus
-
   /**
    * 状态码
    * @format int32
@@ -29,22 +25,17 @@ export interface RequestResponseOfRegisterStatus {
   status?: number
 }
 
-/**
- * 登录响应状态
- */
+/** 登录响应状态 */
 export enum RegisterStatus {
   LoggedIn = 'LoggedIn',
   AdminConfirmationRequired = 'AdminConfirmationRequired',
   EmailConfirmationRequired = 'EmailConfirmationRequired',
 }
 
-/**
- * 请求响应
- */
+/** 请求响应 */
 export interface RequestResponse {
   /** 响应信息 */
   title?: string
-
   /**
    * 状态码
    * @format int32
@@ -52,120 +43,138 @@ export interface RequestResponse {
   status?: number
 }
 
-/**
- * 注册账号
- */
+/** 注册账号 */
 export interface RegisterModel {
-  /** 用户名 */
+  /**
+   * 用户名
+   * @minLength 3
+   * @maxLength 15
+   */
   userName: string
-
-  /** 密码 */
+  /**
+   * 密码
+   * @minLength 1
+   */
   password: string
-
   /**
    * 邮箱
    * @format email
+   * @minLength 1
    */
   email: string
-
   /** Google Recaptcha Token */
   gToken?: string | null
 }
 
-/**
- * 找回账号
- */
+/** 找回账号 */
 export interface RecoveryModel {
   /**
    * 用户邮箱
    * @format email
+   * @minLength 1
    */
   email: string
-
   /** Google Recaptcha Token */
   gToken?: string | null
 }
 
-/**
- * 账号密码重置
- */
+/** 账号密码重置 */
 export interface PasswordResetModel {
-  /** 密码 */
+  /**
+   * 密码
+   * @minLength 6
+   */
   password: string
-
-  /** 邮箱 */
+  /**
+   * 邮箱
+   * @minLength 1
+   */
   email: string
-
-  /** 邮箱接收到的Base64格式Token */
+  /**
+   * 邮箱接收到的Base64格式Token
+   * @minLength 1
+   */
   rToken: string
 }
 
-/**
- * 账号验证
- */
+/** 账号验证 */
 export interface AccountVerifyModel {
-  /** 邮箱接收到的Base64格式Token */
+  /**
+   * 邮箱接收到的Base64格式Token
+   * @minLength 1
+   */
   token: string
-
-  /** 用户邮箱的Base64格式 */
+  /**
+   * 用户邮箱的Base64格式
+   * @minLength 1
+   */
   email: string
 }
 
-/**
- * 登录
- */
+/** 登录 */
 export interface LoginModel {
-  /** 用户名或邮箱 */
+  /**
+   * 用户名或邮箱
+   * @minLength 1
+   */
   userName: string
-
-  /** 密码 */
+  /**
+   * 密码
+   * @minLength 6
+   */
   password: string
 }
 
-/**
- * 基本账号信息更改
- */
+/** 基本账号信息更改 */
 export interface ProfileUpdateModel {
-  /** 用户名 */
+  /**
+   * 用户名
+   * @minLength 3
+   * @maxLength 15
+   */
   userName?: string | null
-
-  /** 描述 */
+  /**
+   * 描述
+   * @maxLength 55
+   */
   bio?: string | null
-
   /**
    * 手机号
    * @format phone
    */
   phone?: string | null
-
-  /** 真实姓名 */
+  /**
+   * 真实姓名
+   * @maxLength 7
+   */
   realName?: string | null
-
-  /** 学工号 */
+  /**
+   * 学工号
+   * @maxLength 15
+   */
   stdNumber?: string | null
 }
 
-/**
- * 密码更改
- */
+/** 密码更改 */
 export interface PasswordChangeModel {
-  /** 旧密码 */
+  /**
+   * 旧密码
+   * @minLength 6
+   */
   old: string
-
-  /** 新密码 */
+  /**
+   * 新密码
+   * @minLength 6
+   */
   new: string
 }
 
-/**
- * 请求响应
- */
+/** 请求响应 */
 export interface RequestResponseOfBoolean {
   /** 响应信息 */
   title?: string
-
   /** 数据 */
   data?: boolean
-
   /**
    * 状态码
    * @format int32
@@ -173,52 +182,39 @@ export interface RequestResponseOfBoolean {
   status?: number
 }
 
-/**
- * 邮箱更改
- */
+/** 邮箱更改 */
 export interface MailChangeModel {
   /**
    * 新邮箱
    * @format email
+   * @minLength 1
    */
   newMail: string
 }
 
-/**
- * 基本账号信息
- */
+/** 基本账号信息 */
 export interface ProfileUserInfoModel {
   /** 用户ID */
   userId?: string | null
-
   /** 用户名 */
   userName?: string | null
-
   /** 邮箱 */
   email?: string | null
-
   /** 签名 */
   bio?: string | null
-
   /** 手机号码 */
   phone?: string | null
-
   /** 真实姓名 */
   realName?: string | null
-
   /** 学工号 */
   stdNumber?: string | null
-
   /** 头像链接 */
   avatar?: string | null
-
   /** 用户角色 */
   role?: Role | null
 }
 
-/**
- * 用户权限枚举
- */
+/** 用户权限枚举 */
 export enum Role {
   Banned = 'Banned',
   User = 'User',
@@ -226,40 +222,29 @@ export enum Role {
   Admin = 'Admin',
 }
 
-/**
- * 全局配置更新对象
- */
+/** 全局配置更新对象 */
 export interface ConfigEditModel {
   /** 用户策略 */
   accountPolicy?: AccountPolicy | null
-
   /** 全局配置项 */
   globalConfig?: GlobalConfig | null
 }
 
-/**
- * 账户策略
- */
+/** 账户策略 */
 export interface AccountPolicy {
   /** 允许用户注册 */
   allowRegister?: boolean
-
   /** 注册时直接激活账户 */
   activeOnRegister?: boolean
-
   /** 使用谷歌验证码校验 */
   useGoogleRecaptcha?: boolean
-
   /** 注册、更换邮箱、找回密码需要邮件确认 */
   emailConfirmationRequired?: boolean
-
   /** 邮箱后缀域名，以逗号分割 */
   emailDomainList?: string
 }
 
-/**
- * 全局设置
- */
+/** 全局设置 */
 export interface GlobalConfig {
   /** 平台前缀名称 */
   title?: string
@@ -267,157 +252,128 @@ export interface GlobalConfig {
   slogan?: string
 }
 
-/**
- * 用户信息（Admin）
- */
+/** 用户信息（Admin） */
 export interface UserInfoModel {
   /** 用户ID */
   id?: string | null
-
   /** 用户名 */
   userName?: string | null
-
   /** 真实姓名 */
   realName?: string | null
-
   /** 学号 */
   stdNumber?: string | null
-
   /** 联系电话 */
   phone?: string | null
-
   /** 签名 */
   bio?: string | null
-
   /**
    * 注册时间
    * @format date-time
    */
   registerTimeUTC?: string
-
   /**
    * 用户最近访问时间
    * @format date-time
    */
   lastVisitedUTC?: string
-
   /** 用户最近访问IP */
   ip?: string
-
   /** 邮箱 */
   email?: string | null
-
   /** 头像链接 */
   avatar?: string | null
-
   /** 用户角色 */
   role?: Role | null
-
   /** 用户是否通过邮箱验证（可登录） */
   emailConfirmed?: boolean | null
 }
 
-/**
- * 队伍信息
- */
+/** 队伍信息 */
 export interface TeamInfoModel {
   /**
    * 队伍 Id
    * @format int32
    */
   id?: number
-
   /** 队伍名称 */
   name?: string | null
-
   /** 队伍签名 */
   bio?: string | null
-
   /** 头像链接 */
   avatar?: string | null
-
   /** 是否锁定 */
   locked?: boolean
-
   /** 队伍成员 */
   members?: TeamUserInfoModel[] | null
 }
 
-/**
- * 队员信息
- */
+/** 队员信息 */
 export interface TeamUserInfoModel {
   /** 用户ID */
   id?: string | null
-
   /** 用户名 */
   userName?: string | null
-
   /** 签名 */
   bio?: string | null
-
   /** 头像链接 */
   avatar?: string | null
-
   /** 是否是队长 */
   captain?: boolean
 }
 
-/**
- * 用户信息更改（Admin）
- */
+/** 用户信息更改（Admin） */
 export interface UpdateUserInfoModel {
-  /** 用户名 */
+  /**
+   * 用户名
+   * @minLength 3
+   * @maxLength 15
+   */
   userName?: string | null
-
   /**
    * 邮箱
    * @format email
    */
   email?: string | null
-
-  /** 签名 */
+  /**
+   * 签名
+   * @maxLength 50
+   */
   bio?: string | null
-
   /**
    * 手机号码
    * @format phone
    */
   phone?: string | null
-
-  /** 真实姓名 */
+  /**
+   * 真实姓名
+   * @maxLength 6
+   */
   realName?: string | null
-
-  /** 学工号 */
+  /**
+   * 学工号
+   * @maxLength 10
+   */
   stdNumber?: string | null
-
   /** 用户是否通过邮箱验证（可登录） */
   emailConfirmed?: boolean | null
-
   /** 用户角色 */
   role?: Role | null
 }
 
-/**
- * 日志信息（Admin）
- */
+/** 日志信息（Admin） */
 export interface LogMessageModel {
   /**
    * 日志时间
    * @format date-time
    */
   time?: string
-
   /** 用户名 */
   name?: string | null
   level?: string | null
-
   /** IP地址 */
   ip?: string | null
-
   /** 日志信息 */
   msg?: string | null
-
   /** 任务状态 */
   status?: string | null
 }
@@ -431,167 +387,170 @@ export enum ParticipationStatus {
 }
 
 export interface LocalFile {
-  /** 文件哈希 */
+  /**
+   * 文件哈希
+   * @maxLength 64
+   */
   hash?: string
-
-  /** 文件名 */
+  /**
+   * 文件名
+   * @minLength 1
+   */
   name: string
 }
 
 export interface ProblemDetails {
   type?: string | null
   title?: string | null
-
   /** @format int32 */
   status?: number | null
   detail?: string | null
   instance?: string | null
+  [key: string]: any
 }
 
-/**
- * 文章对象（Edit）
- */
+/** 文章对象（Edit） */
 export interface PostEditModel {
-  /** 通知标题 */
+  /**
+   * 通知标题
+   * @minLength 1
+   * @maxLength 50
+   */
   title: string
-
   /** 文章总结 */
   summary?: string
-
   /** 文章内容 */
   content?: string
-
   /** 文章标签 */
   tags?: string[]
-
   /** 是否置顶 */
   isPinned?: boolean
 }
 
-/**
- * 文章详细内容
- */
+/** 文章详细内容 */
 export interface PostDetailModel {
-  /** 文章 Id */
+  /**
+   * 文章 Id
+   * @minLength 1
+   */
   id: string
-
-  /** 通知标题 */
+  /**
+   * 通知标题
+   * @minLength 1
+   */
   title: string
-
-  /** 文章总结 */
+  /**
+   * 文章总结
+   * @minLength 1
+   */
   summary: string
-
-  /** 文章内容 */
+  /**
+   * 文章内容
+   * @minLength 1
+   */
   content: string
-
   /** 是否置顶 */
   isPinned: boolean
-
   /** 文章标签 */
   tags?: string[] | null
-
   /** 作者头像 */
   autherAvatar?: string | null
-
   /** 作者名称 */
   autherName?: string | null
-
   /**
    * 发布时间
    * @format date-time
+   * @minLength 1
    */
   time: string
 }
 
-/**
- * 比赛信息（Edit）
- */
+/** 比赛信息（Edit） */
 export interface GameInfoModel {
   /**
    * 比赛 Id
    * @format int32
    */
   id?: number
-
-  /** 比赛标题 */
+  /**
+   * 比赛标题
+   * @minLength 1
+   */
   title: string
-
   /** 是否隐藏 */
   hidden?: boolean
-
   /** 比赛描述 */
   summary?: string
-
   /** 比赛详细介绍 */
   content?: string
-
   /** 报名队伍免审核 */
   acceptWithoutReview?: boolean
-
-  /** 比赛邀请码 */
+  /**
+   * 比赛邀请码
+   * @maxLength 32
+   */
   inviteCode?: string | null
-
   /** 参赛所属单位列表 */
   organizations?: string[] | null
-
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
    */
   teamMemberCountLimit?: number
-
   /**
    * 队伍同时开启的容器数量限制
    * @format int32
    */
   containerCountLimit?: number
-
   /** 比赛头图 */
   poster?: string | null
-
   /** 比赛签名公钥 */
   publicKey?: string
-
   /** 比赛是否为练习模式（比赛结束够依然可以访问） */
   practiceMode?: boolean
-
   /**
    * 开始时间
    * @format date-time
+   * @minLength 1
    */
   start: string
-
   /**
    * 结束时间
    * @format date-time
+   * @minLength 1
    */
   end: string
+  /**
+   * WriteUp 提交截止时间
+   * @format date-time
+   * @minLength 1
+   */
+  wpddl: string
 }
 
 /**
-* 比赛通知，会发往客户端。
-信息涵盖一二三血通知、提示发布通知、题目开启通知等
-*/
+ * 比赛通知，会发往客户端。
+ * 信息涵盖一二三血通知、提示发布通知、题目开启通知等
+ */
 export interface GameNotice {
   /** @format int32 */
   id: number
-
   /** 通知类型 */
   type: NoticeType
-
-  /** 通知内容 */
+  /**
+   * 通知内容
+   * @minLength 1
+   */
   content: string
-
   /**
    * 发布时间
    * @format date-time
+   * @minLength 1
    */
   time: string
 }
 
-/**
- * 比赛公告类型
- */
+/** 比赛公告类型 */
 export enum NoticeType {
   Normal = 'Normal',
   FirstBlood = 'FirstBlood',
@@ -601,81 +560,71 @@ export enum NoticeType {
   NewChallenge = 'NewChallenge',
 }
 
-/**
- * 比赛通知（Edit）
- */
+/** 比赛通知（Edit） */
 export interface GameNoticeModel {
-  /** 通知内容 */
+  /**
+   * 通知内容
+   * @minLength 1
+   */
   content: string
 }
 
-/**
- * 题目详细信息（Edit）
- */
+/** 题目详细信息（Edit） */
 export interface ChallengeEditDetailModel {
   /**
    * 题目Id
    * @format int32
    */
   id?: number
-
-  /** 题目名称 */
+  /**
+   * 题目名称
+   * @minLength 1
+   */
   title: string
-
   /** 题目内容 */
   content?: string
-
   /** 题目标签 */
   tag: ChallengeTag
-
   /** 题目类型 */
   type: ChallengeType
-
   /** 题目提示 */
   hints?: string[]
-
   /** Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag */
   flagTemplate?: string | null
-
   /** 是否启用题目 */
   isEnabled: boolean
-
-  /** 镜像名称与标签 */
+  /**
+   * 镜像名称与标签
+   * @minLength 1
+   */
   containerImage: string
-
   /**
    * 运行内存限制 (MB)
    * @format int32
    */
   memoryLimit: number
-
   /**
    * CPU 运行数量限制
    * @format int32
    */
   cpuCount: number
-
   /**
    * 存储限制 (MB)
    * @format int32
    */
   storageLimit: number
-
   /**
    * 镜像暴露端口
    * @format int32
    */
   containerExposePort: number
-
   /** 是否为特权容器 */
   privilegedContainer?: boolean | null
-
   /**
    * 初始分数
    * @format int32
    */
   originalScore: number
-
   /**
    * 最低分数比例
    * @format double
@@ -683,35 +632,27 @@ export interface ChallengeEditDetailModel {
    * @max 1
    */
   minScoreRate: number
-
   /**
    * 难度系数
    * @format double
    */
   difficulty: number
-
   /**
    * 通过人数
    * @format int32
    */
   acceptedCount: number
-
   /** 统一文件名（仅用于动态附件） */
   fileName?: string | null
-
   /** 题目附件（动态附件存放于 FlagInfoModel） */
   attachment?: Attachment | null
-
   /** 测试容器 */
   testContainer?: ContainerInfoModel | null
-
   /** 题目 Flag 信息 */
   flags: FlagInfoModel[]
 }
 
-/**
- * 题目标签
- */
+/** 题目标签 */
 export enum ChallengeTag {
   Misc = 'Misc',
   Crypto = 'Crypto',
@@ -735,22 +676,8 @@ export enum ChallengeType {
 export interface Attachment {
   /** @format int32 */
   id: number
-
   /** 附件类型 */
   type: FileType
-
-  /** Flag 对应附件 (远程文件） */
-  remoteUrl?: string | null
-
-  /**
-   * 本地文件 Id
-   * @format int32
-   */
-  localFileId?: number | null
-
-  /** Flag 对应文件（本地文件） */
-  localFile?: LocalFile | null
-
   /** 文件默认 Url */
   url?: string | null
 }
@@ -764,83 +691,68 @@ export enum FileType {
 export interface ContainerInfoModel {
   /** 容器状态 */
   status?: ContainerStatus
-
   /**
    * 容器创建时间
    * @format date-time
    */
   startedAt?: string
-
   /**
    * 容器期望终止时间
    * @format date-time
    */
   expectStopAt?: string
-
   /** 题目入口 */
   entry?: string
 }
 
-/**
- * 容器状态
- */
+/** 容器状态 */
 export enum ContainerStatus {
   Pending = 'Pending',
   Running = 'Running',
   Destroyed = 'Destroyed',
 }
 
-/**
- * Flag 信息（Edit）
- */
+/** Flag 信息（Edit） */
 export interface FlagInfoModel {
   /**
    * Flag Id
    * @format int32
    */
   id?: number
-
   /** Flag文本 */
   flag?: string
-
   /** Flag 对应附件 */
   attachment?: Attachment | null
 }
 
-/**
- * 基础题目信息（Edit）
- */
+/** 基础题目信息（Edit） */
 export interface ChallengeInfoModel {
   /**
    * 题目Id
    * @format int32
    */
   id?: number
-
-  /** 题目名称 */
+  /**
+   * 题目名称
+   * @minLength 1
+   */
   title: string
-
   /** 题目标签 */
   tag?: ChallengeTag
-
   /** 题目类型 */
   type?: ChallengeType
-
   /** 是否启用题目 */
   isEnabled?: boolean
-
   /**
    * 题目分值
    * @format int32
    */
   score?: number
-
   /**
    * 最低分值
    * @format int32
    */
   minScore?: number
-
   /**
    * 最初分值
    * @format int32
@@ -848,31 +760,28 @@ export interface ChallengeInfoModel {
   originalScore?: number
 }
 
-/**
- * 题目更新信息（Edit）
- */
+/** 题目更新信息（Edit） */
 export interface ChallengeUpdateModel {
-  /** 题目名称 */
+  /**
+   * 题目名称
+   * @minLength 1
+   */
   title?: string | null
-
   /** 题目内容 */
   content?: string | null
-
-  /** Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag */
+  /**
+   * Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+   * @maxLength 120
+   */
   flagTemplate?: string | null
-
   /** 题目标签 */
   tag?: ChallengeTag | null
-
   /** 题目提示 */
   hints?: string[] | null
-
   /** 是否启用题目 */
   isEnabled?: boolean | null
-
   /** 镜像名称与标签 */
   containerImage?: string | null
-
   /**
    * 运行内存限制 (MB)
    * @format int32
@@ -880,7 +789,6 @@ export interface ChallengeUpdateModel {
    * @max 1048576
    */
   memoryLimit?: number | null
-
   /**
    * CPU 运行数量限制
    * @format int32
@@ -888,7 +796,6 @@ export interface ChallengeUpdateModel {
    * @max 1024
    */
   cpuCount?: number | null
-
   /**
    * 存储限制 (MB)
    * @format int32
@@ -896,22 +803,18 @@ export interface ChallengeUpdateModel {
    * @max 1048576
    */
   storageLimit?: number | null
-
   /**
    * 镜像暴露端口
    * @format int32
    */
   containerExposePort?: number | null
-
   /** 是否为特权容器 */
   privilegedContainer?: boolean | null
-
   /**
    * 初始分数
    * @format int32
    */
   originalScore?: number | null
-
   /**
    * 最低分数比例
    * @format double
@@ -919,51 +822,42 @@ export interface ChallengeUpdateModel {
    * @max 1
    */
   minScoreRate?: number | null
-
   /**
    * 难度系数
    * @format double
    */
   difficulty?: number | null
-
   /** 统一文件名 */
   fileName?: string | null
 }
 
-/**
- * 新建附件信息（Edit）
- */
+/** 新建附件信息（Edit） */
 export interface AttachmentCreateModel {
   /** 附件类型 */
   attachmentType?: FileType
-
   /** 文件哈希（本地文件） */
   fileHash?: string | null
-
   /** 文件 Url（远程文件） */
   remoteUrl?: string | null
 }
 
-/**
- * 新建 Flag 信息（Edit）
- */
+/** 新建 Flag 信息（Edit） */
 export interface FlagCreateModel {
-  /** Flag文本 */
+  /**
+   * Flag文本
+   * @minLength 1
+   * @maxLength 125
+   */
   flag: string
-
   /** 附件类型 */
   attachmentType?: FileType
-
   /** 文件哈希（本地文件） */
   fileHash?: string | null
-
   /** 文件 Url（远程文件） */
   remoteUrl?: string | null
 }
 
-/**
- * 任务执行状态
- */
+/** 任务执行状态 */
 export enum TaskStatus {
   Success = 'Success',
   Fail = 'Fail',
@@ -974,34 +868,26 @@ export enum TaskStatus {
   Pending = 'Pending',
 }
 
-/**
- * 比赛基本信息，不包含详细介绍与当前队伍报名状态
- */
+/** 比赛基本信息，不包含详细介绍与当前队伍报名状态 */
 export interface BasicGameInfoModel {
   /** @format int32 */
   id?: number
-
   /** 比赛标题 */
   title?: string
-
   /** 比赛描述 */
   summary?: string
-
   /** 头图 */
   poster?: string | null
-
   /**
    * 队员数量限制
    * @format int32
    */
   limit?: number
-
   /**
    * 开始时间
    * @format date-time
    */
   start?: string
-
   /**
    * 结束时间
    * @format date-time
@@ -1009,64 +895,47 @@ export interface BasicGameInfoModel {
   end?: string
 }
 
-/**
- * 比赛详细信息，包含详细介绍与当前队伍报名状态
- */
+/** 比赛详细信息，包含详细介绍与当前队伍报名状态 */
 export interface DetailedGameInfoModel {
   /** @format int32 */
   id?: number
-
   /** 比赛标题 */
   title?: string
-
   /** 比赛描述 */
   summary?: string
-
   /** 比赛详细介绍 */
   content?: string
-
   /** 是否为隐藏比赛 */
   hidden?: boolean
-
   /** 参赛所属单位列表 */
   organizations?: string[] | null
-
   /** 是否需要邀请码 */
   inviteCodeRequired?: boolean
-
   /** 比赛头图 */
   poster?: string | null
-
   /**
    * 队员数量限制
    * @format int32
    */
   limit?: number
-
   /**
    * 报名参赛队伍数量
    * @format int32
    */
   teamCount?: number
-
   /** 当前报名的组织 */
   organization?: string | null
-
   /** 参赛队伍名称 */
   teamName?: string | null
-
   /** 比赛是否为练习模式（比赛结束够依然可以访问） */
   practiceMode?: boolean
-
   /** 队伍参与状态 */
   status?: ParticipationStatus
-
   /**
    * 开始时间
    * @format date-time
    */
   start?: string
-
   /**
    * 结束时间
    * @format date-time
@@ -1080,30 +949,23 @@ export interface GameJoinModel {
    * @format int32
    */
   teamId?: number
-
   /** 参赛单位 */
   organization?: string | null
-
   /** 参赛邀请码 */
   inviteCode?: string | null
 }
 
-/**
- * 排行榜
- */
+/** 排行榜 */
 export interface ScoreboardModel {
   /**
    * 更新时间
    * @format date-time
    */
   updateTimeUTC?: string
-
   /** 前十名的时间线 */
   timeLines?: Record<string, TopTimeLine[]>
-
   /** 队伍信息 */
   items?: ScoreboardItem[]
-
   /** 题目信息 */
   challenges?: Record<string, ChallengeInfo[]>
 }
@@ -1114,10 +976,8 @@ export interface TopTimeLine {
    * @format int32
    */
   id?: number
-
   /** 队伍名称 */
   name?: string
-
   /** 时间线 */
   items?: TimeLine[]
 }
@@ -1128,7 +988,6 @@ export interface TimeLine {
    * @format date-time
    */
   time?: string
-
   /**
    * 得分
    * @format int32
@@ -1142,46 +1001,37 @@ export interface ScoreboardItem {
    * @format int32
    */
   id?: number
-
   /** 队伍名称 */
   name?: string
-
   /** 参赛所属组织 */
   organization?: string | null
-
   /** 队伍头像 */
   avatar?: string | null
-
   /**
    * 分数
    * @format int32
    */
   score?: number
-
   /**
    * 排名
    * @format int32
    */
   rank?: number
-
   /**
    * 参赛所属组织排名
    * @format int32
    */
   organizationRank?: number | null
-
   /**
    * 已解出的题目数量
    * @format int32
    */
   solvedCount?: number
-
   /**
    * 得分时间
    * @format date-time
    */
   lastSubmissionTime?: string
-
   /** 题目情况列表 */
   challenges?: ChallengeItem[]
 }
@@ -1192,19 +1042,15 @@ export interface ChallengeItem {
    * @format int32
    */
   id?: number
-
   /**
    * 题目分值
    * @format int32
    */
   score?: number
-
   /** 未解出、一血、二血、三血或者其他 */
   type?: SubmissionType
-
   /** 解题用户名 */
   userName?: string | null
-
   /**
    * 题目提交的时间，为了计算时间线
    * @format date-time
@@ -1212,9 +1058,7 @@ export interface ChallengeItem {
   time?: string | null
 }
 
-/**
- * 提交类型
- */
+/** 提交类型 */
 export enum SubmissionType {
   Unaccepted = 'Unaccepted',
   FirstBlood = 'FirstBlood',
@@ -1229,25 +1073,20 @@ export interface ChallengeInfo {
    * @format int32
    */
   id?: number
-
   /** 题目名称 */
   title?: string
-
   /** 题目标签 */
   tag?: ChallengeTag
-
   /**
    * 题目分值
    * @format int32
    */
   score?: number
-
   /**
    * 解出队伍数量
    * @format int32
    */
   solved?: number
-
   /** 题目三血 */
   bloods?: (Blood | null)[]
 }
@@ -1258,13 +1097,10 @@ export interface Blood {
    * @format int32
    */
   id?: number
-
   /** 队伍名称 */
   name?: string
-
   /** 队伍头像 */
   avatar?: string | null
-
   /**
    * 获得此血的时间
    * @format date-time
@@ -1273,32 +1109,30 @@ export interface Blood {
 }
 
 /**
-* 比赛事件，记录但不会发往客户端。
-信息涵盖Flag提交信息、容器启动关闭信息、作弊信息、题目分数变更信息
-*/
+ * 比赛事件，记录但不会发往客户端。
+ * 信息涵盖Flag提交信息、容器启动关闭信息、作弊信息、题目分数变更信息
+ */
 export interface GameEvent {
   /** 事件类型 */
   type: EventType
-
-  /** 事件内容 */
+  /**
+   * 事件内容
+   * @minLength 1
+   */
   content: string
-
   /**
    * 发布时间
    * @format date-time
+   * @minLength 1
    */
   time: string
-
   /** 相关用户名 */
   user?: string
-
   /** 相关队伍名 */
   team?: string
 }
 
-/**
- * 比赛事件类型
- */
+/** 比赛事件类型 */
 export enum EventType {
   Normal = 'Normal',
   ContainerStart = 'ContainerStart',
@@ -1308,31 +1142,27 @@ export enum EventType {
 }
 
 export interface Submission {
-  /** 提交的答案字符串 */
+  /**
+   * 提交的答案字符串
+   * @maxLength 127
+   */
   answer?: string
-
   /** 提交的答案状态 */
   status?: AnswerResult
-
   /**
    * 答案提交的时间
    * @format date-time
    */
   time?: string
-
   /** 提交用户 */
   user?: string
-
   /** 提交队伍 */
   team?: string
-
   /** 提交题目 */
   challenge?: string
 }
 
-/**
- * 判定结果
- */
+/** 判定结果 */
 export enum AnswerResult {
   FlagSubmitted = 'FlagSubmitted',
   Accepted = 'Accepted',
@@ -1344,97 +1174,81 @@ export enum AnswerResult {
 export interface GameDetailModel {
   /** 题目信息 */
   challenges?: Record<string, ChallengeInfo[]>
-
   /** 积分榜信息 */
   rank?: ScoreboardItem | null
-
-  /** 队伍 Token */
+  /**
+   * 队伍 Token
+   * @minLength 1
+   */
   teamToken: string
+  /**
+   * WriteUp 提交截止时间
+   * @format date-time
+   * @minLength 1
+   */
+  wpddl: string
 }
 
-/**
- * 比赛参与对象，用于审核查看（Admin）
- */
+/** 比赛参与对象，用于审核查看（Admin） */
 export interface ParticipationInfoModel {
   /**
    * 参与对象 Id
    * @format int32
    */
   id?: number
-
   /** 参与队伍 */
   team?: TeamWithDetailedUserInfo
-
   /** 注册的成员 */
   registeredMembers?: string[]
-
   /** 参赛所属组织 */
   organization?: string | null
-
   /** 参与状态 */
   status?: ParticipationStatus
 }
 
-/**
- * 比赛队伍详细信息，用于审核查看（Admin）
- */
+/** 比赛队伍详细信息，用于审核查看（Admin） */
 export interface TeamWithDetailedUserInfo {
   /**
    * 队伍 Id
    * @format int32
    */
   id?: number
-
   /** 队伍名称 */
   name?: string | null
-
   /** 队伍签名 */
   bio?: string | null
-
   /** 头像链接 */
   avatar?: string | null
-
   /** 是否锁定 */
   locked?: boolean
-
   /** 队长 Id */
   captainId?: string
-
   /** 队伍成员 */
   members?: ProfileUserInfoModel[] | null
 }
 
-/**
- * 题目详细信息
- */
+/** 题目详细信息 */
 export interface ChallengeDetailModel {
   /**
    * 题目 Id
    * @format int32
    */
   id?: number
-
   /** 题目名称 */
   title?: string
-
   /** 题目内容 */
   content?: string
-
   /** 题目标签 */
   tag?: ChallengeTag
-
   /** 题目提示 */
   hints?: string[] | null
-
   /**
    * 题目当前分值
    * @format int32
    */
   score?: number
-
   /** 题目类型 */
   type?: ChallengeType
-
   /** Flag 上下文 */
   context?: ClientFlagContext
 }
@@ -1445,70 +1259,75 @@ export interface ClientFlagContext {
    * @format date-time
    */
   closeTime?: string | null
-
   /** 题目实例的连接方式 */
   instanceEntry?: string | null
-
   /** 附件 Url */
   url?: string | null
 }
 
-/**
- * flag 提交
- */
+/** flag 提交 */
 export interface FlagSubmitModel {
   /**
    * flag 内容
    * fix: 防止前端的意外提交 (number/float/null) 可能被错误转换
+   * @minLength 1
+   * @maxLength 126
    */
   flag: string
 }
 
-/**
- * 文章信息
- */
+/** 文章信息 */
 export interface PostInfoModel {
-  /** 文章 Id */
+  /**
+   * 文章 Id
+   * @minLength 1
+   */
   id: string
-
-  /** 文章标题 */
+  /**
+   * 文章标题
+   * @minLength 1
+   */
   title: string
-
-  /** 文章总结 */
+  /**
+   * 文章总结
+   * @minLength 1
+   */
   summary: string
-
   /** 是否置顶 */
   isPinned: boolean
-
   /** 文章标签 */
   tags?: string[] | null
-
   /** 作者头像 */
   autherAvatar?: string | null
-
   /** 作者名称 */
   autherName?: string | null
-
   /**
    * 更新时间
    * @format date-time
+   * @minLength 1
    */
   time: string
 }
 
-/**
- * 队伍信息更新
- */
+/** 队伍信息更新 */
 export interface TeamUpdateModel {
-  /** 队伍名称 */
+  /**
+   * 队伍名称
+   * @maxLength 15
+   */
   name?: string | null
-
-  /** 队伍签名 */
+  /**
+   * 队伍签名
+   * @maxLength 31
+   */
   bio?: string | null
 }
 
 export interface TeamTransferModel {
-  /** 新队长 Id */
+  /**
+   * 新队长 Id
+   * @minLength 1
+   */
   newCaptainId: string
 }
 
@@ -1882,7 +1701,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 更新用户头像接口
      * @request PUT:/api/account/avatar
      */
-    accountAvatar: (data: { file?: File }, params: RequestParams = {}) =>
+    accountAvatar: (
+      data: {
+        /** @format binary */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<string, RequestResponse>({
         path: `/api/account/avatar`,
         method: 'PUT',
@@ -1957,7 +1782,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部用户
      * @request GET:/api/admin/users
      */
-    adminUsers: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
+    adminUsers: (
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<UserInfoModel[], RequestResponse>({
         path: `/api/admin/users`,
         method: 'GET',
@@ -1974,7 +1813,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users
      */
     useAdminUsers: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -1992,7 +1842,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/users
      */
     mutateAdminUsers: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       data?: UserInfoModel[] | Promise<UserInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<UserInfoModel[]>([`/api/admin/users`, query], data, options),
@@ -2005,7 +1866,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 搜索用户
      * @request POST:/api/admin/users/search
      */
-    adminSearchUsers: (query?: { hint?: string }, params: RequestParams = {}) =>
+    adminSearchUsers: (
+      query?: {
+        hint?: string
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<UserInfoModel[], RequestResponse>({
         path: `/api/admin/users/search`,
         method: 'POST',
@@ -2022,7 +1888,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部队伍信息
      * @request GET:/api/admin/teams
      */
-    adminTeams: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
+    adminTeams: (
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<TeamInfoModel[], RequestResponse>({
         path: `/api/admin/teams`,
         method: 'GET',
@@ -2039,7 +1919,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/teams
      */
     useAdminTeams: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -2057,7 +1948,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/teams
      */
     mutateAdminTeams: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       data?: TeamInfoModel[] | Promise<TeamInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<TeamInfoModel[]>([`/api/admin/teams`, query], data, options),
@@ -2070,7 +1972,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 搜索队伍
      * @request POST:/api/admin/teams/search
      */
-    adminSearchTeams: (query?: { hint?: string }, params: RequestParams = {}) =>
+    adminSearchTeams: (
+      query?: {
+        hint?: string
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<TeamInfoModel[], RequestResponse>({
         path: `/api/admin/teams/search`,
         method: 'POST',
@@ -2196,7 +2103,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/logs
      */
     adminLogs: (
-      query?: { level?: string | null; count?: number; skip?: number },
+      query?: {
+        /** @default "All" */
+        level?: string | null
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       params: RequestParams = {}
     ) =>
       this.request<LogMessageModel[], RequestResponse>({
@@ -2215,7 +2135,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/logs
      */
     useAdminLogs: (
-      query?: { level?: string | null; count?: number; skip?: number },
+      query?: {
+        /** @default "All" */
+        level?: string | null
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -2233,7 +2166,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/logs
      */
     mutateAdminLogs: (
-      query?: { level?: string | null; count?: number; skip?: number },
+      query?: {
+        /** @default "All" */
+        level?: string | null
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions
     ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
@@ -2254,6 +2200,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminWriteups
+     * @summary 获取全部 Writeup 基本信息
+     * @request PUT:/api/admin/writeups/{id}
+     */
+    adminWriteups: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/writeups/${id}`,
+        method: 'PUT',
+        ...params,
+      }),
+
+    /**
      * @description 使用此接口获取全部日志，需要Admin权限
      *
      * @tags Admin
@@ -2261,7 +2222,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部文件
      * @request GET:/api/admin/files
      */
-    adminFiles: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
+    adminFiles: (
+      query?: {
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<LocalFile[], RequestResponse>({
         path: `/api/admin/files`,
         method: 'GET',
@@ -2278,7 +2253,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/files
      */
     useAdminFiles: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -2293,7 +2279,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/files
      */
     mutateAdminFiles: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       data?: LocalFile[] | Promise<LocalFile[]>,
       options?: MutatorOptions
     ) => mutate<LocalFile[]>([`/api/admin/files`, query], data, options),
@@ -2352,8 +2349,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/assets
      */
     assetsUpload: (
-      data: { files?: File[] },
-      query?: { filename?: string | null },
+      data: {
+        files?: File[]
+      },
+      query?: {
+        /** 统一文件名 */
+        filename?: string | null
+      },
       params: RequestParams = {}
     ) =>
       this.request<LocalFile[], RequestResponse>({
@@ -2459,7 +2461,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取比赛列表
      * @request GET:/api/edit/games
      */
-    editGetGames: (query?: { count?: number; skip?: number }, params: RequestParams = {}) =>
+    editGetGames: (
+      query?: {
+        /** @format int32 */
+        count?: number
+        /** @format int32 */
+        skip?: number
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<GameInfoModel[], RequestResponse>({
         path: `/api/edit/games`,
         method: 'GET',
@@ -2476,7 +2486,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games
      */
     useEditGetGames: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /** @format int32 */
+        count?: number
+        /** @format int32 */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -2494,7 +2509,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/edit/games
      */
     mutateEditGetGames: (
-      query?: { count?: number; skip?: number },
+      query?: {
+        /** @format int32 */
+        count?: number
+        /** @format int32 */
+        skip?: number
+      },
       data?: GameInfoModel[] | Promise<GameInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<GameInfoModel[]>([`/api/edit/games`, query], data, options),
@@ -2581,7 +2601,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 更新比赛头图
      * @request PUT:/api/edit/games/{id}/poster
      */
-    editUpdateGamePoster: (id: number, data: { file?: File }, params: RequestParams = {}) =>
+    editUpdateGamePoster: (
+      id: number,
+      data: {
+        /** @format binary */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<string, RequestResponse>({
         path: `/api/edit/games/${id}/poster`,
         method: 'PUT',
@@ -3090,7 +3117,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     gameNotices: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       params: RequestParams = {}
     ) =>
       this.request<GameNotice[], RequestResponse>({
@@ -3110,7 +3148,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useGameNotices: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -3129,7 +3178,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameNotices: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       data?: GameNotice[] | Promise<GameNotice[]>,
       options?: MutatorOptions
     ) => mutate<GameNotice[]>([`/api/game/${id}/notices`, query], data, options),
@@ -3144,7 +3204,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     gameEvents: (
       id: number,
-      query?: { hideContainer?: boolean; count?: number; skip?: number },
+      query?: {
+        /**
+         * 隐藏容器
+         * @default false
+         */
+        hideContainer?: boolean
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       params: RequestParams = {}
     ) =>
       this.request<GameEvent[], RequestResponse>({
@@ -3164,7 +3240,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useGameEvents: (
       id: number,
-      query?: { hideContainer?: boolean; count?: number; skip?: number },
+      query?: {
+        /**
+         * 隐藏容器
+         * @default false
+         */
+        hideContainer?: boolean
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -3183,7 +3275,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameEvents: (
       id: number,
-      query?: { hideContainer?: boolean; count?: number; skip?: number },
+      query?: {
+        /**
+         * 隐藏容器
+         * @default false
+         */
+        hideContainer?: boolean
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       data?: GameEvent[] | Promise<GameEvent[]>,
       options?: MutatorOptions
     ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),
@@ -3198,7 +3306,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     gameSubmissions: (
       id: number,
-      query?: { type?: AnswerResult | null; count?: number; skip?: number },
+      query?: {
+        /** 提交类型 */
+        type?: AnswerResult | null
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       params: RequestParams = {}
     ) =>
       this.request<Submission[], RequestResponse>({
@@ -3218,7 +3339,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useGameSubmissions: (
       id: number,
-      query?: { type?: AnswerResult | null; count?: number; skip?: number },
+      query?: {
+        /** 提交类型 */
+        type?: AnswerResult | null
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
@@ -3237,7 +3371,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameSubmissions: (
       id: number,
-      query?: { type?: AnswerResult | null; count?: number; skip?: number },
+      query?: {
+        /** 提交类型 */
+        type?: AnswerResult | null
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
       data?: Submission[] | Promise<Submission[]>,
       options?: MutatorOptions
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
@@ -3534,6 +3681,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         data,
         options
       ),
+
+    /**
+     * @description 提交赛后题解，需要User权限
+     *
+     * @tags Game
+     * @name GameSubmitWriteup
+     * @summary 提交 Writeup
+     * @request POST:/api/game/{id}/writeup
+     */
+    gameSubmitWriteup: (
+      id: number,
+      data: {
+        /** @format binary */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}/writeup`,
+        method: 'POST',
+        body: data,
+        type: ContentType.FormData,
+        ...params,
+      }),
 
     /**
      * @description 创建容器，需要User权限
@@ -4036,7 +4207,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 更新队伍头像接口
      * @request PUT:/api/team/{id}/avatar
      */
-    teamAvatar: (id: number, data: { file?: File }, params: RequestParams = {}) =>
+    teamAvatar: (
+      id: number,
+      data: {
+        /** @format binary */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<string, RequestResponse>({
         path: `/api/team/${id}/avatar`,
         method: 'PUT',
