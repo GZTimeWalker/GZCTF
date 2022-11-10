@@ -9,6 +9,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CTFServer.Controllers;
 
@@ -145,15 +146,15 @@ public class GameController : ControllerBase
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", 404));
 
-        if (team.Members.All(u => u.Id != user.Id))
+        if (team.Members.All(u => u.Id != user!.Id))
             return BadRequest(new RequestResponse("您不是此队伍的队员"));
 
         // 如果已经报名（非拒绝状态）
-        if (await participationRepository.CheckRepeatParticipation(user, game, token))
+        if (await participationRepository.CheckRepeatParticipation(user!, game, token))
             return BadRequest(new RequestResponse("您已经在其他队伍报名参赛"));
 
         // 移除所有的已经存在的报名
-        await participationRepository.RemoveUserParticipations(user, game, token);
+        await participationRepository.RemoveUserParticipations(user!, game, token);
 
         // 根据队伍获取报名信息
         var part = await participationRepository.GetParticipation(team, game, token);
@@ -177,7 +178,7 @@ public class GameController : ControllerBase
             return BadRequest(new RequestResponse("队伍参与人数超过比赛限制"));
 
         // 报名当前成员
-        part.Members.Add(new(user, game, team));
+        part.Members.Add(new(user!, game, team));
 
         part.Organization = model.Organization;
 
@@ -219,9 +220,9 @@ public class GameController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
-        var part = await participationRepository.GetParticipation(user, game, token);
+        var part = await participationRepository.GetParticipation(user!, game, token);
 
-        if (part is null || part.Members.All(u => u.UserId != user.Id))
+        if (part is null || part.Members.All(u => u.UserId != user!.Id))
             return BadRequest(new RequestResponse("无法退出未报名的比赛"));
 
         if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Denied)
@@ -229,7 +230,7 @@ public class GameController : ControllerBase
 
         // FIXME: 审核通过后可以添加新用户、但不能退出？
 
-        part.Members.RemoveWhere(u => u.UserId == user.Id);
+        part.Members.RemoveWhere(u => u.UserId == user!.Id);
 
         if (part.Members.Count == 0)
             await participationRepository.RemoveParticipation(part, token);
@@ -547,6 +548,7 @@ public class GameController : ControllerBase
     /// <response code="404">比赛未找到</response>
     [RequireUser]
     [HttpPost("{id}/Challenges/{challengeId}")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Submit))]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -597,7 +599,7 @@ public class GameController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var submission = await submissionRepository.GetSubmission(id, challengeId, userId, submitId, token);
+        var submission = await submissionRepository.GetSubmission(id, challengeId, userId!, submitId, token);
 
         if (submission is null)
             return NotFound(new RequestResponse("提交未找到", 404));
@@ -623,6 +625,7 @@ public class GameController : ControllerBase
     /// <response code="400">题目不可创建容器</response>
     [RequireUser]
     [HttpPost("{id}/Container/{challengeId}")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -642,7 +645,7 @@ public class GameController : ControllerBase
         if (!instance.Challenge.Type.IsContainer())
             return BadRequest(new RequestResponse("题目不可创建容器"));
 
-        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(15))
+        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
             return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
             {
                 StatusCode = 429
@@ -679,6 +682,7 @@ public class GameController : ControllerBase
     /// <response code="400">容器未创建或无法延期</response>
     [RequireUser]
     [HttpPost("{id}/Container/{challengeId}/Prolong")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -722,6 +726,7 @@ public class GameController : ControllerBase
     /// <response code="400">题目不可创建容器</response>
     [RequireUser]
     [HttpDelete("{id}/Container/{challengeId}")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -744,7 +749,7 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器"));
 
-        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(15))
+        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
             return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
             {
                 StatusCode = 429
@@ -793,7 +798,7 @@ public class GameController : ControllerBase
         if (res.Game is null)
             return res.WithResult(NotFound(new RequestResponse("比赛未找到", 404)));
 
-        var part = await participationRepository.GetParticipation(res.User, res.Game, token);
+        var part = await participationRepository.GetParticipation(res.User!, res.Game, token);
 
         if (part is null)
             return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));

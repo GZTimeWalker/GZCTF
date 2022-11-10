@@ -1,20 +1,21 @@
-﻿using System.Text.Json;
+﻿using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace CTFServer.Utils;
 
 public static class CacheHelper
 {
-    public static async Task<T> GetOrCreateAsync<T, L>(this IDistributedCache cache, ILogger<L> logger, string key, Func<DistributedCacheEntryOptions, Task<T>> func) where T : class
+    public static async Task<T> GetOrCreateAsync<T, L>(this IDistributedCache cache, ILogger<L> logger, string key, Func<DistributedCacheEntryOptions, Task<T>> func)
+        where T : class
     {
         var value = await cache.GetAsync(key);
-        T? result = null;
+        T? result = default(T);
 
         if (value is not null)
         {
             try
             {
-                result = JsonSerializer.Deserialize<T>(value);
+                result = MemoryPackSerializer.Deserialize<T>(value);
             }
             catch
             { }
@@ -22,11 +23,12 @@ public static class CacheHelper
                 return result;
         }
 
-        logger.SystemLog($"重建缓存：{key}", TaskStatus.Pending, LogLevel.Debug);
-
         var cacheOptions = new DistributedCacheEntryOptions();
         result = await func(cacheOptions);
-        await cache.SetAsync(key, JsonSerializer.SerializeToUtf8Bytes(result), cacheOptions);
+        var bytes = MemoryPackSerializer.Serialize(result);
+        await cache.SetAsync(key, bytes, cacheOptions);
+
+        logger.SystemLog($"重建缓存：{key} @ {bytes.Length} bytes", TaskStatus.Success, LogLevel.Debug);
         return result;
     }
 }

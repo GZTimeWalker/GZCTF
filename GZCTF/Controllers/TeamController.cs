@@ -6,6 +6,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Controllers;
@@ -77,7 +78,7 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        return Ok((await teamRepository.GetUserTeams(user, token)).Select(t => TeamInfoModel.FromTeam(t)));
+        return Ok((await teamRepository.GetUserTeams(user!, token)).Select(t => TeamInfoModel.FromTeam(t)));
     }
 
     /// <summary>
@@ -92,6 +93,7 @@ public class TeamController : ControllerBase
     /// <response code="400">队伍不存在</response>
     [HttpPost]
     [RequireUser]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Concurrency))]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -100,20 +102,20 @@ public class TeamController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        var teams = await teamRepository.GetUserTeams(user, token);
+        var teams = await teamRepository.GetUserTeams(user!, token);
 
-        if (teams.Length > 1 && teams.Any(t => t.CaptainId == user.Id))
+        if (teams.Length > 1 && teams.Any(t => t.CaptainId == user!.Id))
             return BadRequest(new RequestResponse("不允许创建多个队伍"));
 
         if (string.IsNullOrEmpty(model.Name))
             return BadRequest(new RequestResponse("队伍名不能为空"));
 
-        var team = await teamRepository.CreateTeam(model, user, token);
+        var team = await teamRepository.CreateTeam(model, user!, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍创建失败"));
 
-        await userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(user!);
 
         logger.Log($"创建队伍 {team.Name}", user, TaskStatus.Success);
 
@@ -147,7 +149,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (team.CaptainId != user.Id)
+        if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         team.UpdateInfo(model);
@@ -184,7 +186,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (team.CaptainId != user.Id)
+        if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
@@ -231,7 +233,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (team.CaptainId != user.Id)
+        if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         return Ok(team.InviteCode);
@@ -263,7 +265,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (team.CaptainId != user.Id)
+        if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         team.UpdateInviteToken();
@@ -300,7 +302,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (team.CaptainId != user.Id)
+        if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         var trans = await teamRepository.BeginTransactionAsync(token);
@@ -379,10 +381,10 @@ public class TeamController : ControllerBase
 
             var user = await userManager.GetUserAsync(User);
 
-            if (team.Members.Any(m => m.Id == user.Id))
+            if (team.Members.Any(m => m.Id == user!.Id))
                 return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
 
-            team.Members.Add(user);
+            team.Members.Add(user!);
 
             await teamRepository.SaveAsync(cancelToken);
             await trans.CommitAsync(cancelToken);
@@ -428,15 +430,14 @@ public class TeamController : ControllerBase
 
             var user = await userManager.GetUserAsync(User);
 
-            if (team.Members.All(m => m.Id != user.Id))
+            if (team.Members.All(m => m.Id != user!.Id))
                 return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))
                 return BadRequest(new RequestResponse("队伍已锁定"));
 
-            team.Members.Remove(user);
+            team.Members.Remove(user!);
 
-            await userManager.UpdateAsync(user);
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
@@ -473,7 +474,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (team.CaptainId != user.Id)
+        if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         if (file.Length == 0)
@@ -522,7 +523,7 @@ public class TeamController : ControllerBase
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
-        if (team.CaptainId != user.Id)
+        if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))

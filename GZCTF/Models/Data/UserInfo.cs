@@ -2,15 +2,18 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using CTFServer.Models.Request.Account;
 using CTFServer.Models.Request.Admin;
+using MemoryPack;
 using Microsoft.AspNetCore.Identity;
 
 namespace CTFServer.Models;
 
-public class UserInfo : IdentityUser
+[MemoryPackable]
+public partial class UserInfo : IdentityUser
 {
     /// <summary>
     /// 用户角色
     /// </summary>
+    [ProtectedPersonalData]
     public Role Role { get; set; } = Role.User;
 
     /// <summary>
@@ -65,11 +68,13 @@ public class UserInfo : IdentityUser
     /// <summary>
     /// 个人提交记录
     /// </summary>
+    [MemoryPackIgnore]
     public List<Submission> Submissions { get; set; } = new();
 
     /// <summary>
     /// 参与的队伍
     /// </summary>
+    [MemoryPackIgnore]
     public List<Team> Teams { get; set; } = new();
 
     #endregion 数据库关系
@@ -91,6 +96,7 @@ public class UserInfo : IdentityUser
     }
 
     [NotMapped]
+    [MemoryPackIgnore]
     public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
 
     internal void UpdateUserInfo(UpdateUserInfoModel model)

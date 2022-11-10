@@ -19,5 +19,5 @@ public record Config : IEquatable<Config>
 
     [Key]
     public string ConfigKey { get; set; } = string.Empty;
-    public string Value { get; set; } = string.Empty;
+    public string? Value { get; set; }
 }

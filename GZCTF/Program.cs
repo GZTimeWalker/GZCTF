@@ -2,7 +2,6 @@ global using CTFServer.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using AspNetCoreRateLimit;
 using CTFServer.Extensions;
 using CTFServer.Hubs;
 using CTFServer.Middlewares;
@@ -78,28 +77,24 @@ else
 #endregion AppDbContext
 
 #region Configuration
-if (!IsTesting)
+if(!IsTesting)
 {
-    builder.Host.ConfigureAppConfiguration((host, config) =>
+    try
     {
-        config.AddJsonFile("ratelimit.json", optional: true, reloadOnChange: true);
-        try
+        builder.Configuration.AddEntityConfiguration(options =>
         {
-            config.AddEntityConfiguration(options =>
-            {
-                if (builder.Configuration.GetSection("ConnectionStrings").Exists())
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
-                else
-                    options.UseInMemoryDatabase("TestDb");
-            });
-        }
-        catch
-        {
-            Log.Logger.Fatal("数据库连接失败，请检查 Database 连接字符串配置");
-            Thread.Sleep(30000);
-            Environment.Exit(1);
-        }
-    });
+            if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
+                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+            else
+                options.UseInMemoryDatabase("TestDb");
+        });
+    }
+    catch
+    {
+        Log.Logger.Fatal("数据库连接失败，请检查 Database 连接字符串配置");
+        Thread.Sleep(30000);
+        Environment.Exit(1);
+    }
 }
 #endregion Configuration
 
@@ -128,19 +123,19 @@ var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
 
 #region Cache
 
-if(!builder.Configuration.GetSection("ConnectionStrings").GetSection("RedisCache").Exists())
+var redisConStr = builder.Configuration.GetConnectionString("RedisCache");
+if (string.IsNullOrWhiteSpace(redisConStr))
 {
     builder.Services.AddDistributedMemoryCache();
 }
 else
 {
-    var constr = builder.Configuration.GetConnectionString("RedisCache");
     builder.Services.AddStackExchangeRedisCache(options =>
     {
-        options.Configuration = constr;
+        options.Configuration = redisConStr;
     });
 
-    signalrBuilder.AddStackExchangeRedis(constr, options =>
+    signalrBuilder.AddStackExchangeRedis(redisConStr, options =>
     {
         options.Configuration.ChannelPrefix = "GZCTF";
     });
@@ -158,7 +153,7 @@ builder.Services.AddAuthentication(o =>
     o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 }).AddIdentityCookies(options =>
 {
-    options.ApplicationCookie.Configure(cookie =>
+    options.ApplicationCookie?.Configure(cookie =>
     {
         cookie.Cookie.Name = "GZCTF_Token";
     });
@@ -180,18 +175,6 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #endregion Identity
 
-#region IP Rate Limit
-if (!IsTesting)
-{
-    builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
-
-    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-    builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
-    builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
-    builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-}
-#endregion IP Rate Limit
-
 #region Services and Repositories
 
 builder.Services.AddTransient<IMailSender, MailSender>()
@@ -206,7 +189,7 @@ builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof
 builder.Services.Configure<ContainerProvider>(builder.Configuration.GetSection(nameof(ContainerProvider)));
 
 if (builder.Configuration.GetSection(nameof(ContainerProvider))
-    .GetValue(typeof(ContainerProviderType), nameof(ContainerProvider.Type))
+    .GetValue<ContainerProviderType>(nameof(ContainerProvider.Type))
     is ContainerProviderType.Kubernetes)
 {
     builder.Services.AddSingleton<IContainerService, K8sService>();
@@ -265,7 +248,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 {
     var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (context.Database.IsRelational())
+    if (!context.Database.IsInMemory())
         await context.Database.MigrateAsync();
 
     await context.Database.EnsureCreatedAsync();
@@ -287,12 +270,11 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
     {
         var usermanager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
         var admin = await usermanager.FindByNameAsync("Admin");
+        var password = app.Environment.IsDevelopment() ? "Admin@2022" :
+            app.Configuration.GetValue<string>("ADMIN_PASSWORD");
 
-        if (admin is null)
+        if (admin is null && password is not null)
         {
-            var password = app.Environment.IsDevelopment() ? "Admin@2022" :
-                app.Configuration.GetValue<string>("ADMIN_PASSWORD");
-
             admin = new UserInfo
             {
                 UserName = "Admin",
@@ -325,14 +307,11 @@ else
     app.UseHsts();
 }
 
-app.UseMiddleware<ProxyMiddleware>();
-
-if (!IsTesting && app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
-{
-    app.UseIpRateLimiting();
-}
-
 app.UseResponseCompression();
+
+app.UseStaticFiles();
+
+app.UseMiddleware<ProxyMiddleware>();
 
 app.UseStaticFiles();
 
@@ -341,14 +320,16 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
+if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
 {
-    endpoints.MapControllers();
-    endpoints.MapHub<UserHub>("/hub/user");
-    endpoints.MapHub<MonitorHub>("/hub/monitor");
-    endpoints.MapHub<AdminHub>("/hub/admin");
-    endpoints.MapFallbackToFile("index.html");
-});
+    app.UseConfiguredRateLimiter();
+}
+
+app.MapControllers();
+app.MapHub<UserHub>("/hub/user");
+app.MapHub<MonitorHub>("/hub/monitor");
+app.MapHub<AdminHub>("/hub/admin");
+app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();

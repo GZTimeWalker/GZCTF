@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 ARG TIMESTAMP
 ARG GIT_SHA
@@ -23,7 +23,7 @@ RUN dotnet build "CTFServer.csproj" -c Release -o /app/build --no-restore
 FROM build AS publish
 RUN dotnet publish "CTFServer.csproj" -c Release -o /app/publish -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=publish /app/publish .

@@ -14,10 +14,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         ILogger<FileRepository> _logger) : base(context)
     {
         logger = _logger;
-        uploadPath = _configuration.GetSection("UploadFolder").Value;
-
-        if (string.IsNullOrEmpty(uploadPath))
-            uploadPath = "uploads";
+        uploadPath = _configuration.GetSection("UploadFolder")?.Value ?? "uploads";
     }
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)

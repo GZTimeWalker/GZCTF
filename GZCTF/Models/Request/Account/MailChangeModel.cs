@@ -12,5 +12,5 @@ public class MailChangeModel
     /// </summary>
     [Required(ErrorMessage = "邮箱是必需的")]
     [EmailAddress(ErrorMessage = "邮箱地址无效")]
-    public string? NewMail { get; set; }
+    public string NewMail { get; set; } = string.Empty;
 }

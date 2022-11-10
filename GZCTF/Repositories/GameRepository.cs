@@ -21,8 +21,8 @@ public class GameRepository : RepositoryBase, IGameRepository
     {
         cache = _cache;
         logger = _logger;
-        xorkey = string.IsNullOrEmpty(_configuration["XorKey"]) ? null
-            : Encoding.UTF8.GetBytes(_configuration["XorKey"]);
+        var xorkeyStr = _configuration["XorKey"];
+        xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
     }
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
@@ -44,13 +44,13 @@ public class GameRepository : RepositoryBase, IGameRepository
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default)
-        => (await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
+        => await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
             return context.Games.Where(g => !g.Hidden)
                 .OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
-        })).ToArray();
+        });
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>

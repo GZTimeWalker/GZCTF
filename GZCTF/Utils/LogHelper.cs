@@ -1,4 +1,5 @@
 ﻿using System.IO.Compression;
+using System.Net;
 using CTFServer.Extensions;
 using NpgsqlTypes;
 using Serilog;
@@ -32,24 +33,21 @@ public static class LogHelper
     /// <param name="user">用户对象</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> _logger, string msg, UserInfo user, TaskStatus status, LogLevel? level = null)
-        => Log(_logger, msg, user.UserName, user.IP, status, level);
+    public static void Log<T>(this ILogger<T> _logger, string msg, UserInfo? user, TaskStatus status, LogLevel? level = null)
+        => Log(_logger, msg, user?.UserName ?? "Anonymous", user?.IP ?? "0.0.0.0", status, level);
 
     /// <summary>
     /// 登记一条 Log 记录
     /// </summary>
     /// <param name="_logger">传入的 Nlog.Logger</param>
     /// <param name="msg">Log 消息</param>
-    /// <param name="username">用户名</param>
     /// <param name="context">Http上下文</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> _logger, string msg, string username, HttpContext context, TaskStatus status, LogLevel? level = null)
+    public static void Log<T>(this ILogger<T> _logger, string msg, HttpContext? context, TaskStatus status, LogLevel? level = null)
     {
-        var ip = context.Connection.RemoteIpAddress?.ToString();
-
-        if (ip is null)
-            return;
+        var ip = context?.Connection?.RemoteIpAddress?.ToString() ?? IPAddress.Loopback.ToString();
+        var username = context?.User?.Identity?.Name ?? "Anonymous";
 
         Log(_logger, msg, username, ip, status, level);
     }
@@ -120,7 +118,6 @@ public static class LogHelper
          logEvent.Exception.GetType() == typeof(OperationCanceledException))
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
     .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
     .WriteTo.Async(t => t.Console(
         formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
