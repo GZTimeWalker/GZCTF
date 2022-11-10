@@ -1,7 +1,9 @@
-﻿using CTFServer.Utils;
+﻿using System.Security.Claims;
+using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Middlewares;
 
@@ -19,35 +21,41 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
     public RequirePrivilegeAttribute(Role privilege)
         => RequiredPrivilege = privilege;
 
+    public static IActionResult GetResult(string msg, int code)
+        => new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
+
+    public static IActionResult RequireLoginResult => GetResult("请先登录", StatusCodes.Status401Unauthorized);
+    public static IActionResult ForbiddenResult => GetResult("无权访问", StatusCodes.Status403Forbidden);
+
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
-        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<UserInfo>>();
-        var user = await userManager.GetUserAsync(context.HttpContext.User);
+        var dbcontext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+
+        UserInfo? user = null;
+
+        if (context.HttpContext.User.Identity?.IsAuthenticated is true)
+            user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Id ==
+                context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         if (user is null)
         {
-            var result = new JsonResult(new RequestResponse("请先登录", 401))
-            {
-                StatusCode = 401
-            };
-            context.Result = result;
+            context.Result = RequireLoginResult;
             return;
         }
 
-        user.UpdateByHttpContext(context.HttpContext);
-        await userManager.UpdateAsync(user);
+        if (DateTimeOffset.UtcNow - user.LastVisitedUTC > TimeSpan.FromSeconds(5))
+        {
+            user.UpdateByHttpContext(context.HttpContext);
+            await dbcontext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
+        }
 
         if (user.Role < RequiredPrivilege)
         {
             if (RequiredPrivilege > Role.User)
-                logger.Log($"尝试访问未经授权的接口 {context.HttpContext.Request.Path}", user, TaskStatus.Denied);
+                logger.Log($"未经授权的访问：{context.HttpContext.Request.Path}", user, TaskStatus.Denied);
 
-            var result = new JsonResult(new RequestResponse("无权访问", 403))
-            {
-                StatusCode = 403
-            };
-            context.Result = result;
+            context.Result = ForbiddenResult;
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Utils;
+using MemoryPack;
 
 namespace CTFServer.Models;
 
-public class Post
+[MemoryPackable]
+public partial class Post
 {
     [Key]
     [MaxLength(8)]

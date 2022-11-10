@@ -8,6 +8,7 @@ using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 
 namespace CTFServer.Controllers;
@@ -59,6 +60,7 @@ public class AccountController : ControllerBase
     /// <response code="200">注册成功</response>
     /// <response code="400">校验失败或用户已存在</response>
     [HttpPost]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse<RegisterStatus>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
@@ -147,6 +149,7 @@ public class AccountController : ControllerBase
     /// <response code="400">校验失败</response>
     /// <response code="404">用户不存在</response>
     [HttpPost]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -158,7 +161,7 @@ public class AccountController : ControllerBase
             ))
             return BadRequest(new RequestResponse("Google reCAPTCHA 校验失败"));
 
-        var user = await userManager.FindByEmailAsync(model.Email);
+        var user = await userManager.FindByEmailAsync(model.Email!);
         if (user is null)
             return NotFound(new RequestResponse("用户不存在", 404));
 
@@ -168,7 +171,7 @@ public class AccountController : ControllerBase
         if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse("请联系管理员重置密码"));
 
-        logger.Log("发送用户密码重置邮件", user.UserName, HttpContext, TaskStatus.Pending);
+        logger.Log("发送用户密码重置邮件", HttpContext, TaskStatus.Pending);
 
         var token = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
 
@@ -196,6 +199,7 @@ public class AccountController : ControllerBase
     /// <response code="200">用户成功重置密码</response>
     /// <response code="400">校验失败</response>
     [HttpPost]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PasswordReset([FromBody] PasswordResetModel model)
@@ -332,7 +336,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
     {
         var user = await userManager.GetUserAsync(User);
-        var oname = user.UserName;
+        var oname = user!.UserName;
 
         user.UpdateUserInfo(model);
         var result = await userManager.UpdateAsync(user);
@@ -363,7 +367,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
     {
         var user = await userManager.GetUserAsync(User);
-        var result = await userManager.ChangePasswordAsync(user, model.Old, model.New);
+        var result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
@@ -385,6 +389,7 @@ public class AccountController : ControllerBase
     /// <response code="401">无权访问</response>
     [HttpPut]
     [RequireUser]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -397,7 +402,7 @@ public class AccountController : ControllerBase
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
         {
-            var result = await userManager.SetEmailAsync(user, model.NewMail);
+            var result = await userManager.SetEmailAsync(user!, model.NewMail);
 
             if (!result.Succeeded)
                 return BadRequest(new RequestResponse<bool>(result.Errors.FirstOrDefault()?.Description ?? "邮箱更新失败", false));
@@ -406,7 +411,7 @@ public class AccountController : ControllerBase
 
         logger.Log("发送用户邮箱更改邮件", user, TaskStatus.Pending);
 
-        var token = Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user, model.NewMail));
+        var token = Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user!, model.NewMail));
 
         if (environment.IsDevelopment())
         {
@@ -414,7 +419,7 @@ public class AccountController : ControllerBase
         }
         else
         {
-            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
+            if (!mailSender.SendConfirmEmailUrl(user!.UserName, user.Email,
                 $"https://{HttpContext.Request.Host}/account/confirm?token={token}&email={Codec.Base64.Encode(model.NewMail)}"))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
@@ -441,7 +446,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> MailChangeConfirm([FromBody] AccountVerifyModel model)
     {
         var user = await userManager.GetUserAsync(User);
-        var result = await userManager.ChangeEmailAsync(user, Codec.Base64.Decode(model.Email), Codec.Base64.Decode(model.Token));
+        var result = await userManager.ChangeEmailAsync(user!, Codec.Base64.Decode(model.Email), Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse("无效邮箱"));
@@ -468,7 +473,7 @@ public class AccountController : ControllerBase
     {
         var user = await userManager.GetUserAsync(User);
 
-        return Ok(ProfileUserInfoModel.FromUserInfo(user));
+        return Ok(ProfileUserInfoModel.FromUserInfo(user!));
     }
 
     /// <summary>
@@ -495,7 +500,7 @@ public class AccountController : ControllerBase
 
         var user = await userManager.GetUserAsync(User);
 
-        if (user.AvatarHash is not null)
+        if (user!.AvatarHash is not null)
             await fileService.DeleteFileByHash(user.AvatarHash, token);
 
         var avatar = await fileService.CreateOrUpdateFile(file, "avatar", token);

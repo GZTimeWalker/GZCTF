@@ -14,10 +14,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         ILogger<FileRepository> _logger) : base(context)
     {
         logger = _logger;
-        uploadPath = _configuration.GetSection("UploadFolder").Value;
-
-        if (string.IsNullOrEmpty(uploadPath))
-            uploadPath = "uploads";
+        uploadPath = _configuration.GetSection("UploadFolder")?.Value ?? "uploads";
     }
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
@@ -30,8 +27,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         await file.CopyToAsync(tmp, token);
 
         tmp.Position = 0;
-        using SHA256 sha256 = SHA256.Create();
-        var hash = await sha256.ComputeHashAsync(tmp, token); // TODO: change to use SHA256.HashDataAsync in .NET 7
+        var hash = await SHA256.HashDataAsync(tmp, token);
         var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
         var localFile = await GetFileByHash(fileHash, token);

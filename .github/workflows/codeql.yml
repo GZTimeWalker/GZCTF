@@ -13,7 +13,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main", "develop", "preview"]
+    branches: [ "main", "develop"]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "main" ]
@@ -57,7 +57,8 @@ jobs:
 
     - uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        include-prerelease: true
 
     - uses: actions/setup-node@v3
       with:
