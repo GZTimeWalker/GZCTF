@@ -23,12 +23,13 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
-import AttachmentUploadModal, { useUploadStyles } from '@Components/admin/AttachmentUploadModal'
+import AttachmentUploadModal from '@Components/admin/AttachmentUploadModal'
 import FlagCreateModal from '@Components/admin/FlagCreateModal'
 import FlagEditPanel from '@Components/admin/FlagEditPanel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
+import { useUploadStyles } from '@Utils/ThemeOverride'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],
@@ -53,7 +54,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
 
   const [disabled, setDisabled] = useState(false)
   const [type, setType] = useState<FileType>(challenge?.attachment?.type ?? FileType.None)
-  const [remoteUrl, setRemoteUrl] = useState(challenge?.attachment?.remoteUrl ?? '')
+  const [remoteUrl, setRemoteUrl] = useState(challenge?.attachment?.url ?? '')
   const [flagTemplate, setFlagTemplate] = useState(challenge?.flagTemplate ?? '')
 
   const modals = useModals()
@@ -61,7 +62,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   useEffect(() => {
     if (challenge) {
       setType(challenge.attachment?.type ?? FileType.None)
-      setRemoteUrl(challenge.attachment?.remoteUrl ?? '')
+      setRemoteUrl(challenge.attachment?.url ?? '')
       setFlagTemplate(challenge.flagTemplate ?? '')
     }
   }, [challenge])

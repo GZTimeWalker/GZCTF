@@ -1292,11 +1292,8 @@ export interface BasicWriteupInfoModel {
   submitted?: boolean
   /** 文件名称 */
   name?: string
-  /**
-   * 文件上传时间
-   * @format date-time
-   */
-  uploadTimeUTC?: string
+  /** 文件大小 */
+  fileSize?: number
 }
 
 /** 文章信息 */

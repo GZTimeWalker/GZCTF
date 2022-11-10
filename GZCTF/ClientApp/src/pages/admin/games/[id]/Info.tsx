@@ -56,6 +56,7 @@ const GameInfoEdit: FC = () => {
   const [organizations, setOrganizations] = useState<string[]>([])
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
+  const [wpddl, setWpddl] = useInputState(3)
 
   const modals = useModals()
   const clipboard = useClipboard()
@@ -81,6 +82,7 @@ const GameInfoEdit: FC = () => {
         setOrganizations(data.data.organizations || [])
         setStart(dayjs(data.data.start))
         setEnd(dayjs(data.data.end))
+        setWpddl(dayjs(data.data.wpddl).diff(data.data.end, 'h'))
       })
       .catch((err) => {
         if (err.status === 404) {
@@ -122,6 +124,7 @@ const GameInfoEdit: FC = () => {
           inviteCode: game.inviteCode?.length ?? 0 > 6 ? game.inviteCode : null,
           start: start.toJSON(),
           end: end.toJSON(),
+          wpddl: end.add(wpddl, 'h').toJSON(),
         })
         .then(() => {
           showNotification({
@@ -198,35 +201,43 @@ const GameInfoEdit: FC = () => {
         </>
       }
     >
-      <Grid grow>
-        <Grid.Col span={6}>
-          <TextInput
-            label="比赛标题"
-            disabled={disabled}
-            value={game?.title}
-            required
-            onChange={(e) => game && setGame({ ...game, title: e.target.value })}
-          />
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <NumberInput
-            label="队伍人数限制"
-            disabled={disabled}
-            min={0}
-            value={game?.teamMemberCountLimit}
-            onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: e })}
-          />
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <NumberInput
-            label="队伍容器数量限制"
-            disabled={disabled}
-            min={1}
-            value={game?.containerCountLimit}
-            onChange={(e) => game && setGame({ ...game, containerCountLimit: e })}
-          />
-        </Grid.Col>
-      </Grid>
+      <Group grow position="apart">
+        <TextInput
+          label="比赛标题"
+          description="过长会影响显示效果"
+          disabled={disabled}
+          value={game?.title}
+          required
+          onChange={(e) => game && setGame({ ...game, title: e.target.value })}
+        />
+        <NumberInput
+          label="队伍人数限制"
+          description="0 表示不限制队伍人数"
+          disabled={disabled}
+          min={0}
+          required
+          value={game?.teamMemberCountLimit}
+          onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: e })}
+        />
+        <NumberInput
+          label="队伍容器数量限制"
+          description="整个队伍共享的容器数量限制"
+          disabled={disabled}
+          min={1}
+          required
+          value={game?.containerCountLimit}
+          onChange={(e) => game && setGame({ ...game, containerCountLimit: e })}
+        />
+        <NumberInput
+          label="Writeup 提交时限"
+          description="比赛结束后几小时内允许提交 Writeup"
+          disabled={disabled}
+          min={0}
+          required
+          value={wpddl}
+          onChange={setWpddl}
+        />
+      </Group>
       <Group grow position="apart">
         <DatePicker
           label="开始日期"

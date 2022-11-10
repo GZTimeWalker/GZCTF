@@ -400,7 +400,8 @@ public class GameController : ControllerBase
         {
             ScoreboardItem = boarditem,
             TeamToken = context.Participation!.Token,
-            Challenges = scoreboard.Challenges
+            Challenges = scoreboard.Challenges,
+            WriteupDeadline = context.Game!.WriteupDeadline
         });
     }
 
@@ -687,7 +688,7 @@ public class GameController : ControllerBase
         if (wp is not null)
             await fileService.DeleteFile(wp, token);
 
-        wp = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.UtcNow:s}", token);
+        wp = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.UtcNow:s}.pdf", token);
 
         if (wp is null)
             return BadRequest(new RequestResponse("保存文件失败"));

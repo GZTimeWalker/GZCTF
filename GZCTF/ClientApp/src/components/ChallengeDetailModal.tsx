@@ -298,7 +298,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         </Group>
       }
     >
-      <Stack spacing="sm" style={{ marginTop: theme.spacing.sm }}>
+      <Stack spacing="sm" mt="sm">
         <Divider />
         <Stack
           spacing="sm"

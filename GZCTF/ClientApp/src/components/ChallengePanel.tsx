@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
+  Button,
   Card,
   Center,
   Divider,
@@ -15,13 +16,14 @@ import {
   Title,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
-import { mdiFlagOutline, mdiPuzzle } from '@mdi/js'
+import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 import ChallengeCard from './ChallengeCard'
 import ChallengeDetailModal from './ChallengeDetailModal'
 import Empty from './Empty'
+import WriteupSubmitModal from './WriteupSubmitModal'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -51,6 +53,7 @@ const ChallengePanel: FC = () => {
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
   const [detailOpened, setDetailOpened] = useState(false)
   const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
+  const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
 
   // skeleton for loading
   if (!challenges) {
@@ -60,7 +63,7 @@ const ChallengePanel: FC = () => {
         noWrap
         position="apart"
         align="flex-start"
-        style={{ minWidth: 'calc(100% - 20rem)' }}
+        style={{ maxWidth: 'calc(100% - 20rem)' }}
       >
         <Stack sx={{ minWidth: '10rem' }} spacing={6}>
           {Array(8)
@@ -138,9 +141,16 @@ const ChallengePanel: FC = () => {
       noWrap
       position="apart"
       align="flex-start"
-      style={{ minWidth: 'calc(100% - 20rem)', maxWidth: 'calc(100% - 20rem)' }}
+      style={{ maxWidth: 'calc(100% - 20rem)' }}
     >
       <Stack style={{ minWidth: '10rem' }}>
+      <Button
+          leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
+          onClick={() => setWriteupSubmitOpened(true)}
+        >
+          提交 Writeup
+        </Button>
+        <Divider/>
         <Switch
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}
@@ -243,6 +253,15 @@ const ChallengePanel: FC = () => {
           </Stack>
         )}
       </ScrollArea>
+      <WriteupSubmitModal
+        opened={writeupSubmitOpened}
+        onClose={() => setWriteupSubmitOpened(false)}
+        withCloseButton={false}
+        size="40%"
+        gameId={numId}
+        wpddl={data.wpddl}
+        centered
+      />
       {challenge?.id && (
         <ChallengeDetailModal
           opened={detailOpened}

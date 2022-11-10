@@ -40,6 +40,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         title,
         start: start.toJSON(),
         end: end.toJSON(),
+        wpddl: end.add(3, 'h').toJSON(),
       })
       .then((data) => {
         showNotification({

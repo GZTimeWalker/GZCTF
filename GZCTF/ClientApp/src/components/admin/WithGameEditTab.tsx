@@ -4,6 +4,7 @@ import { Group, GroupProps, LoadingOverlay, Stack, Tabs, useMantineTheme } from 
 import {
   mdiAccountGroupOutline,
   mdiBullhornOutline,
+  mdiFileDocumentCheckOutline,
   mdiFlagOutline,
   mdiTextBoxOutline,
 } from '@mdi/js'
@@ -15,6 +16,7 @@ const pages = [
   { icon: mdiBullhornOutline, title: '比赛通知', path: 'notices' },
   { icon: mdiFlagOutline, title: '题目编辑', path: 'challenges' },
   { icon: mdiAccountGroupOutline, title: '队伍审核', path: 'review' },
+  { icon: mdiFileDocumentCheckOutline, title: 'Writeups', path: 'writeups' },
 ]
 
 interface GameEditTabProps extends React.PropsWithChildren {

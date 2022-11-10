@@ -18,15 +18,15 @@ public class BasicWriteupInfoModel
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// 文件上传时间
+    /// 文件大小
     /// </summary>
-    public DateTimeOffset UploadTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+    public ulong FileSize { get; set; } = 0;
 
     internal static BasicWriteupInfoModel FromParticipation(Participation part)
         => new()
         {
             Submitted = part.WriteUp is not null,
             Name = part.WriteUp?.Name ?? "#",
-            UploadTimeUTC = part.WriteUp?.UploadTimeUTC ?? DateTimeOffset.UtcNow
+            FileSize = part.WriteUp?.FileSize ?? 0
         };
 }

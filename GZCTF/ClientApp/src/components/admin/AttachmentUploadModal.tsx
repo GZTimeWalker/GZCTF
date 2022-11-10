@@ -2,7 +2,6 @@ import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   Button,
-  createStyles,
   FileButton,
   Modal,
   ModalProps,
@@ -22,29 +21,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { FileType } from '@Api'
-
-export const useUploadStyles = createStyles(() => ({
-  uploadButton: {
-    position: 'relative',
-    transition: 'background-color 150ms ease',
-  },
-
-  uploadProgress: {
-    position: 'absolute',
-    bottom: -1,
-    right: -1,
-    left: -1,
-    top: -1,
-    height: 'auto',
-    backgroundColor: 'transparent',
-    zIndex: 0,
-  },
-
-  uploadLabel: {
-    position: 'relative',
-    zIndex: 1,
-  },
-}))
+import { useUploadStyles } from '@Utils/ThemeOverride'
 
 const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()

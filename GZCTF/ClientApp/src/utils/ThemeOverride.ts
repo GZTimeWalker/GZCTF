@@ -216,3 +216,26 @@ export const useBannerStyles = createStyles((theme) => ({
     color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
   },
 }))
+
+export const useUploadStyles = createStyles(() => ({
+  uploadButton: {
+    position: 'relative',
+    transition: 'background-color 150ms ease',
+  },
+
+  uploadProgress: {
+    position: 'absolute',
+    bottom: -1,
+    right: -1,
+    left: -1,
+    top: -1,
+    height: 'auto',
+    backgroundColor: 'transparent',
+    zIndex: 0,
+  },
+
+  uploadLabel: {
+    position: 'relative',
+    zIndex: 1,
+  },
+}))
