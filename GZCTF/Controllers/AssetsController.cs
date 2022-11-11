@@ -4,6 +4,7 @@ using CTFServer.Middlewares;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace CTFServer.Controllers;
 
@@ -19,6 +20,7 @@ public class AssetsController : ControllerBase
     private readonly IFileRepository fileRepository;
     private readonly IConfiguration configuration;
     private readonly string basepath;
+    private FileExtensionContentTypeProvider extProvider = new();
 
     public AssetsController(IFileRepository _fileeService,
         IConfiguration _configuration,
@@ -55,7 +57,10 @@ public class AssetsController : ControllerBase
             return NotFound(new RequestResponse("文件不存在", 404));
         }
 
-        return new PhysicalFileResult(path, MediaTypeNames.Application.Octet)
+        if (!extProvider.TryGetContentType(filename, out string? contentType))
+            contentType = "application/octet-stream";
+
+        return new PhysicalFileResult(path, contentType)
         {
             FileDownloadName = filename
         };

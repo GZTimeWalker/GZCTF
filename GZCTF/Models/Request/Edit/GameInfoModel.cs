@@ -100,7 +100,6 @@ public class GameInfoModel
     /// <summary>
     /// Writeup 附加说明
     /// </summary>
-    [Required]
     [JsonPropertyName("wpnote")]
     public string WriteupNote { get; set; } = string.Empty;
 

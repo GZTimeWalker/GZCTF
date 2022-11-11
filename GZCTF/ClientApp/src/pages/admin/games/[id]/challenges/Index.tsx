@@ -101,7 +101,7 @@ const GameChallengeEdit: FC = () => {
           >
             返回上级
           </Button>
-          <Group style={{ width: 'calc(100% - 9rem)' }} position="apart">
+          <Group w="calc(100% - 9rem)" position="apart">
             <Select
               placeholder="全部题目"
               clearable

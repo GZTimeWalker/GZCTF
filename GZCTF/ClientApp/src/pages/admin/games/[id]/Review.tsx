@@ -292,7 +292,7 @@ const GameTeamReview: FC = () => {
           >
             返回上级
           </Button>
-          <Group style={{ width: 'calc(100% - 9rem)' }} position="apart">
+          <Group w="calc(100% - 9rem)" position="left">
             <Select
               placeholder="全部显示"
               clearable

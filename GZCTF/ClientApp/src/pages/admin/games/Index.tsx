@@ -76,7 +76,7 @@ const Games: FC = () => {
           <Button leftIcon={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
             新建比赛
           </Button>
-          <Group position="right">
+          <Group style={{ width: 'calc(100% - 9rem)' }} position="right">
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>

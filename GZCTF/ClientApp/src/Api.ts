@@ -548,7 +548,7 @@ export interface GameInfoModel {
    * Writeup 附加说明
    * @minLength 1
    */
-  wpnote: string
+  wpnote?: string
 }
 
 /**

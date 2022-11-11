@@ -23,6 +23,7 @@
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^7.0.0",
+    "@types/react-pdf": "^5.7.4",
     "dayjs": "^1.11.6",
     "echarts": "^5.4.0",
     "echarts-for-react": "^3.0.2",

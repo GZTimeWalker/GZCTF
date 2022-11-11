@@ -63,7 +63,7 @@ const GameNoticeEdit: FC = () => {
             返回上级
           </Button>
 
-          <Group position="center">
+          <Group position="right">
             <Button
               leftIcon={<Icon path={mdiPlus} size={1} />}
               onClick={() => {
