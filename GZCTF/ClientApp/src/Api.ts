@@ -386,6 +386,24 @@ export enum ParticipationStatus {
   Unsubmitted = 'Unsubmitted',
 }
 
+/** 比赛 Writeup 信息 */
+export interface WriteupInfoModel {
+  /**
+   * 参与对象 Id
+   * @format int32
+   */
+  id?: number
+  /** 队伍信息 */
+  team?: TeamInfoModel
+  /** 文件链接 */
+  url?: string
+  /**
+   * 文件上传时间
+   * @format date-time
+   */
+  uploadTimeUTC?: string
+}
+
 export interface LocalFile {
   /**
    * 文件哈希
@@ -2238,9 +2256,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/writeups/{id}
      */
     adminWriteups: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
+      this.request<WriteupInfoModel[], RequestResponse>({
         path: `/api/admin/writeups/${id}`,
         method: 'GET',
+        format: 'json',
         ...params,
       }),
     /**
@@ -2252,7 +2271,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/admin/writeups/{id}
      */
     useAdminWriteups: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<void, RequestResponse>(doFetch ? `/api/admin/writeups/${id}` : null, options),
+      useSWR<WriteupInfoModel[], RequestResponse>(
+        doFetch ? `/api/admin/writeups/${id}` : null,
+        options
+      ),
 
     /**
      * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
@@ -2262,8 +2284,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 获取全部 Writeup 基本信息
      * @request GET:/api/admin/writeups/{id}
      */
-    mutateAdminWriteups: (id: number, data?: void | Promise<void>, options?: MutatorOptions) =>
-      mutate<void>(`/api/admin/writeups/${id}`, data, options),
+    mutateAdminWriteups: (
+      id: number,
+      data?: WriteupInfoModel[] | Promise<WriteupInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<WriteupInfoModel[]>(`/api/admin/writeups/${id}`, data, options),
+
+    /**
+     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDownloadAllWriteups
+     * @summary 下载全部 Writeup
+     * @request GET:/api/admin/writeups/{id}/all
+     */
+    adminDownloadAllWriteups: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/writeups/${id}/all`,
+        method: 'GET',
+        ...params,
+      }),
+    /**
+     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDownloadAllWriteups
+     * @summary 下载全部 Writeup
+     * @request GET:/api/admin/writeups/{id}/all
+     */
+    useAdminDownloadAllWriteups: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) => useSWR<void, RequestResponse>(doFetch ? `/api/admin/writeups/${id}/all` : null, options),
+
+    /**
+     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDownloadAllWriteups
+     * @summary 下载全部 Writeup
+     * @request GET:/api/admin/writeups/{id}/all
+     */
+    mutateAdminDownloadAllWriteups: (
+      id: number,
+      data?: void | Promise<void>,
+      options?: MutatorOptions
+    ) => mutate<void>(`/api/admin/writeups/${id}/all`, data, options),
 
     /**
      * @description 使用此接口获取全部日志，需要Admin权限
