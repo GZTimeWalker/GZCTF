@@ -53,7 +53,7 @@ export interface RegisterModel {
   userName: string
   /**
    * 密码
-   * @minLength 1
+   * @minLength 6
    */
   password: string
   /**
@@ -526,6 +526,11 @@ export interface GameInfoModel {
    * @minLength 1
    */
   wpddl: string
+  /**
+   * WriteUp 附加说明
+   * @minLength 1
+   */
+  wpnote: string
 }
 
 /**
@@ -1292,8 +1297,13 @@ export interface BasicWriteupInfoModel {
   submitted?: boolean
   /** 文件名称 */
   name?: string
-  /** 文件大小 */
+  /**
+   * 文件大小
+   * @format int64
+   */
   fileSize?: number
+  /** WriteUp 附加说明 */
+  note?: string
 }
 
 /** 文章信息 */
