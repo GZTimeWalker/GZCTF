@@ -1,4 +1,6 @@
-﻿using CTFServer.Models.Request.Info;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using CTFServer.Models.Request.Info;
 
 namespace CTFServer.Models.Request.Game;
 
@@ -22,11 +24,18 @@ public class BasicWriteupInfoModel
     /// </summary>
     public ulong FileSize { get; set; } = 0;
 
+    /// <summary>
+    /// WriteUp 附加说明
+    /// </summary>
+    [JsonPropertyName("note")]
+    public string WriteupNote { get; set; } = string.Empty;
+
     internal static BasicWriteupInfoModel FromParticipation(Participation part)
         => new()
         {
             Submitted = part.WriteUp is not null,
             Name = part.WriteUp?.Name ?? "#",
-            FileSize = part.WriteUp?.FileSize ?? 0
+            FileSize = part.WriteUp?.FileSize ?? 0,
+            WriteupNote = part.Game.WriteupNote
         };
 }

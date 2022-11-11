@@ -97,6 +97,13 @@ public class GameInfoModel
     [JsonPropertyName("wpddl")]
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
+    /// <summary>
+    /// WriteUp 附加说明
+    /// </summary>
+    [Required]
+    [JsonPropertyName("wpnote")]
+    public string WriteupNote { get; set; } = string.Empty;
+
     internal static GameInfoModel FromGame(Models.Game game)
         => new()
         {
@@ -115,6 +122,7 @@ public class GameInfoModel
             ContainerCountLimit = game.ContainerCountLimit,
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC,
-            WriteupDeadline = game.WriteupDeadline
+            WriteupDeadline = game.WriteupDeadline,
+            WriteupNote = game.WriteupNote
         };
 }

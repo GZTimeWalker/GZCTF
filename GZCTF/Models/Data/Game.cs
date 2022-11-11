@@ -103,6 +103,13 @@ public class Game
     [JsonPropertyName("wpddl")]
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
+    /// <summary>
+    /// WriteUp 附加说明
+    /// </summary>
+    [Required]
+    [JsonPropertyName("wpnote")]
+    public string WriteupNote { get; set; } = string.Empty;
+
     [NotMapped]
     [JsonIgnore]
     public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
@@ -205,6 +212,7 @@ public class Game
         WriteupDeadline = model.WriteupDeadline;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
         ContainerCountLimit = model.ContainerCountLimit;
+        WriteupNote = model.WriteupNote;
 
         return this;
     }
