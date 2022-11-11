@@ -121,7 +121,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
         },
       }}
     >
-      <Stack spacing="sm" mt="sm">
+      <Stack spacing="xs" mt="sm">
         <Divider />
         <Title order={5}>提交说明</Title>
         <List
@@ -199,7 +199,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
             </Group>
           )}
         </Card>
-        <FileButton onChange={onUpload}>
+        <FileButton onChange={onUpload} accept="application/pdf">
           {(props) => (
             <Button
               {...props}
