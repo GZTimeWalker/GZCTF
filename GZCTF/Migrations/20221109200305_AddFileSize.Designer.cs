@@ -502,14 +502,14 @@ namespace CTFServer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("WriteUpId")
+                    b.Property<int?>("WriteupId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("WriteUpId");
+                    b.HasIndex("WriteupId");
 
                     b.HasIndex("TeamId", "GameId");
 
@@ -1072,15 +1072,15 @@ namespace CTFServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CTFServer.Models.LocalFile", "WriteUp")
+                    b.HasOne("CTFServer.Models.LocalFile", "Writeup")
                         .WithMany()
-                        .HasForeignKey("WriteUpId");
+                        .HasForeignKey("WriteupId");
 
                     b.Navigation("Game");
 
                     b.Navigation("Team");
 
-                    b.Navigation("WriteUp");
+                    b.Navigation("Writeup");
                 });
 
             modelBuilder.Entity("CTFServer.Models.Post", b =>

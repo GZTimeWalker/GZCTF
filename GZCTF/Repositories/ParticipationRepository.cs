@@ -51,6 +51,12 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             .ThenInclude(t => t.Members)
             .OrderBy(p => p.TeamId).ToArrayAsync(token);
 
+    public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default)
+        => context.Participations.Where(p => p.Game == game && p.Writeup != null)
+                .OrderByDescending(p => p.Writeup!.UploadTimeUTC)
+                .Select(p => WriteupInfoModel.FromParticipation(p)!)
+                .ToArrayAsync(token);
+
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default)
         => context.UserParticipations.Include(p => p.Participation)
             .AnyAsync(p => p.User == user && p.Game == game
@@ -88,10 +94,4 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         context.Remove(part);
         return SaveAsync(token);
     }
-
-    public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default)
-        => context.Participations.Where(p => p.Game == game && p.WriteUp != null)
-                .OrderByDescending(p => p.WriteUp!.UploadTimeUTC)
-                .Select(p => WriteupInfoModel.FromParticipation(p))
-                .ToArrayAsync(token);
 }

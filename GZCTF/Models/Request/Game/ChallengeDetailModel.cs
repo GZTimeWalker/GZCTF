@@ -85,5 +85,5 @@ public class ClientFlagContext
     /// <summary>
     /// 附件文件大小
     /// </summary>
-    public ulong? FileSize { get; set; } = null;
+    public long? FileSize { get; set; } = null;
 }

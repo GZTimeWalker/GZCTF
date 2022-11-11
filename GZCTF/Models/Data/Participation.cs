@@ -29,7 +29,7 @@ public class Participation
     /// <summary>
     /// 队伍题解
     /// </summary>
-    public LocalFile? WriteUp { get; set; }
+    public LocalFile? Writeup { get; set; }
 
     #region Db Relationship
 

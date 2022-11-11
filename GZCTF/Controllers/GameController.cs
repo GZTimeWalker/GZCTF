@@ -683,17 +683,17 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow > game.WriteupDeadline)
             return BadRequest(new RequestResponse("提交截止时间已过"));
 
-        var wp = context.Participation!.WriteUp;
+        var wp = context.Participation!.Writeup;
 
         if (wp is not null)
             await fileService.DeleteFile(wp, token);
 
-        wp = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.UtcNow:s}.pdf", token);
+        wp = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
 
         if (wp is null)
             return BadRequest(new RequestResponse("保存文件失败"));
 
-        part.WriteUp = wp;
+        part.Writeup = wp;
 
         await participationRepository.SaveAsync(token);
 

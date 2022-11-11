@@ -521,13 +521,13 @@ export interface GameInfoModel {
    */
   end: string
   /**
-   * WriteUp 提交截止时间
+   * Writeup 提交截止时间
    * @format date-time
    * @minLength 1
    */
   wpddl: string
   /**
-   * WriteUp 附加说明
+   * Writeup 附加说明
    * @minLength 1
    */
   wpnote: string
@@ -1192,7 +1192,7 @@ export interface GameDetailModel {
    */
   teamToken: string
   /**
-   * WriteUp 提交截止时间
+   * Writeup 提交截止时间
    * @format date-time
    * @minLength 1
    */
@@ -1302,7 +1302,7 @@ export interface BasicWriteupInfoModel {
    * @format int64
    */
   fileSize?: number
-  /** WriteUp 附加说明 */
+  /** Writeup 附加说明 */
   note?: string
 }
 

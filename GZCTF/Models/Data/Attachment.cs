@@ -44,7 +44,7 @@ public class Attachment
     /// 获取附件大小
     /// </summary>
     [NotMapped]
-    public ulong? FileSize => LocalFile?.FileSize;
+    public long? FileSize => LocalFile?.FileSize;
     
     /// <summary>
     /// 附件访问链接

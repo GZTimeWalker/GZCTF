@@ -34,7 +34,7 @@ public class FileRepository : RepositoryBase, IFileRepository
 
         if (localFile is not null)
         {
-            localFile.FileSize = (ulong)file.Length;
+            localFile.FileSize = file.Length;
             localFile.Name = fileName ?? file.FileName; // allow rename
             localFile.UploadTimeUTC = DateTimeOffset.UtcNow; // update upload time
             localFile.ReferenceCount++; // same hash, add ref count
@@ -45,7 +45,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         }
         else
         {
-            localFile = new() { Hash = fileHash, Name = fileName ?? file.FileName, FileSize = (ulong)file.Length };
+            localFile = new() { Hash = fileHash, Name = fileName ?? file.FileName, FileSize = file.Length };
             await context.AddAsync(localFile, token);
 
             var path = Path.Combine(uploadPath, localFile.Location);

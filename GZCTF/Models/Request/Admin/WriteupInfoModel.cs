@@ -1,4 +1,5 @@
-﻿using CTFServer.Models.Request.Info;
+﻿using System.Text.Json.Serialization;
+using CTFServer.Models.Request.Info;
 
 namespace CTFServer.Models.Request.Admin;
 
@@ -27,12 +28,19 @@ public class WriteupInfoModel
     /// </summary>
     public DateTimeOffset UploadTimeUTC { get; set; } = DateTimeOffset.UtcNow;
 
-    internal static WriteupInfoModel FromParticipation(Participation part)
-        => new()
+    /// <summary>
+    /// Writeup 文件对象
+    /// </summary>
+    [JsonIgnore]
+    public LocalFile File { get; set; } = default!;
+
+    internal static WriteupInfoModel? FromParticipation(Participation part)
+        => part.Writeup is null ? null : new()
         {
             Id = part.Id,
             Team = TeamInfoModel.FromTeam(part.Team, false),
-            Url = part.WriteUp?.Url() ?? "#",
-            UploadTimeUTC = part.WriteUp?.UploadTimeUTC ?? DateTimeOffset.UtcNow
+            File = part.Writeup,
+            Url = part.Writeup.Url(),
+            UploadTimeUTC = part.Writeup.UploadTimeUTC
         };
 }

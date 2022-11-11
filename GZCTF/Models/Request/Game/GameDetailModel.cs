@@ -23,7 +23,7 @@ public class GameDetailModel
     public string TeamToken { get; set; } = string.Empty;
 
     /// <summary>
-    /// WriteUp 提交截止时间
+    /// Writeup 提交截止时间
     /// </summary>
     [Required]
     [JsonPropertyName("wpddl")]

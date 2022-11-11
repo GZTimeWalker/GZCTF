@@ -91,14 +91,14 @@ public class GameInfoModel
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// WriteUp 提交截止时间
+    /// Writeup 提交截止时间
     /// </summary>
     [Required]
     [JsonPropertyName("wpddl")]
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// WriteUp 附加说明
+    /// Writeup 附加说明
     /// </summary>
     [Required]
     [JsonPropertyName("wpnote")]

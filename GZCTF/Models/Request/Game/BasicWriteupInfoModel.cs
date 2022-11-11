@@ -22,10 +22,10 @@ public class BasicWriteupInfoModel
     /// <summary>
     /// 文件大小
     /// </summary>
-    public ulong FileSize { get; set; } = 0;
+    public long FileSize { get; set; } = 0;
 
     /// <summary>
-    /// WriteUp 附加说明
+    /// Writeup 附加说明
     /// </summary>
     [JsonPropertyName("note")]
     public string WriteupNote { get; set; } = string.Empty;
@@ -33,9 +33,9 @@ public class BasicWriteupInfoModel
     internal static BasicWriteupInfoModel FromParticipation(Participation part)
         => new()
         {
-            Submitted = part.WriteUp is not null,
-            Name = part.WriteUp?.Name ?? "#",
-            FileSize = part.WriteUp?.FileSize ?? 0,
+            Submitted = part.Writeup is not null,
+            Name = part.Writeup?.Name ?? "#",
+            FileSize = part.Writeup?.FileSize ?? 0,
             WriteupNote = part.Game.WriteupNote
         };
 }

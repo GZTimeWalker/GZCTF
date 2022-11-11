@@ -1,4 +1,5 @@
-﻿using System.Net.Mime;
+﻿using System.Linq;
+using System.Net.Mime;
 using CTFServer.Middlewares;
 using CTFServer.Models.Internal;
 using CTFServer.Models.Request.Account;
@@ -33,6 +34,7 @@ public class AdminController : ControllerBase
     private readonly ITeamRepository teamRepository;
     private readonly IServiceProvider serviceProvider;
     private readonly IParticipationRepository participationRepository;
+    private readonly string basepath;
 
     public AdminController(UserManager<UserInfo> _userManager,
         IFileRepository _FileService,
@@ -41,6 +43,7 @@ public class AdminController : ControllerBase
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
         IServiceProvider _serviceProvider,
+        IConfiguration _configuration,
         IParticipationRepository _participationRepository)
     {
         userManager = _userManager;
@@ -51,6 +54,7 @@ public class AdminController : ControllerBase
         gameRepository = _gameRepository;
         serviceProvider = _serviceProvider;
         participationRepository = _participationRepository;
+        basepath = _configuration.GetSection("UploadFolder").Value ?? "uploads";
     }
 
     /// <summary>
@@ -356,7 +360,7 @@ public class AdminController : ControllerBase
     /// <response code="403">禁止访问</response>
     /// <response code="404">比赛未找到</response>
     [HttpGet("Writeups/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WriteupInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
     {
@@ -366,6 +370,34 @@ public class AdminController : ControllerBase
             return NotFound(new RequestResponse("比赛未找到", 404));
 
         return Ok(await participationRepository.GetWriteups(game, token));
+    }
+
+    /// <summary>
+    /// 下载全部 Writeup
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口下载全部 Writeup，需要Admin权限
+    /// </remarks>
+    /// <response code="200">下载成功</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">比赛未找到</response>
+    [HttpGet("Writeups/{id}/All")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DownloadAllWriteups(int id, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        var wps = await participationRepository.GetWriteups(game, token);
+        var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
+        var stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), basepath, filename, token);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return File(stream, "application/zip", $"{filename}.zip");
     }
 
     /// <summary>

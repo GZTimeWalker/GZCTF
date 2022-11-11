@@ -10,7 +10,7 @@ namespace CTFServer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "WriteUpId",
+                name: "WriteupId",
                 table: "Participations",
                 type: "integer",
                 nullable: true);
@@ -23,14 +23,14 @@ namespace CTFServer.Migrations
                 defaultValue: new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
 
             migrationBuilder.CreateIndex(
-                name: "IX_Participations_WriteUpId",
+                name: "IX_Participations_WriteupId",
                 table: "Participations",
-                column: "WriteUpId");
+                column: "WriteupId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Participations_Files_WriteUpId",
+                name: "FK_Participations_Files_WriteupId",
                 table: "Participations",
-                column: "WriteUpId",
+                column: "WriteupId",
                 principalTable: "Files",
                 principalColumn: "Id");
         }
@@ -38,15 +38,15 @@ namespace CTFServer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Participations_Files_WriteUpId",
+                name: "FK_Participations_Files_WriteupId",
                 table: "Participations");
 
             migrationBuilder.DropIndex(
-                name: "IX_Participations_WriteUpId",
+                name: "IX_Participations_WriteupId",
                 table: "Participations");
 
             migrationBuilder.DropColumn(
-                name: "WriteUpId",
+                name: "WriteupId",
                 table: "Participations");
 
             migrationBuilder.DropColumn(
