@@ -144,13 +144,13 @@ const ChallengePanel: FC = () => {
       style={{ maxWidth: 'calc(100% - 20rem)' }}
     >
       <Stack style={{ minWidth: '10rem' }}>
-      <Button
+        <Button
           leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
           onClick={() => setWriteupSubmitOpened(true)}
         >
           提交 Writeup
         </Button>
-        <Divider/>
+        <Divider />
         <Switch
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}

@@ -17,6 +17,7 @@ import {
   ActionIcon,
   Switch,
   PasswordInput,
+  SimpleGrid,
 } from '@mantine/core'
 import { DatePicker, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
@@ -201,7 +202,7 @@ const GameInfoEdit: FC = () => {
         </>
       }
     >
-      <Group grow position="apart">
+      <SimpleGrid cols={4}>
         <TextInput
           label="比赛标题"
           description="过长会影响显示效果"
@@ -228,17 +229,26 @@ const GameInfoEdit: FC = () => {
           value={game?.containerCountLimit}
           onChange={(e) => game && setGame({ ...game, containerCountLimit: e })}
         />
-        <NumberInput
-          label="Writeup 提交时限"
-          description="比赛结束后几小时内允许提交 Writeup"
-          disabled={disabled}
-          min={0}
-          required
-          value={wpddl}
-          onChange={setWpddl}
+        <PasswordInput
+          value={game?.publicKey || ''}
+          label="比赛签名公钥"
+          description="用于校验队伍 Token"
+          readOnly
+          onClick={() => {
+            clipboard.copy(game?.publicKey || '')
+            showNotification({
+              color: 'teal',
+              message: '公钥已复制到剪贴板',
+              icon: <Icon path={mdiCheck} size={1} />,
+              disallowClose: true,
+            })
+          }}
+          styles={{
+            innerInput: {
+              cursor: 'copy',
+            },
+          }}
         />
-      </Group>
-      <Group grow position="apart">
         <DatePicker
           label="开始日期"
           placeholder="Start Date"
@@ -299,74 +309,82 @@ const GameInfoEdit: FC = () => {
           withSeconds
           required
         />
-      </Group>
-      <Group grow position="apart">
-        <PasswordInput
-          value={game?.publicKey || ''}
-          label={
-            <Group spacing="sm">
-              <Text size="sm">比赛签名公钥</Text>
-              <Text size="xs" color="dimmed">
-                用于验证队伍 Token
-              </Text>
-            </Group>
-          }
-          readOnly
-          onClick={() => {
-            clipboard.copy(game?.publicKey || '')
-            showNotification({
-              color: 'teal',
-              message: '公钥已复制到剪贴板',
-              icon: <Icon path={mdiCheck} size={1} />,
-              disallowClose: true,
-            })
-          }}
-        />
-        <TextInput
-          label={
-            <Group spacing="sm">
-              <Text size="sm">邀请码</Text>
-              <Text size="xs" color="dimmed">
-                留空以不启用
-              </Text>
-            </Group>
-          }
-          value={game?.inviteCode || ''}
-          disabled={disabled}
-          onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
-          rightSection={
-            <ActionIcon
-              onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
-            >
-              <Icon path={mdiRefresh} size={1} />
-            </ActionIcon>
-          }
-        />
-        <Switch
-          style={{ marginTop: '1rem' }}
-          disabled={disabled}
-          checked={game?.acceptWithoutReview ?? false}
-          label={SwitchLabel('队伍报名免审核', '队伍报名后直接设置为 Accept 状态')}
-          onChange={(e) => game && setGame({ ...game, acceptWithoutReview: e.target.checked })}
-        />
-        <Switch
-          style={{ marginTop: '1rem' }}
-          disabled={disabled}
-          checked={game?.practiceMode ?? true}
-          label={SwitchLabel('练习模式', '比赛结束后仍然可以查看和提交 Flag')}
-          onChange={(e) => game && setGame({ ...game, practiceMode: e.target.checked })}
-        />
-      </Group>
+      </SimpleGrid>
+      <Grid>
+        <Grid.Col span={6}>
+          <Textarea
+            label="比赛简介"
+            description="将会显示在比赛列表中"
+            value={game?.summary}
+            style={{ width: '100%' }}
+            autosize
+            disabled={disabled}
+            minRows={3}
+            maxRows={3}
+            onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
+          />
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <Stack spacing="xs">
+            <TextInput
+              label="邀请码"
+              description="留空则不启用邀请码报名"
+              value={game?.inviteCode || ''}
+              disabled={disabled}
+              onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
+              rightSection={
+                <ActionIcon
+                  onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
+                >
+                  <Icon path={mdiRefresh} size={1} />
+                </ActionIcon>
+              }
+            />
+            <Switch
+              disabled={disabled}
+              checked={game?.acceptWithoutReview ?? false}
+              label={SwitchLabel('队伍报名免审核', '队伍报名后直接设置为 Accept 状态')}
+              onChange={(e) => game && setGame({ ...game, acceptWithoutReview: e.target.checked })}
+            />
+          </Stack>
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <Stack spacing="xs">
+            <NumberInput
+              label="Writeup 提交时限"
+              description="比赛结束后允许提交 Writeup 的小时数"
+              disabled={disabled}
+              min={0}
+              required
+              value={wpddl}
+              onChange={setWpddl}
+            />
+            <Switch
+              disabled={disabled}
+              checked={game?.practiceMode ?? true}
+              label={SwitchLabel('练习模式', '比赛结束后仍然可以查看题目和提交')}
+              onChange={(e) => game && setGame({ ...game, practiceMode: e.target.checked })}
+            />
+          </Stack>
+        </Grid.Col>
+      </Grid>
       <Group grow position="apart">
         <Textarea
-          label="比赛简介"
-          value={game?.summary}
+          label={
+            <Group spacing="sm">
+              <Text size="sm">Writeup 附加说明</Text>
+              <Text size="xs" color="dimmed">
+                支持 markdown 语法
+              </Text>
+            </Group>
+          }
+          value={game?.wpnote}
           style={{ width: '100%' }}
           autosize
           disabled={disabled}
-          minRows={4}
-          maxRows={4}
-          onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
+          minRows={3}
+          maxRows={3}
+          onChange={(e) => game && setGame({ ...game, wpnote: e.target.value })}
         />
         <MultiSelect
           label={
@@ -385,8 +403,8 @@ const GameInfoEdit: FC = () => {
           value={game?.organizations ?? []}
           styles={{
             input: {
-              minHeight: 110,
-              maxHeight: 110,
+              minHeight: 88,
+              maxHeight: 88,
             },
           }}
           onChange={(e) => game && setGame({ ...game, organizations: e })}

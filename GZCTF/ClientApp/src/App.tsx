@@ -28,11 +28,7 @@ export const App: FC = () => {
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-      <MantineProvider
-        withGlobalStyles
-        withCSSVariables
-        theme={{ ...ThemeOverride, colorScheme }}
-      >
+      <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
         <NotificationsProvider zIndex={5000}>
           {StyledGlobal}
           <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>

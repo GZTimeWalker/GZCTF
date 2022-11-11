@@ -28,8 +28,8 @@ import FlagCreateModal from '@Components/admin/FlagCreateModal'
 import FlagEditPanel from '@Components/admin/FlagEditPanel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 import { useUploadStyles } from '@Utils/ThemeOverride'
+import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],

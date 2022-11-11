@@ -20,8 +20,8 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { FileType } from '@Api'
 import { useUploadStyles } from '@Utils/ThemeOverride'
+import api, { FileType } from '@Api'
 
 const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()

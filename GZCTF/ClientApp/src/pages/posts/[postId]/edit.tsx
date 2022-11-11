@@ -189,7 +189,9 @@ const PostEdit: FC = () => {
                     onClick={() =>
                       modals.openConfirmModal({
                         title: '删除文章',
-                        children: <Text size="sm">你确定要删除文章 &quot;{post.title}&quot; 吗？</Text>,
+                        children: (
+                          <Text size="sm">你确定要删除文章 &quot;{post.title}&quot; 吗？</Text>
+                        ),
                         centered: true,
                         onConfirm: onDelete,
                         labels: { confirm: '确认', cancel: '取消' },

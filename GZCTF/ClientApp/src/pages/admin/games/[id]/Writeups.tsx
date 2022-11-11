@@ -24,18 +24,15 @@ const GameWriteups: FC = () => {
           </Button>
 
           <Group position="center">
-            <Button
-              leftIcon={<Icon path={mdiPlus} size={1} />}
-            >
-              新建通知
-            </Button>
+            <Button leftIcon={<Icon path={mdiPlus} size={1} />}>新建通知</Button>
           </Group>
         </>
       }
     >
-      <ScrollArea style={{ height: 'calc(100vh-180px)', position: 'relative' }} offsetScrollbars>
-
-      </ScrollArea>
+      <ScrollArea
+        style={{ height: 'calc(100vh-180px)', position: 'relative' }}
+        offsetScrollbars
+      ></ScrollArea>
     </WithGameTab>
   )
 }

@@ -21,6 +21,7 @@ import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import api from '@Api'
+import MarkdownRender from './MarkdownRender'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number
@@ -119,7 +120,6 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
           margin: 0,
         },
       }}
-      // opened={true}
     >
       <Stack spacing="sm" mt="sm">
         <Divider />
@@ -163,6 +163,12 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
             </Text>
           </List.Item>
         </List>
+        {data?.note && (
+          <>
+            <Title order={5}>附加说明</Title>
+            <MarkdownRender source={data.note} />
+          </>
+        )}
         <Title order={5}>当前提交</Title>
         <Card>
           {data?.submitted ? (
