@@ -246,7 +246,7 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 
 ## 特别感谢 ❤️‍🔥
 
-感谢 THUCTF 2022 的组织者提供的阿里云公网并发压力测试，帮助验证了 GZCTF 单机实例在千级并发、三分钟 134w 请求压力下的服务稳定性。
+感谢 THUCTF 2022 的组织者 NanoApe 提供的赞助及阿里云公网并发压力测试，帮助验证了 GZCTF 单机实例在千级并发、三分钟 134w 请求压力下的服务稳定性。
 
 ## Stars ✨
 
