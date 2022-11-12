@@ -18,9 +18,9 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
       p="sm"
       shadow="sm"
       sx={(theme) => ({
-        border: selected
-          ? `2px solid ${theme.colors.brand[theme.colorScheme === 'dark' ? 8 : 6]}`
-          : 'none',
+        border: `2px solid ${
+          selected ? theme.colors.brand[theme.colorScheme === 'dark' ? 8 : 6] : 'transparent'
+        }`,
         cursor: 'pointer',
       })}
     >

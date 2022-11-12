@@ -16,7 +16,7 @@ const useStyles = createStyles((theme, { height }: PDFViewerProps) => ({
   layout: {
     marginLeft: theme.spacing.md,
     marginRight: theme.spacing.md,
-    borderRadius: theme.radius.md,
+    borderRadius: theme.radius.sm,
 
     [theme.fn.largerThan(1100 + theme.spacing.md * 2)]: {
       maxWidth: 900,
@@ -28,11 +28,8 @@ const useStyles = createStyles((theme, { height }: PDFViewerProps) => ({
       minWidth: '100% !important',
       maxWidth: '100% !important',
       height: 'auto !important',
-      borderRadius: theme.radius.md,
-    },
-
-    '& .react-pdf__Page__textContent': {
-      display: 'none',
+      borderRadius: theme.radius.xs,
+      boxShadow: theme.shadows.sm,
     },
   },
 
@@ -62,7 +59,7 @@ const PDFViewer: FC<PDFViewerProps> = (props) => {
         <Stack>
           {Array.from(new Array(numPages), (el, index) => (
             <Paper className={classes.paper} key={`page_${index + 1}`}>
-              <Page width={900} pageNumber={index + 1} renderAnnotationLayer={false} />
+              <Page width={800} pageNumber={index + 1} renderAnnotationLayer={false} />
             </Paper>
           ))}
         </Stack>
