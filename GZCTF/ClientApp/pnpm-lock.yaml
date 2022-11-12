@@ -40,6 +40,7 @@ specifiers:
   katex: ^0.16.3
   lodash: ^4.17.21
   marked: ^4.2.2
+  pdfjs-dist: 2.16.105
   prettier: ~2.7.1
   prismjs: ^1.29.0
   react: ^18.2.0
@@ -72,7 +73,6 @@ dependencies:
   '@mdi/js': 7.0.96
   '@mdi/react': 1.6.1
   '@microsoft/signalr': 7.0.0
-  '@types/react-pdf': 5.7.4
   dayjs: 1.11.6
   echarts: 5.4.0
   echarts-for-react: 3.0.2_echarts@5.4.0+react@18.2.0
@@ -81,6 +81,7 @@ dependencies:
   embla-carousel-react: 7.0.5_react@18.2.0
   katex: 0.16.3
   marked: 4.2.2
+  pdfjs-dist: 2.16.105
   prismjs: 1.29.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -100,6 +101,7 @@ devDependencies:
   '@types/prismjs': 1.26.0
   '@types/react': 18.0.25
   '@types/react-dom': 18.0.8
+  '@types/react-pdf': 5.7.4
   '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
   '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
   '@vitejs/plugin-react': 2.2.0_vite@3.2.3
@@ -1082,7 +1084,7 @@ packages:
       pdfjs-dist: 2.16.105
     transitivePeerDependencies:
       - worker-loader
-    dev: false
+    dev: true
 
   /@types/react/18.0.25:
     resolution: {integrity: sha512-xD6c0KDT4m7n9uD4ZHi02lzskaiqcBxf4zi+tXZY98a04wvc0hi/TcCPC2FOESZi51Nd7tlUeOJY8RofL799/g==}
@@ -1664,7 +1666,6 @@ packages:
 
   /dommatrix/1.0.3:
     resolution: {integrity: sha512-l32Xp/TLgWb8ReqbVJAFIvXmY7go4nTxxlWiAFyhoQw9RKEOHBZNnyGvJWqDVSPmq3Y9HlM4npqF/T6VMOXhww==}
-    dev: false
 
   /echarts-for-react/3.0.2_echarts@5.4.0+react@18.2.0:
     resolution: {integrity: sha512-DRwIiTzx8JfwPOVgGttDytBqdp5VzCSyMRIxubgU/g2n9y3VLUmF2FK7Icmg/sNVkv4+rktmrLN9w22U2yy3fA==}
@@ -2937,7 +2938,6 @@ packages:
     dependencies:
       dommatrix: 1.0.3
       web-streams-polyfill: 3.2.1
-    dev: false
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}

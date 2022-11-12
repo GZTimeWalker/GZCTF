@@ -20,7 +20,7 @@
     "paths": {
       "@Api": ["src/Api.ts"],
       "@Components/*": ["src/components/*"],
-      "@Utils/*": ["src/utils/*"]
+      "@Utils/*": ["src/utils/*"],
     }
   },
   "include": ["vite.config.ts", "**/*.ts", "**/*.tsx"],
