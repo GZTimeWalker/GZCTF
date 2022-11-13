@@ -47,14 +47,21 @@ public partial class Codec
             if (str is null)
                 return Array.Empty<byte>();
 
+            byte[] encoded;
             try
             {
-                return Encoding.GetEncoding(type).GetBytes(str);
+                encoded = Encoding.GetEncoding(type).GetBytes(str);
             }
             catch
             {
                 return Array.Empty<byte>();
             }
+
+            Span<char> buffer = new char[encoded.Length * 4 / 3 + 8];
+            if (Convert.TryToBase64Chars(encoded, buffer, out var charsWritten))
+                return Encoding.GetEncoding(type).GetBytes(buffer.Slice(0, charsWritten).ToArray());
+            else
+                return Array.Empty<byte>();
         }
 
         public static byte[] DecodeToBytes(string? str)
@@ -62,14 +69,12 @@ public partial class Codec
             if (str is null)
                 return Array.Empty<byte>();
 
-            try
-            {
-                return Convert.FromBase64String(str);
-            }
-            catch
-            {
-                return Array.Empty<byte>();
-            }
+            Span<byte> buffer = new byte[str.Length * 3 / 4 + 8];
+
+            if (Convert.TryFromBase64String(str, buffer, out int bytesWritten))
+                return buffer.Slice(0, bytesWritten).ToArray();
+
+            return Array.Empty<byte>();
         }
     }
 

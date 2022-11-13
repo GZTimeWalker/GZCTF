@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text;
 using CTFServer.Models.Internal;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
@@ -6,6 +7,7 @@ using k8s;
 using k8s.Autorest;
 using k8s.Models;
 using Microsoft.Extensions.Options;
+using NPOI.SS.Formula.Functions;
 
 namespace CTFServer.Services;
 
@@ -245,7 +247,7 @@ public class K8sService : IContainerService
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
             var dockerjson = $"{{\"auths\":{{\"{registry.ServerAddress}\":{{\"auth\":\"{auth}\"," +
                 $"\"username\":\"{registry.UserName}\",\"password\":\"{registry.Password}\"}}}}}}";
-            var dockerjsonBytes = Codec.Base64.EncodeToBytes(dockerjson);
+            var dockerjsonBytes = Encoding.ASCII.GetBytes(dockerjson);
             var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()
@@ -261,7 +263,7 @@ public class K8sService : IContainerService
             {
                 kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, AuthSecretName, Namespace);
             }
-            catch (Exception)
+            catch
             {
                 kubernetesClient.CoreV1.CreateNamespacedSecret(secret, Namespace);
             }

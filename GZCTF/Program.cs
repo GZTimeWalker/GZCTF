@@ -78,7 +78,7 @@ else
 #endregion AppDbContext
 
 #region Configuration
-if(!IsTesting)
+if (!IsTesting)
 {
     try
     {
@@ -292,7 +292,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear() );
+    app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
     app.UseSerilogRequestLogging(options =>
     {
         options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
