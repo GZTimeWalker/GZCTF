@@ -5,7 +5,10 @@ import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { createStyles, Paper, ScrollArea, Stack } from '@mantine/core'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.js', import.meta.url).href;
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.js',
+  import.meta.url
+).href
 
 interface PDFViewerProps {
   url?: string
