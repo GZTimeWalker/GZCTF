@@ -13,7 +13,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main", "develop"]
+    branches: [ "main" ]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "main" ]
@@ -58,15 +58,16 @@ jobs:
     - uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '7.0.x'
-        include-prerelease: true
 
     - uses: actions/setup-node@v3
       with:
         node-version: 18
 
+    - run: npm i -g pnpm
+
     - name: Build with dotnet
       run: |
-        dotnet build "CTFServer.csproj" -c Release -o build /p:UseNpm=true
+        dotnet build "CTFServer.csproj" -c Release -o build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
