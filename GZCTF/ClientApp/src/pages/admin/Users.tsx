@@ -192,7 +192,7 @@ const Users: FC = () => {
           <TextInput
             icon={<Icon path={mdiMagnify} size={1} />}
             style={{ width: '30%' }}
-            placeholder="搜索用户名/邮箱/学号/姓名"
+            placeholder="搜索用户ID/用户名/邮箱/学号/姓名"
             value={hint}
             onChange={setHint}
             onKeyDown={(e) => {

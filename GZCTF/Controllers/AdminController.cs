@@ -70,8 +70,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(ConfigEditModel), StatusCodes.Status200OK)]
     public IActionResult GetConfigs()
     {
-        // always reload before
-        // ensure latest
+        // always reload, ensure latest
         configService.ReloadConfig();
 
         ConfigEditModel config = new()
@@ -141,6 +140,7 @@ public class AdminController : ControllerBase
                     EF.Functions.Like(item.UserName!, $"%{hint}%") ||
                     EF.Functions.Like(item.StdNumber, $"%{hint}%") ||
                     EF.Functions.Like(item.Email!, $"%{hint}%") ||
+                    EF.Functions.Like(item.Id, $"%{hint}%") ||
                     EF.Functions.Like(item.RealName, $"%{hint}%")
                 )
                 .OrderBy(e => e.Id).Take(30)
