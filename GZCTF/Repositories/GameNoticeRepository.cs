@@ -52,7 +52,7 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
             return context.GameNotices.Where(e => e.GameId == gameId)
                 .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUTC)
                 .Skip(skip).Take(count).ToArrayAsync(token);
-        });
+        }, token);
 
     public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
     {

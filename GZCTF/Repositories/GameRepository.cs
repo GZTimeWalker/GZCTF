@@ -50,14 +50,14 @@ public class GameRepository : RepositoryBase, IGameRepository
             return context.Games.Where(g => !g.Hidden)
                 .OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
-        });
+        }, token);
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
             return GenScoreboard(game, token);
-        });
+        }, token);
 
 
     public async Task DeleteGame(Game game, CancellationToken token = default)

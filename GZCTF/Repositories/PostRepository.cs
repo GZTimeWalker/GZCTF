@@ -41,7 +41,7 @@ public class PostRepository : RepositoryBase, IPostRepository
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
             return context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
                     .ThenByDescending(n => n.UpdateTimeUTC).ToArrayAsync(token);
-        });
+        }, token);
 
     public async Task RemovePost(Post post, CancellationToken token = default)
     {
