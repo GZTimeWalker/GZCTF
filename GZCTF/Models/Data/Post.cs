@@ -44,12 +44,12 @@ public partial class Post
     /// <summary>
     /// 作者信息
     /// </summary>
-    public string? AutherId { get; set; }
+    public string? AuthorId { get; set; }
 
     /// <summary>
     /// 作者
     /// </summary>
-    public UserInfo? Auther { get; set; }
+    public UserInfo? Author { get; set; }
 
     /// <summary>
     /// 发布时间
@@ -64,8 +64,8 @@ public partial class Post
         Content = string.IsNullOrEmpty(model.Content) ? Content : model.Content;
         IsPinned = model.IsPinned;
         Tags = model.Tags.Length > 0 ? model.Tags.ToList() : Tags;
-        Auther = user;
-        AutherId = user.Id;
+        Author = user;
+        AuthorId = user.Id;
         UpdateTimeUTC = DateTimeOffset.UtcNow;
 
         return this;

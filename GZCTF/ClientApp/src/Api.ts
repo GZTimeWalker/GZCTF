@@ -472,9 +472,9 @@ export interface PostDetailModel {
   /** 文章标签 */
   tags?: string[] | null
   /** 作者头像 */
-  autherAvatar?: string | null
+  authorAvatar?: string | null
   /** 作者名称 */
-  autherName?: string | null
+  authorName?: string | null
   /**
    * 发布时间
    * @format date-time
@@ -1346,9 +1346,9 @@ export interface PostInfoModel {
   /** 文章标签 */
   tags?: string[] | null
   /** 作者头像 */
-  autherAvatar?: string | null
+  authorAvatar?: string | null
   /** 作者名称 */
-  autherName?: string | null
+  authorName?: string | null
   /**
    * 更新时间
    * @format date-time

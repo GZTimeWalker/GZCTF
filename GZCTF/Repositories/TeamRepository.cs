@@ -71,7 +71,7 @@ public class TeamRepository : RepositoryBase, ITeamRepository
         return SaveAsync(token);
     }
 
-    public async Task<bool> VeifyToken(int id, string inviteCode, CancellationToken token = default)
+    public async Task<bool> VerifyToken(int id, string inviteCode, CancellationToken token = default)
     {
         var team = await context.Teams.FirstOrDefaultAsync(t => t.Id == id, token);
         return team is not null && team.InviteCode == inviteCode;

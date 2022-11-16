@@ -39,12 +39,12 @@ public class PostInfoModel
     /// <summary>
     /// 作者头像
     /// </summary>
-    public string? AutherAvatar { get; set; }
+    public string? AuthorAvatar { get; set; }
 
     /// <summary>
     /// 作者名称
     /// </summary>
-    public string? AutherName { get; set; }
+    public string? AuthorName { get; set; }
 
     /// <summary>
     /// 更新时间
@@ -61,7 +61,7 @@ public class PostInfoModel
             IsPinned = post.IsPinned,
             Tags = post.Tags,
             Time = post.UpdateTimeUTC,
-            AutherAvatar = post.Auther?.AvatarUrl,
-            AutherName = post.Auther?.UserName,
+            AuthorAvatar = post.Author?.AvatarUrl,
+            AuthorName = post.Author?.UserName,
         };
 }

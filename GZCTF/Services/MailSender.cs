@@ -52,7 +52,7 @@ public class MailSender : IMailSender
         }
     }
 
-    public async Task SendUrlAsync(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
+    public async Task SendUrlAsync(string? title, string? information, string? btnmsg, string? userName, string? email, string? url)
     {
         if (email is null || userName is null || title is null)
         {
@@ -68,7 +68,7 @@ public class MailSender : IMailSender
             .ReadToEndAsync();
         emailContent = emailContent
             .Replace("{title}", title)
-            .Replace("{infomation}", infomation)
+            .Replace("{information}", information)
             .Replace("{btnmsg}", btnmsg)
             .Replace("{email}", email)
             .Replace("{userName}", userName)
@@ -78,12 +78,12 @@ public class MailSender : IMailSender
             logger.SystemLog("邮件发送失败！", TaskStatus.Fail);
     }
 
-    private bool SendUrlIfPossible(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
+    private bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email, string? url)
     {
         if (options?.SendMailAddress is null)
             return false;
 
-        var _ = SendUrlAsync(title, infomation, btnmsg, userName, email, url);
+        var _ = SendUrlAsync(title, information, btnmsg, userName, email, url);
         return true;
     }
 

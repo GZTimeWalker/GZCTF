@@ -38,11 +38,11 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
         cite={
           <Group position="apart" style={{ margin: 'auto', fontStyle: 'normal' }}>
             <Group spacing={5} position="right">
-              <Avatar src={post.autherAvatar} size="sm">
-                {post.autherName?.slice(0, 1) ?? 'A'}
+              <Avatar src={post.authorAvatar} size="sm">
+                {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
               <Text weight={700}>
-                {post.autherName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
+                {post.authorName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
               </Text>
             </Group>
             <Text align="right">

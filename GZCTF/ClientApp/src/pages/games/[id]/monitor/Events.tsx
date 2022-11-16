@@ -62,8 +62,8 @@ const Events: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const [hideConatinerEvents, setHideConatinerEvents] = useLocalStorage({
-    key: 'hide-conatiner-events',
+  const [hideContainerEvents, setHideContainerEvents] = useLocalStorage({
+    key: 'hide-container-events',
     defaultValue: false,
     getInitialValueInEffect: false,
   })
@@ -85,7 +85,7 @@ const Events: FC = () => {
   useEffect(() => {
     api.game
       .gameEvents(numId, {
-        hideContainer: hideConatinerEvents,
+        hideContainer: hideContainerEvents,
         count: ITEM_COUNT_PER_PAGE,
         skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
       })
@@ -104,7 +104,7 @@ const Events: FC = () => {
     if (activePage === 1) {
       newEvents.current = []
     }
-  }, [activePage, hideConatinerEvents])
+  }, [activePage, hideContainerEvents])
 
   useEffect(() => {
     if (game?.end && new Date() < new Date(game.end)) {
@@ -147,7 +147,7 @@ const Events: FC = () => {
 
   const filteredEvents = newEvents.current.filter(
     (e) =>
-      !hideConatinerEvents ||
+      !hideContainerEvents ||
       (e.type !== EventType.ContainerStart && e.type !== EventType.ContainerDestroy)
   )
 
@@ -156,8 +156,8 @@ const Events: FC = () => {
       <Group position="apart" style={{ width: '100%' }}>
         <Switch
           label={SwitchLabel('隐藏容器事件', '隐藏容器启动/销毁事件')}
-          checked={hideConatinerEvents}
-          onChange={(e) => setHideConatinerEvents(e.currentTarget.checked)}
+          checked={hideContainerEvents}
+          onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
         />
         <Group position="right">
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>

@@ -110,9 +110,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
 
         builder.Entity<Post>(entity =>
         {
-            entity.HasOne(e => e.Auther)
+            entity.HasOne(e => e.Author)
                 .WithMany()
-                .HasForeignKey(e => e.AutherId)
+                .HasForeignKey(e => e.AuthorId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(e => e.Tags)
@@ -120,7 +120,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 .Metadata
                 .SetValueComparer(listComparer);
 
-            entity.Navigation(e => e.Auther).AutoInclude();
+            entity.Navigation(e => e.Author).AutoInclude();
         });
 
         builder.Entity<Team>(entity =>

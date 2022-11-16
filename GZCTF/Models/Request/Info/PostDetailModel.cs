@@ -45,12 +45,12 @@ public class PostDetailModel
     /// <summary>
     /// 作者头像
     /// </summary>
-    public string? AutherAvatar { get; set; }
+    public string? AuthorAvatar { get; set; }
 
     /// <summary>
     /// 作者名称
     /// </summary>
-    public string? AutherName { get; set; }
+    public string? AuthorName { get; set; }
 
     /// <summary>
     /// 发布时间
@@ -68,7 +68,7 @@ public class PostDetailModel
             Summary = post.Summary,
             Content = post.Content,
             Time = post.UpdateTimeUTC,
-            AutherAvatar = post.Auther?.AvatarUrl,
-            AutherName = post.Auther?.UserName,
+            AuthorAvatar = post.Author?.AvatarUrl,
+            AuthorName = post.Author?.UserName,
         };
 }

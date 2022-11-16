@@ -63,10 +63,10 @@ const Post: FC = () => {
           <Title order={2} pb="1.5rem" className={classes.title} style={{ fontSize: 36 }}>
             {post?.title}
           </Title>
-          <Avatar src={post?.autherAvatar} color="brand" radius="xl" size="lg">
-            {post?.autherName?.slice(0, 1) ?? 'A'}
+          <Avatar src={post?.authorAvatar} color="brand" radius="xl" size="lg">
+            {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
-          <Text weight={700}>{post?.autherName ?? 'Anonym'}</Text>
+          <Text weight={700}>{post?.authorName ?? 'Anonym'}</Text>
           <Stack spacing={2}>
             <Divider color={theme.colorScheme === 'dark' ? 'white' : 'gray'} />
             <Text weight={500}>{dayjs(post?.time).format('LLL')}</Text>
@@ -85,11 +85,11 @@ const Post: FC = () => {
           </Group>
         )}
         <Group spacing={5} mb={100} position="right">
-          <Avatar src={post?.autherAvatar} size="sm">
-            {post?.autherName?.slice(0, 1) ?? 'A'}
+          <Avatar src={post?.authorAvatar} size="sm">
+            {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text weight={700}>
-            {post?.autherName ?? 'Anonym'} 发布于 {dayjs(post?.time).format('HH:mm, YY/MM/DD')}
+            {post?.authorName ?? 'Anonym'} 发布于 {dayjs(post?.time).format('HH:mm, YY/MM/DD')}
           </Text>
         </Group>
       </Container>

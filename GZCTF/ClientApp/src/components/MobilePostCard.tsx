@@ -55,11 +55,11 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           )}
         </Group>
         <Group spacing={5} position="left">
-          <Avatar src={post.autherAvatar} size="sm">
-            {post.autherName?.slice(0, 1) ?? 'A'}
+          <Avatar src={post.authorAvatar} size="sm">
+            {post.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text weight={500} size="sm">
-            {post.autherName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
+            {post.authorName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
           </Text>
         </Group>
       </Stack>

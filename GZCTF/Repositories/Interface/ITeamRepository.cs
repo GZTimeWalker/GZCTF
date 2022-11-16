@@ -78,7 +78,7 @@ public interface ITeamRepository : IRepository
     /// <param name="inviteToken">邀请Token</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<bool> VeifyToken(int id, string inviteToken, CancellationToken token = default);
+    public Task<bool> VerifyToken(int id, string inviteToken, CancellationToken token = default);
 
     /// <summary>
     /// 删除队伍

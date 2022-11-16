@@ -846,7 +846,7 @@ public class GameController : ControllerBase
                 StatusCode = 429
             };
 
-        var destoryId = instance.Container.Id;
+        var destroyId = instance.Container.Id;
 
         if (!await instanceRepository.DestroyContainer(instance.Container, token))
             return BadRequest(new RequestResponse("题目删除容器失败"));
@@ -862,7 +862,7 @@ public class GameController : ControllerBase
             Content = $"{instance.Challenge.Title}#{instance.Challenge.Id} 销毁容器实例"
         }, token);
 
-        logger.Log($"{context.Participation!.Team.Name} 销毁题目 {instance.Challenge.Title} 的容器实例 [{destoryId}]", context.User, TaskStatus.Success);
+        logger.Log($"{context.Participation!.Team.Name} 销毁题目 {instance.Challenge.Title} 的容器实例 [{destroyId}]", context.User, TaskStatus.Success);
 
         return Ok();
     }
