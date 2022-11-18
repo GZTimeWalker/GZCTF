@@ -18,9 +18,7 @@
     <SpaProxyServerUrl>http://localhost:3000</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <Configurations>Debug;Release;GenAPI</Configurations>
-    <FrontendBuildTool>pnpm</FrontendBuildTool>
-    <FrontendBuildTool Condition="'$(UseNpm)'=='true'">npm</FrontendBuildTool>
-    <ReleaseVersion>0.11.2</ReleaseVersion>
+    <ReleaseVersion>0.12.9</ReleaseVersion>
     <WarningLevel>4</WarningLevel>
     <LangVersion>preview</LangVersion>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
@@ -39,9 +37,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
-    <PackageReference Include="NPOI" Version="2.5.6" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.17.0" />
-    <PackageReference Include="NSwag.MSBuild" Version="13.17.0">
+    <PackageReference Include="NPOI" Version="2.6.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.18.0" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.18.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -59,7 +57,7 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0" />
-    <PackageReference Include="MemoryPack" Version="1.7.2" />
+    <PackageReference Include="MemoryPack" Version="1.7.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
   </ItemGroup>
@@ -118,14 +116,14 @@
   </Target>
 
   <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'GenAPI'">
-    <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net60) aspnetcore2openapi /assembly:$(TargetDir)CTFServer.dll /output:ClientApp/template/swagger.json" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="$(FrontendBuildTool) run genapi" />
+    <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) aspnetcore2openapi /assembly:$(TargetDir)CTFServer.dll /output:ClientApp/template/swagger.json" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run genapi" />
   </Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="$(FrontendBuildTool) install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="$(FrontendBuildTool) run build" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run build" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
