@@ -157,6 +157,8 @@ builder.Services.AddAuthentication(o =>
     options.ApplicationCookie?.Configure(cookie =>
     {
         cookie.Cookie.Name = "GZCTF_Token";
+        cookie.SlidingExpiration = true;
+        cookie.ExpireTimeSpan = TimeSpan.FromDays(7);
     });
 });
 
