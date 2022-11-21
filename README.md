@@ -35,7 +35,8 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - SMTP 注册邮件发送、基于 Google ReCaptchav3 的恶意注册防护
 - 用户封禁、用户三级权限管理
 - 可选的队伍审核、邀请码、注册邮箱限制
-- 实时事件监控、下载积分榜、下载全部提交记录
+- 平台内 Writeup 收集和查阅
+- 实时事件监控、下载积分榜、下载全部提交记录、下载 Writeup
 - 比赛期间裁判监控、提交和主要事件日志
 - 应用内全局设置
 - 以及更多……
@@ -49,6 +50,8 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 ![](assets/demo-5.png)
 ![](assets/demo-6.png)
 ![](assets/demo-7.png)
+![](assets/demo-8.png)
+![](assets/demo-9.png)
 
 ## 安装配置 🚀
 
