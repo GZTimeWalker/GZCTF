@@ -80,8 +80,9 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 {
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=another_p4sswr0d",
-    "RedisCache": "cache:6379,password=some_password" // optional
+    "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>"
+    // redis is optional
+    //"RedisCache": "cache:6379,password=<Redis Password>"
   },
   "Logging": {
     "LogLevel": {
@@ -90,7 +91,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
-  "EmailConfig": { // optional
+  "EmailConfig": {
     "SendMailAddress": "a@a.com",
     "UserName": "",
     "Password": "",
@@ -99,22 +100,24 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
       "Port": 587
     }
   },
-  "XorKey": "Q22yg09A91YWm1GsOf9VIMiw", // some random key
-  "DisableRateLimit": false,
+  "XorKey": "<Random Key Str>",
   "ContainerProvider": {
     "Type": "Docker", // or "Kubernetes"
     "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
-    "DockerConfig": { // optional
-        "SwarmMode": false,
-        "Uri": "unix:///var/run/docker.sock"
+    "DockerConfig": {
+      // optional
+      "SwarmMode": false,
+      "Uri": "unix:///var/run/docker.sock"
     }
-   },
-  "RegistryConfig": { // optional
+  },
+  "RequestLogging": false,
+  "DisableRateLimit": false,
+  "RegistryConfig": {
     "UserName": "",
     "Password": "",
     "ServerAddress": ""
   },
-  "GoogleRecaptcha": { // optional, recaptcha v3
+  "GoogleRecaptcha": {
     "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
     "Sitekey": "",
     "Secretkey": "",

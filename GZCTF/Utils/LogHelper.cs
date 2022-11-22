@@ -80,6 +80,17 @@ public static class LogHelper
         }
     }
 
+    public static void UseRequestLogging(this WebApplication app)
+    {
+        app.UseSerilogRequestLogging(options =>
+        {
+            options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
+            options.GetLevel = (context, time, ex) =>
+                time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
+                (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
+        });
+    }
+
     public static IDictionary<string, ColumnWriterBase> ColumnWriters = new Dictionary<string, ColumnWriterBase>
     {
         {"Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },

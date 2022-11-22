@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using NJsonSchema.Generation;
 using Serilog;
 using Serilog.Events;
@@ -56,11 +57,7 @@ if (IsTesting || (builder.Environment.IsDevelopment() && !builder.Configuration.
 else
 {
     if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-    {
-        Log.Logger.Fatal("未找到数据库连接字符串字段 ConnectionStrings，请检查 appsettings.json 是否正常挂载及配置");
-        Thread.Sleep(30000);
-        Environment.Exit(1);
-    }
+        ExitWithFatalMessage("未找到数据库连接字符串字段 ConnectionStrings，请检查 appsettings.json 是否正常挂载及配置");
 
     builder.Services.AddDbContext<AppDbContext>(
         options =>
@@ -92,9 +89,7 @@ if (!IsTesting)
     }
     catch
     {
-        Log.Logger.Fatal("数据库连接失败，请检查 Database 连接字符串配置");
-        Thread.Sleep(30000);
-        Environment.Exit(1);
+        ExitWithFatalMessage("数据库连接失败，请检查 Database 连接字符串配置");
     }
 }
 #endregion Configuration
@@ -245,67 +240,23 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 
 var app = builder.Build();
 
+await app.RunPrelaunchWork();
+
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
-
-using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-{
-    var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    if (!context.Database.IsInMemory())
-        await context.Database.MigrateAsync();
-
-    await context.Database.EnsureCreatedAsync();
-
-    if (!await context.Posts.AnyAsync())
-    {
-        await context.Posts.AddAsync(new()
-        {
-            UpdateTimeUTC = DateTimeOffset.UtcNow,
-            Title = "Welcome to GZ::CTF!",
-            Summary = "一个开源的CTF比赛平台。",
-            Content = "项目基于 AGPL-3.0 许可证，开源于 [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF)。"
-        });
-
-        await context.SaveChangesAsync();
-    }
-
-    if (app.Environment.IsDevelopment() || app.Configuration.GetSection("ADMIN_PASSWORD").Exists())
-    {
-        var usermanager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
-        var admin = await usermanager.FindByNameAsync("Admin");
-        var password = app.Environment.IsDevelopment() ? "Admin@2022" :
-            app.Configuration.GetValue<string>("ADMIN_PASSWORD");
-
-        if (admin is null && password is not null)
-        {
-            admin = new UserInfo
-            {
-                UserName = "Admin",
-                Email = "admin@gzti.me",
-                Role = CTFServer.Role.Admin,
-                EmailConfirmed = true,
-                RegisterTimeUTC = DateTimeOffset.UtcNow
-            };
-            await usermanager.CreateAsync(admin, password);
-        }
-    }
-}
 
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
-    app.UseSerilogRequestLogging(options =>
-    {
-        options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath}";
-        options.GetLevel = (context, time, ex) =>
-            time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
-            (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
-    });
     app.UseSwaggerUi3();
+
+    app.UseRequestLogging();
 }
 else
 {
+    if (app.Configuration.GetValue<bool>("RequestLogging") is true)
+        app.UseRequestLogging();
+
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
@@ -324,9 +275,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
-{
     app.UseConfiguredRateLimiter();
-}
 
 app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
@@ -380,5 +329,12 @@ public partial class Program
             versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
 
         Console.WriteLine($"GZCTF © 2022-present GZTimeWalker {versionStr,33}\n");
+    }
+
+    public static void ExitWithFatalMessage(string msg)
+    {
+        Log.Logger.Fatal(msg);
+        Thread.Sleep(30000);
+        Environment.Exit(1);
     }
 }
