@@ -249,14 +249,9 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
     app.UseSwaggerUi3();
-
-    app.UseRequestLogging();
 }
 else
 {
-    if (app.Configuration.GetValue<bool>("RequestLogging") is true)
-        app.UseRequestLogging();
-
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
@@ -267,8 +262,6 @@ app.UseStaticFiles();
 
 app.UseMiddleware<ProxyMiddleware>();
 
-app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseAuthentication();
@@ -276,6 +269,9 @@ app.UseAuthorization();
 
 if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
     app.UseConfiguredRateLimiter();
+
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging") is true)
+    app.UseRequestLogging();
 
 app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
