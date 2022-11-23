@@ -89,6 +89,8 @@ if (!IsTesting)
     }
     catch
     {
+        if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
+            Log.Logger.Error($"当前连接字符串：{builder.Configuration.GetConnectionString("Database")}");
         ExitWithFatalMessage("数据库连接失败，请检查 Database 连接字符串配置");
     }
 }
