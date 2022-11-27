@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using CTFServer.Extensions;
 using CTFServer.Models.Data;
+using CTFServer.Utils;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -27,8 +28,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
     private static ValueComparer<TList> GetEnumerableComparer<TList, T>()
         where T : notnull
         where TList : IEnumerable<T>, new()
-        => new ValueComparer<TList>(
-            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
+        => new((c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
     public DbSet<LogModel> Logs { get; set; } = default!;
@@ -78,6 +78,11 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 .HasConversion(setConverter)
                 .Metadata
                 .SetValueComparer(setComparer);
+
+            entity.Property(e => e.BloodBonus)
+                .HasConversion(BloodBonus.Converter)
+                .Metadata
+                .SetValueComparer(BloodBonus.Comparer);
 
             entity.HasMany(e => e.GameEvents)
                 .WithOne(e => e.Game)

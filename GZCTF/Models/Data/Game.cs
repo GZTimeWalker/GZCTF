@@ -110,6 +110,12 @@ public class Game
     [JsonPropertyName("wpnote")]
     public string WriteupNote { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 三血加分
+    /// </summary>
+    [Required]
+    public BloodBonus BloodBonus { get; set; } = new();
+
     [NotMapped]
     [JsonIgnore]
     public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
@@ -213,6 +219,7 @@ public class Game
         TeamMemberCountLimit = model.TeamMemberCountLimit;
         ContainerCountLimit = model.ContainerCountLimit;
         WriteupNote = model.WriteupNote;
+        BloodBonus.TrySetVal(model.BloodBonusValue);
 
         return this;
     }

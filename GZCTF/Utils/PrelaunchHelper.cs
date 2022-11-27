@@ -1,8 +1,8 @@
 ﻿using System;
-using Serilog;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Serilog;
 
 namespace CTFServer.Utils;
 

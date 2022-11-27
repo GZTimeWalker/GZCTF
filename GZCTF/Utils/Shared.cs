@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CTFServer.Utils;
 
@@ -29,7 +31,7 @@ public record RequestResponse<T>(string Title, T Data, int Status = 400);
 /// 列表响应
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class ArrayResponse<T> where T: class
+public class ArrayResponse<T> where T : class
 {
     public ArrayResponse(T[] array, int? tot = null)
     {
@@ -53,4 +55,46 @@ public class ArrayResponse<T> where T: class
     /// 总长度
     /// </summary>
     public int Total { get; set; }
+}
+
+/// <summary>
+/// 三血加分
+/// </summary>
+public struct BloodBonus
+{
+    public const long DefaultValue = (50 << 20) + (30 << 10) + 10;
+    public const int Mask = 0x3ff;
+    public const int Base = 1000;
+
+    private long _val = DefaultValue;
+
+    public BloodBonus(long init = DefaultValue) => TrySetVal(init);
+
+    public long Val => _val;
+
+    public bool TrySetVal(long value)
+    {
+        if ((value & Mask) > Base || ((value >> 10) & Mask) > Base || ((value >> 20) & Mask) > Base)
+            return false;
+        _val = value;
+        return true;
+    }
+
+    public long FirstBlood => (_val >> 20) & 0x3ff;
+
+    public float FirstBloodFactor => FirstBlood / 1000f + 1.0f;
+
+    public long SecondBlood => (_val >> 10) & 0x3ff;
+
+    public float SecondBloodFactor => SecondBlood / 1000f + 1.0f;
+
+    public long ThirdBlood => _val & 0x3ff;
+
+    public float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
+
+    public bool NoBonus => _val == 0;
+
+    public static ValueConverter<BloodBonus, long> Converter => new(v => v.Val, v => new(v));
+
+    public static ValueComparer<BloodBonus> Comparer => new((a, b) => a.Val == b.Val, c => c.Val.GetHashCode());
 }

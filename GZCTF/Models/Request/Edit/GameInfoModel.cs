@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using CTFServer.Utils;
 
 namespace CTFServer.Models.Request.Edit;
 
@@ -100,8 +101,14 @@ public class GameInfoModel
     /// <summary>
     /// Writeup 附加说明
     /// </summary>
-    [JsonPropertyName("wpnote")]
+    [JsonPropertyName("wpNote")]
     public string WriteupNote { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 三血加分
+    /// </summary>
+    [JsonPropertyName("bloodBonus")]
+    public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
     internal static GameInfoModel FromGame(Models.Game game)
         => new()
@@ -122,6 +129,7 @@ public class GameInfoModel
             StartTimeUTC = game.StartTimeUTC,
             EndTimeUTC = game.EndTimeUTC,
             WriteupDeadline = game.WriteupDeadline,
-            WriteupNote = game.WriteupNote
+            WriteupNote = game.WriteupNote,
+            BloodBonusValue = game.BloodBonus.Val
         };
 }

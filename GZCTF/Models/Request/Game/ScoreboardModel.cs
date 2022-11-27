@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using CTFServer.Models.Request.Info;
+using CTFServer.Utils;
 using MemoryPack;
 
 namespace CTFServer.Models.Request.Game;
@@ -14,6 +15,11 @@ public partial class ScoreboardModel
     /// 更新时间
     /// </summary>
     public DateTimeOffset UpdateTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// 三血加分系数
+    /// </summary>
+    public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
     /// <summary>
     /// 前十名的时间线
