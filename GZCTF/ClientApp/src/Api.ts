@@ -1039,12 +1039,12 @@ export interface ScoreboardModel {
    * 更新时间
    * @format date-time
    */
-  updateTimeUTC?: string
+  updateTimeUTC: string
   /**
    * 三血加分系数
    * @format int64
    */
-  bloodBonusValue?: number
+   bloodBonus: number
   /** 前十名的时间线 */
   timeLines?: Record<string, TopTimeLine[]>
   /** 队伍信息 */

@@ -13,8 +13,9 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiKeyboardBackspace, mdiCheck, mdiPlus } from '@mdi/js'
+import { mdiKeyboardBackspace, mdiCheck, mdiPlus, mdiHexagonSlice6 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import BloodBonusModel from '@Components/admin/BloodBonusModel'
 import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
@@ -28,6 +29,7 @@ const GameChallengeEdit: FC = () => {
 
   const navigate = useNavigate()
   const [createOpened, setCreateOpened] = useState(false)
+  const [bonusOpened, setBonusOpened] = useState(false)
   const [category, setCategory] = useState<ChallengeTag | null>(null)
 
   const { data: challenges, mutate } = api.edit.useEditGetGameChallenges(numId, {
@@ -116,13 +118,21 @@ const GameChallengeEdit: FC = () => {
                 return { value: tag[1], ...data }
               })}
             />
-            <Button
-              style={{ marginRight: '18px' }}
-              leftIcon={<Icon path={mdiPlus} size={1} />}
-              onClick={() => setCreateOpened(true)}
-            >
-              新建题目
-            </Button>
+            <Group position="right">
+              <Button
+                leftIcon={<Icon path={mdiHexagonSlice6} size={1} />}
+                onClick={() => setBonusOpened(true)}
+              >
+                三血奖励
+              </Button>
+              <Button
+                style={{ marginRight: '18px' }}
+                leftIcon={<Icon path={mdiPlus} size={1} />}
+                onClick={() => setCreateOpened(true)}
+              >
+                新建题目
+              </Button>
+            </Group>
           </Group>
         </>
       }
@@ -162,6 +172,13 @@ const GameChallengeEdit: FC = () => {
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
         onAddChallenge={(challenge) => mutate([challenge, ...(challenges ?? [])])}
+      />
+      <BloodBonusModel
+        title="三血奖励"
+        centered
+        size="30%"
+        opened={bonusOpened}
+        onClose={() => setBonusOpened(false)}
       />
     </WithGameEditTab>
   )

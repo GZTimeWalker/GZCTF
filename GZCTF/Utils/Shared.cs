@@ -66,33 +66,32 @@ public struct BloodBonus
     public const int Mask = 0x3ff;
     public const int Base = 1000;
 
-    private long _val = DefaultValue;
+    public BloodBonus(long init = DefaultValue) => Val = init;
 
-    public BloodBonus(long init = DefaultValue) => TrySetVal(init);
+    public static BloodBonus Default => new();
 
-    public long Val => _val;
+    public long Val { get; private set; } = DefaultValue;
 
-    public bool TrySetVal(long value)
+    public static BloodBonus FromValue(long value)
     {
         if ((value & Mask) > Base || ((value >> 10) & Mask) > Base || ((value >> 20) & Mask) > Base)
-            return false;
-        _val = value;
-        return true;
+            return new();
+        return new(value);
     }
 
-    public long FirstBlood => (_val >> 20) & 0x3ff;
+    public long FirstBlood => (Val >> 20) & 0x3ff;
 
     public float FirstBloodFactor => FirstBlood / 1000f + 1.0f;
 
-    public long SecondBlood => (_val >> 10) & 0x3ff;
+    public long SecondBlood => (Val >> 10) & 0x3ff;
 
     public float SecondBloodFactor => SecondBlood / 1000f + 1.0f;
 
-    public long ThirdBlood => _val & 0x3ff;
+    public long ThirdBlood => Val & 0x3ff;
 
     public float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
 
-    public bool NoBonus => _val == 0;
+    public bool NoBonus => Val == 0;
 
     public static ValueConverter<BloodBonus, long> Converter => new(v => v.Val, v => new(v));
 

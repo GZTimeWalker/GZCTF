@@ -114,7 +114,7 @@ public class Game
     /// 三血加分
     /// </summary>
     [Required]
-    public BloodBonus BloodBonus { get; set; } = new();
+    public BloodBonus BloodBonus { get; set; } = BloodBonus.Default;
 
     [NotMapped]
     [JsonIgnore]
@@ -219,7 +219,7 @@ public class Game
         TeamMemberCountLimit = model.TeamMemberCountLimit;
         ContainerCountLimit = model.ContainerCountLimit;
         WriteupNote = model.WriteupNote;
-        BloodBonus.TrySetVal(model.BloodBonusValue);
+        BloodBonus = BloodBonus.FromValue(model.BloodBonusValue);
 
         return this;
     }

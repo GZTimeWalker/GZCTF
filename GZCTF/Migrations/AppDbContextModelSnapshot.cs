@@ -236,7 +236,9 @@ namespace CTFServer.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<long>("BloodBonus")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
 
                     b.Property<int>("ContainerCountLimit")
                         .HasColumnType("integer");

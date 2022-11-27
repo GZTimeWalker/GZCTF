@@ -101,6 +101,8 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
 
         if (context is null || !context.Configs.Any())
         {
+            Log.Logger.Information($"初始化数据库……");
+
             var configs = DefaultConfigs();
 
             if (context is not null)

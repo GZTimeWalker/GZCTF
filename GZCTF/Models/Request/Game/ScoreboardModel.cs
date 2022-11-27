@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using CTFServer.Models.Request.Info;
 using CTFServer.Utils;
@@ -14,11 +15,14 @@ public partial class ScoreboardModel
     /// <summary>
     /// 更新时间
     /// </summary>
+    [Required]
     public DateTimeOffset UpdateTimeUTC { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// 三血加分系数
     /// </summary>
+    [Required]
+    [JsonPropertyName("bloodBonus")]
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
     /// <summary>

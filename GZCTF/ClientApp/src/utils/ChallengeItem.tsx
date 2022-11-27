@@ -189,3 +189,67 @@ export const NoticTypeIconMap = (size: number) => {
     [NoticeType.ThirdBlood, iconMap.get(SubmissionType.ThirdBlood)],
   ])
 }
+
+export interface BonusLabel {
+  name: string
+  desrc: string
+}
+
+const BonusLabelNameMap = new Map([
+  [SubmissionType.FirstBlood, '一血'],
+  [SubmissionType.SecondBlood, '二血'],
+  [SubmissionType.ThirdBlood, '三血'],
+])
+
+export class BloodBonus {
+  private val: number = (50 << 20) + (30 << 10) + 10
+  private static mask = 0x3ff
+  private static base = 1000
+
+  static default = new BloodBonus()
+
+  constructor(val?: number) {
+    this.val = val ?? this.val
+  }
+
+  get value() {
+    return this.val
+  }
+
+  getBonusNum(type: SubmissionType) {
+    if (type === SubmissionType.FirstBlood) return (this.val >> 20) & BloodBonus.mask
+    if (type === SubmissionType.SecondBlood) return (this.val >> 10) & BloodBonus.mask
+    if (type === SubmissionType.ThirdBlood) return this.val & BloodBonus.mask
+    return 0
+  }
+
+  getBonus(type: SubmissionType) {
+    if (type === SubmissionType.Unaccepted) return 0
+    if (type === SubmissionType.Normal) return 1
+
+    const num = this.getBonusNum(type)
+    if (num === 0) return 0
+
+    return num / BloodBonus.base
+  }
+
+  getBonusLabels() {
+    return new Map(
+      BloodsTypes.map((type) => {
+        const bonus = this.getBonusNum(type)
+        return [
+          type,
+          {
+            name: BonusLabelNameMap.get(type),
+            desrc: `+${bonus / (BloodBonus.base / 100)}%`,
+          } as BonusLabel,
+        ]
+      })
+    )
+  }
+
+  static fromBonus(first: number, second: number, third: number) {
+    const value = (first << 20) + (second << 10) + third
+    return new BloodBonus(value)
+  }
+}

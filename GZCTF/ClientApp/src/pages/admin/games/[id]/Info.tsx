@@ -50,8 +50,14 @@ const GenerateRandomCode = () => {
 
 const GameInfoEdit: FC = () => {
   const { id } = useParams()
-  const navigate = useNavigate()
+  const numId = parseInt(id ?? '-1')
+  const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, {
+    refreshInterval: 0,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
   const [game, setGame] = useState<GameInfoModel>()
+  const navigate = useNavigate()
 
   const [disabled, setDisabled] = useState(false)
   const [organizations, setOrganizations] = useState<string[]>([])
@@ -63,8 +69,6 @@ const GameInfoEdit: FC = () => {
   const clipboard = useClipboard()
 
   useEffect(() => {
-    const numId = parseInt(id ?? '-1')
-
     if (numId < 0) {
       showNotification({
         color: 'red',
@@ -76,28 +80,14 @@ const GameInfoEdit: FC = () => {
       return
     }
 
-    api.edit
-      .editGetGame(numId)
-      .then((data) => {
-        setGame(data.data)
-        setOrganizations(data.data.organizations || [])
-        setStart(dayjs(data.data.start))
-        setEnd(dayjs(data.data.end))
-        setWpddl(dayjs(data.data.wpddl).diff(data.data.end, 'h'))
-      })
-      .catch((err) => {
-        if (err.status === 404) {
-          showNotification({
-            color: 'red',
-            message: `比赛未找到：${id}`,
-            icon: <Icon path={mdiClose} size={1} />,
-          })
-          navigate('/admin/games')
-        }
-
-        showErrorNotification(err)
-      })
-  }, [id])
+    if (gameSource) {
+      setGame(gameSource)
+      setStart(dayjs(gameSource.start))
+      setEnd(dayjs(gameSource.end))
+      setWpddl(dayjs(gameSource.wpddl).diff(gameSource.end, 'h'))
+      setOrganizations(gameSource.organizations || [])
+    }
+  }, [id, gameSource])
 
   const onUpdatePoster = (file: File | undefined) => {
     if (game && file) {
@@ -110,7 +100,7 @@ const GameInfoEdit: FC = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
-          setGame({ ...game, poster: res.data })
+          mutate({ ...game, poster: res.data })
         })
         .catch(showErrorNotification)
     }
@@ -134,6 +124,7 @@ const GameInfoEdit: FC = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             disallowClose: true,
           })
+          mutate()
           api.game.mutateGameGamesAll()
         })
         .catch(showErrorNotification)
@@ -378,13 +369,13 @@ const GameInfoEdit: FC = () => {
               </Text>
             </Group>
           }
-          value={game?.wpnote}
+          value={game?.wpNote}
           style={{ width: '100%' }}
           autosize
           disabled={disabled}
           minRows={3}
           maxRows={3}
-          onChange={(e) => game && setGame({ ...game, wpnote: e.target.value })}
+          onChange={(e) => game && setGame({ ...game, wpNote: e.target.value })}
         />
         <MultiSelect
           label={

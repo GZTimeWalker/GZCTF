@@ -77,7 +77,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     public void FlushGameInfoCache()
         => cache.Remove(CacheKey.BasicGameInfo);
 
-    public void FlushScoreboard(int gameId)
+    public void FlushScoreboardCache(int gameId)
         => cache.Remove(CacheKey.ScoreBoard(gameId));
 
     #region Generate Scoreboard

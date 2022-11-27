@@ -158,7 +158,7 @@ public class EditController : Controller
     /// <param name="count"></param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
+    /// <response code="200">成功获取比赛列表</response>
     [HttpGet("Games")]
     [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token)
@@ -174,7 +174,7 @@ public class EditController : Controller
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
+    /// <response code="200">成功获取比赛</response>
     [HttpGet("Games/{id}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -197,7 +197,7 @@ public class EditController : Controller
     /// <param name="id"></param>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
+    /// <response code="200">成功修改比赛</response>
     [HttpPut("Games/{id}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -211,6 +211,7 @@ public class EditController : Controller
         game.Update(model);
         await gameRepository.SaveAsync(token);
         gameRepository.FlushGameInfoCache();
+        gameRepository.FlushScoreboardCache(game.Id);
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -223,7 +224,7 @@ public class EditController : Controller
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除文件</response>
+    /// <response code="200">成功删除比赛</response>
     [HttpDelete("Games/{id}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -533,7 +534,7 @@ public class EditController : Controller
         }
 
         // always flush scoreboard
-        gameRepository.FlushScoreboard(game.Id);
+        gameRepository.FlushScoreboardCache(game.Id);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
@@ -656,7 +657,7 @@ public class EditController : Controller
         await challengeRepository.RemoveChallenge(res, token);
 
         // always flush scoreboard
-        gameRepository.FlushScoreboard(game.Id);
+        gameRepository.FlushScoreboardCache(game.Id);
 
         return Ok();
     }

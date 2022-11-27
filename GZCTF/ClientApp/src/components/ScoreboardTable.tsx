@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   Paper,
@@ -16,9 +16,14 @@ import {
   Center,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
+import {
+  BloodBonus,
+  BloodsTypes,
+  ChallengeTagLabelMap,
+  SubmissionTypeIconMap,
+} from '@Utils/ChallengeItem'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
-import { BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 import ScoreboardItemModal from './ScoreboardItemModal'
 
 const useStyles = createStyles((theme) => ({
@@ -238,12 +243,6 @@ const TableRow: FC<{
   )
 }
 
-const BloodData = [
-  { name: '一血', descr: '+5%' },
-  { name: '二血', descr: '+3%' },
-  { name: '三血', descr: '+1%' },
-]
-
 const ITEM_COUNT_PER_PAGE = 30
 
 interface ScoreboardProps {
@@ -257,6 +256,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
   const { classes } = useStyles()
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
+  const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
 
   const { data: scoreboard } = api.game.useGameScoreboard(numId, {
     refreshInterval: 0,
@@ -272,6 +272,14 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
 
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
+
+  useEffect(() => {
+    if (scoreboard) {
+      setBloodBonus(new BloodBonus(scoreboard.bloodBonus))
+    }
+  }, [scoreboard])
+
+  const BloodData = bloodBonus.getBonusLabels()
 
   return (
     <Paper shadow="md" p="md">
@@ -339,9 +347,9 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                 {BloodsTypes.map((type, idx) => (
                   <Group key={idx} position="left" spacing={2}>
                     {iconMap.get(type)}
-                    <Text size="sm">{BloodData[idx].name}</Text>
+                    <Text size="sm">{BloodData.get(type)?.name}</Text>
                     <Text size="xs" color="dimmed">
-                      {BloodData[idx].descr}
+                      {BloodData.get(type)?.desrc}
                     </Text>
                   </Group>
                 ))}
@@ -366,6 +374,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
       </Stack>
       <ScoreboardItemModal
         challenges={scoreboard?.challenges}
+        bloodBonusMap={BloodData}
         opened={itemDetailOpened}
         centered
         withCloseButton={false}

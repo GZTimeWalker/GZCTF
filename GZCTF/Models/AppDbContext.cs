@@ -80,6 +80,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 .SetValueComparer(setComparer);
 
             entity.Property(e => e.BloodBonus)
+                .HasDefaultValue(BloodBonus.Default)
                 .HasConversion(BloodBonus.Converter)
                 .Metadata
                 .SetValueComparer(BloodBonus.Comparer);

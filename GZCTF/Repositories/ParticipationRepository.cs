@@ -74,7 +74,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             // will call SaveAsync
             if (await EnsureInstances(part, part.Game, token))
                 // flush scoreboard when instances are updated
-                gameRepository.FlushScoreboard(part.Game.Id);
+                gameRepository.FlushScoreboardCache(part.Game.Id);
         }
         // team will unlock automatically when request occur
         else

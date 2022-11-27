@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CTFServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221127160426_AddBloodBonus")]
+    [Migration("20221127174109_AddBloodBonus")]
     partial class AddBloodBonus
     {
         /// <inheritdoc />
@@ -239,7 +239,9 @@ namespace CTFServer.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<long>("BloodBonus")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
 
                     b.Property<int>("ContainerCountLimit")
                         .HasColumnType("integer");

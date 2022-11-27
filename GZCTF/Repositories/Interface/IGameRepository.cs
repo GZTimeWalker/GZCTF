@@ -66,7 +66,7 @@ public interface IGameRepository : IRepository
     /// 刷新排行榜
     /// </summary>
     /// <param name="gameId">比赛Id</param>
-    public void FlushScoreboard(int gameId);
+    public void FlushScoreboardCache(int gameId);
 
     /// <summary>
     /// 刷新比赛信息缓存

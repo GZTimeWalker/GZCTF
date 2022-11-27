@@ -97,7 +97,7 @@ public class FlagChecker : IHostedService
                     item.Status = ans;
                     await submissionRepository.SendSubmission(item);
 
-                    gameRepository.FlushScoreboard(item.GameId);
+                    gameRepository.FlushScoreboardCache(item.GameId);
                 }
                 catch (Exception e)
                 {

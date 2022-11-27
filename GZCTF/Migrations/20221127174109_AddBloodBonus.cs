@@ -15,7 +15,7 @@ namespace CTFServer.Migrations
                 table: "Games",
                 type: "bigint",
                 nullable: false,
-                defaultValue: 0L);
+                defaultValue: 52459530L);
         }
 
         /// <inheritdoc />

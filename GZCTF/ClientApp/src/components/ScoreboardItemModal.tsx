@@ -14,24 +14,19 @@ import {
   Avatar,
   Title,
 } from '@mantine/core'
+import { BloodsTypes, BonusLabel } from '@Utils/ChallengeItem'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
 import TeamRadarMap from './TeamRadarMap'
 
 interface ScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null
+  bloodBonusMap: Map<SubmissionType, BonusLabel>
   challenges?: Record<string, ChallengeInfo[]>
 }
 
-const BloodsMap = new Map([
-  [undefined, undefined],
-  [SubmissionType.FirstBlood, '+5%'],
-  [SubmissionType.SecondBlood, '+3%'],
-  [SubmissionType.ThirdBlood, '+1%'],
-])
-
 const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
-  const { item, challenges, ...modalProps } = props
+  const { item, challenges, bloodBonusMap, ...modalProps } = props
   const { classes } = useTableStyles()
 
   const challengeIdMap =
@@ -156,11 +151,13 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                           <td className={classes.mono}>{info?.tag}</td>
                           <td className={classes.mono}>
                             {chal.score}
-                            {chal.score! > info?.score! && (
-                              <Text span color="dimmed" className={classes.mono}>
-                                {` (${BloodsMap.get(chal.type)})`}
-                              </Text>
-                            )}
+                            {chal.score! > info?.score! &&
+                              chal.type &&
+                              BloodsTypes.includes(chal.type) && (
+                                <Text span color="dimmed" className={classes.mono}>
+                                  {` (${bloodBonusMap.get(chal.type)?.desrc})`}
+                                </Text>
+                              )}
                           </td>
                           <td className={classes.mono}>
                             {dayjs(chal.time).format('MM/DD HH:mm:ss')}
