@@ -25,6 +25,8 @@ public class GameRepository : RepositoryBase, IGameRepository
         xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
     }
 
+    public override Task<int> CountAsync(CancellationToken token = default) => context.Games.CountAsync(token);
+
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
         game.GenerateKeyPair(xorkey);

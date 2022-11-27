@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Mime;
+using CTFServer.Extensions;
 using CTFServer.Middlewares;
 using CTFServer.Models.Internal;
 using CTFServer.Models.Request.Account;
@@ -115,12 +116,12 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Users")]
-    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await (
+        => Ok((await (
             from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
             select UserInfoModel.FromUserInfo(user)
-           ).ToArrayAsync(token));
+           ).ToArrayAsync(token)).ToResponse(await userManager.Users.CountAsync(token)));
 
     /// <summary>
     /// 搜索用户
@@ -132,9 +133,9 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpPost("Users/Search")]
-    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
-        => Ok(await (
+        => Ok((await (
             from user in userManager.Users
                 .Where(item =>
                     EF.Functions.Like(item.UserName!, $"%{hint}%") ||
@@ -145,7 +146,7 @@ public class AdminController : ControllerBase
                 )
                 .OrderBy(e => e.Id).Take(30)
             select UserInfoModel.FromUserInfo(user)
-           ).ToArrayAsync(token));
+           ).ToArrayAsync(token)).ToResponse());
 
     /// <summary>
     /// 获取全部队伍信息
@@ -157,10 +158,11 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Teams")]
-    [ProducesResponseType(typeof(TeamInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok((await teamRepository.GetTeams(count, skip, token))
-                .Select(team => TeamInfoModel.FromTeam(team)));
+                .Select(team => TeamInfoModel.FromTeam(team))
+                .ToResponse(await teamRepository.CountAsync(token)));
 
     /// <summary>
     /// 搜索队伍
@@ -172,10 +174,11 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpPost("Teams/Search")]
-    [ProducesResponseType(typeof(TeamInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default)
         => Ok((await teamRepository.SearchTeams(hint, token))
-                .Select(team => TeamInfoModel.FromTeam(team)));
+                .Select(team => TeamInfoModel.FromTeam(team))
+                .ToResponse());
 
     /// <summary>
     /// 修改用户信息
@@ -320,7 +323,7 @@ public class AdminController : ControllerBase
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Logs")]
-    [ProducesResponseType(typeof(List<LogMessageModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(LogMessageModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromQuery] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await logRepository.GetLogs(skip, count, level, token));
 

@@ -160,9 +160,11 @@ public class EditController : Controller
     /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     [HttpGet("Games")]
-    [ProducesResponseType(typeof(GameInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token)
-        => Ok((await gameRepository.GetGames(count, skip, token)).Select(GameInfoModel.FromGame));
+        => Ok((await gameRepository.GetGames(count, skip, token))
+            .Select(GameInfoModel.FromGame)
+            .ToResponse(await gameRepository.CountAsync(token)));
 
     /// <summary>
     /// 获取比赛

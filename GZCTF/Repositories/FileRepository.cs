@@ -17,6 +17,8 @@ public class FileRepository : RepositoryBase, IFileRepository
         uploadPath = _configuration.GetSection("UploadFolder")?.Value ?? "uploads";
     }
 
+    public override Task<int> CountAsync(CancellationToken token = default) => context.Files.CountAsync(token);
+
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
     {
         using Stream tmp = file.Length <= 16 * 1024 * 1024 ? new MemoryStream() :

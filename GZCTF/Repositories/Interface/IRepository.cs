@@ -12,5 +12,7 @@ public interface IRepository
 
     public void Add(object item);
 
+    public Task<int> CountAsync(CancellationToken token = default);
+
     public Task SaveAsync(CancellationToken token = default);
 }

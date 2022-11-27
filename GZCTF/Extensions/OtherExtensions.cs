@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+﻿using CTFServer.Utils;
 
 namespace CTFServer.Extensions;
 
-public static class ListHashExtensions
+public static class ListExtensions
 {
     public static int GetSetHashCode<T>(this IList<T> list)
         => list.Count + list.Distinct().Aggregate(0, (x, y) => x.GetHashCode() ^ y?.GetHashCode() ?? 0xdead);
@@ -20,5 +20,16 @@ public static class IQueryableExtensions
         {
             > 0 => items.Skip(skip).Take(count),
             _ => items
+        };
+}
+
+public static class ArrayExtensions
+{
+    public static ArrayResponse<T> ToResponse<T>(this IEnumerable<T> array, int? tot = null) where T : class
+        => array switch
+        {
+            null => new(Array.Empty<T>()),
+            T[] arr => new(arr, tot),
+            _ => new(array.ToArray(), tot)
         };
 }

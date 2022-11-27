@@ -43,4 +43,9 @@ public class RepositoryBase : IRepository
     public void Detach(object item) => context.Entry(item).State = EntityState.Detached;
 
     public void Add(object item) => context.Add(item);
+
+    public virtual Task<int> CountAsync(CancellationToken token = default)
+    {
+        throw new NotImplementedException();
+    }
 }

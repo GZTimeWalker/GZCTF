@@ -9,6 +9,8 @@ public class ContainerRepository : RepositoryBase, IContainerRepository
     {
     }
 
+    public override Task<int> CountAsync(CancellationToken token = default) => context.Containers.CountAsync(token);
+
     public Task<List<Container>> GetContainers(CancellationToken token = default)
         => context.Containers.ToListAsync(token);
 

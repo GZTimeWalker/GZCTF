@@ -52,14 +52,15 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.3" />
     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
-    <PackageReference Include="MailKit" Version="3.4.2" />
+    <PackageReference Include="MailKit" Version="3.4.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0" />
-    <PackageReference Include="MemoryPack" Version="1.8.5" />
+    <PackageReference Include="MemoryPack" Version="1.8.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+    <PackageReference Include="MemoryPack.Core" Version="1.8.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -84,6 +85,7 @@
     <None Remove="Microsoft.AspNetCore.SignalR.StackExchangeRedis" />
     <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis" />
     <None Remove="MemoryPack" />
+    <None Remove="MemoryPack.Core" />
   </ItemGroup>
 
   <ItemGroup>

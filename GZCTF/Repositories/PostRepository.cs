@@ -18,6 +18,8 @@ public class PostRepository : RepositoryBase, IPostRepository
         logger = _logger;
     }
 
+    public override Task<int> CountAsync(CancellationToken token = default) => context.Posts.CountAsync(token);
+
     public async Task<Post> CreatePost(Post post, CancellationToken token = default)
     {
         post.UpdateKeyWithHash();
