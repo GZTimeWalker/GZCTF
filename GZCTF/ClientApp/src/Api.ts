@@ -577,7 +577,12 @@ export interface GameInfoModel {
    */
   wpddl: string
   /** Writeup 附加说明 */
-  wpnote?: string
+  wpNote?: string
+  /**
+   * 三血加分
+   * @format int64
+   */
+  bloodBonus?: number
 }
 
 /** 列表响应 */
@@ -1035,6 +1040,11 @@ export interface ScoreboardModel {
    * @format date-time
    */
   updateTimeUTC?: string
+  /**
+   * 三血加分系数
+   * @format int64
+   */
+  bloodBonusValue?: number
   /** 前十名的时间线 */
   timeLines?: Record<string, TopTimeLine[]>
   /** 队伍信息 */
