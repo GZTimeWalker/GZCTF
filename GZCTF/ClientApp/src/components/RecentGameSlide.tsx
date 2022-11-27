@@ -31,8 +31,8 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
 
   const { title, poster, start, end } = game
 
-  const startTime = dayjs(start!)
-  const endTime = dayjs(end!)
+  const startTime = dayjs(start)
+  const endTime = dayjs(end)
 
   const status = getGameStatus(startTime, endTime)
   const color = GameColorMap.get(status)

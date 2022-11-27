@@ -102,7 +102,7 @@ const GameNoticePanel: FC = () => {
           })
         }
 
-        update(new Date(message.time!))
+        update(new Date(message.time))
       })
 
       connection

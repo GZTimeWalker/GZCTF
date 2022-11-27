@@ -37,7 +37,7 @@ const GameNoticeEdit: FC = () => {
   }
   const onConfirmDelete = (gameNotice: GameNotice) => {
     api.edit
-      .editDeleteGameNotice(numId, gameNotice.id!)
+      .editDeleteGameNotice(numId, gameNotice.id)
       .then(() => {
         showNotification({
           color: 'teal',

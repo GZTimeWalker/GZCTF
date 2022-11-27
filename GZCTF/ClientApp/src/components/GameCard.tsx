@@ -42,8 +42,8 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
 
   const { summary, title, poster, start, end, limit } = game
-  const startTime = dayjs(start!)
-  const endTime = dayjs(end!)
+  const startTime = dayjs(start)
+  const endTime = dayjs(end)
 
   const duration = endTime.diff(startTime, 'hours')
 
