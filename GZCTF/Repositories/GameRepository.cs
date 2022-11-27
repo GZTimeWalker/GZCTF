@@ -207,9 +207,9 @@ public class GameRepository : RepositoryBase, IGameRepository
                                     } : status switch
                                     {
                                         SubmissionType.Unaccepted => 0,
-                                        SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * game.BloodBonus.FirstBlood),
-                                        SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * game.BloodBonus.SecondBlood),
-                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * game.BloodBonus.ThirdBlood),
+                                        SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * game.BloodBonus.FirstBloodFactor),
+                                        SubmissionType.SecondBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * game.BloodBonus.SecondBloodFactor),
+                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore * game.BloodBonus.ThirdBloodFactor),
                                         SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
                                         _ => throw new ArgumentException(nameof(status))
                                     }

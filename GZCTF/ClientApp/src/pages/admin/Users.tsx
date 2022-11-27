@@ -196,7 +196,6 @@ const Users: FC = () => {
     }
   }
 
-
   return (
     <AdminPage
       isLoading={searching || !users}
