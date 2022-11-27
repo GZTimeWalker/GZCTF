@@ -252,6 +252,22 @@ export interface GlobalConfig {
   slogan?: string
 }
 
+/** 列表响应 */
+export interface ArrayResponseOfUserInfoModel {
+  /** 数据 */
+  data: UserInfoModel[]
+  /**
+   * 数据长度
+   * @format int32
+   */
+  length: number
+  /**
+   * 总长度
+   * @format int32
+   */
+  total?: number
+}
+
 /** 用户信息（Admin） */
 export interface UserInfoModel {
   /** 用户ID */
@@ -286,6 +302,22 @@ export interface UserInfoModel {
   role?: Role | null
   /** 用户是否通过邮箱验证（可登录） */
   emailConfirmed?: boolean | null
+}
+
+/** 列表响应 */
+export interface ArrayResponseOfTeamInfoModel {
+  /** 数据 */
+  data: TeamInfoModel[]
+  /**
+   * 数据长度
+   * @format int32
+   */
+  length: number
+  /**
+   * 总长度
+   * @format int32
+   */
+  total?: number
 }
 
 /** 队伍信息 */
@@ -544,11 +576,24 @@ export interface GameInfoModel {
    * @minLength 1
    */
   wpddl: string
-  /**
-   * Writeup 附加说明
-   * @minLength 1
-   */
+  /** Writeup 附加说明 */
   wpnote?: string
+}
+
+/** 列表响应 */
+export interface ArrayResponseOfGameInfoModel {
+  /** 数据 */
+  data: GameInfoModel[]
+  /**
+   * 数据长度
+   * @format int32
+   */
+  length: number
+  /**
+   * 总长度
+   * @format int32
+   */
+  total?: number
 }
 
 /**
@@ -1845,7 +1890,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<UserInfoModel[], RequestResponse>({
+      this.request<ArrayResponseOfUserInfoModel, RequestResponse>({
         path: `/api/admin/users`,
         method: 'GET',
         query: query,
@@ -1876,7 +1921,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<UserInfoModel[], RequestResponse>(
+      useSWR<ArrayResponseOfUserInfoModel, RequestResponse>(
         doFetch ? [`/api/admin/users`, query] : null,
         options
       ),
@@ -1902,9 +1947,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         skip?: number
       },
-      data?: UserInfoModel[] | Promise<UserInfoModel[]>,
+      data?: ArrayResponseOfUserInfoModel | Promise<ArrayResponseOfUserInfoModel>,
       options?: MutatorOptions
-    ) => mutate<UserInfoModel[]>([`/api/admin/users`, query], data, options),
+    ) => mutate<ArrayResponseOfUserInfoModel>([`/api/admin/users`, query], data, options),
 
     /**
      * @description 使用此接口搜索用户，需要Admin权限
@@ -1920,7 +1965,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<UserInfoModel[], RequestResponse>({
+      this.request<ArrayResponseOfUserInfoModel, RequestResponse>({
         path: `/api/admin/users/search`,
         method: 'POST',
         query: query,
@@ -1951,7 +1996,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<TeamInfoModel[], RequestResponse>({
+      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
         path: `/api/admin/teams`,
         method: 'GET',
         query: query,
@@ -1982,7 +2027,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<TeamInfoModel[], RequestResponse>(
+      useSWR<ArrayResponseOfTeamInfoModel, RequestResponse>(
         doFetch ? [`/api/admin/teams`, query] : null,
         options
       ),
@@ -2008,9 +2053,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         skip?: number
       },
-      data?: TeamInfoModel[] | Promise<TeamInfoModel[]>,
+      data?: ArrayResponseOfTeamInfoModel | Promise<ArrayResponseOfTeamInfoModel>,
       options?: MutatorOptions
-    ) => mutate<TeamInfoModel[]>([`/api/admin/teams`, query], data, options),
+    ) => mutate<ArrayResponseOfTeamInfoModel>([`/api/admin/teams`, query], data, options),
 
     /**
      * @description 使用此接口搜索队伍，需要Admin权限
@@ -2026,7 +2071,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<TeamInfoModel[], RequestResponse>({
+      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
         path: `/api/admin/teams/search`,
         method: 'POST',
         query: query,
@@ -2588,7 +2633,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<GameInfoModel[], RequestResponse>({
+      this.request<ArrayResponseOfGameInfoModel, RequestResponse>({
         path: `/api/edit/games`,
         method: 'GET',
         query: query,
@@ -2613,7 +2658,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<GameInfoModel[], RequestResponse>(
+      useSWR<ArrayResponseOfGameInfoModel, RequestResponse>(
         doFetch ? [`/api/edit/games`, query] : null,
         options
       ),
@@ -2633,9 +2678,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** @format int32 */
         skip?: number
       },
-      data?: GameInfoModel[] | Promise<GameInfoModel[]>,
+      data?: ArrayResponseOfGameInfoModel | Promise<ArrayResponseOfGameInfoModel>,
       options?: MutatorOptions
-    ) => mutate<GameInfoModel[]>([`/api/edit/games`, query], data, options),
+    ) => mutate<ArrayResponseOfGameInfoModel>([`/api/edit/games`, query], data, options),
 
     /**
      * @description 获取比赛，需要管理员权限
