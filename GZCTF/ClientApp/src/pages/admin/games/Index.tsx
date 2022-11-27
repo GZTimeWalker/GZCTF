@@ -36,15 +36,15 @@ const ITEM_COUNT_PER_PAGE = 30
 const Games: FC = () => {
   const [page, setPage] = useState(1)
   const [createOpened, setCreateOpened] = useState(false)
-
   const [disabled, setDisabled] = useState(false)
   const {
     data: games,
-    length: gameCount,
     total,
     setData: setGames,
     updateData: updateGames,
   } = useArrayResponse<GameInfoModel>()
+  const [current, setCurrent] = useState(0)
+
   const navigate = useNavigate()
   const { classes } = useTableStyles()
 
@@ -73,10 +73,9 @@ const Games: FC = () => {
       })
       .then((res) => {
         setGames(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       })
   }, [page])
-
-  const current = (page - 1) * ITEM_COUNT_PER_PAGE + gameCount
 
   return (
     <AdminPage

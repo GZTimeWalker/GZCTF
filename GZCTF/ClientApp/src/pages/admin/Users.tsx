@@ -46,13 +46,13 @@ const Users: FC = () => {
   const {
     data: users,
     total,
-    length: userCount,
     setData: setUsers,
     updateData: updateUsers,
   } = useArrayResponse<UserInfoModel>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const [current, setCurrent] = useState(0)
 
   const modals = useModals()
   const { user: currentUser } = useUser()
@@ -67,6 +67,7 @@ const Users: FC = () => {
       })
       .then((res) => {
         setUsers(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       })
   }, [page, update])
 
@@ -79,6 +80,7 @@ const Users: FC = () => {
         })
         .then((res) => {
           setUsers(res.data)
+          setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
         })
       return
     }
@@ -91,6 +93,7 @@ const Users: FC = () => {
       })
       .then((res) => {
         setUsers(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       })
       .catch(showErrorNotification)
       .finally(() => {
@@ -184,6 +187,7 @@ const Users: FC = () => {
         disallowClose: true,
       })
       users && updateUsers(users.filter((x) => x.id !== user.id))
+      setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
       showErrorNotification(e)
@@ -192,7 +196,6 @@ const Users: FC = () => {
     }
   }
 
-  const current = (page - 1) * ITEM_COUNT_PER_PAGE + userCount
 
   return (
     <AdminPage

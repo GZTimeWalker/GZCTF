@@ -37,13 +37,13 @@ const Teams: FC = () => {
   const {
     data: teams,
     total,
-    length: teamCount,
     setData: setTeams,
     updateData: updateTeams,
   } = useArrayResponse<TeamInfoModel>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const [current, setCurrent] = useState(0)
 
   const { classes, theme } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
@@ -56,6 +56,7 @@ const Teams: FC = () => {
       })
       .then((res) => {
         setTeams(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       })
   }, [page, update])
 
@@ -68,6 +69,7 @@ const Teams: FC = () => {
         })
         .then((res) => {
           setTeams(res.data)
+          setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
         })
       return
     }
@@ -80,6 +82,7 @@ const Teams: FC = () => {
       })
       .then((res) => {
         setTeams(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       })
       .catch(showErrorNotification)
       .finally(() => {
@@ -100,6 +103,7 @@ const Teams: FC = () => {
         disallowClose: true,
       })
       teams && updateTeams(teams.filter((x) => x.id !== team.id))
+      setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
       showErrorNotification(e)
@@ -107,8 +111,6 @@ const Teams: FC = () => {
       setDisabled(false)
     }
   }
-
-  const current = (page - 1) * ITEM_COUNT_PER_PAGE + teamCount
 
   return (
     <AdminPage
