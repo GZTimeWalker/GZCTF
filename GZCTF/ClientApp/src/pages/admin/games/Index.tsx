@@ -13,6 +13,7 @@ import {
   Badge,
   ScrollArea,
   Switch,
+  Code,
 } from '@mantine/core'
 import {
   mdiArrowLeftBold,
@@ -27,6 +28,7 @@ import AdminPage from '@Components/admin/AdminPage'
 import GameCreateModal from '@Components/admin/GameCreateModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles } from '@Utils/ThemeOverride'
+import { useArrayResponse } from '@Utils/useArrayResponse'
 import api, { GameInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -36,7 +38,13 @@ const Games: FC = () => {
   const [createOpened, setCreateOpened] = useState(false)
 
   const [disabled, setDisabled] = useState(false)
-  const [games, setGames] = useState<GameInfoModel[]>()
+  const {
+    data: games,
+    length: gameCount,
+    total,
+    setData: setGames,
+    updateData: updateGames,
+  } = useArrayResponse<GameInfoModel>()
   const navigate = useNavigate()
   const { classes } = useTableStyles()
 
@@ -49,7 +57,8 @@ const Games: FC = () => {
           hidden: !game.hidden,
         })
         .then(() => {
-          setGames(games?.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
+          games &&
+            updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
         })
         .catch(showErrorNotification)
         .finally(() => setDisabled(false))
@@ -67,6 +76,8 @@ const Games: FC = () => {
       })
   }, [page])
 
+  const current = (page - 1) * ITEM_COUNT_PER_PAGE + gameCount
+
   return (
     <AdminPage
       isLoading={!games}
@@ -77,6 +88,9 @@ const Games: FC = () => {
             新建比赛
           </Button>
           <Group style={{ width: 'calc(100% - 9rem)' }} position="right">
+            <Text weight="bold" size="sm">
+              已显示 <Code>{current}</Code> / <Code>{total}</Code> 比赛
+            </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
@@ -178,7 +192,7 @@ const Games: FC = () => {
         size="30%"
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
-        onAddGame={(game) => setGames([...(games ?? []), game])}
+        onAddGame={(game) => updateGames([...(games ?? []), game])}
       />
     </AdminPage>
   )

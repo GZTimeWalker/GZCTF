@@ -9,6 +9,7 @@ import {
   Text,
   Tooltip,
   ScrollArea,
+  Code,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -25,6 +26,7 @@ import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
+import { useArrayResponse } from '@Utils/useArrayResponse'
 import api, { TeamInfoModel } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -32,7 +34,13 @@ const ITEM_COUNT_PER_PAGE = 30
 const Teams: FC = () => {
   const [page, setPage] = useState(1)
   const [update, setUpdate] = useState(new Date())
-  const [teams, setTeams] = useState<TeamInfoModel[]>()
+  const {
+    data: teams,
+    total,
+    length: teamCount,
+    setData: setTeams,
+    updateData: updateTeams,
+  } = useArrayResponse<TeamInfoModel>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -91,7 +99,7 @@ const Teams: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
         disallowClose: true,
       })
-      setTeams(teams?.filter((x) => x.id !== team.id))
+      teams && updateTeams(teams.filter((x) => x.id !== team.id))
       setUpdate(new Date())
     } catch (e: any) {
       showErrorNotification(e)
@@ -99,6 +107,8 @@ const Teams: FC = () => {
       setDisabled(false)
     }
   }
+
+  const current = (page - 1) * ITEM_COUNT_PER_PAGE + teamCount
 
   return (
     <AdminPage
@@ -116,6 +126,9 @@ const Teams: FC = () => {
             }}
           />
           <Group position="right">
+            <Text weight="bold" size="sm">
+              已显示 <Code>{current}</Code> / <Code>{total}</Code> 队伍
+            </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>

@@ -12,6 +12,7 @@ import {
   Switch,
   Stack,
   Button,
+  Code,
 } from '@mantine/core'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -31,6 +32,7 @@ import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles } from '@Utils/ThemeOverride'
+import { useArrayResponse } from '@Utils/useArrayResponse'
 import { useUser } from '@Utils/useUser'
 import api, { Role, UserInfoModel } from '@Api'
 
@@ -41,7 +43,13 @@ const Users: FC = () => {
   const [update, setUpdate] = useState(new Date())
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
-  const [users, setUsers] = useState<UserInfoModel[]>()
+  const {
+    data: users,
+    total,
+    length: userCount,
+    setData: setUsers,
+    updateData: updateUsers,
+  } = useArrayResponse<UserInfoModel>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -98,7 +106,7 @@ const Users: FC = () => {
       })
       .then(() => {
         users &&
-          setUsers(
+          updateUsers(
             users.map((u) =>
               u.id === user.id
                 ? {
@@ -175,7 +183,7 @@ const Users: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
         disallowClose: true,
       })
-      setUsers(users?.filter((x) => x.id !== user.id))
+      users && updateUsers(users.filter((x) => x.id !== user.id))
       setUpdate(new Date())
     } catch (e: any) {
       showErrorNotification(e)
@@ -183,6 +191,8 @@ const Users: FC = () => {
       setDisabled(false)
     }
   }
+
+  const current = (page - 1) * ITEM_COUNT_PER_PAGE + userCount
 
   return (
     <AdminPage
@@ -200,6 +210,9 @@ const Users: FC = () => {
             }}
           />
           <Group position="right">
+            <Text weight="bold" size="sm">
+              已显示 <Code>{current}</Code> / <Code>{total}</Code> 用户
+            </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
@@ -318,7 +331,7 @@ const Users: FC = () => {
           opened={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           mutateUser={(user: UserInfoModel) => {
-            setUsers(
+            updateUsers(
               [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) =>
                 a.id! < b.id! ? -1 : 1
               )
