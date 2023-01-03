@@ -53,7 +53,9 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 ![](assets/demo-8.png)
 ![](assets/demo-9.png)
 
-## 安装配置 🚀
+## 安装配置与更新 🚀
+
+### 安装方法
 
 应用已编译打包成 Docker 镜像，可通过以下方式获取：
 
@@ -67,7 +69,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 
 题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
 
-### `appsettings.json` 配置
+#### `appsettings.json` 配置
 
 当 `ContainerProvider` 为 `Docker` 时：
 
@@ -128,7 +130,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 }
 ```
 
-### 初始管理员
+#### 初始管理员
 
 生产环境中默认不存在管理员权限用户，需要在首次启动时设置 `GZCTF_ADMIN_PASSWORD` 环境变量来设置初始管理员密码，并通过 `Admin` 账号登录。
 
@@ -138,7 +140,7 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 ```
 
-### 端口暴露范围设置
+#### 端口暴露范围设置
 
 以下方式均为经验做法，可能因不同的系统环境有所出入，如不能正常生效，请自行查找相关资料及解决方案。
 
@@ -171,6 +173,17 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 - K8s 及 Docker Swarm 部署：
 
   - 笔者尚未尝试，如有成功的朋友欢迎提 PR 补充
+  
+### 更新方法
+
+对于使用`scripts`目录下`docker-compose.yml`部署者，可以使用如下命令进行更新。（此方法将保留数据库数据）
+
+```bash
+cd GZCTF # docker-compose.yml的位置
+docker-compose down docker-compose.yml
+docker pull gztime/gzctf:latest
+docker-compose up
+```
 
 ### Q&A
 
