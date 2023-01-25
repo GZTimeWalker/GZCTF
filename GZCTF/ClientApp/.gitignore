@@ -30,5 +30,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-template/swagger.json
+template/swagger*.json
 .eslintcache

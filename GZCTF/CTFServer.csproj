@@ -27,12 +27,12 @@
 
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.12" />
-    <PackageReference Include="KubernetesClient" Version="10.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1">
+    <PackageReference Include="KubernetesClient" Version="10.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -53,11 +53,11 @@
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.3" />
     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
     <PackageReference Include="MailKit" Version="3.4.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.1" />
-    <PackageReference Include="MemoryPack" Version="1.9.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.2" />
+    <PackageReference Include="MemoryPack" Version="1.9.12" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
   </ItemGroup>
@@ -117,7 +117,7 @@
   </Target>
 
   <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'GenAPI'">
-    <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) aspnetcore2openapi /assembly:$(TargetDir)CTFServer.dll /output:ClientApp/template/swagger.json" />
+    <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) run /variables:AssemblyPath=$(TargetDir)CTFServer.dll" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run genapi" />
   </Target>
 

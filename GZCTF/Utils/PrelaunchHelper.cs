@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Serilog;
 
 namespace CTFServer.Utils;
 
@@ -46,7 +44,7 @@ public static class PrelaunchHelper
                 {
                     UserName = "Admin",
                     Email = "admin@gzti.me",
-                    Role = CTFServer.Role.Admin,
+                    Role = Role.Admin,
                     EmailConfirmed = true,
                     RegisterTimeUTC = DateTimeOffset.UtcNow
                 };

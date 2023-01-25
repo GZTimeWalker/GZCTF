@@ -15,12 +15,9 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using NJsonSchema.Generation;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -242,8 +239,6 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 
 var app = builder.Build();
 
-await app.RunPrelaunchWork();
-
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
 if (app.Environment.IsDevelopment())
@@ -257,6 +252,8 @@ else
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+await app.RunPrelaunchWork();
 
 app.UseResponseCompression();
 

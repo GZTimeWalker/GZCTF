@@ -1,0 +1,17 @@
+{
+  "runtime": "Net70",
+  "defaultVariables": "AssemblyPath=bin/GenAPI/net7.0/CTFServer.dll",
+  "documentGenerator": {
+    "webApiToOpenApi": {
+      "isAspNetCore": true,
+      "infoTitle": "GZCTF API",
+      "infoVersion": "0.13.0",
+      "generateXmlObjects": true,
+      "generateAbstractProperties": true,
+      "output": "ClientApp/template/swagger.out.json",
+      "assemblyPaths": [
+        "$(AssemblyPath)"
+      ]
+    }
+  }
+}

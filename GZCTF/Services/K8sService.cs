@@ -7,7 +7,6 @@ using k8s;
 using k8s.Autorest;
 using k8s.Models;
 using Microsoft.Extensions.Options;
-using NPOI.SS.Formula.Functions;
 
 namespace CTFServer.Services;
 
