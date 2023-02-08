@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.12" />
-    <PackageReference Include="KubernetesClient" Version="10.0.16" />
+    <PackageReference Include="KubernetesClient" Version="10.0.27" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.2" />
@@ -52,7 +52,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.3" />
     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
-    <PackageReference Include="MailKit" Version="3.4.3" />
+    <PackageReference Include="MailKit" Version="3.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.2" />
@@ -85,6 +85,99 @@
     <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis" />
     <None Remove="MemoryPack" />
     <None Remove="MemoryPack.Core" />
+    <None Remove="ClientApp\build\index.html" />
+    <None Remove="ClientApp\build\static\44b1908c.woff2" />
+    <None Remove="ClientApp\build\static\70ee1f64.ttf" />
+    <None Remove="ClientApp\build\static\850c0af5.woff" />
+    <None Remove="ClientApp\build\static\1e6f9579.ttf" />
+    <None Remove="ClientApp\build\static\36130512.woff2" />
+    <None Remove="ClientApp\build\static\c6368d87.woff" />
+    <None Remove="ClientApp\build\static\138ac28d.ttf" />
+    <None Remove="ClientApp\build\static\aa302ff1.js" />
+    <None Remove="ClientApp\build\static\07d8e303.ttf" />
+    <None Remove="ClientApp\build\static\1d332a61.woff2" />
+    <None Remove="ClientApp\build\static\1ece03f7.ttf" />
+    <None Remove="ClientApp\build\static\6ab6b62e.woff" />
+    <None Remove="ClientApp\build\static\e14fed02.woff" />
+    <None Remove="ClientApp\build\static\e128f92b.woff2" />
+    <None Remove="ClientApp\build\static\88924823.woff2" />
+    <None Remove="ClientApp\build\static\a6f7ec0d.woff" />
+    <None Remove="ClientApp\build\static\5e28753b.woff" />
+    <None Remove="ClientApp\build\static\95b6d2f1.ttf" />
+    <None Remove="ClientApp\build\static\9163df9c.ttf" />
+    <None Remove="ClientApp\build\static\d04c5421.woff2" />
+    <None Remove="ClientApp\build\static\71d517d6.woff2" />
+    <None Remove="ClientApp\build\static\97479ca6.woff2" />
+    <None Remove="ClientApp\build\static\0f60d1b8.woff2" />
+    <None Remove="ClientApp\build\static\08ce98e5.ttf" />
+    <None Remove="ClientApp\build\static\5faf4102.woff2" />
+    <None Remove="ClientApp\build\static\0bacc742.css" />
+    <None Remove="ClientApp\build\static\65841860.woff2" />
+    <None Remove="ClientApp\build\static\de7701e4.woff2" />
+    <None Remove="ClientApp\build\static\0cdd387c.woff2" />
+    <None Remove="ClientApp\build\static\299a533d.js" />
+    <None Remove="ClientApp\build\static\036d4e95.woff2" />
+    <None Remove="ClientApp\build\static\c647367d.ttf" />
+    <None Remove="ClientApp\build\static\2014c523.woff" />
+    <None Remove="ClientApp\build\static\1d0831de.woff2" />
+    <None Remove="ClientApp\build\static\3931dd81.ttf" />
+    <None Remove="ClientApp\build\static\d0332f52.ttf" />
+    <None Remove="ClientApp\build\static\f36ea897.ttf" />
+    <None Remove="ClientApp\build\static\cbe0899b.woff2" />
+    <None Remove="ClientApp\build\static\0d85ae7c.ttf" />
+    <None Remove="ClientApp\build\static\68534840.ttf" />
+    <None Remove="ClientApp\build\static\f45f070c.woff2" />
+    <None Remove="ClientApp\build\static\91ee6750.woff" />
+    <None Remove="ClientApp\build\static\96eeaf5c.woff2" />
+    <None Remove="ClientApp\build\static\4e01af10.css" />
+    <None Remove="ClientApp\build\static\14ff2ef8.woff2" />
+    <None Remove="ClientApp\build\static\1ae6bd74.woff" />
+    <None Remove="ClientApp\build\static\99cd42a3.woff2" />
+    <None Remove="ClientApp\build\static\dc47344d.woff2" />
+    <None Remove="ClientApp\build\static\d96cdf2b.woff" />
+    <None Remove="ClientApp\build\static\7af58c5e.woff2" />
+    <None Remove="ClientApp\build\static\492910f3.woff2" />
+    <None Remove="ClientApp\build\static\ed0b7437.ttf" />
+    <None Remove="ClientApp\build\static\96508bab.woff2" />
+    <None Remove="ClientApp\build\static\9be7ceb8.woff" />
+    <None Remove="ClientApp\build\static\00b26ac8.woff2" />
+    <None Remove="ClientApp\build\static\c6b483ad.woff2" />
+    <None Remove="ClientApp\build\static\6b078827.js" />
+    <None Remove="ClientApp\build\static\e99ae511.woff2" />
+    <None Remove="ClientApp\build\static\bd3ee7d2.woff2" />
+    <None Remove="ClientApp\build\static\ae2899cb.js" />
+    <None Remove="ClientApp\build\static\41c9a0f3.woff2" />
+    <None Remove="ClientApp\build\static\c76c5d69.woff" />
+    <None Remove="ClientApp\build\static\d2062e9e.woff2" />
+    <None Remove="ClientApp\build\static\3398dd02.woff" />
+    <None Remove="ClientApp\build\static\f01f3e87.ttf" />
+    <None Remove="ClientApp\build\static\79cc69df.woff2" />
+    <None Remove="ClientApp\build\static\73fe9257.js" />
+    <None Remove="ClientApp\build\static\68e8c73e.woff2" />
+    <None Remove="ClientApp\build\static\c6dd88d9.woff2" />
+    <None Remove="ClientApp\build\static\a6b2099f.ttf" />
+    <None Remove="ClientApp\build\static\f1d6ef86.woff" />
+    <None Remove="ClientApp\build\static\1c67f068.ttf" />
+    <None Remove="ClientApp\build\static\5d53e70a.woff2" />
+    <None Remove="ClientApp\build\static\a725fc0b.woff2" />
+    <None Remove="ClientApp\build\static\6b47c401.woff2" />
+    <None Remove="ClientApp\build\static\f9377ab0.ttf" />
+    <None Remove="ClientApp\build\static\500e04d5.ttf" />
+    <None Remove="ClientApp\build\static\11e4dc8a.woff" />
+    <None Remove="ClientApp\build\static\c2342cd8.woff2" />
+    <None Remove="ClientApp\build\static\6044c76a.woff2" />
+    <None Remove="ClientApp\build\static\766726bb.woff2" />
+    <None Remove="ClientApp\build\static\8a8d2445.woff" />
+    <None Remove="ClientApp\build\static\ece03cfd.woff" />
+    <None Remove="ClientApp\build\static\74444efd.woff2" />
+    <None Remove="ClientApp\build\static\a4af7d41.woff2" />
+    <None Remove="ClientApp\build\static\51814d27.woff2" />
+    <None Remove="ClientApp\build\static\da68e04d.woff2" />
+    <None Remove="ClientApp\build\static\99f9c675.woff" />
+    <None Remove="ClientApp\build\static\afcac305.js" />
+    <None Remove="ClientApp\build\static\c943cc98.woff" />
+    <None Remove="ClientApp\build\static\23b7f755.js" />
+    <None Remove="ClientApp\build\static\30da91e8.woff" />
   </ItemGroup>
 
   <ItemGroup>
