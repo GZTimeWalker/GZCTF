@@ -82,50 +82,50 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 
 ```json5
 {
-  AllowedHosts: "*",
-  ConnectionStrings: {
-    Database: "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>",
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>",
     // redis is optional
     //"RedisCache": "cache:6379,password=<Redis Password>"
   },
-  Logging: {
-    LogLevel: {
-      Default: "Information",
-      Microsoft: "Warning",
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information",
     },
   },
-  EmailConfig: {
-    SendMailAddress: "a@a.com",
-    UserName: "",
-    Password: "",
-    Smtp: {
-      Host: "localhost",
-      Port: 587,
+  "EmailConfig": {
+    "SendMailAddress": "a@a.com",
+    "UserName": "",
+    "Password": "",
+    "Smtp": {
+      "Host": "localhost",
+      "Port": 587,
     },
   },
-  XorKey: "<Random Key Str>",
-  ContainerProvider: {
-    Type: "Docker", // or "Kubernetes"
-    PublicEntry: "ctf.example.com", // or "xxx.xxx.xxx.xxx"
-    DockerConfig: {
+  "XorKey": "<Random Key Str>",
+  "ContainerProvider": {
+    "Type": "Docker", // or "Kubernetes"
+    "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+    "DockerConfig": {
       // optional
-      SwarmMode: false,
-      Uri: "unix:///var/run/docker.sock",
+      "SwarmMode": false,
+      "Uri": "unix:///var/run/docker.sock",
     },
   },
-  RequestLogging: false,
-  DisableRateLimit: false,
-  RegistryConfig: {
-    UserName: "",
-    Password: "",
-    ServerAddress: "",
+  "RequestLogging": false,
+  "DisableRateLimit": false,
+  "RegistryConfig": {
+    "UserName": "",
+    "Password": "",
+    "ServerAddress": "",
   },
-  GoogleRecaptcha: {
-    VerifyAPIAddress: "https://www.recaptcha.net/recaptcha/api/siteverify",
-    Sitekey: "",
-    Secretkey: "",
-    RecaptchaThreshold: "0.5",
+  "GoogleRecaptcha": {
+    "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
+    "Sitekey": "",
+    "Secretkey": "",
+    "RecaptchaThreshold": "0.5",
   },
 }
 ```
@@ -178,7 +178,7 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 
 - **Q: 题目类型中的“静态容器”指的是全部参赛者共用一个容器吗？**
 
-  不是。静态容器于动态容器相同，每个参赛队伍都有一个独立的容器。
+  不是。静态容器与动态容器相同，每个参赛队伍都有一个独立的容器。
 
   但是静态容器内的内容是一样的，且不会传递下发动态 flag。只能通过获取硬编码于容器中的一个或多个静态 flag 作为验证指标，也即“静态”的意思。
 
