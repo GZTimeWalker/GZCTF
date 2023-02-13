@@ -253,6 +253,7 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
 - **山东科技大学第一届网络安全实践大赛 woodpecker**
 - **西北工业大学 NPUCTF 2022**
 - **SkyNICO 网络空间安全三校联赛 (厦门理工学院、福建师范大学、齐鲁工业大学)**
+- **湖南警察学院网络安全攻防大赛**
 
 _排名不分先后，欢迎提交 PR 进行补充。_
 
