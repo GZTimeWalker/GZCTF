@@ -88,22 +88,17 @@ public class MailSender : IMailSender
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)
-        => SendUrlIfPossible("验证你的注册邮箱",
-            "需要验证你的邮箱：" + email,
-            "确认邮箱", userName, email, confirmLink);
-
-    public bool SendResetPwdUrl(string? userName, string? email, string? resetLink)
-        => SendUrlIfPossible("重置密码",
-            "点击下方按钮重置你的密码。",
-            "重置密码", userName, email, resetLink);
+        => SendUrlIfPossible("验证邮箱",
+            $"你正在进行账户注册操作，我们需要验证你的注册邮箱：{email}，请点击下方按钮进行验证。",
+            "确认验证邮箱", userName, email, confirmLink);
 
     public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink)
         => SendUrlIfPossible("更改邮箱",
-            "点击下方按钮更改你的邮箱。",
-            "更改邮箱", userName, email, resetLink);
+            "你正在进行账户邮箱更换操作，请点击下方按钮验证你的新邮箱。",
+            "确认跟换邮箱", userName, email, resetLink);
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink)
         => SendUrlIfPossible("重置密码",
-            "点击下方按钮重置你的密码。",
-            "重置密码", userName, email, resetLink);
+            "你正在进行账户密码重置操作，请点击下方按钮重置你的密码。",
+            "确认重置密码", userName, email, resetLink);
 }

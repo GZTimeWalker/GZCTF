@@ -31,14 +31,6 @@ public interface IMailSender
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink);
 
     /// <summary>
-    /// 发送密码重置邮件
-    /// </summary>
-    /// <param name="userName">用户名</param>
-    /// <param name="email">用户的电子邮件</param>
-    /// <param name="resetLink">重置链接</param>
-    public bool SendResetPwdUrl(string? userName, string? email, string? resetLink);
-
-    /// <summary>
     /// 发送邮箱重置邮件
     /// </summary>
     /// <param name="userName">用户名</param>
