@@ -1441,7 +1441,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001457
-      electron-to-chromium: 1.4.308
+      electron-to-chromium: 1.4.310
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10_browserslist@4.21.5
 
@@ -1692,8 +1692,8 @@ packages:
       zrender: 5.4.1
     dev: false
 
-  /electron-to-chromium/1.4.308:
-    resolution: {integrity: sha512-qyTx2aDFjEni4UnRWEME9ubd2Xc9c0zerTUl/ZinvD4QPsF0S7kJTV/Es/lPCTkNX6smyYar+z/n8Cl6pFr8yQ==}
+  /electron-to-chromium/1.4.310:
+    resolution: {integrity: sha512-/xlATgfwkm5uDDwLw5nt/MNEf7c1oazLURMZLy39vOioGYyYzLWIDT8fZMJak6qTiAJ7udFTy7JG7ziyjNutiA==}
 
   /embla-carousel-autoplay/7.0.9_embla-carousel@7.0.9:
     resolution: {integrity: sha512-I8LhZ5iAyu8L3qoYgOgjnpHK5mv6c1w5a7IcT6Et24BqGf8D+yFWfI28ctz9YvrqH1QbyUezy5LfuaeGaqfclw==}
