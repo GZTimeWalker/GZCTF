@@ -82,50 +82,50 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 
 ```json5
 {
-  "AllowedHosts": "*",
-  "ConnectionStrings": {
-    "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>",
+  AllowedHosts: "*",
+  ConnectionStrings: {
+    Database: "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>",
     // redis is optional
     //"RedisCache": "cache:6379,password=<Redis Password>"
   },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
+  Logging: {
+    LogLevel: {
+      Default: "Information",
+      Microsoft: "Warning",
       "Microsoft.Hosting.Lifetime": "Information",
     },
   },
-  "EmailConfig": {
-    "SendMailAddress": "a@a.com",
-    "UserName": "",
-    "Password": "",
-    "Smtp": {
-      "Host": "localhost",
-      "Port": 587,
+  EmailConfig: {
+    SendMailAddress: "a@a.com",
+    UserName: "",
+    Password: "",
+    Smtp: {
+      Host: "localhost",
+      Port: 587,
     },
   },
-  "XorKey": "<Random Key Str>",
-  "ContainerProvider": {
-    "Type": "Docker", // or "Kubernetes"
-    "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
-    "DockerConfig": {
+  XorKey: "<Random Key Str>",
+  ContainerProvider: {
+    Type: "Docker", // or "Kubernetes"
+    PublicEntry: "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+    DockerConfig: {
       // optional
-      "SwarmMode": false,
-      "Uri": "unix:///var/run/docker.sock",
+      SwarmMode: false,
+      Uri: "unix:///var/run/docker.sock",
     },
   },
-  "RequestLogging": false,
-  "DisableRateLimit": false,
-  "RegistryConfig": {
-    "UserName": "",
-    "Password": "",
-    "ServerAddress": "",
+  RequestLogging: false,
+  DisableRateLimit: false,
+  RegistryConfig: {
+    UserName: "",
+    Password: "",
+    ServerAddress: "",
   },
-  "GoogleRecaptcha": {
-    "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
-    "Sitekey": "",
-    "Secretkey": "",
-    "RecaptchaThreshold": "0.5",
+  GoogleRecaptcha: {
+    VerifyAPIAddress: "https://www.recaptcha.net/recaptcha/api/siteverify",
+    Sitekey: "",
+    Secretkey: "",
+    RecaptchaThreshold: "0.5",
   },
 }
 ```
