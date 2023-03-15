@@ -43,7 +43,7 @@ const Logs: FC = () => {
           title: '获取日志失败',
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
       })
     if (activePage === 1) {
@@ -74,7 +74,7 @@ const Logs: FC = () => {
           color: 'teal',
           message: '实时日志连接成功',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
       })
       .catch((error) => {

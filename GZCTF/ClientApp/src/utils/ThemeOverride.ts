@@ -161,7 +161,7 @@ export const useBannerStyles = createStyles((theme) => ({
     justifyContent: 'center',
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
-    padding: `${theme.spacing.xl * 3}px 0`,
+    padding: `calc(${theme.spacing.xl} * 3) 0`,
 
     [theme.fn.smallerThan('sm')]: {
       justifyContent: 'start',
@@ -174,7 +174,7 @@ export const useBannerStyles = createStyles((theme) => ({
     zIndex: 1,
 
     [theme.fn.smallerThan('md')]: {
-      padding: `${theme.spacing.md}px ${theme.spacing.md * 2}px`,
+      padding: `${theme.spacing.md} calc(${theme.spacing.md} * 2)`,
     },
   },
   flexGrowAtSm: {
@@ -190,13 +190,13 @@ export const useBannerStyles = createStyles((theme) => ({
   },
   title: {
     color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
-    fontSize: theme.fontSizes.xl * 2.2,
+    fontSize: `calc(${theme.fontSizes.xl} * 2.2)`,
     fontWeight: 900,
     lineHeight: 1.1,
 
     [theme.fn.smallerThan('md')]: {
       maxWidth: '100%',
-      fontSize: theme.fontSizes.xl * 1.8,
+      fontSize: `calc(${theme.fontSizes.xl} * 1.8)`,
       lineHeight: 1.15,
     },
   },

@@ -61,7 +61,7 @@ const GameNoticePanel: FC = () => {
           title: '获取通知失败',
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
       })
   }, [numId])

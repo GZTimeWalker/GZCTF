@@ -158,7 +158,7 @@ const Users: FC = () => {
                   message: '密码已复制到剪贴板',
                   color: 'teal',
                   icon: <Icon path={mdiCheck} size={1} />,
-                  disallowClose: true,
+                  withCloseButton: false,
                 })
               }}
             >
@@ -184,7 +184,7 @@ const Users: FC = () => {
         message: `${user.userName} 已删除`,
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       users && updateUsers(users.filter((x) => x.id !== user.id))
       setCurrent(current - 1)

@@ -59,7 +59,7 @@ const Teams: FC = () => {
         title: '遇到了问题',
         message: '队伍邀请码格式不正确',
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       return
     }
@@ -72,7 +72,7 @@ const Teams: FC = () => {
           title: '加入队伍成功',
           message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         api.team.mutateTeamGetTeamsInfo()
       })

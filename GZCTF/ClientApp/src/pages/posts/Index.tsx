@@ -73,7 +73,7 @@ const Posts: FC = () => {
           <Pagination
             position="center"
             my={20}
-            page={activePage}
+            value={activePage}
             onChange={setPage}
             total={Math.ceil((posts?.length ?? 0) / ITEMS_PER_PAGE)}
           />

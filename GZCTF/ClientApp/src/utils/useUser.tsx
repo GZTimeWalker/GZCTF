@@ -22,7 +22,7 @@ export const useUser = () => {
             color: 'red',
             message: '账户已被禁用',
             icon: <Icon path={mdiClose} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
         })
         return

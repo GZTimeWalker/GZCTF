@@ -71,7 +71,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
                 color: 'orange',
                 message: '邀请码不能为空',
                 icon: <Icon path={mdiClose} size={1} />,
-                disallowClose: true,
+                withCloseButton: false,
               })
               return
             }
@@ -81,7 +81,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
                 color: 'orange',
                 message: '请选择参赛组织',
                 icon: <Icon path={mdiClose} size={1} />,
-                disallowClose: true,
+                withCloseButton: false,
               })
               return
             }

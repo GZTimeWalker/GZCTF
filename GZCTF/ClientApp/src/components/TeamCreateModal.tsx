@@ -35,7 +35,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           title: '队伍已创建',
           message: `${res.data.name} 创建成功，快去邀请队友吧！`,
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         api.team.mutateTeamGetTeamsInfo()
       })

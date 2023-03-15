@@ -220,7 +220,7 @@ const TableRow: FC<{
               <td key={item.id} className={classes.theadMono}>
                 <Tooltip
                   classNames={tooltipClasses}
-                  transition="pop"
+                  transitionProps={{ transition: "pop" }}
                   label={
                     <Stack align="flex-start" spacing={0} style={{ maxWidth: '20rem' }}>
                       <Text lineClamp={3}>{item.title}</Text>
@@ -365,7 +365,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
             Tip: 可以按左右方向键滚动题目列表哦~
           </Text>
           <Pagination
-            page={activePage}
+            value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
             boundaries={2}

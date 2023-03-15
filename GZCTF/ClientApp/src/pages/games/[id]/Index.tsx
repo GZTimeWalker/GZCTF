@@ -142,7 +142,7 @@ const GameDetail: FC = () => {
         color: 'teal',
         message: '报名成功',
         icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       mutate()
     } catch (err) {
@@ -159,7 +159,7 @@ const GameDetail: FC = () => {
         color: 'teal',
         message: '退出成功',
         icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       mutate()
     } catch (err) {
@@ -247,7 +247,7 @@ const GameDetail: FC = () => {
         <Group
           noWrap
           position="apart"
-          style={{ width: '100%', padding: `0 ${theme.spacing.md}px` }}
+          style={{ width: '100%', padding: `0 ${theme.spacing.md}` }}
           className={classes.container}
         >
           <Stack spacing={6} className={classes.flexGrowAtSm}>

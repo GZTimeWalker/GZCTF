@@ -77,7 +77,7 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '题目状态更新成功',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         mutate(
           challenges?.map((c) =>
@@ -109,7 +109,6 @@ const GameChallengeEdit: FC = () => {
               clearable
               searchable
               nothingFound="没有找到标签"
-              clearButtonLabel="显示全部"
               value={category}
               onChange={(value: ChallengeTag) => setCategory(value)}
               itemComponent={ChallengeTagItem}

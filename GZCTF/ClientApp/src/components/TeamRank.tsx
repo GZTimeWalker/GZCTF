@@ -45,7 +45,7 @@ const TeamRank: FC<PaperProps> = (props) => {
         color: 'yellow',
         message: '比赛已经结束',
         icon: <Icon path={mdiExclamationThick} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
     }
   }, [error])
@@ -115,7 +115,7 @@ const TeamRank: FC<PaperProps> = (props) => {
               color: 'teal',
               message: '队伍Token已复制到剪贴板',
               icon: <Icon path={mdiCheck} size={1} />,
-              disallowClose: true,
+              withCloseButton: false,
             })
           }}
           styles={{

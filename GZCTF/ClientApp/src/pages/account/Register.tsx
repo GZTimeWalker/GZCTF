@@ -56,7 +56,7 @@ const Register: FC = () => {
         title: '请检查输入',
         message: '重复密码有误',
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       return
     }
@@ -69,7 +69,7 @@ const Register: FC = () => {
         title: '请等待验证码……',
         message: '请稍后重试',
         loading: true,
-        disallowClose: true,
+        withCloseButton: false,
       })
       return
     }
@@ -83,7 +83,7 @@ const Register: FC = () => {
       message: '等待服务器验证',
       loading: true,
       autoClose: false,
-      disallowClose: true,
+      withCloseButton: false,
     })
 
     api.account
@@ -102,7 +102,7 @@ const Register: FC = () => {
             title: data.title,
             message: data.message,
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
 
           if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
@@ -116,7 +116,7 @@ const Register: FC = () => {
           title: '遇到了问题',
           message: `${err.response.data.title}`,
           icon: <Icon path={mdiClose} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
       })
       .finally(() => {

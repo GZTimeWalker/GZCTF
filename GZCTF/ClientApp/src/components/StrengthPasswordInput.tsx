@@ -73,7 +73,7 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
         },
       }}
       withArrow
-      transition="pop-bottom-left"
+      transitionProps={{ transition: "pop-bottom-left" }}
     >
       <Popover.Target>
         <PasswordInput

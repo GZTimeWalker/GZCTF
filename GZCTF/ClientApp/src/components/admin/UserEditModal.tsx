@@ -64,7 +64,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           color: 'teal',
           message: '用户信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         mutateUser({ ...activeUser, ...profile })
         modalProps.onClose()

@@ -89,7 +89,7 @@ const GameChallengeEdit: FC = () => {
               color: 'teal',
               message: '题目已更新',
               icon: <Icon path={mdiCheck} size={1} />,
-              disallowClose: true,
+              withCloseButton: false,
             })
           }
           mutate(data.data)
@@ -112,7 +112,7 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '题目已删除',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         api.edit.mutateEditGetGameChallenges(numId)
         navigate(`/admin/games/${id}/challenges`)
@@ -131,7 +131,7 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '实例已创建',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         if (challenge) mutate({ ...challenge, testContainer: res.data })
       })
@@ -149,7 +149,7 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '实例已销毁',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         if (challenge) mutate({ ...challenge, testContainer: undefined })
       })
@@ -330,7 +330,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo?.originalScore ?? 500}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, originalScore: e })}
+                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, originalScore: e })}
               />
               <NumberInput
                 label="难度系数"
@@ -342,7 +342,7 @@ const GameChallengeEdit: FC = () => {
                 value={challengeInfo?.difficulty ?? 100}
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, difficulty: e })}
+                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, difficulty: e })}
               />
               <Input.Wrapper label="题目最低分值比例" required>
                 <Slider
@@ -441,7 +441,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.containerExposePort ?? 1}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, containerExposePort: e })}
+                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, containerExposePort: e })}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -455,7 +455,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.cpuCount ?? 1}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, cpuCount: e })}
+                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, cpuCount: e })}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -469,7 +469,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.memoryLimit ?? 32}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
+                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -483,7 +483,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.storageLimit ?? 128}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, storageLimit: e })}
+                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, storageLimit: e })}
               />
             </Grid.Col>
             <Grid.Col span={4} style={{ alignItems: 'center', display: 'flex' }}>

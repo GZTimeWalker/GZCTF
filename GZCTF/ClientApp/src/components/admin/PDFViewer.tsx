@@ -21,7 +21,7 @@ const useStyles = createStyles((theme, { height }: PDFViewerProps) => ({
     marginRight: theme.spacing.md,
     borderRadius: theme.radius.sm,
 
-    [theme.fn.largerThan(1100 + theme.spacing.md * 2)]: {
+    [theme.fn.largerThan(`calc(1100 + ${theme.spacing.md} * 2`)]: {
       maxWidth: 900,
       marginLeft: 'auto',
       marginRight: 'auto',

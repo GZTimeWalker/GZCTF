@@ -183,7 +183,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         color: 'red',
         message: 'Flag 为空不可提交',
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       return
     }
@@ -202,7 +202,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           message: '请等待 flag 检查……',
           loading: true,
           autoClose: false,
-          disallowClose: true,
+          withCloseButton: false,
         })
       })
       .catch(showErrorNotification)
@@ -243,7 +243,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         color: 'teal',
         message: 'Flag 正确',
         icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       if (isDynamic && challenge.context?.instanceEntry) onDestroyContainer()
       mutate()
@@ -254,7 +254,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         color: 'red',
         message: 'Flag 错误',
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
     } else {
       updateNotification({
@@ -262,7 +262,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         color: 'yellow',
         message: 'Flag 状态未知',
         icon: <Icon path={mdiLoading} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
     }
   }
@@ -381,7 +381,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                           color: 'teal',
                           message: '实例入口已复制到剪贴板',
                           icon: <Icon path={mdiCheck} size={1} />,
-                          disallowClose: true,
+                          withCloseButton: false,
                         })
                       }}
                     >

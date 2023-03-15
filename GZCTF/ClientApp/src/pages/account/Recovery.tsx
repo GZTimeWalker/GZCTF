@@ -28,7 +28,7 @@ const Recovery: FC = () => {
         title: '请等待验证码……',
         message: '请稍后重试',
         loading: true,
-        disallowClose: true,
+        withCloseButton: false,
       })
       return
     }
@@ -42,7 +42,7 @@ const Recovery: FC = () => {
       message: '等待服务器验证',
       loading: true,
       autoClose: false,
-      disallowClose: true,
+      withCloseButton: false,
     })
 
     api.account
@@ -57,7 +57,7 @@ const Recovery: FC = () => {
           title: '一封恢复邮件已发送',
           message: '请检查你的邮箱及垃圾邮件~',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
       })
       .catch((err) => {

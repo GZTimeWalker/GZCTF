@@ -19,7 +19,7 @@ import {
   PasswordInput,
   SimpleGrid,
 } from '@mantine/core'
-import { DatePicker, TimeInput } from '@mantine/dates'
+import { DatePickerInput, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -74,7 +74,7 @@ const GameInfoEdit: FC = () => {
         color: 'red',
         message: `比赛 Id 错误：${id}`,
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       navigate('/admin/games')
       return
@@ -98,7 +98,7 @@ const GameInfoEdit: FC = () => {
             color: 'teal',
             message: '成功修改比赛海报',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           mutate({ ...game, poster: res.data })
         })
@@ -122,7 +122,7 @@ const GameInfoEdit: FC = () => {
             color: 'teal',
             message: '比赛信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           mutate()
           api.game.mutateGameGamesAll()
@@ -143,7 +143,7 @@ const GameInfoEdit: FC = () => {
             color: 'teal',
             message: '比赛已删除',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           navigate('/admin/games')
         })
@@ -209,7 +209,7 @@ const GameInfoEdit: FC = () => {
           min={0}
           required
           value={game?.teamMemberCountLimit}
-          onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: e })}
+          onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: Number(e) })}
         />
         <NumberInput
           label="队伍容器数量限制"
@@ -218,7 +218,7 @@ const GameInfoEdit: FC = () => {
           min={1}
           required
           value={game?.containerCountLimit}
-          onChange={(e) => game && setGame({ ...game, containerCountLimit: e })}
+          onChange={(e) => game && setGame({ ...game, containerCountLimit: Number(e) })}
         />
         <PasswordInput
           value={game?.publicKey || ''}
@@ -231,7 +231,7 @@ const GameInfoEdit: FC = () => {
               color: 'teal',
               message: '公钥已复制到剪贴板',
               icon: <Icon path={mdiCheck} size={1} />,
-              disallowClose: true,
+              withCloseButton: false,
             })
           }}
           styles={{
@@ -240,7 +240,7 @@ const GameInfoEdit: FC = () => {
             },
           }}
         />
-        <DatePicker
+        <DatePickerInput
           label="开始日期"
           placeholder="Start Date"
           value={start.toDate()}
@@ -262,9 +262,9 @@ const GameInfoEdit: FC = () => {
           label="开始时间"
           disabled={disabled}
           placeholder="Start Time"
-          value={start.toDate()}
+          value={start.format('HH:mm:ss')}
           onChange={(e) => {
-            const newDate = dayjs(e).date(start.date()).month(start.month()).year(start.year())
+            const newDate = dayjs(e.target.value).date(start.date()).month(start.month()).year(start.year())
             setStart(newDate)
             if (newDate && end < newDate) {
               setEnd(newDate.add(2, 'h'))
@@ -273,7 +273,7 @@ const GameInfoEdit: FC = () => {
           withSeconds
           required
         />
-        <DatePicker
+        <DatePickerInput
           label="结束日期"
           disabled={disabled}
           minDate={start.toDate()}
@@ -291,9 +291,9 @@ const GameInfoEdit: FC = () => {
           label="结束时间"
           disabled={disabled}
           placeholder="End time"
-          value={end.toDate()}
+          value={end.format('HH:mm:ss')}
           onChange={(e) => {
-            const newDate = dayjs(e).date(end.date()).month(end.month()).year(end.year())
+            const newDate = dayjs(e.target.value).date(end.date()).month(end.month()).year(end.year())
             setEnd(newDate)
           }}
           error={end < start}
@@ -348,7 +348,7 @@ const GameInfoEdit: FC = () => {
               min={0}
               required
               value={wpddl}
-              onChange={setWpddl}
+              onChange={(e) => setWpddl(Number(e))}
             />
             <Switch
               disabled={disabled}
@@ -438,7 +438,7 @@ const GameInfoEdit: FC = () => {
                   title: '文件获取失败',
                   message: '请检查文件格式和大小',
                   icon: <Icon path={mdiClose} size={1} />,
-                  disallowClose: true,
+                  withCloseButton: false,
                 })
               }}
               maxSize={3 * 1024 * 1024}

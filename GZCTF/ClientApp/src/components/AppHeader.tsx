@@ -45,7 +45,7 @@ const AppHeader: FC = () => {
         title: '登出成功',
         message: '',
         icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
     })
   }

@@ -113,7 +113,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             title: '退出队伍成功',
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           api.team.mutateTeamGetTeamsInfo()
           props.onClose()
@@ -132,7 +132,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             title: '解散队伍成功',
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           setInviteCode('')
           setTeamInfo(null)
@@ -155,7 +155,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             title: '队伍成功',
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           api.team.mutateTeamGetTeamsInfo()
           setTeamInfo(team.data)
@@ -173,7 +173,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           title: '踢出成员成功',
           message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         api.team.mutateTeamGetTeamsInfo()
         setTeamInfo(data.data)
@@ -191,7 +191,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             color: 'teal',
             message: '队伍邀请码已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
         })
         .catch(showErrorNotification)
@@ -209,7 +209,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             color: 'teal',
             message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           setTeamInfo({ ...teamInfo, avatar: data.data })
           api.team.mutateTeamGetTeamsInfo()
@@ -233,7 +233,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             color: 'teal',
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           api.team.mutateTeamGetTeamsInfo()
         })
@@ -300,7 +300,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                 color: 'teal',
                 message: '邀请码已复制',
                 icon: <Icon path={mdiCheck} size={1} />,
-                disallowClose: true,
+                withCloseButton: false,
               })
             }}
             readOnly
@@ -412,7 +412,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               title: '文件获取失败',
               message: '请检查文件格式和大小',
               icon: <Icon path={mdiClose} size={1} />,
-              disallowClose: true,
+              withCloseButton: false,
             })
           }}
           style={{

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { Box, createStyles, Group, GroupPosition, GroupProps, MantineColor } from '@mantine/core'
+import { Box, createStyles, getStylesRef, Group, GroupPosition, GroupProps, MantineColor } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import LogoHeader from './LogoHeader'
 
@@ -24,8 +24,8 @@ interface IconTabsProps extends GroupProps {
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
-const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
-  const activeTab = { ref: getRef('activeTab') } as const
+const useTabStyle = createStyles((theme, props: TabStyleProps) => {
+  const activeTab = { ref: getStylesRef('activeTab') } as const
   const color = props.color ?? 'brand'
 
   return {
@@ -36,7 +36,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
       fontSize: theme.fontSizes.sm,
       height: 'auto',
-      padding: `${theme.spacing.xs}px ${theme.spacing.lg}px`,
+      padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
       fontWeight: 500,
       boxSizing: 'border-box',
       cursor: 'pointer',
@@ -45,7 +45,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, getRef) => {
       backgroundColor: 'transparent',
 
       [theme.fn.smallerThan('xs')]: {
-        padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+        padding: `${theme.spacing.xs} ${theme.spacing.md}`,
       },
 
       '&:disabled': {

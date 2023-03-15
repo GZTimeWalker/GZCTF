@@ -76,7 +76,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           color: 'teal',
           message: '附件已更新',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         setType(FileType.None)
         challenge &&
@@ -128,7 +128,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 color: 'teal',
                 message: '附件已更新',
                 icon: <Icon path={mdiCheck} size={1} />,
-                disallowClose: true,
+                withCloseButton: false,
               })
             })
             .catch((err) => showErrorNotification(err))
@@ -156,7 +156,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             color: 'teal',
             message: '附件已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
         })
         .catch((err) => showErrorNotification(err))
@@ -177,7 +177,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             color: 'teal',
             message: 'flag 模板已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
         })
@@ -227,9 +227,8 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       </Group>
       <Divider />
       <Group position="apart">
-        <Input.Wrapper label="附件类型" required>
+        <Input.Wrapper label="附件类型" pt={8} required>
           <Chip.Group
-            mt={8}
             value={type}
             onChange={(e) => {
               if (e === FileType.None) {
@@ -448,7 +447,7 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: 'flag 已删除',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         challenge &&
           mutate({

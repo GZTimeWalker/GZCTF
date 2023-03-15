@@ -197,7 +197,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
           </Group>
         </Accordion.Control>
         <Group
-          style={{ margin: `0 ${theme.spacing.xl}px`, minWidth: `${theme.spacing.xl * 3}px` }}
+          style={{ margin: `0 ${theme.spacing.xl}px`, minWidth: `calc(${theme.spacing.xl} * 3)` }}
           position="right"
         >
           {StatusMap.get(participation.status!)?.transformTo.map((value) => {
@@ -254,7 +254,7 @@ const GameTeamReview: FC = () => {
         title: '操作成功',
         message: '参与状态已更新',
         icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
     } catch (err: any) {
       showErrorNotification(err)
@@ -269,7 +269,7 @@ const GameTeamReview: FC = () => {
         color: 'red',
         message: `比赛 Id 错误：${id}`,
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       navigate('/admin/games')
       return

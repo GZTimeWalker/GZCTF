@@ -8,6 +8,7 @@ import {
   Avatar,
   Tooltip,
   createStyles,
+  getStylesRef,
   useMantineColorScheme,
   ActionIcon,
 } from '@mantine/core'
@@ -30,8 +31,8 @@ import { useUser } from '@Utils/useUser'
 import api, { Role } from '@Api'
 import MainIcon from './icon/MainIcon'
 
-const useStyles = createStyles((theme, _param, getRef) => {
-  const active = { ref: getRef('activeItem') } as const
+const useStyles = createStyles((theme) => {
+  const active = { ref: getStylesRef('activeItem') } as const
 
   return {
     active,
@@ -146,7 +147,7 @@ const AppNavbar: FC = () => {
         title: '登出成功',
         message: '',
         icon: <Icon path={mdiCheck} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
     })
   }

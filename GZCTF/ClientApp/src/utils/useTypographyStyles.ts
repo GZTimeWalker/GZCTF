@@ -16,10 +16,10 @@ export const useTypographyStyles = createStyles((theme) => {
       },
 
       '& ul, & ol': {
-        paddingLeft: theme.fontSizes.lg * 1.5,
+        paddingLeft: `calc(${theme.fontSizes.lg} * 1.5)`,
 
         [theme.fn.smallerThan('xs')]: {
-          paddingLeft: theme.fontSizes.xs * 1.5,
+          paddingLeft: `calc(${theme.fontSizes.xs} * 1.5)`,
         },
       },
 
@@ -29,7 +29,7 @@ export const useTypographyStyles = createStyles((theme) => {
 
       '& blockquote': {
         borderLeft: `4px solid ${sc(cs.dark[0], cs.gray[5])}`,
-        padding: `${theme.spacing.md / 2}px ${theme.spacing.md}px`,
+        padding: `calc(${theme.spacing.xs} / 2) ${theme.spacing.md}`,
         color: theme.fn.rgba(sc(cs.dark[0], cs.gray[7]), 0.9),
         backgroundColor: theme.fn.rgba(theme.black, sc(0.1, 0.05)),
         marginBottom: theme.spacing.md,
@@ -48,7 +48,7 @@ export const useTypographyStyles = createStyles((theme) => {
         whiteSpace: 'normal',
         fontSize: '0.95em',
         backgroundColor: theme.fn.rgba(theme.black, sc(0.1, 0.05)),
-        padding: `1px ${theme.spacing.xs / 2}px`,
+        padding: `1px calc(${theme.spacing.xs} / 2)`,
         border: 'none',
       },
 

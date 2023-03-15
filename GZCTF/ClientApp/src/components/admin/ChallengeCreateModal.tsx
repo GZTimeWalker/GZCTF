@@ -44,7 +44,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
             color: 'teal',
             message: '添加比赛题目成功',
             icon: <Icon path={mdiCheck} size={1} />,
-            disallowClose: true,
+            withCloseButton: false,
           })
           onAddChallenge(data.data)
           navigate(`/admin/games/${id}/challenges/${data.data.id}`)

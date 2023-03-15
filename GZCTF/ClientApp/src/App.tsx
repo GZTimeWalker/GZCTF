@@ -12,7 +12,7 @@ import {
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
-import { NotificationsProvider } from '@mantine/notifications'
+import { Notifications } from '@mantine/notifications'
 import { ThemeOverride } from '@Utils/ThemeOverride'
 import { fetcher } from '@Api'
 
@@ -29,7 +29,7 @@ export const App: FC = () => {
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
-        <NotificationsProvider zIndex={5000}>
+      <Notifications zIndex={5000}/>
           {StyledGlobal}
           <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>
             <SWRConfig
@@ -49,7 +49,6 @@ export const App: FC = () => {
               </Suspense>
             </SWRConfig>
           </ModalsProvider>
-        </NotificationsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
   )

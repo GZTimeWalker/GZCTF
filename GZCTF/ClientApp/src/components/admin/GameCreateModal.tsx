@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, Stack, TextInput } from '@mantine/core'
-import { DatePicker, TimeInput } from '@mantine/dates'
+import { DatePickerInput, TimeInput } from '@mantine/dates'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
@@ -29,7 +29,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         title: '输入不合法',
         message: '请输入标题和时间信息',
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       return
     }
@@ -47,7 +47,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           color: 'teal',
           message: '比赛创建成功',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         onAddGame(data.data)
         navigate(`/admin/games/${data.data.id}/info`)
@@ -72,7 +72,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         />
 
         <Group grow position="apart">
-          <DatePicker
+          <DatePickerInput
             label="开始日期"
             placeholder="Start Date"
             value={start.toDate()}
@@ -92,9 +92,9 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           <TimeInput
             label="开始时间"
             placeholder="Start Time"
-            value={start.toDate()}
+            value={start.format('HH:mm:ss')}
             onChange={(e) => {
-              const newDate = dayjs(e).date(start.date()).month(start.month()).year(start.year())
+              const newDate = dayjs(e.target.value).date(start.date()).month(start.month()).year(start.year())
               setStart(newDate)
               if (newDate && end < newDate) {
                 setEnd(newDate.add(2, 'h'))
@@ -106,7 +106,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         </Group>
 
         <Group grow position="apart">
-          <DatePicker
+          <DatePickerInput
             label="结束日期"
             minDate={start.toDate()}
             placeholder="End time"
@@ -122,9 +122,9 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           <TimeInput
             label="结束时间"
             placeholder="End time"
-            value={end.toDate()}
+            value={end.format('HH:mm:ss')}
             onChange={(e) => {
-              const newDate = dayjs(e).date(end.date()).month(end.month()).year(end.year())
+              const newDate = dayjs(e.target.value).date(end.date()).month(end.month()).year(end.year())
               setEnd(newDate)
             }}
             error={end < start}

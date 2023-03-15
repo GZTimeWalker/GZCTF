@@ -42,7 +42,7 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
                 message: 'flag 已复制到剪贴板',
                 color: 'teal',
                 icon: <Icon path={mdiCheck} size={1} />,
-                disallowClose: true,
+                withCloseButton: false,
               })
             }}
             styles={{

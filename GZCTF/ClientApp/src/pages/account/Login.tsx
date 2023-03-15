@@ -29,7 +29,7 @@ const Login: FC = () => {
         title: '请检查输入',
         message: '无效的用户名或密码',
         icon: <Icon path={mdiClose} size={1} />,
-        disallowClose: true,
+        withCloseButton: false,
       })
       setDisabled(false)
       return
@@ -46,7 +46,7 @@ const Login: FC = () => {
           title: '登录成功',
           message: '跳转回登录前页面',
           icon: <Icon path={mdiCheck} size={1} />,
-          disallowClose: true,
+          withCloseButton: false,
         })
         api.account.mutateAccountProfile()
         const from = params['from']
