@@ -98,7 +98,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
         </Group>
       }
     >
-      <Stack spacing="sm" style={{ marginTop: theme.spacing.sm }}>
+      <Stack spacing="sm">
         <Divider />
         <Stack
           spacing="sm"

@@ -197,7 +197,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
           </Group>
         </Accordion.Control>
         <Group
-          style={{ margin: `0 ${theme.spacing.xl}px`, minWidth: `calc(${theme.spacing.xl} * 3)` }}
+          style={{ margin: `0 ${theme.spacing.xl}`, minWidth: `calc(${theme.spacing.xl} * 3)` }}
           position="right"
         >
           {StatusMap.get(participation.status!)?.transformTo.map((value) => {
