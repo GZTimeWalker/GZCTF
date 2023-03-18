@@ -29,26 +29,26 @@ export const App: FC = () => {
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
-      <Notifications zIndex={5000}/>
-          {StyledGlobal}
-          <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>
-            <SWRConfig
-              value={{
-                refreshInterval: 10000,
-                fetcher,
-              }}
+        <Notifications zIndex={5000} />
+        {StyledGlobal}
+        <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>
+          <SWRConfig
+            value={{
+              refreshInterval: 10000,
+              fetcher,
+            }}
+          >
+            <Suspense
+              fallback={
+                <Center style={{ height: '100vh', width: '100vw' }}>
+                  <Loader />
+                </Center>
+              }
             >
-              <Suspense
-                fallback={
-                  <Center style={{ height: '100vh', width: '100vw' }}>
-                    <Loader />
-                  </Center>
-                }
-              >
-                {useRoutes(routes)}
-              </Suspense>
-            </SWRConfig>
-          </ModalsProvider>
+              {useRoutes(routes)}
+            </Suspense>
+          </SWRConfig>
+        </ModalsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
   )

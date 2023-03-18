@@ -1,5 +1,13 @@
 import React, { FC, useEffect, useState } from 'react'
-import { Box, createStyles, getStylesRef, Group, GroupPosition, GroupProps, MantineColor } from '@mantine/core'
+import {
+  Box,
+  createStyles,
+  getStylesRef,
+  Group,
+  GroupPosition,
+  GroupProps,
+  MantineColor,
+} from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import LogoHeader from './LogoHeader'
 

@@ -220,7 +220,7 @@ const TableRow: FC<{
               <td key={item.id} className={classes.theadMono}>
                 <Tooltip
                   classNames={tooltipClasses}
-                  transitionProps={{ transition: "pop" }}
+                  transitionProps={{ transition: 'pop' }}
                   label={
                     <Stack align="flex-start" spacing={0} style={{ maxWidth: '20rem' }}>
                       <Text lineClamp={3}>{item.title}</Text>

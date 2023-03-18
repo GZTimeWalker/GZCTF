@@ -330,7 +330,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo?.originalScore ?? 500}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, originalScore: e })}
+                onChange={(e) =>
+                  e !== '' && setChallengeInfo({ ...challengeInfo, originalScore: e })
+                }
               />
               <NumberInput
                 label="难度系数"
@@ -441,7 +443,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.containerExposePort ?? 1}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, containerExposePort: e })}
+                onChange={(e) =>
+                  e !== '' && setChallengeInfo({ ...challengeInfo, containerExposePort: e })
+                }
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -483,7 +487,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.storageLimit ?? 128}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, storageLimit: e })}
+                onChange={(e) =>
+                  e !== '' && setChallengeInfo({ ...challengeInfo, storageLimit: e })
+                }
               />
             </Grid.Col>
             <Grid.Col span={4} style={{ alignItems: 'center', display: 'flex' }}>

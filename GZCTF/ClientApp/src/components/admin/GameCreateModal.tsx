@@ -94,7 +94,11 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             placeholder="Start Time"
             value={start.format('HH:mm:ss')}
             onChange={(e) => {
-              const newDate = dayjs(e.target.value).date(start.date()).month(start.month()).year(start.year())
+              const newTime = e.target.value.split(':')
+              const newDate = dayjs(start)
+                .hour(Number(newTime[0]))
+                .minute(Number(newTime[1]))
+                .second(Number(newTime[2]))
               setStart(newDate)
               if (newDate && end < newDate) {
                 setEnd(newDate.add(2, 'h'))
@@ -124,7 +128,11 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             placeholder="End time"
             value={end.format('HH:mm:ss')}
             onChange={(e) => {
-              const newDate = dayjs(e.target.value).date(end.date()).month(end.month()).year(end.year())
+              const newTime = e.target.value.split(':')
+              const newDate = dayjs(end)
+                .hour(Number(newTime[0]))
+                .minute(Number(newTime[1]))
+                .second(Number(newTime[2]))
               setEnd(newDate)
             }}
             error={end < start}
