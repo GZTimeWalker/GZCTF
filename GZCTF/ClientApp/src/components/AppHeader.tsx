@@ -19,7 +19,7 @@ import LogoHeader from './LogoHeader'
 const useHeaderStyles = createStyles((theme) => ({
   header: {
     width: '100%',
-    zIndex: 500,
+    zIndex: 150,
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.white[0],
     border: 'none',
     boxShadow: theme.shadows.md,
@@ -50,7 +50,7 @@ const AppHeader: FC = () => {
     })
   }
 
-  const { isMobile } = useIsMobile()
+  const isMobile = useIsMobile()
 
   return (
     <Header fixed hidden={!isMobile} height={isMobile ? 60 : 0} className={headerClasses.header}>

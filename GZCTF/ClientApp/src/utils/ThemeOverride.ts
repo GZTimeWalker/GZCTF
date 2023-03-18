@@ -1,5 +1,5 @@
 import { createStyles, keyframes, MantineThemeOverride, useMantineTheme } from '@mantine/core'
-import { useViewportSize } from '@mantine/hooks'
+import { useMediaQuery } from '@mantine/hooks'
 
 export const ThemeOverride: MantineThemeOverride = {
   colors: {
@@ -121,12 +121,9 @@ export const useTooltipStyles = createStyles((theme) => ({
 }))
 
 export const useIsMobile = (limit?: number) => {
-  const view = useViewportSize()
   const theme = useMantineTheme()
-  return {
-    loaded: view.width > 0,
-    isMobile: view.width > 0 && view.width < (limit ?? theme.breakpoints.xs),
-  }
+  const isMobile = useMediaQuery(`(max-width: ${limit ? `${limit}px` : theme.breakpoints.xs})`)
+  return isMobile
 }
 
 export const ACCEPT_IMAGE_MIME_TYPE = {

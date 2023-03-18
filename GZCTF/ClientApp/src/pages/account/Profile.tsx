@@ -48,7 +48,7 @@ const Profile: FC = () => {
 
   const [email, setEmail] = useState('')
 
-  const { isMobile } = useIsMobile()
+  const isMobile = useIsMobile()
 
   usePageTitle('个人信息')
 

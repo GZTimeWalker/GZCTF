@@ -43,7 +43,7 @@ const Teams: FC = () => {
 
   const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id === user?.userId))
 
-  const { isMobile } = useIsMobile()
+  const isMobile = useIsMobile()
 
   const onEditTeam = (team: TeamInfoModel) => {
     setEditTeam(team)

@@ -59,94 +59,106 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
   }
 
   return (
-    <Modal {...modalProps}>
-      <Stack>
-        <TextInput
-          label="比赛标题"
-          type="text"
-          required
-          placeholder="Title"
-          style={{ width: '100%' }}
-          value={title}
-          onChange={setTitle}
-        />
+    <Modal.Root opened={modalProps.opened} onClose={modalProps.onClose} centered size="30%">
+      <Modal.Overlay />
+      <Modal.Content>
+        <Modal.Header>
+          <Modal.Title>新建比赛</Modal.Title>
+          <Modal.CloseButton />
+        </Modal.Header>
+        <Modal.Body>
+          <Stack>
+            <TextInput
+              label="比赛标题"
+              type="text"
+              required
+              placeholder="Title"
+              style={{ width: '100%' }}
+              value={title}
+              onChange={setTitle}
+            />
 
-        <Group grow position="apart">
-          <DatePickerInput
-            label="开始日期"
-            placeholder="Start Date"
-            value={start.toDate()}
-            clearable={false}
-            onChange={(e) => {
-              const newDate = dayjs(e)
-                .hour(start.hour())
-                .minute(start.minute())
-                .second(start.second())
-              setStart(newDate)
-              if (newDate && end < newDate) {
-                setEnd(newDate.add(2, 'h'))
-              }
-            }}
-            required
-          />
-          <TimeInput
-            label="开始时间"
-            placeholder="Start Time"
-            value={start.format('HH:mm:ss')}
-            onChange={(e) => {
-              const newTime = e.target.value.split(':')
-              const newDate = dayjs(start)
-                .hour(Number(newTime[0]))
-                .minute(Number(newTime[1]))
-                .second(Number(newTime[2]))
-              setStart(newDate)
-              if (newDate && end < newDate) {
-                setEnd(newDate.add(2, 'h'))
-              }
-            }}
-            withSeconds
-            required
-          />
-        </Group>
+            <Group grow position="apart">
+              <DatePickerInput
+                label="开始日期"
+                placeholder="Start Date"
+                value={start.toDate()}
+                clearable={false}
+                onChange={(e) => {
+                  const newDate = dayjs(e)
+                    .hour(start.hour())
+                    .minute(start.minute())
+                    .second(start.second())
+                  setStart(newDate)
+                  if (newDate && end < newDate) {
+                    setEnd(newDate.add(2, 'h'))
+                  }
+                }}
+                required
+              />
+              <TimeInput
+                label="开始时间"
+                placeholder="Start Time"
+                value={start.format('HH:mm:ss')}
+                onChange={(e) => {
+                  const newTime = e.target.value.split(':')
+                  const newDate = dayjs(start)
+                    .hour(Number(newTime[0]))
+                    .minute(Number(newTime[1]))
+                    .second(Number(newTime[2]))
+                  setStart(newDate)
+                  if (newDate && end < newDate) {
+                    setEnd(newDate.add(2, 'h'))
+                  }
+                }}
+                withSeconds
+                required
+              />
+            </Group>
 
-        <Group grow position="apart">
-          <DatePickerInput
-            label="结束日期"
-            minDate={start.toDate()}
-            placeholder="End time"
-            value={end.toDate()}
-            clearable={false}
-            onChange={(e) => {
-              const newDate = dayjs(e).hour(end.hour()).minute(end.minute()).second(end.second())
-              setEnd(newDate)
-            }}
-            error={end < start}
-            required
-          />
-          <TimeInput
-            label="结束时间"
-            placeholder="End time"
-            value={end.format('HH:mm:ss')}
-            onChange={(e) => {
-              const newTime = e.target.value.split(':')
-              const newDate = dayjs(end)
-                .hour(Number(newTime[0]))
-                .minute(Number(newTime[1]))
-                .second(Number(newTime[2]))
-              setEnd(newDate)
-            }}
-            error={end < start}
-            withSeconds
-            required
-          />
-        </Group>
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
-          <Button fullWidth disabled={disabled} onClick={onCreate}>
-            创建比赛
-          </Button>
-        </Group>
-      </Stack>
-    </Modal>
+            <Group grow position="apart">
+              <DatePickerInput
+                label="结束日期"
+                minDate={start.toDate()}
+                placeholder="End time"
+                value={end.toDate()}
+                clearable={false}
+                onChange={(e) => {
+                  const newDate = dayjs(e)
+                    .hour(end.hour())
+                    .minute(end.minute())
+                    .second(end.second())
+                  setEnd(newDate)
+                }}
+                error={end < start}
+                required
+              />
+              <TimeInput
+                label="结束时间"
+                placeholder="End time"
+                value={end.format('HH:mm:ss')}
+                onChange={(e) => {
+                  const newTime = e.target.value.split(':')
+                  const newDate = dayjs(end)
+                    .hour(Number(newTime[0]))
+                    .minute(Number(newTime[1]))
+                    .second(Number(newTime[2]))
+                  setEnd(newDate)
+                }}
+                error={end < start}
+                withSeconds
+                required
+              />
+            </Group>
+            <Group grow style={{ margin: 'auto', width: '100%' }}>
+              <Button fullWidth disabled={disabled} onClick={onCreate}>
+                创建比赛
+              </Button>
+            </Group>
+          </Stack>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
   )
 }
 

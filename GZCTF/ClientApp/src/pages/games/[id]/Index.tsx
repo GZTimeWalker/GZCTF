@@ -129,7 +129,7 @@ const GameDetail: FC = () => {
 
   const status = game?.status ?? ParticipationStatus.Unsubmitted
   const modals = useModals()
-  const { isMobile } = useIsMobile()
+  const isMobile = useIsMobile()
 
   const [joinModalOpen, setJoinModalOpen] = useState(false)
 

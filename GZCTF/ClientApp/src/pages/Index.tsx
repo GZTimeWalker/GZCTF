@@ -94,7 +94,7 @@ const Home: FC = () => {
   ].slice(0, 3)
 
   const { classes, theme } = useStyles()
-  const { isMobile } = useIsMobile(900)
+  const isMobile = useIsMobile(900)
 
   usePageTitle()
 

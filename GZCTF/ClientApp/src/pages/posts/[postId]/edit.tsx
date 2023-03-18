@@ -56,7 +56,7 @@ const PostEdit: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const modals = useModals()
 
-  const { isMobile } = useIsMobile()
+  const isMobile = useIsMobile()
 
   const onUpdate = () => {
     if (postId === 'new') {

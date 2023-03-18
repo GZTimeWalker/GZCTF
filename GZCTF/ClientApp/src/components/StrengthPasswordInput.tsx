@@ -46,7 +46,7 @@ interface StrengthPasswordInputProps {
 const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
   const [opened, { close, open }] = useDisclosure(false)
   const pwd = props.value
-  const { isMobile } = useIsMobile()
+  const isMobile = useIsMobile()
 
   const checks = [
     <PasswordRequirement key={0} label="至少 6 个字符" meets={pwd.length >= 6} />,

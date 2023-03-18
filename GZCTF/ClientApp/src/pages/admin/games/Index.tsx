@@ -186,9 +186,6 @@ const Games: FC = () => {
         </ScrollArea>
       </Paper>
       <GameCreateModal
-        title="新建比赛"
-        centered
-        size="30%"
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
         onAddGame={(game) => updateGames([...(games ?? []), game])}
