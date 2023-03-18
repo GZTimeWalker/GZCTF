@@ -22,8 +22,8 @@ public class MailSender : IMailSender
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
     {
         if (options?.SendMailAddress is null ||
-            this.options?.Smtp?.Host is null ||
-            this.options?.Smtp?.Port is null)
+            options?.Smtp?.Host is null ||
+            options?.Smtp?.Port is null)
             return true;
 
         var msg = new MimeMessage();
