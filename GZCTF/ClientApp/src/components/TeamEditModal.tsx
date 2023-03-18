@@ -340,7 +340,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   onTransferCaptain={(user: TeamUserInfoModel) => {
                     modals.openConfirmModal({
                       title: '确认转移队长',
-                      centered: true,
+
                       children: (
                         <Text size="sm">
                           你确定要将队伍 "{teamInfo?.name}" 的队长移交给 "{user.userName}" 吗？
@@ -355,7 +355,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   onKick={(user: TeamUserInfoModel) => {
                     modals.openConfirmModal({
                       title: '确认删除',
-                      centered: true,
+
                       children: <Text size="sm">你确定要踢出队员 "{user.userName}" 吗？</Text>,
                       onConfirm: () => onConfirmKickUser(user.id!),
                       labels: { confirm: '确认', cancel: '取消' },
@@ -376,7 +376,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             onClick={() => {
               modals.openConfirmModal({
                 title: isCaptain ? '确认解散' : '确认退出',
-                centered: true,
+
                 children: isCaptain ? (
                   <Text size="sm">你确定要解散队伍吗？</Text>
                 ) : (
@@ -401,7 +401,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       <Modal
         opened={dropzoneOpened}
         onClose={() => setDropzoneOpened(false)}
-        centered
         withCloseButton={false}
       >
         <Dropzone

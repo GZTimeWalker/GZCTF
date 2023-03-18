@@ -56,7 +56,7 @@ const GameChallengeEdit: FC = () => {
         </Text>
       ),
       onConfirm: () => onConfirmToggle(challenge, setDisabled),
-      centered: true,
+
       labels: { confirm: '确认', cancel: '取消' },
       confirmProps: { color: 'orange' },
     })
@@ -166,7 +166,6 @@ const GameChallengeEdit: FC = () => {
       </ScrollArea>
       <ChallengeCreateModal
         title="新建题目"
-        centered
         size="30%"
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
@@ -174,7 +173,6 @@ const GameChallengeEdit: FC = () => {
       />
       <BloodBonusModel
         title="三血奖励"
-        centered
         size="30%"
         opened={bonusOpened}
         onClose={() => setBonusOpened(false)}

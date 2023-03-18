@@ -133,7 +133,7 @@ const Users: FC = () => {
 
       modals.openModal({
         title: `为 ${user.userName} 重置密码`,
-        centered: true,
+
         withCloseButton: false,
         children: (
           <Stack>
@@ -326,7 +326,6 @@ const Users: FC = () => {
           </Table>
         </ScrollArea>
         <UserEditModal
-          centered
           size="35%"
           title="编辑用户"
           user={activeUser}

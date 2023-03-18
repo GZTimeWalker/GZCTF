@@ -38,6 +38,13 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
   const minRate = (min / tot) * 100
   const curRate = (cur / tot) * 100
 
+  const tooltipStyle = {
+    tooltip: {
+      color: theme.colorScheme === 'dark' ? 'white' : 'black',
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : 'white',
+    },
+  }
+
   return (
     <Card shadow="sm">
       <Group noWrap position="apart">
@@ -71,18 +78,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             </Badge>
           </Group>
         </Group>
-        <Tooltip
-          label="编辑题目信息"
-          position="left"
-          width={120}
-          offset={10}
-          styles={{
-            tooltip: {
-              color: theme.colorScheme === 'dark' ? 'white' : 'black',
-              backgroundColor: theme.colorScheme === 'dark' ? '' : 'white',
-            },
-          }}
-        >
+        <Tooltip label="编辑题目信息" position="left" width={120} offset={10} styles={tooltipStyle}>
           <ActionIcon
             onClick={() => {
               navigate(`/admin/games/${id}/challenges/${challenge.id}`)
@@ -96,12 +92,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           position="left"
           width={120}
           offset={54}
-          styles={{
-            tooltip: {
-              color: theme.colorScheme === 'dark' ? 'white' : 'black',
-              backgroundColor: theme.colorScheme === 'dark' ? '' : 'white',
-            },
-          }}
+          styles={tooltipStyle}
         >
           <ActionIcon
             onClick={() => {

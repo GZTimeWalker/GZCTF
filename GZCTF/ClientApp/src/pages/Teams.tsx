@@ -160,12 +160,7 @@ const Teams: FC = () => {
           )}
         </Stack>
 
-        <Modal
-          opened={joinOpened}
-          centered
-          title="加入已有队伍"
-          onClose={() => setJoinOpened(false)}
-        >
+        <Modal opened={joinOpened} title="加入已有队伍" onClose={() => setJoinOpened(false)}>
           <Stack>
             <Text size="sm">请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。</Text>
             <TextInput
@@ -184,7 +179,6 @@ const Teams: FC = () => {
 
         <TeamCreateModal
           opened={createOpened}
-          centered
           title="创建新队伍"
           isOwnTeam={ownTeam ?? false}
           onClose={() => setCreateOpened(false)}
@@ -192,7 +186,6 @@ const Teams: FC = () => {
 
         <TeamEditModal
           opened={editOpened}
-          centered
           title="队伍详情"
           onClose={() => setEditOpened(false)}
           team={editTeam}

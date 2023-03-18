@@ -192,7 +192,6 @@ const PostEdit: FC = () => {
                         children: (
                           <Text size="sm">你确定要删除文章 &quot;{post.title}&quot; 吗？</Text>
                         ),
-                        centered: true,
                         onConfirm: onDelete,
                         labels: { confirm: '确认', cancel: '取消' },
                         confirmProps: { color: 'red' },
@@ -209,7 +208,6 @@ const PostEdit: FC = () => {
                         modals.openConfirmModal({
                           title: '文章已更改',
                           children: <Text size="sm">文章内容已更改，是否保存？</Text>,
-                          centered: true,
                           labels: { confirm: '确认', cancel: '取消' },
                           onConfirm: () => {
                             onUpdate()

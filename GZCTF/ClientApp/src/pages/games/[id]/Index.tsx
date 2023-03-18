@@ -199,7 +199,6 @@ const GameDetail: FC = () => {
         </Stack>
       ),
       onConfirm: () => setJoinModalOpen(true),
-      centered: true,
       labels: { confirm: '确认报名', cancel: '取消' },
       confirmProps: { color: 'brand' },
     })
@@ -214,7 +213,6 @@ const GameDetail: FC = () => {
         </Stack>
       ),
       onConfirm: onSubmitLeave,
-      centered: true,
       labels: { confirm: '确认退出', cancel: '取消' },
       confirmProps: { color: 'brand' },
     })
@@ -319,7 +317,6 @@ const GameDetail: FC = () => {
         <GameJoinModal
           title="补全报名信息"
           opened={joinModalOpen}
-          centered
           withCloseButton={false}
           onClose={() => setJoinModalOpen(false)}
           onSubmitJoin={onSubmitJoin}

@@ -227,7 +227,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       </Group>
       <Divider />
       <Group position="apart">
-        <Input.Wrapper label="附件类型" pt={8} required>
+        <Input.Wrapper label="附件类型" required>
           <Chip.Group
             value={type}
             onChange={(e) => {
@@ -236,7 +236,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                   title: '清除附件',
                   children: <Text size="sm">你确定要清除本题的附件吗？</Text>,
                   onConfirm: onConfirmClear,
-                  centered: true,
                   labels: { confirm: '确认', cancel: '取消' },
                   confirmProps: { color: 'orange' },
                 })
@@ -245,11 +244,13 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               }
             }}
           >
-            {Object.entries(FileType).map((type) => (
-              <Chip key={type[0]} value={type[1]}>
-                {FileTypeDesrcMap.get(type[1])}
-              </Chip>
-            ))}
+            <Group position="left" spacing="sm" h="2.25rem">
+              {Object.entries(FileType).map((type) => (
+                <Chip key={type[0]} value={type[1]} size="sm">
+                  {FileTypeDesrcMap.get(type[1])}
+                </Chip>
+              ))}
+            </Group>
           </Chip.Group>
         </Input.Wrapper>
         {type !== FileType.Remote ? (
@@ -343,7 +344,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       )}
       <FlagCreateModal
         title="添加 flag"
-        centered
         opened={flagCreateModalOpen}
         onClose={() => setFlagCreateModalOpen(false)}
       />
@@ -393,14 +393,12 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
       <AttachmentUploadModal
         title="批量添加动态附件"
         size="40%"
-        centered
         opened={attachmentUploadModalOpened}
         onClose={() => setAttachmentUploadModalOpened(false)}
       />
       <AttachmentRemoteEditModal
         title="批量添加远程附件"
         size="40%"
-        centered
         opened={remoteAttachmentModalOpened}
         onClose={() => setRemoteAttachmentModalOpened(false)}
       />
@@ -433,7 +431,7 @@ const GameChallengeEdit: FC = () => {
         </Stack>
       ),
       onConfirm: () => flag.id && onConfirmDeleteFlag(flag.id),
-      centered: true,
+
       labels: { confirm: '确认', cancel: '取消' },
       confirmProps: { color: 'red' },
     })

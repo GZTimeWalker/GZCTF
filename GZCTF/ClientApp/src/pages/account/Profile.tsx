@@ -252,18 +252,12 @@ const Profile: FC = () => {
       {/* Change Password */}
       <PasswordChangeModal
         opened={pwdChangeOpened}
-        centered
         onClose={() => setPwdChangeOpened(false)}
         title="更改密码"
       />
 
       {/* Change Email */}
-      <Modal
-        opened={mailEditOpened}
-        centered
-        onClose={() => setMailEditOpened(false)}
-        title="更改邮箱"
-      >
+      <Modal opened={mailEditOpened} onClose={() => setMailEditOpened(false)} title="更改邮箱">
         <Stack>
           <Text>
             更改邮箱后，您将不能通过原邮箱登录。一封邮件将会发送至新邮箱，请点击邮件中的链接完成验证。
@@ -298,7 +292,6 @@ const Profile: FC = () => {
       <Modal
         opened={dropzoneOpened}
         onClose={() => setDropzoneOpened(false)}
-        centered
         withCloseButton={false}
       >
         <Dropzone

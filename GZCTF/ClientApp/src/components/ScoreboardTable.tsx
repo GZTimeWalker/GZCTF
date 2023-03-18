@@ -376,7 +376,6 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
         challenges={scoreboard?.challenges}
         bloodBonusMap={BloodData}
         opened={itemDetailOpened}
-        centered
         withCloseButton={false}
         size="40rem"
         onClose={() => setItemDetailOpened(false)}

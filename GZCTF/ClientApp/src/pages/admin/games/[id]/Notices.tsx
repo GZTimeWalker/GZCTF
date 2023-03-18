@@ -30,7 +30,7 @@ const GameNoticeEdit: FC = () => {
       title: '删除通知',
       children: <Text> 你确定要删除通知该通知吗？</Text>,
       onConfirm: () => onConfirmDelete(gameNotice),
-      centered: true,
+
       labels: { confirm: '删除通知', cancel: '取消' },
       confirmProps: { color: 'red' },
     })
@@ -111,7 +111,6 @@ const GameNoticeEdit: FC = () => {
         )}
       </ScrollArea>
       <GameNoticeEditModal
-        centered
         size="30%"
         title={activeGameNotice ? '编辑通知' : '新建通知'}
         opened={isEditModalOpen}

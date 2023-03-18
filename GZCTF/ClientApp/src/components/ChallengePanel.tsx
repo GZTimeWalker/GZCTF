@@ -260,7 +260,6 @@ const ChallengePanel: FC = () => {
         size="40%"
         gameId={numId}
         wpddl={data.wpddl}
-        centered
       />
       {challenge?.id && (
         <ChallengeDetailModal
@@ -268,7 +267,6 @@ const ChallengePanel: FC = () => {
           onClose={() => setDetailOpened(false)}
           withCloseButton={false}
           size="40%"
-          centered
           gameId={numId}
           solved={
             data &&

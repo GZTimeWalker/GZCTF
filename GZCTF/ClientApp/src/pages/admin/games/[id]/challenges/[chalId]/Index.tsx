@@ -201,7 +201,7 @@ const GameChallengeEdit: FC = () => {
                   title: `删除题目`,
                   children: <Text size="sm">你确定要删除题目 "{challengeInfo.title}" 吗？</Text>,
                   onConfirm: () => onConfirmDelete(),
-                  centered: true,
+
                   labels: { confirm: '确认', cancel: '取消' },
                   confirmProps: { color: 'red' },
                 })
@@ -511,7 +511,6 @@ const GameChallengeEdit: FC = () => {
         onClose={() => setPreviewOpend(false)}
         withCloseButton={false}
         size="40%"
-        centered
         type={challenge?.type ?? ChallengeType.StaticAttachment}
         tagData={
           ChallengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
