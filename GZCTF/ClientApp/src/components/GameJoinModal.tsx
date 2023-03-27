@@ -33,6 +33,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
       <Stack>
         <Select
           required
+          withinPortal
           label="选择你的参赛队伍"
           description="请选择一个队伍参与比赛，选定后不可更改"
           data={teams?.map((t) => ({ label: t.name!, value: t.id!.toString() })) ?? []}
@@ -53,6 +54,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
         {game?.organizations && game.organizations.length > 0 && (
           <Select
             required
+            withinPortal
             label="选择你的参赛组织"
             description="本场比赛具有多个参赛组织，请选择你的参赛组织"
             data={game.organizations}

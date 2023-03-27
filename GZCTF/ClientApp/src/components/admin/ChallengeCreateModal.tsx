@@ -75,6 +75,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           value={type}
           onChange={setType}
           itemComponent={ChallengeTypeItem}
+          withinPortal
           data={Object.entries(ChallengeType).map((type) => {
             const data = ChallengeTypeLabelMap.get(type[1])
             return { value: type[1], ...data }
@@ -87,6 +88,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           value={tag}
           onChange={setTag}
           itemComponent={ChallengeTagItem}
+          withinPortal
           data={Object.entries(ChallengeTag).map((tag) => {
             const data = ChallengeTagLabelMap.get(tag[1])
             return { value: tag[1], ...data }
