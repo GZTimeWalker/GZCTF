@@ -184,7 +184,7 @@ const GameDetail: FC = () => {
         <Stack spacing="xs">
           <Text size="sm">你确定要报名此比赛吗？</Text>
           <Text size="sm">
-            报名参赛后参赛队伍将被锁定，不能再进行人员变动。
+            报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动。
             <Text span weight={700}>
               即邀请、踢出队员。
             </Text>
@@ -308,7 +308,7 @@ const GameDetail: FC = () => {
           )}
           {status === ParticipationStatus.Accepted && !started && (
             <Alert color="teal" icon={<Icon path={mdiCheck} />} title="比赛尚未开始">
-              你已经以队伍 "{game?.teamName}" 成员身份成功报名，请耐心等待比赛开始。
+              你已经以队伍 "{game?.teamName}" 成员身份成功报名并通过审核，请耐心等待比赛开始。
               {isMobile && '请使用电脑端参与比赛及查看比赛详情。'}
             </Alert>
           )}
