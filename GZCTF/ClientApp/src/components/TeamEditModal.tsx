@@ -242,7 +242,13 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   }
 
   return (
-    <Modal {...modalProps}>
+    <Modal
+      {...modalProps}
+      onClose={() => {
+        setDropzoneOpened(false)
+        props.onClose()
+      }}
+    >
       <Stack spacing="lg">
         {/* Team Info */}
         <Grid grow>
@@ -402,6 +408,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         opened={dropzoneOpened}
         onClose={() => setDropzoneOpened(false)}
         withCloseButton={false}
+        zIndex={1000}
       >
         <Dropzone
           onDrop={(files) => setAvatarFile(files[0])}

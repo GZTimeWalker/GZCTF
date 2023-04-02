@@ -10,7 +10,7 @@
     "genapi": "swagger-typescript-api -p template/swagger.json -t template -o src --module-name-first-tag"
   },
   "dependencies": {
-    "@babel/core": "^7.21.3",
+    "@babel/core": "^7.21.4",
     "@emotion/react": "^11.10.6",
     "@mantine/carousel": "^6.0.5",
     "@mantine/core": "^6.0.5",
@@ -36,8 +36,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-pdf": "^6.2.2",
-    "react-router": "^6.9.0",
-    "react-router-dom": "^6.9.0",
+    "react-router": "^6.10.0",
+    "react-router-dom": "^6.10.0",
     "swr": "^1.3.0",
     "vite-tsconfig-paths": "^3.6.0"
   },
@@ -49,7 +49,7 @@
     "@types/marked": "^4.0.8",
     "@types/node": "18.11.9",
     "@types/prismjs": "^1.26.0",
-    "@types/react": "^18.0.30",
+    "@types/react": "^18.0.32",
     "@types/react-dom": "^18.0.11",
     "@types/react-pdf": "^5.7.4",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
