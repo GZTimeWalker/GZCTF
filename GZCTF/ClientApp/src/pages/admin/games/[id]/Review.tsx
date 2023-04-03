@@ -88,6 +88,10 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
+  label: {
+    padding: '0',
+  },
+
   control: {
     padding: '8px 4px',
     ...theme.fn.hover({ background: 'transparent' }),
