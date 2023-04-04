@@ -84,7 +84,7 @@ const About: FC = () => {
                 size="lg"
                 variant="outline"
               >
-                © 2022 GZTime {valid ? `#${sha.substring(0, 6)}` : ''}
+                © 2022-Now GZTime {valid ? `#${sha.substring(0, 6)}` : ''}
               </Badge>
             </HoverCard.Target>
             <HoverCard.Dropdown>
@@ -107,10 +107,14 @@ const About: FC = () => {
                       </Anchor>
                       <Badge
                         variant="gradient"
-                        gradient={{ from: 'teal', to: 'blue', deg: 60 }}
+                        gradient={
+                          valid
+                            ? { from: 'teal', to: 'blue', deg: 60 }
+                            : { from: 'red', to: 'orange', deg: -60 }
+                        }
                         size="xs"
                       >
-                        {valid ? `${tag}#${sha.substring(0, 6)}` : 'Unofficial'}
+                        {valid ? `${tag}#${sha.substring(0, 6)}` : 'UNOFFICIAL'}
                       </Badge>
                     </Group>
                   </Stack>
