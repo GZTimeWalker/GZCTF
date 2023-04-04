@@ -14,6 +14,7 @@ import {
   Select,
   Tooltip,
   Center,
+  Input,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import {
@@ -66,7 +67,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-const Lefts = [0, 55, 95, 265, 335, 390]
+const Lefts = [0, 55, 95, 275, 345, 400]
 const Widths = Array(5).fill(0)
 Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
@@ -179,20 +180,25 @@ const TableRow: FC<{
           >
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Text
-            lineClamp={1}
-            align="left"
-            weight={500}
+          <Input
+            variant="unstyled"
+            value={item.name}
+            readOnly
+            size="sm"
             sx={(theme) => ({
-              userSelect: 'none',
+              wrapper: {
+                width: '100%',
+              },
 
-              ...theme.fn.hover({
-                cursor: 'pointer',
-              }),
+              input: {
+                userSelect: 'none',
+
+                ...theme.fn.hover({
+                  cursor: 'pointer',
+                }),
+              },
             })}
-          >
-            {item.name}
-          </Text>
+          />
         </Group>
       </td>
       <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
