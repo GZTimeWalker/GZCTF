@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.13" />
-    <PackageReference Include="KubernetesClient" Version="10.1.4" />
+    <PackageReference Include="KubernetesClient" Version="10.1.19" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.4" />

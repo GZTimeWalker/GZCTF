@@ -228,7 +228,7 @@ public class Challenge
         CPUCount = model.CPUCount ?? CPUCount;
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;
-        ContainerImage = model.ContainerImage ?? ContainerImage;
+        ContainerImage = model.ContainerImage?.Trim() ?? ContainerImage;
         PrivilegedContainer = model.PrivilegedContainer ?? PrivilegedContainer;
         ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
         OriginalScore = model.OriginalScore ?? OriginalScore;
