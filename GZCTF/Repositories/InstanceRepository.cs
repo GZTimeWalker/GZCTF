@@ -75,6 +75,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     flags[pos].IsOccupied = true;
 
                     instance.FlagId = flags[pos].Id;
+                    instance.IsLoaded = true;
 
                     try
                     {
@@ -102,6 +103,10 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     Flag = challenge.GenerateFlag(part),
                     IsOccupied = true
                 };
+
+                instance.IsLoaded = true;
+
+                await SaveAsync(token);
             }
         }
 
