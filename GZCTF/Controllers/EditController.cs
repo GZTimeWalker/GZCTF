@@ -516,7 +516,7 @@ public class EditController : Controller
                 {
                     Game = game,
                     Type = NoticeType.NewChallenge,
-                    Content = $"新增了题目 ⌈{res.Title}⌋",
+                    Content = $"新增了题目 「{res.Title}」",
                 }, token);
             }
         }
@@ -529,7 +529,7 @@ public class EditController : Controller
             {
                 Game = game,
                 Type = NoticeType.NewHint,
-                Content = $"⌈{res.Title}⌋ 更新了提示",
+                Content = $"「{res.Title}」 更新了提示",
             }, token);
         }
 
