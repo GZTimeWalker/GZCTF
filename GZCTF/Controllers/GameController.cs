@@ -795,7 +795,7 @@ public class GameController : ControllerBase
         if (instance.Container is null)
             return BadRequest(new RequestResponse("题目未创建容器"));
 
-        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow < TimeSpan.FromMinutes(10))
+        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(10))
             return BadRequest(new RequestResponse("容器时间尚不可延长"));
 
         await instanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
