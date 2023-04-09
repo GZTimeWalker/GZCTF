@@ -172,8 +172,8 @@ devDependencies:
     specifier: ^0.0.8
     version: 0.0.8(prismjs@1.29.0)
   vite-plugin-webfont-dl:
-    specifier: ^3.7.0
-    version: 3.7.0(vite@4.2.1)
+    specifier: ^3.7.1
+    version: 3.7.1(vite@4.2.1)
 
 packages:
 
@@ -3602,8 +3602,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-webfont-dl@3.7.0(vite@4.2.1):
-    resolution: {integrity: sha512-PotO4G5DQdKroXzXf6M+J6KDxBCn8cHw6LvkD/Nhrj/W04yi2rUvpO1D2KhG2ruuZraPn+ACUYWhx8I//G3BIA==}
+  /vite-plugin-webfont-dl@3.7.1(vite@4.2.1):
+    resolution: {integrity: sha512-vQc66ICmlTHSjxOTewFluNuisyyEj0A0dUV21d0AHdfwn1iyZFdd6mWrkWt12Y314jxQKQeTlT7ErmqnXP4FZw==}
     peerDependencies:
       vite: ^2 || ^3 || ^4
     dependencies:

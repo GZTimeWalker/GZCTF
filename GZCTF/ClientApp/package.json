@@ -68,6 +68,6 @@
     "vite": "^4.2.1",
     "vite-plugin-pages": "^0.29.0",
     "vite-plugin-prismjs": "^0.0.8",
-    "vite-plugin-webfont-dl": "^3.7.0"
+    "vite-plugin-webfont-dl": "^3.7.1"
   }
 }

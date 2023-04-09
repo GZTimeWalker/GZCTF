@@ -25,6 +25,17 @@ import ChallengeDetailModal from './ChallengeDetailModal'
 import Empty from './Empty'
 import WriteupSubmitModal from './WriteupSubmitModal'
 
+const DEFAULT_COLS = 8
+const GRID_BREAKPOINTS = [
+  { maxWidth: 3200, cols: 7 },
+  { maxWidth: 2900, cols: 6 },
+  { maxWidth: 2500, cols: 5 },
+  { maxWidth: 2100, cols: 4 },
+  { maxWidth: 1700, cols: 3 },
+  { maxWidth: 1300, cols: 2 },
+  { maxWidth: 900, cols: 1 },
+]
+
 const ChallengePanel: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
@@ -76,7 +87,7 @@ const ChallengePanel: FC = () => {
             ))}
         </Stack>
         <SimpleGrid
-          cols={3}
+          cols={DEFAULT_COLS}
           spacing="sm"
           p="xs"
           style={{
@@ -84,14 +95,7 @@ const ChallengePanel: FC = () => {
             position: 'relative',
             paddingTop: 0,
           }}
-          breakpoints={[
-            { maxWidth: 2900, cols: 6 },
-            { maxWidth: 2500, cols: 5 },
-            { maxWidth: 2100, cols: 4 },
-            { maxWidth: 1700, cols: 3 },
-            { maxWidth: 1300, cols: 2 },
-            { maxWidth: 900, cols: 1 },
-          ]}
+          breakpoints={GRID_BREAKPOINTS}
         >
           {Array(8)
             .fill(null)
@@ -214,18 +218,11 @@ const ChallengePanel: FC = () => {
       >
         {currentChallenges && currentChallenges.length ? (
           <SimpleGrid
-            cols={3}
+            cols={DEFAULT_COLS}
             spacing="sm"
             p="xs"
             style={{ paddingTop: 0 }}
-            breakpoints={[
-              { maxWidth: 2900, cols: 6 },
-              { maxWidth: 2500, cols: 5 },
-              { maxWidth: 2100, cols: 4 },
-              { maxWidth: 1700, cols: 3 },
-              { maxWidth: 1300, cols: 2 },
-              { maxWidth: 1080, cols: 1 },
-            ]}
+            breakpoints={GRID_BREAKPOINTS}
           >
             {currentChallenges?.map((chal) => (
               <ChallengeCard
