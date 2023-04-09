@@ -166,7 +166,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             instance.Container = container;
             instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-            logger.Log($"{team.Name} 启动题目 {instance.Challenge.Title} 的容器实例 [{container.Id}]", user, TaskStatus.Success);
+            logger.Log($"{team.Name} 启动题目 {instance.Challenge.Title} 的容器实例 [{container.ContainerId}]", user, TaskStatus.Success);
 
             // will save instance together
             await gameEventRepository.AddEvent(new()
