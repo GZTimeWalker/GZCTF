@@ -1087,6 +1087,8 @@ export interface ScoreboardItem {
   id?: number
   /** 队伍名称 */
   name?: string
+  /** 队伍 Bio */
+  bio?: string | null
   /** 参赛所属组织 */
   organization?: string | null
   /** 队伍头像 */

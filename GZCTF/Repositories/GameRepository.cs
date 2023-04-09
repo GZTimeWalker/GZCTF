@@ -165,6 +165,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 return new ScoreboardItem
                 {
                     Id = j.Key.Team.Id,
+                    Bio = j.Key.Team.Bio,
                     Name = j.Key.Team.Name,
                     Avatar = j.Key.Team.AvatarUrl,
                     Organization = j.Key.Organization,

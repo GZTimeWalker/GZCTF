@@ -13,6 +13,7 @@ import {
   LoadingOverlay,
   Avatar,
   Title,
+  Badge,
 } from '@mantine/core'
 import { BloodsTypes, BonusLabel } from '@Utils/ChallengeItem'
 import { useTableStyles } from '@Utils/ThemeOverride'
@@ -69,14 +70,19 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack spacing={0}>
-            <Title order={4} lineClamp={1}>
-              {item?.name ?? 'Team'}
-            </Title>
-            {item?.organization && (
-              <Text size="sm" lineClamp={1}>
-                {item.organization}
-              </Text>
-            )}
+            <Group spacing={4}>
+              <Title order={4} lineClamp={1}>
+                {item?.name ?? 'Team'}
+              </Title>
+              {item?.organization && (
+                <Badge size="sm" variant="outline">
+                  {item.organization}
+                </Badge>
+              )}
+            </Group>
+            <Text size="sm" lineClamp={1}>
+              {item?.bio ?? '这只队伍很懒，什么都没留下'}
+            </Text>
           </Stack>
         </Group>
       }

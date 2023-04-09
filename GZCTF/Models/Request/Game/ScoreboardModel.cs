@@ -88,6 +88,11 @@ public partial class ScoreboardItem
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// 队伍 Bio
+    /// </summary>
+    public string? Bio { get; set; } = string.Empty;
+
+    /// <summary>
     /// 参赛所属组织
     /// </summary>
     public string? Organization { get; set; }
