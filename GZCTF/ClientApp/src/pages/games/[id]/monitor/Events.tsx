@@ -11,6 +11,7 @@ import {
   Stack,
   Card,
   Switch,
+  Input,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -79,7 +80,7 @@ const Events: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const iconMap = EventTypeIconMap(1)
+  const iconMap = EventTypeIconMap(1.15)
   const { classes } = useTableStyles()
 
   useEffect(() => {
@@ -173,7 +174,7 @@ const Events: FC = () => {
         </Group>
       </Group>
       <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
-        <Stack spacing="xs" pr={10}>
+        <Stack spacing="xs" pr={10} w="100%">
           {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card
               shadow="sm"
@@ -184,12 +185,26 @@ const Events: FC = () => {
                 i === 0 && activePage === 1 && filteredEvents.length > 0 ? classes.fade : undefined
               }
             >
-              <Group noWrap align="flex-start" position="right" style={{ width: '100%' }}>
+              <Group noWrap align="flex-start" position="right" spacing="sm" w="100%">
                 {iconMap.get(event.type)}
-                <Stack spacing={2} style={{ width: '100%' }}>
-                  <Text weight={500} lineClamp={1}>
-                    {event.content}
-                  </Text>
+                <Stack spacing={2} w="100%">
+                  <Input
+                    variant="unstyled"
+                    value={event.content}
+                    readOnly
+                    sx={(theme) => ({
+                      wrapper: {
+                        width: '100%',
+                      },
+
+                      input: {
+                        userSelect: 'none',
+                        fontWeight: 500,
+                        fontSize: theme.fontSizes.md,
+                        lineHeight: '1em',
+                      },
+                    })}
+                  />
                   <Group noWrap position="apart">
                     <Text size="sm" weight={500} color="dimmed">
                       {event.team}, {event.user}
