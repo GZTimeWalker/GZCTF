@@ -202,6 +202,7 @@ const Events: FC = () => {
                         fontWeight: 500,
                         fontSize: theme.fontSizes.md,
                         lineHeight: '1em',
+                        height: '1em',
                       },
                     })}
                   />
