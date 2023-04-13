@@ -83,6 +83,7 @@ public class K8sService : IContainerService
                 {
                     Nameservers = new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" },
                 },
+                EnableServiceLinks = false,
                 Containers = new[]
                 {
                     new V1Container()
