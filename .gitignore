@@ -234,6 +234,9 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 
+# Docs
+**/.next
+
 **/appsettings.json
 **/appsettings.*.json
 !**/appsettings.Template.json
