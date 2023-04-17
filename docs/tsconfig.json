@@ -16,7 +16,7 @@
       "module": "esnext",
       "resolveJsonModule": true,
       "paths": {
-        "@components/*": ["components/*"]
+        "@Components/*": ["components/*"]
       }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
