@@ -1,0 +1,25 @@
+# 快速上手
+
+## 安装配置
+
+应用已编译打包成 Docker 镜像，可通过以下方式获取：
+
+```bash
+docker pull gztime/gzctf:latest
+# or
+docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
+```
+
+也可使用 `scripts` 目录下的 `docker-compose.yml` 文件进行配置。
+
+题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
+
+## 初始管理员
+
+生产环境中默认不存在管理员权限用户，需要在首次启动时设置 `GZCTF_ADMIN_PASSWORD` 环境变量来设置初始管理员密码，并通过 `Admin` 账号登录。
+
+你也可以通过手动更改数据库条目来将当前已注册的用户设置为管理员。当管理员注册完成并成功登录后，进入所选数据库表后执行：
+
+```sql
+UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
+```

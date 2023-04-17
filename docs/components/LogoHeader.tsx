@@ -10,7 +10,7 @@ export const LogoHeader: FC = () => {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
-      <MainIcon width={40} />
+      <MainIcon width={40} height={40}/>
       <span style={{ fontWeight: 800, fontSize: "30px", color }}>
         GZ<span style={{ color: highlightColor }}>::</span>CTF
       </span>

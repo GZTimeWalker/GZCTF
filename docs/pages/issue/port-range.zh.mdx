@@ -1,0 +1,33 @@
+# 端口范围设置
+
+以下方式均为经验做法，可能因不同的系统环境有所出入，如不能正常生效，请自行查找相关资料及解决方案。
+
+## Docker 部署
+
+- `sudo nano /etc/sysctl.conf`
+- 添加如下内容，指定 `ip_local_port_range`:
+
+```
+net.ipv4.ip_local_port_range = 20000 50000
+```
+
+- 执行 `sudo sysctl -p` 使配置生效
+- 重启 Docker 服务
+
+## K3s 部署
+
+- `sudo nano /etc/systemd/system/k3s.service`
+- 编辑如下设置中的 `ExecStart`，指定`service-node-port-range`
+
+```
+ExecStart=/usr/local/bin/k3s \
+    server \
+    --kube-apiserver-arg service-node-port-range=20000-50000
+```
+
+- `sudo systemctl daemon-reload`
+- `sudo systemctl restart k3s`
+
+## K8s 及 Docker Swarm 部署：
+
+笔者尚未尝试，如有成功的朋友欢迎提 PR 补充
