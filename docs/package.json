@@ -1,0 +1,13 @@
+{
+    "name": "gzctf-docs",
+    "version": "0.13.4",
+    "private": true,
+    "scripts": {},
+    "dependencies": {
+        "next": "^13.3.0",
+        "nextra": "^2.4.0",
+        "nextra-theme-docs": "^2.4.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    }
+}

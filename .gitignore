@@ -183,7 +183,7 @@ ClientBin/
 *.publishsettings
 orleans.codegen.cs
 
-/node_modules
+**/node_modules
 
 # RIA/Silverlight projects
 Generated_Code/
@@ -237,18 +237,16 @@ _Pvt_Extensions
 **/appsettings.json
 **/appsettings.*.json
 !**/appsettings.Template.json
-!/appsettings.json
-
 **/k8sconfig.yaml
 
-/.VSCodeCounter/*
-*/db/*
-**/CTFServer.xml
+.VSCodeCounter/*
+.idea/**
 .vscode/**
+
+**/db/*
+**/CTFServer.xml
 **/uploads/**
 **/log/**
 **/*.key
 **/*.db*
 **/.DS_Store
-
-.idea/**
