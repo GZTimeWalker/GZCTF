@@ -28,11 +28,7 @@ const config: DocsThemeConfig = {
     title: "此页内容",
   },
   footer: {
-    text: (
-      <div style={{ width: "100%", textAlign: "center" }}>
-        ©2022-present By GZTimeWalker
-      </div>
-    ),
+    text: "©2022-present By GZTimeWalker"
   },
 };
 
