@@ -90,7 +90,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
     >
       <Stack align="center" spacing="xs">
         <Stack style={{ width: '60%', minWidth: '20rem' }}>
-          <Center style={{ height: '12rem' }}>
+          <Center style={{ height: '14rem' }}>
             <LoadingOverlay visible={!indicator || !values} />
             {item && indicator && values && (
               <TeamRadarMap indicator={indicator} value={values} name={item?.name ?? ''} />
