@@ -6,7 +6,7 @@ const config: DocsThemeConfig = {
   docsRepositoryBase: "https://github.com/GZTimeWalker/GZCTF/tree/main/docs",
   useNextSeoProps() {
     return {
-      titleTemplate: "%s - GZ::CTF",
+      titleTemplate: "%s - GZ::CTF Docs",
     };
   },
   head: <link rel="icon" type="image/png" href="/favicon.png" />,
