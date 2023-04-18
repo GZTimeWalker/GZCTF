@@ -32,21 +32,25 @@ public class UserCreateModel
     /// <summary>
     /// 真实姓名
     /// </summary>
+    [MaxLength(7, ErrorMessage = "真实姓名过长")]
     public string? RealName { get; set; }
 
     /// <summary>
     /// 学号
     /// </summary>
+    [MaxLength(15, ErrorMessage = "学工号过长")]
     public string? StdNumber { get; set; }
 
     /// <summary>
     /// 联系电话
     /// </summary>
+    [Phone(ErrorMessage = "手机号格式错误")]
     public string? Phone { get; set; }
 
     /// <summary>
     /// 用户加入的队伍
     /// </summary>
+    [MaxLength(15, ErrorMessage = "队伍名称过长")]
     public string? TeamName { get; set; }
 
     internal UserInfo ToUserInfo()

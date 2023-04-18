@@ -129,18 +129,20 @@ public class AdminController : ControllerBase
     /// 使用此接口批量添加用户，需要Admin权限
     /// </remarks>
     /// <response code="200">成功添加</response>
+    /// <response code="400">用户校验失败</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpPost("Users")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddUsers([FromBody] List<UserCreateModel> model, CancellationToken token = default)
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddUsers([FromBody] UserCreateModel[] model, CancellationToken token = default)
     {
         var trans = await teamRepository.BeginTransactionAsync(token);
 
         try
         {
-            var users = new List<(UserInfo, string?)>(model.Count);
-            foreach(var user in model)
+            var users = new List<(UserInfo, string?)>(model.Length);
+            foreach (var user in model)
             {
                 var userInfo = user.ToUserInfo();
                 await userManager.CreateAsync(userInfo, user.Password);
@@ -148,7 +150,7 @@ public class AdminController : ControllerBase
             }
 
             var teams = new List<Team>();
-            foreach(var (user, teamName) in users)
+            foreach (var (user, teamName) in users)
             {
                 if (teamName is null)
                     continue;
@@ -164,6 +166,9 @@ public class AdminController : ControllerBase
                     team.Members.Add(user);
                 }
             }
+
+            await teamRepository.SaveAsync(token);
+            await trans.CommitAsync(token);
 
             return Ok();
         }

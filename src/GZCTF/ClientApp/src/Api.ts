@@ -323,13 +323,25 @@ export interface UserCreateModel {
    * @minLength 1
    */
   email: string
-  /** 真实姓名 */
+  /**
+   * 真实姓名
+   * @maxLength 7
+   */
   realName?: string | null
-  /** 学号 */
+  /**
+   * 学号
+   * @maxLength 15
+   */
   stdNumber?: string | null
-  /** 联系电话 */
+  /**
+   * 联系电话
+   * @format phone
+   */
   phone?: string | null
-  /** 用户加入的队伍 */
+  /**
+   * 用户加入的队伍
+   * @maxLength 15
+   */
   teamName?: string | null
 }
 
