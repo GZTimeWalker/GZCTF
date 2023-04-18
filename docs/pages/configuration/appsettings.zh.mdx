@@ -1,0 +1,61 @@
+# appsettings.json 配置
+
+
+当 `ContainerProvider` 为 `Docker` 时：
+
+- 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
+- 如需使用外部 docker，请将 Uri 指向对应 docker API Server
+
+当 `ContainerProvider` 为 `K8s` 时：
+
+- 请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下
+
+```json5
+{
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>",
+    // redis is optional
+    //"RedisCache": "cache:6379,password=<Redis Password>"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information",
+    },
+  },
+  "EmailConfig": {
+    "SendMailAddress": "a@a.com",
+    "UserName": "",
+    "Password": "",
+    "Smtp": {
+      "Host": "localhost",
+      "Port": 587,
+    },
+  },
+  "XorKey": "<Random Key Str>",
+  "ContainerProvider": {
+    "Type": "Docker", // or "Kubernetes"
+    "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+    "DockerConfig": {
+      // optional
+      "SwarmMode": false,
+      "Uri": "unix:///var/run/docker.sock",
+    },
+  },
+  "RequestLogging": false,
+  "DisableRateLimit": false,
+  "RegistryConfig": {
+    "UserName": "",
+    "Password": "",
+    "ServerAddress": "",
+  },
+  "GoogleRecaptcha": {
+    "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
+    "Sitekey": "",
+    "Secretkey": "",
+    "RecaptchaThreshold": "0.5",
+  },
+}
+```
