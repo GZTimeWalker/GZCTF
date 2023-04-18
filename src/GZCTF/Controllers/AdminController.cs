@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Net.Mime;
+﻿using System.Net.Mime;
 using CTFServer.Extensions;
 using CTFServer.Middlewares;
 using CTFServer.Models.Internal;
@@ -122,6 +121,58 @@ public class AdminController : ControllerBase
             from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
             select UserInfoModel.FromUserInfo(user)
            ).ToArrayAsync(token)).ToResponse(await userManager.Users.CountAsync(token)));
+
+    /// <summary>
+    /// 批量添加用户
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口批量添加用户，需要Admin权限
+    /// </remarks>
+    /// <response code="200">成功添加</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpPost("Users")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> AddUsers([FromBody] List<UserCreateModel> model, CancellationToken token = default)
+    {
+        var trans = await teamRepository.BeginTransactionAsync(token);
+
+        try
+        {
+            var users = new List<(UserInfo, string?)>(model.Count);
+            foreach(var user in model)
+            {
+                var userInfo = user.ToUserInfo();
+                await userManager.CreateAsync(userInfo, user.Password);
+                users.Add((userInfo, user.TeamName));
+            }
+
+            var teams = new List<Team>();
+            foreach(var (user, teamName) in users)
+            {
+                if (teamName is null)
+                    continue;
+
+                var team = teams.Find(team => team.Name == teamName);
+                if (team is null)
+                {
+                    team = await teamRepository.CreateTeam(new(teamName), user, token);
+                    teams.Add(team!);
+                }
+                else
+                {
+                    team.Members.Add(user);
+                }
+            }
+
+            return Ok();
+        }
+        catch
+        {
+            await trans.RollbackAsync(token);
+            throw;
+        }
+    }
 
     /// <summary>
     /// 搜索用户
@@ -281,7 +332,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTeam(int id, CancellationToken token = default)
     {
-        var team = await teamRepository.GetTeamById(id);
+        var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", 404));

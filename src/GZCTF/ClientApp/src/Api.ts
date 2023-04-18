@@ -304,6 +304,35 @@ export interface UserInfoModel {
   emailConfirmed?: boolean | null
 }
 
+/** 批量用户创建（Admin） */
+export interface UserCreateModel {
+  /**
+   * 用户名
+   * @minLength 3
+   * @maxLength 15
+   */
+  userName: string
+  /**
+   * 密码
+   * @minLength 6
+   */
+  password: string
+  /**
+   * 邮箱
+   * @format email
+   * @minLength 1
+   */
+  email: string
+  /** 真实姓名 */
+  realName?: string | null
+  /** 学号 */
+  stdNumber?: string | null
+  /** 联系电话 */
+  phone?: string | null
+  /** 用户加入的队伍 */
+  teamName?: string | null
+}
+
 /** 列表响应 */
 export interface ArrayResponseOfTeamInfoModel {
   /** 数据 */
@@ -1963,6 +1992,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: ArrayResponseOfUserInfoModel | Promise<ArrayResponseOfUserInfoModel>,
       options?: MutatorOptions
     ) => mutate<ArrayResponseOfUserInfoModel>([`/api/admin/users`, query], data, options),
+
+    /**
+     * @description 使用此接口批量添加用户，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminAddUsers
+     * @summary 批量添加用户
+     * @request POST:/api/admin/users
+     */
+    adminAddUsers: (data: UserCreateModel[], params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/users`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
     /**
      * @description 使用此接口搜索用户，需要Admin权限
