@@ -227,61 +227,73 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
     public async Task<(SubmissionType, AnswerResult)> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
-        var instance = await context.Instances
-            .IgnoreAutoIncludes()
-            .Include(i => i.FlagContext)
-            .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
-                i.ParticipationId == submission.ParticipationId, token);
+        var trans = await context.Database.BeginTransactionAsync(token);
 
-        // submission is from the queue, do not modify it directly
-        // we need to requery the entity to ensure it is being tracked correctly
-        var updateSub = await context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
-
-        var ret = SubmissionType.Unaccepted;
-
-        if (instance is null)
+        try
         {
-            submission.Status = AnswerResult.NotFound;
-            return (SubmissionType.Unaccepted, AnswerResult.NotFound);
-        }
 
-        if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
-        {
-            updateSub.Status = await context.FlagContexts
-                .AsNoTracking()
-                .AnyAsync(
-                    f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
-                    token)
-                ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
-        }
-        else
-        {
-            updateSub.Status = instance.FlagContext?.Flag == submission.Answer
-                ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
-        }
+            var instance = await context.Instances
+                .IgnoreAutoIncludes()
+                .Include(i => i.FlagContext)
+                .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
+                    i.ParticipationId == submission.ParticipationId, token);
 
-        bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
+            // submission is from the queue, do not modify it directly
+            // we need to requery the entity to ensure it is being tracked correctly
+            var updateSub = await context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
-        if (firstTime && submission.Game.EndTimeUTC > submission.SubmitTimeUTC)
-        {
-            instance.IsSolved = true;
-            updateSub.Challenge.AcceptedCount++;
-            ret = updateSub.Challenge.AcceptedCount switch
+            var ret = SubmissionType.Unaccepted;
+
+            if (instance is null)
             {
-                1 => SubmissionType.FirstBlood,
-                2 => SubmissionType.SecondBlood,
-                3 => SubmissionType.ThirdBlood,
-                _ => SubmissionType.Normal
-            };
+                submission.Status = AnswerResult.NotFound;
+                return (SubmissionType.Unaccepted, AnswerResult.NotFound);
+            }
+
+            if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
+            {
+                updateSub.Status = await context.FlagContexts
+                    .AsNoTracking()
+                    .AnyAsync(
+                        f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
+                        token)
+                    ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+            }
+            else
+            {
+                updateSub.Status = instance.FlagContext?.Flag == submission.Answer
+                    ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+            }
+
+            bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
+
+            if (firstTime && submission.Game.EndTimeUTC > submission.SubmitTimeUTC)
+            {
+                instance.IsSolved = true;
+                updateSub.Challenge.AcceptedCount++;
+                ret = updateSub.Challenge.AcceptedCount switch
+                {
+                    1 => SubmissionType.FirstBlood,
+                    2 => SubmissionType.SecondBlood,
+                    3 => SubmissionType.ThirdBlood,
+                    _ => SubmissionType.Normal
+                };
+            }
+            else
+            {
+                ret = updateSub.Status == AnswerResult.Accepted ?
+                    SubmissionType.Normal : SubmissionType.Unaccepted;
+            }
+
+            await SaveAsync(token);
+            await trans.CommitAsync(token);
+
+            return (ret, updateSub.Status);
         }
-        else
+        catch
         {
-            ret = updateSub.Status == AnswerResult.Accepted ?
-                SubmissionType.Normal : SubmissionType.Unaccepted;
+            await trans.RollbackAsync(token);
+            throw;
         }
-
-        await SaveAsync(token);
-
-        return (ret, updateSub.Status);
     }
 }

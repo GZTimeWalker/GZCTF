@@ -1,6 +1,7 @@
 ﻿using System.Threading.Channels;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Services;
 
@@ -99,6 +100,11 @@ public class FlagChecker : IHostedService
 
                     gameRepository.FlushScoreboardCache(item.GameId);
                 }
+                catch (DbUpdateConcurrencyException)
+                {
+                    logger.SystemLog($"[数据库并发] 未能更新提交 #{item.Id} 的状态", TaskStatus.Fail, LogLevel.Warning);
+                    await channelWriter.WriteAsync(item, token);
+                }
                 catch (Exception e)
                 {
                     logger.SystemLog($"检查线程 #{id} 发生异常", TaskStatus.Fail, LogLevel.Debug);
@@ -122,7 +128,7 @@ public class FlagChecker : IHostedService
     {
         TokenSource = new CancellationTokenSource();
 
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < 2; ++i)
             _ = Checker(i, TokenSource.Token);
 
         await using var scope = serviceScopeFactory.CreateAsyncScope();

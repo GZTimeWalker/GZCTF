@@ -118,6 +118,18 @@ public class Challenge
     public double Difficulty { get; set; } = 5;
 
     /// <summary>
+    /// 下载文件名称，仅用于动态附件统一文件名
+    /// </summary>
+    public string? FileName { get; set; } = "attachment";
+
+    /// <summary>
+    /// 并发检查
+    /// </summary>
+    [JsonIgnore]
+    [ConcurrencyCheck]
+    public Guid ConcurrencyStamp { get; set; } = Guid.NewGuid();
+
+    /// <summary>
     /// 当前题目分值
     /// </summary>
     [NotMapped]
@@ -126,11 +138,6 @@ public class Challenge
         OriginalScore * (MinScoreRate +
             (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
         ));
-
-    /// <summary>
-    /// 下载文件名称，仅用于动态附件统一文件名
-    /// </summary>
-    public string? FileName { get; set; } = "attachment";
 
     #region Db Relationship
 
