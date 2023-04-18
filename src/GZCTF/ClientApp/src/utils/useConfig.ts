@@ -1,4 +1,6 @@
-import api from '@Api'
+import { useEffect } from 'react'
+import { useLocalStorage } from '@mantine/hooks'
+import api, { GlobalConfig } from '@Api'
 
 export const useConfig = () => {
   const {
@@ -15,5 +17,19 @@ export const useConfig = () => {
     refreshWhenOffline: false,
   })
 
-  return { config, error, mutate }
+  const [globalConfig, setGlobalConfig] = useLocalStorage({
+    key: 'global-config',
+    defaultValue: {
+      title: 'GZ',
+      slogan: 'Hack for fun not for profit',
+    } as GlobalConfig,
+  })
+
+  useEffect(() => {
+    if (config) {
+      setGlobalConfig(config)
+    }
+  }, [config])
+
+  return { config: config ?? globalConfig, error, mutate }
 }
