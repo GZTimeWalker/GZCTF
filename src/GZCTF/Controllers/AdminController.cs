@@ -26,6 +26,7 @@ namespace CTFServer.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AdminController : ControllerBase
 {
+    private readonly ILogger<AdminController> logger;
     private readonly UserManager<UserInfo> userManager;
     private readonly ILogRepository logRepository;
     private readonly IFileRepository fileService;
@@ -37,6 +38,7 @@ public class AdminController : ControllerBase
     private readonly string basepath;
 
     public AdminController(UserManager<UserInfo> _userManager,
+        ILogger<AdminController> _logger,
         IFileRepository _FileService,
         ILogRepository _logRepository,
         IConfigService _configService,
@@ -46,6 +48,7 @@ public class AdminController : ControllerBase
         IConfiguration _configuration,
         IParticipationRepository _participationRepository)
     {
+        logger = _logger;
         userManager = _userManager;
         fileService = _FileService;
         configService = _configService;
@@ -137,6 +140,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddUsers([FromBody] UserCreateModel[] model, CancellationToken token = default)
     {
+        var currentUser = await userManager.GetUserAsync(User);
         var trans = await teamRepository.BeginTransactionAsync(token);
 
         try
@@ -145,7 +149,37 @@ public class AdminController : ControllerBase
             foreach (var user in model)
             {
                 var userInfo = user.ToUserInfo();
-                await userManager.CreateAsync(userInfo, user.Password);
+                var result = await userManager.CreateAsync(userInfo, user.Password);
+
+                if (!result.Succeeded)
+                {
+                    switch (result.Errors.FirstOrDefault()?.Code)
+                    {
+                        case "DuplicateEmail":
+                            userInfo = await userManager.FindByEmailAsync(user.Email);
+                            break;
+                        case "DuplicateUserName":
+                            userInfo = await userManager.FindByNameAsync(user.UserName);
+                            break;
+                        default:
+                            await trans.RollbackAsync(token);
+                            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+                    }
+
+                    if (userInfo is not null)
+                    {
+                        userInfo.UpdateUserInfo(user);
+                        await userManager.RemovePasswordAsync(userInfo);
+                        result = await userManager.AddPasswordAsync(userInfo, user.Password);
+                    }
+
+                    if (!result.Succeeded || userInfo is null)
+                    {
+                        await trans.RollbackAsync(token);
+                        return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+                    }
+                }
+
                 users.Add((userInfo, user.TeamName));
             }
 
@@ -169,6 +203,8 @@ public class AdminController : ControllerBase
 
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
+
+            logger.Log($"成功批量添加 {users.Count} 个用户", currentUser, TaskStatus.Success);
 
             return Ok();
         }

@@ -111,6 +111,15 @@ public partial class UserInfo : IdentityUser
         EmailConfirmed = model.EmailConfirmed ?? EmailConfirmed;
     }
 
+    internal void UpdateUserInfo(UserCreateModel model)
+    {
+        UserName = model.UserName ?? UserName;
+        Email = model.Email ?? Email;
+        StdNumber = model.StdNumber ?? StdNumber;
+        RealName = model.RealName ?? RealName;
+        PhoneNumber = model.Phone ?? PhoneNumber;
+    }
+
     internal void UpdateUserInfo(ProfileUpdateModel model)
     {
         UserName = model.UserName ?? UserName;
