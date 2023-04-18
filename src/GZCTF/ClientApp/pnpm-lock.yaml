@@ -90,7 +90,7 @@ dependencies:
     version: 2.1.3(react@18.2.0)
   vite-tsconfig-paths:
     specifier: ^4.2.0
-    version: 4.2.0(typescript@5.0.3)(vite@4.2.1)
+    version: 4.2.0(typescript@5.0.3)(vite@4.2.2)
 
 devDependencies:
   '@babel/eslint-parser':
@@ -98,7 +98,7 @@ devDependencies:
     version: 7.21.3(@babel/core@7.21.4)(eslint@8.37.0)
   '@nabla/vite-plugin-eslint':
     specifier: ^1.5.0
-    version: 1.5.0(eslint@8.37.0)(vite@4.2.1)
+    version: 1.5.0(eslint@8.37.0)(vite@4.2.2)
   '@trivago/prettier-plugin-sort-imports':
     specifier: ^4.1.1
     version: 4.1.1(prettier@2.8.7)
@@ -131,7 +131,7 @@ devDependencies:
     version: 5.59.0(eslint@8.37.0)(typescript@5.0.3)
   '@vitejs/plugin-react':
     specifier: ^3.1.0
-    version: 3.1.0(vite@4.2.1)
+    version: 3.1.0(vite@4.2.2)
   axios:
     specifier: ^1.3.5
     version: 1.3.5
@@ -151,8 +151,8 @@ devDependencies:
     specifier: ~2.8.7
     version: 2.8.7
   rollup:
-    specifier: ^3.20.5
-    version: 3.20.5
+    specifier: ^3.20.6
+    version: 3.20.6
   swagger-typescript-api:
     specifier: ^12.0.4
     version: 12.0.4
@@ -163,17 +163,17 @@ devDependencies:
     specifier: 5.0.3
     version: 5.0.3
   vite:
-    specifier: ^4.2.1
-    version: 4.2.1(@types/node@18.15.11)
+    specifier: ^4.2.2
+    version: 4.2.2(@types/node@18.15.11)
   vite-plugin-pages:
     specifier: ^0.29.0
-    version: 0.29.0(vite@4.2.1)
+    version: 0.29.0(vite@4.2.2)
   vite-plugin-prismjs:
     specifier: ^0.0.8
     version: 0.0.8(prismjs@1.29.0)
   vite-plugin-webfont-dl:
     specifier: ^3.7.3
-    version: 3.7.3(vite@4.2.1)
+    version: 3.7.3(vite@4.2.2)
 
 packages:
 
@@ -988,7 +988,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@nabla/vite-plugin-eslint@1.5.0(eslint@8.37.0)(vite@4.2.1):
+  /@nabla/vite-plugin-eslint@1.5.0(eslint@8.37.0)(vite@4.2.2):
     resolution: {integrity: sha512-3NR+mHcW4lY9n1t+cqM8W1xM/UQXKpuDyaoJmPPQKoBCEjFoSvE4XcJwG86lk7K0AauqWwecsgEhmdZLDW07YQ==}
     peerDependencies:
       eslint: '*'
@@ -997,7 +997,7 @@ packages:
       '@types/eslint': 8.37.0
       chalk: 4.1.2
       eslint: 8.37.0
-      vite: 4.2.1(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.11)
     dev: true
 
   /@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1:
@@ -1373,7 +1373,7 @@ packages:
       eslint-visitor-keys: 3.4.0
     dev: true
 
-  /@vitejs/plugin-react@3.1.0(vite@4.2.1):
+  /@vitejs/plugin-react@3.1.0(vite@4.2.2):
     resolution: {integrity: sha512-AfgcRL8ZBhAlc3BFdigClmTUMISmmzHn7sB2h9U1odvc5U/MjWXsAaz18b/WoppUTDBzxOJwo2VdClfUcItu9g==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -1384,7 +1384,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.19.6(@babel/core@7.21.4)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.2.1(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.11)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3151,8 +3151,8 @@ packages:
       glob: 7.2.3
     dev: true
 
-  /rollup@3.20.5:
-    resolution: {integrity: sha512-Mx6NE3nLPIP6a9ReV4dTPOYYmDiyarJNtSbc37Jx0jvh8SHySoFPgyZAp9aDP3LnYvaJOrz+fclcwq3oZDzlnA==}
+  /rollup@3.20.6:
+    resolution: {integrity: sha512-2yEB3nQXp/tBQDN0hJScJQheXdvU2wFhh6ld7K/aiZ1vYcak6N/BKjY1QrU6BvO2JWYS8bEs14FRaxXosxy2zw==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -3568,7 +3568,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /vite-plugin-pages@0.29.0(vite@4.2.1):
+  /vite-plugin-pages@0.29.0(vite@4.2.2):
     resolution: {integrity: sha512-vRgLflQNMs8QnDB8A5XwX8b2XYSIN1Mdy3Bx7A7N9NTFeybRj/zpvoosdbMgJ3LsJ84AznHC3GytWQZGNpE5BA==}
     peerDependencies:
       '@vue/compiler-sfc': ^2.7.0 || ^3.0.0
@@ -3585,7 +3585,7 @@ packages:
       json5: 2.2.3
       local-pkg: 0.4.3
       picocolors: 1.0.0
-      vite: 4.2.1(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.11)
       yaml: 2.2.1
     transitivePeerDependencies:
       - supports-color
@@ -3602,7 +3602,7 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-webfont-dl@3.7.3(vite@4.2.1):
+  /vite-plugin-webfont-dl@3.7.3(vite@4.2.2):
     resolution: {integrity: sha512-55PkuJI2SUTXMyGpFqNreRdF1J7NNWkI7S0v97pKIpdfUaPejBUmN48JgHtFNSvUdyF0ooRj1S440aM7K8kfdg==}
     peerDependencies:
       vite: ^2 || ^3 || ^4
@@ -3611,12 +3611,12 @@ packages:
       clean-css: 5.3.2
       flat-cache: 3.0.4
       picocolors: 1.0.0
-      vite: 4.2.1(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.11)
     transitivePeerDependencies:
       - debug
     dev: true
 
-  /vite-tsconfig-paths@4.2.0(typescript@5.0.3)(vite@4.2.1):
+  /vite-tsconfig-paths@4.2.0(typescript@5.0.3)(vite@4.2.2):
     resolution: {integrity: sha512-jGpus0eUy5qbbMVGiTxCL1iB9ZGN6Bd37VGLJU39kTDD6ZfULTTb1bcc5IeTWqWJKiWV5YihCaibeASPiGi8kw==}
     peerDependencies:
       vite: '*'
@@ -3627,14 +3627,14 @@ packages:
       debug: 4.3.4
       globrex: 0.1.2
       tsconfck: 2.1.1(typescript@5.0.3)
-      vite: 4.2.1(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.11)
     transitivePeerDependencies:
       - supports-color
       - typescript
     dev: false
 
-  /vite@4.2.1(@types/node@18.15.11):
-    resolution: {integrity: sha512-7MKhqdy0ISo4wnvwtqZkjke6XN4taqQ2TBaTccLIpOKv7Vp2h4Y+NpmWCnGDeSvvn45KxvWgGyb0MkHvY1vgbg==}
+  /vite@4.2.2(@types/node@18.15.11):
+    resolution: {integrity: sha512-PcNtT5HeDxb3QaSqFYkEum8f5sCVe0R3WK20qxgIvNBZPXU/Obxs/+ubBMeE7nLWeCo2LDzv+8hRYSlcaSehig==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -3662,7 +3662,7 @@ packages:
       esbuild: 0.17.17
       postcss: 8.4.22
       resolve: 1.22.2
-      rollup: 3.20.5
+      rollup: 3.20.6
     optionalDependencies:
       fsevents: 2.3.2
 
