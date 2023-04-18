@@ -80,7 +80,7 @@ jobs:
       - name: Publish Image
         uses: docker/build-push-action@v3
         with:
-          context: ./GZCTF
+          context: ./src/GZCTF
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
