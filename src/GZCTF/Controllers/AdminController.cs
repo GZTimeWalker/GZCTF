@@ -169,8 +169,8 @@ public class AdminController : ControllerBase
                     if (userInfo is not null)
                     {
                         userInfo.UpdateUserInfo(user);
-                        await userManager.RemovePasswordAsync(userInfo);
-                        result = await userManager.AddPasswordAsync(userInfo, user.Password);
+                        var code = await userManager.GeneratePasswordResetTokenAsync(userInfo);
+                        result = await userManager.ResetPasswordAsync(userInfo, code, user.Password);
                     }
 
                     if (!result.Succeeded || userInfo is null)
