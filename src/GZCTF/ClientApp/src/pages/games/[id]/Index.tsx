@@ -222,9 +222,7 @@ const GameDetail: FC = () => {
       <Button disabled={!canSubmit} onClick={onJoin}>
         {finished ? '比赛结束' : !user ? '请先登录' : GameActionMap.get(status)}
       </Button>
-      {started && !isMobile && (
-        <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>
-      )}
+      {started && <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>}
       {(status === ParticipationStatus.Pending || status === ParticipationStatus.Denied) && (
         <Button color="red" variant="outline" onClick={onLeave}>
           退出比赛

@@ -27,7 +27,7 @@ import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import ScoreboardItemModal from './ScoreboardItemModal'
 
-const useStyles = createStyles((theme) => ({
+export const useScoreboardStyles = createStyles((theme) => ({
   table: {
     tableLayout: 'fixed',
     width: 'auto',
@@ -74,7 +74,7 @@ Lefts.forEach((val, idx) => {
 })
 
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
-  const { classes, cx, theme } = useStyles()
+  const { classes, cx, theme } = useScoreboardStyles()
 
   const hiddenCol = [...Array(5).keys()].map((i) => (
     <th
@@ -154,7 +154,7 @@ const TableRow: FC<{
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
-  const { classes, cx, theme } = useStyles()
+  const { classes, cx, theme } = useScoreboardStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
@@ -251,7 +251,7 @@ const TableRow: FC<{
 
 const ITEM_COUNT_PER_PAGE = 30
 
-interface ScoreboardProps {
+export interface ScoreboardProps {
   organization: string | null
   setOrganization: (org: string | null) => void
 }
@@ -259,7 +259,7 @@ interface ScoreboardProps {
 const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { classes } = useStyles()
+  const { classes } = useScoreboardStyles()
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
@@ -347,6 +347,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
               </tbody>
             </Table>
           </Box>
+
           <Box className={classes.legend}>
             <Stack spacing="xs">
               <Group spacing="lg">
@@ -370,7 +371,9 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           <Text size="sm" color="dimmed">
             Tip: 可以按左右方向键滚动题目列表哦~
           </Text>
+
           <Pagination
+            noWrap
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}

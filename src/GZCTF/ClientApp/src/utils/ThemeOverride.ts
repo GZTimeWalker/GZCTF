@@ -173,6 +173,10 @@ export const useBannerStyles = createStyles((theme) => ({
     [theme.fn.smallerThan('sm')]: {
       justifyContent: 'start',
     },
+
+    [theme.fn.smallerThan('md')]: {
+      padding: `calc(${theme.spacing.xl} * 1.5) 1rem`,
+    },
   },
   container: {
     position: 'relative',

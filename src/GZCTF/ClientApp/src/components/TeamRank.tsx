@@ -12,11 +12,13 @@ import {
   Progress,
   Skeleton,
   PasswordInput,
+  Badge,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import api from '@Api'
 
 const useStyle = createStyles((theme) => ({
@@ -35,6 +37,7 @@ const TeamRank: FC<PaperProps> = (props) => {
   const { classes, theme } = useStyle()
 
   const clipboard = useClipboard()
+  const isMobile = useIsMobile(1080)
 
   const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
 
@@ -58,14 +61,14 @@ const TeamRank: FC<PaperProps> = (props) => {
             {data?.rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Skeleton visible={!data}>
-            <Stack spacing={0}>
-              <Title order={4} lineClamp={1}>
+            <Stack spacing={2} align="flex-start">
+              <Title order={3} lineClamp={1}>
                 {data?.rank?.name ?? 'Team'}
               </Title>
               {data?.rank?.organization && (
-                <Text size="sm" lineClamp={1}>
+                <Badge size="xs" variant="outline">
                   {data.rank.organization}
-                </Text>
+                </Badge>
               )}
             </Stack>
           </Skeleton>
@@ -104,27 +107,29 @@ const TeamRank: FC<PaperProps> = (props) => {
           </Stack>
         </Group>
         <Progress value={solved * 100} />
-        <PasswordInput
-          value={data?.teamToken}
-          readOnly
-          icon={<Icon path={mdiKey} size={1} />}
-          variant="unstyled"
-          onClick={() => {
-            clipboard.copy(data?.teamToken)
-            showNotification({
-              color: 'teal',
-              message: '队伍Token已复制到剪贴板',
-              icon: <Icon path={mdiCheck} size={1} />,
-              withCloseButton: false,
-            })
-          }}
-          styles={{
-            innerInput: {
-              cursor: 'copy',
-              fontFamily: theme.fontFamilyMonospace,
-            },
-          }}
-        />
+        {!isMobile && (
+          <PasswordInput
+            value={data?.teamToken}
+            readOnly
+            icon={<Icon path={mdiKey} size={1} />}
+            variant="unstyled"
+            onClick={() => {
+              clipboard.copy(data?.teamToken)
+              showNotification({
+                color: 'teal',
+                message: '队伍Token已复制到剪贴板',
+                icon: <Icon path={mdiCheck} size={1} />,
+                withCloseButton: false,
+              })
+            }}
+            styles={{
+              innerInput: {
+                cursor: 'copy',
+                fontFamily: theme.fontFamilyMonospace,
+              },
+            }}
+          />
+        )}
       </Stack>
     </Card>
   )

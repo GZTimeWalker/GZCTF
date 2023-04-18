@@ -89,16 +89,15 @@ const GameNoticePanel: FC = () => {
           showNotification({
             color: 'yellow',
             message: message.content,
-            autoClose: 60000,
+            autoClose: 5000,
           })
-          api.game.mutateGameChallengesWithTeamInfo(numId)
         }
 
         if (message.type === NoticeType.Normal) {
           showNotification({
             color: 'brand',
             message: message.content,
-            autoClose: 60000,
+            autoClose: 5000,
           })
         }
 
