@@ -2,8 +2,9 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: [ "develop", "ci-test*" ]
-    tags: [ "v*" ]
+    branches: ["develop", "ci-test*"]
+    tags: ["v*"]
+    paths: ["src/GZCTF/**"]
   workflow_dispatch:
 
 jobs:
@@ -24,7 +25,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: "7.0.x"
 
       - uses: actions/setup-node@v3
         with:
@@ -91,8 +92,7 @@ jobs:
           dry-run: false
           token: ${{ secrets.PACKAGE_TOKEN }}
           container: "gzctf/gzctf"
-          keep-tags-regexes:
-            ^v(.)*
+          keep-tags-regexes: ^v(.)*
           prune-tags-regexes: ^[0-9a-f]{6,40}
           keep-tags: |
             latest
