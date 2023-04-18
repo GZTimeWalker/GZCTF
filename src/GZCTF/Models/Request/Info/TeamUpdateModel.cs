@@ -7,6 +7,8 @@ namespace CTFServer.Models.Request.Info;
 /// </summary>
 public class TeamUpdateModel
 {
+    public TeamUpdateModel() { }
+
     public TeamUpdateModel(string teamName)
     {
         Name = teamName;

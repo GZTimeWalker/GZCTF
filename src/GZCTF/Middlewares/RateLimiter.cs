@@ -71,7 +71,7 @@ public class RateLimiter
                     .GetService<ILoggerFactory>()?
                     .CreateLogger<RateLimiter>()
                     .Log($"请求过于频繁：{context.HttpContext.Request.Path}",
-                        context.HttpContext, TaskStatus.Denied, LogLevel.Debug);
+                        context.HttpContext, TaskStatus.Denied, LogLevel.Warning);
 
                 return new ValueTask();
             }
@@ -105,4 +105,3 @@ public static class RateLimiterExtensions
     public static IApplicationBuilder UseConfiguredRateLimiter(this IApplicationBuilder builder)
         => builder.UseRateLimiter(RateLimiter.GetRateLimiterOptions());
 }
-
