@@ -19,7 +19,7 @@ jobs:
       security-events: write
     defaults:
       run:
-        working-directory: GZCTF
+        working-directory: src/GZCTF
 
     strategy:
       fail-fast: false
