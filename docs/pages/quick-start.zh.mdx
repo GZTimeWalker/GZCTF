@@ -1,18 +1,122 @@
+import { Callout } from "nextra-theme-docs";
+
 # 快速上手
+
+GZCTF 通过 Docker 镜像的方式提供，你可以通过 docker-compose 的方式快速部署一个功能完善的 CTF 平台。请注意，这并不是唯一的部署方式，我们更推荐使用 Kubernetes 的方式部署。相关的部署方式请参考 [部署](/deployment)。
+
+<Callout type="warning">
+
+GZCTF 的安全性和前端功能依赖于 HTTPS，此部分所描述的部署方式并不提供 HTTPS 支持，因此不适合用于生产环境。仅供本地测试使用。
+
+本文档不涉及如何配置 HTTPS，关于 nginx、traefik 等软件的配置使用方法请自行查询，请注意 GZCTF 的 websocket 功能可能也需要进行独立配置，如遇到比赛通知无法推送等问题请先排查反向代理是否配置正确。
+
+</Callout>
 
 ## 安装配置
 
-应用已编译打包成 Docker 镜像，可通过以下方式获取：
+<Callout type="info">
 
-```bash
-docker pull gztime/gzctf:latest
-# or
-docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
-```
+你需要安装 Docker 和 docker-compose 以便于快速开始使用 GZCTF，你可以在 [Docker 官网](https://docs.docker.com/engine/install/) 找到相关的安装说明。
 
-也可使用 `scripts` 目录下的 `docker-compose.yml` 文件进行配置。
+</Callout>
 
-题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
+1. 为了后续的配置，请准备好如下的初始化参数：
+
+   - `GZCTF_ADMIN_PASSWORD`：初始管理员密码，在数据库未初始化时生效，需要在第一次启动时进行设置，配置在 `docker-compose.yml` 中。
+   - `POSTGRES_PASSWORD`: 数据库密码，需要配置在 `docker-compose.yml` 中及 `appsettings.json` 中。
+   - `XOR_KEY`: 用于加密比赛私钥的随机字符串，需要配置在 `appsettings.json` 中。
+   - `PUBLIC_ENTRY`: 外部访问地址，可以是 IP 或域名，需要配置在 `appsettings.json` 中，用于提供给选手访问题目容器的地址。
+
+2. 将以下内容保存为 `appsettings.json` 文件，**并替换为你的初始化参数**，具体配置说明请参考 [`appsettings.json` 配置](/config/appsettings)。
+
+   ```json
+   {
+     "AllowedHosts": "*",
+     "ConnectionStrings": {
+       "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=<Your POSTGRES_PASSWORD>"
+     },
+     "EmailConfig": {
+       "SendMailAddress": "a@a.com",
+       "UserName": "",
+       "Password": "",
+       "Smtp": {
+         "Host": "localhost",
+         "Port": 587
+       }
+     },
+     "XorKey": "<Your XOR_KEY>",
+     "ContainerProvider": {
+       "Type": "Docker", // or "Kubernetes"
+       "PublicEntry": "<Your PUBLIC_ENTRY>", // or "xxx.xxx.xxx.xxx"
+       "DockerConfig": {
+         // optional
+         "SwarmMode": false,
+         "Uri": "unix:///var/run/docker.sock"
+       }
+     },
+     "RequestLogging": false,
+     "DisableRateLimit": true,
+     "RegistryConfig": {
+       "UserName": "",
+       "Password": "",
+       "ServerAddress": ""
+     },
+     "GoogleRecaptcha": {
+       "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
+       "Sitekey": "",
+       "Secretkey": "",
+       "RecaptchaThreshold": "0.5"
+     }
+   }
+   ```
+
+3. 将以下内容保存为 `docker-compose.yml` 文件，**并替换为你的初始化参数**
+
+   ```yaml
+   version: "3.0"
+   services:
+     gzctf:
+       image: gztime/gzctf:latest
+       restart: always
+       environment:
+         - "GZCTF_ADMIN_PASSWORD=<Your GZCTF_ADMIN_PASSWORD>"
+       ports:
+         - "80:80"
+       volumes:
+         - "./data/files:/app/uploads"
+         - "./appsettings.json:/app/appsettings.json:ro"
+         - "./logs:/app/log"
+         # - "./k8sconfig.yaml:/app/k8sconfig.yaml:ro" # this is required for k8s deployment
+         - "/var/run/docker.sock:/var/run/docker.sock" # this is required for docker deployment
+       depends_on:
+         - db
+
+     db:
+       image: postgres:alpine
+       restart: always
+       environment:
+         - "POSTGRES_PASSWORD=<Your POSTGRES_PASSWORD>"
+       volumes:
+         - "./data/db:/var/lib/postgresql/data"
+   ```
+
+   <Callout type="info">
+
+   你有可能遇到网段冲突的情况，请参考相关更改 `docker-compose.yml`
+   中的子网配置或 `/etc/docker/daemon.json` 中的网段配置。
+
+   ```yaml
+   networks:
+     default:
+       driver: bridge
+       ipam:
+         config:
+           - subnet: 192.168.12.0/24
+   ```
+
+   </Callout>
+
+4. 运行 `docker-compose up -d` 来启动 GZCTF，之后你可以通过浏览器访问 GZCTF 了。
 
 ## 初始管理员
 
@@ -21,5 +125,34 @@ docker pull ghcr.io/gztimewalker/gzctf/gzctf:latest
 你也可以通过手动更改数据库条目来将当前已注册的用户设置为管理员。当管理员注册完成并成功登录后，进入所选数据库表后执行：
 
 ```sql
-UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='some_user_name';
+UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='your_admin_user_name';
 ```
+
+你可能会用到如下的命令：
+
+```bash
+docker-compose exec db psql -U postgres
+```
+
+```bash
+psql (15.2)
+Type "help" for help.
+
+postgres=# \c ctf
+You are now connected to database "ctf" as user "postgres".
+ctf=# #do your sql query
+```
+
+## 题目配置
+
+题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
+
+GZCTF 通过将 `GZCTF_FLAG` 环境变量注入到容器中来实现动态 flag 的分发，因此请确保题目**的容器初始化脚本**中将这个环境变量中的文本放入到合适的位置。请注意，这一环境变量的初始化是在容器启动时进行的，而非容器镜像构建时。
+
+<Callout type="info">
+
+若使用 Docker 作为容器后端，则请勿在题目 Dockerfile 中使用 `EXPOSE` 暴露端口，因为 GZCTF 会自动将指定端口映射到主机的随机端口上，如果在 Dockerfile 中使用 `EXPOSE` 会导致一道题暴露多个端口，占用端口资源、留下安全隐患。
+
+使用 Kubernetes 作为容器后端时，此项配置不受影响，因为 Kubernetes 中 GZCTF 会为特定的端口创建 Service。
+
+</Callout>

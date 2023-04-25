@@ -1,0 +1,167 @@
+import { Callout } from "nextra-theme-docs";
+
+# appsettings.json 配置
+
+`appsettings.json` 文件是 GZCTF 的核心配置文件，通过挂载入容器内的方式进行配置。本篇将介绍配置文件的各个字段的含义。
+
+<Callout type="info">
+
+`appsettings.json` 的每次更新都需要重启 GZCTF 服务才能生效。
+
+</Callout>
+
+## 配置文件结构
+
+此处给出一个完整的配置文件示例：
+
+```json5
+{
+  AllowedHosts: "*",
+  ConnectionStrings: {
+    Database: "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>",
+    // redis is optional
+    //"RedisCache": "cache:6379,password=<Redis Password>"
+  },
+  Logging: {
+    LogLevel: {
+      Default: "Information",
+      Microsoft: "Warning",
+      "Microsoft.Hosting.Lifetime": "Information",
+    },
+  },
+  EmailConfig: {
+    SendMailAddress: "a@a.com",
+    UserName: "",
+    Password: "",
+    Smtp: {
+      Host: "localhost",
+      Port: 587,
+    },
+  },
+  XorKey: "<Random Key Str>",
+  ContainerProvider: {
+    Type: "Docker", // or "Kubernetes"
+    PublicEntry: "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+    DockerConfig: {
+      // optional
+      SwarmMode: false,
+      Uri: "unix:///var/run/docker.sock",
+    },
+  },
+  RequestLogging: false,
+  DisableRateLimit: false,
+  RegistryConfig: {
+    UserName: "",
+    Password: "",
+    ServerAddress: "",
+  },
+  GoogleRecaptcha: {
+    VerifyAPIAddress: "https://www.recaptcha.net/recaptcha/api/siteverify",
+    Sitekey: "",
+    Secretkey: "",
+    RecaptchaThreshold: "0.5",
+  },
+}
+```
+
+## 核心功能配置字段
+
+### ConnectionStrings
+
+此处配置数据库连接字符串，其中 `Database` 为必填项，`RedisCache` 为可选项。
+
+GZCTF 使用 PostgreSQL 作为后端数据库和数据持久化，使用 Redis 作为缓存和消息队列。单实例部署的情况下 Redis 不是必须的，可以直接采用 GZCTF 的内存缓存；多实例部署的情况下，Redis 是必须的，用作共享缓存和 SignalR 的 Scale-Out 广播。
+
+<Callout type="info">
+
+GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库。请在配置文件中填写正确的数据库连接字符串。
+
+</Callout>
+
+### EmailConfig
+
+此处配置邮件发送相关信息，若采用邮箱注册和其他相关邮件功能，此处为必填项。
+
+- **SendMailAddress:** 发件人邮箱地址
+- **UserName:** SMTP 服务器用户名
+- **Password:** SMTP 服务器密码
+- **Smtp:** SMTP 服务器地址和端口
+
+<Callout type="info">
+
+由于部分云服务厂家限制，可能无法采用 465 端口发送邮件。此时请尝试使用 587 端口。
+
+</Callout>
+
+### XorKey
+
+此处配置加密密钥，用于加密数据库中比赛的私钥信息，可为任意长度的任意字符串。
+
+### ContainerProvider
+
+此处配置容器后端，为比赛动态创建容器的必填项。
+
+- **Type:** 容器后端类型，可选 `Docker` 或 `Kubernetes`。
+- **PublicEntry:** 容器后端的公网地址，用于生成比赛的访问地址，展示给参赛队伍。
+
+#### Docker
+
+- **SwarmMode:** 是否为 Swarm 模式，若为 Swarm 模式，将会使用 Swarm API 进器管理。
+
+  <Callout type="warning">
+
+  由于 Docker Swarm 已不是一个活跃的项目，相关安全性功能相较于 k8s 有很大距离，不推荐使用。
+
+  </Callout>
+
+- **Uri:** Docker API Server 地址
+
+  - 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
+  - 如需使用外部 docker，请将 Uri 指向对应 docker API Server，**外部 API 鉴权尚未实现，不推荐此部署方式**
+
+#### Kubernetes
+
+请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下
+
+<Callout type="info">
+
+请注意更改 `k8sconfig.yaml` 文件中的 `server` 字段，将其指向集群的 API Server 地址。集群默认地址一般为 `https://127.0.0.1:6443`，需要更改为集群实际地址。
+
+</Callout>
+
+### RequestLogging
+
+此处配置是否开启请求日志记录，若开启，将会在日志中输出每个请求的详细信息。此处输出不包括静态文件的请求。
+
+### DisableRateLimit
+
+此处配置是否开启请求频率限制，若开启，将会根据预设规则限制每个 IP 和 API 的请求频率。
+
+<Callout type="warning">
+
+目前此功能尚有一些问题，在代理后端的情况下可能会导致拒绝响应。相关原因仍在排查中，请暂时关闭此功能，设置字段值为 `true`。
+
+</Callout>
+
+### RegistryConfig
+
+此处配置 Docker Registry 的用户名和密码，用于比赛动态创建容器时拉取镜像的验证，可选项。
+
+- **UserName:** Docker Registry 用户名
+- **Password:** Docker Registry 密码
+- **ServerAddress:** Docker Registry 地址，请注意不需要包含 `https://` 前缀
+
+<Callout type="info">
+
+请确保密码中不包含特殊字符（如 `":@` 等，但是可以使用 `_`），否则可能导致模板注入问题，导致 Secret 创建失败。
+
+</Callout>
+
+### GoogleRecaptcha
+
+此处配置 Google Recaptcha 的相关信息，用于注册时的验证码验证，可选项。
+
+- **VerifyAPIAddress:** Google Recaptcha 验证 API 地址
+- **Sitekey:** Google Recaptcha 站点密钥
+- **Secretkey:** Google Recaptcha 服务器密钥
+- **RecaptchaThreshold:** Google Recaptcha 阈值，用于判断验证码是否有效

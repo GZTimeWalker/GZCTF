@@ -8,6 +8,7 @@
     "build": "next build"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.0.0",
     "next": "^13.3.0",
     "next-themes": "^0.2.1",
     "nextra": "^2.4.0",
