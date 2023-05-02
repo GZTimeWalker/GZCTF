@@ -73,12 +73,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
     }
 
     private static byte[] ConfigHash(IDictionary<string, string?> configs)
-    {
-        using var sha256 = SHA256.Create();
-        return sha256.ComputeHash(
-            Encoding.UTF8.GetBytes(string.Join(";", configs.Select(c => $"{c.Key}={c.Value}")))
-        );
-    }
+        => SHA256.HashData(Encoding.UTF8.GetBytes(string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))));
 
     public override void Load()
     {
