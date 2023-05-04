@@ -67,7 +67,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
                     if (flags.Count == 0)
                     {
-                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Fail, LogLevel.Warning);
+                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Failed, LogLevel.Warning);
                         return null;
                     }
 
@@ -86,7 +86,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     catch
                     {
                         retry++;
-                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 分配的动态附件保存失败，重试中：{retry} 次", TaskStatus.Fail, LogLevel.Warning);
+                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 分配的动态附件保存失败，重试中：{retry} 次", TaskStatus.Failed, LogLevel.Warning);
                         if (retry >= 3)
                             return null;
                         await Task.Delay(100, token);
@@ -123,7 +123,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
         catch (Exception ex)
         {
-            logger.SystemLog($"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Failed, LogLevel.Warning);
             return false;
         }
     }
@@ -133,7 +133,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
             logger.SystemLog($"无法为题目 {instance.Challenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
-            return new TaskResult<Container>(TaskStatus.Fail);
+            return new TaskResult<Container>(TaskStatus.Failed);
         }
 
         if (await context.Instances.CountAsync(i => i.Participation == instance.Participation
@@ -159,8 +159,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
             if (container is null)
             {
-                logger.SystemLog($"为题目 {instance.Challenge.Title} 启动容器实例失败", TaskStatus.Fail, LogLevel.Warning);
-                return new TaskResult<Container>(TaskStatus.Fail);
+                logger.SystemLog($"为题目 {instance.Challenge.Title} 启动容器实例失败", TaskStatus.Failed, LogLevel.Warning);
+                return new TaskResult<Container>(TaskStatus.Failed);
             }
 
             instance.Container = container;

@@ -56,7 +56,7 @@ public class MailSender : IMailSender
     {
         if (email is null || userName is null || title is null)
         {
-            logger.SystemLog("无效的邮件发送调用！", TaskStatus.Fail);
+            logger.SystemLog("无效的邮件发送调用！", TaskStatus.Failed);
             return;
         }
 
@@ -75,7 +75,7 @@ public class MailSender : IMailSender
             .Replace("{url}", url)
             .Replace("{nowtime}", DateTimeOffset.UtcNow.ToString("u"));
         if (!await SendEmailAsync(title, emailContent, email))
-            logger.SystemLog("邮件发送失败！", TaskStatus.Fail);
+            logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
     }
 
     private bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email, string? url)

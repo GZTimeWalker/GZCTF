@@ -1,8 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Channels;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CTFServer.Utils;
+
+public static class ChannelService
+{
+    internal static IServiceCollection AddChannel<T>(this IServiceCollection services)
+    {
+        var channel = Channel.CreateUnbounded<T>();
+        services.AddSingleton(channel);
+        services.AddSingleton(channel.Reader);
+        services.AddSingleton(channel.Writer);
+        return services;
+    }
+}
 
 /// <summary>
 /// 任务结果

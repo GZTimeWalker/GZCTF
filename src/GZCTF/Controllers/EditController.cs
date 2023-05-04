@@ -211,7 +211,7 @@ public class EditController : Controller
         game.Update(model);
         await gameRepository.SaveAsync(token);
         gameRepository.FlushGameInfoCache();
-        gameRepository.FlushScoreboardCache(game.Id);
+        await gameRepository.FlushScoreboardCache(game.Id, token);
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -534,7 +534,7 @@ public class EditController : Controller
         }
 
         // always flush scoreboard
-        gameRepository.FlushScoreboardCache(game.Id);
+        await gameRepository.FlushScoreboardCache(game.Id, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
@@ -657,7 +657,7 @@ public class EditController : Controller
         await challengeRepository.RemoveChallenge(res, token);
 
         // always flush scoreboard
-        gameRepository.FlushScoreboardCache(game.Id);
+        await gameRepository.FlushScoreboardCache(game.Id, token);
 
         return Ok();
     }

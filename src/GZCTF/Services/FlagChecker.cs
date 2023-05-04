@@ -5,18 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Services;
 
-public static class ChannelService
-{
-    internal static IServiceCollection AddChannel<T>(this IServiceCollection services)
-    {
-        var channel = Channel.CreateUnbounded<T>();
-        services.AddSingleton(channel);
-        services.AddSingleton(channel.Reader);
-        services.AddSingleton(channel.Writer);
-        return services;
-    }
-}
-
 public class FlagChecker : IHostedService
 {
     private readonly ILogger<FlagChecker> logger;
@@ -69,7 +57,7 @@ public class FlagChecker : IHostedService
                     }
                     else
                     {
-                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Fail, LogLevel.Information);
+                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Failed, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
 
@@ -98,16 +86,16 @@ public class FlagChecker : IHostedService
                     item.Status = ans;
                     await submissionRepository.SendSubmission(item);
 
-                    gameRepository.FlushScoreboardCache(item.GameId);
+                    await gameRepository.FlushScoreboardCache(item.GameId, token);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    logger.SystemLog($"[数据库并发] 未能更新提交 #{item.Id} 的状态", TaskStatus.Fail, LogLevel.Warning);
+                    logger.SystemLog($"[数据库并发] 未能更新提交 #{item.Id} 的状态", TaskStatus.Failed, LogLevel.Warning);
                     await channelWriter.WriteAsync(item, token);
                 }
                 catch (Exception e)
                 {
-                    logger.SystemLog($"检查线程 #{id} 发生异常", TaskStatus.Fail, LogLevel.Debug);
+                    logger.SystemLog($"检查线程 #{id} 发生异常", TaskStatus.Failed, LogLevel.Debug);
                     logger.LogError(e.Message, e);
                 }
 

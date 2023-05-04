@@ -1,8 +1,11 @@
 ﻿using System.Text;
+using System.Threading.Channels;
 using CTFServer.Models.Request.Game;
-using CTFServer.Models.Request.Info;
 using CTFServer.Repositories.Interface;
+using CTFServer.Services;
 using CTFServer.Utils;
+using IdentityModel.OidcClient;
+using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -13,14 +16,17 @@ public class GameRepository : RepositoryBase, IGameRepository
     private readonly IDistributedCache cache;
     private readonly byte[]? xorkey;
     private readonly ILogger<GameRepository> logger;
+    private readonly ChannelWriter<CacheRequest> cacheRequestChannelWriter;
 
     public GameRepository(IDistributedCache _cache,
         IConfiguration _configuration,
         ILogger<GameRepository> _logger,
+        ChannelWriter<CacheRequest> _cacheRequestChannelWriter,
         AppDbContext _context) : base(_context)
     {
         cache = _cache;
         logger = _logger;
+        cacheRequestChannelWriter = _cacheRequestChannelWriter;
         var xorkeyStr = _configuration["XorKey"];
         xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
     }
@@ -57,10 +63,9 @@ public class GameRepository : RepositoryBase, IGameRepository
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14);
             return GenScoreboard(game, token);
         }, token);
-
 
     public async Task DeleteGame(Game game, CancellationToken token = default)
     {
@@ -77,15 +82,15 @@ public class GameRepository : RepositoryBase, IGameRepository
     public void FlushGameInfoCache()
         => cache.Remove(CacheKey.BasicGameInfo);
 
-    public void FlushScoreboardCache(int gameId)
-        => cache.Remove(CacheKey.ScoreBoard(gameId));
+    public async Task FlushScoreboardCache(int gameId, CancellationToken token)
+        => await cacheRequestChannelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
 
     #region Generate Scoreboard
 
     private record Data(Instance Instance, Submission? Submission);
 
     // By xfoxfu & GZTimeWalker @ 2022/04/03
-    private async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
+    public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
     {
         var data = await FetchData(game, token);
         var bloods = GenBloods(data);
@@ -279,4 +284,33 @@ public class GameRepository : RepositoryBase, IGameRepository
     }
 
     #endregion Generate Scoreboard
+}
+
+public class ScoreboardCacheHandler : ICacheRequestHandler
+{
+    public static CacheRequest MakeCacheRequest(int id)
+        => new(Utils.CacheKey.ScoreBoardBase, new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14) }, id.ToString());
+
+    public string? CacheKey(CacheRequest request)
+    {
+        if (request.Params.Length != 1)
+            return null;
+
+        return Utils.CacheKey.ScoreBoard(request.Params[0]);
+    }
+
+    public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
+    {
+        if (!int.TryParse(request.Params[0], out int id))
+            return Array.Empty<byte>();
+
+        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return Array.Empty<byte>();
+
+        var scoreboard = await gameRepository.GenScoreboard(game, token);
+        return MemoryPackSerializer.Serialize(scoreboard);
+    }
 }

@@ -5,6 +5,10 @@ namespace CTFServer.Utils;
 
 public static class CacheHelper
 {
+    /// <summary>
+    /// 获取缓存或重新构建，如果缓存不存在会阻塞
+    /// 使用 CacheMaker 和 CacheRequest 代替处理耗时更久的缓存
+    /// </summary>
     public static async Task<T> GetOrCreateAsync<T, L>(this IDistributedCache cache,
         ILogger<L> logger,
         string key,
@@ -51,7 +55,22 @@ public static class CacheKey
     /// <summary>
     /// 比赛通知缓存
     /// </summary>
+    public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
+
+    /// <summary>
+    /// 积分榜缓存根标识
+    /// </summary>
+    public const string ScoreBoardBase = "_ScoreBoard";
+
+    /// <summary>
+    /// 比赛通知缓存
+    /// </summary>
     public static string GameNotice(int id) => $"_GameNotice_{id}";
+
+    /// <summary>
+    /// 比赛通知缓存
+    /// </summary>
+    public static string GameNotice(string id) => $"_ScoreBoard_{id}";
 
     /// <summary>
     /// 比赛基础信息缓存

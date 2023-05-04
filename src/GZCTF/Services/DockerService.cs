@@ -63,8 +63,8 @@ public class DockerService : IContainerService
             }
             else
             {
-                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
-                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
+                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Failed, LogLevel.Warning);
+                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Failed, LogLevel.Error);
                 return;
             }
         }
@@ -157,8 +157,8 @@ public class DockerService : IContainerService
             }
             else
             {
-                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Fail, LogLevel.Warning);
-                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Fail, LogLevel.Error);
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Failed, LogLevel.Warning);
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Failed, LogLevel.Error);
                 return null;
             }
         }
@@ -182,7 +182,7 @@ public class DockerService : IContainerService
             retry++;
             if (retry == 3)
             {
-                logger.SystemLog($"容器 {parameters.Service.Name} 创建后未获取到端口暴露信息，创建失败", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建后未获取到端口暴露信息，创建失败", TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
             if (res is not { Endpoint.Ports.Count: > 0 })
@@ -254,7 +254,7 @@ public class DockerService : IContainerService
             retry++;
             if (retry == 3)
             {
-                logger.SystemLog($"启动容器实例 {container.ContainerId} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Fail, LogLevel.Warning);
+                logger.SystemLog($"启动容器实例 {container.ContainerId} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
             if (!started)
@@ -268,7 +268,7 @@ public class DockerService : IContainerService
 
         if (container.Status != ContainerStatus.Running)
         {
-            logger.SystemLog($"创建 {config.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"创建 {config.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
 
@@ -283,7 +283,7 @@ public class DockerService : IContainerService
         if (int.TryParse(port, out var numport))
             container.Port = numport;
         else
-            logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Fail, LogLevel.Warning);
+            logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Failed, LogLevel.Warning);
 
         container.IP = info.NetworkSettings.IPAddress;
 

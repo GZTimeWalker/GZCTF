@@ -66,7 +66,15 @@ public interface IGameRepository : IRepository
     /// 刷新排行榜
     /// </summary>
     /// <param name="gameId">比赛Id</param>
-    public void FlushScoreboardCache(int gameId);
+    /// <param name="token"></param>
+    public Task FlushScoreboardCache(int gameId, CancellationToken token);
+
+    /// <summary>
+    /// 生成排行榜
+    /// </summary>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    public Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default);
 
     /// <summary>
     /// 刷新比赛信息缓存

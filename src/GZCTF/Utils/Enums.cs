@@ -70,7 +70,7 @@ public enum TaskStatus : sbyte
     /// <summary>
     /// 任务执行失败
     /// </summary>
-    Fail = 1,
+    Failed = 1,
 
     /// <summary>
     /// 任务遇到重复错误
