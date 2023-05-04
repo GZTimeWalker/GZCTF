@@ -1,0 +1,15 @@
+{
+  "runtime": "Net70",
+  "defaultVariables": "AssemblyPath=bin/GenAPI/net7.0/CTFServer.dll",
+  "documentGenerator": {
+    "aspNetCoreToOpenApi": {
+      "isAspNetCore": true,
+      "generateXmlObjects": true,
+      "generateAbstractProperties": true,
+      "output": "ClientApp/template/swagger.json",
+      "assemblyPaths": [
+        "$(AssemblyPath)"
+      ]
+    }
+  }
+}
