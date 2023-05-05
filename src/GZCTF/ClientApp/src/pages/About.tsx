@@ -21,6 +21,7 @@ const sha = import.meta.env.VITE_APP_GIT_SHA ?? 'unknown'
 const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'unknown'
 const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? ''
 const builtdate = import.meta.env.DEV ? dayjs() : dayjs(timestamp)
+const repo = 'https://github.com/GZTimeWalker/GZCTF'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -77,7 +78,7 @@ const About: FC = () => {
           <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
             <HoverCard.Target>
               <Badge
-                onClick={() => window.open('https://github.com/GZTimeWalker/GZCTF')}
+                onClick={() => window.open(repo)}
                 style={{
                   cursor: 'pointer',
                 }}

@@ -14,6 +14,7 @@ import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { ThemeOverride } from '@Utils/ThemeOverride'
+import { useBanner } from '@Utils/useConfig'
 import { fetcher } from '@Api'
 
 export const App: FC = () => {
@@ -25,6 +26,8 @@ export const App: FC = () => {
 
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
+
+  useBanner()
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>

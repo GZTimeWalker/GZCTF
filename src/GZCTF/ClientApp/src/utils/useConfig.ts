@@ -1,6 +1,13 @@
-import { useEffect } from 'react'
+import dayjs from 'dayjs'
+import { useEffect, useRef } from 'react'
 import { useLocalStorage } from '@mantine/hooks'
 import api, { GlobalConfig } from '@Api'
+
+const sha = import.meta.env.VITE_APP_GIT_SHA ?? 'unknown'
+const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'unknown'
+const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? ''
+const builtdate = import.meta.env.DEV ? dayjs() : dayjs(timestamp)
+const repo = 'https://github.com/GZTimeWalker/GZCTF'
 
 export const useConfig = () => {
   const {
@@ -32,4 +39,48 @@ export const useConfig = () => {
   }, [config])
 
   return { config: config ?? globalConfig, error, mutate }
+}
+
+const showBanner = () => {
+  const valid =
+    timestamp.length === 25 && builtdate.isValid() && sha.length === 40 && tag.length > 0
+  const rst = '\x1b[0m'
+  const bold = '\x1b[1m'
+  const brand = '\x1b[38;2;4;202;171m'
+  const alert = '\x1b[38;2;254;48;48m'
+  const padding = ' '.repeat(45)
+
+  const showtag = valid ? `${brand}${tag}` : `${alert}Unknown`
+  const commit = valid ? `${brand}${sha}` : `${alert}Unofficial build version`
+
+  const title = `
+ ██████╗ ███████╗ ${brand}        ${rst}  ██████╗████████╗███████╗
+██╔════╝ ╚══███╔╝ ${brand} ██╗██╗ ${rst} ██╔════╝╚══██╔══╝██╔════╝
+██║  ███╗  ███╔╝  ${brand} ╚═╝╚═╝ ${rst} ██║        ██║   █████╗
+██║   ██║ ███╔╝   ${brand} ██╗██╗ ${rst} ██║        ██║   ██╔══╝
+╚██████╔╝███████╗ ${brand} ╚═╝╚═╝ ${rst} ╚██████╗   ██║   ██║
+ ╚═════╝ ╚══════╝ ${brand}        ${rst}  ╚═════╝   ╚═╝   ╚═╝
+
+${padding}${bold}@ ${showtag}${rst}
+`
+
+  console.log(
+    `${title}` +
+      `\n${bold}Copyright (C) 2022-now, GZTimeWalker, All rights reserved.${rst}\n` +
+      `\n${bold}License  : ${brand}GNU Affero General Public License v3.0${rst}` +
+      `\n${bold}Commit   : ${commit}${rst}` +
+      `\n${bold}Built at : ${brand}${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}${rst}` +
+      `\n${bold}Issues   : ${repo}/issues` +
+      '\n'
+  )
+}
+
+export const useBanner = () => {
+  const mounted = useRef(false)
+  useEffect(() => {
+    if (!mounted.current) {
+      showBanner()
+      mounted.current = true
+    }
+  }, [])
 }
