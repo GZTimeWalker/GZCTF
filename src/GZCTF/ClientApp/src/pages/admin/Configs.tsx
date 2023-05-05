@@ -62,7 +62,7 @@ const Configs: FC = () => {
       >
         保存配置
       </Button>
-      <Stack style={{ width: '100%' }} spacing="xl">
+      <Stack w="100%" spacing="xl">
         <Stack>
           <Title order={2}>平台设置</Title>
           <Divider />

@@ -104,7 +104,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
                 ),
               }}
             >
-              <Group spacing={4} noWrap position="center" style={{ width: '100%' }}>
+              <Group spacing={4} noWrap position="center" w="100%">
                 <Icon
                   path={tag.icon}
                   size={1}

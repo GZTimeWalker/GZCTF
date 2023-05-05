@@ -81,7 +81,7 @@ const Recovery: FC = () => {
         label="邮箱"
         placeholder="ctf@example.com"
         type="email"
-        style={{ width: '100%' }}
+        w="100%"
         value={email}
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}

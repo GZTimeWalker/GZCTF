@@ -97,7 +97,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                 支队伍攻克
               </Text>
             </Title>
-            <Group position="center" spacing="md" style={{ height: 20 }}>
+            <Group position="center" spacing="md" h={20}>
               {challenge.bloods &&
                 challenge.bloods.map((blood, idx) => (
                   <Tooltip.Floating

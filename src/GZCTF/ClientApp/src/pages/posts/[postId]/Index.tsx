@@ -57,7 +57,8 @@ const Post: FC = () => {
         <Stack
           spacing={6}
           align="center"
-          style={{ width: '100%', padding: `0 ${theme.spacing.xs}` }}
+          w="100%"
+          p={`0 ${theme.spacing.xs}`}
           className={classes.container}
         >
           <Title order={2} pb="1.5rem" className={classes.title} style={{ fontSize: 36 }}>

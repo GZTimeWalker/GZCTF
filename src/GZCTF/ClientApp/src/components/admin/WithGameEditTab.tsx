@@ -45,7 +45,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
 
   return (
     <AdminPage {...others}>
-      <Group noWrap position="apart" align="flex-start" style={{ width: '100%' }}>
+      <Group noWrap position="apart" align="flex-start" w="100%">
         <Tabs
           orientation="vertical"
           value={activeTab}
@@ -64,7 +64,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
             ))}
           </Tabs.List>
         </Tabs>
-        <Stack style={{ width: 'calc(100% - 9rem)', position: 'relative' }}>
+        <Stack w="calc(100% - 9rem)" pos="relative">
           <LoadingOverlay
             visible={isLoading ?? false}
             overlayOpacity={1}

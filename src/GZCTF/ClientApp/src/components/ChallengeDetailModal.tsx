@@ -54,7 +54,7 @@ export const Countdown: FC<{ time: string }> = ({ time }) => {
   }, [])
 
   return (
-    <Card style={{ width: '5rem', textAlign: 'center', padding: '0px 4px' }}>
+    <Card w="5rem" p="0px 4px" style={{ textAlign: 'center' }}>
       <Text size="sm" style={{ fontWeight: 700 }}>
         {countdown.asSeconds() > 0 ? countdown.format('HH:mm:ss') : '00:00:00'}
       </Text>
@@ -285,7 +285,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         },
       }}
       title={
-        <Group style={{ width: '100%' }} position="apart">
+        <Group w="100%" position="apart">
           <Group>
             {tagData && (
               <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />

@@ -200,7 +200,8 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 fullWidth
                 className={classes.uploadButton}
                 disabled={type !== FileType.Local}
-                style={{ width: '122px', marginTop: '24px' }}
+                w="122px"
+                mt="24px"
                 color={progress !== 0 ? 'cyan' : theme.primaryColor}
               >
                 <div className={classes.uploadLabel}>{progress !== 0 ? '上传中' : '上传附件'}</div>
@@ -216,11 +217,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             )}
           </FileButton>
         ) : (
-          <Button
-            disabled={disabled}
-            style={{ width: '122px', marginTop: '24px' }}
-            onClick={onRemote}
-          >
+          <Button disabled={disabled} w="122px" mt="24px" onClick={onRemote}>
             保存链接
           </Button>
         )}
@@ -259,7 +256,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             readOnly
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
-            style={{ width: 'calc(100% - 320px)' }}
+            w="calc(100% - 320px)"
             onClick={() => challenge?.attachment?.url && window.open(challenge?.attachment?.url)}
           />
         ) : (
@@ -267,7 +264,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             label="附件链接"
             disabled={disabled}
             value={remoteUrl}
-            style={{ width: 'calc(100% - 320px)' }}
+            w="calc(100% - 320px)"
             onChange={(e) => setRemoteUrl(e.target.value)}
           />
         )}
@@ -279,11 +276,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             保存 flag 模版
           </Button>
         ) : (
-          <Button
-            disabled={disabled}
-            style={{ width: '122px' }}
-            onClick={() => setFlagCreateModalOpen(true)}
-          >
+          <Button disabled={disabled} w="122px" onClick={() => setFlagCreateModalOpen(true)}>
             添加 flag
           </Button>
         )}
@@ -327,7 +320,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           {!challenge?.flags.length && (
             <>
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
-              <Center style={{ height: 'calc(100vh - 430px)' }}>
+              <Center h="calc(100vh - 430px)">
                 <Stack spacing={0}>
                   <Title order={2}>flag 列表为空</Title>
                   <Text>请通过右上角添加 flag</Text>
@@ -376,11 +369,11 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
         </Group>
       </Group>
       <Divider />
-      <ScrollArea sx={{ height: 'calc(100vh - 250px)', position: 'relative' }}>
+      <ScrollArea h="calc(100vh - 250px)" pos="relative">
         {!challenge?.flags.length && (
           <>
             <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
-            <Center style={{ height: 'calc(100vh - 250px)' }}>
+            <Center h="calc(100vh - 250px)">
               <Stack spacing={0}>
                 <Title order={2}>flag 列表为空</Title>
                 <Text>请通过右上角添加 flag</Text>

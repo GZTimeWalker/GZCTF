@@ -85,7 +85,7 @@ const Reset: FC = () => {
         value={retypedPwd}
         onChange={(event) => setRetypedPwd(event.currentTarget.value)}
         label="重复密码"
-        style={{ width: '100%' }}
+        w="100%"
         disabled={disabled}
         error={pwd !== retypedPwd}
         onKeyDown={enterHandler}

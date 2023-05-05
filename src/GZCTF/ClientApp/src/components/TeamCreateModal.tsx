@@ -68,7 +68,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
             label="队伍名称"
             type="text"
             placeholder="team"
-            style={{ width: '100%' }}
+            w="100%"
             value={createTeam?.name ?? ''}
             onChange={(event) => setCreateTeam({ ...createTeam, name: event.currentTarget.value })}
           />
@@ -76,7 +76,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
             label="队伍签名"
             placeholder={createTeam?.bio ?? '这个人很懒，什么都没有写'}
             value={createTeam?.bio ?? ''}
-            style={{ width: '100%' }}
+            w="100%"
             autosize
             minRows={2}
             maxRows={4}

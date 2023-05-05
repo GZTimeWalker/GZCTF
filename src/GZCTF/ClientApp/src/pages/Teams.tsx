@@ -154,7 +154,7 @@ const Teams: FC = () => {
               </SimpleGrid>
             </>
           ) : (
-            <Center style={{ width: '100%', height: '80wh' }}>
+            <Center w="100%" h="80wh">
               <Loader />
             </Center>
           )}
@@ -167,7 +167,7 @@ const Teams: FC = () => {
               label="邀请码"
               type="text"
               placeholder="team:0:01234567890123456789012345678901"
-              style={{ width: '100%' }}
+              w="100%"
               value={joinTeamCode}
               onChange={(event) => setJoinTeamCode(event.currentTarget.value)}
             />

@@ -77,24 +77,19 @@ const GameNoticeEdit: FC = () => {
         </>
       }
     >
-      <ScrollArea style={{ height: 'calc(100vh-180px)', position: 'relative' }} offsetScrollbars>
+      <ScrollArea pos="relative" h="calc(100vh - 180px)" offsetScrollbars>
         {!gameNotices || gameNotices?.length === 0 ? (
-          <Center style={{ height: 'calc(100vh - 180px)' }}>
+          <Center h="calc(100vh - 180px)">
             <Stack spacing={0}>
               <Title order={2}>Ouch! 这个比赛还没有通知</Title>
               <Text>安然无事真好！</Text>
             </Stack>
           </Center>
         ) : (
-          <Stack
-            spacing="lg"
-            align="center"
-            style={{
-              margin: '2%',
-            }}
-          >
+          <Stack spacing="lg" align="center" m="2%">
             {gameNotices.map((gameNotice) => (
               <GameNoticeEditCard
+                w="95%"
                 key={gameNotice.id}
                 gameNotice={gameNotice}
                 onDelete={() => {
@@ -104,7 +99,6 @@ const GameNoticeEdit: FC = () => {
                   setActiveGameNotice(gameNotice)
                   setIsEditModalOpen(true)
                 }}
-                style={{ width: '90%' }}
               />
             ))}
           </Stack>

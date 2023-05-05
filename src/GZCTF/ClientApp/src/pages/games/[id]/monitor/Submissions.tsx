@@ -193,7 +193,7 @@ const Submissions: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" style={{ width: '100%' }}>
+      <Group position="apart" w="100%">
         <SegmentedControl
           color="brand"
           value={type}
@@ -241,7 +241,7 @@ const Submissions: FC = () => {
         </Group>
       </Group>
       <Paper shadow="md" p="md">
-        <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 200px)' }}>
+        <ScrollArea offsetScrollbars h="calc(100vh - 200px)">
           <Table className={classes.table}>
             <thead>
               <tr>

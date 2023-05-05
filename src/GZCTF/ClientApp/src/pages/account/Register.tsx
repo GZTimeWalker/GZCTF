@@ -131,7 +131,7 @@ const Register: FC = () => {
         label="邮箱"
         type="email"
         placeholder="ctf@example.com"
-        style={{ width: '100%' }}
+        w="100%"
         value={email}
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
@@ -141,7 +141,7 @@ const Register: FC = () => {
         label="用户名"
         type="text"
         placeholder="ctfer"
-        style={{ width: '100%' }}
+        w="100%"
         value={uname}
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
@@ -157,7 +157,7 @@ const Register: FC = () => {
         onChange={(event) => setRetypedPwd(event.currentTarget.value)}
         disabled={disabled}
         label="重复密码"
-        style={{ width: '100%' }}
+        w="100%"
         error={pwd !== retypedPwd}
       />
       <Anchor

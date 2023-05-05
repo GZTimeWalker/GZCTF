@@ -85,7 +85,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
         },
       }}
       title={
-        <Group style={{ width: '100%' }} position="apart">
+        <Group w="100%" position="apart">
           <Group>
             {tagData && (
               <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />

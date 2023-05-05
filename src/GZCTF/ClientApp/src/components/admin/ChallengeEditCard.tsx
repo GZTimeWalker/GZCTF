@@ -54,14 +54,14 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           onChange={() => onToggle(challenge, setDisabled)}
         />
         <Icon path={data!.icon} color={theme.colors[data?.color ?? 'brand'][5]} size={1} />
-        <Group noWrap position="apart" spacing="sm" style={{ width: 'calc(100% - 100px)' }}>
-          <Text lineClamp={1} weight={700} style={{ width: '14rem' }}>
+        <Group noWrap position="apart" spacing="sm" w="calc(100% - 100px)">
+          <Text lineClamp={1} weight={700} w="14rem">
             {challenge.title}
           </Text>
 
           <Progress
             size="xl"
-            style={{ width: 'calc(100% - 25rem)' }}
+            w="calc(100% - 25rem)"
             radius="xl"
             sections={[
               { value: minRate, color: colors[9], label: `${challenge.minScore}` },
@@ -69,10 +69,10 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             ]}
           />
 
-          <Text size="xs" weight={700} style={{ width: '2.5rem' }}>
+          <Text size="xs" weight={700} w="2.5rem">
             {challenge.originalScore}pts
           </Text>
-          <Group position="right" style={{ width: '8rem' }}>
+          <Group position="right" w="8rem">
             <Badge color={data?.color} variant="dot">
               {data?.label}
             </Badge>

@@ -154,7 +154,7 @@ const Events: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" style={{ width: '100%' }}>
+      <Group position="apart" w="100%">
         <Switch
           label={SwitchLabel('隐藏容器事件', '隐藏容器启动/销毁事件')}
           checked={hideContainerEvents}
@@ -173,7 +173,7 @@ const Events: FC = () => {
           </ActionIcon>
         </Group>
       </Group>
-      <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 160px)' }}>
+      <ScrollArea offsetScrollbars h="calc(100vh - 160px)">
         <Stack spacing="xs" pr={10} w="100%">
           {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card

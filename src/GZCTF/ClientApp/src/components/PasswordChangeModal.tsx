@@ -61,7 +61,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           required
           label="原密码"
           placeholder="P4ssW@rd"
-          style={{ width: '100%' }}
+          w="100%"
           value={oldPwd}
           onChange={setOldPwd}
         />
@@ -70,7 +70,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           required
           label="确认密码"
           placeholder="P4ssW@rd"
-          style={{ width: '100%' }}
+          w="100%"
           value={retypedPwd}
           onChange={setRetypedPwd}
         />

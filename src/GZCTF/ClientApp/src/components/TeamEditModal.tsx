@@ -257,7 +257,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               label="队伍名称"
               type="text"
               placeholder={team?.name ?? 'ctfteam'}
-              style={{ width: '100%' }}
+              w="100%"
               value={teamInfo?.name ?? 'team'}
               disabled={!isCaptain}
               onChange={(event) => setTeamInfo({ ...teamInfo, name: event.target.value })}
@@ -317,7 +317,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           label="队伍签名"
           placeholder={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
           value={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
-          style={{ width: '100%' }}
+          w="100%"
           disabled={!isCaptain}
           autosize
           minRows={2}
@@ -326,7 +326,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         />
 
         <Text size="sm">队员管理</Text>
-        <ScrollArea style={{ height: 140 }} offsetScrollbars>
+        <ScrollArea h={140} offsetScrollbars>
           <Stack spacing="xs">
             {captain && (
               <Group position="apart">

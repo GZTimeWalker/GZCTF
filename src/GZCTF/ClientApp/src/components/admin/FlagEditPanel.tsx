@@ -30,7 +30,7 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
   return (
     <Card>
       <Group noWrap position="apart" spacing={3}>
-        <Stack align="flex-start" spacing={0} style={{ width: '100%' }}>
+        <Stack align="flex-start" spacing={0} w="100%">
           <Input
             variant="unstyled"
             value={flag.flag}
@@ -48,6 +48,8 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
             styles={{
               input: {
                 fontFamily: theme.fontFamilyMonospace,
+                lineHeight: '1em',
+                height: 'auto',
               },
               wrapper: {
                 width: '100%',

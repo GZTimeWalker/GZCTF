@@ -88,8 +88,8 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       }
     >
       <Stack align="center" spacing="xs">
-        <Stack style={{ width: '60%', minWidth: '20rem' }}>
-          <Center style={{ height: '14rem' }}>
+        <Stack w="60%" miw="20rem">
+          <Center h="14rem">
             <LoadingOverlay visible={!indicator || !values} />
             {item && indicator && values && (
               <TeamRadarMap indicator={indicator} value={values} name={item?.name ?? ''} />
@@ -131,7 +131,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           <Progress value={solved * 100} />
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
-          <ScrollArea scrollbarSize={6} style={{ height: '12rem', width: '100%' }}>
+          <ScrollArea scrollbarSize={6} h="12rem" w="100%">
             <Table className={classes.table}>
               <thead>
                 <tr>

@@ -174,7 +174,6 @@ const GameInfoEdit: FC = () => {
                   title: `删除比赛`,
                   children: <Text size="sm">你确定要删除比赛 "{game?.title}" 吗？</Text>,
                   onConfirm: () => onConfirmDelete(),
-
                   labels: { confirm: '确认', cancel: '取消' },
                   confirmProps: { color: 'red' },
                 })
@@ -315,7 +314,7 @@ const GameInfoEdit: FC = () => {
             label="比赛简介"
             description="将会显示在比赛列表中"
             value={game?.summary}
-            style={{ width: '100%' }}
+            w="100%"
             autosize
             disabled={disabled}
             minRows={3}
@@ -378,7 +377,7 @@ const GameInfoEdit: FC = () => {
             </Group>
           }
           value={game?.wpNote}
-          style={{ width: '100%' }}
+          w="100%"
           autosize
           disabled={disabled}
           minRows={3}
@@ -428,7 +427,7 @@ const GameInfoEdit: FC = () => {
               </Group>
             }
             value={game?.content}
-            style={{ width: '100%' }}
+            w="100%"
             autosize
             disabled={disabled}
             minRows={8}
@@ -463,7 +462,7 @@ const GameInfoEdit: FC = () => {
                 {game?.poster ? (
                   <Image height="195px" fit="contain" src={game.poster} />
                 ) : (
-                  <Center style={{ height: '160px' }}>
+                  <Center h="160px">
                     <Stack spacing={0}>
                       <Text size="xl" inline>
                         拖放图片或点击此处以选择海报

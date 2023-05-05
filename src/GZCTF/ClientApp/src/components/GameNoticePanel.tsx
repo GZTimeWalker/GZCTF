@@ -133,7 +133,7 @@ const GameNoticePanel: FC = () => {
   )
 
   return (
-    <Card shadow="sm" style={{ width: '20rem' }}>
+    <Card shadow="sm" w="20rem">
       <Stack spacing="xs">
         <SegmentedControl
           value={filter}
@@ -151,7 +151,7 @@ const GameNoticePanel: FC = () => {
           ]}
         />
         {filteredNotices.length ? (
-          <ScrollArea offsetScrollbars scrollbarSize={0} style={{ height: 'calc(100vh - 25rem)' }}>
+          <ScrollArea offsetScrollbars scrollbarSize={0} h="calc(100vh - 25rem)">
             <List
               size="sm"
               spacing={3}
@@ -175,7 +175,7 @@ const GameNoticePanel: FC = () => {
             </List>
           </ScrollArea>
         ) : (
-          <Stack justify="center" style={{ height: 'calc(100vh - 25rem)' }}>
+          <Stack justify="center" h="calc(100vh - 25rem)">
             <Empty description="暂无通知" />
           </Stack>
         )}

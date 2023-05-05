@@ -50,11 +50,11 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         },
       })}
     >
-      <Card.Section style={{ position: 'relative' }}>
+      <Card.Section pos="relative">
         {poster ? (
-          <Image src={poster} height={POSTER_HEIGHT} alt="poster" />
+          <Image src={poster} h={POSTER_HEIGHT} alt="poster" />
         ) : (
-          <Center style={{ height: POSTER_HEIGHT }}>
+          <Center h={POSTER_HEIGHT}>
             <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
           </Center>
         )}

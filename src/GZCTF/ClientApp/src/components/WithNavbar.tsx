@@ -42,7 +42,7 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
           header={<AppHeader />}
           styles={{ body: { overflow: 'hidden' } }}
         >
-          <Center style={{ width: '100%' }}>
+          <Center w="100%">
             <LoadingOverlay
               visible={isLoading ?? false}
               overlayOpacity={1}

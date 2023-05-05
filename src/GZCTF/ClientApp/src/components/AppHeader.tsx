@@ -54,7 +54,7 @@ const AppHeader: FC = () => {
 
   return (
     <Header fixed hidden={!isMobile} height={isMobile ? 60 : 0} className={headerClasses.header}>
-      <Group style={{ height: '100%' }} p="0 1rem" position="apart" noWrap>
+      <Group h="100%" p="0 1rem" position="apart" noWrap>
         <LogoHeader onClick={() => navigate('/')} />
         <Menu shadow="md" opened={opened} onClose={() => setOpened(false)} width={200} offset={13}>
           <Menu.Target>

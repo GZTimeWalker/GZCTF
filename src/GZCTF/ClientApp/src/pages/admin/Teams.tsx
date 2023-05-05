@@ -118,8 +118,8 @@ const Teams: FC = () => {
       head={
         <>
           <TextInput
+            w="30%"
             icon={<Icon path={mdiMagnify} size={1} />}
-            style={{ width: '30%' }}
             placeholder="搜索队伍名称"
             value={hint}
             onChange={setHint}
@@ -145,8 +145,8 @@ const Teams: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="md" style={{ width: '100%' }}>
-        <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height: 'calc(100vh - 190px)' }}>
+      <Paper shadow="md" p="md" w="100%">
+        <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
           <Table className={classes.table}>
             <thead>
               <tr>

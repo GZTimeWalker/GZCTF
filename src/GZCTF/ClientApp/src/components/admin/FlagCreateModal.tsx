@@ -1,15 +1,6 @@
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  Button,
-  Group,
-  Modal,
-  ModalProps,
-  Stack,
-  TextInput,
-  Text,
-  useMantineTheme,
-} from '@mantine/core'
+import { Button, Group, Modal, ModalProps, Stack, Text, Textarea } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
@@ -22,8 +13,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
 
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
-  const theme = useMantineTheme()
-  const [flag, setFlag] = useInputState('')
+  const [flags, setFlags] = useInputState('')
 
   const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
     refreshInterval: 0,
@@ -32,17 +22,18 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
   })
 
   const onCreate = () => {
-    if (!flag) {
+    if (!flags) {
       return
     }
 
+    const flagList = flags
+      .split('\n')
+      .filter((x) => x.trim().length > 0)
+      .map((x) => ({ flag: x }))
+
     setDisabled(true)
     api.edit
-      .editAddFlags(numId, numCId, [
-        {
-          flag,
-        },
-      ])
+      .editAddFlags(numId, numCId, flagList)
       .then(() => {
         showNotification({
           color: 'teal',
@@ -53,7 +44,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
         challenge &&
           mutate({
             ...challenge,
-            flags: [...(challenge.flags ?? []), { flag }],
+            flags: [...(challenge.flags ?? []), ...flagList],
           })
       })
       .catch((err) => {
@@ -61,7 +52,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
         setDisabled(false)
       })
       .finally(() => {
-        setFlag('')
+        setFlags('')
         setDisabled(false)
         props.onClose()
       })
@@ -70,20 +61,24 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
   return (
     <Modal {...props}>
       <Stack>
-        <Text>创建一个 flag，每道静态题目可以拥有多个 flag，任意 flag 被获取均可得分。</Text>
-        <TextInput
-          label="flag 内容"
-          type="text"
-          required
-          placeholder="flag{...}"
-          style={{ width: '100%' }}
-          styles={{
-            input: {
+        <Text>
+          创建 flag，多个 flag 按行分割，每行一个。
+          <br />
+          每道题目可以拥有多个 flag，获取任意 flag 均可得分。
+        </Text>
+        <Textarea
+          value={flags}
+          w="100%"
+          disabled={disabled}
+          autosize
+          minRows={8}
+          maxRows={8}
+          onChange={setFlags}
+          sx={(theme) => ({
+            '& textarea': {
               fontFamily: theme.fontFamilyMonospace,
             },
-          }}
-          value={flag}
-          onChange={setFlag}
+          })}
         />
         <Group grow style={{ margin: 'auto', width: '100%' }}>
           <Button fullWidth disabled={disabled} onClick={onCreate}>

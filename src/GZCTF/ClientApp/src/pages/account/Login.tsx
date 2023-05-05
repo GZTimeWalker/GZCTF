@@ -67,7 +67,7 @@ const Login: FC = () => {
         label="用户名或邮箱"
         placeholder="ctfer"
         type="text"
-        style={{ width: '100%' }}
+        w="100%"
         value={uname}
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
@@ -78,7 +78,7 @@ const Login: FC = () => {
         label="密码"
         id="your-password"
         placeholder="P4ssW@rd"
-        style={{ width: '100%' }}
+        w="100%"
         value={pwd}
         disabled={disabled}
         onChange={(event) => setPwd(event.currentTarget.value)}
@@ -94,7 +94,7 @@ const Login: FC = () => {
       >
         忘记密码？
       </Anchor>
-      <Grid grow style={{ width: '100%' }}>
+      <Grid grow w="100%">
         <Grid.Col span={2}>
           <Button fullWidth variant="outline" component={Link} to="/account/register">
             注册

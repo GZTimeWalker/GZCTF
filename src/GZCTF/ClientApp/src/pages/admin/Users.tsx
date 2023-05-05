@@ -202,8 +202,8 @@ const Users: FC = () => {
       head={
         <>
           <TextInput
+            w="30%"
             icon={<Icon path={mdiMagnify} size={1} />}
-            style={{ width: '30%' }}
             placeholder="搜索用户ID/用户名/邮箱/学号/姓名"
             value={hint}
             onChange={setHint}
@@ -229,8 +229,8 @@ const Users: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="xs" style={{ width: '100%' }}>
-        <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height: 'calc(100vh - 190px)' }}>
+      <Paper shadow="md" p="xs" w="100%">
+        <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
           <Table className={classes.table}>
             <thead>
               <tr>

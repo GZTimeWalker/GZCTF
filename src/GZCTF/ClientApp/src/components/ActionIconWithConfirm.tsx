@@ -31,7 +31,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
           <Text size="sm" weight={500}>
             {props.message}
           </Text>
-          <Group style={{ width: '100%', justifyContent: 'space-evenly' }}>
+          <Group w="100%" style={{ justifyContent: 'space-evenly' }}>
             <Button
               size="xs"
               py={2}

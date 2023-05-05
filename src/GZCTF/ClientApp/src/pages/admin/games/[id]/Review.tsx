@@ -115,10 +115,10 @@ const MemberItem: FC<MemberItemProps> = (props) => {
 
   return (
     <Group spacing="xl" position="apart">
-      <Group style={{ width: 'calc(100% - 10rem)' }}>
+      <Group w="calc(100% - 10rem)">
         <Avatar src={user.avatar} />
         <Group noWrap>
-          <Stack spacing={2} style={{ width: '15rem' }}>
+          <Stack spacing={2} w="15rem">
             <Group noWrap spacing="xs">
               <Icon path={mdiAccountOutline} {...iconProps} />
               <Group noWrap>
@@ -186,7 +186,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
             </Group>
-            <Group position="apart" style={{ width: 'calc(30%)' }}>
+            <Group position="apart" w="calc(30%)">
               <Box>
                 <Text>{participation.organization}</Text>
                 <Text size="sm" color="dimmed" weight={700}>
@@ -200,10 +200,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
           </Group>
         </Accordion.Control>
-        <Group
-          style={{ margin: `0 ${theme.spacing.xl}`, minWidth: `calc(${theme.spacing.xl} * 3)` }}
-          position="right"
-        >
+        <Group w={`0 ${theme.spacing.xl}`} miw={`calc(${theme.spacing.xl} * 3)`} position="right">
           {StatusMap.get(participation.status!)?.transformTo.map((value) => {
             const s = StatusMap.get(value)!
             return (
@@ -308,13 +305,9 @@ const GameTeamReview: FC = () => {
         </>
       }
     >
-      <ScrollArea
-        style={{ height: 'calc(100vh - 180px)', position: 'relative' }}
-        offsetScrollbars
-        type="auto"
-      >
+      <ScrollArea type="auto" pos="relative" h="calc(100vh - 180px)" offsetScrollbars>
         {!participations || participations.length === 0 ? (
-          <Center style={{ height: 'calc(100vh - 200px)' }}>
+          <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
               <Title order={2}>Ouch! 还没有队伍报名这个比赛</Title>
               <Text>在路上了……别急！</Text>

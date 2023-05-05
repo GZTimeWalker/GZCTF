@@ -106,7 +106,7 @@ const Home: FC = () => {
           <RecentGameCarousel games={recentGames} />
         )}
         <Stack align="center">
-          <Group noWrap spacing={4} position="apart" align="flex-start" style={{ width: '100%' }}>
+          <Group noWrap spacing={4} position="apart" align="flex-start" w="100%">
             <Stack className={classes.posts}>
               {isMobile
                 ? posts?.map((post) => (
@@ -121,7 +121,7 @@ const Home: FC = () => {
                 <Stack>
                   <Group>
                     <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
-                    <Title order={3}>近期活动</Title>
+                    <Title order={3}>最近比赛</Title>
                   </Group>
                   {recentGames?.map((game) => (
                     <RecentGame key={game.id} game={game} />

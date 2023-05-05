@@ -51,8 +51,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               {team.name?.slice(0, 1) ?? 'T'}
             </Avatar>
 
-            <Stack spacing={0} style={{ width: 'calc(100% - 72px)' }}>
-              <Group style={{ width: '100%' }} position="left">
+            <Stack spacing={0} w="calc(100% - 72px)">
+              <Group w="100%" position="left">
                 <Title order={2} align="left">
                   {team.name}
                 </Title>

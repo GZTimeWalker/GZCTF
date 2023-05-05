@@ -66,7 +66,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           type="text"
           required
           placeholder="Title"
-          style={{ width: '100%' }}
+          w="100%"
           value={title}
           onChange={setTitle}
         />

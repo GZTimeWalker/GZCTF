@@ -51,7 +51,7 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       sx={{ backgroundImage: `url(${poster})` }}
       className={classes.card}
     >
-      <Stack style={{ height: '100%' }} spacing={2} justify="space-between">
+      <Stack h="100%" spacing={2} justify="space-between">
         <Group spacing={4}>
           <Badge size="sm" variant="filled">
             {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛

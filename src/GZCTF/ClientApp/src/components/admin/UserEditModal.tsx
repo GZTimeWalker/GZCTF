@@ -84,7 +84,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
             <TextInput
               label="用户名"
               type="text"
-              style={{ width: '100%' }}
+              w="100%"
               value={profile.userName ?? 'ctfer'}
               disabled={disabled}
               onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
@@ -113,7 +113,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           <TextInput
             label="邮箱"
             type="email"
-            style={{ width: '100%' }}
+            w="100%"
             value={profile.email ?? 'ctfer@gzti.me'}
             disabled={disabled}
             onChange={(event) => setProfile({ ...profile, email: event.target.value })}
@@ -121,7 +121,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           <TextInput
             label="手机号"
             type="tel"
-            style={{ width: '100%' }}
+            w="100%"
             value={profile.phone ?? ''}
             disabled={disabled}
             onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
@@ -129,7 +129,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           <TextInput
             label="学工号"
             type="number"
-            style={{ width: '100%' }}
+            w="100%"
             value={profile.stdNumber ?? ''}
             disabled={disabled}
             onChange={(event) => setProfile({ ...profile, stdNumber: event.target.value })}
@@ -137,7 +137,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           <TextInput
             label="真实姓名"
             type="text"
-            style={{ width: '100%' }}
+            w="100%"
             value={profile.realName ?? ''}
             disabled={disabled}
             onChange={(event) => setProfile({ ...profile, realName: event.target.value })}
@@ -146,7 +146,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         <Textarea
           label="描述"
           value={profile.bio ?? '这个人很懒，什么都没有写'}
-          style={{ width: '100%' }}
+          w="100%"
           disabled={disabled}
           autosize
           minRows={2}

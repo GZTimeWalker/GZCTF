@@ -17,12 +17,12 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
   ...props
 }) => {
   return (
-    <Card {...props} shadow="sm" p="lg">
-      <Group position="apart">
+    <Card {...props} shadow="sm" p="sm">
+      <Group position="apart" noWrap>
         <Group position="left">
           <Text weight="500">{gameNotice.content}</Text>
         </Group>
-        <Group position="right">
+        <Group position="right" noWrap>
           <ActionIcon onClick={onEdit}>
             <Icon path={mdiPencilOutline} size={1} />
           </ActionIcon>

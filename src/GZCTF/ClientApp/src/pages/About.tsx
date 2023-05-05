@@ -61,8 +61,8 @@ const About: FC = () => {
 
   return (
     <WithNavBar>
-      <Stack justify="space-between" style={{ height: 'calc(100vh - 32px)' }}>
-        <Center style={{ height: 'calc(100vh - 32px)' }}>
+      <Stack justify="space-between" h="calc(100vh - 32px)">
+        <Center h="calc(100vh - 32px)">
           <Title order={2} className={classes.watermark}>
             GZ::CTF
           </Title>
@@ -95,7 +95,7 @@ const About: FC = () => {
                     <Title className={classes.title}>
                       GZ<span className={classes.brand}>::</span>CTF
                     </Title>
-                    <Group sx={{ marginLeft: '-18px', marginTop: '-5px' }}>
+                    <Group ml="-18px" mt="-5px">
                       <Anchor
                         href="https://github.com/GZTimeWalker"
                         color="dimmed"

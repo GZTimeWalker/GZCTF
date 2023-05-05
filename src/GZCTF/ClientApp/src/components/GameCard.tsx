@@ -66,15 +66,12 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
     >
       <Card.Section>
         <Group noWrap align="flex-start">
-          <BackgroundImage
-            src={poster ?? ''}
-            style={{ height: '10rem', maxWidth: '20rem', minWidth: '20rem' }}
-          >
-            <Center style={{ height: '100%' }}>
+          <BackgroundImage src={poster ?? ''} h="10rem" maw="20rem" miw="20rem">
+            <Center h="100%">
               {!poster && <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />}
             </Center>
           </BackgroundImage>
-          <Stack spacing="sm" p="md" style={{ width: '100%' }}>
+          <Stack spacing="sm" p="md" w="100%">
             <Group spacing={0} position="apart" align="flex-start">
               <Stack spacing={2}>
                 <Group noWrap spacing="xs">

@@ -86,7 +86,7 @@ const Games: FC = () => {
           <Button leftIcon={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
             新建比赛
           </Button>
-          <Group style={{ width: 'calc(100% - 9rem)' }} position="right">
+          <Group w="calc(100% - 9rem)" position="right">
             <Text weight="bold" size="sm">
               已显示 <Code>{current}</Code> / <Code>{total}</Code> 比赛
             </Text>
@@ -104,8 +104,8 @@ const Games: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="md" style={{ width: '100%' }}>
-        <ScrollArea offsetScrollbars style={{ height: 'calc(100vh - 190px)' }}>
+      <Paper shadow="md" p="md" w="100%">
+        <ScrollArea offsetScrollbars h="calc(100vh - 190px)">
           <Table className={classes.table}>
             <thead>
               <tr>
@@ -163,7 +163,7 @@ const Games: FC = () => {
                         </Group>
                       </td>
                       <td>
-                        <Text lineClamp={1} style={{ width: 'calc(50vw - 20rem)' }}>
+                        <Text lineClamp={1} w="calc(50vw - 20rem)">
                           {game.summary}
                         </Text>
                       </td>

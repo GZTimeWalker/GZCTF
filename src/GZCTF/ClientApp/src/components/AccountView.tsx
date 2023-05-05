@@ -20,7 +20,7 @@ const AccountView: FC<AccountViewProps> = ({ onSubmit, children }) => {
   const navigate = useNavigate()
 
   return (
-    <Center style={{ height: '100vh' }}>
+    <Center h="100vh">
       <Stack align="center" justify="center">
         <LogoHeader onClick={() => navigate('/')} />
         <form className={classes.input} onSubmit={onSubmit}>

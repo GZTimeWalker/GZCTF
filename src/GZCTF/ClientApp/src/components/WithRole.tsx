@@ -39,7 +39,7 @@ const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
 
   if (role && RoleMap.get(role)! < required /* show loader before redirect */) {
     return (
-      <Center style={{ height: 'calc(100vh - 32px)' }}>
+      <Center h="calc(100vh - 32px)">
         <Loader />
       </Center>
     )

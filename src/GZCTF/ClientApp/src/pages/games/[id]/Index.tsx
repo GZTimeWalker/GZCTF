@@ -243,7 +243,8 @@ const GameDetail: FC = () => {
         <Group
           noWrap
           position="apart"
-          style={{ width: '100%', padding: `0 ${theme.spacing.md}` }}
+          w="100%"
+          p={`0 ${theme.spacing.md}`}
           className={classes.container}
         >
           <Stack spacing={6} className={classes.flexGrowAtSm}>
@@ -284,7 +285,7 @@ const GameDetail: FC = () => {
             <Group>{ControlButtons}</Group>
           </Stack>
           <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">
-            <Center style={{ height: '100%' }}>
+            <Center h="100%">
               {!game?.poster && (
                 <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
               )}

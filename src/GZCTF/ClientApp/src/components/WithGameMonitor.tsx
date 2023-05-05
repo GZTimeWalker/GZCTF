@@ -75,7 +75,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                 </Tabs.List>
               </Tabs>
             </Stack>
-            <Stack style={{ width: 'calc(100% - 11rem)', position: 'relative' }}>
+            <Stack w="calc(100% - 11rem)" pos="relative">
               <LoadingOverlay
                 visible={isLoading ?? false}
                 overlayOpacity={1}

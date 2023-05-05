@@ -292,6 +292,7 @@ const GameChallengeEdit: FC = () => {
           </Grid.Col>
           <Grid.Col span={3}>
             <Textarea
+              w="100%"
               label={
                 <Group spacing="sm">
                   <Text size="sm">题目描述</Text>
@@ -301,7 +302,6 @@ const GameChallengeEdit: FC = () => {
                 </Group>
               }
               value={challengeInfo?.content ?? ''}
-              style={{ width: '100%' }}
               autosize
               disabled={disabled}
               minRows={5}
@@ -413,7 +413,7 @@ const GameChallengeEdit: FC = () => {
               />
             </Grid.Col>
             <Grid.Col span={4}>
-              <Group spacing={0} align="center" pt={22} style={{ height: '100%' }}>
+              <Group spacing={0} align="center" pt={22} h="100%">
                 {challenge?.testContainer ? (
                   <Code
                     sx={(theme) => ({

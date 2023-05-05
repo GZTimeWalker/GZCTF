@@ -141,7 +141,7 @@ const Profile: FC = () => {
             <TextInput
               label="用户名"
               type="text"
-              style={{ width: '100%' }}
+              w="100%"
               value={profile.userName ?? 'ctfer'}
               disabled={disabled}
               onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
@@ -161,7 +161,7 @@ const Profile: FC = () => {
         <TextInput
           label="邮箱"
           type="email"
-          style={{ width: '100%' }}
+          w="100%"
           value={user?.email ?? 'ctfer@gzti.me'}
           disabled
           readOnly
@@ -169,7 +169,7 @@ const Profile: FC = () => {
         <TextInput
           label="手机号"
           type="tel"
-          style={{ width: '100%' }}
+          w="100%"
           value={profile.phone ?? ''}
           disabled={disabled}
           onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
@@ -178,7 +178,7 @@ const Profile: FC = () => {
           <TextInput
             label="学工号"
             type="number"
-            style={{ width: '100%' }}
+            w="100%"
             value={profile.stdNumber ?? ''}
             disabled={disabled}
             onChange={(event) => setProfile({ ...profile, stdNumber: event.target.value })}
@@ -186,7 +186,7 @@ const Profile: FC = () => {
           <TextInput
             label="真实姓名"
             type="text"
-            style={{ width: '100%' }}
+            w="100%"
             value={profile.realName ?? ''}
             disabled={disabled}
             onChange={(event) => setProfile({ ...profile, realName: event.target.value })}
@@ -195,7 +195,7 @@ const Profile: FC = () => {
         <Textarea
           label="描述"
           value={profile.bio ?? '这个人很懒，什么都没有写'}
-          style={{ width: '100%' }}
+          w="100%"
           disabled={disabled}
           autosize
           minRows={2}
@@ -242,8 +242,8 @@ const Profile: FC = () => {
       {isMobile ? (
         context
       ) : (
-        <Center style={{ height: '90vh' }}>
-          <Paper style={{ width: '55%', maxWidth: 600 }} shadow="sm" pt="2%" p="5%">
+        <Center h="90vh">
+          <Paper w="55%" maw={600} shadow="sm" pt="2%" p="5%">
             {context}
           </Paper>
         </Center>
@@ -266,7 +266,7 @@ const Profile: FC = () => {
             required
             label="新邮箱"
             type="email"
-            style={{ width: '100%' }}
+            w="100%"
             placeholder={user?.email ?? 'ctfer@gzti.me'}
             value={email}
             onChange={(event) => setEmail(event.target.value)}

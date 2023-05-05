@@ -108,7 +108,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
           {files.length === 0 ? (
             <>
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
-              <Center style={{ height: '40vh' }}>
+              <Center h="40vh">
                 <Stack spacing={0}>
                   <Title order={2}>你还没有选择任何文件</Title>
                   <Text>你选择的文件将会显示在这里</Text>

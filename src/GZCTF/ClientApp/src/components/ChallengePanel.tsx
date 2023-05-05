@@ -110,7 +110,7 @@ const ChallengePanel: FC = () => {
                     </Center>
                     <Stack spacing="xs">
                       <Skeleton height="1rem" width="6rem" mt={5} />
-                      <Group position="center" spacing="md" style={{ height: 20 }}>
+                      <Group position="center" spacing="md" h={20}>
                         <Skeleton height="1.2rem" width="1.2rem" />
                         <Skeleton height="1.2rem" width="1.2rem" />
                         <Skeleton height="1.2rem" width="1.2rem" />
@@ -140,14 +140,8 @@ const ChallengePanel: FC = () => {
   }
 
   return (
-    <Group
-      spacing="sm"
-      noWrap
-      position="apart"
-      align="flex-start"
-      style={{ maxWidth: 'calc(100% - 20rem)' }}
-    >
-      <Stack style={{ minWidth: '10rem' }}>
+    <Group spacing="sm" noWrap position="apart" align="flex-start" miw="calc(100% - 20rem)">
+      <Stack miw="10rem">
         <Button
           leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
           onClick={() => setWriteupSubmitOpened(true)}
@@ -208,11 +202,9 @@ const ChallengePanel: FC = () => {
         </Tabs>
       </Stack>
       <ScrollArea
-        style={{
-          width: 'calc(100% - 9rem)',
-          height: 'calc(100vh - 100px)',
-          position: 'relative',
-        }}
+        w="calc(100% - 9rem)"
+        h="calc(100vh - 100px)"
+        pos="relative"
         offsetScrollbars
         scrollbarSize={4}
       >
@@ -244,7 +236,7 @@ const ChallengePanel: FC = () => {
             ))}
           </SimpleGrid>
         ) : (
-          <Stack spacing={0} pt="20vh" style={{ width: '20em', margin: 'auto' }}>
+          <Stack spacing={0} pt="20vh" w="20em" m="auto">
             <Title order={2}>题目都被解出啦！</Title>
             <Text>或许还有更难的挑战在等着你……</Text>
           </Stack>

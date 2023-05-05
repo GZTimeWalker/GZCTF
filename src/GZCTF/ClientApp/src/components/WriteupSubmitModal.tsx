@@ -95,7 +95,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
   return (
     <Modal
       title={
-        <Group style={{ width: '100%' }} position="apart">
+        <Group w="100%" position="apart">
           <Title order={4}>管理 Writeup</Title>
           <Group spacing={4}>
             <Icon

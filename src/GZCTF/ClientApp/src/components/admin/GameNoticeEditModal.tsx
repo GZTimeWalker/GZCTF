@@ -99,7 +99,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
             </Group>
           }
           value={content}
-          style={{ width: '100%' }}
+          w="100%"
           autosize
           minRows={5}
           maxRows={16}
@@ -107,7 +107,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         />
         <Group grow style={{ margin: 'auto', width: '100%' }}>
           <Button fullWidth disabled={disabled} onClick={onConfirm}>
-            {'确认'}
+            确认
           </Button>
         </Group>
       </Stack>
