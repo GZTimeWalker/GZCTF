@@ -186,7 +186,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
             </Group>
-            <Group position="apart" w="calc(30%)">
+            <Group position="apart" w="30%">
               <Box>
                 <Text>{participation.organization}</Text>
                 <Text size="sm" color="dimmed" weight={700}>
@@ -200,7 +200,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
           </Group>
         </Accordion.Control>
-        <Group w={`0 ${theme.spacing.xl}`} miw={`calc(${theme.spacing.xl} * 3)`} position="right">
+        <Group m={`0 ${theme.spacing.xl}`} miw={`calc(${theme.spacing.xl} * 3)`} position="right">
           {StatusMap.get(participation.status!)?.transformTo.map((value) => {
             const s = StatusMap.get(value)!
             return (

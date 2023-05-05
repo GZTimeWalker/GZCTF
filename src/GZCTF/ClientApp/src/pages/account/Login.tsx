@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core'
 import { useInputState, getHotkeyHandler } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -11,7 +11,7 @@ import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
 const Login: FC = () => {
-  const params = useParams()
+  const params = useSearchParams()[0]
   const navigate = useNavigate()
 
   const [pwd, setPwd] = useInputState('')
@@ -49,8 +49,7 @@ const Login: FC = () => {
           withCloseButton: false,
         })
         api.account.mutateAccountProfile()
-        const from = params['from']
-        navigate(from ? (from as string) : '/')
+        navigate(params.get('from') ?? '/')
       })
       .catch((err) => {
         showErrorNotification(err)

@@ -307,7 +307,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         >
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
-            <Box className={classes.root} style={{ minHeight: '4rem' }}>
+            <Box className={classes.root} mih="4rem">
               {challenge?.context?.url && (
                 <Popover
                   opened={downloadOpened}
@@ -327,9 +327,9 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                       onMouseEnter={downloadOpen}
                       onMouseLeave={downloadClose}
                       onClick={() => window.open(challenge.context?.url ?? '#')}
-                      style={{
-                        float: 'right',
-                      }}
+                      top={0}
+                      right={0}
+                      pos="absolute"
                     >
                       <Icon path={mdiDownload} size={1} />
                     </ActionIcon>
@@ -341,7 +341,17 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                   </Popover.Dropdown>
                 </Popover>
               )}
-              <MarkdownRender source={challenge?.content ?? ''} />
+              <MarkdownRender
+                source={challenge?.content ?? ''}
+                sx={{
+                  '& div > p:first-child:before': {
+                    content: '""',
+                    float: 'right',
+                    width: 45,
+                    height: 45,
+                  },
+                }}
+              />
             </Box>
           </Group>
           {challenge?.hints && challenge.hints.length > 0 && (

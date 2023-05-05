@@ -124,6 +124,9 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
                       variant="filled"
                       size="lg"
                       color="brand"
+                      top={0}
+                      right={0}
+                      pos="absolute"
                       onMouseEnter={downloadOpen}
                       onMouseLeave={downloadClose}
                       onClick={() =>
@@ -134,9 +137,6 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
                           withCloseButton: false,
                         })
                       }
-                      style={{
-                        float: 'right',
-                      }}
                     >
                       <Icon path={mdiDownload} size={1} />
                     </ActionIcon>
@@ -148,7 +148,17 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
                   </Popover.Dropdown>
                 </Popover>
               )}
-              <MarkdownRender source={challenge?.content ?? ''} />
+              <MarkdownRender
+                source={challenge?.content ?? ''}
+                sx={{
+                  '& div > p:first-child:before': {
+                    content: '""',
+                    float: 'right',
+                    width: 45,
+                    height: 45,
+                  },
+                }}
+              />
             </Box>
           </Group>
           {challenge?.hints && challenge.hints.length > 0 && (

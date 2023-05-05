@@ -52,9 +52,9 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
     >
       <Card.Section pos="relative">
         {poster ? (
-          <Image src={poster} h={POSTER_HEIGHT} alt="poster" />
+          <Image src={poster} height={POSTER_HEIGHT} alt="poster" />
         ) : (
-          <Center h={POSTER_HEIGHT}>
+          <Center mah={POSTER_HEIGHT}>
             <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
           </Center>
         )}
@@ -62,9 +62,9 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
 
       <Card.Section
         inheritPadding
+        pos="relative"
+        mt={`calc(16px - ${POSTER_HEIGHT})`}
         style={{
-          position: 'relative',
-          marginTop: `calc(16px - ${POSTER_HEIGHT})`,
           alignContent: 'flex-end',
         }}
       >
@@ -76,22 +76,22 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
       </Card.Section>
 
       <Card.Section
+        h={34}
+        pos="relative"
+        mt={`calc(${POSTER_HEIGHT} - 2rem - 34px)`}
+        bg="rgba(0,0,0,.5)"
+        display="flex"
+        p="0 16px"
         style={{
-          position: 'relative',
-          marginTop: `calc(${POSTER_HEIGHT} - 2rem - 34px)`,
-          background: 'rgba(0,0,0,.5)',
-          display: 'flex',
-          height: 34,
-          padding: '0 16px',
           alignItems: 'center',
         }}
       >
-        <Title lineClamp={1} order={4} align="left" style={{ color: theme.colors.gray[0] }}>
+        <Title lineClamp={1} order={4} align="left" color={theme.colors.gray[0]}>
           &gt; {title}
         </Title>
       </Card.Section>
 
-      <Stack spacing={0} style={{ marginTop: 16 }}>
+      <Stack spacing={0} mt={16}>
         <Group noWrap spacing={0} position="apart">
           <Text size="sm" weight={700}>
             {status === GameStatus.Coming ? '开始于' : '结束于'}

@@ -121,7 +121,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
         },
       }}
     >
-      <Stack spacing="xs" mt="sm">
+      <Stack spacing="xs" mt={0}>
         <Divider />
         <Title order={5}>提交说明</Title>
         <List

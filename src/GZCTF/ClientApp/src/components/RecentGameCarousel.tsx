@@ -13,7 +13,7 @@ const RecentGameCarousel: FC<RecentGameCarouselProps> = ({ games, ...props }) =>
 
   return (
     <Carousel
-      sx={{ width: '100%' }}
+      w="100%"
       mx="auto"
       loop
       withIndicators

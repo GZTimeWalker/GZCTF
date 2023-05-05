@@ -3,11 +3,12 @@ import 'katex/dist/katex.min.css'
 import { marked } from 'marked'
 import Prism from 'prismjs'
 import { forwardRef } from 'react'
-import { TypographyStylesProvider } from '@mantine/core'
+import { Sx, TypographyStylesProvider } from '@mantine/core'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 
 interface MarkdownProps extends React.ComponentPropsWithoutRef<'div'> {
   source: string
+  sx?: Sx | (Sx | undefined)[]
 }
 
 const RenderReplacer = (func: any, replacer: (text: string) => string) => {
@@ -59,7 +60,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
       className={others.className ? cx(classes.root, others.className) : classes.root}
       {...others}
     >
-      <div className="line-numbers" dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
+      <div dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
     </TypographyStylesProvider>
   )
 })
