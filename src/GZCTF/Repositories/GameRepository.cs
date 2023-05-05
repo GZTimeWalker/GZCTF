@@ -51,6 +51,10 @@ public class GameRepository : RepositoryBase, IGameRepository
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
+    public Task<int[]> GetUpcomingGames(CancellationToken token = default)
+        => context.Games.Where(g => g.StartTimeUTC - DateTime.UtcNow < TimeSpan.FromMinutes(5))
+            .OrderBy(g => g.StartTimeUTC).Select(g => g.Id).ToArrayAsync(token);
+
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default)
         => await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
         {
@@ -289,7 +293,10 @@ public class GameRepository : RepositoryBase, IGameRepository
 public class ScoreboardCacheHandler : ICacheRequestHandler
 {
     public static CacheRequest MakeCacheRequest(int id)
-        => new(Utils.CacheKey.ScoreBoardBase, new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14) }, id.ToString());
+        => new(Utils.CacheKey.ScoreBoardBase, new()
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14)
+        }, id.ToString());
 
     public string? CacheKey(CacheRequest request)
     {

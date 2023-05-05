@@ -78,7 +78,7 @@ public class CacheMaker : IHostedService
                     continue;
                 }
 
-                var updateLock = $"_CacheUpdateLock_{key}";
+                var updateLock = CacheKey.UpdateLock(key);
 
                 logger.SystemLog($"缓存更新线程开始处理更新请求：{key}", TaskStatus.Pending, LogLevel.Debug);
 

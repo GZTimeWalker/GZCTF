@@ -212,9 +212,9 @@ builder.Services.AddScoped<IConfigService, ConfigService>();
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddChannel<CacheRequest>();
-builder.Services.AddHostedService<FlagChecker>();
 builder.Services.AddHostedService<CacheMaker>();
-builder.Services.AddHostedService<ContainerChecker>();
+builder.Services.AddHostedService<FlagChecker>();
+builder.Services.AddHostedService<CronJobService>();
 
 #endregion Services and Repositories
 

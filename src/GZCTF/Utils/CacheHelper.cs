@@ -48,12 +48,17 @@ public static class CacheHelper
 public static class CacheKey
 {
     /// <summary>
+    /// 缓存更新锁
+    /// </summary>
+    public static string UpdateLock(string key) => $"_CacheUpdateLock_{key}";
+
+    /// <summary>
     /// 积分榜缓存
     /// </summary>
     public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
 
     /// <summary>
-    /// 比赛通知缓存
+    /// 积分榜缓存
     /// </summary>
     public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
 

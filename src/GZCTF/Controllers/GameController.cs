@@ -846,7 +846,7 @@ public class GameController : ControllerBase
                 StatusCode = 429
             };
 
-        var destroyId = instance.Container.Id;
+        var destroyId = instance.Container.ContainerId;
 
         if (!await instanceRepository.DestroyContainer(instance.Container, token))
             return BadRequest(new RequestResponse("题目删除容器失败"));
