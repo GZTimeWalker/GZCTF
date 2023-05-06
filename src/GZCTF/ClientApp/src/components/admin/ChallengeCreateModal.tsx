@@ -42,7 +42,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
         .then((data) => {
           showNotification({
             color: 'teal',
-            message: '添加比赛题目成功',
+            message: '比赛题目已添加',
             icon: <Icon path={mdiCheck} size={1} />,
           })
           onAddChallenge(data.data)

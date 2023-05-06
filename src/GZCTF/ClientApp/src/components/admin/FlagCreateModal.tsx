@@ -37,7 +37,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: 'flag 创建成功',
+          message: 'flag 已创建',
           icon: <Icon path={mdiCheck} size={1} />,
         })
         challenge &&

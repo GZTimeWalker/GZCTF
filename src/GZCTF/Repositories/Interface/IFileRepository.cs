@@ -12,6 +12,16 @@ public interface IFileRepository : IRepository
     public Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default);
 
     /// <summary>
+    /// 创建或更新一个图像文件
+    /// </summary>
+    /// <param name="file">文件对象</param>
+    /// <param name="fileName">保存文件名</param>
+    /// <param name="token">取消Token</param>
+    /// <param name="resize">缩放后的宽，设置为 0 则不缩放</param>
+    /// <returns>文件Id</returns>
+    public Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, CancellationToken token = default, int resize = 300);
+
+    /// <summary>
     /// 删除一个文件
     /// </summary>
     /// <param name="file">文件对象</param>

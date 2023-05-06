@@ -52,7 +52,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         .then((data) => {
           showNotification({
             color: 'teal',
-            message: '通知修改成功',
+            message: '通知已修改',
             icon: <Icon path={mdiCheck} size={1} />,
           })
           mutateGameNotice(data.data)

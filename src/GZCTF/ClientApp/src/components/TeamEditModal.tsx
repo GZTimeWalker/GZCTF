@@ -22,7 +22,7 @@ import {
 import { Dropzone } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
-import { showNotification } from '@mantine/notifications'
+import { showNotification, updateNotification, notifications } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
@@ -83,6 +83,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [inviteCode, setInviteCode] = useState('')
+  const [disabled, setDisabled] = useState(false)
+  const { mutate: mutateTeams } = api.team.useTeamGetTeamsInfo()
 
   const theme = useMantineTheme()
   const clipboard = useClipboard()
@@ -114,7 +116,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
           })
-          api.team.mutateTeamGetTeamsInfo()
+          mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo?.id))
           props.onClose()
         })
         .catch(showErrorNotification)
@@ -134,7 +136,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           })
           setInviteCode('')
           setTeamInfo(null)
-          api.team.mutateTeamGetTeamsInfo()
+          mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
           props.onClose()
         })
         .catch(showErrorNotification)
@@ -154,8 +156,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
           })
-          api.team.mutateTeamGetTeamsInfo()
           setTeamInfo(team.data)
+          mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? team.data : x)), {
+            revalidate: false,
+          })
         })
         .catch(showErrorNotification)
     }
@@ -171,8 +175,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        api.team.mutateTeamGetTeamsInfo()
         setTeamInfo(data.data)
+        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo?.id ? data.data : x)), {
+          revalidate: false,
+        })
       })
       .catch(showErrorNotification)
   }
@@ -195,19 +201,35 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
   const onChangeAvatar = () => {
     if (avatarFile && teamInfo?.id) {
+      setDisabled(true)
+      notifications.clean()
+      showNotification({
+        id: 'upload-avatar',
+        color: 'orange',
+        message: '正在上传头像',
+        loading: true,
+        autoClose: false,
+      })
+
       api.team
         .teamAvatar(teamInfo?.id, {
           file: avatarFile,
         })
         .then((data) => {
-          showNotification({
+          updateNotification({
+            id: 'upload-avatar',
             color: 'teal',
             message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
+            autoClose: true,
           })
-          setTeamInfo({ ...teamInfo, avatar: data.data })
-          api.team.mutateTeamGetTeamsInfo()
           setAvatarFile(null)
+          const newTeamInfo = { ...teamInfo, avatar: data.data }
+          setTeamInfo(newTeamInfo)
+          mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)), {
+            revalidate: false,
+          })
+          setDisabled(false)
           setDropzoneOpened(false)
         })
         .catch((err) => {
@@ -228,7 +250,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             message: '队伍信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
           })
-          api.team.mutateTeamGetTeamsInfo()
+          mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)), {
+            revalidate: false,
+          })
         })
         .catch(showErrorNotification)
     }
@@ -415,6 +439,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           m="0 auto 20px auto"
           miw={220}
           mih={220}
+          disabled={disabled}
           maxSize={3 * 1024 * 1024}
           accept={ACCEPT_IMAGE_MIME_TYPE}
         >
@@ -433,7 +458,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             )}
           </Group>
         </Dropzone>
-        <Button fullWidth variant="outline" onClick={onChangeAvatar}>
+        <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
           更新头像
         </Button>
       </Modal>

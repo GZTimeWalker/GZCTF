@@ -2,6 +2,7 @@
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp.Formats.Gif;
 
 namespace CTFServer.Repositories;
 
@@ -19,25 +20,21 @@ public class FileRepository : RepositoryBase, IFileRepository
 
     public override Task<int> CountAsync(CancellationToken token = default) => context.Files.CountAsync(token);
 
-    public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
-    {
-        using Stream tmp = file.Length <= 16 * 1024 * 1024 ? new MemoryStream() :
+    private static Stream GetStream(long bufferSize) => bufferSize <= 16 * 1024 * 1024 ? new MemoryStream() :
                 File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
 
-        logger.SystemLog($"缓存位置：{tmp.GetType()}", TaskStatus.Pending, LogLevel.Trace);
-
-        await file.CopyToAsync(tmp, token);
-
-        tmp.Position = 0;
-        var hash = await SHA256.HashDataAsync(tmp, token);
+    private async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream, CancellationToken token = default)
+    {
+        contentStream.Position = 0;
+        var hash = await SHA256.HashDataAsync(contentStream, token);
         var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
         var localFile = await GetFileByHash(fileHash, token);
 
         if (localFile is not null)
         {
-            localFile.FileSize = file.Length;
-            localFile.Name = fileName ?? file.FileName; // allow rename
+            localFile.FileSize = contentStream.Length;
+            localFile.Name = fileName; // allow rename
             localFile.UploadTimeUTC = DateTimeOffset.UtcNow; // update upload time
             localFile.ReferenceCount++; // same hash, add ref count
 
@@ -47,7 +44,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         }
         else
         {
-            localFile = new() { Hash = fileHash, Name = fileName ?? file.FileName, FileSize = file.Length };
+            localFile = new() { Hash = fileHash, Name = fileName, FileSize = contentStream.Length };
             await context.AddAsync(localFile, token);
 
             var path = Path.Combine(uploadPath, localFile.Location);
@@ -57,13 +54,56 @@ public class FileRepository : RepositoryBase, IFileRepository
 
             using var fileStream = File.Create(Path.Combine(path, localFile.Hash));
 
-            tmp.Position = 0;
-            await tmp.CopyToAsync(fileStream, token);
+            contentStream.Position = 0;
+            await contentStream.CopyToAsync(fileStream, token);
         }
 
         await SaveAsync(token);
-
         return localFile;
+    }
+
+    public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
+    {
+        using var tmp = GetStream(file.Length);
+
+        logger.SystemLog($"缓存位置：{tmp.GetType()}", TaskStatus.Pending, LogLevel.Trace);
+
+        await file.CopyToAsync(tmp, token);
+        return await StoreLocalFile(fileName ?? file.Name, tmp, token);
+    }
+
+    public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, CancellationToken token = default, int resize = 300)
+    {
+        // we do not process images larger than 32MB
+        if (file.Length >= 32 * 1024 * 1024)
+            return null;
+
+        try
+        {
+            using Stream webpStream = new MemoryStream();
+
+            using (var tmp = GetStream(file.Length))
+            {
+                await file.CopyToAsync(tmp, token);
+                tmp.Position = 0;
+                using var image = await Image.LoadAsync(tmp, token);
+
+                if (image.Metadata.DecodedImageFormat is GifFormat)
+                    return await StoreLocalFile($"{fileName}.gif", tmp, token);
+
+                if (resize > 0)
+                    image.Mutate(im => im.Resize(resize, 0));
+
+                await image.SaveAsWebpAsync(webpStream, token);
+            }
+
+            return await StoreLocalFile($"{fileName}.webp", webpStream, token);
+        }
+        catch
+        {
+            logger.SystemLog($"无法存储图像文件：{file.Name}", TaskStatus.Failed, LogLevel.Warning);
+            return null;
+        }
     }
 
     public async Task<TaskStatus> DeleteFile(LocalFile file, CancellationToken token = default)

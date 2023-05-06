@@ -53,6 +53,8 @@ const GameChallengeEdit: FC = () => {
     revalidateOnFocus: false,
   })
 
+  const { mutate: mutateChals } = api.edit.useEditGetGameChallenges(numId)
+
   const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)
 
@@ -92,7 +94,9 @@ const GameChallengeEdit: FC = () => {
             })
           }
           mutate(data.data)
-          api.edit.mutateEditGetGameChallenges(numId)
+          mutateChals((chals) => chals?.map((chal) => (chal.id === numCId ? data.data : chal)), {
+            revalidate: false,
+          })
         })
         .catch(showErrorNotification)
         .finally(() => {
@@ -112,7 +116,7 @@ const GameChallengeEdit: FC = () => {
           message: '题目已删除',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        api.edit.mutateEditGetGameChallenges(numId)
+        mutateChals((chals) => chals?.filter((chal) => chal.id !== numCId), { revalidate: false })
         navigate(`/admin/games/${id}/challenges`)
       })
       .catch(showErrorNotification)

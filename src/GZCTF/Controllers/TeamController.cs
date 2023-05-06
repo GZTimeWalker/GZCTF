@@ -486,10 +486,10 @@ public class TeamController : ControllerBase
         if (team.AvatarHash is not null)
             _ = await FileService.DeleteFileByHash(team.AvatarHash, token);
 
-        var avatar = await FileService.CreateOrUpdateFile(file, "avatar", token);
+        var avatar = await FileService.CreateOrUpdateImage(file, "avatar", token);
 
         if (avatar is null)
-            return BadRequest(new RequestResponse("未知错误"));
+            return BadRequest(new RequestResponse("队伍头像更新失败"));
 
         team.AvatarHash = avatar.Hash;
         await teamRepository.SaveAsync(token);

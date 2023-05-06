@@ -48,15 +48,11 @@ const useStyles = createStyles((theme) => ({
 
 const Home: FC = () => {
   const { data: posts, mutate } = api.info.useInfoGetLatestPosts({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
+    refreshInterval: 5 * 60 * 1000,
   })
 
   const { data: allGames } = api.game.useGameGamesAll({
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
+    refreshInterval: 5 * 60 * 1000,
   })
 
   allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())

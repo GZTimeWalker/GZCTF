@@ -143,7 +143,7 @@ const AppNavbar: FC = () => {
   const logout = () => {
     api.account.accountLogOut().then(() => {
       navigate('/')
-      mutate((key) => typeof key === 'string' && key.includes('game'), undefined, {
+      mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
         revalidate: false,
       })
       showNotification({

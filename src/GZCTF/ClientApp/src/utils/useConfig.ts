@@ -91,10 +91,12 @@ export const localStorageProvider = () => {
   const cacheKey = 'gzctf-cache'
   const map = new Map(JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]'))
 
-  window.addEventListener('beforeunload', () => {
-    const appCache = LZString.compress(JSON.stringify(Array.from(map.entries())))
-    localStorage.setItem(cacheKey, appCache)
-  })
+  if (!import.meta.env.DEV) {
+    window.addEventListener('beforeunload', () => {
+      const appCache = LZString.compress(JSON.stringify(Array.from(map.entries())))
+      localStorage.setItem(cacheKey, appCache)
+    })
+  }
 
   return map as Cache
 }

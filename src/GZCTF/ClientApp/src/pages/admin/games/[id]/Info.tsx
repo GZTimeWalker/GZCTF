@@ -23,7 +23,7 @@ import { DatePickerInput, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
-import { showNotification } from '@mantine/notifications'
+import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import {
   mdiKeyboardBackspace,
   mdiCheck,
@@ -90,14 +90,27 @@ const GameInfoEdit: FC = () => {
 
   const onUpdatePoster = (file: File | undefined) => {
     if (game && file) {
+      setDisabled(true)
+      notifications.clean()
+      showNotification({
+        id: 'upload-poster',
+        color: 'orange',
+        message: '正在上传海报',
+        loading: true,
+        autoClose: false,
+      })
+
       api.edit
         .editUpdateGamePoster(game.id!, { file })
         .then((res) => {
-          showNotification({
+          updateNotification({
+            id: 'upload-poster',
             color: 'teal',
-            message: '成功修改比赛海报',
+            message: '比赛海报已更新',
             icon: <Icon path={mdiCheck} size={1} />,
+            autoClose: true,
           })
+          setDisabled(false)
           mutate({ ...game, poster: res.data })
         })
         .catch(showErrorNotification)

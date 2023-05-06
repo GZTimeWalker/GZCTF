@@ -75,7 +75,7 @@ const GameChallengeEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '题目状态更新成功',
+          message: '题目状态已更新',
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutate(

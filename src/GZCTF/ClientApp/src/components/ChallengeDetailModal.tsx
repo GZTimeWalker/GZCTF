@@ -21,7 +21,7 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { useClipboard, useDisclosure, useInputState } from '@mantine/hooks'
-import { showNotification, updateNotification } from '@mantine/notifications'
+import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
@@ -221,7 +221,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       })
       .then((res) => {
         setSubmitId(res.data)
-
+        notifications.clean()
         showNotification({
           id: 'flag-submitted',
           color: 'orange',

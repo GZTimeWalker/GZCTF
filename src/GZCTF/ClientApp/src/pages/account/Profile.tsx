@@ -17,7 +17,7 @@ import {
   SimpleGrid,
 } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
-import { showNotification } from '@mantine/notifications'
+import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
@@ -41,7 +41,7 @@ const Profile: FC = () => {
   })
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
-  const [disabled] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   const [mailEditOpened, setMailEditOpened] = useState(false)
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false)
@@ -64,17 +64,30 @@ const Profile: FC = () => {
 
   const onChangeAvatar = () => {
     if (avatarFile) {
+      setDisabled(true)
+      notifications.clean()
+      showNotification({
+        id: 'upload-avatar',
+        color: 'orange',
+        message: '正在上传头像',
+        loading: true,
+        autoClose: false,
+      })
+
       api.account
         .accountAvatar({
           file: avatarFile,
         })
         .then(() => {
-          showNotification({
+          updateNotification({
+            id: 'upload-avatar',
             color: 'teal',
             message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
+            autoClose: true,
           })
-          mutate({ ...user })
+          setDisabled(false)
+          mutate({ ...user }, { revalidate: false })
           setAvatarFile(null)
           setDropzoneOpened(false)
         })

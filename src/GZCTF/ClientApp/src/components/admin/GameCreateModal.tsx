@@ -44,7 +44,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
       .then((data) => {
         showNotification({
           color: 'teal',
-          message: '比赛创建成功',
+          message: '比赛已创建',
           icon: <Icon path={mdiCheck} size={1} />,
         })
         onAddGame(data.data)

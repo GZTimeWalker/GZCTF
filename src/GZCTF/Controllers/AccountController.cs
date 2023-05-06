@@ -503,10 +503,10 @@ public class AccountController : ControllerBase
         if (user!.AvatarHash is not null)
             await fileService.DeleteFileByHash(user.AvatarHash, token);
 
-        var avatar = await fileService.CreateOrUpdateFile(file, "avatar", token);
+        var avatar = await fileService.CreateOrUpdateImage(file, "avatar", token);
 
         if (avatar is null)
-            return BadRequest(new RequestResponse("文件创建失败"));
+            return BadRequest(new RequestResponse("用户头像更新失败"));
 
         user.AvatarHash = avatar.Hash;
         var result = await userManager.UpdateAsync(user);
