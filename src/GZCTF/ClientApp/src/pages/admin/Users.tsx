@@ -268,28 +268,20 @@ const Users: FC = () => {
                       </Group>
                     </td>
                     <td>
-                      <Text
-                        size="sm"
-                        style={{ fontFamily: theme.fontFamilyMonospace }}
-                        lineClamp={1}
-                      >
+                      <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
                         {user.email}
                       </Text>
                     </td>
                     <td>
                       <Group noWrap position="apart">
-                        <Text
-                          lineClamp={1}
-                          size="sm"
-                          style={{ fontFamily: theme.fontFamilyMonospace }}
-                        >
+                        <Text lineClamp={1} size="sm" ff={theme.fontFamilyMonospace}>
                           {user.ip}
                         </Text>
                       </Group>
                     </td>
                     <td>{!user.realName ? '用户未填写' : user.realName}</td>
                     <td>
-                      <Text size="sm" style={{ fontFamily: theme.fontFamilyMonospace }}>
+                      <Text size="sm" ff={theme.fontFamilyMonospace}>
                         {!user.stdNumber ? '00000000' : user.stdNumber}
                       </Text>
                     </td>

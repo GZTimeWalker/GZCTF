@@ -294,7 +294,7 @@ const GameDetail: FC = () => {
         </Group>
       </div>
       <Container className={classes.content}>
-        <Stack spacing="xs">
+        <Stack spacing="xs" pb={100}>
           {GetAlert(status, game?.teamName ?? '')}
           {teamRequire && (
             <Alert color="yellow" icon={<Icon path={mdiAlertCircle} />} title="当前无法报名">
@@ -311,7 +311,7 @@ const GameDetail: FC = () => {
               {isMobile && '请使用电脑端参与比赛及查看比赛详情。'}
             </Alert>
           )}
-          <MarkdownRender source={game?.content ?? ''} style={{ marginBottom: 100 }} />
+          <MarkdownRender source={game?.content ?? ''} />
         </Stack>
         <GameJoinModal
           title="补全报名信息"

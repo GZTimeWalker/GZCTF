@@ -125,7 +125,7 @@ const GameChallengeEdit: FC = () => {
                 三血奖励
               </Button>
               <Button
-                style={{ marginRight: '18px' }}
+                mr="18px"
                 leftIcon={<Icon path={mdiPlus} size={1} />}
                 onClick={() => setCreateOpened(true)}
               >

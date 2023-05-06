@@ -140,7 +140,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             required
           />
         </Group>
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
+        <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onCreate}>
             创建比赛
           </Button>

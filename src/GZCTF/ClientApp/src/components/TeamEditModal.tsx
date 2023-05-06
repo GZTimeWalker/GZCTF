@@ -374,7 +374,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           </Stack>
         </ScrollArea>
 
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
+        <Group grow m="auto" w="100%">
           <Button
             fullWidth
             color="red"
@@ -421,15 +421,13 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               withCloseButton: false,
             })
           }}
-          style={{
-            margin: '0 auto 20px auto',
-            minWidth: '220px',
-            minHeight: '220px',
-          }}
+          m="0 auto 20px auto"
+          miw={220}
+          mih={220}
           maxSize={3 * 1024 * 1024}
           accept={ACCEPT_IMAGE_MIME_TYPE}
         >
-          <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
+          <Group position="center" spacing="xl" mih={240} style={{ pointerEvents: 'none' }}>
             {avatarFile ? (
               <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
             ) : (

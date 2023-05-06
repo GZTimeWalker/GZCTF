@@ -129,13 +129,13 @@ const Profile: FC = () => {
   const context = (
     <>
       {/* Header */}
-      <Box style={{ marginBottom: '5px' }}>
+      <Box mb={5}>
         <h2>个人信息</h2>
       </Box>
       <Divider />
 
       {/* User Info */}
-      <Stack spacing="md" style={{ margin: 'auto', marginTop: '15px' }}>
+      <Stack spacing="md" m="auto" mt={15}>
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
@@ -202,7 +202,7 @@ const Profile: FC = () => {
           maxRows={4}
           onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
         />
-        <Box style={{ margin: 'auto', width: '100%' }}>
+        <Box m="auto" w="100%">
           <Grid grow>
             <Grid.Col span={4}>
               <Button
@@ -305,15 +305,13 @@ const Profile: FC = () => {
               withCloseButton: false,
             })
           }}
-          style={{
-            margin: '0 auto 20px auto',
-            minWidth: '220px',
-            minHeight: '220px',
-          }}
+          m="0 auto 20px auto"
+          miw={220}
+          mih={220}
           maxSize={3 * 1024 * 1024}
           accept={ACCEPT_IMAGE_MIME_TYPE}
         >
-          <Group position="center" spacing="xl" style={{ minHeight: 240, pointerEvents: 'none' }}>
+          <Group position="center" spacing="xl" mih={240} style={{ pointerEvents: 'none' }}>
             {avatarFile ? (
               <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
             ) : (

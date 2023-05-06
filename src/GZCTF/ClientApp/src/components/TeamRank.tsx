@@ -73,12 +73,7 @@ const TeamRank: FC<PaperProps> = (props) => {
             </Stack>
           </Skeleton>
         </Group>
-        <Group
-          grow
-          style={{
-            textAlign: 'center',
-          }}
-        >
+        <Group grow ta="center">
           <Stack spacing={2}>
             <Skeleton visible={!data}>
               <Text className={classes.number}>{data?.rank?.rank ?? '0'}</Text>

@@ -228,7 +228,7 @@ const TableRow: FC<{
                   classNames={tooltipClasses}
                   transitionProps={{ transition: 'pop' }}
                   label={
-                    <Stack align="flex-start" spacing={0} style={{ maxWidth: '20rem' }}>
+                    <Stack align="flex-start" spacing={0} maw="20rem">
                       <Text lineClamp={3}>{item.title}</Text>
                       <Text color={tag.color} style={textStyle}>
                         + {chal?.score} pts
@@ -316,7 +316,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
             />
           </Group>
         )}
-        <Box style={{ position: 'relative' }}>
+        <Box pos="relative">
           <Box
             sx={{
               maxWidth: '100%',
@@ -386,7 +386,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
         bloodBonusMap={BloodData}
         opened={itemDetailOpened}
         withCloseButton={false}
-        size="40rem"
+        size="45rem"
         onClose={() => setItemDetailOpened(false)}
         item={currentItem}
       />

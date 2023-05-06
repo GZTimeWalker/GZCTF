@@ -147,7 +147,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
                 一份标准 PDF 文档
               </Text>
               ，除题解外还需附有每道题目获得
-              <Text mx={5} span style={{ fontFamily: theme.fontFamilyMonospace }}>
+              <Text mx={5} span ff={theme.fontFamilyMonospace}>
                 flag
               </Text>
               字符串时的相关截图。
@@ -178,12 +178,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
                 <Text weight={600} size="md">
                   {data?.name ?? 'Writeup-1-2-2022-10-11T12:00:00.pdf'}
                 </Text>
-                <Text
-                  weight={600}
-                  size="sm"
-                  color="dimmed"
-                  style={{ fontFamily: theme.fontFamilyMonospace }}
-                >
+                <Text weight={600} size="sm" color="dimmed" ff={theme.fontFamilyMonospace}>
                   {data?.fileSize ? hunamize(data.fileSize) : '456.64 KB'}
                 </Text>
               </Stack>

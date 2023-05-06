@@ -100,14 +100,10 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
     >
       <Stack spacing="sm">
         <Divider />
-        <Stack
-          spacing="sm"
-          justify="space-between"
-          style={{ position: 'relative', minHeight: '20vh' }}
-        >
+        <Stack spacing="sm" justify="space-between" pos="relative" mih="20vh">
           <LoadingOverlay visible={!challenge} />
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
-            <Box className={classes.root} style={{ minHeight: '4rem' }}>
+            <Box className={classes.root} mih="4rem">
               {attachmentType !== FileType.None && (
                 <Popover
                   opened={downloadOpened}
@@ -166,7 +162,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               {challenge.hints.map((hint) => (
                 <Group spacing="xs" align="flex-start" noWrap>
                   <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-                  <Text key={hint} size="sm" style={{ maxWidth: 'calc(100% - 2rem)' }}>
+                  <Text key={hint} size="sm" maw="calc(100% - 2rem)">
                     {hint}
                   </Text>
                 </Group>

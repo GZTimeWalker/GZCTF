@@ -69,14 +69,8 @@ const ChallengePanel: FC = () => {
   // skeleton for loading
   if (!challenges) {
     return (
-      <Group
-        spacing="sm"
-        noWrap
-        position="apart"
-        align="flex-start"
-        style={{ maxWidth: 'calc(100% - 20rem)' }}
-      >
-        <Stack sx={{ minWidth: '10rem' }} spacing={6}>
+      <Group spacing="sm" noWrap position="apart" align="flex-start" maw="calc(100% - 20rem)">
+        <Stack miw="10rem" spacing={6}>
           {Array(8)
             .fill(null)
             .map((_v, i) => (
@@ -101,7 +95,7 @@ const ChallengePanel: FC = () => {
             .fill(null)
             .map((_v, i) => (
               <Card key={i} radius="md" shadow="sm">
-                <Stack spacing="sm" style={{ position: 'relative', zIndex: 99 }}>
+                <Stack spacing="sm" pos="relative" style={{ zIndex: 99 }}>
                   <Skeleton height="1.5rem" width="70%" mt={4} />
                   <Divider />
                   <Group noWrap position="apart" align="start">
@@ -127,7 +121,7 @@ const ChallengePanel: FC = () => {
 
   if (allChallenges.length === 0) {
     return (
-      <Center sx={{ width: 'calc(100% - 20rem)', height: 'calc(100vh - 100px)' }}>
+      <Center w="calc(100% - 20rem)" h="calc(100vh - 100px)">
         <Empty
           bordered
           description="Ouch! 这个比赛还没有可用题目呢……"
@@ -209,13 +203,7 @@ const ChallengePanel: FC = () => {
         scrollbarSize={4}
       >
         {currentChallenges && currentChallenges.length ? (
-          <SimpleGrid
-            cols={DEFAULT_COLS}
-            spacing="sm"
-            p="xs"
-            style={{ paddingTop: 0 }}
-            breakpoints={GRID_BREAKPOINTS}
-          >
+          <SimpleGrid cols={DEFAULT_COLS} spacing="sm" p="xs" pt={0} breakpoints={GRID_BREAKPOINTS}>
             {currentChallenges?.map((chal) => (
               <ChallengeCard
                 key={chal.id}

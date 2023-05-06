@@ -168,12 +168,10 @@ const PostEdit: FC = () => {
             {!isMobile && (
               <Title
                 order={1}
-                style={{
-                  color: theme.fn.rgba(
-                    theme.colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
-                    0.5
-                  ),
-                }}
+                c={theme.fn.rgba(
+                  theme.colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
+                  0.5
+                )}
               >
                 {`> ${postId === 'new' ? '新建' : '编辑'}文章`}
               </Title>

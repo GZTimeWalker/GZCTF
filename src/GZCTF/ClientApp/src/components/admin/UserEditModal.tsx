@@ -78,7 +78,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       {/* User Info */}
-      <Stack spacing="md" style={{ margin: 'auto', marginTop: '15px' }}>
+      <Stack spacing="md" m="auto" mt={15}>
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
@@ -183,7 +183,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           </Group>
         </Stack>
 
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
+        <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
             保存信息
           </Button>

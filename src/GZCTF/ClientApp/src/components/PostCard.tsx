@@ -36,7 +36,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
       <Blockquote
         color={theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]}
         cite={
-          <Group position="apart" style={{ margin: 'auto', fontStyle: 'normal' }}>
+          <Group position="apart" m="auto" fs="normal">
             <Group spacing={5} position="right">
               <Avatar src={post.authorAvatar} size="sm">
                 {post.authorName?.slice(0, 1) ?? 'A'}

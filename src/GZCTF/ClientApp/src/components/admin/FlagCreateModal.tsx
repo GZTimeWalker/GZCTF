@@ -80,7 +80,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
             },
           })}
         />
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
+        <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onCreate}>
             创建 flag
           </Button>

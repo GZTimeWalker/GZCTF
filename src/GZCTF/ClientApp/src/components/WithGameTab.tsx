@@ -64,21 +64,21 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
 
   return (
     <Card
+      w="9rem"
+      ta="center"
+      pt={4}
       style={{
-        width: '9rem',
-        textAlign: 'center',
-        paddingTop: '4px',
         overflow: 'visible',
       }}
     >
-      <Text style={{ fontWeight: 700 }} lineClamp={1}>
+      <Text weight={700} lineClamp={1}>
         {countdown.asHours() > 999
           ? '比赛还会很久'
           : countdown.asSeconds() > 0
           ? `${Math.floor(countdown.asHours())} : ${countdown.format('mm : ss')}`
           : '比赛已结束'}
       </Text>
-      <Card.Section style={{ marginTop: 4 }}>
+      <Card.Section mt={4}>
         <CustomProgress percentage={progress} py={0} />
       </Card.Section>
     </Card>
@@ -156,7 +156,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   }, [game, role, location])
 
   return (
-    <Stack style={{ position: 'relative' }}>
+    <Stack pos="relative">
       <LoadingOverlay
         visible={!game}
         overlayOpacity={1}

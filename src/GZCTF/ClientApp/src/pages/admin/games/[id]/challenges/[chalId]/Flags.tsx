@@ -420,7 +420,7 @@ const GameChallengeEdit: FC = () => {
       children: (
         <Stack>
           <Text>确定删除下列 flag 吗？</Text>
-          <Text style={{ fontFamily: theme.fontFamilyMonospace }}>{flag.flag}</Text>
+          <Text ff={theme.fontFamilyMonospace}>{flag.flag}</Text>
         </Stack>
       ),
       onConfirm: () => flag.id && onConfirmDeleteFlag(flag.id),

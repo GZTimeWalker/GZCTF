@@ -89,7 +89,7 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
         />
       </Popover.Target>
       <Popover.Dropdown>
-        <Progress color={color} value={strength} size={5} style={{ marginBottom: 10 }} />
+        <Progress color={color} value={strength} size={5} mb={10} />
         {checks}
       </Popover.Dropdown>
     </Popover>

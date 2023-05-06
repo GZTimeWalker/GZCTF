@@ -105,7 +105,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           maxRows={16}
           onChange={(e) => setContent(e.currentTarget.value)}
         />
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
+        <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onConfirm}>
             确认
           </Button>

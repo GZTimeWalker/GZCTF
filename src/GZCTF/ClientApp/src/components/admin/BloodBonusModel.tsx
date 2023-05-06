@@ -84,7 +84,7 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
           value={thirdBloodBonus / 10}
           onChange={(value) => value && setThirdBloodBonus(Math.floor(value * 10))}
         />
-        <Group grow style={{ margin: 'auto', width: '100%' }}>
+        <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onUpdate}>
             保存更改
           </Button>

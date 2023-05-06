@@ -95,12 +95,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
               <TeamRadarMap indicator={indicator} value={values} name={item?.name ?? ''} />
             )}
           </Center>
-          <Group
-            grow
-            style={{
-              textAlign: 'center',
-            }}
-          >
+          <Group grow ta="center">
             <Stack spacing={2}>
               <Text weight={700} size="sm" className={classes.mono}>
                 {item?.rank}

@@ -58,7 +58,7 @@ const GameWriteups: FC = () => {
         </Center>
       ) : (
         <Group noWrap align="flex-start" position="apart">
-          <Stack style={{ position: 'relative', marginTop: '-3rem', width: 'calc(100% - 16rem)' }}>
+          <Stack pos="relative" mt="-3rem" w="calc(100% - 16rem)">
             <PDFViewer url={selected.url} height="calc(100vh - 110px)" />
           </Stack>
           <ScrollArea miw="15rem" maw="15rem" h="calc(100vh - 110px - 3rem)" type="never">

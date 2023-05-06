@@ -15,7 +15,7 @@ const Challenges: FC = () => {
         <WithGameTab>
           <Group spacing="sm" position="apart" align="flex-start" grow noWrap>
             <ChallengePanel />
-            <Stack style={{ maxWidth: '20rem' }}>
+            <Stack maw="20rem">
               <TeamRank />
               <GameNoticePanel />
             </Stack>

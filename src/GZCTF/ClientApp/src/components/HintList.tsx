@@ -41,11 +41,11 @@ export const HintList: FC<HintListProps> = (props) => {
 
   return (
     <Input.Wrapper {...rest}>
-      <ScrollArea offsetScrollbars scrollbarSize={4} style={{ height }}>
+      <ScrollArea offsetScrollbars scrollbarSize={4} h={height}>
         <Stack spacing="xs">
           {hintdict.map((kv) => (
             <TextInput
-              style={{ marginRight: 4 }}
+              mr={4}
               value={kv.hint}
               disabled={disabled}
               key={kv.key}
@@ -57,11 +57,7 @@ export const HintList: FC<HintListProps> = (props) => {
               }
             />
           ))}
-          <Button
-            style={{ marginRight: 4 }}
-            leftIcon={<Icon path={mdiPlus} size={1} />}
-            onClick={handleAdd}
-          >
+          <Button mr={4} leftIcon={<Icon path={mdiPlus} size={1} />} onClick={handleAdd}>
             添加提示
           </Button>
         </Stack>

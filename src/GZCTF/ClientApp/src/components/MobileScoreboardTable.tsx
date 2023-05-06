@@ -112,7 +112,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             }}
           />
         )}
-        <Box style={{ position: 'relative' }}>
+        <Box pos="relative">
           <Box
             sx={{
               maxWidth: '100%',
