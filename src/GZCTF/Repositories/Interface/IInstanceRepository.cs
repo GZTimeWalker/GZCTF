@@ -20,7 +20,7 @@ public interface IInstanceRepository : IRepository
     /// <param name="submission">当前提交</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<(SubmissionType, AnswerResult)> VerifyAnswer(Submission submission, CancellationToken token = default);
+    public Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default);
 
     /// <summary>
     /// 获取题目实例

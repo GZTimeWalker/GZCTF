@@ -80,8 +80,6 @@ public class CacheMaker : IHostedService
 
                 var updateLock = CacheKey.UpdateLock(key);
 
-                logger.SystemLog($"缓存更新线程开始处理更新请求：{key}", TaskStatus.Pending, LogLevel.Debug);
-
                 if (await cache.GetAsync(updateLock, token) is not null)
                 {
                     // only one GZCTF instance will never encounter this problem

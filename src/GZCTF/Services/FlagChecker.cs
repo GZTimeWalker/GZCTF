@@ -1,4 +1,5 @@
 ﻿using System.Threading.Channels;
+using CTFServer.Models;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,10 @@ public class FlagChecker : IHostedService
                         logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
+
+                        // only flush the scoreboard if the contest is not ended and the submission is accepted
+                        if (item.Game.EndTimeUTC > item.SubmitTimeUTC)
+                            await gameRepository.FlushScoreboardCache(item.GameId, token);
                     }
                     else
                     {
@@ -85,8 +90,6 @@ public class FlagChecker : IHostedService
 
                     item.Status = ans;
                     await submissionRepository.SendSubmission(item);
-
-                    await gameRepository.FlushScoreboardCache(item.GameId, token);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -41,6 +41,13 @@ public record RequestResponse(string Title, int Status = 400);
 public record RequestResponse<T>(string Title, T Data, int Status = 400);
 
 /// <summary>
+/// 答案校验结果
+/// </summary>
+/// <param name="SubType">提交类型</param>
+/// <param name="AnsRes">提交 flag 判定结果</param>
+public record VerifyResult(SubmissionType SubType, AnswerResult AnsRes);
+
+/// <summary>
 /// 列表响应
 /// </summary>
 /// <typeparam name="T"></typeparam>

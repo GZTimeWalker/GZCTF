@@ -225,7 +225,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         return checkInfo;
     }
 
-    public async Task<(SubmissionType, AnswerResult)> VerifyAnswer(Submission submission, CancellationToken token = default)
+    public async Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
         var trans = await context.Database.BeginTransactionAsync(token);
 
@@ -247,7 +247,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             if (instance is null)
             {
                 submission.Status = AnswerResult.NotFound;
-                return (SubmissionType.Unaccepted, AnswerResult.NotFound);
+                return new(SubmissionType.Unaccepted, AnswerResult.NotFound);
             }
 
             if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
@@ -266,8 +266,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             }
 
             bool firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
+            bool beforeEnd = submission.Game.EndTimeUTC > submission.SubmitTimeUTC;
 
-            if (firstTime && submission.Game.EndTimeUTC > submission.SubmitTimeUTC)
+            if (firstTime && beforeEnd)
             {
                 instance.IsSolved = true;
                 updateSub.Challenge.AcceptedCount++;
@@ -288,7 +289,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             await SaveAsync(token);
             await trans.CommitAsync(token);
 
-            return (ret, updateSub.Status);
+            return new(ret, updateSub.Status);
         }
         catch
         {
