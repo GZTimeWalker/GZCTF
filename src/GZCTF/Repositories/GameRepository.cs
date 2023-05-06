@@ -52,7 +52,8 @@ public class GameRepository : RepositoryBase, IGameRepository
         => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default)
-        => context.Games.Where(g => g.StartTimeUTC - DateTime.UtcNow < TimeSpan.FromMinutes(5))
+        => context.Games.Where(g => g.StartTimeUTC > DateTime.UtcNow
+            && g.StartTimeUTC - DateTime.UtcNow < TimeSpan.FromMinutes(5))
             .OrderBy(g => g.StartTimeUTC).Select(g => g.Id).ToArrayAsync(token);
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default)
