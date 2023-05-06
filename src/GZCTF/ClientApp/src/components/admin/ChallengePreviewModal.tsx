@@ -51,7 +51,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
 
     showNotification({
       color: 'teal',
-      title: 'Flag 似乎被正确提交了！',
+      title: 'flag 似乎被正确提交了！',
       message: flag,
       icon: <Icon path={mdiCheck} size={1} />,
       withCloseButton: false,

@@ -318,8 +318,8 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
         )}
         <Box pos="relative">
           <Box
+            maw="100%"
             sx={{
-              maxWidth: '100%',
               overflow: 'scroll',
               '::-webkit-scrollbar': {
                 height: 0,

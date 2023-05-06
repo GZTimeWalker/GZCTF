@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import React, { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -42,6 +43,10 @@ const ChallengePanel: FC = () => {
 
   const { data } = api.game.useGameChallengesWithTeamInfo(numId)
   const challenges = data?.challenges
+
+  const { data: game } = api.game.useGameGames(numId, {
+    refreshInterval: 0,
+  })
 
   const tags = Object.keys(challenges ?? {})
   const [activeTab, setActiveTab] = useState<ChallengeTag | 'All'>('All')
@@ -240,11 +245,12 @@ const ChallengePanel: FC = () => {
       />
       {challenge?.id && (
         <ChallengeDetailModal
-          opened={detailOpened}
-          onClose={() => setDetailOpened(false)}
-          withCloseButton={false}
           size="40%"
           gameId={numId}
+          opened={detailOpened}
+          withCloseButton={false}
+          onClose={() => setDetailOpened(false)}
+          gameEnded={dayjs(game?.end) < dayjs()}
           solved={
             data &&
             data.rank?.challenges?.find((c) => c.id === challenge?.id)?.type !==

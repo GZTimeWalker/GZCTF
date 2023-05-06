@@ -316,7 +316,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           </Stack>
         </Stack>
       ) : (
-        <ScrollArea sx={{ height: 'calc(100vh - 430px)', position: 'relative' }}>
+        <ScrollArea h="calc(100vh - 430px)" pos="relative">
           {!challenge?.flags.length && (
             <>
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />

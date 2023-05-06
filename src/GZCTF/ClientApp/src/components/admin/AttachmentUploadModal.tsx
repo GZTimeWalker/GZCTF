@@ -104,7 +104,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
           批量上传动态附件，<strong>需要以每个 flag 为文件名称</strong>
           ，所有附件在上传后将会以统一的文件名进行下发。
         </Text>
-        <ScrollArea offsetScrollbars sx={{ height: '40vh', position: 'relative' }}>
+        <ScrollArea offsetScrollbars h="40vh" pos="relative">
           {files.length === 0 ? (
             <>
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />

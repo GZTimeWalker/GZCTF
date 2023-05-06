@@ -33,6 +33,7 @@ import MarkdownRender from './MarkdownRender'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
+  gameEnded: boolean
   tagData: ChallengeTagItemProps
   title: string
   score: number
@@ -86,8 +87,34 @@ export const FlagPlaceholders: string[] = [
   '借问 flag 何处有？牧童遥指杏花村',
 ]
 
+export const WrongFlagHints: string[] = [
+  '饮水思源，重新审题吧。',
+  '诗云：路漫漫其修远兮，再接再厉吧。',
+  '沉着冷静，可能会有意想不到的收获。',
+  '失败乃成功之母，回去再琢磨琢磨。',
+  '非也非也，不是这个 flag。',
+  '望眼欲穿，flag 却不在这里。',
+  '不要浮躁，仔细再思考思考。',
+  '翻遍天涯，也不是这个答案。',
+  '走马观花，可找不到 flag。',
+  '反复推敲，答案应该就在你手边。',
+  '深谋远虑，flag 不是那么简单。',
+  '山高水远，flag 藏得真是深啊！',
+  '时运不济，碾过你的难道是寂寞？',
+  '兴奋过头，还需要学会更加冷静的思考。',
+  '碰壁了，难道是你已经到了巅峰？',
+  '岁月静好，flag 却已然远去。',
+  '浅水已涸，flag 不可复得。',
+  '白雪纷纷何所似，似此 flag 被我错过。',
+  '旧事追思，往事如烟。flag 已然消逝。',
+  '桃花潭水深千尺，不及 flag 不见了踪迹。',
+  '万籁俱寂，唯有 flag 的错误提示在耳边响起。',
+  '陌上花开，可缓缓归矣。flag 未得而返。',
+  '风萧萧兮易水寒，无奈 flag 仍未到彼岸。',
+]
+
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
-  const { gameId, challengeId, tagData, title, score, solved, ...modalProps } = props
+  const { gameId, gameEnded, challengeId, tagData, title, score, solved, ...modalProps } = props
   const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
@@ -181,7 +208,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     if (!challengeId || !flag) {
       showNotification({
         color: 'red',
-        message: 'Flag 为空不可提交',
+        message: '不能提交空 flag',
         icon: <Icon path={mdiClose} size={1} />,
         withCloseButton: false,
       })
@@ -199,6 +226,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         showNotification({
           id: 'flag-submitted',
           color: 'orange',
+          title: 'flag 已提交',
           message: '请等待 flag 检查……',
           loading: true,
           autoClose: false,
@@ -219,7 +247,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           if (res.data !== AnswerResult.FlagSubmitted) {
             setOnSubmitting(false)
             setFlag('')
-            checkDataFlag(res.data)
+            checkDataFlag(submitId, res.data)
             clearInterval(polling)
             setDisabled(false)
             api.game.mutateGameChallengesWithTeamInfo(gameId)
@@ -236,14 +264,15 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     return () => clearInterval(polling)
   }, [submitId])
 
-  const checkDataFlag = (data: string) => {
+  const checkDataFlag = (id: number, data: string) => {
     if (data === AnswerResult.Accepted) {
       updateNotification({
         id: 'flag-submitted',
         color: 'teal',
-        message: 'Flag 正确',
+        title: 'flag 正确',
+        message: gameEnded ? '比赛已结束，本次提交不会被计分' : '排行榜将稍后更新……',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
+        autoClose: 8000,
       })
       if (isDynamic && challenge.context?.instanceEntry) onDestroyContainer()
       mutate()
@@ -252,17 +281,19 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       updateNotification({
         id: 'flag-submitted',
         color: 'red',
-        message: 'Flag 错误',
+        title: 'flag 错误',
+        message: WrongFlagHints[Math.floor(Math.random() * WrongFlagHints.length)],
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
+        autoClose: 8000,
       })
     } else {
       updateNotification({
         id: 'flag-submitted',
         color: 'yellow',
-        message: 'Flag 状态未知',
+        title: 'flag 状态未知',
+        message: `请联系管理员确认提交：${id}`,
         icon: <Icon path={mdiLoading} size={1} />,
-        withCloseButton: false,
+        autoClose: false,
       })
     }
   }
