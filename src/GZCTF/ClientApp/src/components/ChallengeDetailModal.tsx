@@ -105,7 +105,7 @@ export const WrongFlagHints: string[] = [
   '碰壁了，难道是你已经到了巅峰？',
   '岁月静好，flag 却已然远去。',
   '浅水已涸，flag 不可复得。',
-  '白雪纷纷何所似，似此 flag 被我错过。',
+  '白雪纷纷何所似，似此 flag 被错过。',
   '旧事追思，往事如烟。flag 已然消逝。',
   '桃花潭水深千尺，不及 flag 不见了踪迹。',
   '万籁俱寂，唯有 flag 的错误提示在耳边响起。',
@@ -250,7 +250,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             checkDataFlag(submitId, res.data)
             clearInterval(polling)
             setDisabled(false)
-            api.game.mutateGameChallengesWithTeamInfo(gameId)
           }
         })
         .catch((err) => {
