@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.RateLimiting;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.RateLimiting;
@@ -39,13 +40,13 @@ public class RateLimiter
         => new RateLimiterOptions()
         {
             RejectionStatusCode = StatusCodes.Status429TooManyRequests,
-            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
+            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
             {
-                IPAddress? remoteIPaddress = context?.Connection?.RemoteIpAddress;
+                string? userId = context?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (remoteIPaddress is not null && !IPAddress.IsLoopback(remoteIPaddress))
+                if (userId is not null)
                 {
-                    return RateLimitPartition.GetSlidingWindowLimiter<IPAddress>(remoteIPaddress, key => new()
+                    return RateLimitPartition.GetSlidingWindowLimiter(userId, key => new()
                     {
                         PermitLimit = 150,
                         Window = TimeSpan.FromMinutes(1),
@@ -54,10 +55,29 @@ public class RateLimiter
                         SegmentsPerWindow = 6,
                     });
                 }
-                else
+
+                string? remoteIPaddress = context?.Connection?.RemoteIpAddress?.ToString();
+
+                if (context is not null && context.Request.Headers.TryGetValue("X-Forwarded-For", out var value))
                 {
-                    return RateLimitPartition.GetNoLimiter<IPAddress>(IPAddress.Loopback);
+                    // note that we consider the previous reverse proxy server credible
+                    remoteIPaddress = value.ToString().Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 }
+
+                if (remoteIPaddress is not null && IPAddress.TryParse(remoteIPaddress, out IPAddress? address))
+                {
+                    if (!IPAddress.IsLoopback(address))
+                        return RateLimitPartition.GetSlidingWindowLimiter(remoteIPaddress, key => new()
+                        {
+                            PermitLimit = 150,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 60,
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            SegmentsPerWindow = 6,
+                        });
+                }
+
+                return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
             }),
             OnRejected = (context, cancellationToken) =>
             {
@@ -79,24 +99,24 @@ public class RateLimiter
         .AddConcurrencyLimiter(nameof(LimitPolicy.Concurrency), options =>
         {
             options.PermitLimit = 1;
-            options.QueueLimit = 5;
+            options.QueueLimit = 20;
         })
         .AddFixedWindowLimiter(nameof(LimitPolicy.Register), options =>
         {
-            options.PermitLimit = 10;
+            options.PermitLimit = 20;
             options.Window = TimeSpan.FromSeconds(150);
         })
         .AddTokenBucketLimiter(nameof(LimitPolicy.Container), options =>
         {
-            options.TokenLimit = 4;
-            options.TokensPerPeriod = 2;
+            options.TokenLimit = 120;
+            options.TokensPerPeriod = 30;
             options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
         })
         .AddTokenBucketLimiter(nameof(LimitPolicy.Submit), options =>
         {
-            options.TokenLimit = 3;
-            options.TokensPerPeriod = 1;
-            options.ReplenishmentPeriod = TimeSpan.FromSeconds(20);
+            options.TokenLimit = 60;
+            options.TokensPerPeriod = 30;
+            options.ReplenishmentPeriod = TimeSpan.FromSeconds(5);
         });
 }
 

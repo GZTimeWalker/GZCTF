@@ -32,7 +32,7 @@ public class ConfigService : IConfigService
         TypeConverter converter = TypeDescriptor.GetConverter(type);
         if (type == typeof(string) || type.IsValueType)
         {
-            configs.Add(new(key, converter.ConvertToString(value) ?? String.Empty));
+            configs.Add(new(key, converter.ConvertToString(value) ?? string.Empty));
         }
         else if (type.IsClass)
         {

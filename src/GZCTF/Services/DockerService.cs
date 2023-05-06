@@ -21,7 +21,7 @@ public class DockerService : IContainerService
         options = _options.Value.DockerConfig ?? new DockerConfig();
         publicEntry = _options.Value.PublicEntry;
         logger = _logger;
-        DockerClientConfiguration cfg = string.IsNullOrEmpty(this.options.Uri) ? new() : new(new Uri(this.options.Uri));
+        DockerClientConfiguration cfg = string.IsNullOrEmpty(options.Uri) ? new() : new(new Uri(options.Uri));
 
         // TODO: Docker Auth Required
         dockerClient = cfg.CreateClient();
@@ -36,7 +36,7 @@ public class DockerService : IContainerService
             };
         }
 
-        logger.SystemLog($"Docker 服务已启动 ({(string.IsNullOrEmpty(this.options.Uri) ? "localhost" : this.options.Uri)})", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog($"Docker 服务已启动 ({(string.IsNullOrEmpty(options.Uri) ? "localhost" : options.Uri)})", TaskStatus.Success, LogLevel.Debug);
     }
 
     public Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
@@ -63,7 +63,7 @@ public class DockerService : IContainerService
             }
             else
             {
-                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Failed, LogLevel.Warning);
+                logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
                 logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Failed, LogLevel.Error);
                 return;
             }
@@ -139,8 +139,8 @@ public class DockerService : IContainerService
     public async Task<Container?> CreateContainerWithSwarm(ContainerConfig config, CancellationToken token = default)
     {
         var parameters = GetServiceCreateParameters(config);
-        ServiceCreateResponse? serviceRes = null;
         int retry = 0;
+        ServiceCreateResponse? serviceRes;
     CreateContainer:
         try
         {
