@@ -143,6 +143,43 @@ You are now connected to database "ctf" as user "postgres".
 ctf=# #do your sql query
 ```
 
+## 使用 Redis 作为缓存
+
+如果你想使用 Redis 作为缓存，获得更无缝的版本切换、服务端重启体验，可以在上述到配置中添加如下内容：
+
+1. `docker-compose.yml` 文件
+
+    ```yaml
+    version: "3.0"
+    services:
+      gzctf:
+        # ...
+        depends_on:
+          - db
+          - cache
+
+      cache:
+        image: redis:alpine
+        restart: always
+
+      db:
+        # ...
+    ```
+2. `appsettings.json` 文件
+
+    ```json
+    {
+      "AllowedHosts": "*",
+      "ConnectionStrings": {
+        // ...
+        "RedisCache": "cache:6379,abortConnect=false"
+      }
+      // ...
+    }
+    ```
+
+之后重新使用 `docker-compose up -d` 启动 GZCTF 即可。
+
 ## 题目配置
 
 题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
