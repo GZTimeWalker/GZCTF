@@ -43,7 +43,6 @@ const GameNoticeEdit: FC = () => {
           color: 'teal',
           message: '通知已删除',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         mutate(gameNotices?.filter((t) => t.id !== gameNotice.id) ?? [])
       })

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core'
 import { useInputState, getHotkeyHandler } from '@mantine/hooks'
@@ -8,6 +8,7 @@ import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/usePageTitle'
+import { useUser } from '@Utils/useUser'
 import api from '@Api'
 
 const Login: FC = () => {
@@ -17,8 +18,18 @@ const Login: FC = () => {
   const [pwd, setPwd] = useInputState('')
   const [uname, setUname] = useInputState('')
   const [disabled, setDisabled] = useState(false)
+  const [needRedirect, setNeedRedirect] = useState(false)
+
+  const { user, mutate } = useUser()
 
   usePageTitle('登录')
+
+  useEffect(() => {
+    if (needRedirect && user) {
+      navigate(params.get('from') ?? '/')
+      setNeedRedirect(false)
+    }
+  }, [user, needRedirect])
 
   const onLogin = () => {
     setDisabled(true)
@@ -29,7 +40,6 @@ const Login: FC = () => {
         title: '请检查输入',
         message: '无效的用户名或密码',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       setDisabled(false)
       return
@@ -46,10 +56,9 @@ const Login: FC = () => {
           title: '登录成功',
           message: '跳转回登录前页面',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
-        api.account.mutateAccountProfile()
-        navigate(params.get('from') ?? '/')
+        setNeedRedirect(true)
+        mutate()
       })
       .catch((err) => {
         showErrorNotification(err)

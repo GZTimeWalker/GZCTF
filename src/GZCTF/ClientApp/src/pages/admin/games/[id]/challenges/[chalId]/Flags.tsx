@@ -76,7 +76,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           color: 'teal',
           message: '附件已更新',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         setType(FileType.None)
         challenge &&
@@ -128,7 +127,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 color: 'teal',
                 message: '附件已更新',
                 icon: <Icon path={mdiCheck} size={1} />,
-                withCloseButton: false,
               })
             })
             .catch((err) => showErrorNotification(err))
@@ -156,7 +154,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             color: 'teal',
             message: '附件已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
         })
         .catch((err) => showErrorNotification(err))
@@ -177,7 +174,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             color: 'teal',
             message: 'flag 模板已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
         })
@@ -438,7 +434,6 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: 'flag 已删除',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         challenge &&
           mutate({

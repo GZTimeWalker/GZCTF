@@ -44,7 +44,6 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
             color: 'teal',
             message: '附件已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           props.onClose()
           api.edit.mutateEditGetGameChallenge(numId, numCId)

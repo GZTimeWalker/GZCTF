@@ -255,7 +255,6 @@ const GameTeamReview: FC = () => {
         title: '操作成功',
         message: '参与状态已更新',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
       })
     } catch (err: any) {
       showErrorNotification(err)
@@ -270,7 +269,6 @@ const GameTeamReview: FC = () => {
         color: 'red',
         message: `比赛 Id 错误：${id}`,
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       navigate('/admin/games')
       return

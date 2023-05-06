@@ -73,7 +73,6 @@ const Profile: FC = () => {
             color: 'teal',
             message: '头像已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           mutate({ ...user })
           setAvatarFile(null)
@@ -95,7 +94,6 @@ const Profile: FC = () => {
           title: '更改成功',
           message: '个人信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         mutate({ ...user })
       })
@@ -115,7 +113,6 @@ const Profile: FC = () => {
               title: '验证邮件已发送',
               message: '请检查你的邮箱及垃圾邮件~',
               icon: <Icon path={mdiCheck} size={1} />,
-              withCloseButton: false,
             })
           } else {
             mutate({ ...user, email: email })
@@ -302,7 +299,6 @@ const Profile: FC = () => {
               title: '文件获取失败',
               message: '请检查文件格式和大小',
               icon: <Icon path={mdiClose} size={1} />,
-              withCloseButton: false,
             })
           }}
           m="0 auto 20px auto"

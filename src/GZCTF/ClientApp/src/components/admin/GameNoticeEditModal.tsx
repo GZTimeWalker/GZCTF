@@ -31,7 +31,6 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         title: '输入不能为空',
         message: '请输入内容',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       return
     }
@@ -40,7 +39,6 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         color: 'orange',
         message: '似乎没有变化哦',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       return
     }
@@ -56,7 +54,6 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
             color: 'teal',
             message: '通知修改成功',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           mutateGameNotice(data.data)
           modalProps.onClose()
@@ -76,7 +73,6 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
             color: 'teal',
             message: '通知已添加',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           mutateGameNotice(data.data)
           setDisabled(false)

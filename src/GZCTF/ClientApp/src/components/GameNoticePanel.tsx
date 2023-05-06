@@ -61,7 +61,6 @@ const GameNoticePanel: FC = () => {
           title: '获取通知失败',
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
-          withCloseButton: false,
         })
       })
   }, [numId])
@@ -104,14 +103,9 @@ const GameNoticePanel: FC = () => {
         update(new Date(message.time))
       })
 
-      connection
-        .start()
-        .then(() => {
-          console.log('> 实时比赛通知已连接')
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+      connection.start().catch((error) => {
+        console.error(error)
+      })
 
       return () => {
         connection.stop().catch((err) => {

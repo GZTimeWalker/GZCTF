@@ -89,7 +89,6 @@ const GameChallengeEdit: FC = () => {
               color: 'teal',
               message: '题目已更新',
               icon: <Icon path={mdiCheck} size={1} />,
-              withCloseButton: false,
             })
           }
           mutate(data.data)
@@ -112,7 +111,6 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '题目已删除',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         api.edit.mutateEditGetGameChallenges(numId)
         navigate(`/admin/games/${id}/challenges`)
@@ -131,7 +129,6 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '实例已创建',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         if (challenge) mutate({ ...challenge, testContainer: res.data })
       })
@@ -149,7 +146,6 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '实例已销毁',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         if (challenge) mutate({ ...challenge, testContainer: undefined })
       })

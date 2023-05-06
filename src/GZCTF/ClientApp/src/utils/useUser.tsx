@@ -10,7 +10,7 @@ export const useUser = () => {
   const {
     data: user,
     error,
-    mutate,
+    mutate: mutateUser,
   } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
@@ -22,7 +22,6 @@ export const useUser = () => {
             color: 'red',
             message: '账户已被禁用',
             icon: <Icon path={mdiClose} size={1} />,
-            withCloseButton: false,
           })
         })
         return
@@ -36,7 +35,7 @@ export const useUser = () => {
     },
   })
 
-  return { user, error, mutate }
+  return { user, error, mutate: mutateUser }
 }
 
 export const useUserRole = () => {

@@ -100,7 +100,6 @@ const Teams: FC = () => {
         message: `${team.name} 已删除`,
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
       })
       teams && updateTeams(teams.filter((x) => x.id !== team.id))
       setCurrent(current - 1)

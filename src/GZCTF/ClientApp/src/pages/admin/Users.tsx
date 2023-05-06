@@ -134,7 +134,6 @@ const Users: FC = () => {
       modals.openModal({
         title: `为 ${user.userName} 重置密码`,
 
-        withCloseButton: false,
         children: (
           <Stack>
             <Text>
@@ -158,7 +157,6 @@ const Users: FC = () => {
                   message: '密码已复制到剪贴板',
                   color: 'teal',
                   icon: <Icon path={mdiCheck} size={1} />,
-                  withCloseButton: false,
                 })
               }}
             >
@@ -184,7 +182,6 @@ const Users: FC = () => {
         message: `${user.userName} 已删除`,
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
       })
       users && updateUsers(users.filter((x) => x.id !== user.id))
       setCurrent(current - 1)

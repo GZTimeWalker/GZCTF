@@ -1,4 +1,6 @@
 import dayjs from 'dayjs'
+import LZString from 'lz-string'
+import { Cache } from 'swr'
 import { useEffect, useRef } from 'react'
 import { useLocalStorage } from '@mantine/hooks'
 import api, { GlobalConfig } from '@Api'
@@ -83,4 +85,16 @@ export const useBanner = () => {
       mounted.current = true
     }
   }, [])
+}
+
+export const localStorageProvider = () => {
+  const cacheKey = 'gzctf-cache'
+  const map = new Map(JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]'))
+
+  window.addEventListener('beforeunload', () => {
+    const appCache = LZString.compress(JSON.stringify(Array.from(map.entries())))
+    localStorage.setItem(cacheKey, appCache)
+  })
+
+  return map as Cache
 }

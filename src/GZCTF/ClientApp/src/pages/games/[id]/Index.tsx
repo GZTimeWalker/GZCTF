@@ -142,7 +142,6 @@ const GameDetail: FC = () => {
         color: 'teal',
         message: '报名成功',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
       })
       mutate()
     } catch (err) {
@@ -159,7 +158,6 @@ const GameDetail: FC = () => {
         color: 'teal',
         message: '退出成功',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
       })
       mutate()
     } catch (err) {

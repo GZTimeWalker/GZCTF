@@ -29,7 +29,6 @@ const Verify: FC = () => {
             title: '账户已验证，请登录',
             message: window.atob(email),
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
         })
         .catch(() => {
@@ -38,7 +37,6 @@ const Verify: FC = () => {
             title: '账户验证失败',
             message: '参数错误，请检查',
             icon: <Icon path={mdiClose} size={1} />,
-            withCloseButton: false,
           })
         })
         .finally(() => {

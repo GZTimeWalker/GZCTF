@@ -103,7 +103,6 @@ const Submissions: FC = () => {
           title: '获取提交失败',
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
-          withCloseButton: false,
         })
       })
     if (activePage === 1) {
@@ -135,7 +134,6 @@ const Submissions: FC = () => {
             color: 'teal',
             message: '实时提交连接成功',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
         })
         .catch((error) => {

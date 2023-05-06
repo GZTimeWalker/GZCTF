@@ -29,7 +29,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         title: '输入不合法',
         message: '请输入标题和时间信息',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       return
     }
@@ -47,7 +46,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           color: 'teal',
           message: '比赛创建成功',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         onAddGame(data.data)
         navigate(`/admin/games/${data.data.id}/info`)

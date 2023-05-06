@@ -91,6 +91,13 @@ export const ThemeOverride: MantineThemeOverride = {
         popoverProps: { withinPortal: true },
       },
     },
+    Notification: {
+      defaultProps: {
+        radius: 'md',
+        withBorder: true,
+        withCloseButton: false,
+      },
+    },
   },
 }
 

@@ -136,7 +136,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
           color: 'yellow',
           message: '比赛尚未开始',
           icon: <Icon path={mdiExclamationThick} size={1} />,
-          withCloseButton: false,
         })
       } else if (
         !location.pathname.includes('scoreboard') &&
@@ -149,7 +148,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
           color: 'yellow',
           message: '比赛已经结束',
           icon: <Icon path={mdiExclamationThick} size={1} />,
-          withCloseButton: false,
         })
       }
     }

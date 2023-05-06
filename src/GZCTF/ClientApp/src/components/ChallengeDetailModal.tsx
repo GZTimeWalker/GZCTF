@@ -210,7 +210,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         color: 'red',
         message: '不能提交空 flag',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       return
     }
@@ -230,7 +229,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           message: '请等待 flag 检查……',
           loading: true,
           autoClose: false,
-          withCloseButton: false,
         })
       })
       .catch(showErrorNotification)
@@ -293,6 +291,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         message: `请联系管理员确认提交：${id}`,
         icon: <Icon path={mdiLoading} size={1} />,
         autoClose: false,
+        withCloseButton: true,
       })
     }
   }
@@ -417,7 +416,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                           color: 'teal',
                           message: '实例入口已复制到剪贴板',
                           icon: <Icon path={mdiCheck} size={1} />,
-                          withCloseButton: false,
                         })
                       }}
                     >

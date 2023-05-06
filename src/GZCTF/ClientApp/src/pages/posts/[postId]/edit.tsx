@@ -70,7 +70,6 @@ const PostEdit: FC = () => {
             color: 'teal',
             message: '文章已创建',
             icon: <Icon path={mdiCheck} size={24} />,
-            withCloseButton: false,
           })
           navigate(`/posts/${res.data}/edit`)
         })
@@ -89,7 +88,6 @@ const PostEdit: FC = () => {
             color: 'teal',
             message: '文章已保存',
             icon: <Icon path={mdiCheck} size={24} />,
-            withCloseButton: false,
           })
         })
         .finally(() => {

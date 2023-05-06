@@ -54,7 +54,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         {poster ? (
           <Image src={poster} height={POSTER_HEIGHT} alt="poster" />
         ) : (
-          <Center mah={POSTER_HEIGHT}>
+          <Center mih={POSTER_HEIGHT}>
             <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
           </Center>
         )}

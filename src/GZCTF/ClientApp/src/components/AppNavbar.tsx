@@ -1,3 +1,4 @@
+import { useSWRConfig } from 'swr'
 import React, { FC, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -134,6 +135,7 @@ const AppNavbar: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { classes } = useStyles()
+  const { mutate } = useSWRConfig()
 
   const [active, setActive] = useState(getLabel(location.pathname) ?? '')
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
@@ -141,13 +143,13 @@ const AppNavbar: FC = () => {
   const logout = () => {
     api.account.accountLogOut().then(() => {
       navigate('/')
-      api.account.mutateAccountProfile()
+      mutate((key) => typeof key === 'string' && key.includes('game'), undefined, {
+        revalidate: false,
+      })
       showNotification({
         color: 'teal',
-        title: '登出成功',
-        message: '',
+        message: '登出成功',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
       })
     })
   }

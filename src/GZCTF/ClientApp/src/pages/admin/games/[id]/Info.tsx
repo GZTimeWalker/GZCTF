@@ -74,7 +74,6 @@ const GameInfoEdit: FC = () => {
         color: 'red',
         message: `比赛 Id 错误：${id}`,
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       navigate('/admin/games')
       return
@@ -98,7 +97,6 @@ const GameInfoEdit: FC = () => {
             color: 'teal',
             message: '成功修改比赛海报',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           mutate({ ...game, poster: res.data })
         })
@@ -122,7 +120,6 @@ const GameInfoEdit: FC = () => {
             color: 'teal',
             message: '比赛信息已更新',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           mutate()
           api.game.mutateGameGamesAll()
@@ -143,7 +140,6 @@ const GameInfoEdit: FC = () => {
             color: 'teal',
             message: '比赛已删除',
             icon: <Icon path={mdiCheck} size={1} />,
-            withCloseButton: false,
           })
           navigate('/admin/games')
         })
@@ -230,7 +226,6 @@ const GameInfoEdit: FC = () => {
               color: 'teal',
               message: '公钥已复制到剪贴板',
               icon: <Icon path={mdiCheck} size={1} />,
-              withCloseButton: false,
             })
           }}
           styles={{
@@ -445,7 +440,6 @@ const GameInfoEdit: FC = () => {
                   title: '文件获取失败',
                   message: '请检查文件格式和大小',
                   icon: <Icon path={mdiClose} size={1} />,
-                  withCloseButton: false,
                 })
               }}
               maxSize={3 * 1024 * 1024}

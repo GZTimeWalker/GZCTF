@@ -42,10 +42,8 @@ const AppHeader: FC = () => {
       api.account.mutateAccountProfile()
       showNotification({
         color: 'teal',
-        title: '登出成功',
-        message: '',
+        message: '登出成功',
         icon: <Icon path={mdiCheck} size={1} />,
-        withCloseButton: false,
       })
     })
   }

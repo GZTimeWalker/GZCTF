@@ -70,7 +70,6 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
                   color: 'teal',
                   message: '附件已更新',
                   icon: <Icon path={mdiCheck} size={1} />,
-                  withCloseButton: false,
                 })
                 setTimeout(() => {
                   api.edit.mutateEditGetGameChallenge(numId, numCId)
@@ -92,7 +91,6 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
         color: 'red',
         message: '请选择至少一个文件',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
     }
   }

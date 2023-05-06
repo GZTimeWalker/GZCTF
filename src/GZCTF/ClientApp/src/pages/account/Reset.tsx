@@ -30,7 +30,6 @@ const Reset: FC = () => {
         title: '请检查输入',
         message: '重复密码有误',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       return
     }
@@ -41,7 +40,6 @@ const Reset: FC = () => {
         title: '密码重设失败',
         message: '参数错误，请检查',
         icon: <Icon path={mdiClose} size={1} />,
-        withCloseButton: false,
       })
       return
     }
@@ -59,7 +57,6 @@ const Reset: FC = () => {
           title: '密码已重置',
           message: '请重新登录',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         navigate('/account/login')
       })

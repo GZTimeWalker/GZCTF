@@ -14,7 +14,7 @@ import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { ThemeOverride } from '@Utils/ThemeOverride'
-import { useBanner } from '@Utils/useConfig'
+import { localStorageProvider, useBanner } from '@Utils/useConfig'
 import { fetcher } from '@Api'
 
 export const App: FC = () => {
@@ -38,6 +38,7 @@ export const App: FC = () => {
           <SWRConfig
             value={{
               refreshInterval: 10000,
+              provider: localStorageProvider,
               fetcher,
             }}
           >

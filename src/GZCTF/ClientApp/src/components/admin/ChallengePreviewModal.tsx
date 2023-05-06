@@ -54,7 +54,6 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
       title: 'flag 似乎被正确提交了！',
       message: flag,
       icon: <Icon path={mdiCheck} size={1} />,
-      withCloseButton: false,
     })
     setFlag('')
   }
@@ -130,7 +129,6 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
                           color: 'teal',
                           message: '假装附件已经下载了！',
                           icon: <Icon path={mdiCheck} size={1} />,
-                          withCloseButton: false,
                         })
                       }
                     >

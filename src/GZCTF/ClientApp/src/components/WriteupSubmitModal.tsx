@@ -68,7 +68,6 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
           color: 'teal',
           message: 'Writeup 已成功提交',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         mutate()
         setDisabled(false)

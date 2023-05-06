@@ -39,7 +39,6 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
           color: 'teal',
           message: 'flag 创建成功',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         challenge &&
           mutate({

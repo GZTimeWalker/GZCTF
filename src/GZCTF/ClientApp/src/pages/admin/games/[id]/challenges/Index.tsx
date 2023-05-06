@@ -77,7 +77,6 @@ const GameChallengeEdit: FC = () => {
           color: 'teal',
           message: '题目状态更新成功',
           icon: <Icon path={mdiCheck} size={1} />,
-          withCloseButton: false,
         })
         mutate(
           challenges?.map((c) =>
