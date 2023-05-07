@@ -69,7 +69,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         logger.SystemLog($"缓存位置：{tmp.GetType()}", TaskStatus.Pending, LogLevel.Trace);
 
         await file.CopyToAsync(tmp, token);
-        return await StoreLocalFile(fileName ?? file.Name, tmp, token);
+        return await StoreLocalFile(fileName ?? file.FileName, tmp, token);
     }
 
     public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, CancellationToken token = default, int resize = 300)

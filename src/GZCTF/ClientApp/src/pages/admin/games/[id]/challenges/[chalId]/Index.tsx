@@ -94,9 +94,8 @@ const GameChallengeEdit: FC = () => {
             })
           }
           mutate(data.data)
-          mutateChals((chals) => chals?.map((chal) => (chal.id === numCId ? data.data : chal)), {
-            revalidate: false,
-          })
+          console.log(data.data)
+          mutateChals()
         })
         .catch(showErrorNotification)
         .finally(() => {

@@ -17,6 +17,7 @@ import {
   Overlay,
   Center,
   Code,
+  List,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -282,6 +283,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         <Stack>
           <TextInput
             label="flag 模板"
+            size="sm"
             value={flagTemplate}
             placeholder="flag{random_uuid}"
             onChange={(e) => setFlagTemplate(e.target.value)}
@@ -292,16 +294,16 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             }}
           />
           <Stack spacing={6} pb={8}>
-            <Text size="xs">请输入 flag 模版字符串，留空以生成随机 UUID 作为 flag</Text>
-            <Text size="xs">
+            <Text size="sm">请输入 flag 模版字符串，留空以生成随机 UUID 作为 flag</Text>
+            <Text size="sm">
               若指定 <Code>[TEAM_HASH]</Code> 则它将会被自动替换为队伍 Token
               与相关信息所生成的哈希值
             </Text>
-            <Text size="xs">
+            <Text size="sm">
               若未指定 <Code>[TEAM_HASH]</Code> 则将启用 Leet
               字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高
             </Text>
-            <Text size="xs">
+            <Text size="sm">
               若需要在指定 <Code>[TEAM_HASH]</Code> 的情况下启用 Leet 字符串功能，请在 flag
               模版字符串
               <Text span weight={700}>
@@ -309,6 +311,25 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               </Text>
               添加 <Code>[LEET]</Code> 标记，此时不会检查 flag 模版字符串的熵
             </Text>
+            <Text size="sm" weight="bold">
+              flag 模编写示例
+            </Text>
+            <List size="sm" spacing={6}>
+              <List.Item>
+                留空会得到 <Code>{`flag{1bab71b8-117f-4dea-a047-340b72101d7b}`}</Code>
+              </List.Item>
+              <List.Item>
+                <Code>{`flag{hello world}`}</Code> 会得到 <Code>{`flag{He1lo_w0r1d}`}</Code>
+              </List.Item>
+              <List.Item>
+                <Code>{`flag{hello_world_[TEAM_HASH]}`}</Code> 会得到{' '}
+                <Code>{`flag{hello_world_5418ce4d815c}`}</Code>
+              </List.Item>
+              <List.Item>
+                <Code>{`[LEET]flag{hello world [TEAM_HASH]}`}</Code> 会得到{' '}
+                <Code>{`flag{He1lo_w0r1d_5418ce4d815c}`}</Code>
+              </List.Item>
+            </List>
           </Stack>
         </Stack>
       ) : (
