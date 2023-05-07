@@ -1527,7 +1527,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001485
+      caniuse-lite: 1.0.30001486
       electron-to-chromium: 1.4.385
       node-releases: 2.0.10
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
@@ -1547,8 +1547,8 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  /caniuse-lite@1.0.30001485:
-    resolution: {integrity: sha512-8aUpZ7sjhlOyiNsg+pgcrTTPUXKh+rg544QYHSvQErljVEKJzvkYkCR/hUFeeVoEfTToUtY9cUKNRC7+c45YkA==}
+  /caniuse-lite@1.0.30001486:
+    resolution: {integrity: sha512-uv7/gXuHi10Whlj0pp5q/tsK/32J2QSqVRKQhs2j8VsDCjgyruAh/eEXHF822VqO9yT6iZKw3nRwZRSPBE9OQg==}
 
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -1998,8 +1998,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /eta@2.0.1:
-    resolution: {integrity: sha512-46E2qDPDm7QA+usjffUWz9KfXsxVZclPOuKsXs4ZWZdI/X1wpDF7AO424pt7fdYohCzWsIkXAhNGXSlwo5naAg==}
+  /eta@2.1.1:
+    resolution: {integrity: sha512-daWDLvwOCghtrXRVI4LEt57/R3hFwCidxRlczeYUGBWZ/8MuyZiusOFiCAXkVziuBMdku/lKQk2BgH1hsmijbA==}
     engines: {node: '>=6.0.0'}
     dev: true
 
@@ -3346,7 +3346,7 @@ packages:
       '@types/swagger-schema-official': 2.0.22
       cosmiconfig: 7.0.1
       didyoumean: 1.2.2
-      eta: 2.0.1
+      eta: 2.1.1
       js-yaml: 4.1.0
       lodash: 4.17.21
       make-dir: 3.1.0

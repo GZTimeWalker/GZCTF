@@ -229,11 +229,18 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)), {
             revalidate: false,
           })
-          setDisabled(false)
-          setDropzoneOpened(false)
         })
-        .catch((err) => {
-          showErrorNotification(err)
+        .catch(() => {
+          updateNotification({
+            id: 'upload-avatar',
+            color: 'red',
+            message: '头像更新失败',
+            icon: <Icon path={mdiClose} size={1} />,
+            autoClose: true,
+          })
+        })
+        .finally(() => {
+          setDisabled(false)
           setDropzoneOpened(false)
         })
     }

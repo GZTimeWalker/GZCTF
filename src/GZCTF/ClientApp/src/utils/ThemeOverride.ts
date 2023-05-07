@@ -143,9 +143,15 @@ export const useIsMobile = (limit?: number) => {
   return isMobile
 }
 
-export const ACCEPT_IMAGE_MIME_TYPE = {
-  'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp'],
-}
+export const ACCEPT_IMAGE_MIME_TYPE = [
+  'image/png',
+  'image/gif',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+  'image/bmp',
+  'image/tiff',
+]
 
 interface FixedButtonProps {
   right?: string

@@ -110,10 +110,20 @@ const GameInfoEdit: FC = () => {
             icon: <Icon path={mdiCheck} size={1} />,
             autoClose: true,
           })
-          setDisabled(false)
           mutate({ ...game, poster: res.data })
         })
-        .catch(showErrorNotification)
+        .catch(() => {
+          updateNotification({
+            id: 'upload-poster',
+            color: 'red',
+            message: '比赛海报更新失败',
+            icon: <Icon path={mdiClose} size={1} />,
+            autoClose: true,
+          })
+        })
+        .finally(() => {
+          setDisabled(false)
+        })
     }
   }
 

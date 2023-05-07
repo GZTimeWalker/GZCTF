@@ -89,10 +89,18 @@ const Profile: FC = () => {
           setDisabled(false)
           mutate({ ...user }, { revalidate: false })
           setAvatarFile(null)
-          setDropzoneOpened(false)
         })
-        .catch((err) => {
-          showErrorNotification(err)
+        .catch(() => {
+          updateNotification({
+            id: 'upload-avatar',
+            color: 'red',
+            message: '头像更新失败',
+            icon: <Icon path={mdiClose} size={1} />,
+            autoClose: true,
+          })
+        })
+        .finally(() => {
+          setDisabled(false)
           setDropzoneOpened(false)
         })
     }
