@@ -71,7 +71,7 @@ public class Challenge
     public int? StorageLimit { get; set; } = 256;
 
     /// <summary>
-    /// CPU 运行数量限制
+    /// CPU 限制 (0.1 CPUs)
     /// </summary>
     public int? CPUCount { get; set; } = 1;
 

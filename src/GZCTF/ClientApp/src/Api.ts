@@ -718,7 +718,8 @@ export interface ChallengeEditDetailModel {
    */
   memoryLimit: number
   /**
-   * CPU 运行数量限制
+   * CPU 限制 (0.1 CPUs)
+   *
    * @format int32
    */
   cpuCount: number
@@ -909,7 +910,7 @@ export interface ChallengeUpdateModel {
    */
   memoryLimit?: number | null
   /**
-   * CPU 运行数量限制
+   * CPU 限制 (0.1 CPUs)
    * @format int32
    * @min 1
    * @max 1024
@@ -979,7 +980,7 @@ export interface FlagCreateModel {
 /** 任务执行状态 */
 export enum TaskStatus {
   Success = 'Success',
-  Fail = 'Fail',
+  Failed = 'Failed',
   Duplicate = 'Duplicate',
   Denied = 'Denied',
   NotFound = 'NotFound',

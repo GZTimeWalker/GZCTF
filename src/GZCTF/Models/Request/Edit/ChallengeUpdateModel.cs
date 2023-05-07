@@ -53,7 +53,7 @@ public class ChallengeUpdateModel
     public int? MemoryLimit { get; set; }
 
     /// <summary>
-    /// CPU 运行数量限制
+    /// CPU 限制 (0.1 CPUs)
     /// </summary>
     [Range(1, 1024, ErrorMessage = "{0} 的值必须介于 {1} - {2}")]
     public int? CPUCount { get; set; }

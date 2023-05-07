@@ -95,7 +95,7 @@ public class DockerService : IContainerService
             {
                 PublishAllPorts = true,
                 Memory = config.MemoryLimit * 1024 * 1024,
-                CPUCount = 1,
+                CPUPercent = config.CPUCount * 10,
                 Privileged = config.PrivilegedContainer
             }
         };
@@ -129,7 +129,7 @@ public class DockerService : IContainerService
                         Limits = new()
                         {
                             MemoryBytes = config.MemoryLimit * 1024 * 1024,
-                            NanoCPUs = config.CPUCount * 10_0000_0000,
+                            NanoCPUs = config.CPUCount * 1_0000_0000,
                         },
                     },
                 }
@@ -254,7 +254,7 @@ public class DockerService : IContainerService
             retry++;
             if (retry == 3)
             {
-                logger.SystemLog($"启动容器实例 {container.ContainerId} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Failed, LogLevel.Warning);
+                logger.SystemLog($"启动容器实例 {container.ContainerId[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
             if (!started)

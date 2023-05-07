@@ -69,7 +69,7 @@ public class ChallengeEditDetailModel
     public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
-    /// CPU 运行数量限制
+    ///  CPU 限制 (0.1 CPUs)
     /// </summary>
     [Required]
     public int? CPUCount { get; set; } = 1;

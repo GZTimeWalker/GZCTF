@@ -449,8 +449,8 @@ const GameChallengeEdit: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <NumberInput
-                label="CPU 数量限制"
-                description="限制容器使用的 CPU"
+                label="CPU 限制 (0.1 CPUs)"
+                description="乘以 0.1 即为 CPU 核心数"
                 min={1}
                 max={1024}
                 required

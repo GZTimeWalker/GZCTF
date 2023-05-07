@@ -38,7 +38,7 @@ public class ContainerConfig
     public int MemoryLimit { get; set; } = 64;
 
     /// <summary>
-    /// CPU 数量
+    ///  CPU 限制 (0.1 CPUs)
     /// </summary>
     public int CPUCount { get; set; } = 1;
 
