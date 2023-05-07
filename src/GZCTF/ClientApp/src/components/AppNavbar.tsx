@@ -1,4 +1,3 @@
-import { useSWRConfig } from 'swr'
 import React, { FC, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -13,7 +12,6 @@ import {
   useMantineColorScheme,
   ActionIcon,
 } from '@mantine/core'
-import { showNotification } from '@mantine/notifications'
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -23,13 +21,12 @@ import {
   mdiWeatherSunny,
   mdiWeatherNight,
   mdiLogout,
-  mdiCheck,
   mdiWrenchOutline,
   mdiNoteTextOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { useUser } from '@Utils/useUser'
-import api, { Role } from '@Api'
+import { useLoginOut, useUser } from '@Utils/useUser'
+import { Role } from '@Api'
 import MainIcon from './icon/MainIcon'
 
 const useStyles = createStyles((theme) => {
@@ -135,24 +132,11 @@ const AppNavbar: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { classes } = useStyles()
-  const { mutate } = useSWRConfig()
 
   const [active, setActive] = useState(getLabel(location.pathname) ?? '')
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
-  const logout = () => {
-    api.account.accountLogOut().then(() => {
-      navigate('/')
-      mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
-        revalidate: false,
-      })
-      showNotification({
-        color: 'teal',
-        message: '登出成功',
-        icon: <Icon path={mdiCheck} size={1} />,
-      })
-    })
-  }
+  const logout = useLoginOut()
 
   const { user, error } = useUser()
 

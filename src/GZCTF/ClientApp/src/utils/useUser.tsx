@@ -1,6 +1,7 @@
+import { useSWRConfig } from 'swr'
 import { useNavigate } from 'react-router'
 import { showNotification } from '@mantine/notifications'
-import { mdiClose } from '@mdi/js'
+import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '@Api'
 
@@ -10,7 +11,7 @@ export const useUser = () => {
   const {
     data: user,
     error,
-    mutate: mutateUser,
+    mutate,
   } = api.account.useAccountProfile({
     refreshInterval: 0,
     revalidateIfStale: false,
@@ -35,7 +36,7 @@ export const useUser = () => {
     },
   })
 
-  return { user, error, mutate: mutateUser }
+  return { user, error, mutate }
 }
 
 export const useUserRole = () => {
@@ -52,4 +53,25 @@ export const useTeams = () => {
     refreshInterval: 120000,
   })
   return { teams, error, mutate }
+}
+
+export const useLoginOut = () => {
+  const navigate = useNavigate()
+  const { mutate } = useSWRConfig()
+  const { mutate: mutateProfile } = api.account.useAccountProfile()
+
+  return () => {
+    api.account.accountLogOut().then(() => {
+      navigate('/')
+      mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
+        revalidate: false,
+      })
+      mutateProfile(undefined, false)
+      showNotification({
+        color: 'teal',
+        message: '登出成功',
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    })
+  }
 }

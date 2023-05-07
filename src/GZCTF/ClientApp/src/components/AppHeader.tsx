@@ -1,19 +1,16 @@
 import { FC, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Burger, createStyles, Group, Header, Menu, useMantineColorScheme } from '@mantine/core'
-import { showNotification } from '@mantine/notifications'
 import {
   mdiWeatherSunny,
   mdiWeatherNight,
   mdiAccountCircleOutline,
   mdiLogout,
-  mdiCheck,
   mdiAccountGroupOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { useUser } from '@Utils/useUser'
-import api from '@Api'
+import { useLoginOut, useUser } from '@Utils/useUser'
 import LogoHeader from './LogoHeader'
 
 const useHeaderStyles = createStyles((theme) => ({
@@ -36,18 +33,7 @@ const AppHeader: FC = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { user, error } = useUser()
 
-  const logout = () => {
-    api.account.accountLogOut().then(() => {
-      navigate('/')
-      api.account.mutateAccountProfile()
-      showNotification({
-        color: 'teal',
-        message: '登出成功',
-        icon: <Icon path={mdiCheck} size={1} />,
-      })
-    })
-  }
-
+  const logout = useLoginOut()
   const isMobile = useIsMobile()
 
   return (
