@@ -9,7 +9,6 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
   const numId = parseInt(id ?? '-1')
   const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, {
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
   const [disabled, setDisabled] = useState(false)

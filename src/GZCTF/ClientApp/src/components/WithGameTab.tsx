@@ -95,6 +95,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const { role } = useUserRole()
   const { data: game } = api.game.useGameGames(numId, {
     refreshInterval: 0,
+    revalidateOnFocus: false,
   })
 
   const finished = dayjs() > dayjs(game?.end ?? new Date())

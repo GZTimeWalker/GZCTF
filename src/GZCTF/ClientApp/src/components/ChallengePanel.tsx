@@ -41,11 +41,14 @@ const ChallengePanel: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const { data } = api.game.useGameChallengesWithTeamInfo(numId)
+  const { data } = api.game.useGameChallengesWithTeamInfo(numId, {
+    shouldRetryOnError: false,
+  })
   const challenges = data?.challenges
 
   const { data: game } = api.game.useGameGames(numId, {
     refreshInterval: 0,
+    revalidateOnFocus: false,
   })
 
   const tags = Object.keys(challenges ?? {})

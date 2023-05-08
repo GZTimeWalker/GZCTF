@@ -266,6 +266,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
 
   const { data: scoreboard } = api.game.useGameScoreboard(numId, {
     refreshInterval: 0,
+    revalidateOnFocus: false,
   })
 
   const filtered =

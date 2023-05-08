@@ -16,7 +16,7 @@ const GameWriteups: FC = () => {
 
   const { data: writeups } = api.admin.useAdminWriteups(numId, {
     refreshInterval: 0,
-    revalidateIfStale: false,
+    revalidateOnFocus: false,
   })
 
   useEffect(() => {

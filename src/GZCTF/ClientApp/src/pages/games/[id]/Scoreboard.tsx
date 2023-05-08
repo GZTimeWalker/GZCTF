@@ -13,7 +13,9 @@ import api from '@Api'
 const Scoreboard: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { data, error } = api.game.useGameChallengesWithTeamInfo(numId)
+  const { data, error } = api.game.useGameChallengesWithTeamInfo(numId, {
+    shouldRetryOnError: false,
+  })
 
   const [organization, setOrganization] = useState<string | null>('all')
   const isMobile = useIsMobile(1080)

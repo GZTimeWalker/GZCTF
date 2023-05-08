@@ -38,7 +38,6 @@ const PostEdit: FC = () => {
     postId ?? '',
     {
       refreshInterval: 0,
-      revalidateIfStale: false,
       revalidateOnFocus: false,
     },
     postId?.length === 8

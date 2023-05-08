@@ -17,11 +17,11 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   const numId = parseInt(id ?? '-1')
   const { gameNotice, mutateGameNotice, ...modalProps } = props
 
-  const [content, setContent] = useState<string | undefined>(gameNotice?.content)
+  const [content, setContent] = useState<string>(gameNotice?.content || '')
   const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
-    setContent(gameNotice?.content)
+    setContent(gameNotice?.content || '')
   }, [gameNotice])
 
   const onConfirm = () => {
@@ -43,8 +43,9 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
       return
     }
 
+    setDisabled(true)
+
     if (gameNotice && !disabled) {
-      setDisabled(true)
       api.edit
         .editUpdateGameNotice(numId, gameNotice.id, {
           content: content,
@@ -63,7 +64,6 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           setDisabled(false)
         })
     } else {
-      // add notice
       api.edit
         .editAddGameNotice(numId, {
           content: content,
@@ -81,6 +81,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         .catch(showErrorNotification)
         .finally(() => {
           setDisabled(false)
+          setContent('')
         })
     }
   }

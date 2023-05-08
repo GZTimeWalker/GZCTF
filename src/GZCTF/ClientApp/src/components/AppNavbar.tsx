@@ -143,8 +143,9 @@ const AppNavbar: FC = () => {
   useEffect(() => {
     if (location.pathname === '/') {
       setActive(items[0].label)
+    } else {
+      setActive(getLabel(location.pathname) ?? '')
     }
-    setActive(getLabel(location.pathname) ?? '')
   }, [location.pathname])
 
   const links = items

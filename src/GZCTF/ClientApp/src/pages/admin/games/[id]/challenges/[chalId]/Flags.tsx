@@ -49,7 +49,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
 
   const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
 
@@ -367,11 +366,7 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
 
   const theme = useMantineTheme()
 
-  const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId, {
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
+  const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId)
 
   const [attachmentUploadModalOpened, setAttachmentUploadModalOpened] = useState(false)
   const [remoteAttachmentModalOpened, setRemoteAttachmentModalOpened] = useState(false)
@@ -424,11 +419,7 @@ const GameChallengeEdit: FC = () => {
   const theme = useMantineTheme()
   const modals = useModals()
 
-  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
-    refreshInterval: 0,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  })
+  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId)
 
   const onDeleteFlag = (flag: FlagInfoModel) => {
     modals.openConfirmModal({

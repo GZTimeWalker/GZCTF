@@ -14,7 +14,8 @@ export const useUser = () => {
     mutate,
   } = api.account.useAccountProfile({
     refreshInterval: 0,
-    revalidateIfStale: false,
+    shouldRetryOnError: false,
+    revalidateOnFocus: false,
     onErrorRetry: (err, _key, _config, revalidate, { retryCount }) => {
       if (err?.status === 403) {
         api.account.accountLogOut().then(() => {
@@ -30,7 +31,10 @@ export const useUser = () => {
 
       if (err?.status === 401) return
 
-      if (retryCount >= 5) return
+      if (retryCount >= 5) {
+        mutate(undefined, false)
+        return
+      }
 
       setTimeout(() => revalidate({ retryCount: retryCount }), 10000)
     },
@@ -51,27 +55,36 @@ export const useTeams = () => {
     mutate,
   } = api.team.useTeamGetTeamsInfo({
     refreshInterval: 120000,
+    shouldRetryOnError: false,
+    revalidateOnFocus: false,
   })
+
   return { teams, error, mutate }
 }
 
 export const useLoginOut = () => {
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
-  const { mutate: mutateProfile } = api.account.useAccountProfile()
+  const { mutate: mutateProfile } = useUser()
 
   return () => {
-    api.account.accountLogOut().then(() => {
-      navigate('/')
-      mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
-        revalidate: false,
+    api.account
+      .accountLogOut()
+      .then(() => {
+        navigate('/')
+        mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
+          revalidate: false,
+        })
+        mutateProfile(undefined, { revalidate: false })
+        showNotification({
+          color: 'teal',
+          message: '登出成功',
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
       })
-      mutateProfile(undefined, false)
-      showNotification({
-        color: 'teal',
-        message: '登出成功',
-        icon: <Icon path={mdiCheck} size={1} />,
+      .catch(() => {
+        navigate('/')
+        mutateProfile(undefined, { revalidate: false })
       })
-    })
   }
 }

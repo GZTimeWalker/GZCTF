@@ -17,7 +17,6 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
 
   const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
 

@@ -16,7 +16,6 @@ const GameNoticeEdit: FC = () => {
   const numId = parseInt(id ?? '-1')
   const { data: gameNotices, mutate } = api.edit.useEditGetGameNotices(numId, {
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
 
@@ -78,7 +77,7 @@ const GameNoticeEdit: FC = () => {
     >
       <ScrollArea pos="relative" h="calc(100vh - 180px)" offsetScrollbars>
         {!gameNotices || gameNotices?.length === 0 ? (
-          <Center h="calc(100vh - 180px)">
+          <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
               <Title order={2}>Ouch! 这个比赛还没有通知</Title>
               <Text>安然无事真好！</Text>

@@ -69,6 +69,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
 
   const { data: scoreboard } = api.game.useGameScoreboard(numId, {
     refreshInterval: 0,
+    revalidateOnFocus: false,
   })
 
   const filtered =

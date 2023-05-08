@@ -18,7 +18,6 @@ const ITEMS_PER_PAGE = 10
 const Posts: FC = () => {
   const { data: posts, mutate } = api.info.useInfoGetPosts({
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
 

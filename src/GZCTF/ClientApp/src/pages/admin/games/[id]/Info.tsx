@@ -53,7 +53,6 @@ const GameInfoEdit: FC = () => {
   const numId = parseInt(id ?? '-1')
   const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, {
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
   const [game, setGame] = useState<GameInfoModel>()

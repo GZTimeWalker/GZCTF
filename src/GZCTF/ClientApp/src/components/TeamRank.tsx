@@ -32,7 +32,9 @@ const TeamRank: FC<PaperProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
-  const { data, error } = api.game.useGameChallengesWithTeamInfo(numId)
+  const { data, error } = api.game.useGameChallengesWithTeamInfo(numId, {
+    shouldRetryOnError: false,
+  })
 
   const { classes, theme } = useStyle()
 

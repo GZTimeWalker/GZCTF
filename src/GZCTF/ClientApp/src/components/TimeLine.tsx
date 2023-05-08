@@ -16,6 +16,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
 
   const { data: scoreboard } = api.game.useGameScoreboard(numId, {
     refreshInterval: 0,
+    revalidateOnFocus: false,
   })
 
   const { data: game } = api.game.useGameGames(numId, {

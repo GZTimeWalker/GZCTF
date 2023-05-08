@@ -87,7 +87,7 @@ const Profile: FC = () => {
             autoClose: true,
           })
           setDisabled(false)
-          mutate({ ...user }, { revalidate: false })
+          mutate()
           setAvatarFile(null)
         })
         .catch(() => {

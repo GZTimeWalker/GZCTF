@@ -34,7 +34,6 @@ const GameChallengeEdit: FC = () => {
 
   const { data: challenges, mutate } = api.edit.useEditGetGameChallenges(numId, {
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
 
