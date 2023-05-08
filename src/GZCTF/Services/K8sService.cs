@@ -49,7 +49,14 @@ public class K8sService : IContainerService
             AuthSecretName = $"{registry.UserName}-{padding}";
         }
 
-        InitK8s(withAuth, registry);
+        try
+        {
+            InitK8s(withAuth, registry);
+        }
+        catch
+        {
+            Program.ExitWithFatalMessage($"K8s 初始化失败，请检查相关配置是否正确 ({config.Host})");
+        }
 
         logger.SystemLog($"K8s 服务已启动 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
     }
