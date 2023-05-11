@@ -6,15 +6,16 @@ import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
+import { useConfig } from '@Utils/useConfig'
 import api, { AccountPolicy, ConfigEditModel, GlobalConfig } from '@Api'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs({
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
   })
 
+  const { mutate: mutateConfig } = useConfig()
   const [disabled, setDisabled] = useState(false)
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
@@ -40,7 +41,7 @@ const Configs: FC = () => {
       })
       .catch(showErrorNotification)
       .finally(() => {
-        api.info.mutateInfoGetGlobalConfig()
+        mutateConfig({ ...conf.globalConfig })
         setDisabled(false)
       })
   }

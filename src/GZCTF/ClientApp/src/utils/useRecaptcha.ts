@@ -52,7 +52,6 @@ const loadReCaptcha = (siteKey: string) => {
 export const useReCaptcha = (action: string) => {
   const { data: sitekey, error } = api.info.useInfoGetRecaptchaSiteKey({
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     refreshWhenHidden: false,

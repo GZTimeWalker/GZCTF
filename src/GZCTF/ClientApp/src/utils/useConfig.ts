@@ -18,7 +18,6 @@ export const useConfig = () => {
     mutate,
   } = api.info.useInfoGetGlobalConfig({
     refreshInterval: 0,
-    revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     refreshWhenHidden: false,
