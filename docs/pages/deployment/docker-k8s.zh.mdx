@@ -2,6 +2,8 @@ import { Callout } from "nextra-theme-docs";
 
 # Docker + K8s 分离部署
 
+本文中以轻量化部署的 K3s 为例，若您已经部署了 K8s 集群，可以参考本文后续配置进行类似的设置。
+
 ## 安装 Docker
 
 你可以在 [Docker 官网](https://docs.docker.com/engine/install/) 找到相关的安装说明，并使用 [快速上手](/quick-start) 中的基本配置将 GZCTF 运行起来。
@@ -12,7 +14,7 @@ k3s 是一个轻量级的 k8s 发行版，可以在单机和多机上快速部�
 
 <Callout type="warning">
 
-为了防止 Docker 与 k8s 的容器运行时共存可能造成的问题，请参考官方文档在**另一台机器**上安装 k3s，如果你的机器只有一个，但是想用 k8s 的相关功能，那么可以参考 [K8s 集群部署](/k8s-only) 中的方法。
+为了防止 Docker 与 k8s 的容器运行时共存可能造成的问题，请参考官方文档在**另一台机器**上安装 k3s，如果你的机器只有一个，但是想用 k8s 的相关功能，那么可以参考 [K8s 集群部署](/deployment/k8s-only) 中的方法。
 
 </Callout>
 
