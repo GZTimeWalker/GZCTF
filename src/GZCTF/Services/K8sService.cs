@@ -131,7 +131,7 @@ public class K8sService : IContainerService
         }
         catch (HttpOperationException e)
         {
-            logger.SystemLog($"容器 {name} 创建失败, 状态：{e.Response.StatusCode.ToString()}", TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog($"容器 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
             logger.SystemLog($"容器 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
             return null;
         }
@@ -181,6 +181,12 @@ public class K8sService : IContainerService
         {
             service = await kubernetesClient.CoreV1.CreateNamespacedServiceAsync(service, Namespace, cancellationToken: token);
         }
+        catch (HttpOperationException e)
+        {
+            logger.SystemLog($"服务 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog($"服务 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
+            return null;
+        }
         catch (Exception e)
         {
             logger.LogError(e, "创建服务失败");
@@ -209,7 +215,7 @@ public class K8sService : IContainerService
                 container.Status = ContainerStatus.Destroyed;
                 return;
             }
-            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.Response.StatusCode.ToString()}", TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
             logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
         }
         catch (Exception e)
