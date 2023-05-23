@@ -43,7 +43,7 @@ const StatusMap = new Map([
       title: '待审核',
       color: 'yellow',
       iconPath: mdiHelpCircleOutline,
-      transformTo: [ParticipationStatus.Accepted, ParticipationStatus.Denied],
+      transformTo: [ParticipationStatus.Accepted, ParticipationStatus.Rejected],
     },
   ],
   [
@@ -52,15 +52,15 @@ const StatusMap = new Map([
       title: '审核通过',
       color: 'green',
       iconPath: mdiCheck,
-      transformTo: [ParticipationStatus.Forfeited],
+      transformTo: [ParticipationStatus.Suspended],
     },
   ],
   [
-    ParticipationStatus.Denied,
+    ParticipationStatus.Rejected,
     { title: '审核不通过', color: 'red', iconPath: mdiClose, transformTo: [] },
   ],
   [
-    ParticipationStatus.Forfeited,
+    ParticipationStatus.Suspended,
     {
       title: '禁赛',
       color: 'alert',

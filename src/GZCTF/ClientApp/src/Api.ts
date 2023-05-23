@@ -454,8 +454,8 @@ export interface LogMessageModel {
 export enum ParticipationStatus {
   Pending = 'Pending',
   Accepted = 'Accepted',
-  Denied = 'Denied',
-  Forfeited = 'Forfeited',
+  Rejected = 'Rejected',
+  Suspended = 'Suspended',
   Unsubmitted = 'Unsubmitted',
 }
 

@@ -124,7 +124,7 @@ public class GameRepository : RepositoryBase, IGameRepository
                 (i, s) => new { Instance = i, Submissions = s }
             ).SelectMany(j => j.Submissions.DefaultIfEmpty(),
                 (j, s) => new Data(j.Instance, s)
-            ).ToArrayAsync(token);
+            ).AsSplitQuery().ToArrayAsync(token);
 
     private static IDictionary<int, Blood?[]> GenBloods(Data[] data)
         => data.GroupBy(j => j.Instance.Challenge).Select(g => new

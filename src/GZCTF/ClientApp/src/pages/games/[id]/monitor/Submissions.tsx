@@ -28,6 +28,7 @@ import {
 import { Icon } from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
+import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 50
@@ -78,10 +79,7 @@ const Submissions: FC = () => {
   const [submissions, setSubmissions] = useState<Submission[]>()
   const [type, setType] = useState<AnswerResult | 'All'>('All')
 
-  const { data: game } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { game } = useGame(numId)
 
   const iconMap = AnswerResultIconMap(0.8)
   const { classes, cx } = useTableStyles()

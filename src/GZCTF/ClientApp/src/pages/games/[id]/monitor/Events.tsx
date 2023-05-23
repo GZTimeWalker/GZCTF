@@ -30,6 +30,7 @@ import { Icon } from '@mdi/react'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useTableStyles } from '@Utils/ThemeOverride'
+import { useGame } from '@Utils/useGame'
 import api, { EventType, GameEvent } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -75,10 +76,7 @@ const Events: FC = () => {
   const newEvents = useRef<GameEvent[]>([])
   const [events, setEvents] = useState<GameEvent[]>()
 
-  const { data: game } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { game } = useGame(numId)
 
   const iconMap = EventTypeIconMap(1.15)
   const { classes } = useTableStyles()

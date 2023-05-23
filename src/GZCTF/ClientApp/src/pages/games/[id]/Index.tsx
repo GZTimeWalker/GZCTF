@@ -25,6 +25,7 @@ import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useBannerStyles, useIsMobile } from '@Utils/ThemeOverride'
+import { useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
@@ -41,7 +42,7 @@ const GameAlertMap = new Map([
   ],
   [ParticipationStatus.Accepted, null],
   [
-    ParticipationStatus.Denied,
+    ParticipationStatus.Rejected,
     {
       color: 'red',
       icon: mdiAlertCircle,
@@ -50,7 +51,7 @@ const GameAlertMap = new Map([
     },
   ],
   [
-    ParticipationStatus.Forfeited,
+    ParticipationStatus.Suspended,
     {
       color: 'red',
       icon: mdiAlertCircle,
@@ -64,8 +65,8 @@ const GameAlertMap = new Map([
 const GameActionMap = new Map([
   [ParticipationStatus.Pending, '等待审核'],
   [ParticipationStatus.Accepted, '通过审核'],
-  [ParticipationStatus.Denied, '重新报名'],
-  [ParticipationStatus.Forfeited, '通过审核'],
+  [ParticipationStatus.Rejected, '重新报名'],
+  [ParticipationStatus.Suspended, '通过审核'],
   [ParticipationStatus.Unsubmitted, '报名参赛'],
 ])
 
@@ -90,14 +91,7 @@ const GameDetail: FC = () => {
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
 
-  const {
-    data: game,
-    error,
-    mutate,
-  } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { game, error, mutate, status } = useGame(numId)
 
   const { classes, theme } = useBannerStyles()
 
@@ -114,6 +108,9 @@ const GameDetail: FC = () => {
   const { user } = useUser()
   const { teams } = useTeams()
 
+  const modals = useModals()
+  const isMobile = useIsMobile()
+
   usePageTitle(game?.title)
 
   useEffect(() => {
@@ -125,13 +122,9 @@ const GameDetail: FC = () => {
 
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>()
 
-  useEffect(() => scrollIntoView({ alignment: 'center' }), [])
-
-  const status = game?.status ?? ParticipationStatus.Unsubmitted
-  const modals = useModals()
-  const isMobile = useIsMobile()
-
   const [joinModalOpen, setJoinModalOpen] = useState(false)
+
+  useEffect(() => scrollIntoView({ alignment: 'center' }), [])
 
   const onSubmitJoin = async (info: GameJoinModel) => {
     try {
@@ -166,7 +159,7 @@ const GameDetail: FC = () => {
   }
 
   const canSubmit =
-    (status === ParticipationStatus.Unsubmitted || status === ParticipationStatus.Denied) &&
+    (status === ParticipationStatus.Unsubmitted || status === ParticipationStatus.Rejected) &&
     !finished &&
     user &&
     teams &&
@@ -221,7 +214,7 @@ const GameDetail: FC = () => {
         {finished ? '比赛结束' : !user ? '请先登录' : GameActionMap.get(status)}
       </Button>
       {started && <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>查看榜单</Button>}
-      {(status === ParticipationStatus.Pending || status === ParticipationStatus.Denied) && (
+      {(status === ParticipationStatus.Pending || status === ParticipationStatus.Rejected) && (
         <Button color="red" variant="outline" onClick={onLeave}>
           退出比赛
         </Button>

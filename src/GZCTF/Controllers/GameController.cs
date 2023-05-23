@@ -187,7 +187,7 @@ public class GameController : ControllerBase
 
         part.Organization = model.Organization;
 
-        if (part.Status == ParticipationStatus.Denied)
+        if (part.Status == ParticipationStatus.Rejected)
             part.Status = ParticipationStatus.Pending;
 
         await participationRepository.SaveAsync(token);
@@ -230,7 +230,7 @@ public class GameController : ControllerBase
         if (part is null || part.Members.All(u => u.UserId != user!.Id))
             return BadRequest(new RequestResponse("无法退出未报名的比赛"));
 
-        if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Denied)
+        if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Rejected)
             return BadRequest(new RequestResponse("审核通过后无法退出比赛"));
 
         // FIXME: 审核通过后可以添加新用户、但不能退出？

@@ -6,9 +6,10 @@ import { Card, Stack, Title, Text, LoadingOverlay, useMantineTheme } from '@mant
 import { showNotification } from '@mantine/notifications'
 import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
-import api, { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
+import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
 import CustomProgress from './CustomProgress'
 import IconTabs from './IconTabs'
 import { RequireRole } from './WithRole'
@@ -93,10 +94,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
 
   const theme = useMantineTheme()
   const { role } = useUserRole()
-  const { data: game } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { game, status } = useGame(numId)
 
   const finished = dayjs() > dayjs(game?.end ?? new Date())
   const filteredPages = pages
@@ -134,8 +132,21 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       if (now < dayjs(game.start)) {
         navigate(`/games/${numId}`)
         showNotification({
+          id: 'no-access',
           color: 'yellow',
           message: '比赛尚未开始',
+          icon: <Icon path={mdiExclamationThick} size={1} />,
+        })
+      } else if (
+        !location.pathname.includes('scoreboard') &&
+        status === ParticipationStatus.Suspended &&
+        now < dayjs(game.end)
+      ) {
+        navigate(`/games/${numId}`)
+        showNotification({
+          id: 'no-access',
+          color: 'yellow',
+          message: '您已被禁赛',
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       } else if (
@@ -146,13 +157,14 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       ) {
         navigate(`/games/${numId}`)
         showNotification({
+          id: 'no-access',
           color: 'yellow',
           message: '比赛已经结束',
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       }
     }
-  }, [game, role, location])
+  }, [game, status, role, location])
 
   return (
     <Stack pos="relative">

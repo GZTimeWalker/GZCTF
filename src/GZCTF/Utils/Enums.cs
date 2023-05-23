@@ -264,12 +264,12 @@ public enum ParticipationStatus : byte
     /// <summary>
     /// 已拒绝
     /// </summary>
-    Denied = 2,
+    Rejected = 2,
 
     /// <summary>
-    /// 已取消
+    /// 已禁赛
     /// </summary>
-    Forfeited = 3,
+    Suspended = 3,
 
     /// <summary>
     /// 未提交

@@ -4,8 +4,9 @@ import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/co
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useGame } from '@Utils/useGame'
 import { useTeams } from '@Utils/useUser'
-import api, { GameJoinModel } from '@Api'
+import { GameJoinModel } from '@Api'
 
 interface GameJoinModalProps extends ModalProps {
   onSubmitJoin: (info: GameJoinModel) => Promise<void>
@@ -17,11 +18,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const numId = parseInt(id ?? '-1')
   const { onSubmitJoin, currentOrganization, ...modalProps } = props
   const { teams } = useTeams()
-
-  const { data: game } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { game } = useGame(numId)
 
   const [inviteCode, setInviteCode] = useState('')
   const [organization, setOrganization] = useState(currentOrganization ?? '')

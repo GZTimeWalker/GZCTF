@@ -3,6 +3,7 @@ import ReactEcharts from 'echarts-for-react'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useMantineTheme } from '@mantine/core'
+import { useGame } from '@Utils/useGame'
 import api from '@Api'
 
 interface TimeLineProps {
@@ -19,10 +20,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
     revalidateOnFocus: false,
   })
 
-  const { data: game } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { game } = useGame(numId)
 
   const [now, setNow] = useState<Date>(new Date())
   const [chartData, setChartData] = useState<any>()

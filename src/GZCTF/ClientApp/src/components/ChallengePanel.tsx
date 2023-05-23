@@ -19,6 +19,7 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useGame } from '@Utils/useGame'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '../utils/ChallengeItem'
 import ChallengeCard from './ChallengeCard'
@@ -46,10 +47,7 @@ const ChallengePanel: FC = () => {
   })
   const challenges = data?.challenges
 
-  const { data: game } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { game } = useGame(numId)
 
   const tags = Object.keys(challenges ?? {})
   const [activeTab, setActiveTab] = useState<ChallengeTag | 'All'>('All')

@@ -147,7 +147,7 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
         builder.Entity<Participation>(entity =>
         {
             entity.Property(e => e.Status)
-                .HasConversion<string>();
+                .HasConversion<int>();
 
             entity.HasMany(e => e.Instances).WithOne();
 
