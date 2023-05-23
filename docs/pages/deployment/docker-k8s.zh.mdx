@@ -12,9 +12,23 @@ import { Callout } from "nextra-theme-docs";
 
 k3s 是一个轻量级的 k8s 发行版，可以在单机和多机上快速部署 k8s 集群。官网文档地址：[https://docs.k3s.io/zh](https://docs.k3s.io/zh)
 
-<Callout type="warning">
+<Callout type="info">
 
-为了防止 Docker 与 k8s 的容器运行时共存可能造成的问题，请参考官方文档在**另一台机器**上安装 k3s，如果你的机器只有一个，但是想用 k8s 的相关功能，那么可以参考 [K8s 集群部署](/deployment/k8s-only) 中的方法。
+如果你的机器只有一台，并想通过 Docker 运行 GZCTF 可以在安装时指定添加以下参数指定 Docker 后端：
+
+```bash
+INSTALL_K3S_EXEC="--docker"
+```
+
+并使用如下格式安装 k3s，如需更多信息请参考 [k3s 安装配置](https://docs.k3s.io/installation/configuration)：
+
+```bash
+curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXEC="..." sh -
+```
+
+但这种方法是不推荐的，使用 Docker 作为容器后端可能会导致一些功能不可用。
+
+如果不想使用 Docker 作为容器后端，但是需要单机部署，那么可以参考 [K8s 集群部署](/deployment/k8s-only) 中的方法。
 
 </Callout>
 
@@ -153,6 +167,22 @@ Reference: [How do you increase maximum pods per node in K3S?](https://stackover
 
 - `sudo systemctl daemon-reload`
 - `sudo systemctl restart k3s`
+
+<Callout type="info">
+
+如果需要在一台 k3s 实例上运行超过 255 个 Pod 可能会超过默认的子网大小，需要在安装 k3s 时指定 `INSTALL_K3S_EXEC`，并更改 `node-cidr-mask-size` 为所需的子网大小。
+
+```bash
+INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+```
+
+并使用如下格式安装 k3s，如需更多信息请参考 [k3s 安装配置](https://docs.k3s.io/installation/configuration)：
+
+```bash
+curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXEC="..." sh -
+```
+
+</Callout>
 
 ## 添加容器镜像仓库
 
