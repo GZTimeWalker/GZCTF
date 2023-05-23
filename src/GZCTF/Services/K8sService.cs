@@ -63,9 +63,22 @@ public class K8sService : IContainerService
 
     public async Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
     {
-        // use uuid avoid conflict
-        var name = $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}-{Guid.NewGuid().ToString("N")[..16]}"
-            .Replace('_', '-'); // ensure name is available
+        var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
+
+        if (imageName is null)
+        {
+            logger.SystemLog($"无法解析镜像名称 {config.Image}", TaskStatus.Failed, LogLevel.Warning);
+            return null;
+        }
+
+        // add prefix when meet the leading numbers
+        // which is not allowed in k8s dns name
+        if (char.IsDigit(imageName[0]))
+            imageName = $"chal-{imageName}";
+
+        // follow the k8s naming convention
+        // use uuid to avoid name conflict
+        var name = $"{imageName}-{Guid.NewGuid().ToString("N")[..16]}".Replace('_', '-');
 
         var pod = new V1Pod("v1", "Pod")
         {
@@ -183,12 +196,24 @@ public class K8sService : IContainerService
         }
         catch (HttpOperationException e)
         {
+            try
+            {
+                // remove the pod if service creation failed, ignore the error
+                await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(name, Namespace, cancellationToken: token);
+            }
+            catch { }
             logger.SystemLog($"服务 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
             logger.SystemLog($"服务 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
         {
+            try
+            {
+                // remove the pod if service creation failed, ignore the error
+                await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(name, Namespace, cancellationToken: token);
+            }
+            catch { }
             logger.LogError(e, "创建服务失败");
             return null;
         }
