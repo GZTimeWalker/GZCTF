@@ -60,7 +60,7 @@ const PDFViewer: FC<PDFViewerProps> = (props) => {
         onLoadError={showErrorNotification}
       >
         <Stack>
-          {Array.from(new Array(numPages), (el, index) => (
+          {Array.from(new Array(numPages), (_, index) => (
             <Paper className={classes.paper} key={`page_${index + 1}`}>
               <Page width={800} pageNumber={index + 1} renderAnnotationLayer={false} />
             </Paper>

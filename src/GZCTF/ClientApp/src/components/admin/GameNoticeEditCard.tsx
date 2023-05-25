@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Text, ActionIcon, Group, Card, PaperProps } from '@mantine/core'
 import { mdiPencilOutline, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { GameNotice } from '../../Api'
+import { GameNotice } from '@Api'
 
 interface GameNoticeEditCardProps extends PaperProps {
   gameNotice: GameNotice

@@ -25,10 +25,10 @@ import { notifications, showNotification, updateNotification } from '@mantine/no
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { ChallengeTagItemProps } from '@Utils/ChallengeItem'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
-import { ChallengeTagItemProps } from '../utils/ChallengeItem'
 import MarkdownRender from './MarkdownRender'
 
 interface ChallengeDetailModalProps extends ModalProps {

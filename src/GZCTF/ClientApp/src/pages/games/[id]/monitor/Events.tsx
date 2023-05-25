@@ -1,4 +1,3 @@
-import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -27,6 +26,7 @@ import {
   mdiClose,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import * as signalR from '@microsoft/signalr'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useTableStyles } from '@Utils/ThemeOverride'

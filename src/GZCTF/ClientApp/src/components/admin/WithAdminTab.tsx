@@ -9,8 +9,8 @@ import {
   mdiSitemapOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import IconTabs from '@Components/IconTabs'
 import { usePageTitle } from '@Utils/usePageTitle'
-import IconTabs from '../IconTabs'
 
 const pages = [
   { icon: mdiFlagOutline, title: '比赛管理', path: 'games', color: 'yellow' },

@@ -13,9 +13,9 @@ import {
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { BloodsTypes, ChallengeTagLabelMap } from '@Utils/ChallengeItem'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'
-import { BloodsTypes, ChallengeTagLabelMap } from '../utils/ChallengeItem'
 
 interface ChallengeCardProps {
   challenge: ChallengeInfo

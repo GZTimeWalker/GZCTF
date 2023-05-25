@@ -11,6 +11,7 @@ module.exports = {
     '^react(.*)$',
     '^@mantine/(.*)$',
     '^@mdi/(.*)$',
+    '^@[a-z](.*)$',
     '^@Components/(.*)$',
     '^@Utils/(.*)$',
     '^@Api$',

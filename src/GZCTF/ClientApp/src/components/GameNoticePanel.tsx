@@ -1,4 +1,3 @@
-import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -6,8 +5,9 @@ import { Card, List, ScrollArea, SegmentedControl, Stack, Text } from '@mantine/
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import * as signalR from '@microsoft/signalr'
+import { NoticTypeIconMap } from '@Utils/ChallengeItem'
 import api, { GameNotice, NoticeType } from '@Api'
-import { NoticTypeIconMap } from '../utils/ChallengeItem'
 import Empty from './Empty'
 
 enum NoticeFilter {
