@@ -44,7 +44,7 @@ export const useConfig = () => {
 
 const showBanner = () => {
   const valid =
-    timestamp.length === 25 && builtdate.isValid() && sha.length === 40 && tag.length > 0
+    timestamp.length === 20 && builtdate.isValid() && sha.length === 40 && tag.length > 0
   const rst = '\x1b[0m'
   const bold = '\x1b[1m'
   const brand = '\x1b[38;2;4;202;171m'

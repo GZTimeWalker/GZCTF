@@ -58,7 +58,7 @@ const About: FC = () => {
   usePageTitle('关于')
 
   const valid =
-    timestamp.length === 25 && builtdate.isValid() && sha.length === 40 && tag.length > 0
+    timestamp.length === 20 && builtdate.isValid() && sha.length === 40 && tag.length > 0
 
   return (
     <WithNavBar>
