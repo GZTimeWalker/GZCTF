@@ -27,7 +27,7 @@ jobs:
           cache-name: cache-node-modules
         with:
           path: ~/.local/share/pnpm/store
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/GZCTF/ClientApp/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/GZCTF/ClientApp/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -37,12 +37,12 @@ jobs:
         with:
           node-version: 20
 
-      - name: Prebuild Project
+      - name: Prebuild project
         run: |
           npm i -g pnpm
           dotnet build "CTFServer.csproj" -c Release -o build
 
-      - name: Publish Project
+      - name: Publish project
         run: |
           dotnet publish "CTFServer.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
           dotnet publish "CTFServer.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true
@@ -51,10 +51,10 @@ jobs:
           VITE_APP_GIT_SHA: ${{ github.sha }}
           VITE_APP_GIT_NAME: ${{ github.ref_name }}
 
-      - name: Docker Setup QEMU
+      - name: Docker setup QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Docker Setup Buildx
+      - name: Docker setup Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to Docker Hub
@@ -70,7 +70,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Docker Metadata action
+      - name: Docker metadata action
         uses: docker/metadata-action@v4
         id: meta
         with:
@@ -83,7 +83,7 @@ jobs:
             type=semver,pattern={{raw}}
             type=sha,enable=true,priority=100,prefix=,suffix=,format=short
 
-      - name: Publish Image
+      - name: Publish images
         uses: docker/build-push-action@v3
         with:
           context: ./src/GZCTF
