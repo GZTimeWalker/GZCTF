@@ -476,7 +476,7 @@ const GameInfoEdit: FC = () => {
             >
               <Center style={{ pointerEvents: 'none' }}>
                 {game?.poster ? (
-                  <Image height="195px" fit="contain" src={game.poster} />
+                  <Image height="195px" fit="contain" src={game.poster} alt="poster" />
                 ) : (
                   <Center h="160px">
                     <Stack spacing={0}>

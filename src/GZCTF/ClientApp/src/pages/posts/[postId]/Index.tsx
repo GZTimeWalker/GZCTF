@@ -63,7 +63,7 @@ const Post: FC = () => {
           <Title order={2} pb="1.5rem" className={classes.title} style={{ fontSize: 36 }}>
             {post?.title}
           </Title>
-          <Avatar src={post?.authorAvatar} color="brand" radius="xl" size="lg">
+          <Avatar alt="avatar" src={post?.authorAvatar} color="brand" radius="xl" size="lg">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text weight={700}>{post?.authorName ?? 'Anonym'}</Text>
@@ -85,7 +85,7 @@ const Post: FC = () => {
           </Group>
         )}
         <Group spacing={5} mb={100} position="right">
-          <Avatar src={post?.authorAvatar} size="sm">
+          <Avatar alt="avatar" src={post?.authorAvatar} size="sm">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text weight={700}>

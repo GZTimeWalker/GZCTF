@@ -259,7 +259,14 @@ await app.RunPrelaunchWork();
 
 app.UseResponseCompression();
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append(
+             "Cache-Control", $"public, max-age={60 * 60 * 24 * 7}");
+    }
+});
 
 app.UseMiddleware<ProxyMiddleware>();
 

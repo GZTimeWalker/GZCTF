@@ -254,7 +254,7 @@ const Users: FC = () => {
                     <td>
                       <Group noWrap position="apart" spacing="xs">
                         <Group noWrap position="left">
-                          <Avatar src={user.avatar} radius="xl" />
+                          <Avatar alt="avatar" src={user.avatar} radius="xl" />
                           <Text weight={500} lineClamp={1}>
                             {user.userName}
                           </Text>

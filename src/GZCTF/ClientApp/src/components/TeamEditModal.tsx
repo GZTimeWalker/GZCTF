@@ -53,7 +53,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
       onMouseLeave={() => setShowBtns(false)}
     >
       <Group position="left">
-        <Avatar src={user.avatar} radius="xl" />
+        <Avatar alt="avatar" src={user.avatar} radius="xl" />
         <Text weight={500}>{user.userName}</Text>
       </Group>
       {isCaptain && showBtns && (
@@ -290,6 +290,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           <Grid.Col span={4}>
             <Center>
               <Avatar
+                alt="avatar"
                 radius="xl"
                 size={70}
                 src={teamInfo?.avatar}
@@ -354,7 +355,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             {captain && (
               <Group position="apart">
                 <Group position="left">
-                  <Avatar src={captain.avatar} radius="xl" />
+                  <Avatar alt="avatar" src={captain.avatar} radius="xl" />
                   <Text weight={500}>{captain.userName}</Text>
                 </Group>
                 <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />

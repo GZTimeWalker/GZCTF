@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'build',
-      target: ['es2020', 'chrome86'],
+      target: ['es2020'],
       assetsDir: 'static',
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
@@ -51,7 +51,6 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths(),
       prismjs({
         languages: 'all',
-        plugins: ['line-numbers'],
         css: true,
       }),
     ],

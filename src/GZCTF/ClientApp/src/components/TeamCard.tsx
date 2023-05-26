@@ -47,7 +47,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
       <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
         <Stack style={{ flexGrow: 1 }}>
           <Group align="stretch" position="apart">
-            <Avatar color="cyan" size="lg" radius="md" src={team.avatar}>
+            <Avatar alt="avatar" color="cyan" size="lg" radius="md" src={team.avatar}>
               {team.name?.slice(0, 1) ?? 'T'}
             </Avatar>
 
@@ -90,6 +90,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 <Avatar.Group spacing="md">
                   <Tooltip label={captain?.userName} withArrow classNames={tooltipClasses}>
                     <Avatar
+                      alt="avatar"
                       radius="xl"
                       src={captain?.avatar}
                       style={{
@@ -101,6 +102,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                     members.slice(0, AVATAR_LIMIT).map((m) => (
                       <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
                         <Avatar
+                          alt="avatar"
                           radius="xl"
                           src={m.avatar}
                           style={{
@@ -115,7 +117,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                       withArrow
                       classNames={tooltipClasses}
                     >
-                      <Avatar radius="xl">+{members.length - AVATAR_LIMIT}</Avatar>
+                      <Avatar alt="avatar" radius="xl">
+                        +{members.length - AVATAR_LIMIT}
+                      </Avatar>
                     </Tooltip>
                   )}
                 </Avatar.Group>

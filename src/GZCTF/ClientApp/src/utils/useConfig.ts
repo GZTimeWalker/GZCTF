@@ -5,11 +5,13 @@ import { useEffect, useRef } from 'react'
 import { useLocalStorage } from '@mantine/hooks'
 import api, { GlobalConfig } from '@Api'
 
-const sha = import.meta.env.VITE_APP_GIT_SHA ?? 'unknown'
-const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'unknown'
-const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? ''
-const builtdate = import.meta.env.DEV ? dayjs() : dayjs(timestamp)
-const repo = 'https://github.com/GZTimeWalker/GZCTF'
+const RepoMeta = {
+  sha: import.meta.env.VITE_APP_GIT_SHA ?? 'unknown',
+  tag: import.meta.env.VITE_APP_GIT_NAME ?? 'unknown',
+  timestamp: import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '',
+  buildtime: import.meta.env.DEV ? dayjs() : dayjs(import.meta.env.VITE_APP_BUILD_TIMESTAMP),
+  repo: 'https://github.com/GZTimeWalker/GZCTF',
+}
 
 export const useConfig = () => {
   const {
@@ -42,9 +44,15 @@ export const useConfig = () => {
   return { config: config ?? globalConfig, error, mutate }
 }
 
-const showBanner = () => {
+export const ValidatedRepoMeta = () => {
+  const { sha, tag, timestamp, buildtime } = RepoMeta
   const valid =
-    timestamp.length === 20 && builtdate.isValid() && sha.length === 40 && tag.length > 0
+    timestamp.length === 20 && buildtime.isValid() && sha.length === 40 && tag.length > 0
+  return { valid, ...RepoMeta }
+}
+
+const showBanner = () => {
+  const { sha, tag, buildtime, repo, valid } = ValidatedRepoMeta()
   const rst = '\x1b[0m'
   const bold = '\x1b[1m'
   const brand = '\x1b[38;2;4;202;171m'
@@ -68,10 +76,10 @@ ${padding}${bold}@ ${showtag}${rst}
   console.log(
     `${title}` +
       `\n${bold}Copyright (C) 2022-now, GZTimeWalker, All rights reserved.${rst}\n` +
-      `\n${bold}License   : ${brand}GNU Affero General Public License v3.0${rst}` +
-      `\n${bold}Commit    : ${commit}${rst}` +
-      `\n${bold}Pushed at : ${brand}${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}${rst}` +
-      `\n${bold}Issues    : ${repo}/issues` +
+      `\n${bold}License  : ${brand}GNU Affero General Public License v3.0${rst}` +
+      `\n${bold}Commit   : ${commit}${rst}` +
+      `\n${bold}Built at : ${brand}${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}${rst}` +
+      `\n${bold}Issues   : ${repo}/issues` +
       '\n'
   )
 }

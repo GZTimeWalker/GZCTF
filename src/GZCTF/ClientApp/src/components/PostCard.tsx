@@ -38,7 +38,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
         cite={
           <Group position="apart" m="auto" fs="normal">
             <Group spacing={5} position="right">
-              <Avatar src={post.authorAvatar} size="sm">
+              <Avatar alt="avatar" src={post.authorAvatar} size="sm">
                 {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
               <Text weight={700}>

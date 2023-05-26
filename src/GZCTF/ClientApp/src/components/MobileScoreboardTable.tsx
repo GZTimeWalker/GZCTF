@@ -18,6 +18,7 @@ const TableRow: FC<{
       <td className={cx(classes.theadFixLeft)}>
         <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
           <Avatar
+            alt="avatar"
             src={item.avatar}
             radius="xl"
             size={30}

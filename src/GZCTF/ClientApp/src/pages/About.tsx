@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { FC } from 'react'
 import {
   Text,
@@ -14,14 +13,8 @@ import {
 } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
-import { useConfig } from '@Utils/useConfig'
+import { ValidatedRepoMeta as validatedRepoMeta, useConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
-
-const sha = import.meta.env.VITE_APP_GIT_SHA ?? 'unknown'
-const tag = import.meta.env.VITE_APP_GIT_NAME ?? 'unknown'
-const timestamp = import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? ''
-const builtdate = import.meta.env.DEV ? dayjs() : dayjs(timestamp)
-const repo = 'https://github.com/GZTimeWalker/GZCTF'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -54,11 +47,9 @@ const useStyles = createStyles((theme) => ({
 const About: FC = () => {
   const { classes } = useStyles()
   const { config } = useConfig()
+  const { repo, valid, tag, sha, buildtime } = validatedRepoMeta()
 
   usePageTitle('关于')
-
-  const valid =
-    timestamp.length === 20 && builtdate.isValid() && sha.length === 40 && tag.length > 0
 
   return (
     <WithNavBar>
@@ -128,7 +119,7 @@ const About: FC = () => {
                     sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
                   >
                     {valid
-                      ? `Pushed at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}`
+                      ? `Built at ${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}`
                       : 'This release is not officially built'}
                   </Text>
                 </Group>

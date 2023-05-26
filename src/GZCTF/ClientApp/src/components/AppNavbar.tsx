@@ -198,7 +198,7 @@ const AppNavbar: FC = () => {
               <Menu.Target>
                 <ActionIcon className={classes.link}>
                   {user?.avatar ? (
-                    <Avatar src={user?.avatar} radius="md" size="md" />
+                    <Avatar alt="avatar" src={user?.avatar} radius="md" size="md" />
                   ) : (
                     <Icon path={mdiAccountCircleOutline} size={1} />
                   )}

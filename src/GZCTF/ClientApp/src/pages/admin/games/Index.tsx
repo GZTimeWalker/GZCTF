@@ -141,7 +141,7 @@ const Games: FC = () => {
                             onClick={() => navigate(`/games/${game.id}`)}
                             sx={{ cursor: 'pointer' }}
                           >
-                            <Avatar src={game.poster} radius={0}>
+                            <Avatar alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
                             </Avatar>
                             <Text weight={700} lineClamp={1} maw="calc(10vw)">

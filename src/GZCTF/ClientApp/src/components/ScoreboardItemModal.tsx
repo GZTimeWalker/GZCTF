@@ -66,7 +66,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       {...modalProps}
       title={
         <Group position="left" spacing="md" noWrap>
-          <Avatar src={item?.avatar} size={50} radius="md" color="brand">
+          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" color="brand">
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack spacing={0}>

@@ -168,6 +168,7 @@ const Profile: FC = () => {
           <Grid.Col span={4}>
             <Center>
               <Avatar
+                alt="avatar"
                 radius={40}
                 size={80}
                 src={user?.avatar}

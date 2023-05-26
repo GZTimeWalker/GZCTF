@@ -168,7 +168,7 @@ const Teams: FC = () => {
                       <td>
                         <Group position="apart">
                           <Group position="left">
-                            <Avatar src={team.avatar} radius="xl">
+                            <Avatar alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
                             <Text lineClamp={1}>{team.name}</Text>
@@ -201,12 +201,14 @@ const Teams: FC = () => {
                                   withArrow
                                   classNames={tooltipClasses}
                                 >
-                                  <Avatar radius="xl" src={m.avatar} />
+                                  <Avatar alt="avatar" radius="xl" src={m.avatar} />
                                 </Tooltip>
                               ))}
                             {members && members.length > 8 && (
                               <Tooltip label={<Text>{members.slice(8).join(',')}</Text>} withArrow>
-                                <Avatar radius="xl">+{members.length - 8}</Avatar>
+                                <Avatar alt="avatar" radius="xl">
+                                  +{members.length - 8}
+                                </Avatar>
                               </Tooltip>
                             )}
                           </Avatar.Group>

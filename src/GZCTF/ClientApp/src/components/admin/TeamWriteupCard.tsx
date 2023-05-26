@@ -26,7 +26,7 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
     >
       <Group noWrap spacing={3} position="apart">
         <Group noWrap position="apart">
-          <Avatar src={writeup.team?.avatar} size="md">
+          <Avatar alt="avatar" src={writeup.team?.avatar} size="md">
             {writeup.team?.name?.slice(0, 1)}
           </Avatar>
           <Stack spacing={0}>

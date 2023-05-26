@@ -116,7 +116,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
   return (
     <Group spacing="xl" position="apart">
       <Group w="calc(100% - 10rem)">
-        <Avatar src={user.avatar} />
+        <Avatar alt="avatar" src={user.avatar} />
         <Group noWrap>
           <Stack spacing={2} w="15rem">
             <Group noWrap spacing="xs">
@@ -176,7 +176,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
         <Accordion.Control>
           <Group position="apart">
             <Group>
-              <Avatar src={participation.team?.avatar} />
+              <Avatar alt="avatar" src={participation.team?.avatar} />
               <Box>
                 <Text weight={500}>
                   {!participation.team?.name ? '（无名队伍）' : participation.team.name}
