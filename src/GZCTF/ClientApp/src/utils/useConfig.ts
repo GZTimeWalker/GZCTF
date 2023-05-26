@@ -68,10 +68,10 @@ ${padding}${bold}@ ${showtag}${rst}
   console.log(
     `${title}` +
       `\n${bold}Copyright (C) 2022-now, GZTimeWalker, All rights reserved.${rst}\n` +
-      `\n${bold}License  : ${brand}GNU Affero General Public License v3.0${rst}` +
-      `\n${bold}Commit   : ${commit}${rst}` +
-      `\n${bold}Built at : ${brand}${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}${rst}` +
-      `\n${bold}Issues   : ${repo}/issues` +
+      `\n${bold}License   : ${brand}GNU Affero General Public License v3.0${rst}` +
+      `\n${bold}Commit    : ${commit}${rst}` +
+      `\n${bold}Pushed at : ${brand}${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}${rst}` +
+      `\n${bold}Issues    : ${repo}/issues` +
       '\n'
   )
 }

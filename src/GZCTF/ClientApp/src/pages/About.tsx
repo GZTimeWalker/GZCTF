@@ -128,7 +128,7 @@ const About: FC = () => {
                     sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
                   >
                     {valid
-                      ? `Built at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}`
+                      ? `Pushed at ${builtdate.format('YYYY-MM-DDTHH:mm:ssZ')}`
                       : 'This release is not officially built'}
                   </Text>
                 </Group>
