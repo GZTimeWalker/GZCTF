@@ -69,8 +69,8 @@ dependencies:
     specifier: ^1.5.0
     version: 1.5.0
   marked:
-    specifier: ^5.0.3
-    version: 5.0.3
+    specifier: ^5.0.4
+    version: 5.0.4
   pdfjs-dist:
     specifier: 3.6.172
     version: 3.6.172
@@ -84,8 +84,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   react-pdf:
-    specifier: ^7.0.1
-    version: 7.0.1(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^7.0.2
+    version: 7.0.2(react-dom@18.2.0)(react@18.2.0)
   react-router:
     specifier: ^6.11.2
     version: 6.11.2(react@18.2.0)
@@ -2744,8 +2744,8 @@ packages:
     hasBin: true
     dev: false
 
-  /make-cancellable-promise@1.2.1:
-    resolution: {integrity: sha512-nigEn7brgUhjUb2lEobWUW4ZiJdIZ/Wct0UsmDsqaZhgLMvY1OC6FGLa/5SU2RvnyuilkjM7g5JGxt6CJZQGNw==}
+  /make-cancellable-promise@1.3.1:
+    resolution: {integrity: sha512-DWOzWdO3xhY5ESjVR+wVFy03rpt0ZccS4bunccNwngoX6rllKlMZm6S9ZnJ5nMuDDweqDMjtaO0g6tZeh+cCUA==}
     dev: false
 
   /make-dir@3.1.0:
@@ -2754,18 +2754,18 @@ packages:
     dependencies:
       semver: 6.3.0
 
-  /make-event-props@1.5.0:
-    resolution: {integrity: sha512-ubtzzj95Ga0t/LoINWPjqQWIxbb1SJ6td7YygKzx8kX5ywu/dpN0YnCsjzJOTxFXKsb/1SJBzy+uBAMnKWMVDw==}
+  /make-event-props@1.6.1:
+    resolution: {integrity: sha512-JhvWq/iz1BvlmnPvLJjXv+xnMPJZuychrDC68V+yCGQJn5chcA8rLGKo5EP1XwIKVrigSXKLmbeXAGkf36wdCQ==}
     dev: false
 
-  /marked@5.0.3:
-    resolution: {integrity: sha512-KUONa43Uk74uUNWMxh6lfaNYmSAsRMiDAaX8QBCCRVXzEufR0zX6T33vrGbvTnQLL02ungDM3KSzZtO+chJaHg==}
+  /marked@5.0.4:
+    resolution: {integrity: sha512-r0W8/DK56fAkV0qfUCO9cEt/VlFWUzoJOqEigvijmsVkTuPOHckh7ZutNJepRO1AxHhK96/9txonHg4bWd/aLA==}
     engines: {node: '>= 18'}
     hasBin: true
     dev: false
 
-  /merge-refs@1.1.3:
-    resolution: {integrity: sha512-di/iXo7YUDHs38KoIROE2BQvL6xmqiKYpNQSM0NG2jdvikvhJOeihXXyOXXMKkoMxdCXF2SvyxTJ92NuRA5wfA==}
+  /merge-refs@1.2.1:
+    resolution: {integrity: sha512-pRPz39HQz2xzHdXAGvtJ9S8aEpNgpUjzb5yPC3ytozodmsHg+9nqgRs7/YOmn9fM/TLzntAC8AdGTidKxOq9TQ==}
     dependencies:
       '@types/react': 18.2.7
     dev: false
@@ -3185,16 +3185,16 @@ packages:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
-  /react-pdf@7.0.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-fOTp1Sfc2WwveYiDVg7F7RZFJcVBgvzilAY6Ouj7rAeY5Jb/lQqTmqQUchjwlAOHsmGNiA0YfKOK5Th0hif5NQ==}
+  /react-pdf@7.0.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-oPC0a3kWSVFTTL/SBmGsVE6saZdMRrRNoeIOAjYOS2OdNGyGttd+1fcjnS9voI0Du0B88CqYuWErEfrPkk6AqQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       clsx: 1.2.1
-      make-cancellable-promise: 1.2.1
-      make-event-props: 1.5.0
-      merge-refs: 1.1.3
+      make-cancellable-promise: 1.3.1
+      make-event-props: 1.6.1
+      merge-refs: 1.2.1
       pdfjs-dist: 3.6.172
       prop-types: 15.8.1
       react: 18.2.0
