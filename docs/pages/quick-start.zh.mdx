@@ -6,7 +6,7 @@ GZCTF 通过 Docker 镜像的方式提供，你可以通过 docker-compose 的�
 
 <Callout type="warning">
 
-GZCTF 的安全性和前端功能依赖于 HTTPS，此部分所描述的部署方式并不提供 HTTPS 支持，因此不适合用于生产环境。仅供本地测试使用。
+GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此部分所描述的部署方式并不提供 HTTPS 支持，因此不适合用于生产环境。仅供本地测试使用。
 
 本文档不涉及如何配置 HTTPS，关于 nginx、traefik 等软件的配置使用方法请自行查询，请注意 GZCTF 的 websocket 功能可能也需要进行独立配置，如遇到比赛通知无法推送等问题请先排查反向代理是否配置正确。
 
@@ -149,36 +149,50 @@ ctf=# #do your sql query
 
 1. `docker-compose.yml` 文件
 
-    ```yaml
-    version: "3.0"
-    services:
-      gzctf:
-        # ...
-        depends_on:
-          - db
-          - cache
+   ```yaml
+   version: "3.0"
+   services:
+     gzctf:
+       # ...
+       depends_on:
+         - db
+         - cache
 
-      cache:
-        image: redis:alpine
-        restart: always
+     cache:
+       image: redis:alpine
+       restart: always
 
-      db:
-        # ...
-    ```
+     db:
+       # ...
+   ```
+
 2. `appsettings.json` 文件
 
-    ```json
-    {
-      "AllowedHosts": "*",
-      "ConnectionStrings": {
-        // ...
-        "RedisCache": "cache:6379,abortConnect=false"
-      }
-      // ...
-    }
-    ```
+   ```json
+   {
+     "AllowedHosts": "*",
+     "ConnectionStrings": {
+       // ...
+       "RedisCache": "cache:6379,abortConnect=false"
+     }
+     // ...
+   }
+   ```
 
 之后重新使用 `docker-compose up -d` 启动 GZCTF 即可。
+
+## 容器镜像
+
+GZCTF 已经预先构建并打包为统一的 Docker 镜像，你可以在 [Docker Hub](https://hub.docker.com/r/gztime/gzctf) 上找到相关的镜像。
+
+请使用如下两个容器注册表获取镜像：
+
+```
+gztime/gzctf:latest
+ghcr.io/gztimewalker/gzctf/gzctf:latest
+```
+
+测试版本和开发版本请使用 `develop` 镜像标签。
 
 ## 题目配置
 
