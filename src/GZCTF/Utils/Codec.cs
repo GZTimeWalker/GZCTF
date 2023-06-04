@@ -316,7 +316,7 @@ public partial class Codec
 
         foreach (var file in files)
         {
-            var entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Fastest);
+            var entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Optimal);
             await using var entryStream = entry.Open();
             await using var fileStream = File.OpenRead(Path.Combine(basepath, file.Location, file.Hash));
             await fileStream.CopyToAsync(entryStream, token);
