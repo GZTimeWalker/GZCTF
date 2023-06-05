@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "lint": "eslint --ext .ts,.tsx src",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write src",
@@ -58,6 +59,7 @@
     "axios": "^1.4.0",
     "babel-plugin-prismjs": "^2.1.0",
     "eslint": "8.42.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "form-data": "~4.0.0",
     "lodash": "^4.17.21",
     "prettier": "~2.8.8",

@@ -59,7 +59,9 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
           max={100}
           disabled={disabled}
           value={firstBloodBonus / 10}
-          onChange={(value) => typeof value === "number" && setFirstBloodBonus(Math.floor(value * 10))}
+          onChange={(value) =>
+            typeof value === 'number' && setFirstBloodBonus(Math.floor(value * 10))
+          }
         />
         <NumberInput
           label="二血奖励 (%)"
@@ -70,7 +72,9 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
           max={100}
           disabled={disabled}
           value={secondBloodBonus / 10}
-          onChange={(value) => typeof value === "number" && setSecondBloodBonus(Math.floor(value * 10))}
+          onChange={(value) =>
+            typeof value === 'number' && setSecondBloodBonus(Math.floor(value * 10))
+          }
         />
         <NumberInput
           label="三血奖励 (%)"
@@ -81,7 +85,9 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
           max={100}
           disabled={disabled}
           value={thirdBloodBonus / 10}
-          onChange={(value) => typeof value === "number" && setThirdBloodBonus(Math.floor(value * 10))}
+          onChange={(value) =>
+            typeof value === 'number' && setThirdBloodBonus(Math.floor(value * 10))
+          }
         />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onUpdate}>
