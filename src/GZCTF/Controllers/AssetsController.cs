@@ -20,7 +20,7 @@ public class AssetsController : ControllerBase
     private readonly IFileRepository fileRepository;
     private readonly IConfiguration configuration;
     private readonly string basepath;
-    private FileExtensionContentTypeProvider extProvider = new();
+    private readonly FileExtensionContentTypeProvider extProvider = new();
 
     public AssetsController(IFileRepository _fileeService,
         IConfiguration _configuration,
@@ -58,7 +58,7 @@ public class AssetsController : ControllerBase
         }
 
         if (!extProvider.TryGetContentType(filename, out string? contentType))
-            contentType = "application/octet-stream";
+            contentType = MediaTypeNames.Application.Octet;
 
         return new PhysicalFileResult(path, contentType)
         {
