@@ -27,6 +27,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
     public async Task<Instance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
+        using var transaction = await context.Database.BeginTransactionAsync(token);
+
         var instance = await context.Instances
             .Include(i => i.FlagContext)
             .Where(e => e.ChallengeId == challengeId && e.Participation == part)
@@ -39,28 +41,35 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
 
         if (instance.IsLoaded)
+        {
+            await transaction.CommitAsync(token);
             return instance;
+        }
 
         var challenge = instance.Challenge;
 
         if (challenge is null || !challenge.IsEnabled)
+        {
+            await transaction.CommitAsync(token);
             return null;
-
-        if (challenge.Type.IsStatic())
-        {
-            instance.FlagContext = null; // use challenge to verify
-            instance.IsLoaded = true;
-
-            await SaveAsync(token);
         }
-        else
+
+        try
         {
-            if (challenge.Type.IsAttachment())
+            // dynamic flag dispatch
+            switch (challenge.Type)
             {
-                bool saved = false;
-                int retry = 0;
-                do
-                {
+                case ChallengeType.DynamicContainer:
+                    instance.FlagContext = new()
+                    {
+                        Challenge = challenge,
+                        // tiny probability will produce the same FLAG,
+                        // but this will not affect the correctness of the answer
+                        Flag = challenge.GenerateFlag(part),
+                        IsOccupied = true
+                    };
+                    break;
+                case ChallengeType.DynamicAttachment:
                     var flags = await context.FlagContexts
                         .Where(e => e.Challenge == challenge && !e.IsOccupied)
                         .ToListAsync(token);
@@ -75,39 +84,22 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     flags[pos].IsOccupied = true;
 
                     instance.FlagId = flags[pos].Id;
-                    instance.IsLoaded = true;
-
-                    try
-                    {
-                        // FlagId need to be unique
-                        await SaveAsync(token);
-                        saved = true;
-                    }
-                    catch
-                    {
-                        retry++;
-                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 分配的动态附件保存失败，重试中：{retry} 次", TaskStatus.Failed, LogLevel.Warning);
-                        if (retry >= 3)
-                            return null;
-                        await Task.Delay(100, token);
-                    }
-                } while (!saved);
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                instance.FlagContext = new()
-                {
-                    Challenge = challenge,
-                    // tiny probability will produce the same FLAG,
-                    // but this will not affect the correctness of the answer
-                    Flag = challenge.GenerateFlag(part),
-                    IsOccupied = true
-                };
 
-                instance.IsLoaded = true;
+            // instance.FlagContext is null by default
+            // static flag does not need to be dispatched
 
-                await SaveAsync(token);
-            }
+            instance.IsLoaded = true;
+            await transaction.CommitAsync(token);
+        }
+        catch
+        {
+            logger.SystemLog($"为队伍 {part.Team.Name} 获取题目 {challenge.Title}#{challenge.Id} 的实例时遇到问题（可能由于并发错误），回滚中", TaskStatus.Failed, LogLevel.Warning);
+            await transaction.RollbackAsync(token);
+            return null;
         }
 
         return instance;

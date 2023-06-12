@@ -155,6 +155,9 @@ import { Callout } from "nextra-theme-docs";
                - name: gzctf-k8sconfig
                  mountPath: /app/k8sconfig.yaml
                  subPath: k8sconfig
+               # 若需要持久化存储日志 .log 文件
+               # 请为每个 GZCTF 实例额外挂载一个卷至 /app/log
+               # GZCTF 会自动处理日志文件，并会自动 rotate 和 compress
              resources:
                requests:
                  cpu: 1000m

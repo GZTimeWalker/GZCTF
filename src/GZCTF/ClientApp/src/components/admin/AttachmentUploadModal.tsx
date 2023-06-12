@@ -99,14 +99,22 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
     <Modal {...props}>
       <Stack>
         <Text>
-          批量上传动态附件，<strong>需要以每个 flag 为文件名称</strong>
-          ，所有附件在上传后将会以统一的文件名进行下发。
+          批量上传动态附件，所有附件上传后将会以统一的文件名进行下发。
+          <br />
+          <Text weight="bold" span>
+            请以每个 flag 作为对应附件的文件名。
+          </Text>
+          <br />
+          <Text weight="bold" color="orange" span>
+            建议上传预期参赛队伍数量的两倍的动态附件。
+          </Text>
+          <br />
         </Text>
         <ScrollArea offsetScrollbars h="40vh" pos="relative">
           {files.length === 0 ? (
             <>
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
-              <Center h="40vh">
+              <Center h="calc(40vh - 20px)">
                 <Stack spacing={0}>
                   <Title order={2}>你还没有选择任何文件</Title>
                   <Text>你选择的文件将会显示在这里</Text>
