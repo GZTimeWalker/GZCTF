@@ -198,13 +198,23 @@ public class Challenge
         if (string.IsNullOrEmpty(FlagTemplate))
             return $"flag{Guid.NewGuid():B}";
 
+        if (FlagTemplate.Contains("[GUID]"))
+            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("B"));
+
         if (FlagTemplate.Contains("[TEAM_HASH]"))
         {
             var flag = FlagTemplate;
             if (FlagTemplate.StartsWith("[LEET]"))
                 flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
 
-            var hash = Codec.StrSHA256($"{part.Token}::{part.Game.PrivateKey}::{Id}");
+            //   Using the signature private key of the game to generate a hash for the
+            // team is not a wise and sufficiently secure choice. Moreover, this private
+            // key should not exist outside of any backend systems, even if it is encrypted
+            // with a XOR key in a configuration file or provided to the organizers (admin)
+            // for third-party flag calculation and external distribution.
+            //   To address this issue, one possible solution is to use a salted hash of
+            // the private key as the salt for the team's hash.
+            var hash = Codec.StrSHA256($"{part.Token}::{part.Game.TeamHashSalt}::{Id}");
             return flag.Replace("[TEAM_HASH]", hash[12..24]);
         }
 
@@ -215,6 +225,9 @@ public class Challenge
     {
         if (string.IsNullOrEmpty(FlagTemplate))
             return "flag{GZCTF_dynamic_flag_test}";
+
+        if (FlagTemplate.Contains("[GUID]"))
+            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("B"));
 
         if (FlagTemplate.StartsWith("[LEET]"))
             return Codec.Leet.LeetFlag(FlagTemplate[6..]);

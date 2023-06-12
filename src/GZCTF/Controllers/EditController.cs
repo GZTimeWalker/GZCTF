@@ -189,6 +189,30 @@ public class EditController : Controller
     }
 
     /// <summary>
+    /// 获取比赛队伍 Hash 的加盐
+    /// </summary>
+    /// <remarks>
+    /// 获取比赛队伍 Hash 的加盐，需要管理员权限
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛哈希加盐</response>
+    [HttpGet("Games/{id}/TeamHashSalt")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetTeamHashSalt([FromRoute] int id, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        // ref: TeamToken =>
+        // Codec.StrSHA256($"{part.Token}::{part.Game.TeamHashSalt}::{Id}");
+        return Ok(game.TeamHashSalt);
+    }
+
+    /// <summary>
     /// 修改比赛
     /// </summary>
     /// <remarks>

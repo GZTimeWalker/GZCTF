@@ -284,7 +284,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             label="flag 模板"
             size="sm"
             value={flagTemplate}
-            placeholder="flag{random_uuid}"
+            placeholder="flag{[GUID]}"
             onChange={(e) => setFlagTemplate(e.target.value)}
             styles={{
               input: {
@@ -293,7 +293,10 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             }}
           />
           <Stack spacing={6} pb={8}>
-            <Text size="sm">请输入 flag 模版字符串，留空以生成随机 UUID 作为 flag</Text>
+            <Text size="sm">请输入 flag 模版字符串，留空以生成随机 GUID 作为 flag</Text>
+            <Text size="sm">
+              指定 <Code>[GUID]</Code>则会仅替换此处的占位符为随机 GUID
+            </Text>
             <Text size="sm">
               若指定 <Code>[TEAM_HASH]</Code> 则它将会被自动替换为队伍 Token
               与相关信息所生成的哈希值
@@ -311,7 +314,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               添加 <Code>[LEET]</Code> 标记，此时不会检查 flag 模版字符串的熵
             </Text>
             <Text size="sm" weight="bold">
-              flag 模编写示例
+              flag 模板编写示例
             </Text>
             <List size="sm" spacing={6}>
               <List.Item>

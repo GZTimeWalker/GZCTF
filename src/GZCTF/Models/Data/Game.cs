@@ -168,6 +168,9 @@ public class Game
     [NotMapped]
     public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
 
+    [NotMapped]
+    public string TeamHashSalt => Codec.StrSHA256($"GZCTF@{PrivateKey}@PK");
+
     internal void GenerateKeyPair(byte[]? xorkey)
     {
         SecureRandom sr = new();
