@@ -17,6 +17,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "MailKit"
 
   # Check for updates to GitHub Actions workflows weekly
   - package-ecosystem: "github-actions"

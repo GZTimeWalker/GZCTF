@@ -88,7 +88,7 @@ jobs:
             type=sha,enable=true,priority=100,prefix=,suffix=,format=short
 
       - name: Publish images
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./src/GZCTF
           tags: ${{ steps.meta.outputs.tags }}
