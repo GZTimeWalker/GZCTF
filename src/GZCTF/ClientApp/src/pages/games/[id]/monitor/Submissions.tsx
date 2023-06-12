@@ -146,12 +146,14 @@ const Submissions: FC = () => {
     }
   }, [game])
 
-  const rows = [...(activePage === 1 ? newSubmissions.current : []), ...(submissions ?? [])].map(
+  const filteredSubs = newSubmissions.current.filter((item) => type === 'All' || item.status === type)
+
+  const rows = [...(activePage === 1 ? filteredSubs : []), ...(submissions ?? [])].map(
     (item, i) => (
       <tr
         key={`${item.time}@${i}`}
         className={
-          i === 0 && activePage === 1 && newSubmissions.current.length > 0
+          i === 0 && activePage === 1 && filteredSubs.length > 0
             ? cx(classes.fade)
             : undefined
         }
