@@ -1,0 +1,25 @@
+# Basic dependabot.yml file with
+# minimum configuration for two package managers
+
+version: 2
+updates:
+  # Check for updates to NPM packages daily
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "pdfjs-dist"
+      - dependency-name: "@types/*"
+
+  # Check for updates to NuGet packages daily
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Check for updates to GitHub Actions workflows weekly
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
