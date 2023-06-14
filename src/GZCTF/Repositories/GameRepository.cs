@@ -4,7 +4,6 @@ using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services;
 using CTFServer.Utils;
-using IdentityModel.OidcClient;
 using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
