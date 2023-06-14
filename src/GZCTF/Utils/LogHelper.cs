@@ -91,7 +91,7 @@ public static class LogHelper
         });
     }
 
-    public static IDictionary<string, ColumnWriterBase> ColumnWriters = new Dictionary<string, ColumnWriterBase>
+    public static IDictionary<string, ColumnWriterBase> ColumnWriters => new Dictionary<string, ColumnWriterBase>()
     {
         {"Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
         {"Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },

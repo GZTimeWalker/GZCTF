@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Channels;
+using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services;
@@ -13,11 +14,13 @@ namespace CTFServer.Repositories;
 public class GameRepository : RepositoryBase, IGameRepository
 {
     private readonly IDistributedCache cache;
+    private readonly ITeamRepository teamRepository;
     private readonly byte[]? xorkey;
     private readonly ILogger<GameRepository> logger;
     private readonly ChannelWriter<CacheRequest> cacheRequestChannelWriter;
 
     public GameRepository(IDistributedCache _cache,
+        ITeamRepository _teamRepository,
         IConfiguration _configuration,
         ILogger<GameRepository> _logger,
         ChannelWriter<CacheRequest> _cacheRequestChannelWriter,
@@ -25,6 +28,7 @@ public class GameRepository : RepositoryBase, IGameRepository
     {
         cache = _cache;
         logger = _logger;
+        teamRepository = _teamRepository;
         cacheRequestChannelWriter = _cacheRequestChannelWriter;
         var xorkeyStr = _configuration["XorKey"];
         xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
@@ -67,9 +71,24 @@ public class GameRepository : RepositoryBase, IGameRepository
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14);
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
             return GenScoreboard(game, token);
         }, token);
+
+    public async Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default)
+    {
+        // In most cases, we can get the scoreboard from the cache
+        var scoreboard = await GetScoreboard(game, token);
+
+        foreach (var item in scoreboard.Items)
+        {
+            item.TeamInfo = await teamRepository.GetTeamById(item.Id, token) ??
+                throw new ArgumentNullException("team", "Team not found");
+        }
+
+        return scoreboard;
+    }
+
 
     public async Task DeleteGame(Game game, CancellationToken token = default)
     {

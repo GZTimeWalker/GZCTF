@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CTFServer.Models.Request.Info;
+using CTFServer.Models.Request.Admin;
 using CTFServer.Utils;
 using MemoryPack;
 
@@ -131,6 +131,13 @@ public partial class ScoreboardItem
     /// 题目情况列表
     /// </summary>
     public IEnumerable<ChallengeItem> Challenges { get; set; } = Array.Empty<ChallengeItem>();
+
+    /// <summary>
+    /// 队伍信息，用于生成排行榜
+    /// </summary>
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public Team? TeamInfo { get; set; }
 }
 
 [MemoryPackable]

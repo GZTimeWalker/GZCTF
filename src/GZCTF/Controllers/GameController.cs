@@ -2,13 +2,11 @@
 using System.Security.Claims;
 using System.Threading.Channels;
 using CTFServer.Middlewares;
-using CTFServer.Models;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
-using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -458,14 +456,22 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
-        var scoreboard = await gameRepository.GetScoreboard(game, token);
+        try
+        {
+            var scoreboard = await gameRepository.GetScoreboardWithMembers(game, token);
+            var stream = ExcelHelper.GetScoreboardExcel(scoreboard, game);
+            stream.Seek(0, SeekOrigin.Begin);
 
-        var stream = ExcelHelper.GetScoreboardExcel(scoreboard, game);
-        stream.Seek(0, SeekOrigin.Begin);
-
-        return File(stream,
+            return File(stream,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"{game.Title}_Scoreboard_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
+        }
+        catch (Exception ex)
+        {
+            logger.SystemLog("下载积分榜遇到错误", TaskStatus.Failed, LogLevel.Error);
+            logger.LogError(ex, ex.Message);
+            return BadRequest(new RequestResponse("遇到问题，请重试"));
+        }
     }
 
     /// <summary>
@@ -496,7 +502,7 @@ public class GameController : ControllerBase
 
         var submissions = await submissionRepository.GetSubmissions(game, count: 0, token: token);
 
-        var stream = ExcelHelper.GetSubmissionExcel(submissions, game);
+        var stream = ExcelHelper.GetSubmissionExcel(submissions);
         stream.Seek(0, SeekOrigin.Begin);
 
         return File(stream,
