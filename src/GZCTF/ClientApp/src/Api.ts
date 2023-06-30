@@ -228,6 +228,8 @@ export interface ConfigEditModel {
   accountPolicy?: AccountPolicy | null
   /** 全局配置项 */
   globalConfig?: GlobalConfig | null
+  /** 比赛策略 */
+  gamePolicy?: GamePolicy | null
 }
 
 /** 账户策略 */
@@ -250,6 +252,12 @@ export interface GlobalConfig {
   title?: string
   /** 平台标语 */
   slogan?: string
+}
+
+/** 比赛策略 */
+export interface GamePolicy {
+  /** 是否在达到数量限制时自动销毁最早的容器 */
+  autoDestroyOnLimitReached?: boolean
 }
 
 /** 列表响应 */

@@ -183,6 +183,7 @@ builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
 builder.Services.Configure<RegistryConfig>(builder.Configuration.GetSection(nameof(RegistryConfig)));
 builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameof(AccountPolicy)));
 builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof(GlobalConfig)));
+builder.Services.Configure<GamePolicy>(builder.Configuration.GetSection(nameof(GamePolicy)));
 builder.Services.Configure<ContainerProvider>(builder.Configuration.GetSection(nameof(ContainerProvider)));
 
 if (builder.Configuration.GetSection(nameof(ContainerProvider))

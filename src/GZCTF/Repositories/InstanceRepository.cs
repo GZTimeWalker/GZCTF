@@ -3,6 +3,7 @@ using CTFServer.Repositories.Interface;
 using CTFServer.Services.Interface;
 using CTFServer.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace CTFServer.Repositories;
 
@@ -12,15 +13,18 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     private readonly IContainerRepository containerRepository;
     private readonly IGameEventRepository gameEventRepository;
     private readonly ILogger<InstanceRepository> logger;
+    private readonly IOptionsSnapshot<GamePolicy> gamePolicy;
 
     public InstanceRepository(AppDbContext _context,
         IContainerService _service,
         IContainerRepository _containerRepository,
         IGameEventRepository _gameEventRepository,
+        IOptionsSnapshot<GamePolicy> _gamePolicy,
         ILogger<InstanceRepository> _logger) : base(_context)
     {
         logger = _logger;
         service = _service;
+        gamePolicy = _gamePolicy;
         gameEventRepository = _gameEventRepository;
         containerRepository = _containerRepository;
     }
@@ -128,9 +132,32 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
-        if (await context.Instances.CountAsync(i => i.Participation == instance.Participation
-                && i.Container != null, token) >= containerLimit)
-            return new TaskResult<Container>(TaskStatus.Denied);
+        // containerLimit == 0 means unlimit
+        if (containerLimit > 0)
+        {
+            if (gamePolicy.Value.AutoDestroyOnLimitReached)
+            {
+                var running = await context.Instances
+                    .Where(i => i.Participation == instance.Participation && i.Container != null)
+                    .OrderBy(i => i.Container!.StartedAt).ToListAsync(token);
+
+                var first = running.FirstOrDefault();
+                if (running.Count >= containerLimit && first is not null)
+                {
+                    logger.Log($"{team.Name} 自动销毁题目 {first.Challenge.Title} 的容器实例 [{first.Container!.ContainerId}]", user, TaskStatus.Success);
+                    await DestroyContainer(running.First().Container!, token);
+                }
+            }
+            else
+            {
+                var count = await context.Instances.CountAsync(
+                    i => i.Participation == instance.Participation &&
+                    i.Container != null, token);
+
+                if (count >= containerLimit)
+                    return new TaskResult<Container>(TaskStatus.Denied);
+            }
+        }
 
         if (instance.Container is null)
         {

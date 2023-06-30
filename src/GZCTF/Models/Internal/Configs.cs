@@ -34,6 +34,17 @@ public class AccountPolicy
 }
 
 /// <summary>
+/// 比赛策略
+/// </summary>
+public class GamePolicy
+{
+    /// <summary>
+    /// 是否在达到数量限制时自动销毁最早的容器
+    /// </summary>
+    public bool AutoDestroyOnLimitReached { get; set; } = false;
+}
+
+/// <summary>
 /// 全局设置
 /// </summary>
 public class GlobalConfig

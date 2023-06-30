@@ -16,4 +16,9 @@ public class ConfigEditModel
     /// 全局配置项
     /// </summary>
     public GlobalConfig? GlobalConfig { get; set; }
+
+    /// <summary>
+    /// 比赛策略
+    /// </summary>
+    public GamePolicy? GamePolicy { get; set; }
 }

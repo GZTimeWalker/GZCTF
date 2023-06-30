@@ -79,7 +79,8 @@ public class AdminController : ControllerBase
         ConfigEditModel config = new()
         {
             AccountPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value,
-            GlobalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value
+            GlobalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,
+            GamePolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<GamePolicy>>().Value
         };
 
         return Ok(config);

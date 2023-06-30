@@ -29,6 +29,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
 
         configs.UnionWith(ConfigService.GetConfigs(new AccountPolicy()));
         configs.UnionWith(ConfigService.GetConfigs(new GlobalConfig()));
+        configs.UnionWith(ConfigService.GetConfigs(new GamePolicy()));
 
         return configs;
     }

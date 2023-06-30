@@ -229,10 +229,10 @@ const GameInfoEdit: FC = () => {
           onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: Number(e) })}
         />
         <NumberInput
-          label="队伍容器数量限制"
-          description="整个队伍共享的容器数量限制"
+          label="队伍容器数量上限"
+          description="队伍共享的容器数量 (0 表示不限制)"
           disabled={disabled}
-          min={1}
+          min={0}
           required
           value={game?.containerCountLimit}
           onChange={(e) => game && setGame({ ...game, containerCountLimit: Number(e) })}
