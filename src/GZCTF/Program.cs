@@ -230,14 +230,7 @@ builder.Services.AddResponseCompression(options =>
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
 {
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var errmsg = context.ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage;
-        return new JsonResult(new RequestResponse(errmsg is not null && errmsg.Length > 0 ? errmsg : "校验失败，请检查输入。"))
-        {
-            StatusCode = 400
-        };
-    };
+    options.InvalidModelStateResponseFactory = InvalidModelStateHandler;
 });
 
 var app = builder.Build();
@@ -341,5 +334,27 @@ public partial class Program
         Log.Logger.Fatal(msg);
         Thread.Sleep(30000);
         Environment.Exit(1);
+    }
+
+    public static IActionResult InvalidModelStateHandler(ActionContext context)
+    {
+        string? errmsg = null;
+
+        if (context.ModelState.ErrorCount > 0)
+        {
+            foreach (var val in context.ModelState.Values)
+            {
+                if (val.Errors.Count > 0)
+                {
+                    errmsg = val.Errors.FirstOrDefault()?.ErrorMessage;
+                    break;
+                }
+            }
+        }
+
+        return new JsonResult(new RequestResponse(errmsg is not null && errmsg.Length > 0 ? errmsg : "校验失败，请检查输入。"))
+        {
+            StatusCode = 400
+        };
     }
 }

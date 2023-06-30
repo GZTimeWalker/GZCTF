@@ -11,6 +11,7 @@ import {
   ScrollArea,
   Code,
   Badge,
+  Input,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -184,7 +185,7 @@ const Teams: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th style={{ width: '20rem' }}>队伍</th>
+                <th style={{ width: '23rem' }}>队伍</th>
                 <th>队员</th>
                 <th>签名</th>
                 <th />
@@ -201,20 +202,28 @@ const Teams: FC = () => {
                   return (
                     <tr key={team.id}>
                       <td>
-                        <Group position="apart">
+                        <Group position="apart" spacing={0}>
                           <Group position="left">
                             <Avatar alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
-                            <Text lineClamp={1} weight="bold">
-                              {team.name}
-                            </Text>
+                            <Input
+                              variant="unstyled"
+                              value={team.name ?? 'team'}
+                              readOnly
+                              sx={() => ({
+                                input: {
+                                  userSelect: 'none',
+                                  fontWeight: 'bold',
+                                  width: '14rem',
+                                },
+                              })}
+                            />
                           </Group>
-                          <Group position="right">
-                            <Badge size="sm" color={team.locked ? 'yellow' : 'gray'}>
-                              {team.locked ? '已锁定' : '未锁定'}
-                            </Badge>
-                          </Group>
+
+                          <Badge size="sm" color={team.locked ? 'yellow' : 'gray'}>
+                            {team.locked ? '已锁定' : '未锁定'}
+                          </Badge>
                         </Group>
                       </td>
                       <td>
