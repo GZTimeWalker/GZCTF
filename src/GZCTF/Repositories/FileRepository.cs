@@ -151,6 +151,6 @@ public class FileRepository : RepositoryBase, IFileRepository
     public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)
         => context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
 
-    public Task<List<LocalFile>> GetFiles(int count, int skip, CancellationToken token = default)
-        => context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToListAsync(token);
+    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default)
+        => context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
 }

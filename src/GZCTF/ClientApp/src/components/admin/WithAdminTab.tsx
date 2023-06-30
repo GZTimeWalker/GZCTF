@@ -7,6 +7,7 @@ import {
   mdiAccountGroupOutline,
   mdiFileDocumentOutline,
   mdiSitemapOutline,
+  mdiPackageVariantClosed,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import IconTabs from '@Components/IconTabs'
@@ -16,6 +17,7 @@ const pages = [
   { icon: mdiFlagOutline, title: '比赛管理', path: 'games', color: 'yellow' },
   { icon: mdiAccountGroupOutline, title: '队伍管理', path: 'teams', color: 'green' },
   { icon: mdiAccountCogOutline, title: '用户管理', path: 'users', color: 'cyan' },
+  { icon: mdiPackageVariantClosed, title: '容器管理', path: 'instances', color: 'blue' },
   { icon: mdiFileDocumentOutline, title: '系统日志', path: 'logs', color: 'red' },
   { icon: mdiSitemapOutline, title: '全局设置', path: 'configs', color: 'orange' },
 ]

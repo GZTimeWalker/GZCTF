@@ -294,14 +294,14 @@ const Users: FC = () => {
                         <ActionIconWithConfirm
                           iconPath={mdiLockReset}
                           color="orange"
-                          message={`确定要重置 “${user.userName}” 的密码吗？`}
+                          message={`确定重置用户\n “${user.userName}” 的密码吗？`}
                           disabled={disabled}
                           onClick={() => onResetPassword(user)}
                         />
                         <ActionIconWithConfirm
                           iconPath={mdiDeleteOutline}
                           color="alert"
-                          message={`确定要删除 “${user.userName}” 吗？`}
+                          message={`确定要删除用户\n “${user.userName}” 吗？`}
                           disabled={disabled || user.id === currentUser?.userId}
                           onClick={() => onDelete(user)}
                         />

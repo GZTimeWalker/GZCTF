@@ -28,10 +28,19 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
       </Popover.Target>
       <Popover.Dropdown>
         <Stack align="center" spacing={6}>
-          <Text size="sm" weight={500}>
+          <Text
+            size="sm"
+            weight="bold"
+            h="auto"
+            style={{
+              whiteSpace: 'pre-wrap',
+              textAlign: 'center',
+            }}
+          >
             {props.message}
           </Text>
-          <Group w="100%" style={{ justifyContent: 'space-evenly' }}>
+
+          <Group w="100%" position="apart">
             <Button
               size="xs"
               py={2}

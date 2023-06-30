@@ -34,6 +34,8 @@ public class AdminController : ControllerBase
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
     private readonly IServiceProvider serviceProvider;
+    private readonly IContainerRepository containerRepository;
+    private readonly IInstanceRepository instanceRepository;
     private readonly IParticipationRepository participationRepository;
     private readonly string basepath;
 
@@ -44,6 +46,8 @@ public class AdminController : ControllerBase
         IConfigService _configService,
         IGameRepository _gameRepository,
         ITeamRepository _teamRepository,
+        IInstanceRepository _instanceRepository,
+        IContainerRepository _containerRepository,
         IServiceProvider _serviceProvider,
         IConfiguration _configuration,
         IParticipationRepository _participationRepository)
@@ -55,6 +59,8 @@ public class AdminController : ControllerBase
         logRepository = _logRepository;
         teamRepository = _teamRepository;
         gameRepository = _gameRepository;
+        instanceRepository = _instanceRepository;
+        containerRepository = _containerRepository;
         serviceProvider = _serviceProvider;
         participationRepository = _participationRepository;
         basepath = _configuration.GetSection("UploadFolder").Value ?? "uploads";
@@ -523,16 +529,58 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
+    /// 获取全部容器实例
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口获取全部容器实例，需要Admin权限
+    /// </remarks>
+    /// <response code="200">实例列表</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpGet("Instances")]
+    [ProducesResponseType(typeof(ArrayResponse<ContainerInstanceModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Instances(CancellationToken token = default)
+        => Ok(new ArrayResponse<ContainerInstanceModel>(await containerRepository.GetContainerInstances(token)));
+
+    /// <summary>
+    /// 删除容器实例
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口强制删除容器实例，需要Admin权限
+    /// </remarks>
+    /// <response code="200">成功获取</response>
+    /// <response code="400">容器实例销毁失败</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">容器实例未找到</response>
+    [HttpDelete("Instances/{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DestroyInstance(string id, CancellationToken token = default)
+    {
+        var container = await containerRepository.GetContainerById(id, token);
+
+        if (container is null)
+            return NotFound(new RequestResponse("容器实例未找到", 404));
+
+        if (await instanceRepository.DestroyContainer(container, token))
+            return Ok();
+        else
+            return BadRequest(new RequestResponse("容器实例销毁失败", 404));
+    }
+
+    /// <summary>
     /// 获取全部文件
     /// </summary>
     /// <remarks>
-    /// 使用此接口获取全部日志，需要Admin权限
+    /// 使用此接口获取全部文件，需要Admin权限
     /// </remarks>
-    /// <response code="200">日志列表</response>
+    /// <response code="200">文件列表</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     [HttpGet("Files")]
-    [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ArrayResponse<LocalFile>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await fileService.GetFiles(count, skip, token));
+        => Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
 }

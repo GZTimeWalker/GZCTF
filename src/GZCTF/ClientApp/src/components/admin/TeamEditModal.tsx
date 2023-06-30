@@ -36,7 +36,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   useEffect(() => {
     setTeamInfo({ ...team })
     setActiveTeam(team)
-    console.log(team)
   }, [team])
 
   const onChangeTeamInfo = () => {

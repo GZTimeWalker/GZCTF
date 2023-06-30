@@ -277,7 +277,9 @@ const Teams: FC = () => {
                           <ActionIconWithConfirm
                             iconPath={team.locked ? mdiLockOpenVariantOutline : mdiLockOutline}
                             color={team.locked ? 'gray' : 'yellow'}
-                            message={`确定要${team.locked ? '解锁' : '锁定'} “${team.name}” 吗？`}
+                            message={`确定要${team.locked ? '解锁' : '锁定'}队伍\n“${
+                              team.name
+                            }” 吗？`}
                             disabled={disabled}
                             onClick={() => onToggleLock(team)}
                           />
@@ -285,7 +287,7 @@ const Teams: FC = () => {
                           <ActionIconWithConfirm
                             iconPath={mdiDeleteOutline}
                             color="alert"
-                            message={`确定要删除 “${team.name}” 吗？`}
+                            message={`确定要删除队伍\n“${team.name}” 吗？`}
                             disabled={disabled}
                             onClick={() => onDelete(team)}
                           />

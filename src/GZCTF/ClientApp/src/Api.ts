@@ -404,9 +404,15 @@ export interface TeamUserInfoModel {
 
 /** 队伍信息更改（Admin） */
 export interface AdminTeamModel {
-  /** 队伍名称 */
+  /**
+   * 队伍名称
+   * @maxLength 15
+   */
   name?: string | null
-  /** 队伍签名 */
+  /**
+   * 队伍签名
+   * @maxLength 31
+   */
   bio?: string | null
   /** 是否锁定 */
   locked?: boolean | null
@@ -493,6 +499,107 @@ export interface WriteupInfoModel {
    * @format date-time
    */
   uploadTimeUTC?: string
+}
+
+/** 列表响应 */
+export interface ArrayResponseOfContainerInstanceModel {
+  /** 数据 */
+  data: ContainerInstanceModel[]
+  /**
+   * 数据长度
+   * @format int32
+   */
+  length: number
+  /**
+   * 总长度
+   * @format int32
+   */
+  total?: number
+}
+
+/** 容器实例信息（Admin） */
+export interface ContainerInstanceModel {
+  /** 队伍 */
+  team?: TeamModel | null
+  /** 题目 */
+  challenge?: ChallengeModel | null
+  /** 容器镜像 */
+  image?: string
+  /** 容器数据库 ID */
+  containerGuid?: string
+  /** 容器 ID */
+  containerId?: string
+  /**
+   * 容器创建时间
+   * @format date-time
+   */
+  startedAt?: string
+  /**
+   * 容器期望终止时间
+   * @format date-time
+   */
+  expectStopAt?: string
+  /** 公开 IP */
+  publicIP?: string | null
+  /**
+   * 公开端口
+   * @format int32
+   */
+  publicPort?: number | null
+}
+
+/** 队伍信息 */
+export interface TeamModel {
+  /**
+   * 队伍 ID
+   * @format int32
+   */
+  id?: number
+  /** 队名 */
+  name?: string
+}
+
+/** 题目信息 */
+export interface ChallengeModel {
+  /**
+   * 题目 ID
+   * @format int32
+   */
+  id?: number
+  /** 题目名称 */
+  title?: string
+  /** 题目标签 */
+  tag?: ChallengeTag
+}
+
+/** 题目标签 */
+export enum ChallengeTag {
+  Misc = 'Misc',
+  Crypto = 'Crypto',
+  Pwn = 'Pwn',
+  Web = 'Web',
+  Reverse = 'Reverse',
+  Blockchain = 'Blockchain',
+  Forensics = 'Forensics',
+  Hardware = 'Hardware',
+  Mobile = 'Mobile',
+  PPC = 'PPC',
+}
+
+/** 列表响应 */
+export interface ArrayResponseOfLocalFile {
+  /** 数据 */
+  data: LocalFile[]
+  /**
+   * 数据长度
+   * @format int32
+   */
+  length: number
+  /**
+   * 总长度
+   * @format int32
+   */
+  total?: number
 }
 
 export interface LocalFile {
@@ -783,20 +890,6 @@ export interface ChallengeEditDetailModel {
   testContainer?: ContainerInfoModel | null
   /** 题目 Flag 信息 */
   flags: FlagInfoModel[]
-}
-
-/** 题目标签 */
-export enum ChallengeTag {
-  Misc = 'Misc',
-  Crypto = 'Crypto',
-  Pwn = 'Pwn',
-  Web = 'Web',
-  Reverse = 'Reverse',
-  Blockchain = 'Blockchain',
-  Forensics = 'Forensics',
-  Hardware = 'Hardware',
-  Mobile = 'Mobile',
-  PPC = 'PPC',
 }
 
 export enum ChallengeType {
@@ -2485,7 +2578,64 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<void>(`/api/admin/writeups/${id}/all`, data, options),
 
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description 使用此接口获取全部容器实例，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminInstances
+     * @summary 获取全部容器实例
+     * @request GET:/api/admin/instances
+     */
+    adminInstances: (params: RequestParams = {}) =>
+      this.request<ArrayResponseOfContainerInstanceModel, RequestResponse>({
+        path: `/api/admin/instances`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 使用此接口获取全部容器实例，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminInstances
+     * @summary 获取全部容器实例
+     * @request GET:/api/admin/instances
+     */
+    useAdminInstances: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ArrayResponseOfContainerInstanceModel, RequestResponse>(
+        doFetch ? `/api/admin/instances` : null,
+        options
+      ),
+
+    /**
+     * @description 使用此接口获取全部容器实例，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminInstances
+     * @summary 获取全部容器实例
+     * @request GET:/api/admin/instances
+     */
+    mutateAdminInstances: (
+      data?: ArrayResponseOfContainerInstanceModel | Promise<ArrayResponseOfContainerInstanceModel>,
+      options?: MutatorOptions
+    ) => mutate<ArrayResponseOfContainerInstanceModel>(`/api/admin/instances`, data, options),
+
+    /**
+     * @description 使用此接口强制删除容器实例，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDestroyInstance
+     * @summary 删除容器实例
+     * @request DELETE:/api/admin/instances/{id}
+     */
+    adminDestroyInstance: (id: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/instances/${id}`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口获取全部文件，需要Admin权限
      *
      * @tags Admin
      * @name AdminFiles
@@ -2507,7 +2657,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<LocalFile[], RequestResponse>({
+      this.request<ArrayResponseOfLocalFile, RequestResponse>({
         path: `/api/admin/files`,
         method: 'GET',
         query: query,
@@ -2515,7 +2665,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description 使用此接口获取全部文件，需要Admin权限
      *
      * @tags Admin
      * @name AdminFiles
@@ -2538,10 +2688,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<LocalFile[], RequestResponse>(doFetch ? [`/api/admin/files`, query] : null, options),
+      useSWR<ArrayResponseOfLocalFile, RequestResponse>(
+        doFetch ? [`/api/admin/files`, query] : null,
+        options
+      ),
 
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description 使用此接口获取全部文件，需要Admin权限
      *
      * @tags Admin
      * @name AdminFiles
@@ -2561,9 +2714,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         skip?: number
       },
-      data?: LocalFile[] | Promise<LocalFile[]>,
+      data?: ArrayResponseOfLocalFile | Promise<ArrayResponseOfLocalFile>,
       options?: MutatorOptions
-    ) => mutate<LocalFile[]>([`/api/admin/files`, query], data, options),
+    ) => mutate<ArrayResponseOfLocalFile>([`/api/admin/files`, query], data, options),
   }
   assets = {
     /**

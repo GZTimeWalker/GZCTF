@@ -52,5 +52,5 @@ public interface IFileRepository : IRepository
     /// <param name="skip">跳过</param>
     /// <param name="token">取消Token</param>
     /// <returns>文件对象列表</returns>
-    public Task<List<LocalFile>> GetFiles(int count, int skip, CancellationToken token = default);
+    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default);
 }
