@@ -10,6 +10,7 @@ import {
   Tooltip,
   ScrollArea,
   Code,
+  Badge,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -20,14 +21,17 @@ import {
   mdiLockOutline,
   mdiDeleteOutline,
   mdiCheck,
+  mdiPencilOutline,
+  mdiLockOpenVariantOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
+import TeamEditModal from '@Components/admin/TeamEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
-import api, { TeamInfoModel } from '@Api'
+import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -44,8 +48,10 @@ const Teams: FC = () => {
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const [current, setCurrent] = useState(0)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [activeTeam, setActiveTeam] = useState<TeamWithDetailedUserInfo>({})
 
-  const { classes, theme } = useTableStyles()
+  const { classes } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
 
   useEffect(() => {
@@ -96,6 +102,7 @@ const Teams: FC = () => {
       setDisabled(true)
 
       await api.admin.adminDeleteTeam(team.id)
+
       showNotification({
         message: `${team.name} 已删除`,
         color: 'teal',
@@ -103,6 +110,34 @@ const Teams: FC = () => {
       })
       teams && updateTeams(teams.filter((x) => x.id !== team.id))
       setCurrent(current - 1)
+      setUpdate(new Date())
+    } catch (e: any) {
+      showErrorNotification(e)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const onToggleLock = async (team: TeamInfoModel) => {
+    try {
+      if (!team.id) return
+      setDisabled(true)
+
+      await api.admin.adminUpdateTeam(team.id!, {
+        locked: !team.locked,
+      })
+
+      showNotification({
+        color: 'teal',
+        message: '队伍信息已更新',
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+
+      updateTeams(
+        [{ ...team, locked: !team.locked }, ...(teams?.filter((n) => n.id !== team.id) ?? [])].sort(
+          (a, b) => (a.id! < b.id! ? -1 : 1)
+        )
+      )
       setUpdate(new Date())
     } catch (e: any) {
       showErrorNotification(e)
@@ -149,9 +184,9 @@ const Teams: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th>队伍</th>
-                <th>签名</th>
+                <th style={{ width: '20rem' }}>队伍</th>
                 <th>队员</th>
+                <th>签名</th>
                 <th />
               </tr>
             </thead>
@@ -171,17 +206,16 @@ const Teams: FC = () => {
                             <Avatar alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
-                            <Text lineClamp={1}>{team.name}</Text>
+                            <Text lineClamp={1} weight="bold">
+                              {team.name}
+                            </Text>
                           </Group>
-                          {team.locked && (
-                            <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
-                          )}
+                          <Group position="right">
+                            <Badge size="sm" color={team.locked ? 'yellow' : 'gray'}>
+                              {team.locked ? '已锁定' : '未锁定'}
+                            </Badge>
+                          </Group>
                         </Group>
-                      </td>
-                      <td>
-                        <Text lineClamp={1} style={{ overflow: 'hidden' }}>
-                          {team.bio}
-                        </Text>
                       </td>
                       <td>
                         <Tooltip.Group openDelay={300} closeDelay={100}>
@@ -214,14 +248,39 @@ const Teams: FC = () => {
                           </Avatar.Group>
                         </Tooltip.Group>
                       </td>
+                      <td>
+                        <Text lineClamp={1} style={{ overflow: 'hidden' }}>
+                          {team.bio ?? '这个队伍很懒，什么都没有写'}
+                        </Text>
+                      </td>
                       <td align="right">
-                        <ActionIconWithConfirm
-                          iconPath={mdiDeleteOutline}
-                          color="alert"
-                          message={`确定要删除 “${team.name}” 吗？`}
-                          disabled={disabled}
-                          onClick={() => onDelete(team)}
-                        />
+                        <Group noWrap spacing="sm" position="right">
+                          <ActionIcon
+                            color="blue"
+                            onClick={() => {
+                              setActiveTeam(team)
+                              setIsEditModalOpen(true)
+                            }}
+                          >
+                            <Icon path={mdiPencilOutline} size={1} />
+                          </ActionIcon>
+
+                          <ActionIconWithConfirm
+                            iconPath={team.locked ? mdiLockOpenVariantOutline : mdiLockOutline}
+                            color={team.locked ? 'gray' : 'yellow'}
+                            message={`确定要${team.locked ? '解锁' : '锁定'} “${team.name}” 吗？`}
+                            disabled={disabled}
+                            onClick={() => onToggleLock(team)}
+                          />
+
+                          <ActionIconWithConfirm
+                            iconPath={mdiDeleteOutline}
+                            color="alert"
+                            message={`确定要删除 “${team.name}” 吗？`}
+                            disabled={disabled}
+                            onClick={() => onDelete(team)}
+                          />
+                        </Group>
                       </td>
                     </tr>
                   )
@@ -229,6 +288,20 @@ const Teams: FC = () => {
             </tbody>
           </Table>
         </ScrollArea>
+        <TeamEditModal
+          size="35%"
+          title="编辑队伍"
+          team={activeTeam}
+          opened={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          mutateTeam={(team: TeamWithDetailedUserInfo) => {
+            updateTeams(
+              [team, ...(teams?.filter((n) => n.id !== team.id) ?? [])].sort((a, b) =>
+                a.id! < b.id! ? -1 : 1
+              )
+            )
+          }}
+        />
       </Paper>
     </AdminPage>
   )

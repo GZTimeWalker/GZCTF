@@ -273,6 +273,32 @@ public class AdminController : ControllerBase
                 .ToResponse());
 
     /// <summary>
+    /// 修改队伍信息
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口修改队伍信息，需要Admin权限
+    /// </remarks>
+    /// <response code="200">成功更新</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">队伍未找到</response>
+    [HttpPut("Teams/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] AdminTeamModel model, CancellationToken token = default)
+    {
+        var team = await teamRepository.GetTeamById(id, token);
+
+        if (team is null)
+            return BadRequest(new RequestResponse("队伍未找到"));
+
+        team.UpdateInfo(model);
+        await teamRepository.SaveAsync(token);
+
+        return Ok();
+    }
+
+    /// <summary>
     /// 修改用户信息
     /// </summary>
     /// <remarks>
@@ -285,7 +311,7 @@ public class AdminController : ControllerBase
     [HttpPut("Users/{userid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateUserInfo(string userid, [FromBody] UpdateUserInfoModel model, CancellationToken token)
+    public async Task<IActionResult> UpdateUserInfo(string userid, [FromBody] AdminUserInfoModel model)
     {
         var user = await userManager.FindByIdAsync(userid);
 

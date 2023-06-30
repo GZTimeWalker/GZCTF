@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Info;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CTFServer.Models;
 
@@ -82,5 +84,12 @@ public class Team
     {
         Name = string.IsNullOrEmpty(model.Name) ? Name : model.Name;
         Bio = model.Bio;
+    }
+
+    internal void UpdateInfo(AdminTeamModel model)
+    {
+        Name = string.IsNullOrEmpty(model.Name) ? Name : model.Name;
+        Bio = string.IsNullOrEmpty(model.Bio) ? Bio : model.Bio;
+        Locked = model.Locked ?? Locked;
     }
 }

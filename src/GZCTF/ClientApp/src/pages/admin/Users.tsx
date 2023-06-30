@@ -255,7 +255,7 @@ const Users: FC = () => {
                       <Group noWrap position="apart" spacing="xs">
                         <Group noWrap position="left">
                           <Avatar alt="avatar" src={user.avatar} radius="xl" />
-                          <Text weight={500} lineClamp={1}>
+                          <Text weight="bold" lineClamp={1}>
                             {user.userName}
                           </Text>
                         </Group>
@@ -270,11 +270,9 @@ const Users: FC = () => {
                       </Text>
                     </td>
                     <td>
-                      <Group noWrap position="apart">
-                        <Text lineClamp={1} size="sm" ff={theme.fontFamilyMonospace}>
-                          {user.ip}
-                        </Text>
-                      </Group>
+                      <Text lineClamp={1} size="sm" ff={theme.fontFamilyMonospace}>
+                        {user.ip}
+                      </Text>
                     </td>
                     <td>{!user.realName ? '用户未填写' : user.realName}</td>
                     <td>

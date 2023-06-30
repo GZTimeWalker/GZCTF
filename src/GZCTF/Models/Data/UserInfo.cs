@@ -99,7 +99,7 @@ public partial class UserInfo : IdentityUser
     [MemoryPackIgnore]
     public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
 
-    internal void UpdateUserInfo(UpdateUserInfoModel model)
+    internal void UpdateUserInfo(AdminUserInfoModel model)
     {
         UserName = model.UserName ?? UserName;
         Email = model.Email ?? Email;

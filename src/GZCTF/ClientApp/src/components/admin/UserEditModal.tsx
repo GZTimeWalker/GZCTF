@@ -20,7 +20,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { UserInfoModel, UpdateUserInfoModel, Role } from '@Api'
+import api, { UserInfoModel, AdminUserInfoModel, Role } from '@Api'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],
@@ -40,18 +40,10 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
 
   const [activeUser, setActiveUser] = useState<UserInfoModel>(user)
-  const [profile, setProfile] = useState<UpdateUserInfoModel>({})
+  const [profile, setProfile] = useState<AdminUserInfoModel>({})
 
   useEffect(() => {
-    setProfile({
-      userName: user.userName,
-      email: user.email,
-      role: user.role,
-      bio: user.bio,
-      realName: user.realName,
-      stdNumber: user.stdNumber,
-      phone: user.phone,
-    })
+    setProfile({ ...user })
     setActiveUser(user)
   }, [user])
 

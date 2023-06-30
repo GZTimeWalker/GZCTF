@@ -394,8 +394,18 @@ export interface TeamUserInfoModel {
   captain?: boolean
 }
 
+/** 队伍信息更改（Admin） */
+export interface AdminTeamModel {
+  /** 队伍名称 */
+  name?: string | null
+  /** 队伍签名 */
+  bio?: string | null
+  /** 是否锁定 */
+  locked?: boolean | null
+}
+
 /** 用户信息更改（Admin） */
-export interface UpdateUserInfoModel {
+export interface AdminUserInfoModel {
   /**
    * 用户名
    * @minLength 3
@@ -2152,6 +2162,39 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 使用此接口修改队伍信息，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminUpdateTeam
+     * @summary 修改队伍信息
+     * @request PUT:/api/admin/teams/{id}
+     */
+    adminUpdateTeam: (id: number, data: AdminTeamModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/teams/${id}`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口删除队伍，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDeleteTeam
+     * @summary 删除队伍
+     * @request DELETE:/api/admin/teams/{id}
+     */
+    adminDeleteTeam: (id: number, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/admin/teams/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 使用此接口修改用户信息，需要Admin权限
      *
      * @tags Admin
@@ -2159,7 +2202,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary 修改用户信息
      * @request PUT:/api/admin/users/{userid}
      */
-    adminUpdateUserInfo: (userid: string, data: UpdateUserInfoModel, params: RequestParams = {}) =>
+    adminUpdateUserInfo: (userid: string, data: AdminUserInfoModel, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/admin/users/${userid}`,
         method: 'PUT',
@@ -2238,22 +2281,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     adminResetPassword: (userid: string, params: RequestParams = {}) =>
       this.request<string, RequestResponse>({
         path: `/api/admin/users/${userid}/password`,
-        method: 'DELETE',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 使用此接口删除队伍，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDeleteTeam
-     * @summary 删除队伍
-     * @request DELETE:/api/admin/teams/{id}
-     */
-    adminDeleteTeam: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/admin/teams/${id}`,
         method: 'DELETE',
         format: 'json',
         ...params,
@@ -2827,6 +2854,49 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
+
+    /**
+     * @description 获取比赛队伍 Hash 的加盐，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetTeamHashSalt
+     * @summary 获取比赛队伍 Hash 的加盐
+     * @request GET:/api/edit/games/{id}/teamhashsalt
+     */
+    editGetTeamHashSalt: (id: number, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/edit/games/${id}/teamhashsalt`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛队伍 Hash 的加盐，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetTeamHashSalt
+     * @summary 获取比赛队伍 Hash 的加盐
+     * @request GET:/api/edit/games/{id}/teamhashsalt
+     */
+    useEditGetTeamHashSalt: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<string, RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/teamhashsalt` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛队伍 Hash 的加盐，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetTeamHashSalt
+     * @summary 获取比赛队伍 Hash 的加盐
+     * @request GET:/api/edit/games/{id}/teamhashsalt
+     */
+    mutateEditGetTeamHashSalt: (
+      id: number,
+      data?: string | Promise<string>,
+      options?: MutatorOptions
+    ) => mutate<string>(`/api/edit/games/${id}/teamhashsalt`, data, options),
 
     /**
      * @description 使用此接口更新比赛头图，需要Admin权限
