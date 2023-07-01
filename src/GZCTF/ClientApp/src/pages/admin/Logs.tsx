@@ -1,15 +1,27 @@
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
-import { Group, SegmentedControl, ActionIcon, Table, Paper, ScrollArea } from '@mantine/core'
+import {
+  Group,
+  SegmentedControl,
+  ActionIcon,
+  Table,
+  Paper,
+  ScrollArea,
+  Input,
+  createStyles,
+  Text,
+  Badge,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose, mdiCheck, mdiArrowLeftBold, mdiArrowRightBold } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import AdminPage from '@Components/admin/AdminPage'
+import { TaskStatusColorMap } from '@Utils/ChallengeItem'
 import { useTableStyles } from '@Utils/ThemeOverride'
-import api, { LogMessageModel } from '@Api'
+import api, { LogMessageModel, TaskStatus } from '@Api'
 
-const ITEM_COUNT_PER_PAGE = 30
+const ITEM_COUNT_PER_PAGE = 50
 
 enum LogLevel {
   Info = 'Information',
@@ -18,10 +30,25 @@ enum LogLevel {
   All = 'All',
 }
 
+const NoPaddingTable = createStyles(() => ({
+  table: {
+    padding: 0,
+    borderCollapse: 'collapse',
+    borderSpacing: 0,
+    width: '100%',
+
+    '& tbody tr td': {
+      whiteSpace: 'nowrap',
+      padding: '0 1rem 0 0',
+    },
+  },
+}))
+
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
-  const { classes, cx } = useTableStyles()
+  const { classes, cx, theme } = useTableStyles()
+  const { classes: noPaddingClasses } = NoPaddingTable()
 
   const [, update] = useState(new Date())
   const newLogs = useRef<LogMessageModel[]>([])
@@ -93,11 +120,40 @@ const Logs: FC = () => {
         i === 0 && activePage === 1 && newLogs.current.length > 0 ? cx(classes.fade) : undefined
       }
     >
-      <td className={cx(classes.mono)}>{dayjs(item.time).format('MM/DD HH:mm:ss')}</td>
-      <td className={cx(classes.mono)}>{item.name}</td>
-      <td>{item.msg}</td>
-      <td className={cx(classes.mono)}>{item.status}</td>
-      <td className={cx(classes.mono)}>{item.ip}</td>
+      <td className={cx(classes.mono)}>
+        <Badge size="sm" color="indigo">
+          {dayjs(item.time).format('MM/DD HH:mm:ss')}
+        </Badge>
+      </td>
+      <td className={cx(classes.mono)}>
+        <Text ff={theme.fontFamilyMonospace} size="sm" weight={300}>
+          {item.ip || 'localhost'}
+        </Text>
+      </td>
+      <td className={cx(classes.mono)}>
+        <Text ff={theme.fontFamilyMonospace} size="sm" weight="bold" lineClamp={1}>
+          {item.name}
+        </Text>
+      </td>
+      <td>
+        <Input
+          variant="unstyled"
+          value={item.msg || ''}
+          readOnly
+          size="sm"
+          sx={() => ({
+            input: {
+              userSelect: 'none',
+              lineHeight: 1,
+            },
+          })}
+        />
+      </td>
+      <td className={cx(classes.mono)}>
+        <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
+          {item.status}
+        </Badge>
+      </td>
     </tr>
   ))
 
@@ -141,14 +197,14 @@ const Logs: FC = () => {
     >
       <Paper shadow="md" p="md" w="100%">
         <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
-          <Table className={classes.table}>
+          <Table className={cx(classes.table, noPaddingClasses.table)}>
             <thead>
               <tr>
-                <th>时间</th>
-                <th>用户名</th>
+                <th style={{ width: '8rem' }}>时间</th>
+                <th style={{ width: '10rem' }}>IP</th>
+                <th style={{ width: '6rem' }}>用户名</th>
                 <th>信息</th>
-                <th>状态</th>
-                <th>IP</th>
+                <th style={{ width: '3rem' }}>状态</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>

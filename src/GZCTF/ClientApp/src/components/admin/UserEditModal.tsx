@@ -15,11 +15,13 @@ import {
   Stack,
   Textarea,
   TextInput,
+  useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useUser } from '@Utils/useUser'
 import api, { UserInfoModel, AdminUserInfoModel, Role } from '@Api'
 
 export const RoleColorMap = new Map<Role, string>([
@@ -36,6 +38,8 @@ interface UserEditModalProps extends ModalProps {
 
 const UserEditModal: FC<UserEditModalProps> = (props) => {
   const { user, mutateUser, ...modalProps } = props
+  const { user: self } = useUser()
+  const theme = useMantineTheme()
 
   const [disabled, setDisabled] = useState(false)
 
@@ -76,6 +80,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
               label="用户名"
               type="text"
               w="100%"
+              ff={theme.fontFamilyMonospace}
               value={profile.userName ?? 'ctfer'}
               disabled={disabled}
               onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
@@ -90,6 +95,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         <Input.Wrapper label="用户角色">
           <SegmentedControl
             fullWidth
+            readOnly={self?.userId === user.id}
             disabled={disabled}
             color={RoleColorMap.get(profile.role ?? Role.User)}
             value={profile.role ?? Role.User}

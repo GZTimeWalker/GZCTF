@@ -26,8 +26,10 @@ const Login: FC = () => {
 
   useEffect(() => {
     if (needRedirect && user) {
-      navigate(params.get('from') ?? '/')
       setNeedRedirect(false)
+      setTimeout(() => {
+        navigate(params.get('from') ?? '/')
+      }, 200)
     }
   }, [user, needRedirect])
 

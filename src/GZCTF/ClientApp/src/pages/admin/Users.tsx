@@ -231,7 +231,7 @@ const Users: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th>激活</th>
+                <th style={{ width: '1.8rem' }}>激活</th>
                 <th>用户</th>
                 <th>邮箱</th>
                 <th>用户 IP</th>
@@ -255,7 +255,12 @@ const Users: FC = () => {
                       <Group noWrap position="apart" spacing="xs">
                         <Group noWrap position="left">
                           <Avatar alt="avatar" src={user.avatar} radius="xl" />
-                          <Text weight="bold" lineClamp={1}>
+                          <Text
+                            ff={theme.fontFamilyMonospace}
+                            size="sm"
+                            weight="bold"
+                            lineClamp={1}
+                          >
                             {user.userName}
                           </Text>
                         </Group>

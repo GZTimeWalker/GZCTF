@@ -20,7 +20,7 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTag, ChallengeType, NoticeType, SubmissionType } from '@Api'
+import { ChallengeTag, ChallengeType, NoticeType, SubmissionType, TaskStatus } from '@Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
   [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],
@@ -253,3 +253,14 @@ export class BloodBonus {
     return new BloodBonus(value)
   }
 }
+
+export const TaskStatusColorMap = new Map<TaskStatus | null, string>([
+  [TaskStatus.Success, 'green'],
+  [TaskStatus.Failed, 'red'],
+  [TaskStatus.Pending, 'yellow'],
+  [TaskStatus.Denied, 'alert'],
+  [TaskStatus.Exit, 'gray'],
+  [TaskStatus.NotFound, 'violet'],
+  [TaskStatus.Duplicate, 'lime'],
+  [null, 'gray'],
+])
