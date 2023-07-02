@@ -7,7 +7,8 @@ namespace CTFServer.Models;
 /// <summary>
 /// 比赛参与信息
 /// </summary>
-[Index(nameof(GameId), nameof(TeamId))]
+[Index(nameof(GameId))]
+[Index(nameof(TeamId))]
 public class Participation
 {
     [Key]

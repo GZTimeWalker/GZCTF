@@ -197,19 +197,20 @@ else
     builder.Services.AddSingleton<IContainerService, DockerService>();
 }
 
-builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
-builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
-builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
-builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
-builder.Services.AddScoped<IPostRepository, PostRepository>();
-builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
-builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
-builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IConfigService, ConfigService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
-builder.Services.AddScoped<IConfigService, ConfigService>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
+builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
+builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
+builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
+builder.Services.AddScoped<ICheatInfoRepository, CheatInfoRepository>();
+builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
+builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
+builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddChannel<CacheRequest>();
