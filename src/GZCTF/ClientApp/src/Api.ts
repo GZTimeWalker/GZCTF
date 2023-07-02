@@ -1410,6 +1410,31 @@ export enum AnswerResult {
   CheatDetected = 'CheatDetected',
 }
 
+/** 作弊行为信息 */
+export interface CheatInfoModel {
+  /** flag 所属队伍 */
+  ownedTeam?: ParticipationModel
+  /** 提交对应 flag 的队伍 */
+  submitTeam?: ParticipationModel
+  /** 本次抄袭行为对应的提交 */
+  submission?: Submission
+}
+
+/** 队伍参与信息 */
+export interface ParticipationModel {
+  /**
+   * 参与 Id
+   * @format int32
+   */
+  id?: number
+  /** 队伍信息 */
+  team?: TeamModel
+  /** 队伍参与状态 */
+  status?: ParticipationStatus
+  /** 队伍所属组织 */
+  organization?: string | null
+}
+
 export interface GameDetailModel {
   /** 题目信息 */
   challenges?: Record<string, ChallengeInfo[]>
@@ -3854,6 +3879,49 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: Submission[] | Promise<Submission[]>,
       options?: MutatorOptions
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
+
+    /**
+     * @description 获取比赛作弊数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameCheatInfo
+     * @summary 获取比赛作弊信息
+     * @request GET:/api/game/{id}/cheatinfo
+     */
+    gameCheatInfo: (id: number, params: RequestParams = {}) =>
+      this.request<CheatInfoModel[], RequestResponse>({
+        path: `/api/game/${id}/cheatinfo`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛作弊数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameCheatInfo
+     * @summary 获取比赛作弊信息
+     * @request GET:/api/game/{id}/cheatinfo
+     */
+    useGameCheatInfo: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<CheatInfoModel[], RequestResponse>(
+        doFetch ? `/api/game/${id}/cheatinfo` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛作弊数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameCheatInfo
+     * @summary 获取比赛作弊信息
+     * @request GET:/api/game/{id}/cheatinfo
+     */
+    mutateGameCheatInfo: (
+      id: number,
+      data?: CheatInfoModel[] | Promise<CheatInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<CheatInfoModel[]>(`/api/game/${id}/cheatinfo`, data, options),
 
     /**
      * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
