@@ -11,6 +11,8 @@ import {
   useMantineTheme,
   Input,
   Tooltip,
+  Badge,
+  Text,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -82,7 +84,7 @@ const Submissions: FC = () => {
   const { game } = useGame(numId)
 
   const iconMap = AnswerResultIconMap(0.8)
-  const { classes, cx } = useTableStyles()
+  const { classes, cx, theme } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
 
   useEffect(() => {
@@ -159,9 +161,21 @@ const Submissions: FC = () => {
         }
       >
         <td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</td>
-        <td className={cx(classes.mono)}>{dayjs(item.time).format('MM/DD HH:mm:ss')}</td>
-        <td>{item.team ?? 'Team'}</td>
-        <td>{item.user ?? 'User'}</td>
+        <td className={cx(classes.mono)}>
+          <Badge size="sm" color="indigo">
+            {dayjs(item.time).format('MM/DD HH:mm:ss')}
+          </Badge>
+        </td>
+        <td>
+          <Text size="sm" weight="bold">
+            {item.team ?? 'Team'}
+          </Text>
+        </td>
+        <td>
+          <Text ff={theme.fontFamilyMonospace} size="sm" weight="bold">
+            {item.user ?? 'User'}
+          </Text>
+        </td>
         <td>{item.challenge ?? 'Challenge'}</td>
         <td
           style={{
@@ -243,12 +257,12 @@ const Submissions: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th>
+                <th style={{ width: '0.6rem' }}>
                   <Group align="center">
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
                 </th>
-                <th>时间</th>
+                <th style={{ width: '8rem' }}>时间</th>
                 <th>队伍</th>
                 <th>用户</th>
                 <th>题目</th>
