@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using CTFServer.Extensions;
 using CTFServer.Models.Data;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
@@ -31,21 +30,22 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
         => new((c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
-    public DbSet<LogModel> Logs { get; set; } = default!;
-    public DbSet<Submission> Submissions { get; set; } = default!;
-    public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Post> Posts { get; set; } = default!;
-    public DbSet<GameNotice> GameNotices { get; set; } = default!;
-    public DbSet<GameEvent> GameEvents { get; set; } = default!;
-    public DbSet<LocalFile> Files { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;
-    public DbSet<Instance> Instances { get; set; } = default!;
-    public DbSet<Participation> Participations { get; set; } = default!;
     public DbSet<Team> Teams { get; set; } = default!;
-    public DbSet<FlagContext> FlagContexts { get; set; } = default!;
-    public DbSet<Container> Containers { get; set; } = default!;
-    public DbSet<Attachment> Attachments { get; set; } = default!;
+    public DbSet<LogModel> Logs { get; set; } = default!;
     public DbSet<Config> Configs { get; set; } = default!;
+    public DbSet<LocalFile> Files { get; set; } = default!;
+    public DbSet<Instance> Instances { get; set; } = default!;
+    public DbSet<CheatInfo> CheatInfo { get; set; } = default!;
+    public DbSet<Challenge> Challenges { get; set; } = default!;
+    public DbSet<Container> Containers { get; set; } = default!;
+    public DbSet<GameEvent> GameEvents { get; set; } = default!;
+    public DbSet<Submission> Submissions { get; set; } = default!;
+    public DbSet<Attachment> Attachments { get; set; } = default!;
+    public DbSet<GameNotice> GameNotices { get; set; } = default!;
+    public DbSet<FlagContext> FlagContexts { get; set; } = default!;
+    public DbSet<Participation> Participations { get; set; } = default!;
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
@@ -306,6 +306,25 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
 
             entity.Navigation(e => e.Team).AutoInclude();
             entity.Navigation(e => e.User).AutoInclude();
+        });
+
+        builder.Entity<CheatInfo>(entity =>
+        {
+            entity.HasOne(e => e.Game)
+                .WithMany()
+                .HasForeignKey(e => e.GameId);
+
+            entity.HasOne(e => e.SourceTeam)
+                .WithMany()
+                .HasForeignKey(e => e.SourceTeamId);
+
+            entity.HasOne(e => e.SubmitTeam)
+                .WithMany()
+                .HasForeignKey(e => e.SubmitTeamId);
+
+            entity.HasOne(e => e.Submission)
+                .WithMany()
+                .HasForeignKey(e => e.SubmissionId);
         });
     }
 }

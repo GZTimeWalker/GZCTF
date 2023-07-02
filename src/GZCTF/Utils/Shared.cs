@@ -48,6 +48,42 @@ public record RequestResponse<T>(string Title, T Data, int Status = 400);
 public record VerifyResult(SubmissionType SubType, AnswerResult AnsRes);
 
 /// <summary>
+/// 队伍信息
+/// </summary>
+/// <param name="Name">队名</param>
+/// <param name="Id">队伍 ID</param>
+public record TeamModel(int Id, string Name)
+{
+    internal static TeamModel FromTeam(Team team)
+        => new(team.Id, team.Name);
+}
+
+/// <summary>
+/// 题目信息
+/// </summary>
+/// <param name="Id">题目 ID</param>
+/// <param name="Title">题目名称</param>
+/// <param name="Tag">题目标签</param>
+public record ChallengeModel(int Id, string Title, ChallengeTag Tag)
+{
+    internal static ChallengeModel FromChallenge(Challenge chal)
+        => new(chal.Id, chal.Title, chal.Tag);
+}
+
+/// <summary>
+/// 队伍参与信息
+/// </summary>
+/// <param name="Id">参与 Id</param>
+/// <param name="Team">队伍信息</param>
+/// <param name="Status">队伍参与状态</param>
+/// <param name="Organization">队伍所属组织</param>
+public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Organization)
+{
+    internal static ParticipationModel FromParticipation(Participation part)
+        => new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Organization);
+}
+
+/// <summary>
 /// 列表响应
 /// </summary>
 /// <typeparam name="T"></typeparam>

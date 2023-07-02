@@ -71,11 +71,11 @@ public class FlagChecker : IHostedService
 
                         if (ans == AnswerResult.CheatDetected)
                         {
-                            logger.Log($"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeam!.Name}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                            logger.Log($"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeamName}]", item.User!, TaskStatus.Success, LogLevel.Information);
                             await eventRepository.AddEvent(new()
                             {
                                 Type = EventType.CheatDetected,
-                                Content = $"题目 [{item.Challenge.Title}] 疑似发生违规，相关队伍 [{item.Team.Name}] 和 [{result.SourceTeam!.Name}]",
+                                Content = $"题目 [{item.Challenge.Title}] 疑似发生违规，相关队伍 [{item.Team.Name}] 和 [{result.SourceTeamName}]",
                                 TeamId = item.TeamId,
                                 UserId = item.UserId,
                                 GameId = item.GameId,

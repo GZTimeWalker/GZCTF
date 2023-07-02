@@ -10,6 +10,7 @@ namespace CTFServer.Repositories;
 public class InstanceRepository : RepositoryBase, IInstanceRepository
 {
     private readonly IContainerService service;
+    private readonly ICheatInfoRepository cheatInfoRepository;
     private readonly IContainerRepository containerRepository;
     private readonly IGameEventRepository gameEventRepository;
     private readonly ILogger<InstanceRepository> logger;
@@ -17,6 +18,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
     public InstanceRepository(AppDbContext _context,
         IContainerService _service,
+        ICheatInfoRepository _cheatInfoRepository,
         IContainerRepository _containerRepository,
         IGameEventRepository _gameEventRepository,
         IOptionsSnapshot<GamePolicy> _gamePolicy,
@@ -25,6 +27,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         logger = _logger;
         service = _service;
         gamePolicy = _gamePolicy;
+        cheatInfoRepository = _cheatInfoRepository;
         gameEventRepository = _gameEventRepository;
         containerRepository = _containerRepository;
     }
@@ -216,18 +219,16 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         var instances = await context.Instances.Where(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId != submission.ParticipationId)
-                .Include(i => i.Challenge).Include(i => i.FlagContext)
-                .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
+                .Include(i => i.FlagContext).Include(i => i.Participation)
+                .ThenInclude(i => i.Team).ToArrayAsync(token);
 
         foreach (var instance in instances)
         {
             if (instance.FlagContext?.Flag == submission.Answer)
             {
-                checkInfo.AnswerResult = AnswerResult.CheatDetected;
-                checkInfo.CheatUser = submission.User;
-                checkInfo.CheatTeam = submission.Team;
-                checkInfo.SourceTeam = instance.Participation.Team;
-                checkInfo.Challenge = instance.Challenge;
+                var cheatInfo = await cheatInfoRepository.CreateCheatInfo(submission, instance, token);
+
+                checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
 
                 var updateSub = await context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
 
