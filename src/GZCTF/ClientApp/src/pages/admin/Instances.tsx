@@ -25,7 +25,7 @@ import { Icon } from '@mdi/react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { ChallengeTagLabelMap } from '@Utils/ChallengeItem'
+import { ChallengeTagLabelMap } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
 

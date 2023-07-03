@@ -22,7 +22,7 @@ import {
   BloodsTypes,
   ChallengeTagLabelMap,
   SubmissionTypeIconMap,
-} from '@Utils/ChallengeItem'
+} from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import ScoreboardItemModal from './ScoreboardItemModal'

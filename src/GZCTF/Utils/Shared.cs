@@ -50,12 +50,13 @@ public record VerifyResult(SubmissionType SubType, AnswerResult AnsRes);
 /// <summary>
 /// 队伍信息
 /// </summary>
-/// <param name="Name">队名</param>
 /// <param name="Id">队伍 ID</param>
-public record TeamModel(int Id, string Name)
+/// <param name="Name">队名</param>
+/// <param name="Avatar">队伍头像</param>
+public record TeamModel(int Id, string Name, string? Avatar)
 {
     internal static TeamModel FromTeam(Team team)
-        => new(team.Id, team.Name);
+        => new(team.Id, team.Name, team.AvatarUrl);
 }
 
 /// <summary>

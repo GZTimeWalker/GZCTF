@@ -17,7 +17,7 @@ import { mdiClose, mdiCheck, mdiArrowLeftBold, mdiArrowRightBold } from '@mdi/js
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import AdminPage from '@Components/admin/AdminPage'
-import { TaskStatusColorMap } from '@Utils/ChallengeItem'
+import { TaskStatusColorMap } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { LogMessageModel, TaskStatus } from '@Api'
 

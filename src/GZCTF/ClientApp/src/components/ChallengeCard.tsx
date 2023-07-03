@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { BloodsTypes, ChallengeTagLabelMap } from '@Utils/ChallengeItem'
+import { BloodsTypes, ChallengeTagLabelMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'
 

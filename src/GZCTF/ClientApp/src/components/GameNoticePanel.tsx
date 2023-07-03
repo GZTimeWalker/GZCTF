@@ -6,7 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
-import { NoticTypeIconMap } from '@Utils/ChallengeItem'
+import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
 import Empty from './Empty'
 

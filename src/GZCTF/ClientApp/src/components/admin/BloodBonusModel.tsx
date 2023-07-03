@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, NumberInput, Stack, Text } from '@mantine/core'
-import { BloodBonus } from '@Utils/ChallengeItem'
+import { BloodBonus } from '@Utils/Shared'
 import api, { SubmissionType } from '@Api'
 
 const BloodBonusModel: FC<ModalProps> = (props) => {

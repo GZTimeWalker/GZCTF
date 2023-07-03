@@ -3,14 +3,18 @@ import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core
 import {
   mdiBomb,
   mdiBullhornOutline,
+  mdiCancel,
   mdiCellphoneCog,
+  mdiCheck,
   mdiChevronTripleLeft,
   mdiChip,
+  mdiClose,
   mdiConsole,
   mdiEthereum,
   mdiFingerprint,
   mdiFlag,
   mdiGamepadVariantOutline,
+  mdiHelpCircleOutline,
   mdiHexagonSlice2,
   mdiHexagonSlice4,
   mdiHexagonSlice6,
@@ -20,7 +24,14 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTag, ChallengeType, NoticeType, SubmissionType, TaskStatus } from '@Api'
+import {
+  ChallengeTag,
+  ChallengeType,
+  NoticeType,
+  ParticipationStatus,
+  SubmissionType,
+  TaskStatus,
+} from '@Api'
 
 export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
   [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],
@@ -189,6 +200,40 @@ export const NoticTypeIconMap = (size: number) => {
     [NoticeType.ThirdBlood, iconMap.get(SubmissionType.ThirdBlood)],
   ])
 }
+
+export const ParticipationStatusMap = new Map([
+  [
+    ParticipationStatus.Pending,
+    {
+      title: '待审核',
+      color: 'yellow',
+      iconPath: mdiHelpCircleOutline,
+      transformTo: [ParticipationStatus.Accepted, ParticipationStatus.Rejected],
+    },
+  ],
+  [
+    ParticipationStatus.Accepted,
+    {
+      title: '审核通过',
+      color: 'green',
+      iconPath: mdiCheck,
+      transformTo: [ParticipationStatus.Suspended],
+    },
+  ],
+  [
+    ParticipationStatus.Rejected,
+    { title: '审核不通过', color: 'red', iconPath: mdiClose, transformTo: [] },
+  ],
+  [
+    ParticipationStatus.Suspended,
+    {
+      title: '禁赛',
+      color: 'alert',
+      iconPath: mdiCancel,
+      transformTo: [ParticipationStatus.Accepted],
+    },
+  ],
+])
 
 export interface BonusLabel {
   name: string

@@ -19,7 +19,7 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/ChallengeItem'
+import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame } from '@Utils/useGame'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 import ChallengeCard from './ChallengeCard'

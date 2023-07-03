@@ -25,7 +25,7 @@ import { notifications, showNotification, updateNotification } from '@mantine/no
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { ChallengeTagItemProps } from '@Utils/ChallengeItem'
+import { ChallengeTagItemProps } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'

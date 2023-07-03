@@ -557,6 +557,8 @@ export interface TeamModel {
   id?: number
   /** 队名 */
   name?: string
+  /** 队伍头像 */
+  avatar?: string | null
 }
 
 /** 题目信息 */

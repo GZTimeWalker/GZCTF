@@ -226,11 +226,10 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             if (instance.FlagContext?.Flag == submission.Answer)
             {
-                var cheatInfo = await cheatInfoRepository.CreateCheatInfo(submission, instance, token);
-
-                checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
-
                 var updateSub = await context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+
+                var cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
+                checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
 
                 if (updateSub is not null)
                     updateSub.Status = AnswerResult.CheatDetected;
