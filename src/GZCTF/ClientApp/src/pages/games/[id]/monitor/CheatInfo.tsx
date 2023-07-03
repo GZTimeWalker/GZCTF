@@ -214,7 +214,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                 </Text>
               </Stack>
             </Group>
-            <Box w="5em">
+            <Box w="6em">
               <Badge color={part.color}>{part.title}</Badge>
             </Box>
           </Group>

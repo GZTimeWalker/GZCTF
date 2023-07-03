@@ -133,7 +133,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                   {participation.team?.members?.length ?? 0} 已报名
                 </Text>
               </Box>
-              <Box w="5em">
+              <Box w="6em">
                 <Badge color={part.color}>{part.title}</Badge>
               </Box>
             </Group>
