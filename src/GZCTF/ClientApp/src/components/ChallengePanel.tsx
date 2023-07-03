@@ -127,7 +127,7 @@ const ChallengePanel: FC = () => {
 
   if (allChallenges.length === 0) {
     return (
-      <Center w="calc(100% - 20rem)" h="calc(100vh - 100px)">
+      <Center miw="calc(100% - 20rem)" h="calc(100vh - 100px)">
         <Empty
           bordered
           description="Ouch! 这个比赛还没有可用题目呢……"
