@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   Center,
-  createStyles,
   Group,
   ScrollArea,
   Select,
@@ -32,35 +31,8 @@ import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ParticipationStatusMap } from '@Utils/Shared'
+import { useAccordionStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
-
-const useStyles = createStyles((theme) => ({
-  root: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    borderRadius: theme.radius.sm,
-  },
-
-  item: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    border: '1px solid rgba(0,0,0,0.2)',
-    position: 'relative',
-    transition: 'transform 150ms ease',
-
-    '&[data-active]': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-      boxShadow: theme.shadows.md,
-    },
-  },
-
-  label: {
-    padding: '0',
-  },
-
-  control: {
-    padding: '8px 4px',
-    ...theme.fn.hover({ background: 'transparent' }),
-  },
-}))
 
 interface MemberItemProps {
   user: ProfileUserInfoModel
@@ -133,6 +105,7 @@ interface ParticipationItemProps {
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   const { participation, disabled, setParticipationStatus } = props
   const theme = useMantineTheme()
+  const part = ParticipationStatusMap.get(participation.status!)!
 
   return (
     <Accordion.Item value={participation.id!.toString()}>
@@ -161,15 +134,13 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
               <Box w="5em">
-                <Badge color={ParticipationStatusMap.get(participation.status!)?.color}>
-                  {ParticipationStatusMap.get(participation.status!)?.title}
-                </Badge>
+                <Badge color={part.color}>{part.title}</Badge>
               </Box>
             </Group>
           </Group>
         </Accordion.Control>
         <Group m={`0 ${theme.spacing.xl}`} miw={`calc(${theme.spacing.xl} * 3)`} position="right">
-          {ParticipationStatusMap.get(participation.status!)?.transformTo.map((value) => {
+          {part.transformTo.map((value) => {
             const s = ParticipationStatusMap.get(value)!
             return (
               <ActionIconWithConfirm
@@ -209,7 +180,7 @@ const GameTeamReview: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
-  const { classes } = useStyles()
+  const { classes } = useAccordionStyles()
 
   const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
     setDisabled(true)

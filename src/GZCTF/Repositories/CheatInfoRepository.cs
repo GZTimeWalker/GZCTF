@@ -40,5 +40,5 @@ public class CheatInfoRepository : RepositoryBase, ICheatInfoRepository
             .Include(i => i.SubmitTeam).ThenInclude(t => t.Team)
             .Include(i => i.Submission).ThenInclude(s => s.User)
             .Include(i => i.Submission).ThenInclude(s => s.Challenge)
-            .ToArrayAsync(token);
+            .AsSplitQuery().ToArrayAsync(token);
 }

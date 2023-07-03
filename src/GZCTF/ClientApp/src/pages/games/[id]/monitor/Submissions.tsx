@@ -263,9 +263,9 @@ const Submissions: FC = () => {
                   </Group>
                 </th>
                 <th style={{ width: '8rem' }}>时间</th>
-                <th>队伍</th>
-                <th>用户</th>
-                <th>题目</th>
+                <th style={{ minWidth: '5rem' }}>队伍</th>
+                <th style={{ minWidth: '5rem' }}>用户</th>
+                <th style={{ minWidth: '3rem' }}>题目</th>
                 <th className={cx(classes.mono)}>flag</th>
               </tr>
             </thead>

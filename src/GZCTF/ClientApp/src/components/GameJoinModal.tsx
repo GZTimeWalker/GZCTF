@@ -65,12 +65,23 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
           onClick={() => {
             setDisabled(true)
 
+            if (!team) {
+              showNotification({
+                color: 'orange',
+                message: '请选择参赛队伍',
+                icon: <Icon path={mdiClose} size={1} />,
+              })
+              setDisabled(false)
+              return
+            }
+
             if (game?.inviteCodeRequired && !inviteCode) {
               showNotification({
                 color: 'orange',
                 message: '邀请码不能为空',
                 icon: <Icon path={mdiClose} size={1} />,
               })
+              setDisabled(false)
               return
             }
 
@@ -80,6 +91,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
                 message: '请选择参赛组织',
                 icon: <Icon path={mdiClose} size={1} />,
               })
+              setDisabled(false)
               return
             }
 

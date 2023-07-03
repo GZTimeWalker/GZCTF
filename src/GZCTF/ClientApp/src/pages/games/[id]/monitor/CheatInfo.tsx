@@ -9,40 +9,64 @@ import {
   Title,
   Group,
   Accordion,
-  createStyles,
   useMantineTheme,
   Box,
   Avatar,
   Badge,
+  Input,
+  Switch,
 } from '@mantine/core'
+import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck } from '@mdi/js'
+import { mdiCheck, mdiKeyAlert, mdiTarget } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { RequireRole } from '@Components/WithRole'
+import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ParticipationStatusMap } from '@Utils/Shared'
-import api, { CheatInfoModel, ParticipationStatus } from '@Api'
+import { useAccordionStyles } from '@Utils/ThemeOverride'
+import { useUserRole } from '@Utils/useUser'
+import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
 
 enum CheatType {
   Submit = 'Submit',
   Owned = 'Owned',
 }
 
+const CheatTypeMap = new Map([
+  [
+    CheatType.Submit,
+    {
+      color: 'orange',
+      iconPath: mdiTarget,
+    },
+  ],
+  [
+    CheatType.Owned,
+    {
+      color: 'red',
+      iconPath: mdiKeyAlert,
+    },
+  ],
+])
+
 interface CheatSubmissionInfo {
   time?: dayjs.Dayjs
   answer?: string
   user?: string
   challenge?: string
+  relatedTeam?: string
   cheatType: CheatType
 }
 
 interface CheatTeamInfo {
   name?: string
   avatar?: string | null
-  lastSubmitTime?: dayjs.Dayjs
   teamId?: number
   status?: ParticipationStatus
+  lastSubmitTime?: dayjs.Dayjs
   participateId?: number
   organization?: string | null
   submissionInfo: Set<CheatSubmissionInfo>
@@ -86,6 +110,7 @@ const ToCheatTeamInfo = (cheatInfo: CheatInfoModel[]) => {
       user: submission.user,
       challenge: submission.challenge,
       cheatType: CheatType.Owned,
+      relatedTeam: submitTeam.team?.name,
     }
 
     ownedTeamInfo.submissionInfo.add(cheatSubmissionInfo)
@@ -97,6 +122,7 @@ const ToCheatTeamInfo = (cheatInfo: CheatInfoModel[]) => {
     const cheatSubmissionSourceInfo: CheatSubmissionInfo = {
       ...cheatSubmissionInfo,
       cheatType: CheatType.Submit,
+      relatedTeam: ownedTeam.team?.name,
     }
 
     submitTeamInfo.submissionInfo.add(cheatSubmissionSourceInfo)
@@ -104,67 +130,72 @@ const ToCheatTeamInfo = (cheatInfo: CheatInfoModel[]) => {
   return cheatTeamInfo
 }
 
-const useStyles = createStyles((theme) => ({
-  root: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    borderRadius: theme.radius.sm,
-  },
-
-  item: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    border: '1px solid rgba(0,0,0,0.2)',
-    position: 'relative',
-    transition: 'transform 150ms ease',
-
-    '&[data-active]': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-      boxShadow: theme.shadows.md,
-    },
-  },
-
-  label: {
-    padding: '0',
-  },
-
-  control: {
-    padding: '8px 4px',
-    ...theme.fn.hover({ background: 'transparent' }),
-  },
-}))
-
 interface CheatSubmissionInfoProps {
   submissionInfo: CheatSubmissionInfo
 }
 
 const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
   const { submissionInfo } = props
+  const theme = useMantineTheme()
+  const type = CheatTypeMap.get(submissionInfo.cheatType)!
 
   return (
-    <Group position="apart" w="100%">
-      <Group position="apart" w="50%">
-        <Text>{submissionInfo.time?.format('YYYY-MM-DD HH:mm:ss')}</Text>
-        <Text>{submissionInfo.user}</Text>
-
-        <Text>{submissionInfo.challenge}</Text>
+    <Group position="apart" w="100%" spacing={0}>
+      <Group position="left" w="auto">
+        <Icon path={type.iconPath} size={1} color={theme.colors[type.color][6]} />
+        <Badge size="sm" color="indigo">
+          {dayjs(submissionInfo.time).format('MM/DD HH:mm:ss')}
+        </Badge>
+        <Text lineClamp={1} weight="bold">
+          {submissionInfo.user}
+        </Text>
+        <Group>
+          {submissionInfo.cheatType === CheatType.Owned && (
+            <Badge size="sm" color="red">
+              {`>>>`}
+            </Badge>
+          )}
+          {submissionInfo.cheatType === CheatType.Submit && (
+            <Badge size="sm" color="orange">
+              {`<<<`}
+            </Badge>
+          )}
+          <Text size="sm" lineClamp={1} weight="bold">
+            {submissionInfo.relatedTeam}
+          </Text>
+        </Group>
       </Group>
-
-      <Group position="apart" w="50%">
-        <Text>{submissionInfo.answer}</Text>
-        <Text>{submissionInfo.cheatType}</Text>
-      </Group>
+      <Stack spacing={0} w="40%">
+        <Text weight="bold" size="xs" lineClamp={1}>
+          {submissionInfo.challenge}
+        </Text>
+        <Input
+          variant="unstyled"
+          value={submissionInfo.answer}
+          readOnly
+          size="xs"
+          sx={(theme) => ({
+            input: {
+              fontFamily: theme.fontFamilyMonospace,
+            },
+          })}
+        />
+      </Stack>
     </Group>
   )
 }
 
 interface CheatInfoItemProps {
-  cheatTeamInfo: CheatTeamInfo
+  userRole: Role
   disabled: boolean
+  cheatTeamInfo: CheatTeamInfo
   setParticipationStatus: (id: number, status: ParticipationStatus) => Promise<void>
 }
 
 const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
-  const { cheatTeamInfo, disabled, setParticipationStatus } = props
+  const { cheatTeamInfo, disabled, userRole, setParticipationStatus } = props
   const theme = useMantineTheme()
+  const part = ParticipationStatusMap.get(cheatTeamInfo.status!)!
 
   return (
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
@@ -192,27 +223,27 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
               </Stack>
             </Group>
             <Box w="5em">
-              <Badge color={ParticipationStatusMap.get(cheatTeamInfo.status!)?.color}>
-                {ParticipationStatusMap.get(cheatTeamInfo.status!)?.title}
-              </Badge>
+              <Badge color={part.color}>{part.title}</Badge>
             </Box>
           </Group>
         </Accordion.Control>
-        <Group m={`0 ${theme.spacing.xl}`} miw={theme.spacing.xl} position="right">
-          {ParticipationStatusMap.get(cheatTeamInfo.status!)?.transformTo.map((value) => {
-            const s = ParticipationStatusMap.get(value)!
-            return (
-              <ActionIconWithConfirm
-                key={`${cheatTeamInfo.participateId}@${value}`}
-                iconPath={s.iconPath}
-                color={s.color}
-                message={`确定要设为“${s.title}”吗？`}
-                disabled={disabled}
-                onClick={() => setParticipationStatus(cheatTeamInfo.participateId!, value)}
-              />
-            )
-          })}
-        </Group>
+        {RequireRole(Role.Admin, userRole) && (
+          <Group m={`0 ${theme.spacing.xl}`} miw={theme.spacing.xl} position="right">
+            {part.transformTo.map((value) => {
+              const s = ParticipationStatusMap.get(value)!
+              return (
+                <ActionIconWithConfirm
+                  key={`${cheatTeamInfo.participateId}@${value}`}
+                  iconPath={s.iconPath}
+                  color={s.color}
+                  message={`确定要设为“${s.title}”吗？`}
+                  disabled={disabled}
+                  onClick={() => setParticipationStatus(cheatTeamInfo.participateId!, value)}
+                />
+              )
+            })}
+          </Group>
+        )}
       </Box>
       <Accordion.Panel>
         <Stack>
@@ -239,9 +270,15 @@ const CheatInfo: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const { classes } = useStyles()
-  const [cheatTeamInfo, setCheatTeamInfo] = useState<Map<number, CheatTeamInfo>>()
+  const { role } = useUserRole()
+  const { classes } = useAccordionStyles()
   const [disabled, setDisabled] = useState(false)
+  const [cheatTeamInfo, setCheatTeamInfo] = useState<Map<number, CheatTeamInfo>>()
+  const [teamView, setTeamView] = useLocalStorage({
+    key: 'cheat-info-team-view',
+    defaultValue: true,
+    getInitialValueInEffect: false,
+  })
 
   useEffect(() => {
     if (!cheatInfo) return
@@ -275,8 +312,15 @@ const CheatInfo: FC = () => {
 
   return (
     <WithGameMonitorTab>
+      <Group position="apart" w="100%">
+        <Switch
+          label={SwitchLabel('队伍视图', '使用队伍视图展示作弊信息')}
+          checked={teamView}
+          onChange={(e) => setTeamView(e.currentTarget.checked)}
+        />
+      </Group>
       <ScrollArea offsetScrollbars h="calc(100vh - 160px)">
-        <Stack spacing="xs" pr={10} w="100%">
+        <Stack spacing="xs" w="100%">
           {!cheatTeamInfo || cheatTeamInfo?.size === 0 ? (
             <Center h="calc(100vh - 180px)">
               <Stack spacing={0}>
@@ -286,6 +330,7 @@ const CheatInfo: FC = () => {
             </Center>
           ) : (
             <Accordion
+              multiple
               variant="contained"
               chevronPosition="left"
               classNames={classes}
@@ -296,6 +341,7 @@ const CheatInfo: FC = () => {
                 .map((cheatInfo) => (
                   <CheatInfoItem
                     key={cheatInfo.participateId}
+                    userRole={role ?? Role.User}
                     cheatTeamInfo={cheatInfo}
                     disabled={disabled}
                     setParticipationStatus={setParticipationStatus}

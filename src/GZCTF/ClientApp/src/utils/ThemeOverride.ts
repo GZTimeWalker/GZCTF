@@ -263,3 +263,30 @@ export const useUploadStyles = createStyles(() => ({
     zIndex: 1,
   },
 }))
+
+export const useAccordionStyles = createStyles((theme) => ({
+  root: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    borderRadius: theme.radius.sm,
+  },
+
+  item: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    border: '1px solid rgba(0,0,0,0.2)',
+    position: 'relative',
+
+    '&[data-active]': {
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+      boxShadow: theme.shadows.md,
+    },
+  },
+
+  label: {
+    padding: '0',
+  },
+
+  control: {
+    padding: '8px 4px',
+    ...theme.fn.hover({ background: 'transparent' }),
+  },
+}))
