@@ -27,7 +27,7 @@ import {
   mdiStar,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
+import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ParticipationStatusMap } from '@Utils/Shared'
@@ -139,21 +139,14 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
           </Group>
         </Accordion.Control>
-        <Group m={`0 ${theme.spacing.xl}`} miw={`calc(${theme.spacing.xl} * 3)`} position="right">
-          {part.transformTo.map((value) => {
-            const s = ParticipationStatusMap.get(value)!
-            return (
-              <ActionIconWithConfirm
-                key={`${participation.id}@${value}`}
-                iconPath={s.iconPath}
-                color={s.color}
-                message={`确定要设为“${s.title}”吗？`}
-                disabled={disabled}
-                onClick={() => setParticipationStatus(participation.id!, value)}
-              />
-            )
-          })}
-        </Group>
+        <ParticipationStatusControl
+          disabled={disabled}
+          participateId={participation.id!}
+          status={participation.status!}
+          setParticipationStatus={setParticipationStatus}
+          m={`0 ${theme.spacing.xl}`}
+          miw={theme.spacing.xl}
+        />
       </Box>
       <Accordion.Panel>
         <Stack>

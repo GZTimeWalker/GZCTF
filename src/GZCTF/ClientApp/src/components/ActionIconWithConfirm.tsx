@@ -1,10 +1,20 @@
 import { FC, useState } from 'react'
-import { MantineColor, Popover, ActionIcon, Stack, Group, Button, Text } from '@mantine/core'
+import {
+  MantineColor,
+  Popover,
+  ActionIcon,
+  Stack,
+  Group,
+  Button,
+  Text,
+  MantineNumberSize,
+} from '@mantine/core'
 import { Icon } from '@mdi/react'
 
 export interface ActionIconWithConfirmProps {
   iconPath: string
   color?: MantineColor
+  size?: MantineNumberSize
   message: string
   disabled?: boolean
   onClick: () => Promise<void>
@@ -21,9 +31,10 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
           color={props.color}
           onClick={() => setOpened(true)}
           disabled={props.disabled && !loading}
+          size={props.size}
           loading={loading}
         >
-          <Icon path={props.iconPath} size={1} />
+          <Icon path={props.iconPath} size={props.size ?? 1} />
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown>

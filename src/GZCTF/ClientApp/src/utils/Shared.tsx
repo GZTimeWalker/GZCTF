@@ -228,7 +228,7 @@ export const ParticipationStatusMap = new Map([
     ParticipationStatus.Suspended,
     {
       title: '禁赛',
-      color: 'red',
+      color: 'alert',
       iconPath: mdiCancel,
       transformTo: [ParticipationStatus.Accepted],
     },
