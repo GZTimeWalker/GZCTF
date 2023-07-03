@@ -26,15 +26,15 @@ export const ThemeOverride: MantineThemeOverride = {
       '#007F6E',
     ],
     alert: [
-      '#FF9090',
-      '#FF8080',
-      '#FF7070',
-      '#FF6060',
-      '#FF5050',
-      '#FE4040',
-      '#FE3030',
-      '#FE2020',
-      '#FC1010',
+      '#FFB4B4',
+      '#FFA0A0',
+      '#FF8c8c',
+      '#FF7878',
+      '#FF6464',
+      '#FE5050',
+      '#FE3c3c',
+      '#FE2828',
+      '#FC1414',
       '#FC0000',
     ],
     white: [
@@ -261,5 +261,32 @@ export const useUploadStyles = createStyles(() => ({
   uploadLabel: {
     position: 'relative',
     zIndex: 1,
+  },
+}))
+
+export const useAccordionStyles = createStyles((theme) => ({
+  root: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    borderRadius: theme.radius.sm,
+  },
+
+  item: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    border: '1px solid rgba(0,0,0,0.2)',
+    position: 'relative',
+
+    '&[data-active]': {
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+      boxShadow: theme.shadows.md,
+    },
+  },
+
+  label: {
+    padding: '0',
+  },
+
+  control: {
+    padding: '8px 4px',
+    ...theme.fn.hover({ background: 'transparent' }),
   },
 }))

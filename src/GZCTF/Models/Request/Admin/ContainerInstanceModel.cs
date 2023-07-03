@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using CTFServer.Utils;
 
 namespace CTFServer.Models.Request.Admin;
 
@@ -7,21 +7,6 @@ namespace CTFServer.Models.Request.Admin;
 /// </summary>
 public class ContainerInstanceModel
 {
-    /// <summary>
-    /// 队伍信息
-    /// </summary>
-    /// <param name="Name">队名</param>
-    /// <param name="Id">队伍 ID</param>
-    public record TeamModel(int Id, string Name);
-
-    /// <summary>
-    /// 题目信息
-    /// </summary>
-    /// <param name="Id">题目 ID</param>
-    /// <param name="Title">题目名称</param>
-    /// <param name="Tag">题目标签</param>
-    public record ChallengeModel(int Id, string Title, ChallengeTag Tag);
-
     /// <summary>
     /// 队伍
     /// </summary>
@@ -84,8 +69,8 @@ public class ContainerInstanceModel
 
         if (team is not null && chal is not null)
         {
-            model.Team = new TeamModel(team.Id, team.Name);
-            model.Challenge = new ChallengeModel(chal.Id, chal.Title, chal.Tag);
+            model.Team = TeamModel.FromTeam(team);
+            model.Challenge = ChallengeModel.FromChallenge(chal);
         }
 
         return model;

@@ -7,9 +7,7 @@ import {
   Box,
   Button,
   Center,
-  createStyles,
   Group,
-  Paper,
   ScrollArea,
   Select,
   Stack,
@@ -22,81 +20,19 @@ import {
   mdiAccountOutline,
   mdiKeyboardBackspace,
   mdiBadgeAccountHorizontalOutline,
-  mdiCancel,
   mdiCheck,
   mdiClose,
   mdiEmailOutline,
-  mdiHelpCircleOutline,
   mdiPhoneOutline,
   mdiStar,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
+import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { ParticipationStatusMap } from '@Utils/Shared'
+import { useAccordionStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
-
-const StatusMap = new Map([
-  [
-    ParticipationStatus.Pending,
-    {
-      title: '待审核',
-      color: 'yellow',
-      iconPath: mdiHelpCircleOutline,
-      transformTo: [ParticipationStatus.Accepted, ParticipationStatus.Rejected],
-    },
-  ],
-  [
-    ParticipationStatus.Accepted,
-    {
-      title: '审核通过',
-      color: 'green',
-      iconPath: mdiCheck,
-      transformTo: [ParticipationStatus.Suspended],
-    },
-  ],
-  [
-    ParticipationStatus.Rejected,
-    { title: '审核不通过', color: 'red', iconPath: mdiClose, transformTo: [] },
-  ],
-  [
-    ParticipationStatus.Suspended,
-    {
-      title: '禁赛',
-      color: 'alert',
-      iconPath: mdiCancel,
-      transformTo: [ParticipationStatus.Accepted],
-    },
-  ],
-])
-
-const useStyles = createStyles((theme) => ({
-  root: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    borderRadius: theme.radius.sm,
-  },
-
-  item: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    border: '1px solid rgba(0,0,0,0.2)',
-    position: 'relative',
-    transition: 'transform 150ms ease',
-
-    '&[data-active]': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-      boxShadow: theme.shadows.md,
-    },
-  },
-
-  label: {
-    padding: '0',
-  },
-
-  control: {
-    padding: '8px 4px',
-    ...theme.fn.hover({ background: 'transparent' }),
-  },
-}))
 
 interface MemberItemProps {
   user: ProfileUserInfoModel
@@ -169,6 +105,7 @@ interface ParticipationItemProps {
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   const { participation, disabled, setParticipationStatus } = props
   const theme = useMantineTheme()
+  const part = ParticipationStatusMap.get(participation.status!)!
 
   return (
     <Accordion.Item value={participation.id!.toString()}>
@@ -176,7 +113,9 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
         <Accordion.Control>
           <Group position="apart">
             <Group>
-              <Avatar alt="avatar" src={participation.team?.avatar} />
+              <Avatar alt="avatar" src={participation.team?.avatar}>
+                {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
+              </Avatar>
               <Box>
                 <Text weight={500}>
                   {!participation.team?.name ? '（无名队伍）' : participation.team.name}
@@ -194,27 +133,20 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                   {participation.team?.members?.length ?? 0} 已报名
                 </Text>
               </Box>
-              <Badge color={StatusMap.get(participation.status!)?.color}>
-                {StatusMap.get(participation.status!)?.title}
-              </Badge>
+              <Box w="5em">
+                <Badge color={part.color}>{part.title}</Badge>
+              </Box>
             </Group>
           </Group>
         </Accordion.Control>
-        <Group m={`0 ${theme.spacing.xl}`} miw={`calc(${theme.spacing.xl} * 3)`} position="right">
-          {StatusMap.get(participation.status!)?.transformTo.map((value) => {
-            const s = StatusMap.get(value)!
-            return (
-              <ActionIconWithConfirm
-                key={`${participation.id}@${value}`}
-                iconPath={s.iconPath}
-                color={s.color}
-                message={`确定要设为“${s.title}”吗？`}
-                disabled={disabled}
-                onClick={() => setParticipationStatus(participation.id!, value)}
-              />
-            )
-          })}
-        </Group>
+        <ParticipationStatusControl
+          disabled={disabled}
+          participateId={participation.id!}
+          status={participation.status!}
+          setParticipationStatus={setParticipationStatus}
+          m={`0 ${theme.spacing.xl}`}
+          miw={theme.spacing.xl}
+        />
       </Box>
       <Accordion.Panel>
         <Stack>
@@ -241,7 +173,7 @@ const GameTeamReview: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
-  const { classes } = useStyles()
+  const { classes } = useAccordionStyles()
 
   const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
     setDisabled(true)
@@ -295,7 +227,7 @@ const GameTeamReview: FC = () => {
             <Select
               placeholder="全部显示"
               clearable
-              data={Array.from(StatusMap, (v) => ({ value: v[0], label: v[1].title }))}
+              data={Array.from(ParticipationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
               value={selectedStatus}
               onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
             />
@@ -312,26 +244,24 @@ const GameTeamReview: FC = () => {
             </Stack>
           </Center>
         ) : (
-          <Paper shadow="md">
-            <Accordion
-              variant="contained"
-              chevronPosition="left"
-              classNames={classes}
-              className={classes.root}
-            >
-              {participations?.map(
-                (participation) =>
-                  (selectedStatus === null || participation.status === selectedStatus) && (
-                    <ParticipationItem
-                      key={participation.id}
-                      participation={participation}
-                      disabled={disabled}
-                      setParticipationStatus={setParticipationStatus}
-                    />
-                  )
-              )}
-            </Accordion>
-          </Paper>
+          <Accordion
+            variant="contained"
+            chevronPosition="left"
+            classNames={classes}
+            className={classes.root}
+          >
+            {participations?.map(
+              (participation) =>
+                (selectedStatus === null || participation.status === selectedStatus) && (
+                  <ParticipationItem
+                    key={participation.id}
+                    participation={participation}
+                    disabled={disabled}
+                    setParticipationStatus={setParticipationStatus}
+                  />
+                )
+            )}
+          </Accordion>
         )}
       </ScrollArea>
     </WithGameEditTab>

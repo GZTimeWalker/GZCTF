@@ -39,7 +39,7 @@ import {
   ChallengeTypeLabelMap,
   ChallengeTagItem,
   ChallengeTagLabelMap,
-} from '@Utils/ChallengeItem'
+} from '@Utils/Shared'
 import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType, FileType } from '@Api'
 
 const GameChallengeEdit: FC = () => {

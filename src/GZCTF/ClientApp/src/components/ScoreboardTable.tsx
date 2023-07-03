@@ -17,12 +17,7 @@ import {
   Input,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
-import {
-  BloodBonus,
-  BloodsTypes,
-  ChallengeTagLabelMap,
-  SubmissionTypeIconMap,
-} from '@Utils/ChallengeItem'
+import { BloodBonus, BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import ScoreboardItemModal from './ScoreboardItemModal'

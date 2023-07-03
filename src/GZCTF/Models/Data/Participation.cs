@@ -1,8 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFServer.Models;
 
+/// <summary>
+/// 比赛参与信息
+/// </summary>
+[Index(nameof(GameId))]
+[Index(nameof(TeamId))]
 public class Participation
 {
     [Key]

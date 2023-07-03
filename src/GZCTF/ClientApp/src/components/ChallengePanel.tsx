@@ -19,7 +19,7 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/ChallengeItem'
+import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame } from '@Utils/useGame'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 import ChallengeCard from './ChallengeCard'
@@ -127,7 +127,7 @@ const ChallengePanel: FC = () => {
 
   if (allChallenges.length === 0) {
     return (
-      <Center w="calc(100% - 20rem)" h="calc(100vh - 100px)">
+      <Center miw="calc(100% - 20rem)" h="calc(100vh - 100px)">
         <Empty
           bordered
           description="Ouch! 这个比赛还没有可用题目呢……"

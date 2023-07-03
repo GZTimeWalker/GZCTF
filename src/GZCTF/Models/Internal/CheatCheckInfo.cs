@@ -1,4 +1,6 @@
-﻿namespace CTFServer.Models.Internal;
+﻿using CTFServer.Models.Data;
+
+namespace CTFServer.Models.Internal;
 
 public class CheatCheckInfo
 {
@@ -8,27 +10,32 @@ public class CheatCheckInfo
     public AnswerResult AnswerResult { get; set; } = AnswerResult.WrongAnswer;
 
     /// <summary>
-    /// 相关题目
+    /// 作弊队伍名称
     /// </summary>
-    public Challenge? Challenge { get; set; }
-
-    /// <summary>
-    /// 作弊队伍
-    /// </summary>
-    public Team? CheatTeam { get; set; }
+    public string? SubmitTeamName { get; set; }
 
     /// <summary>
     /// Flag 原属队伍
     /// </summary>
-    public Team? SourceTeam { get; set; }
+    public string? SourceTeamName { get; set; }
 
     /// <summary>
     /// 作弊用户
     /// </summary>
-    public UserInfo? CheatUser { get; set; }
+    public string? CheatUserName { get; set; }
 
     /// <summary>
     /// Flag 文本
     /// </summary>
     public string? Flag { get; set; }
+
+    internal static CheatCheckInfo FromCheatInfo(CheatInfo info)
+        => new()
+        {
+            Flag = info.Submission.Answer,
+            AnswerResult = AnswerResult.CheatDetected,
+            SubmitTeamName = info.SubmitTeam.Team.Name,
+            SourceTeamName = info.SourceTeam.Team.Name,
+            CheatUserName = info.Submission.UserName
+        };
 }

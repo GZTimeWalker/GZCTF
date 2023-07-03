@@ -16,7 +16,7 @@ import {
   Badge,
   Input,
 } from '@mantine/core'
-import { BonusLabel } from '@Utils/ChallengeItem'
+import { BonusLabel } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
 import TeamRadarMap from './TeamRadarMap'

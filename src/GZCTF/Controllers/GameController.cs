@@ -5,6 +5,7 @@ using CTFServer.Middlewares;
 using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Edit;
 using CTFServer.Models.Request.Game;
+using CTFServer.Repositories;
 using CTFServer.Repositories.Interface;
 using CTFServer.Utils;
 using Microsoft.AspNetCore.Identity;
@@ -30,14 +31,15 @@ public class GameController : ControllerBase
     private readonly IFileRepository fileService;
     private readonly IGameRepository gameRepository;
     private readonly ITeamRepository teamRepository;
-    private readonly IContainerRepository containerRepository;
-    private readonly IGameNoticeRepository noticeRepository;
     private readonly IGameEventRepository eventRepository;
     private readonly IInstanceRepository instanceRepository;
+    private readonly IGameNoticeRepository noticeRepository;
+    private readonly IGameEventRepository gameEventRepository;
+    private readonly IContainerRepository containerRepository;
+    private readonly ICheatInfoRepository cheatInfoRepository;
     private readonly IChallengeRepository challengeRepository;
     private readonly ISubmissionRepository submissionRepository;
     private readonly IParticipationRepository participationRepository;
-    private readonly IGameEventRepository gameEventRepository;
 
     public GameController(
         ILogger<GameController> _logger,
@@ -49,6 +51,7 @@ public class GameController : ControllerBase
         IGameEventRepository _eventRepository,
         IGameNoticeRepository _noticeRepository,
         IInstanceRepository _instanceRepository,
+        ICheatInfoRepository _cheatInfoRepository,
         IChallengeRepository _challengeRepository,
         IContainerRepository _containerRepository,
         IGameEventRepository _gameEventRepository,
@@ -67,6 +70,7 @@ public class GameController : ControllerBase
         challengeRepository = _challengeRepository;
         containerRepository = _containerRepository;
         gameEventRepository = _gameEventRepository;
+        cheatInfoRepository = _cheatInfoRepository;
         submissionRepository = _submissionRepository;
         participationRepository = _participationRepository;
     }
@@ -355,6 +359,34 @@ public class GameController : ControllerBase
             return BadRequest(new RequestResponse("比赛未开始"));
 
         return Ok(await submissionRepository.GetSubmissions(game, type, count, skip, token));
+    }
+
+    /// <summary>
+    /// 获取比赛作弊信息
+    /// </summary>
+    /// <remarks>
+    /// 获取比赛作弊数据，需要Monitor权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛作弊数据</response>
+    /// <response code="400">比赛未找到</response>
+    [RequireMonitor]
+    [HttpGet("{id}/CheatInfo")]
+    [ProducesResponseType(typeof(CheatInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CheatInfo([FromRoute] int id,CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到"));
+
+        if (DateTimeOffset.UtcNow < game.StartTimeUTC)
+            return BadRequest(new RequestResponse("比赛未开始"));
+
+        return Ok((await cheatInfoRepository.GetCheatInfoByGameId(game.Id, token))
+            .Select(CheatInfoModel.FromCheatInfo));
     }
 
     /// <summary>

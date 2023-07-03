@@ -11,7 +11,7 @@ import {
   ChallengeTagLabelMap,
   ChallengeTypeItem,
   ChallengeTypeLabelMap,
-} from '@Utils/ChallengeItem'
+} from '@Utils/Shared'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
 
 interface ChallengeCreateModalProps extends ModalProps {

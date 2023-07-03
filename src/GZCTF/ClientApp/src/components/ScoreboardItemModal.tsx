@@ -15,7 +15,7 @@ import {
   Title,
   Badge,
 } from '@mantine/core'
-import { BloodsTypes, BonusLabel } from '@Utils/ChallengeItem'
+import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
 import TeamRadarMap from './TeamRadarMap'
@@ -71,7 +71,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           </Avatar>
           <Stack spacing={0}>
             <Group spacing={4}>
-              <Title order={4} lineClamp={1}>
+              <Title order={4} lineClamp={1} weight="bold">
                 {item?.name ?? 'Team'}
               </Title>
               {item?.organization && (
