@@ -261,7 +261,7 @@ const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
     <ScrollArea offsetScrollbars h="calc(100vh - 180px)">
       <Stack spacing="xs" w="100%">
         {!cheatTeamInfo || cheatTeamInfo?.size === 0 ? (
-          <Center h="calc(100vh - 180px)">
+          <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
               <Title order={2}>暂时没有队伍作弊信息</Title>
               <Text>看起来大家都很老实呢</Text>
@@ -299,9 +299,8 @@ interface CheatInfoTableViewProps {
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const { classes, cx, theme } = useTableStyles()
-  const { cheatInfo } = props
 
-  const rows = cheatInfo
+  const rows = props.cheatInfo
     .sort(
       (a, b) => (dayjs(b.submission?.time).unix() ?? 0) - (dayjs(a.submission?.time).unix() ?? 0)
     )
