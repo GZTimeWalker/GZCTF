@@ -7,9 +7,11 @@ import {
   mdiAccountCircleOutline,
   mdiLogout,
   mdiAccountGroupOutline,
+  mdiCached,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useIsMobile } from '@Utils/ThemeOverride'
+import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import LogoHeader from './LogoHeader'
 
@@ -31,6 +33,7 @@ const AppHeader: FC = () => {
   const navigate = useNavigate()
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
 
   const logout = useLoginOut()
@@ -60,6 +63,9 @@ const AppHeader: FC = () => {
                   icon={<Icon path={mdiAccountCircleOutline} size={1} />}
                 >
                   用户信息
+                </Menu.Item>
+                <Menu.Item onClick={clearLocalCache} icon={<Icon path={mdiCached} size={1} />}>
+                  清除缓存
                 </Menu.Item>
                 <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
                   登出

@@ -23,8 +23,10 @@ import {
   mdiLogout,
   mdiWrenchOutline,
   mdiNoteTextOutline,
+  mdiCached,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
 import MainIcon from './icon/MainIcon'
@@ -137,7 +139,7 @@ const AppNavbar: FC = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const logout = useLoginOut()
-
+  const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
 
   useEffect(() => {
@@ -213,6 +215,9 @@ const AppNavbar: FC = () => {
                   icon={<Icon path={mdiAccountCircleOutline} size={1} />}
                 >
                   用户信息
+                </Menu.Item>
+                <Menu.Item onClick={clearLocalCache} icon={<Icon path={mdiCached} size={1} />}>
+                  清除缓存
                 </Menu.Item>
                 <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
                   登出

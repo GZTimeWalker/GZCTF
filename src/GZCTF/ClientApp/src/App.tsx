@@ -14,7 +14,7 @@ import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { ThemeOverride } from '@Utils/ThemeOverride'
-import { localStorageProvider, useBanner } from '@Utils/useConfig'
+import { useLocalStorageCache, useBanner } from '@Utils/useConfig'
 import { fetcher } from '@Api'
 
 export const App: FC = () => {
@@ -29,6 +29,8 @@ export const App: FC = () => {
 
   useBanner()
 
+  const { localCacheProvider } = useLocalStorageCache()
+
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
@@ -38,7 +40,7 @@ export const App: FC = () => {
           <SWRConfig
             value={{
               refreshInterval: 10000,
-              provider: localStorageProvider,
+              provider: localCacheProvider,
               fetcher,
             }}
           >

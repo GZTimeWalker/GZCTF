@@ -94,14 +94,28 @@ export const useBanner = () => {
   }, [])
 }
 
-export const localStorageProvider = () => {
+export const useLocalStorageCache = () => {
   const cacheKey = 'gzctf-cache'
-  const map = new Map(JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]'))
 
-  window.addEventListener('beforeunload', () => {
-    const appCache = LZString.compress(JSON.stringify(Array.from(map.entries())))
+  const mapRef = useRef(
+    new Map(JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]'))
+  )
+
+  const saveCache = () => {
+    const appCache = LZString.compress(JSON.stringify(Array.from(mapRef.current.entries())))
     localStorage.setItem(cacheKey, appCache)
-  })
+  }
 
-  return map as Cache
+  const localCacheProvider = () => {
+    window.addEventListener('beforeunload', saveCache)
+    return mapRef.current as Cache
+  }
+
+  const clearLocalCache = () => {
+    window.removeEventListener('beforeunload', saveCache)
+    localStorage.removeItem('gzctf-cache')
+    window.location.reload()
+  }
+
+  return { localCacheProvider, clearLocalCache }
 }
