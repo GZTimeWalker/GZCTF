@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.Threading.Channels;
-using CTFServer.Models.Request.Admin;
 using CTFServer.Models.Request.Game;
 using CTFServer.Repositories.Interface;
 using CTFServer.Services;

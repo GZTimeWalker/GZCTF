@@ -119,9 +119,7 @@ const Home: FC = () => {
                     <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
                     <Title order={3}>最近比赛</Title>
                   </Group>
-                  {recentGames?.map((game) => (
-                    <RecentGame key={game.id} game={game} />
-                  ))}
+                  {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}
                 </Stack>
               </div>
             </nav>

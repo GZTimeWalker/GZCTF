@@ -64,9 +64,7 @@ const Posts: FC = () => {
         <Stack>
           {posts
             ?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE)
-            .map((post) => (
-              <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
-            ))}
+            .map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
         </Stack>
         {(posts?.length ?? 0) > ITEMS_PER_PAGE && (
           <Pagination
