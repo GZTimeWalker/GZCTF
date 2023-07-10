@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
@@ -25,7 +24,7 @@ import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useBannerStyles, useIsMobile } from '@Utils/ThemeOverride'
-import { useGame } from '@Utils/useGame'
+import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
@@ -95,15 +94,7 @@ const GameDetail: FC = () => {
 
   const { classes, theme } = useBannerStyles()
 
-  const startTime = dayjs(game?.start) ?? dayjs()
-  const endTime = dayjs(game?.end) ?? dayjs()
-
-  const duriation = endTime.diff(startTime, 'minute')
-  const current = dayjs().diff(startTime, 'minute')
-
-  const finished = current > duriation
-  const started = current > 0
-  const progress = started ? (finished ? 100 : current / duriation) : 0
+  const { startTime, endTime, finished, started, progress } = getGameStatus(game)
 
   const { user } = useUser()
   const { teams } = useTeams()

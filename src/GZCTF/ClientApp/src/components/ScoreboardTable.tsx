@@ -19,7 +19,8 @@ import {
 import { Icon } from '@mdi/react'
 import { BloodBonus, BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
-import api, { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
+import { useGameScoreboard } from '@Utils/useGame'
+import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import ScoreboardItemModal from './ScoreboardItemModal'
 
 export const useScoreboardStyles = createStyles((theme) => ({
@@ -260,10 +261,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
 
-  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { scoreboard } = useGameScoreboard(numId)
 
   const filtered =
     organization === 'all'

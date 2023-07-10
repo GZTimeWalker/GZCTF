@@ -2,7 +2,8 @@ import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Paper, Table, Group, Avatar, Box, Stack, Pagination, Select, Input } from '@mantine/core'
 import { BloodBonus } from '@Utils/Shared'
-import api, { ScoreboardItem, SubmissionType } from '@Api'
+import { useGameScoreboard } from '@Utils/useGame'
+import { ScoreboardItem, SubmissionType } from '@Api'
 import MobileScoreboardItemModal from './MobileScoreboardItemModal'
 import { ScoreboardProps, useScoreboardStyles } from './ScoreboardTable'
 
@@ -68,10 +69,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
   const { classes, cx } = useScoreboardStyles()
 
-  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { scoreboard } = useGameScoreboard(numId)
 
   const filtered =
     organization === 'all'

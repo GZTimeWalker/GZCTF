@@ -3,8 +3,7 @@ import ReactEcharts from 'echarts-for-react'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useMantineTheme } from '@mantine/core'
-import { useGame } from '@Utils/useGame'
-import api from '@Api'
+import { useGame, useGameScoreboard } from '@Utils/useGame'
 
 interface TimeLineProps {
   organization: string | null
@@ -15,10 +14,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
   const numId = parseInt(id ?? '-1')
   const theme = useMantineTheme()
 
-  const { data: scoreboard } = api.game.useGameScoreboard(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { scoreboard } = useGameScoreboard(numId)
 
   const { game } = useGame(numId)
 
