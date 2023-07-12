@@ -100,6 +100,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
             // static flag does not need to be dispatched
 
             instance.IsLoaded = true;
+            await SaveAsync(token);
             await transaction.CommitAsync(token);
         }
         catch
