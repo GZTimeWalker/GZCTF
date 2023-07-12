@@ -1,13 +1,13 @@
-﻿using CTFServer.Hubs;
-using CTFServer.Hubs.Client;
-using CTFServer.Models.Request.Admin;
+﻿using GZCTF.Hubs;
+using GZCTF.Hubs.Client;
+using GZCTF.Models.Request.Admin;
 using Microsoft.AspNetCore.SignalR;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace CTFServer.Extensions;
+namespace GZCTF.Extensions;
 
 public static class SignalRSinkExtension
 {

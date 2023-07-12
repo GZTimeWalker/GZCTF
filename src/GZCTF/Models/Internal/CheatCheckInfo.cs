@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Data;
+﻿using GZCTF.Models.Data;
 
-namespace CTFServer.Models.Internal;
+namespace GZCTF.Models.Internal;
 
 public class CheatCheckInfo
 {

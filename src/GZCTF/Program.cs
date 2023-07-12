@@ -1,16 +1,16 @@
-global using CTFServer.Models;
+global using GZCTF.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using CTFServer.Extensions;
-using CTFServer.Hubs;
-using CTFServer.Middlewares;
-using CTFServer.Models.Internal;
-using CTFServer.Repositories;
-using CTFServer.Repositories.Interface;
-using CTFServer.Services;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Extensions;
+using GZCTF.Hubs;
+using GZCTF.Middlewares;
+using GZCTF.Models.Internal;
+using GZCTF.Repositories;
+using GZCTF.Repositories.Interface;
+using GZCTF.Services;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -288,7 +288,7 @@ var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 try
 {
     var version = typeof(Program).Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
-    logger.SystemLog(version ?? "GZ::CTF", CTFServer.TaskStatus.Pending, LogLevel.Debug);
+    logger.SystemLog(version ?? "GZ::CTF", GZCTF.TaskStatus.Pending, LogLevel.Debug);
     await app.RunAsync();
 }
 catch (Exception exception)
@@ -298,7 +298,7 @@ catch (Exception exception)
 }
 finally
 {
-    logger.SystemLog("服务器已退出", CTFServer.TaskStatus.Exit, LogLevel.Debug);
+    logger.SystemLog("服务器已退出", GZCTF.TaskStatus.Exit, LogLevel.Debug);
     Log.CloseAndFlush();
 }
 

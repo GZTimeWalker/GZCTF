@@ -1,7 +1,7 @@
-﻿using CTFServer.Models.Data;
-using CTFServer.Utils;
+﻿using GZCTF.Models.Data;
+using GZCTF.Utils;
 
-namespace CTFServer.Models.Request.Game;
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 作弊行为信息

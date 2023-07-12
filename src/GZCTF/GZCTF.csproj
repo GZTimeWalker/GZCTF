@@ -25,6 +25,7 @@
     <TieredPgo>true</TieredPgo>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'GZCTF' " />
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.15" />
     <PackageReference Include="KubernetesClient" Version="11.0.36" />
@@ -60,10 +61,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="CTFServer.Test" />
+    <InternalsVisibleTo Include="GZCTF.Test" />
   </ItemGroup>
 
   <ItemGroup>

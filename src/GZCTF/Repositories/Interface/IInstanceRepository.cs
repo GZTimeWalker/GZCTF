@@ -1,7 +1,7 @@
-﻿using CTFServer.Models.Internal;
-using CTFServer.Utils;
+﻿using GZCTF.Models.Internal;
+using GZCTF.Utils;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface IInstanceRepository : IRepository
 {

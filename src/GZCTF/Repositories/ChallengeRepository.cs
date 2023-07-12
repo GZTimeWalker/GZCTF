@@ -1,9 +1,9 @@
-﻿using CTFServer.Models.Data;
-using CTFServer.Models.Request.Edit;
-using CTFServer.Repositories.Interface;
+﻿using GZCTF.Models.Data;
+using GZCTF.Models.Request.Edit;
+using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class ChallengeRepository : RepositoryBase, IChallengeRepository
 {

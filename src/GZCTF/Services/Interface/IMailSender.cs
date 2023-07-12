@@ -1,4 +1,4 @@
-﻿namespace CTFServer.Services.Interface;
+﻿namespace GZCTF.Services.Interface;
 
 public interface IMailSender
 {

@@ -1,19 +1,19 @@
 ﻿using System.Net.Mime;
-using CTFServer.Extensions;
-using CTFServer.Middlewares;
-using CTFServer.Models.Internal;
-using CTFServer.Models.Request.Account;
-using CTFServer.Models.Request.Admin;
-using CTFServer.Models.Request.Info;
-using CTFServer.Repositories.Interface;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Extensions;
+using GZCTF.Middlewares;
+using GZCTF.Models.Internal;
+using GZCTF.Models.Request.Account;
+using GZCTF.Models.Request.Admin;
+using GZCTF.Models.Request.Info;
+using GZCTF.Repositories.Interface;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CTFServer.Controllers;
+namespace GZCTF.Controllers;
 
 /// <summary>
 /// 管理员数据交互接口

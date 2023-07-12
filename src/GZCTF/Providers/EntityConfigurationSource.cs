@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Providers;
+namespace GZCTF.Providers;
 
 public class EntityConfigurationSource : IConfigurationSource
 {

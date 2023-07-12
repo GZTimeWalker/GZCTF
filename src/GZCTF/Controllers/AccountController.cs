@@ -1,17 +1,17 @@
 ﻿using System.Net.Mime;
-using CTFServer.Extensions;
-using CTFServer.Middlewares;
-using CTFServer.Models.Internal;
-using CTFServer.Models.Request.Account;
-using CTFServer.Repositories.Interface;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Extensions;
+using GZCTF.Middlewares;
+using GZCTF.Models.Internal;
+using GZCTF.Models.Request.Account;
+using GZCTF.Repositories.Interface;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 
-namespace CTFServer.Controllers;
+namespace GZCTF.Controllers;
 
 /// <summary>
 /// 用户账户相关接口

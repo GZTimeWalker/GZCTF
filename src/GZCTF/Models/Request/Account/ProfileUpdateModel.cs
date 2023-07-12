@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request.Account;
+namespace GZCTF.Models.Request.Account;
 
 /// <summary>
 /// 基本账号信息更改

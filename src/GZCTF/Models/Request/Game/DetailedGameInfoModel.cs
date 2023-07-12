@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace CTFServer.Models.Request.Game;
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 比赛详细信息，包含详细介绍与当前队伍报名状态

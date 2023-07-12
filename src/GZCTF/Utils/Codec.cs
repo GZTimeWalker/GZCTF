@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public partial class Codec
 {

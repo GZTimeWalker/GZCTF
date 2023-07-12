@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CTFServer.Models.Internal;
-using CTFServer.Services.Interface;
+using GZCTF.Models.Internal;
+using GZCTF.Services.Interface;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CTFServer.Test;
+namespace GZCTF.Test;
 
 public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
 {

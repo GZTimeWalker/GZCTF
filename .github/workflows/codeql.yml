@@ -48,7 +48,7 @@ jobs:
 
       - name: Build with dotnet
         run: |
-          dotnet build "CTFServer.csproj" -c Release -o build
+          dotnet build "GZCTF.csproj" -c Release -o build
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

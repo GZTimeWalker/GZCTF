@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CTFServer.Models.Request.Admin;
-using CTFServer.Utils;
+using GZCTF.Models.Request.Admin;
+using GZCTF.Utils;
 using MemoryPack;
 
-namespace CTFServer.Models.Request.Game;
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 排行榜

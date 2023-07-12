@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CTFServer.Migrations
+namespace GZCTF.Migrations
 {
     public partial class AddDataProtectionKeys : Migration
     {

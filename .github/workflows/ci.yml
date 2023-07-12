@@ -44,12 +44,12 @@ jobs:
       - name: Prebuild project
         run: |
           npm i -g pnpm
-          dotnet build "CTFServer.csproj" -c Release -o build
+          dotnet build "GZCTF.csproj" -c Release -o build
 
       - name: Publish project
         run: |
-          dotnet publish "CTFServer.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
-          dotnet publish "CTFServer.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true
+          dotnet publish "GZCTF.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
+          dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true
         env:
           VITE_APP_BUILD_TIMESTAMP: ${{ steps.datetime.outputs.time }}
           VITE_APP_GIT_SHA: ${{ github.sha }}

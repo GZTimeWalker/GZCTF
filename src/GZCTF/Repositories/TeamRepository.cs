@@ -1,8 +1,8 @@
-﻿using CTFServer.Models.Request.Info;
-using CTFServer.Repositories.Interface;
+﻿using GZCTF.Models.Request.Info;
+using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class TeamRepository : RepositoryBase, ITeamRepository
 {

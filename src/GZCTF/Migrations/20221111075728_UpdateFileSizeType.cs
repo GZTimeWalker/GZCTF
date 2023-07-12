@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace CTFServer.Migrations
+namespace GZCTF.Migrations
 {
     /// <inheritdoc />
     public partial class UpdateFileSizeType : Migration

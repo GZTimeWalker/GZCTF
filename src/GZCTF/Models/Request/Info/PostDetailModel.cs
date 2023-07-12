@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request.Info;
+namespace GZCTF.Models.Request.Info;
 
 /// <summary>
 /// 文章详细内容

@@ -1,8 +1,8 @@
-﻿using CTFServer.Hubs.Client;
-using CTFServer.Utils;
+﻿using GZCTF.Hubs.Client;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.SignalR;
 
-namespace CTFServer.Hubs;
+namespace GZCTF.Hubs;
 
 public class AdminHub : Hub<IAdminClient>
 {

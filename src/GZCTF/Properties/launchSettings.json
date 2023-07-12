@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "CTFServer": {
+    "GZCTF": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:55000",

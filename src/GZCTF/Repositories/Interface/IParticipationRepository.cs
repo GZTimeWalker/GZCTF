@@ -1,7 +1,7 @@
-﻿using CTFServer.Models.Request.Admin;
-using CTFServer.Models.Request.Game;
+﻿using GZCTF.Models.Request.Admin;
+using GZCTF.Models.Request.Game;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface IParticipationRepository : IRepository
 {

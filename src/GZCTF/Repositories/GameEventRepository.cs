@@ -1,10 +1,10 @@
-﻿using CTFServer.Hubs;
-using CTFServer.Hubs.Clients;
-using CTFServer.Repositories.Interface;
+﻿using GZCTF.Hubs;
+using GZCTF.Hubs.Clients;
+using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class GameEventRepository : RepositoryBase, IGameEventRepository
 {

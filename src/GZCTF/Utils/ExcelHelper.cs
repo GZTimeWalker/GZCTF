@@ -1,8 +1,8 @@
-﻿using CTFServer.Models.Request.Game;
+﻿using GZCTF.Models.Request.Game;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public static class ExcelHelper
 {

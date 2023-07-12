@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace CTFServer.Models.Request.Game;
+namespace GZCTF.Models.Request.Game;
 
 public class GameDetailModel
 {

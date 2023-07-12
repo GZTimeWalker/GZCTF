@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public static class PrelaunchHelper
 {

@@ -1,9 +1,9 @@
-﻿using CTFServer.Models.Internal;
-using CTFServer.Services;
+﻿using GZCTF.Models.Internal;
+using GZCTF.Services;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CTFServer.Test;
+namespace GZCTF.Test;
 
 public class ConfigServiceTest
 {

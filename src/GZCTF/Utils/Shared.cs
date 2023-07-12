@@ -3,7 +3,7 @@ using System.Threading.Channels;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public static class ChannelService
 {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace CTFServer.Migrations
+namespace GZCTF.Migrations
 {
     public partial class AddGameHidden : Migration
     {

@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Account;
+﻿using GZCTF.Models.Request.Account;
 
-namespace CTFServer.Models.Request.Admin;
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 比赛队伍详细信息，用于审核查看（Admin）

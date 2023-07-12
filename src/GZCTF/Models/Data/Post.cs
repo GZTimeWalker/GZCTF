@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CTFServer.Models.Request.Edit;
-using CTFServer.Utils;
+using GZCTF.Models.Request.Edit;
+using GZCTF.Utils;
 using MemoryPack;
 
-namespace CTFServer.Models;
+namespace GZCTF.Models;
 
 [MemoryPackable]
 public partial class Post

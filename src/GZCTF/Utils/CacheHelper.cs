@@ -1,7 +1,7 @@
 ﻿using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public static class CacheHelper
 {

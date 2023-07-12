@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
-using CTFServer.Models.Internal;
+using GZCTF.Models.Internal;
 using Microsoft.Extensions.Options;
 
-namespace CTFServer.Extensions;
+namespace GZCTF.Extensions;
 
 public interface IRecaptchaExtension
 {

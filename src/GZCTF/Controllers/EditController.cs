@@ -1,16 +1,16 @@
 ﻿using System.Net.Mime;
-using CTFServer.Extensions;
-using CTFServer.Middlewares;
-using CTFServer.Models.Request.Edit;
-using CTFServer.Models.Request.Game;
-using CTFServer.Models.Request.Info;
-using CTFServer.Repositories.Interface;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Extensions;
+using GZCTF.Middlewares;
+using GZCTF.Models.Request.Edit;
+using GZCTF.Models.Request.Game;
+using GZCTF.Models.Request.Info;
+using GZCTF.Repositories.Interface;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CTFServer.Controllers;
+namespace GZCTF.Controllers;
 
 /// <summary>
 /// 数据修改交互接口

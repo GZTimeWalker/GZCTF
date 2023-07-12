@@ -1,4 +1,4 @@
-﻿namespace CTFServer.Repositories.Interface;
+﻿namespace GZCTF.Repositories.Interface;
 
 public interface IGameNoticeRepository : IRepository
 {

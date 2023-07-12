@@ -1,10 +1,10 @@
-﻿using CTFServer.Hubs.Clients;
-using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
+﻿using GZCTF.Hubs.Clients;
+using GZCTF.Repositories.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Primitives;
 
-namespace CTFServer.Hubs;
+namespace GZCTF.Hubs;
 
 public class UserHub : Hub<IUserClient>
 {

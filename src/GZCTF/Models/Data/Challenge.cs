@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using CTFServer.Models.Data;
-using CTFServer.Models.Request.Edit;
-using CTFServer.Utils;
+using GZCTF.Models.Data;
+using GZCTF.Models.Request.Edit;
+using GZCTF.Utils;
 
-namespace CTFServer.Models;
+namespace GZCTF.Models;
 
 public class Challenge
 {

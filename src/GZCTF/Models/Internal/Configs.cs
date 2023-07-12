@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CTFServer.Models.Internal;
+namespace GZCTF.Models.Internal;
 
 /// <summary>
 /// 账户策略

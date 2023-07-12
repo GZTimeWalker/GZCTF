@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Data;
+namespace GZCTF.Models.Data;
 
 /// <summary>
 /// 用于存放配置项

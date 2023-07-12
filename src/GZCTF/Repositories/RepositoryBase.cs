@@ -1,8 +1,8 @@
-﻿using CTFServer.Repositories.Interface;
+﻿using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class RepositoryBase : IRepository
 {

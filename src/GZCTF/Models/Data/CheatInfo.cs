@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Models.Data;
+namespace GZCTF.Models.Data;
 
 /// <summary>
 /// 抄袭行为记录
@@ -56,4 +56,3 @@ public class CheatInfo
 
     #endregion Db Relationship
 }
-

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace CTFServer.Middlewares;
+namespace GZCTF.Middlewares;
 
 public class ProxyMiddleware
 {

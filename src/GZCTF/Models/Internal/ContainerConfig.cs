@@ -1,4 +1,4 @@
-﻿namespace CTFServer.Models.Internal;
+﻿namespace GZCTF.Models.Internal;
 
 public class ContainerConfig
 {

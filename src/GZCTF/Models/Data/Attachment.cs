@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace CTFServer.Models.Data;
+namespace GZCTF.Models.Data;
 
 public class Attachment
 {

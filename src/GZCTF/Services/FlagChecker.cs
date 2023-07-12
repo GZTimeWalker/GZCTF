@@ -1,10 +1,10 @@
 ﻿using System.Threading.Channels;
-using CTFServer.Models;
-using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
+using GZCTF.Models;
+using GZCTF.Repositories.Interface;
+using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Services;
+namespace GZCTF.Services;
 
 public class FlagChecker : IHostedService
 {

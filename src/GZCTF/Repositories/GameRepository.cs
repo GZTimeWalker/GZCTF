@@ -1,14 +1,14 @@
 ﻿using System.Text;
 using System.Threading.Channels;
-using CTFServer.Models.Request.Game;
-using CTFServer.Repositories.Interface;
-using CTFServer.Services;
-using CTFServer.Utils;
+using GZCTF.Models.Request.Game;
+using GZCTF.Repositories.Interface;
+using GZCTF.Services;
+using GZCTF.Utils;
 using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class GameRepository : RepositoryBase, IGameRepository
 {

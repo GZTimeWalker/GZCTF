@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CTFServer.Models.Request.Info;
+using GZCTF.Models.Request.Info;
 
-namespace CTFServer.Models.Request.Game;
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 比赛 Writeup 提交信息

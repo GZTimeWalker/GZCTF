@@ -1,4 +1,4 @@
-﻿namespace CTFServer.Models.Request.Admin;
+﻿namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 用户信息（Admin）

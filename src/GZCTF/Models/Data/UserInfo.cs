@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CTFServer.Models.Request.Account;
-using CTFServer.Models.Request.Admin;
+using GZCTF.Models.Request.Account;
+using GZCTF.Models.Request.Admin;
 using MemoryPack;
 using Microsoft.AspNetCore.Identity;
 
-namespace CTFServer.Models;
+namespace GZCTF.Models;
 
 [MemoryPackable]
 public partial class UserInfo : IdentityUser

@@ -1,15 +1,15 @@
 using System.Net.Mime;
 using System.Text.RegularExpressions;
-using CTFServer.Middlewares;
-using CTFServer.Models.Request.Info;
-using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
+using GZCTF.Middlewares;
+using GZCTF.Models.Request.Info;
+using GZCTF.Repositories.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Controllers;
+namespace GZCTF.Controllers;
 
 /// <summary>
 /// 队伍数据交互接口

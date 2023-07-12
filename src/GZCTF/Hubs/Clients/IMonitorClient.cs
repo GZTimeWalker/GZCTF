@@ -1,4 +1,4 @@
-﻿namespace CTFServer.Hubs.Clients;
+﻿namespace GZCTF.Hubs.Clients;
 
 public interface IMonitorClient
 {

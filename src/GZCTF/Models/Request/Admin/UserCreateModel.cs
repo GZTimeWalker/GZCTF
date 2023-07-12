@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request.Admin;
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 批量用户创建（Admin）

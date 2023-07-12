@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CTFServer;
+namespace GZCTF;
 
 /// <summary>
 /// 用户权限枚举

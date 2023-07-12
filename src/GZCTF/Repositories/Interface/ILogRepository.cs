@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Admin;
+﻿using GZCTF.Models.Request.Admin;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface ILogRepository : IRepository
 {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using CTFServer.Models.Request.Info;
+using GZCTF.Models.Request.Info;
 
-namespace CTFServer.Models.Request.Admin;
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 比赛 Writeup 信息

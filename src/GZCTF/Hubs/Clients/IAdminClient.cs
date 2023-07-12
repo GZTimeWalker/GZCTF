@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Admin;
+﻿using GZCTF.Models.Request.Admin;
 
-namespace CTFServer.Hubs.Client;
+namespace GZCTF.Hubs.Client;
 
 public interface IAdminClient
 {

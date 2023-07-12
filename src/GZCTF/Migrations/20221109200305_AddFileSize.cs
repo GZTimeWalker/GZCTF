@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CTFServer.Migrations
+namespace GZCTF.Migrations
 {
     public partial class AddFileSize : Migration
     {

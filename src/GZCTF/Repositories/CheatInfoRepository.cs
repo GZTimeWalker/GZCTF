@@ -1,8 +1,8 @@
-﻿using CTFServer.Models.Data;
-using CTFServer.Repositories.Interface;
+﻿using GZCTF.Models.Data;
+using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class CheatInfoRepository : RepositoryBase, ICheatInfoRepository
 {

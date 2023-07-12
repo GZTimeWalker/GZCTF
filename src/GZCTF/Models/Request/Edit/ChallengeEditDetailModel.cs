@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CTFServer.Models.Data;
-using CTFServer.Models.Request.Game;
+using GZCTF.Models.Data;
+using GZCTF.Models.Request.Game;
 
-namespace CTFServer.Models.Request.Edit;
+namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
 /// 题目详细信息（Edit）

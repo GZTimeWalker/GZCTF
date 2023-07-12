@@ -17,14 +17,14 @@ RUN npm i -g pnpm
 
 COPY ["GZCTF", "/src/GZCTF/"]
 WORKDIR "/src/GZCTF"
-RUN dotnet restore "CTFServer.csproj"
-RUN dotnet build "CTFServer.csproj" -c Release -o /app/build --no-restore
+RUN dotnet restore "GZCTF.csproj"
+RUN dotnet build "GZCTF.csproj" -c Release -o /app/build --no-restore
 
 FROM build AS publish
-RUN dotnet publish "CTFServer.csproj" -c Release -o /app/publish -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
+RUN dotnet publish "GZCTF.csproj" -c Release -o /app/publish -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "CTFServer.dll"]
+ENTRYPOINT ["dotnet", "GZCTF.dll"]

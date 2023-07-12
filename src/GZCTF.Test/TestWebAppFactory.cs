@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using CTFServer.Services.Interface;
+using GZCTF.Services.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CTFServer.Test;
+namespace GZCTF.Test;
 
 public class TestWebAppFactory : WebApplicationFactory<Program>
 {

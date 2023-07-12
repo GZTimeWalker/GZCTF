@@ -1,4 +1,4 @@
-﻿namespace CTFServer.Models.Request.Game;
+﻿namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 题目详细信息

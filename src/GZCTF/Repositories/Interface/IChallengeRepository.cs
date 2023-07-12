@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Edit;
+﻿using GZCTF.Models.Request.Edit;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface IChallengeRepository : IRepository
 {

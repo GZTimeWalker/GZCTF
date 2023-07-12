@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using CTFServer.Services.Interface;
+using GZCTF.Services.Interface;
 
-namespace CTFServer.Test;
+namespace GZCTF.Test;
 
 public class TestMailSender : IMailSender
 {

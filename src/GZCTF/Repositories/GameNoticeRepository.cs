@@ -1,12 +1,12 @@
-﻿using CTFServer.Hubs;
-using CTFServer.Hubs.Clients;
-using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
+﻿using GZCTF.Hubs;
+using GZCTF.Hubs.Clients;
+using GZCTF.Repositories.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 {

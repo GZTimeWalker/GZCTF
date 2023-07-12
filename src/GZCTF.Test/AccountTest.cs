@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CTFServer.Test;
+namespace GZCTF.Test;
 
 public class AccountTest : IClassFixture<TestWebAppFactory>
 {

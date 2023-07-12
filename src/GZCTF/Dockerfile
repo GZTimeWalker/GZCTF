@@ -8,4 +8,4 @@ WORKDIR /app
 COPY --from=build /publish .
 
 EXPOSE 80
-ENTRYPOINT ["dotnet", "CTFServer.dll"]
+ENTRYPOINT ["dotnet", "GZCTF.dll"]

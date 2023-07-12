@@ -1,9 +1,9 @@
-﻿using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
+﻿using GZCTF.Repositories.Interface;
+using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class PostRepository : RepositoryBase, IPostRepository
 {

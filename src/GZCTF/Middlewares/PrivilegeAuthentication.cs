@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
-using CTFServer.Utils;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Middlewares;
+namespace GZCTF.Middlewares;
 
 /// <summary>
 /// 需要权限访问

@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Admin;
+﻿using GZCTF.Models.Request.Admin;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface IContainerRepository : IRepository
 {
@@ -12,7 +12,7 @@ public interface IContainerRepository : IRepository
     public Task<List<Container>> GetContainers(CancellationToken token = default);
 
     /// <summary>
-    /// 根据容器数据库 ID 获取容器 
+    /// 根据容器数据库 ID 获取容器
     /// </summary>
     /// <param name="guid">容器数据库 ID</param>
     /// <param name="token"></param>

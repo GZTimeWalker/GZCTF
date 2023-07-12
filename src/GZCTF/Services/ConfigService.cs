@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
-using CTFServer.Models.Data;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Models.Data;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Services;
+namespace GZCTF.Services;
 
 public class ConfigService : IConfigService
 {

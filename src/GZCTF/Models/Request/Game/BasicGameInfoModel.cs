@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using MemoryPack;
 
-namespace CTFServer.Models.Request.Game;
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 比赛基本信息，不包含详细介绍与当前队伍报名状态

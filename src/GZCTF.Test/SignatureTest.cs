@@ -1,5 +1,5 @@
 using System.Text;
-using CTFServer.Utils;
+using GZCTF.Utils;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -8,7 +8,7 @@ using Org.BouncyCastle.Utilities.Encoders;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CTFServer.Test;
+namespace GZCTF.Test;
 
 public class SignatureTest
 {

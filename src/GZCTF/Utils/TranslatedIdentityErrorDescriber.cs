@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public class TranslatedIdentityErrorDescriber : IdentityErrorDescriber
 {

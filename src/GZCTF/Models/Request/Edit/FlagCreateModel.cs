@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request.Edit;
+namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
 /// 新建 Flag 信息（Edit）

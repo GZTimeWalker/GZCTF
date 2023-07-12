@@ -3,10 +3,10 @@ using System.Globalization;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
-using CTFServer.Utils;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace CTFServer.Middlewares;
+namespace GZCTF.Middlewares;
 
 /// <summary>
 /// 请求频率限制

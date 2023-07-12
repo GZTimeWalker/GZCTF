@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Data;
+﻿using GZCTF.Models.Data;
 
-namespace CTFServer.Models.Request.Edit;
+namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
 /// Flag 信息（Edit）

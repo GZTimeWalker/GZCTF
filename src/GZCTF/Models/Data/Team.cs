@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CTFServer.Models.Request.Admin;
-using CTFServer.Models.Request.Info;
+using GZCTF.Models.Request.Admin;
+using GZCTF.Models.Request.Info;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CTFServer.Models;
+namespace GZCTF.Models;
 
 public class Team
 {

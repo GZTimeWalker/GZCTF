@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Game;
+﻿using GZCTF.Models.Request.Game;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface IGameRepository : IRepository
 {

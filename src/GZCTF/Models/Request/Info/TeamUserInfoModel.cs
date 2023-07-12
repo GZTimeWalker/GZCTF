@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CTFServer.Models.Request.Info;
+namespace GZCTF.Models.Request.Info;
 
 /// <summary>
 /// 队员信息

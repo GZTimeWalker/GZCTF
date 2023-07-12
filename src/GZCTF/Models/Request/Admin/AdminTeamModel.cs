@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CTFServer.Models.Request.Admin;
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 队伍信息更改（Admin）

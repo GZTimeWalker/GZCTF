@@ -1,6 +1,6 @@
 ﻿using System.IO.Compression;
 using System.Net;
-using CTFServer.Extensions;
+using GZCTF.Extensions;
 using NpgsqlTypes;
 using Serilog;
 using Serilog.Core;
@@ -11,7 +11,7 @@ using Serilog.Templates;
 using Serilog.Templates.Themes;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public static class LogHelper
 {

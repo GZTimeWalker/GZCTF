@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CTFServer.Models.Internal;
+namespace GZCTF.Models.Internal;
 
 /// <summary>
 /// Response Model from Google Recaptcha V3 Verify API

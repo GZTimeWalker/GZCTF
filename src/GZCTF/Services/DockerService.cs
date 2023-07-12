@@ -1,12 +1,12 @@
 ﻿using System.Net;
-using CTFServer.Models.Internal;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Models.Internal;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Options;
 
-namespace CTFServer.Services;
+namespace GZCTF.Services;
 
 public class DockerService : IContainerService
 {

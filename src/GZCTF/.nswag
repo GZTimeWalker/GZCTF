@@ -1,6 +1,6 @@
 {
   "runtime": "Net70",
-  "defaultVariables": "AssemblyPath=bin/GenAPI/net7.0/CTFServer.dll",
+  "defaultVariables": "AssemblyPath=bin/GenAPI/net7.0/GZCTF.dll",
   "documentGenerator": {
     "aspNetCoreToOpenApi": {
       "isAspNetCore": true,

@@ -247,7 +247,7 @@ _Pvt_Extensions
 .vscode/**
 
 **/db/*
-**/CTFServer.xml
+**/GZCTF.xml
 **/uploads/**
 **/log/**
 **/*.key

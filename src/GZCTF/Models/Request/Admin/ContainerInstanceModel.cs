@@ -1,6 +1,6 @@
-﻿using CTFServer.Utils;
+﻿using GZCTF.Utils;
 
-namespace CTFServer.Models.Request.Admin;
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 容器实例信息（Admin）

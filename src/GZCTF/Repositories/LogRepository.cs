@@ -1,8 +1,8 @@
-﻿using CTFServer.Models.Request.Admin;
-using CTFServer.Repositories.Interface;
+﻿using GZCTF.Models.Request.Admin;
+using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class LogRepository : RepositoryBase, ILogRepository
 {

@@ -1,4 +1,4 @@
-﻿namespace CTFServer.Models.Request.Game;
+﻿namespace GZCTF.Models.Request.Game;
 
 public class GameJoinModel
 {

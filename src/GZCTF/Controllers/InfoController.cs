@@ -1,12 +1,12 @@
-﻿using CTFServer.Extensions;
-using CTFServer.Models.Internal;
-using CTFServer.Models.Request.Info;
-using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
+﻿using GZCTF.Extensions;
+using GZCTF.Models.Internal;
+using GZCTF.Models.Request.Info;
+using GZCTF.Repositories.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace CTFServer.Controllers;
+namespace GZCTF.Controllers;
 
 /// <summary>
 /// 全局信息接口

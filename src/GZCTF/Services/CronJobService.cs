@@ -1,11 +1,11 @@
 ﻿using System.Threading.Channels;
-using CTFServer.Repositories;
-using CTFServer.Repositories.Interface;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Repositories;
+using GZCTF.Repositories.Interface;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace CTFServer.Services;
+namespace GZCTF.Services;
 
 public class CronJobService : IHostedService, IDisposable
 {

@@ -1,12 +1,12 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using CTFServer.Models.Data;
-using CTFServer.Models.Internal;
-using CTFServer.Services;
+using GZCTF.Models.Data;
+using GZCTF.Models.Internal;
+using GZCTF.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace CTFServer.Providers;
+namespace GZCTF.Providers;
 
 public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
 {

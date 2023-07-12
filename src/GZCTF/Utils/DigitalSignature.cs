@@ -3,7 +3,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 /// <summary>
 /// 签名算法

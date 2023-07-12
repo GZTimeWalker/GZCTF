@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
-using CTFServer.Models.Internal;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+using GZCTF.Models.Internal;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
-namespace CTFServer.Services;
+namespace GZCTF.Services;
 
 public class MailSender : IMailSender
 {
@@ -60,7 +60,7 @@ public class MailSender : IMailSender
             return;
         }
 
-        string ns = typeof(MailSender).Namespace ?? "CTFServer.Services";
+        string ns = typeof(MailSender).Namespace ?? "GZCTF.Services";
         Assembly asm = typeof(MailSender).Assembly;
         string resourceName = $"{ns}.Assets.URLEmailTemplate.html";
         string emailContent = await

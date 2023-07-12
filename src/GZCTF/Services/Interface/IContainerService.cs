@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Internal;
+﻿using GZCTF.Models.Internal;
 
-namespace CTFServer.Services.Interface;
+namespace GZCTF.Services.Interface;
 
 public interface IContainerService
 {

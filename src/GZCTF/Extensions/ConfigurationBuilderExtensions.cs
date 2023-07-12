@@ -1,7 +1,7 @@
-﻿using CTFServer.Providers;
+﻿using GZCTF.Providers;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Extensions;
+namespace GZCTF.Extensions;
 
 public static class ConfigurationBuilderExtensions
 {

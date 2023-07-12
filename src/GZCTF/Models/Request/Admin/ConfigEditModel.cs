@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Internal;
+﻿using GZCTF.Models.Internal;
 
-namespace CTFServer.Models.Request.Admin;
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 全局配置更新对象

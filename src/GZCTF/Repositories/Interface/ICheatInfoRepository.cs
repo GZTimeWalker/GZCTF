@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Data;
+﻿using GZCTF.Models.Data;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface ICheatInfoRepository : IRepository
 {

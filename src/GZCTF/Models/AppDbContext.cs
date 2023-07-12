@@ -1,13 +1,13 @@
 ﻿using System.Text.Json;
-using CTFServer.Models.Data;
-using CTFServer.Utils;
+using GZCTF.Models.Data;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace CTFServer.Models;
+namespace GZCTF.Models;
 
 public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyContext
 {

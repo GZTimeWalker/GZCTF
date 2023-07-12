@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CTFServer.Models.Data;
+using GZCTF.Models.Data;
 
-namespace CTFServer.Models;
+namespace GZCTF.Models;
 
 public class FlagContext
 {

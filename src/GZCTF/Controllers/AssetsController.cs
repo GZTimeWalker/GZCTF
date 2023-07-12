@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
-using CTFServer.Middlewares;
-using CTFServer.Repositories.Interface;
-using CTFServer.Utils;
+using GZCTF.Middlewares;
+using GZCTF.Repositories.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
-namespace CTFServer.Controllers;
+namespace GZCTF.Controllers;
 
 /// <summary>
 /// 文件交互接口

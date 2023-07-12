@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using MemoryPack;
 
-namespace CTFServer.Models;
+namespace GZCTF.Models;
 
 /// <summary>
 /// 比赛通知，会发往客户端。

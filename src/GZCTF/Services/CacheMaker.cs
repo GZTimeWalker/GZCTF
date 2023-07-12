@@ -1,9 +1,9 @@
 ﻿using System.Threading.Channels;
-using CTFServer.Repositories;
-using CTFServer.Utils;
+using GZCTF.Repositories;
+using GZCTF.Utils;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace CTFServer.Services;
+namespace GZCTF.Services;
 
 /// <summary>
 /// 缓存更新请求

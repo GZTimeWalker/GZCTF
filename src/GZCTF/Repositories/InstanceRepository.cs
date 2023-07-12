@@ -1,11 +1,11 @@
-﻿using CTFServer.Models.Internal;
-using CTFServer.Repositories.Interface;
-using CTFServer.Services.Interface;
-using CTFServer.Utils;
+﻿using GZCTF.Models.Internal;
+using GZCTF.Repositories.Interface;
+using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CTFServer.Repositories;
+namespace GZCTF.Repositories;
 
 public class InstanceRepository : RepositoryBase, IInstanceRepository
 {

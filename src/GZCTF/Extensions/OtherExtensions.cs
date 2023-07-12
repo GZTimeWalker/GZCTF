@@ -1,6 +1,6 @@
-﻿using CTFServer.Utils;
+﻿using GZCTF.Utils;
 
-namespace CTFServer.Extensions;
+namespace GZCTF.Extensions;
 
 public static class ListExtensions
 {

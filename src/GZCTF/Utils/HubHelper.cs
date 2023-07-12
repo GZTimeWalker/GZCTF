@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTFServer.Utils;
+namespace GZCTF.Utils;
 
 public class HubHelper
 {

@@ -1,6 +1,6 @@
-﻿using CTFServer.Models.Request.Info;
+﻿using GZCTF.Models.Request.Info;
 
-namespace CTFServer.Repositories.Interface;
+namespace GZCTF.Repositories.Interface;
 
 public interface ITeamRepository : IRepository
 {
