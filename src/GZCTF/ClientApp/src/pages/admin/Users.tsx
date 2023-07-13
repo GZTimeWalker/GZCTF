@@ -254,7 +254,9 @@ const Users: FC = () => {
                     <td>
                       <Group noWrap position="apart" spacing="xs">
                         <Group noWrap position="left">
-                          <Avatar alt="avatar" src={user.avatar} radius="xl" />
+                          <Avatar alt="avatar" src={user.avatar} radius="xl">
+                            {user.userName?.slice(0, 1) ?? 'U'}
+                          </Avatar>
                           <Text
                             ff={theme.fontFamilyMonospace}
                             size="sm"

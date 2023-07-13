@@ -88,7 +88,9 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           </Grid.Col>
           <Grid.Col span={4}>
             <Center>
-              <Avatar alt="avatar" radius="xl" size={70} src={activeUser.avatar} />
+              <Avatar alt="avatar" radius="xl" size={70} src={activeUser.avatar}>
+                {activeUser.userName?.slice(0, 1) ?? 'U'}
+              </Avatar>
             </Center>
           </Grid.Col>
         </Grid>

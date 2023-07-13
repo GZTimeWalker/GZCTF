@@ -96,7 +96,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                       style={{
                         border: 'none',
                       }}
-                    />
+                    >
+                      {captain?.userName?.slice(0, 1) ?? 'C'}
+                    </Avatar>
                   </Tooltip>
                   {members &&
                     members.slice(0, AVATAR_LIMIT).map((m) => (
@@ -108,7 +110,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                           style={{
                             border: 'none',
                           }}
-                        />
+                        >
+                          {m.userName?.slice(0, 1) ?? 'U'}
+                        </Avatar>
                       </Tooltip>
                     ))}
                   {members && members.length > AVATAR_LIMIT && (

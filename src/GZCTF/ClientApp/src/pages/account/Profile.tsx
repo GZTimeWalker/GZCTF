@@ -173,7 +173,9 @@ const Profile: FC = () => {
                 size={80}
                 src={user?.avatar}
                 onClick={() => setDropzoneOpened(true)}
-              />
+              >
+                {user?.userName?.slice(0, 1) ?? 'U'}
+              </Avatar>
             </Center>
           </Grid.Col>
         </Grid>

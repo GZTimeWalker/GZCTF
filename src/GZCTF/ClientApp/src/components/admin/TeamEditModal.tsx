@@ -83,7 +83,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           </Grid.Col>
           <Grid.Col span={4}>
             <Center>
-              <Avatar alt="avatar" radius="xl" size={70} src={activeTeam.avatar} />
+              <Avatar alt="avatar" radius="xl" size={70} src={activeTeam.avatar}>
+                {activeTeam.name?.slice(0, 1) ?? 'T'}
+              </Avatar>
             </Center>
           </Grid.Col>
         </Grid>
@@ -108,7 +110,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             {activeTeam.members?.map((user) => (
               <Group position="apart">
                 <Group position="left">
-                  <Avatar alt="avatar" src={user.avatar} radius="xl" />
+                  <Avatar alt="avatar" src={user.avatar} radius="xl">
+                    {user.userName?.slice(0, 1) ?? 'U'}
+                  </Avatar>
                   <Stack spacing={0}>
                     <Text weight={500}>{user.userName}</Text>
                     <Text size="xs" color="dimmed">{`#${user.id?.substring(0, 8)}`}</Text>

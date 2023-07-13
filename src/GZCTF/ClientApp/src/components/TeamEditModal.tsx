@@ -53,7 +53,9 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
       onMouseLeave={() => setShowBtns(false)}
     >
       <Group position="left">
-        <Avatar alt="avatar" src={user.avatar} radius="xl" />
+        <Avatar alt="avatar" src={user.avatar} radius="xl">
+          {user.userName?.slice(0, 1) ?? 'U'}
+        </Avatar>
         <Text weight={500}>{user.userName}</Text>
       </Group>
       {isCaptain && showBtns && (
@@ -295,7 +297,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                 size={70}
                 src={teamInfo?.avatar}
                 onClick={() => isCaptain && setDropzoneOpened(true)}
-              />
+              >
+                {teamInfo?.name?.slice(0, 1) ?? 'T'}
+              </Avatar>
             </Center>
           </Grid.Col>
         </Grid>
@@ -355,7 +359,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             {captain && (
               <Group position="apart">
                 <Group position="left">
-                  <Avatar alt="avatar" src={captain.avatar} radius="xl" />
+                  <Avatar alt="avatar" src={captain.avatar} radius="xl">
+                    {captain.userName?.slice(0, 1) ?? 'C'}
+                  </Avatar>
                   <Text weight={500}>{captain.userName}</Text>
                 </Group>
                 <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />

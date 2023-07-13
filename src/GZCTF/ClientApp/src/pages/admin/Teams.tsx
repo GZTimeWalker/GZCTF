@@ -244,7 +244,9 @@ const Teams: FC = () => {
                                   withArrow
                                   classNames={tooltipClasses}
                                 >
-                                  <Avatar alt="avatar" radius="xl" src={m.avatar} />
+                                  <Avatar alt="avatar" radius="xl" src={m.avatar}>
+                                    {m.userName?.slice(0, 1) ?? 'U'}
+                                  </Avatar>
                                 </Tooltip>
                               ))}
                             {members && members.length > 8 && (
