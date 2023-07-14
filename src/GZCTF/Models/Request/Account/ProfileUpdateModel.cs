@@ -35,6 +35,6 @@ public class ProfileUpdateModel
     /// <summary>
     /// 学工号
     /// </summary>
-    [MaxLength(15, ErrorMessage = "学工号过长")]
+    [MaxLength(24, ErrorMessage = "学工号过长")]
     public string? StdNumber { get; set; }
 }

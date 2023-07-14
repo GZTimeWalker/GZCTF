@@ -35,13 +35,13 @@ public class AdminUserInfoModel
     /// <summary>
     /// 真实姓名
     /// </summary>
-    [MaxLength(6, ErrorMessage = "真实姓名过长")]
+    [MaxLength(7, ErrorMessage = "真实姓名过长")]
     public string? RealName { get; set; }
 
     /// <summary>
     /// 学工号
     /// </summary>
-    [MaxLength(10, ErrorMessage = "学工号过长")]
+    [MaxLength(24, ErrorMessage = "学工号过长")]
     public string? StdNumber { get; set; }
 
     /// <summary>
