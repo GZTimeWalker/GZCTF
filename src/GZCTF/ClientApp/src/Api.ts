@@ -9,8 +9,15 @@
  * ---------------------------------------------------------------
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from 'axios'
-import useSWR, { mutate, MutatorOptions, SWRConfiguration } from 'swr'
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  HeadersDefaults,
+  ResponseType,
+} from 'axios'
+import axios from 'axios'
+import useSWR, { MutatorOptions, SWRConfiguration, mutate } from 'swr'
 
 /** 请求响应 */
 export interface RequestResponseOfRegisterStatus {
@@ -150,7 +157,7 @@ export interface ProfileUpdateModel {
   realName?: string | null
   /**
    * 学工号
-   * @maxLength 15
+   * @maxLength 24
    */
   stdNumber?: string | null
 }
@@ -443,12 +450,12 @@ export interface AdminUserInfoModel {
   phone?: string | null
   /**
    * 真实姓名
-   * @maxLength 6
+   * @maxLength 7
    */
   realName?: string | null
   /**
    * 学工号
-   * @maxLength 10
+   * @maxLength 24
    */
   stdNumber?: string | null
   /** 用户是否通过邮箱验证（可登录） */
@@ -1650,6 +1657,7 @@ export enum ContentType {
   Json = 'application/json',
   FormData = 'multipart/form-data',
   UrlEncoded = 'application/x-www-form-urlencoded',
+  Text = 'text/plain',
 }
 
 export class HttpClient<SecurityDataType = unknown> {
@@ -1675,47 +1683,44 @@ export class HttpClient<SecurityDataType = unknown> {
     this.securityData = data
   }
 
-  private mergeRequestParams(
+  protected mergeRequestParams(
     params1: AxiosRequestConfig,
     params2?: AxiosRequestConfig
   ): AxiosRequestConfig {
+    const method = params1.method || (params2 && params2.method)
+
     return {
       ...this.instance.defaults,
       ...params1,
       ...(params2 || {}),
-      headers: Object.assign(
-        {},
-        this.instance.defaults.headers,
-        (params1 || {}).headers,
-        (params2 || {}).headers
-      ),
+      headers: {
+        ...((method &&
+          this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) ||
+          {}),
+        ...(params1.headers || {}),
+        ...((params2 && params2.headers) || {}),
+      },
     }
   }
 
-  private createFormData(input: Record<string, unknown>): FormData {
+  protected stringifyFormItem(formItem: unknown) {
+    if (typeof formItem === 'object' && formItem !== null) {
+      return JSON.stringify(formItem)
+    } else {
+      return `${formItem}`
+    }
+  }
+
+  protected createFormData(input: Record<string, unknown>): FormData {
     return Object.keys(input || {}).reduce((formData, key) => {
       const property = input[key]
-      if (Array.isArray(property)) {
-        property.forEach((blob) => {
-          formData.append(
-            key,
-            blob instanceof Blob
-              ? blob
-              : typeof blob === 'object' && blob !== null
-              ? JSON.stringify(blob)
-              : `${blob}`
-          )
-        })
-      } else {
-        formData.append(
-          key,
-          property instanceof Blob
-            ? property
-            : typeof property === 'object' && property !== null
-            ? JSON.stringify(property)
-            : `${property}`
-        )
+      const propertyContent: any[] = property instanceof Array ? property : [property]
+
+      for (const formItem of propertyContent) {
+        const isFileType = formItem instanceof Blob || formItem instanceof File
+        formData.append(key, isFileType ? formItem : this.stringifyFormItem(formItem))
       }
+
       return formData
     }, new FormData())
   }
@@ -1735,21 +1740,22 @@ export class HttpClient<SecurityDataType = unknown> {
         (await this.securityWorker(this.securityData))) ||
       {}
     const requestParams = this.mergeRequestParams(params, secureParams)
-    const responseFormat = (format && this.format) || void 0
+    const responseFormat = format || this.format || undefined
 
     if (type === ContentType.FormData && body && body !== null && typeof body === 'object') {
-      if (!requestParams.headers) requestParams.headers = { Accept: '*/*' }
-
       body = this.createFormData(body as Record<string, unknown>)
+    }
+
+    if (type === ContentType.Text && body && body !== null && typeof body !== 'string') {
+      body = JSON.stringify(body)
     }
 
     return this.instance.request({
       ...requestParams,
-      headers: Object.assign(
-        {},
-        requestParams.headers,
-        type && type !== ContentType.FormData ? { 'Content-Type': type } : {}
-      ),
+      headers: {
+        ...(requestParams.headers || {}),
+        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+      },
       params: query,
       responseType: responseFormat,
       data: body,
@@ -1767,17 +1773,41 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   account = {
     /**
-     * @description 使用此接口注册新用户，Dev环境下不校验 GToken，邮件URL：/verify
+     * @description 使用此接口更新用户头像，需要User权限
      *
      * @tags Account
-     * @name AccountRegister
-     * @summary 用户注册接口
-     * @request POST:/api/account/register
+     * @name AccountAvatar
+     * @summary 更新用户头像接口
+     * @request PUT:/api/account/avatar
      */
-    accountRegister: (data: RegisterModel, params: RequestParams = {}) =>
-      this.request<RequestResponseOfRegisterStatus, RequestResponse>({
-        path: `/api/account/register`,
-        method: 'POST',
+    accountAvatar: (
+      data: {
+        /** @format binary */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<string, RequestResponse>({
+        path: `/api/account/avatar`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.FormData,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口更改用户邮箱，需要User权限，邮件URL：/confirm
+     *
+     * @tags Account
+     * @name AccountChangeEmail
+     * @summary 用户邮箱更改接口
+     * @request PUT:/api/account/changeemail
+     */
+    accountChangeEmail: (data: MailChangeModel, params: RequestParams = {}) =>
+      this.request<RequestResponseOfBoolean, RequestResponse>({
+        path: `/api/account/changeemail`,
+        method: 'PUT',
         body: data,
         type: ContentType.Json,
         format: 'json',
@@ -1785,52 +1815,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口请求找回密码，向用户邮箱发送邮件，邮件URL：/reset
+     * @description 使用此接口更新用户密码，需要User权限
      *
      * @tags Account
-     * @name AccountRecovery
-     * @summary 用户找回密码请求接口
-     * @request POST:/api/account/recovery
+     * @name AccountChangePassword
+     * @summary 用户密码更改接口
+     * @request PUT:/api/account/changepassword
      */
-    accountRecovery: (data: RecoveryModel, params: RequestParams = {}) =>
-      this.request<RequestResponse, RequestResponse>({
-        path: `/api/account/recovery`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 使用此接口重置密码，需要邮箱验证码
-     *
-     * @tags Account
-     * @name AccountPasswordReset
-     * @summary 用户重置密码接口
-     * @request POST:/api/account/passwordreset
-     */
-    accountPasswordReset: (data: PasswordResetModel, params: RequestParams = {}) =>
+    accountChangePassword: (data: PasswordChangeModel, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
-        path: `/api/account/passwordreset`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description 使用此接口通过邮箱验证码确认邮箱
-     *
-     * @tags Account
-     * @name AccountVerify
-     * @summary 用户邮箱确认接口
-     * @request POST:/api/account/verify
-     */
-    accountVerify: (data: AccountVerifyModel, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/account/verify`,
-        method: 'POST',
+        path: `/api/account/changepassword`,
+        method: 'PUT',
         body: data,
         type: ContentType.Json,
         ...params,
@@ -1869,58 +1864,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更新用户用户名和描述，需要User权限
-     *
-     * @tags Account
-     * @name AccountUpdate
-     * @summary 用户数据更新接口
-     * @request PUT:/api/account/update
-     */
-    accountUpdate: (data: ProfileUpdateModel, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/account/update`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description 使用此接口更新用户密码，需要User权限
-     *
-     * @tags Account
-     * @name AccountChangePassword
-     * @summary 用户密码更改接口
-     * @request PUT:/api/account/changepassword
-     */
-    accountChangePassword: (data: PasswordChangeModel, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/account/changepassword`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description 使用此接口更改用户邮箱，需要User权限，邮件URL：/confirm
-     *
-     * @tags Account
-     * @name AccountChangeEmail
-     * @summary 用户邮箱更改接口
-     * @request PUT:/api/account/changeemail
-     */
-    accountChangeEmail: (data: MailChangeModel, params: RequestParams = {}) =>
-      this.request<RequestResponseOfBoolean, RequestResponse>({
-        path: `/api/account/changeemail`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
      * @description 使用此接口确认更改用户邮箱，需要邮箱验证码，需要User权限
      *
      * @tags Account
@@ -1931,6 +1874,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     accountMailChangeConfirm: (data: AccountVerifyModel, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/account/mailchangeconfirm`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口重置密码，需要邮箱验证码
+     *
+     * @tags Account
+     * @name AccountPasswordReset
+     * @summary 用户重置密码接口
+     * @request POST:/api/account/passwordreset
+     */
+    accountPasswordReset: (data: PasswordResetModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/account/passwordreset`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
@@ -1980,30 +1940,266 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ProfileUserInfoModel>(`/api/account/profile`, data, options),
 
     /**
-     * @description 使用此接口更新用户头像，需要User权限
+     * @description 使用此接口请求找回密码，向用户邮箱发送邮件，邮件URL：/reset
      *
      * @tags Account
-     * @name AccountAvatar
-     * @summary 更新用户头像接口
-     * @request PUT:/api/account/avatar
+     * @name AccountRecovery
+     * @summary 用户找回密码请求接口
+     * @request POST:/api/account/recovery
      */
-    accountAvatar: (
-      data: {
-        /** @format binary */
-        file?: File
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<string, RequestResponse>({
-        path: `/api/account/avatar`,
+    accountRecovery: (data: RecoveryModel, params: RequestParams = {}) =>
+      this.request<RequestResponse, RequestResponse>({
+        path: `/api/account/recovery`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口注册新用户，Dev环境下不校验 GToken，邮件URL：/verify
+     *
+     * @tags Account
+     * @name AccountRegister
+     * @summary 用户注册接口
+     * @request POST:/api/account/register
+     */
+    accountRegister: (data: RegisterModel, params: RequestParams = {}) =>
+      this.request<RequestResponseOfRegisterStatus, RequestResponse>({
+        path: `/api/account/register`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口更新用户用户名和描述，需要User权限
+     *
+     * @tags Account
+     * @name AccountUpdate
+     * @summary 用户数据更新接口
+     * @request PUT:/api/account/update
+     */
+    accountUpdate: (data: ProfileUpdateModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/account/update`,
         method: 'PUT',
         body: data,
-        type: ContentType.FormData,
-        format: 'json',
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口通过邮箱验证码确认邮箱
+     *
+     * @tags Account
+     * @name AccountVerify
+     * @summary 用户邮箱确认接口
+     * @request POST:/api/account/verify
+     */
+    accountVerify: (data: AccountVerifyModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/account/verify`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
   }
   admin = {
+    /**
+     * @description 使用此接口批量添加用户，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminAddUsers
+     * @summary 批量添加用户
+     * @request POST:/api/admin/users
+     */
+    adminAddUsers: (data: UserCreateModel[], params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/users`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口删除队伍，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDeleteTeam
+     * @summary 删除队伍
+     * @request DELETE:/api/admin/teams/{id}
+     */
+    adminDeleteTeam: (id: number, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/admin/teams/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口删除用户，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDeleteUser
+     * @summary 删除用户
+     * @request DELETE:/api/admin/users/{userid}
+     */
+    adminDeleteUser: (userid: string, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/admin/users/${userid}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口强制删除容器实例，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDestroyInstance
+     * @summary 删除容器实例
+     * @request DELETE:/api/admin/instances/{id}
+     */
+    adminDestroyInstance: (id: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/instances/${id}`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDownloadAllWriteups
+     * @summary 下载全部 Writeup
+     * @request GET:/api/admin/writeups/{id}/all
+     */
+    adminDownloadAllWriteups: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/writeups/${id}/all`,
+        method: 'GET',
+        ...params,
+      }),
+    /**
+     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDownloadAllWriteups
+     * @summary 下载全部 Writeup
+     * @request GET:/api/admin/writeups/{id}/all
+     */
+    useAdminDownloadAllWriteups: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) => useSWR<void, RequestResponse>(doFetch ? `/api/admin/writeups/${id}/all` : null, options),
+
+    /**
+     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminDownloadAllWriteups
+     * @summary 下载全部 Writeup
+     * @request GET:/api/admin/writeups/{id}/all
+     */
+    mutateAdminDownloadAllWriteups: (
+      id: number,
+      data?: void | Promise<void>,
+      options?: MutatorOptions
+    ) => mutate<void>(`/api/admin/writeups/${id}/all`, data, options),
+
+    /**
+     * @description 使用此接口获取全部文件，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminFiles
+     * @summary 获取全部文件
+     * @request GET:/api/admin/files
+     */
+    adminFiles: (
+      query?: {
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ArrayResponseOfLocalFile, RequestResponse>({
+        path: `/api/admin/files`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 使用此接口获取全部文件，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminFiles
+     * @summary 获取全部文件
+     * @request GET:/api/admin/files
+     */
+    useAdminFiles: (
+      query?: {
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<ArrayResponseOfLocalFile, RequestResponse>(
+        doFetch ? [`/api/admin/files`, query] : null,
+        options
+      ),
+
+    /**
+     * @description 使用此接口获取全部文件，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminFiles
+     * @summary 获取全部文件
+     * @request GET:/api/admin/files
+     */
+    mutateAdminFiles: (
+      query?: {
+        /**
+         * @format int32
+         * @default 50
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      data?: ArrayResponseOfLocalFile | Promise<ArrayResponseOfLocalFile>,
+      options?: MutatorOptions
+    ) => mutate<ArrayResponseOfLocalFile>([`/api/admin/files`, query], data, options),
+
     /**
      * @description 使用此接口获取全局设置，需要Admin权限
      *
@@ -2044,35 +2240,62 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ConfigEditModel>(`/api/admin/config`, data, options),
 
     /**
-     * @description 使用此接口更改全局设置，需要Admin权限
+     * @description 使用此接口获取全部容器实例，需要Admin权限
      *
      * @tags Admin
-     * @name AdminUpdateConfigs
-     * @summary 更改配置
-     * @request PUT:/api/admin/config
+     * @name AdminInstances
+     * @summary 获取全部容器实例
+     * @request GET:/api/admin/instances
      */
-    adminUpdateConfigs: (data: ConfigEditModel, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/config`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
+    adminInstances: (params: RequestParams = {}) =>
+      this.request<ArrayResponseOfContainerInstanceModel, RequestResponse>({
+        path: `/api/admin/instances`,
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
-
     /**
-     * @description 使用此接口获取全部用户，需要Admin权限
+     * @description 使用此接口获取全部容器实例，需要Admin权限
      *
      * @tags Admin
-     * @name AdminUsers
-     * @summary 获取全部用户
-     * @request GET:/api/admin/users
+     * @name AdminInstances
+     * @summary 获取全部容器实例
+     * @request GET:/api/admin/instances
      */
-    adminUsers: (
+    useAdminInstances: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ArrayResponseOfContainerInstanceModel, RequestResponse>(
+        doFetch ? `/api/admin/instances` : null,
+        options
+      ),
+
+    /**
+     * @description 使用此接口获取全部容器实例，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminInstances
+     * @summary 获取全部容器实例
+     * @request GET:/api/admin/instances
+     */
+    mutateAdminInstances: (
+      data?: ArrayResponseOfContainerInstanceModel | Promise<ArrayResponseOfContainerInstanceModel>,
+      options?: MutatorOptions
+    ) => mutate<ArrayResponseOfContainerInstanceModel>(`/api/admin/instances`, data, options),
+
+    /**
+     * @description 使用此接口获取全部日志，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminLogs
+     * @summary 获取全部日志
+     * @request GET:/api/admin/logs
+     */
+    adminLogs: (
       query?: {
+        /** @default "All" */
+        level?: string | null
         /**
          * @format int32
-         * @default 100
+         * @default 50
          */
         count?: number
         /**
@@ -2083,26 +2306,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ArrayResponseOfUserInfoModel, RequestResponse>({
-        path: `/api/admin/users`,
+      this.request<LogMessageModel[], RequestResponse>({
+        path: `/api/admin/logs`,
         method: 'GET',
         query: query,
         format: 'json',
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部用户，需要Admin权限
+     * @description 使用此接口获取全部日志，需要Admin权限
      *
      * @tags Admin
-     * @name AdminUsers
-     * @summary 获取全部用户
-     * @request GET:/api/admin/users
+     * @name AdminLogs
+     * @summary 获取全部日志
+     * @request GET:/api/admin/logs
      */
-    useAdminUsers: (
+    useAdminLogs: (
       query?: {
+        /** @default "All" */
+        level?: string | null
         /**
          * @format int32
-         * @default 100
+         * @default 50
          */
         count?: number
         /**
@@ -2114,24 +2339,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<ArrayResponseOfUserInfoModel, RequestResponse>(
-        doFetch ? [`/api/admin/users`, query] : null,
+      useSWR<LogMessageModel[], RequestResponse>(
+        doFetch ? [`/api/admin/logs`, query] : null,
         options
       ),
 
     /**
-     * @description 使用此接口获取全部用户，需要Admin权限
+     * @description 使用此接口获取全部日志，需要Admin权限
      *
      * @tags Admin
-     * @name AdminUsers
-     * @summary 获取全部用户
-     * @request GET:/api/admin/users
+     * @name AdminLogs
+     * @summary 获取全部日志
+     * @request GET:/api/admin/logs
      */
-    mutateAdminUsers: (
+    mutateAdminLogs: (
       query?: {
+        /** @default "All" */
+        level?: string | null
         /**
          * @format int32
-         * @default 100
+         * @default 50
          */
         count?: number
         /**
@@ -2140,24 +2367,60 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         skip?: number
       },
-      data?: ArrayResponseOfUserInfoModel | Promise<ArrayResponseOfUserInfoModel>,
+      data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions
-    ) => mutate<ArrayResponseOfUserInfoModel>([`/api/admin/users`, query], data, options),
+    ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
 
     /**
-     * @description 使用此接口批量添加用户，需要Admin权限
+     * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限
      *
      * @tags Admin
-     * @name AdminAddUsers
-     * @summary 批量添加用户
-     * @request POST:/api/admin/users
+     * @name AdminParticipation
+     * @summary 更新参与状态
+     * @request PUT:/api/admin/participation/{id}/{status}
      */
-    adminAddUsers: (data: UserCreateModel[], params: RequestParams = {}) =>
+    adminParticipation: (id: number, status: ParticipationStatus, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
-        path: `/api/admin/users`,
+        path: `/api/admin/participation/${id}/${status}`,
+        method: 'PUT',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口重置用户密码，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminResetPassword
+     * @summary 重置用户密码
+     * @request DELETE:/api/admin/users/{userid}/password
+     */
+    adminResetPassword: (userid: string, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/admin/users/${userid}/password`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口搜索队伍，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminSearchTeams
+     * @summary 搜索队伍
+     * @request POST:/api/admin/teams/search
+     */
+    adminSearchTeams: (
+      query?: {
+        hint?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
+        path: `/api/admin/teams/search`,
         method: 'POST',
-        body: data,
-        type: ContentType.Json,
+        query: query,
+        format: 'json',
         ...params,
       }),
 
@@ -2268,24 +2531,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfTeamInfoModel>([`/api/admin/teams`, query], data, options),
 
     /**
-     * @description 使用此接口搜索队伍，需要Admin权限
+     * @description 使用此接口更改全局设置，需要Admin权限
      *
      * @tags Admin
-     * @name AdminSearchTeams
-     * @summary 搜索队伍
-     * @request POST:/api/admin/teams/search
+     * @name AdminUpdateConfigs
+     * @summary 更改配置
+     * @request PUT:/api/admin/config
      */
-    adminSearchTeams: (
-      query?: {
-        hint?: string
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
-        path: `/api/admin/teams/search`,
-        method: 'POST',
-        query: query,
-        format: 'json',
+    adminUpdateConfigs: (data: ConfigEditModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/config`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 
@@ -2307,22 +2565,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口删除队伍，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDeleteTeam
-     * @summary 删除队伍
-     * @request DELETE:/api/admin/teams/{id}
-     */
-    adminDeleteTeam: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/admin/teams/${id}`,
-        method: 'DELETE',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
      * @description 使用此接口修改用户信息，需要Admin权限
      *
      * @tags Admin
@@ -2336,22 +2578,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'PUT',
         body: data,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description 使用此接口删除用户，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDeleteUser
-     * @summary 删除用户
-     * @request DELETE:/api/admin/users/{userid}
-     */
-    adminDeleteUser: (userid: string, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/admin/users/${userid}`,
-        method: 'DELETE',
-        format: 'json',
         ...params,
       }),
 
@@ -2399,36 +2625,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ProfileUserInfoModel>(`/api/admin/users/${userid}`, data, options),
 
     /**
-     * @description 使用此接口重置用户密码，需要Admin权限
+     * @description 使用此接口获取全部用户，需要Admin权限
      *
      * @tags Admin
-     * @name AdminResetPassword
-     * @summary 重置用户密码
-     * @request DELETE:/api/admin/users/{userid}/password
+     * @name AdminUsers
+     * @summary 获取全部用户
+     * @request GET:/api/admin/users
      */
-    adminResetPassword: (userid: string, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/admin/users/${userid}/password`,
-        method: 'DELETE',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 使用此接口获取全部日志，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminLogs
-     * @summary 获取全部日志
-     * @request GET:/api/admin/logs
-     */
-    adminLogs: (
+    adminUsers: (
       query?: {
-        /** @default "All" */
-        level?: string | null
         /**
          * @format int32
-         * @default 50
+         * @default 100
          */
         count?: number
         /**
@@ -2439,28 +2647,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<LogMessageModel[], RequestResponse>({
-        path: `/api/admin/logs`,
+      this.request<ArrayResponseOfUserInfoModel, RequestResponse>({
+        path: `/api/admin/users`,
         method: 'GET',
         query: query,
         format: 'json',
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description 使用此接口获取全部用户，需要Admin权限
      *
      * @tags Admin
-     * @name AdminLogs
-     * @summary 获取全部日志
-     * @request GET:/api/admin/logs
+     * @name AdminUsers
+     * @summary 获取全部用户
+     * @request GET:/api/admin/users
      */
-    useAdminLogs: (
+    useAdminUsers: (
       query?: {
-        /** @default "All" */
-        level?: string | null
         /**
          * @format int32
-         * @default 50
+         * @default 100
          */
         count?: number
         /**
@@ -2472,26 +2678,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<LogMessageModel[], RequestResponse>(
-        doFetch ? [`/api/admin/logs`, query] : null,
+      useSWR<ArrayResponseOfUserInfoModel, RequestResponse>(
+        doFetch ? [`/api/admin/users`, query] : null,
         options
       ),
 
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description 使用此接口获取全部用户，需要Admin权限
      *
      * @tags Admin
-     * @name AdminLogs
-     * @summary 获取全部日志
-     * @request GET:/api/admin/logs
+     * @name AdminUsers
+     * @summary 获取全部用户
+     * @request GET:/api/admin/users
      */
-    mutateAdminLogs: (
+    mutateAdminUsers: (
       query?: {
-        /** @default "All" */
-        level?: string | null
         /**
          * @format int32
-         * @default 50
+         * @default 100
          */
         count?: number
         /**
@@ -2500,24 +2704,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          */
         skip?: number
       },
-      data?: LogMessageModel[] | Promise<LogMessageModel[]>,
+      data?: ArrayResponseOfUserInfoModel | Promise<ArrayResponseOfUserInfoModel>,
       options?: MutatorOptions
-    ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
-
-    /**
-     * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminParticipation
-     * @summary 更新参与状态
-     * @request PUT:/api/admin/participation/{id}/{status}
-     */
-    adminParticipation: (id: number, status: ParticipationStatus, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/participation/${id}/${status}`,
-        method: 'PUT',
-        ...params,
-      }),
+    ) => mutate<ArrayResponseOfUserInfoModel>([`/api/admin/users`, query], data, options),
 
     /**
      * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
@@ -2561,191 +2750,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: WriteupInfoModel[] | Promise<WriteupInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<WriteupInfoModel[]>(`/api/admin/writeups/${id}`, data, options),
-
+  }
+  assets = {
     /**
-     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     * @description 按照文件哈希删除文件
      *
-     * @tags Admin
-     * @name AdminDownloadAllWriteups
-     * @summary 下载全部 Writeup
-     * @request GET:/api/admin/writeups/{id}/all
+     * @tags Assets
+     * @name AssetsDelete
+     * @summary 删除文件接口
+     * @request DELETE:/api/assets/{hash}
      */
-    adminDownloadAllWriteups: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/writeups/${id}/all`,
-        method: 'GET',
-        ...params,
-      }),
-    /**
-     * @description 使用此接口下载全部 Writeup，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDownloadAllWriteups
-     * @summary 下载全部 Writeup
-     * @request GET:/api/admin/writeups/{id}/all
-     */
-    useAdminDownloadAllWriteups: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) => useSWR<void, RequestResponse>(doFetch ? `/api/admin/writeups/${id}/all` : null, options),
-
-    /**
-     * @description 使用此接口下载全部 Writeup，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDownloadAllWriteups
-     * @summary 下载全部 Writeup
-     * @request GET:/api/admin/writeups/{id}/all
-     */
-    mutateAdminDownloadAllWriteups: (
-      id: number,
-      data?: void | Promise<void>,
-      options?: MutatorOptions
-    ) => mutate<void>(`/api/admin/writeups/${id}/all`, data, options),
-
-    /**
-     * @description 使用此接口获取全部容器实例，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminInstances
-     * @summary 获取全部容器实例
-     * @request GET:/api/admin/instances
-     */
-    adminInstances: (params: RequestParams = {}) =>
-      this.request<ArrayResponseOfContainerInstanceModel, RequestResponse>({
-        path: `/api/admin/instances`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 使用此接口获取全部容器实例，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminInstances
-     * @summary 获取全部容器实例
-     * @request GET:/api/admin/instances
-     */
-    useAdminInstances: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<ArrayResponseOfContainerInstanceModel, RequestResponse>(
-        doFetch ? `/api/admin/instances` : null,
-        options
-      ),
-
-    /**
-     * @description 使用此接口获取全部容器实例，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminInstances
-     * @summary 获取全部容器实例
-     * @request GET:/api/admin/instances
-     */
-    mutateAdminInstances: (
-      data?: ArrayResponseOfContainerInstanceModel | Promise<ArrayResponseOfContainerInstanceModel>,
-      options?: MutatorOptions
-    ) => mutate<ArrayResponseOfContainerInstanceModel>(`/api/admin/instances`, data, options),
-
-    /**
-     * @description 使用此接口强制删除容器实例，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDestroyInstance
-     * @summary 删除容器实例
-     * @request DELETE:/api/admin/instances/{id}
-     */
-    adminDestroyInstance: (id: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/instances/${id}`,
+    assetsDelete: (hash: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse | ProblemDetails>({
+        path: `/api/assets/${hash}`,
         method: 'DELETE',
         ...params,
       }),
 
-    /**
-     * @description 使用此接口获取全部文件，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminFiles
-     * @summary 获取全部文件
-     * @request GET:/api/admin/files
-     */
-    adminFiles: (
-      query?: {
-        /**
-         * @format int32
-         * @default 50
-         */
-        count?: number
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ArrayResponseOfLocalFile, RequestResponse>({
-        path: `/api/admin/files`,
-        method: 'GET',
-        query: query,
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 使用此接口获取全部文件，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminFiles
-     * @summary 获取全部文件
-     * @request GET:/api/admin/files
-     */
-    useAdminFiles: (
-      query?: {
-        /**
-         * @format int32
-         * @default 50
-         */
-        count?: number
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) =>
-      useSWR<ArrayResponseOfLocalFile, RequestResponse>(
-        doFetch ? [`/api/admin/files`, query] : null,
-        options
-      ),
-
-    /**
-     * @description 使用此接口获取全部文件，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminFiles
-     * @summary 获取全部文件
-     * @request GET:/api/admin/files
-     */
-    mutateAdminFiles: (
-      query?: {
-        /**
-         * @format int32
-         * @default 50
-         */
-        count?: number
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number
-      },
-      data?: ArrayResponseOfLocalFile | Promise<ArrayResponseOfLocalFile>,
-      options?: MutatorOptions
-    ) => mutate<ArrayResponseOfLocalFile>([`/api/admin/files`, query], data, options),
-  }
-  assets = {
     /**
      * @description 根据哈希获取文件，不匹配文件名
      *
@@ -2817,71 +2838,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-
-    /**
-     * @description 按照文件哈希删除文件
-     *
-     * @tags Assets
-     * @name AssetsDelete
-     * @summary 删除文件接口
-     * @request DELETE:/api/assets/{hash}
-     */
-    assetsDelete: (hash: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse | ProblemDetails>({
-        path: `/api/assets/${hash}`,
-        method: 'DELETE',
-        ...params,
-      }),
   }
   edit = {
     /**
-     * @description 添加文章，需要管理员权限
+     * @description 添加比赛题目 Flag，需要管理员权限
      *
      * @tags Edit
-     * @name EditAddPost
-     * @summary 添加文章
-     * @request POST:/api/edit/posts
+     * @name EditAddFlags
+     * @summary 添加比赛题目 Flag
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/flags
      */
-    editAddPost: (data: PostEditModel, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/edit/posts`,
+    editAddFlags: (id: number, cId: number, data: FlagCreateModel[], params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/flags`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 修改文章，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditUpdatePost
-     * @summary 修改文章
-     * @request PUT:/api/edit/posts/{id}
-     */
-    editUpdatePost: (id: string, data: PostEditModel, params: RequestParams = {}) =>
-      this.request<PostDetailModel, RequestResponse>({
-        path: `/api/edit/posts/${id}`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 删除文章，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditDeletePost
-     * @summary 删除文章
-     * @request DELETE:/api/edit/posts/{id}
-     */
-    editDeletePost: (id: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/posts/${id}`,
-        method: 'DELETE',
         ...params,
       }),
 
@@ -2902,6 +2874,312 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
+
+    /**
+     * @description 添加比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditAddGameChallenge
+     * @summary 添加比赛题目
+     * @request POST:/api/edit/games/{id}/challenges
+     */
+    editAddGameChallenge: (id: number, data: ChallengeInfoModel, params: RequestParams = {}) =>
+      this.request<ChallengeEditDetailModel, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 添加比赛通知，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditAddGameNotice
+     * @summary 添加比赛通知
+     * @request POST:/api/edit/games/{id}/notices
+     */
+    editAddGameNotice: (id: number, data: GameNoticeModel, params: RequestParams = {}) =>
+      this.request<GameNotice, RequestResponse>({
+        path: `/api/edit/games/${id}/notices`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 添加文章，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditAddPost
+     * @summary 添加文章
+     * @request POST:/api/edit/posts
+     */
+    editAddPost: (data: PostEditModel, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/edit/posts`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 测试比赛题目容器，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditCreateTestContainer
+     * @summary 测试比赛题目容器
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/container
+     */
+    editCreateTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/container`,
+        method: 'POST',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 删除比赛，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditDeleteGame
+     * @summary 删除比赛
+     * @request DELETE:/api/edit/games/{id}
+     */
+    editDeleteGame: (id: number, params: RequestParams = {}) =>
+      this.request<GameInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 删除比赛通知，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditDeleteGameNotice
+     * @summary 删除比赛通知
+     * @request DELETE:/api/edit/games/{id}/notices/{noticeId}
+     */
+    editDeleteGameNotice: (id: number, noticeId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/notices/${noticeId}`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
+     * @description 删除文章，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditDeletePost
+     * @summary 删除文章
+     * @request DELETE:/api/edit/posts/{id}
+     */
+    editDeletePost: (id: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/posts/${id}`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
+     * @description 关闭测试比赛题目容器，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditDestroyTestContainer
+     * @summary 关闭测试比赛题目容器
+     * @request DELETE:/api/edit/games/{id}/challenges/{cId}/container
+     */
+    editDestroyTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/container`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
+     * @description 获取比赛，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGame
+     * @summary 获取比赛
+     * @request GET:/api/edit/games/{id}
+     */
+    editGetGame: (id: number, params: RequestParams = {}) =>
+      this.request<GameInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGame
+     * @summary 获取比赛
+     * @request GET:/api/edit/games/{id}
+     */
+    useEditGetGame: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GameInfoModel, RequestResponse>(doFetch ? `/api/edit/games/${id}` : null, options),
+
+    /**
+     * @description 获取比赛，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGame
+     * @summary 获取比赛
+     * @request GET:/api/edit/games/{id}
+     */
+    mutateEditGetGame: (
+      id: number,
+      data?: GameInfoModel | Promise<GameInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<GameInfoModel>(`/api/edit/games/${id}`, data, options),
+
+    /**
+     * @description 获取比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenge
+     * @summary 获取比赛题目
+     * @request GET:/api/edit/games/{id}/challenges/{cId}
+     */
+    editGetGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
+      this.request<ChallengeEditDetailModel, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenge
+     * @summary 获取比赛题目
+     * @request GET:/api/edit/games/{id}/challenges/{cId}
+     */
+    useEditGetGameChallenge: (
+      id: number,
+      cId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<ChallengeEditDetailModel, RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/challenges/${cId}` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenge
+     * @summary 获取比赛题目
+     * @request GET:/api/edit/games/{id}/challenges/{cId}
+     */
+    mutateEditGetGameChallenge: (
+      id: number,
+      cId: number,
+      data?: ChallengeEditDetailModel | Promise<ChallengeEditDetailModel>,
+      options?: MutatorOptions
+    ) => mutate<ChallengeEditDetailModel>(`/api/edit/games/${id}/challenges/${cId}`, data, options),
+
+    /**
+     * @description 获取全部比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenges
+     * @summary 获取全部比赛题目
+     * @request GET:/api/edit/games/{id}/challenges
+     */
+    editGetGameChallenges: (id: number, params: RequestParams = {}) =>
+      this.request<ChallengeInfoModel[], RequestResponse>({
+        path: `/api/edit/games/${id}/challenges`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取全部比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenges
+     * @summary 获取全部比赛题目
+     * @request GET:/api/edit/games/{id}/challenges
+     */
+    useEditGetGameChallenges: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ChallengeInfoModel[], RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/challenges` : null,
+        options
+      ),
+
+    /**
+     * @description 获取全部比赛题目，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameChallenges
+     * @summary 获取全部比赛题目
+     * @request GET:/api/edit/games/{id}/challenges
+     */
+    mutateEditGetGameChallenges: (
+      id: number,
+      data?: ChallengeInfoModel[] | Promise<ChallengeInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<ChallengeInfoModel[]>(`/api/edit/games/${id}/challenges`, data, options),
+
+    /**
+     * @description 获取比赛通知，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameNotices
+     * @summary 获取比赛通知
+     * @request GET:/api/edit/games/{id}/notices
+     */
+    editGetGameNotices: (id: number, params: RequestParams = {}) =>
+      this.request<GameNotice[], RequestResponse>({
+        path: `/api/edit/games/${id}/notices`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛通知，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameNotices
+     * @summary 获取比赛通知
+     * @request GET:/api/edit/games/{id}/notices
+     */
+    useEditGetGameNotices: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GameNotice[], RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/notices` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛通知，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditGetGameNotices
+     * @summary 获取比赛通知
+     * @request GET:/api/edit/games/{id}/notices
+     */
+    mutateEditGetGameNotices: (
+      id: number,
+      data?: GameNotice[] | Promise<GameNotice[]>,
+      options?: MutatorOptions
+    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
 
     /**
      * @description 获取比赛列表，需要管理员权限
@@ -2970,80 +3248,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfGameInfoModel>([`/api/edit/games`, query], data, options),
 
     /**
-     * @description 获取比赛，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGame
-     * @summary 获取比赛
-     * @request GET:/api/edit/games/{id}
-     */
-    editGetGame: (id: number, params: RequestParams = {}) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGame
-     * @summary 获取比赛
-     * @request GET:/api/edit/games/{id}
-     */
-    useEditGetGame: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<GameInfoModel, RequestResponse>(doFetch ? `/api/edit/games/${id}` : null, options),
-
-    /**
-     * @description 获取比赛，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGame
-     * @summary 获取比赛
-     * @request GET:/api/edit/games/{id}
-     */
-    mutateEditGetGame: (
-      id: number,
-      data?: GameInfoModel | Promise<GameInfoModel>,
-      options?: MutatorOptions
-    ) => mutate<GameInfoModel>(`/api/edit/games/${id}`, data, options),
-
-    /**
-     * @description 修改比赛，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditUpdateGame
-     * @summary 修改比赛
-     * @request PUT:/api/edit/games/{id}
-     */
-    editUpdateGame: (id: number, data: GameInfoModel, params: RequestParams = {}) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 删除比赛，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditDeleteGame
-     * @summary 删除比赛
-     * @request DELETE:/api/edit/games/{id}
-     */
-    editDeleteGame: (id: number, params: RequestParams = {}) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}`,
-        method: 'DELETE',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
      * @description 获取比赛队伍 Hash 的加盐，需要管理员权限
      *
      * @tags Edit
@@ -3087,258 +3291,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<string>(`/api/edit/games/${id}/teamhashsalt`, data, options),
 
     /**
-     * @description 使用此接口更新比赛头图，需要Admin权限
+     * @description 删除比赛题目 Flag，需要管理员权限
      *
      * @tags Edit
-     * @name EditUpdateGamePoster
-     * @summary 更新比赛头图
-     * @request PUT:/api/edit/games/{id}/poster
+     * @name EditRemoveFlag
+     * @summary 删除比赛题目 Flag
+     * @request DELETE:/api/edit/games/{id}/challenges/{cId}/flags/{fId}
      */
-    editUpdateGamePoster: (
-      id: number,
-      data: {
-        /** @format binary */
-        file?: File
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<string, RequestResponse>({
-        path: `/api/edit/games/${id}/poster`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.FormData,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 添加比赛通知，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditAddGameNotice
-     * @summary 添加比赛通知
-     * @request POST:/api/edit/games/{id}/notices
-     */
-    editAddGameNotice: (id: number, data: GameNoticeModel, params: RequestParams = {}) =>
-      this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/notices`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 获取比赛通知，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameNotices
-     * @summary 获取比赛通知
-     * @request GET:/api/edit/games/{id}/notices
-     */
-    editGetGameNotices: (id: number, params: RequestParams = {}) =>
-      this.request<GameNotice[], RequestResponse>({
-        path: `/api/edit/games/${id}/notices`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛通知，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameNotices
-     * @summary 获取比赛通知
-     * @request GET:/api/edit/games/{id}/notices
-     */
-    useEditGetGameNotices: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<GameNotice[], RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/notices` : null,
-        options
-      ),
-
-    /**
-     * @description 获取比赛通知，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameNotices
-     * @summary 获取比赛通知
-     * @request GET:/api/edit/games/{id}/notices
-     */
-    mutateEditGetGameNotices: (
-      id: number,
-      data?: GameNotice[] | Promise<GameNotice[]>,
-      options?: MutatorOptions
-    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
-
-    /**
-     * @description 更新比赛通知，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditUpdateGameNotice
-     * @summary 更新比赛通知
-     * @request PUT:/api/edit/games/{id}/notices/{noticeId}
-     */
-    editUpdateGameNotice: (
-      id: number,
-      noticeId: number,
-      data: GameNoticeModel,
-      params: RequestParams = {}
-    ) =>
-      this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/notices/${noticeId}`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 删除比赛通知，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditDeleteGameNotice
-     * @summary 删除比赛通知
-     * @request DELETE:/api/edit/games/{id}/notices/{noticeId}
-     */
-    editDeleteGameNotice: (id: number, noticeId: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/notices/${noticeId}`,
+    editRemoveFlag: (id: number, cId: number, fId: number, params: RequestParams = {}) =>
+      this.request<TaskStatus, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/flags/${fId}`,
         method: 'DELETE',
-        ...params,
-      }),
-
-    /**
-     * @description 添加比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditAddGameChallenge
-     * @summary 添加比赛题目
-     * @request POST:/api/edit/games/{id}/challenges
-     */
-    editAddGameChallenge: (id: number, data: ChallengeInfoModel, params: RequestParams = {}) =>
-      this.request<ChallengeEditDetailModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 获取全部比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameChallenges
-     * @summary 获取全部比赛题目
-     * @request GET:/api/edit/games/{id}/challenges
-     */
-    editGetGameChallenges: (id: number, params: RequestParams = {}) =>
-      this.request<ChallengeInfoModel[], RequestResponse>({
-        path: `/api/edit/games/${id}/challenges`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取全部比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameChallenges
-     * @summary 获取全部比赛题目
-     * @request GET:/api/edit/games/{id}/challenges
-     */
-    useEditGetGameChallenges: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<ChallengeInfoModel[], RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/challenges` : null,
-        options
-      ),
-
-    /**
-     * @description 获取全部比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameChallenges
-     * @summary 获取全部比赛题目
-     * @request GET:/api/edit/games/{id}/challenges
-     */
-    mutateEditGetGameChallenges: (
-      id: number,
-      data?: ChallengeInfoModel[] | Promise<ChallengeInfoModel[]>,
-      options?: MutatorOptions
-    ) => mutate<ChallengeInfoModel[]>(`/api/edit/games/${id}/challenges`, data, options),
-
-    /**
-     * @description 获取比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameChallenge
-     * @summary 获取比赛题目
-     * @request GET:/api/edit/games/{id}/challenges/{cId}
-     */
-    editGetGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
-      this.request<ChallengeEditDetailModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameChallenge
-     * @summary 获取比赛题目
-     * @request GET:/api/edit/games/{id}/challenges/{cId}
-     */
-    useEditGetGameChallenge: (
-      id: number,
-      cId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) =>
-      useSWR<ChallengeEditDetailModel, RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/challenges/${cId}` : null,
-        options
-      ),
-
-    /**
-     * @description 获取比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetGameChallenge
-     * @summary 获取比赛题目
-     * @request GET:/api/edit/games/{id}/challenges/{cId}
-     */
-    mutateEditGetGameChallenge: (
-      id: number,
-      cId: number,
-      data?: ChallengeEditDetailModel | Promise<ChallengeEditDetailModel>,
-      options?: MutatorOptions
-    ) => mutate<ChallengeEditDetailModel>(`/api/edit/games/${id}/challenges/${cId}`, data, options),
-
-    /**
-     * @description 修改比赛题目，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditUpdateGameChallenge
-     * @summary 修改比赛题目信息，Flags 不受更改，使用 Flag 相关 API 修改
-     * @request PUT:/api/edit/games/{id}/challenges/{cId}
-     */
-    editUpdateGameChallenge: (
-      id: number,
-      cId: number,
-      data: ChallengeUpdateModel,
-      params: RequestParams = {}
-    ) =>
-      this.request<ChallengeEditDetailModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
         format: 'json',
         ...params,
       }),
@@ -3354,37 +3317,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     editRemoveGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}`,
-        method: 'DELETE',
-        ...params,
-      }),
-
-    /**
-     * @description 测试比赛题目容器，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditCreateTestContainer
-     * @summary 测试比赛题目容器
-     * @request POST:/api/edit/games/{id}/challenges/{cId}/container
-     */
-    editCreateTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/container`,
-        method: 'POST',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 关闭测试比赛题目容器，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditDestroyTestContainer
-     * @summary 关闭测试比赛题目容器
-     * @request DELETE:/api/edit/games/{id}/challenges/{cId}/container
-     */
-    editDestroyTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/container`,
         method: 'DELETE',
         ...params,
       }),
@@ -3413,279 +3345,230 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 添加比赛题目 Flag，需要管理员权限
+     * @description 修改比赛，需要管理员权限
      *
      * @tags Edit
-     * @name EditAddFlags
-     * @summary 添加比赛题目 Flag
-     * @request POST:/api/edit/games/{id}/challenges/{cId}/flags
+     * @name EditUpdateGame
+     * @summary 修改比赛
+     * @request PUT:/api/edit/games/{id}
      */
-    editAddFlags: (id: number, cId: number, data: FlagCreateModel[], params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/flags`,
-        method: 'POST',
+    editUpdateGame: (id: number, data: GameInfoModel, params: RequestParams = {}) =>
+      this.request<GameInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}`,
+        method: 'PUT',
         body: data,
         type: ContentType.Json,
+        format: 'json',
         ...params,
       }),
 
     /**
-     * @description 删除比赛题目 Flag，需要管理员权限
+     * @description 修改比赛题目，需要管理员权限
      *
      * @tags Edit
-     * @name EditRemoveFlag
-     * @summary 删除比赛题目 Flag
-     * @request DELETE:/api/edit/games/{id}/challenges/{cId}/flags/{fId}
+     * @name EditUpdateGameChallenge
+     * @summary 修改比赛题目信息，Flags 不受更改，使用 Flag 相关 API 修改
+     * @request PUT:/api/edit/games/{id}/challenges/{cId}
      */
-    editRemoveFlag: (id: number, cId: number, fId: number, params: RequestParams = {}) =>
-      this.request<TaskStatus, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/flags/${fId}`,
-        method: 'DELETE',
+    editUpdateGameChallenge: (
+      id: number,
+      cId: number,
+      data: ChallengeUpdateModel,
+      params: RequestParams = {}
+    ) =>
+      this.request<ChallengeEditDetailModel, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 更新比赛通知，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditUpdateGameNotice
+     * @summary 更新比赛通知
+     * @request PUT:/api/edit/games/{id}/notices/{noticeId}
+     */
+    editUpdateGameNotice: (
+      id: number,
+      noticeId: number,
+      data: GameNoticeModel,
+      params: RequestParams = {}
+    ) =>
+      this.request<GameNotice, RequestResponse>({
+        path: `/api/edit/games/${id}/notices/${noticeId}`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口更新比赛头图，需要Admin权限
+     *
+     * @tags Edit
+     * @name EditUpdateGamePoster
+     * @summary 更新比赛头图
+     * @request PUT:/api/edit/games/{id}/poster
+     */
+    editUpdateGamePoster: (
+      id: number,
+      data: {
+        /** @format binary */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<string, RequestResponse>({
+        path: `/api/edit/games/${id}/poster`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.FormData,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 修改文章，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditUpdatePost
+     * @summary 修改文章
+     * @request PUT:/api/edit/posts/{id}
+     */
+    editUpdatePost: (id: string, data: PostEditModel, params: RequestParams = {}) =>
+      this.request<PostDetailModel, RequestResponse>({
+        path: `/api/edit/posts/${id}`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
         format: 'json',
         ...params,
       }),
   }
   game = {
     /**
-     * @description 获取最近十个比赛
+     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
      *
      * @tags Game
-     * @name GameGamesAll
-     * @summary 获取最新的比赛
-     * @request GET:/api/game
+     * @name GameChallengesWithTeamInfo
+     * @summary 获取全部比赛题目信息及当前队伍信息
+     * @request GET:/api/game/{id}/details
      */
-    gameGamesAll: (params: RequestParams = {}) =>
-      this.request<BasicGameInfoModel[], RequestResponse>({
-        path: `/api/game`,
+    gameChallengesWithTeamInfo: (id: number, params: RequestParams = {}) =>
+      this.request<GameDetailModel, RequestResponse>({
+        path: `/api/game/${id}/details`,
         method: 'GET',
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取最近十个比赛
+     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
      *
      * @tags Game
-     * @name GameGamesAll
-     * @summary 获取最新的比赛
-     * @request GET:/api/game
+     * @name GameChallengesWithTeamInfo
+     * @summary 获取全部比赛题目信息及当前队伍信息
+     * @request GET:/api/game/{id}/details
      */
-    useGameGamesAll: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<BasicGameInfoModel[], RequestResponse>(doFetch ? `/api/game` : null, options),
-
-    /**
-     * @description 获取最近十个比赛
-     *
-     * @tags Game
-     * @name GameGamesAll
-     * @summary 获取最新的比赛
-     * @request GET:/api/game
-     */
-    mutateGameGamesAll: (
-      data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>,
-      options?: MutatorOptions
-    ) => mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
-
-    /**
-     * @description 获取比赛的详细信息
-     *
-     * @tags Game
-     * @name GameGames
-     * @summary 获取比赛详细信息
-     * @request GET:/api/game/{id}
-     */
-    gameGames: (id: number, params: RequestParams = {}) =>
-      this.request<DetailedGameInfoModel, RequestResponse>({
-        path: `/api/game/${id}`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛的详细信息
-     *
-     * @tags Game
-     * @name GameGames
-     * @summary 获取比赛详细信息
-     * @request GET:/api/game/{id}
-     */
-    useGameGames: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<DetailedGameInfoModel, RequestResponse>(doFetch ? `/api/game/${id}` : null, options),
-
-    /**
-     * @description 获取比赛的详细信息
-     *
-     * @tags Game
-     * @name GameGames
-     * @summary 获取比赛详细信息
-     * @request GET:/api/game/{id}
-     */
-    mutateGameGames: (
+    useGameChallengesWithTeamInfo: (
       id: number,
-      data?: DetailedGameInfoModel | Promise<DetailedGameInfoModel>,
-      options?: MutatorOptions
-    ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
-
-    /**
-     * @description 加入一场比赛，需要User权限
-     *
-     * @tags Game
-     * @name GameJoinGame
-     * @summary 加入一个比赛
-     * @request POST:/api/game/{id}
-     */
-    gameJoinGame: (id: number, data: GameJoinModel, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description 退出一场比赛，需要User权限
-     *
-     * @tags Game
-     * @name GameLeaveGame
-     * @summary 退出一个比赛
-     * @request DELETE:/api/game/{id}
-     */
-    gameLeaveGame: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}`,
-        method: 'DELETE',
-        ...params,
-      }),
-
-    /**
-     * @description 获取积分榜数据
-     *
-     * @tags Game
-     * @name GameScoreboard
-     * @summary 获取积分榜
-     * @request GET:/api/game/{id}/scoreboard
-     */
-    gameScoreboard: (id: number, params: RequestParams = {}) =>
-      this.request<ScoreboardModel, RequestResponse>({
-        path: `/api/game/${id}/scoreboard`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取积分榜数据
-     *
-     * @tags Game
-     * @name GameScoreboard
-     * @summary 获取积分榜
-     * @request GET:/api/game/{id}/scoreboard
-     */
-    useGameScoreboard: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<ScoreboardModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/scoreboard` : null,
-        options
-      ),
-
-    /**
-     * @description 获取积分榜数据
-     *
-     * @tags Game
-     * @name GameScoreboard
-     * @summary 获取积分榜
-     * @request GET:/api/game/{id}/scoreboard
-     */
-    mutateGameScoreboard: (
-      id: number,
-      data?: ScoreboardModel | Promise<ScoreboardModel>,
-      options?: MutatorOptions
-    ) => mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
-
-    /**
-     * @description 获取比赛通知数据
-     *
-     * @tags Game
-     * @name GameNotices
-     * @summary 获取比赛通知
-     * @request GET:/api/game/{id}/notices
-     */
-    gameNotices: (
-      id: number,
-      query?: {
-        /**
-         * @format int32
-         * @default 100
-         */
-        count?: number
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<GameNotice[], RequestResponse>({
-        path: `/api/game/${id}/notices`,
-        method: 'GET',
-        query: query,
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛通知数据
-     *
-     * @tags Game
-     * @name GameNotices
-     * @summary 获取比赛通知
-     * @request GET:/api/game/{id}/notices
-     */
-    useGameNotices: (
-      id: number,
-      query?: {
-        /**
-         * @format int32
-         * @default 100
-         */
-        count?: number
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number
-      },
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<GameNotice[], RequestResponse>(
-        doFetch ? [`/api/game/${id}/notices`, query] : null,
+      useSWR<GameDetailModel, RequestResponse>(doFetch ? `/api/game/${id}/details` : null, options),
+
+    /**
+     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameChallengesWithTeamInfo
+     * @summary 获取全部比赛题目信息及当前队伍信息
+     * @request GET:/api/game/{id}/details
+     */
+    mutateGameChallengesWithTeamInfo: (
+      id: number,
+      data?: GameDetailModel | Promise<GameDetailModel>,
+      options?: MutatorOptions
+    ) => mutate<GameDetailModel>(`/api/game/${id}/details`, data, options),
+
+    /**
+     * @description 获取比赛作弊数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameCheatInfo
+     * @summary 获取比赛作弊信息
+     * @request GET:/api/game/{id}/cheatinfo
+     */
+    gameCheatInfo: (id: number, params: RequestParams = {}) =>
+      this.request<CheatInfoModel[], RequestResponse>({
+        path: `/api/game/${id}/cheatinfo`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛作弊数据，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameCheatInfo
+     * @summary 获取比赛作弊信息
+     * @request GET:/api/game/{id}/cheatinfo
+     */
+    useGameCheatInfo: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<CheatInfoModel[], RequestResponse>(
+        doFetch ? `/api/game/${id}/cheatinfo` : null,
         options
       ),
 
     /**
-     * @description 获取比赛通知数据
+     * @description 获取比赛作弊数据，需要Monitor权限
      *
      * @tags Game
-     * @name GameNotices
-     * @summary 获取比赛通知
-     * @request GET:/api/game/{id}/notices
+     * @name GameCheatInfo
+     * @summary 获取比赛作弊信息
+     * @request GET:/api/game/{id}/cheatinfo
      */
-    mutateGameNotices: (
+    mutateGameCheatInfo: (
       id: number,
-      query?: {
-        /**
-         * @format int32
-         * @default 100
-         */
-        count?: number
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number
-      },
-      data?: GameNotice[] | Promise<GameNotice[]>,
+      data?: CheatInfoModel[] | Promise<CheatInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<GameNotice[]>([`/api/game/${id}/notices`, query], data, options),
+    ) => mutate<CheatInfoModel[]>(`/api/game/${id}/cheatinfo`, data, options),
+
+    /**
+     * @description 创建容器，需要User权限
+     *
+     * @tags Game
+     * @name GameCreateContainer
+     * @summary 创建容器
+     * @request POST:/api/game/{id}/container/{challengeId}
+     */
+    gameCreateContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}`,
+        method: 'POST',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 删除，需要User权限
+     *
+     * @tags Game
+     * @name GameDeleteContainer
+     * @summary 删除容器
+     * @request DELETE:/api/game/{id}/container/{challengeId}
+     */
+    gameDeleteContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}`,
+        method: 'DELETE',
+        ...params,
+      }),
 
     /**
      * @description 获取比赛事件数据，需要Monitor权限
@@ -3790,6 +3673,493 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),
 
     /**
+     * @description 获取比赛的详细信息
+     *
+     * @tags Game
+     * @name GameGames
+     * @summary 获取比赛详细信息
+     * @request GET:/api/game/{id}
+     */
+    gameGames: (id: number, params: RequestParams = {}) =>
+      this.request<DetailedGameInfoModel, RequestResponse>({
+        path: `/api/game/${id}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛的详细信息
+     *
+     * @tags Game
+     * @name GameGames
+     * @summary 获取比赛详细信息
+     * @request GET:/api/game/{id}
+     */
+    useGameGames: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<DetailedGameInfoModel, RequestResponse>(doFetch ? `/api/game/${id}` : null, options),
+
+    /**
+     * @description 获取比赛的详细信息
+     *
+     * @tags Game
+     * @name GameGames
+     * @summary 获取比赛详细信息
+     * @request GET:/api/game/{id}
+     */
+    mutateGameGames: (
+      id: number,
+      data?: DetailedGameInfoModel | Promise<DetailedGameInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
+
+    /**
+     * @description 获取最近十个比赛
+     *
+     * @tags Game
+     * @name GameGamesAll
+     * @summary 获取最新的比赛
+     * @request GET:/api/game
+     */
+    gameGamesAll: (params: RequestParams = {}) =>
+      this.request<BasicGameInfoModel[], RequestResponse>({
+        path: `/api/game`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取最近十个比赛
+     *
+     * @tags Game
+     * @name GameGamesAll
+     * @summary 获取最新的比赛
+     * @request GET:/api/game
+     */
+    useGameGamesAll: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<BasicGameInfoModel[], RequestResponse>(doFetch ? `/api/game` : null, options),
+
+    /**
+     * @description 获取最近十个比赛
+     *
+     * @tags Game
+     * @name GameGamesAll
+     * @summary 获取最新的比赛
+     * @request GET:/api/game
+     */
+    mutateGameGamesAll: (
+      data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
+
+    /**
+     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameGetChallenge
+     * @summary 获取比赛题目信息
+     * @request GET:/api/game/{id}/challenges/{challengeId}
+     */
+    gameGetChallenge: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<ChallengeDetailModel, RequestResponse>({
+        path: `/api/game/${id}/challenges/${challengeId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameGetChallenge
+     * @summary 获取比赛题目信息
+     * @request GET:/api/game/{id}/challenges/{challengeId}
+     */
+    useGameGetChallenge: (
+      id: number,
+      challengeId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<ChallengeDetailModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/challenges/${challengeId}` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+     *
+     * @tags Game
+     * @name GameGetChallenge
+     * @summary 获取比赛题目信息
+     * @request GET:/api/game/{id}/challenges/{challengeId}
+     */
+    mutateGameGetChallenge: (
+      id: number,
+      challengeId: number,
+      data?: ChallengeDetailModel | Promise<ChallengeDetailModel>,
+      options?: MutatorOptions
+    ) => mutate<ChallengeDetailModel>(`/api/game/${id}/challenges/${challengeId}`, data, options),
+
+    /**
+     * @description 获取赛后题解提交情况，需要User权限
+     *
+     * @tags Game
+     * @name GameGetWriteup
+     * @summary 获取 Writeup 信息
+     * @request GET:/api/game/{id}/writeup
+     */
+    gameGetWriteup: (id: number, params: RequestParams = {}) =>
+      this.request<BasicWriteupInfoModel, RequestResponse>({
+        path: `/api/game/${id}/writeup`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取赛后题解提交情况，需要User权限
+     *
+     * @tags Game
+     * @name GameGetWriteup
+     * @summary 获取 Writeup 信息
+     * @request GET:/api/game/{id}/writeup
+     */
+    useGameGetWriteup: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<BasicWriteupInfoModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/writeup` : null,
+        options
+      ),
+
+    /**
+     * @description 获取赛后题解提交情况，需要User权限
+     *
+     * @tags Game
+     * @name GameGetWriteup
+     * @summary 获取 Writeup 信息
+     * @request GET:/api/game/{id}/writeup
+     */
+    mutateGameGetWriteup: (
+      id: number,
+      data?: BasicWriteupInfoModel | Promise<BasicWriteupInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<BasicWriteupInfoModel>(`/api/game/${id}/writeup`, data, options),
+
+    /**
+     * @description 加入一场比赛，需要User权限
+     *
+     * @tags Game
+     * @name GameJoinGame
+     * @summary 加入一个比赛
+     * @request POST:/api/game/{id}
+     */
+    gameJoinGame: (id: number, data: GameJoinModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 退出一场比赛，需要User权限
+     *
+     * @tags Game
+     * @name GameLeaveGame
+     * @summary 退出一个比赛
+     * @request DELETE:/api/game/{id}
+     */
+    gameLeaveGame: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}`,
+        method: 'DELETE',
+        ...params,
+      }),
+
+    /**
+     * @description 获取比赛通知数据
+     *
+     * @tags Game
+     * @name GameNotices
+     * @summary 获取比赛通知
+     * @request GET:/api/game/{id}/notices
+     */
+    gameNotices: (
+      id: number,
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<GameNotice[], RequestResponse>({
+        path: `/api/game/${id}/notices`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛通知数据
+     *
+     * @tags Game
+     * @name GameNotices
+     * @summary 获取比赛通知
+     * @request GET:/api/game/{id}/notices
+     */
+    useGameNotices: (
+      id: number,
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<GameNotice[], RequestResponse>(
+        doFetch ? [`/api/game/${id}/notices`, query] : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛通知数据
+     *
+     * @tags Game
+     * @name GameNotices
+     * @summary 获取比赛通知
+     * @request GET:/api/game/{id}/notices
+     */
+    mutateGameNotices: (
+      id: number,
+      query?: {
+        /**
+         * @format int32
+         * @default 100
+         */
+        count?: number
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number
+      },
+      data?: GameNotice[] | Promise<GameNotice[]>,
+      options?: MutatorOptions
+    ) => mutate<GameNotice[]>([`/api/game/${id}/notices`, query], data, options),
+
+    /**
+     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     *
+     * @tags Game
+     * @name GameParticipations
+     * @summary 获取全部比赛参与信息
+     * @request GET:/api/game/{id}/participations
+     */
+    gameParticipations: (id: number, params: RequestParams = {}) =>
+      this.request<ParticipationInfoModel[], RequestResponse>({
+        path: `/api/game/${id}/participations`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     *
+     * @tags Game
+     * @name GameParticipations
+     * @summary 获取全部比赛参与信息
+     * @request GET:/api/game/{id}/participations
+     */
+    useGameParticipations: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ParticipationInfoModel[], RequestResponse>(
+        doFetch ? `/api/game/${id}/participations` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     *
+     * @tags Game
+     * @name GameParticipations
+     * @summary 获取全部比赛参与信息
+     * @request GET:/api/game/{id}/participations
+     */
+    mutateGameParticipations: (
+      id: number,
+      data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
+
+    /**
+     * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
+     *
+     * @tags Game
+     * @name GameProlongContainer
+     * @summary 延长容器时间
+     * @request POST:/api/game/{id}/container/{challengeId}/prolong
+     */
+    gameProlongContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}/prolong`,
+        method: 'POST',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 获取积分榜数据
+     *
+     * @tags Game
+     * @name GameScoreboard
+     * @summary 获取积分榜
+     * @request GET:/api/game/{id}/scoreboard
+     */
+    gameScoreboard: (id: number, params: RequestParams = {}) =>
+      this.request<ScoreboardModel, RequestResponse>({
+        path: `/api/game/${id}/scoreboard`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取积分榜数据
+     *
+     * @tags Game
+     * @name GameScoreboard
+     * @summary 获取积分榜
+     * @request GET:/api/game/{id}/scoreboard
+     */
+    useGameScoreboard: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ScoreboardModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/scoreboard` : null,
+        options
+      ),
+
+    /**
+     * @description 获取积分榜数据
+     *
+     * @tags Game
+     * @name GameScoreboard
+     * @summary 获取积分榜
+     * @request GET:/api/game/{id}/scoreboard
+     */
+    mutateGameScoreboard: (
+      id: number,
+      data?: ScoreboardModel | Promise<ScoreboardModel>,
+      options?: MutatorOptions
+    ) => mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
+
+    /**
+     * @description 下载比赛积分榜，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameScoreboardSheet
+     * @summary 下载比赛积分榜
+     * @request GET:/api/game/{id}/scoreboardsheet
+     */
+    gameScoreboardSheet: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/${id}/scoreboardsheet`,
+        method: 'GET',
+        ...params,
+      }),
+    /**
+     * @description 下载比赛积分榜，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameScoreboardSheet
+     * @summary 下载比赛积分榜
+     * @request GET:/api/game/{id}/scoreboardsheet
+     */
+    useGameScoreboardSheet: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<void, RequestResponse>(doFetch ? `/api/game/${id}/scoreboardsheet` : null, options),
+
+    /**
+     * @description 下载比赛积分榜，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameScoreboardSheet
+     * @summary 下载比赛积分榜
+     * @request GET:/api/game/{id}/scoreboardsheet
+     */
+    mutateGameScoreboardSheet: (
+      id: number,
+      data?: void | Promise<void>,
+      options?: MutatorOptions
+    ) => mutate<void>(`/api/game/${id}/scoreboardsheet`, data, options),
+
+    /**
+     * @description 查询 flag 状态，需要User权限
+     *
+     * @tags Game
+     * @name GameStatus
+     * @summary 查询 flag 状态
+     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
+     */
+    gameStatus: (id: number, challengeId: number, submitId: number, params: RequestParams = {}) =>
+      this.request<AnswerResult, RequestResponse>({
+        path: `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 查询 flag 状态，需要User权限
+     *
+     * @tags Game
+     * @name GameStatus
+     * @summary 查询 flag 状态
+     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
+     */
+    useGameStatus: (
+      id: number,
+      challengeId: number,
+      submitId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<AnswerResult, RequestResponse>(
+        doFetch ? `/api/game/${id}/challenges/${challengeId}/status/${submitId}` : null,
+        options
+      ),
+
+    /**
+     * @description 查询 flag 状态，需要User权限
+     *
+     * @tags Game
+     * @name GameStatus
+     * @summary 查询 flag 状态
+     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
+     */
+    mutateGameStatus: (
+      id: number,
+      challengeId: number,
+      submitId: number,
+      data?: AnswerResult | Promise<AnswerResult>,
+      options?: MutatorOptions
+    ) =>
+      mutate<AnswerResult>(
+        `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
+        data,
+        options
+      ),
+
+    /**
      * @description 获取比赛提交数据，需要Monitor权限
      *
      * @tags Game
@@ -3883,175 +4253,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
 
     /**
-     * @description 获取比赛作弊数据，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameCheatInfo
-     * @summary 获取比赛作弊信息
-     * @request GET:/api/game/{id}/cheatinfo
-     */
-    gameCheatInfo: (id: number, params: RequestParams = {}) =>
-      this.request<CheatInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/cheatinfo`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛作弊数据，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameCheatInfo
-     * @summary 获取比赛作弊信息
-     * @request GET:/api/game/{id}/cheatinfo
-     */
-    useGameCheatInfo: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<CheatInfoModel[], RequestResponse>(
-        doFetch ? `/api/game/${id}/cheatinfo` : null,
-        options
-      ),
-
-    /**
-     * @description 获取比赛作弊数据，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameCheatInfo
-     * @summary 获取比赛作弊信息
-     * @request GET:/api/game/{id}/cheatinfo
-     */
-    mutateGameCheatInfo: (
-      id: number,
-      data?: CheatInfoModel[] | Promise<CheatInfoModel[]>,
-      options?: MutatorOptions
-    ) => mutate<CheatInfoModel[]>(`/api/game/${id}/cheatinfo`, data, options),
-
-    /**
-     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
-     *
-     * @tags Game
-     * @name GameChallengesWithTeamInfo
-     * @summary 获取全部比赛题目信息及当前队伍信息
-     * @request GET:/api/game/{id}/details
-     */
-    gameChallengesWithTeamInfo: (id: number, params: RequestParams = {}) =>
-      this.request<GameDetailModel, RequestResponse>({
-        path: `/api/game/${id}/details`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
-     *
-     * @tags Game
-     * @name GameChallengesWithTeamInfo
-     * @summary 获取全部比赛题目信息及当前队伍信息
-     * @request GET:/api/game/{id}/details
-     */
-    useGameChallengesWithTeamInfo: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) =>
-      useSWR<GameDetailModel, RequestResponse>(doFetch ? `/api/game/${id}/details` : null, options),
-
-    /**
-     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
-     *
-     * @tags Game
-     * @name GameChallengesWithTeamInfo
-     * @summary 获取全部比赛题目信息及当前队伍信息
-     * @request GET:/api/game/{id}/details
-     */
-    mutateGameChallengesWithTeamInfo: (
-      id: number,
-      data?: GameDetailModel | Promise<GameDetailModel>,
-      options?: MutatorOptions
-    ) => mutate<GameDetailModel>(`/api/game/${id}/details`, data, options),
-
-    /**
-     * @description 获取比赛的全部题目参与信息，需要Admin权限
-     *
-     * @tags Game
-     * @name GameParticipations
-     * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
-     */
-    gameParticipations: (id: number, params: RequestParams = {}) =>
-      this.request<ParticipationInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/participations`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛的全部题目参与信息，需要Admin权限
-     *
-     * @tags Game
-     * @name GameParticipations
-     * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
-     */
-    useGameParticipations: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<ParticipationInfoModel[], RequestResponse>(
-        doFetch ? `/api/game/${id}/participations` : null,
-        options
-      ),
-
-    /**
-     * @description 获取比赛的全部题目参与信息，需要Admin权限
-     *
-     * @tags Game
-     * @name GameParticipations
-     * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
-     */
-    mutateGameParticipations: (
-      id: number,
-      data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
-      options?: MutatorOptions
-    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
-
-    /**
-     * @description 下载比赛积分榜，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameScoreboardSheet
-     * @summary 下载比赛积分榜
-     * @request GET:/api/game/{id}/scoreboardsheet
-     */
-    gameScoreboardSheet: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}/scoreboardsheet`,
-        method: 'GET',
-        ...params,
-      }),
-    /**
-     * @description 下载比赛积分榜，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameScoreboardSheet
-     * @summary 下载比赛积分榜
-     * @request GET:/api/game/{id}/scoreboardsheet
-     */
-    useGameScoreboardSheet: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<void, RequestResponse>(doFetch ? `/api/game/${id}/scoreboardsheet` : null, options),
-
-    /**
-     * @description 下载比赛积分榜，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameScoreboardSheet
-     * @summary 下载比赛积分榜
-     * @request GET:/api/game/{id}/scoreboardsheet
-     */
-    mutateGameScoreboardSheet: (
-      id: number,
-      data?: void | Promise<void>,
-      options?: MutatorOptions
-    ) => mutate<void>(`/api/game/${id}/scoreboardsheet`, data, options),
-
-    /**
      * @description 下载比赛全部提交，需要Monitor权限
      *
      * @tags Game
@@ -4091,55 +4292,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<void>(`/api/game/${id}/submissionsheet`, data, options),
 
     /**
-     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
-     *
-     * @tags Game
-     * @name GameGetChallenge
-     * @summary 获取比赛题目信息
-     * @request GET:/api/game/{id}/challenges/{challengeId}
-     */
-    gameGetChallenge: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<ChallengeDetailModel, RequestResponse>({
-        path: `/api/game/${id}/challenges/${challengeId}`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
-     *
-     * @tags Game
-     * @name GameGetChallenge
-     * @summary 获取比赛题目信息
-     * @request GET:/api/game/{id}/challenges/{challengeId}
-     */
-    useGameGetChallenge: (
-      id: number,
-      challengeId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) =>
-      useSWR<ChallengeDetailModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/challenges/${challengeId}` : null,
-        options
-      ),
-
-    /**
-     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
-     *
-     * @tags Game
-     * @name GameGetChallenge
-     * @summary 获取比赛题目信息
-     * @request GET:/api/game/{id}/challenges/{challengeId}
-     */
-    mutateGameGetChallenge: (
-      id: number,
-      challengeId: number,
-      data?: ChallengeDetailModel | Promise<ChallengeDetailModel>,
-      options?: MutatorOptions
-    ) => mutate<ChallengeDetailModel>(`/api/game/${id}/challenges/${challengeId}`, data, options),
-
-    /**
      * @description 提交 flag，需要User权限，需要当前激活队伍已经报名
      *
      * @tags Game
@@ -4161,105 +4313,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: 'json',
         ...params,
       }),
-
-    /**
-     * @description 查询 flag 状态，需要User权限
-     *
-     * @tags Game
-     * @name GameStatus
-     * @summary 查询 flag 状态
-     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
-     */
-    gameStatus: (id: number, challengeId: number, submitId: number, params: RequestParams = {}) =>
-      this.request<AnswerResult, RequestResponse>({
-        path: `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 查询 flag 状态，需要User权限
-     *
-     * @tags Game
-     * @name GameStatus
-     * @summary 查询 flag 状态
-     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
-     */
-    useGameStatus: (
-      id: number,
-      challengeId: number,
-      submitId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) =>
-      useSWR<AnswerResult, RequestResponse>(
-        doFetch ? `/api/game/${id}/challenges/${challengeId}/status/${submitId}` : null,
-        options
-      ),
-
-    /**
-     * @description 查询 flag 状态，需要User权限
-     *
-     * @tags Game
-     * @name GameStatus
-     * @summary 查询 flag 状态
-     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
-     */
-    mutateGameStatus: (
-      id: number,
-      challengeId: number,
-      submitId: number,
-      data?: AnswerResult | Promise<AnswerResult>,
-      options?: MutatorOptions
-    ) =>
-      mutate<AnswerResult>(
-        `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
-        data,
-        options
-      ),
-
-    /**
-     * @description 获取赛后题解提交情况，需要User权限
-     *
-     * @tags Game
-     * @name GameGetWriteup
-     * @summary 获取 Writeup 信息
-     * @request GET:/api/game/{id}/writeup
-     */
-    gameGetWriteup: (id: number, params: RequestParams = {}) =>
-      this.request<BasicWriteupInfoModel, RequestResponse>({
-        path: `/api/game/${id}/writeup`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取赛后题解提交情况，需要User权限
-     *
-     * @tags Game
-     * @name GameGetWriteup
-     * @summary 获取 Writeup 信息
-     * @request GET:/api/game/{id}/writeup
-     */
-    useGameGetWriteup: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<BasicWriteupInfoModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/writeup` : null,
-        options
-      ),
-
-    /**
-     * @description 获取赛后题解提交情况，需要User权限
-     *
-     * @tags Game
-     * @name GameGetWriteup
-     * @summary 获取 Writeup 信息
-     * @request GET:/api/game/{id}/writeup
-     */
-    mutateGameGetWriteup: (
-      id: number,
-      data?: BasicWriteupInfoModel | Promise<BasicWriteupInfoModel>,
-      options?: MutatorOptions
-    ) => mutate<BasicWriteupInfoModel>(`/api/game/${id}/writeup`, data, options),
 
     /**
      * @description 提交赛后题解，需要User权限
@@ -4284,55 +4337,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         type: ContentType.FormData,
         ...params,
       }),
-
-    /**
-     * @description 创建容器，需要User权限
-     *
-     * @tags Game
-     * @name GameCreateContainer
-     * @summary 创建容器
-     * @request POST:/api/game/{id}/container/{challengeId}
-     */
-    gameCreateContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}`,
-        method: 'POST',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 删除，需要User权限
-     *
-     * @tags Game
-     * @name GameDeleteContainer
-     * @summary 删除容器
-     * @request DELETE:/api/game/{id}/container/{challengeId}
-     */
-    gameDeleteContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}`,
-        method: 'DELETE',
-        ...params,
-      }),
-
-    /**
-     * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
-     *
-     * @tags Game
-     * @name GameProlongContainer
-     * @summary 延长容器时间
-     * @request POST:/api/game/{id}/container/{challengeId}/prolong
-     */
-    gameProlongContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}/prolong`,
-        method: 'POST',
-        format: 'json',
-        ...params,
-      }),
   }
   info = {
+    /**
+     * @description 获取全局设置
+     *
+     * @tags Info
+     * @name InfoGetGlobalConfig
+     * @summary 获取全局设置
+     * @request GET:/api/config
+     */
+    infoGetGlobalConfig: (params: RequestParams = {}) =>
+      this.request<GlobalConfig, any>({
+        path: `/api/config`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取全局设置
+     *
+     * @tags Info
+     * @name InfoGetGlobalConfig
+     * @summary 获取全局设置
+     * @request GET:/api/config
+     */
+    useInfoGetGlobalConfig: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<GlobalConfig, any>(doFetch ? `/api/config` : null, options),
+
+    /**
+     * @description 获取全局设置
+     *
+     * @tags Info
+     * @name InfoGetGlobalConfig
+     * @summary 获取全局设置
+     * @request GET:/api/config
+     */
+    mutateInfoGetGlobalConfig: (
+      data?: GlobalConfig | Promise<GlobalConfig>,
+      options?: MutatorOptions
+    ) => mutate<GlobalConfig>(`/api/config`, data, options),
+
     /**
      * @description 获取最新文章
      *
@@ -4371,45 +4416,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: PostInfoModel[] | Promise<PostInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<PostInfoModel[]>(`/api/posts/latest`, data, options),
-
-    /**
-     * @description 获取全部文章
-     *
-     * @tags Info
-     * @name InfoGetPosts
-     * @summary 获取全部文章
-     * @request GET:/api/posts
-     */
-    infoGetPosts: (params: RequestParams = {}) =>
-      this.request<PostInfoModel[], any>({
-        path: `/api/posts`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取全部文章
-     *
-     * @tags Info
-     * @name InfoGetPosts
-     * @summary 获取全部文章
-     * @request GET:/api/posts
-     */
-    useInfoGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<PostInfoModel[], any>(doFetch ? `/api/posts` : null, options),
-
-    /**
-     * @description 获取全部文章
-     *
-     * @tags Info
-     * @name InfoGetPosts
-     * @summary 获取全部文章
-     * @request GET:/api/posts
-     */
-    mutateInfoGetPosts: (
-      data?: PostInfoModel[] | Promise<PostInfoModel[]>,
-      options?: MutatorOptions
-    ) => mutate<PostInfoModel[]>(`/api/posts`, data, options),
 
     /**
      * @description 获取文章详情
@@ -4452,43 +4458,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<PostDetailModel>(`/api/posts/${id}`, data, options),
 
     /**
-     * @description 获取全局设置
+     * @description 获取全部文章
      *
      * @tags Info
-     * @name InfoGetGlobalConfig
-     * @summary 获取全局设置
-     * @request GET:/api/config
+     * @name InfoGetPosts
+     * @summary 获取全部文章
+     * @request GET:/api/posts
      */
-    infoGetGlobalConfig: (params: RequestParams = {}) =>
-      this.request<GlobalConfig, any>({
-        path: `/api/config`,
+    infoGetPosts: (params: RequestParams = {}) =>
+      this.request<PostInfoModel[], any>({
+        path: `/api/posts`,
         method: 'GET',
         format: 'json',
         ...params,
       }),
     /**
-     * @description 获取全局设置
+     * @description 获取全部文章
      *
      * @tags Info
-     * @name InfoGetGlobalConfig
-     * @summary 获取全局设置
-     * @request GET:/api/config
+     * @name InfoGetPosts
+     * @summary 获取全部文章
+     * @request GET:/api/posts
      */
-    useInfoGetGlobalConfig: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<GlobalConfig, any>(doFetch ? `/api/config` : null, options),
+    useInfoGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<PostInfoModel[], any>(doFetch ? `/api/posts` : null, options),
 
     /**
-     * @description 获取全局设置
+     * @description 获取全部文章
      *
      * @tags Info
-     * @name InfoGetGlobalConfig
-     * @summary 获取全局设置
-     * @request GET:/api/config
+     * @name InfoGetPosts
+     * @summary 获取全部文章
+     * @request GET:/api/posts
      */
-    mutateInfoGetGlobalConfig: (
-      data?: GlobalConfig | Promise<GlobalConfig>,
+    mutateInfoGetPosts: (
+      data?: PostInfoModel[] | Promise<PostInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<GlobalConfig>(`/api/config`, data, options),
+    ) => mutate<PostInfoModel[]>(`/api/posts`, data, options),
 
     /**
      * @description 获取 Recaptcha SiteKey
@@ -4528,6 +4534,82 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       mutate<string>(`/api/sitekey`, data, options),
   }
   team = {
+    /**
+     * @description 接受邀请的接口，需要User权限，且不在队伍中
+     *
+     * @tags Team
+     * @name TeamAccept
+     * @summary 接受邀请
+     * @request POST:/api/team/accept
+     */
+    teamAccept: (data: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/team/accept`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口更新队伍头像，需要User权限，且为队伍成员
+     *
+     * @tags Team
+     * @name TeamAvatar
+     * @summary 更新队伍头像接口
+     * @request PUT:/api/team/{id}/avatar
+     */
+    teamAvatar: (
+      id: number,
+      data: {
+        /** @format binary */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<string, RequestResponse>({
+        path: `/api/team/${id}/avatar`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.FormData,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 用户创建队伍接口，每个用户只能创建一个队伍
+     *
+     * @tags Team
+     * @name TeamCreateTeam
+     * @summary 创建队伍
+     * @request POST:/api/team
+     */
+    teamCreateTeam: (data: TeamUpdateModel, params: RequestParams = {}) =>
+      this.request<TeamInfoModel, RequestResponse>({
+        path: `/api/team`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 用户删除队伍接口，需要User权限，且为队伍队长
+     *
+     * @tags Team
+     * @name TeamDeleteTeam
+     * @summary 删除队伍
+     * @request DELETE:/api/team/{id}
+     */
+    teamDeleteTeam: (id: number, params: RequestParams = {}) =>
+      this.request<TeamInfoModel, RequestResponse>({
+        path: `/api/team/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
     /**
      * @description 根据 id 获取一个队伍的基本信息
      *
@@ -4569,40 +4651,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<TeamInfoModel>(`/api/team/${id}`, data, options),
 
     /**
-     * @description 队伍信息更改接口，需要为队伍创建者
-     *
-     * @tags Team
-     * @name TeamUpdateTeam
-     * @summary 更改队伍信息
-     * @request PUT:/api/team/{id}
-     */
-    teamUpdateTeam: (id: number, data: TeamUpdateModel, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 用户删除队伍接口，需要User权限，且为队伍队长
-     *
-     * @tags Team
-     * @name TeamDeleteTeam
-     * @summary 删除队伍
-     * @request DELETE:/api/team/{id}
-     */
-    teamDeleteTeam: (id: number, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}`,
-        method: 'DELETE',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
      * @description 根据用户获取一个队伍的基本信息
      *
      * @tags Team
@@ -4642,42 +4690,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<TeamInfoModel[]>(`/api/team`, data, options),
 
     /**
-     * @description 用户创建队伍接口，每个用户只能创建一个队伍
-     *
-     * @tags Team
-     * @name TeamCreateTeam
-     * @summary 创建队伍
-     * @request POST:/api/team
-     */
-    teamCreateTeam: (data: TeamUpdateModel, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 移交队伍所有权接口，需要为队伍创建者
-     *
-     * @tags Team
-     * @name TeamTransfer
-     * @summary 移交队伍所有权
-     * @request PUT:/api/team/{id}/transfer
-     */
-    teamTransfer: (id: number, data: TeamTransferModel, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}/transfer`,
-        method: 'PUT',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
      * @description 获取队伍邀请信息，需要为队伍创建者
      *
      * @tags Team
@@ -4715,22 +4727,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       mutate<string>(`/api/team/${id}/invite`, data, options),
 
     /**
-     * @description 更新邀请 Token 的接口，需要为队伍创建者
-     *
-     * @tags Team
-     * @name TeamUpdateInviteToken
-     * @summary 更新邀请 Token
-     * @request PUT:/api/team/{id}/invite
-     */
-    teamUpdateInviteToken: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/team/${id}/invite`,
-        method: 'PUT',
-        format: 'json',
-        ...params,
-      }),
-
-    /**
      * @description 踢除用户接口，踢出对应id的用户，需要队伍创建者权限
      *
      * @tags Team
@@ -4743,23 +4739,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/team/${id}/kick/${userid}`,
         method: 'POST',
         format: 'json',
-        ...params,
-      }),
-
-    /**
-     * @description 接受邀请的接口，需要User权限，且不在队伍中
-     *
-     * @tags Team
-     * @name TeamAccept
-     * @summary 接受邀请
-     * @request POST:/api/team/accept
-     */
-    teamAccept: (data: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/team/accept`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
         ...params,
       }),
 
@@ -4779,26 +4758,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更新队伍头像，需要User权限，且为队伍成员
+     * @description 移交队伍所有权接口，需要为队伍创建者
      *
      * @tags Team
-     * @name TeamAvatar
-     * @summary 更新队伍头像接口
-     * @request PUT:/api/team/{id}/avatar
+     * @name TeamTransfer
+     * @summary 移交队伍所有权
+     * @request PUT:/api/team/{id}/transfer
      */
-    teamAvatar: (
-      id: number,
-      data: {
-        /** @format binary */
-        file?: File
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<string, RequestResponse>({
-        path: `/api/team/${id}/avatar`,
+    teamTransfer: (id: number, data: TeamTransferModel, params: RequestParams = {}) =>
+      this.request<TeamInfoModel, RequestResponse>({
+        path: `/api/team/${id}/transfer`,
         method: 'PUT',
         body: data,
-        type: ContentType.FormData,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 更新邀请 Token 的接口，需要为队伍创建者
+     *
+     * @tags Team
+     * @name TeamUpdateInviteToken
+     * @summary 更新邀请 Token
+     * @request PUT:/api/team/{id}/invite
+     */
+    teamUpdateInviteToken: (id: number, params: RequestParams = {}) =>
+      this.request<string, RequestResponse>({
+        path: `/api/team/${id}/invite`,
+        method: 'PUT',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description 队伍信息更改接口，需要为队伍创建者
+     *
+     * @tags Team
+     * @name TeamUpdateTeam
+     * @summary 更改队伍信息
+     * @request PUT:/api/team/{id}
+     */
+    teamUpdateTeam: (id: number, data: TeamUpdateModel, params: RequestParams = {}) =>
+      this.request<TeamInfoModel, RequestResponse>({
+        path: `/api/team/${id}`,
+        method: 'PUT',
+        body: data,
+        type: ContentType.Json,
         format: 'json',
         ...params,
       }),
