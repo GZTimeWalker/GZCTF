@@ -40,6 +40,8 @@ import {
   ChallengeTagItem,
   ChallengeTagLabelMap,
 } from '@Utils/Shared'
+import { OnceSWRConfig } from '@Utils/useConfig'
+import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType, FileType } from '@Api'
 
 const GameChallengeEdit: FC = () => {
@@ -47,12 +49,9 @@ const GameChallengeEdit: FC = () => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
-  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { challenge, mutate } = useEditChallenge(numId, numCId)
 
-  const { mutate: mutateChals } = api.edit.useEditGetGameChallenges(numId)
+  const { mutate: mutateChals } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
 
   const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)

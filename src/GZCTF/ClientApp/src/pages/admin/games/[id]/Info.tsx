@@ -37,6 +37,7 @@ import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
 
 const GenerateRandomCode = () => {
@@ -51,10 +52,7 @@ const GenerateRandomCode = () => {
 const GameInfoEdit: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, OnceSWRConfig)
   const [game, setGame] = useState<GameInfoModel>()
   const navigate = useNavigate()
 

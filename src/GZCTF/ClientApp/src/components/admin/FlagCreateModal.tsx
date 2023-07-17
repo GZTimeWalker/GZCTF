@@ -6,6 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useEditChallenge } from '@Utils/useEdit'
 import api from '@Api'
 
 const FlagCreateModal: FC<ModalProps> = (props) => {
@@ -15,10 +16,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
   const [flags, setFlags] = useInputState('')
 
-  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { challenge, mutate } = useEditChallenge(numId, numCId)
 
   const onCreate = () => {
     if (!flags) {

@@ -6,6 +6,7 @@ import { Icon } from '@mdi/react'
 import PDFViewer from '@Components/admin/PDFViewer'
 import TeamWriteupCard from '@Components/admin/TeamWriteupCard'
 import WithGameTab from '@Components/admin/WithGameEditTab'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { WriteupInfoModel } from '@Api'
 
 const GameWriteups: FC = () => {
@@ -14,10 +15,7 @@ const GameWriteups: FC = () => {
   const navigate = useNavigate()
   const [selected, setSelected] = useState<WriteupInfoModel>()
 
-  const { data: writeups } = api.admin.useAdminWriteups(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: writeups } = api.admin.useAdminWriteups(numId, OnceSWRConfig)
 
   useEffect(() => {
     if (writeups?.length && !selected) {

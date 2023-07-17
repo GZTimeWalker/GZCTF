@@ -20,6 +20,7 @@ import { mdiCheck, mdiExclamationThick, mdiFileDocumentOutline, mdiFileHidden } 
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUploadStyles } from '@Utils/ThemeOverride'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
 import MarkdownRender from './MarkdownRender'
 
@@ -29,10 +30,7 @@ interface WriteupSubmitModalProps extends ModalProps {
 }
 
 export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl, ...props }) => {
-  const { data, mutate } = api.game.useGameGetWriteup(gameId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data, mutate } = api.game.useGameGetWriteup(gameId, OnceSWRConfig)
 
   const theme = useMantineTheme()
   const { classes } = useUploadStyles()

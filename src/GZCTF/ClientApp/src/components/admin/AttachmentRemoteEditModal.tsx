@@ -1,10 +1,11 @@
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Modal, ModalProps, Text, Stack, Textarea, useMantineTheme } from '@mantine/core'
+import { Button, Modal, Text, Stack, Textarea, useMantineTheme, ModalProps } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType, FlagCreateModel } from '@Api'
 
 const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
@@ -12,6 +13,8 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
   const [disabled, setDisabled] = useState(false)
+
+  const { mutate } = useEditChallenge(numId, numCId)
 
   const [text, setText] = useState('')
   const [flags, setFlags] = useState<FlagCreateModel[]>([])
@@ -45,8 +48,9 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
             message: '附件已更新',
             icon: <Icon path={mdiCheck} size={1} />,
           })
+          setText('')
+          mutate()
           props.onClose()
-          api.edit.mutateEditGetGameChallenge(numId, numCId)
         })
         .catch((err) => showErrorNotification(err))
         .finally(() => {

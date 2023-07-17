@@ -1,9 +1,14 @@
 import dayjs from 'dayjs'
 import LZString from 'lz-string'
-import { Cache } from 'swr'
+import { Cache, SWRConfiguration } from 'swr'
 import { useEffect, useRef } from 'react'
 import { useLocalStorage } from '@mantine/hooks'
 import api, { GlobalConfig } from '@Api'
+
+export const OnceSWRConfig: SWRConfiguration = {
+  refreshInterval: 0,
+  revalidateOnFocus: false,
+}
 
 const RepoMeta = {
   sha: import.meta.env.VITE_APP_GIT_SHA ?? 'unknown',

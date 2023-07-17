@@ -21,6 +21,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUploadStyles } from '@Utils/ThemeOverride'
+import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType } from '@Api'
 
 const AttachmentUploadModal: FC<ModalProps> = (props) => {
@@ -28,6 +29,8 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
   const uploadFileName = `DYN_ATTACHMENT_${numCId}`
   const [disabled, setDisabled] = useState(false)
+
+  const { mutate } = useEditChallenge(numId, numCId)
 
   const [progress, setProgress] = useState(0)
   const [files, setFiles] = useState<File[]>([])
@@ -71,9 +74,8 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
                   message: '附件已更新',
                   icon: <Icon path={mdiCheck} size={1} />,
                 })
-                setTimeout(() => {
-                  api.edit.mutateEditGetGameChallenge(numId, numCId)
-                }, 1000)
+                setFiles([])
+                mutate()
                 props.onClose()
               })
               .catch((err) => showErrorNotification(err))

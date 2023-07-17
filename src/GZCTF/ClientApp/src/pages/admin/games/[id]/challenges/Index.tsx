@@ -21,6 +21,7 @@ import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ChallengeTagItem, ChallengeTagLabelMap } from '@Utils/Shared'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
 
 const GameChallengeEdit: FC = () => {
@@ -32,10 +33,7 @@ const GameChallengeEdit: FC = () => {
   const [bonusOpened, setBonusOpened] = useState(false)
   const [category, setCategory] = useState<ChallengeTag | null>(null)
 
-  const { data: challenges, mutate } = api.edit.useEditGetGameChallenges(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: challenges, mutate } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
 
   const filteredChallenges =
     category && challenges ? challenges?.filter((c) => c.tag === category) : challenges

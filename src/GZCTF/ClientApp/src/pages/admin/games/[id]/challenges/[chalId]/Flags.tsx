@@ -30,6 +30,7 @@ import FlagEditPanel from '@Components/admin/FlagEditPanel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUploadStyles } from '@Utils/ThemeOverride'
+import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
@@ -47,10 +48,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
-  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { challenge, mutate } = useEditChallenge(numId, numCId)
 
   const [disabled, setDisabled] = useState(false)
   const [type, setType] = useState<FileType>(challenge?.attachment?.type ?? FileType.None)
@@ -369,7 +367,7 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
 
   const theme = useMantineTheme()
 
-  const { data: challenge } = api.edit.useEditGetGameChallenge(numId, numCId)
+  const { challenge } = useEditChallenge(numId, numCId)
 
   const [attachmentUploadModalOpened, setAttachmentUploadModalOpened] = useState(false)
   const [remoteAttachmentModalOpened, setRemoteAttachmentModalOpened] = useState(false)
@@ -422,7 +420,7 @@ const GameChallengeEdit: FC = () => {
   const theme = useMantineTheme()
   const modals = useModals()
 
-  const { data: challenge, mutate } = api.edit.useEditGetGameChallenge(numId, numCId)
+  const { challenge, mutate } = useEditChallenge(numId, numCId)
 
   const onDeleteFlag = (flag: FlagInfoModel) => {
     modals.openConfirmModal({

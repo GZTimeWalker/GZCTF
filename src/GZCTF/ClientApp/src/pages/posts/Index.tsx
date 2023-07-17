@@ -9,6 +9,7 @@ import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { PostInfoModel, Role } from '@Api'
@@ -16,10 +17,7 @@ import api, { PostInfoModel, Role } from '@Api'
 const ITEMS_PER_PAGE = 10
 
 const Posts: FC = () => {
-  const { data: posts, mutate } = api.info.useInfoGetPosts({
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: posts, mutate } = api.info.useInfoGetPosts(OnceSWRConfig)
 
   const { classes: btnClasses } = useFixedButtonStyles({
     right: 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',

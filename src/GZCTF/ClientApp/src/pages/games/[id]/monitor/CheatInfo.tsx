@@ -29,6 +29,7 @@ import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles, useTableStyles } from '@Utils/ThemeOverride'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
 import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
 
@@ -383,10 +384,7 @@ const CheatInfo: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const { data: cheatInfo } = api.game.useGameCheatInfo(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: cheatInfo } = api.game.useGameCheatInfo(numId, OnceSWRConfig)
 
   const [disabled, setDisabled] = useState(false)
   const [cheatTeamInfo, setCheatTeamInfo] = useState<Map<number, CheatTeamInfo>>()

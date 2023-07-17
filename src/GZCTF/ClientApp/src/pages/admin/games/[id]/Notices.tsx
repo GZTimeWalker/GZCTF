@@ -9,15 +9,13 @@ import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameNotice } from '@Api'
 
 const GameNoticeEdit: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { data: gameNotices, mutate } = api.edit.useEditGetGameNotices(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: gameNotices, mutate } = api.edit.useEditGetGameNotices(numId, OnceSWRConfig)
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeGameNotice, setActiveGameNotice] = useState<GameNotice | null>(null)

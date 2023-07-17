@@ -2,15 +2,13 @@ import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, NumberInput, Stack, Text } from '@mantine/core'
 import { BloodBonus } from '@Utils/Shared'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { SubmissionType } from '@Api'
 
 const BloodBonusModel: FC<ModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, OnceSWRConfig)
   const [disabled, setDisabled] = useState(false)
   const [firstBloodBonus, setFirstBloodBonus] = useState(0)
   const [secondBloodBonus, setSecondBloodBonus] = useState(0)

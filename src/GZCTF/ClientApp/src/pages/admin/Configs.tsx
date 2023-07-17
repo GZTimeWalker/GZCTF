@@ -6,14 +6,11 @@ import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
-import { useConfig } from '@Utils/useConfig'
+import { OnceSWRConfig, useConfig } from '@Utils/useConfig'
 import api, { AccountPolicy, ConfigEditModel, GamePolicy, GlobalConfig } from '@Api'
 
 const Configs: FC = () => {
-  const { data: configs, mutate } = api.admin.useAdminGetConfigs({
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: configs, mutate } = api.admin.useAdminGetConfigs(OnceSWRConfig)
 
   const { mutate: mutateConfig } = useConfig()
   const [disabled, setDisabled] = useState(false)

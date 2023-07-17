@@ -27,6 +27,7 @@ import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
 import MarkdownRender from './MarkdownRender'
@@ -117,10 +118,11 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { gameId, gameEnded, challengeId, tagData, title, score, solved, ...modalProps } = props
   const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
 
-  const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: challenge, mutate } = api.game.useGameGetChallenge(
+    gameId,
+    challengeId,
+    OnceSWRConfig
+  )
 
   const [placeholder, setPlaceholder] = useState('')
 

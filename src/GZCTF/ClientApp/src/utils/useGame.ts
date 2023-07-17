@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import api, { DetailedGameInfoModel, ParticipationStatus } from '@Api'
+import { OnceSWRConfig } from './useConfig'
 
 export const getGameStatus = (game?: DetailedGameInfoModel) => {
   const startTime = dayjs(game?.start)
@@ -22,14 +23,7 @@ export const getGameStatus = (game?: DetailedGameInfoModel) => {
 }
 
 export const useGame = (numId: number) => {
-  const {
-    data: game,
-    error,
-    mutate,
-  } = api.game.useGameGames(numId, {
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-  })
+  const { data: game, error, mutate } = api.game.useGameGames(numId, OnceSWRConfig)
 
   return { game, error, mutate, status: game?.status ?? ParticipationStatus.Unsubmitted }
 }
@@ -46,8 +40,8 @@ export const useGameScoreboard = (numId: number) => {
     error,
     mutate,
   } = api.game.useGameScoreboard(numId, {
+    ...OnceSWRConfig,
     refreshInterval: inProgress ? 30 * 1000 : 0,
-    revalidateOnFocus: false,
   })
 
   return { scoreboard, error, mutate }
