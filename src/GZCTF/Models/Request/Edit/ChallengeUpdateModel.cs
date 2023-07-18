@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GZCTF.Extensions;
+using GZCTF.Utils;
 
 namespace GZCTF.Models.Request.Edit;
 
@@ -100,4 +102,27 @@ public class ChallengeUpdateModel
     /// 统一文件名
     /// </summary>
     public string? FileName { get; set; }
+
+    /// <summary>
+    /// 提示是否存在更新
+    /// </summary>
+    /// <param name="originalHash">原有哈希</param>
+    /// <returns></returns>
+    internal bool IsHintUpdated(int? originalHash)
+        => Hints is not null && Hints.Count > 0 &&
+           Hints.GetSetHashCode() != originalHash;
+
+    /// <summary>
+    /// 是否为有效的 Flag 模板
+    /// </summary>
+    /// <returns></returns>
+    internal bool IsValidFlagTemplate()
+    {
+        if (string.IsNullOrWhiteSpace(FlagTemplate))
+            return false;
+
+        return FlagTemplate.Contains("[GUID]") ||
+           FlagTemplate.Contains("[TEAM_HASH]") ||
+           Codec.Leet.LeetEntropy(FlagTemplate) >= 32.0;
+    }
 }

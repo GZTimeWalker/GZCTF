@@ -517,14 +517,9 @@ public class EditController : Controller
         if (model.FileName is not null && string.IsNullOrWhiteSpace(model.FileName))
             return BadRequest(new RequestResponse("动态附件名不可为空"));
 
-        bool hintUpdated = model.Hints is not null &&
-                model.Hints.Count > 0 &&
-                model.Hints.GetSetHashCode() != res.Hints?.GetSetHashCode();
+        bool hintUpdated = model.IsHintUpdated(res.Hints?.GetSetHashCode());
 
-        if (!string.IsNullOrWhiteSpace(model.FlagTemplate)
-            && res.Type == ChallengeType.DynamicContainer
-            && !model.FlagTemplate.Contains("[TEAM_HASH]")
-            && Codec.Leet.LeetEntropy(model.FlagTemplate) < 32.0)
+        if (res.Type == ChallengeType.DynamicContainer && !model.IsValidFlagTemplate())
             return BadRequest(new RequestResponse("flag 复杂度不足，请考虑添加队伍哈希或增加长度"));
 
         res.Update(model);
