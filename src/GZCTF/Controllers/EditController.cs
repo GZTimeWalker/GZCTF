@@ -519,7 +519,7 @@ public class EditController : Controller
 
         bool hintUpdated = model.IsHintUpdated(res.Hints?.GetSetHashCode());
 
-        if (res.Type == ChallengeType.DynamicContainer && !model.IsValidFlagTemplate())
+        if (!string.IsNullOrWhiteSpace(model.FlagTemplate) && res.Type == ChallengeType.DynamicContainer && !model.IsValidFlagTemplate())
             return BadRequest(new RequestResponse("flag 复杂度不足，请考虑添加队伍哈希或增加长度"));
 
         res.Update(model);
