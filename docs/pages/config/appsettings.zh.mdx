@@ -47,6 +47,20 @@ import { Callout } from "nextra-theme-docs";
       SwarmMode: false,
       Uri: "unix:///var/run/docker.sock",
     },
+    K8sConfig: {
+      // optional
+      Namespace: "gzctf-challenges",
+      ConfigPath: "k8sconfig.yaml",
+      AllowCIDR: [
+        // allow the cluster CIDR for LB
+        "10.0.0.0/8",
+      ],
+      DNS: [
+        // custom DNS to avoid cluster DNS
+        "8.8.8.8",
+        "223.5.5.5",
+      ],
+    },
   },
   RequestLogging: false,
   DisableRateLimit: false,
@@ -121,7 +135,12 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 
 #### Kubernetes
 
-请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下
+- **Namespace:** Kubernetes 命名空间，用于创建题目实例的命名空间，默认为 `gzctf-challenges`
+- **ConfigPath:** Kubernetes 配置文件路径，用于连接集群，默认为 `k8sconfig.yaml`
+- **AllowCIDR:** [实验功能] 允许访问 Pod 的 CIDR 白名单
+- **DNS:** [实验功能] 避免使用集群 DNS 的自定义 DNS 服务器列表
+
+默认行为请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下。实验功能若非了解行为请勿更改。
 
 <Callout type="info">
 

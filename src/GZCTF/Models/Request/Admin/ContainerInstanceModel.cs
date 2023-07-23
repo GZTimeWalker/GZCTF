@@ -57,7 +57,8 @@ public class ContainerInstanceModel
         var team = container.Instance?.Participation?.Team;
         var chal = container.Instance?.Challenge;
 
-        var model = new ContainerInstanceModel() {
+        var model = new ContainerInstanceModel()
+        {
             Image = container.Image,
             ContainerGuid = container.Id,
             ContainerId = container.ContainerId,

@@ -1,9 +1,9 @@
 ﻿using System.Net;
+using Docker.DotNet;
+using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
 using GZCTF.Utils;
-using Docker.DotNet;
-using Docker.DotNet.Models;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services;
@@ -18,7 +18,7 @@ public class DockerService : IContainerService
 
     public DockerService(IOptions<ContainerProvider> _options, IOptions<RegistryConfig> _registry, ILogger<DockerService> _logger)
     {
-        options = _options.Value.DockerConfig ?? new DockerConfig();
+        options = _options.Value.DockerConfig ?? new();
         publicEntry = _options.Value.PublicEntry;
         logger = _logger;
         DockerClientConfiguration cfg = string.IsNullOrEmpty(options.Uri) ? new() : new(new Uri(options.Uri));
@@ -136,7 +136,7 @@ public class DockerService : IContainerService
             }
         };
 
-    public async Task<Container?> CreateContainerWithSwarm(ContainerConfig config, CancellationToken token = default)
+    private async Task<Container?> CreateContainerWithSwarm(ContainerConfig config, CancellationToken token = default)
     {
         var parameters = GetServiceCreateParameters(config);
         int retry = 0;
@@ -157,7 +157,7 @@ public class DockerService : IContainerService
             }
             else
             {
-                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode.ToString()}", TaskStatus.Failed, LogLevel.Warning);
+                logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 状态：{e.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
                 logger.SystemLog($"容器 {parameters.Service.Name} 创建失败, 响应：{e.ResponseBody}", TaskStatus.Failed, LogLevel.Error);
                 return null;
             }
@@ -203,7 +203,7 @@ public class DockerService : IContainerService
         return container;
     }
 
-    public async Task<Container?> CreateContainerWithSingle(ContainerConfig config, CancellationToken token = default)
+    private async Task<Container?> CreateContainerWithSingle(ContainerConfig config, CancellationToken token = default)
     {
         var parameters = GetCreateContainerParameters(config);
         CreateContainerResponse? containerRes = null;

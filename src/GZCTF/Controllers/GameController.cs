@@ -375,7 +375,7 @@ public class GameController : ControllerBase
     [HttpGet("{id}/CheatInfo")]
     [ProducesResponseType(typeof(CheatInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CheatInfo([FromRoute] int id,CancellationToken token = default)
+    public async Task<IActionResult> CheatInfo([FromRoute] int id, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 

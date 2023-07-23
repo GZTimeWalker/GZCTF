@@ -12,7 +12,6 @@ namespace GZCTF.Services;
 
 public class K8sService : IContainerService
 {
-    private const string Namespace = "gzctf-challenges";
     private const string NetworkPolicy = "gzctf-policy";
 
     private readonly ILogger<K8sService> logger;
@@ -20,19 +19,21 @@ public class K8sService : IContainerService
     private readonly string hostIP;
     private readonly string publicEntry;
     private readonly string? AuthSecretName;
+    private readonly K8sConfig options;
 
     public K8sService(IOptions<RegistryConfig> _registry, IOptions<ContainerProvider> _provider, ILogger<K8sService> _logger)
     {
         logger = _logger;
         publicEntry = _provider.Value.PublicEntry;
+        options = _provider.Value.K8sConfig ?? new();
 
-        if (!File.Exists("k8sconfig.yaml"))
+        if (!File.Exists(options.KubeConfig))
         {
-            LogHelper.SystemLog(logger, "无法加载 K8s 配置文件，请确保挂载 /app/k8sconfig.yaml");
-            throw new FileNotFoundException("k8sconfig.yaml");
+            LogHelper.SystemLog(logger, $"无法加载 K8s 配置文件，请确保配置文件存在 {options.KubeConfig}");
+            throw new FileNotFoundException(options.KubeConfig);
         }
 
-        var config = KubernetesClientConfiguration.BuildConfigFromConfigFile("k8sconfig.yaml");
+        var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(options.KubeConfig);
 
         hostIP = config.Host[(config.Host.LastIndexOf('/') + 1)..config.Host.LastIndexOf(':')];
 
@@ -53,8 +54,9 @@ public class K8sService : IContainerService
         {
             InitK8s(withAuth, registry);
         }
-        catch
+        catch (Exception e)
         {
+            logger.LogError(e, $"K8s 初始化失败，请检查相关配置是否正确 ({config.Host})");
             Program.ExitWithFatalMessage($"K8s 初始化失败，请检查相关配置是否正确 ({config.Host})");
         }
 
@@ -85,7 +87,7 @@ public class K8sService : IContainerService
             Metadata = new V1ObjectMeta()
             {
                 Name = name,
-                NamespaceProperty = Namespace,
+                NamespaceProperty = options.Namespace,
                 Labels = new Dictionary<string, string>()
                 {
                     ["ctf.gzti.me/ResourceId"] = name,
@@ -101,7 +103,8 @@ public class K8sService : IContainerService
                 DnsPolicy = "None",
                 DnsConfig = new()
                 {
-                    Nameservers = new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" },
+                    // FIXME: remove nullable when JsonObjectCreationHandling release
+                    Nameservers = options.DNS ?? new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" },
                 },
                 EnableServiceLinks = false,
                 Containers = new[]
@@ -128,8 +131,7 @@ public class K8sService : IContainerService
                             Requests = new Dictionary<string, ResourceQuantity>()
                             {
                                 ["cpu"] = new ResourceQuantity("10m"),
-                                ["memory"] = new ResourceQuantity("32Mi"),
-                                ["ephemeral-storage"] = new ResourceQuantity("128Mi")
+                                ["memory"] = new ResourceQuantity("32Mi")
                             }
                         }
                     }
@@ -140,7 +142,7 @@ public class K8sService : IContainerService
 
         try
         {
-            pod = await kubernetesClient.CreateNamespacedPodAsync(pod, Namespace, cancellationToken: token);
+            pod = await kubernetesClient.CreateNamespacedPodAsync(pod, options.Namespace, cancellationToken: token);
         }
         catch (HttpOperationException e)
         {
@@ -173,7 +175,7 @@ public class K8sService : IContainerService
             Metadata = new V1ObjectMeta()
             {
                 Name = name,
-                NamespaceProperty = Namespace,
+                NamespaceProperty = options.Namespace,
                 Labels = new Dictionary<string, string>() { ["ctf.gzti.me/ResourceId"] = name }
             },
             Spec = new V1ServiceSpec()
@@ -192,14 +194,14 @@ public class K8sService : IContainerService
 
         try
         {
-            service = await kubernetesClient.CoreV1.CreateNamespacedServiceAsync(service, Namespace, cancellationToken: token);
+            service = await kubernetesClient.CoreV1.CreateNamespacedServiceAsync(service, options.Namespace, cancellationToken: token);
         }
         catch (HttpOperationException e)
         {
             try
             {
                 // remove the pod if service creation failed, ignore the error
-                await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(name, Namespace, cancellationToken: token);
+                await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(name, options.Namespace, cancellationToken: token);
             }
             catch { }
             logger.SystemLog($"服务 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
@@ -211,7 +213,7 @@ public class K8sService : IContainerService
             try
             {
                 // remove the pod if service creation failed, ignore the error
-                await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(name, Namespace, cancellationToken: token);
+                await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(name, options.Namespace, cancellationToken: token);
             }
             catch { }
             logger.LogError(e, "创建服务失败");
@@ -230,8 +232,8 @@ public class K8sService : IContainerService
     {
         try
         {
-            await kubernetesClient.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, Namespace, cancellationToken: token);
-            await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(container.ContainerId, Namespace, cancellationToken: token);
+            await kubernetesClient.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, options.Namespace, cancellationToken: token);
+            await kubernetesClient.CoreV1.DeleteNamespacedPodAsync(container.ContainerId, options.Namespace, cancellationToken: token);
         }
         catch (HttpOperationException e)
         {
@@ -254,11 +256,12 @@ public class K8sService : IContainerService
 
     private void InitK8s(bool withAuth, RegistryConfig? registry)
     {
-        if (kubernetesClient.CoreV1.ListNamespace().Items.All(ns => ns.Metadata.Name != Namespace))
-            kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = Namespace } });
+        if (kubernetesClient.CoreV1.ListNamespace().Items.All(ns => ns.Metadata.Name != options.Namespace))
+            kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = options.Namespace } });
 
-        if (kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(Namespace).Items.All(np => np.Metadata.Name != NetworkPolicy))
+        if (kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(options.Namespace).Items.All(np => np.Metadata.Name != NetworkPolicy))
         {
+
             kubernetesClient.NetworkingV1.CreateNamespacedNetworkPolicy(new()
             {
                 Metadata = new() { Name = NetworkPolicy },
@@ -272,17 +275,34 @@ public class K8sService : IContainerService
                         {
                             To = new[]
                             {
-                                new V1NetworkPolicyPeer() { IpBlock = new() { Cidr = "0.0.0.0/0", Except = new[] { "10.0.0.0/8" } } },
+                                new V1NetworkPolicyPeer() {
+                                    IpBlock = new() {
+                                        Cidr = "0.0.0.0/0",
+                                        // FIXME: remove nullable when JsonObjectCreationHandling release
+                                        Except = options.AllowCIDR ?? new[] { "10.0.0.0/8" }
+                                    }
+                                },
                             }
                         }
                     }
                 }
-            }, Namespace);
+            }, options.Namespace);
         }
 
         if (withAuth && registry is not null)
         {
-            var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
+            // check if the UserName and UserName
+            // will inject the json and make it invalid
+            foreach (var chr in $"{registry.UserName}{registry.UserName}")
+            {
+                if (":@\"\\".Contains(chr))
+                {
+                    logger.SystemLog("Registry 用户名或密码中包含非法字符", TaskStatus.Failed, LogLevel.Error);
+                    throw new ArgumentException("Registry 用户名或密码中包含非法字符");
+                }
+            }
+
+            var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.UserName}");
             var dockerjson = $"{{\"auths\":{{\"{registry.ServerAddress}\":{{\"auth\":\"{auth}\"," +
                 $"\"username\":\"{registry.UserName}\",\"password\":\"{registry.Password}\"}}}}}}";
             var dockerjsonBytes = Encoding.ASCII.GetBytes(dockerjson);
@@ -291,7 +311,7 @@ public class K8sService : IContainerService
                 Metadata = new V1ObjectMeta()
                 {
                     Name = AuthSecretName,
-                    NamespaceProperty = Namespace,
+                    NamespaceProperty = options.Namespace,
                 },
                 Data = new Dictionary<string, byte[]>() { [".dockerconfigjson"] = dockerjsonBytes },
                 Type = "kubernetes.io/dockerconfigjson"
@@ -299,11 +319,11 @@ public class K8sService : IContainerService
 
             try
             {
-                kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, AuthSecretName, Namespace);
+                kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, AuthSecretName, options.Namespace);
             }
             catch
             {
-                kubernetesClient.CoreV1.CreateNamespacedSecret(secret, Namespace);
+                kubernetesClient.CoreV1.CreateNamespacedSecret(secret, options.Namespace);
             }
         }
     }

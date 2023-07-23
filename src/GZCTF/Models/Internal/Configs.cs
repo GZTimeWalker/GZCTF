@@ -86,6 +86,7 @@ public class ContainerProvider
     public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
     public string PublicEntry { get; set; } = string.Empty;
 
+    public K8sConfig? K8sConfig { get; set; }
     public DockerConfig? DockerConfig { get; set; }
 }
 
@@ -93,6 +94,19 @@ public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
     public bool SwarmMode { get; set; } = false;
+}
+
+public class K8sConfig
+{
+    public string Namespace { get; set; } = "gzctf-challenges";
+    public string KubeConfig { get; set; } = "k8sconfig.yaml";
+
+    // TODO：wait for JsonObjectCreationHandling release
+    //public List<string> AllowCIDR { get; set; } = new() { "10.0.0.0/8" };
+    //public List<string> DNS { get; set; } = new() { "8.8.8.8", "223.5.5.5", "114.114.114.114" };
+
+    public string[]? AllowCIDR { get; set; }
+    public string[]? DNS { get; set; }
 }
 
 public class RegistryConfig
