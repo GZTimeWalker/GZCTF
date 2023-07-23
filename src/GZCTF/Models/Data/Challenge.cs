@@ -199,7 +199,7 @@ public class Challenge
             return $"flag{Guid.NewGuid():B}";
 
         if (FlagTemplate.Contains("[GUID]"))
-            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("B"));
+            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
 
         if (FlagTemplate.Contains("[TEAM_HASH]"))
         {
@@ -227,7 +227,7 @@ public class Challenge
             return "flag{GZCTF_dynamic_flag_test}";
 
         if (FlagTemplate.Contains("[GUID]"))
-            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("B"));
+            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
 
         if (FlagTemplate.StartsWith("[LEET]"))
             return Codec.Leet.LeetFlag(FlagTemplate[6..]);
