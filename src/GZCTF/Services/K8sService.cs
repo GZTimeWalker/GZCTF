@@ -291,9 +291,9 @@ public class K8sService : IContainerService
 
         if (withAuth && registry is not null)
         {
-            // check if the UserName and UserName
+            // check if the UserName and Password
             // will inject the json and make it invalid
-            foreach (var chr in $"{registry.UserName}{registry.UserName}")
+            foreach (var chr in $"{registry.UserName}{registry.Password}")
             {
                 if (":@\"\\".Contains(chr))
                 {
@@ -302,7 +302,7 @@ public class K8sService : IContainerService
                 }
             }
 
-            var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.UserName}");
+            var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
             var dockerjson = $"{{\"auths\":{{\"{registry.ServerAddress}\":{{\"auth\":\"{auth}\"," +
                 $"\"username\":\"{registry.UserName}\",\"password\":\"{registry.Password}\"}}}}}}";
             var dockerjsonBytes = Encoding.ASCII.GetBytes(dockerjson);
