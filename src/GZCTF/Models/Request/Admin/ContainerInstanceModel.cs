@@ -43,14 +43,14 @@ public class ContainerInstanceModel
     public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
-    /// 公开 IP
+    /// 访问 IP
     /// </summary>
-    public string? PublicIP { get; set; }
+    public string PublicIP { get; set; } = string.Empty;
 
     /// <summary>
-    /// 公开端口
+    /// 访问端口
     /// </summary>
-    public int? PublicPort { get; set; }
+    public int PublicPort { get; set; }
 
     internal static ContainerInstanceModel FromContainer(Container container)
     {
@@ -64,8 +64,9 @@ public class ContainerInstanceModel
             ContainerId = container.ContainerId,
             StartedAt = container.StartedAt,
             ExpectStopAt = container.ExpectStopAt,
-            PublicIP = container.PublicIP,
-            PublicPort = container.PublicPort
+            // fallback to host if public is null
+            PublicIP = container.PublicIP ?? container.IP,
+            PublicPort = container.PublicPort ?? container.Port
         };
 
         if (team is not null && chal is not null)

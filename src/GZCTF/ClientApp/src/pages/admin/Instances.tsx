@@ -12,7 +12,9 @@ import {
   Badge,
   Box,
   Code,
+  Tooltip,
 } from '@mantine/core'
+import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiAccountGroupOutline,
@@ -26,7 +28,7 @@ import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ChallengeTagLabelMap } from '@Utils/Shared'
-import { useTableStyles } from '@Utils/ThemeOverride'
+import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
 
 type SelectTeamItemProps = TeamModel & React.ComponentPropsWithoutRef<'div'>
@@ -76,6 +78,8 @@ const Instances: FC = () => {
   const [challenge, setChallenge] = useState<ChallengeModel[]>()
   const [disabled, setDisabled] = useState(false)
   const { classes, theme } = useTableStyles()
+  const clipBoard = useClipboard()
+  const { classes: tooltipClasses } = useTooltipStyles()
 
   useEffect(() => {
     if (instances) {
@@ -246,12 +250,36 @@ const Instances: FC = () => {
                         </Group>
                       </td>
                       <td>
-                        <Text size="sm" ff={theme.fontFamilyMonospace} color="dimmed">
-                          {`${inst.publicIP}:`}
-                          <Text span weight="bold" color="white">
-                            {inst.publicPort}
+                        <Tooltip
+                          label="点击复制"
+                          withArrow
+                          position="left"
+                          classNames={tooltipClasses}
+                        >
+                          <Text
+                            size="sm"
+                            color="dimmed"
+                            ff={theme.fontFamilyMonospace}
+                            style={{
+                              backgroundColor: 'transparent',
+                              fontSize: theme.fontSizes.sm,
+                              cursor: 'pointer',
+                            }}
+                            onClick={() => {
+                              clipBoard.copy(`${inst.publicIP ?? ''}:${inst.publicPort ?? ''}`)
+                              showNotification({
+                                color: 'teal',
+                                message: '实例入口已复制到剪贴板',
+                                icon: <Icon path={mdiCheck} size={1} />,
+                              })
+                            }}
+                          >
+                            {`${inst.publicIP}:`}
+                            <Text span weight="bold" color="white">
+                              {inst.publicPort}
+                            </Text>
                           </Text>
-                        </Text>
+                        </Tooltip>
                       </td>
                       <td align="right">
                         <Group noWrap spacing="sm" position="right">

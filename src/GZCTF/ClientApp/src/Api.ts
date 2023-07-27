@@ -546,13 +546,13 @@ export interface ContainerInstanceModel {
    * @format date-time
    */
   expectStopAt?: string
-  /** 公开 IP */
-  publicIP?: string | null
+  /** 访问 IP */
+  publicIP?: string
   /**
-   * 公开端口
+   * 访问端口
    * @format int32
    */
-  publicPort?: number | null
+  publicPort?: number
 }
 
 /** 队伍信息 */
