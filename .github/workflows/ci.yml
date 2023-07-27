@@ -108,5 +108,5 @@ jobs:
             latest
             main
             develop
-          keep-last: 5
-          prune-untagged: true
+          keep-last: 20
+          prune-untagged: false
