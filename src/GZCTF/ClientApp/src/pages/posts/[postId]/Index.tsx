@@ -51,7 +51,7 @@ const Post: FC = () => {
   usePageTitle(post?.title ?? 'Post')
 
   return (
-    <WithNavBar width="100%" padding={0} isLoading={!post} minWidth={0}>
+    <WithNavBar width="100%" isLoading={!post} minWidth={0}>
       <div ref={targetRef} className={classes.root}>
         <Stack
           spacing={6}
