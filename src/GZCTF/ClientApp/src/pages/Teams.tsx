@@ -105,7 +105,7 @@ const Teams: FC = () => {
   return (
     <WithNavBar minWidth={0}>
       <WithRole requiredRole={Role.User}>
-        <Stack>
+        <Stack pt="md">
           <Group position={isMobile ? 'center' : 'apart'} grow={isMobile}>
             {isMobile ? (
               btns

@@ -95,8 +95,8 @@ const Home: FC = () => {
   usePageTitle()
 
   return (
-    <WithNavBar minWidth={0}>
-      <Stack justify="space-between">
+    <WithNavBar minWidth={0} withFooter>
+      <Stack justify="flex-start">
         <StickyHeader />
         {isMobile && recentGames && recentGames.length > 0 && (
           <RecentGameCarousel games={recentGames} />

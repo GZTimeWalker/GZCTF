@@ -55,7 +55,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   usePageTitle(pages[tabIndex].title)
 
   return (
-    <Stack spacing="xs" align="center">
+    <Stack spacing="xs" align="center" pt="md">
       <IconTabs
         withIcon
         active={activeTab}

@@ -167,7 +167,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   }, [game, status, role, location])
 
   return (
-    <Stack pos="relative">
+    <Stack pos="relative" mt="md">
       <LoadingOverlay
         visible={!game}
         overlayOpacity={1}

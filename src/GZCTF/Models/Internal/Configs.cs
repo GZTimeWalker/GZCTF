@@ -58,6 +58,11 @@ public class GlobalConfig
     /// 平台标语
     /// </summary>
     public string Slogan { get; set; } = "Hack for fun not for profit";
+
+    /// <summary>
+    /// ICP / 公安备案信息
+    /// </summary>
+    public string? BeianInfo { get; set; }
 }
 
 public class SmtpConfig

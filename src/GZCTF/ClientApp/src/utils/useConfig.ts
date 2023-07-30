@@ -37,6 +37,7 @@ export const useConfig = () => {
     defaultValue: {
       title: 'GZ',
       slogan: 'Hack for fun not for profit',
+      beianInfo: null,
     } as GlobalConfig,
   })
 

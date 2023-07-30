@@ -10,7 +10,6 @@ const useStyles = createStyles((theme) => ({
     paddingBottom: 8,
     position: 'sticky',
     zIndex: 50,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
 
     '::before': {
       content: '""',
@@ -18,7 +17,6 @@ const useStyles = createStyles((theme) => ({
       top: -16,
       right: 0,
       left: 0,
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
       paddingTop: 16,
     },
 

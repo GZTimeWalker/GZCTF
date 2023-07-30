@@ -220,7 +220,7 @@ const GameDetail: FC = () => {
   )
 
   return (
-    <WithNavBar width="100%" padding={0} isLoading={!game} minWidth={0}>
+    <WithNavBar width="100%" isLoading={!game} minWidth={0}>
       <div ref={targetRef} className={classes.root}>
         <Group
           noWrap

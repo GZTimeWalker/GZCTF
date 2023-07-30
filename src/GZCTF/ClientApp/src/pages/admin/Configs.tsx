@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import { Button, Divider, SimpleGrid, Stack, Switch, TextInput, Title } from '@mantine/core'
+import { Button, Divider, Grid, SimpleGrid, Stack, Switch, TextInput, Title } from '@mantine/core'
 import { mdiCheck, mdiContentSaveOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AdminPage from '@Components/admin/AdminPage'
@@ -67,32 +67,47 @@ const Configs: FC = () => {
         <Stack>
           <Title order={2}>平台设置</Title>
           <Divider />
-          <SimpleGrid cols={2}>
-            <TextInput
-              label="平台名称"
-              description="平台名称将显示在网页标题、页面顶部等位置，后跟 ::CTF 字段"
-              placeholder="GZ"
-              value={globalConfig?.title ?? ''}
-              onChange={(e) => {
-                setGlobalConfig({ ...(globalConfig ?? {}), title: e.currentTarget.value })
-              }}
-            />
-            <TextInput
-              label="平台标语"
-              description="平台标语将显示在页面顶部和关于页面"
-              placeholder="Hack for fun not for profit"
-              value={globalConfig?.slogan ?? ''}
-              onChange={(e) => {
-                setGlobalConfig({ ...(globalConfig ?? {}), slogan: e.currentTarget.value })
-              }}
-            />
-          </SimpleGrid>
+          <Grid columns={4}>
+            <Grid.Col span={1}>
+              <TextInput
+                label="平台名称"
+                description="平台名称显示后跟 ::CTF 字段"
+                placeholder="GZ"
+                value={globalConfig?.title ?? ''}
+                onChange={(e) => {
+                  setGlobalConfig({ ...(globalConfig ?? {}), title: e.currentTarget.value })
+                }}
+              />
+            </Grid.Col>
+            <Grid.Col span={1}>
+              <TextInput
+                label="平台标语"
+                description="平台标语将显示在页面顶部和关于页面"
+                placeholder="Hack for fun not for profit"
+                value={globalConfig?.slogan ?? ''}
+                onChange={(e) => {
+                  setGlobalConfig({ ...(globalConfig ?? {}), slogan: e.currentTarget.value })
+                }}
+              />
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <TextInput
+                label="备案信息"
+                description="显示在网页底部的备案信息"
+                placeholder="某 IPC 备 XXXXXXXX 号-X 某公网安备 XXXXXXXXXXXXXX 号"
+                value={globalConfig?.beianInfo ?? ''}
+                onChange={(e) => {
+                  setGlobalConfig({ ...(globalConfig ?? {}), beianInfo: e.currentTarget.value })
+                }}
+              />
+            </Grid.Col>
+          </Grid>
         </Stack>
 
         <Stack>
           <Title order={2}>账户策略</Title>
           <Divider />
-          <SimpleGrid cols={2}>
+          <SimpleGrid cols={4}>
             <Switch
               checked={accountPolicy?.allowRegister ?? true}
               disabled={disabled}
@@ -107,7 +122,7 @@ const Configs: FC = () => {
             <Switch
               checked={accountPolicy?.emailConfirmationRequired ?? false}
               disabled={disabled}
-              label={SwitchLabel('需要邮箱确认', '用户注册、更换邮箱、找回密码是否需要邮件确认')}
+              label={SwitchLabel('需要邮箱确认', '用户是否需要邮件确认身份')}
               onChange={(e) =>
                 setAccountPolicy({
                   ...(accountPolicy ?? {}),
@@ -129,7 +144,7 @@ const Configs: FC = () => {
             <Switch
               checked={accountPolicy?.useGoogleRecaptcha ?? false}
               disabled={disabled}
-              label={SwitchLabel('使用谷歌验证码', '是否在用户发送验证邮件时检查谷歌验证码有效性')}
+              label={SwitchLabel('使用谷歌验证码', '是否在发送验证邮件时进行验证码校验')}
               onChange={(e) =>
                 setAccountPolicy({
                   ...(accountPolicy ?? {}),

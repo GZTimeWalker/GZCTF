@@ -1,4 +1,4 @@
-import { createStyles, keyframes, MantineThemeOverride, useMantineTheme } from '@mantine/core'
+import { createStyles, keyframes, MantineThemeOverride, useMantineTheme, rem } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 
 export const ThemeOverride: MantineThemeOverride = {
@@ -288,5 +288,55 @@ export const useAccordionStyles = createStyles((theme) => ({
   control: {
     padding: '8px 4px',
     ...theme.fn.hover({ background: 'transparent' }),
+  },
+}))
+
+const FOOTER_HEIGHT = rem(240)
+
+export const useFooterStyles = createStyles((theme) => ({
+  spacer: {
+    height: FOOTER_HEIGHT,
+  },
+
+  wrapper: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.white[2],
+    position: 'fixed',
+    zIndex: 5,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: FOOTER_HEIGHT,
+    paddingRight: `calc(${theme.spacing.xl} * 3)`,
+    paddingLeft: `calc(var(--mantine-navbar-width) + ${theme.spacing.xl} * 3)`,
+
+    [theme.fn.smallerThan('md')]: {
+      padding: `calc(${theme.spacing.xl})`,
+    },
+  },
+}))
+
+export const useLogoStyles = createStyles((theme) => ({
+  title: {
+    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+  },
+  brand: {
+    color: theme.colors[theme.primaryColor][4],
+  },
+  bio: {
+    fontFamily: theme.fontFamilyMonospace,
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    color: theme.colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.dark[4],
+  },
+  blink: {
+    animation: `${keyframes`0%, 100% {opacity:0;} 50% {opacity:1;}`} 1s infinite steps(1,start)`,
+  },
+  watermark: {
+    position: 'absolute',
+    fontSize: '12rem',
+    fontWeight: 'bold',
+    opacity: 0.05,
+    transform: 'scale(1.5)',
+    userSelect: 'none',
   },
 }))

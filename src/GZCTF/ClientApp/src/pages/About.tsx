@@ -1,60 +1,22 @@
 import { FC } from 'react'
-import {
-  Text,
-  Stack,
-  Badge,
-  Group,
-  HoverCard,
-  Title,
-  createStyles,
-  Anchor,
-  keyframes,
-  Center,
-} from '@mantine/core'
+import { Text, Stack, Badge, Group, HoverCard, Title, Anchor, Center } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
-import { ValidatedRepoMeta as validatedRepoMeta, useConfig } from '@Utils/useConfig'
+import { useLogoStyles } from '@Utils/ThemeOverride'
+import { ValidatedRepoMeta, useConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 
-const useStyles = createStyles((theme) => ({
-  title: {
-    marginLeft: '-20px',
-    marginBottom: '-5px',
-    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
-  },
-  brand: {
-    color: theme.colors[theme.primaryColor][4],
-  },
-  bio: {
-    fontFamily: theme.fontFamilyMonospace,
-    fontWeight: 'bold',
-    fontSize: '1.5rem',
-    color: theme.colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.dark[4],
-  },
-  blink: {
-    animation: `${keyframes`0%, 100% {opacity:0;} 50% {opacity:1;}`} 1s infinite steps(1,start)`,
-  },
-  watermark: {
-    position: 'absolute',
-    fontSize: '12rem',
-    fontWeight: 'bold',
-    opacity: 0.05,
-    transform: 'scale(1.5)',
-    userSelect: 'none',
-  },
-}))
-
 const About: FC = () => {
-  const { classes } = useStyles()
+  const { classes } = useLogoStyles()
   const { config } = useConfig()
-  const { repo, valid, tag, sha, buildtime } = validatedRepoMeta()
+  const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
 
   usePageTitle('关于')
 
   return (
     <WithNavBar>
-      <Stack justify="space-between" h="calc(100vh - 32px)">
-        <Center h="calc(100vh - 32px)">
+      <Stack justify="space-between" h="calc(100vh - 16px)">
+        <Center h="calc(100vh - 16px)">
           <Title order={2} className={classes.watermark}>
             GZ::CTF
           </Title>
@@ -84,7 +46,13 @@ const About: FC = () => {
                 <Group>
                   <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
                   <Stack spacing="xs">
-                    <Title className={classes.title}>
+                    <Title
+                      style={{
+                        marginLeft: '-20px',
+                        marginBottom: '-5px',
+                      }}
+                      className={classes.title}
+                    >
                       GZ<span className={classes.brand}>::</span>CTF
                     </Title>
                     <Group ml="-18px" mt="-5px">

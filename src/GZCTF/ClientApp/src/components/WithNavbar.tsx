@@ -1,13 +1,7 @@
 import React, { FC } from 'react'
-import {
-  AppShell,
-  Box,
-  Center,
-  LoadingOverlay,
-  MantineNumberSize,
-  useMantineTheme,
-} from '@mantine/core'
+import { AppShell, Box, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
 import { useUser } from '@Utils/useUser'
+import AppFooter from './AppFooter'
 import AppHeader from './AppHeader'
 import AppNavbar from './AppNavbar'
 import Watermark from './Watermark'
@@ -16,11 +10,17 @@ import WithWiderScreen from './WithWiderScreen'
 interface WithNavBarProps extends React.PropsWithChildren {
   width?: string
   minWidth?: number
-  padding?: MantineNumberSize
   isLoading?: boolean
+  withFooter?: boolean
 }
 
-const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, minWidth }) => {
+const WithNavBar: FC<WithNavBarProps> = ({
+  children,
+  width,
+  isLoading,
+  minWidth,
+  withFooter = false,
+}) => {
   const theme = useMantineTheme()
   const { user } = useUser()
 
@@ -36,13 +36,28 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
         fontFamily="JetBrains Mono"
       >
         <AppShell
-          padding={padding ?? 'md'}
+          padding={0}
           fixed
           navbar={<AppNavbar />}
           header={<AppHeader />}
-          styles={{ body: { overflow: 'hidden' } }}
+          styles={{
+            body: {
+              overflow: 'hidden',
+            },
+          }}
         >
-          <Center w="100%">
+          <Stack
+            w="100%"
+            mih="100vh"
+            align="center"
+            style={{
+              zIndex: 10,
+              position: 'relative',
+              backgroundColor:
+                theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
+              boxShadow: theme.shadows.sm,
+            }}
+          >
             <LoadingOverlay
               visible={isLoading ?? false}
               overlayOpacity={1}
@@ -53,6 +68,7 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
             <Box
               sx={(theme) => ({
                 width: width ?? '80%',
+                zIndex: 20,
 
                 [theme.fn.smallerThan('xs')]: {
                   width: '97%',
@@ -61,7 +77,8 @@ const WithNavBar: FC<WithNavBarProps> = ({ children, width, padding, isLoading, 
             >
               {children}
             </Box>
-          </Center>
+          </Stack>
+          {withFooter && <AppFooter />}
         </AppShell>
       </Watermark>
     </WithWiderScreen>

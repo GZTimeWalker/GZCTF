@@ -23,7 +23,7 @@ const Games: FC = () => {
   return (
     <WithNavBar>
       <StickyHeader />
-      <Stack>
+      <Stack pt="md">
         {games.map((g) => (
           <GameCard key={g.id} game={g} />
         ))}
