@@ -401,13 +401,7 @@ public class AccountController : ControllerBase
         var user = await userManager.GetUserAsync(User);
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
-        {
-            var result = await userManager.SetEmailAsync(user!, model.NewMail);
-
-            if (!result.Succeeded)
-                return BadRequest(new RequestResponse<bool>(result.Errors.FirstOrDefault()?.Description ?? "邮箱更新失败", false));
-            return Ok(new RequestResponse<bool>("邮箱已更新", false, 200));
-        }
+            return BadRequest(new RequestResponse<bool>("请联系管理员修改邮箱", false));
 
         logger.Log("发送用户邮箱更改邮件", user, TaskStatus.Pending);
 
