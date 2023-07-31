@@ -49,6 +49,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
           <Stack
             w="100%"
             mih="100vh"
+            pb="xl"
             align="center"
             style={{
               zIndex: 10,
