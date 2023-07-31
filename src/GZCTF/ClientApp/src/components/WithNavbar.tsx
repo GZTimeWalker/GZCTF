@@ -49,14 +49,14 @@ const WithNavBar: FC<WithNavBarProps> = ({
           <Stack
             w="100%"
             mih="100vh"
-            pb="xl"
+            pb={withFooter ? 'xl' : 0}
+            pos="relative"
             align="center"
             style={{
               zIndex: 10,
-              position: 'relative',
+              boxShadow: theme.shadows.sm,
               backgroundColor:
                 theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
-              boxShadow: theme.shadows.sm,
             }}
           >
             <LoadingOverlay
