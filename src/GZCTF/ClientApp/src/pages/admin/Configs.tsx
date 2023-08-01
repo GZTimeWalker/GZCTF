@@ -92,12 +92,12 @@ const Configs: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <TextInput
-                label="备案信息"
-                description="显示在网页底部的备案信息"
+                label="页脚附加信息"
+                description="显示在网页底部的附加信息"
                 placeholder="某 IPC 备 XXXXXXXX 号-X 某公网安备 XXXXXXXXXXXXXX 号"
-                value={globalConfig?.beianInfo ?? ''}
+                value={globalConfig?.footerInfo ?? ''}
                 onChange={(e) => {
-                  setGlobalConfig({ ...(globalConfig ?? {}), beianInfo: e.currentTarget.value })
+                  setGlobalConfig({ ...(globalConfig ?? {}), footerInfo: e.currentTarget.value })
                 }}
               />
             </Grid.Col>

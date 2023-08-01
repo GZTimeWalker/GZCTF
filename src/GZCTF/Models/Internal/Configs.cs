@@ -60,9 +60,9 @@ public class GlobalConfig
     public string Slogan { get; set; } = "Hack for fun not for profit";
 
     /// <summary>
-    /// ICP / 公安备案信息
+    /// 页脚显示的信息
     /// </summary>
-    public string? BeianInfo { get; set; }
+    public string? FooterInfo { get; set; }
 }
 
 public class SmtpConfig

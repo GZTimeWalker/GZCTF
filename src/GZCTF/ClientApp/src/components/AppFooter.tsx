@@ -50,15 +50,15 @@ const AppFooter: FC = () => {
             {isMobile ? (
               <>
                 {copyright}
-                {config.beianInfo && <Divider />}
+                {config.footerInfo && <Divider />}
               </>
             ) : (
               <Divider label={copyright} labelPosition="center" />
             )}
 
-            {config.beianInfo && (
+            {config.footerInfo && (
               <Text align="center" size="sm" color="dimmed">
-                {config.beianInfo}
+                {config.footerInfo}
               </Text>
             )}
           </Stack>

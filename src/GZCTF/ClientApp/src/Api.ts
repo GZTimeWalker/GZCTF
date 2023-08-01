@@ -259,8 +259,8 @@ export interface GlobalConfig {
   title?: string
   /** 平台标语 */
   slogan?: string
-  /** ICP / 公安备案信息 */
-  beianInfo?: string | null
+  /** 页脚显示的信息 */
+  footerInfo?: string | null
 }
 
 /** 比赛策略 */
