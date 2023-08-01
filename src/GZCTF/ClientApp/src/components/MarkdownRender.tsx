@@ -44,7 +44,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
 
   marked.setOptions({
     highlight(code, lang) {
-      if (Prism.languages[lang]) {
+      if (lang && Prism.languages[lang]) {
         return Prism.highlight(code, Prism.languages[lang], lang)
       } else {
         return code
