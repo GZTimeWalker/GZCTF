@@ -595,6 +595,7 @@ export enum ChallengeTag {
   Hardware = 'Hardware',
   Mobile = 'Mobile',
   PPC = 'PPC',
+  SocialEngineering = 'SocialEngineering',
 }
 
 /** 列表响应 */

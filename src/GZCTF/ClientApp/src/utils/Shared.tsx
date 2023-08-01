@@ -22,6 +22,7 @@ import {
   mdiMatrix,
   mdiPlus,
   mdiWeb,
+  mdiHeadCogOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import {
@@ -91,6 +92,10 @@ export const ChallengeTagLabelMap = new Map<ChallengeTag, ChallengeTagItemProps>
     { desrc: '移动设备', icon: mdiCellphoneCog, label: ChallengeTag.Mobile, color: 'pink' },
   ],
   [ChallengeTag.PPC, { desrc: '编程', icon: mdiConsole, label: ChallengeTag.PPC, color: 'orange' }],
+  [
+    ChallengeTag.SocialEngineering,
+    { desrc: '社会工程学', icon: mdiHeadCogOutline, label: ChallengeTag.SocialEngineering, color: 'yellow' },
+  ],
 ])
 
 export interface ChallengeTagItemProps extends React.ComponentPropsWithoutRef<'div'> {
