@@ -6,7 +6,7 @@
     <IsPackable>false</IsPackable>
     <CollectCoverage>true</CollectCoverage>
     <Configurations>Debug;Release;GenAPI</Configurations>
-    <ReleaseVersion>0.15.4</ReleaseVersion>
+    <ReleaseVersion>0.15.5</ReleaseVersion>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
   </PropertyGroup>
 

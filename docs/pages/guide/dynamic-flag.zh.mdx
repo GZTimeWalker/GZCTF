@@ -58,8 +58,8 @@ $$
 \begin{aligned}
 H &= \sum_{i=1}^{n} \log_2{m_i} \\
 m_i &= \begin{cases}
-    0 & \text{if } c_i \text{ is not in LeetMap} \\
-    \text{len}(\text{LeetMap}[c_i]) & \text{otherwise}
+    \text{len}(\text{LeetMap}[c_i]) & \text{if } c_i \text{ is in LeetMap} \\
+    0 & \text{otherwise}
 \end{cases}
 \end{aligned}
 $$
