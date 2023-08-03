@@ -60,7 +60,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
             <Group noWrap spacing="xs">
               <Icon path={mdiAccountOutline} {...iconProps} />
               <Group noWrap>
-                <Text weight={700}>{user.userName}</Text>
+                <Text fw={700}>{user.userName}</Text>
                 <Text>{!user.realName ? '' : user.realName}</Text>
               </Group>
             </Group>
@@ -85,12 +85,12 @@ const MemberItem: FC<MemberItemProps> = (props) => {
         {isCaptain && (
           <Group spacing={0}>
             <Icon path={mdiStar} color={theme.colors.yellow[4]} size={0.9} />
-            <Text size="sm" weight={500} color="yellow">
+            <Text size="sm" fw={500} c="yellow">
               队长
             </Text>
           </Group>
         )}
-        <Text size="sm" weight={700} color={isRegistered ? 'teal' : 'orange'}>
+        <Text size="sm" fw={700} c={isRegistered ? 'teal' : 'orange'}>
           {isRegistered ? '已报名' : '未报名'}
         </Text>
       </Group>
@@ -118,10 +118,10 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
               </Avatar>
               <Box>
-                <Text weight={500}>
+                <Text fw={500}>
                   {!participation.team?.name ? '（无名队伍）' : participation.team.name}
                 </Text>
-                <Text size="sm" color="dimmed">
+                <Text size="sm" c="dimmed">
                   {!participation.team?.bio ? '（未设置签名）' : participation.team.bio}
                 </Text>
               </Box>
@@ -129,7 +129,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             <Group position="apart" w="30%">
               <Box>
                 <Text>{participation.organization}</Text>
-                <Text size="sm" color="dimmed" weight={700}>
+                <Text size="sm" c="dimmed" fw={700}>
                   {participation.registeredMembers?.length ?? 0}/
                   {participation.team?.members?.length ?? 0} 已报名
                 </Text>

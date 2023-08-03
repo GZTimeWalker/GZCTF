@@ -20,7 +20,7 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
     <Card {...props} shadow="sm" p="sm">
       <Group position="apart" noWrap>
         <Group position="left">
-          <Text weight="500">{gameNotice.content}</Text>
+          <Text fw="500">{gameNotice.content}</Text>
         </Group>
         <Group position="right" noWrap>
           <ActionIcon onClick={onEdit}>

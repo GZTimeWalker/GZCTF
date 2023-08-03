@@ -306,12 +306,12 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             <Text size="sm">
               若需要在指定 <Code>[TEAM_HASH]</Code> 的情况下启用 Leet 字符串功能，请在 flag
               模版字符串
-              <Text span weight={700}>
+              <Text span fw={700}>
                 之前
               </Text>
               添加 <Code>[LEET]</Code> 标记，此时不会检查 flag 模版字符串的熵
             </Text>
-            <Text size="sm" weight="bold">
+            <Text size="sm" fw="bold">
               flag 模板编写示例
             </Text>
             <List size="sm" spacing={6}>

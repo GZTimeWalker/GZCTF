@@ -7,7 +7,7 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {
   return (
-    <Text color={meets ? 'teal' : 'red'} mt={5} size="sm">
+    <Text c={meets ? 'teal' : 'red'} mt={5} size="sm">
       <Center inline>
         {meets ? <Icon path={mdiCheck} size={0.7} /> : <Icon path={mdiClose} size={0.7} />}
         <Box ml={7}>{label}</Box>

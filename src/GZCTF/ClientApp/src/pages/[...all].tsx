@@ -21,10 +21,10 @@ const Error404: FC = () => {
     <WithNavBar minWidth={0}>
       <Stack spacing={0} align="center" justify="center" h="calc(100vh - 32px)">
         <Icon404 />
-        <Title order={1} color="#00bfa5" weight="lighter">
+        <Title order={1} color="#00bfa5" fw="lighter">
           页面不存在
         </Title>
-        <Text weight="bold">一处荒芜，为何于此驻足</Text>
+        <Text fw="bold">一处荒芜，为何于此驻足</Text>
       </Stack>
     </WithNavBar>
   )

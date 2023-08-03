@@ -155,28 +155,18 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
 
         <Stack spacing={2}>
           <Group position="apart">
-            <Text size="sm" weight={500}>
+            <Text size="sm" fw={500}>
               用户 IP
             </Text>
-            <Text
-              size="sm"
-              span
-              weight={500}
-              sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
-            >
+            <Text size="sm" span fw={500} ff={theme.fontFamilyMonospace}>
               {user.ip}
             </Text>
           </Group>
           <Group position="apart">
-            <Text size="sm" weight={500}>
+            <Text size="sm" fw={500}>
               最后访问时间
             </Text>
-            <Text
-              size="sm"
-              span
-              weight={500}
-              sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
-            >
+            <Text size="sm" span fw={500} ff={theme.fontFamilyMonospace}>
               {dayjs(user.lastVisitedUTC).format('YYYY-MM-DD HH:mm:ss')}
             </Text>
           </Group>

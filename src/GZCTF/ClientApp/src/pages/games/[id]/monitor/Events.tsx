@@ -203,10 +203,10 @@ const Events: FC = () => {
                     })}
                   />
                   <Group noWrap position="apart">
-                    <Text size="sm" weight={500} color="dimmed">
+                    <Text size="sm" fw={500} c="dimmed">
                       {event.team}, {event.user}
                     </Text>
-                    <Text size="xs" weight={500} color="dimmed">
+                    <Text size="xs" fw={500} c="dimmed">
                       {dayjs(event.time).format('MM/DD HH:mm:ss')}
                     </Text>
                   </Group>

@@ -339,7 +339,7 @@ const Profile: FC = () => {
                 <Text size="xl" inline>
                   拖放图片或点击此处以选择头像
                 </Text>
-                <Text size="sm" color="dimmed" inline mt={7}>
+                <Text size="sm" c="dimmed" inline mt={7}>
                   请选择小于 3MB 的图片
                 </Text>
               </Box>

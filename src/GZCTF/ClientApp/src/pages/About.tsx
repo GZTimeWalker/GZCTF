@@ -7,7 +7,7 @@ import { ValidatedRepoMeta, useConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const About: FC = () => {
-  const { classes } = useLogoStyles()
+  const { classes, theme } = useLogoStyles()
   const { config } = useConfig()
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
 
@@ -60,8 +60,8 @@ const About: FC = () => {
                         href="https://github.com/GZTimeWalker"
                         color="dimmed"
                         size="sm"
-                        weight={500}
-                        sx={{ lineHeight: 1 }}
+                        fw={500}
+                        lh={1}
                       >
                         @GZTimeWalker
                       </Anchor>
@@ -80,12 +80,7 @@ const About: FC = () => {
                   </Stack>
                 </Group>
                 <Group spacing="xs">
-                  <Text
-                    size="xs"
-                    weight={500}
-                    color="dimmed"
-                    sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
-                  >
+                  <Text size="xs" fw={500} color="dimmed" ff={theme.fontFamilyMonospace}>
                     {valid
                       ? `Built at ${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}`
                       : 'This release is not officially built'}

@@ -87,7 +87,7 @@ const Games: FC = () => {
             新建比赛
           </Button>
           <Group w="calc(100% - 9rem)" position="right">
-            <Text weight="bold" size="sm">
+            <Text fw="bold" size="sm">
               已显示 <Code>{current}</Code> / <Code>{total}</Code> 比赛
             </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
@@ -144,7 +144,7 @@ const Games: FC = () => {
                             <Avatar alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
                             </Avatar>
-                            <Text weight={700} lineClamp={1} maw="calc(10vw)">
+                            <Text fw={700} lineClamp={1} maw="calc(10vw)">
                               {game.title}
                             </Text>
                           </Group>

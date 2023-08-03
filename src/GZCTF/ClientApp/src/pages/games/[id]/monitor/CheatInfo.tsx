@@ -150,16 +150,16 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
           <Badge size="sm" color="indigo">
             {dayjs(submissionInfo.time).format('MM/DD HH:mm:ss')}
           </Badge>
-          <Text lineClamp={1} weight="bold">
+          <Text lineClamp={1} fw="bold">
             {submissionInfo.relatedTeam}
           </Text>
         </Group>
-        <Text size="sm" lineClamp={1} weight="bold">
+        <Text size="sm" lineClamp={1} fw="bold">
           {submissionInfo.user}
         </Text>
       </Group>
       <Stack spacing={0} w="40%">
-        <Text weight="bold" size="xs" lineClamp={1}>
+        <Text fw="bold" size="xs" lineClamp={1}>
           {submissionInfo.challenge}
         </Text>
         <Input
@@ -201,7 +201,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
               </Avatar>
               <Stack spacing={0}>
                 <Group spacing={4}>
-                  <Title order={4} lineClamp={1} weight="bold">
+                  <Title order={4} lineClamp={1} fw="bold">
                     {!cheatTeamInfo.name ? '（无名队伍）' : cheatTeamInfo.name}
                   </Title>
                   {cheatTeamInfo?.organization && (
@@ -313,7 +313,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
           </Badge>
         </td>
         <td>
-          <Text size="sm" weight="bold">
+          <Text size="sm" fw="bold">
             {item.ownedTeam?.team?.name ?? 'Team'}
           </Text>
         </td>
@@ -323,12 +323,12 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
           </Badge>
         </td>
         <td>
-          <Text size="sm" weight="bold">
+          <Text size="sm" fw="bold">
             {item.submitTeam?.team?.name ?? 'Team'}
           </Text>
         </td>
         <td>
-          <Text ff={theme.fontFamilyMonospace} size="sm" weight="bold">
+          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold">
             {item.submission?.user ?? 'User'}
           </Text>
         </td>

@@ -100,7 +100,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
               size={0.9}
               color={noteColor}
             />
-            <Text weight={600} size="md" color={noteColor}>
+            <Text fw={600} size="md" c={noteColor}>
               {data?.submitted ? '已成功提交' : '尚未提交'}
             </Text>
           </Group>
@@ -131,7 +131,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
           <List.Item>
             <Text>
               请在
-              <Text mx={5} span weight={600} color="yellow">
+              <Text mx={5} span fw={600} c="yellow">
                 {ddl.format(' YYYY 年 MM 月 DD 日 HH:mm:ss ')}
               </Text>
               前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。
@@ -140,7 +140,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
           <List.Item>
             <Text>
               请将全部解出题目整理为
-              <Text mx={5} weight={600} span color="yellow">
+              <Text mx={5} fw={600} span c="yellow">
                 一份标准 PDF 文档
               </Text>
               ，除题解外还需附有每道题目获得
@@ -153,7 +153,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
           <List.Item>
             <Text>
               请上传小于
-              <Text mx={5} weight={600} span color="yellow">
+              <Text mx={5} fw={600} span c="yellow">
                 20MB
               </Text>
               的 PDF 文档。
@@ -172,10 +172,10 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
             <Group>
               <Icon path={mdiFileDocumentOutline} size={1.5} />
               <Stack spacing={0}>
-                <Text weight={600} size="md">
+                <Text fw={600} size="md">
                   {data?.name ?? 'Writeup-1-2-2022-10-11T12:00:00.pdf'}
                 </Text>
-                <Text weight={600} size="sm" color="dimmed" ff={theme.fontFamilyMonospace}>
+                <Text fw={600} size="sm" c="dimmed" ff={theme.fontFamilyMonospace}>
                   {data?.fileSize ? hunamize(data.fileSize) : '456.64 KB'}
                 </Text>
               </Stack>
@@ -184,7 +184,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
             <Group>
               <Icon path={mdiFileHidden} size={1.5} />
               <Stack spacing={0}>
-                <Text weight={600} size="md">
+                <Text fw={600} size="md">
                   你的队伍尚未提交 Writeup
                 </Text>
               </Stack>

@@ -30,10 +30,10 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
             {writeup.team?.name?.slice(0, 1)}
           </Avatar>
           <Stack spacing={0}>
-            <Text lineClamp={1} weight={600}>
+            <Text lineClamp={1} fw={600}>
               {writeup.team?.name}
             </Text>
-            <Text lineClamp={1} size="xs" color="dimmed">
+            <Text lineClamp={1} size="xs" c="dimmed">
               {dayjs(writeup.uploadTimeUTC).format('YYYY-MM-DD HH:mm')}
             </Text>
           </Stack>

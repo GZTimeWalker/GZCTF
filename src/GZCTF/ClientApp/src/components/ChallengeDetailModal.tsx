@@ -57,7 +57,7 @@ export const Countdown: FC<{ time: string }> = ({ time }) => {
 
   return (
     <Card w="5rem" p="0px 4px" ta="center">
-      <Text size="sm" weight={700}>
+      <Text size="sm" fw={700}>
         {countdown.asSeconds() > 0 ? countdown.format('HH:mm:ss') : '00:00:00'}
       </Text>
     </Card>
@@ -323,7 +323,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             )}
             <Title order={4}>{challenge?.title ?? title}</Title>
           </Group>
-          <Text weight={700} sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}>
+          <Text fw={700} ff={theme.fontFamilyMonospace}>
             {challenge?.score ?? score} pts
           </Text>
         </Group>
@@ -403,7 +403,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           {isDynamic && challenge?.context?.instanceEntry && (
             <Stack align="center">
               <Group>
-                <Text size="sm" weight={600}>
+                <Text size="sm" fw={600}>
                   实例访问入口：
                   <Tooltip label="点击复制" withArrow classNames={tooltipClasses}>
                     <Code
@@ -440,7 +440,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         </Stack>
         <Divider />
         {solved ? (
-          <Text align="center" weight={700}>
+          <Text align="center" fw={700}>
             该题目已被解出
           </Text>
         ) : (

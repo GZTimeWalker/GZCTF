@@ -93,8 +93,8 @@ const Configs: FC = () => {
             <Grid.Col span={2}>
               <TextInput
                 label="页脚附加信息"
-                description="显示在网页底部的附加信息"
-                placeholder="某 IPC 备 XXXXXXXX 号-X 某公网安备 XXXXXXXXXXXXXX 号"
+                description="显示在网页底部的附加信息，支持 Markdown 语法, <mbr/> 会在移动设备中替换为 <br/>"
+                placeholder="`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)"
                 value={globalConfig?.footerInfo ?? ''}
                 onChange={(e) => {
                   setGlobalConfig({ ...(globalConfig ?? {}), footerInfo: e.currentTarget.value })

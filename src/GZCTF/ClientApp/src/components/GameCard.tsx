@@ -96,7 +96,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
                 </Badge>
               </Group>
             </Group>
-            <Text weight={500} size="sm" lineClamp={3}>
+            <Text fw={500} size="sm" lineClamp={3}>
               {summary}
             </Text>
           </Stack>

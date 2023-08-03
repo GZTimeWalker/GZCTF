@@ -98,27 +98,27 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
           </Center>
           <Group grow ta="center">
             <Stack spacing={1}>
-              <Text weight={700} size="sm" className={classes.mono}>
+              <Text fw={700} size="sm" className={classes.mono}>
                 {item?.rank}
               </Text>
               <Text size="xs">总排名</Text>
             </Stack>
             {item?.organization && (
               <Stack spacing={1}>
-                <Text weight={700} size="sm" className={classes.mono}>
+                <Text fw={700} size="sm" className={classes.mono}>
                   {item?.organizationRank}
                 </Text>
                 <Text size="xs">排名</Text>
               </Stack>
             )}
             <Stack spacing={1}>
-              <Text weight={700} size="sm" className={classes.mono}>
+              <Text fw={700} size="sm" className={classes.mono}>
                 {item?.score}
               </Text>
               <Text size="xs">得分</Text>
             </Stack>
             <Stack spacing={1}>
-              <Text weight={700} size="sm" className={classes.mono}>
+              <Text fw={700} size="sm" className={classes.mono}>
                 {item?.solvedCount}
               </Text>
               <Text size="xs">攻克数量</Text>
@@ -185,7 +185,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
             </Table>
           </ScrollArea>
         ) : (
-          <Text py="1rem" weight={700}>
+          <Text py="1rem" fw={700}>
             Ouch! 这支队伍还没有解出题目呢……
           </Text>
         )}

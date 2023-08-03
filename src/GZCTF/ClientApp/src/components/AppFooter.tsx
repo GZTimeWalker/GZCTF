@@ -3,20 +3,21 @@ import { Text, Stack, Divider, Anchor, Center } from '@mantine/core'
 import MainIcon from '@Components/icon/MainIcon'
 import { useFooterStyles, useIsMobile, useLogoStyles } from '@Utils/ThemeOverride'
 import { useConfig } from '@Utils/useConfig'
+import FooterRender from './FooterRender'
 
 const AppFooter: FC = () => {
   const { config } = useConfig()
   const isMobile = useIsMobile()
-  const { classes } = useFooterStyles()
+  const { classes, theme } = useFooterStyles()
   const { classes: logoClasses } = useLogoStyles()
 
   const copyright = (
     <Text
       size="xs"
       align="center"
-      weight={500}
+      fw={500}
       color="dimmed"
-      sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
+      ff={theme.fontFamilyMonospace}
     >
       Copyright&nbsp;©&nbsp;2022-now&nbsp;
       {isMobile && <br />}
@@ -24,7 +25,7 @@ const AppFooter: FC = () => {
         href="https://github.com/GZTimeWalker"
         color="dimmed"
         size="sm"
-        weight={500}
+        fw={500}
         sx={{ lineHeight: 1 }}
       >
         @GZTimeWalker
@@ -42,7 +43,7 @@ const AppFooter: FC = () => {
             <Stack w="100%" align="center" spacing={2}>
               <MainIcon style={{ maxWidth: isMobile ? 45 : 50, height: 'auto' }} />
 
-              <Text weight="bold" size={isMobile ? 28 : 36}>
+              <Text fw="bold" size={isMobile ? 28 : 36}>
                 GZ<span className={logoClasses.brand}>::</span>CTF
               </Text>
             </Stack>
@@ -56,11 +57,7 @@ const AppFooter: FC = () => {
               <Divider label={copyright} labelPosition="center" />
             )}
 
-            {config.footerInfo && (
-              <Text align="center" size="sm" color="dimmed">
-                {config.footerInfo}
-              </Text>
-            )}
+            {config.footerInfo && <FooterRender source={config.footerInfo} />}
           </Stack>
         </Center>
       </div>

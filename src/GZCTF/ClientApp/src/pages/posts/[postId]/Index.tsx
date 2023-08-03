@@ -51,7 +51,7 @@ const Post: FC = () => {
   usePageTitle(post?.title ?? 'Post')
 
   return (
-    <WithNavBar width="100%" isLoading={!post} minWidth={0}>
+    <WithNavBar width="100%" isLoading={!post} minWidth={0} withFooter>
       <div ref={targetRef} className={classes.root}>
         <Stack
           spacing={6}
@@ -66,10 +66,10 @@ const Post: FC = () => {
           <Avatar alt="avatar" src={post?.authorAvatar} color="brand" radius="xl" size="lg">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
-          <Text weight={700}>{post?.authorName ?? 'Anonym'}</Text>
+          <Text fw={700}>{post?.authorName ?? 'Anonym'}</Text>
           <Stack spacing={2}>
             <Divider color={theme.colorScheme === 'dark' ? 'white' : 'gray'} />
-            <Text weight={500}>{dayjs(post?.time).format('LLL')}</Text>
+            <Text fw={500}>{dayjs(post?.time).format('LLL')}</Text>
           </Stack>
         </Stack>
       </div>
@@ -78,7 +78,7 @@ const Post: FC = () => {
         {post?.tags && post.tags.length > 0 && (
           <Group position="right">
             {post.tags.map((tag, idx) => (
-              <Text key={idx} weight={700} span color="brand">
+              <Text key={idx} fw={700} span c="brand">
                 {`#${tag}`}
               </Text>
             ))}
@@ -88,7 +88,7 @@ const Post: FC = () => {
           <Avatar alt="avatar" src={post?.authorAvatar} size="sm">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
-          <Text weight={700}>
+          <Text fw={700}>
             {post?.authorName ?? 'Anonym'} 发布于 {dayjs(post?.time).format('HH:mm, YY/MM/DD')}
           </Text>
         </Group>

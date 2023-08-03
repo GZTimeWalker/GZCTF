@@ -41,13 +41,13 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               <Avatar alt="avatar" src={post.authorAvatar} size="sm">
                 {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
-              <Text weight={700}>
+              <Text fw={700}>
                 {post.authorName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
               </Text>
             </Group>
             <Text align="right">
               <Anchor component={Link} to={`/posts/${post.id}`}>
-                <Text span weight={500} size="sm">
+                <Text span fw={500} size="sm">
                   查看详情 &gt;&gt;&gt;
                 </Text>
               </Anchor>
@@ -60,7 +60,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             <Group position="apart">
               <Title order={3}>
                 {post.isPinned && (
-                  <Text span color="brand">
+                  <Text span c="brand">
                     {'[置顶] '}
                   </Text>
                 )}
@@ -84,7 +84,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           ) : (
             <Title order={3}>
               {post.isPinned && (
-                <Text span color="brand">
+                <Text span c="brand">
                   {'[置顶] '}
                 </Text>
               )}
@@ -95,7 +95,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           {post.tags && (
             <Group>
               {post.tags.map((tag, idx) => (
-                <Text key={idx} size="sm" weight={700} span color="brand">
+                <Text key={idx} size="sm" fw={700} span c="brand">
                   {`#${tag}`}
                 </Text>
               ))}

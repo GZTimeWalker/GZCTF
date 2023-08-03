@@ -40,7 +40,7 @@ const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
       <Text lineClamp={1} size="sm">
         {name}
       </Text>
-      <Text size="xs" color="dimmed">
+      <Text size="xs" c="dimmed">
         {`#${id}`}
       </Text>
     </Stack>
@@ -59,7 +59,7 @@ const SelectChallengeItem = forwardRef<HTMLDivElement, SelectChallengeItemProps>
           <Text lineClamp={1} size="sm">
             {title}
           </Text>
-          <Text size="xs" color="dimmed">
+          <Text size="xs" c="dimmed">
             {`#${id}`}
           </Text>
         </Stack>
@@ -191,7 +191,7 @@ const Instances: FC = () => {
           </Group>
 
           <Group position="right">
-            <Text weight="bold" size="sm">
+            <Text fw="bold" size="sm">
               共计 <Code>{instances?.length}</Code> 个已分发容器实例
             </Text>
           </Group>
@@ -221,14 +221,14 @@ const Instances: FC = () => {
                     <tr key={inst.containerGuid}>
                       <td>
                         <Box w="100%" h="100%">
-                          <Text truncate size="sm" weight="bold" lineClamp={1}>
+                          <Text truncate size="sm" fw="bold" lineClamp={1}>
                             {inst.team?.name}
                           </Text>
                         </Box>
                       </td>
                       <td>
                         <Box w="100%" h="100%">
-                          <Text truncate size="sm" weight="bold" lineClamp={1}>
+                          <Text truncate size="sm" fw="bold" lineClamp={1}>
                             {inst.challenge?.title}
                           </Text>
                         </Box>
@@ -275,7 +275,7 @@ const Instances: FC = () => {
                             }}
                           >
                             {`${inst.publicIP}:`}
-                            <Text span weight="bold" color="white">
+                            <Text span fw="bold" c="white">
                               {inst.publicPort}
                             </Text>
                           </Text>
@@ -298,7 +298,7 @@ const Instances: FC = () => {
             </tbody>
           </Table>
         </ScrollArea>
-        <Text size="xs" color="dimmed">
+        <Text size="xs" c="dimmed">
           注：容器实例统计不包括管理员测试容器、已销毁的容器
         </Text>
       </Paper>

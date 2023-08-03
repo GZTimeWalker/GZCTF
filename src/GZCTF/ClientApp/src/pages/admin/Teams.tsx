@@ -163,7 +163,7 @@ const Teams: FC = () => {
             }}
           />
           <Group position="right">
-            <Text weight="bold" size="sm">
+            <Text fw="bold" size="sm">
               已显示 <Code>{current}</Code> / <Code>{total}</Code> 队伍
             </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>

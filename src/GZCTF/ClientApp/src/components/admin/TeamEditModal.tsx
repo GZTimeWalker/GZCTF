@@ -114,8 +114,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                     {user.userName?.slice(0, 1) ?? 'U'}
                   </Avatar>
                   <Stack spacing={0}>
-                    <Text weight={500}>{user.userName}</Text>
-                    <Text size="xs" color="dimmed">{`#${user.id?.substring(0, 8)}`}</Text>
+                    <Text fw={500}>{user.userName}</Text>
+                    <Text size="xs" c="dimmed">{`#${user.id?.substring(0, 8)}`}</Text>
                   </Stack>
                 </Group>
                 <Group position="right">

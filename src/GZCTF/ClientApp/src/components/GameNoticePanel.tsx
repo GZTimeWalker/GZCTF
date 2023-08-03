@@ -159,7 +159,7 @@ const GameNoticePanel: FC = () => {
               {filteredNotices.map((notice) => (
                 <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
                   <Stack spacing={1}>
-                    <Text size="xs" weight={700} color="dimmed">
+                    <Text size="xs" fw={700} c="dimmed">
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
                     </Text>
                     <Text>{notice.content}</Text>

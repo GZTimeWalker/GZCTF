@@ -72,7 +72,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
         overflow: 'visible',
       }}
     >
-      <Text weight={700} lineClamp={1}>
+      <Text fw={700} lineClamp={1}>
         {countdown.asHours() > 999
           ? '比赛还会很久'
           : countdown.asSeconds() > 0

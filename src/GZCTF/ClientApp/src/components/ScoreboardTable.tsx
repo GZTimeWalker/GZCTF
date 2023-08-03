@@ -106,7 +106,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
                   size={1}
                   color={theme.colors[tag.color][theme.colorScheme === 'dark' ? 8 : 6]}
                 />
-                <Text color={tag.color}>{key}</Text>
+                <Text c={tag.color}>{key}</Text>
               </Group>
             </th>
           )
@@ -227,10 +227,10 @@ const TableRow: FC<{
                   label={
                     <Stack align="flex-start" spacing={0} maw="20rem">
                       <Text lineClamp={3}>{item.title}</Text>
-                      <Text color={tag.color} style={textStyle}>
+                      <Text c={tag.color} style={textStyle}>
                         + {chal?.score} pts
                       </Text>
-                      <Text color="dimmed" style={textStyle}>
+                      <Text c="dimmed" style={textStyle}>
                         # {dayjs(chal?.time).format('MM/DD HH:mm:ss')}
                       </Text>
                     </Stack>
@@ -350,20 +350,20 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                   <Group key={idx} position="left" spacing={2}>
                     {iconMap.get(type)}
                     <Text size="sm">{BloodData.get(type)?.name}</Text>
-                    <Text size="xs" color="dimmed">
+                    <Text size="xs" c="dimmed">
                       {BloodData.get(type)?.desrc}
                     </Text>
                   </Group>
                 ))}
               </Group>
-              <Text size="sm" color="dimmed">
+              <Text size="sm" c="dimmed">
                 注：同分队伍以得分时间先后排名
               </Text>
             </Stack>
           </Box>
         </Box>
         <Group position="apart">
-          <Text size="sm" color="dimmed">
+          <Text size="sm" c="dimmed">
             Tip: 可以按左右方向键滚动题目列表哦~
           </Text>
 

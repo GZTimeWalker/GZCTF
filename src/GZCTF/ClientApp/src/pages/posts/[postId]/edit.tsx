@@ -165,7 +165,7 @@ const PostEdit: FC = () => {
             {!isMobile && (
               <Title
                 order={1}
-                c={theme.fn.rgba(
+                color={theme.fn.rgba(
                   theme.colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
                   0.5
                 )}
@@ -232,7 +232,7 @@ const PostEdit: FC = () => {
             label={
               <Group spacing="sm">
                 <Text size="sm">文章梗概</Text>
-                <Text size="xs" color="dimmed">
+                <Text size="xs" c="dimmed">
                   支持 markdown 语法
                 </Text>
               </Group>
@@ -246,7 +246,7 @@ const PostEdit: FC = () => {
             label={
               <Group spacing="sm">
                 <Text size="sm">文章内容</Text>
-                <Text size="xs" color="dimmed">
+                <Text size="xs" c="dimmed">
                   支持 markdown 语法
                 </Text>
               </Group>

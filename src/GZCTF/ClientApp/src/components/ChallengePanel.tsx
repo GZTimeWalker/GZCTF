@@ -153,7 +153,7 @@ const ChallengePanel: FC = () => {
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}
           label={
-            <Text size="md" weight={700}>
+            <Text size="md" fw={700}>
               隐藏已解出
             </Text>
           }

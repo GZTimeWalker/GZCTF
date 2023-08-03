@@ -252,7 +252,7 @@ const GameChallengeEdit: FC = () => {
               label={
                 <Group spacing="sm">
                   <Text size="sm">题目类型</Text>
-                  <Text size="xs" color="dimmed">
+                  <Text size="xs" c="dimmed">
                     创建后不可更改
                   </Text>
                 </Group>
@@ -292,7 +292,7 @@ const GameChallengeEdit: FC = () => {
               label={
                 <Group spacing="sm">
                   <Text size="sm">题目描述</Text>
-                  <Text size="xs" color="dimmed">
+                  <Text size="xs" c="dimmed">
                     支持 markdown 语法
                   </Text>
                 </Group>
@@ -422,7 +422,7 @@ const GameChallengeEdit: FC = () => {
                     {challenge?.testContainer?.entry ?? ''}
                   </Code>
                 ) : (
-                  <Text size="sm" weight={600} color="dimmed">
+                  <Text size="sm" fw={600} c="dimmed">
                     测试容器未开启
                   </Text>
                 )}

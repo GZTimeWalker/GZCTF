@@ -138,15 +138,15 @@ const Users: FC = () => {
           <Stack>
             <Text>
               用户密码已重置，
-              <Text span weight={700}>
+              <Text span fw={700}>
                 此密码只会显示一次
               </Text>
               。
             </Text>
             <Text
-              weight={700}
+              fw={700}
               align="center"
-              sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}
+              ff={theme.fontFamilyMonospace}
             >
               {res.data}
             </Text>
@@ -209,7 +209,7 @@ const Users: FC = () => {
             }}
           />
           <Group position="right">
-            <Text weight="bold" size="sm">
+            <Text fw="bold" size="sm">
               已显示 <Code>{current}</Code> / <Code>{total}</Code> 用户
             </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
@@ -257,12 +257,7 @@ const Users: FC = () => {
                           <Avatar alt="avatar" src={user.avatar} radius="xl">
                             {user.userName?.slice(0, 1) ?? 'U'}
                           </Avatar>
-                          <Text
-                            ff={theme.fontFamilyMonospace}
-                            size="sm"
-                            weight="bold"
-                            lineClamp={1}
-                          >
+                          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold" lineClamp={1}>
                             {user.userName}
                           </Text>
                         </Group>

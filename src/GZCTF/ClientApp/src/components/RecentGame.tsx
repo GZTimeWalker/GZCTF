@@ -93,7 +93,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
 
       <Stack spacing={0} mt={16}>
         <Group noWrap spacing={0} position="apart">
-          <Text size="sm" weight={700}>
+          <Text size="sm" fw={700}>
             {status === GameStatus.Coming ? '开始于' : '结束于'}
           </Text>
           <Badge size="xs" color={color} variant="light">
@@ -103,7 +103,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
           </Badge>
         </Group>
         <Group noWrap spacing={0} position="apart">
-          <Text size="sm" weight={700}>
+          <Text size="sm" fw={700}>
             {status === GameStatus.OnGoing ? '剩余时间' : '持续时间'}
           </Text>
           <Badge size="xs" color={color} variant="light">

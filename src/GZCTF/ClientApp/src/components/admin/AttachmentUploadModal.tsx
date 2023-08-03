@@ -103,11 +103,11 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
         <Text>
           批量上传动态附件，所有附件上传后将会以统一的文件名进行下发。
           <br />
-          <Text weight="bold" span>
+          <Text fw="bold" span>
             请以每个 flag 作为对应附件的文件名。
           </Text>
           <br />
-          <Text weight="bold" color="orange" span>
+          <Text fw="bold" c="orange" span>
             建议上传预期参赛队伍数量的两倍的动态附件。
           </Text>
           <br />
@@ -128,7 +128,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               {files.map((file) => (
                 <Card p={4}>
                   <Group position="apart">
-                    <Text lineClamp={1} sx={{ fontFamily: theme.fontFamilyMonospace }}>
+                    <Text lineClamp={1} ff={theme.fontFamilyMonospace}>
                       {file.name}
                     </Text>
                     <ActionIcon onClick={() => setFiles(files.filter((f) => f !== file))}>

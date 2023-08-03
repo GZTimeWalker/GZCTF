@@ -71,7 +71,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           </Avatar>
           <Stack spacing={0}>
             <Group spacing={4}>
-              <Title order={4} lineClamp={1} weight="bold">
+              <Title order={4} lineClamp={1} fw="bold">
                 {item?.name ?? 'Team'}
               </Title>
               {item?.organization && (
@@ -97,27 +97,27 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           </Center>
           <Group grow ta="center">
             <Stack spacing={2}>
-              <Text weight={700} size="sm" className={classes.mono}>
+              <Text fw={700} size="sm" className={classes.mono}>
                 {item?.rank}
               </Text>
               <Text size="xs">总排名</Text>
             </Stack>
             {item?.organization && (
               <Stack spacing={2}>
-                <Text weight={700} size="sm" className={classes.mono}>
+                <Text fw={700} size="sm" className={classes.mono}>
                   {item?.organizationRank}
                 </Text>
                 <Text size="xs">排名</Text>
               </Stack>
             )}
             <Stack spacing={2}>
-              <Text weight={700} size="sm" className={classes.mono}>
+              <Text fw={700} size="sm" className={classes.mono}>
                 {item?.score}
               </Text>
               <Text size="xs">得分</Text>
             </Stack>
             <Stack spacing={2}>
-              <Text weight={700} size="sm" className={classes.mono}>
+              <Text fw={700} size="sm" className={classes.mono}>
                 {item?.solvedCount}
               </Text>
               <Text size="xs">攻克数量</Text>
@@ -155,7 +155,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                             {chal.score! > info?.score! &&
                               chal.type &&
                               BloodsTypes.includes(chal.type) && (
-                                <Text span color="dimmed" className={classes.mono}>
+                                <Text span c="dimmed" className={classes.mono}>
                                   {` (${bloodBonusMap.get(chal.type)?.desrc})`}
                                 </Text>
                               )}
@@ -170,7 +170,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
             </Table>
           </ScrollArea>
         ) : (
-          <Text py="1rem" weight={700}>
+          <Text py="1rem" fw={700}>
             Ouch! 这支队伍还没有解出题目呢……
           </Text>
         )}

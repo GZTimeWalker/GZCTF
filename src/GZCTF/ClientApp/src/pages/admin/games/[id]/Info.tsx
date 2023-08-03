@@ -386,7 +386,7 @@ const GameInfoEdit: FC = () => {
           label={
             <Group spacing="sm">
               <Text size="sm">Writeup 附加说明</Text>
-              <Text size="xs" color="dimmed">
+              <Text size="xs" c="dimmed">
                 支持 markdown 语法
               </Text>
             </Group>
@@ -403,7 +403,7 @@ const GameInfoEdit: FC = () => {
           label={
             <Group spacing="sm">
               <Text size="sm">参赛可选组织列表</Text>
-              <Text size="xs" color="dimmed">
+              <Text size="xs" c="dimmed">
                 添加参赛组织以开启分组榜单
               </Text>
             </Group>
@@ -436,7 +436,7 @@ const GameInfoEdit: FC = () => {
             label={
               <Group spacing="sm">
                 <Text size="sm">比赛详情</Text>
-                <Text size="xs" color="dimmed">
+                <Text size="xs" c="dimmed">
                   支持 markdown 语法
                 </Text>
               </Group>
@@ -481,7 +481,7 @@ const GameInfoEdit: FC = () => {
                       <Text size="xl" inline>
                         拖放图片或点击此处以选择海报
                       </Text>
-                      <Text size="sm" color="dimmed" inline mt={7}>
+                      <Text size="sm" c="dimmed" inline mt={7}>
                         请选择小于 3MB 的图片
                       </Text>
                     </Stack>

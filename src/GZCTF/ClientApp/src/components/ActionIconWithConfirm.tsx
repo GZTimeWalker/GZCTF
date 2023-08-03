@@ -41,11 +41,11 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
         <Stack align="center" spacing={6}>
           <Text
             size="sm"
-            weight="bold"
+            fw="bold"
             h="auto"
+            ta="center"
             style={{
               whiteSpace: 'pre-wrap',
-              textAlign: 'center',
             }}
           >
             {props.message}

@@ -91,7 +91,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
             )}
             <Title order={4}>{challenge?.title ?? ''}</Title>
           </Group>
-          <Text weight={700} sx={(theme) => ({ fontFamily: theme.fontFamilyMonospace })}>
+          <Text fw={700} ff={theme.fontFamilyMonospace}>
             {challenge?.originalScore ?? 500} pts
           </Text>
         </Group>
@@ -182,7 +182,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
           {isDynamic && withContainer && (
             <Stack align="center">
               <Group>
-                <Text size="sm" weight={600}>
+                <Text size="sm" fw={600}>
                   实例访问入口：
                   <Tooltip label="点击复制" withArrow classNames={tooltipClasses}>
                     <Code

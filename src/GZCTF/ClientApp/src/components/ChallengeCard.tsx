@@ -73,7 +73,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
     >
       <Stack spacing="sm" pos="relative" style={{ zIndex: 99 }}>
         <Group noWrap position="apart" spacing="xs">
-          <Text lineClamp={1} weight={700} size={theme.fontSizes.lg}>
+          <Text lineClamp={1} fw={700} size={theme.fontSizes.lg}>
             {challenge.title}
           </Text>
           {solved && <Icon path={mdiFlag} size={1} color={colorStr} />}
@@ -81,14 +81,14 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
         <Divider />
         <Group noWrap position="apart" align="start">
           <Group noWrap position="center">
-            <Text align="center" weight={700} size={18} ff={theme.fontFamilyMonospace}>
+            <Text align="center" fw={700} size={18} ff={theme.fontFamilyMonospace}>
               {challenge.score} pts
             </Text>
           </Group>
           <Stack spacing="xs">
             <Title order={6} align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
               {`${challenge.solved} `}
-              <Text color="dimmed" size="xs" inherit span>
+              <Text c="dimmed" size="xs" inherit span>
                 支队伍攻克
               </Text>
             </Title>
@@ -102,10 +102,8 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                     classNames={tooltipClasses}
                     label={
                       <Stack spacing={0}>
-                        <Text color={theme.colorScheme === 'dark' ? '' : 'dark'}>
-                          {blood?.name}
-                        </Text>
-                        <Text size="xs" color="dimmed">
+                        <Text c={theme.colorScheme === 'dark' ? '' : 'dark'}>{blood?.name}</Text>
+                        <Text size="xs" c="dimmed">
                           {dayjs(blood?.submitTimeUTC).format('YY/MM/DD HH:mm:ss')}
                         </Text>
                       </Stack>

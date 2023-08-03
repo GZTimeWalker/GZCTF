@@ -65,11 +65,11 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
         <Text>
           批量设置远程附件及对应 flag，每行一组。
           <br />
-          <Text weight="bold" span>
+          <Text fw="bold" span>
             请将 flag 字符串与 url 以空格隔开。
           </Text>
           <br />
-          <Text weight="bold" color="orange" span>
+          <Text fw="bold" c="orange" span>
             建议上传预期参赛队伍数量的两倍的动态附件。
           </Text>
           <br />

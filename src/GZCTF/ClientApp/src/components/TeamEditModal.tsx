@@ -56,7 +56,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
         <Avatar alt="avatar" src={user.avatar} radius="xl">
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
-        <Text weight={500}>{user.userName}</Text>
+        <Text fw={500}>{user.userName}</Text>
       </Group>
       {isCaptain && showBtns && (
         <Group spacing="xs" position="right">
@@ -362,7 +362,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   <Avatar alt="avatar" src={captain.avatar} radius="xl">
                     {captain.userName?.slice(0, 1) ?? 'C'}
                   </Avatar>
-                  <Text weight={500}>{captain.userName}</Text>
+                  <Text fw={500}>{captain.userName}</Text>
                 </Group>
                 <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />
               </Group>
@@ -465,7 +465,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                 <Text size="xl" inline>
                   拖放图片或点击此处以选择头像
                 </Text>
-                <Text size="sm" color="dimmed" inline mt={7}>
+                <Text size="sm" c="dimmed" inline mt={7}>
                   请选择小于 3MB 的图片
                 </Text>
               </Box>

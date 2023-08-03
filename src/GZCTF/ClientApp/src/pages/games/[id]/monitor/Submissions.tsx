@@ -167,12 +167,12 @@ const Submissions: FC = () => {
           </Badge>
         </td>
         <td>
-          <Text size="sm" weight="bold">
+          <Text size="sm" fw="bold">
             {item.team ?? 'Team'}
           </Text>
         </td>
         <td>
-          <Text ff={theme.fontFamilyMonospace} size="sm" weight="bold">
+          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold">
             {item.user ?? 'User'}
           </Text>
         </td>

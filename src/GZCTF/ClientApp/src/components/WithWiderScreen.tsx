@@ -15,10 +15,10 @@ const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 1080 }
   return tooSmall ? (
     <Stack spacing={0} align="center" justify="center" h="calc(100vh - 32px)">
       <IconWiderScreenRequired />
-      <Title order={1} color="#00bfa5" weight="lighter">
+      <Title order={1} color="#00bfa5" fw="lighter">
         页面宽度不足
       </Title>
-      <Text weight="bold">请使用更宽的设备浏览本页面</Text>
+      <Text fw="bold">请使用更宽的设备浏览本页面</Text>
     </Stack>
   ) : (
     <>{children}</>

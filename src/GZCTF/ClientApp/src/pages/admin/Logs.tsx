@@ -126,12 +126,12 @@ const Logs: FC = () => {
         </Badge>
       </td>
       <td className={cx(classes.mono)}>
-        <Text ff={theme.fontFamilyMonospace} size="sm" weight={300}>
+        <Text ff={theme.fontFamilyMonospace} size="sm" fw={300}>
           {item.ip || 'localhost'}
         </Text>
       </td>
       <td className={cx(classes.mono)}>
-        <Text ff={theme.fontFamilyMonospace} size="sm" weight="bold" lineClamp={1}>
+        <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold" lineClamp={1}>
           {item.name}
         </Text>
       </td>

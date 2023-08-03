@@ -65,7 +65,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Divider my="xs" />
           <Stack spacing="xs">
             <Group spacing="xs" position="apart">
-              <Text transform="uppercase" color="dimmed">
+              <Text transform="uppercase" c="dimmed">
                 个人身份:
               </Text>
               {isCaptain ? (
@@ -79,7 +79,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               )}
             </Group>
             <Group spacing="xs">
-              <Text transform="uppercase" color="dimmed">
+              <Text transform="uppercase" c="dimmed">
                 队员列表:
               </Text>
               <Box style={{ flexGrow: 1 }} />

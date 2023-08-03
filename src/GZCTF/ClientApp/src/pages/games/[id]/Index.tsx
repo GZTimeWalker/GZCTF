@@ -167,14 +167,14 @@ const GameDetail: FC = () => {
           <Text size="sm">你确定要报名此比赛吗？</Text>
           <Text size="sm">
             报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动。
-            <Text span weight={700}>
+            <Text span fw={700}>
               即邀请、踢出队员。
             </Text>
             队伍将在比赛结束后或驳回请求时解锁。
           </Text>
           <Text size="sm">
             比赛队伍人数要求以选择队伍的成员数为准，
-            <Text span weight={700}>
+            <Text span fw={700}>
               不论队员是否以此队伍身份参加比赛。
             </Text>
           </Text>
@@ -220,7 +220,7 @@ const GameDetail: FC = () => {
   )
 
   return (
-    <WithNavBar width="100%" isLoading={!game} minWidth={0}>
+    <WithNavBar width="100%" isLoading={!game} minWidth={0} withFooter>
       <div ref={targetRef} className={classes.root}>
         <Group
           noWrap
@@ -238,8 +238,8 @@ const GameDetail: FC = () => {
             </Group>
             <Stack spacing={2}>
               <Title className={classes.title}>{game?.title}</Title>
-              <Text size="sm" color="dimmed">
-                <Text span weight={700}>
+              <Text size="sm" c="dimmed">
+                <Text span fw={700}>
                   {`${game?.teamCount ?? 0} `}
                 </Text>
                 支队伍已报名
@@ -250,7 +250,7 @@ const GameDetail: FC = () => {
                 <Text size="sm" className={classes.date}>
                   开始时间
                 </Text>
-                <Text size="sm" weight={700} className={classes.date}>
+                <Text size="sm" fw={700} className={classes.date}>
                   {startTime.format('HH:mm:ss, MMMM DD, YYYY')}
                 </Text>
               </Stack>
@@ -258,7 +258,7 @@ const GameDetail: FC = () => {
                 <Text size="sm" className={classes.date}>
                   结束时间
                 </Text>
-                <Text size="sm" weight={700} className={classes.date}>
+                <Text size="sm" fw={700} className={classes.date}>
                   {endTime.format('HH:mm:ss, MMMM DD, YYYY')}
                 </Text>
               </Stack>
