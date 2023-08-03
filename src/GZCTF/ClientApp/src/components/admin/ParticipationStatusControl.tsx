@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Group, GroupProps, MantineNumberSize } from '@mantine/core'
+import { Group, GroupProps, MantineNumberSize, useMantineTheme } from '@mantine/core'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { ParticipationStatusMap } from '@Utils/Shared'
 import { ParticipationStatus } from '@Api'
@@ -15,9 +15,16 @@ interface ParticipationStatusControlProps extends GroupProps {
 export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (props) => {
   const { disabled, participateId, status, setParticipationStatus, size, ...others } = props
   const part = ParticipationStatusMap.get(status)!
+  const theme = useMantineTheme()
 
   return (
-    <Group {...others}>
+    <Group
+      noWrap
+      position="center"
+      miw={`calc(${theme.spacing.xl} * 3)`}
+      m={`0 ${theme.spacing.xs}`}
+      {...others}
+    >
       {part.transformTo.map((value) => {
         const s = ParticipationStatusMap.get(value)!
         return (

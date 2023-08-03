@@ -106,7 +106,6 @@ interface ParticipationItemProps {
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   const { participation, disabled, setParticipationStatus } = props
-  const theme = useMantineTheme()
   const part = ParticipationStatusMap.get(participation.status!)!
 
   return (
@@ -146,8 +145,6 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
           participateId={participation.id!}
           status={participation.status!}
           setParticipationStatus={setParticipationStatus}
-          m={`0 ${theme.spacing.xl}`}
-          miw={theme.spacing.xl}
         />
       </Box>
       <Accordion.Panel>
