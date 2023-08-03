@@ -143,11 +143,7 @@ const Users: FC = () => {
               </Text>
               。
             </Text>
-            <Text
-              fw={700}
-              align="center"
-              ff={theme.fontFamilyMonospace}
-            >
+            <Text fw={700} align="center" ff={theme.fontFamilyMonospace}>
               {res.data}
             </Text>
             <Button

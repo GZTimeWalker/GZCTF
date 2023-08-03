@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.15.5",
+  "version": "0.15.6",
   "private": true,
   "scripts": {
     "dev": "vite",
