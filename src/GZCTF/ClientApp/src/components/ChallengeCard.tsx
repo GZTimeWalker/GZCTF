@@ -79,12 +79,10 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           {solved && <Icon path={mdiFlag} size={1} color={colorStr} />}
         </Group>
         <Divider />
-        <Group noWrap position="apart" align="start">
-          <Group noWrap position="center">
-            <Text align="center" fw={700} size={18} ff={theme.fontFamilyMonospace}>
-              {challenge.score} pts
-            </Text>
-          </Group>
+        <Group noWrap position="apart" align="center" spacing={2}>
+          <Text align="center" fw={700} size={18} ff={theme.fontFamilyMonospace}>
+            {challenge.score}&nbsp;pts
+          </Text>
           <Stack spacing="xs">
             <Title order={6} align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
               {`${challenge.solved} `}
@@ -92,7 +90,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                 支队伍攻克
               </Text>
             </Title>
-            <Group position="center" spacing="md" h={20}>
+            <Group position="center" spacing="md" h={20} noWrap>
               {challenge.bloods &&
                 challenge.bloods.map((blood, idx) => (
                   <Tooltip.Floating
