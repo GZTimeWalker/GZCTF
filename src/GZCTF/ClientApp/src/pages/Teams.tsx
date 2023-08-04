@@ -29,7 +29,7 @@ import api, { TeamInfoModel, Role } from '@Api'
 
 const Teams: FC = () => {
   const { user, error: userError } = useUser()
-  const { teams, error: teamsError } = useTeams()
+  const { teams, mutate: mutateTeams, error: teamsError } = useTeams()
 
   const theme = useMantineTheme()
 
@@ -72,7 +72,7 @@ const Teams: FC = () => {
           message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        api.team.mutateTeamGetTeamsInfo()
+        mutateTeams()
       })
       .catch(showErrorNotification)
       .finally(() => {
@@ -180,6 +180,7 @@ const Teams: FC = () => {
           title="创建新队伍"
           isOwnTeam={ownTeam ?? false}
           onClose={() => setCreateOpened(false)}
+          mutate={mutateTeams}
         />
 
         <TeamEditModal

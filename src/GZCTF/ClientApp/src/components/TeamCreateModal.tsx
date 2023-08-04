@@ -19,10 +19,11 @@ import api, { TeamUpdateModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean
+  mutate: () => void
 }
 
 const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
-  const { isOwnTeam, ...modalProps } = props
+  const { isOwnTeam, mutate, ...modalProps } = props
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' })
   const theme = useMantineTheme()
 
@@ -36,7 +37,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           message: `${res.data.name} 创建成功，快去邀请队友吧！`,
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        api.team.mutateTeamGetTeamsInfo()
+        mutate()
       })
       .catch(showErrorNotification)
       .finally(() => {
