@@ -23,10 +23,27 @@ const RenderReplacer = (func: any, replacer: (text: string) => string) => {
   }
 }
 
+const InlineRegex = /\$([\s\S]+?)\$/g
+const BlockRegex = /\$\$([\s\S]+?)\$\$/g
+
 export const InlineMarkdownRender = forwardRef<HTMLParagraphElement, InlineMarkdownProps>(
   (props, ref) => {
     const { source, ...others } = props
     const { classes, cx } = useInlineStyles()
+
+    const renderer = new marked.Renderer()
+
+    const replacer = (text: string) =>
+      text.replace(InlineRegex, (_, expression) => {
+        return katex.renderToString(expression, { displayMode: false, throwOnError: false })
+      })
+
+    renderer.text = RenderReplacer(renderer.text, replacer)
+
+    marked.setOptions({
+      renderer,
+      silent: true,
+    })
 
     return (
       <Text
@@ -34,7 +51,7 @@ export const InlineMarkdownRender = forwardRef<HTMLParagraphElement, InlineMarkd
         className={others.className ? cx(classes.root, others.className) : classes.root}
         {...others}
         dangerouslySetInnerHTML={{
-          __html: marked.parseInline(source, { silent: true }) ?? '',
+          __html: marked.parseInline(source) ?? '',
         }}
       />
     )
@@ -47,17 +64,17 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
 
   const renderer = new marked.Renderer()
 
-  const replacer = ((blockRegex, inlineRegex) => (text: string) => {
-    text = text.replace(blockRegex, (_, expression) => {
+  const replacer = (text: string) => {
+    text = text.replace(BlockRegex, (_, expression) => {
       return katex.renderToString(expression, { displayMode: true, throwOnError: false })
     })
 
-    text = text.replace(inlineRegex, (_, expression) => {
+    text = text.replace(InlineRegex, (_, expression) => {
       return katex.renderToString(expression, { displayMode: false, throwOnError: false })
     })
 
     return text
-  })(/\$\$([\s\S]+?)\$\$/g, /\$([\s\S]+?)\$/g)
+  }
 
   renderer.paragraph = RenderReplacer(renderer.paragraph, replacer)
   renderer.text = RenderReplacer(renderer.text, replacer)

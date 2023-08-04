@@ -236,7 +236,6 @@ export const useInlineStyles = createStyles((theme) => {
 
   return {
     root: {
-      overflowX: 'auto',
       wordBreak: 'break-word',
       wordWrap: 'break-word',
 
