@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
+import WithAdminTab from '@Components/admin/WithAdminTab'
+import { AdminTabProps } from '@Components/admin/WithAdminTab'
 import { Role } from '@Api'
-import WithAdminTab from './WithAdminTab'
-import { AdminTabProps } from './WithAdminTab'
 
 const AdminPage: FC<AdminTabProps> = (props) => {
   return (

@@ -10,10 +10,10 @@ import {
   mdiCached,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import LogoHeader from '@Components/LogoHeader'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
-import LogoHeader from './LogoHeader'
 
 const useHeaderStyles = createStyles((theme) => ({
   header: {

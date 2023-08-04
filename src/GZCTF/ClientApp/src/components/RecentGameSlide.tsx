@@ -2,8 +2,8 @@ import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge, Group, Stack, Title, createStyles, Paper } from '@mantine/core'
-import { getGameStatus, GameColorMap, GameStatus } from './GameCard'
-import { RecentGameProps } from './RecentGame'
+import { getGameStatus, GameColorMap, GameStatus } from '@Components/GameCard'
+import { RecentGameProps } from '@Components/RecentGame'
 
 const useStyles = createStyles((theme) => ({
   card: {

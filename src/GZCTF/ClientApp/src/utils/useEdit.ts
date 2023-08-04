@@ -1,5 +1,5 @@
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
-import { OnceSWRConfig } from './useConfig'
 
 export const useEditChallenge = (numId: number, numCId: number) => {
   const {

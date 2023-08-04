@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
+import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { DetailedGameInfoModel, ParticipationStatus } from '@Api'
-import { OnceSWRConfig } from './useConfig'
 
 export const getGameStatus = (game?: DetailedGameInfoModel) => {
   const startTime = dayjs(game?.start)

@@ -6,13 +6,13 @@ import { Card, Stack, Title, Text, LoadingOverlay, useMantineTheme } from '@mant
 import { showNotification } from '@mantine/notifications'
 import { mdiFlagOutline, mdiMonitorEye, mdiChartLine, mdiExclamationThick } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import CustomProgress from '@Components/CustomProgress'
+import IconTabs from '@Components/IconTabs'
+import { RequireRole } from '@Components/WithRole'
 import { useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
-import CustomProgress from './CustomProgress'
-import IconTabs from './IconTabs'
-import { RequireRole } from './WithRole'
 
 const pages = [
   {

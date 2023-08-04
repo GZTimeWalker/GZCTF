@@ -19,8 +19,10 @@
     "baseUrl": ".",
     "paths": {
       "@Api": ["src/Api.ts"],
+      "@App": ["src/App"],
       "@Components/*": ["src/components/*"],
-      "@Utils/*": ["src/utils/*"],
+      "@Pages/*": ["src/pages/*"],
+      "@Utils/*": ["src/utils/*"]
     }
   },
   "include": ["vite.config.ts", "**/*.ts", "**/*.tsx"],

@@ -9,7 +9,7 @@ import {
   MantineColor,
 } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
-import LogoHeader from './LogoHeader'
+import LogoHeader from '@Components/LogoHeader'
 
 interface TabStyleProps {
   color?: MantineColor

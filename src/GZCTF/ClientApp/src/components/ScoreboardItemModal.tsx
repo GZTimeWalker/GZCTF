@@ -15,10 +15,10 @@ import {
   Title,
   Badge,
 } from '@mantine/core'
+import TeamRadarMap from '@Components/TeamRadarMap'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
-import TeamRadarMap from './TeamRadarMap'
 
 interface ScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null

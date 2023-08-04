@@ -23,7 +23,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Countdown, FlagPlaceholders } from '@Components/ChallengeDetailModal'
-import MarkdownRender from '@Components/MarkdownRender'
+import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
@@ -160,9 +160,12 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               {challenge.hints.map((hint) => (
                 <Group spacing="xs" align="flex-start" noWrap>
                   <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-                  <Text key={hint} size="sm" maw="calc(100% - 2rem)">
-                    {hint}
-                  </Text>
+                  <InlineMarkdownRender
+                    key={hint}
+                    size="sm"
+                    maw="calc(100% - 2rem)"
+                    source={hint}
+                  />
                 </Group>
               ))}
             </Stack>

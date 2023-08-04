@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Stack, Center, createStyles } from '@mantine/core'
-import LogoHeader from './LogoHeader'
+import LogoHeader from '@Components/LogoHeader'
 
 const useStyles = createStyles(() => ({
   input: {

@@ -1,12 +1,8 @@
 import { marked } from 'marked'
 import { forwardRef } from 'react'
-import { Sx, TypographyStylesProvider, createStyles } from '@mantine/core'
+import { TypographyStylesProvider, createStyles } from '@mantine/core'
+import { MarkdownProps } from '@Components/MarkdownRender'
 import { useIsMobile } from '@Utils/ThemeOverride'
-
-interface MarkdownProps extends React.ComponentPropsWithoutRef<'div'> {
-  source: string
-  sx?: Sx | (Sx | undefined)[]
-}
 
 const useFooterStyles = createStyles((theme) => {
   const sc = (dark: any, light: any) => (theme.colorScheme === 'dark' ? dark : light)

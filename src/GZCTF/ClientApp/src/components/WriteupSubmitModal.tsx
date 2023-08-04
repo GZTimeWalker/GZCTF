@@ -18,11 +18,11 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiFileDocumentOutline, mdiFileHidden } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import MarkdownRender from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
-import MarkdownRender from './MarkdownRender'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number

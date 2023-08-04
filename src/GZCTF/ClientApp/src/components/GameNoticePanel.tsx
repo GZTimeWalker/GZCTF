@@ -6,9 +6,10 @@ import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
+import Empty from '@Components/Empty'
+import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
-import Empty from './Empty'
 
 enum NoticeFilter {
   All = 'all',
@@ -162,7 +163,7 @@ const GameNoticePanel: FC = () => {
                     <Text size="xs" fw={700} c="dimmed">
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
                     </Text>
-                    <Text>{notice.content}</Text>
+                    <InlineMarkdownRender source={notice.content} />
                   </Stack>
                 </List.Item>
               ))}

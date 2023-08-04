@@ -16,10 +16,10 @@ import {
   Badge,
   Input,
 } from '@mantine/core'
+import TeamRadarMap from '@Components/TeamRadarMap'
 import { BonusLabel } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
-import TeamRadarMap from './TeamRadarMap'
 
 interface MobileScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null

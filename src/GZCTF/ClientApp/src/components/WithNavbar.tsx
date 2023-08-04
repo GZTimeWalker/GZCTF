@@ -1,11 +1,11 @@
 import React, { FC } from 'react'
 import { AppShell, Box, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
+import AppFooter from '@Components/AppFooter'
+import AppHeader from '@Components/AppHeader'
+import AppNavbar from '@Components/AppNavbar'
+import Watermark from '@Components/Watermark'
+import WithWiderScreen from '@Components/WithWiderScreen'
 import { useUser } from '@Utils/useUser'
-import AppFooter from './AppFooter'
-import AppHeader from './AppHeader'
-import AppNavbar from './AppNavbar'
-import Watermark from './Watermark'
-import WithWiderScreen from './WithWiderScreen'
 
 interface WithNavBarProps extends React.PropsWithChildren {
   width?: string

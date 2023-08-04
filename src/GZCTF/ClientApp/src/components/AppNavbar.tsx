@@ -26,10 +26,10 @@ import {
   mdiCached,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import MainIcon from '@Components/icon/MainIcon'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
-import MainIcon from './icon/MainIcon'
 
 const useStyles = createStyles((theme) => {
   const active = { ref: getStylesRef('activeItem') } as const

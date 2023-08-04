@@ -1,7 +1,9 @@
+import dayjs from 'dayjs'
 import { FC } from 'react'
-import { Text, ActionIcon, Group, Card, PaperProps } from '@mantine/core'
+import { ActionIcon, Group, Card, PaperProps, Stack, Text } from '@mantine/core'
 import { mdiPencilOutline, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { GameNotice } from '@Api'
 
 interface GameNoticeEditCardProps extends PaperProps {
@@ -19,9 +21,12 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
   return (
     <Card {...props} shadow="sm" p="sm">
       <Group position="apart" noWrap>
-        <Group position="left">
-          <Text fw="500">{gameNotice.content}</Text>
-        </Group>
+        <Stack spacing={1}>
+          <InlineMarkdownRender source={gameNotice.content} />
+          <Text size="xs" fw={700} c="dimmed">
+            {dayjs(gameNotice.time).format('#YY/MM/DD HH:mm:ss')}
+          </Text>
+        </Stack>
         <Group position="right" noWrap>
           <ActionIcon onClick={onEdit}>
             <Icon path={mdiPencilOutline} size={1} />

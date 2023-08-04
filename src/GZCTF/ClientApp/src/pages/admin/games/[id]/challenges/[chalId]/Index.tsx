@@ -293,7 +293,7 @@ const GameChallengeEdit: FC = () => {
                 <Group spacing="sm">
                   <Text size="sm">题目描述</Text>
                   <Text size="xs" c="dimmed">
-                    支持 markdown 语法
+                    支持 Markdown 语法
                   </Text>
                 </Group>
               }
@@ -308,7 +308,14 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Stack spacing="sm">
               <HintList
-                label="题目提示"
+                label={
+                  <Group spacing="sm">
+                    <Text size="sm">题目提示</Text>
+                    <Text size="xs" c="dimmed">
+                      支持 Inline Markdown 语法
+                    </Text>
+                  </Group>
+                }
                 hints={challengeInfo?.hints ?? []}
                 disabled={disabled}
                 height={180}

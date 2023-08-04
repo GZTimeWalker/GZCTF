@@ -229,3 +229,39 @@ export const useTypographyStyles = createStyles((theme) => {
     },
   }
 })
+
+export const useInlineStyles = createStyles((theme) => {
+  const sc = (dark: any, light: any) => (theme.colorScheme === 'dark' ? dark : light)
+  const cs = theme.colors
+
+  return {
+    root: {
+      overflowX: 'auto',
+      wordBreak: 'break-word',
+      wordWrap: 'break-word',
+
+      '& code': {
+        whiteSpace: 'normal',
+        fontWeight: 500,
+        backgroundColor: 'transparent',
+        fontFamily: theme.fontFamilyMonospace,
+        padding: `0 2px`,
+        border: 'none',
+      },
+
+      '& strong': {
+        color: cs.brand[sc(6, 7)],
+      },
+
+      '& a': {
+        color: cs.brand[sc(6, 7)],
+        textDecoration: 'underline',
+        transition: 'all 0.2s ease-in-out',
+      },
+
+      '& a:hover': {
+        textDecoration: 'none',
+      },
+    },
+  }
+})

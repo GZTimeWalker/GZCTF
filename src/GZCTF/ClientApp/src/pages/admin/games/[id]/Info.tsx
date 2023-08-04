@@ -387,7 +387,7 @@ const GameInfoEdit: FC = () => {
             <Group spacing="sm">
               <Text size="sm">Writeup 附加说明</Text>
               <Text size="xs" c="dimmed">
-                支持 markdown 语法
+                支持 Markdown 语法
               </Text>
             </Group>
           }
@@ -437,7 +437,7 @@ const GameInfoEdit: FC = () => {
               <Group spacing="sm">
                 <Text size="sm">比赛详情</Text>
                 <Text size="xs" c="dimmed">
-                  支持 markdown 语法
+                  支持 Markdown 语法
                 </Text>
               </Group>
             }

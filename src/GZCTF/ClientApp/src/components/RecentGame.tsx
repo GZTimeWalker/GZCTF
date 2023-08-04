@@ -14,8 +14,8 @@ import {
 } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { getGameStatus, GameColorMap, GameStatus } from '@Components/GameCard'
 import { BasicGameInfoModel } from '@Api'
-import { getGameStatus, GameColorMap, GameStatus } from './GameCard'
 
 export interface RecentGameProps {
   game: BasicGameInfoModel

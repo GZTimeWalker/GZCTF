@@ -9,7 +9,7 @@ import {
   mdiTextBoxOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import AdminPage from './AdminPage'
+import AdminPage from '@Components/admin/AdminPage'
 
 const pages = [
   { icon: mdiTextBoxOutline, title: '信息编辑', path: 'info' },

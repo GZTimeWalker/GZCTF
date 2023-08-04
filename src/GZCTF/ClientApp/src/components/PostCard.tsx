@@ -15,10 +15,10 @@ import {
 } from '@mantine/core'
 import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import MarkdownRender from '@Components/MarkdownRender'
+import { RequireRole } from '@Components/WithRole'
 import { useUserRole } from '@Utils/useUser'
 import { PostInfoModel, Role } from '@Api'
-import MarkdownRender from './MarkdownRender'
-import { RequireRole } from './WithRole'
 
 export interface PostCardProps {
   post: PostInfoModel

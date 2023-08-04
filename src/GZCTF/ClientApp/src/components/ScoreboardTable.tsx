@@ -17,11 +17,11 @@ import {
   Input,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
+import ScoreboardItemModal from '@Components/ScoreboardItemModal'
 import { BloodBonus, BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
-import ScoreboardItemModal from './ScoreboardItemModal'
 
 export const useScoreboardStyles = createStyles((theme) => ({
   table: {

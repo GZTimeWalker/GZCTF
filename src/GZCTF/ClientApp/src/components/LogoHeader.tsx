@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { Group, Title, createStyles, GroupProps } from '@mantine/core'
+import MainIcon from '@Components/icon/MainIcon'
 import { useConfig } from '@Utils/useConfig'
-import MainIcon from './icon/MainIcon'
 
 const useStyles = createStyles((theme) => ({
   brand: {

@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { Group, Card, Title, Text, Stack, ActionIcon, Box, Avatar } from '@mantine/core'
 import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import MarkdownRender from '@Components/MarkdownRender'
+import { PostCardProps } from '@Components/PostCard'
+import { RequireRole } from '@Components/WithRole'
 import { useUserRole } from '@Utils/useUser'
 import { Role } from '@Api'
-import MarkdownRender from './MarkdownRender'
-import { PostCardProps } from './PostCard'
-import { RequireRole } from './WithRole'
 
 const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const navigate = useNavigate()

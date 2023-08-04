@@ -233,7 +233,7 @@ const PostEdit: FC = () => {
               <Group spacing="sm">
                 <Text size="sm">文章梗概</Text>
                 <Text size="xs" c="dimmed">
-                  支持 markdown 语法
+                  支持 Markdown 语法
                 </Text>
               </Group>
             }
@@ -247,7 +247,7 @@ const PostEdit: FC = () => {
               <Group spacing="sm">
                 <Text size="sm">文章内容</Text>
                 <Text size="xs" c="dimmed">
-                  支持 markdown 语法
+                  支持 Markdown 语法
                 </Text>
               </Group>
             }

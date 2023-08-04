@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Group, Title, Text, createStyles, keyframes } from '@mantine/core'
+import LogoHeader from '@Components/LogoHeader'
 import { useConfig } from '@Utils/useConfig'
-import LogoHeader from './LogoHeader'
 
 const useStyles = createStyles((theme) => ({
   group: {

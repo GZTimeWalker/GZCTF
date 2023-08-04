@@ -89,12 +89,8 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       <Stack>
+        <Text>编辑比赛通知详情，支持 Inline Markdown 语法。</Text>
         <Textarea
-          label={
-            <Group spacing="sm">
-              <Text size="sm">通知详情 </Text>
-            </Group>
-          }
           value={content}
           w="100%"
           autosize

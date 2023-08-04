@@ -3,10 +3,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import { mdiFileTableOutline, mdiFlag, mdiLightningBolt, mdiExclamationThick } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import WithGameTab from '@Components/WithGameTab'
+import WithNavBar from '@Components/WithNavbar'
+import WithRole from '@Components/WithRole'
 import { Role } from '@Api'
-import WithGameTab from './WithGameTab'
-import WithNavBar from './WithNavbar'
-import WithRole from './WithRole'
 
 const pages = [
   { icon: mdiLightningBolt, title: '事件监控', path: 'events' },
