@@ -198,6 +198,8 @@ ghcr.io/gztimewalker/gzctf/gzctf:latest
 
 题目配置和题目示例请见 [GZCTF-Challenges](https://github.com/GZTimeWalker/GZCTF-Challenges) 仓库。
 
+也可以参考和借鉴 [W4terCTF 2023](https://github.com/W4terDr0p/W4terCTF-2023) 的公开题目仓库，此内的题目均在题目正常工作的情况下尽量保证 Docker Image 的体积足够小，以便于在比赛中快速部署。
+
 GZCTF 通过将 `GZCTF_FLAG` 环境变量注入到容器中来实现动态 flag 的分发，因此请确保题目**的容器初始化脚本**中将这个环境变量中的文本放入到合适的位置。请注意，这一环境变量的初始化是在容器启动时进行的，而非容器镜像构建时。
 
 <Callout type="info">
