@@ -34,7 +34,7 @@ const GRID_BREAKPOINTS = [
   { maxWidth: 2500, cols: 5 },
   { maxWidth: 2100, cols: 4 },
   { maxWidth: 1700, cols: 3 },
-  { maxWidth: 1300, cols: 2 },
+  { maxWidth: 1350, cols: 2 },
   { maxWidth: 900, cols: 1 },
 ]
 
