@@ -75,10 +75,17 @@ import { Callout } from "nextra-theme-docs";
     "Secretkey": "",
     "RecaptchaThreshold": "0.5"
   },
-  "ForwardedHeadersOptions": {
+  "ForwardedOptions": {
     "ForwardedHeaders": 5, // a flag enum, see following link
     "ForwardLimit": 1,
-    "ForwardedForHeaderName": "X-Forwarded-For"
+    "ForwardedForHeaderName": "X-Forwarded-For",
+    // use the following options to allow proxy
+    "TrustedNetworks": [
+      "10.0.0.0/8"
+    ],
+    "TrustedProxies": [
+      "10.0.0.1"
+    ]
   }
 }
 ```
@@ -184,12 +191,20 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 - **Secretkey:** Google Recaptcha 服务器密钥
 - **RecaptchaThreshold:** Google Recaptcha 阈值，用于判断验证码是否有效
 
-### ForwardedHeadersOptions
+### ForwardedOptions
 
 此处配置反向代理的相关信息，用于获取真实 IP 地址，可选项。
 
 - **ForwardedHeaders:** 反向代理转发的标头枚举，默认请使用 `5`，详情请见 [ForwardedHeaders 枚举](https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders?view=aspnetcore-7.0)
 - **ForwardLimit:** 反向代理层数限制
 - **ForwardedForHeaderName:** 反向代理 IP 地址头名称
+- **TrustedNetworks:** 反向代理信任的网络列表，使用 CIDR 表示
+- **TrustedProxies:** 反向代理信任的代理列表，使用 IP 地址或域名表示
+
+<Callout type="info">
+
+若想要忽略反向代理的信任列表，允许任意 IP 地址访问，请参考[转发 Linux 和非 IIS 反向代理的方案](https://learn.microsoft.com/zh-cn/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0#forward-the-scheme-for-linux-and-non-iis-reverse-proxies)，设置环境变量 `ASPNETCORE_FORWARDEDHEADERS_ENABLED` 为 `true`。
+
+</Callout>
 
 其他字段请参考官方文档描述：[配置 ASP.NET Core 以使用代理服务器和负载均衡器](https://learn.microsoft.com/zh-cn/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0) 及 [ForwardedHeadersOptions 类](https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.aspnetcore.builder.forwardedheadersoptions?view=aspnetcore-7.0)

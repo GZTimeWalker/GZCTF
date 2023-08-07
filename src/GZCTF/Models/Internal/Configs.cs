@@ -1,4 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Net;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using GZCTF.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace GZCTF.Models.Internal;
 
@@ -127,4 +131,39 @@ public class RecaptchaConfig
     public string? SiteKey { get; set; }
     public string VerifyAPIAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
     public float RecaptchaThreshold { get; set; } = 0.5f;
+}
+
+public class ForwardedOptions : ForwardedHeadersOptions
+{
+    public List<string>? TrustedNetworks { get; set; }
+    public List<string>? TrustedProxies { get; set; }
+
+    public void ToForwardedHeadersOptions(ForwardedHeadersOptions options)
+    {
+        // assign the same value to the base class via reflection
+        var type = typeof(ForwardedHeadersOptions);
+        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var property in properties)
+        {
+            // skip the properties that are not being set directly
+            if (property.Name == nameof(KnownNetworks) ||
+                property.Name == nameof(KnownProxies))
+                continue;
+
+            property.SetValue(options, property.GetValue(this));
+        }
+
+        TrustedNetworks?.ForEach((network) =>
+        {
+            // split the network into address and prefix length
+            var parts = network.Split('/');
+            if (parts.Length == 2 && int.TryParse(parts[1], out var prefixLength))
+            {
+                var address = IPAddress.Parse(parts[0]);
+                options.KnownNetworks.Add(new IPNetwork(address, prefixLength));
+            }
+        });
+
+        TrustedProxies?.ForEach((proxy) => proxy.ResolveIP().ToList().ForEach((ip) => options.KnownProxies.Add(ip)));
+    }
 }

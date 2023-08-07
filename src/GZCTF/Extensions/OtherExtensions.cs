@@ -1,4 +1,5 @@
-﻿using GZCTF.Utils;
+﻿using System.Net;
+using GZCTF.Utils;
 
 namespace GZCTF.Extensions;
 
@@ -32,4 +33,14 @@ public static class ArrayExtensions
             T[] arr => new(arr, tot),
             _ => new(array.ToArray(), tot)
         };
+}
+
+public static class IPAddressExtensions
+{
+    public static IPAddress[] ResolveIP(this string? host)
+    {
+        return (!string.IsNullOrWhiteSpace(host))
+            ? Dns.GetHostAddresses(host)
+            : Array.Empty<IPAddress>();
+    }
 }

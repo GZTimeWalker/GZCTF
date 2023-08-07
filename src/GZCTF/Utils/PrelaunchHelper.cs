@@ -10,6 +10,7 @@ public static class PrelaunchHelper
     {
         using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
+        var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
         var cache = serviceScope.ServiceProvider.GetRequiredService<IDistributedCache>();
 
@@ -48,7 +49,10 @@ public static class PrelaunchHelper
                     EmailConfirmed = true,
                     RegisterTimeUTC = DateTimeOffset.UtcNow
                 };
-                await usermanager.CreateAsync(admin, password);
+
+                var result = await usermanager.CreateAsync(admin, password);
+                if (!result.Succeeded)
+                    logger.SystemLog($"管理员账户创建失败，错误信息：{result.Errors.FirstOrDefault()?.Description}", TaskStatus.Failed, LogLevel.Debug);
             }
         }
 

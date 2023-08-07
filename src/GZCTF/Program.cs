@@ -186,7 +186,20 @@ builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameo
 builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof(GlobalConfig)));
 builder.Services.Configure<GamePolicy>(builder.Configuration.GetSection(nameof(GamePolicy)));
 builder.Services.Configure<ContainerProvider>(builder.Configuration.GetSection(nameof(ContainerProvider)));
-builder.Services.Configure<ForwardedHeadersOptions>(builder.Configuration.GetSection(nameof(ForwardedHeadersOptions)));
+
+var forwardedOptions = builder.Configuration.GetSection(nameof(ForwardedOptions)).Get<ForwardedOptions>();
+if (forwardedOptions is null)
+{
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    });
+}
+else
+{
+    builder.Services.Configure<ForwardedHeadersOptions>(forwardedOptions.ToForwardedHeadersOptions);
+}
 
 if (builder.Configuration.GetSection(nameof(ContainerProvider))
     .GetValue<ContainerProviderType>(nameof(ContainerProvider.Type))
