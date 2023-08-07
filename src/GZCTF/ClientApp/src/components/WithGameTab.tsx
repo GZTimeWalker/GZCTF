@@ -9,7 +9,7 @@ import { Icon } from '@mdi/react'
 import CustomProgress from '@Components/CustomProgress'
 import IconTabs from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
-import { useGame } from '@Utils/useGame'
+import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
@@ -47,12 +47,9 @@ const pages = [
 dayjs.extend(duration)
 
 const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
-  const start = dayjs(game?.start ?? new Date())
-  const end = dayjs(game?.end ?? new Date())
-  const total = end.diff(start)
+  const { endTime, progress } = getGameStatus(game)
 
   const [now, setNow] = useState(dayjs())
-  const current = now.diff(start)
 
   useEffect(() => {
     if (!game || dayjs() > dayjs(game.end)) return
@@ -60,8 +57,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
     return () => clearInterval(interval)
   }, [game])
 
-  const progress = (current / total) * 100
-  const countdown = dayjs.duration(end.diff(now))
+  const countdown = dayjs.duration(endTime.diff(now))
 
   return (
     <Card

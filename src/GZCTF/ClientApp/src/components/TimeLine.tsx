@@ -3,7 +3,7 @@ import ReactEcharts from 'echarts-for-react'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useMantineTheme } from '@mantine/core'
-import { useGame, useGameScoreboard } from '@Utils/useGame'
+import { getGameStatus, useGame, useGameScoreboard } from '@Utils/useGame'
 
 interface TimeLineProps {
   organization: string | null
@@ -18,6 +18,15 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
 
   const { game } = useGame(numId)
 
+  const { startTime, endTime, progress } = getGameStatus(game)
+
+  const totDuration = endTime.diff(startTime, 'd')
+  const longGame = totDuration > 14
+  const weekProgress = (7 / totDuration) * 100
+
+  const scaleStart = progress - weekProgress
+  const scaleEnd = progress
+
   const [now, setNow] = useState<Date>(new Date())
   const [chartData, setChartData] = useState<any>()
 
@@ -25,7 +34,6 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
     if (!scoreboard?.timeLines || !game) return
 
     const timeLine = scoreboard?.timeLines[organization ?? 'all'] ?? []
-    const endTime = dayjs(game.end)
     const current = dayjs()
     const last = endTime.diff(current, 's') < 0 ? endTime : current
 
@@ -138,14 +146,14 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
         dataZoom: [
           {
             type: 'inside',
-            start: 0,
-            end: 100,
+            start: longGame ? scaleStart : 0,
+            end: longGame ? scaleEnd : 100,
             xAxisIndex: 0,
             filterMode: 'none',
           },
           {
-            start: 0,
-            end: 100,
+            start: longGame ? scaleStart : 0,
+            end: longGame ? scaleEnd : 100,
             xAxisIndex: 0,
             showDetail: false,
           },

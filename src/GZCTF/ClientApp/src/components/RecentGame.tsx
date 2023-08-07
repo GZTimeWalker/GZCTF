@@ -14,7 +14,8 @@ import {
 } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { getGameStatus, GameColorMap, GameStatus } from '@Components/GameCard'
+import { GameColorMap, GameStatus } from '@Components/GameCard'
+import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 
 export interface RecentGameProps {
@@ -26,12 +27,9 @@ const POSTER_HEIGHT = '15vh'
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
 
-  const { title, poster, start, end } = game
+  const { title, poster } = game
+  const { startTime, endTime, status } = getGameStatus(game)
 
-  const startTime = dayjs(start)
-  const endTime = dayjs(end)
-
-  const status = getGameStatus(startTime, endTime)
   const color = GameColorMap.get(status)
 
   const duration =

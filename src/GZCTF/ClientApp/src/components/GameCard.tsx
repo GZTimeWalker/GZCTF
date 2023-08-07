@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from 'dayjs'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -15,6 +14,7 @@ import {
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 
 export enum GameStatus {
@@ -33,21 +33,14 @@ interface GameCardProps {
   game: BasicGameInfoModel
 }
 
-export const getGameStatus = (start: Dayjs, end: Dayjs) => {
-  const now = dayjs()
-  return end < now ? GameStatus.Ended : start > now ? GameStatus.Coming : GameStatus.OnGoing
-}
-
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
 
-  const { summary, title, poster, start, end, limit } = game
-  const startTime = dayjs(start)
-  const endTime = dayjs(end)
+  const { summary, title, poster, limit } = game
+  const { startTime, endTime, status } = getGameStatus(game)
 
   const duration = endTime.diff(startTime, 'hours')
 
-  const status = getGameStatus(startTime, endTime)
   const color = GameColorMap.get(status)
 
   return (

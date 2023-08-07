@@ -2,8 +2,9 @@ import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge, Group, Stack, Title, createStyles, Paper } from '@mantine/core'
-import { getGameStatus, GameColorMap, GameStatus } from '@Components/GameCard'
+import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
+import { getGameStatus } from '@Utils/useGame'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -29,12 +30,10 @@ const useStyles = createStyles((theme) => ({
 const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
   const { classes } = useStyles()
 
-  const { title, poster, start, end } = game
+  const { title, poster } = game
 
-  const startTime = dayjs(start)
-  const endTime = dayjs(end)
+  const { startTime, endTime, status } = getGameStatus(game)
 
-  const status = getGameStatus(startTime, endTime)
   const color = GameColorMap.get(status)
 
   const duration =

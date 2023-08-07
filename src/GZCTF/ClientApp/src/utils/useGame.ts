@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { GameStatus } from '@Components/GameCard'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { DetailedGameInfoModel, ParticipationStatus } from '@Api'
 
@@ -11,14 +12,18 @@ export const getGameStatus = (game?: DetailedGameInfoModel) => {
 
   const finished = current > duriation
   const started = current > 0
-  const progress = started ? (finished ? 100 : current / duriation) : 0
+  const total = endTime.diff(startTime, 'minute')
+  const progress = started ? (finished ? 1 : current / duriation) : 0
+  const status = started ? (finished ? GameStatus.Ended : GameStatus.OnGoing) : GameStatus.Coming
 
   return {
     startTime,
     endTime,
     finished,
     started,
-    progress,
+    progress: progress * 100,
+    total,
+    status,
   }
 }
 
