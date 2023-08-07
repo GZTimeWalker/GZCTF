@@ -12,6 +12,7 @@ using GZCTF.Services;
 using GZCTF.Services.Interface;
 using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -185,6 +186,7 @@ builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameo
 builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof(GlobalConfig)));
 builder.Services.Configure<GamePolicy>(builder.Configuration.GetSection(nameof(GamePolicy)));
 builder.Services.Configure<ContainerProvider>(builder.Configuration.GetSection(nameof(ContainerProvider)));
+builder.Services.Configure<ForwardedHeadersOptions>(builder.Configuration.GetSection(nameof(ForwardedHeadersOptions)));
 
 if (builder.Configuration.GetSection(nameof(ContainerProvider))
     .GetValue<ContainerProviderType>(nameof(ContainerProvider.Type))
@@ -263,7 +265,7 @@ app.UseStaticFiles(new StaticFileOptions
     }
 });
 
-app.UseMiddleware<ProxyMiddleware>();
+app.UseForwardedHeaders();
 
 app.UseRouting();
 

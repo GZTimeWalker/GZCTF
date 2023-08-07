@@ -14,67 +14,71 @@ import { Callout } from "nextra-theme-docs";
 
 此处给出一个完整的配置文件示例：
 
-```json5
+```json
 {
-  AllowedHosts: "*",
-  ConnectionStrings: {
-    Database: "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>",
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "Database": "Host=db:5432;Database=gzctf;Username=postgres;Password=<Database Password>"
     // redis is optional
     //"RedisCache": "cache:6379,password=<Redis Password>"
   },
-  Logging: {
-    LogLevel: {
-      Default: "Information",
-      Microsoft: "Warning",
-      "Microsoft.Hosting.Lifetime": "Information",
-    },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
   },
-  EmailConfig: {
-    SendMailAddress: "a@a.com",
-    UserName: "",
-    Password: "",
-    Smtp: {
-      Host: "localhost",
-      Port: 587,
-    },
+  "EmailConfig": {
+    "SendMailAddress": "a@a.com",
+    "UserName": "",
+    "Password": "",
+    "Smtp": {
+      "Host": "localhost",
+      "Port": 587
+    }
   },
-  XorKey: "<Random Key Str>",
-  ContainerProvider: {
-    Type: "Docker", // or "Kubernetes"
-    PublicEntry: "ctf.example.com", // or "xxx.xxx.xxx.xxx"
-    DockerConfig: {
+  "XorKey": "<Random Key Str>",
+  "ContainerProvider": {
+    "Type": "Docker", // or "Kubernetes"
+    "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
+    "DockerConfig": {
       // optional
-      SwarmMode: false,
-      Uri: "unix:///var/run/docker.sock",
+      "SwarmMode": false,
+      "Uri": "unix:///var/run/docker.sock"
     },
-    K8sConfig: {
+    "K8sConfig": {
       // optional
-      Namespace: "gzctf-challenges",
-      ConfigPath: "k8sconfig.yaml",
-      AllowCIDR: [
+      "Namespace": "gzctf-challenges",
+      "ConfigPath": "k8sconfig.yaml",
+      "AllowCIDR": [
         // allow the cluster CIDR for LB
-        "10.0.0.0/8",
+        "10.0.0.0/8"
       ],
-      DNS: [
+      "DNS": [
         // custom DNS to avoid cluster DNS
         "8.8.8.8",
-        "223.5.5.5",
-      ],
-    },
+        "223.5.5.5"
+      ]
+    }
   },
-  RequestLogging: false,
-  DisableRateLimit: false,
-  RegistryConfig: {
-    UserName: "",
-    Password: "",
-    ServerAddress: "",
+  "RequestLogging": false,
+  "DisableRateLimit": false,
+  "RegistryConfig": {
+    "UserName": "",
+    "Password": "",
+    "ServerAddress": ""
   },
-  GoogleRecaptcha: {
-    VerifyAPIAddress: "https://www.recaptcha.net/recaptcha/api/siteverify",
-    Sitekey: "",
-    Secretkey: "",
-    RecaptchaThreshold: "0.5",
+  "GoogleRecaptcha": {
+    "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
+    "Sitekey": "",
+    "Secretkey": "",
+    "RecaptchaThreshold": "0.5"
   },
+  "ForwardedHeadersOptions": {
+    "ForwardLimit": 1,
+    "ForwardedForHeaderName": "X-Forwarded-For"
+  }
 }
 ```
 
@@ -178,3 +182,12 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 - **Sitekey:** Google Recaptcha 站点密钥
 - **Secretkey:** Google Recaptcha 服务器密钥
 - **RecaptchaThreshold:** Google Recaptcha 阈值，用于判断验证码是否有效
+
+### ForwardedHeadersOptions
+
+此处配置反向代理的相关信息，用于获取真实 IP 地址，可选项。
+
+- **ForwardLimit:** 反向代理层数限制
+- **ForwardedForHeaderName:** 反向代理 IP 地址头名称
+
+其他字段请参考官方文档描述：[配置 ASP.NET Core 以使用代理服务器和负载均衡器](https://learn.microsoft.com/zh-cn/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0) 及 [ForwardedHeadersOptions 类](https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.aspnetcore.builder.forwardedheadersoptions?view=aspnetcore-7.0)
