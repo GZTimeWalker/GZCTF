@@ -31,16 +31,6 @@ jobs:
         with:
           format: "YYYY-MM-DDTHH:mm:ssZ"
 
-      - name: Cache node modules
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.local/share/pnpm/store
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/GZCTF/ClientApp/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-
       - name: Prebuild project
         run: |
           npm i -g pnpm

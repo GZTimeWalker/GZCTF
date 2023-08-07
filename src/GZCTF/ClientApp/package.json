@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.15.6",
+  "version": "0.15.7",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -66,7 +66,7 @@
     "swagger-typescript-api": "^13.0.2",
     "tslib": "^2.6.1",
     "typescript": "5.1.6",
-    "vite": "^4.4.8",
+    "vite": "^4.4.9",
     "vite-plugin-pages": "^0.31.0",
     "vite-plugin-prismjs": "^0.0.8",
     "vite-plugin-webfont-dl": "^3.7.6"
