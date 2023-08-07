@@ -157,10 +157,11 @@ public class ForwardedOptions : ForwardedHeadersOptions
         {
             // split the network into address and prefix length
             var parts = network.Split('/');
-            if (parts.Length == 2 && int.TryParse(parts[1], out var prefixLength))
+            if (parts.Length == 2 &&
+                IPAddress.TryParse(parts[0], out var prefix) &&
+                int.TryParse(parts[1], out var prefixLength))
             {
-                var address = IPAddress.Parse(parts[0]);
-                options.KnownNetworks.Add(new IPNetwork(address, prefixLength));
+                options.KnownNetworks.Add(new IPNetwork(prefix, prefixLength));
             }
         });
 

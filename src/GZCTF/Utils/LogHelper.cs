@@ -84,7 +84,7 @@ public static class LogHelper
     {
         app.UseSerilogRequestLogging(options =>
         {
-            options.MessageTemplate = "[{StatusCode}] @{Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath} From {RemoteIP}";
+            options.MessageTemplate = "[{StatusCode}] {Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath} @ {RemoteIP}";
             options.GetLevel = (context, time, ex) =>
                 time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
                 (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
@@ -110,54 +110,53 @@ public static class LogHelper
     private const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
     private const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
-    public static Logger GetInitLogger()
+    public static Serilog.ILogger GetInitLogger()
         => new LoggerConfiguration()
             .Enrich.FromLogContext()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
-            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
                 formatter: new ExpressionTemplate(InitLogTemplate, theme: TemplateTheme.Literate),
                 restrictedToMinimumLevel: LogEventLevel.Debug
             ))
-            .CreateLogger();
+            .CreateBootstrapLogger();
 
-    public static Logger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
+    public static Serilog.ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
         => new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .MinimumLevel.Debug()
-    .Filter.ByExcluding(logEvent =>
-         logEvent.Exception != null &&
-         logEvent.Exception.GetType() == typeof(OperationCanceledException))
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
-    .WriteTo.Async(t => t.Console(
-        formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
-        restrictedToMinimumLevel: LogEventLevel.Debug
-    ))
-    .WriteTo.Async(t => t.File(
-        path: "log/log_.log",
-        formatter: new ExpressionTemplate(LogTemplate),
-        rollingInterval: RollingInterval.Day,
-        fileSizeLimitBytes: 10 * 1024 * 1024,
-        restrictedToMinimumLevel: LogEventLevel.Debug,
-        rollOnFileSizeLimit: true,
-        retainedFileCountLimit: 5,
-        hooks: new ArchiveHooks(CompressionLevel.Optimal, "log/archive/{UtcDate:yyyy-MM}")
-    ))
-    .WriteTo.Async(t => t.PostgreSQL(
-        connectionString: configuration.GetConnectionString("Database"),
-        tableName: "Logs",
-        respectCase: true,
-        columnOptions: ColumnWriters,
-        restrictedToMinimumLevel: LogEventLevel.Information,
-        period: TimeSpan.FromSeconds(30)
-    ))
-    .WriteTo.SignalR(serviceProvider)
-    .CreateLogger();
+            .Enrich.FromLogContext()
+            .MinimumLevel.Debug()
+            .Filter.ByExcluding(logEvent =>
+                 logEvent.Exception != null &&
+                 logEvent.Exception.GetType() == typeof(OperationCanceledException))
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
+            .WriteTo.Async(t => t.Console(
+                formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+                restrictedToMinimumLevel: LogEventLevel.Debug
+            ))
+            .WriteTo.Async(t => t.File(
+                path: "log/log_.log",
+                formatter: new ExpressionTemplate(LogTemplate),
+                rollingInterval: RollingInterval.Day,
+                fileSizeLimitBytes: 10 * 1024 * 1024,
+                restrictedToMinimumLevel: LogEventLevel.Debug,
+                rollOnFileSizeLimit: true,
+                retainedFileCountLimit: 5,
+                hooks: new ArchiveHooks(CompressionLevel.Optimal, "log/archive/{UtcDate:yyyy-MM}")
+            ))
+            .WriteTo.Async(t => t.PostgreSQL(
+                connectionString: configuration.GetConnectionString("Database"),
+                tableName: "Logs",
+                respectCase: true,
+                columnOptions: ColumnWriters,
+                restrictedToMinimumLevel: LogEventLevel.Information,
+                period: TimeSpan.FromSeconds(30)
+            ))
+            .WriteTo.SignalR(serviceProvider)
+            .CreateLogger();
 }
 
 public class TimeColumnWriter : ColumnWriterBase
