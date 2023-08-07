@@ -86,9 +86,9 @@ export const ThemeOverride: MantineThemeOverride = {
         centered: true,
       },
     },
-    DatePickerInput: {
+    Popover: {
       defaultProps: {
-        popoverProps: { withinPortal: true },
+        withinPortal: true,
       },
     },
     Notification: {
