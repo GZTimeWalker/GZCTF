@@ -76,6 +76,7 @@ import { Callout } from "nextra-theme-docs";
     "RecaptchaThreshold": "0.5"
   },
   "ForwardedHeadersOptions": {
+    "ForwardedHeaders": 5, // a flag enum, see following link
     "ForwardLimit": 1,
     "ForwardedForHeaderName": "X-Forwarded-For"
   }
@@ -187,6 +188,7 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 
 此处配置反向代理的相关信息，用于获取真实 IP 地址，可选项。
 
+- **ForwardedHeaders:** 反向代理转发的标头枚举，默认请使用 `5`，详情请见 [ForwardedHeaders 枚举](https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders?view=aspnetcore-7.0)
 - **ForwardLimit:** 反向代理层数限制
 - **ForwardedForHeaderName:** 反向代理 IP 地址头名称
 

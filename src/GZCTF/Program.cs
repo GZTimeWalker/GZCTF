@@ -240,18 +240,6 @@ var app = builder.Build();
 
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
-    app.UseSwaggerUi3();
-}
-else
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
-
 await app.RunPrelaunchWork();
 
 app.UseResponseCompression();
@@ -266,6 +254,18 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseForwardedHeaders();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
+    app.UseSwaggerUi3();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
 app.UseRouting();
 
