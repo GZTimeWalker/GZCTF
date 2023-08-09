@@ -226,6 +226,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasIndex(e => e.InstanceId);
+
+            entity.Navigation(e => e.Instance).AutoInclude();
         });
 
         builder.Entity<Challenge>(entity =>
