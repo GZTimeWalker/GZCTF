@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
 using GZCTF.Utils;
@@ -289,23 +290,22 @@ public class K8sService : IContainerService
             }, options.Namespace);
         }
 
-        if (withAuth && registry is not null)
+        if (withAuth && registry is not null && registry.ServerAddress is not null)
         {
-            // check if the UserName and Password
-            // will inject the json and make it invalid
-            foreach (var chr in $"{registry.UserName}{registry.Password}")
-            {
-                if (":@\"\\".Contains(chr))
-                {
-                    logger.SystemLog("Registry 用户名或密码中包含非法字符", TaskStatus.Failed, LogLevel.Error);
-                    throw new ArgumentException("Registry 用户名或密码中包含非法字符");
-                }
-            }
-
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
-            var dockerjson = $"{{\"auths\":{{\"{registry.ServerAddress}\":{{\"auth\":\"{auth}\"," +
-                $"\"username\":\"{registry.UserName}\",\"password\":\"{registry.Password}\"}}}}}}";
-            var dockerjsonBytes = Encoding.ASCII.GetBytes(dockerjson);
+            var dockerjsonObj = new
+            {
+                auths = new Dictionary<string, object> {
+                    {
+                        registry.ServerAddress, new {
+                            auth,
+                            username = registry.UserName,
+                            password = registry.Password
+                        }
+                    }
+                }
+            };
+            var dockerjsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerjsonObj);
             var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()
