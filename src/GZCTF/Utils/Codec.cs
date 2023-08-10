@@ -191,6 +191,15 @@ public partial class Codec
     }
 
     /// <summary>
+    /// 转换为对应进制
+    /// </summary>
+    /// <param name="source">源数据</param>
+    /// <param name="tobase">进制支持2,8,10,16</param>
+    /// <returns></returns>
+    public static List<string> ToBase(List<int> source, int tobase)
+        => new(source.ConvertAll((a) => Convert.ToString(a, tobase)));
+
+    /// <summary>
     /// 字节数组转换为16进制字符串
     /// </summary>
     /// <param name="bytes">原始字节数组</param>
@@ -217,85 +226,6 @@ public partial class Codec
         }
         return res;
     }
-
-    /// <summary>
-    /// 获取字符串ASCII数组
-    /// </summary>
-    /// <param name="str">原字符串</param>
-    /// <returns></returns>
-    public static List<int> ASCII(string str)
-    {
-        var buff = Encoding.ASCII.GetBytes(str);
-        List<int> res = new();
-        foreach (var item in buff)
-            res.Add(item);
-        return res;
-    }
-
-    /// <summary>
-    /// 转换为对应进制
-    /// </summary>
-    /// <param name="source">源数据</param>
-    /// <param name="tobase">进制支持2,8,10,16</param>
-    /// <returns></returns>
-    public static List<string> ToBase(List<int> source, int tobase)
-        => new(source.ConvertAll((a) => Convert.ToString(a, tobase)));
-
-    /// <summary>
-    /// 反转字符串
-    /// </summary>
-    /// <param name="s">原字符串</param>
-    /// <returns></returns>
-    public static string Reverse(string s)
-    {
-        var charArray = s.ToCharArray();
-        Array.Reverse(charArray);
-        return new string(charArray);
-    }
-
-    /// <summary>
-    /// 获取字符串MD5哈希摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <param name="useBase64">是否使用Base64编码</param>
-    /// <returns></returns>
-    public static string StrMD5(string str, bool useBase64 = false)
-    {
-        var output = MD5.HashData(Encoding.Default.GetBytes(str));
-        if (useBase64)
-            return Convert.ToBase64String(output);
-        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
-    }
-
-    /// <summary>
-    /// 获取SHA256哈希摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <param name="useBase64">是否使用Base64编码</param>
-    /// <returns></returns>
-    public static string StrSHA256(string str, bool useBase64 = false)
-    {
-        var output = SHA256.HashData(Encoding.Default.GetBytes(str));
-        if (useBase64)
-            return Convert.ToBase64String(output);
-        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
-    }
-
-    /// <summary>
-    /// 获取MD5哈希字节摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <returns></returns>
-    public static byte[] BytesMD5(string str)
-        => MD5.HashData(Encoding.Default.GetBytes(str));
-
-    /// <summary>
-    /// 获取SHA256哈希字节摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <returns></returns>
-    public static byte[] BytesSHA256(string str)
-        => SHA256.HashData(Encoding.Default.GetBytes(str));
 
     /// <summary>
     /// 将文件打包为 zip 文件
@@ -325,4 +255,96 @@ public partial class Codec
         await tmp.FlushAsync(token);
         return tmp;
     }
+}
+
+public static partial class CodecExtensions
+{
+
+    [GeneratedRegex("[^a-zA-Z0-9]+")]
+    private static partial Regex RFC1123ReplacePattern();
+
+    /// <summary>
+    /// 将字符串转换为符合 RFC1123 要求的字符串
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="leading">若开头为数字则添加的字符串</param>
+    /// <returns></returns>
+    public static string ToValidRFC1123String(this string str, string leading = "name")
+    {
+        var ret = RFC1123ReplacePattern().Replace(str, "-").Trim('-').ToLowerInvariant();
+        if (ret.Length > 0 && char.IsDigit(ret[0]))
+            return $"{leading}-{ret}";
+        return ret;
+    }
+
+    /// <summary>
+    /// 获取字符串ASCII数组
+    /// </summary>
+    /// <param name="str">原字符串</param>
+    /// <returns></returns>
+    public static List<int> ASCII(this string str)
+    {
+        var buff = Encoding.ASCII.GetBytes(str);
+        List<int> res = new();
+        foreach (var item in buff)
+            res.Add(item);
+        return res;
+    }
+
+    /// <summary>
+    /// 反转字符串
+    /// </summary>
+    /// <param name="s">原字符串</param>
+    /// <returns></returns>
+    public static string Reverse(this string s)
+    {
+        var charArray = s.ToCharArray();
+        Array.Reverse(charArray);
+        return new string(charArray);
+    }
+
+    /// <summary>
+    /// 获取字符串MD5哈希摘要
+    /// </summary>
+    /// <param name="str">原始字符串</param>
+    /// <param name="useBase64">是否使用Base64编码</param>
+    /// <returns></returns>
+    public static string StrMD5(this string str, bool useBase64 = false)
+    {
+        var output = MD5.HashData(Encoding.Default.GetBytes(str));
+        if (useBase64)
+            return Convert.ToBase64String(output);
+        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// 获取SHA256哈希摘要
+    /// </summary>
+    /// <param name="str">原始字符串</param>
+    /// <param name="useBase64">是否使用Base64编码</param>
+    /// <returns></returns>
+    public static string StrSHA256(this string str, bool useBase64 = false)
+    {
+        var output = SHA256.HashData(Encoding.Default.GetBytes(str));
+        if (useBase64)
+            return Convert.ToBase64String(output);
+        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// 获取MD5哈希字节摘要
+    /// </summary>
+    /// <param name="str">原始字符串</param>
+    /// <returns></returns>
+    public static byte[] BytesMD5(this string str)
+        => MD5.HashData(Encoding.Default.GetBytes(str));
+
+    /// <summary>
+    /// 获取SHA256哈希字节摘要
+    /// </summary>
+    /// <param name="str">原始字符串</param>
+    /// <returns></returns>
+    public static byte[] BytesSHA256(this string str)
+        => SHA256.HashData(Encoding.Default.GetBytes(str));
+
 }

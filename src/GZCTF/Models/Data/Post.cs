@@ -71,5 +71,5 @@ public partial class Post
         return this;
     }
 
-    internal void UpdateKeyWithHash() => Id = Codec.StrSHA256($"{Title}:{UpdateTimeUTC:s}:{Guid.NewGuid()}")[4..12];
+    internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUTC:s}:{Guid.NewGuid()}".StrSHA256()[4..12];
 }

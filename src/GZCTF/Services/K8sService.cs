@@ -47,8 +47,8 @@ public class K8sService : IContainerService
 
         if (withAuth)
         {
-            var padding = Codec.StrMD5($"{registry.UserName}@{registry.Password}@{registry.ServerAddress}");
-            AuthSecretName = $"{registry.UserName}-{padding}";
+            var padding = $"{registry.UserName}@{registry.Password}@{registry.ServerAddress}".StrMD5();
+            AuthSecretName = $"{registry.UserName}-{padding}".ToValidRFC1123String("secret");
         }
 
         try
@@ -74,14 +74,7 @@ public class K8sService : IContainerService
             return null;
         }
 
-        // add prefix when meet the leading numbers
-        // which is not allowed in k8s dns name
-        if (char.IsDigit(imageName[0]))
-            imageName = $"chal-{imageName}";
-
-        // follow the k8s naming convention
-        // use uuid to avoid name conflict
-        var name = $"{imageName}-{Guid.NewGuid().ToString("N")[..16]}".Replace('_', '-');
+        var name = $"{imageName.ToValidRFC1123String("chal")}-{Guid.NewGuid().ToString("N")[..16]}";
 
         var pod = new V1Pod("v1", "Pod")
         {

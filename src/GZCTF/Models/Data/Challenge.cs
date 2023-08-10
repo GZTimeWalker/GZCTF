@@ -214,7 +214,7 @@ public class Challenge
             // for third-party flag calculation and external distribution.
             //   To address this issue, one possible solution is to use a salted hash of
             // the private key as the salt for the team's hash.
-            var hash = Codec.StrSHA256($"{part.Token}::{part.Game.TeamHashSalt}::{Id}");
+            var hash = $"{part.Token}::{part.Game.TeamHashSalt}::{Id}".StrSHA256();
             return flag.Replace("[TEAM_HASH]", hash[12..24]);
         }
 

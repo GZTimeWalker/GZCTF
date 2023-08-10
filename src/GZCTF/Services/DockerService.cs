@@ -78,7 +78,7 @@ public class DockerService : IContainerService
     }
 
     private static string GetName(ContainerConfig config)
-        => $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{Codec.StrMD5(config.Flag ?? Guid.NewGuid().ToString())[..16]}";
+        => $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMD5()[..16]}";
 
     private static CreateContainerParameters GetCreateContainerParameters(ContainerConfig config)
         => new()
