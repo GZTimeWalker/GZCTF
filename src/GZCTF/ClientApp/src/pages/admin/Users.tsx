@@ -93,7 +93,7 @@ const Users: FC = () => {
       })
       .then((res) => {
         setUsers(res.data)
-        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
+        setCurrent(res.data.length)
       })
       .catch(showErrorNotification)
       .finally(() => {
@@ -211,9 +211,12 @@ const Users: FC = () => {
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
+            <Text fw="bold" size="sm">
+              {page}
+            </Text>
             <ActionIcon
               size="lg"
-              disabled={users && users.length < ITEM_COUNT_PER_PAGE}
+              disabled={page * ITEM_COUNT_PER_PAGE >= total}
               onClick={() => setPage(page + 1)}
             >
               <Icon path={mdiArrowRightBold} size={1} />

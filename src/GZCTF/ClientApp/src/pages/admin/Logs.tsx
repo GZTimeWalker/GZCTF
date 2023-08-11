@@ -184,6 +184,9 @@ const Logs: FC = () => {
             >
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
+            <Text fw="bold" size="sm">
+              {activePage}
+            </Text>
             <ActionIcon
               size="lg"
               disabled={logs && logs.length < ITEM_COUNT_PER_PAGE}
