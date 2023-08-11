@@ -7,13 +7,12 @@ export const getGameStatus = (game?: DetailedGameInfoModel) => {
   const startTime = dayjs(game?.start)
   const endTime = dayjs(game?.end)
 
-  const duriation = endTime.diff(startTime, 'minute')
+  const total = endTime.diff(startTime, 'minute')
   const current = dayjs().diff(startTime, 'minute')
 
-  const finished = current > duriation
+  const finished = current > total
   const started = current > 0
-  const total = endTime.diff(startTime, 'minute')
-  const progress = started ? (finished ? 1 : current / duriation) : 0
+  const progress = started ? (finished ? 1 : current / total) : 0
   const status = started ? (finished ? GameStatus.Ended : GameStatus.OnGoing) : GameStatus.Coming
 
   return {

@@ -93,9 +93,9 @@ public class MailSender : IMailSender
             "确认验证邮箱", userName, email, confirmLink);
 
     public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink)
-        => SendUrlIfPossible("更改邮箱",
+        => SendUrlIfPossible("更换邮箱",
             "你正在进行账户邮箱更换操作，请点击下方按钮验证你的新邮箱。",
-            "确认跟换邮箱", userName, email, resetLink);
+            "确认更换邮箱", userName, email, resetLink);
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink)
         => SendUrlIfPossible("重置密码",

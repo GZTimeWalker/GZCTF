@@ -285,6 +285,7 @@ const GameInfoEdit: FC = () => {
               .hour(Number(newTime[0]))
               .minute(Number(newTime[1]))
               .second(Number(newTime[2]))
+              .millisecond(0)
             setStart(newDate)
             if (newDate && end < newDate) {
               setEnd(newDate.add(2, 'h'))
@@ -318,6 +319,7 @@ const GameInfoEdit: FC = () => {
               .hour(Number(newTime[0]))
               .minute(Number(newTime[1]))
               .second(Number(newTime[2]))
+              .millisecond(0)
             setEnd(newDate)
           }}
           error={end < start}
