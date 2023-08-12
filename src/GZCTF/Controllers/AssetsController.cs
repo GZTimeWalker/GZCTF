@@ -16,20 +16,16 @@ namespace GZCTF.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AssetsController : ControllerBase
 {
+    private const string BasePath = "files/uploads";
+
     private readonly ILogger<AssetsController> logger;
     private readonly IFileRepository fileRepository;
-    private readonly IConfiguration configuration;
-    private readonly string basepath;
     private readonly FileExtensionContentTypeProvider extProvider = new();
 
-    public AssetsController(IFileRepository _fileeService,
-        IConfiguration _configuration,
-        ILogger<AssetsController> _logger)
+    public AssetsController(IFileRepository _fileeService, ILogger<AssetsController> _logger)
     {
         fileRepository = _fileeService;
-        configuration = _configuration;
         logger = _logger;
-        basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
     }
 
     /// <summary>
@@ -48,8 +44,7 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public IActionResult GetFile([RegularExpression("[0-9a-f]{64}")] string hash, string filename)
     {
-        var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
-        path = Path.GetFullPath(Path.Combine(basepath, path));
+        var path = Path.GetFullPath(Path.Combine(BasePath, hash[..2], hash[2..4], hash));
 
         if (!System.IO.File.Exists(path))
         {

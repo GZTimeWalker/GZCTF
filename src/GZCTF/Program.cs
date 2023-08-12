@@ -28,10 +28,14 @@ Banner();
 
 #region Directory
 
-var uploadPath = Path.Combine(builder.Configuration.GetSection("UploadFolder").Value ?? "uploads");
+var dirs = new[] { "logs", "uploads", "capture" };
 
-if (!Directory.Exists(uploadPath))
-    Directory.CreateDirectory(uploadPath);
+foreach (var dir in dirs)
+{
+    var path = Path.Combine("files", dir);
+    if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
+}
 
 #endregion Directory
 
