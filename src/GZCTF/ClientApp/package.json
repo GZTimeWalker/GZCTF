@@ -40,7 +40,7 @@
     "react-pdf": "^7.3.3",
     "react-router": "^6.15.0",
     "react-router-dom": "^6.15.0",
-    "swr": "^2.2.0",
+    "swr": "^2.2.1",
     "vite-tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "@nabla/vite-plugin-eslint": "^1.5.0",
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/katex": "^0.16.2",
-    "@types/node": "20.4.9",
+    "@types/node": "20.4.10",
     "@types/prismjs": "^1.26.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
@@ -57,7 +57,7 @@
     "@vitejs/plugin-react": "^4.0.4",
     "axios": "^1.4.0",
     "babel-plugin-prismjs": "^2.1.0",
-    "eslint": "8.46.0",
+    "eslint": "8.47.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "form-data": "~4.0.0",
     "lodash": "^4.17.21",

@@ -24,7 +24,7 @@ const Scoreboard: FC = () => {
   return (
     <WithNavBar width="90%" minWidth={0}>
       {isMobile ? (
-        <Stack>
+        <Stack pb="md">
           {data && !error && <TeamRank />}
           {isVertical ? (
             <MobileScoreboardTable
@@ -40,7 +40,7 @@ const Scoreboard: FC = () => {
         </Stack>
       ) : (
         <WithGameTab>
-          <Stack>
+          <Stack pb="2rem">
             <TimeLine organization={organization ?? 'all'} />
             <ScoreboardTable
               organization={organization ?? 'all'}
