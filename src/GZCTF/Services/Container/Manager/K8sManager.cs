@@ -12,14 +12,12 @@ public class K8sManager : IContainerManager
 {
     private readonly ILogger<K8sManager> _logger;
     private readonly IContainerProvider<Kubernetes, K8sMetadata> _provider;
-    private readonly IPortMapper _mapper;
     private readonly K8sMetadata _meta;
     private readonly Kubernetes _client;
 
-    public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, IPortMapper mapper, ILogger<K8sManager> logger)
+    public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger)
     {
         _logger = logger;
-        _mapper = mapper;
         _provider = provider;
         _meta = _provider.GetMetadata();
         _client = _provider.GetProvider();
@@ -121,20 +119,84 @@ public class K8sManager : IContainerManager
             return null;
         }
 
-
-        return await _mapper.MapContainer(new Container()
+        // Service is needed for port mapping
+        var container = new Container()
         {
             ContainerId = name,
             Image = config.Image,
             Port = config.ExposedPort,
-        }, config, token);
+        };
+
+        var service = new V1Service("v1", "Service")
+        {
+            Metadata = new V1ObjectMeta()
+            {
+                Name = name,
+                NamespaceProperty = _meta.Config.Namespace,
+                Labels = new Dictionary<string, string>() { ["ctf.gzti.me/ResourceId"] = name }
+            },
+            Spec = new V1ServiceSpec()
+            {
+                Type = _meta.ExposePort ? "NodePort" : "ClusterIP",
+                Ports = new[]
+                {
+                    new V1ServicePort(config.ExposedPort, targetPort: config.ExposedPort)
+                },
+                Selector = new Dictionary<string, string>()
+                {
+                    ["ctf.gzti.me/ResourceId"] = name
+                }
+            }
+        };
+
+        try
+        {
+            service = await _client.CoreV1.CreateNamespacedServiceAsync(service, _meta.Config.Namespace, cancellationToken: token);
+        }
+        catch (HttpOperationException e)
+        {
+            try
+            {
+                // remove the pod if service creation failed, ignore the error
+                await _client.CoreV1.DeleteNamespacedPodAsync(name, _meta.Config.Namespace, cancellationToken: token);
+            }
+            catch { }
+            _logger.SystemLog($"服务 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog($"服务 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
+            return null;
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                // remove the pod if service creation failed, ignore the error
+                await _client.CoreV1.DeleteNamespacedPodAsync(name, _meta.Config.Namespace, cancellationToken: token);
+            }
+            catch { }
+            _logger.LogError(e, "创建服务失败");
+            return null;
+        }
+
+        container.StartedAt = DateTimeOffset.UtcNow;
+        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
+        container.IP = service.Spec.ClusterIP;
+        container.Port = config.ExposedPort;
+        container.IsProxy = !_meta.ExposePort;
+
+        if (_meta.ExposePort)
+        {
+            container.PublicIP = _meta.PublicEntry;
+            container.PublicPort = service.Spec.Ports[0].NodePort;
+        }
+
+        return container;
     }
 
     public async Task DestroyContainerAsync(Container container, CancellationToken token = default)
     {
         try
         {
-            await _mapper.UnmapContainer(container, token);
+            await _client.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, _meta.Config.Namespace, cancellationToken: token);
             await _client.CoreV1.DeleteNamespacedPodAsync(container.ContainerId, _meta.Config.Namespace, cancellationToken: token);
         }
         catch (HttpOperationException e)

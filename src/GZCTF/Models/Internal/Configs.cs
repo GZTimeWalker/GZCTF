@@ -90,9 +90,19 @@ public enum ContainerProviderType
     Kubernetes
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ContainerPortMappingType
+{
+    Default,
+    PlatformProxy,
+    Frp,
+}
+
 public class ContainerProvider
 {
     public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
+    public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
+
     public string PublicEntry { get; set; } = string.Empty;
 
     public K8sConfig? K8sConfig { get; set; }

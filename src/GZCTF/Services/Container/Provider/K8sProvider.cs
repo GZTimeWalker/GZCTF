@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services;
 
-public class K8sMetadata
+public class K8sMetadata : ContainerProviderMetadata
 {
     /// <summary>
     /// 容器注册表鉴权 Secret 名称
@@ -19,11 +19,6 @@ public class K8sMetadata
     /// K8s 集群 Host IP
     /// </summary>
     public string HostIP { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 公共访问入口
-    /// </summary>
-    public string PublicEntry { get; set; } = string.Empty;
 
     /// <summary>
     /// K8s 配置
@@ -41,12 +36,13 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
     public Kubernetes GetProvider() => _kubernetesClient;
     public K8sMetadata GetMetadata() => _k8sMetadata;
 
-    public K8sProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> provider, ILogger<K8sProvider> logger)
+    public K8sProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> options, ILogger<K8sProvider> logger)
     {
         _k8sMetadata = new()
         {
-            Config = provider.Value.K8sConfig ?? new(),
-            PublicEntry = provider.Value.PublicEntry
+            Config = options.Value.K8sConfig ?? new(),
+            PortMappingType = options.Value.PortMappingType,
+            PublicEntry = options.Value.PublicEntry,
         };
 
         if (!File.Exists(_k8sMetadata.Config.KubeConfig))

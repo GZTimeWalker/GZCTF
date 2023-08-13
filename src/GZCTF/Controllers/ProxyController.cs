@@ -1,11 +1,13 @@
 ﻿
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
-using ProtocolType = System.Net.Sockets.ProtocolType;
+using Microsoft.Extensions.Options;
 using PacketDotNet;
+using ProtocolType = System.Net.Sockets.ProtocolType;
 
 namespace GZCTF.Controllers;
 
@@ -18,11 +20,15 @@ public class ProxyController : ControllerBase
 {
     private readonly ILogger<ProxyController> _logger;
     private readonly IContainerRepository _containerRepository;
-    private const int BufferSize = 1024 * 4;
 
-    public ProxyController(ILogger<ProxyController> logger, IContainerRepository containerRepository)
+    private readonly bool _enablePlatformProxy = false;
+    private const int BUFFER_SIZE = 1024 * 4;
+    private const int CONNECTION_LIMIT = 128;
+
+    public ProxyController(ILogger<ProxyController> logger, IOptions<ContainerProvider> provider, IContainerRepository containerRepository)
     {
         _logger = logger;
+        _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
         _containerRepository = containerRepository;
     }
 
@@ -35,18 +41,21 @@ public class ProxyController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ProxyForInstance(string id)
     {
+        if (!_enablePlatformProxy)
+            return BadRequest(new RequestResponse("TCP 代理已禁用"));
+
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return BadRequest(new RequestResponse("仅支持 Websocket 请求"));
 
         var container = await _containerRepository.GetContainerById(id);
 
-        if (container is null)
+        if (container is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器"));
 
         var socket = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
         await socket.ConnectAsync(container.IP, container.Port);
 
-        if(!socket.Connected)
+        if (!socket.Connected)
             return BadRequest(new RequestResponse("容器连接失败"));
 
         var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
@@ -57,7 +66,7 @@ public class ProxyController : ControllerBase
 
         var sender = Task.Run(async () =>
         {
-            var buffer = new byte[BufferSize];
+            var buffer = new byte[BUFFER_SIZE];
             while (true)
             {
                 var status = await ws.ReceiveAsync(buffer, ct);
@@ -72,7 +81,7 @@ public class ProxyController : ControllerBase
 
         var receiver = Task.Run(async () =>
         {
-            var buffer = new byte[BufferSize];
+            var buffer = new byte[BUFFER_SIZE];
             while (true)
             {
                 var count = await stream.ReadAsync(buffer, ct);

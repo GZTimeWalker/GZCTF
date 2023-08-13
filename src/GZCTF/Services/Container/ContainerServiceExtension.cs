@@ -5,39 +5,50 @@ using k8s;
 
 namespace GZCTF.Services;
 
+public class ContainerProviderMetadata
+{
+    /// <summary>
+    /// 公共访问入口
+    /// </summary>
+    public string PublicEntry { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 端口映射类型
+    /// </summary>
+    public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
+
+    /// <summary>
+    /// 是否直接暴露端口
+    /// </summary>
+    public bool ExposePort => PortMappingType == ContainerPortMappingType.Default;
+}
+
 public static class ContainerServiceExtension
 {
     internal static IServiceCollection AddContainerService(this IServiceCollection services, ConfigurationManager configuration)
     {
-        var provider = configuration.GetSection(nameof(ContainerProvider));
-        var type = provider.GetValue<ContainerProviderType>(nameof(ContainerProvider.Type));
+        var config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ?? new();
 
         // FIXME: custom IPortMapper
-        if (type == ContainerProviderType.Kubernetes)
+        return services.AddProvider(config).AddManager(config);
+    }
+
+    private static IServiceCollection AddProvider(this IServiceCollection services, ContainerProvider config)
+        => config.Type switch
         {
-            services.AddSingleton<IContainerProvider<Kubernetes, K8sMetadata>, K8sProvider>();
+            ContainerProviderType.Docker => services.AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
+            ContainerProviderType.Kubernetes => services.AddSingleton<IContainerProvider<Kubernetes, K8sMetadata>, K8sProvider>(),
+            _ => throw new NotImplementedException()
+        };
 
-            services.AddSingleton<IPortMapper, K8sNodePortMapper>();
-            services.AddSingleton<IContainerManager, K8sManager>();
-        }
-        else if (type == ContainerProviderType.Docker)
-        {
-            services.AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>();
+    private static IServiceCollection AddManager(this IServiceCollection services, ContainerProvider config)
+    {
+        if (config.Type == ContainerProviderType.Kubernetes)
+            return services.AddSingleton<IContainerManager, K8sManager>();
 
-            var docker = provider.GetValue<DockerConfig?>(nameof(ContainerProvider.DockerConfig));
+        if (config.DockerConfig?.SwarmMode is true)
+            return services.AddSingleton<IContainerManager, SwarmManager>();
 
-            if (docker?.SwarmMode is true)
-            {
-                services.AddSingleton<IPortMapper, SwarmDirectMapper>();
-                services.AddSingleton<IContainerManager, SwarmManager>();
-            }
-            else
-            {
-                services.AddSingleton<IPortMapper, DockerDirectMapper>();
-                services.AddSingleton<IContainerManager, DockerManager>();
-            }
-        }
-
-        return services;
+        return services.AddSingleton<IContainerManager, DockerManager>();
     }
 }

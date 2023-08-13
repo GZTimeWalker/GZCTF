@@ -11,14 +11,12 @@ public class DockerManager : IContainerManager
 {
     private readonly ILogger<DockerManager> _logger;
     private readonly IContainerProvider<DockerClient, DockerMetadata> _provider;
-    private readonly IPortMapper _mapper;
     private readonly DockerMetadata _meta;
     private readonly DockerClient _client;
 
-    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, IPortMapper mapper, ILogger<DockerManager> logger)
+    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
     {
         _logger = logger;
-        _mapper = mapper;
         _provider = provider;
         _meta = _provider.GetMetadata();
         _client = _provider.GetProvider();
@@ -31,7 +29,6 @@ public class DockerManager : IContainerManager
     {
         try
         {
-            await _mapper.UnmapContainer(container, token);
             await _client.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
         }
         catch (DockerContainerNotFoundException)
@@ -67,10 +64,6 @@ public class DockerManager : IContainerManager
             Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
             Name = DockerMetadata.GetName(config),
             Env = config.Flag is null ? Array.Empty<string>() : new string[] { $"GZCTF_FLAG={config.Flag}" },
-            ExposedPorts = new Dictionary<string, EmptyStruct>()
-            {
-                [config.ExposedPort.ToString()] = new EmptyStruct()
-            },
             HostConfig = new()
             {
                 PublishAllPorts = true,
@@ -83,6 +76,15 @@ public class DockerManager : IContainerManager
     public async Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
     {
         var parameters = GetCreateContainerParameters(config);
+
+        if (_meta.ExposePort)
+        {
+            parameters.ExposedPorts = new Dictionary<string, EmptyStruct>()
+            {
+                [config.ExposedPort.ToString()] = new EmptyStruct()
+            };
+        }
+
         CreateContainerResponse? containerRes = null;
         try
         {
@@ -116,10 +118,61 @@ public class DockerManager : IContainerManager
             return null;
         }
 
-        return await _mapper.MapContainer(new()
+        var container = new Container()
         {
             ContainerId = containerRes.ID,
             Image = config.Image,
-        }, config, token);
+        };
+
+        var retry = 0;
+        bool started;
+
+        do
+        {
+            started = await _client.Containers.StartContainerAsync(container.ContainerId, new(), token);
+            retry++;
+            if (retry == 3)
+            {
+                _logger.SystemLog($"启动容器实例 {container.ContainerId[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Failed, LogLevel.Warning);
+                return null;
+            }
+            if (!started)
+                await Task.Delay(500, token);
+        } while (!started);
+
+        var info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
+
+        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Destroyed :
+                info.State.Running ? ContainerStatus.Running : ContainerStatus.Pending;
+
+        if (container.Status != ContainerStatus.Running)
+        {
+            _logger.SystemLog($"创建 {config.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Failed, LogLevel.Warning);
+            return null;
+        }
+
+        container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
+        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
+        container.IP = info.NetworkSettings.IPAddress;
+        container.Port = config.ExposedPort;
+        container.IsProxy = !_meta.ExposePort;
+
+        if (_meta.ExposePort)
+        {
+            var port = info.NetworkSettings.Ports
+            .FirstOrDefault(p =>
+                p.Key.StartsWith(config.ExposedPort.ToString())
+            ).Value.First().HostPort;
+
+            if (int.TryParse(port, out var numport))
+                container.PublicPort = numport;
+            else
+                _logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Failed, LogLevel.Warning);
+
+            if (!string.IsNullOrEmpty(_meta.PublicEntry))
+                container.PublicIP = _meta.PublicEntry;
+        }
+
+        return container;
     }
 }

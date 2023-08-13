@@ -7,13 +7,8 @@ using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services;
 
-public class DockerMetadata
+public class DockerMetadata : ContainerProviderMetadata
 {
-    /// <summary>
-    /// 公共访问入口
-    /// </summary>
-    public string PublicEntry { get; set; } = string.Empty;
-
     /// <summary>
     /// Docker 配置
     /// </summary>
@@ -46,7 +41,8 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
         _dockerMeta = new()
         {
             Config = options.Value.DockerConfig ?? new(),
-            PublicEntry = options.Value.PublicEntry
+            PortMappingType = options.Value.PortMappingType,
+            PublicEntry = options.Value.PublicEntry,
         };
 
         DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? new() : new(new Uri(_dockerMeta.Config.Uri));

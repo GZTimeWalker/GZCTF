@@ -11,14 +11,12 @@ public class SwarmManager : IContainerManager
 {
     private readonly ILogger<SwarmManager> _logger;
     private readonly IContainerProvider<DockerClient, DockerMetadata> _provider;
-    private readonly IPortMapper _mapper;
     private readonly DockerMetadata _meta;
     private readonly DockerClient _client;
 
-    public SwarmManager(IContainerProvider<DockerClient, DockerMetadata> provider, IPortMapper mapper, ILogger<SwarmManager> logger)
+    public SwarmManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<SwarmManager> logger)
     {
         _logger = logger;
-        _mapper = mapper;
         _provider = provider;
         _meta = _provider.GetMetadata();
         _client = _provider.GetProvider();
@@ -30,7 +28,6 @@ public class SwarmManager : IContainerManager
     {
         try
         {
-            await _mapper.UnmapContainer(container, token);
             await _client.Swarm.RemoveServiceAsync(container.ContainerId, token);
         }
         catch (DockerContainerNotFoundException)
@@ -59,25 +56,15 @@ public class SwarmManager : IContainerManager
         container.Status = ContainerStatus.Destroyed;
     }
 
-    private static string GetName(ContainerConfig config)
-        => $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMD5()[..16]}";
-
     private ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config)
         => new()
         {
             RegistryAuth = _meta.Auth,
             Service = new()
             {
-                Name = GetName(config),
+                Name = DockerMetadata.GetName(config),
                 Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
                 Mode = new() { Replicated = new() { Replicas = 1 } },
-                EndpointSpec = new()
-                {
-                    Ports = new PortConfig[] { new() {
-                        PublishMode = "global",
-                        TargetPort = (uint)config.ExposedPort,
-                    } },
-                },
                 TaskTemplate = new()
                 {
                     RestartPolicy = new() { Condition = "none" },
@@ -94,7 +81,15 @@ public class SwarmManager : IContainerManager
                             NanoCPUs = config.CPUCount * 1_0000_0000,
                         },
                     },
-                }
+                },
+                EndpointSpec = new()
+                {
+                    Ports = new PortConfig[] { new() {
+                            PublishMode = _meta.ExposePort ? "global" : "vip",
+                            TargetPort = (uint)config.ExposedPort,
+                        }
+                    },
+                },
             }
         };
 
@@ -130,10 +125,42 @@ public class SwarmManager : IContainerManager
             return null;
         }
 
-        return await _mapper.MapContainer(new()
+        var container = new Container()
         {
             ContainerId = serviceRes.ID,
             Image = config.Image,
-        }, config, token);
+        };
+
+        retry = 0;
+        SwarmService? res;
+        do
+        {
+            res = await _client.Swarm.InspectServiceAsync(container.ContainerId, token);
+            retry++;
+            if (retry == 3)
+            {
+                _logger.SystemLog($"容器 {container.ContainerId} 创建后未获取到端口暴露信息，创建失败", TaskStatus.Failed, LogLevel.Warning);
+                return null;
+            }
+            if (res is not { Endpoint.Ports.Count: > 0 })
+                await Task.Delay(500, token);
+        } while (res is not { Endpoint.Ports.Count: > 0 });
+
+        // TODO: Test is needed
+        container.Status = ContainerStatus.Running;
+        container.StartedAt = res.CreatedAt;
+        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
+        container.IP = res.Endpoint.VirtualIPs.First().Addr;
+        container.Port = (int)res.Endpoint.Ports.First().PublishedPort;
+        container.IsProxy = !_meta.ExposePort;
+
+        if (_meta.ExposePort)
+        {
+            container.PublicPort = container.Port;
+            if (!string.IsNullOrEmpty(_meta.PublicEntry))
+                container.PublicIP = _meta.PublicEntry;
+        }
+
+        return container;
     }
 }
