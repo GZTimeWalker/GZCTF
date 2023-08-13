@@ -9,41 +9,41 @@ namespace GZCTF.Repositories;
 
 public class InstanceRepository : RepositoryBase, IInstanceRepository
 {
-    private readonly IContainerService service;
-    private readonly ICheatInfoRepository cheatInfoRepository;
-    private readonly IContainerRepository containerRepository;
-    private readonly IGameEventRepository gameEventRepository;
-    private readonly ILogger<InstanceRepository> logger;
-    private readonly IOptionsSnapshot<GamePolicy> gamePolicy;
+    private readonly IContainerService _service;
+    private readonly ICheatInfoRepository _cheatInfoRepository;
+    private readonly IContainerRepository _containerRepository;
+    private readonly IGameEventRepository _gameEventRepository;
+    private readonly ILogger<InstanceRepository> _logger;
+    private readonly IOptionsSnapshot<GamePolicy> _gamePolicy;
 
-    public InstanceRepository(AppDbContext _context,
-        IContainerService _service,
-        ICheatInfoRepository _cheatInfoRepository,
-        IContainerRepository _containerRepository,
-        IGameEventRepository _gameEventRepository,
-        IOptionsSnapshot<GamePolicy> _gamePolicy,
-        ILogger<InstanceRepository> _logger) : base(_context)
+    public InstanceRepository(AppDbContext context,
+        IContainerService service,
+        ICheatInfoRepository cheatInfoRepository,
+        IContainerRepository containerRepository,
+        IGameEventRepository gameEventRepository,
+        IOptionsSnapshot<GamePolicy> gamePolicy,
+        ILogger<InstanceRepository> logger) : base(context)
     {
-        logger = _logger;
-        service = _service;
-        gamePolicy = _gamePolicy;
-        cheatInfoRepository = _cheatInfoRepository;
-        gameEventRepository = _gameEventRepository;
-        containerRepository = _containerRepository;
+        _logger = logger;
+        _service = service;
+        _gamePolicy = gamePolicy;
+        _cheatInfoRepository = cheatInfoRepository;
+        _gameEventRepository = gameEventRepository;
+        _containerRepository = containerRepository;
     }
 
     public async Task<Instance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
-        using var transaction = await context.Database.BeginTransactionAsync(token);
+        using var transaction = await _context.Database.BeginTransactionAsync(token);
 
-        var instance = await context.Instances
+        var instance = await _context.Instances
             .Include(i => i.FlagContext)
             .Where(e => e.ChallengeId == challengeId && e.Participation == part)
             .SingleOrDefaultAsync(token);
 
         if (instance is null)
         {
-            logger.SystemLog($"队伍对应参与对象为空，这可能是非预期的情况 [{part.Id}, {challengeId}]", TaskStatus.NotFound, LogLevel.Warning);
+            _logger.SystemLog($"队伍对应参与对象为空，这可能是非预期的情况 [{part.Id}, {challengeId}]", TaskStatus.NotFound, LogLevel.Warning);
             return null;
         }
 
@@ -77,13 +77,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                     };
                     break;
                 case ChallengeType.DynamicAttachment:
-                    var flags = await context.FlagContexts
+                    var flags = await _context.FlagContexts
                         .Where(e => e.Challenge == challenge && !e.IsOccupied)
                         .ToListAsync(token);
 
                     if (flags.Count == 0)
                     {
-                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Failed, LogLevel.Warning);
+                        _logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Failed, LogLevel.Warning);
                         return null;
                     }
 
@@ -105,7 +105,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         }
         catch
         {
-            logger.SystemLog($"为队伍 {part.Team.Name} 获取题目 {challenge.Title}#{challenge.Id} 的实例时遇到问题（可能由于并发错误），回滚中", TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog($"为队伍 {part.Team.Name} 获取题目 {challenge.Title}#{challenge.Id} 的实例时遇到问题（可能由于并发错误），回滚中", TaskStatus.Failed, LogLevel.Warning);
             await transaction.RollbackAsync(token);
             return null;
         }
@@ -117,13 +117,13 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     {
         try
         {
-            await service.DestroyContainerAsync(container, token);
-            await containerRepository.RemoveContainer(container, token);
+            await _service.DestroyContainerAsync(container, token);
+            await _containerRepository.RemoveContainer(container, token);
             return true;
         }
         catch (Exception ex)
         {
-            logger.SystemLog($"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog($"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()}): {ex.Message}", TaskStatus.Failed, LogLevel.Warning);
             return false;
         }
     }
@@ -132,29 +132,29 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     {
         if (string.IsNullOrEmpty(instance.Challenge.ContainerImage) || instance.Challenge.ContainerExposePort is null)
         {
-            logger.SystemLog($"无法为题目 {instance.Challenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
+            _logger.SystemLog($"无法为题目 {instance.Challenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
         // containerLimit == 0 means unlimit
         if (containerLimit > 0)
         {
-            if (gamePolicy.Value.AutoDestroyOnLimitReached)
+            if (_gamePolicy.Value.AutoDestroyOnLimitReached)
             {
-                var running = await context.Instances
+                var running = await _context.Instances
                     .Where(i => i.Participation == instance.Participation && i.Container != null)
                     .OrderBy(i => i.Container!.StartedAt).ToListAsync(token);
 
                 var first = running.FirstOrDefault();
                 if (running.Count >= containerLimit && first is not null)
                 {
-                    logger.Log($"{team.Name} 自动销毁题目 {first.Challenge.Title} 的容器实例 [{first.Container!.ContainerId}]", user, TaskStatus.Success);
+                    _logger.Log($"{team.Name} 自动销毁题目 {first.Challenge.Title} 的容器实例 [{first.Container!.ContainerId}]", user, TaskStatus.Success);
                     await DestroyContainer(running.First().Container!, token);
                 }
             }
             else
             {
-                var count = await context.Instances.CountAsync(
+                var count = await _context.Instances.CountAsync(
                     i => i.Participation == instance.Participation &&
                     i.Container != null, token);
 
@@ -165,8 +165,8 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         if (instance.Container is null)
         {
-            await context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
-            var container = await service.CreateContainerAsync(new ContainerConfig()
+            await _context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
+            var container = await _service.CreateContainerAsync(new ContainerConfig()
             {
                 TeamId = team.Id.ToString(),
                 UserId = user.Id,
@@ -181,17 +181,17 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
             if (container is null)
             {
-                logger.SystemLog($"为题目 {instance.Challenge.Title} 启动容器实例失败", TaskStatus.Failed, LogLevel.Warning);
+                _logger.SystemLog($"为题目 {instance.Challenge.Title} 启动容器实例失败", TaskStatus.Failed, LogLevel.Warning);
                 return new TaskResult<Container>(TaskStatus.Failed);
             }
 
             instance.Container = container;
             instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-            logger.Log($"{team.Name} 启动题目 {instance.Challenge.Title} 的容器实例 [{container.ContainerId}]", user, TaskStatus.Success);
+            _logger.Log($"{team.Name} 启动题目 {instance.Challenge.Title} 的容器实例 [{container.ContainerId}]", user, TaskStatus.Success);
 
             // will save instance together
-            await gameEventRepository.AddEvent(new()
+            await _gameEventRepository.AddEvent(new()
             {
                 Type = EventType.ContainerStart,
                 GameId = instance.Challenge.GameId,
@@ -211,14 +211,14 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     }
 
     public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default)
-        => context.Instances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
+        => _context.Instances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
             .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
 
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
     {
         CheatCheckInfo checkInfo = new();
 
-        var instances = await context.Instances.Where(i => i.ChallengeId == submission.ChallengeId &&
+        var instances = await _context.Instances.Where(i => i.ChallengeId == submission.ChallengeId &&
                 i.ParticipationId != submission.ParticipationId)
                 .Include(i => i.FlagContext).Include(i => i.Participation)
                 .ThenInclude(i => i.Team).ToArrayAsync(token);
@@ -227,9 +227,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
         {
             if (instance.FlagContext?.Flag == submission.Answer)
             {
-                var updateSub = await context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+                var updateSub = await _context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
 
-                var cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
+                var cheatInfo = await _cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
                 checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
 
                 if (updateSub is not null)
@@ -246,12 +246,12 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
     public async Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
-        var trans = await context.Database.BeginTransactionAsync(token);
+        var trans = await _context.Database.BeginTransactionAsync(token);
 
         try
         {
 
-            var instance = await context.Instances
+            var instance = await _context.Instances
                 .IgnoreAutoIncludes()
                 .Include(i => i.FlagContext)
                 .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
@@ -259,7 +259,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
             // submission is from the queue, do not modify it directly
             // we need to requery the entity to ensure it is being tracked correctly
-            var updateSub = await context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
+            var updateSub = await _context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
             var ret = SubmissionType.Unaccepted;
 
@@ -271,7 +271,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
             if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
             {
-                updateSub.Status = await context.FlagContexts
+                updateSub.Status = await _context.FlagContexts
                     .AsNoTracking()
                     .AnyAsync(
                         f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,

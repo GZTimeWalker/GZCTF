@@ -16,10 +16,10 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
     /// <summary>
     /// 所需权限
     /// </summary>
-    private readonly Role RequiredPrivilege;
+    private readonly Role _requiredPrivilege;
 
     public RequirePrivilegeAttribute(Role privilege)
-        => RequiredPrivilege = privilege;
+        => _requiredPrivilege = privilege;
 
     public static IActionResult GetResult(string msg, int code)
         => new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
@@ -50,9 +50,9 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
             await dbcontext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
         }
 
-        if (user.Role < RequiredPrivilege)
+        if (user.Role < _requiredPrivilege)
         {
-            if (RequiredPrivilege > Role.User)
+            if (_requiredPrivilege > Role.User)
                 logger.Log($"未经授权的访问：{context.HttpContext.Request.Path}", user, TaskStatus.Denied);
 
             context.Result = ForbiddenResult;

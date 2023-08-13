@@ -8,17 +8,17 @@ namespace GZCTF.Repositories;
 
 public class FileRepository : RepositoryBase, IFileRepository
 {
-    private readonly ILogger<FileRepository> logger;
-    private readonly string uploadPath;
+    private readonly ILogger<FileRepository> _logger;
+    private readonly string _uploadPath;
 
-    public FileRepository(AppDbContext context, IConfiguration _configuration,
-        ILogger<FileRepository> _logger) : base(context)
+    public FileRepository(AppDbContext context, IConfiguration configuration,
+        ILogger<FileRepository> logger) : base(context)
     {
-        logger = _logger;
-        uploadPath = _configuration.GetSection("UploadFolder")?.Value ?? "uploads";
+        _logger = logger;
+        _uploadPath = configuration.GetSection("UploadFolder")?.Value ?? "uploads";
     }
 
-    public override Task<int> CountAsync(CancellationToken token = default) => context.Files.CountAsync(token);
+    public override Task<int> CountAsync(CancellationToken token = default) => _context.Files.CountAsync(token);
 
     private static Stream GetStream(long bufferSize) => bufferSize <= 16 * 1024 * 1024 ? new MemoryStream() :
                 File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
@@ -38,16 +38,16 @@ public class FileRepository : RepositoryBase, IFileRepository
             localFile.UploadTimeUTC = DateTimeOffset.UtcNow; // update upload time
             localFile.ReferenceCount++; // same hash, add ref count
 
-            logger.SystemLog($"文件引用计数 [{localFile.Hash[..8]}] {localFile.Name} => {localFile.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
+            _logger.SystemLog($"文件引用计数 [{localFile.Hash[..8]}] {localFile.Name} => {localFile.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
 
-            context.Update(localFile);
+            _context.Update(localFile);
         }
         else
         {
             localFile = new() { Hash = fileHash, Name = fileName, FileSize = contentStream.Length };
-            await context.AddAsync(localFile, token);
+            await _context.AddAsync(localFile, token);
 
-            var path = Path.Combine(uploadPath, localFile.Location);
+            var path = Path.Combine(_uploadPath, localFile.Location);
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -66,7 +66,7 @@ public class FileRepository : RepositoryBase, IFileRepository
     {
         using var tmp = GetStream(file.Length);
 
-        logger.SystemLog($"缓存位置：{tmp.GetType()}", TaskStatus.Pending, LogLevel.Trace);
+        _logger.SystemLog($"缓存位置：{tmp.GetType()}", TaskStatus.Pending, LogLevel.Trace);
 
         await file.CopyToAsync(tmp, token);
         return await StoreLocalFile(fileName ?? file.FileName, tmp, token);
@@ -101,38 +101,38 @@ public class FileRepository : RepositoryBase, IFileRepository
         }
         catch
         {
-            logger.SystemLog($"无法存储图像文件：{file.Name}", TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog($"无法存储图像文件：{file.Name}", TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
     }
 
     public async Task<TaskStatus> DeleteFile(LocalFile file, CancellationToken token = default)
     {
-        var path = Path.Combine(uploadPath, file.Location, file.Hash);
+        var path = Path.Combine(_uploadPath, file.Location, file.Hash);
 
         if (file.ReferenceCount > 1)
         {
             file.ReferenceCount--; // other ref exists, decrease ref count
 
-            logger.SystemLog($"文件引用计数 [{file.Hash[..8]}] {file.Name} => {file.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
+            _logger.SystemLog($"文件引用计数 [{file.Hash[..8]}] {file.Name} => {file.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
 
             await SaveAsync(token);
 
             return TaskStatus.Success;
         }
 
-        logger.SystemLog($"删除文件 [{file.Hash[..8]}] {file.Name}", TaskStatus.Pending, LogLevel.Information);
+        _logger.SystemLog($"删除文件 [{file.Hash[..8]}] {file.Name}", TaskStatus.Pending, LogLevel.Information);
 
         if (File.Exists(path))
         {
             File.Delete(path);
-            context.Files.Remove(file);
+            _context.Files.Remove(file);
             await SaveAsync(token);
 
             return TaskStatus.Success;
         }
 
-        context.Files.Remove(file);
+        _context.Files.Remove(file);
         await SaveAsync(token);
 
         return TaskStatus.NotFound;
@@ -149,8 +149,8 @@ public class FileRepository : RepositoryBase, IFileRepository
     }
 
     public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)
-        => context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
+        => _context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
 
     public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default)
-        => context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
+        => _context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
 }

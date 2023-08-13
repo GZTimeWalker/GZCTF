@@ -6,13 +6,13 @@ namespace GZCTF.Repositories;
 
 public class LogRepository : RepositoryBase, ILogRepository
 {
-    public LogRepository(AppDbContext _context) : base(_context)
+    public LogRepository(AppDbContext context) : base(context)
     {
     }
 
     public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, CancellationToken token)
     {
-        IQueryable<LogModel> data = context.Logs;
+        IQueryable<LogModel> data = _context.Logs;
 
         if (level is not null && level != "All")
             data = data.Where(x => x.Level == level);

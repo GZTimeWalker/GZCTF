@@ -10,24 +10,24 @@ namespace GZCTF.Services;
 
 public class MailSender : IMailSender
 {
-    private readonly EmailConfig? options;
-    private readonly ILogger<MailSender> logger;
+    private readonly EmailConfig? _options;
+    private readonly ILogger<MailSender> _logger;
 
     public MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger)
     {
-        this.options = options.Value;
-        this.logger = logger;
+        _options = options.Value;
+        _logger = logger;
     }
 
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
     {
-        if (options?.SendMailAddress is null ||
-            options?.Smtp?.Host is null ||
-            options?.Smtp?.Port is null)
+        if (_options?.SendMailAddress is null ||
+            _options?.Smtp?.Host is null ||
+            _options?.Smtp?.Port is null)
             return true;
 
         var msg = new MimeMessage();
-        msg.From.Add(new MailboxAddress(options.SendMailAddress, options.SendMailAddress));
+        msg.From.Add(new MailboxAddress(_options.SendMailAddress, _options.SendMailAddress));
         msg.To.Add(new MailboxAddress(to, to));
         msg.Subject = subject;
         msg.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = content };
@@ -36,18 +36,18 @@ public class MailSender : IMailSender
         {
             using var client = new SmtpClient();
 
-            await client.ConnectAsync(options.Smtp.Host, options.Smtp.Port.Value);
+            await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port.Value);
             client.AuthenticationMechanisms.Remove("XOAUTH2");
-            await client.AuthenticateAsync(options.UserName, options.Password);
+            await client.AuthenticateAsync(_options.UserName, _options.Password);
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
+            _logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
-            logger.LogError(e, "邮件发送遇到问题");
+            _logger.LogError(e, "邮件发送遇到问题");
             return false;
         }
     }
@@ -56,7 +56,7 @@ public class MailSender : IMailSender
     {
         if (email is null || userName is null || title is null)
         {
-            logger.SystemLog("无效的邮件发送调用！", TaskStatus.Failed);
+            _logger.SystemLog("无效的邮件发送调用！", TaskStatus.Failed);
             return;
         }
 
@@ -75,12 +75,12 @@ public class MailSender : IMailSender
             .Replace("{url}", url)
             .Replace("{nowtime}", DateTimeOffset.UtcNow.ToString("u"));
         if (!await SendEmailAsync(title, emailContent, email))
-            logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
+            _logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
     }
 
     private bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email, string? url)
     {
-        if (options?.SendMailAddress is null)
+        if (_options?.SendMailAddress is null)
             return false;
 
         var _ = SendUrlAsync(title, information, btnmsg, userName, email, url);

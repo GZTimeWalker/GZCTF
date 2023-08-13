@@ -12,63 +12,64 @@ namespace GZCTF.Repositories;
 
 public class GameRepository : RepositoryBase, IGameRepository
 {
-    private readonly IDistributedCache cache;
-    private readonly ITeamRepository teamRepository;
-    private readonly byte[]? xorkey;
-    private readonly ILogger<GameRepository> logger;
-    private readonly ChannelWriter<CacheRequest> cacheRequestChannelWriter;
+    private readonly IDistributedCache _cache;
+    private readonly ITeamRepository _teamRepository;
+    private readonly byte[]? _xorkey;
+    private readonly ILogger<GameRepository> _logger;
+    private readonly ChannelWriter<CacheRequest> _cacheRequestChannelWriter;
 
-    public GameRepository(IDistributedCache _cache,
-        ITeamRepository _teamRepository,
-        IConfiguration _configuration,
-        ILogger<GameRepository> _logger,
-        ChannelWriter<CacheRequest> _cacheRequestChannelWriter,
-        AppDbContext _context) : base(_context)
+    public GameRepository(IDistributedCache cache,
+        ITeamRepository teamRepository,
+        IConfiguration configuration,
+        ILogger<GameRepository> logger,
+        ChannelWriter<CacheRequest> cacheRequestChannelWriter,
+        AppDbContext context) : base(context)
     {
-        cache = _cache;
-        logger = _logger;
-        teamRepository = _teamRepository;
-        cacheRequestChannelWriter = _cacheRequestChannelWriter;
-        var xorkeyStr = _configuration["XorKey"];
-        xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
+        _cache = cache;
+        _logger = logger;
+        _teamRepository = teamRepository;
+        _cacheRequestChannelWriter = cacheRequestChannelWriter;
+
+        var xorkeyStr = configuration["XorKey"];
+        _xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
     }
 
-    public override Task<int> CountAsync(CancellationToken token = default) => context.Games.CountAsync(token);
+    public override Task<int> CountAsync(CancellationToken token = default) => _context.Games.CountAsync(token);
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
-        game.GenerateKeyPair(xorkey);
+        game.GenerateKeyPair(_xorkey);
 
-        if (xorkey is null)
-            logger.SystemLog("配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。", TaskStatus.Pending, LogLevel.Warning);
+        if (_xorkey is null)
+            _logger.SystemLog("配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。", TaskStatus.Pending, LogLevel.Warning);
 
-        await context.AddAsync(game, token);
+        await _context.AddAsync(game, token);
         await SaveAsync(token);
         return game;
     }
 
     public string GetToken(Game game, Team team)
-        => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", xorkey)}";
+        => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorkey)}";
 
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
-        => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
+        => _context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default)
-        => context.Games.Where(g => g.StartTimeUTC > DateTime.UtcNow
+        => _context.Games.Where(g => g.StartTimeUTC > DateTime.UtcNow
             && g.StartTimeUTC - DateTime.UtcNow < TimeSpan.FromMinutes(5))
             .OrderBy(g => g.StartTimeUTC).Select(g => g.Id).ToArrayAsync(token);
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default)
-        => await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
+        => await _cache.GetOrCreateAsync(_logger, CacheKey.BasicGameInfo, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-            return context.Games.Where(g => !g.Hidden)
+            return _context.Games.Where(g => !g.Hidden)
                 .OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
         }, token);
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
-        => cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
+        => _cache.GetOrCreateAsync(_logger, CacheKey.ScoreBoard(game.Id), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
             return GenScoreboard(game, token);
@@ -81,7 +82,7 @@ public class GameRepository : RepositoryBase, IGameRepository
 
         foreach (var item in scoreboard.Items)
         {
-            item.TeamInfo = await teamRepository.GetTeamById(item.Id, token) ??
+            item.TeamInfo = await _teamRepository.GetTeamById(item.Id, token) ??
                 throw new ArgumentNullException("team", "Team not found");
         }
 
@@ -91,21 +92,21 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     public async Task DeleteGame(Game game, CancellationToken token = default)
     {
-        context.Remove(game);
-        cache.Remove(CacheKey.BasicGameInfo);
-        cache.Remove(CacheKey.ScoreBoard(game.Id));
+        _context.Remove(game);
+        _cache.Remove(CacheKey.BasicGameInfo);
+        _cache.Remove(CacheKey.ScoreBoard(game.Id));
 
         await SaveAsync(token);
     }
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token)
-        => context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
+        => _context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
 
     public void FlushGameInfoCache()
-        => cache.Remove(CacheKey.BasicGameInfo);
+        => _cache.Remove(CacheKey.BasicGameInfo);
 
     public async Task FlushScoreboardCache(int gameId, CancellationToken token)
-        => await cacheRequestChannelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
+        => await _cacheRequestChannelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
 
     #region Generate Scoreboard
 
@@ -127,14 +128,14 @@ public class GameRepository : RepositoryBase, IGameRepository
     }
 
     private Task<Data[]> FetchData(Game game, CancellationToken token = default)
-        => context.Instances
+        => _context.Instances
             .Include(i => i.Challenge)
             .Where(i => i.Challenge.Game == game
                 && i.Challenge.IsEnabled
                 && i.Participation.Status == ParticipationStatus.Accepted)
             .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
-                context.Submissions.Where(s => s.Status == AnswerResult.Accepted
+                _context.Submissions.Where(s => s.Status == AnswerResult.Accepted
                     && s.SubmitTimeUTC < game.EndTimeUTC),
                 i => new { i.ChallengeId, i.ParticipationId },
                 s => new { s.ChallengeId, s.ParticipationId },

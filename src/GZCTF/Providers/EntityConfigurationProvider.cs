@@ -10,17 +10,17 @@ namespace GZCTF.Providers;
 
 public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
 {
-    private readonly EntityConfigurationSource source;
-    private readonly CancellationTokenSource cancellationTokenSource;
-    private Task? databaseWatcher;
-    private byte[] lastHash;
-    private bool disposed = false;
+    private readonly EntityConfigurationSource _source;
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    private Task? _databaseWatcher;
+    private byte[] _lastHash;
+    private bool _disposed = false;
 
-    public EntityConfigurationProvider(EntityConfigurationSource _source)
+    public EntityConfigurationProvider(EntityConfigurationSource source)
     {
-        source = _source;
-        lastHash = Array.Empty<byte>();
-        cancellationTokenSource = new();
+        _source = source;
+        _lastHash = Array.Empty<byte>();
+        _cancellationTokenSource = new();
     }
 
     private static HashSet<Config> DefaultConfigs()
@@ -40,16 +40,16 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
         {
             try
             {
-                await Task.Delay(source.PollingInterval, token);
+                await Task.Delay(_source.PollingInterval, token);
                 IDictionary<string, string?> actualData = await GetDataAsync(token);
 
                 byte[] computedHash = ConfigHash(actualData);
-                if (!computedHash.SequenceEqual(lastHash))
+                if (!computedHash.SequenceEqual(_lastHash))
                 {
                     Data = actualData;
                     OnReload();
                 }
-                lastHash = computedHash;
+                _lastHash = computedHash;
             }
             catch (Exception ex)
             {
@@ -61,7 +61,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
     private AppDbContext CreateAppDbContext()
     {
         var builder = new DbContextOptionsBuilder<AppDbContext>();
-        source.OptionsAction(builder);
+        _source.OptionsAction(builder);
 
         return new AppDbContext(builder.Options);
     }
@@ -78,13 +78,13 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
 
     public override void Load()
     {
-        if (databaseWatcher is not null)
+        if (_databaseWatcher is not null)
         {
             var task = GetDataAsync();
             task.Wait();
             Data = task.Result;
 
-            lastHash = ConfigHash(Data);
+            _lastHash = ConfigHash(Data);
             return;
         }
 
@@ -114,20 +114,20 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
             Data = context.Configs.ToDictionary(c => c.ConfigKey, c => c.Value, StringComparer.OrdinalIgnoreCase);
         }
 
-        lastHash = ConfigHash(Data);
+        _lastHash = ConfigHash(Data);
 
-        var cancellationToken = cancellationTokenSource.Token;
-        databaseWatcher = Task.Run(() => WatchDatabase(cancellationToken), cancellationToken);
+        var cancellationToken = _cancellationTokenSource.Token;
+        _databaseWatcher = Task.Run(() => WatchDatabase(cancellationToken), cancellationToken);
     }
 
     public void Dispose()
     {
-        if (disposed)
+        if (_disposed)
             return;
 
-        cancellationTokenSource.Cancel();
-        cancellationTokenSource.Dispose();
-        disposed = true;
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 }
