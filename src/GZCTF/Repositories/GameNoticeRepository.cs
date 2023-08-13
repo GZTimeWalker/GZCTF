@@ -10,54 +10,54 @@ namespace GZCTF.Repositories;
 
 public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
 {
-    private readonly IDistributedCache cache;
-    private readonly ILogger<GameNoticeRepository> logger;
-    private readonly IHubContext<UserHub, IUserClient> hubContext;
+    private readonly IDistributedCache _cache;
+    private readonly ILogger<GameNoticeRepository> _logger;
+    private readonly IHubContext<UserHub, IUserClient> _hubContext;
 
-    public GameNoticeRepository(IDistributedCache _cache,
-        ILogger<GameNoticeRepository> _logger,
+    public GameNoticeRepository(IDistributedCache cache,
+        ILogger<GameNoticeRepository> logger,
         IHubContext<UserHub, IUserClient> hub,
-        AppDbContext _context) : base(_context)
+        AppDbContext context) : base(context)
     {
-        cache = _cache;
-        logger = _logger;
-        hubContext = hub;
+        _cache = cache;
+        _logger = logger;
+        _hubContext = hub;
     }
 
     public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default)
     {
-        await context.AddAsync(notice, token);
+        await _context.AddAsync(notice, token);
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.GameNotice(notice.GameId));
+        _cache.Remove(CacheKey.GameNotice(notice.GameId));
 
-        await hubContext.Clients.Group($"Game_{notice.GameId}")
+        await _hubContext.Clients.Group($"Game_{notice.GameId}")
             .ReceivedGameNotice(notice);
 
         return notice;
     }
 
     public Task<GameNotice[]> GetNormalNotices(int gameId, CancellationToken token = default)
-        => context.GameNotices
+        => _context.GameNotices
             .Where(n => n.GameId == gameId && n.Type == NoticeType.Normal)
             .ToArrayAsync(token);
 
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default)
-        => context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
+        => _context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
     public Task<GameNotice[]> GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default)
-        => cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), (entry) =>
+        => _cache.GetOrCreateAsync(_logger, CacheKey.GameNotice(gameId), (entry) =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-            return context.GameNotices.Where(e => e.GameId == gameId)
+            return _context.GameNotices.Where(e => e.GameId == gameId)
                 .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUTC)
                 .Skip(skip).Take(count).ToArrayAsync(token);
         }, token);
 
     public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
     {
-        context.Remove(notice);
-        cache.Remove(CacheKey.GameNotice(notice.GameId));
+        _context.Remove(notice);
+        _cache.Remove(CacheKey.GameNotice(notice.GameId));
 
         return SaveAsync(token);
     }
@@ -67,7 +67,7 @@ public class GameNoticeRepository : RepositoryBase, IGameNoticeRepository
         notice.PublishTimeUTC = DateTimeOffset.UtcNow;
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.GameNotice(notice.GameId));
+        _cache.Remove(CacheKey.GameNotice(notice.GameId));
 
         return notice;
     }

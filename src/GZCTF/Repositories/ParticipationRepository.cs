@@ -6,21 +6,21 @@ namespace GZCTF.Repositories;
 
 public class ParticipationRepository : RepositoryBase, IParticipationRepository
 {
-    private readonly IGameRepository gameRepository;
+    private readonly IGameRepository _gameRepository;
 
     public ParticipationRepository(
-        IGameRepository _gameRepository,
-        AppDbContext _context) : base(_context)
+        IGameRepository gameRepository,
+        AppDbContext context) : base(context)
     {
-        gameRepository = _gameRepository;
+        _gameRepository = gameRepository;
     }
 
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
-        var challenges = await context.Challenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
+        var challenges = await _context.Challenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
 
         // requery instead of Entry
-        part = await context.Participations.Include(p => p.Challenges).SingleAsync(p => p.Id == part.Id, token);
+        part = await _context.Participations.Include(p => p.Challenges).SingleAsync(p => p.Id == part.Id, token);
 
         bool update = false;
 
@@ -33,31 +33,31 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
     }
 
     public Task<Participation?> GetParticipationById(int id, CancellationToken token = default)
-        => context.Participations.FirstOrDefaultAsync(p => p.Id == id, token);
+        => _context.Participations.FirstOrDefaultAsync(p => p.Id == id, token);
 
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default)
-        => context.Participations.FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
+        => _context.Participations.FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
 
     public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default)
-        => context.Participations.FirstOrDefaultAsync(p => p.Members.Any(m => m.Game == game && m.User == user), token);
+        => _context.Participations.FirstOrDefaultAsync(p => p.Members.Any(m => m.Game == game && m.User == user), token);
 
     public Task<int> GetParticipationCount(Game game, CancellationToken token = default)
-        => context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);
+        => _context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);
 
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default)
-        => context.Participations.Where(p => p.GameId == game.Id)
+        => _context.Participations.Where(p => p.GameId == game.Id)
             .Include(p => p.Team)
             .ThenInclude(t => t.Members)
             .OrderBy(p => p.TeamId).ToArrayAsync(token);
 
     public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default)
-        => context.Participations.Where(p => p.Game == game && p.Writeup != null)
+        => _context.Participations.Where(p => p.Game == game && p.Writeup != null)
                 .OrderByDescending(p => p.Writeup!.UploadTimeUTC)
                 .Select(p => WriteupInfoModel.FromParticipation(p)!)
                 .ToArrayAsync(token);
 
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default)
-        => context.UserParticipations.Include(p => p.Participation)
+        => _context.UserParticipations.Include(p => p.Participation)
             .AnyAsync(p => p.User == user && p.Game == game
                 && p.Participation.Status != ParticipationStatus.Rejected, token);
 
@@ -75,7 +75,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             // also flush scoreboard when a team is re-accepted
             if (await EnsureInstances(part, part.Game, token) || oldStatus == ParticipationStatus.Suspended)
                 // flush scoreboard when instances are updated
-                await gameRepository.FlushScoreboardCache(part.Game.Id, token);
+                await _gameRepository.FlushScoreboardCache(part.Game.Id, token);
 
             return;
         }
@@ -85,20 +85,20 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
 
         // flush scoreboard when a team is suspended
         if (status == ParticipationStatus.Suspended && part.Game.IsActive)
-            await gameRepository.FlushScoreboardCache(part.GameId, token);
+            await _gameRepository.FlushScoreboardCache(part.GameId, token);
     }
 
     public async Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default)
-        => context.RemoveRange(await context.UserParticipations
+        => _context.RemoveRange(await _context.UserParticipations
                 .Where(p => p.User == user && p.Game == game).ToArrayAsync(token));
 
     public async Task RemoveUserParticipations(UserInfo user, Team team, CancellationToken token = default)
-        => context.RemoveRange(await context.UserParticipations
+        => _context.RemoveRange(await _context.UserParticipations
                 .Where(p => p.User == user && p.Team == team).ToArrayAsync(token));
 
     public Task RemoveParticipation(Participation part, CancellationToken token = default)
     {
-        context.Remove(part);
+        _context.Remove(part);
         return SaveAsync(token);
     }
 }

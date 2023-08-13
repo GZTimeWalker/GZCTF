@@ -23,30 +23,30 @@ public interface IRecaptchaExtension
 
 public class RecaptchaExtension : IRecaptchaExtension
 {
-    private readonly RecaptchaConfig? options;
-    private readonly HttpClient httpClient;
+    private readonly RecaptchaConfig? _options;
+    private readonly HttpClient _httpClient;
 
     public RecaptchaExtension(IOptions<RecaptchaConfig> options)
     {
-        this.options = options.Value;
-        httpClient = new();
+        _options = options.Value;
+        _httpClient = new();
     }
 
     public async Task<bool> VerifyAsync(string token, string ip)
     {
-        if (options is null)
+        if (_options is null)
             return true;
 
         if (string.IsNullOrEmpty(token))
             return false;
 
-        var response = await httpClient.GetStreamAsync($"{options.VerifyAPIAddress}?secret={options.Secretkey}&response={token}&remoteip={ip}");
+        var response = await _httpClient.GetStreamAsync($"{_options.VerifyAPIAddress}?secret={_options.Secretkey}&response={token}&remoteip={ip}");
         var tokenResponse = await JsonSerializer.DeserializeAsync<TokenResponseModel>(response);
-        if (tokenResponse is null || !tokenResponse.Success || tokenResponse.Score < options.RecaptchaThreshold)
+        if (tokenResponse is null || !tokenResponse.Success || tokenResponse.Score < _options.RecaptchaThreshold)
             return false;
 
         return true;
     }
 
-    public string SiteKey() => options?.SiteKey ?? "NOTOKEN";
+    public string SiteKey() => _options?.SiteKey ?? "NOTOKEN";
 }

@@ -6,17 +6,17 @@ namespace GZCTF.Repositories;
 
 public class CheatInfoRepository : RepositoryBase, ICheatInfoRepository
 {
-    private readonly IParticipationRepository participationRepository;
+    private readonly IParticipationRepository _participationRepository;
 
-    public CheatInfoRepository(AppDbContext _context,
-        IParticipationRepository _participationRepository) : base(_context)
+    public CheatInfoRepository(AppDbContext context,
+        IParticipationRepository participationRepository) : base(context)
     {
-        participationRepository = _participationRepository;
+        _participationRepository = participationRepository;
     }
 
     public async Task<CheatInfo> CreateCheatInfo(Submission submission, Instance source, CancellationToken token = default)
     {
-        var submit = await participationRepository.GetParticipation(submission.Team, submission.Game, token);
+        var submit = await _participationRepository.GetParticipation(submission.Team, submission.Game, token);
 
         if (submit is null)
             throw new NullReferenceException(nameof(submit));
@@ -29,13 +29,13 @@ public class CheatInfoRepository : RepositoryBase, ICheatInfoRepository
             SourceTeam = source.Participation
         };
 
-        await context.AddAsync(info, token);
+        await _context.AddAsync(info, token);
 
         return info;
     }
 
     public Task<CheatInfo[]> GetCheatInfoByGameId(int gameId, CancellationToken token = default)
-        => context.CheatInfo.IgnoreAutoIncludes().Where(i => i.GameId == gameId)
+        => _context.CheatInfo.IgnoreAutoIncludes().Where(i => i.GameId == gameId)
             .Include(i => i.SourceTeam).ThenInclude(t => t.Team)
             .Include(i => i.SubmitTeam).ThenInclude(t => t.Team)
             .Include(i => i.Submission).ThenInclude(s => s.User)

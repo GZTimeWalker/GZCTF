@@ -7,11 +7,11 @@ namespace GZCTF.Repositories;
 
 public class ChallengeRepository : RepositoryBase, IChallengeRepository
 {
-    private readonly IFileRepository fileRepository;
+    private readonly IFileRepository _fileRepository;
 
-    public ChallengeRepository(AppDbContext _context, IFileRepository _fileRepository) : base(_context)
+    public ChallengeRepository(AppDbContext context, IFileRepository fileRepository) : base(context)
     {
-        fileRepository = _fileRepository;
+        _fileRepository = fileRepository;
     }
 
     public async Task AddFlags(Challenge challenge, FlagCreateModel[] models, CancellationToken token = default)
@@ -21,7 +21,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             Attachment? attachment = model.AttachmentType == FileType.None ? null : new()
             {
                 Type = model.AttachmentType,
-                LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
+                LocalFile = await _fileRepository.GetFileByHash(model.FileHash, token),
                 RemoteUrl = model.RemoteUrl
             };
 
@@ -38,7 +38,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
     public async Task<Challenge> CreateChallenge(Game game, Challenge challenge, CancellationToken token = default)
     {
-        await context.AddAsync(challenge, token);
+        await _context.AddAsync(challenge, token);
         game.Challenges.Add(challenge);
         await SaveAsync(token);
         return challenge;
@@ -46,8 +46,8 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
     public async Task<bool> EnsureInstances(Challenge challenge, Game game, CancellationToken token = default)
     {
-        await context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
-        await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+        await _context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
+        await _context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
         bool update = false;
 
@@ -61,7 +61,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
 
     public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default)
     {
-        var challenges = context.Challenges
+        var challenges = _context.Challenges
             .Where(c => c.Id == id && c.GameId == gameId);
 
         if (withFlag)
@@ -71,7 +71,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     }
 
     public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default)
-        => context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
+        => _context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
     public async Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
     {
@@ -83,7 +83,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
                     flag.Attachment.Type == FileType.Local &&
                     flag.Attachment.LocalFile is not null)
                 {
-                    await fileRepository.DeleteFileByHash(
+                    await _fileRepository.DeleteFileByHash(
                         flag.Attachment.LocalFile.Hash, token);
                 }
             }
@@ -92,11 +92,11 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
                  challenge.Attachment.Type == FileType.Local &&
                  challenge.Attachment.LocalFile is not null)
         {
-            await fileRepository.DeleteFileByHash(
+            await _fileRepository.DeleteFileByHash(
                 challenge.Attachment.LocalFile.Hash, token);
         }
 
-        context.Remove(challenge);
+        _context.Remove(challenge);
         await SaveAsync(token);
     }
 
@@ -111,11 +111,11 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             flag.Attachment.Type == FileType.Local &&
             flag.Attachment.LocalFile is not null)
         {
-            await fileRepository.DeleteFileByHash(
+            await _fileRepository.DeleteFileByHash(
                 flag.Attachment.LocalFile.Hash, token);
         }
 
-        context.Remove(flag);
+        _context.Remove(flag);
 
         if (challenge.Flags.Count == 0)
             challenge.IsEnabled = false;
@@ -130,7 +130,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         Attachment? attachment = model.AttachmentType == FileType.None ? null : new()
         {
             Type = model.AttachmentType,
-            LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
+            LocalFile = await _fileRepository.GetFileByHash(model.FileHash, token),
             RemoteUrl = model.RemoteUrl
         };
 
@@ -139,15 +139,15 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             if (challenge.Attachment.Type == FileType.Local &&
                 challenge.Attachment.LocalFile is not null)
             {
-                await fileRepository.DeleteFileByHash(
+                await _fileRepository.DeleteFileByHash(
                     challenge.Attachment.LocalFile.Hash, token);
             }
 
-            context.Remove(challenge.Attachment);
+            _context.Remove(challenge.Attachment);
         }
 
         if (attachment is not null)
-            await context.AddAsync(attachment, token);
+            await _context.AddAsync(attachment, token);
 
         challenge.Attachment = attachment;
 
@@ -155,5 +155,5 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     }
 
     public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)
-        => context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
+        => _context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
 }

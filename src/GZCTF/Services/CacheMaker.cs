@@ -33,65 +33,65 @@ public interface ICacheRequestHandler
 
 public class CacheMaker : IHostedService
 {
-    private readonly ILogger<CacheMaker> logger;
-    private readonly IDistributedCache cache;
-    private readonly ChannelReader<CacheRequest> channelReader;
-    private readonly IServiceScopeFactory serviceScopeFactory;
-    private CancellationTokenSource TokenSource { get; set; } = new CancellationTokenSource();
-    private Dictionary<string, ICacheRequestHandler> cacheHandlers = new();
+    private readonly ILogger<CacheMaker> _logger;
+    private readonly IDistributedCache _cache;
+    private readonly ChannelReader<CacheRequest> _channelReader;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private CancellationTokenSource _tokenSource { get; set; } = new CancellationTokenSource();
+    private readonly Dictionary<string, ICacheRequestHandler> _cacheHandlers = new();
 
     public CacheMaker(
-        ILogger<CacheMaker> _logger,
-        IDistributedCache _cache,
-        ChannelReader<CacheRequest> _channelReader,
-        IServiceScopeFactory _serviceScopeFactory)
+        ILogger<CacheMaker> logger,
+        IDistributedCache cache,
+        ChannelReader<CacheRequest> channelReader,
+        IServiceScopeFactory serviceScopeFactory)
     {
-        logger = _logger;
-        cache = _cache;
-        channelReader = _channelReader;
-        serviceScopeFactory = _serviceScopeFactory;
+        _logger = logger;
+        _cache = cache;
+        _channelReader = channelReader;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public void AddCacheRequestHandler<T>(string key) where T : ICacheRequestHandler, new()
-        => cacheHandlers.Add(key, new T());
+        => _cacheHandlers.Add(key, new T());
 
     private async Task Maker(CancellationToken token = default)
     {
-        logger.SystemLog($"缓存更新线程已启动", TaskStatus.Pending, LogLevel.Debug);
+        _logger.SystemLog($"缓存更新线程已启动", TaskStatus.Pending, LogLevel.Debug);
 
         try
         {
-            await foreach (var item in channelReader.ReadAllAsync(token))
+            await foreach (var item in _channelReader.ReadAllAsync(token))
             {
-                if (!cacheHandlers.ContainsKey(item.Key))
+                if (!_cacheHandlers.ContainsKey(item.Key))
                 {
-                    logger.SystemLog($"缓存更新线程未找到匹配的请求：{item.Key}", TaskStatus.NotFound, LogLevel.Warning);
+                    _logger.SystemLog($"缓存更新线程未找到匹配的请求：{item.Key}", TaskStatus.NotFound, LogLevel.Warning);
                     continue;
                 }
 
-                var handler = cacheHandlers[item.Key];
+                var handler = _cacheHandlers[item.Key];
                 var key = handler.CacheKey(item);
 
                 if (key is null)
                 {
-                    logger.SystemLog($"无效的缓存更新请求：{item.Key}", TaskStatus.NotFound, LogLevel.Warning);
+                    _logger.SystemLog($"无效的缓存更新请求：{item.Key}", TaskStatus.NotFound, LogLevel.Warning);
                     continue;
                 }
 
                 var updateLock = CacheKey.UpdateLock(key);
 
-                if (await cache.GetAsync(updateLock, token) is not null)
+                if (await _cache.GetAsync(updateLock, token) is not null)
                 {
                     // only one GZCTF instance will never encounter this problem
-                    logger.SystemLog($"缓存更新线程已锁定：{key}", TaskStatus.Pending, LogLevel.Debug);
+                    _logger.SystemLog($"缓存更新线程已锁定：{key}", TaskStatus.Pending, LogLevel.Debug);
                     continue;
                 }
 
-                await using var scope = serviceScopeFactory.CreateAsyncScope();
+                await using var scope = _serviceScopeFactory.CreateAsyncScope();
 
                 try
                 {
-                    await cache.SetAsync(updateLock, Array.Empty<byte>(), new DistributedCacheEntryOptions
+                    await _cache.SetAsync(updateLock, Array.Empty<byte>(), new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60)
                     }, token);
@@ -100,21 +100,21 @@ public class CacheMaker : IHostedService
 
                     if (bytes is not null && bytes.Length > 0)
                     {
-                        await cache.SetAsync(key, bytes, item.Options ?? new DistributedCacheEntryOptions(), token);
-                        logger.SystemLog($"缓存已更新：{key} @ {bytes.Length} bytes", TaskStatus.Success, LogLevel.Debug);
+                        await _cache.SetAsync(key, bytes, item.Options ?? new DistributedCacheEntryOptions(), token);
+                        _logger.SystemLog($"缓存已更新：{key} @ {bytes.Length} bytes", TaskStatus.Success, LogLevel.Debug);
                     }
                     else
                     {
-                        logger.SystemLog($"缓存生成失败：{key}", TaskStatus.Failed, LogLevel.Warning);
+                        _logger.SystemLog($"缓存生成失败：{key}", TaskStatus.Failed, LogLevel.Warning);
                     }
                 }
                 catch (Exception e)
                 {
-                    logger.SystemLog($"缓存更新线程更新失败：{key} @ {e.Message}", TaskStatus.Failed, LogLevel.Error);
+                    _logger.SystemLog($"缓存更新线程更新失败：{key} @ {e.Message}", TaskStatus.Failed, LogLevel.Error);
                 }
                 finally
                 {
-                    await cache.RemoveAsync(updateLock, token);
+                    await _cache.RemoveAsync(updateLock, token);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -122,17 +122,17 @@ public class CacheMaker : IHostedService
         }
         catch (OperationCanceledException)
         {
-            logger.SystemLog($"任务取消，缓存更新线程将退出", TaskStatus.Exit, LogLevel.Debug);
+            _logger.SystemLog($"任务取消，缓存更新线程将退出", TaskStatus.Exit, LogLevel.Debug);
         }
         finally
         {
-            logger.SystemLog($"缓存更新线程已退出", TaskStatus.Exit, LogLevel.Debug);
+            _logger.SystemLog($"缓存更新线程已退出", TaskStatus.Exit, LogLevel.Debug);
         }
     }
 
     public Task StartAsync(CancellationToken token)
     {
-        TokenSource = new CancellationTokenSource();
+        _tokenSource = new CancellationTokenSource();
 
         #region Add Handlers
 
@@ -140,16 +140,16 @@ public class CacheMaker : IHostedService
 
         #endregion
 
-        _ = Maker(TokenSource.Token);
+        _ = Maker(_tokenSource.Token);
 
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken token)
     {
-        TokenSource.Cancel();
+        _tokenSource.Cancel();
 
-        logger.SystemLog("缓存更新已停用", TaskStatus.Success, LogLevel.Debug);
+        _logger.SystemLog("缓存更新已停用", TaskStatus.Success, LogLevel.Debug);
 
         return Task.CompletedTask;
     }

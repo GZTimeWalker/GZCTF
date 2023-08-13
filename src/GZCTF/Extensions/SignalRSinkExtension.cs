@@ -17,24 +17,23 @@ public static class SignalRSinkExtension
 
 public class SignalRSink : ILogEventSink
 {
-    private readonly IServiceProvider serviceProvider;
-    private IHubContext<AdminHub, IAdminClient>? hubContext;
+    private readonly IServiceProvider _serviceProvider;
+    private IHubContext<AdminHub, IAdminClient>? _hubContext;
 
-    public SignalRSink(IServiceProvider _serviceProvider)
+    public SignalRSink(IServiceProvider serviceProvider)
     {
-        serviceProvider = _serviceProvider;
+        _serviceProvider = serviceProvider;
     }
 
     public void Emit(LogEvent logEvent)
     {
-        if (hubContext is null)
-            hubContext = serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
+        _hubContext ??= _serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
         if (logEvent.Level >= LogEventLevel.Information)
         {
             try
             {
-                hubContext.Clients.All.ReceivedLog(
+                _hubContext.Clients.All.ReceivedLog(
                     new LogMessageModel
                     {
                         Time = logEvent.Timestamp,

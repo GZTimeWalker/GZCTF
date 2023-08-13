@@ -15,20 +15,20 @@ namespace GZCTF.Controllers;
 [ApiController]
 public class InfoController : ControllerBase
 {
-    private readonly IOptionsSnapshot<AccountPolicy> accountPolicy;
-    private readonly IOptionsSnapshot<GlobalConfig> globalConfig;
-    private readonly IPostRepository postRepository;
-    private readonly IRecaptchaExtension recaptchaExtension;
+    private readonly IOptionsSnapshot<AccountPolicy> _accountPolicy;
+    private readonly IOptionsSnapshot<GlobalConfig> _globalConfig;
+    private readonly IPostRepository _postRepository;
+    private readonly IRecaptchaExtension _recaptchaExtension;
 
-    public InfoController(IPostRepository _postRepository,
-        IRecaptchaExtension _recaptchaExtension,
-        IOptionsSnapshot<GlobalConfig> _globalConfig,
-        IOptionsSnapshot<AccountPolicy> _accountPolicy)
+    public InfoController(IPostRepository postRepository,
+        IRecaptchaExtension recaptchaExtension,
+        IOptionsSnapshot<GlobalConfig> globalConfig,
+        IOptionsSnapshot<AccountPolicy> accountPolicy)
     {
-        globalConfig = _globalConfig;
-        accountPolicy = _accountPolicy;
-        postRepository = _postRepository;
-        recaptchaExtension = _recaptchaExtension;
+        _globalConfig = globalConfig;
+        _accountPolicy = accountPolicy;
+        _postRepository = postRepository;
+        _recaptchaExtension = recaptchaExtension;
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class InfoController : ControllerBase
     [HttpGet("Posts/Latest")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLatestPosts(CancellationToken token)
-        => Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
+        => Ok((await _postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取全部文章
@@ -55,7 +55,7 @@ public class InfoController : ControllerBase
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token)
-        => Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
+        => Ok((await _postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取文章详情
@@ -71,7 +71,7 @@ public class InfoController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost(string id, CancellationToken token)
     {
-        var post = await postRepository.GetPostByIdFromCache(id, token);
+        var post = await _postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse("文章未找到", 404));
@@ -88,7 +88,7 @@ public class InfoController : ControllerBase
     /// <response code="200">成功获取配置信息</response>
     [HttpGet("Config")]
     [ProducesResponseType(typeof(GlobalConfig), StatusCodes.Status200OK)]
-    public IActionResult GetGlobalConfig() => Ok(globalConfig.Value);
+    public IActionResult GetGlobalConfig() => Ok(_globalConfig.Value);
 
     /// <summary>
     /// 获取 Recaptcha SiteKey
@@ -100,5 +100,5 @@ public class InfoController : ControllerBase
     [HttpGet("SiteKey")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public IActionResult GetRecaptchaSiteKey()
-        => Ok(accountPolicy.Value.UseGoogleRecaptcha ? recaptchaExtension.SiteKey() : "NOTOKEN");
+        => Ok(_accountPolicy.Value.UseGoogleRecaptcha ? _recaptchaExtension.SiteKey() : "NOTOKEN");
 }
