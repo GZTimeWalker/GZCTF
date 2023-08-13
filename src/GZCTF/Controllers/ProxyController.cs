@@ -4,6 +4,8 @@ using System.Net.WebSockets;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
+using ProtocolType = System.Net.Sockets.ProtocolType;
+using PacketDotNet;
 
 namespace GZCTF.Controllers;
 
@@ -34,7 +36,7 @@ public class ProxyController : ControllerBase
     public async Task<IActionResult> ProxyForInstance(string id)
     {
         if (!HttpContext.WebSockets.IsWebSocketRequest)
-            return BadRequest(new RequestResponse("仅支持 Websocket"));
+            return BadRequest(new RequestResponse("仅支持 Websocket 请求"));
 
         var container = await _containerRepository.GetContainerById(id);
 
@@ -64,7 +66,7 @@ public class ProxyController : ControllerBase
                     cts.Cancel();
                     break;
                 }
-                await stream.WriteAsync(buffer, 0, status.Count, ct);
+                await stream.WriteAsync(buffer.AsMemory(0, status.Count), ct);
             }
         }, ct);
 
@@ -73,7 +75,7 @@ public class ProxyController : ControllerBase
             var buffer = new byte[BufferSize];
             while (true)
             {
-                var count = await stream.ReadAsync(buffer, 0, buffer.Length, ct);
+                var count = await stream.ReadAsync(buffer, ct);
                 if (count == 0)
                 {
                     cts.Cancel();
