@@ -227,7 +227,8 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
 
             entity.HasIndex(e => e.InstanceId);
 
-            entity.Navigation(e => e.Instance).AutoInclude();
+            // FIXME: Which API will be affected by AutoInclude
+            //entity.Navigation(e => e.Instance).AutoInclude();
         });
 
         builder.Entity<Challenge>(entity =>

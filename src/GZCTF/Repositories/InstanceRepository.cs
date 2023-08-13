@@ -9,7 +9,7 @@ namespace GZCTF.Repositories;
 
 public class InstanceRepository : RepositoryBase, IInstanceRepository
 {
-    private readonly IContainerService _service;
+    private readonly IContainerManager _service;
     private readonly ICheatInfoRepository _cheatInfoRepository;
     private readonly IContainerRepository _containerRepository;
     private readonly IGameEventRepository _gameEventRepository;
@@ -17,7 +17,7 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
     private readonly IOptionsSnapshot<GamePolicy> _gamePolicy;
 
     public InstanceRepository(AppDbContext context,
-        IContainerService service,
+        IContainerManager service,
         ICheatInfoRepository cheatInfoRepository,
         IContainerRepository containerRepository,
         IGameEventRepository gameEventRepository,

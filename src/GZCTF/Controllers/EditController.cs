@@ -30,7 +30,7 @@ public class EditController : Controller
     private readonly IGameRepository _gameRepository;
     private readonly IChallengeRepository _challengeRepository;
     private readonly IFileRepository _fileService;
-    private readonly IContainerService _containerService;
+    private readonly IContainerManager _containerService;
     private readonly IContainerRepository _containerRepository;
 
     public EditController(UserManager<UserInfo> userManager,
@@ -40,7 +40,7 @@ public class EditController : Controller
         IChallengeRepository challengeRepository,
         IGameNoticeRepository gameNoticeRepository,
         IGameRepository gameRepository,
-        IContainerService containerService,
+        IContainerManager containerService,
         IFileRepository fileService)
     {
         _logger = logger;

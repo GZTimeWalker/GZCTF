@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Internal;
+﻿using GZCTF.Utils;
+
+namespace GZCTF.Models.Internal;
 
 public class ContainerConfig
 {

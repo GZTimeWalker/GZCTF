@@ -205,16 +205,7 @@ else
     builder.Services.Configure<ForwardedHeadersOptions>(forwardedOptions.ToForwardedHeadersOptions);
 }
 
-if (builder.Configuration.GetSection(nameof(ContainerProvider))
-    .GetValue<ContainerProviderType>(nameof(ContainerProvider.Type))
-    is ContainerProviderType.Kubernetes)
-{
-    builder.Services.AddSingleton<IContainerService, K8sService>();
-}
-else
-{
-    builder.Services.AddSingleton<IContainerService, DockerService>();
-}
+builder.Services.AddContainerService(builder.Configuration);
 
 builder.Services.AddScoped<IConfigService, ConfigService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
