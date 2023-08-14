@@ -120,11 +120,9 @@ const GameNoticePanel: FC = () => {
   const filteredNotices = ApplyFilter(allNotices, filter)
 
   filteredNotices.sort((a, b) =>
-    a.type === NoticeType.Normal && b.type === NoticeType.Normal
-      ? 0
-      : a.type === NoticeType.Normal
-      ? -1
-      : 1
+    a.type !== b.type && (a.type === NoticeType.Normal || b.type == NoticeType.Normal)
+      ? (a.type === NoticeType.Normal ? -1 : 1)
+      : (dayjs(a.time).isAfter(b.time) ? -1 : 1)
   )
 
   return (
