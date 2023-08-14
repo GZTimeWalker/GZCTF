@@ -266,7 +266,7 @@ const Instances: FC = () => {
                               cursor: 'pointer',
                             }}
                             onClick={() => {
-                              clipBoard.copy(`${inst.publicIP ?? ''}:${inst.publicPort ?? ''}`)
+                              clipBoard.copy(`${inst.ip ?? ''}:${inst.port ?? ''}`)
                               showNotification({
                                 color: 'teal',
                                 message: '实例入口已复制到剪贴板',
@@ -274,9 +274,9 @@ const Instances: FC = () => {
                               })
                             }}
                           >
-                            {`${inst.publicIP}:`}
+                            {`${inst.ip}:`}
                             <Text span fw="bold" c="white">
-                              {inst.publicPort}
+                              {inst.port}
                             </Text>
                           </Text>
                         </Tooltip>

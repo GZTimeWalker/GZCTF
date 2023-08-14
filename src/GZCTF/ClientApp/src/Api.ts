@@ -549,12 +549,12 @@ export interface ContainerInstanceModel {
    */
   expectStopAt?: string
   /** 访问 IP */
-  publicIP?: string
+  ip?: string
   /**
    * 访问端口
    * @format int32
    */
-  publicPort?: number
+  port?: number
 }
 
 /** 队伍信息 */
@@ -1669,12 +1669,9 @@ export class HttpClient<SecurityDataType = unknown> {
   private secure?: boolean
   private format?: ResponseType
 
-  constructor({
-    securityWorker,
-    secure,
-    format,
-    ...axiosConfig
-  }: ApiConfig<SecurityDataType> = {}) {
+  constructor(
+    { securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}
+  ) {
     this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || '' })
     this.secure = secure
     this.format = format
@@ -1727,15 +1724,9 @@ export class HttpClient<SecurityDataType = unknown> {
     }, new FormData())
   }
 
-  public request = async <T = any, _E = any>({
-    secure,
-    path,
-    type,
-    query,
-    format,
-    body,
-    ...params
-  }: FullRequestParams): Promise<AxiosResponse<T>> => {
+  public request = async <T = any, _E = any>(
+    { secure, path, type, query, format, body, ...params }: FullRequestParams
+  ): Promise<AxiosResponse<T>> => {
     const secureParams =
       ((typeof secure === 'boolean' ? secure : this.secure) &&
         this.securityWorker &&
@@ -4534,6 +4525,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateInfoGetRecaptchaSiteKey: (data?: string | Promise<string>, options?: MutatorOptions) =>
       mutate<string>(`/api/sitekey`, data, options),
+  }
+  proxy = {
+    /**
+     * No description
+     *
+     * @tags Proxy
+     * @name ProxyProxyForInstance
+     * @summary 采用 websocket 代理 TCP 流量
+     * @request GET:/inst/{id}
+     */
+    proxyProxyForInstance: (id: string, params: RequestParams = {}) =>
+      this.request<any, RequestResponse>({
+        path: `/inst/${id}`,
+        method: 'GET',
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Proxy
+     * @name ProxyProxyForInstance
+     * @summary 采用 websocket 代理 TCP 流量
+     * @request GET:/inst/{id}
+     */
+    useProxyProxyForInstance: (id: string, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<any, RequestResponse>(doFetch ? `/inst/${id}` : null, options),
+
+    /**
+     * No description
+     *
+     * @tags Proxy
+     * @name ProxyProxyForInstance
+     * @summary 采用 websocket 代理 TCP 流量
+     * @request GET:/inst/{id}
+     */
+    mutateProxyProxyForInstance: (
+      id: string,
+      data?: any | Promise<any>,
+      options?: MutatorOptions
+    ) => mutate<any>(`/inst/${id}`, data, options),
   }
   team = {
     /**
