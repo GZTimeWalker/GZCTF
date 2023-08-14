@@ -287,6 +287,8 @@ if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging") is true)
     app.UseRequestLogging();
 
+app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
+
 app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");

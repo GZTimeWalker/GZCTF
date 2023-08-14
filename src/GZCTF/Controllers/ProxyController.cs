@@ -1,8 +1,7 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Text;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
@@ -60,86 +59,120 @@ public class ProxyController : ControllerBase
         if (container is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器"));
 
-        if (!await IncrementConnectionCount(id, token))
+        if (!await IncrementConnectionCount(id))
             return BadRequest(new RequestResponse("容器连接数已达上限"));
 
-        var socket = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
-        await socket.ConnectAsync(container.IP, container.Port);
+        var ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
-        if (!socket.Connected)
+        if (ipAddress is null)
+            return BadRequest(new RequestResponse("容器地址解析失败"));
+
+        NetworkStream? stream;
+        try
+        {
+            IPEndPoint ipEndPoint = new(ipAddress, container.Port);
+            var socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            await socket.ConnectAsync(ipEndPoint, token);
+
+            if (!socket.Connected)
+                return BadRequest(new RequestResponse("容器连接失败"));
+
+            stream = new NetworkStream(socket);
+        }
+        catch
+        {
             return BadRequest(new RequestResponse("容器连接失败"));
+        }
 
         var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
-        var stream = new NetworkStream(socket);
+        var clientIp = HttpContext.Connection.RemoteIpAddress;
+        var clientPort = HttpContext.Connection.RemotePort;
+
+        _logger.SystemLog($"[{id}] {clientIp}:{clientPort} -> {container.IP}:{container.Port}", TaskStatus.Pending, LogLevel.Debug);
 
         try
         {
-            _logger.SystemLog($"[{id}] {HttpContext.Connection.RemoteIpAddress} -> {container.IP}:{container.Port}", TaskStatus.Pending, LogLevel.Debug);
-            await RunProxy(stream, token);
+            var (tx, rx) = await RunProxy(stream, ws, token);
+            _logger.SystemLog($"[{id}] tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
         }
         finally
         {
-            await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "bye", token);
-            await stream.DisposeAsync();
-            await DecrementConnectionCount(id, token);
+            await DecrementConnectionCount(id);
         }
 
-        return Ok();
+        return new EmptyResult();
     }
 
     /// <summary>
     /// 采用 websocket 代理 TCP 流量
     /// </summary>
     /// <param name="stream"></param>
+    /// <param name="ws"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    internal async Task RunProxy(NetworkStream stream, CancellationToken token = default)
+    internal static async Task<(ulong, ulong)> RunProxy(NetworkStream stream, WebSocket ws, CancellationToken token = default)
     {
         var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
         cts.CancelAfter(TimeSpan.FromMinutes(30));
 
         var ct = cts.Token;
+        ulong tx = 0, rx = 0;
 
         var sender = Task.Run(async () =>
         {
             var buffer = new byte[BUFFER_SIZE];
-            while (true)
+            try
             {
-                var status = await HttpContext.Request.Body.ReadAsync(buffer, ct);
-                if (status == 0)
+                while (true)
                 {
-                    cts.Cancel();
-                    break;
+                    var status = await ws.ReceiveAsync(buffer, ct);
+                    if (status.CloseStatus.HasValue)
+                    {
+                        await stream.DisposeAsync();
+                        cts.Cancel();
+                        break;
+                    }
+                    tx += (ulong)status.Count;
+                    await stream.WriteAsync(buffer.AsMemory(0, status.Count), ct);
                 }
-                await stream.WriteAsync(buffer.AsMemory(0, status), ct);
             }
+            catch (TaskCanceledException) { }
+            catch { cts.Cancel(); }
         }, ct);
 
         var receiver = Task.Run(async () =>
         {
             var buffer = new byte[BUFFER_SIZE];
-            while (true)
+            try
             {
-                var count = await stream.ReadAsync(buffer, ct);
-                if (count == 0)
+                while (true)
                 {
-                    cts.Cancel();
-                    break;
+                    var count = await stream.ReadAsync(buffer, ct);
+                    if (count == 0)
+                    {
+                        await ws.CloseAsync(WebSocketCloseStatus.Empty, null, token);
+                        cts.Cancel();
+                        break;
+                    }
+                    rx += (ulong)count;
+                    await ws.SendAsync(buffer.AsMemory(0, count), WebSocketMessageType.Binary, true, ct);
                 }
-                await HttpContext.Response.Body.WriteAsync(buffer.AsMemory(0, count), ct);
             }
+            catch (TaskCanceledException) { }
+            catch { cts.Cancel(); }
         }, ct);
 
         await Task.WhenAny(sender, receiver);
+
+        return (tx, rx);
     }
 
     /// <summary>
     /// 实现容器 TCP 连接计数的 Fetch-Add 操作
     /// </summary>
     /// <param name="id">容器 id</param>
-    /// <param name="token"></param>
     /// <returns></returns>
-    internal async Task<bool> IncrementConnectionCount(string id, CancellationToken token = default)
+    internal async Task<bool> IncrementConnectionCount(string id)
     {
         var key = CacheKey.ConnectionCount(id);
         var bytes = await _cache.GetAsync(key);
@@ -151,7 +184,7 @@ public class ProxyController : ControllerBase
         await _cache.SetAsync(key, BitConverter.GetBytes(count + 1), new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
-        }, token);
+        });
 
         return true;
     }
@@ -160,9 +193,8 @@ public class ProxyController : ControllerBase
     /// 实现容器 TCP 连接计数的减少操作
     /// </summary>
     /// <param name="id">容器 id</param>
-    /// <param name="token"></param>
     /// <returns></returns>
-    internal async Task DecrementConnectionCount(string id, CancellationToken token = default)
+    internal async Task DecrementConnectionCount(string id)
     {
         var key = CacheKey.ConnectionCount(id);
         var bytes = await _cache.GetAsync(key);
@@ -174,14 +206,14 @@ public class ProxyController : ControllerBase
 
         if (count <= 1)
         {
-            await _cache.RemoveAsync(key, token);
+            await _cache.RemoveAsync(key);
         }
         else
         {
             await _cache.SetAsync(key, BitConverter.GetBytes(count - 1), new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
-            }, token);
+            });
         }
     }
 }
