@@ -32,7 +32,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
         rotate={-9}
         textSize={15}
         gutter={20}
-        opacity={theme.colorScheme === 'dark' ? 0.006 : 0.012}
+        opacity={theme.colorScheme === 'dark' ? 0.012 : 0.024}
         fontFamily="JetBrains Mono"
       >
         <AppShell
