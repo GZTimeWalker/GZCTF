@@ -86,4 +86,9 @@ public static class CacheKey
     /// 文章
     /// </summary>
     public const string Posts = "_Posts";
+
+    /// <summary>
+    /// 容器连接数缓存
+    /// </summary>
+    public static string ConnectionCount(string id) => $"_Container_Conn_{id}";
 }
