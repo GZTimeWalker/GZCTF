@@ -26,5 +26,10 @@ RUN dotnet publish "GZCTF.csproj" -c Release -o /app/publish -r linux-x64 --no-s
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 EXPOSE 80
+COPY --from=build /usr/bin/wget /usr/bin/wget
 COPY --from=publish /app/publish .
+
+HEALTHCHECK --interval=5m --timeout=3s --start-period=10s --retries=1 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:80/healthz || exit 1
+
 ENTRYPOINT ["dotnet", "GZCTF.dll"]
