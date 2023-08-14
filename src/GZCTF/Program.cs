@@ -235,6 +235,7 @@ builder.Services.AddHostedService<CronJobService>();
 
 #endregion Services and Repositories
 
+builder.Services.AddHealthChecks();
 builder.Services.AddResponseCompression(options =>
 {
     options.Providers.Add<BrotliCompressionProvider>();
@@ -295,6 +296,7 @@ app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
+app.MapHealthChecks("/healthz");
 app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();
