@@ -26,7 +26,7 @@ public class ProxyController : ControllerBase
 
     private readonly bool _enablePlatformProxy = false;
     private const int BUFFER_SIZE = 1024 * 4;
-    private const uint CONNECTION_LIMIT = 128;
+    private const uint CONNECTION_LIMIT = 64;
 
     public ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
         IOptions<ContainerProvider> provider, IContainerRepository containerRepository)
@@ -44,6 +44,7 @@ public class ProxyController : ControllerBase
     /// <param name="token"></param>
     /// <returns></returns>
     [Route("{id:length(36)}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ProxyForInstance([RegularExpression(@"[0-9a-f\-]{36}")] string id, CancellationToken token = default)
@@ -51,16 +52,19 @@ public class ProxyController : ControllerBase
         if (!_enablePlatformProxy)
             return BadRequest(new RequestResponse("TCP 代理已禁用"));
 
+        if (!await ValidateContainer(id, token))
+            return NotFound(new RequestResponse("不存在的容器"));
+
         if (!HttpContext.WebSockets.IsWebSocketRequest)
-            return BadRequest(new RequestResponse("仅支持 Websocket 请求"));
+            return NoContent();
+
+        if (!await IncrementConnectionCount(id))
+            return BadRequest(new RequestResponse("容器连接数已达上限"));
 
         var container = await _containerRepository.GetContainerById(id, token);
 
         if (container is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器"));
-
-        if (!await IncrementConnectionCount(id))
-            return BadRequest(new RequestResponse("容器连接数已达上限"));
 
         var ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
@@ -93,7 +97,7 @@ public class ProxyController : ControllerBase
         try
         {
             var (tx, rx) = await RunProxy(stream, ws, token);
-            _logger.SystemLog($"[{id}] tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
+            _logger.SystemLog($"[{id}] {clientIp}:{clientPort}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
         }
         finally
         {
@@ -132,8 +136,11 @@ public class ProxyController : ControllerBase
                         cts.Cancel();
                         break;
                     }
-                    tx += (ulong)status.Count;
-                    await stream.WriteAsync(buffer.AsMemory(0, status.Count), ct);
+                    if (status.Count > 0)
+                    {
+                        tx += (ulong)status.Count;
+                        await stream.WriteAsync(buffer.AsMemory(0, status.Count), ct);
+                    }
                 }
             }
             catch (TaskCanceledException) { }
@@ -167,6 +174,37 @@ public class ProxyController : ControllerBase
         return (tx, rx);
     }
 
+    private readonly DistributedCacheEntryOptions _validOption = new ()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+    };
+
+    private readonly DistributedCacheEntryOptions _storeOption = new()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
+    };
+
+    /// <summary>
+    /// 容器存在性校验
+    /// </summary>
+    /// <param name="id">容器 id</param>
+    /// <returns></returns>
+    internal async Task<bool> ValidateContainer(string id, CancellationToken token = default)
+    {
+        var key = CacheKey.ConnectionCount(id);
+        var bytes = await _cache.GetAsync(key, token);
+
+        if (bytes is not null)
+            return true;
+
+        var valid = await _containerRepository.ValidateContainer(id, token);
+
+        if (valid)
+            await _cache.SetAsync(key, BitConverter.GetBytes(0), _validOption, token);
+
+        return valid;
+    }
+
     /// <summary>
     /// 实现容器 TCP 连接计数的 Fetch-Add 操作
     /// </summary>
@@ -176,15 +214,16 @@ public class ProxyController : ControllerBase
     {
         var key = CacheKey.ConnectionCount(id);
         var bytes = await _cache.GetAsync(key);
-        var count = bytes is null ? 0 : BitConverter.ToUInt32(bytes);
 
-        if (count >= CONNECTION_LIMIT)
+        if (bytes is null)
             return false;
 
-        await _cache.SetAsync(key, BitConverter.GetBytes(count + 1), new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
-        });
+        var count = BitConverter.ToUInt32(bytes);
+
+        if (count > CONNECTION_LIMIT)
+            return false;
+
+        await _cache.SetAsync(key, BitConverter.GetBytes(count + 1), _storeOption);
 
         return true;
     }
@@ -204,16 +243,13 @@ public class ProxyController : ControllerBase
 
         var count = BitConverter.ToUInt32(bytes);
 
-        if (count <= 1)
+        if (count > 1)
         {
-            await _cache.RemoveAsync(key);
+            await _cache.SetAsync(key, BitConverter.GetBytes(count - 1), _storeOption);
         }
         else
         {
-            await _cache.SetAsync(key, BitConverter.GetBytes(count - 1), new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
-            });
+            await _cache.SetAsync(key, BitConverter.GetBytes(0), _validOption);
         }
     }
 }

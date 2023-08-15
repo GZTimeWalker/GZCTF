@@ -41,4 +41,7 @@ public class ContainerRepository : RepositoryBase, IContainerRepository
         _context.Containers.Remove(container);
         return SaveAsync(token);
     }
+
+    public async Task<bool> ValidateContainer(string guid, CancellationToken token = default)
+        => await _context.Containers.AnyAsync(c => c.Id == guid, token);
 }
