@@ -61,7 +61,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
           <Text size="sm" fw={600}>
             获取客户端：
             <Anchor
-              href="https://github.com/XDSEC/WebSocketReflectorX"
+              href="https://github.com/XDSEC/WebSocketReflectorX/releases"
               target="_blank"
               rel="noreferrer"
             >
