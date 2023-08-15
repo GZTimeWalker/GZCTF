@@ -72,6 +72,13 @@ public class Container
     [NotMapped]
     public string Entry => IsProxy ? Id : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
 
+    /// <summary>
+    /// 容器实例流量捕获存储路径
+    /// </summary>
+    [NotMapped]
+    public string TrafficPath => Instance is null ? string.Empty :
+        $"files/capture/{Instance.ParticipationId}/{Instance.ChallengeId}/{DateTimeOffset.Now:s}.pcap";
+
     #region Db Relationship
 
     /// <summary>

@@ -102,6 +102,7 @@ public class ContainerProvider
 {
     public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
     public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
+    public bool EnableTrafficCapture { get; set; } = false;
 
     public string PublicEntry { get; set; } = string.Empty;
 
