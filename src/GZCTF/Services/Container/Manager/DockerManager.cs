@@ -57,7 +57,7 @@ public class DockerManager : IContainerManager
         container.Status = ContainerStatus.Destroyed;
     }
 
-    private static CreateContainerParameters GetCreateContainerParameters(ContainerConfig config)
+    private CreateContainerParameters GetCreateContainerParameters(ContainerConfig config)
         => new()
         {
             Image = config.Image,
@@ -66,11 +66,11 @@ public class DockerManager : IContainerManager
             Env = config.Flag is null ? Array.Empty<string>() : new string[] { $"GZCTF_FLAG={config.Flag}" },
             HostConfig = new()
             {
-                PublishAllPorts = true,
                 Memory = config.MemoryLimit * 1024 * 1024,
                 CPUPercent = config.CPUCount * 10,
-                Privileged = config.PrivilegedContainer
-            }
+                Privileged = config.PrivilegedContainer,
+                NetworkMode = string.IsNullOrWhiteSpace(_meta.Config.ChallengeNetwork) ? null : _meta.Config.ChallengeNetwork,
+            },
         };
 
     public async Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
@@ -83,6 +83,7 @@ public class DockerManager : IContainerManager
             {
                 [config.ExposedPort.ToString()] = new EmptyStruct()
             };
+            parameters.HostConfig.PublishAllPorts = true;
         }
 
         CreateContainerResponse? containerRes = null;

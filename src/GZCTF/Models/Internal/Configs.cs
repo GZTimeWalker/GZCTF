@@ -114,6 +114,7 @@ public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
     public bool SwarmMode { get; set; } = false;
+    public string? ChallengeNetwork { get; set; }
 }
 
 public class K8sConfig

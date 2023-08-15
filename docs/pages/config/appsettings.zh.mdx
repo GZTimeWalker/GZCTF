@@ -47,6 +47,7 @@ import { Callout } from "nextra-theme-docs";
     "DockerConfig": {
       // optional
       "SwarmMode": false,
+      "ChallengeNetwork": "",
       "Uri": "unix:///var/run/docker.sock"
     },
     "K8sConfig": {
@@ -144,6 +145,35 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 
   - 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
   - 如需使用外部 docker，请将 Uri 指向对应 docker API Server，**外部 API 鉴权尚未实现，不推荐此部署方式**
+
+- **ChallengeNetwork:** 指定题目容器所在的网络，若不指定，将会使用默认网络。
+
+  <Callout type="info">
+
+  采用 `PlatformProxy` 端口映射类型时，为了使得 GZCTF 顺利访问题目容器，需要额外手动创建一个网络：
+
+  ```bash
+  docker network create challenges -d bridge --subnet 192.168.133.0/24
+  ```
+
+  设置配置项 **ChallengeNetwork** 为对应的网络名称，并需要在 docker-compose.yml 中桥接外部网络，例如：
+
+  ```yaml
+  version: "3.7"
+  services:
+    gzctf:
+      ...
+      networks:
+        - default
+        - challenges
+
+  networks:
+    challenges:
+      external: true
+  ```
+
+  </Callout>
+
 
 #### Kubernetes
 

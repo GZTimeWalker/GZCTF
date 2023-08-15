@@ -122,7 +122,7 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
 
    </Callout>
 
-4. 运行 `docker-compose up -d` 来启动 GZCTF，之后你可以通过浏览器访问 GZCTF 了。
+4. 运行 `docker compose up -d` 来启动 GZCTF，之后你可以通过浏览器访问 GZCTF 了。
 
 ## 初始管理员
 
@@ -137,7 +137,7 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='your_admin_user_name';
 你可能会用到如下的命令：
 
 ```bash
-docker-compose exec db psql -U postgres
+docker compose exec db psql -U postgres
 ```
 
 ```bash
@@ -185,7 +185,7 @@ ctf=# #do your sql query
    }
    ```
 
-之后重新使用 `docker-compose up -d` 启动 GZCTF 即可。
+之后重新使用 `docker compose up -d` 启动 GZCTF 即可。
 
 ## 容器镜像
 
