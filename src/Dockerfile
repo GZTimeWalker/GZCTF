@@ -7,9 +7,7 @@ ENV VITE_APP_BUILD_TIMESTAMP=$TIMESTAMP
 ENV VITE_APP_GIT_SHA=$GIT_SHA
 ENV VITE_APP_GIT_NAME=$GIT_NAME
 
-RUN apt update && \
-    apt install -y wget && \
-    apt install -y gnupg2 && \
+RUN apt update && apt install -y wget gnupg2 libpcap0.8 && \
     wget -qO- https://deb.nodesource.com/setup_20.x | bash - && \
     apt install -y build-essential nodejs
 
@@ -28,7 +26,7 @@ WORKDIR /app
 EXPOSE 80
 
 COPY --from=publish /app/publish .
-RUN apt update && apt install -y wget libpcap --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y wget libpcap0.8 --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 HEALTHCHECK --interval=5m --timeout=3s --start-period=10s --retries=1 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:80/healthz || exit 1

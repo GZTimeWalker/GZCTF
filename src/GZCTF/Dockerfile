@@ -9,7 +9,7 @@ COPY --from=build /publish .
 
 EXPOSE 80
 
-RUN apt update && apt install -y wget libpcap --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y wget libpcap0.8 --no-install-recommends && rm -rf /var/lib/apt/lists/*
 HEALTHCHECK --interval=5m --timeout=3s --start-period=10s --retries=1 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:80/healthz || exit 1
 
