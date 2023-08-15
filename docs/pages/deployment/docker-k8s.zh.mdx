@@ -102,9 +102,8 @@ gzctf:
   networks:
     default:
   volumes:
-    - "./data/files:/app/uploads"
+    - "./data/files:/app/files"
     - "./appsettings.json:/app/appsettings.json:ro"
-    - "./logs:/app/log"
     - "./k8sconfig.yaml:/app/k8sconfig.yaml:ro" # this is required for k8s deployment
     # - "/var/run/docker.sock:/var/run/docker.sock" # this is required for docker deployment
   depends_on:
