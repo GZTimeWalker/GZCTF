@@ -41,6 +41,8 @@ import { Callout } from "nextra-theme-docs";
   "XorKey": "<Random Key Str>",
   "ContainerProvider": {
     "Type": "Docker", // or "Kubernetes"
+    "PortMappingType": "Default",
+    "EnableTrafficCapture": false,
     "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
     "DockerConfig": {
       // optional
@@ -80,12 +82,8 @@ import { Callout } from "nextra-theme-docs";
     "ForwardLimit": 1,
     "ForwardedForHeaderName": "X-Forwarded-For",
     // use the following options to allow proxy
-    "TrustedNetworks": [
-      "10.0.0.0/8"
-    ],
-    "TrustedProxies": [
-      "10.0.0.1"
-    ]
+    "TrustedNetworks": ["10.0.0.0/8"],
+    "TrustedProxies": ["10.0.0.1"]
   }
 }
 ```
@@ -129,6 +127,8 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 
 - **Type:** 容器后端类型，可选 `Docker` 或 `Kubernetes`。
 - **PublicEntry:** 容器后端的公网地址，用于生成比赛的访问地址，展示给参赛队伍。
+- **PortMappingType:** 端口映射类型，可选 `Default` 或 `PlatformProxy`。
+- **EnableTrafficCapture:** 是否开启流量捕获，仅在 `PortMappingType` 设置为 `PlatformProxy` 时可用。若开启，将会记录流量于 `/app/files/capture` 目录下。
 
 #### Docker
 
