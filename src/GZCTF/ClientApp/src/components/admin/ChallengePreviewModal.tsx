@@ -5,7 +5,6 @@ import {
   ActionIcon,
   Box,
   Button,
-  Code,
   Divider,
   Group,
   LoadingOverlay,
@@ -16,16 +15,15 @@ import {
   Text,
   TextInput,
   Title,
-  Tooltip,
 } from '@mantine/core'
 import { useDisclosure, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { Countdown, FlagPlaceholders } from '@Components/ChallengeDetailModal'
+import { FlagPlaceholders } from '@Components/ChallengeDetailModal'
+import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { ChallengeTagItemProps } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import { ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
 
@@ -42,9 +40,8 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
 
   const [placeholder, setPlaceholder] = useState('')
   const [flag, setFlag] = useInputState('')
-  const [withContainer, setWithContainer] = useState(false)
   const [startTime, setStartTime] = useState(dayjs())
-  const { classes: tooltipClasses } = useTooltipStyles()
+  const [withContainer, setWithContainer] = useState(false)
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -183,33 +180,15 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
             </Group>
           )}
           {isDynamic && withContainer && (
-            <Stack align="center">
-              <Group>
-                <Text size="sm" fw={600}>
-                  实例访问入口：
-                  <Tooltip label="点击复制" withArrow classNames={tooltipClasses}>
-                    <Code
-                      style={{
-                        backgroundColor: 'transparent',
-                        fontSize: theme.fontSizes.sm,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      localhost:2333
-                    </Code>
-                  </Tooltip>
-                </Text>
-                <Countdown time={startTime.add(2, 'h').toJSON()} />
-              </Group>
-              <Group position="center">
-                <Button color="orange" disabled>
-                  延长时间
-                </Button>
-                <Button color="red" onClick={() => setWithContainer(false)}>
-                  销毁实例
-                </Button>
-              </Group>
-            </Stack>
+            <InstanceEntry
+              context={{
+                closeTime: startTime.add(2, 'hour').toJSON(),
+                instanceEntry: 'localhost:2333',
+              }}
+              disabled={false}
+              onProlong={() => {}}
+              onDestroy={() => setWithContainer(false)}
+            />
           )}
         </Stack>
         <Divider />

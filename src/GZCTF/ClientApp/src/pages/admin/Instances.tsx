@@ -27,7 +27,7 @@ import { Icon } from '@mdi/react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { ChallengeTagLabelMap } from '@Utils/Shared'
+import { ChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
 
@@ -205,8 +205,8 @@ const Instances: FC = () => {
               <tr>
                 <th>队伍</th>
                 <th>题目</th>
-                <th>容器 Id</th>
                 <th>生命周期</th>
+                <th>容器 Id</th>
                 <th>访问入口</th>
                 <th />
               </tr>
@@ -234,11 +234,6 @@ const Instances: FC = () => {
                         </Box>
                       </td>
                       <td>
-                        <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
-                          {inst.containerId?.substring(0, 20)}
-                        </Text>
-                      </td>
-                      <td>
                         <Group noWrap spacing="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(inst.startedAt).format('MM/DD HH:mm')}
@@ -248,6 +243,39 @@ const Instances: FC = () => {
                             {dayjs(inst.expectStopAt).format('MM/DD HH:mm')}
                           </Badge>
                         </Group>
+                      </td>
+                      <td>
+                        <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
+                          <Tooltip
+                            label="复制 URL"
+                            withArrow
+                            position="left"
+                            classNames={tooltipClasses}
+                          >
+                            <Text
+                              size="sm"
+                              ff={theme.fontFamilyMonospace}
+                              style={{
+                                backgroundColor: 'transparent',
+                                fontSize: theme.fontSizes.sm,
+                                cursor: 'pointer',
+                              }}
+                              onClick={() => {
+                                clipBoard.copy(
+                                  inst.containerGuid && getProxyUrl(inst.containerGuid)
+                                )
+                                showNotification({
+                                  color: 'teal',
+                                  title: '代理 URL 已复制到剪贴板',
+                                  message: '请使用客户端进行访问',
+                                  icon: <Icon path={mdiCheck} size={1} />,
+                                })
+                              }}
+                            >
+                              {inst.containerGuid}
+                            </Text>
+                          </Tooltip>
+                        </Text>
                       </td>
                       <td>
                         <Tooltip
@@ -269,7 +297,7 @@ const Instances: FC = () => {
                               clipBoard.copy(`${inst.ip ?? ''}:${inst.port ?? ''}`)
                               showNotification({
                                 color: 'teal',
-                                message: '实例入口已复制到剪贴板',
+                                message: '访问入口已复制到剪贴板',
                                 icon: <Icon path={mdiCheck} size={1} />,
                               })
                             }}
@@ -286,7 +314,7 @@ const Instances: FC = () => {
                           <ActionIconWithConfirm
                             iconPath={mdiPackageVariantClosedRemove}
                             color="alert"
-                            message={`确定销毁容器：\n${inst.containerId} `}
+                            message={`确定销毁容器：${inst.containerGuid?.substring(0, 8)}?`}
                             disabled={disabled}
                             onClick={() => onDelete(inst.containerGuid)}
                           />
