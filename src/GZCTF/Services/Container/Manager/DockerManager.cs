@@ -69,7 +69,7 @@ public class DockerManager : IContainerManager
                 Memory = config.MemoryLimit * 1024 * 1024,
                 CPUPercent = config.CPUCount * 10,
                 Privileged = config.PrivilegedContainer,
-                NetworkMode = string.IsNullOrWhiteSpace(_meta.Config.ChallengeNetwork) ? null : _meta.Config.ChallengeNetwork,
+                NetworkMode = _meta.Config.ChallengeNetwork,
             },
         };
 
