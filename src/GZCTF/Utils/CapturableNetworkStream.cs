@@ -65,7 +65,7 @@ public class CapturableNetworkStream : NetworkStream
 
         var udp = new UdpPacket((ushort)_options.Dest.Port, (ushort)_options.Source.Port)
         {
-            PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
+            PayloadDataSegment = new ByteArraySegment(buffer[..count].ToArray())
         };
 
         var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)

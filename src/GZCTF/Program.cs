@@ -277,6 +277,7 @@ else
 }
 
 app.UseRouting();
+app.MapHealthChecks("/healthz");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -293,7 +294,6 @@ app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
-app.MapHealthChecks("/healthz");
 app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();
