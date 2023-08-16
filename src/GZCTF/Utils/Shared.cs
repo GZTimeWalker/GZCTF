@@ -115,6 +115,28 @@ public class ArrayResponse<T> where T : class
 }
 
 /// <summary>
+/// 文件记录
+/// </summary>
+public class FileRecord
+{
+    /// <summary>
+    /// 文件名
+    /// </summary>
+    public string FileName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 文件大小
+    /// </summary>
+    public long Size { get; set; } = 0;
+
+    /// <summary>
+    /// 文件路径
+    /// </summary>
+    public DateTimeOffset UpdateTime { get; set; } = DateTimeOffset.Now;
+}
+
+
+/// <summary>
 /// 三血加分
 /// </summary>
 public struct BloodBonus(long init = BloodBonus.DefaultValue)

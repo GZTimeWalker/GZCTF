@@ -11,6 +11,7 @@ using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using NPOI.OpenXmlFormats.Dml;
 
 namespace GZCTF.Controllers;
 
@@ -401,9 +402,39 @@ public class GameController : ControllerBase
     [RequireMonitor]
     [HttpGet("Games/{id}/Captures")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token)
         => Ok((await _challengeRepository.GetChallengesWithTrafficCapturing(id, token))
             .Select(ChallengeTrafficRecordModel.FromChallenge));
+
+    /// <summary>
+    /// 获取开启了比赛题目中捕获到到队伍信息
+    /// </summary>
+    /// <remarks>
+    /// 获取开启了比赛题目中捕获到到队伍信息，需要Monitor权限
+    /// </remarks>
+    /// <param name="challengeId"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目</response>
+    [RequireMonitor]
+    [HttpGet("Captures/{challengeId}")]
+    [ProducesResponseType(typeof(TeamTrafficModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetChallengeTraffic([FromRoute] int challengeId, CancellationToken token)
+    {
+        var filePath = $"{FilePath.Capture}/{challengeId}";
+
+        if (!Path.Exists(filePath))
+            return NotFound(new RequestResponse("未找到相关捕获信息"));
+
+        var participationIds = await GetDirNamesAsInt(filePath);
+
+        if (participationIds.Count == 0)
+            return NotFound(new RequestResponse("未找到相关捕获信息"));
+
+        var participations = await _participationRepository.GetParticipationsByIds(participationIds, token);
+
+        return Ok(participations.Select(p => TeamTrafficModel.FromParticipation(p, challengeId)));
+    }
 
     /// <summary>
     /// 获取全部比赛题目信息及当前队伍信息
@@ -974,5 +1005,17 @@ public class GameController : ControllerBase
         }
 
         return res;
+    }
+
+    private static Task<List<int>> GetDirNamesAsInt(string dir)
+    {
+        if (!Directory.Exists(dir))
+            return Task.FromResult(new List<int>());
+
+        return Task.Run(() => Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly).Select(d =>
+        {
+            var name = Path.GetFileName(d);
+            return int.TryParse(name, out var res) ? res : -1;
+        }).Where(d => d > 0).ToList());
     }
 }

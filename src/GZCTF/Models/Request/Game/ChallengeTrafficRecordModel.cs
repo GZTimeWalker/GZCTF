@@ -33,7 +33,7 @@ public class ChallengeTrafficRecordModel
     public bool IsEnabled { get; set; } = false;
 
     /// <summary>
-    /// 题目所捕获到的队伍流量的数量
+    /// 题目所捕获到的队伍流量数量
     /// </summary>
     public int Count { get; set; } = 0;
 
@@ -48,7 +48,8 @@ public class ChallengeTrafficRecordModel
             Tag = challenge.Tag,
             Type = challenge.Type,
             IsEnabled = challenge.IsEnabled,
-            Count = Directory.Exists(trafficPath) ? Directory.GetDirectories(trafficPath).Length : 0
+            Count = Directory.Exists(trafficPath) ?
+                Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length : 0
         };
     }
 }

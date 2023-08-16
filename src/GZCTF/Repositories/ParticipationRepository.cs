@@ -88,6 +88,11 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             await _gameRepository.FlushScoreboardCache(part.GameId, token);
     }
 
+    public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default)
+        => _context.Participations.Where(p => ids.Contains(p.Id))
+            .Include(p => p.Team)
+            .ToArrayAsync(token);
+
     public async Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default)
         => _context.RemoveRange(await _context.UserParticipations
                 .Where(p => p.User == user && p.Game == game).ToArrayAsync(token));
