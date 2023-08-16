@@ -159,7 +159,6 @@ public class ProxyController : ControllerBase
             catch (TaskCanceledException) { }
             finally
             {
-                stream.Close();
                 cts.Cancel();
             }
         }, ct);
