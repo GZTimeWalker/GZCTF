@@ -102,9 +102,9 @@ public sealed class CapturableNetworkStream : NetworkStream
         await base.WriteAsync(buffer, cancellationToken);
     }
 
-    public override void Close()
+    public override void Dispose()
     {
-        base.Close();
+        base.Dispose();
         _device?.Close();
     }
 }
