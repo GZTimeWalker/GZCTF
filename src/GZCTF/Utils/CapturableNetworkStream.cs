@@ -36,7 +36,7 @@ public class CapturableNetworkStream : NetworkStream
 {
     private readonly CapturableNetworkStreamOptions _options;
     private readonly CaptureFileWriterDevice? _device = null;
-    private readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("ba-db-ad-ba-db-ad");
+    private readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
 
     public CapturableNetworkStream(Socket socket, CapturableNetworkStreamOptions options) : base(socket)
     {

@@ -25,8 +25,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const { classes: tooltipClasses, theme } = useTooltipStyles()
 
   const instanceEntry = context.instanceEntry ?? ''
-  const isPlatfromProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
-  const copyEntry = isPlatfromProxy ? getProxyUrl(instanceEntry) : instanceEntry
+  const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
+  const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry) : instanceEntry
 
   return (
     <Stack align="flex-start" spacing={2}>
@@ -44,8 +44,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
                 clipBoard.copy(copyEntry)
                 showNotification({
                   color: 'teal',
-                  title: isPlatfromProxy ? '实例入口已复制到剪贴板' : undefined,
-                  message: isPlatfromProxy ? '请使用客户端进行访问' : '实例入口已复制到剪贴板',
+                  title: isPlatformProxy ? '实例入口已复制到剪贴板' : undefined,
+                  message: isPlatformProxy ? '请使用客户端进行访问' : '实例入口已复制到剪贴板',
                   icon: <Icon path={mdiCheck} size={1} />,
                 })
               }}
@@ -56,7 +56,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         </Text>
         <Countdown time={context.closeTime ?? '0'} />
       </Group>
-      {isPlatfromProxy && (
+      {isPlatformProxy && (
         <Group noWrap spacing={0}>
           <Text size="sm" fw={600}>
             获取客户端：

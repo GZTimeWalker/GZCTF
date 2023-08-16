@@ -81,9 +81,9 @@ public class Challenge
     public int? ContainerExposePort { get; set; } = 80;
 
     /// <summary>
-    /// 是否为特权容器
+    /// 是否需要记录访问流量
     /// </summary>
-    public bool? PrivilegedContainer { get; set; } = false;
+    public bool CaptureTraffic { get; set; } = false;
 
     /// <summary>
     /// 解决题目人数
@@ -249,7 +249,7 @@ public class Challenge
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;
         ContainerImage = model.ContainerImage?.Trim() ?? ContainerImage;
-        PrivilegedContainer = model.PrivilegedContainer ?? PrivilegedContainer;
+        CaptureTraffic = model.CaptureTraffic ?? CaptureTraffic;
         ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
         OriginalScore = model.OriginalScore ?? OriginalScore;
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;

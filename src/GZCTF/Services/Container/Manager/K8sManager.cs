@@ -71,7 +71,6 @@ public class K8sManager : IContainerManager
                         Name = name,
                         Image = config.Image,
                         ImagePullPolicy = "Always",
-                        SecurityContext = new() { Privileged = config.PrivilegedContainer },
                         Env = config.Flag is null ? new List<V1EnvVar>() : new[]
                         {
                             new V1EnvVar("GZCTF_FLAG", config.Flag)

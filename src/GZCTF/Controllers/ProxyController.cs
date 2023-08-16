@@ -129,7 +129,7 @@ public class ProxyController : ControllerBase
     /// <param name="ws"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    internal async Task<(ulong, ulong)> RunProxy(CapturableNetworkStream stream, WebSocket ws, CancellationToken token = default)
+    internal static async Task<(ulong, ulong)> RunProxy(CapturableNetworkStream stream, WebSocket ws, CancellationToken token = default)
     {
         var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
         cts.CancelAfter(TimeSpan.FromMinutes(30));

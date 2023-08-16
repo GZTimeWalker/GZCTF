@@ -30,9 +30,9 @@ public class ContainerConfig
     public string? Flag { get; set; } = string.Empty;
 
     /// <summary>
-    /// 是否为特权容器
+    /// 是否需要记录访问流量
     /// </summary>
-    public bool PrivilegedContainer { get; set; } = false;
+    public bool CaptureTraffic { get; set; } = false;
 
     /// <summary>
     /// 内存限制（MB）
