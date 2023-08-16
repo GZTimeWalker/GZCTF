@@ -74,7 +74,7 @@ public class ChallengeUpdateModel
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool? CaptureTraffic { get; set; } = false;
+    public bool? EnableTrafficCapture { get; set; } = false;
 
     #endregion Container
 

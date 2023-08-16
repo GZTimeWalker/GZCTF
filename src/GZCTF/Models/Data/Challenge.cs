@@ -83,7 +83,7 @@ public class Challenge
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool CaptureTraffic { get; set; } = false;
+    public bool EnableTrafficCapture { get; set; } = false;
 
     /// <summary>
     /// 解决题目人数
@@ -249,7 +249,7 @@ public class Challenge
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;
         ContainerImage = model.ContainerImage?.Trim() ?? ContainerImage;
-        CaptureTraffic = model.CaptureTraffic ?? CaptureTraffic;
+        EnableTrafficCapture = model.EnableTrafficCapture ?? EnableTrafficCapture;
         ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
         OriginalScore = model.OriginalScore ?? OriginalScore;
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;

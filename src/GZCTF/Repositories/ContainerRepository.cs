@@ -13,7 +13,9 @@ public class ContainerRepository : RepositoryBase, IContainerRepository
     public override Task<int> CountAsync(CancellationToken token = default) => _context.Containers.CountAsync(token);
 
     public Task<Container?> GetContainerById(string guid, CancellationToken token = default)
-        => _context.Containers.Include(c => c.Instance).FirstOrDefaultAsync(i => i.Id == guid, token);
+        => _context.Containers.Include(c => c.Instance)
+            .ThenInclude(i => i!.Challenge)
+            .FirstOrDefaultAsync(i => i.Id == guid, token);
 
     public Task<List<Container>> GetContainers(CancellationToken token = default)
         => _context.Containers.ToListAsync(token);

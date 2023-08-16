@@ -93,7 +93,7 @@ public class ProxyController : ControllerBase
             {
                 Source = new(clientIp, clientPort),
                 Dest = ipEndPoint,
-                EnableCapture = _enableTrafficCapture,
+                EnableCapture = _enableTrafficCapture && container.Instance.Challenge.EnableTrafficCapture,
                 FilePath = container.TrafficPath(HttpContext.Connection.Id),
             });
         }

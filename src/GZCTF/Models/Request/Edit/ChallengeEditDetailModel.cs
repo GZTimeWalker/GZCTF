@@ -89,7 +89,7 @@ public class ChallengeEditDetailModel
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool? CaptureTraffic { get; set; } = false;
+    public bool? EnableTrafficCapture { get; set; } = false;
 
     #endregion Container
 
@@ -159,7 +159,7 @@ public class ChallengeEditDetailModel
             CPUCount = chal.CPUCount,
             StorageLimit = chal.StorageLimit,
             ContainerExposePort = chal.ContainerExposePort,
-            CaptureTraffic = chal.CaptureTraffic,
+            EnableTrafficCapture = chal.EnableTrafficCapture,
             OriginalScore = chal.OriginalScore,
             MinScoreRate = chal.MinScoreRate,
             Difficulty = chal.Difficulty,

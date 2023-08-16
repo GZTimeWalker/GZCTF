@@ -32,7 +32,7 @@ public class ContainerConfig
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool CaptureTraffic { get; set; } = false;
+    public bool EnableTrafficCapture { get; set; } = false;
 
     /// <summary>
     /// 内存限制（MB）

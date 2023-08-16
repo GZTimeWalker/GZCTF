@@ -869,8 +869,8 @@ export interface ChallengeEditDetailModel {
    * @format int32
    */
   containerExposePort: number
-  /** 是否为特权容器 */
-  privilegedContainer?: boolean | null
+  /** 是否需要记录访问流量 */
+  enableTrafficCapture?: boolean | null
   /**
    * 初始分数
    * @format int32
@@ -1050,8 +1050,8 @@ export interface ChallengeUpdateModel {
    * @format int32
    */
   containerExposePort?: number | null
-  /** 是否为特权容器 */
-  privilegedContainer?: boolean | null
+  /** 是否需要记录访问流量 */
+  enableTrafficCapture?: boolean | null
   /**
    * 初始分数
    * @format int32
@@ -4533,11 +4533,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Proxy
      * @name ProxyProxyForInstance
      * @summary 采用 websocket 代理 TCP 流量
-     * @request GET:/inst/{id}
+     * @request GET:/api/proxy/{id}
      */
     proxyProxyForInstance: (id: string, params: RequestParams = {}) =>
-      this.request<any, RequestResponse>({
-        path: `/inst/${id}`,
+      this.request<void, RequestResponse>({
+        path: `/api/proxy/${id}`,
         method: 'GET',
         ...params,
       }),
@@ -4547,10 +4547,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Proxy
      * @name ProxyProxyForInstance
      * @summary 采用 websocket 代理 TCP 流量
-     * @request GET:/inst/{id}
+     * @request GET:/api/proxy/{id}
      */
     useProxyProxyForInstance: (id: string, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<any, RequestResponse>(doFetch ? `/inst/${id}` : null, options),
+      useSWR<void, RequestResponse>(doFetch ? `/api/proxy/${id}` : null, options),
 
     /**
      * No description
@@ -4558,13 +4558,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Proxy
      * @name ProxyProxyForInstance
      * @summary 采用 websocket 代理 TCP 流量
-     * @request GET:/inst/{id}
+     * @request GET:/api/proxy/{id}
      */
     mutateProxyProxyForInstance: (
       id: string,
-      data?: any | Promise<any>,
+      data?: void | Promise<void>,
       options?: MutatorOptions
-    ) => mutate<any>(`/inst/${id}`, data, options),
+    ) => mutate<void>(`/api/proxy/${id}`, data, options),
   }
   team = {
     /**

@@ -498,10 +498,10 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={4} style={{ alignItems: 'center', display: 'flex' }}>
               <Switch
                 disabled={disabled}
-                checked={challengeInfo.privilegedContainer ?? false}
-                label={SwitchLabel('特权容器', '以特权模式运行容器，Swarm 不受支持')}
+                checked={challengeInfo.enableTrafficCapture ?? false}
+                label={SwitchLabel('开启流量捕获', '捕获队伍解题流量，需要开启平台代理')}
                 onChange={(e) =>
-                  setChallengeInfo({ ...challengeInfo, privilegedContainer: e.target.checked })
+                  setChallengeInfo({ ...challengeInfo, enableTrafficCapture: e.target.checked })
                 }
               />
             </Grid.Col>
