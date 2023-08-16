@@ -117,7 +117,7 @@ public class ProxyController : ControllerBase
         finally
         {
             await DecrementConnectionCount(id);
-            stream.Dispose();
+            stream.Close();
             ws.Dispose();
         }
 
@@ -147,10 +147,7 @@ public class ProxyController : ControllerBase
                 while (true)
                 {
                     var status = await ws.ReceiveAsync(buffer, ct);
-                    if (status.CloseStatus.HasValue)
-                    {
-                        break;
-                    }
+                    if (status.CloseStatus.HasValue) break;
                     if (status.Count > 0)
                     {
                         tx += (ulong)status.Count;
@@ -159,10 +156,7 @@ public class ProxyController : ControllerBase
                 }
             }
             catch (TaskCanceledException) { }
-            finally
-            {
-                cts.Cancel();
-            }
+            finally { cts.Cancel(); }
         }, ct);
 
         var receiver = Task.Run(async () =>
@@ -183,11 +177,7 @@ public class ProxyController : ControllerBase
                 }
             }
             catch (TaskCanceledException) { }
-            finally
-            {
-                stream.Close();
-                cts.Cancel();
-            }
+            finally { cts.Cancel(); }
         }, ct);
 
         await Task.WhenAny(sender, receiver);

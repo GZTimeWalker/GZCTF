@@ -56,28 +56,19 @@ public class RateLimiter
                     });
                 }
 
-                string? remoteIPaddress = context?.Connection?.RemoteIpAddress?.ToString();
+                var address = context?.Connection?.RemoteIpAddress;
 
-                if (context is not null && context.Request.Headers.TryGetValue("X-Forwarded-For", out var value))
+                if (address is null || IPAddress.IsLoopback(address))
+                    return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
+
+                return RateLimitPartition.GetSlidingWindowLimiter(address.ToString(), key => new()
                 {
-                    // note that we consider the previous reverse proxy server credible
-                    remoteIPaddress = value.ToString().Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-                }
-
-                if (remoteIPaddress is not null && IPAddress.TryParse(remoteIPaddress, out IPAddress? address))
-                {
-                    if (!IPAddress.IsLoopback(address))
-                        return RateLimitPartition.GetSlidingWindowLimiter(remoteIPaddress, key => new()
-                        {
-                            PermitLimit = 150,
-                            Window = TimeSpan.FromMinutes(1),
-                            QueueLimit = 60,
-                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                            SegmentsPerWindow = 6,
-                        });
-                }
-
-                return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
+                    PermitLimit = 150,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 60,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    SegmentsPerWindow = 6,
+                });
             }),
             OnRejected = (context, cancellationToken) =>
             {

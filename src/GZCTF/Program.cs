@@ -173,7 +173,8 @@ builder.Services.AddIdentityCore<UserInfo>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
-    o.TokenLifespan = TimeSpan.FromHours(3));
+    o.TokenLifespan = TimeSpan.FromHours(3)
+);
 
 #endregion Identity
 
