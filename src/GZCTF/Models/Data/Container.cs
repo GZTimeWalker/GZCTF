@@ -75,9 +75,8 @@ public class Container
     /// <summary>
     /// 容器实例流量捕获存储路径
     /// </summary>
-    [NotMapped]
-    public string TrafficPath => Instance is null ? string.Empty :
-        $"files/capture/{Instance.ParticipationId}/{Instance.ChallengeId}/{DateTimeOffset.Now:s}.pcap";
+    public string TrafficPath(string conn) => Instance is null ? string.Empty :
+        $"files/capture/{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:s}-{conn}.pcap";
 
     #region Db Relationship
 

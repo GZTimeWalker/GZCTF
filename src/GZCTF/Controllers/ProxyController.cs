@@ -94,7 +94,7 @@ public class ProxyController : ControllerBase
                 Source = new(clientIp, clientPort),
                 Dest = ipEndPoint,
                 EnableCapture = _enableTrafficCapture,
-                FilePath = container.TrafficPath,
+                FilePath = container.TrafficPath(HttpContext.Connection.Id),
             });
         }
         catch (Exception e)
@@ -105,12 +105,10 @@ public class ProxyController : ControllerBase
 
         var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
-        _logger.SystemLog($"[{id}] {clientIp}:{clientPort} -> {container.IP}:{container.Port}", TaskStatus.Pending, LogLevel.Debug);
-
         try
         {
             var (tx, rx) = await RunProxy(stream, ws, token);
-            _logger.SystemLog($"[{id}] {clientIp}:{clientPort}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
+            _logger.SystemLog($"[{id}] {clientIp} -> {container.IP}:{container.Port}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
         }
         catch (Exception e)
         {
