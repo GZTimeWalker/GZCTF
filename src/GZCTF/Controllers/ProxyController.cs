@@ -80,7 +80,7 @@ public class ProxyController : ControllerBase
         try
         {
             IPEndPoint ipEndPoint = new(ipAddress, container.Port);
-            var socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            using var socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             await socket.ConnectAsync(ipEndPoint, token);
 
             if (!socket.Connected)
