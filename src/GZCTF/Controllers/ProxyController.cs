@@ -174,8 +174,6 @@ public class ProxyController : ControllerBase
                     if (count == 0)
                     {
                         await ws.CloseAsync(WebSocketCloseStatus.Empty, null, token);
-                        stream.Close();
-                        cts.Cancel();
                         break;
                     }
                     rx += (ulong)count;
