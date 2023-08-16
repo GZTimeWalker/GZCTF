@@ -117,6 +117,8 @@ public class ProxyController : ControllerBase
         finally
         {
             await DecrementConnectionCount(id);
+            stream.Dispose();
+            ws.Dispose();
         }
 
         return new EmptyResult();
