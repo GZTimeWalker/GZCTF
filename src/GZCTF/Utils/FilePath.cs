@@ -34,4 +34,32 @@ internal static class FilePath
     internal static string Logs => GetDir(DirType.Logs);
     internal static string Uploads => GetDir(DirType.Uploads);
     internal static string Capture => GetDir(DirType.Capture);
+
+    /// <summary>
+    /// 获取文件夹内容
+    /// </summary>
+    /// <param name="dir">文件夹</param>
+    /// <param name="totSize">总大小</param>
+    /// <returns></returns>
+    internal static List<FileRecord> GetFileRecords(string dir, out long totSize)
+    {
+        totSize = 0;
+        var records = new List<FileRecord>();
+
+        foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
+        {
+            var info = new FileInfo(file)!;
+
+            records.Add(new()
+            {
+                FileName = info.Name,
+                Size = info.Length,
+                UpdateTime = info.LastAccessTimeUtc
+            });
+
+            totSize += info.Length;
+        }
+
+        return records;
+    }
 }

@@ -3,7 +3,7 @@ using GZCTF.Utils;
 
 namespace GZCTF.Models.Request.Game;
 
-public class ChallengeTrafficRecordModel
+public class ChallengeTrafficModel
 {
     /// <summary>
     /// 题目Id
@@ -37,7 +37,7 @@ public class ChallengeTrafficRecordModel
     /// </summary>
     public int Count { get; set; } = 0;
 
-    internal static ChallengeTrafficRecordModel FromChallenge(Challenge challenge)
+    internal static ChallengeTrafficModel FromChallenge(Challenge challenge)
     {
         string trafficPath = $"{FilePath.Capture}/{challenge.Id}";
 

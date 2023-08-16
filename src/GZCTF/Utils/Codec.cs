@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using NPOI.HSSF.Record;
 
 namespace GZCTF.Utils;
 
@@ -249,6 +250,34 @@ public partial class Codec
             var entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Optimal);
             await using var entryStream = entry.Open();
             await using var fileStream = File.OpenRead(Path.Combine(basepath, file.Location, file.Hash));
+            await fileStream.CopyToAsync(entryStream, token);
+        }
+
+        await tmp.FlushAsync(token);
+        return tmp;
+    }
+
+    /// <summary>
+    /// 将文件夹打包为 zip 文件
+    /// </summary>
+    /// <param name="basePath">根目录</param>
+    /// <param name="zipName">压缩包根目录</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async static Task<Stream> ZipFilesAsync(string basePath, string zipName, CancellationToken token = default)
+    {
+        var records = FilePath.GetFileRecords(basePath, out long size);
+
+        Stream tmp = size <= 64 * 1024 * 1024 ? new MemoryStream() :
+            File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
+
+        using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
+
+        foreach (var file in records)
+        {
+            var entry = zip.CreateEntry(Path.Combine(zipName, file.FileName), CompressionLevel.Optimal);
+            await using var entryStream = entry.Open();
+            await using var fileStream = File.OpenRead(Path.Combine(basePath, file.FileName));
             await fileStream.CopyToAsync(entryStream, token);
         }
 

@@ -33,30 +33,13 @@ public class TeamTrafficModel
     public string? Avatar { get; set; }
 
     /// <summary>
-    /// 题目所捕获到的流量
+    /// 题目所捕获到的流量数量
     /// </summary>
-    public List<FileRecord> Records { get; set; } = new();
+    public int Count { get; set; }
 
     internal static TeamTrafficModel FromParticipation(Participation part, int challengeId)
     {
         string trafficPath = $"{FilePath.Capture}/{challengeId}/{part.Id}";
-
-        var records = new List<FileRecord>();
-
-        if (Directory.Exists(trafficPath))
-        {
-            foreach (string file in Directory.EnumerateFiles(trafficPath))
-            {
-                var info = new FileInfo(file)!;
-
-                records.Add(new()
-                {
-                    FileName = info.Name,
-                    Size = info.Length,
-                    UpdateTime = info.LastAccessTimeUtc
-                });
-            }
-        }
 
         return new()
         {
@@ -65,7 +48,8 @@ public class TeamTrafficModel
             Bio = part.Team.Bio,
             ParticipationId = part.Id,
             Avatar = part.Team.AvatarUrl,
-            Records = records
+            Count = Directory.Exists(trafficPath) ?
+                Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length : 0
         };
     }
 }

@@ -1446,6 +1446,47 @@ export interface ParticipationModel {
   organization?: string | null
 }
 
+/** 队伍流量获取信息 */
+export interface TeamTrafficModel {
+  /**
+   * 队伍 Id
+   * @format int32
+   */
+  id?: number
+  /**
+   * 参与 Id
+   * @format int32
+   */
+  participationId?: number
+  /** 队伍名称 */
+  name?: string | null
+  /** 队伍签名 */
+  bio?: string | null
+  /** 头像链接 */
+  avatar?: string | null
+  /**
+   * 题目所捕获到的流量数量
+   * @format int32
+   */
+  count?: number
+}
+
+/** 文件记录 */
+export interface FileRecord {
+  /** 文件名 */
+  fileName?: string
+  /**
+   * 文件大小
+   * @format int64
+   */
+  size?: number
+  /**
+   * 文件路径
+   * @format date-time
+   */
+  updateTime?: string
+}
+
 export interface GameDetailModel {
   /** 题目信息 */
   challenges?: Record<string, ChallengeInfo[]>
@@ -2081,33 +2122,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         ...params,
       }),
-    /**
-     * @description 使用此接口下载全部 Writeup，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDownloadAllWriteups
-     * @summary 下载全部 Writeup
-     * @request GET:/api/admin/writeups/{id}/all
-     */
-    useAdminDownloadAllWriteups: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) => useSWR<void, RequestResponse>(doFetch ? `/api/admin/writeups/${id}/all` : null, options),
-
-    /**
-     * @description 使用此接口下载全部 Writeup，需要Admin权限
-     *
-     * @tags Admin
-     * @name AdminDownloadAllWriteups
-     * @summary 下载全部 Writeup
-     * @request GET:/api/admin/writeups/{id}/all
-     */
-    mutateAdminDownloadAllWriteups: (
-      id: number,
-      data?: void | Promise<void>,
-      options?: MutatorOptions
-    ) => mutate<void>(`/api/admin/writeups/${id}/all`, data, options),
 
     /**
      * @description 使用此接口获取全部文件，需要Admin权限
@@ -2774,35 +2788,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         ...params,
       }),
-    /**
-     * @description 根据哈希获取文件，不匹配文件名
-     *
-     * @tags Assets
-     * @name AssetsGetFile
-     * @summary 获取文件接口
-     * @request GET:/assets/{hash}/{filename}
-     */
-    useAssetsGetFile: (
-      hash: string,
-      filename: string,
-      options?: SWRConfiguration,
-      doFetch: boolean = true
-    ) => useSWR<void, RequestResponse>(doFetch ? `/assets/${hash}/${filename}` : null, options),
-
-    /**
-     * @description 根据哈希获取文件，不匹配文件名
-     *
-     * @tags Assets
-     * @name AssetsGetFile
-     * @summary 获取文件接口
-     * @request GET:/assets/{hash}/{filename}
-     */
-    mutateAssetsGetFile: (
-      hash: string,
-      filename: string,
-      data?: void | Promise<void>,
-      options?: MutatorOptions
-    ) => mutate<void>(`/assets/${hash}/${filename}`, data, options),
 
     /**
      * @description 上传一个或多个文件
@@ -3794,6 +3779,184 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ChallengeDetailModel>(`/api/game/${id}/challenges/${challengeId}`, data, options),
 
     /**
+     * @description 获取开启了流量捕获的比赛题目，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetChallengesWithTrafficCapturing
+     * @summary 获取开启了流量捕获的比赛题目
+     * @request GET:/api/game/games/{id}/captures
+     */
+    gameGetChallengesWithTrafficCapturing: (id: number, params: RequestParams = {}) =>
+      this.request<ChallengeInfoModel[], RequestResponse>({
+        path: `/api/game/games/${id}/captures`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取开启了流量捕获的比赛题目，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetChallengesWithTrafficCapturing
+     * @summary 获取开启了流量捕获的比赛题目
+     * @request GET:/api/game/games/{id}/captures
+     */
+    useGameGetChallengesWithTrafficCapturing: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<ChallengeInfoModel[], RequestResponse>(
+        doFetch ? `/api/game/games/${id}/captures` : null,
+        options
+      ),
+
+    /**
+     * @description 获取开启了流量捕获的比赛题目，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetChallengesWithTrafficCapturing
+     * @summary 获取开启了流量捕获的比赛题目
+     * @request GET:/api/game/games/{id}/captures
+     */
+    mutateGameGetChallengesWithTrafficCapturing: (
+      id: number,
+      data?: ChallengeInfoModel[] | Promise<ChallengeInfoModel[]>,
+      options?: MutatorOptions
+    ) => mutate<ChallengeInfoModel[]>(`/api/game/games/${id}/captures`, data, options),
+
+    /**
+     * @description 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetChallengeTraffic
+     * @summary 获取比赛题目中捕获到到队伍信息
+     * @request GET:/api/game/captures/{challengeId}
+     */
+    gameGetChallengeTraffic: (challengeId: number, params: RequestParams = {}) =>
+      this.request<TeamTrafficModel[], RequestResponse>({
+        path: `/api/game/captures/${challengeId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetChallengeTraffic
+     * @summary 获取比赛题目中捕获到到队伍信息
+     * @request GET:/api/game/captures/{challengeId}
+     */
+    useGameGetChallengeTraffic: (
+      challengeId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<TeamTrafficModel[], RequestResponse>(
+        doFetch ? `/api/game/captures/${challengeId}` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetChallengeTraffic
+     * @summary 获取比赛题目中捕获到到队伍信息
+     * @request GET:/api/game/captures/{challengeId}
+     */
+    mutateGameGetChallengeTraffic: (
+      challengeId: number,
+      data?: TeamTrafficModel[] | Promise<TeamTrafficModel[]>,
+      options?: MutatorOptions
+    ) => mutate<TeamTrafficModel[]>(`/api/game/captures/${challengeId}`, data, options),
+
+    /**
+     * @description 获取流量包文件，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetTeamTraffic
+     * @summary 获取流量包文件
+     * @request GET:/api/game/captures/{challengeId}/{partId}/{filename}
+     */
+    gameGetTeamTraffic: (
+      challengeId: number,
+      partId: number,
+      filename: string,
+      params: RequestParams = {}
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}/${filename}`,
+        method: 'GET',
+        ...params,
+      }),
+
+    /**
+     * @description 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetTeamTrafficAll
+     * @summary 获取比赛题目中捕获到到队伍的流量包列表
+     * @request GET:/api/game/captures/{challengeId}/{partId}
+     */
+    gameGetTeamTrafficAll: (challengeId: number, partId: number, params: RequestParams = {}) =>
+      this.request<FileRecord[], RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetTeamTrafficAll
+     * @summary 获取比赛题目中捕获到到队伍的流量包列表
+     * @request GET:/api/game/captures/{challengeId}/{partId}
+     */
+    useGameGetTeamTrafficAll: (
+      challengeId: number,
+      partId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true
+    ) =>
+      useSWR<FileRecord[], RequestResponse>(
+        doFetch ? `/api/game/captures/${challengeId}/${partId}` : null,
+        options
+      ),
+
+    /**
+     * @description 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetTeamTrafficAll
+     * @summary 获取比赛题目中捕获到到队伍的流量包列表
+     * @request GET:/api/game/captures/{challengeId}/{partId}
+     */
+    mutateGameGetTeamTrafficAll: (
+      challengeId: number,
+      partId: number,
+      data?: FileRecord[] | Promise<FileRecord[]>,
+      options?: MutatorOptions
+    ) => mutate<FileRecord[]>(`/api/game/captures/${challengeId}/${partId}`, data, options),
+
+    /**
+     * @description 获取流量包文件，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetTeamTrafficZip
+     * @summary 获取流量包文件压缩包
+     * @request GET:/api/game/captures/{challengeId}/{partId}/all
+     */
+    gameGetTeamTrafficZip: (challengeId: number, partId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}/all`,
+        method: 'GET',
+        ...params,
+      }),
+
+    /**
      * @description 获取赛后题解提交情况，需要User权限
      *
      * @tags Game
@@ -4071,30 +4234,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         ...params,
       }),
-    /**
-     * @description 下载比赛积分榜，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameScoreboardSheet
-     * @summary 下载比赛积分榜
-     * @request GET:/api/game/{id}/scoreboardsheet
-     */
-    useGameScoreboardSheet: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<void, RequestResponse>(doFetch ? `/api/game/${id}/scoreboardsheet` : null, options),
-
-    /**
-     * @description 下载比赛积分榜，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameScoreboardSheet
-     * @summary 下载比赛积分榜
-     * @request GET:/api/game/{id}/scoreboardsheet
-     */
-    mutateGameScoreboardSheet: (
-      id: number,
-      data?: void | Promise<void>,
-      options?: MutatorOptions
-    ) => mutate<void>(`/api/game/${id}/scoreboardsheet`, data, options),
 
     /**
      * @description 查询 flag 状态，需要User权限
@@ -4259,30 +4398,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         ...params,
       }),
-    /**
-     * @description 下载比赛全部提交，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameSubmissionSheet
-     * @summary 下载比赛全部提交
-     * @request GET:/api/game/{id}/submissionsheet
-     */
-    useGameSubmissionSheet: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<void, RequestResponse>(doFetch ? `/api/game/${id}/submissionsheet` : null, options),
-
-    /**
-     * @description 下载比赛全部提交，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameSubmissionSheet
-     * @summary 下载比赛全部提交
-     * @request GET:/api/game/{id}/submissionsheet
-     */
-    mutateGameSubmissionSheet: (
-      id: number,
-      data?: void | Promise<void>,
-      options?: MutatorOptions
-    ) => mutate<void>(`/api/game/${id}/submissionsheet`, data, options),
 
     /**
      * @description 提交 flag，需要User权限，需要当前激活队伍已经报名
@@ -4541,30 +4656,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         ...params,
       }),
-    /**
-     * No description
-     *
-     * @tags Proxy
-     * @name ProxyProxyForInstance
-     * @summary 采用 websocket 代理 TCP 流量
-     * @request GET:/api/proxy/{id}
-     */
-    useProxyProxyForInstance: (id: string, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<void, RequestResponse>(doFetch ? `/api/proxy/${id}` : null, options),
-
-    /**
-     * No description
-     *
-     * @tags Proxy
-     * @name ProxyProxyForInstance
-     * @summary 采用 websocket 代理 TCP 流量
-     * @request GET:/api/proxy/{id}
-     */
-    mutateProxyProxyForInstance: (
-      id: string,
-      data?: void | Promise<void>,
-      options?: MutatorOptions
-    ) => mutate<void>(`/api/proxy/${id}`, data, options),
   }
   team = {
     /**
