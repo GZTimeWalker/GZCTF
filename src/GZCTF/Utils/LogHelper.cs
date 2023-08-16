@@ -138,7 +138,7 @@ public static class LogHelper
                 restrictedToMinimumLevel: LogEventLevel.Debug
             ))
             .WriteTo.Async(t => t.File(
-                path: "files/logs/log_.log",
+                path: $"files/logs/log_.log",
                 formatter: new ExpressionTemplate(LogTemplate),
                 rollingInterval: RollingInterval.Day,
                 fileSizeLimitBytes: 10 * 1024 * 1024,

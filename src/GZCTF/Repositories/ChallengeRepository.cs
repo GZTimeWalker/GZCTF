@@ -73,6 +73,9 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default)
         => _context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
+    public Task<Challenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default)
+        => _context.Challenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture).ToArrayAsync(token);
+
     public async Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
     {
         if (challenge.Type == ChallengeType.DynamicAttachment)

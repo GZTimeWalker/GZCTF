@@ -147,7 +147,8 @@ public class ProxyController : ControllerBase
                 while (true)
                 {
                     var status = await ws.ReceiveAsync(buffer, ct);
-                    if (status.CloseStatus.HasValue) break;
+                    if (status.CloseStatus.HasValue)
+                        break;
                     if (status.Count > 0)
                     {
                         tx += (ulong)status.Count;

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GZCTF.Utils;
 
 namespace GZCTF.Models;
 
@@ -76,7 +77,8 @@ public class Container
     /// 容器实例流量捕获存储路径
     /// </summary>
     public string TrafficPath(string conn) => Instance is null ? string.Empty :
-        $"files/capture/{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:s}-{conn}.pcap";
+        Path.Combine(FilePath.Capture,
+            $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:s}-{conn}.pcap");
 
     #region Db Relationship
 

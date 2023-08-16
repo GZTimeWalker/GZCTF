@@ -26,18 +26,7 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 Banner();
 
-#region Directory
-
-var dirs = new[] { "logs", "uploads", "capture" };
-
-foreach (var dir in dirs)
-{
-    var path = Path.Combine("files", dir);
-    if (!Directory.Exists(path))
-        Directory.CreateDirectory(path);
-}
-
-#endregion Directory
+FilePath.EnsureDirs();
 
 #region Logging
 

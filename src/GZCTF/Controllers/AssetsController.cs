@@ -16,8 +16,6 @@ namespace GZCTF.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AssetsController : ControllerBase
 {
-    private const string BasePath = "files/uploads";
-
     private readonly ILogger<AssetsController> _logger;
     private readonly IFileRepository _fileRepository;
     private readonly FileExtensionContentTypeProvider _extProvider = new();
@@ -44,7 +42,7 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public IActionResult GetFile([RegularExpression("[0-9a-f]{64}")] string hash, string filename)
     {
-        var path = Path.GetFullPath(Path.Combine(BasePath, hash[..2], hash[2..4], hash));
+        var path = Path.GetFullPath(Path.Combine(FilePath.Uploads, hash[..2], hash[2..4], hash));
 
         if (!System.IO.File.Exists(path))
         {

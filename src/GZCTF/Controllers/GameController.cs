@@ -390,6 +390,22 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
+    /// 获取开启了流量捕获的比赛题目
+    /// </summary>
+    /// <remarks>
+    /// 获取开启了流量捕获的比赛题目，需要Monitor权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目</response>
+    [RequireMonitor]
+    [HttpGet("Games/{id}/Captures")]
+    [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
+        => Ok((await _challengeRepository.GetChallengesWithTrafficCapturing(id, token))
+            .Select(ChallengeTrafficRecordModel.FromChallenge));
+
+    /// <summary>
     /// 获取全部比赛题目信息及当前队伍信息
     /// </summary>
     /// <remarks>
