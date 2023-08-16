@@ -32,7 +32,7 @@ public class CapturableNetworkStreamOptions
     public bool EnableCapture { get; set; } = false;
 }
 
-public class CapturableNetworkStream : NetworkStream
+public sealed class CapturableNetworkStream : NetworkStream
 {
     private readonly CapturableNetworkStreamOptions _options;
     private readonly CaptureFileWriterDevice? _device = null;
