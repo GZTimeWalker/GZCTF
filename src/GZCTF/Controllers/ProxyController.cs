@@ -147,8 +147,6 @@ public class ProxyController : ControllerBase
                     var status = await ws.ReceiveAsync(buffer, ct);
                     if (status.CloseStatus.HasValue)
                     {
-                        stream.Close();
-                        cts.Cancel();
                         break;
                     }
                     if (status.Count > 0)
