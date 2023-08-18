@@ -3,7 +3,6 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using PacketDotNet;
 using PacketDotNet.Utils;
-using Serilog;
 using SharpPcap;
 using SharpPcap.LibPcap;
 
@@ -32,6 +31,9 @@ public class CapturableNetworkStreamOptions
     public bool EnableCapture { get; set; } = false;
 }
 
+/// <summary>
+/// 能够被捕获的网络流（Socket）
+/// </summary>
 public sealed class CapturableNetworkStream : NetworkStream
 {
     private readonly CapturableNetworkStreamOptions _options;
