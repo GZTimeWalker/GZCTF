@@ -36,13 +36,13 @@ docker network create challenges -d bridge --subnet 192.168.133.0/24
 ```yaml
 version: "3.7"
 services:
-gzctf:
+  gzctf:
     ...
     networks:
     - default
     - challenges
 
 networks:
-challenges:
+  challenges:
     external: true
 ```
