@@ -34,14 +34,36 @@ interface ChallengePreviewModalProps extends ModalProps {
   tagData: ChallengeTagItemProps
 }
 
+interface FakeContext {
+  closeTime: string | null
+  instanceEntry: string | null
+}
+
 const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
   const { challenge, type, attachmentType, tagData, ...modalProps } = props
   const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
 
   const [placeholder, setPlaceholder] = useState('')
   const [flag, setFlag] = useInputState('')
-  const [startTime, setStartTime] = useState(dayjs())
-  const [withContainer, setWithContainer] = useState(false)
+
+  const [context, setContext] = useState<FakeContext>({
+    closeTime: null,
+    instanceEntry: null,
+  })
+
+  const onCreate = () => {
+    setContext({
+      closeTime: dayjs().add(10, 'm').add(10, 's').toJSON(),
+      instanceEntry: 'localhost:2333',
+    })
+  }
+
+  const onDestroy = () => {
+    setContext({
+      closeTime: null,
+      instanceEntry: null,
+    })
+  }
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -167,27 +189,13 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               ))}
             </Stack>
           )}
-          {isDynamic && !withContainer && (
-            <Group position="center" spacing={2}>
-              <Button
-                onClick={() => {
-                  setWithContainer(true)
-                  setStartTime(dayjs())
-                }}
-              >
-                开启实例
-              </Button>
-            </Group>
-          )}
-          {isDynamic && withContainer && (
+          {isDynamic && (
             <InstanceEntry
-              context={{
-                closeTime: startTime.add(2, 'hour').toJSON(),
-                instanceEntry: 'localhost:2333',
-              }}
+              context={context}
               disabled={false}
-              onProlong={() => {}}
-              onDestroy={() => setWithContainer(false)}
+              onCreate={onCreate}
+              onProlong={onCreate}
+              onDestroy={onDestroy}
             />
           )}
         </Stack>

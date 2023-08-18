@@ -61,7 +61,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "form-data": "~4.0.0",
     "lodash": "^4.17.21",
-    "prettier": "~3.0.1",
+    "prettier": "~3.0.2",
     "rollup": "^3.28.0",
     "swagger-typescript-api": "^13.0.3",
     "tslib": "^2.6.1",

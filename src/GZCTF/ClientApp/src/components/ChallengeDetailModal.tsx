@@ -1,12 +1,9 @@
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import React from 'react'
 import {
   ActionIcon,
   Box,
   Button,
-  Card,
   Divider,
   Group,
   LoadingOverlay,
@@ -38,28 +35,6 @@ interface ChallengeDetailModalProps extends ModalProps {
   score: number
   challengeId: number
   solved?: boolean
-}
-
-dayjs.extend(duration)
-
-export const Countdown: FC<{ time: string }> = ({ time }) => {
-  const end = dayjs(time)
-  const [now, setNow] = useState(dayjs())
-  const countdown = dayjs.duration(end.diff(now))
-
-  useEffect(() => {
-    if (dayjs() > end) return
-    const interval = setInterval(() => setNow(dayjs()), 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <Card w="5rem" p="0px 4px" ta="center">
-      <Text size="sm" fw={700}>
-        {countdown.asSeconds() > 0 ? countdown.format('HH:mm:ss') : '00:00:00'}
-      </Text>
-    </Card>
-  )
 }
 
 export const FlagPlaceholders: string[] = [
@@ -152,6 +127,12 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               instanceEntry: res.data.entry,
             },
           })
+          showNotification({
+            color: 'teal',
+            title: '实例已创建',
+            message: '请注意实例到期时间',
+            icon: <Icon path={mdiCheck} size={1} />,
+          })
         })
         .catch(showErrorNotification)
         .finally(() => setDisabled(false))
@@ -171,6 +152,12 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               closeTime: null,
               instanceEntry: null,
             },
+          })
+          showNotification({
+            color: 'teal',
+            title: '实例已销毁',
+            message: '你可以重新创建实例',
+            icon: <Icon path={mdiCheck} size={1} />,
           })
         })
         .catch(showErrorNotification)
@@ -389,16 +376,10 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               ))}
             </Stack>
           )}
-          {isDynamic && !challenge?.context?.instanceEntry && (
-            <Group position="center" spacing={2}>
-              <Button onClick={onCreateContainer} disabled={disabled} loading={disabled}>
-                开启实例
-              </Button>
-            </Group>
-          )}
-          {isDynamic && challenge?.context?.instanceEntry && (
+          {isDynamic && challenge.context && (
             <InstanceEntry
               context={challenge.context}
+              onCreate={onCreateContainer}
               onProlong={onProlongContainer}
               onDestroy={onDestroyContainer}
               disabled={disabled}
