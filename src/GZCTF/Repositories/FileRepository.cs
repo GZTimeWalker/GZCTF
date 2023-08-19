@@ -72,7 +72,7 @@ public class FileRepository : RepositoryBase, IFileRepository
         return await StoreLocalFile(fileName ?? file.FileName, tmp, token);
     }
 
-    public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, CancellationToken token = default, int resize = 300)
+    public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, int resize = 300, CancellationToken token = default)
     {
         // we do not process images larger than 32MB
         if (file.Length >= 32 * 1024 * 1024)

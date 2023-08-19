@@ -7,12 +7,15 @@ namespace GZCTF.Repositories;
 public class ParticipationRepository : RepositoryBase, IParticipationRepository
 {
     private readonly IGameRepository _gameRepository;
+    private readonly IFileRepository _fileRepository;
 
     public ParticipationRepository(
         IGameRepository gameRepository,
+        IFileRepository fileRepository,
         AppDbContext context) : base(context)
     {
         _gameRepository = gameRepository;
+        _fileRepository = fileRepository;
     }
 
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
@@ -101,9 +104,12 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
         => _context.RemoveRange(await _context.UserParticipations
                 .Where(p => p.User == user && p.Team == team).ToArrayAsync(token));
 
-    public Task RemoveParticipation(Participation part, CancellationToken token = default)
+    public async Task RemoveParticipation(Participation part, CancellationToken token = default)
     {
+        if (part.Writeup is not null)
+            await _fileRepository.DeleteFile(part.Writeup, token);
+
         _context.Remove(part);
-        return SaveAsync(token);
+        await SaveAsync(token);
     }
 }

@@ -486,7 +486,7 @@ public class TeamController : ControllerBase
         if (team.AvatarHash is not null)
             _ = await _fileService.DeleteFileByHash(team.AvatarHash, token);
 
-        var avatar = await _fileService.CreateOrUpdateImage(file, "avatar", token);
+        var avatar = await _fileService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("队伍头像更新失败"));

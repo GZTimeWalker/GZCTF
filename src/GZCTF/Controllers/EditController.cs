@@ -290,7 +290,7 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var poster = await _fileService.CreateOrUpdateImage(file, "poster", token, 0);
+        var poster = await _fileService.CreateOrUpdateImage(file, "poster", 0, token);
 
         if (poster is null)
             return BadRequest(new RequestResponse("文件创建失败"));

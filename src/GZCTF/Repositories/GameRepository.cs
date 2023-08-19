@@ -14,12 +14,16 @@ public class GameRepository : RepositoryBase, IGameRepository
 {
     private readonly IDistributedCache _cache;
     private readonly ITeamRepository _teamRepository;
+    private readonly IChallengeRepository _challengeRepository;
+    private readonly IParticipationRepository _participationRepository;
     private readonly byte[]? _xorkey;
     private readonly ILogger<GameRepository> _logger;
     private readonly ChannelWriter<CacheRequest> _cacheRequestChannelWriter;
 
     public GameRepository(IDistributedCache cache,
         ITeamRepository teamRepository,
+        IChallengeRepository challengeRepository,
+        IParticipationRepository participationRepository,
         IConfiguration configuration,
         ILogger<GameRepository> logger,
         ChannelWriter<CacheRequest> cacheRequestChannelWriter,
@@ -28,6 +32,8 @@ public class GameRepository : RepositoryBase, IGameRepository
         _cache = cache;
         _logger = logger;
         _teamRepository = teamRepository;
+        _challengeRepository = challengeRepository;
+        _participationRepository = participationRepository;
         _cacheRequestChannelWriter = cacheRequestChannelWriter;
 
         var xorkeyStr = configuration["XorKey"];
@@ -92,11 +98,37 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     public async Task DeleteGame(Game game, CancellationToken token = default)
     {
-        _context.Remove(game);
-        _cache.Remove(CacheKey.BasicGameInfo);
-        _cache.Remove(CacheKey.ScoreBoard(game.Id));
+        var trans = await BeginTransactionAsync(token);
 
-        await SaveAsync(token);
+        try
+        {
+            await _context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
+
+            _logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Challenges.Count} 个题目的相关附件……", TaskStatus.Pending, LogLevel.Debug);
+
+            foreach (var chal in game.Challenges)
+                await _challengeRepository.RemoveChallenge(chal, token);
+
+            await _context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+
+            _logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Participations.Count} 个队伍相关文件……", TaskStatus.Pending, LogLevel.Debug);
+
+            foreach (var part in game.Participations)
+                await _participationRepository.RemoveParticipation(part, token);
+
+            _context.Remove(game);
+
+            await SaveAsync(token);
+            await trans.CommitAsync(token);
+
+            _cache.Remove(CacheKey.BasicGameInfo);
+            _cache.Remove(CacheKey.ScoreBoard(game.Id));
+        }
+        catch
+        {
+            await trans.RollbackAsync(token);
+            throw;
+        }
     }
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token)
