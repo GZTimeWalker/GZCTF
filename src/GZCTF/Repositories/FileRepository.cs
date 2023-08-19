@@ -9,13 +9,10 @@ namespace GZCTF.Repositories;
 public class FileRepository : RepositoryBase, IFileRepository
 {
     private readonly ILogger<FileRepository> _logger;
-    private readonly string _uploadPath;
 
-    public FileRepository(AppDbContext context, IConfiguration configuration,
-        ILogger<FileRepository> logger) : base(context)
+    public FileRepository(AppDbContext context, ILogger<FileRepository> logger) : base(context)
     {
         _logger = logger;
-        _uploadPath = configuration.GetSection("UploadFolder")?.Value ?? "uploads";
     }
 
     public override Task<int> CountAsync(CancellationToken token = default) => _context.Files.CountAsync(token);
@@ -47,7 +44,7 @@ public class FileRepository : RepositoryBase, IFileRepository
             localFile = new() { Hash = fileHash, Name = fileName, FileSize = contentStream.Length };
             await _context.AddAsync(localFile, token);
 
-            var path = Path.Combine(_uploadPath, localFile.Location);
+            var path = Path.Combine(FilePath.Uploads, localFile.Location);
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -108,7 +105,7 @@ public class FileRepository : RepositoryBase, IFileRepository
 
     public async Task<TaskStatus> DeleteFile(LocalFile file, CancellationToken token = default)
     {
-        var path = Path.Combine(_uploadPath, file.Location, file.Hash);
+        var path = Path.Combine(FilePath.Uploads, file.Location, file.Hash);
 
         if (file.ReferenceCount > 1)
         {
