@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
@@ -25,6 +26,10 @@ public class ProxyController : ControllerBase
     private readonly bool _enableTrafficCapture = false;
     private const int BUFFER_SIZE = 1024 * 4;
     private const uint CONNECTION_LIMIT = 64;
+    private readonly JsonSerializerOptions _JsonOptions = new()
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
 
     public ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
         IOptions<ContainerProvider> provider, IContainerRepository containerRepository)
@@ -60,7 +65,7 @@ public class ProxyController : ControllerBase
         if (!await IncrementConnectionCount(id))
             return BadRequest(new RequestResponse("容器连接数已达上限"));
 
-        var container = await _containerRepository.GetContainerById(id, token);
+        var container = await _containerRepository.GetContainerWithInstanceById(id, token);
 
         if (container is null || container.Instance is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器"));
@@ -76,6 +81,24 @@ public class ProxyController : ControllerBase
         if (clientIp is null)
             return BadRequest(new RequestResponse("无效的访问地址"));
 
+        var enable = _enableTrafficCapture && container.Instance.Challenge.EnableTrafficCapture;
+        byte[]? metadata = null;
+
+        if (enable)
+        {
+            metadata = JsonSerializer.SerializeToUtf8Bytes(new
+            {
+                Challenge = container.Instance.Challenge.Title,
+                container.Instance.ChallengeId,
+
+                Team = container.Instance.Participation.Team.Name,
+                container.Instance.Participation.TeamId,
+
+                container.ContainerId,
+                container.Instance.FlagContext?.Flag
+            }, _JsonOptions);
+        }
+
         CapturableNetworkStream? stream;
         try
         {
@@ -89,13 +112,15 @@ public class ProxyController : ControllerBase
                 return BadRequest(new RequestResponse("容器连接失败"));
             }
 
-            stream = new CapturableNetworkStream(socket, new()
-            {
-                Source = new(clientIp, clientPort),
-                Dest = ipEndPoint,
-                EnableCapture = _enableTrafficCapture && container.Instance.Challenge.EnableTrafficCapture,
-                FilePath = container.TrafficPath(HttpContext.Connection.Id),
-            });
+            stream = new CapturableNetworkStream(socket, metadata,
+                new()
+                {
+                    Source = new(clientIp, clientPort),
+                    Dest = ipEndPoint,
+                    EnableCapture = enable,
+                    FilePath = container.TrafficPath(HttpContext.Connection.Id),
+                }
+            );
         }
         catch (Exception e)
         {

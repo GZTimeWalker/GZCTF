@@ -39,8 +39,9 @@ public sealed class CapturableNetworkStream : NetworkStream
     private readonly CapturableNetworkStreamOptions _options;
     private readonly CaptureFileWriterDevice? _device = null;
     private readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
+    private readonly IPEndPoint _host = new(IPAddress.Parse("0.0.0.0"), 65535);
 
-    public CapturableNetworkStream(Socket socket, CapturableNetworkStreamOptions options) : base(socket)
+    public CapturableNetworkStream(Socket socket, byte[]? metadata, CapturableNetworkStreamOptions options) : base(socket)
     {
         _options = options;
 
@@ -55,6 +56,9 @@ public sealed class CapturableNetworkStream : NetworkStream
 
             _device = new(_options.FilePath, FileMode.Open);
             _device.Open(LinkLayers.Ethernet);
+
+            if (metadata is not null)
+                WriteCapturedData(_host, _options.Source, metadata);
         }
     }
 
@@ -65,19 +69,7 @@ public sealed class CapturableNetworkStream : NetworkStream
         if (!_options.EnableCapture)
             return count;
 
-        var udp = new UdpPacket((ushort)_options.Dest.Port, (ushort)_options.Source.Port)
-        {
-            PayloadDataSegment = new ByteArraySegment(buffer[..count].ToArray())
-        };
-
-        var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)
-        {
-            PayloadPacket = new IPv6Packet(_options.Dest.Address, _options.Source.Address) { PayloadPacket = udp }
-        };
-
-        udp.UpdateUdpChecksum();
-
-        _device?.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
+        WriteCapturedData(_options.Dest, _options.Source, buffer);
 
         return count;
     }
@@ -85,23 +77,32 @@ public sealed class CapturableNetworkStream : NetworkStream
     public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         if (_options.EnableCapture)
-        {
-            var udp = new UdpPacket((ushort)_options.Source.Port, (ushort)_options.Dest.Port)
-            {
-                PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
-            };
-
-            var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)
-            {
-                PayloadPacket = new IPv6Packet(_options.Source.Address, _options.Dest.Address) { PayloadPacket = udp }
-            };
-
-            udp.UpdateUdpChecksum();
-
-            _device?.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
-        }
+            WriteCapturedData(_options.Source, _options.Dest, buffer);
 
         await base.WriteAsync(buffer, cancellationToken);
+    }
+
+    /// <summary>
+    /// 向文件写入一条数据记录
+    /// </summary>
+    /// <param name="source">源地址</param>
+    /// <param name="dest">目的地址</param>
+    /// <param name="buffer">数据</param>
+    internal void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
+    {
+        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
+        {
+            PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
+        };
+
+        var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)
+        {
+            PayloadPacket = new IPv6Packet(source.Address, dest.Address) { PayloadPacket = udp }
+        };
+
+        udp.UpdateUdpChecksum();
+
+        _device?.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
     }
 
     public override void Close()

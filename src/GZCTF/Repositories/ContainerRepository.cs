@@ -19,8 +19,13 @@ public class ContainerRepository : RepositoryBase, IContainerRepository
     public override Task<int> CountAsync(CancellationToken token = default) => _context.Containers.CountAsync(token);
 
     public Task<Container?> GetContainerById(string guid, CancellationToken token = default)
-        => _context.Containers.Include(c => c.Instance)
-            .ThenInclude(i => i!.Challenge)
+        => _context.Containers.FirstOrDefaultAsync(i => i.Id == guid, token);
+
+    public Task<Container?> GetContainerWithInstanceById(string guid, CancellationToken token = default)
+        => _context.Containers.IgnoreAutoIncludes()
+            .Include(c => c.Instance).ThenInclude(i => i!.Challenge)
+            .Include(c => c.Instance).ThenInclude(i => i!.FlagContext)
+            .Include(c => c.Instance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);
 
     public Task<List<Container>> GetContainers(CancellationToken token = default)
