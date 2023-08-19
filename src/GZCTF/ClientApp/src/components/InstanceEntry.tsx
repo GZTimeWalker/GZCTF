@@ -28,11 +28,12 @@ import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ClientFlagContext } from '@Api'
 
 interface InstanceEntryProps {
+  test?: boolean
   context: ClientFlagContext
   disabled: boolean
-  onCreate: () => void
-  onProlong: () => void
-  onDestroy: () => void
+  onCreate?: () => void
+  onProlong?: () => void
+  onDestroy?: () => void
 }
 
 dayjs.extend(duration)
@@ -69,7 +70,7 @@ const Countdown: FC<CountdownProps> = ({ time, prolongNotice }) => {
 }
 
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
-  const { context, disabled, onCreate, onDestroy } = props
+  const { test, context, disabled, onCreate, onDestroy } = props
 
   const clipBoard = useClipboard()
 
@@ -79,7 +80,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const instanceEntry = context.instanceEntry ?? ''
   const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
-  const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry) : instanceEntry
+  const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry, test) : instanceEntry
 
   const [canProlong, setCanProlong] = useState(false)
 
@@ -103,7 +104,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   }, [context])
 
   const onProlong = () => {
-    if (!canProlong) return
+    if (!canProlong || !props.onProlong) return
 
     props.onProlong()
     setCanProlong(false)
@@ -146,7 +147,11 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   }
 
   if (!withContainer) {
-    return (
+    return test ? (
+      <Text size="md" color="dimmed" fw={600} pt={30}>
+        测试容器未开启
+      </Text>
+    ) : (
       <Group position="apart" pt="xs" noWrap>
         <Stack align="left" spacing={0}>
           <Text size="sm" fw={600}>
@@ -165,11 +170,12 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} w="100%">
       <TextInput
         label={<Text fw={600}>实例入口</Text>}
         description={
-          isPlatformProxy && (
+          isPlatformProxy &&
+          !test && (
             <Text>
               平台已启用代理模式，建议使用专用客户端。
               <Anchor
@@ -211,26 +217,28 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         }
         rightSectionWidth="5rem"
       />
-      <Group position="apart" pt="xs" noWrap>
-        <Stack align="left" spacing={0}>
-          <Text size="sm" fw={600}>
-            剩余时间：
-            <Countdown time={context.closeTime ?? '0'} prolongNotice={prolongNotice} />
-          </Text>
-          <Text size="xs" color="dimmed" fw={600}>
-            你可以在到期前 10 分钟内延长时间
-          </Text>
-        </Stack>
+      {!test && (
+        <Group position="apart" pt="xs" noWrap>
+          <Stack align="left" spacing={0}>
+            <Text size="sm" fw={600}>
+              剩余时间：
+              <Countdown time={context.closeTime ?? '0'} prolongNotice={prolongNotice} />
+            </Text>
+            <Text size="xs" color="dimmed" fw={600}>
+              你可以在到期前 10 分钟内延长时间
+            </Text>
+          </Stack>
 
-        <Group position="right" noWrap spacing="xs">
-          <Button color="orange" onClick={onProlong} disabled={!canProlong}>
-            延长时间
-          </Button>
-          <Button color="red" onClick={onDestroy} disabled={disabled}>
-            销毁实例
-          </Button>
+          <Group position="right" noWrap spacing="xs">
+            <Button color="orange" onClick={onProlong} disabled={!canProlong}>
+              延长时间
+            </Button>
+            <Button color="red" onClick={onDestroy} disabled={disabled}>
+              销毁实例
+            </Button>
+          </Group>
         </Group>
-      </Group>
+      )}
     </Stack>
   )
 }

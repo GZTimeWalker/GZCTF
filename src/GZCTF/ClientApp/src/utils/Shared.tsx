@@ -310,7 +310,7 @@ export const TaskStatusColorMap = new Map<TaskStatus | null, string>([
   [null, 'gray'],
 ])
 
-export const getProxyUrl = (guid: string) => {
+export const getProxyUrl = (guid: string, test: boolean = false) => {
   const protocol = window.location.protocol.replace('http', 'ws')
-  return `${protocol}//${window.location.host}/api/proxy/${guid}`
+  return `${protocol}//${window.location.host}/api/proxy${test && '/noinst'}/${guid}`
 }

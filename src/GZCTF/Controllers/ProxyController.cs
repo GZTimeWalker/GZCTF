@@ -99,30 +99,78 @@ public class ProxyController : ControllerBase
             }, _JsonOptions);
         }
 
-        IPEndPoint ipEndPoint = new(ipAddress, container.Port);
+        IPEndPoint client = new(clientIp, clientPort);
+        IPEndPoint target = new(ipAddress, container.Port);
 
-        using var socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        return await DoContainerProxy(id, client, target, metadata, new()
+            {
+                Source = client,
+                Dest = target,
+                EnableCapture = enable,
+                FilePath = container.TrafficPath(HttpContext.Connection.Id),
+            }, token);
+    }
+
+    /// <summary>
+    /// 采用 websocket 代理 TCP 流量，为测试容器使用
+    /// </summary>
+    /// <param name="id">测试容器 id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    [Route("NoInst/{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ProxyForNoInstance(string id, CancellationToken token = default)
+    {
+        if (!_enablePlatformProxy)
+            return BadRequest(new RequestResponse("TCP 代理已禁用"));
+
+        if (!await ValidateContainer(id, token))
+            return NotFound(new RequestResponse("不存在的容器"));
+
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
+            return NoContent();
+
+        var container = await _containerRepository.GetContainerById(id, token);
+
+        if (container is null || container.InstanceId != 0 || !container.IsProxy)
+            return NotFound(new RequestResponse("不存在的容器"));
+
+        var ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
+
+        if (ipAddress is null)
+            return BadRequest(new RequestResponse("容器地址解析失败"));
+
+        var clientIp = HttpContext.Connection.RemoteIpAddress;
+        var clientPort = HttpContext.Connection.RemotePort;
+
+        if (clientIp is null)
+            return BadRequest(new RequestResponse("无效的访问地址"));
+
+        IPEndPoint client = new(clientIp, clientPort);
+        IPEndPoint target = new(ipAddress, container.Port);
+
+        return await DoContainerProxy(id, client, target, null, new(), token);
+    }
+
+    internal async Task<IActionResult> DoContainerProxy(string id, IPEndPoint client, IPEndPoint target,
+        byte[]? metadata, CapturableNetworkStreamOptions options, CancellationToken token = default)
+    {
+        using var socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
         CapturableNetworkStream? stream;
         try
         {
-            await socket.ConnectAsync(ipEndPoint, token);
+            await socket.ConnectAsync(target, token);
 
             if (!socket.Connected)
             {
-                _logger.SystemLog($"容器连接失败，请检查网络配置 -> {container.IP}:{container.Port}", TaskStatus.Failed, LogLevel.Warning);
+                _logger.SystemLog($"容器连接失败，请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Warning);
                 return BadRequest(new RequestResponse("容器连接失败"));
             }
 
-            stream = new CapturableNetworkStream(socket, metadata,
-                new()
-                {
-                    Source = new(clientIp, clientPort),
-                    Dest = ipEndPoint,
-                    EnableCapture = enable,
-                    FilePath = container.TrafficPath(HttpContext.Connection.Id),
-                }
-            );
+            stream = new CapturableNetworkStream(socket, metadata, options);
         }
         catch (Exception e)
         {
@@ -135,7 +183,7 @@ public class ProxyController : ControllerBase
         try
         {
             var (tx, rx) = await RunProxy(stream, ws, token);
-            _logger.SystemLog($"[{id}] {clientIp} -> {container.IP}:{container.Port}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
+            _logger.SystemLog($"[{id}] {client.Address} -> {target.Address}:{target.Port}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
         }
         catch (Exception e)
         {
@@ -235,13 +283,13 @@ public class ProxyController : ControllerBase
         var key = CacheKey.ConnectionCount(id);
         var bytes = await _cache.GetAsync(key, token);
 
+        // avoid DoS attack with cache -1
         if (bytes is not null)
-            return true;
+            return BitConverter.ToInt32(bytes) >= 0;
 
         var valid = await _containerRepository.ValidateContainer(id, token);
 
-        if (valid)
-            await _cache.SetAsync(key, BitConverter.GetBytes(0), _validOption, token);
+        await _cache.SetAsync(key, BitConverter.GetBytes(valid ? 0 : -1), _validOption, token);
 
         return valid;
     }
@@ -259,7 +307,7 @@ public class ProxyController : ControllerBase
         if (bytes is null)
             return false;
 
-        var count = BitConverter.ToUInt32(bytes);
+        var count = BitConverter.ToInt32(bytes);
 
         if (count > CONNECTION_LIMIT)
             return false;
@@ -282,7 +330,7 @@ public class ProxyController : ControllerBase
         if (bytes is null)
             return;
 
-        var count = BitConverter.ToUInt32(bytes);
+        var count = BitConverter.ToInt32(bytes);
 
         if (count > 1)
         {

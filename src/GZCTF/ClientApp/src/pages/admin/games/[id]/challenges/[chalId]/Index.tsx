@@ -12,11 +12,9 @@ import {
   Textarea,
   TextInput,
   Grid,
-  Code,
   Switch,
   Title,
 } from '@mantine/core'
-import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -29,6 +27,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import HintList from '@Components/HintList'
+import InstanceEntry from '@Components/InstanceEntry'
 import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
@@ -63,7 +62,6 @@ const GameChallengeEdit: FC = () => {
   const [previewOpend, setPreviewOpend] = useState(false)
 
   const modals = useModals()
-  const clipBoard = useClipboard()
 
   useEffect(() => {
     if (challenge) {
@@ -416,24 +414,14 @@ const GameChallengeEdit: FC = () => {
               />
             </Grid.Col>
             <Grid.Col span={4}>
-              <Group spacing={0} align="center" pt={22} h="100%">
-                {challenge?.testContainer ? (
-                  <Code
-                    sx={(theme) => ({
-                      backgroundColor: 'transparent',
-                      fontSize: theme.fontSizes.sm,
-                      fontWeight: 'bold',
-                    })}
-                    onClick={() => clipBoard.copy(challenge?.testContainer?.entry ?? '')}
-                  >
-                    {challenge?.testContainer?.entry ?? ''}
-                  </Code>
-                ) : (
-                  <Text size="sm" fw={600} c="dimmed">
-                    测试容器未开启
-                  </Text>
-                )}
-              </Group>
+              <InstanceEntry
+                test
+                disabled={disabled}
+                context={{
+                  closeTime: challenge?.testContainer?.expectStopAt,
+                  instanceEntry: challenge?.testContainer?.entry,
+                }}
+              />
             </Grid.Col>
             <Grid.Col span={2}>
               <NumberInput

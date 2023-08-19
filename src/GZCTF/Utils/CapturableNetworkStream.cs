@@ -13,12 +13,12 @@ public class CapturableNetworkStreamOptions
     /// <summary>
     /// 流量源地址
     /// </summary>
-    public required IPEndPoint Source { get; set; }
+    public IPEndPoint Source { get; set; } = new(0, 0);
 
     /// <summary>
     /// 流量目的地址
     /// </summary>
-    public required IPEndPoint Dest { get; set; }
+    public IPEndPoint Dest { get; set; } = new(0, 0);
 
     /// <summary>
     /// 记录文件位置
@@ -39,7 +39,7 @@ public sealed class CapturableNetworkStream : NetworkStream
     private readonly CapturableNetworkStreamOptions _options;
     private readonly CaptureFileWriterDevice? _device = null;
     private readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
-    private readonly IPEndPoint _host = new(IPAddress.Parse("0.0.0.0"), 65535);
+    private readonly IPEndPoint _host = new(0, 65535);
 
     public CapturableNetworkStream(Socket socket, byte[]? metadata, CapturableNetworkStreamOptions options) : base(socket)
     {
@@ -83,7 +83,7 @@ public sealed class CapturableNetworkStream : NetworkStream
     }
 
     /// <summary>
-    /// 向文件写入一条数据记录
+    /// 向文件写入一条流量记录
     /// </summary>
     /// <param name="source">源地址</param>
     /// <param name="dest">目的地址</param>

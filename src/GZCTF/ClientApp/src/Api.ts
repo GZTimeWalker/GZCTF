@@ -4696,6 +4696,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Proxy
+     * @name ProxyProxyForNoInstance
+     * @summary 采用 websocket 代理 TCP 流量，为测试容器使用
+     * @request GET:/api/proxy/noinst/{id}
+     */
+    proxyProxyForNoInstance: (id: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/proxy/noinst/${id}`,
+        method: 'GET',
+        ...params,
+      }),
   }
   team = {
     /**
