@@ -214,6 +214,8 @@ builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddChannel<CacheRequest>();
+builder.Services.AddSingleton<CacheHelper>();
+
 builder.Services.AddHostedService<CacheMaker>();
 builder.Services.AddHostedService<FlagChecker>();
 builder.Services.AddHostedService<CronJobService>();

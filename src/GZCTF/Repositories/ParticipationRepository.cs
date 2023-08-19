@@ -1,20 +1,21 @@
 ﻿using GZCTF.Models.Request.Admin;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
 public class ParticipationRepository : RepositoryBase, IParticipationRepository
 {
-    private readonly IGameRepository _gameRepository;
+    private readonly CacheHelper _cacheHelper;
     private readonly IFileRepository _fileRepository;
 
     public ParticipationRepository(
-        IGameRepository gameRepository,
+        CacheHelper cacheHelper,
         IFileRepository fileRepository,
         AppDbContext context) : base(context)
     {
-        _gameRepository = gameRepository;
+        _cacheHelper = cacheHelper;
         _fileRepository = fileRepository;
     }
 
@@ -78,7 +79,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
             // also flush scoreboard when a team is re-accepted
             if (await EnsureInstances(part, part.Game, token) || oldStatus == ParticipationStatus.Suspended)
                 // flush scoreboard when instances are updated
-                await _gameRepository.FlushScoreboardCache(part.Game.Id, token);
+                await _cacheHelper.FlushScoreboardCache(part.Game.Id, token);
 
             return;
         }
@@ -88,7 +89,7 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
 
         // flush scoreboard when a team is suspended
         if (status == ParticipationStatus.Suspended && part.Game.IsActive)
-            await _gameRepository.FlushScoreboardCache(part.GameId, token);
+            await _cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default)
@@ -106,10 +107,16 @@ public class ParticipationRepository : RepositoryBase, IParticipationRepository
 
     public async Task RemoveParticipation(Participation part, CancellationToken token = default)
     {
-        if (part.Writeup is not null)
-            await _fileRepository.DeleteFile(part.Writeup, token);
+        await DeleteParticipationWriteUp(part, token);
 
         _context.Remove(part);
         await SaveAsync(token);
+    }
+
+    public Task DeleteParticipationWriteUp(Participation part, CancellationToken token = default)
+    {
+        if (part.Writeup is not null)
+            return _fileRepository.DeleteFile(part.Writeup, token);
+        return Task.CompletedTask;
     }
 }

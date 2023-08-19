@@ -5,6 +5,7 @@ using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services;
 using GZCTF.Services.Interface;
 using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,7 @@ namespace GZCTF.Controllers;
 public class EditController : Controller
 {
     private readonly ILogger<EditController> _logger;
+    private readonly CacheHelper _cacheHelper;
     private readonly UserManager<UserInfo> _userManager;
     private readonly IPostRepository _postRepository;
     private readonly IGameNoticeRepository _gameNoticeRepository;
@@ -33,7 +35,9 @@ public class EditController : Controller
     private readonly IContainerManager _containerService;
     private readonly IContainerRepository _containerRepository;
 
-    public EditController(UserManager<UserInfo> userManager,
+    public EditController(
+        CacheHelper cacheHelper,
+        UserManager<UserInfo> userManager,
         ILogger<EditController> logger,
         IPostRepository postRepository,
         IContainerRepository containerRepository,
@@ -44,6 +48,7 @@ public class EditController : Controller
         IFileRepository fileService)
     {
         _logger = logger;
+        _cacheHelper = cacheHelper;
         _fileService = fileService;
         _userManager = userManager;
         _gameRepository = gameRepository;
@@ -235,7 +240,7 @@ public class EditController : Controller
         game.Update(model);
         await _gameRepository.SaveAsync(token);
         _gameRepository.FlushGameInfoCache();
-        await _gameRepository.FlushScoreboardCache(game.Id, token);
+        await _cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -251,6 +256,7 @@ public class EditController : Controller
     /// <response code="200">成功删除比赛</response>
     [HttpDelete("Games/{id}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGame([FromRoute] int id, CancellationToken token)
     {
@@ -259,7 +265,34 @@ public class EditController : Controller
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        await _gameRepository.DeleteGame(game, token);
+        return await _gameRepository.DeleteGame(game, token) switch
+        {
+            TaskStatus.Success => Ok(),
+            TaskStatus.Failed => BadRequest(new RequestResponse("比赛删除失败，文件可能已受损，请重试")),
+            _ => throw new NotImplementedException()
+        };
+    }
+
+    /// <summary>
+    /// 删除比赛的全部 WriteUp
+    /// </summary>
+    /// <remarks>
+    /// 删除比赛的全部 WriteUp，需要管理员权限
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <response code="200">成功删除比赛 WriteUps</response>
+    [HttpDelete("Games/{id}/WriteUps")]
+    [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteGameWriteUps([FromRoute] int id, CancellationToken token)
+    {
+        var game = await _gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse("比赛未找到", 404));
+
+        await _gameRepository.DeleteAllWriteUps(game, token);
 
         return Ok();
     }
@@ -553,7 +586,7 @@ public class EditController : Controller
         }
 
         // always flush scoreboard
-        await _gameRepository.FlushScoreboardCache(game.Id, token);
+        await _cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
@@ -676,7 +709,7 @@ public class EditController : Controller
         await _challengeRepository.RemoveChallenge(res, token);
 
         // always flush scoreboard
-        await _gameRepository.FlushScoreboardCache(game.Id, token);
+        await _cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok();
     }

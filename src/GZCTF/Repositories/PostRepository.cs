@@ -1,4 +1,5 @@
-﻿using GZCTF.Repositories.Interface;
+﻿using GZCTF.Extensions;
+using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
