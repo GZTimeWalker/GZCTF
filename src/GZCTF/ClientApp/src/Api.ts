@@ -2979,6 +2979,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 删除比赛的全部 WriteUp，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditDeleteGameWriteUps
+     * @summary 删除比赛的全部 WriteUp
+     * @request DELETE:/api/edit/games/{id}/writeups
+     */
+    editDeleteGameWriteUps: (id: number, params: RequestParams = {}) =>
+      this.request<GameInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}/writeups`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
      * @description 删除文章，需要管理员权限
      *
      * @tags Edit
