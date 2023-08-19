@@ -401,11 +401,11 @@ public class GameController : ControllerBase
     /// </remarks>
     /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件列表</response>
+    /// <response code="200">成功获取题目列表</response>
     /// <response code="404">未找到相关捕获信息</response>
     [RequireMonitor]
     [HttpGet("Games/{id}/Captures")]
-    [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ChallengeTrafficModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token)
         => Ok((await _challengeRepository.GetChallengesWithTrafficCapturing(id, token))
             .Select(ChallengeTrafficModel.FromChallenge));

@@ -1446,6 +1446,30 @@ export interface ParticipationModel {
   organization?: string | null
 }
 
+export interface ChallengeTrafficModel {
+  /**
+   * 题目Id
+   * @format int32
+   */
+  id?: number
+  /**
+   * 题目名称
+   * @minLength 1
+   */
+  title: string
+  /** 题目标签 */
+  tag?: ChallengeTag
+  /** 题目类型 */
+  type?: ChallengeType
+  /** 是否启用题目 */
+  isEnabled?: boolean
+  /**
+   * 题目所捕获到的队伍流量数量
+   * @format int32
+   */
+  count?: number
+}
+
 /** 队伍流量获取信息 */
 export interface TeamTrafficModel {
   /**
@@ -3787,7 +3811,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/game/games/{id}/captures
      */
     gameGetChallengesWithTrafficCapturing: (id: number, params: RequestParams = {}) =>
-      this.request<ChallengeInfoModel[], RequestResponse>({
+      this.request<ChallengeTrafficModel[], RequestResponse>({
         path: `/api/game/games/${id}/captures`,
         method: 'GET',
         format: 'json',
@@ -3806,7 +3830,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       options?: SWRConfiguration,
       doFetch: boolean = true
     ) =>
-      useSWR<ChallengeInfoModel[], RequestResponse>(
+      useSWR<ChallengeTrafficModel[], RequestResponse>(
         doFetch ? `/api/game/games/${id}/captures` : null,
         options
       ),
@@ -3821,9 +3845,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateGameGetChallengesWithTrafficCapturing: (
       id: number,
-      data?: ChallengeInfoModel[] | Promise<ChallengeInfoModel[]>,
+      data?: ChallengeTrafficModel[] | Promise<ChallengeTrafficModel[]>,
       options?: MutatorOptions
-    ) => mutate<ChallengeInfoModel[]>(`/api/game/games/${id}/captures`, data, options),
+    ) => mutate<ChallengeTrafficModel[]>(`/api/game/games/${id}/captures`, data, options),
 
     /**
      * @description 获取比赛题目中捕获到到队伍信息，需要Monitor权限
