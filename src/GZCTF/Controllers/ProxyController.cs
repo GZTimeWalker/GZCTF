@@ -99,11 +99,13 @@ public class ProxyController : ControllerBase
             }, _JsonOptions);
         }
 
+        IPEndPoint ipEndPoint = new(ipAddress, container.Port);
+
+        using var socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
         CapturableNetworkStream? stream;
         try
         {
-            IPEndPoint ipEndPoint = new(ipAddress, container.Port);
-            using var socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             await socket.ConnectAsync(ipEndPoint, token);
 
             if (!socket.Connected)
@@ -128,7 +130,7 @@ public class ProxyController : ControllerBase
             return BadRequest(new RequestResponse("容器连接失败"));
         }
 
-        var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
+        using var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
         try
         {
@@ -143,7 +145,6 @@ public class ProxyController : ControllerBase
         {
             await DecrementConnectionCount(id);
             stream.Close();
-            ws.Dispose();
         }
 
         return new EmptyResult();
@@ -182,15 +183,16 @@ public class ProxyController : ControllerBase
                 }
             }
             catch (TaskCanceledException) { }
+            catch (Exception) { throw; }
             finally { cts.Cancel(); }
         }, ct);
 
         var receiver = Task.Run(async () =>
         {
             var buffer = new byte[BUFFER_SIZE];
-            try
-            {
-                while (true)
+        try
+        {
+            while (true)
                 {
                     var count = await stream.ReadAsync(buffer, ct);
                     if (count == 0)
@@ -203,6 +205,7 @@ public class ProxyController : ControllerBase
                 }
             }
             catch (TaskCanceledException) { }
+            catch (Exception) { throw; }
             finally { cts.Cancel(); }
         }, ct);
 

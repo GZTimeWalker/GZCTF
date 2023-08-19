@@ -69,7 +69,7 @@ public sealed class CapturableNetworkStream : NetworkStream
         if (!_options.EnableCapture)
             return count;
 
-        WriteCapturedData(_options.Dest, _options.Source, buffer);
+        WriteCapturedData(_options.Dest, _options.Source, buffer[..count]);
 
         return count;
     }
