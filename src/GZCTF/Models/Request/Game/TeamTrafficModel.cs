@@ -49,7 +49,7 @@ public class TeamTrafficModel
             Organization = part.Organization,
             Avatar = part.Team.AvatarUrl,
             Count = Directory.Exists(trafficPath) ?
-                Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length : 0
+                Directory.GetFiles(trafficPath, "*", SearchOption.TopDirectoryOnly).Length : 0
         };
     }
 }

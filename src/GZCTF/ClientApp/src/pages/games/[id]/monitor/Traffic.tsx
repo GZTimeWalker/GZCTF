@@ -105,6 +105,12 @@ const FileItem: FC<FileRecord & SelectableItemProps> = (itemProps) => {
   )
 }
 
+const SWROptions = {
+  refreshInterval: 0,
+  shouldRetryOnError: false,
+  revalidateOnFocus: false,
+}
+
 const Traffic: FC = () => {
   const { id } = useParams()
   const gameId = parseInt(id ?? '-1')
@@ -112,16 +118,16 @@ const Traffic: FC = () => {
   const [challengeId, setChallengeId] = useState<number | null>(null)
   const [participationId, setParticipationId] = useState<number | null>(null)
 
-  const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(gameId)
+  const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(gameId, SWROptions)
   const { data: teamTraffic } = api.game.useGameGetChallengeTraffic(
     challengeId ?? 0,
-    {},
+    SWROptions,
     !!challengeId
   )
   const { data: fileRecords } = api.game.useGameGetTeamTrafficAll(
     challengeId ?? 0,
     participationId ?? 0,
-    {},
+    SWROptions,
     !!challengeId && !!participationId
   )
 
