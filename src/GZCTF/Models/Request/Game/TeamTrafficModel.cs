@@ -8,14 +8,14 @@ namespace GZCTF.Models;
 public class TeamTrafficModel
 {
     /// <summary>
-    /// 队伍 Id
+    /// 参与 Id
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 参与 Id
+    /// 队伍 Id
     /// </summary>
-    public int ParticipationId { get; set; }
+    public int TeamId { get; set; }
 
     /// <summary>
     /// 队伍名称
@@ -43,10 +43,10 @@ public class TeamTrafficModel
 
         return new()
         {
-            Id = part.Team.Id,
+            Id = part.Id,
+            TeamId = part.Team.Id,
             Name = part.Team.Name,
             Organization = part.Organization,
-            ParticipationId = part.Id,
             Avatar = part.Team.AvatarUrl,
             Count = Directory.Exists(trafficPath) ?
                 Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length : 0

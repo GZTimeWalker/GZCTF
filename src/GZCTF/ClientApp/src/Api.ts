@@ -1473,15 +1473,15 @@ export interface ChallengeTrafficModel {
 /** 队伍流量获取信息 */
 export interface TeamTrafficModel {
   /**
-   * 队伍 Id
+   * 参与 Id
    * @format int32
    */
   id?: number
   /**
-   * 参与 Id
+   * 队伍 Id
    * @format int32
    */
-  participationId?: number
+  teamId?: number
   /** 队伍名称 */
   name?: string | null
   /** 参赛所属组织 */
