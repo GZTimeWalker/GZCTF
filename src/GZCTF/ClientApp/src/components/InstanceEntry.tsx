@@ -128,7 +128,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   }
 
   const onOpenInNew = () => {
-    window.open(`http://${instanceEntry}`)
+    window.open(`http://${instanceEntry}`, '_blank')
   }
 
   const onOpenInApp = () => {

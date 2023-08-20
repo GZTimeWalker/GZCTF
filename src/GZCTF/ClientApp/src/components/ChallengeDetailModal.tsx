@@ -330,7 +330,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                       color="brand"
                       onMouseEnter={downloadOpen}
                       onMouseLeave={downloadClose}
-                      onClick={() => window.open(challenge.context?.url ?? '#')}
+                      onClick={() => window.open(challenge.context?.url ?? '#', '_blank')}
                       top={0}
                       right={0}
                       pos="absolute"

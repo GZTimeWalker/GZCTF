@@ -250,7 +250,9 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
             w="calc(100% - 320px)"
-            onClick={() => challenge?.attachment?.url && window.open(challenge?.attachment?.url)}
+            onClick={() =>
+              challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')
+            }
           />
         ) : (
           <TextInput

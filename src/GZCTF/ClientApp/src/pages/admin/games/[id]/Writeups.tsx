@@ -39,7 +39,7 @@ const GameWriteups: FC = () => {
             <Button
               fullWidth
               leftIcon={<Icon path={mdiFolderDownloadOutline} size={1} />}
-              onClick={() => window.open(`/api/admin/writeups/${id}/all`)}
+              onClick={() => window.open(`/api/admin/writeups/${id}/all`, '_blank')}
             >
               下载全部 Writeup
             </Button>
