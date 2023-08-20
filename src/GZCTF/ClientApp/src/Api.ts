@@ -1484,8 +1484,8 @@ export interface TeamTrafficModel {
   participationId?: number
   /** 队伍名称 */
   name?: string | null
-  /** 队伍签名 */
-  bio?: string | null
+  /** 参赛所属组织 */
+  organization?: string | null
   /** 头像链接 */
   avatar?: string | null
   /**
@@ -1505,7 +1505,7 @@ export interface FileRecord {
    */
   size?: number
   /**
-   * 文件路径
+   * 文件修改日期
    * @format date-time
    */
   updateTime?: string

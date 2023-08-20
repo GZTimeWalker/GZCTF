@@ -50,12 +50,7 @@ internal static class FilePath
         {
             var info = new FileInfo(file)!;
 
-            records.Add(new()
-            {
-                FileName = info.Name,
-                Size = info.Length,
-                UpdateTime = info.LastAccessTimeUtc
-            });
+            records.Add(FileRecord.FromFileInfo(info));
 
             totSize += info.Length;
         }

@@ -130,9 +130,17 @@ public class FileRecord
     public long Size { get; set; } = 0;
 
     /// <summary>
-    /// 文件路径
+    /// 文件修改日期
     /// </summary>
     public DateTimeOffset UpdateTime { get; set; } = DateTimeOffset.Now;
+
+    internal static FileRecord FromFileInfo(FileInfo info)
+        => new()
+        {
+            FileName = info.Name,
+            UpdateTime = info.LastWriteTimeUtc,
+            Size = info.Length,
+        };
 }
 
 

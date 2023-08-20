@@ -23,9 +23,9 @@ public class TeamTrafficModel
     public string? Name { get; set; }
 
     /// <summary>
-    /// 队伍签名
+    /// 参赛所属组织
     /// </summary>
-    public string? Bio { get; set; }
+    public string? Organization { get; set; }
 
     /// <summary>
     /// 头像链接
@@ -45,7 +45,7 @@ public class TeamTrafficModel
         {
             Id = part.Team.Id,
             Name = part.Team.Name,
-            Bio = part.Team.Bio,
+            Organization = part.Organization,
             ParticipationId = part.Id,
             Avatar = part.Team.AvatarUrl,
             Count = Directory.Exists(trafficPath) ?
