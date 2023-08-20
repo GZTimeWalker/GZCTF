@@ -269,7 +269,6 @@ else
 }
 
 app.UseRouting();
-app.MapHealthChecks("/healthz");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -282,10 +281,13 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Request
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
 
+app.MapHealthChecks("/healthz");
 app.MapControllers();
+
 app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
+
 app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();
