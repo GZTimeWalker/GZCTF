@@ -320,10 +320,10 @@ export const HunamizeSize = (size: number) => {
   if (size < 1024) {
     return `${size} B`
   } else if (size < 1024 * 1024) {
-    return `${(size / 1024).toFixed(2)} KB`
+    return `${(size / 1024).toFixed(2)} KiB`
   } else if (size < 1024 * 1024 * 1024) {
-    return `${(size / 1024 / 1024).toFixed(2)} MB`
+    return `${(size / 1024 / 1024).toFixed(2)} MiB`
   } else {
-    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GiB`
   }
 }
