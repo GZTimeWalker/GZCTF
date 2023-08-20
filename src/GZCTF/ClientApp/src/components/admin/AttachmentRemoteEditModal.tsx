@@ -39,24 +39,23 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   }, [text])
 
   const onUpload = () => {
-    if (flags.length > 0) {
-      api.edit
-        .editAddFlags(numId, numCId, flags)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: '附件已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          setText('')
-          mutate()
-          props.onClose()
+    if (flags.length <= 0) return
+    api.edit
+      .editAddFlags(numId, numCId, flags)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '附件已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch((err) => showErrorNotification(err))
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+        setText('')
+        mutate()
+        props.onClose()
+      })
+      .catch((err) => showErrorNotification(err))
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   return (

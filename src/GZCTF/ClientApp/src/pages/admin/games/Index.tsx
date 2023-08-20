@@ -50,20 +50,19 @@ const Games: FC = () => {
   const { classes } = useTableStyles()
 
   const onToggleHidden = (game: GameInfoModel) => {
-    if (game.id) {
-      setDisabled(true)
-      api.edit
-        .editUpdateGame(game.id, {
-          ...game,
-          hidden: !game.hidden,
-        })
-        .then(() => {
-          games &&
-            updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
-        })
-        .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
-    }
+    if (!game.id) return
+
+    setDisabled(true)
+    api.edit
+      .editUpdateGame(game.id, {
+        ...game,
+        hidden: !game.hidden,
+      })
+      .then(() => {
+        games && updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
+      })
+      .catch(showErrorNotification)
+      .finally(() => setDisabled(false))
   }
 
   useEffect(() => {

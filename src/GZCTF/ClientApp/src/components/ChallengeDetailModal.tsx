@@ -114,74 +114,71 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const [flag, setFlag] = useInputState('')
 
   const onCreateContainer = () => {
-    if (challengeId) {
-      setDisabled(true)
-      api.game
-        .gameCreateContainer(gameId, challengeId)
-        .then((res) => {
-          mutate({
-            ...challenge,
-            context: {
-              ...challenge?.context,
-              closeTime: res.data.expectStopAt,
-              instanceEntry: res.data.entry,
-            },
-          })
-          showNotification({
-            color: 'teal',
-            title: '实例已创建',
-            message: '请注意实例到期时间',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
+    if (!challengeId) return
+    setDisabled(true)
+    api.game
+      .gameCreateContainer(gameId, challengeId)
+      .then((res) => {
+        mutate({
+          ...challenge,
+          context: {
+            ...challenge?.context,
+            closeTime: res.data.expectStopAt,
+            instanceEntry: res.data.entry,
+          },
         })
-        .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
-    }
+        showNotification({
+          color: 'teal',
+          title: '实例已创建',
+          message: '请注意实例到期时间',
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .catch(showErrorNotification)
+      .finally(() => setDisabled(false))
   }
 
   const onDestroyContainer = () => {
-    if (challengeId) {
-      setDisabled(true)
-      api.game
-        .gameDeleteContainer(gameId, challengeId)
-        .then(() => {
-          mutate({
-            ...challenge,
-            context: {
-              ...challenge?.context,
-              closeTime: null,
-              instanceEntry: null,
-            },
-          })
-          showNotification({
-            color: 'teal',
-            title: '实例已销毁',
-            message: '你可以重新创建实例',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
+    if (!challengeId) return
+    setDisabled(true)
+    api.game
+      .gameDeleteContainer(gameId, challengeId)
+      .then(() => {
+        mutate({
+          ...challenge,
+          context: {
+            ...challenge?.context,
+            closeTime: null,
+            instanceEntry: null,
+          },
         })
-        .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
-    }
+        showNotification({
+          color: 'teal',
+          title: '实例已销毁',
+          message: '你可以重新创建实例',
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .catch(showErrorNotification)
+      .finally(() => setDisabled(false))
   }
 
   const onProlongContainer = () => {
-    if (challengeId) {
-      setDisabled(true)
-      api.game
-        .gameProlongContainer(gameId, challengeId)
-        .then((res) => {
-          mutate({
-            ...challenge,
-            context: {
-              ...challenge?.context,
-              closeTime: res.data.expectStopAt,
-            },
-          })
+    if (!challengeId) return
+    setDisabled(true)
+    api.game
+      .gameProlongContainer(gameId, challengeId)
+      .then((res) => {
+        mutate({
+          ...challenge,
+          context: {
+            ...challenge?.context,
+            closeTime: res.data.expectStopAt,
+          },
         })
-        .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
-    }
+      })
+      .catch(showErrorNotification)
+      .finally(() => setDisabled(false))
   }
 
   const onSubmit = (event: React.FormEvent) => {

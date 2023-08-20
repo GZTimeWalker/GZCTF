@@ -74,31 +74,31 @@ const GameChallengeEdit: FC = () => {
   }, [challenge])
 
   const onUpdate = (challenge: ChallengeUpdateModel, noFeedback?: boolean) => {
-    if (challenge) {
-      setDisabled(true)
-      return api.edit
-        .editUpdateGameChallenge(numId, numCId, {
-          ...challenge,
-          isEnabled: undefined,
-        })
-        .then((data) => {
-          if (!noFeedback) {
-            showNotification({
-              color: 'teal',
-              message: '题目已更新',
-              icon: <Icon path={mdiCheck} size={1} />,
-            })
-          }
-          mutate(data.data)
-          mutateChals()
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          if (!noFeedback) {
-            setDisabled(false)
-          }
-        })
-    }
+    if (!challenge) return
+
+    setDisabled(true)
+    return api.edit
+      .editUpdateGameChallenge(numId, numCId, {
+        ...challenge,
+        isEnabled: undefined,
+      })
+      .then((data) => {
+        if (!noFeedback) {
+          showNotification({
+            color: 'teal',
+            message: '题目已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+          })
+        }
+        mutate(data.data)
+        mutateChals()
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        if (!noFeedback) {
+          setDisabled(false)
+        }
+      })
   }
 
   const onConfirmDelete = () => {

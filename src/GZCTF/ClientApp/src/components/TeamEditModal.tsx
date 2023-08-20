@@ -108,63 +108,61 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   }, [inviteCode, isCaptain, teamId])
 
   const onConfirmLeaveTeam = () => {
-    if (teamInfo && !isCaptain) {
-      api.team
-        .teamLeave(teamInfo.id!)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            title: '退出队伍成功',
-            message: '队伍信息已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo?.id))
-          props.onClose()
+    if (!teamInfo || isCaptain) return
+
+    api.team
+      .teamLeave(teamInfo.id!)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          title: '退出队伍成功',
+          message: '队伍信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch(showErrorNotification)
-    }
+        mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo?.id))
+        props.onClose()
+      })
+      .catch(showErrorNotification)
   }
 
   const onConfirmDisbandTeam = () => {
-    if (teamInfo && isCaptain) {
-      api.team
-        .teamDeleteTeam(teamInfo.id!)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            title: '解散队伍成功',
-            message: '队伍信息已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          setInviteCode('')
-          setTeamInfo(null)
-          mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
-          props.onClose()
+    if (!teamInfo || !isCaptain) return
+    api.team
+      .teamDeleteTeam(teamInfo.id!)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          title: '解散队伍成功',
+          message: '队伍信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch(showErrorNotification)
-    }
+        setInviteCode('')
+        setTeamInfo(null)
+        mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
+        props.onClose()
+      })
+      .catch(showErrorNotification)
   }
 
   const onTransferCaptain = (userId: string) => {
-    if (teamInfo && isCaptain) {
-      api.team
-        .teamTransfer(teamInfo.id!, {
-          newCaptainId: userId,
+    if (!teamInfo || !isCaptain) return
+    api.team
+      .teamTransfer(teamInfo.id!, {
+        newCaptainId: userId,
+      })
+      .then((team) => {
+        showNotification({
+          color: 'teal',
+          title: '队伍成功',
+          message: '队伍信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .then((team) => {
-          showNotification({
-            color: 'teal',
-            title: '队伍成功',
-            message: '队伍信息已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          setTeamInfo(team.data)
-          mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? team.data : x)), {
-            revalidate: false,
-          })
+        setTeamInfo(team.data)
+        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? team.data : x)), {
+          revalidate: false,
         })
-        .catch(showErrorNotification)
-    }
+      })
+      .catch(showErrorNotification)
   }
 
   const onConfirmKickUser = (userId: string) => {
@@ -186,85 +184,82 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   }
 
   const onRefreshInviteCode = () => {
-    if (inviteCode) {
-      api.team
-        .teamUpdateInviteToken(team?.id!)
-        .then((data) => {
-          setInviteCode(data.data)
-          showNotification({
-            color: 'teal',
-            message: '队伍邀请码已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
+    if (!inviteCode) return
+
+    api.team
+      .teamUpdateInviteToken(team?.id!)
+      .then((data) => {
+        setInviteCode(data.data)
+        showNotification({
+          color: 'teal',
+          message: '队伍邀请码已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch(showErrorNotification)
-    }
+      })
+      .catch(showErrorNotification)
   }
 
   const onChangeAvatar = () => {
-    if (avatarFile && teamInfo?.id) {
-      setDisabled(true)
-      notifications.clean()
-      showNotification({
-        id: 'upload-avatar',
-        color: 'orange',
-        message: '正在上传头像',
-        loading: true,
-        autoClose: false,
-      })
+    if (!avatarFile || !teamInfo?.id) return
+    setDisabled(true)
+    notifications.clean()
+    showNotification({
+      id: 'upload-avatar',
+      color: 'orange',
+      message: '正在上传头像',
+      loading: true,
+      autoClose: false,
+    })
 
-      api.team
-        .teamAvatar(teamInfo?.id, {
-          file: avatarFile,
+    api.team
+      .teamAvatar(teamInfo?.id, {
+        file: avatarFile,
+      })
+      .then((data) => {
+        updateNotification({
+          id: 'upload-avatar',
+          color: 'teal',
+          message: '头像已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          autoClose: true,
         })
-        .then((data) => {
-          updateNotification({
-            id: 'upload-avatar',
-            color: 'teal',
-            message: '头像已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            autoClose: true,
-          })
-          setAvatarFile(null)
-          const newTeamInfo = { ...teamInfo, avatar: data.data }
-          setTeamInfo(newTeamInfo)
-          mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)), {
-            revalidate: false,
-          })
+        setAvatarFile(null)
+        const newTeamInfo = { ...teamInfo, avatar: data.data }
+        setTeamInfo(newTeamInfo)
+        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)), {
+          revalidate: false,
         })
-        .catch(() => {
-          updateNotification({
-            id: 'upload-avatar',
-            color: 'red',
-            message: '头像更新失败',
-            icon: <Icon path={mdiClose} size={1} />,
-            autoClose: true,
-          })
+      })
+      .catch(() => {
+        updateNotification({
+          id: 'upload-avatar',
+          color: 'red',
+          message: '头像更新失败',
+          icon: <Icon path={mdiClose} size={1} />,
+          autoClose: true,
         })
-        .finally(() => {
-          setDisabled(false)
-          setDropzoneOpened(false)
-        })
-    }
+      })
+      .finally(() => {
+        setDisabled(false)
+        setDropzoneOpened(false)
+      })
   }
 
   const onSaveChange = () => {
-    if (teamInfo && teamInfo?.id) {
-      api.team
-        .teamUpdateTeam(teamInfo.id, teamInfo)
-        .then(() => {
-          // Updated TeamInfoModel
-          showNotification({
-            color: 'teal',
-            message: '队伍信息已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)), {
-            revalidate: false,
-          })
+    if (!teamInfo || !teamInfo?.id) return
+    api.team
+      .teamUpdateTeam(teamInfo.id, teamInfo)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '队伍信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch(showErrorNotification)
-    }
+        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)), {
+          revalidate: false,
+        })
+      })
+      .catch(showErrorNotification)
   }
 
   return (

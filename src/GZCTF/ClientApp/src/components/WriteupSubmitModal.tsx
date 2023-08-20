@@ -20,6 +20,7 @@ import { mdiCheck, mdiExclamationThick, mdiFileDocumentOutline, mdiFileHidden } 
 import { Icon } from '@mdi/react'
 import MarkdownRender from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { HunamizeSize } from '@Utils/Shared'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
@@ -75,18 +76,6 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
         setProgress(0)
         setDisabled(false)
       })
-  }
-
-  const hunamize = (size: number) => {
-    if (size < 1024) {
-      return `${size} B`
-    } else if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(2)} KB`
-    } else if (size < 1024 * 1024 * 1024) {
-      return `${(size / 1024 / 1024).toFixed(2)} MB`
-    } else {
-      return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
-    }
   }
 
   return (
@@ -168,15 +157,15 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
         )}
         <Title order={5}>当前提交</Title>
         <Card>
-          {data?.submitted ? (
+          {data && data.submitted ? (
             <Group>
               <Icon path={mdiFileDocumentOutline} size={1.5} />
               <Stack spacing={0}>
                 <Text fw={600} size="md">
-                  {data?.name ?? 'Writeup-1-2-2022-10-11T12:00:00.pdf'}
+                  {data.name}
                 </Text>
                 <Text fw={600} size="sm" c="dimmed" ff={theme.fontFamilyMonospace}>
-                  {data?.fileSize ? hunamize(data.fileSize) : '456.64 KB'}
+                  {data.fileSize && HunamizeSize(data.fileSize)}
                 </Text>
               </Stack>
             </Group>

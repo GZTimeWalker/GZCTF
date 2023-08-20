@@ -15,6 +15,7 @@ import {
   Image,
   Center,
   SimpleGrid,
+  Title,
 } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
@@ -63,47 +64,47 @@ const Profile: FC = () => {
   }, [user])
 
   const onChangeAvatar = () => {
-    if (avatarFile) {
-      setDisabled(true)
-      notifications.clean()
-      showNotification({
-        id: 'upload-avatar',
-        color: 'orange',
-        message: '正在上传头像',
-        loading: true,
-        autoClose: false,
-      })
+    if (!avatarFile) return
 
-      api.account
-        .accountAvatar({
-          file: avatarFile,
+    setDisabled(true)
+    notifications.clean()
+    showNotification({
+      id: 'upload-avatar',
+      color: 'orange',
+      message: '正在上传头像',
+      loading: true,
+      autoClose: false,
+    })
+
+    api.account
+      .accountAvatar({
+        file: avatarFile,
+      })
+      .then(() => {
+        updateNotification({
+          id: 'upload-avatar',
+          color: 'teal',
+          message: '头像已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          autoClose: true,
         })
-        .then(() => {
-          updateNotification({
-            id: 'upload-avatar',
-            color: 'teal',
-            message: '头像已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            autoClose: true,
-          })
-          setDisabled(false)
-          mutate()
-          setAvatarFile(null)
+        setDisabled(false)
+        mutate()
+        setAvatarFile(null)
+      })
+      .catch(() => {
+        updateNotification({
+          id: 'upload-avatar',
+          color: 'red',
+          message: '头像更新失败',
+          icon: <Icon path={mdiClose} size={1} />,
+          autoClose: true,
         })
-        .catch(() => {
-          updateNotification({
-            id: 'upload-avatar',
-            color: 'red',
-            message: '头像更新失败',
-            icon: <Icon path={mdiClose} size={1} />,
-            autoClose: true,
-          })
-        })
-        .finally(() => {
-          setDisabled(false)
-          setDropzoneOpened(false)
-        })
-    }
+      })
+      .finally(() => {
+        setDisabled(false)
+        setDropzoneOpened(false)
+      })
   }
 
   const onChangeProfile = () => {
@@ -122,80 +123,71 @@ const Profile: FC = () => {
   }
 
   const onChangeEmail = () => {
-    if (email) {
-      api.account
-        .accountChangeEmail({
-          newMail: email,
-        })
-        .then((res) => {
-          if (res.data.data) {
-            showNotification({
-              color: 'teal',
-              title: '验证邮件已发送',
-              message: '请检查你的邮箱及垃圾邮件~',
-              icon: <Icon path={mdiCheck} size={1} />,
-            })
-          } else {
-            mutate({ ...user, email: email })
-          }
-          setMailEditOpened(false)
-        })
-        .catch(showErrorNotification)
-    }
+    if (!email) return
+
+    api.account
+      .accountChangeEmail({
+        newMail: email,
+      })
+      .then((res) => {
+        if (res.data.data) {
+          showNotification({
+            color: 'teal',
+            title: '验证邮件已发送',
+            message: '请检查你的邮箱及垃圾邮件~',
+            icon: <Icon path={mdiCheck} size={1} />,
+          })
+        } else {
+          mutate({ ...user, email: email })
+        }
+        setMailEditOpened(false)
+      })
+      .catch(showErrorNotification)
   }
 
   const context = (
     <>
-      {/* Header */}
-      <Box mb={5}>
-        <h2>个人信息</h2>
-      </Box>
-      <Divider />
-
-      {/* User Info */}
-      <Stack spacing="md" m="auto" mt={15}>
-        <Grid grow>
-          <Grid.Col span={8}>
-            <TextInput
-              label="用户名"
-              type="text"
-              w="100%"
-              value={profile.userName ?? 'ctfer'}
-              disabled={disabled}
-              onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
-            />
-          </Grid.Col>
-          <Grid.Col span={4}>
-            <Center>
-              <Avatar
-                alt="avatar"
-                radius={40}
-                size={80}
-                src={user?.avatar}
-                onClick={() => setDropzoneOpened(true)}
-              >
-                {user?.userName?.slice(0, 1) ?? 'U'}
-              </Avatar>
-            </Center>
-          </Grid.Col>
-        </Grid>
-        <TextInput
-          label="邮箱"
-          type="email"
-          w="100%"
-          value={user?.email ?? 'ctfer@gzti.me'}
-          disabled
-          readOnly
-        />
-        <TextInput
-          label="手机号"
-          type="tel"
-          w="100%"
-          value={profile.phone ?? ''}
-          disabled={disabled}
-          onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
-        />
+      <Title order={2}>个人信息</Title>
+      <Divider mt="xs" mb="md" />
+      <Stack spacing="md" m="auto">
+        <Group noWrap>
+          <TextInput
+            label="用户名"
+            type="text"
+            w="100%"
+            value={profile.userName ?? 'ctfer'}
+            disabled={disabled}
+            onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
+          />
+          <Center>
+            <Avatar
+              alt="avatar"
+              radius={40}
+              size={80}
+              src={user?.avatar}
+              onClick={() => setDropzoneOpened(true)}
+            >
+              {user?.userName?.slice(0, 1) ?? 'U'}
+            </Avatar>
+          </Center>
+        </Group>
         <SimpleGrid cols={2}>
+          <TextInput
+            label="邮箱"
+            type="email"
+            w="100%"
+            value={user?.email ?? 'ctfer@gzti.me'}
+            disabled
+            readOnly
+          />
+          <TextInput
+            label="手机号"
+            type="tel"
+            w="100%"
+            value={profile.phone ?? ''}
+            disabled={disabled}
+            onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
+          />
           <TextInput
             label="学工号"
             type="number"
@@ -261,27 +253,27 @@ const Profile: FC = () => {
   return (
     <WithNavBar minWidth={0}>
       {isMobile ? (
-        context
+        <Box mt="md">{context}</Box>
       ) : (
-        <Center h="90vh">
-          <Paper w="55%" maw={600} shadow="sm" pt="2%" p="5%">
+        <Center h="100vh">
+          <Paper w="55%" maw={600} shadow="sm" p="5%">
             {context}
           </Paper>
         </Center>
       )}
 
-      {/* Change Password */}
       <PasswordChangeModal
         opened={pwdChangeOpened}
         onClose={() => setPwdChangeOpened(false)}
         title="更改密码"
       />
 
-      {/* Change Email */}
       <Modal opened={mailEditOpened} onClose={() => setMailEditOpened(false)} title="更改邮箱">
         <Stack>
           <Text>
-            更改邮箱后，您将不能通过原邮箱登录。一封邮件将会发送至新邮箱，请点击邮件中的链接完成验证。
+            更改邮箱后，您将不能通过原邮箱登录。
+            <br />
+            一封邮件将会发送至新邮箱，请点击邮件中的链接完成验证。
           </Text>
           <TextInput
             required
@@ -309,7 +301,6 @@ const Profile: FC = () => {
         </Stack>
       </Modal>
 
-      {/* Change avatar */}
       <Modal
         opened={dropzoneOpened}
         onClose={() => setDropzoneOpened(false)}
