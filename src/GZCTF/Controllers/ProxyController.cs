@@ -28,7 +28,8 @@ public class ProxyController : ControllerBase
     private const uint CONNECTION_LIMIT = 64;
     private readonly JsonSerializerOptions _JsonOptions = new()
     {
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        WriteIndented = true,
     };
 
     public ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
