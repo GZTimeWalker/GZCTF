@@ -78,7 +78,7 @@ public class Container
     /// </summary>
     public string TrafficPath(string conn) => Instance is null ? string.Empty :
         Path.Combine(FilePath.Capture,
-            $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}-{conn}.pcap");
+            $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
 
     #region Db Relationship
 

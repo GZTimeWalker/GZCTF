@@ -39,8 +39,7 @@ const useItemStyle = createStyles((theme) => ({
     }),
 
     '&[data-active]': {
-      backgroundColor: theme.colors.background,
-      color: theme.colors.color,
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
       ...theme.fn.hover({ backgroundColor: theme.colors.hover }),
     },
 
@@ -89,11 +88,11 @@ const ScrollSelect: FC<ScrollSelectProps> = (props) => {
   } = props
 
   return (
-    <ScrollArea type="auto" h="calc(100vh - 110px)" {...ScrollAreaProps}>
+    <ScrollArea type="auto" {...ScrollAreaProps}>
       {!items || items.length === 0 ? (
         <Center h="100%">{emptyPlaceholder}</Center>
       ) : (
-        <Stack spacing="xs" w="100%">
+        <Stack spacing={2} w="100%">
           {customClick
             ? items.map((item) => (
                 <ItemComponent

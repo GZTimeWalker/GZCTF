@@ -1,10 +1,14 @@
 import dayjs from 'dayjs'
 import { CSSProperties, FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Grid, Paper } from '@mantine/core'
+import { Group, Grid, Paper, Text, Divider, rem, ActionIcon, Tooltip } from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { mdiClose, mdiDownload } from '@mdi/js'
+import Icon from '@mdi/react'
 import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, TeamItem, FileItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { FileRecord } from '@Api'
 
 const SWROptions = {
@@ -19,6 +23,7 @@ const Traffic: FC = () => {
 
   const [challengeId, setChallengeId] = useState<number | null>(null)
   const [participationId, setParticipationId] = useState<number | null>(null)
+  const { classes: tooltipClasses, theme } = useTooltipStyles()
 
   const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(
     gameId,
@@ -42,47 +47,84 @@ const Traffic: FC = () => {
     window.open(`/api/game/captures/${challengeId}/${participationId}/${item.fileName}`, '_blank')
   }
 
+  const onDownloadAll = () => {
+    if (!challengeId || !participationId) {
+      showNotification({
+        color: 'red',
+        title: '遇到了问题',
+        message: '请先选择题目和队伍',
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      return
+    }
+
+    window.open(`/api/game/captures/${challengeId}/${participationId}/all`, '_blank')
+  }
+
   const orderedFileRecords =
     fileRecords?.sort((a, b) => dayjs(b.updateTime).diff(dayjs(a.updateTime))) ?? []
 
-  // make list longer for testing by duplicating 3 times
-  const testFiles = orderedFileRecords.concat(orderedFileRecords).concat(orderedFileRecords)
-
   const innerStyle: CSSProperties = {
-    borderRight: '1px solid gray',
+    borderRight: `${rem(2)} solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
+    }`,
   }
+
+  const srollHeight = 'calc(100vh - 174px)'
+  const headerHeight = rem(32)
 
   return (
     <WithGameMonitorTab>
-      <Paper shadow="md">
-        <Grid gutter={0} h="calc(100vh - 110px)" grow>
-          <Grid.Col span={3}>
+      <Paper shadow="md" p="md">
+        <Grid gutter={0} h="calc(100vh - 142px)" grow>
+          <Grid.Col span={3} style={innerStyle}>
+            <Group h={headerHeight} pb="3px" px="xs">
+              <Text size="md" weight={700}>
+                题目
+              </Text>
+            </Group>
+            <Divider size="sm" />
             <ScrollSelect
-              style={innerStyle}
               itemComponent={ChallengeItem}
               items={challengeTraffic}
-              emptyPlaceholder="暂无题目"
               selectedId={challengeId}
               onSelectId={setChallengeId}
+              h={srollHeight}
             />
           </Grid.Col>
-          <Grid.Col span={3}>
+          <Grid.Col span={3} style={innerStyle}>
+            <Group h={headerHeight} pb="3px" px="xs">
+              <Text size="md" weight={700}>
+                队伍
+              </Text>
+            </Group>
+            <Divider size="sm" />
             <ScrollSelect
-              style={innerStyle}
               itemComponent={TeamItem}
               items={teamTraffic}
-              emptyPlaceholder="暂无队伍"
               selectedId={participationId}
               onSelectId={setParticipationId}
+              h={srollHeight}
             />
           </Grid.Col>
           <Grid.Col span={6}>
+            <Group h={headerHeight} pb="3px" px="xs" position="apart">
+              <Text size="md" weight={700}>
+                流量文件
+              </Text>
+              <Tooltip label="下载全部列出流量" position="left" classNames={tooltipClasses}>
+                <ActionIcon size="md" onClick={onDownloadAll}>
+                  <Icon path={mdiDownload} size={1} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+            <Divider size="sm" />
             <ScrollSelect
               itemComponent={FileItem}
-              items={testFiles}
-              emptyPlaceholder="暂无文件"
+              items={orderedFileRecords}
               customClick
               onSelectId={onDownload}
+              h={srollHeight}
             />
           </Grid.Col>
         </Grid>

@@ -55,7 +55,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         />
         <Icon path={data!.icon} color={theme.colors[data?.color ?? 'brand'][5]} size={1} />
         <Group noWrap position="apart" spacing="sm" w="calc(100% - 100px)">
-          <Text lineClamp={1} fw={700} w="14rem">
+          <Text truncate fw={700} w="14rem">
             {challenge.title}
           </Text>
 
