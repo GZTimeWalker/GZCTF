@@ -104,12 +104,12 @@ public class ProxyController : ControllerBase
         IPEndPoint target = new(ipAddress, container.Port);
 
         return await DoContainerProxy(id, client, target, metadata, new()
-            {
-                Source = client,
-                Dest = target,
-                EnableCapture = enable,
-                FilePath = container.TrafficPath(HttpContext.Connection.Id),
-            }, token);
+        {
+            Source = client,
+            Dest = target,
+            EnableCapture = enable,
+            FilePath = container.TrafficPath(HttpContext.Connection.Id),
+        }, token);
     }
 
     /// <summary>
@@ -239,9 +239,9 @@ public class ProxyController : ControllerBase
         var receiver = Task.Run(async () =>
         {
             var buffer = new byte[BUFFER_SIZE];
-        try
-        {
-            while (true)
+            try
+            {
+                while (true)
                 {
                     var count = await stream.ReadAsync(buffer, ct);
                     if (count == 0)

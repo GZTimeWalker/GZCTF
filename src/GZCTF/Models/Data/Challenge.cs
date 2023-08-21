@@ -242,19 +242,23 @@ public class Challenge
         Tag = model.Tag ?? Tag;
         Hints = model.Hints ?? Hints;
         IsEnabled = model.IsEnabled ?? IsEnabled;
-        // only set FlagTemplate to null when it pass an empty string (but not null)
-        FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
-            string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : model.FlagTemplate;
         CPUCount = model.CPUCount ?? CPUCount;
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;
         ContainerImage = model.ContainerImage?.Trim() ?? ContainerImage;
-        EnableTrafficCapture = model.EnableTrafficCapture ?? EnableTrafficCapture;
         ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
         OriginalScore = model.OriginalScore ?? OriginalScore;
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;
         Difficulty = model.Difficulty ?? Difficulty;
         FileName = model.FileName ?? FileName;
+
+        // only set FlagTemplate to null when it pass an empty string (but not null)
+        FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
+            string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : model.FlagTemplate;
+
+        // DynamicContainer only
+        EnableTrafficCapture = Type == ChallengeType.DynamicContainer &&
+            (model.EnableTrafficCapture ?? EnableTrafficCapture);
 
         return this;
     }

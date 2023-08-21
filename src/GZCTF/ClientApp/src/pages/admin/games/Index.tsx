@@ -112,7 +112,7 @@ const Games: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th>隐藏</th>
+                <th>公开</th>
                 <th>比赛</th>
                 <th>比赛时间</th>
                 <th>简介</th>
@@ -130,7 +130,7 @@ const Games: FC = () => {
                       <td>
                         <Switch
                           disabled={disabled}
-                          checked={game.hidden ?? false}
+                          checked={!game.hidden}
                           onChange={() => onToggleHidden(game)}
                         />
                       </td>
@@ -164,7 +164,7 @@ const Games: FC = () => {
                         </Group>
                       </td>
                       <td>
-                        <Text lineClamp={1} w="calc(50vw - 20rem)">
+                        <Text truncate maw="30rem">
                           {game.summary}
                         </Text>
                       </td>

@@ -1,109 +1,11 @@
 import dayjs from 'dayjs'
 import { CSSProperties, FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Center, Grid, NavLink, Paper, ScrollArea, ScrollAreaProps, Stack } from '@mantine/core'
+import { Grid, Paper } from '@mantine/core'
+import ScrollSelect from '@Components/ScrollSelect'
+import { ChallengeItem, TeamItem, FileItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
-import { HunamizeSize } from '@Utils/Shared'
-import api, { ChallengeTrafficModel, FileRecord, TeamTrafficModel } from '@Api'
-
-interface SelectableItemProps {
-  onClick: () => void
-  active: boolean
-}
-
-interface ScrollSelectProps extends ScrollAreaProps {
-  itemComponent: React.FC<any>
-  emptyPlaceholder?: React.ReactNode
-  items?: any[]
-  customClick?: boolean
-  selectedId?: number | null
-  onSelectId: (item: any | null) => void
-}
-
-const ScrollSelect: FC<ScrollSelectProps> = (props) => {
-  const {
-    itemComponent: ItemComponent,
-    emptyPlaceholder,
-    items,
-    selectedId,
-    onSelectId,
-    customClick,
-    ...ScrollAreaProps
-  } = props
-
-  return (
-    <ScrollArea h="100%" {...ScrollAreaProps}>
-      {!items || items.length === 0 ? (
-        <Center h="100%">{emptyPlaceholder}</Center>
-      ) : (
-        <Stack spacing="xs" w="100%">
-          {customClick
-            ? items.map((item) => (
-                <ItemComponent
-                  key={item.id}
-                  onClick={() => onSelectId(item)}
-                  active={false}
-                  {...item}
-                />
-              ))
-            : items.map((item) => (
-                <ItemComponent
-                  key={item.id}
-                  onClick={() => onSelectId(item.id)}
-                  active={selectedId === item.id}
-                  {...item}
-                />
-              ))}
-        </Stack>
-      )}
-    </ScrollArea>
-  )
-}
-
-const ChallengeItem: FC<ChallengeTrafficModel & SelectableItemProps> = (itemProps) => {
-  const { onClick, active, ...props } = itemProps
-
-  return (
-    <NavLink
-      label={props.title}
-      description={props.tag}
-      rightSection={props.count}
-      onClick={onClick}
-      active={active}
-      variant="filled"
-    />
-  )
-}
-
-const TeamItem: FC<TeamTrafficModel & SelectableItemProps> = (itemProps) => {
-  const { onClick, active, ...props } = itemProps
-
-  return (
-    <NavLink
-      label={props.name}
-      description={props.organization}
-      rightSection={props.count}
-      onClick={onClick}
-      active={active}
-      variant="filled"
-    />
-  )
-}
-
-const FileItem: FC<FileRecord & SelectableItemProps> = (itemProps) => {
-  const { onClick, active, ...props } = itemProps
-
-  return (
-    <NavLink
-      label={props.fileName}
-      description={dayjs(props.updateTime).format('YYYY/MM/DD HH:mm:ss')}
-      rightSection={HunamizeSize(props.size!)}
-      onClick={onClick}
-      active={active}
-      variant="filled"
-    />
-  )
-}
+import api, { FileRecord } from '@Api'
 
 const SWROptions = {
   refreshInterval: 0,
@@ -118,7 +20,10 @@ const Traffic: FC = () => {
   const [challengeId, setChallengeId] = useState<number | null>(null)
   const [participationId, setParticipationId] = useState<number | null>(null)
 
-  const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(gameId, SWROptions)
+  const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(
+    gameId,
+    SWROptions
+  )
   const { data: teamTraffic } = api.game.useGameGetChallengeTraffic(
     challengeId ?? 0,
     SWROptions,
@@ -136,6 +41,12 @@ const Traffic: FC = () => {
 
     window.open(`/api/game/captures/${challengeId}/${participationId}/${item.fileName}`, '_blank')
   }
+
+  const orderedFileRecords =
+    fileRecords?.sort((a, b) => dayjs(b.updateTime).diff(dayjs(a.updateTime))) ?? []
+
+  // make list longer for testing by duplicating 3 times
+  const testFiles = orderedFileRecords.concat(orderedFileRecords).concat(orderedFileRecords)
 
   const innerStyle: CSSProperties = {
     borderRight: '1px solid gray',
@@ -168,7 +79,7 @@ const Traffic: FC = () => {
           <Grid.Col span={6}>
             <ScrollSelect
               itemComponent={FileItem}
-              items={fileRecords}
+              items={testFiles}
               emptyPlaceholder="暂无文件"
               customClick
               onSelectId={onDownload}

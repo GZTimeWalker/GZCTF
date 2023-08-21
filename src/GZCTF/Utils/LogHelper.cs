@@ -89,7 +89,7 @@ public static class LogHelper
                 context.Response.StatusCode == 204 ? LogEventLevel.Verbose :
                 time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
                 (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
-            
+
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
                 diagnosticContext.Set("RemoteIP", httpContext.Connection.RemoteIpAddress);

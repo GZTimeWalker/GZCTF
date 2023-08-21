@@ -547,6 +547,9 @@ public class EditController : Controller
         if (model.IsEnabled == true && !res.Flags.Any() && res.Type != ChallengeType.DynamicContainer)
             return BadRequest(new RequestResponse("题目无 flag，不可启用"));
 
+        if (res.EnableTrafficCapture && res.Type.IsContainer())
+            return BadRequest(new RequestResponse("只有容器题目可以进行流量捕获"));
+
         if (model.FileName is not null && string.IsNullOrWhiteSpace(model.FileName))
             return BadRequest(new RequestResponse("动态附件名不可为空"));
 
