@@ -9,19 +9,20 @@ import {
   LoadingOverlay,
   Modal,
   ModalProps,
-  Popover,
   Stack,
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core'
-import { useDisclosure, useInputState } from '@mantine/hooks'
+import { useInputState } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ChallengeTagItemProps } from '@Utils/Shared'
+import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
@@ -89,7 +90,7 @@ export const WrongFlagHints: string[] = [
 
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { gameId, gameEnded, challengeId, tagData, title, score, solved, ...modalProps } = props
-  const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
+  const { classes: tooltipClasses } = useTooltipStyles()
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(
     gameId,
@@ -313,37 +314,22 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} mih="4rem">
               {challenge?.context?.url && (
-                <Popover
-                  opened={downloadOpened}
-                  position="left"
-                  width="5rem"
-                  styles={{
-                    dropdown: {
-                      padding: '5px',
-                    },
-                  }}
-                >
-                  <Popover.Target>
-                    <ActionIcon
-                      variant="filled"
-                      size="lg"
-                      color="brand"
-                      onMouseEnter={downloadOpen}
-                      onMouseLeave={downloadClose}
-                      onClick={() => window.open(challenge.context?.url ?? '#', '_blank')}
-                      top={0}
-                      right={0}
-                      pos="absolute"
-                    >
-                      <Icon path={mdiDownload} size={1} />
-                    </ActionIcon>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <Text size="sm" align="center">
-                      下载附件
-                    </Text>
-                  </Popover.Dropdown>
-                </Popover>
+                <Tooltip label="下载附件" position="left" classNames={tooltipClasses}>
+                  <ActionIcon
+                    component="a"
+                    href={challenge.context?.url ?? '#'}
+                    target="_blank"
+                    rel="noreferrer"
+                    variant="filled"
+                    size="lg"
+                    color="brand"
+                    top={0}
+                    right={0}
+                    pos="absolute"
+                  >
+                    <Icon path={mdiDownload} size={1} />
+                  </ActionIcon>
+                </Tooltip>
               )}
               <MarkdownRender
                 source={challenge?.content ?? ''}

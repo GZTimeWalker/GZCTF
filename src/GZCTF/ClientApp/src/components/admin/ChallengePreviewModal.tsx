@@ -10,13 +10,13 @@ import {
   LoadingOverlay,
   Modal,
   ModalProps,
-  Popover,
   Stack,
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core'
-import { useDisclosure, useInputState } from '@mantine/hooks'
+import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -24,6 +24,7 @@ import { FlagPlaceholders } from '@Components/ChallengeDetailModal'
 import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { ChallengeTagItemProps } from '@Utils/Shared'
+import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import { ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
 
@@ -41,7 +42,7 @@ interface FakeContext {
 
 const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
   const { challenge, type, attachmentType, tagData, ...modalProps } = props
-  const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
+  const { classes: tooltipClasses } = useTooltipStyles()
 
   const [placeholder, setPlaceholder] = useState('')
   const [flag, setFlag] = useInputState('')
@@ -123,43 +124,25 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} mih="4rem">
               {attachmentType !== FileType.None && (
-                <Popover
-                  opened={downloadOpened}
-                  position="left"
-                  width="5rem"
-                  styles={{
-                    dropdown: {
-                      padding: '5px',
-                    },
-                  }}
-                >
-                  <Popover.Target>
-                    <ActionIcon
-                      variant="filled"
-                      size="lg"
-                      color="brand"
-                      top={0}
-                      right={0}
-                      pos="absolute"
-                      onMouseEnter={downloadOpen}
-                      onMouseLeave={downloadClose}
-                      onClick={() =>
-                        showNotification({
-                          color: 'teal',
-                          message: '假装附件已经下载了！',
-                          icon: <Icon path={mdiCheck} size={1} />,
-                        })
-                      }
-                    >
-                      <Icon path={mdiDownload} size={1} />
-                    </ActionIcon>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <Text size="sm" align="center">
-                      下载附件
-                    </Text>
-                  </Popover.Dropdown>
-                </Popover>
+                <Tooltip label="下载附件" position="left" classNames={tooltipClasses}>
+                  <ActionIcon
+                    variant="filled"
+                    size="lg"
+                    color="brand"
+                    top={0}
+                    right={0}
+                    pos="absolute"
+                    onClick={() =>
+                      showNotification({
+                        color: 'teal',
+                        message: '假装附件已经下载了！',
+                        icon: <Icon path={mdiCheck} size={1} />,
+                      })
+                    }
+                  >
+                    <Icon path={mdiDownload} size={1} />
+                  </ActionIcon>
+                </Tooltip>
               )}
               <MarkdownRender
                 source={challenge?.content ?? ''}

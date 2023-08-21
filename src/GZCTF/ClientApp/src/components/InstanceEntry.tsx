@@ -127,24 +127,13 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     })
   }
 
-  const onOpenInNew = () => {
-    window.open(`http://${instanceEntry}`, '_blank')
-  }
-
-  const onOpenInApp = () => {
-    if (!isPlatformProxy) {
-      return
-    }
+  const getAppUrl = () => {
     const url = new URL('wsrx://open')
     url.searchParams.append('url', copyEntry)
-    window.location.href = url.href
-    showNotification({
-      color: 'teal',
-      title: '已尝试拉起客户端',
-      message: '请确保客户端正确安装',
-      icon: <Icon path={mdiCheck} size={1} />,
-    })
+    return url.href
   }
+
+  const openUrl = isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`
 
   if (!withContainer) {
     return test ? (
@@ -209,7 +198,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               withArrow
               classNames={tooltipClasses}
             >
-              <ActionIcon onClick={isPlatformProxy ? onOpenInApp : onOpenInNew}>
+              <ActionIcon component="a" href={openUrl} target="_blank" rel="noreferrer">
                 <Icon path={isPlatformProxy ? mdiOpenInApp : mdiOpenInNew} size={1} />
               </ActionIcon>
             </Tooltip>
