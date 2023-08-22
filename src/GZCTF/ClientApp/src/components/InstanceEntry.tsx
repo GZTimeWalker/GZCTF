@@ -198,7 +198,12 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               withArrow
               classNames={tooltipClasses}
             >
-              <ActionIcon component="a" href={openUrl} target="_blank" rel="noreferrer">
+              <ActionIcon
+                component="a"
+                href={openUrl}
+                target={isPlatformProxy ? '_self' : '_blank'}
+                rel="noreferrer"
+              >
                 <Icon path={isPlatformProxy ? mdiOpenInApp : mdiOpenInNew} size={1} />
               </ActionIcon>
             </Tooltip>
