@@ -37,12 +37,15 @@ const useItemStyle = createStyles((theme) => ({
     userSelect: 'none',
 
     ...theme.fn.hover({
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
     }),
 
     '&[data-active]': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
-      ...theme.fn.hover({ backgroundColor: theme.colors.hover }),
+      ...theme.fn.hover({
+        backgroundColor:
+          theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[3],
+      }),
     },
 
     '&[data-disabled]': {
