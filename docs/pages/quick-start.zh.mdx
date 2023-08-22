@@ -47,6 +47,8 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
      "XorKey": "<Your XOR_KEY>",
      "ContainerProvider": {
        "Type": "Docker", // or "Kubernetes"
+       "PortMappingType": "Default", // or "PlatformProxy"
+       "EnableTrafficCapture": false,
        "PublicEntry": "<Your PUBLIC_ENTRY>", // or "xxx.xxx.xxx.xxx"
        "DockerConfig": {
          // optional
@@ -66,6 +68,11 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
        "Sitekey": "",
        "Secretkey": "",
        "RecaptchaThreshold": "0.5"
+     },
+     "ForwardedOptions": {
+       "ForwardedHeaders": 5,
+       "ForwardLimit": 1,
+       "TrustedNetworks": ["192.168.12.0/8"]
      }
    }
    ```
@@ -83,9 +90,8 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
        ports:
          - "80:80"
        volumes:
-         - "./data/files:/app/uploads"
+         - "./data/files:/app/files"
          - "./appsettings.json:/app/appsettings.json:ro"
-         - "./logs:/app/log"
          # - "./k8sconfig.yaml:/app/k8sconfig.yaml:ro" # this is required for k8s deployment
          - "/var/run/docker.sock:/var/run/docker.sock" # this is required for docker deployment
        depends_on:
@@ -116,7 +122,7 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
 
    </Callout>
 
-4. 运行 `docker-compose up -d` 来启动 GZCTF，之后你可以通过浏览器访问 GZCTF 了。
+4. 运行 `docker compose up -d` 来启动 GZCTF，之后你可以通过浏览器访问 GZCTF 了。
 
 ## 初始管理员
 
@@ -131,7 +137,7 @@ UPDATE "AspNetUsers" SET "Role"=3 WHERE "UserName"='your_admin_user_name';
 你可能会用到如下的命令：
 
 ```bash
-docker-compose exec db psql -U postgres
+docker compose exec db psql -U postgres
 ```
 
 ```bash
@@ -179,7 +185,7 @@ ctf=# #do your sql query
    }
    ```
 
-之后重新使用 `docker-compose up -d` 启动 GZCTF 即可。
+之后重新使用 `docker compose up -d` 启动 GZCTF 即可。
 
 ## 容器镜像
 

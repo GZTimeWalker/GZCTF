@@ -226,6 +226,9 @@ public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyConte
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasIndex(e => e.InstanceId);
+
+            // FIXME: Which API will be affected by AutoInclude
+            //entity.Navigation(e => e.Instance).AutoInclude();
         });
 
         builder.Entity<Challenge>(entity =>

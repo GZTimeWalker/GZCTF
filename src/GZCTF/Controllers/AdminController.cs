@@ -37,7 +37,6 @@ public class AdminController : ControllerBase
     private readonly IContainerRepository _containerRepository;
     private readonly IInstanceRepository _instanceRepository;
     private readonly IParticipationRepository _participationRepository;
-    private readonly string _basepath;
 
     public AdminController(UserManager<UserInfo> userManager,
         ILogger<AdminController> logger,
@@ -63,7 +62,6 @@ public class AdminController : ControllerBase
         _containerRepository = containerRepository;
         _serviceProvider = serviceProvider;
         _participationRepository = participationRepository;
-        _basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
     }
 
     /// <summary>
@@ -522,7 +520,7 @@ public class AdminController : ControllerBase
 
         var wps = await _participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
-        var stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), _basepath, filename, token);
+        var stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), FilePath.Uploads, filename, token);
         stream.Seek(0, SeekOrigin.Begin);
 
         return File(stream, "application/zip", $"{filename}.zip");

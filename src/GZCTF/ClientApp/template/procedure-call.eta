@@ -67,9 +67,10 @@ const wrapperArgs = _
     .join(', ')
 
 const queryTmpl = (query != null && queryName) || null;
+const enableSWR = _.upperCase(method) === "GET" && type !== "void";
 %>
 
-<% if (_.upperCase(method) === "GET") { %>
+<% if (enableSWR) { %>
 /**
 <%~ routeDocs.description %>
 

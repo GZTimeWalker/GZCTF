@@ -115,19 +115,46 @@ public class ArrayResponse<T> where T : class
 }
 
 /// <summary>
+/// 文件记录
+/// </summary>
+public class FileRecord
+{
+    /// <summary>
+    /// 文件名
+    /// </summary>
+    public string FileName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 文件大小
+    /// </summary>
+    public long Size { get; set; } = 0;
+
+    /// <summary>
+    /// 文件修改日期
+    /// </summary>
+    public DateTimeOffset UpdateTime { get; set; } = DateTimeOffset.Now;
+
+    internal static FileRecord FromFileInfo(FileInfo info)
+        => new()
+        {
+            FileName = info.Name,
+            UpdateTime = info.LastWriteTimeUtc,
+            Size = info.Length,
+        };
+}
+
+/// <summary>
 /// 三血加分
 /// </summary>
-public struct BloodBonus
+public struct BloodBonus(long init = BloodBonus.DefaultValue)
 {
     public const long DefaultValue = (50 << 20) + (30 << 10) + 10;
     public const int Mask = 0x3ff;
     public const int Base = 1000;
 
-    public BloodBonus(long init = DefaultValue) => Val = init;
-
     public static BloodBonus Default => new();
 
-    public long Val { get; private set; } = DefaultValue;
+    public long Val { get; private set; } = init;
 
     public static BloodBonus FromValue(long value)
     {
@@ -136,19 +163,19 @@ public struct BloodBonus
         return new(value);
     }
 
-    public long FirstBlood => (Val >> 20) & 0x3ff;
+    public readonly long FirstBlood => (Val >> 20) & 0x3ff;
 
-    public float FirstBloodFactor => FirstBlood / 1000f + 1.0f;
+    public readonly float FirstBloodFactor => FirstBlood / 1000f + 1.0f;
 
-    public long SecondBlood => (Val >> 10) & 0x3ff;
+    public readonly long SecondBlood => (Val >> 10) & 0x3ff;
 
-    public float SecondBloodFactor => SecondBlood / 1000f + 1.0f;
+    public readonly float SecondBloodFactor => SecondBlood / 1000f + 1.0f;
 
-    public long ThirdBlood => Val & 0x3ff;
+    public readonly long ThirdBlood => Val & 0x3ff;
 
-    public float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
+    public readonly float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
 
-    public bool NoBonus => Val == 0;
+    public readonly bool NoBonus => Val == 0;
 
     public static ValueConverter<BloodBonus, long> Converter => new(v => v.Val, v => new(v));
 

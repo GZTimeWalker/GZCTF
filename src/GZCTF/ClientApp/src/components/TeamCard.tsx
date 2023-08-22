@@ -57,7 +57,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                   {team.name}
                 </Title>
               </Group>
-              <Text size="sm" lineClamp={2} style={{ overflow: 'hidden' }}>
+              <Text truncate size="sm" lineClamp={2}>
                 {team.bio}
               </Text>
             </Stack>

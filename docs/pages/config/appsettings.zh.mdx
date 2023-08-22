@@ -41,10 +41,13 @@ import { Callout } from "nextra-theme-docs";
   "XorKey": "<Random Key Str>",
   "ContainerProvider": {
     "Type": "Docker", // or "Kubernetes"
+    "PortMappingType": "Default",
+    "EnableTrafficCapture": false,
     "PublicEntry": "ctf.example.com", // or "xxx.xxx.xxx.xxx"
     "DockerConfig": {
       // optional
       "SwarmMode": false,
+      "ChallengeNetwork": "",
       "Uri": "unix:///var/run/docker.sock"
     },
     "K8sConfig": {
@@ -80,12 +83,8 @@ import { Callout } from "nextra-theme-docs";
     "ForwardLimit": 1,
     "ForwardedForHeaderName": "X-Forwarded-For",
     // use the following options to allow proxy
-    "TrustedNetworks": [
-      "10.0.0.0/8"
-    ],
-    "TrustedProxies": [
-      "10.0.0.1"
-    ]
+    "TrustedNetworks": ["10.0.0.0/8"],
+    "TrustedProxies": ["10.0.0.1"]
   }
 }
 ```
@@ -129,6 +128,8 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 
 - **Type:** 容器后端类型，可选 `Docker` 或 `Kubernetes`。
 - **PublicEntry:** 容器后端的公网地址，用于生成比赛的访问地址，展示给参赛队伍。
+- **PortMappingType:** 端口映射类型，可选 `Default` 或 `PlatformProxy`。
+- **EnableTrafficCapture:** 是否开启流量捕获，仅在 `PortMappingType` 设置为 `PlatformProxy` 时可用。若开启，将会记录流量于 `/app/files/capture` 目录下。
 
 #### Docker
 
@@ -145,12 +146,14 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
   - 如需使用本地 docker，请将 Uri 置空，并将 `/var/run/docker.sock` 挂载入容器对应位置
   - 如需使用外部 docker，请将 Uri 指向对应 docker API Server，**外部 API 鉴权尚未实现，不推荐此部署方式**
 
+- **ChallengeNetwork:** 指定题目容器所在的网络，若不指定，将会使用默认网络。
+
 #### Kubernetes
 
 - **Namespace:** Kubernetes 命名空间，用于创建题目实例的命名空间，默认为 `gzctf-challenges`
 - **ConfigPath:** Kubernetes 配置文件路径，用于连接集群，默认为 `k8sconfig.yaml`
-- **AllowCIDR:** [实验功能] 允许访问 Pod 的 CIDR 白名单
-- **DNS:** [实验功能] 避免使用集群 DNS 的自定义 DNS 服务器列表
+- **AllowCIDR:** 允许访问 Pod 的 CIDR 白名单
+- **DNS:** 避免使用集群 DNS 的自定义 DNS 服务器列表
 
 默认行为请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下。实验功能若非了解行为请勿更改。
 

@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using System.Security.Claims;
+using System.Security.Policy;
 using System.Threading.Channels;
 using GZCTF.Middlewares;
 using GZCTF.Models.Request.Admin;
@@ -11,6 +12,9 @@ using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using NPOI.HSSF.Record;
+using NPOI.OpenXmlFormats.Dml;
+using YamlDotNet.Core.Tokens;
 
 namespace GZCTF.Controllers;
 
@@ -106,7 +110,7 @@ public class GameController : ControllerBase
         var context = await GetContextInfo(id, token: token);
 
         if (context.Game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
+            return NotFound(new RequestResponse("比赛未找到", 404));
 
         var count = await _participationRepository.GetParticipationCount(context.Game, token);
 
@@ -265,7 +269,7 @@ public class GameController : ControllerBase
         var game = await _gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
+            return NotFound(new RequestResponse("比赛未找到", 404));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -293,7 +297,7 @@ public class GameController : ControllerBase
         var game = await _gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
+            return NotFound(new RequestResponse("比赛未找到", 404));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -323,7 +327,7 @@ public class GameController : ControllerBase
         var game = await _gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
+            return NotFound(new RequestResponse("比赛未找到", 404));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -353,7 +357,7 @@ public class GameController : ControllerBase
         var game = await _gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
+            return NotFound(new RequestResponse("比赛未找到", 404));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -380,13 +384,150 @@ public class GameController : ControllerBase
         var game = await _gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到"));
+            return NotFound(new RequestResponse("比赛未找到", 404));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
         return Ok((await _cheatInfoRepository.GetCheatInfoByGameId(game.Id, token))
             .Select(CheatInfoModel.FromCheatInfo));
+    }
+
+    /// <summary>
+    /// 获取开启了流量捕获的比赛题目
+    /// </summary>
+    /// <remarks>
+    /// 获取开启了流量捕获的比赛题目，需要Monitor权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取题目列表</response>
+    /// <response code="404">未找到相关捕获信息</response>
+    [RequireMonitor]
+    [HttpGet("Games/{id}/Captures")]
+    [ProducesResponseType(typeof(ChallengeTrafficModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token)
+        => Ok((await _challengeRepository.GetChallengesWithTrafficCapturing(id, token))
+            .Select(ChallengeTrafficModel.FromChallenge));
+
+    /// <summary>
+    /// 获取比赛题目中捕获到到队伍信息
+    /// </summary>
+    /// <remarks>
+    /// 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+    /// </remarks>
+    /// <param name="challengeId">题目 Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取文件列表</response>
+    /// <response code="404">未找到相关捕获信息</response>
+    [RequireMonitor]
+    [HttpGet("Captures/{challengeId}")]
+    [ProducesResponseType(typeof(TeamTrafficModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetChallengeTraffic([FromRoute] int challengeId, CancellationToken token)
+    {
+        var filePath = $"{FilePath.Capture}/{challengeId}";
+
+        if (!Path.Exists(filePath))
+            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+
+        var participationIds = await GetDirNamesAsInt(filePath);
+
+        if (participationIds.Count == 0)
+            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+
+        var participations = await _participationRepository.GetParticipationsByIds(participationIds, token);
+
+        return Ok(participations.Select(p => TeamTrafficModel.FromParticipation(p, challengeId)));
+    }
+
+    /// <summary>
+    /// 获取比赛题目中捕获到到队伍的流量包列表
+    /// </summary>
+    /// <remarks>
+    /// 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+    /// </remarks>
+    /// <param name="challengeId">题目 Id</param>
+    /// <param name="partId">队伍参与 Id</param>
+    /// <response code="200">成功获取文件列表</response>
+    /// <response code="404">未找到相关捕获信息</response>
+    [RequireMonitor]
+    [HttpGet("Captures/{challengeId}/{partId}")]
+    [ProducesResponseType(typeof(FileRecord[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public IActionResult GetTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId)
+    {
+        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
+
+        if (!Path.Exists(filePath))
+            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+
+        return Ok(FilePath.GetFileRecords(filePath, out long _));
+    }
+
+    /// <summary>
+    /// 获取流量包文件压缩包
+    /// </summary>
+    /// <remarks>
+    /// 获取流量包文件，需要Monitor权限
+    /// </remarks>
+    /// <param name="challengeId">题目 Id</param>
+    /// <param name="partId">队伍参与 Id</param>
+    /// <param name="token">队伍参与 Id</param>
+    /// <response code="200">成功获取文件</response>
+    /// <response code="404">未找到相关捕获信息</response>
+    [RequireMonitor]
+    [HttpGet("Captures/{challengeId}/{partId}/All")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetTeamTrafficZip([FromRoute] int challengeId, [FromRoute] int partId, CancellationToken token)
+    {
+        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
+
+        if (!Path.Exists(filePath))
+            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+
+        var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
+        var stream = await Codec.ZipFilesAsync(filePath, filename, token);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return File(stream, "application/zip", $"{filename}.zip");
+    }
+
+    /// <summary>
+    /// 获取流量包文件
+    /// </summary>
+    /// <remarks>
+    /// 获取流量包文件，需要Monitor权限
+    /// </remarks>
+    /// <param name="challengeId">题目 Id</param>
+    /// <param name="partId">队伍参与 Id</param>
+    /// <param name="filename">流量包文件名</param>
+    /// <response code="200">成功获取文件</response>
+    /// <response code="404">未找到相关捕获信息</response>
+    [RequireMonitor]
+    [HttpGet("Captures/{challengeId}/{partId}/{filename}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public IActionResult GetTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId, [FromRoute] string filename)
+    {
+        try
+        {
+            var file = Path.GetFileName(filename);
+            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId}/{partId}", file));
+
+            if (Path.GetExtension(file) != ".pcap" || !Path.Exists(path))
+                return NotFound(new RequestResponse("未找到相关捕获信息"));
+
+            return new PhysicalFileResult(path, MediaTypeNames.Application.Octet)
+            {
+                FileDownloadName = file
+            };
+        }
+        catch
+        {
+            return NotFound(new RequestResponse("未找到相关捕获信息"));
+        }
     }
 
     /// <summary>
@@ -958,5 +1099,17 @@ public class GameController : ControllerBase
         }
 
         return res;
+    }
+
+    private static Task<List<int>> GetDirNamesAsInt(string dir)
+    {
+        if (!Directory.Exists(dir))
+            return Task.FromResult(new List<int>());
+
+        return Task.Run(() => Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly).Select(d =>
+        {
+            var name = Path.GetFileName(d);
+            return int.TryParse(name, out var res) ? res : -1;
+        }).Where(d => d > 0).ToList());
     }
 }

@@ -20,15 +20,10 @@ public class AssetsController : ControllerBase
     private readonly IFileRepository _fileRepository;
     private readonly FileExtensionContentTypeProvider _extProvider = new();
 
-    private readonly string _basepath;
-
-    public AssetsController(IFileRepository fileeService,
-        IConfiguration configuration,
-        ILogger<AssetsController> logger)
+    public AssetsController(IFileRepository fileService, ILogger<AssetsController> logger)
     {
-        _fileRepository = fileeService;
+        _fileRepository = fileService;
         _logger = logger;
-        _basepath = configuration.GetSection("UploadFolder").Value ?? "uploads";
     }
 
     /// <summary>
@@ -47,8 +42,7 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public IActionResult GetFile([RegularExpression("[0-9a-f]{64}")] string hash, string filename)
     {
-        var path = $"{hash[..2]}/{hash[2..4]}/{hash}";
-        path = Path.GetFullPath(Path.Combine(_basepath, path));
+        var path = Path.GetFullPath(Path.Combine(FilePath.Uploads, hash[..2], hash[2..4], hash));
 
         if (!System.IO.File.Exists(path))
         {

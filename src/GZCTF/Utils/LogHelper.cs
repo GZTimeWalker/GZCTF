@@ -3,8 +3,8 @@ using System.Net;
 using GZCTF.Extensions;
 using NpgsqlTypes;
 using Serilog;
-using Serilog.Core;
 using Serilog.Events;
+using Serilog.Filters;
 using Serilog.Sinks.File.Archive;
 using Serilog.Sinks.PostgreSQL;
 using Serilog.Templates;
@@ -86,8 +86,10 @@ public static class LogHelper
         {
             options.MessageTemplate = "[{StatusCode}] {Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath} @ {RemoteIP}";
             options.GetLevel = (context, time, ex) =>
+                context.Response.StatusCode == 204 ? LogEventLevel.Verbose :
                 time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
                 (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
+
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
                 diagnosticContext.Set("RemoteIP", httpContext.Connection.RemoteIpAddress);
@@ -126,6 +128,10 @@ public static class LogHelper
     public static Serilog.ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
         => new LoggerConfiguration()
             .Enrich.FromLogContext()
+            .Filter.ByExcluding(
+                Matching.WithProperty<string>("RequestPath", v =>
+                    "/healthz".Equals(v, StringComparison.OrdinalIgnoreCase))
+            )
             .MinimumLevel.Debug()
             .Filter.ByExcluding(logEvent =>
                  logEvent.Exception != null &&
@@ -138,14 +144,14 @@ public static class LogHelper
                 restrictedToMinimumLevel: LogEventLevel.Debug
             ))
             .WriteTo.Async(t => t.File(
-                path: "log/log_.log",
+                path: $"{FilePath.Logs}/log_.log",
                 formatter: new ExpressionTemplate(LogTemplate),
                 rollingInterval: RollingInterval.Day,
                 fileSizeLimitBytes: 10 * 1024 * 1024,
                 restrictedToMinimumLevel: LogEventLevel.Debug,
                 rollOnFileSizeLimit: true,
                 retainedFileCountLimit: 5,
-                hooks: new ArchiveHooks(CompressionLevel.Optimal, "log/archive/{UtcDate:yyyy-MM}")
+                hooks: new ArchiveHooks(CompressionLevel.Optimal, $"{FilePath.Logs}/archive/{{UtcDate:yyyy-MM}}")
             ))
             .WriteTo.Async(t => t.PostgreSQL(
                 connectionString: configuration.GetConnectionString("Database"),

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Utils;
 
-public class HubHelper
+public static class HubHelper
 {
     /// <summary>
     /// 当前请求是否具有权限

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GZCTF.Utils;
 
 namespace GZCTF.Models;
 
@@ -70,7 +71,14 @@ public class Container
     /// 容器实例访问方式
     /// </summary>
     [NotMapped]
-    public string Entry => $"{PublicIP ?? IP}:{PublicPort ?? Port}";
+    public string Entry => IsProxy ? Id : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
+
+    /// <summary>
+    /// 容器实例流量捕获存储路径
+    /// </summary>
+    public string TrafficPath(string conn) => Instance is null ? string.Empty :
+        Path.Combine(FilePath.Capture,
+            $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
 
     #region Db Relationship
 

@@ -29,30 +29,30 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const [type, setType] = useState<string | null>(null)
 
   const onCreate = () => {
-    if (title && tag && type) {
-      setDisabled(true)
-      const numId = parseInt(id ?? '-1')
+    if (!title || !tag || !type) return
 
-      api.edit
-        .editAddGameChallenge(numId, {
-          title: title,
-          tag: tag as ChallengeTag,
-          type: type as ChallengeType,
+    setDisabled(true)
+    const numId = parseInt(id ?? '-1')
+
+    api.edit
+      .editAddGameChallenge(numId, {
+        title: title,
+        tag: tag as ChallengeTag,
+        type: type as ChallengeType,
+      })
+      .then((data) => {
+        showNotification({
+          color: 'teal',
+          message: '比赛题目已添加',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .then((data) => {
-          showNotification({
-            color: 'teal',
-            message: '比赛题目已添加',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          onAddChallenge(data.data)
-          navigate(`/admin/games/${id}/challenges/${data.data.id}`)
-        })
-        .catch((err) => {
-          showErrorNotification(err)
-          setDisabled(false)
-        })
-    }
+        onAddChallenge(data.data)
+        navigate(`/admin/games/${id}/challenges/${data.data.id}`)
+      })
+      .catch((err) => {
+        showErrorNotification(err)
+        setDisabled(false)
+      })
   }
 
   return (

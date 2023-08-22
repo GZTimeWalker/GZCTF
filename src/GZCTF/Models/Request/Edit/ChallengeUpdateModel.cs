@@ -72,9 +72,9 @@ public class ChallengeUpdateModel
     public int? ContainerExposePort { get; set; }
 
     /// <summary>
-    /// 是否为特权容器
+    /// 是否需要记录访问流量
     /// </summary>
-    public bool? PrivilegedContainer { get; set; } = false;
+    public bool? EnableTrafficCapture { get; set; } = false;
 
     #endregion Container
 

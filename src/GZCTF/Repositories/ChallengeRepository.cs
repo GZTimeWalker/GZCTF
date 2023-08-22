@@ -73,28 +73,15 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
     public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default)
         => _context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
+    public Task<Challenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default)
+        => _context.Challenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture).ToArrayAsync(token);
+
+    public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)
+        => _context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
+
     public async Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
     {
-        if (challenge.Type == ChallengeType.DynamicAttachment)
-        {
-            foreach (var flag in challenge.Flags)
-            {
-                if (flag.Attachment is not null &&
-                    flag.Attachment.Type == FileType.Local &&
-                    flag.Attachment.LocalFile is not null)
-                {
-                    await _fileRepository.DeleteFileByHash(
-                        flag.Attachment.LocalFile.Hash, token);
-                }
-            }
-        }
-        else if (challenge.Attachment is not null &&
-                 challenge.Attachment.Type == FileType.Local &&
-                 challenge.Attachment.LocalFile is not null)
-        {
-            await _fileRepository.DeleteFileByHash(
-                challenge.Attachment.LocalFile.Hash, token);
-        }
+        await DeleteAllAttachment(challenge, true, token);
 
         _context.Remove(challenge);
         await SaveAsync(token);
@@ -107,13 +94,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         if (flag is null)
             return TaskStatus.NotFound;
 
-        if (flag.Attachment is not null &&
-            flag.Attachment.Type == FileType.Local &&
-            flag.Attachment.LocalFile is not null)
-        {
-            await _fileRepository.DeleteFileByHash(
-                flag.Attachment.LocalFile.Hash, token);
-        }
+        await DeleteAttachment(flag.Attachment, token);
 
         _context.Remove(flag);
 
@@ -134,17 +115,7 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
             RemoteUrl = model.RemoteUrl
         };
 
-        if (challenge.Attachment is not null)
-        {
-            if (challenge.Attachment.Type == FileType.Local &&
-                challenge.Attachment.LocalFile is not null)
-            {
-                await _fileRepository.DeleteFileByHash(
-                    challenge.Attachment.LocalFile.Hash, token);
-            }
-
-            _context.Remove(challenge.Attachment);
-        }
+        await DeleteAllAttachment(challenge, false, token);
 
         if (attachment is not null)
             await _context.AddAsync(attachment, token);
@@ -154,6 +125,27 @@ public class ChallengeRepository : RepositoryBase, IChallengeRepository
         await SaveAsync(token);
     }
 
-    public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)
-        => _context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
+    internal async Task DeleteAllAttachment(Challenge challenge, bool purge = false, CancellationToken token = default)
+    {
+        await DeleteAttachment(challenge.Attachment, token);
+
+        if (purge && challenge.Type == ChallengeType.DynamicAttachment)
+        {
+            foreach (var flag in challenge.Flags)
+                await DeleteAttachment(flag.Attachment, token);
+
+            _context.RemoveRange(challenge.Flags);
+        }
+    }
+
+    internal async Task DeleteAttachment(Attachment? attachment, CancellationToken token = default)
+    {
+        if (attachment is null)
+            return;
+
+        if (attachment.Type == FileType.Local && attachment.LocalFile is not null)
+            await _fileRepository.DeleteFile(attachment.LocalFile, token);
+
+        _context.Remove(attachment);
+    }
 }

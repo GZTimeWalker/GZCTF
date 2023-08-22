@@ -88,85 +88,84 @@ const GameInfoEdit: FC = () => {
   }, [id, gameSource])
 
   const onUpdatePoster = (file: File | undefined) => {
-    if (game && file) {
-      setDisabled(true)
-      notifications.clean()
-      showNotification({
-        id: 'upload-poster',
-        color: 'orange',
-        message: '正在上传海报',
-        loading: true,
-        autoClose: false,
-      })
+    if (!game || !file) return
 
-      api.edit
-        .editUpdateGamePoster(game.id!, { file })
-        .then((res) => {
-          updateNotification({
-            id: 'upload-poster',
-            color: 'teal',
-            message: '比赛海报已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-            autoClose: true,
-          })
-          mutate({ ...game, poster: res.data })
+    setDisabled(true)
+    notifications.clean()
+    showNotification({
+      id: 'upload-poster',
+      color: 'orange',
+      message: '正在上传海报',
+      loading: true,
+      autoClose: false,
+    })
+
+    api.edit
+      .editUpdateGamePoster(game.id!, { file })
+      .then((res) => {
+        updateNotification({
+          id: 'upload-poster',
+          color: 'teal',
+          message: '比赛海报已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
+          autoClose: true,
         })
-        .catch(() => {
-          updateNotification({
-            id: 'upload-poster',
-            color: 'red',
-            message: '比赛海报更新失败',
-            icon: <Icon path={mdiClose} size={1} />,
-            autoClose: true,
-          })
+        mutate({ ...game, poster: res.data })
+      })
+      .catch(() => {
+        updateNotification({
+          id: 'upload-poster',
+          color: 'red',
+          message: '比赛海报更新失败',
+          icon: <Icon path={mdiClose} size={1} />,
+          autoClose: true,
         })
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+      })
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   const onUpdateInfo = () => {
-    if (game && game.title) {
-      setDisabled(true)
-      api.edit
-        .editUpdateGame(game.id!, {
-          ...game,
-          inviteCode: game.inviteCode?.length ?? 0 > 6 ? game.inviteCode : null,
-          start: start.toJSON(),
-          end: end.toJSON(),
-          wpddl: end.add(wpddl, 'h').toJSON(),
+    if (!game?.title) return
+
+    setDisabled(true)
+    api.edit
+      .editUpdateGame(game.id!, {
+        ...game,
+        inviteCode: game.inviteCode?.length ?? 0 > 6 ? game.inviteCode : null,
+        start: start.toJSON(),
+        end: end.toJSON(),
+        wpddl: end.add(wpddl, 'h').toJSON(),
+      })
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '比赛信息已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: '比赛信息已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          mutate()
-          api.game.mutateGameGamesAll()
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+        mutate()
+        api.game.mutateGameGamesAll()
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   const onConfirmDelete = () => {
-    if (game) {
-      api.edit
-        .editDeleteGame(game.id!)
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: '比赛已删除',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          navigate('/admin/games')
+    if (!game) return
+    api.edit
+      .editDeleteGame(game.id!)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '比赛已删除',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch(showErrorNotification)
-    }
+        navigate('/admin/games')
+      })
+      .catch(showErrorNotification)
   }
 
   return (

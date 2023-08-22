@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using System.Threading.Channels;
+using GZCTF.Extensions;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
@@ -14,21 +14,24 @@ public class GameRepository : RepositoryBase, IGameRepository
 {
     private readonly IDistributedCache _cache;
     private readonly ITeamRepository _teamRepository;
+    private readonly IChallengeRepository _challengeRepository;
+    private readonly IParticipationRepository _participationRepository;
     private readonly byte[]? _xorkey;
     private readonly ILogger<GameRepository> _logger;
-    private readonly ChannelWriter<CacheRequest> _cacheRequestChannelWriter;
 
     public GameRepository(IDistributedCache cache,
         ITeamRepository teamRepository,
+        IChallengeRepository challengeRepository,
+        IParticipationRepository participationRepository,
         IConfiguration configuration,
         ILogger<GameRepository> logger,
-        ChannelWriter<CacheRequest> cacheRequestChannelWriter,
         AppDbContext context) : base(context)
     {
         _cache = cache;
         _logger = logger;
         _teamRepository = teamRepository;
-        _cacheRequestChannelWriter = cacheRequestChannelWriter;
+        _challengeRepository = challengeRepository;
+        _participationRepository = participationRepository;
 
         var xorkeyStr = configuration["XorKey"];
         _xorkey = string.IsNullOrEmpty(xorkeyStr) ? null : Encoding.UTF8.GetBytes(xorkeyStr);
@@ -90,13 +93,53 @@ public class GameRepository : RepositoryBase, IGameRepository
     }
 
 
-    public async Task DeleteGame(Game game, CancellationToken token = default)
+    public async Task<TaskStatus> DeleteGame(Game game, CancellationToken token = default)
     {
-        _context.Remove(game);
-        _cache.Remove(CacheKey.BasicGameInfo);
-        _cache.Remove(CacheKey.ScoreBoard(game.Id));
+        var trans = await BeginTransactionAsync(token);
 
-        await SaveAsync(token);
+        try
+        {
+            await _context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
+
+            _logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Challenges.Count} 个题目的相关附件……", TaskStatus.Pending, LogLevel.Debug);
+
+            foreach (var chal in game.Challenges)
+                await _challengeRepository.RemoveChallenge(chal, token);
+
+            await _context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+
+            _logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Participations.Count} 个队伍相关文件……", TaskStatus.Pending, LogLevel.Debug);
+
+            foreach (var part in game.Participations)
+                await _participationRepository.RemoveParticipation(part, token);
+
+            _context.Remove(game);
+
+            await SaveAsync(token);
+            await trans.CommitAsync(token);
+
+            _cache.Remove(CacheKey.BasicGameInfo);
+            _cache.Remove(CacheKey.ScoreBoard(game.Id));
+
+            return TaskStatus.Success;
+        }
+        catch
+        {
+            _logger.SystemLog($"删除比赛失败，相关文件可能已受损，请重新删除", TaskStatus.Pending, LogLevel.Debug);
+            await trans.RollbackAsync(token);
+
+            return TaskStatus.Failed;
+        }
+    }
+
+    public async Task DeleteAllWriteUps(Game game, CancellationToken token = default)
+    {
+        await _context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+
+        _logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Participations.Count} 个队伍相关文件……", TaskStatus.Pending, LogLevel.Debug);
+
+        foreach (var part in game.Participations)
+            await _participationRepository.DeleteParticipationWriteUp(part, token);
     }
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token)
@@ -104,9 +147,6 @@ public class GameRepository : RepositoryBase, IGameRepository
 
     public void FlushGameInfoCache()
         => _cache.Remove(CacheKey.BasicGameInfo);
-
-    public async Task FlushScoreboardCache(int gameId, CancellationToken token)
-        => await _cacheRequestChannelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
 
     #region Generate Scoreboard
 

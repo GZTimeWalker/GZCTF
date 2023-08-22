@@ -1,7 +1,13 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
-import { mdiFileTableOutline, mdiFlag, mdiLightningBolt, mdiExclamationThick } from '@mdi/js'
+import {
+  mdiFileTableOutline,
+  mdiFlag,
+  mdiLightningBolt,
+  mdiExclamationThick,
+  mdiPackageVariant,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
@@ -12,6 +18,7 @@ const pages = [
   { icon: mdiLightningBolt, title: '事件监控', path: 'events' },
   { icon: mdiFlag, title: '提交记录', path: 'submissions' },
   { icon: mdiExclamationThick, title: '作弊信息', path: 'cheatinfo' },
+  { icon: mdiPackageVariant, title: '流量捕获', path: 'traffic' },
 ]
 
 interface WithGameMonitorProps extends React.PropsWithChildren {

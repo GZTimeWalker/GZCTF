@@ -2,7 +2,7 @@
 
 namespace GZCTF.Services.Interface;
 
-public interface IContainerService
+public interface IContainerManager
 {
     /// <summary>
     /// 创建容器

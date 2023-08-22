@@ -22,6 +22,14 @@ public interface IParticipationRepository : IRepository
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default);
 
     /// <summary>
+    /// 从 Id 数组获取比赛参与列表
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default);
+
+    /// <summary>
     /// 获取比赛 Writeup 列表
     /// </summary>
     /// <param name="game"></param>
@@ -90,6 +98,14 @@ public interface IParticipationRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// 删除参与对象的 WriteUps
+    /// </summary>
+    /// <param name="part">参与对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task DeleteParticipationWriteUp(Participation part, CancellationToken token = default);
 
     /// <summary>
     /// 删除参与对象

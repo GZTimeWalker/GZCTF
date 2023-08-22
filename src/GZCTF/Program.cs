@@ -26,14 +26,7 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 Banner();
 
-#region Directory
-
-var uploadPath = Path.Combine(builder.Configuration.GetSection("UploadFolder").Value ?? "uploads");
-
-if (!Directory.Exists(uploadPath))
-    Directory.CreateDirectory(uploadPath);
-
-#endregion Directory
+FilePath.EnsureDirs();
 
 #region Logging
 
@@ -169,7 +162,8 @@ builder.Services.AddIdentityCore<UserInfo>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
-    o.TokenLifespan = TimeSpan.FromHours(3));
+    o.TokenLifespan = TimeSpan.FromHours(3)
+);
 
 #endregion Identity
 
@@ -201,16 +195,7 @@ else
     builder.Services.Configure<ForwardedHeadersOptions>(forwardedOptions.ToForwardedHeadersOptions);
 }
 
-if (builder.Configuration.GetSection(nameof(ContainerProvider))
-    .GetValue<ContainerProviderType>(nameof(ContainerProvider.Type))
-    is ContainerProviderType.Kubernetes)
-{
-    builder.Services.AddSingleton<IContainerService, K8sService>();
-}
-else
-{
-    builder.Services.AddSingleton<IContainerService, DockerService>();
-}
+builder.Services.AddContainerService(builder.Configuration);
 
 builder.Services.AddScoped<IConfigService, ConfigService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
@@ -229,6 +214,8 @@ builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddChannel<CacheRequest>();
+builder.Services.AddSingleton<CacheHelper>();
+
 builder.Services.AddHostedService<CacheMaker>();
 builder.Services.AddHostedService<FlagChecker>();
 builder.Services.AddHostedService<CronJobService>();
@@ -292,11 +279,15 @@ if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging") is true)
     app.UseRequestLogging();
 
+app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
+
+app.MapHealthChecks("/healthz");
 app.MapControllers();
+
 app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
-app.MapHealthChecks("/healthz");
+
 app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();

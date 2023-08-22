@@ -1,4 +1,5 @@
-﻿using GZCTF.Hubs;
+﻿using GZCTF.Extensions;
+using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;

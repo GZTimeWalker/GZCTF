@@ -263,7 +263,7 @@ const Teams: FC = () => {
                         </Tooltip.Group>
                       </td>
                       <td>
-                        <Text lineClamp={1} style={{ overflow: 'hidden' }}>
+                        <Text lineClamp={1} truncate>
                           {team.bio ?? '这个队伍很懒，什么都没有写'}
                         </Text>
                       </td>

@@ -1,9 +1,10 @@
-﻿using MemoryPack;
+﻿using GZCTF.Utils;
+using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace GZCTF.Utils;
+namespace GZCTF.Extensions;
 
-public static class CacheHelper
+public static class CacheExtensions
 {
     /// <summary>
     /// 获取缓存或重新构建，如果缓存不存在会阻塞
@@ -40,50 +41,4 @@ public static class CacheHelper
 
         return result;
     }
-}
-
-/// <summary>
-/// 缓存标识
-/// </summary>
-public static class CacheKey
-{
-    /// <summary>
-    /// 缓存更新锁
-    /// </summary>
-    public static string UpdateLock(string key) => $"_CacheUpdateLock_{key}";
-
-    /// <summary>
-    /// 积分榜缓存
-    /// </summary>
-    public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
-
-    /// <summary>
-    /// 积分榜缓存
-    /// </summary>
-    public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
-
-    /// <summary>
-    /// 积分榜缓存根标识
-    /// </summary>
-    public const string ScoreBoardBase = "_ScoreBoard";
-
-    /// <summary>
-    /// 比赛通知缓存
-    /// </summary>
-    public static string GameNotice(int id) => $"_GameNotice_{id}";
-
-    /// <summary>
-    /// 比赛通知缓存
-    /// </summary>
-    public static string GameNotice(string id) => $"_ScoreBoard_{id}";
-
-    /// <summary>
-    /// 比赛基础信息缓存
-    /// </summary>
-    public const string BasicGameInfo = "_BasicGameInfo";
-
-    /// <summary>
-    /// 文章
-    /// </summary>
-    public const string Posts = "_Posts";
 }

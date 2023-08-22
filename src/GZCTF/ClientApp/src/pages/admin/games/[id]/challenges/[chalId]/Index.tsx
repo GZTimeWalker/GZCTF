@@ -12,11 +12,9 @@ import {
   Textarea,
   TextInput,
   Grid,
-  Code,
   Switch,
   Title,
 } from '@mantine/core'
-import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -29,6 +27,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import HintList from '@Components/HintList'
+import InstanceEntry from '@Components/InstanceEntry'
 import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
@@ -63,7 +62,6 @@ const GameChallengeEdit: FC = () => {
   const [previewOpend, setPreviewOpend] = useState(false)
 
   const modals = useModals()
-  const clipBoard = useClipboard()
 
   useEffect(() => {
     if (challenge) {
@@ -76,31 +74,31 @@ const GameChallengeEdit: FC = () => {
   }, [challenge])
 
   const onUpdate = (challenge: ChallengeUpdateModel, noFeedback?: boolean) => {
-    if (challenge) {
-      setDisabled(true)
-      return api.edit
-        .editUpdateGameChallenge(numId, numCId, {
-          ...challenge,
-          isEnabled: undefined,
-        })
-        .then((data) => {
-          if (!noFeedback) {
-            showNotification({
-              color: 'teal',
-              message: '题目已更新',
-              icon: <Icon path={mdiCheck} size={1} />,
-            })
-          }
-          mutate(data.data)
-          mutateChals()
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          if (!noFeedback) {
-            setDisabled(false)
-          }
-        })
-    }
+    if (!challenge) return
+
+    setDisabled(true)
+    return api.edit
+      .editUpdateGameChallenge(numId, numCId, {
+        ...challenge,
+        isEnabled: undefined,
+      })
+      .then((data) => {
+        if (!noFeedback) {
+          showNotification({
+            color: 'teal',
+            message: '题目已更新',
+            icon: <Icon path={mdiCheck} size={1} />,
+          })
+        }
+        mutate(data.data)
+        mutateChals()
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        if (!noFeedback) {
+          setDisabled(false)
+        }
+      })
   }
 
   const onConfirmDelete = () => {
@@ -416,24 +414,14 @@ const GameChallengeEdit: FC = () => {
               />
             </Grid.Col>
             <Grid.Col span={4}>
-              <Group spacing={0} align="center" pt={22} h="100%">
-                {challenge?.testContainer ? (
-                  <Code
-                    sx={(theme) => ({
-                      backgroundColor: 'transparent',
-                      fontSize: theme.fontSizes.sm,
-                      fontWeight: 'bold',
-                    })}
-                    onClick={() => clipBoard.copy(challenge?.testContainer?.entry ?? '')}
-                  >
-                    {challenge?.testContainer?.entry ?? ''}
-                  </Code>
-                ) : (
-                  <Text size="sm" fw={600} c="dimmed">
-                    测试容器未开启
-                  </Text>
-                )}
-              </Group>
+              <InstanceEntry
+                test
+                disabled={disabled}
+                context={{
+                  closeTime: challenge?.testContainer?.expectStopAt,
+                  instanceEntry: challenge?.testContainer?.entry,
+                }}
+              />
             </Grid.Col>
             <Grid.Col span={2}>
               <NumberInput
@@ -498,10 +486,10 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={4} style={{ alignItems: 'center', display: 'flex' }}>
               <Switch
                 disabled={disabled}
-                checked={challengeInfo.privilegedContainer ?? false}
-                label={SwitchLabel('特权容器', '以特权模式运行容器，Swarm 不受支持')}
+                checked={challengeInfo.enableTrafficCapture ?? false}
+                label={SwitchLabel('开启流量捕获', '捕获队伍解题流量，需要开启平台代理')}
                 onChange={(e) =>
-                  setChallengeInfo({ ...challengeInfo, privilegedContainer: e.target.checked })
+                  setChallengeInfo({ ...challengeInfo, enableTrafficCapture: e.target.checked })
                 }
               />
             </Grid.Col>

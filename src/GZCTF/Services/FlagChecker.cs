@@ -1,5 +1,4 @@
 ﻿using System.Threading.Channels;
-using GZCTF.Models;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -38,10 +37,10 @@ public class FlagChecker : IHostedService
 
                 await using var scope = _serviceScopeFactory.CreateAsyncScope();
 
+                var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
                 var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
                 var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
                 var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
-                var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
                 var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
 
                 try
@@ -58,7 +57,7 @@ public class FlagChecker : IHostedService
 
                         // only flush the scoreboard if the contest is not ended and the submission is accepted
                         if (item.Game.EndTimeUTC > item.SubmitTimeUTC)
-                            await gameRepository.FlushScoreboardCache(item.GameId, token);
+                            await cacheHelper.FlushScoreboardCache(item.GameId, token);
                     }
                     else
                     {

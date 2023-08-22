@@ -75,14 +75,15 @@ public interface IGameRepository : IRepository
     /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task DeleteGame(Game game, CancellationToken token = default);
+    public Task<TaskStatus> DeleteGame(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 刷新排行榜
+    /// 删除比赛的全部 WriteUp
     /// </summary>
-    /// <param name="gameId">比赛Id</param>
+    /// <param name="game">比赛对象</param>
     /// <param name="token"></param>
-    public Task FlushScoreboardCache(int gameId, CancellationToken token);
+    /// <returns></returns>
+    public Task DeleteAllWriteUps(Game game, CancellationToken token = default);
 
     /// <summary>
     /// 生成排行榜

@@ -96,33 +96,32 @@ const PostEdit: FC = () => {
   }
 
   const onDelete = () => {
-    if (postId) {
-      setDisabled(true)
-      api.edit
-        .editDeletePost(postId)
-        .then(() => {
-          api.info.mutateInfoGetPosts()
-          api.info.mutateInfoGetLatestPosts()
-          navigate('/posts')
-        })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+    if (!postId) return
+    setDisabled(true)
+    api.edit
+      .editDeletePost(postId)
+      .then(() => {
+        api.info.mutateInfoGetPosts()
+        api.info.mutateInfoGetLatestPosts()
+        navigate('/posts')
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   useEffect(() => {
-    if (curPost) {
-      setPost({
-        title: curPost.title,
-        content: curPost.content,
-        summary: curPost.summary,
-        isPinned: curPost.isPinned,
-        tags: curPost.tags ?? [],
-      })
-      setTags(curPost.tags ?? [])
-    }
+    if (!curPost) return
+
+    setPost({
+      title: curPost.title,
+      content: curPost.content,
+      summary: curPost.summary,
+      isPinned: curPost.isPinned,
+      tags: curPost.tags ?? [],
+    })
+    setTags(curPost.tags ?? [])
   }, [curPost])
 
   const isChanged = () =>

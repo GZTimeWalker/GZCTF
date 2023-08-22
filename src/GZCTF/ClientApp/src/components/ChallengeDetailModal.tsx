@@ -1,26 +1,21 @@
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import React from 'react'
 import {
   ActionIcon,
   Box,
   Button,
-  Card,
-  Code,
   Divider,
   Group,
   LoadingOverlay,
   Modal,
   ModalProps,
-  Popover,
   Stack,
   Text,
   TextInput,
   Title,
   Tooltip,
 } from '@mantine/core'
-import { useClipboard, useDisclosure, useInputState } from '@mantine/hooks'
+import { useInputState } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -31,6 +26,7 @@ import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
+import InstanceEntry from './InstanceEntry'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
@@ -40,28 +36,6 @@ interface ChallengeDetailModalProps extends ModalProps {
   score: number
   challengeId: number
   solved?: boolean
-}
-
-dayjs.extend(duration)
-
-export const Countdown: FC<{ time: string }> = ({ time }) => {
-  const end = dayjs(time)
-  const [now, setNow] = useState(dayjs())
-  const countdown = dayjs.duration(end.diff(now))
-
-  useEffect(() => {
-    if (dayjs() > end) return
-    const interval = setInterval(() => setNow(dayjs()), 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <Card w="5rem" p="0px 4px" ta="center">
-      <Text size="sm" fw={700}>
-        {countdown.asSeconds() > 0 ? countdown.format('HH:mm:ss') : '00:00:00'}
-      </Text>
-    </Card>
-  )
 }
 
 export const FlagPlaceholders: string[] = [
@@ -116,7 +90,7 @@ export const WrongFlagHints: string[] = [
 
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { gameId, gameEnded, challengeId, tagData, title, score, solved, ...modalProps } = props
-  const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
+  const { classes: tooltipClasses } = useTooltipStyles()
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(
     gameId,
@@ -130,15 +104,10 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     setPlaceholder(FlagPlaceholders[Math.floor(Math.random() * FlagPlaceholders.length)])
   }, [challengeId])
 
-  const instanceCloseTime = dayjs(challenge?.context?.closeTime ?? 0)
-  const instanceLeft = instanceCloseTime.diff(dayjs(), 'minute')
-
   const isDynamic =
     challenge?.type === ChallengeType.StaticContainer ||
     challenge?.type === ChallengeType.DynamicContainer
   const { classes, theme } = useTypographyStyles()
-  const { classes: tooltipClasses } = useTooltipStyles()
-  const clipBoard = useClipboard()
 
   const [disabled, setDisabled] = useState(false)
   const [onSubmitting, setOnSubmitting] = useState(false)
@@ -146,62 +115,71 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const [flag, setFlag] = useInputState('')
 
   const onCreateContainer = () => {
-    if (challengeId) {
-      setDisabled(true)
-      api.game
-        .gameCreateContainer(gameId, challengeId)
-        .then((res) => {
-          mutate({
-            ...challenge,
-            context: {
-              ...challenge?.context,
-              closeTime: res.data.expectStopAt,
-              instanceEntry: res.data.entry,
-            },
-          })
+    if (!challengeId) return
+    setDisabled(true)
+    api.game
+      .gameCreateContainer(gameId, challengeId)
+      .then((res) => {
+        mutate({
+          ...challenge,
+          context: {
+            ...challenge?.context,
+            closeTime: res.data.expectStopAt,
+            instanceEntry: res.data.entry,
+          },
         })
-        .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
-    }
+        showNotification({
+          color: 'teal',
+          title: '实例已创建',
+          message: '请注意实例到期时间',
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .catch(showErrorNotification)
+      .finally(() => setDisabled(false))
   }
 
   const onDestroyContainer = () => {
-    if (challengeId) {
-      setDisabled(true)
-      api.game
-        .gameDeleteContainer(gameId, challengeId)
-        .then(() => {
-          mutate({
-            ...challenge,
-            context: {
-              ...challenge?.context,
-              closeTime: null,
-              instanceEntry: null,
-            },
-          })
+    if (!challengeId) return
+    setDisabled(true)
+    api.game
+      .gameDeleteContainer(gameId, challengeId)
+      .then(() => {
+        mutate({
+          ...challenge,
+          context: {
+            ...challenge?.context,
+            closeTime: null,
+            instanceEntry: null,
+          },
         })
-        .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
-    }
+        showNotification({
+          color: 'teal',
+          title: '实例已销毁',
+          message: '你可以重新创建实例',
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .catch(showErrorNotification)
+      .finally(() => setDisabled(false))
   }
 
   const onProlongContainer = () => {
-    if (challengeId) {
-      setDisabled(true)
-      api.game
-        .gameProlongContainer(gameId, challengeId)
-        .then((res) => {
-          mutate({
-            ...challenge,
-            context: {
-              ...challenge?.context,
-              closeTime: res.data.expectStopAt,
-            },
-          })
+    if (!challengeId) return
+    setDisabled(true)
+    api.game
+      .gameProlongContainer(gameId, challengeId)
+      .then((res) => {
+        mutate({
+          ...challenge,
+          context: {
+            ...challenge?.context,
+            closeTime: res.data.expectStopAt,
+          },
         })
-        .catch(showErrorNotification)
-        .finally(() => setDisabled(false))
-    }
+      })
+      .catch(showErrorNotification)
+      .finally(() => setDisabled(false))
   }
 
   const onSubmit = (event: React.FormEvent) => {
@@ -336,37 +314,22 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} mih="4rem">
               {challenge?.context?.url && (
-                <Popover
-                  opened={downloadOpened}
-                  position="left"
-                  width="5rem"
-                  styles={{
-                    dropdown: {
-                      padding: '5px',
-                    },
-                  }}
-                >
-                  <Popover.Target>
-                    <ActionIcon
-                      variant="filled"
-                      size="lg"
-                      color="brand"
-                      onMouseEnter={downloadOpen}
-                      onMouseLeave={downloadClose}
-                      onClick={() => window.open(challenge.context?.url ?? '#')}
-                      top={0}
-                      right={0}
-                      pos="absolute"
-                    >
-                      <Icon path={mdiDownload} size={1} />
-                    </ActionIcon>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <Text size="sm" align="center">
-                      下载附件
-                    </Text>
-                  </Popover.Dropdown>
-                </Popover>
+                <Tooltip label="下载附件" position="left" classNames={tooltipClasses}>
+                  <ActionIcon
+                    component="a"
+                    href={challenge.context?.url ?? '#'}
+                    target="_blank"
+                    rel="noreferrer"
+                    variant="filled"
+                    size="lg"
+                    color="brand"
+                    top={0}
+                    right={0}
+                    pos="absolute"
+                  >
+                    <Icon path={mdiDownload} size={1} />
+                  </ActionIcon>
+                </Tooltip>
               )}
               <MarkdownRender
                 source={challenge?.content ?? ''}
@@ -396,49 +359,14 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               ))}
             </Stack>
           )}
-          {isDynamic && !challenge?.context?.instanceEntry && (
-            <Group position="center" spacing={2}>
-              <Button onClick={onCreateContainer} disabled={disabled} loading={disabled}>
-                开启实例
-              </Button>
-            </Group>
-          )}
-          {isDynamic && challenge?.context?.instanceEntry && (
-            <Stack align="center">
-              <Group>
-                <Text size="sm" fw={600}>
-                  实例访问入口：
-                  <Tooltip label="点击复制" withArrow classNames={tooltipClasses}>
-                    <Code
-                      style={{
-                        backgroundColor: 'transparent',
-                        fontSize: theme.fontSizes.sm,
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        clipBoard.copy(challenge.context?.instanceEntry ?? '')
-                        showNotification({
-                          color: 'teal',
-                          message: '实例入口已复制到剪贴板',
-                          icon: <Icon path={mdiCheck} size={1} />,
-                        })
-                      }}
-                    >
-                      {challenge?.context?.instanceEntry}
-                    </Code>
-                  </Tooltip>
-                </Text>
-                <Countdown time={challenge?.context?.closeTime ?? '0'} />
-              </Group>
-              <Group position="center">
-                <Button color="orange" onClick={onProlongContainer} disabled={instanceLeft > 10}>
-                  延长时间
-                </Button>
-                <Button color="red" onClick={onDestroyContainer} disabled={disabled}>
-                  销毁实例
-                </Button>
-              </Group>
-            </Stack>
+          {isDynamic && challenge.context && (
+            <InstanceEntry
+              context={challenge.context}
+              onCreate={onCreateContainer}
+              onProlong={onProlongContainer}
+              onDestroy={onDestroyContainer}
+              disabled={disabled}
+            />
           )}
         </Stack>
         <Divider />
@@ -466,6 +394,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                   提交 flag
                 </Button>
               }
+              rightSectionWidth="6rem"
             />
           </form>
         )}

@@ -38,63 +38,64 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const { classes, theme } = useUploadStyles()
 
   const onUpload = () => {
-    if (files.length > 0) {
-      setProgress(0)
-      setDisabled(true)
-
-      api.assets
-        .assetsUpload(
-          {
-            files,
-          },
-          { filename: uploadFileName },
-          {
-            onUploadProgress: (e) => {
-              setProgress((e.loaded / (e.total ?? 1)) * 90)
-            },
-          }
-        )
-        .then((data) => {
-          setProgress(95)
-          if (data.data) {
-            api.edit
-              .editAddFlags(
-                numId,
-                numCId,
-                data.data.map((f, idx) => ({
-                  flag: files[idx].name,
-                  attachmentType: FileType.Local,
-                  fileHash: f.hash,
-                }))
-              )
-              .then(() => {
-                setProgress(0)
-                showNotification({
-                  color: 'teal',
-                  message: '附件已更新',
-                  icon: <Icon path={mdiCheck} size={1} />,
-                })
-                setFiles([])
-                mutate()
-                props.onClose()
-              })
-              .catch((err) => showErrorNotification(err))
-              .finally(() => {
-                setDisabled(false)
-              })
-          }
-        })
-        .catch((err) => showErrorNotification(err))
-        .finally(() => {
-          setDisabled(false)
-        })
-    } else {
+    if (files.length <= 0) {
       showNotification({
         color: 'red',
         message: '请选择至少一个文件',
         icon: <Icon path={mdiClose} size={1} />,
       })
+      return
     }
+
+    setProgress(0)
+    setDisabled(true)
+
+    api.assets
+      .assetsUpload(
+        {
+          files,
+        },
+        { filename: uploadFileName },
+        {
+          onUploadProgress: (e) => {
+            setProgress((e.loaded / (e.total ?? 1)) * 90)
+          },
+        }
+      )
+      .then((data) => {
+        setProgress(95)
+        if (data.data) {
+          api.edit
+            .editAddFlags(
+              numId,
+              numCId,
+              data.data.map((f, idx) => ({
+                flag: files[idx].name,
+                attachmentType: FileType.Local,
+                fileHash: f.hash,
+              }))
+            )
+            .then(() => {
+              setProgress(0)
+              showNotification({
+                color: 'teal',
+                message: '附件已更新',
+                icon: <Icon path={mdiCheck} size={1} />,
+              })
+              setFiles([])
+              mutate()
+              props.onClose()
+            })
+            .catch((err) => showErrorNotification(err))
+            .finally(() => {
+              setDisabled(false)
+            })
+        }
+      })
+      .catch((err) => showErrorNotification(err))
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   return (

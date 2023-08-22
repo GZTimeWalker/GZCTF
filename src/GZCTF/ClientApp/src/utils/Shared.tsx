@@ -309,3 +309,21 @@ export const TaskStatusColorMap = new Map<TaskStatus | null, string>([
   [TaskStatus.Duplicate, 'lime'],
   [null, 'gray'],
 ])
+
+export const getProxyUrl = (guid: string, test: boolean = false) => {
+  const protocol = window.location.protocol.replace('http', 'ws')
+  const api = test ? 'api/proxy/noinst' : 'api/proxy'
+  return `${protocol}//${window.location.host}/${api}/${guid}`
+}
+
+export const HunamizeSize = (size: number) => {
+  if (size < 1024) {
+    return `${size} B`
+  } else if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(2)} KiB`
+  } else if (size < 1024 * 1024 * 1024) {
+    return `${(size / 1024 / 1024).toFixed(2)} MiB`
+  } else {
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GiB`
+  }
+}

@@ -90,9 +90,20 @@ public enum ContainerProviderType
     Kubernetes
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ContainerPortMappingType
+{
+    Default,
+    PlatformProxy,
+    Frp,
+}
+
 public class ContainerProvider
 {
     public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
+    public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
+    public bool EnableTrafficCapture { get; set; } = false;
+
     public string PublicEntry { get; set; } = string.Empty;
 
     public K8sConfig? K8sConfig { get; set; }
@@ -103,6 +114,7 @@ public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
     public bool SwarmMode { get; set; } = false;
+    public string? ChallengeNetwork { get; set; }
 }
 
 public class K8sConfig

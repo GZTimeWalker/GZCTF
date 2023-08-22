@@ -20,6 +20,22 @@ public interface IContainerRepository : IRepository
     public Task<Container?> GetContainerById(string guid, CancellationToken token = default);
 
     /// <summary>
+    /// 根据容器数据库 ID 获取容器及实例信息
+    /// </summary>
+    /// <param name="guid">容器数据库 ID</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Container?> GetContainerWithInstanceById(string guid, CancellationToken token = default);
+
+    /// <summary>
+    /// 容器数据库 ID 对应容器是否存在
+    /// </summary>
+    /// <param name="guid">容器数据库 ID</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> ValidateContainer(string guid, CancellationToken token = default);
+
+    /// <summary>
     /// 获取容器实例信息
     /// </summary>
     /// <param name="token"></param>

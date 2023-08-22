@@ -17,7 +17,7 @@ namespace GZCTF.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -38,6 +38,9 @@ namespace GZCTF.Migrations
 
                     b.Property<int?>("CPUCount")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("EnableTrafficCapture")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -79,9 +82,6 @@ namespace GZCTF.Migrations
 
                     b.Property<int>("OriginalScore")
                         .HasColumnType("integer");
-
-                    b.Property<bool?>("PrivilegedContainer")
-                        .HasColumnType("boolean");
 
                     b.Property<int?>("StorageLimit")
                         .HasColumnType("integer");

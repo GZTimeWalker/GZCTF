@@ -45,12 +45,12 @@ public class ContainerInstanceModel
     /// <summary>
     /// 访问 IP
     /// </summary>
-    public string PublicIP { get; set; } = string.Empty;
+    public string IP { get; set; } = string.Empty;
 
     /// <summary>
     /// 访问端口
     /// </summary>
-    public int PublicPort { get; set; }
+    public int Port { get; set; }
 
     internal static ContainerInstanceModel FromContainer(Container container)
     {
@@ -65,8 +65,8 @@ public class ContainerInstanceModel
             StartedAt = container.StartedAt,
             ExpectStopAt = container.ExpectStopAt,
             // fallback to host if public is null
-            PublicIP = container.PublicIP ?? container.IP,
-            PublicPort = container.PublicPort ?? container.Port
+            IP = container.PublicIP ?? container.IP,
+            Port = container.PublicPort ?? container.Port
         };
 
         if (team is not null && chal is not null)

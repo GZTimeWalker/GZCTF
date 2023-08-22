@@ -140,46 +140,45 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   }
 
   const onRemote = () => {
-    if (remoteUrl.startsWith('http')) {
-      setDisabled(true)
-      api.edit
-        .editUpdateAttachment(numId, numCId, {
-          attachmentType: FileType.Remote,
-          remoteUrl: remoteUrl,
+    if (!remoteUrl.startsWith('http')) return
+    setDisabled(true)
+    api.edit
+      .editUpdateAttachment(numId, numCId, {
+        attachmentType: FileType.Remote,
+        remoteUrl: remoteUrl,
+      })
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: '附件已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: '附件已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-        })
-        .catch((err) => showErrorNotification(err))
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+      })
+      .catch((err) => showErrorNotification(err))
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   const onChangeFlagTemplate = () => {
-    if (flagTemplate !== challenge?.flagTemplate) {
-      setDisabled(true)
-      api.edit
-        // allow empty flag template to be set (but not null or undefined)
-        .editUpdateGameChallenge(numId, numCId, { flagTemplate })
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: 'flag 模板已更新',
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
+    if (flagTemplate === challenge?.flagTemplate) return
+
+    setDisabled(true)
+    api.edit
+      // allow empty flag template to be set (but not null or undefined)
+      .editUpdateGameChallenge(numId, numCId, { flagTemplate })
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: 'flag 模板已更新',
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch(showErrorNotification)
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+        challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
+      })
+      .catch(showErrorNotification)
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   return (
@@ -251,7 +250,9 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
             w="calc(100% - 320px)"
-            onClick={() => challenge?.attachment?.url && window.open(challenge?.attachment?.url)}
+            onClick={() =>
+              challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')
+            }
           />
         ) : (
           <TextInput

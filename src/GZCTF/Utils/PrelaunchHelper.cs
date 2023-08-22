@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GZCTF.Models.Internal;
+using IdentityModel.OidcClient;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 
 namespace GZCTF.Utils;
 
@@ -55,6 +58,10 @@ public static class PrelaunchHelper
                     logger.SystemLog($"管理员账户创建失败，错误信息：{result.Errors.FirstOrDefault()?.Description}", TaskStatus.Failed, LogLevel.Debug);
             }
         }
+
+        var containerConfig = serviceScope.ServiceProvider.GetRequiredService<IOptions<ContainerProvider>>();
+        if (containerConfig.Value.EnableTrafficCapture && containerConfig.Value.PortMappingType != ContainerPortMappingType.PlatformProxy)
+            logger.SystemLog($"在不使用平台代理模式时无法进行流量捕获！", TaskStatus.Failed, LogLevel.Warning);
 
         if (!cache.CacheCheck())
             Program.ExitWithFatalMessage("缓存配置无效，请检查 RedisCache 字段配置。如不使用 Redis 请将配置项置空。");

@@ -24,22 +24,21 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
   }, [gameSource])
 
   const onUpdate = () => {
-    if (gameSource && gameSource.title) {
-      setDisabled(true)
-      api.edit
-        .editUpdateGame(numId, {
-          ...gameSource,
-          bloodBonus: BloodBonus.fromBonus(firstBloodBonus, secondBloodBonus, thirdBloodBonus)
-            .value,
-        })
-        .then(() => {
-          mutate()
-          props.onClose()
-        })
-        .finally(() => {
-          setDisabled(false)
-        })
-    }
+    if (!gameSource?.title) return
+
+    setDisabled(true)
+    api.edit
+      .editUpdateGame(numId, {
+        ...gameSource,
+        bloodBonus: BloodBonus.fromBonus(firstBloodBonus, secondBloodBonus, thirdBloodBonus).value,
+      })
+      .then(() => {
+        mutate()
+        props.onClose()
+      })
+      .finally(() => {
+        setDisabled(false)
+      })
   }
 
   return (

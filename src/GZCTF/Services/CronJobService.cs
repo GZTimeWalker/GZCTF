@@ -29,7 +29,7 @@ public class CronJobService : IHostedService, IDisposable
     private async Task ContainerChecker(AsyncServiceScope scope)
     {
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
-        var containerService = scope.ServiceProvider.GetRequiredService<IContainerService>();
+        var containerService = scope.ServiceProvider.GetRequiredService<IContainerManager>();
 
         foreach (var container in await containerRepo.GetDyingContainers())
         {

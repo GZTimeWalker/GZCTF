@@ -31,7 +31,7 @@ const About: FC = () => {
           <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
             <HoverCard.Target>
               <Badge
-                onClick={() => window.open(repo)}
+                onClick={() => window.open(repo, '_blank')}
                 style={{
                   cursor: 'pointer',
                 }}

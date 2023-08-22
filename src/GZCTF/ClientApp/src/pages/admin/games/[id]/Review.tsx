@@ -118,10 +118,10 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
               </Avatar>
               <Box>
-                <Text fw={500}>
+                <Text truncate fw={500}>
                   {!participation.team?.name ? '（无名队伍）' : participation.team.name}
                 </Text>
-                <Text size="sm" c="dimmed">
+                <Text truncate size="sm" c="dimmed">
                   {!participation.team?.bio ? '（未设置签名）' : participation.team.bio}
                 </Text>
               </Box>

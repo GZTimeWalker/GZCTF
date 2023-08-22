@@ -40,6 +40,14 @@ public interface IChallengeRepository : IRepository
     public Task<Challenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default);
 
     /// <summary>
+    /// 获取全部需要捕获流量的题目
+    /// </summary>
+    /// <param name="gameId">比赛Id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<Challenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default);
+
+    /// <summary>
     /// 添加 Flag
     /// </summary>
     /// <param name="challenge">比赛题目对象</param>

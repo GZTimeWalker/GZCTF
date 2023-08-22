@@ -80,7 +80,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                 </Badge>
               )}
             </Group>
-            <Text size="sm" lineClamp={1}>
+            <Text truncate size="sm" lineClamp={1}>
               {item?.bio || '这只队伍很懒，什么都没留下'}
             </Text>
           </Stack>

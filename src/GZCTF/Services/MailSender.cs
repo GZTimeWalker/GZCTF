@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
 using GZCTF.Utils;
@@ -66,14 +67,17 @@ public class MailSender : IMailSender
         string emailContent = await
             new StreamReader(asm.GetManifestResourceStream(resourceName)!)
             .ReadToEndAsync();
-        emailContent = emailContent
+
+        emailContent = new StringBuilder(emailContent)
             .Replace("{title}", title)
             .Replace("{information}", information)
             .Replace("{btnmsg}", btnmsg)
             .Replace("{email}", email)
             .Replace("{userName}", userName)
             .Replace("{url}", url)
-            .Replace("{nowtime}", DateTimeOffset.UtcNow.ToString("u"));
+            .Replace("{nowtime}", DateTimeOffset.UtcNow.ToString("u"))
+            .ToString();
+
         if (!await SendEmailAsync(title, emailContent, email))
             _logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
     }

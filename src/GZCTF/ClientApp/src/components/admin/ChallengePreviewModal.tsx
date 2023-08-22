@@ -5,24 +5,23 @@ import {
   ActionIcon,
   Box,
   Button,
-  Code,
   Divider,
   Group,
   LoadingOverlay,
   Modal,
   ModalProps,
-  Popover,
   Stack,
   Text,
   TextInput,
   Title,
   Tooltip,
 } from '@mantine/core'
-import { useDisclosure, useInputState } from '@mantine/hooks'
+import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { Countdown, FlagPlaceholders } from '@Components/ChallengeDetailModal'
+import { FlagPlaceholders } from '@Components/ChallengeDetailModal'
+import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
@@ -36,15 +35,36 @@ interface ChallengePreviewModalProps extends ModalProps {
   tagData: ChallengeTagItemProps
 }
 
+interface FakeContext {
+  closeTime: string | null
+  instanceEntry: string | null
+}
+
 const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
   const { challenge, type, attachmentType, tagData, ...modalProps } = props
-  const [downloadOpened, { close: downloadClose, open: downloadOpen }] = useDisclosure(false)
+  const { classes: tooltipClasses } = useTooltipStyles()
 
   const [placeholder, setPlaceholder] = useState('')
   const [flag, setFlag] = useInputState('')
-  const [withContainer, setWithContainer] = useState(false)
-  const [startTime, setStartTime] = useState(dayjs())
-  const { classes: tooltipClasses } = useTooltipStyles()
+
+  const [context, setContext] = useState<FakeContext>({
+    closeTime: null,
+    instanceEntry: null,
+  })
+
+  const onCreate = () => {
+    setContext({
+      closeTime: dayjs().add(10, 'm').add(10, 's').toJSON(),
+      instanceEntry: 'localhost:2333',
+    })
+  }
+
+  const onDestroy = () => {
+    setContext({
+      closeTime: null,
+      instanceEntry: null,
+    })
+  }
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -104,43 +124,25 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} mih="4rem">
               {attachmentType !== FileType.None && (
-                <Popover
-                  opened={downloadOpened}
-                  position="left"
-                  width="5rem"
-                  styles={{
-                    dropdown: {
-                      padding: '5px',
-                    },
-                  }}
-                >
-                  <Popover.Target>
-                    <ActionIcon
-                      variant="filled"
-                      size="lg"
-                      color="brand"
-                      top={0}
-                      right={0}
-                      pos="absolute"
-                      onMouseEnter={downloadOpen}
-                      onMouseLeave={downloadClose}
-                      onClick={() =>
-                        showNotification({
-                          color: 'teal',
-                          message: '假装附件已经下载了！',
-                          icon: <Icon path={mdiCheck} size={1} />,
-                        })
-                      }
-                    >
-                      <Icon path={mdiDownload} size={1} />
-                    </ActionIcon>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <Text size="sm" align="center">
-                      下载附件
-                    </Text>
-                  </Popover.Dropdown>
-                </Popover>
+                <Tooltip label="下载附件" position="left" classNames={tooltipClasses}>
+                  <ActionIcon
+                    variant="filled"
+                    size="lg"
+                    color="brand"
+                    top={0}
+                    right={0}
+                    pos="absolute"
+                    onClick={() =>
+                      showNotification({
+                        color: 'teal',
+                        message: '假装附件已经下载了！',
+                        icon: <Icon path={mdiCheck} size={1} />,
+                      })
+                    }
+                  >
+                    <Icon path={mdiDownload} size={1} />
+                  </ActionIcon>
+                </Tooltip>
               )}
               <MarkdownRender
                 source={challenge?.content ?? ''}
@@ -170,46 +172,14 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               ))}
             </Stack>
           )}
-          {isDynamic && !withContainer && (
-            <Group position="center" spacing={2}>
-              <Button
-                onClick={() => {
-                  setWithContainer(true)
-                  setStartTime(dayjs())
-                }}
-              >
-                开启实例
-              </Button>
-            </Group>
-          )}
-          {isDynamic && withContainer && (
-            <Stack align="center">
-              <Group>
-                <Text size="sm" fw={600}>
-                  实例访问入口：
-                  <Tooltip label="点击复制" withArrow classNames={tooltipClasses}>
-                    <Code
-                      style={{
-                        backgroundColor: 'transparent',
-                        fontSize: theme.fontSizes.sm,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      localhost:2333
-                    </Code>
-                  </Tooltip>
-                </Text>
-                <Countdown time={startTime.add(2, 'h').toJSON()} />
-              </Group>
-              <Group position="center">
-                <Button color="orange" disabled>
-                  延长时间
-                </Button>
-                <Button color="red" onClick={() => setWithContainer(false)}>
-                  销毁实例
-                </Button>
-              </Group>
-            </Stack>
+          {isDynamic && (
+            <InstanceEntry
+              context={context}
+              disabled={false}
+              onCreate={onCreate}
+              onProlong={onCreate}
+              onDestroy={onDestroy}
+            />
           )}
         </Stack>
         <Divider />
@@ -227,6 +197,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               },
             }}
             rightSection={<Button type="submit">提交 flag</Button>}
+            rightSectionWidth="6rem"
           />
         </form>
       </Stack>

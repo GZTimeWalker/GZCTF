@@ -497,7 +497,7 @@ public class AccountController : ControllerBase
         if (user!.AvatarHash is not null)
             await _fileService.DeleteFileByHash(user.AvatarHash, token);
 
-        var avatar = await _fileService.CreateOrUpdateImage(file, "avatar", token);
+        var avatar = await _fileService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("用户头像更新失败"));
