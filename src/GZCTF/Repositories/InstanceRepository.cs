@@ -250,16 +250,9 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
 
         try
         {
-
-            var instance = await _context.Instances
-                .IgnoreAutoIncludes()
-                .Include(i => i.FlagContext)
+            var instance = await _context.Instances.IgnoreAutoIncludes().Include(i => i.FlagContext)
                 .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                     i.ParticipationId == submission.ParticipationId, token);
-
-            // submission is from the queue, do not modify it directly
-            // we need to requery the entity to ensure it is being tracked correctly
-            var updateSub = await _context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
             var ret = SubmissionType.Unaccepted;
 
@@ -268,6 +261,10 @@ public class InstanceRepository : RepositoryBase, IInstanceRepository
                 submission.Status = AnswerResult.NotFound;
                 return new(SubmissionType.Unaccepted, AnswerResult.NotFound);
             }
+
+            // submission is from the queue, do not modify it directly
+            // we need to requery the entity to ensure it is being tracked correctly
+            var updateSub = await _context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
             if (instance.FlagContext is null && submission.Challenge.Type.IsStatic())
             {

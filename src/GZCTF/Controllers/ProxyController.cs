@@ -52,6 +52,7 @@ public class ProxyController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status418ImATeapot)]
     public async Task<IActionResult> ProxyForInstance(string id, CancellationToken token = default)
     {
         if (!_enablePlatformProxy)
@@ -122,6 +123,7 @@ public class ProxyController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status418ImATeapot)]
     public async Task<IActionResult> ProxyForNoInstance(string id, CancellationToken token = default)
     {
         if (!_enablePlatformProxy)
@@ -166,17 +168,14 @@ public class ProxyController : ControllerBase
             await socket.ConnectAsync(target, token);
 
             if (!socket.Connected)
-            {
-                _logger.SystemLog($"容器连接失败，请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Warning);
-                return BadRequest(new RequestResponse("容器连接失败"));
-            }
+                throw new SocketException((int)SocketError.NotConnected);
 
             stream = new CapturableNetworkStream(socket, metadata, options);
         }
-        catch (Exception e)
+        catch (SocketException e)
         {
-            _logger.LogError(e, "容器连接失败");
-            return BadRequest(new RequestResponse("容器连接失败"));
+            _logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Warning);
+            return new JsonResult(new RequestResponse($"容器连接失败（{e.SocketErrorCode}）", 418)) { StatusCode = 418 };
         }
 
         using var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
@@ -188,7 +187,7 @@ public class ProxyController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "代理错误");
+            _logger.LogError(e, "代理过程发生错误");
         }
         finally
         {
