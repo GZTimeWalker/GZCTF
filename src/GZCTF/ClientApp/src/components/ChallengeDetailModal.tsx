@@ -394,6 +394,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                   提交 flag
                 </Button>
               }
+              rightSectionWidth="6rem"
             />
           </form>
         )}

@@ -197,6 +197,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               },
             }}
             rightSection={<Button type="submit">提交 flag</Button>}
+            rightSectionWidth="6rem"
           />
         </form>
       </Stack>
