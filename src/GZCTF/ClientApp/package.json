@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -52,8 +52,8 @@
     "@types/prismjs": "^1.26.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.4.0",
-    "@typescript-eslint/parser": "^6.4.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
     "@vitejs/plugin-react": "^4.0.4",
     "axios": "^1.4.0",
     "babel-plugin-prismjs": "^2.1.0",
@@ -62,7 +62,7 @@
     "form-data": "~4.0.0",
     "lodash": "^4.17.21",
     "prettier": "~3.0.2",
-    "rollup": "^3.28.0",
+    "rollup": "^3.28.1",
     "swagger-typescript-api": "^13.0.3",
     "tslib": "^2.6.2",
     "typescript": "5.1.6",
