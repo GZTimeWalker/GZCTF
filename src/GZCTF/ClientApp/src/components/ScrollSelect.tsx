@@ -10,12 +10,14 @@ import {
   UnstyledButtonProps,
 } from '@mantine/core'
 
-export interface SelectableItemProps<T = object> extends UnstyledButtonProps {
+export interface SelectableItemProps extends UnstyledButtonProps {
   onClick: () => void
-  active: boolean
+  active?: boolean
   disabled?: boolean
-  item: T
 }
+
+export type PropsWithItem<T = unknown, I = object> = T & { item: I }
+export type SelectableItemComponent<I = object> = FC<PropsWithItem<SelectableItemProps, I>>
 
 interface ScrollSelectProps extends ScrollAreaProps {
   itemComponent: React.FC<any>
@@ -46,14 +48,6 @@ const useItemStyle = createStyles((theme) => ({
     '&[data-disabled]': {
       opacity: 0.4,
       pointerEvents: 'none',
-    },
-  },
-
-  description: {
-    display: 'block',
-
-    '&[data-active]': {
-      color: 'inherit',
     },
   },
 }))

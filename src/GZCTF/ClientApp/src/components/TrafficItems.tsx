@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
-import { FC } from 'react'
 import { Avatar, Badge, Group, Stack, Text, rem, useMantineTheme } from '@mantine/core'
+import { mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { SelectableItemProps, SelectableItem } from '@Components/ScrollSelect'
+import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
 import { ChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
 import {
   ChallengeTrafficModel,
@@ -14,19 +14,19 @@ import {
 
 const itemHeight = rem(60)
 
-export const ChallengeItem: FC<SelectableItemProps<ChallengeTrafficModel>> = (props) => {
-  const item = props.item
+export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (itemProps) => {
+  const { item, ...props } = itemProps
   const data = ChallengeTagLabelMap.get(item.tag as ChallengeTag)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
 
   return (
-    <SelectableItem h={itemHeight} {...props}>
+    <SelectableItem h={itemHeight} pr={5} {...props}>
       <Group position="apart" spacing={0} w="100%" noWrap>
         <Group position="left" spacing="xs" noWrap>
           <Icon path={data.icon} color={theme.colors[data.color ?? 'brand'][5]} size={1} />
           <Stack spacing={0} align="flex-start">
-            <Text truncate fw={700} w="calc(25vw - 14rem)">
+            <Text truncate fw={700} w="calc(25vw - 15rem)">
               {item.title}
             </Text>
             <Badge color={data.color} size="xs" variant="dot">
@@ -35,37 +35,29 @@ export const ChallengeItem: FC<SelectableItemProps<ChallengeTrafficModel>> = (pr
           </Stack>
         </Group>
 
-        <Text color="dimmed" size="xs">
-          {item.count} 队伍
-        </Text>
+        <Group position="right" spacing={2} noWrap>
+          <Text color="dimmed" size="xs" lineClamp={1}>
+            {item.count}&nbsp;队伍
+          </Text>
+          <Icon path={mdiMenuRight} size={1} />
+        </Group>
       </Group>
     </SelectableItem>
   )
 }
 
-export const TeamItem: FC<SelectableItemProps<TeamTrafficModel>> = (props) => {
-  const item = props.item
+export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
+  const { item, ...props } = itemProps
 
   return (
-    <SelectableItem h={itemHeight} {...props}>
+    <SelectableItem h={itemHeight} pr={5} {...props}>
       <Group position="apart" spacing={0} w="100%" noWrap>
         <Group position="left" spacing="xs" noWrap>
-          <Avatar
-            alt="avatar"
-            src={item.avatar}
-            radius="xl"
-            size={30}
-            color="brand"
-            sx={(theme) => ({
-              ...theme.fn.hover({
-                cursor: 'pointer',
-              }),
-            })}
-          >
+          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color="brand">
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack spacing={0} align="flex-start">
-            <Text truncate fw={700} w="calc(25vw - 14rem)">
+            <Text truncate fw={700} w="calc(25vw - 15rem)">
               {item.name ?? 'Team'}
             </Text>
             {item.organization && (
@@ -76,16 +68,19 @@ export const TeamItem: FC<SelectableItemProps<TeamTrafficModel>> = (props) => {
           </Stack>
         </Group>
 
-        <Text color="dimmed" size="xs">
-          {item.count} 流量
-        </Text>
+        <Group position="right" spacing={2} noWrap>
+          <Text color="dimmed" size="xs" lineClamp={1}>
+            {item.count}&nbsp;流量
+          </Text>
+          <Icon path={mdiMenuRight} size={1} />
+        </Group>
       </Group>
     </SelectableItem>
   )
 }
 
-export const FileItem: FC<SelectableItemProps<FileRecord>> = (props) => {
-  const item = props.item
+export const FileItem: SelectableItemComponent<FileRecord> = (itemProps) => {
+  const { item, ...props } = itemProps
 
   return (
     <SelectableItem h={itemHeight} {...props}>
