@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { Avatar, Badge, Group, Stack, Text, rem, useMantineTheme } from '@mantine/core'
-import { mdiMenuRight } from '@mdi/js'
+import { mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
 import { ChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
@@ -85,14 +85,18 @@ export const FileItem: SelectableItemComponent<FileRecord> = (itemProps) => {
   return (
     <SelectableItem h={itemHeight} {...props}>
       <Group position="apart" spacing={0} w="100%" noWrap>
-        <Stack spacing={0} align="flex-start">
-          <Text truncate fw={500} w="calc(50vw - 20rem)">
-            {item.fileName}
-          </Text>
-          <Badge size="sm" color="indigo">
-            {dayjs(item.updateTime).format('MM/DD HH:mm:ss')}
-          </Badge>
-        </Stack>
+        <Group position="left" spacing="sm" noWrap>
+          <Icon path={mdiFileDownloadOutline} size={1.2} />
+
+          <Stack spacing={0} align="flex-start">
+            <Text truncate fw={500} w="calc(50vw - 22rem)">
+              {item.fileName}
+            </Text>
+            <Badge size="sm" color="indigo">
+              {dayjs(item.updateTime).format('MM/DD HH:mm:ss')}
+            </Badge>
+          </Stack>
+        </Group>
 
         <Text fw={500} size="sm">
           {HunamizeSize(item.size ?? 0)}

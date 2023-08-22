@@ -15,7 +15,7 @@ import {
   Title,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiClose, mdiDownload } from '@mdi/js'
+import { mdiClose, mdiDownloadMultiple } from '@mdi/js'
 import Icon from '@mdi/react'
 import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, TeamItem, FileItem } from '@Components/TrafficItems'
@@ -134,7 +134,7 @@ const Traffic: FC = () => {
                 </Text>
                 <Tooltip label="下载全部列出流量" position="left" classNames={tooltipClasses}>
                   <ActionIcon size="md" onClick={onDownloadAll}>
-                    <Icon path={mdiDownload} size={1} />
+                    <Icon path={mdiDownloadMultiple} size={1} />
                   </ActionIcon>
                 </Tooltip>
               </Group>
