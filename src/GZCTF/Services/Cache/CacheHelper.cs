@@ -3,17 +3,10 @@ using GZCTF.Repositories;
 
 namespace GZCTF.Services
 {
-    public class CacheHelper
+    public class CacheHelper(ChannelWriter<CacheRequest> channelWriter)
     {
-        private readonly ChannelWriter<CacheRequest> _channelWriter;
-
-        public CacheHelper(ChannelWriter<CacheRequest> channelWriter)
-        {
-            _channelWriter = channelWriter;
-        }
-
         public async Task FlushScoreboardCache(int gameId, CancellationToken token)
-            => await _channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
+            => await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
     }
 }
 

@@ -7,22 +7,14 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services;
 
-public class CronJobService : IHostedService, IDisposable
+public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger) : IHostedService, IDisposable
 {
-    private readonly ILogger<CronJobService> _logger;
-    private readonly IServiceScopeFactory _serviceProvider;
     private Timer? _timer;
-
-    public CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger)
-    {
-        _serviceProvider = provider;
-        _logger = logger;
-    }
 
     public Task StartAsync(CancellationToken token)
     {
         _timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(3));
-        _logger.SystemLog("定时任务已启动", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog("定时任务已启动", TaskStatus.Success, LogLevel.Debug);
         return Task.CompletedTask;
     }
 
@@ -35,7 +27,7 @@ public class CronJobService : IHostedService, IDisposable
         {
             await containerService.DestroyContainerAsync(container);
             await containerRepo.RemoveContainer(container);
-            _logger.SystemLog($"移除到期容器 [{container.ContainerId}]", TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog($"移除到期容器 [{container.ContainerId}]", TaskStatus.Success, LogLevel.Debug);
         }
     }
 
@@ -57,14 +49,14 @@ public class CronJobService : IHostedService, IDisposable
             if (value is null)
             {
                 await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-                _logger.SystemLog($"比赛 #{key} 即将开始，积分榜缓存已加入缓存队列", TaskStatus.Success, LogLevel.Debug);
+                logger.SystemLog($"比赛 #{key} 即将开始，积分榜缓存已加入缓存队列", TaskStatus.Success, LogLevel.Debug);
             }
         }
     }
 
     private async void Execute(object? state)
     {
-        await using var scope = _serviceProvider.CreateAsyncScope();
+        await using var scope = provider.CreateAsyncScope();
 
         await ContainerChecker(scope);
         await BootstrapCache(scope);
@@ -73,7 +65,7 @@ public class CronJobService : IHostedService, IDisposable
     public Task StopAsync(CancellationToken token)
     {
         _timer?.Change(Timeout.Infinite, 0);
-        _logger.SystemLog("定时任务已停止", TaskStatus.Exit, LogLevel.Debug);
+        logger.SystemLog("定时任务已停止", TaskStatus.Exit, LogLevel.Debug);
         return Task.CompletedTask;
     }
 

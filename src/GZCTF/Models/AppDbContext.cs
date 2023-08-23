@@ -9,12 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GZCTF.Models;
 
-public class AppDbContext : IdentityDbContext<UserInfo>, IDataProtectionKeyContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<UserInfo>(options), IDataProtectionKeyContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
-
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
     {
         var options = new JsonSerializerOptions() { WriteIndented = false };

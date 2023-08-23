@@ -46,7 +46,7 @@ public partial class Codec
         public static byte[] EncodeToBytes(string? str, string type = "utf-8")
         {
             if (str is null)
-                return Array.Empty<byte>();
+                return [];
 
             byte[] encoded;
             try
@@ -55,27 +55,27 @@ public partial class Codec
             }
             catch
             {
-                return Array.Empty<byte>();
+                return [];
             }
 
             Span<char> buffer = new char[encoded.Length * 4 / 3 + 8];
             if (Convert.TryToBase64Chars(encoded, buffer, out var charsWritten))
-                return Encoding.GetEncoding(type).GetBytes(buffer.Slice(0, charsWritten).ToArray());
+                return Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten].ToArray());
             else
-                return Array.Empty<byte>();
+                return [];
         }
 
         public static byte[] DecodeToBytes(string? str)
         {
             if (str is null)
-                return Array.Empty<byte>();
+                return [];
 
             Span<byte> buffer = new byte[str.Length * 3 / 4 + 8];
 
             if (Convert.TryFromBase64String(str, buffer, out int bytesWritten))
-                return buffer.Slice(0, bytesWritten).ToArray();
+                return buffer[..bytesWritten].ToArray();
 
-            return Array.Empty<byte>();
+            return [];
         }
     }
 
@@ -314,9 +314,7 @@ public static partial class CodecExtensions
     public static List<int> ASCII(this string str)
     {
         var buff = Encoding.ASCII.GetBytes(str);
-        List<int> res = new();
-        foreach (var item in buff)
-            res.Add(item);
+        List<int> res = [..buff];
         return res;
     }
 
@@ -340,7 +338,7 @@ public static partial class CodecExtensions
     /// <returns></returns>
     public static string StrMD5(this string str, bool useBase64 = false)
     {
-        var output = MD5.HashData(Encoding.Default.GetBytes(str));
+        var output = MD5.HashData(str.ToUTF8Bytes());
         if (useBase64)
             return Convert.ToBase64String(output);
         return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
@@ -354,26 +352,35 @@ public static partial class CodecExtensions
     /// <returns></returns>
     public static string StrSHA256(this string str, bool useBase64 = false)
     {
-        var output = SHA256.HashData(Encoding.Default.GetBytes(str));
+        var output = SHA256.HashData(str.ToUTF8Bytes());
         if (useBase64)
             return Convert.ToBase64String(output);
         return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>
-    /// 获取MD5哈希字节摘要
+    /// 获取 MD5 哈希字节摘要
     /// </summary>
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] BytesMD5(this string str)
-        => MD5.HashData(Encoding.Default.GetBytes(str));
+        => MD5.HashData(str.ToUTF8Bytes());
 
     /// <summary>
-    /// 获取SHA256哈希字节摘要
+    /// 获取 SHA256 哈希字节摘要
     /// </summary>
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] BytesSHA256(this string str)
-        => SHA256.HashData(Encoding.Default.GetBytes(str));
+        => SHA256.HashData(str.ToUTF8Bytes());
+
+
+    /// <summary>
+    /// 获取字符串 UTF-8 编码字节
+    /// </summary>
+    /// <param name="str">原始字符串</param>
+    /// <returns></returns>
+    public static byte[] ToUTF8Bytes(this string str)
+        => Encoding.UTF8.GetBytes(str);
 
 }

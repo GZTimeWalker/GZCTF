@@ -10,17 +10,12 @@ namespace GZCTF.Middlewares;
 /// <summary>
 /// 需要权限访问
 /// </summary>
+/// <param name="privilege">
+/// 所需权限
+/// </param>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
+public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthorizationFilter
 {
-    /// <summary>
-    /// 所需权限
-    /// </summary>
-    private readonly Role _requiredPrivilege;
-
-    public RequirePrivilegeAttribute(Role privilege)
-        => _requiredPrivilege = privilege;
-
     public static IActionResult GetResult(string msg, int code)
         => new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
 
@@ -50,9 +45,9 @@ public class RequirePrivilegeAttribute : Attribute, IAsyncAuthorizationFilter
             await dbcontext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
         }
 
-        if (user.Role < _requiredPrivilege)
+        if (user.Role < privilege)
         {
-            if (_requiredPrivilege > Role.User)
+            if (privilege > Role.User)
                 logger.Log($"未经授权的访问：{context.HttpContext.Request.Path}", user, TaskStatus.Denied);
 
             context.Result = ForbiddenResult;

@@ -4,15 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class LogRepository : RepositoryBase, ILogRepository
+public class LogRepository(AppDbContext context) : RepositoryBase(context), ILogRepository
 {
-    public LogRepository(AppDbContext context) : base(context)
-    {
-    }
-
     public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, CancellationToken token)
     {
-        IQueryable<LogModel> data = _context.Logs;
+        IQueryable<LogModel> data = context.Logs;
 
         if (level is not null && level != "All")
             data = data.Where(x => x.Level == level);

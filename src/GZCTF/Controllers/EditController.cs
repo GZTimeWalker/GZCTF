@@ -22,43 +22,18 @@ namespace GZCTF.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class EditController : Controller
+public class EditController(
+    CacheHelper cacheHelper,
+    UserManager<UserInfo> userManager,
+    ILogger<EditController> logger,
+    IPostRepository postRepository,
+    IContainerRepository containerRepository,
+    IChallengeRepository challengeRepository,
+    IGameNoticeRepository gameNoticeRepository,
+    IGameRepository gameRepository,
+    IContainerManager containerService,
+    IFileRepository fileService) : Controller
 {
-    private readonly ILogger<EditController> _logger;
-    private readonly CacheHelper _cacheHelper;
-    private readonly UserManager<UserInfo> _userManager;
-    private readonly IPostRepository _postRepository;
-    private readonly IGameNoticeRepository _gameNoticeRepository;
-    private readonly IGameRepository _gameRepository;
-    private readonly IChallengeRepository _challengeRepository;
-    private readonly IFileRepository _fileService;
-    private readonly IContainerManager _containerService;
-    private readonly IContainerRepository _containerRepository;
-
-    public EditController(
-        CacheHelper cacheHelper,
-        UserManager<UserInfo> userManager,
-        ILogger<EditController> logger,
-        IPostRepository postRepository,
-        IContainerRepository containerRepository,
-        IChallengeRepository challengeRepository,
-        IGameNoticeRepository gameNoticeRepository,
-        IGameRepository gameRepository,
-        IContainerManager containerService,
-        IFileRepository fileService)
-    {
-        _logger = logger;
-        _cacheHelper = cacheHelper;
-        _fileService = fileService;
-        _userManager = userManager;
-        _gameRepository = gameRepository;
-        _postRepository = postRepository;
-        _containerService = containerService;
-        _challengeRepository = challengeRepository;
-        _containerRepository = containerRepository;
-        _gameNoticeRepository = gameNoticeRepository;
-    }
-
     /// <summary>
     /// 添加文章
     /// </summary>
@@ -72,8 +47,8 @@ public class EditController : Controller
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddPost([FromBody] PostEditModel model, CancellationToken token)
     {
-        var user = await _userManager.GetUserAsync(User);
-        var res = await _postRepository.CreatePost(new Post().Update(model, user!), token);
+        var user = await userManager.GetUserAsync(User);
+        var res = await postRepository.CreatePost(new Post().Update(model, user!), token);
         return Ok(res.Id);
     }
 
@@ -93,14 +68,14 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdatePost(string id, [FromBody] PostEditModel model, CancellationToken token)
     {
-        var post = await _postRepository.GetPostById(id, token);
+        var post = await postRepository.GetPostById(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse("文章未找到", 404));
 
-        var user = await _userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
 
-        await _postRepository.UpdatePost(post.Update(model, user!), token);
+        await postRepository.UpdatePost(post.Update(model, user!), token);
 
         return Ok(PostDetailModel.FromPost(post));
     }
@@ -120,12 +95,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletePost(string id, CancellationToken token)
     {
-        var post = await _postRepository.GetPostById(id, token);
+        var post = await postRepository.GetPostById(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse("文章未找到", 404));
 
-        await _postRepository.RemovePost(post, token);
+        await postRepository.RemovePost(post, token);
 
         return Ok();
     }
@@ -144,12 +119,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddGame([FromBody] GameInfoModel model, CancellationToken token)
     {
-        var game = await _gameRepository.CreateGame(new Game().Update(model), token);
+        var game = await gameRepository.CreateGame(new Game().Update(model), token);
 
         if (game is null)
             return BadRequest(new RequestResponse("比赛创建失败", 400));
 
-        _gameRepository.FlushGameInfoCache();
+        gameRepository.FlushGameInfoCache();
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -167,9 +142,9 @@ public class EditController : Controller
     [HttpGet("Games")]
     [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token)
-        => Ok((await _gameRepository.GetGames(count, skip, token))
+        => Ok((await gameRepository.GetGames(count, skip, token))
             .Select(GameInfoModel.FromGame)
-            .ToResponse(await _gameRepository.CountAsync(token)));
+            .ToResponse(await gameRepository.CountAsync(token)));
 
     /// <summary>
     /// 获取比赛
@@ -185,7 +160,7 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGame([FromRoute] int id, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -207,7 +182,7 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetTeamHashSalt([FromRoute] int id, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -232,15 +207,15 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGame([FromRoute] int id, [FromBody] GameInfoModel model, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
         game.Update(model);
-        await _gameRepository.SaveAsync(token);
-        _gameRepository.FlushGameInfoCache();
-        await _cacheHelper.FlushScoreboardCache(game.Id, token);
+        await gameRepository.SaveAsync(token);
+        gameRepository.FlushGameInfoCache();
+        await cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -260,12 +235,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGame([FromRoute] int id, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        return await _gameRepository.DeleteGame(game, token) switch
+        return await gameRepository.DeleteGame(game, token) switch
         {
             TaskStatus.Success => Ok(),
             TaskStatus.Failed => BadRequest(new RequestResponse("比赛删除失败，文件可能已受损，请重试")),
@@ -287,12 +262,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGameWriteUps([FromRoute] int id, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        await _gameRepository.DeleteAllWriteUps(game, token);
+        await gameRepository.DeleteAllWriteUps(game, token);
 
         return Ok();
     }
@@ -318,19 +293,19 @@ public class EditController : Controller
         if (file.Length > 3 * 1024 * 1024)
             return BadRequest(new RequestResponse("文件过大"));
 
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var poster = await _fileService.CreateOrUpdateImage(file, "poster", 0, token);
+        var poster = await fileService.CreateOrUpdateImage(file, "poster", 0, token);
 
         if (poster is null)
             return BadRequest(new RequestResponse("文件创建失败"));
 
         game.PosterHash = poster.Hash;
-        await _gameRepository.SaveAsync(token);
-        _gameRepository.FlushGameInfoCache();
+        await gameRepository.SaveAsync(token);
+        gameRepository.FlushGameInfoCache();
 
         return Ok(poster.Url());
     }
@@ -350,12 +325,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGameNotice([FromRoute] int id, [FromBody] GameNoticeModel model, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await _gameNoticeRepository.AddNotice(new()
+        var res = await gameNoticeRepository.AddNotice(new()
         {
             Content = model.Content,
             GameId = game.Id,
@@ -380,12 +355,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        return Ok(await _gameNoticeRepository.GetNormalNotices(id, token));
+        return Ok(await gameNoticeRepository.GetNormalNotices(id, token));
     }
 
     /// <summary>
@@ -404,7 +379,7 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGameNotice([FromRoute] int id, [FromRoute] int noticeId, [FromBody] GameNoticeModel model, CancellationToken token = default)
     {
-        var notice = await _gameNoticeRepository.GetNoticeById(id, noticeId, token);
+        var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
             return NotFound(new RequestResponse("通知未找到", 404));
@@ -413,7 +388,7 @@ public class EditController : Controller
             return BadRequest(new RequestResponse("不能更改系统通知"));
 
         notice.Content = model.Content;
-        return Ok(await _gameNoticeRepository.UpdateNotice(notice, token));
+        return Ok(await gameNoticeRepository.UpdateNotice(notice, token));
     }
 
     /// <summary>
@@ -432,7 +407,7 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGameNotice([FromRoute] int id, [FromRoute] int noticeId, CancellationToken token)
     {
-        var notice = await _gameNoticeRepository.GetNoticeById(id, noticeId, token);
+        var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
             return NotFound(new RequestResponse("通知未找到", 404));
@@ -440,7 +415,7 @@ public class EditController : Controller
         if (notice.Type != NoticeType.Normal)
             return BadRequest(new RequestResponse("不能删除系统通知"));
 
-        await _gameNoticeRepository.RemoveNotice(notice, token);
+        await gameNoticeRepository.RemoveNotice(notice, token);
 
         return Ok();
     }
@@ -460,12 +435,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGameChallenge([FromRoute] int id, [FromBody] ChallengeInfoModel model, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await _challengeRepository.CreateChallenge(game, new Challenge()
+        var res = await challengeRepository.CreateChallenge(game, new Challenge()
         {
             Title = model.Title,
             Type = model.Type,
@@ -487,7 +462,7 @@ public class EditController : Controller
     [HttpGet("Games/{id}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
-        => Ok((await _challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
+        => Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
     /// 获取比赛题目
@@ -504,12 +479,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var res = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -533,12 +508,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGameChallenge([FromRoute] int id, [FromRoute] int cId, [FromBody] ChallengeUpdateModel model, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var res = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -563,11 +538,11 @@ public class EditController : Controller
         if (model.IsEnabled == true)
         {
             // will also update IsEnabled
-            await _challengeRepository.EnsureInstances(res, game, token);
+            await challengeRepository.EnsureInstances(res, game, token);
 
             if (game.IsActive)
             {
-                await _gameNoticeRepository.AddNotice(new()
+                await gameNoticeRepository.AddNotice(new()
                 {
                     Game = game,
                     Type = NoticeType.NewChallenge,
@@ -576,11 +551,11 @@ public class EditController : Controller
             }
         }
         else
-            await _challengeRepository.SaveAsync(token);
+            await challengeRepository.SaveAsync(token);
 
         if (game.IsActive && res.IsEnabled && hintUpdated)
         {
-            await _gameNoticeRepository.AddNotice(new()
+            await gameNoticeRepository.AddNotice(new()
             {
                 Game = game,
                 Type = NoticeType.NewHint,
@@ -589,7 +564,7 @@ public class EditController : Controller
         }
 
         // always flush scoreboard
-        await _cacheHelper.FlushScoreboardCache(game.Id, token);
+        await cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
@@ -609,12 +584,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var challenge = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -625,9 +600,9 @@ public class EditController : Controller
         if (challenge.ContainerImage is null || challenge.ContainerExposePort is null)
             return BadRequest(new RequestResponse("容器配置错误"));
 
-        var user = await _userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
 
-        var container = await _containerService.CreateContainerAsync(new()
+        var container = await containerService.CreateContainerAsync(new()
         {
             TeamId = "admin",
             UserId = user!.Id,
@@ -643,9 +618,9 @@ public class EditController : Controller
             return BadRequest(new RequestResponse("容器创建失败"));
 
         challenge.TestContainer = container;
-        await _challengeRepository.SaveAsync(token);
+        await challengeRepository.SaveAsync(token);
 
-        _logger.Log($"成功创建测试容器 {container.ContainerId}", user, TaskStatus.Success);
+        logger.Log($"成功创建测试容器 {container.ContainerId}", user, TaskStatus.Success);
 
         return Ok(ContainerInfoModel.FromContainer(container));
     }
@@ -665,12 +640,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DestroyTestContainer([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var challenge = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -678,8 +653,8 @@ public class EditController : Controller
         if (challenge.TestContainer is null)
             return Ok();
 
-        await _containerService.DestroyContainerAsync(challenge.TestContainer, token);
-        await _containerRepository.RemoveContainer(challenge.TestContainer, token);
+        await containerService.DestroyContainerAsync(challenge.TestContainer, token);
+        await containerRepository.RemoveContainer(challenge.TestContainer, token);
 
         return Ok();
     }
@@ -699,20 +674,20 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var res = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var res = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
             return NotFound(new RequestResponse("题目未找到", 404));
 
-        await _challengeRepository.RemoveChallenge(res, token);
+        await challengeRepository.RemoveChallenge(res, token);
 
         // always flush scoreboard
-        await _cacheHelper.FlushScoreboardCache(game.Id, token);
+        await cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok();
     }
@@ -733,12 +708,12 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateAttachment([FromRoute] int id, [FromRoute] int cId, [FromBody] AttachmentCreateModel model, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var challenge = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -746,7 +721,7 @@ public class EditController : Controller
         if (challenge.Type == ChallengeType.DynamicAttachment)
             return BadRequest(new RequestResponse("动态附件题目请使用 assets API 上传附件"));
 
-        await _challengeRepository.UpdateAttachment(challenge, model, token);
+        await challengeRepository.UpdateAttachment(challenge, model, token);
 
         return Ok();
     }
@@ -767,17 +742,17 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddFlags([FromRoute] int id, [FromRoute] int cId, [FromBody] FlagCreateModel[] models, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var challenge = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
 
-        await _challengeRepository.AddFlags(challenge, models, token);
+        await challengeRepository.AddFlags(challenge, models, token);
 
         return Ok();
     }
@@ -798,16 +773,16 @@ public class EditController : Controller
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveFlag([FromRoute] int id, [FromRoute] int cId, [FromRoute] int fId, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var challenge = await _challengeRepository.GetChallenge(id, cId, true, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse("题目未找到", 404));
 
-        return Ok(await _challengeRepository.RemoveFlag(challenge, fId, token));
+        return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
     }
 }

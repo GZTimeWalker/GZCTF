@@ -9,16 +9,9 @@ using MimeKit;
 
 namespace GZCTF.Services;
 
-public class MailSender : IMailSender
+public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger) : IMailSender
 {
-    private readonly EmailConfig? _options;
-    private readonly ILogger<MailSender> _logger;
-
-    public MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger)
-    {
-        _options = options.Value;
-        _logger = logger;
-    }
+    private readonly EmailConfig? _options = options.Value;
 
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
     {
@@ -43,12 +36,12 @@ public class MailSender : IMailSender
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            _logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
+            logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "邮件发送遇到问题");
+            logger.LogError(e, "邮件发送遇到问题");
             return false;
         }
     }
@@ -57,7 +50,7 @@ public class MailSender : IMailSender
     {
         if (email is null || userName is null || title is null)
         {
-            _logger.SystemLog("无效的邮件发送调用！", TaskStatus.Failed);
+            logger.SystemLog("无效的邮件发送调用！", TaskStatus.Failed);
             return;
         }
 
@@ -79,7 +72,7 @@ public class MailSender : IMailSender
             .ToString();
 
         if (!await SendEmailAsync(title, emailContent, email))
-            _logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
+            logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
     }
 
     private bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email, string? url)

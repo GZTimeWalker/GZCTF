@@ -24,46 +24,18 @@ namespace GZCTF.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class AdminController : ControllerBase
+public class AdminController(UserManager<UserInfo> userManager,
+    ILogger<AdminController> logger,
+    IFileRepository fileService,
+    ILogRepository logRepository,
+    IConfigService configService,
+    IGameRepository gameRepository,
+    ITeamRepository teamRepository,
+    IInstanceRepository instanceRepository,
+    IContainerRepository containerRepository,
+    IServiceProvider serviceProvider,
+    IParticipationRepository participationRepository) : ControllerBase
 {
-    private readonly ILogger<AdminController> _logger;
-    private readonly UserManager<UserInfo> _userManager;
-    private readonly ILogRepository _logRepository;
-    private readonly IFileRepository _fileService;
-    private readonly IConfigService _configService;
-    private readonly IGameRepository _gameRepository;
-    private readonly ITeamRepository _teamRepository;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IContainerRepository _containerRepository;
-    private readonly IInstanceRepository _instanceRepository;
-    private readonly IParticipationRepository _participationRepository;
-
-    public AdminController(UserManager<UserInfo> userManager,
-        ILogger<AdminController> logger,
-        IFileRepository fileService,
-        ILogRepository logRepository,
-        IConfigService configService,
-        IGameRepository gameRepository,
-        ITeamRepository teamRepository,
-        IInstanceRepository instanceRepository,
-        IContainerRepository containerRepository,
-        IServiceProvider serviceProvider,
-        IConfiguration configuration,
-        IParticipationRepository participationRepository)
-    {
-        _logger = logger;
-        _userManager = userManager;
-        _fileService = fileService;
-        _configService = configService;
-        _logRepository = logRepository;
-        _teamRepository = teamRepository;
-        _gameRepository = gameRepository;
-        _instanceRepository = instanceRepository;
-        _containerRepository = containerRepository;
-        _serviceProvider = serviceProvider;
-        _participationRepository = participationRepository;
-    }
-
     /// <summary>
     /// 获取配置
     /// </summary>
@@ -78,13 +50,13 @@ public class AdminController : ControllerBase
     public IActionResult GetConfigs()
     {
         // always reload, ensure latest
-        _configService.ReloadConfig();
+        configService.ReloadConfig();
 
         ConfigEditModel config = new()
         {
-            AccountPolicy = _serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value,
-            GlobalConfig = _serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,
-            GamePolicy = _serviceProvider.GetRequiredService<IOptionsSnapshot<GamePolicy>>().Value
+            AccountPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value,
+            GlobalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,
+            GamePolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<GamePolicy>>().Value
         };
 
         return Ok(config);
@@ -107,7 +79,7 @@ public class AdminController : ControllerBase
         {
             var value = prop.GetValue(model);
             if (value is not null)
-                await _configService.SaveConfig(prop.PropertyType, value, token);
+                await configService.SaveConfig(prop.PropertyType, value, token);
         }
 
         return Ok();
@@ -126,9 +98,9 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok((await (
-            from user in _userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
+            from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
             select UserInfoModel.FromUserInfo(user)
-           ).ToArrayAsync(token)).ToResponse(await _userManager.Users.CountAsync(token)));
+           ).ToArrayAsync(token)).ToResponse(await userManager.Users.CountAsync(token)));
 
     /// <summary>
     /// 批量添加用户
@@ -145,8 +117,8 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddUsers([FromBody] UserCreateModel[] model, CancellationToken token = default)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-        var trans = await _teamRepository.BeginTransactionAsync(token);
+        var currentUser = await userManager.GetUserAsync(User);
+        var trans = await teamRepository.BeginTransactionAsync(token);
 
         try
         {
@@ -154,17 +126,17 @@ public class AdminController : ControllerBase
             foreach (var user in model)
             {
                 var userInfo = user.ToUserInfo();
-                var result = await _userManager.CreateAsync(userInfo, user.Password);
+                var result = await userManager.CreateAsync(userInfo, user.Password);
 
                 if (!result.Succeeded)
                 {
                     switch (result.Errors.FirstOrDefault()?.Code)
                     {
                         case "DuplicateEmail":
-                            userInfo = await _userManager.FindByEmailAsync(user.Email);
+                            userInfo = await userManager.FindByEmailAsync(user.Email);
                             break;
                         case "DuplicateUserName":
-                            userInfo = await _userManager.FindByNameAsync(user.UserName);
+                            userInfo = await userManager.FindByNameAsync(user.UserName);
                             break;
                         default:
                             await trans.RollbackAsync(token);
@@ -174,8 +146,8 @@ public class AdminController : ControllerBase
                     if (userInfo is not null)
                     {
                         userInfo.UpdateUserInfo(user);
-                        var code = await _userManager.GeneratePasswordResetTokenAsync(userInfo);
-                        result = await _userManager.ResetPasswordAsync(userInfo, code, user.Password);
+                        var code = await userManager.GeneratePasswordResetTokenAsync(userInfo);
+                        result = await userManager.ResetPasswordAsync(userInfo, code, user.Password);
                     }
 
                     if (!result.Succeeded || userInfo is null)
@@ -197,7 +169,7 @@ public class AdminController : ControllerBase
                 var team = teams.Find(team => team.Name == teamName);
                 if (team is null)
                 {
-                    team = await _teamRepository.CreateTeam(new(teamName), user, token);
+                    team = await teamRepository.CreateTeam(new(teamName), user, token);
                     teams.Add(team!);
                 }
                 else
@@ -206,10 +178,10 @@ public class AdminController : ControllerBase
                 }
             }
 
-            await _teamRepository.SaveAsync(token);
+            await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
-            _logger.Log($"成功批量添加 {users.Count} 个用户", currentUser, TaskStatus.Success);
+            logger.Log($"成功批量添加 {users.Count} 个用户", currentUser, TaskStatus.Success);
 
             return Ok();
         }
@@ -233,7 +205,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
         => Ok((await (
-            from user in _userManager.Users
+            from user in userManager.Users
                 .Where(item =>
                     EF.Functions.Like(item.UserName!, $"%{hint}%") ||
                     EF.Functions.Like(item.StdNumber, $"%{hint}%") ||
@@ -257,9 +229,9 @@ public class AdminController : ControllerBase
     [HttpGet("Teams")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok((await _teamRepository.GetTeams(count, skip, token))
+        => Ok((await teamRepository.GetTeams(count, skip, token))
                 .Select(team => TeamInfoModel.FromTeam(team))
-                .ToResponse(await _teamRepository.CountAsync(token)));
+                .ToResponse(await teamRepository.CountAsync(token)));
 
     /// <summary>
     /// 搜索队伍
@@ -273,7 +245,7 @@ public class AdminController : ControllerBase
     [HttpPost("Teams/Search")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default)
-        => Ok((await _teamRepository.SearchTeams(hint, token))
+        => Ok((await teamRepository.SearchTeams(hint, token))
                 .Select(team => TeamInfoModel.FromTeam(team))
                 .ToResponse());
 
@@ -292,13 +264,13 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] AdminTeamModel model, CancellationToken token = default)
     {
-        var team = await _teamRepository.GetTeamById(id, token);
+        var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
 
         team.UpdateInfo(model);
-        await _teamRepository.SaveAsync(token);
+        await teamRepository.SaveAsync(token);
 
         return Ok();
     }
@@ -318,13 +290,13 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUserInfo(string userid, [FromBody] AdminUserInfoModel model)
     {
-        var user = await _userManager.FindByIdAsync(userid);
+        var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
 
         user.UpdateUserInfo(model);
-        await _userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(user);
 
         return Ok();
     }
@@ -344,14 +316,14 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ResetPassword(string userid, CancellationToken token = default)
     {
-        var user = await _userManager.FindByIdAsync(userid);
+        var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
 
         var pwd = Codec.RandomPassword(16);
-        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-        await _userManager.ResetPasswordAsync(user, code, pwd);
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
+        await userManager.ResetPasswordAsync(user, code, pwd);
 
         return Ok(pwd);
     }
@@ -371,20 +343,20 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(string userid, CancellationToken token = default)
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
 
         if (user!.Id == userid)
             return BadRequest(new RequestResponse("不可以删除自己"));
 
-        user = await _userManager.FindByIdAsync(userid);
+        user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
 
-        if (await _teamRepository.CheckIsCaptain(user, token))
+        if (await teamRepository.CheckIsCaptain(user, token))
             return BadRequest(new RequestResponse("不可以删除队长"));
 
-        await _userManager.DeleteAsync(user);
+        await userManager.DeleteAsync(user);
 
         return Ok();
     }
@@ -404,12 +376,12 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTeam(int id, CancellationToken token = default)
     {
-        var team = await _teamRepository.GetTeamById(id, token);
+        var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", 404));
 
-        await _teamRepository.DeleteTeam(team, token);
+        await teamRepository.DeleteTeam(team, token);
 
         return Ok();
     }
@@ -428,7 +400,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UserInfo(string userid)
     {
-        var user = await _userManager.FindByIdAsync(userid);
+        var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", 404));
@@ -448,7 +420,7 @@ public class AdminController : ControllerBase
     [HttpGet("Logs")]
     [ProducesResponseType(typeof(LogMessageModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromQuery] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await _logRepository.GetLogs(skip, count, level, token));
+        => Ok(await logRepository.GetLogs(skip, count, level, token));
 
     /// <summary>
     /// 更新参与状态
@@ -465,12 +437,12 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Participation(int id, ParticipationStatus status, CancellationToken token = default)
     {
-        var participation = await _participationRepository.GetParticipationById(id, token);
+        var participation = await participationRepository.GetParticipationById(id, token);
 
         if (participation is null)
             return NotFound(new RequestResponse("参与状态未找到", 404));
 
-        await _participationRepository.UpdateParticipationStatus(participation, status, token);
+        await participationRepository.UpdateParticipationStatus(participation, status, token);
 
         return Ok();
     }
@@ -490,12 +462,12 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        return Ok(await _participationRepository.GetWriteups(game, token));
+        return Ok(await participationRepository.GetWriteups(game, token));
     }
 
     /// <summary>
@@ -513,12 +485,12 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DownloadAllWriteups(int id, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var wps = await _participationRepository.GetWriteups(game, token);
+        var wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
         var stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), FilePath.Uploads, filename, token);
         stream.Seek(0, SeekOrigin.Begin);
@@ -538,7 +510,7 @@ public class AdminController : ControllerBase
     [HttpGet("Instances")]
     [ProducesResponseType(typeof(ArrayResponse<ContainerInstanceModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Instances(CancellationToken token = default)
-        => Ok(new ArrayResponse<ContainerInstanceModel>(await _containerRepository.GetContainerInstances(token)));
+        => Ok(new ArrayResponse<ContainerInstanceModel>(await containerRepository.GetContainerInstances(token)));
 
     /// <summary>
     /// 删除容器实例
@@ -557,12 +529,12 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DestroyInstance(string id, CancellationToken token = default)
     {
-        var container = await _containerRepository.GetContainerById(id, token);
+        var container = await containerRepository.GetContainerById(id, token);
 
         if (container is null)
             return NotFound(new RequestResponse("容器实例未找到", 404));
 
-        if (await _instanceRepository.DestroyContainer(container, token))
+        if (await instanceRepository.DestroyContainer(container, token))
             return Ok();
         else
             return BadRequest(new RequestResponse("容器实例销毁失败", 404));
@@ -580,5 +552,5 @@ public class AdminController : ControllerBase
     [HttpGet("Files")]
     [ProducesResponseType(typeof(ArrayResponse<LocalFile>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(new ArrayResponse<LocalFile>(await _fileService.GetFiles(count, skip, token)));
+        => Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
 }

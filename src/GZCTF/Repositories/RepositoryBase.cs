@@ -4,17 +4,14 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Repositories;
 
-public class RepositoryBase : IRepository
+public class RepositoryBase(AppDbContext context) : IRepository
 {
-    protected readonly AppDbContext _context;
-
-    public RepositoryBase(AppDbContext context)
-        => _context = context;
+    protected readonly AppDbContext context = context;
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default)
-        => _context.Database.BeginTransactionAsync(token);
+        => context.Database.BeginTransactionAsync(token);
 
-    public string ChangeTrackerView => _context.ChangeTracker.DebugView.LongView;
+    public string ChangeTrackerView => context.ChangeTracker.DebugView.LongView;
 
     public async Task SaveAsync(CancellationToken token = default)
     {
@@ -23,7 +20,7 @@ public class RepositoryBase : IRepository
         {
             try
             {
-                await _context.SaveChangesAsync(token);
+                await context.SaveChangesAsync(token);
                 saved = true;
             }
             catch (DbUpdateConcurrencyException ex)
@@ -39,9 +36,9 @@ public class RepositoryBase : IRepository
         }
     }
 
-    public void Detach(object item) => _context.Entry(item).State = EntityState.Detached;
+    public void Detach(object item) => context.Entry(item).State = EntityState.Detached;
 
-    public void Add(object item) => _context.Add(item);
+    public void Add(object item) => context.Add(item);
 
     public virtual Task<int> CountAsync(CancellationToken token = default)
     {

@@ -14,17 +14,9 @@ namespace GZCTF.Controllers;
 [ApiController]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class AssetsController : ControllerBase
+public class AssetsController(IFileRepository fileService, ILogger<AssetsController> logger) : ControllerBase
 {
-    private readonly ILogger<AssetsController> _logger;
-    private readonly IFileRepository _fileRepository;
     private readonly FileExtensionContentTypeProvider _extProvider = new();
-
-    public AssetsController(IFileRepository fileService, ILogger<AssetsController> logger)
-    {
-        _fileRepository = fileService;
-        _logger = logger;
-    }
 
     /// <summary>
     /// 获取文件接口
@@ -46,7 +38,7 @@ public class AssetsController : ControllerBase
 
         if (!System.IO.File.Exists(path))
         {
-            _logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, LogLevel.Warning);
+            logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, LogLevel.Warning);
             return NotFound(new RequestResponse("文件不存在", 404));
         }
 
@@ -85,8 +77,8 @@ public class AssetsController : ControllerBase
             {
                 if (file.Length > 0)
                 {
-                    var res = await _fileRepository.CreateOrUpdateFile(file, filename, token);
-                    _logger.SystemLog($"更新文件 [{res.Hash[..8]}] {filename ?? file.FileName} @ {file.Length} bytes", TaskStatus.Success, LogLevel.Debug);
+                    var res = await fileService.CreateOrUpdateFile(file, filename, token);
+                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {filename ?? file.FileName} @ {file.Length} bytes", TaskStatus.Success, LogLevel.Debug);
                     results.Add(res);
                 }
             }
@@ -94,7 +86,7 @@ public class AssetsController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
             return BadRequest(new RequestResponse("遇到IO错误"));
         }
     }
@@ -118,9 +110,9 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(string hash, CancellationToken token)
     {
-        var result = await _fileRepository.DeleteFileByHash(hash, token);
+        var result = await fileService.DeleteFileByHash(hash, token);
 
-        _logger.SystemLog($"删除文件 [{hash[..8]}]...", result, LogLevel.Information);
+        logger.SystemLog($"删除文件 [{hash[..8]}]...", result, LogLevel.Information);
 
         return result switch
         {

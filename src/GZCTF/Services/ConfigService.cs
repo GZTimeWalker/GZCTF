@@ -6,20 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Services;
 
-public class ConfigService : IConfigService
+public class ConfigService(AppDbContext context,
+    ILogger<ConfigService> logger,
+    IConfiguration configuration) : IConfigService
 {
-    private readonly ILogger<ConfigService> _logger;
-    private readonly IConfigurationRoot? _configuration;
-    private readonly AppDbContext _context;
-
-    public ConfigService(AppDbContext context,
-        ILogger<ConfigService> logger,
-        IConfiguration configuration)
-    {
-        _context = context;
-        _logger = logger;
-        _configuration = configuration as IConfigurationRoot;
-    }
+    private readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
     private static void MapConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
     {
@@ -70,7 +61,7 @@ public class ConfigService : IConfigService
 
     private async Task SaveConfigInternal(HashSet<Config> configs, CancellationToken token = default)
     {
-        var dbConfigs = await _context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
+        var dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
         foreach (var conf in configs)
         {
             if (dbConfigs.TryGetValue(conf.ConfigKey, out var dbConf))
@@ -78,17 +69,17 @@ public class ConfigService : IConfigService
                 if (dbConf.Value != conf.Value)
                 {
                     dbConf.Value = conf.Value;
-                    _logger.SystemLog($"更新全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
+                    logger.SystemLog($"更新全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
                 }
             }
             else
             {
-                _logger.SystemLog($"添加全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
-                await _context.Configs.AddAsync(conf, token);
+                logger.SystemLog($"添加全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
+                await context.Configs.AddAsync(conf, token);
             }
         }
 
-        await _context.SaveChangesAsync(token);
+        await context.SaveChangesAsync(token);
         _configuration?.Reload();
     }
 

@@ -1,20 +1,15 @@
 ﻿using System.Net.Mime;
 using System.Security.Claims;
-using System.Security.Policy;
 using System.Threading.Channels;
 using GZCTF.Middlewares;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
-using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using NPOI.HSSF.Record;
-using NPOI.OpenXmlFormats.Dml;
-using YamlDotNet.Core.Tokens;
 
 namespace GZCTF.Controllers;
 
@@ -27,58 +22,23 @@ namespace GZCTF.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class GameController : ControllerBase
+public class GameController(
+    ILogger<GameController> logger,
+    UserManager<UserInfo> userManager,
+    ChannelWriter<Submission> channelWriter,
+    IFileRepository fileService,
+    IGameRepository gameRepository,
+    ITeamRepository teamRepository,
+    IGameEventRepository eventRepository,
+    IGameNoticeRepository noticeRepository,
+    IInstanceRepository instanceRepository,
+    ICheatInfoRepository cheatInfoRepository,
+    IChallengeRepository challengeRepository,
+    IContainerRepository containerRepository,
+    IGameEventRepository gameEventRepository,
+    ISubmissionRepository submissionRepository,
+    IParticipationRepository participationRepository) : ControllerBase
 {
-    private readonly ILogger<GameController> _logger;
-    private readonly UserManager<UserInfo> _userManager;
-    private readonly ChannelWriter<Submission> _checkerChannelWriter;
-    private readonly IFileRepository _fileService;
-    private readonly IGameRepository _gameRepository;
-    private readonly ITeamRepository _teamRepository;
-    private readonly IGameEventRepository _eventRepository;
-    private readonly IInstanceRepository _instanceRepository;
-    private readonly IGameNoticeRepository _noticeRepository;
-    private readonly IGameEventRepository _gameEventRepository;
-    private readonly IContainerRepository _containerRepository;
-    private readonly ICheatInfoRepository _cheatInfoRepository;
-    private readonly IChallengeRepository _challengeRepository;
-    private readonly ISubmissionRepository _submissionRepository;
-    private readonly IParticipationRepository _participationRepository;
-
-    public GameController(
-        ILogger<GameController> logger,
-        UserManager<UserInfo> userManager,
-        ChannelWriter<Submission> channelWriter,
-        IFileRepository fileService,
-        IGameRepository gameRepository,
-        ITeamRepository teamRepository,
-        IGameEventRepository eventRepository,
-        IGameNoticeRepository noticeRepository,
-        IInstanceRepository instanceRepository,
-        ICheatInfoRepository cheatInfoRepository,
-        IChallengeRepository challengeRepository,
-        IContainerRepository containerRepository,
-        IGameEventRepository gameEventRepository,
-        ISubmissionRepository submissionRepository,
-        IParticipationRepository participationRepository)
-    {
-        _logger = logger;
-        _userManager = userManager;
-        _checkerChannelWriter = channelWriter;
-        _fileService = fileService;
-        _gameRepository = gameRepository;
-        _teamRepository = teamRepository;
-        _eventRepository = eventRepository;
-        _noticeRepository = noticeRepository;
-        _instanceRepository = instanceRepository;
-        _challengeRepository = challengeRepository;
-        _containerRepository = containerRepository;
-        _gameEventRepository = gameEventRepository;
-        _cheatInfoRepository = cheatInfoRepository;
-        _submissionRepository = submissionRepository;
-        _participationRepository = participationRepository;
-    }
-
     /// <summary>
     /// 获取最新的比赛
     /// </summary>
@@ -90,7 +50,7 @@ public class GameController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Games(CancellationToken token)
-         => Ok(await _gameRepository.GetBasicGameInfo(10, 0, token));
+         => Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
 
     /// <summary>
     /// 获取比赛详细信息
@@ -112,7 +72,7 @@ public class GameController : ControllerBase
         if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var count = await _participationRepository.GetParticipationCount(context.Game, token);
+        var count = await participationRepository.GetParticipationCount(context.Game, token);
 
         return Ok(DetailedGameInfoModel.FromGame(context.Game, count)
                       .WithParticipation(context.Participation));
@@ -137,7 +97,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> JoinGame(int id, [FromBody] GameJoinModel model, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -151,8 +111,8 @@ public class GameController : ControllerBase
         if (game.Organizations is { Count: > 0 } && game.Organizations.All(o => o != model.Organization))
             return BadRequest(new RequestResponse("无效的参赛单位"));
 
-        var user = await _userManager.GetUserAsync(User);
-        var team = await _teamRepository.GetTeamById(model.TeamId, token);
+        var user = await userManager.GetUserAsync(User);
+        var team = await teamRepository.GetTeamById(model.TeamId, token);
 
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", 404));
@@ -161,14 +121,14 @@ public class GameController : ControllerBase
             return BadRequest(new RequestResponse("您不是此队伍的队员"));
 
         // 如果已经报名（非拒绝状态）
-        if (await _participationRepository.CheckRepeatParticipation(user!, game, token))
+        if (await participationRepository.CheckRepeatParticipation(user!, game, token))
             return BadRequest(new RequestResponse("您已经在其他队伍报名参赛"));
 
         // 移除所有的已经存在的报名
-        await _participationRepository.RemoveUserParticipations(user!, game, token);
+        await participationRepository.RemoveUserParticipations(user!, game, token);
 
         // 根据队伍获取报名信息
-        var part = await _participationRepository.GetParticipation(team, game, token);
+        var part = await participationRepository.GetParticipation(team, game, token);
 
         // 如果队伍未报名
         if (part is null)
@@ -179,10 +139,10 @@ public class GameController : ControllerBase
                 Game = game,
                 Team = team,
                 Organization = model.Organization,
-                Token = _gameRepository.GetToken(game, team)
+                Token = gameRepository.GetToken(game, team)
             };
 
-            _participationRepository.Add(part);
+            participationRepository.Add(part);
         }
 
         if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)
@@ -196,12 +156,12 @@ public class GameController : ControllerBase
         if (part.Status == ParticipationStatus.Rejected)
             part.Status = ParticipationStatus.Pending;
 
-        await _participationRepository.SaveAsync(token);
+        await participationRepository.SaveAsync(token);
 
         if (game.AcceptWithoutReview)
-            await _participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
+            await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
-        _logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
+        logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 
         return Ok();
     }
@@ -224,14 +184,14 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> LeaveGame(int id, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
 
-        var user = await _userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
 
-        var part = await _participationRepository.GetParticipation(user!, game, token);
+        var part = await participationRepository.GetParticipation(user!, game, token);
 
         if (part is null || part.Members.All(u => u.UserId != user!.Id))
             return BadRequest(new RequestResponse("无法退出未报名的比赛"));
@@ -244,9 +204,9 @@ public class GameController : ControllerBase
         part.Members.RemoveWhere(u => u.UserId == user!.Id);
 
         if (part.Members.Count == 0)
-            await _participationRepository.RemoveParticipation(part, token);
+            await participationRepository.RemoveParticipation(part, token);
         else
-            await _participationRepository.SaveAsync(token);
+            await participationRepository.SaveAsync(token);
 
         return Ok();
     }
@@ -266,7 +226,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -274,7 +234,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
-        return Ok(await _gameRepository.GetScoreboard(game, token));
+        return Ok(await gameRepository.GetScoreboard(game, token));
     }
 
     /// <summary>
@@ -294,7 +254,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -302,7 +262,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
-        return Ok(await _noticeRepository.GetNotices(game.Id, count, skip, token));
+        return Ok(await noticeRepository.GetNotices(game.Id, count, skip, token));
     }
 
     /// <summary>
@@ -324,7 +284,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Events([FromRoute] int id, [FromQuery] bool hideContainer = false, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -332,7 +292,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
-        return Ok(await _eventRepository.GetEvents(game.Id, hideContainer, count, skip, token));
+        return Ok(await eventRepository.GetEvents(game.Id, hideContainer, count, skip, token));
     }
 
     /// <summary>
@@ -354,7 +314,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] AnswerResult? type = null, [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -362,7 +322,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
-        return Ok(await _submissionRepository.GetSubmissions(game, type, count, skip, token));
+        return Ok(await submissionRepository.GetSubmissions(game, type, count, skip, token));
     }
 
     /// <summary>
@@ -381,7 +341,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CheatInfo([FromRoute] int id, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", 404));
@@ -389,7 +349,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
-        return Ok((await _cheatInfoRepository.GetCheatInfoByGameId(game.Id, token))
+        return Ok((await cheatInfoRepository.GetCheatInfoByGameId(game.Id, token))
             .Select(CheatInfoModel.FromCheatInfo));
     }
 
@@ -407,7 +367,7 @@ public class GameController : ControllerBase
     [HttpGet("Games/{id}/Captures")]
     [ProducesResponseType(typeof(ChallengeTrafficModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token)
-        => Ok((await _challengeRepository.GetChallengesWithTrafficCapturing(id, token))
+        => Ok((await challengeRepository.GetChallengesWithTrafficCapturing(id, token))
             .Select(ChallengeTrafficModel.FromChallenge));
 
     /// <summary>
@@ -436,7 +396,7 @@ public class GameController : ControllerBase
         if (participationIds.Count == 0)
             return NotFound(new RequestResponse("未找到相关捕获信息", 404));
 
-        var participations = await _participationRepository.GetParticipationsByIds(participationIds, token);
+        var participations = await participationRepository.GetParticipationsByIds(participationIds, token);
 
         return Ok(participations.Select(p => TeamTrafficModel.FromParticipation(p, challengeId)));
     }
@@ -553,7 +513,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var scoreboard = await _gameRepository.GetScoreboard(context.Game!, token);
+        var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
         var boarditem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
 
@@ -599,7 +559,7 @@ public class GameController : ControllerBase
         if (context.Game is null)
             return NotFound(new RequestResponse("比赛未找到"));
 
-        return Ok((await _participationRepository.GetParticipations(context.Game!, token))
+        return Ok((await participationRepository.GetParticipations(context.Game!, token))
                     .Select(ParticipationInfoModel.FromParticipation));
     }
 
@@ -621,7 +581,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ScoreboardSheet([FromRoute] int id, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到"));
@@ -631,7 +591,7 @@ public class GameController : ControllerBase
 
         try
         {
-            var scoreboard = await _gameRepository.GetScoreboardWithMembers(game, token);
+            var scoreboard = await gameRepository.GetScoreboardWithMembers(game, token);
             var stream = ExcelHelper.GetScoreboardExcel(scoreboard, game);
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -641,8 +601,8 @@ public class GameController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.SystemLog("下载积分榜遇到错误", TaskStatus.Failed, LogLevel.Error);
-            _logger.LogError(ex, ex.Message);
+            logger.SystemLog("下载积分榜遇到错误", TaskStatus.Failed, LogLevel.Error);
+            logger.LogError(ex, ex.Message);
             return BadRequest(new RequestResponse("遇到问题，请重试"));
         }
     }
@@ -665,7 +625,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> SubmissionSheet([FromRoute] int id, CancellationToken token = default)
     {
-        var game = await _gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到"));
@@ -673,7 +633,7 @@ public class GameController : ControllerBase
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
 
-        var submissions = await _submissionRepository.GetSubmissions(game, count: 0, token: token);
+        var submissions = await submissionRepository.GetSubmissions(game, count: 0, token: token);
 
         var stream = ExcelHelper.GetSubmissionExcel(submissions);
         stream.Seek(0, SeekOrigin.Begin);
@@ -710,7 +670,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await _instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到或动态附件分配失败", 404));
@@ -756,10 +716,10 @@ public class GameController : ControllerBase
             SubmitTimeUTC = DateTimeOffset.UtcNow,
         };
 
-        submission = await _submissionRepository.AddSubmission(submission, token);
+        submission = await submissionRepository.AddSubmission(submission, token);
 
         // send to flag checker service
-        await _checkerChannelWriter.WriteAsync(submission, token);
+        await channelWriter.WriteAsync(submission, token);
 
         return Ok(submission.Id);
     }
@@ -784,7 +744,7 @@ public class GameController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var submission = await _submissionRepository.GetSubmission(id, challengeId, userId!, submitId, token);
+        var submission = await submissionRepository.GetSubmission(id, challengeId, userId!, submitId, token);
 
         if (submission is null)
             return NotFound(new RequestResponse("提交未找到", 404));
@@ -865,18 +825,18 @@ public class GameController : ControllerBase
         var wp = context.Participation!.Writeup;
 
         if (wp is not null)
-            await _fileService.DeleteFile(wp, token);
+            await fileService.DeleteFile(wp, token);
 
-        wp = await _fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
+        wp = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
 
         if (wp is null)
             return BadRequest(new RequestResponse("保存文件失败"));
 
         part.Writeup = wp;
 
-        await _participationRepository.SaveAsync(token);
+        await participationRepository.SaveAsync(token);
 
-        _logger.Log($"{team.Name} 成功提交 {game.Title} 的 Writeup", context.User!, TaskStatus.Success);
+        logger.Log($"{team.Name} 成功提交 {game.Title} 的 Writeup", context.User!, TaskStatus.Success);
 
         return Ok();
     }
@@ -907,7 +867,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await _instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -926,10 +886,10 @@ public class GameController : ControllerBase
             if (instance.Container.Status == ContainerStatus.Running)
                 return BadRequest(new RequestResponse("题目已经创建容器"));
 
-            await _containerRepository.RemoveContainer(instance.Container, token);
+            await containerRepository.RemoveContainer(instance.Container, token);
         }
 
-        return await _instanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!, context.Game!.ContainerCountLimit, token) switch
+        return await instanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!, context.Game!.ContainerCountLimit, token) switch
         {
             null or (TaskStatus.Failed, null) => BadRequest(new RequestResponse("题目创建容器失败")),
             (TaskStatus.Denied, null) => BadRequest(new RequestResponse($"队伍容器数目不能超过 {context.Game.ContainerCountLimit}")),
@@ -963,7 +923,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await _instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -977,7 +937,7 @@ public class GameController : ControllerBase
         if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(10))
             return BadRequest(new RequestResponse("容器时间尚不可延长"));
 
-        await _instanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
+        await instanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }
@@ -1008,7 +968,7 @@ public class GameController : ControllerBase
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await _instanceRepository.GetInstance(context.Participation!, challengeId, token);
+        var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
             return NotFound(new RequestResponse("题目未找到", 404));
@@ -1027,12 +987,12 @@ public class GameController : ControllerBase
 
         var destroyId = instance.Container.ContainerId;
 
-        if (!await _instanceRepository.DestroyContainer(instance.Container, token))
+        if (!await instanceRepository.DestroyContainer(instance.Container, token))
             return BadRequest(new RequestResponse("题目删除容器失败"));
 
         instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-        await _gameEventRepository.AddEvent(new()
+        await gameEventRepository.AddEvent(new()
         {
             Type = EventType.ContainerDestroy,
             GameId = context.Game!.Id,
@@ -1041,7 +1001,7 @@ public class GameController : ControllerBase
             Content = $"{instance.Challenge.Title}#{instance.Challenge.Id} 销毁容器实例"
         }, token);
 
-        _logger.Log($"{context.Participation!.Team.Name} 销毁题目 {instance.Challenge.Title} 的容器实例 [{destroyId}]", context.User, TaskStatus.Success);
+        logger.Log($"{context.Participation!.Team.Name} 销毁题目 {instance.Challenge.Title} 的容器实例 [{destroyId}]", context.User, TaskStatus.Success);
 
         return Ok();
     }
@@ -1065,14 +1025,14 @@ public class GameController : ControllerBase
     {
         ContextInfo res = new()
         {
-            User = await _userManager.GetUserAsync(User),
-            Game = await _gameRepository.GetGameById(id, token)
+            User = await userManager.GetUserAsync(User),
+            Game = await gameRepository.GetGameById(id, token)
         };
 
         if (res.Game is null)
             return res.WithResult(NotFound(new RequestResponse("比赛未找到", 404)));
 
-        var part = await _participationRepository.GetParticipation(res.User!, res.Game, token);
+        var part = await participationRepository.GetParticipation(res.User!, res.Game, token);
 
         if (part is null)
             return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));
@@ -1090,7 +1050,7 @@ public class GameController : ControllerBase
 
         if (challengeId > 0)
         {
-            var challenge = await _challengeRepository.GetChallenge(id, challengeId, withFlag, token);
+            var challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
 
             if (challenge is null)
                 return res.WithResult(NotFound(new RequestResponse("题目未找到", 404)));

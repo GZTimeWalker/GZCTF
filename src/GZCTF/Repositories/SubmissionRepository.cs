@@ -19,25 +19,25 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
 
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)
     {
-        await _context.AddAsync(submission, token);
-        await _context.SaveChangesAsync(token);
+        await context.AddAsync(submission, token);
+        await context.SaveChangesAsync(token);
 
         return submission;
     }
 
     public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId, CancellationToken token = default)
-        => _context.Submissions.Where(s => s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
+        => context.Submissions.Where(s => s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
             .SingleOrDefaultAsync(token);
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default)
-        => _context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
+        => context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
             .AsNoTracking().Include(e => e.Game).ToArrayAsync(token);
 
     private IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {
         var subs = type is not null
-            ? _context.Submissions.Where(s => s.Status == type.Value)
-            : _context.Submissions;
+            ? context.Submissions.Where(s => s.Status == type.Value)
+            : context.Submissions;
 
         return subs.OrderByDescending(s => s.SubmitTimeUTC);
     }

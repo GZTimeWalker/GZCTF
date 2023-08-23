@@ -8,24 +8,16 @@ using Serilog;
 
 namespace GZCTF.Providers;
 
-public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
+public class EntityConfigurationProvider(EntityConfigurationSource source) : ConfigurationProvider, IDisposable
 {
-    private readonly EntityConfigurationSource _source;
-    private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
     private Task? _databaseWatcher;
-    private byte[] _lastHash;
+    private byte[] _lastHash = [];
     private bool _disposed = false;
-
-    public EntityConfigurationProvider(EntityConfigurationSource source)
-    {
-        _source = source;
-        _lastHash = Array.Empty<byte>();
-        _cancellationTokenSource = new();
-    }
 
     private static HashSet<Config> DefaultConfigs()
     {
-        HashSet<Config> configs = new();
+        HashSet<Config> configs = [];
 
         configs.UnionWith(ConfigService.GetConfigs(new AccountPolicy()));
         configs.UnionWith(ConfigService.GetConfigs(new GlobalConfig()));
@@ -40,7 +32,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
         {
             try
             {
-                await Task.Delay(_source.PollingInterval, token);
+                await Task.Delay(source.PollingInterval, token);
                 IDictionary<string, string?> actualData = await GetDataAsync(token);
 
                 byte[] computedHash = ConfigHash(actualData);
@@ -61,7 +53,7 @@ public class EntityConfigurationProvider : ConfigurationProvider, IDisposable
     private AppDbContext CreateAppDbContext()
     {
         var builder = new DbContextOptionsBuilder<AppDbContext>();
-        _source.OptionsAction(builder);
+        source.OptionsAction(builder);
 
         return new AppDbContext(builder.Options);
     }

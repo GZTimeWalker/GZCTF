@@ -16,14 +16,11 @@ namespace GZCTF.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ProxyController : ControllerBase
+public class ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
+    IOptions<ContainerProvider> provider, IContainerRepository containerRepository) : ControllerBase
 {
-    private readonly ILogger<ProxyController> _logger;
-    private readonly IDistributedCache _cache;
-    private readonly IContainerRepository _containerRepository;
-
-    private readonly bool _enablePlatformProxy = false;
-    private readonly bool _enableTrafficCapture = false;
+    private readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
+    private readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
     private const int BUFFER_SIZE = 1024 * 4;
     private const uint CONNECTION_LIMIT = 64;
     private readonly JsonSerializerOptions _JsonOptions = new()
@@ -31,16 +28,6 @@ public class ProxyController : ControllerBase
         Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         WriteIndented = true,
     };
-
-    public ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
-        IOptions<ContainerProvider> provider, IContainerRepository containerRepository)
-    {
-        _cache = cache;
-        _logger = logger;
-        _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
-        _enableTrafficCapture = provider.Value.EnableTrafficCapture;
-        _containerRepository = containerRepository;
-    }
 
     /// <summary>
     /// 采用 websocket 代理 TCP 流量
@@ -67,7 +54,7 @@ public class ProxyController : ControllerBase
         if (!await IncrementConnectionCount(id))
             return BadRequest(new RequestResponse("容器连接数已达上限"));
 
-        var container = await _containerRepository.GetContainerWithInstanceById(id, token);
+        var container = await containerRepository.GetContainerWithInstanceById(id, token);
 
         if (container is null || container.Instance is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器"));
@@ -135,7 +122,7 @@ public class ProxyController : ControllerBase
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
 
-        var container = await _containerRepository.GetContainerById(id, token);
+        var container = await containerRepository.GetContainerById(id, token);
 
         if (container is null || container.InstanceId != 0 || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器"));
@@ -174,7 +161,7 @@ public class ProxyController : ControllerBase
         }
         catch (SocketException e)
         {
-            _logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Warning);
             return new JsonResult(new RequestResponse($"容器连接失败（{e.SocketErrorCode}）", 418)) { StatusCode = 418 };
         }
 
@@ -183,11 +170,11 @@ public class ProxyController : ControllerBase
         try
         {
             var (tx, rx) = await RunProxy(stream, ws, token);
-            _logger.SystemLog($"[{id}] {client.Address} -> {target.Address}:{target.Port}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog($"[{id}] {client.Address} -> {target.Address}:{target.Port}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "代理过程发生错误");
+            logger.LogError(e, "代理过程发生错误");
         }
         finally
         {
@@ -281,15 +268,15 @@ public class ProxyController : ControllerBase
     internal async Task<bool> ValidateContainer(string id, CancellationToken token = default)
     {
         var key = CacheKey.ConnectionCount(id);
-        var bytes = await _cache.GetAsync(key, token);
+        var bytes = await cache.GetAsync(key, token);
 
         // avoid DoS attack with cache -1
         if (bytes is not null)
             return BitConverter.ToInt32(bytes) >= 0;
 
-        var valid = await _containerRepository.ValidateContainer(id, token);
+        var valid = await containerRepository.ValidateContainer(id, token);
 
-        await _cache.SetAsync(key, BitConverter.GetBytes(valid ? 0 : -1), _validOption, token);
+        await cache.SetAsync(key, BitConverter.GetBytes(valid ? 0 : -1), _validOption, token);
 
         return valid;
     }
@@ -302,7 +289,7 @@ public class ProxyController : ControllerBase
     internal async Task<bool> IncrementConnectionCount(string id)
     {
         var key = CacheKey.ConnectionCount(id);
-        var bytes = await _cache.GetAsync(key);
+        var bytes = await cache.GetAsync(key);
 
         if (bytes is null)
             return false;
@@ -312,7 +299,7 @@ public class ProxyController : ControllerBase
         if (count > CONNECTION_LIMIT)
             return false;
 
-        await _cache.SetAsync(key, BitConverter.GetBytes(count + 1), _storeOption);
+        await cache.SetAsync(key, BitConverter.GetBytes(count + 1), _storeOption);
 
         return true;
     }
@@ -325,7 +312,7 @@ public class ProxyController : ControllerBase
     internal async Task DecrementConnectionCount(string id)
     {
         var key = CacheKey.ConnectionCount(id);
-        var bytes = await _cache.GetAsync(key);
+        var bytes = await cache.GetAsync(key);
 
         if (bytes is null)
             return;
@@ -334,11 +321,11 @@ public class ProxyController : ControllerBase
 
         if (count > 1)
         {
-            await _cache.SetAsync(key, BitConverter.GetBytes(count - 1), _storeOption);
+            await cache.SetAsync(key, BitConverter.GetBytes(count - 1), _storeOption);
         }
         else
         {
-            await _cache.SetAsync(key, BitConverter.GetBytes(0), _validOption);
+            await cache.SetAsync(key, BitConverter.GetBytes(0), _validOption);
         }
     }
 }
