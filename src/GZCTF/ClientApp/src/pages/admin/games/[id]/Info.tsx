@@ -35,7 +35,7 @@ import {
 import { Icon } from '@mdi/react'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
@@ -112,11 +112,12 @@ const GameInfoEdit: FC = () => {
         })
         mutate({ ...game, poster: res.data })
       })
-      .catch(() => {
+      .catch((err) => {
         updateNotification({
           id: 'upload-poster',
           color: 'red',
-          message: '比赛海报更新失败',
+          title: '比赛海报更新失败',
+          message: tryGetErrorMsg(err),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
         })

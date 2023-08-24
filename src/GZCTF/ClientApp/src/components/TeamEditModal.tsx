@@ -25,7 +25,7 @@ import { useModals } from '@mantine/modals'
 import { showNotification, updateNotification, notifications } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 
@@ -230,11 +230,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           revalidate: false,
         })
       })
-      .catch(() => {
+      .catch((err) => {
         updateNotification({
           id: 'upload-avatar',
           color: 'red',
-          message: '头像更新失败',
+          title: '头像更新失败',
+          message: tryGetErrorMsg(err),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
         })

@@ -2,6 +2,9 @@ import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 
+export const tryGetErrorMsg = (err: any) =>
+  err?.response?.data?.title ?? err?.title ?? err ?? '未知错误'
+
 export const showErrorNotification = (err: any) => {
   if (err?.response?.status === 429) {
     showNotification({
@@ -16,7 +19,7 @@ export const showErrorNotification = (err: any) => {
   showNotification({
     color: 'red',
     title: '遇到了问题',
-    message: `${err?.response?.data?.title ?? err?.title ?? err ?? '未知错误'}`,
+    message: tryGetErrorMsg(err),
     icon: <Icon path={mdiClose} size={1} />,
   })
 }

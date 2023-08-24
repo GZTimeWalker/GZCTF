@@ -23,7 +23,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
 import { ACCEPT_IMAGE_MIME_TYPE, useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
@@ -92,11 +92,12 @@ const Profile: FC = () => {
         mutate()
         setAvatarFile(null)
       })
-      .catch(() => {
+      .catch((err) => {
         updateNotification({
           id: 'upload-avatar',
           color: 'red',
-          message: '头像更新失败',
+          title: '头像更新失败',
+          message: tryGetErrorMsg(err),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
         })
