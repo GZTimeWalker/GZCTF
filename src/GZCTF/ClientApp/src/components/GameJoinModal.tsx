@@ -22,7 +22,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
 
   const [inviteCode, setInviteCode] = useState('')
   const [organization, setOrganization] = useState(currentOrganization ?? '')
-  const [team, setTeam] = useState('')
+  const [team, setTeam] = useState(teams?.[0]?.id?.toString() ?? '')
   const [disabled, setDisabled] = useState(false)
 
   return (
