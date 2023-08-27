@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -10,20 +10,70 @@ import { GameJoinModel } from '@Api'
 
 interface GameJoinModalProps extends ModalProps {
   onSubmitJoin: (info: GameJoinModel) => Promise<void>
-  currentOrganization?: string | null
 }
 
 const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { onSubmitJoin, currentOrganization, ...modalProps } = props
+  const { onSubmitJoin, ...modalProps } = props
   const { teams } = useTeams()
   const { game } = useGame(numId)
 
   const [inviteCode, setInviteCode] = useState('')
-  const [organization, setOrganization] = useState(currentOrganization ?? '')
+  const [organization, setOrganization] = useState('')
   const [team, setTeam] = useState('')
   const [disabled, setDisabled] = useState(false)
+
+  useEffect(() => {
+    if (teams && teams.length === 1) {
+      setTeam(teams[0].id!.toString())
+    }
+  }, [teams])
+
+  const onJoinGame = () => {
+    setDisabled(true)
+
+    if (!team) {
+      showNotification({
+        color: 'orange',
+        message: '请选择参赛队伍',
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      setDisabled(false)
+      return
+    }
+
+    if (game?.inviteCodeRequired && !inviteCode) {
+      showNotification({
+        color: 'orange',
+        message: '邀请码不能为空',
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      setDisabled(false)
+      return
+    }
+
+    if (game?.organizations && game.organizations.length > 0 && !organization) {
+      showNotification({
+        color: 'orange',
+        message: '请选择参赛组织',
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      setDisabled(false)
+      return
+    }
+
+    onSubmitJoin({
+      teamId: parseInt(team),
+      inviteCode: game?.inviteCodeRequired ? inviteCode : undefined,
+      organization: game?.organizations && game.organizations.length > 0 ? organization : undefined,
+    }).finally(() => {
+      setInviteCode('')
+      setOrganization('')
+      setDisabled(false)
+      props.onClose()
+    })
+  }
 
   return (
     <Modal {...modalProps}>
@@ -60,54 +110,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
             onChange={(e) => setOrganization(e ?? '')}
           />
         )}
-        <Button
-          disabled={disabled}
-          onClick={() => {
-            setDisabled(true)
-
-            if (!team) {
-              showNotification({
-                color: 'orange',
-                message: '请选择参赛队伍',
-                icon: <Icon path={mdiClose} size={1} />,
-              })
-              setDisabled(false)
-              return
-            }
-
-            if (game?.inviteCodeRequired && !inviteCode) {
-              showNotification({
-                color: 'orange',
-                message: '邀请码不能为空',
-                icon: <Icon path={mdiClose} size={1} />,
-              })
-              setDisabled(false)
-              return
-            }
-
-            if (game?.organizations && game.organizations.length > 0 && !organization) {
-              showNotification({
-                color: 'orange',
-                message: '请选择参赛组织',
-                icon: <Icon path={mdiClose} size={1} />,
-              })
-              setDisabled(false)
-              return
-            }
-
-            onSubmitJoin({
-              teamId: parseInt(team),
-              inviteCode: game?.inviteCodeRequired ? inviteCode : undefined,
-              organization:
-                game?.organizations && game.organizations.length > 0 ? organization : undefined,
-            }).finally(() => {
-              setInviteCode('')
-              setOrganization('')
-              setDisabled(false)
-              props.onClose()
-            })
-          }}
-        >
+        <Button disabled={disabled} onClick={onJoinGame}>
           报名参赛
         </Button>
       </Stack>
