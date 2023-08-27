@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -10,20 +10,25 @@ import { GameJoinModel } from '@Api'
 
 interface GameJoinModalProps extends ModalProps {
   onSubmitJoin: (info: GameJoinModel) => Promise<void>
-  currentOrganization?: string | null
 }
 
 const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { onSubmitJoin, currentOrganization, ...modalProps } = props
+  const { onSubmitJoin, ...modalProps } = props
   const { teams } = useTeams()
   const { game } = useGame(numId)
 
   const [inviteCode, setInviteCode] = useState('')
-  const [organization, setOrganization] = useState(currentOrganization ?? '')
-  const [team, setTeam] = useState(teams?.[0]?.id?.toString() ?? '')
+  const [organization, setOrganization] = useState('')
+  const [team, setTeam] = useState('')
   const [disabled, setDisabled] = useState(false)
+
+  useEffect(() => {
+    if (teams && teams.length > 0) {
+      setTeam(teams[0].id!.toString())
+    }
+  }, [teams])
 
   return (
     <Modal {...modalProps}>
