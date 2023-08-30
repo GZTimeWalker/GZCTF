@@ -50,7 +50,7 @@ const GameChallengeEdit: FC = () => {
 
   const { challenge, mutate } = useEditChallenge(numId, numCId)
 
-  const { mutate: mutateChals } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
+  const { data: chals, mutate: mutateChals } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
 
   const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)
@@ -110,7 +110,7 @@ const GameChallengeEdit: FC = () => {
           message: '题目已删除',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        mutateChals((chals) => chals?.filter((chal) => chal.id !== numCId), { revalidate: false })
+        mutateChals(chals?.filter((chal) => chal.id !== numCId), { revalidate: false })
         navigate(`/admin/games/${id}/challenges`)
       })
       .catch(showErrorNotification)

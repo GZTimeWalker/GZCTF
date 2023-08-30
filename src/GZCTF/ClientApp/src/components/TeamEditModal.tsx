@@ -86,7 +86,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [inviteCode, setInviteCode] = useState('')
   const [disabled, setDisabled] = useState(false)
-  const { mutate: mutateTeams } = api.team.useTeamGetTeamsInfo()
+  const { data: teams, mutate: mutateTeams } = api.team.useTeamGetTeamsInfo()
 
   const theme = useMantineTheme()
   const clipboard = useClipboard()
@@ -119,7 +119,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo?.id))
+        mutateTeams(teams?.filter((x) => x.id !== teamInfo?.id))
         props.onClose()
       })
       .catch(showErrorNotification)
@@ -138,7 +138,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         })
         setInviteCode('')
         setTeamInfo(null)
-        mutateTeams((teams) => teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
+        mutateTeams(teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
         props.onClose()
       })
       .catch(showErrorNotification)
@@ -158,7 +158,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setTeamInfo(team.data)
-        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? team.data : x)), {
+        mutateTeams(teams?.map((x) => (x.id === teamInfo.id ? team.data : x)), {
           revalidate: false,
         })
       })
@@ -176,7 +176,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setTeamInfo(data.data)
-        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo?.id ? data.data : x)), {
+        mutateTeams(teams?.map((x) => (x.id === teamInfo?.id ? data.data : x)), {
           revalidate: false,
         })
       })
@@ -226,7 +226,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         setAvatarFile(null)
         const newTeamInfo = { ...teamInfo, avatar: data.data }
         setTeamInfo(newTeamInfo)
-        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)), {
+        mutateTeams(teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)), {
           revalidate: false,
         })
       })
@@ -256,7 +256,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        mutateTeams((teams) => teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)), {
+        mutateTeams(teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)), {
           revalidate: false,
         })
       })
