@@ -50,7 +50,10 @@ const GameChallengeEdit: FC = () => {
 
   const { challenge, mutate } = useEditChallenge(numId, numCId)
 
-  const { data: chals, mutate: mutateChals } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
+  const { data: chals, mutate: mutateChals } = api.edit.useEditGetGameChallenges(
+    numId,
+    OnceSWRConfig
+  )
 
   const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)
