@@ -26,7 +26,7 @@ public class InfoController(IPostRepository postRepository,
     /// 获取最新文章
     /// </remarks>
     /// <param name="token"></param>
-    /// <response code="200">成功获取公告</response>
+    /// <response code="200">成功获取文章</response>
     [HttpGet("Posts/Latest")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLatestPosts(CancellationToken token)
@@ -39,7 +39,7 @@ public class InfoController(IPostRepository postRepository,
     /// 获取全部文章
     /// </remarks>
     /// <param name="token"></param>
-    /// <response code="200">成功获取公告</response>
+    /// <response code="200">成功获取文章</response>
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token)
@@ -54,6 +54,7 @@ public class InfoController(IPostRepository postRepository,
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">成功获取文章详情</response>
+    /// <response code="404">文章未找到</response>
     [HttpGet("Posts/{id}")]
     [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
