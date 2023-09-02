@@ -51,7 +51,7 @@ export interface RequestResponse {
 }
 
 /** 注册账号 */
-export interface RegisterModel {
+export type RegisterModel = ModelWithCaptcha & {
   /**
    * 用户名
    * @minLength 3
@@ -69,20 +69,21 @@ export interface RegisterModel {
    * @minLength 1
    */
   email: string
-  /** Google Recaptcha Token */
-  gToken?: string | null
+}
+
+export interface ModelWithCaptcha {
+  /** Captcha Challenge */
+  challenge?: string | null
 }
 
 /** 找回账号 */
-export interface RecoveryModel {
+export type RecoveryModel = ModelWithCaptcha & {
   /**
    * 用户邮箱
    * @format email
    * @minLength 1
    */
   email: string
-  /** Google Recaptcha Token */
-  gToken?: string | null
 }
 
 /** 账号密码重置 */
@@ -119,7 +120,7 @@ export interface AccountVerifyModel {
 }
 
 /** 登录 */
-export interface LoginModel {
+export type LoginModel = ModelWithCaptcha & {
   /**
    * 用户名或邮箱
    * @minLength 1
@@ -245,8 +246,8 @@ export interface AccountPolicy {
   allowRegister?: boolean
   /** 注册时直接激活账户 */
   activeOnRegister?: boolean
-  /** 使用谷歌验证码校验 */
-  useGoogleRecaptcha?: boolean
+  /** 使用验证码校验 */
+  useCaptcha?: boolean
   /** 注册、更换邮箱、找回密码需要邮件确认 */
   emailConfirmationRequired?: boolean
   /** 邮箱后缀域名，以逗号分割 */
@@ -1669,6 +1670,20 @@ export interface PostInfoModel {
   time: string
 }
 
+/** 验证码配置 */
+export interface ClientCaptchaInfoModel {
+  /** 验证码类型 */
+  type?: CaptchaProvider
+  /** 客户端密钥 */
+  siteKey?: string
+}
+
+export enum CaptchaProvider {
+  None = 'None',
+  GoogleRecaptcha = 'GoogleRecaptcha',
+  CloudflareTurnstile = 'CloudflareTurnstile',
+}
+
 /** 队伍信息更新 */
 export interface TeamUpdateModel {
   /**
@@ -2016,7 +2031,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口注册新用户，Dev环境下不校验 GToken，邮件URL：/verify
+     * @description 使用此接口注册新用户，Dev 环境下不校验，邮件URL：/verify
      *
      * @tags Account
      * @name AccountRegister
@@ -4488,6 +4503,45 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   }
   info = {
     /**
+     * @description 获取 Captcha 配置
+     *
+     * @tags Info
+     * @name InfoGetClientCaptchaInfo
+     * @summary 获取 Captcha 配置
+     * @request GET:/api/captcha
+     */
+    infoGetClientCaptchaInfo: (params: RequestParams = {}) =>
+      this.request<ClientCaptchaInfoModel, any>({
+        path: `/api/captcha`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+    /**
+     * @description 获取 Captcha 配置
+     *
+     * @tags Info
+     * @name InfoGetClientCaptchaInfo
+     * @summary 获取 Captcha 配置
+     * @request GET:/api/captcha
+     */
+    useInfoGetClientCaptchaInfo: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ClientCaptchaInfoModel, any>(doFetch ? `/api/captcha` : null, options),
+
+    /**
+     * @description 获取 Captcha 配置
+     *
+     * @tags Info
+     * @name InfoGetClientCaptchaInfo
+     * @summary 获取 Captcha 配置
+     * @request GET:/api/captcha
+     */
+    mutateInfoGetClientCaptchaInfo: (
+      data?: ClientCaptchaInfoModel | Promise<ClientCaptchaInfoModel>,
+      options?: MutatorOptions
+    ) => mutate<ClientCaptchaInfoModel>(`/api/captcha`, data, options),
+
+    /**
      * @description 获取全局设置
      *
      * @tags Info
@@ -4643,43 +4697,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: PostInfoModel[] | Promise<PostInfoModel[]>,
       options?: MutatorOptions
     ) => mutate<PostInfoModel[]>(`/api/posts`, data, options),
-
-    /**
-     * @description 获取 Recaptcha SiteKey
-     *
-     * @tags Info
-     * @name InfoGetRecaptchaSiteKey
-     * @summary 获取 Recaptcha SiteKey
-     * @request GET:/api/sitekey
-     */
-    infoGetRecaptchaSiteKey: (params: RequestParams = {}) =>
-      this.request<string, any>({
-        path: `/api/sitekey`,
-        method: 'GET',
-        format: 'json',
-        ...params,
-      }),
-    /**
-     * @description 获取 Recaptcha SiteKey
-     *
-     * @tags Info
-     * @name InfoGetRecaptchaSiteKey
-     * @summary 获取 Recaptcha SiteKey
-     * @request GET:/api/sitekey
-     */
-    useInfoGetRecaptchaSiteKey: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<string, any>(doFetch ? `/api/sitekey` : null, options),
-
-    /**
-     * @description 获取 Recaptcha SiteKey
-     *
-     * @tags Info
-     * @name InfoGetRecaptchaSiteKey
-     * @summary 获取 Recaptcha SiteKey
-     * @request GET:/api/sitekey
-     */
-    mutateInfoGetRecaptchaSiteKey: (data?: string | Promise<string>, options?: MutatorOptions) =>
-      mutate<string>(`/api/sitekey`, data, options),
   }
   proxy = {
     /**

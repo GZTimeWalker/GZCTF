@@ -1,18 +1,18 @@
 import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { TextInput, Button, Anchor } from '@mantine/core'
+import { TextInput, Button, Anchor, Box } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
+import { useCaptcha } from '@Utils/useCaptcha'
 import { usePageTitle } from '@Utils/usePageTitle'
-import { useReCaptcha } from '@Utils/useRecaptcha'
 import api from '@Api'
 
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
-  const reCaptcha = useReCaptcha('recovery')
+  const captcha = useCaptcha('recovery')
   const [disabled, setDisabled] = useState(false)
 
   usePageTitle('找回账号')
@@ -20,7 +20,7 @@ const Recovery: FC = () => {
   const onRecovery = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    const token = await reCaptcha?.getToken()
+    const token = await captcha?.getChallenge()
 
     if (!token) {
       showNotification({
@@ -46,7 +46,7 @@ const Recovery: FC = () => {
     api.account
       .accountRecovery({
         email,
-        gToken: token,
+        challenge: token,
       })
       .then(() => {
         updateNotification({
@@ -83,6 +83,7 @@ const Recovery: FC = () => {
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
+      <Box id="captcha" />
       <Anchor
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,

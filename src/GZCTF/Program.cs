@@ -172,9 +172,6 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 builder.Services.AddTransient<IMailSender, MailSender>()
     .Configure<EmailConfig>(builder.Configuration.GetSection(nameof(EmailConfig)));
 
-builder.Services.AddSingleton<IRecaptchaExtension, RecaptchaExtension>()
-    .Configure<RecaptchaConfig>(builder.Configuration.GetSection("GoogleRecaptcha"));
-
 builder.Services.Configure<RegistryConfig>(builder.Configuration.GetSection(nameof(RegistryConfig)));
 builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameof(AccountPolicy)));
 builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof(GlobalConfig)));
@@ -195,6 +192,7 @@ else
     builder.Services.Configure<ForwardedHeadersOptions>(forwardedOptions.ToForwardedHeadersOptions);
 }
 
+builder.Services.AddCaptchaService(builder.Configuration);
 builder.Services.AddContainerService(builder.Configuration);
 
 builder.Services.AddScoped<IConfigService, ConfigService>();

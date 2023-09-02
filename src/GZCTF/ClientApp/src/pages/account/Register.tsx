@@ -1,14 +1,14 @@
 import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core'
+import { Button, Anchor, TextInput, PasswordInput, Box } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
+import { useCaptcha } from '@Utils/useCaptcha'
 import { usePageTitle } from '@Utils/usePageTitle'
-import { useReCaptcha } from '@Utils/useRecaptcha'
 import api, { RegisterStatus } from '@Api'
 
 const RegisterStatusMap = new Map([
@@ -43,7 +43,7 @@ const Register: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const navigate = useNavigate()
-  const reCaptcha = useReCaptcha('register')
+  const captcha = useCaptcha('register')
 
   usePageTitle('注册')
 
@@ -60,7 +60,7 @@ const Register: FC = () => {
       return
     }
 
-    const token = await reCaptcha?.getToken()
+    const token = await captcha?.getChallenge()
 
     if (!token) {
       showNotification({
@@ -88,7 +88,7 @@ const Register: FC = () => {
         userName: uname,
         password: pwd,
         email: email,
-        gToken: token,
+        challenge: token,
       })
       .then((res) => {
         const data = RegisterStatusMap.get(res.data.data)
@@ -155,6 +155,7 @@ const Register: FC = () => {
         w="100%"
         error={pwd !== retypedPwd}
       />
+      <Box id="captcha" />
       <Anchor
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,

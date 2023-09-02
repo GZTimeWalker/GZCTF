@@ -22,9 +22,9 @@ public class AccountPolicy
     public bool ActiveOnRegister { get; set; } = true;
 
     /// <summary>
-    /// 使用谷歌验证码校验
+    /// 使用验证码校验
     /// </summary>
-    public bool UseGoogleRecaptcha { get; set; } = false;
+    public bool UseCaptcha { get; set; } = false;
 
     /// <summary>
     /// 注册、更换邮箱、找回密码需要邮件确认
@@ -69,6 +69,8 @@ public class GlobalConfig
     public string? FooterInfo { get; set; }
 }
 
+#region Mail Config
+
 public class SmtpConfig
 {
     public string? Host { get; set; } = "127.0.0.1";
@@ -82,6 +84,10 @@ public class EmailConfig
     public string? SendMailAddress { get; set; } = string.Empty;
     public SmtpConfig? Smtp { get; set; } = new();
 }
+
+#endregion
+
+#region Container Provider
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ContainerProviderType
@@ -137,13 +143,34 @@ public class RegistryConfig
     public string? Password { get; set; }
 }
 
-public class RecaptchaConfig
+#endregion
+
+#region Captcha Provider
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum CaptchaProvider
 {
+    None,
+    GoogleRecaptcha,
+    CloudflareTurnstile
+}
+
+public class CaptchaConfig
+{
+    public CaptchaProvider Provider { get; set; }
     public string? Secretkey { get; set; }
     public string? SiteKey { get; set; }
+
+    public GoogleRecaptchaConfig GoogleRecaptcha { get; set; } = new();
+}
+
+public class GoogleRecaptchaConfig
+{
     public string VerifyAPIAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
     public float RecaptchaThreshold { get; set; } = 0.5f;
 }
+
+#endregion
 
 public class ForwardedOptions : ForwardedHeadersOptions
 {

@@ -23,7 +23,7 @@ public class AccountController(
     IMailSender mailSender,
     IFileRepository fileService,
     IHostEnvironment environment,
-    IRecaptchaExtension recaptcha,
+    ICaptchaExtension captcha,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
@@ -33,25 +33,23 @@ public class AccountController(
     /// 用户注册接口
     /// </summary>
     /// <remarks>
-    /// 使用此接口注册新用户，Dev环境下不校验 GToken，邮件URL：/verify
+    /// 使用此接口注册新用户，Dev 环境下不校验，邮件URL：/verify
     /// </remarks>
     /// <param name="model"></param>
+    /// <param name="token"></param>
     /// <response code="200">注册成功</response>
     /// <response code="400">校验失败或用户已存在</response>
     [HttpPost]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse<RegisterStatus>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] RegisterModel model)
+    public async Task<IActionResult> Register([FromBody] RegisterModel model, CancellationToken token = default)
     {
         if (!accountPolicy.Value.AllowRegister)
             return BadRequest(new RequestResponse("注册功能已禁用"));
 
-        if (accountPolicy.Value.UseGoogleRecaptcha && (
-                model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
-                !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())
-            ))
-            return BadRequest(new RequestResponse("Google reCAPTCHA 校验失败"));
+        if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
+            return BadRequest(new RequestResponse("验证码校验失败"));
 
         var mailDomain = model.Email!.Split('@')[1];
         if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
@@ -101,15 +99,15 @@ public class AccountController(
 
         logger.Log("发送用户邮箱验证邮件", user, TaskStatus.Pending);
 
-        var token = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
+        var rToken = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
         if (environment.IsDevelopment())
         {
-            logger.Log($"http://{HttpContext.Request.Host}/account/verify?token={token}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log($"http://{HttpContext.Request.Host}/account/verify?token={rToken}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
             if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
-                $"https://{HttpContext.Request.Host}/account/verify?token={token}&email={Codec.Base64.Encode(model.Email)}"))
+                $"https://{HttpContext.Request.Host}/account/verify?token={rToken}&email={Codec.Base64.Encode(model.Email)}"))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
 
@@ -124,6 +122,7 @@ public class AccountController(
     /// 使用此接口请求找回密码，向用户邮箱发送邮件，邮件URL：/reset
     /// </remarks>
     /// <param name="model"></param>
+    /// <param name="token"></param>
     /// <response code="200">用户密码重置邮件发送成功</response>
     /// <response code="400">校验失败</response>
     /// <response code="404">用户不存在</response>
@@ -132,13 +131,10 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Recovery([FromBody] RecoveryModel model)
+    public async Task<IActionResult> Recovery([FromBody] RecoveryModel model, CancellationToken token = default)
     {
-        if (accountPolicy.Value.UseGoogleRecaptcha && (
-                model.GToken is null || HttpContext.Connection.RemoteIpAddress is null ||
-                !await recaptcha.VerifyAsync(model.GToken, HttpContext.Connection.RemoteIpAddress.ToString())
-            ))
-            return BadRequest(new RequestResponse("Google reCAPTCHA 校验失败"));
+        if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
+            return BadRequest(new RequestResponse("验证码校验失败"));
 
         var user = await userManager.FindByEmailAsync(model.Email!);
         if (user is null)
@@ -152,16 +148,16 @@ public class AccountController(
 
         logger.Log("发送用户密码重置邮件", HttpContext, TaskStatus.Pending);
 
-        var token = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
+        var rToken = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
 
         if (environment.IsDevelopment())
         {
-            logger.Log($"http://{HttpContext.Request.Host}/account/reset?token={token}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log($"http://{HttpContext.Request.Host}/account/reset?token={rToken}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
             if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email,
-                $"https://{HttpContext.Request.Host}/account/reset?token={token}&email={Codec.Base64.Encode(model.Email)}"))
+                $"https://{HttpContext.Request.Host}/account/reset?token={rToken}&email={Codec.Base64.Encode(model.Email)}"))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
 
@@ -254,8 +250,11 @@ public class AccountController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> LogIn([FromBody] LoginModel model)
+    public async Task<IActionResult> LogIn([FromBody] LoginModel model, CancellationToken token = default)
     {
+        if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
+            return BadRequest(new RequestResponse("验证码校验失败"));
+
         var user = await userManager.FindByNameAsync(model.UserName);
         user ??= await userManager.FindByEmailAsync(model.UserName);
 

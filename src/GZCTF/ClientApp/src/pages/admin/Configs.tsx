@@ -142,13 +142,13 @@ const Configs: FC = () => {
               }
             />
             <Switch
-              checked={accountPolicy?.useGoogleRecaptcha ?? false}
+              checked={accountPolicy?.useCaptcha ?? false}
               disabled={disabled}
-              label={SwitchLabel('使用谷歌验证码', '是否在发送验证邮件时进行验证码校验')}
+              label={SwitchLabel('启用验证码', '是否在发送验证邮件时进行验证码校验')}
               onChange={(e) =>
                 setAccountPolicy({
                   ...(accountPolicy ?? {}),
-                  useGoogleRecaptcha: e.currentTarget.checked,
+                  useCaptcha: e.currentTarget.checked,
                 })
               }
             />

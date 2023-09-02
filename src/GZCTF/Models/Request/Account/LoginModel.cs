@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GZCTF.Extensions;
 
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
 /// 登录
 /// </summary>
-public class LoginModel
+public class LoginModel : ModelWithCaptcha
 {
     /// <summary>
     /// 用户名或邮箱

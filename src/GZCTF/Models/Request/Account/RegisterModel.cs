@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GZCTF.Extensions;
 
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
 /// 注册账号
 /// </summary>
-public class RegisterModel
+public class RegisterModel : ModelWithCaptcha
 {
     /// <summary>
     /// 用户名
@@ -28,9 +29,4 @@ public class RegisterModel
     [Required(ErrorMessage = "邮箱是必需的")]
     [EmailAddress(ErrorMessage = "邮箱地址无效")]
     public string Email { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Google Recaptcha Token
-    /// </summary>
-    public string? GToken { get; set; }
 }

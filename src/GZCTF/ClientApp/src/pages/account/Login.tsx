@@ -1,18 +1,20 @@
 import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core'
-import { useInputState, getHotkeyHandler } from '@mantine/hooks'
+import { PasswordInput, Grid, TextInput, Button, Anchor, Box } from '@mantine/core'
+import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useCaptcha } from '@Utils/useCaptcha'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api from '@Api'
 
 const Login: FC = () => {
   const params = useSearchParams()[0]
+  const captcha = useCaptcha('login')
   const navigate = useNavigate()
 
   const [pwd, setPwd] = useInputState('')
@@ -33,7 +35,9 @@ const Login: FC = () => {
     }
   }, [user, needRedirect])
 
-  const onLogin = () => {
+  const onLogin = async (event: React.FormEvent) => {
+    event.preventDefault()
+
     setDisabled(true)
 
     if (uname.length === 0 || pwd.length < 6) {
@@ -47,10 +51,13 @@ const Login: FC = () => {
       return
     }
 
+    const token = await captcha?.getChallenge()
+
     api.account
       .accountLogIn({
         userName: uname,
         password: pwd,
+        challenge: token,
       })
       .then(() => {
         showNotification({
@@ -68,10 +75,8 @@ const Login: FC = () => {
       })
   }
 
-  const enterHandler = getHotkeyHandler([['Enter', onLogin]])
-
   return (
-    <AccountView>
+    <AccountView onSubmit={onLogin}>
       <TextInput
         required
         label="用户名或邮箱"
@@ -81,7 +86,6 @@ const Login: FC = () => {
         value={uname}
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
-        onKeyDown={enterHandler}
       />
       <PasswordInput
         required
@@ -92,8 +96,8 @@ const Login: FC = () => {
         value={pwd}
         disabled={disabled}
         onChange={(event) => setPwd(event.currentTarget.value)}
-        onKeyDown={enterHandler}
       />
+      <Box id="captcha" />
       <Anchor
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,

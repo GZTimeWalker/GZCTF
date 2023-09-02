@@ -13,8 +13,8 @@ namespace GZCTF.Controllers;
 /// </summary>
 [Route("api")]
 [ApiController]
-public class InfoController(IPostRepository postRepository,
-    IRecaptchaExtension recaptchaExtension,
+public class InfoController(ICaptchaExtension captcha,
+    IPostRepository postRepository,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     IOptionsSnapshot<AccountPolicy> accountPolicy) : ControllerBase
 {
@@ -80,14 +80,14 @@ public class InfoController(IPostRepository postRepository,
     public IActionResult GetGlobalConfig() => Ok(globalConfig.Value);
 
     /// <summary>
-    /// 获取 Recaptcha SiteKey
+    /// 获取 Captcha 配置
     /// </summary>
     /// <remarks>
-    /// 获取 Recaptcha SiteKey
+    /// 获取 Captcha 配置
     /// </remarks>
-    /// <response code="200">成功获取 Recaptcha SiteKey</response>
-    [HttpGet("SiteKey")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    public IActionResult GetRecaptchaSiteKey()
-        => Ok(accountPolicy.Value.UseGoogleRecaptcha ? recaptchaExtension.SiteKey() : "NOTOKEN");
+    /// <response code="200">成功获取 Captcha 配置</response>
+    [HttpGet("Captcha")]
+    [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
+    public IActionResult GetClientCaptchaInfo()
+        => Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
 }
