@@ -50,8 +50,8 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
        "PortMappingType": "Default", // or "PlatformProxy"
        "EnableTrafficCapture": false,
        "PublicEntry": "<Your PUBLIC_ENTRY>", // or "xxx.xxx.xxx.xxx"
+       // optional
        "DockerConfig": {
-         // optional
          "SwarmMode": false,
          "Uri": "unix:///var/run/docker.sock"
        }
@@ -63,15 +63,16 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
        "Password": "",
        "ServerAddress": ""
      },
-    "CaptchaConfig": {
-      "Provider": "None",
-      "SiteKey": "<Your SITE_KEY>",
-      "SecretKey": "<Your SECRET_KEY>",
-      "GoogleRecaptcha": {
-        "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
-        "RecaptchaThreshold": "0.5"
-      }
-    },
+     "CaptchaConfig": {
+       "Provider": "None", // or "CloudflareTurnstile" or "GoogleRecaptcha"
+       "SiteKey": "<Your SITE_KEY>",
+       "SecretKey": "<Your SECRET_KEY>",
+       // optional
+       "GoogleRecaptcha": {
+         "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
+         "RecaptchaThreshold": "0.5"
+       }
+     },
      "ForwardedOptions": {
        "ForwardedHeaders": 5,
        "ForwardLimit": 1,

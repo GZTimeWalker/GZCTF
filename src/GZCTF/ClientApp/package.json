@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -48,7 +48,7 @@
     "@nabla/vite-plugin-eslint": "^1.5.0",
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/katex": "^0.16.2",
-    "@types/node": "20.5.7",
+    "@types/node": "20.5.8",
     "@types/prismjs": "^1.26.0",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
