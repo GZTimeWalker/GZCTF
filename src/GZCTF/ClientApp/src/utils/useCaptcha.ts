@@ -75,7 +75,7 @@ export class Turnstile implements Captcha {
     return this.challenge
   }
 
-  public loadTurnstile(siteKey: string, theme: string = 'light') {
+  public loadTurnstile(siteKey: string, action: string, theme: string = 'light') {
     if (!siteKey) return
 
     const script = document.createElement('script')
@@ -90,13 +90,14 @@ export class Turnstile implements Captcha {
       window.turnstile.render('#captcha', {
         sitekey: siteKey,
         theme: theme,
+        action: action,
         callback: (token: string) => (this.challenge = token),
       })
     }
   }
 
   constructor(siteKey: string, action: string, theme: string = 'light') {
-    this.loadTurnstile(siteKey, theme)
+    this.loadTurnstile(siteKey, action, theme)
     this.siteKey = siteKey
     this.action = action
     this.challenge = null
