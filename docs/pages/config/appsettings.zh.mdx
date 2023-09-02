@@ -72,11 +72,14 @@ import { Callout } from "nextra-theme-docs";
     "Password": "",
     "ServerAddress": ""
   },
-  "GoogleRecaptcha": {
-    "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
-    "Sitekey": "",
-    "Secretkey": "",
-    "RecaptchaThreshold": "0.5"
+  "CaptchaConfig": {
+    "Provider": "None",
+    "SiteKey": "...",
+    "SecretKey": "...",
+    "GoogleRecaptcha": {
+      "VerifyAPIAddress": "https://www.recaptcha.net/recaptcha/api/siteverify",
+      "RecaptchaThreshold": "0.5"
+    }
   },
   "ForwardedOptions": {
     "ForwardedHeaders": 5, // a flag enum, see following link
@@ -185,13 +188,19 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 
 </Callout>
 
-### GoogleRecaptcha
+### CaptchaConfig
 
-此处配置 Google Recaptcha 的相关信息，用于注册时的验证码验证，可选项。
+此处配置验证码相关信息，用于注册、找回账号和登录时的验证码验证，可选项。
+
+- **Provider:** 验证码提供商，可选 `None`、`GoogleRecaptcha` 或 `CloudflareTurnstile`
+- **SiteKey:** 验证码 Sitekey
+- **SecretKey:** 验证码 Secretkey
+
+#### GoogleRecaptcha
+
+配置 Google Recaptcha 的相关信息，用于注册时的验证码验证，可选项。
 
 - **VerifyAPIAddress:** Google Recaptcha 验证 API 地址
-- **Sitekey:** Google Recaptcha 站点密钥
-- **Secretkey:** Google Recaptcha 服务器密钥
 - **RecaptchaThreshold:** Google Recaptcha 阈值，用于判断验证码是否有效
 
 ### ForwardedOptions

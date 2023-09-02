@@ -243,6 +243,7 @@ public class AccountController(
     /// 使用此接口登录账户
     /// </remarks>
     /// <param name="model"></param>
+    /// <param name="token"></param>
     /// <response code="200">用户成功登录</response>
     /// <response code="400">校验失败</response>
     /// <response code="401">用户名或密码错误</response>

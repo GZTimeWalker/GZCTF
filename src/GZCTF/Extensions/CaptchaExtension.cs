@@ -46,7 +46,7 @@ public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) :
 
     public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context, CancellationToken token = default)
     {
-        if (_config is null || string.IsNullOrWhiteSpace(_config.Secretkey))
+        if (_config is null || string.IsNullOrWhiteSpace(_config.SecretKey))
             return true;
 
         if (string.IsNullOrEmpty(model.Challenge) || context.Connection.RemoteIpAddress is null)
@@ -55,7 +55,7 @@ public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) :
         var ip = context.Connection.RemoteIpAddress;
         var api = _config.GoogleRecaptcha.VerifyAPIAddress;
 
-        var result = await _httpClient.GetAsync($"{api}?secret={_config.Secretkey}&response={token}&remoteip={ip}", token);
+        var result = await _httpClient.GetAsync($"{api}?secret={_config.SecretKey}&response={token}&remoteip={ip}", token);
         var res = await result.Content.ReadFromJsonAsync<RecaptchaResponseModel>(cancellationToken: token);
 
         return res is not null && res.Success && res.Score >= _config.GoogleRecaptcha.RecaptchaThreshold;
@@ -68,7 +68,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
     public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context, CancellationToken token = default)
     {
-        if (_config is null || string.IsNullOrWhiteSpace(_config.Secretkey))
+        if (_config is null || string.IsNullOrWhiteSpace(_config.SecretKey))
             return true;
 
         if (string.IsNullOrEmpty(model.Challenge) || context.Connection.RemoteIpAddress is null)
@@ -78,7 +78,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
         TurnstileRequestModel req = new()
         {
-            Secret = _config.Secretkey,
+            Secret = _config.SecretKey,
             Response = model.Challenge,
             RemoteIP = ip.ToString()
         };

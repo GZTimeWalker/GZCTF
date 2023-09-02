@@ -158,7 +158,7 @@ public enum CaptchaProvider
 public class CaptchaConfig
 {
     public CaptchaProvider Provider { get; set; }
-    public string? Secretkey { get; set; }
+    public string? SecretKey { get; set; }
     public string? SiteKey { get; set; }
 
     public GoogleRecaptchaConfig GoogleRecaptcha { get; set; } = new();

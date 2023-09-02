@@ -3,10 +3,9 @@
     "GZCTF": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:55000",
+      "applicationUrl": "http://localhost:20461",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
