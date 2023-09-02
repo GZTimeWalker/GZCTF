@@ -35,6 +35,9 @@ dependencies:
   '@mantine/notifications':
     specifier: ^6.0.19
     version: 6.0.19(@mantine/core@6.0.19)(@mantine/hooks@6.0.19)(react-dom@18.2.0)(react@18.2.0)
+  '@marsidev/react-turnstile':
+    specifier: ^0.3.0
+    version: 0.3.0(react-dom@18.2.0)(react@18.2.0)
   '@mdi/js':
     specifier: ^7.2.96
     version: 7.2.96
@@ -83,6 +86,9 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
+  react-google-recaptcha-v3:
+    specifier: ^1.10.1
+    version: 1.10.1(react-dom@18.2.0)(react@18.2.0)
   react-pdf:
     specifier: ^7.3.3
     version: 7.3.3(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
@@ -1068,6 +1074,16 @@ packages:
       - supports-color
     dev: false
     optional: true
+
+  /@marsidev/react-turnstile@0.3.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-TSBOtQ4w+kDXVGQOpbTbkw7cuaRXxiQr6WNuPassvzEc1V+FNPYRCx2cRZ/0lSGtdClSUvsyG9prueeDQ6uhuw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@mdi/js@7.2.96:
     resolution: {integrity: sha512-paR9M9ZT7rKbh2boksNUynuSZMHhqRYnEZOm/KrZTjQ4/FzyhjLHuvw/8XYzP+E7fS4+/Ms/82EN1pl/OFsiIA==}
@@ -3309,6 +3325,17 @@ packages:
       file-selector: 0.6.0
       prop-types: 15.8.1
       react: 18.2.0
+    dev: false
+
+  /react-google-recaptcha-v3@1.10.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-K3AYzSE0SasTn+XvV2tq+6YaxM+zQypk9rbCgG4OVUt7Rh4ze9basIKefoBz9sC0CNslJj9N1uwTTgRMJQbQJQ==}
+    peerDependencies:
+      react: ^16.3 || ^17.0 || ^18.0
+      react-dom: ^17.0 || ^18.0
+    dependencies:
+      hoist-non-react-statics: 3.3.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /react-is@16.13.1:

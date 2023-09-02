@@ -55,7 +55,7 @@ public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) :
         var ip = context.Connection.RemoteIpAddress;
         var api = _config.GoogleRecaptcha.VerifyAPIAddress;
 
-        var result = await _httpClient.GetAsync($"{api}?secret={_config.SecretKey}&response={token}&remoteip={ip}", token);
+        var result = await _httpClient.GetAsync($"{api}?secret={_config.SecretKey}&response={model.Challenge}&remoteip={ip}", token);
         var res = await result.Content.ReadFromJsonAsync<RecaptchaResponseModel>(cancellationToken: token);
 
         return res is not null && res.Success && res.Score >= _config.GoogleRecaptcha.RecaptchaThreshold;

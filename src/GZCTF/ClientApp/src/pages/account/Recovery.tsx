@@ -1,28 +1,28 @@
 import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { TextInput, Button, Anchor, Box } from '@mantine/core'
+import { TextInput, Button, Anchor } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
-import { useCaptcha } from '@Utils/useCaptcha'
+import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
-  const captcha = useCaptcha('recovery')
   const [disabled, setDisabled] = useState(false)
+  const { captchaRef, getToken } = useCaptchaRef()
 
   usePageTitle('找回账号')
 
   const onRecovery = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    const token = await captcha?.getChallenge()
+    const { valid, token } = await getToken()
 
-    if (!token) {
+    if (!valid) {
       showNotification({
         color: 'orange',
         title: '请等待验证码……',
@@ -43,32 +43,30 @@ const Recovery: FC = () => {
       autoClose: false,
     })
 
-    api.account
-      .accountRecovery({
+    try {
+      await api.account.accountRecovery({
         email,
         challenge: token,
       })
-      .then(() => {
-        updateNotification({
-          id: 'recovery-status',
-          color: 'teal',
-          title: '一封恢复邮件已发送',
-          message: '请检查你的邮箱及垃圾邮件~',
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
+
+      updateNotification({
+        id: 'recovery-status',
+        color: 'teal',
+        title: '一封恢复邮件已发送',
+        message: '请检查你的邮箱及垃圾邮件~',
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((err) => {
-        updateNotification({
-          id: 'recovery-status',
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.response.data.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+    } catch (err: any) {
+      updateNotification({
+        id: 'recovery-status',
+        color: 'red',
+        title: '遇到了问题',
+        message: `${err.response.data.title}`,
+        icon: <Icon path={mdiClose} size={1} />,
       })
-      .finally(() => {
-        setDisabled(false)
-      })
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (
@@ -83,7 +81,7 @@ const Recovery: FC = () => {
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
-      <Box id="captcha" />
+      <Captcha action="recovery" ref={captchaRef} />
       <Anchor
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,

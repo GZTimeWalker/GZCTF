@@ -1,20 +1,18 @@
 import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { PasswordInput, Grid, TextInput, Button, Anchor, Box } from '@mantine/core'
+import { PasswordInput, Grid, TextInput, Button, Anchor } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
-import { showNotification } from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useCaptcha } from '@Utils/useCaptcha'
+import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api from '@Api'
 
 const Login: FC = () => {
   const params = useSearchParams()[0]
-  const captcha = useCaptcha('login')
   const navigate = useNavigate()
 
   const [pwd, setPwd] = useInputState('')
@@ -22,6 +20,7 @@ const Login: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [needRedirect, setNeedRedirect] = useState(false)
 
+  const { captchaRef, getToken } = useCaptchaRef()
   const { user, mutate } = useUser()
 
   usePageTitle('登录')
@@ -51,28 +50,54 @@ const Login: FC = () => {
       return
     }
 
-    const token = await captcha?.getChallenge()
+    const { valid, token } = await getToken()
 
-    api.account
-      .accountLogIn({
+    if (!valid) {
+      showNotification({
+        color: 'orange',
+        title: '请等待验证码……',
+        message: '请稍后重试',
+        loading: true,
+      })
+      return
+    }
+
+    showNotification({
+      color: 'orange',
+      id: 'login-status',
+      title: '请求已发送……',
+      message: '等待服务器验证',
+      loading: true,
+      autoClose: false,
+    })
+
+    try {
+      await api.account.accountLogIn({
         userName: uname,
         password: pwd,
         challenge: token,
       })
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          title: '登录成功',
-          message: '跳转回登录前页面',
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        setNeedRedirect(true)
-        mutate()
+
+      updateNotification({
+        id: 'login-status',
+        color: 'teal',
+        title: '登录成功',
+        message: '跳转回登录前页面',
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((err) => {
-        showErrorNotification(err)
-        setDisabled(false)
+      setNeedRedirect(true)
+      mutate()
+    } catch (err: any) {
+      updateNotification({
+        id: 'login-status',
+        color: 'red',
+        title: '遇到了问题',
+        message: `${err.response.data.title}`,
+        icon: <Icon path={mdiClose} size={1} />,
       })
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (
@@ -97,7 +122,7 @@ const Login: FC = () => {
         disabled={disabled}
         onChange={(event) => setPwd(event.currentTarget.value)}
       />
-      <Box id="captcha" />
+      <Captcha action="login" ref={captchaRef} />
       <Anchor
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,

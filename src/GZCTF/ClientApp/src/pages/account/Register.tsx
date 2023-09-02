@@ -1,13 +1,13 @@
 import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Anchor, TextInput, PasswordInput, Box } from '@mantine/core'
+import { Button, Anchor, TextInput, PasswordInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
+import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
-import { useCaptcha } from '@Utils/useCaptcha'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { RegisterStatus } from '@Api'
 
@@ -43,7 +43,7 @@ const Register: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const navigate = useNavigate()
-  const captcha = useCaptcha('register')
+  const { captchaRef, getToken } = useCaptchaRef()
 
   usePageTitle('注册')
 
@@ -60,9 +60,9 @@ const Register: FC = () => {
       return
     }
 
-    const token = await captcha?.getChallenge()
+    const { valid, token } = await getToken()
 
-    if (!token) {
+    if (!valid) {
       showNotification({
         color: 'orange',
         title: '请等待验证码……',
@@ -83,40 +83,37 @@ const Register: FC = () => {
       autoClose: false,
     })
 
-    api.account
-      .accountRegister({
+    try {
+      const res = await api.account.accountRegister({
         userName: uname,
         password: pwd,
         email: email,
         challenge: token,
       })
-      .then((res) => {
-        const data = RegisterStatusMap.get(res.data.data)
-        if (data) {
-          updateNotification({
-            id: 'register-status',
-            color: 'teal',
-            title: data.title,
-            message: data.message,
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-
-          if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
-          else navigate('/account/login')
-        }
-      })
-      .catch((err) => {
+      const data = RegisterStatusMap.get(res.data.data)
+      if (data) {
         updateNotification({
           id: 'register-status',
-          color: 'red',
-          title: '遇到了问题',
-          message: `${err.response.data.title}`,
-          icon: <Icon path={mdiClose} size={1} />,
+          color: 'teal',
+          title: data.title,
+          message: data.message,
+          icon: <Icon path={mdiCheck} size={1} />,
         })
+
+        if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
+        else navigate('/account/login')
+      }
+    } catch (err: any) {
+      updateNotification({
+        id: 'register-status',
+        color: 'red',
+        title: '遇到了问题',
+        message: `${err.response.data.title}`,
+        icon: <Icon path={mdiClose} size={1} />,
       })
-      .finally(() => {
-        setDisabled(false)
-      })
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (
@@ -155,7 +152,7 @@ const Register: FC = () => {
         w="100%"
         error={pwd !== retypedPwd}
       />
-      <Box id="captcha" />
+      <Captcha action="register" ref={captchaRef} />
       <Anchor
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,

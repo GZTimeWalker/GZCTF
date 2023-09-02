@@ -5,8 +5,8 @@ import LogoHeader from '@Components/LogoHeader'
 
 const useStyles = createStyles(() => ({
   input: {
-    width: '25vw',
-    minWidth: '250px',
+    width: '300px',
+    minWidth: '300px',
     maxWidth: '300px',
   },
 }))
