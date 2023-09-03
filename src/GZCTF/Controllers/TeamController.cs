@@ -41,7 +41,7 @@ public class TeamController(UserManager<UserInfo> userManager,
         var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return NotFound(new RequestResponse("队伍不存在", 404));
+            return NotFound(new RequestResponse("队伍不存在", StatusCodes.Status404NotFound));
 
         return Ok(TeamInfoModel.FromTeam(team));
     }
@@ -135,7 +135,10 @@ public class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
 
         team.UpdateInfo(model);
 
@@ -172,12 +175,15 @@ public class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse("队伍已锁定"));
 
-        var newCaptain = await userManager.Users.SingleOrDefaultAsync(u => u.Id == model.NewCaptainId);
+        var newCaptain = await userManager.Users.SingleOrDefaultAsync(u => u.Id == model.NewCaptainId, cancellationToken: token);
 
         if (newCaptain is null)
             return BadRequest(new RequestResponse("移交的用户不存在"));
@@ -219,7 +225,10 @@ public class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
 
         return Ok(team.InviteCode);
     }
@@ -251,7 +260,10 @@ public class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
 
         team.UpdateInviteToken();
 
@@ -288,7 +300,10 @@ public class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
 
         var trans = await teamRepository.BeginTransactionAsync(token);
 
@@ -411,7 +426,7 @@ public class TeamController(UserManager<UserInfo> userManager,
             var team = await teamRepository.GetTeamById(id, token);
 
             if (team is null)
-                return BadRequest(new RequestResponse("队伍未找到"));
+                return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
             var user = await userManager.GetUserAsync(User);
 
@@ -457,10 +472,13 @@ public class TeamController(UserManager<UserInfo> userManager,
         var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
 
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
@@ -506,10 +524,13 @@ public class TeamController(UserManager<UserInfo> userManager,
         var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", 403)) { StatusCode = 403 };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse("队伍已锁定"));

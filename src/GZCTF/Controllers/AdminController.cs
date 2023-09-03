@@ -293,7 +293,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", 404));
+            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
 
         user.UpdateUserInfo(model);
         await userManager.UpdateAsync(user);
@@ -314,12 +314,12 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpDelete("Users/{userid}/Password")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ResetPassword(string userid, CancellationToken token = default)
+    public async Task<IActionResult> ResetPassword(string userid)
     {
         var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", 404));
+            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
 
         var pwd = Codec.RandomPassword(16);
         var code = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -351,7 +351,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", 404));
+            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
 
         if (await teamRepository.CheckIsCaptain(user, token))
             return BadRequest(new RequestResponse("不可以删除队长"));
@@ -379,7 +379,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return NotFound(new RequestResponse("队伍未找到", 404));
+            return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
         await teamRepository.DeleteTeam(team, token);
 
@@ -403,7 +403,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", 404));
+            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
 
         return Ok(ProfileUserInfoModel.FromUserInfo(user));
     }
@@ -440,7 +440,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         var participation = await participationRepository.GetParticipationById(id, token);
 
         if (participation is null)
-            return NotFound(new RequestResponse("参与状态未找到", 404));
+            return NotFound(new RequestResponse("参与状态未找到", StatusCodes.Status404NotFound));
 
         await participationRepository.UpdateParticipationStatus(participation, status, token);
 
@@ -465,7 +465,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         return Ok(await participationRepository.GetWriteups(game, token));
     }
@@ -488,7 +488,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         var wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
@@ -532,12 +532,12 @@ public class AdminController(UserManager<UserInfo> userManager,
         var container = await containerRepository.GetContainerById(id, token);
 
         if (container is null)
-            return NotFound(new RequestResponse("容器实例未找到", 404));
+            return NotFound(new RequestResponse("容器实例未找到", StatusCodes.Status404NotFound));
 
         if (await instanceRepository.DestroyContainer(container, token))
             return Ok();
         else
-            return BadRequest(new RequestResponse("容器实例销毁失败", 404));
+            return BadRequest(new RequestResponse("容器实例销毁失败"));
     }
 
     /// <summary>

@@ -87,14 +87,14 @@ public class AccountController(
             await signInManager.SignInAsync(user, true);
 
             logger.Log("用户成功注册", user, TaskStatus.Success);
-            return Ok(new RequestResponse<RegisterStatus>("注册成功", RegisterStatus.LoggedIn, 200));
+            return Ok(new RequestResponse<RegisterStatus>("注册成功", RegisterStatus.LoggedIn, StatusCodes.Status200OK));
         }
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
         {
             logger.Log("用户成功注册，待审核", user, TaskStatus.Success);
             return Ok(new RequestResponse<RegisterStatus>("注册成功，等待管理员审核",
-                    RegisterStatus.AdminConfirmationRequired, 200));
+                    RegisterStatus.AdminConfirmationRequired, StatusCodes.Status200OK));
         }
 
         logger.Log("发送用户邮箱验证邮件", user, TaskStatus.Pending);
@@ -112,7 +112,7 @@ public class AccountController(
         }
 
         return Ok(new RequestResponse<RegisterStatus>("注册成功，等待邮箱验证",
-                    RegisterStatus.EmailConfirmationRequired, 200));
+                    RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
     }
 
     /// <summary>
@@ -138,10 +138,10 @@ public class AccountController(
 
         var user = await userManager.FindByEmailAsync(model.Email!);
         if (user is null)
-            return NotFound(new RequestResponse("用户不存在", 404));
+            return NotFound(new RequestResponse("用户不存在", StatusCodes.Status404NotFound));
 
         if (!user.EmailConfirmed)
-            return NotFound(new RequestResponse("账户未激活，请重新注册", 404));
+            return NotFound(new RequestResponse("账户未激活，请重新注册", StatusCodes.Status404NotFound));
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse("请联系管理员重置密码"));
@@ -161,7 +161,7 @@ public class AccountController(
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
 
-        return Ok(new RequestResponse("邮件发送成功", 200));
+        return Ok(new RequestResponse("邮件发送成功", StatusCodes.Status200OK));
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public class AccountController(
         var result = await userManager.ConfirmEmailAsync(user, Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse("邮箱验证失败", 401));
+            return Unauthorized(new RequestResponse("邮箱验证失败", StatusCodes.Status401Unauthorized));
 
         logger.Log("通过邮箱验证", user, TaskStatus.Success);
         await signInManager.SignInAsync(user, true);
@@ -260,10 +260,10 @@ public class AccountController(
         user ??= await userManager.FindByEmailAsync(model.UserName);
 
         if (user is null)
-            return Unauthorized(new RequestResponse("用户名或密码错误", 401));
+            return Unauthorized(new RequestResponse("用户名或密码错误", StatusCodes.Status401Unauthorized));
 
         if (user.Role == Role.Banned)
-            return Unauthorized(new RequestResponse("用户已被禁用", 401));
+            return Unauthorized(new RequestResponse("用户已被禁用", StatusCodes.Status401Unauthorized));
 
         user.LastSignedInUTC = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
@@ -273,7 +273,7 @@ public class AccountController(
         var result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse("用户名或密码错误", 401));
+            return Unauthorized(new RequestResponse("用户名或密码错误", StatusCodes.Status401Unauthorized));
 
         logger.Log("用户成功登录", user, TaskStatus.Success);
 
@@ -397,7 +397,7 @@ public class AccountController(
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
 
-        return Ok(new RequestResponse<bool>("邮箱待验证", true, 200));
+        return Ok(new RequestResponse<bool>("邮箱待验证", true, StatusCodes.Status200OK));
     }
 
     /// <summary>

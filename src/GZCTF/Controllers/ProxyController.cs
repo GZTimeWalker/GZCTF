@@ -46,7 +46,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return BadRequest(new RequestResponse("TCP 代理已禁用"));
 
         if (!await ValidateContainer(id, token))
-            return NotFound(new RequestResponse("不存在的容器"));
+            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
@@ -57,7 +57,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         var container = await containerRepository.GetContainerWithInstanceById(id, token);
 
         if (container is null || container.Instance is null || !container.IsProxy)
-            return NotFound(new RequestResponse("不存在的容器"));
+            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         var ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
@@ -117,7 +117,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return BadRequest(new RequestResponse("TCP 代理已禁用"));
 
         if (!await ValidateContainer(id, token))
-            return NotFound(new RequestResponse("不存在的容器"));
+            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
@@ -125,7 +125,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         var container = await containerRepository.GetContainerById(id, token);
 
         if (container is null || container.InstanceId != 0 || !container.IsProxy)
-            return NotFound(new RequestResponse("不存在的容器"));
+            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         var ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
@@ -161,8 +161,11 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         }
         catch (SocketException e)
         {
-            logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Warning);
-            return new JsonResult(new RequestResponse($"容器连接失败（{e.SocketErrorCode}）", 418)) { StatusCode = 418 };
+            logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Debug);
+            return new JsonResult(new RequestResponse($"容器连接失败（{e.SocketErrorCode}）", StatusCodes.Status418ImATeapot))
+            {
+                StatusCode = StatusCodes.Status418ImATeapot
+            };
         }
 
         using var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();

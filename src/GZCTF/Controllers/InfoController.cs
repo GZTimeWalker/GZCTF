@@ -63,7 +63,7 @@ public class InfoController(ICaptchaExtension captcha,
         var post = await postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
-            return NotFound(new RequestResponse("文章未找到", 404));
+            return NotFound(new RequestResponse("文章不存在", StatusCodes.Status404NotFound));
 
         return Ok(PostDetailModel.FromPost(post));
     }

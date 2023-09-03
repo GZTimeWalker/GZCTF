@@ -142,11 +142,11 @@ builder.Services.AddAuthentication(o =>
     o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 }).AddIdentityCookies(options =>
 {
-    options.ApplicationCookie?.Configure(cookie =>
+    options.ApplicationCookie?.Configure(auth =>
     {
-        cookie.Cookie.Name = "GZCTF_Token";
-        cookie.SlidingExpiration = true;
-        cookie.ExpireTimeSpan = TimeSpan.FromDays(7);
+        auth.Cookie.Name = "GZCTF_Token";
+        auth.SlidingExpiration = true;
+        auth.ExpireTimeSpan = TimeSpan.FromDays(7);
     });
 });
 
@@ -247,8 +247,7 @@ app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
     {
-        ctx.Context.Response.Headers.Append(
-             "Cache-Control", $"public, max-age={60 * 60 * 24 * 7}");
+        ctx.Context.Response.Headers.CacheControl = $"public, max-age={60 * 60 * 24 * 7}";
     }
 });
 

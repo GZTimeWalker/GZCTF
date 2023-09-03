@@ -70,7 +70,7 @@ public class GameController(
         var context = await GetContextInfo(id, token: token);
 
         if (context.Game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         var count = await participationRepository.GetParticipationCount(context.Game, token);
 
@@ -100,7 +100,7 @@ public class GameController(
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         if (!game.PracticeMode && game.EndTimeUTC < DateTimeOffset.UtcNow)
             return BadRequest(new RequestResponse("比赛已结束"));
@@ -115,7 +115,7 @@ public class GameController(
         var team = await teamRepository.GetTeamById(model.TeamId, token);
 
         if (team is null)
-            return NotFound(new RequestResponse("队伍未找到", 404));
+            return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
         if (team.Members.All(u => u.Id != user!.Id))
             return BadRequest(new RequestResponse("您不是此队伍的队员"));
@@ -187,7 +187,7 @@ public class GameController(
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         var user = await userManager.GetUserAsync(User);
 
@@ -229,7 +229,7 @@ public class GameController(
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -257,7 +257,7 @@ public class GameController(
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -287,7 +287,7 @@ public class GameController(
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -317,7 +317,7 @@ public class GameController(
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -344,7 +344,7 @@ public class GameController(
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", 404));
+            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         if (DateTimeOffset.UtcNow < game.StartTimeUTC)
             return BadRequest(new RequestResponse("比赛未开始"));
@@ -389,12 +389,12 @@ public class GameController(
         var filePath = $"{FilePath.Capture}/{challengeId}";
 
         if (!Path.Exists(filePath))
-            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
 
         var participationIds = await GetDirNamesAsInt(filePath);
 
         if (participationIds.Count == 0)
-            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
 
         var participations = await participationRepository.GetParticipationsByIds(participationIds, token);
 
@@ -420,7 +420,7 @@ public class GameController(
         var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
 
         if (!Path.Exists(filePath))
-            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
 
         return Ok(FilePath.GetFileRecords(filePath, out long _));
     }
@@ -445,7 +445,7 @@ public class GameController(
         var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
 
         if (!Path.Exists(filePath))
-            return NotFound(new RequestResponse("未找到相关捕获信息", 404));
+            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
 
         var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
         var stream = await Codec.ZipFilesAsync(filePath, filename, token);
@@ -663,7 +663,7 @@ public class GameController(
     public async Task<IActionResult> GetChallenge([FromRoute] int id, [FromRoute] int challengeId, CancellationToken token)
     {
         if (id <= 0 || challengeId <= 0)
-            return NotFound(new RequestResponse("题目未找到", 404));
+            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
 
         var context = await GetContextInfo(id, token: token);
 
@@ -673,7 +673,7 @@ public class GameController(
         var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
-            return NotFound(new RequestResponse("题目未找到或动态附件分配失败", 404));
+            return NotFound(new RequestResponse("题目未找到或动态附件分配失败", StatusCodes.Status404NotFound));
 
         return Ok(ChallengeDetailModel.FromInstance(instance));
     }
@@ -747,7 +747,7 @@ public class GameController(
         var submission = await submissionRepository.GetSubmission(id, challengeId, userId!, submitId, token);
 
         if (submission is null)
-            return NotFound(new RequestResponse("提交未找到", 404));
+            return NotFound(new RequestResponse("提交未找到", StatusCodes.Status404NotFound));
 
         return Ok(submission.Status switch
         {
@@ -870,15 +870,15 @@ public class GameController(
         var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
-            return NotFound(new RequestResponse("题目未找到", 404));
+            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
 
         if (!instance.Challenge.Type.IsContainer())
             return BadRequest(new RequestResponse("题目不可创建容器"));
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
-            return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
+            return new JsonResult(new RequestResponse("容器操作过于频繁", StatusCodes.Status429TooManyRequests))
             {
-                StatusCode = 429
+                StatusCode = StatusCodes.Status429TooManyRequests
             };
 
         if (instance.Container is not null)
@@ -926,7 +926,7 @@ public class GameController(
         var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
-            return NotFound(new RequestResponse("题目未找到", 404));
+            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
 
         if (!instance.Challenge.Type.IsContainer())
             return BadRequest(new RequestResponse("题目不可创建容器"));
@@ -971,7 +971,7 @@ public class GameController(
         var instance = await instanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
-            return NotFound(new RequestResponse("题目未找到", 404));
+            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
 
         if (!instance.Challenge.Type.IsContainer())
             return BadRequest(new RequestResponse("题目不可创建容器"));
@@ -980,9 +980,9 @@ public class GameController(
             return BadRequest(new RequestResponse("题目未创建容器"));
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
-            return new JsonResult(new RequestResponse("容器操作过于频繁", 429))
+            return new JsonResult(new RequestResponse("容器操作过于频繁", StatusCodes.Status429TooManyRequests))
             {
-                StatusCode = 429
+                StatusCode = StatusCodes.Status429TooManyRequests
             };
 
         var destroyId = instance.Container.ContainerId;
@@ -1030,7 +1030,7 @@ public class GameController(
         };
 
         if (res.Game is null)
-            return res.WithResult(NotFound(new RequestResponse("比赛未找到", 404)));
+            return res.WithResult(NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound)));
 
         var part = await participationRepository.GetParticipation(res.User!, res.Game, token);
 
@@ -1053,7 +1053,7 @@ public class GameController(
             var challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
 
             if (challenge is null)
-                return res.WithResult(NotFound(new RequestResponse("题目未找到", 404)));
+                return res.WithResult(NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound)));
 
             res.Challenge = challenge;
         }

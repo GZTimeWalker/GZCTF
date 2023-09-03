@@ -38,16 +38,19 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
 
         if (!System.IO.File.Exists(path))
         {
-            logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0", TaskStatus.NotFound, LogLevel.Warning);
-            return NotFound(new RequestResponse("文件不存在", 404));
+            var ip = HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+            logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", ip, TaskStatus.NotFound, LogLevel.Warning);
+            return NotFound(new RequestResponse("文件不存在", StatusCodes.Status404NotFound));
         }
 
         if (!_extProvider.TryGetContentType(filename, out string? contentType))
             contentType = MediaTypeNames.Application.Octet;
 
+        HttpContext.Response.Headers.CacheControl = $"public, max-age={60 * 60 * 24 * 7}";
+
         return new PhysicalFileResult(path, contentType)
         {
-            FileDownloadName = filename
+            FileDownloadName = filename,
         };
     }
 

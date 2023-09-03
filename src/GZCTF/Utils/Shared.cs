@@ -30,7 +30,7 @@ public record TaskResult<TResult>(TaskStatus Status, TResult? Result = default);
 /// </summary>
 /// <param name="Title">响应信息</param>
 /// <param name="Status">状态码</param>
-public record RequestResponse(string Title, int Status = 400);
+public record RequestResponse(string Title, int Status = StatusCodes.Status400BadRequest);
 
 /// <summary>
 /// 请求响应
@@ -38,7 +38,7 @@ public record RequestResponse(string Title, int Status = 400);
 /// <param name="Title">响应信息</param>
 /// <param name="Data">数据</param>
 /// <param name="Status">状态码</param>
-public record RequestResponse<T>(string Title, T Data, int Status = 400);
+public record RequestResponse<T>(string Title, T Data, int Status = StatusCodes.Status400BadRequest);
 
 /// <summary>
 /// 答案校验结果

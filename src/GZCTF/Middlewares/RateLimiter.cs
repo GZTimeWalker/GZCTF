@@ -1,6 +1,6 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
 using GZCTF.Utils;
@@ -70,21 +70,21 @@ public class RateLimiter
                     SegmentsPerWindow = 6,
                 });
             }),
-            OnRejected = (context, cancellationToken) =>
+            OnRejected = async (context, cancellationToken) =>
             {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                context.HttpContext.Response.ContentType = MediaTypeNames.Application.Json;
+
+                var afterSec = (int)TimeSpan.FromMinutes(1).TotalSeconds;
+
                 if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
-                {
-                    context.HttpContext.Response.Headers.RetryAfter =
-                    ((int)retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo);
-                }
+                    afterSec = (int)retryAfter.TotalSeconds;
 
-                context?.HttpContext?.RequestServices?
-                    .GetService<ILoggerFactory>()?
-                    .CreateLogger<RateLimiter>()
-                    .Log($"请求过于频繁：{context.HttpContext.Request.Path}",
-                        context.HttpContext, TaskStatus.Denied, LogLevel.Warning);
-
-                return new ValueTask();
+                context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);
+                await context.HttpContext.Response.WriteAsJsonAsync(
+                    new RequestResponse($"Too many requests, retry after {afterSec} seconds.",
+                        StatusCodes.Status429TooManyRequests
+                    ), cancellationToken);
             }
         }
         .AddConcurrencyLimiter(nameof(LimitPolicy.Concurrency), options =>
