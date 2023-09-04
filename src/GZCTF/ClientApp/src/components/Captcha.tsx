@@ -32,16 +32,20 @@ const ReCaptchaBox = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   const { action, ...others } = props
   const { executeRecaptcha } = useGoogleReCaptcha()
 
-  useImperativeHandle(ref, () => ({
-    getToken: async () => {
-      if (!executeRecaptcha) {
-        return { valid: false }
-      }
+  useImperativeHandle(
+    ref,
+    () => ({
+      getToken: async () => {
+        if (!executeRecaptcha) {
+          return { valid: false }
+        }
 
-      const token = await executeRecaptcha(action)
-      return { valid: !!token, token }
-    },
-  }), [executeRecaptcha, action])
+        const token = await executeRecaptcha(action)
+        return { valid: !!token, token }
+      },
+    }),
+    [executeRecaptcha, action]
+  )
 
   return <Box {...others} />
 })
@@ -63,25 +67,29 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   const turnstileRef = useRef<TurnstileInstance>(null)
   const reCaptchaRef = useRef<CaptchaInstance>(null)
 
-  useImperativeHandle(ref, () => ({
-    getToken: async () => {
-      if (error || !info) {
-        return { valid: false }
-      }
+  useImperativeHandle(
+    ref,
+    () => ({
+      getToken: async () => {
+        if (error || !info) {
+          return { valid: false }
+        }
 
-      if (!info?.siteKey || type === CaptchaProvider.None) {
-        return { valid: true }
-      }
+        if (!info?.siteKey || type === CaptchaProvider.None) {
+          return { valid: true }
+        }
 
-      if (type === CaptchaProvider.GoogleRecaptcha) {
-        const res = await reCaptchaRef.current?.getToken()
-        return res ?? { valid: false }
-      }
+        if (type === CaptchaProvider.GoogleRecaptcha) {
+          const res = await reCaptchaRef.current?.getToken()
+          return res ?? { valid: false }
+        }
 
-      const token = turnstileRef.current?.getResponse()
-      return { valid: !!token, token }
-    },
-  }), [error, info, type])
+        const token = turnstileRef.current?.getResponse()
+        return { valid: !!token, token }
+      },
+    }),
+    [error, info, type]
+  )
 
   if (error || !info?.siteKey || type === CaptchaProvider.None) {
     return <Box {...others} />

@@ -1,6 +1,7 @@
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
-import { marked } from 'marked'
+import { Marked } from 'marked'
+import { markedHighlight } from 'marked-highlight'
 import Prism from 'prismjs'
 import { forwardRef } from 'react'
 import { Sx, Text, TextProps, TypographyStylesProvider } from '@mantine/core'
@@ -30,6 +31,8 @@ export const InlineMarkdownRender = forwardRef<HTMLParagraphElement, InlineMarkd
   (props, ref) => {
     const { source, ...others } = props
     const { classes, cx } = useInlineStyles()
+
+    const marked = new Marked()
 
     const renderer = new marked.Renderer()
 
@@ -62,6 +65,20 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
   const { classes, cx } = useTypographyStyles()
   const { source, ...others } = props
 
+  Prism.manual = true
+
+  const marked = new Marked(
+    markedHighlight({
+      highlight(code, lang) {
+        if (lang && Prism.languages[lang]) {
+          return Prism.highlight(code, Prism.languages[lang], lang)
+        } else {
+          return code
+        }
+      },
+    })
+  )
+
   const renderer = new marked.Renderer()
 
   const replacer = (text: string) => {
@@ -79,16 +96,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
   renderer.paragraph = RenderReplacer(renderer.paragraph, replacer)
   renderer.text = RenderReplacer(renderer.text, replacer)
 
-  Prism.manual = true
-
   marked.setOptions({
-    highlight(code, lang) {
-      if (lang && Prism.languages[lang]) {
-        return Prism.highlight(code, Prism.languages[lang], lang)
-      } else {
-        return code
-      }
-    },
     renderer,
     silent: true,
   })
