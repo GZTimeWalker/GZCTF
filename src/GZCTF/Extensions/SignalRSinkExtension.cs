@@ -11,14 +11,17 @@ namespace GZCTF.Extensions;
 
 public static class SignalRSinkExtension
 {
-    public static LoggerConfiguration SignalR(this LoggerSinkConfiguration loggerConfiguration, IServiceProvider serviceProvider)
-        => loggerConfiguration.Sink(new SignalRSink(serviceProvider));
+    public static LoggerConfiguration SignalR(this LoggerSinkConfiguration loggerConfiguration,
+        IServiceProvider serviceProvider)
+    {
+        return loggerConfiguration.Sink(new SignalRSink(serviceProvider));
+    }
 }
 
 public class SignalRSink : ILogEventSink
 {
-    private readonly IServiceProvider _serviceProvider;
-    private IHubContext<AdminHub, IAdminClient>? _hubContext;
+    readonly IServiceProvider _serviceProvider;
+    IHubContext<AdminHub, IAdminClient>? _hubContext;
 
     public SignalRSink(IServiceProvider serviceProvider)
     {
@@ -30,7 +33,6 @@ public class SignalRSink : ILogEventSink
         _hubContext ??= _serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
         if (logEvent.Level >= LogEventLevel.Information)
-        {
             try
             {
                 _hubContext.Clients.All.ReceivedLog(
@@ -48,6 +50,5 @@ public class SignalRSink : ILogEventSink
             {
                 // ignored
             }
-        }
     }
 }

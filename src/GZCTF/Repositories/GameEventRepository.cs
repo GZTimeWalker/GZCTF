@@ -1,9 +1,6 @@
 ﻿using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
-using GZCTF.Models;
-
 using GZCTF.Repositories.Interface;
-
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,14 +18,15 @@ public class GameEventRepository(
         gameEvent = await context.GameEvents.SingleAsync(s => s.Id == gameEvent.Id, token);
 
         await hub.Clients.Group($"Game_{gameEvent.GameId}")
-                .ReceivedGameEvent(gameEvent);
+            .ReceivedGameEvent(gameEvent);
 
         return gameEvent;
     }
 
-    public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0, CancellationToken token = default)
+    public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,
+        CancellationToken token = default)
     {
-        var data = context.GameEvents.Where(e => e.GameId == gameId);
+        IQueryable<GameEvent> data = context.GameEvents.Where(e => e.GameId == gameId);
 
         if (hideContainer)
             data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-using GZCTF.Models.Request.Info;
+﻿using System.Text.Json.Serialization;
 
 namespace GZCTF.Models.Request.Game;
 
@@ -32,11 +29,13 @@ public class BasicWriteupInfoModel
     public string WriteupNote { get; set; } = string.Empty;
 
     internal static BasicWriteupInfoModel FromParticipation(Participation part)
-        => new()
+    {
+        return new BasicWriteupInfoModel
         {
             Submitted = part.Writeup is not null,
             Name = part.Writeup?.Name ?? "#",
             FileSize = part.Writeup?.FileSize ?? 0,
             WriteupNote = part.Game.WriteupNote
         };
+    }
 }

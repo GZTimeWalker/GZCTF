@@ -1,18 +1,18 @@
 import React, { FC, useEffect, useState } from 'react'
 import {
-  Group,
-  Table,
-  Text,
   ActionIcon,
-  Badge,
   Avatar,
-  TextInput,
-  Paper,
-  ScrollArea,
-  Switch,
-  Stack,
+  Badge,
   Button,
   Code,
+  Group,
+  Paper,
+  ScrollArea,
+  Stack,
+  Switch,
+  Table,
+  Text,
+  TextInput,
 } from '@mantine/core'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'

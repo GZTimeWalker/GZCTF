@@ -1,25 +1,26 @@
 namespace GZCTF.Utils;
 
-internal enum DirType : byte
+enum DirType : byte
 {
     Logs,
     Uploads,
     Capture
 }
 
-internal static class FilePath
+static class FilePath
 {
     const string Base = "files";
+
+    internal static string Logs => GetDir(DirType.Logs);
+    internal static string Uploads => GetDir(DirType.Uploads);
+    internal static string Capture => GetDir(DirType.Capture);
 
     internal static void EnsureDirs()
     {
         foreach (DirType type in Enum.GetValues<DirType>())
         {
-            string path = Path.Combine(Base, type.ToString().ToLower());
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+            var path = Path.Combine(Base, type.ToString().ToLower());
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         }
     }
 
@@ -29,11 +30,9 @@ internal static class FilePath
     /// <param name="type"></param>
     /// <returns></returns>
     static string GetDir(DirType type)
-        => Path.Combine(Base, type.ToString().ToLower());
-
-    internal static string Logs => GetDir(DirType.Logs);
-    internal static string Uploads => GetDir(DirType.Uploads);
-    internal static string Capture => GetDir(DirType.Capture);
+    {
+        return Path.Combine(Base, type.ToString().ToLower());
+    }
 
     /// <summary>
     /// 获取文件夹内容
@@ -46,7 +45,7 @@ internal static class FilePath
         totSize = 0;
         var records = new List<FileRecord>();
 
-        foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
+        foreach (var file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
         {
             var info = new FileInfo(file);
 

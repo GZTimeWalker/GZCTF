@@ -1,14 +1,13 @@
 using System.Net.Mime;
 using System.Text.RegularExpressions;
 using GZCTF.Middlewares;
-
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Controllers;
 
@@ -39,7 +38,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBasicInfo(int id, CancellationToken token)
     {
-        var team = await teamRepository.GetTeamById(id, token);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return NotFound(new RequestResponse("队伍不存在", StatusCodes.Status404NotFound));
@@ -62,7 +61,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetTeamsInfo(CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
+        UserInfo? user = await userManager.GetUserAsync(User);
 
         return Ok((await teamRepository.GetUserTeams(user!, token)).Select(t => TeamInfoModel.FromTeam(t)));
     }
@@ -86,9 +85,9 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateTeam([FromBody] TeamUpdateModel model, CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
+        UserInfo? user = await userManager.GetUserAsync(User);
 
-        var teams = await teamRepository.GetUserTeams(user!, token);
+        Team[] teams = await teamRepository.GetUserTeams(user!, token);
 
         if (teams.Length > 1 && teams.Any(t => t.CaptainId == user!.Id))
             return BadRequest(new RequestResponse("不允许创建多个队伍"));
@@ -96,7 +95,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         if (string.IsNullOrEmpty(model.Name))
             return BadRequest(new RequestResponse("队伍名不能为空"));
 
-        var team = await teamRepository.CreateTeam(model, user!, token);
+        Team? team = await teamRepository.CreateTeam(model, user!, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍创建失败"));
@@ -127,10 +126,11 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] TeamUpdateModel model, CancellationToken token)
+    public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] TeamUpdateModel model,
+        CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
-        var team = await teamRepository.GetTeamById(id, token);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
@@ -167,10 +167,11 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Transfer([FromRoute] int id, [FromBody] TeamTransferModel model, CancellationToken token)
+    public async Task<IActionResult> Transfer([FromRoute] int id, [FromBody] TeamTransferModel model,
+        CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
-        var team = await teamRepository.GetTeamById(id, token);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
@@ -184,12 +185,12 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse("队伍已锁定"));
 
-        var newCaptain = await userManager.Users.SingleOrDefaultAsync(u => u.Id == model.NewCaptainId, cancellationToken: token);
+        UserInfo? newCaptain = await userManager.Users.SingleOrDefaultAsync(u => u.Id == model.NewCaptainId, token);
 
         if (newCaptain is null)
             return BadRequest(new RequestResponse("移交的用户不存在"));
 
-        var newCaptainTeams = await teamRepository.GetUserTeams(newCaptain, token);
+        Team[] newCaptainTeams = await teamRepository.GetUserTeams(newCaptain, token);
 
         if (newCaptainTeams.Count(t => t.CaptainId == newCaptain.Id) >= 3)
             return BadRequest(new RequestResponse("被移交者所管理的队伍过多"));
@@ -219,8 +220,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> InviteCode([FromRoute] int id, CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
-        var team = await teamRepository.GetTeamById(id, token);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
@@ -254,8 +255,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> UpdateInviteToken([FromRoute] int id, CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
-        var team = await teamRepository.GetTeamById(id, token);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
@@ -294,8 +295,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> KickUser([FromRoute] int id, [FromRoute] string userid, CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
-        var team = await teamRepository.GetTeamById(id, token);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
@@ -306,14 +307,14 @@ public partial class TeamController(UserManager<UserInfo> userManager,
                 StatusCode = StatusCodes.Status403Forbidden
             };
 
-        var trans = await teamRepository.BeginTransactionAsync(token);
+        IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(token);
 
         try
         {
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))
                 return BadRequest(new RequestResponse("队伍已锁定"));
 
-            var kickUser = team.Members.SingleOrDefault(m => m.Id == userid);
+            UserInfo? kickUser = team.Members.SingleOrDefault(m => m.Id == userid);
             if (kickUser is null)
                 return BadRequest(new RequestResponse("用户不在队伍中"));
 
@@ -368,11 +369,11 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse($"队伍 Id 转换错误：{preCode[(lastColon + 1)..]}"));
 
         var teamName = preCode[..lastColon];
-        var trans = await teamRepository.BeginTransactionAsync(cancelToken);
+        IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(cancelToken);
 
         try
         {
-            var team = await teamRepository.GetTeamById(teamId, cancelToken);
+            Team? team = await teamRepository.GetTeamById(teamId, cancelToken);
 
             if (team is null)
                 return BadRequest(new RequestResponse($"{teamName} 队伍未找到"));
@@ -383,7 +384,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
                 return BadRequest(new RequestResponse($"{teamName} 队伍已锁定"));
 
-            var user = await userManager.GetUserAsync(User);
+            UserInfo? user = await userManager.GetUserAsync(User);
 
             if (team.Members.Any(m => m.Id == user!.Id))
                 return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
@@ -423,16 +424,16 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Leave([FromRoute] int id, CancellationToken token)
     {
-        var trans = await teamRepository.BeginTransactionAsync(token);
+        IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(token);
 
         try
         {
-            var team = await teamRepository.GetTeamById(id, token);
+            Team? team = await teamRepository.GetTeamById(id, token);
 
             if (team is null)
                 return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
-            var user = await userManager.GetUserAsync(User);
+            UserInfo? user = await userManager.GetUserAsync(User);
 
             if (team.Members.All(m => m.Id != user!.Id))
                 return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
@@ -472,8 +473,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Avatar([FromRoute] int id, IFormFile file, CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
-        var team = await teamRepository.GetTeamById(id, token);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
@@ -493,7 +494,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         if (team.AvatarHash is not null)
             _ = await fileService.DeleteFileByHash(team.AvatarHash, token);
 
-        var avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
+        LocalFile? avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("队伍头像更新失败"));
@@ -524,8 +525,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteTeam(int id, CancellationToken token)
     {
-        var user = await userManager.GetUserAsync(User);
-        var team = await teamRepository.GetTeamById(id, token);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));

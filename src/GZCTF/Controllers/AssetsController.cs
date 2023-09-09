@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using GZCTF.Middlewares;
-
 using GZCTF.Repositories.Interface;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -17,7 +15,7 @@ namespace GZCTF.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AssetsController(IFileRepository fileService, ILogger<AssetsController> logger) : ControllerBase
 {
-    private readonly FileExtensionContentTypeProvider _extProvider = new();
+    readonly FileExtensionContentTypeProvider _extProvider = new();
 
     /// <summary>
     /// 获取文件接口
@@ -44,15 +42,12 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
             return NotFound(new RequestResponse("文件不存在", StatusCodes.Status404NotFound));
         }
 
-        if (!_extProvider.TryGetContentType(filename, out string? contentType))
+        if (!_extProvider.TryGetContentType(filename, out var contentType))
             contentType = MediaTypeNames.Application.Octet;
 
         HttpContext.Response.Headers.CacheControl = $"public, max-age={60 * 60 * 24 * 7}";
 
-        return new PhysicalFileResult(path, contentType)
-        {
-            FileDownloadName = filename,
-        };
+        return new PhysicalFileResult(path, contentType) { FileDownloadName = filename };
     }
 
     /// <summary>
@@ -72,20 +67,21 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
     [HttpPost("api/[controller]")]
     [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Upload(List<IFormFile> files, [FromQuery] string? filename, CancellationToken token)
+    public async Task<IActionResult> Upload(List<IFormFile> files, [FromQuery] string? filename,
+        CancellationToken token)
     {
         try
         {
             List<LocalFile> results = new();
-            foreach (var file in files)
-            {
+            foreach (IFormFile file in files)
                 if (file.Length > 0)
                 {
-                    var res = await fileService.CreateOrUpdateFile(file, filename, token);
-                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {filename ?? file.FileName} @ {file.Length} bytes", TaskStatus.Success, LogLevel.Debug);
+                    LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
+                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {filename ?? file.FileName} @ {file.Length} bytes",
+                        TaskStatus.Success, LogLevel.Debug);
                     results.Add(res);
                 }
-            }
+
             return Ok(results);
         }
         catch (Exception ex)
@@ -114,7 +110,7 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(string hash, CancellationToken token)
     {
-        var result = await fileService.DeleteFileByHash(hash, token);
+        TaskStatus result = await fileService.DeleteFileByHash(hash, token);
 
         logger.SystemLog($"删除文件 [{hash[..8]}]...", result, LogLevel.Information);
 

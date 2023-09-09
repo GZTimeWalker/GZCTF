@@ -1,5 +1,4 @@
-﻿
-using GZCTF.Models.Request.Account;
+﻿using GZCTF.Models.Request.Account;
 
 namespace GZCTF.Models.Request.Admin;
 
@@ -44,7 +43,8 @@ public class TeamWithDetailedUserInfo
     public ProfileUserInfoModel[]? Members { get; set; }
 
     internal static TeamWithDetailedUserInfo FromTeam(Team team)
-        => new()
+    {
+        return new TeamWithDetailedUserInfo
         {
             Id = team.Id,
             Name = team.Name,
@@ -54,4 +54,5 @@ public class TeamWithDetailedUserInfo
             CaptainId = team.CaptainId,
             Members = team.Members.Select(ProfileUserInfoModel.FromUserInfo).ToArray()
         };
+    }
 }

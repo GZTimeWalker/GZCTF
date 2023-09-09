@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { Group, Title, createStyles, GroupProps } from '@mantine/core'
+import { createStyles, Group, GroupProps, Title } from '@mantine/core'
 import MainIcon from '@Components/icon/MainIcon'
 import { useConfig } from '@Utils/useConfig'
 

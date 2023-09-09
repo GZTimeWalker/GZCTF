@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
-
 using MemoryPack;
 using Microsoft.AspNetCore.Identity;
 
@@ -58,27 +58,9 @@ public partial class UserInfo : IdentityUser
     [ProtectedPersonalData]
     public string StdNumber { get; set; } = string.Empty;
 
-    #region 数据库关系
-
-    /// <summary>
-    /// 头像哈希
-    /// </summary>
-    [MaxLength(64)]
-    public string? AvatarHash { get; set; }
-
-    /// <summary>
-    /// 个人提交记录
-    /// </summary>
+    [NotMapped]
     [MemoryPackIgnore]
-    public List<Submission> Submissions { get; set; } = new();
-
-    /// <summary>
-    /// 参与的队伍
-    /// </summary>
-    [MemoryPackIgnore]
-    public List<Team> Teams { get; set; } = new();
-
-    #endregion 数据库关系
+    public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
 
     /// <summary>
     /// 通过Http请求更新用户最新访问时间和IP
@@ -88,17 +70,13 @@ public partial class UserInfo : IdentityUser
     {
         LastVisitedUTC = DateTimeOffset.UtcNow;
 
-        var remoteAddress = context.Connection.RemoteIpAddress;
+        IPAddress? remoteAddress = context.Connection.RemoteIpAddress;
 
         if (remoteAddress is null)
             return;
 
         IP = remoteAddress.ToString();
     }
-
-    [NotMapped]
-    [MemoryPackIgnore]
-    public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
 
     internal void UpdateUserInfo(AdminUserInfoModel model)
     {
@@ -129,4 +107,26 @@ public partial class UserInfo : IdentityUser
         RealName = model.RealName ?? RealName;
         StdNumber = model.StdNumber ?? StdNumber;
     }
+
+    #region 数据库关系
+
+    /// <summary>
+    /// 头像哈希
+    /// </summary>
+    [MaxLength(64)]
+    public string? AvatarHash { get; set; }
+
+    /// <summary>
+    /// 个人提交记录
+    /// </summary>
+    [MemoryPackIgnore]
+    public List<Submission> Submissions { get; set; } = new();
+
+    /// <summary>
+    /// 参与的队伍
+    /// </summary>
+    [MemoryPackIgnore]
+    public List<Team> Teams { get; set; } = new();
+
+    #endregion 数据库关系
 }

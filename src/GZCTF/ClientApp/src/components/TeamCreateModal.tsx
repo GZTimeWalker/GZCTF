@@ -1,18 +1,18 @@
 import { FC, useState } from 'react'
 import {
   Button,
+  Center,
   Modal,
   ModalProps,
   Stack,
+  Text,
   Textarea,
   TextInput,
-  Text,
   Title,
-  Center,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCloseCircle, mdiCheck } from '@mdi/js'
+import { mdiCheck, mdiCloseCircle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { TeamUpdateModel } from '@Api'

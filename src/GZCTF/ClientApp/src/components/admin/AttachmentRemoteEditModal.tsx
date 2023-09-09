@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Modal, Text, Stack, Textarea, useMantineTheme, ModalProps } from '@mantine/core'
+import { Button, Modal, ModalProps, Stack, Text, Textarea, useMantineTheme } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'

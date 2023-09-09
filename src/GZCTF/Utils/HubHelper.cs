@@ -19,32 +19,38 @@ public static class HubHelper
         if (userId is null)
             return false;
 
-        var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
+        UserInfo? currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
 
         return currentUser is not null && currentUser.Role >= privilege;
     }
 
     /// <summary>
-    /// 当前请求是否具有<see cref="Role.Admin"/>权限
+    /// 当前请求是否具有<see cref="Role.Admin" />权限
     /// </summary>
     /// <param name="context">当前请求</param>
     /// <returns></returns>
     public static Task<bool> HasAdmin(HttpContext context)
-        => HasPrivilege(context, Role.Admin);
+    {
+        return HasPrivilege(context, Role.Admin);
+    }
 
     /// <summary>
-    /// 当前请求是否具有大于等于<see cref="Role.Monitor"/>权限
+    /// 当前请求是否具有大于等于<see cref="Role.Monitor" />权限
     /// </summary>
     /// <param name="context">当前请求</param>
     /// <returns></returns>
     public static Task<bool> HasMonitor(HttpContext context)
-        => HasPrivilege(context, Role.Monitor);
+    {
+        return HasPrivilege(context, Role.Monitor);
+    }
 
     /// <summary>
-    /// 当前请求是否具有大于等于<see cref="Role.User"/>权限
+    /// 当前请求是否具有大于等于<see cref="Role.User" />权限
     /// </summary>
     /// <param name="context">当前请求</param>
     /// <returns></returns>
     public static Task<bool> HasUser(HttpContext context)
-        => HasPrivilege(context, Role.User);
+    {
+        return HasPrivilege(context, Role.User);
+    }
 }

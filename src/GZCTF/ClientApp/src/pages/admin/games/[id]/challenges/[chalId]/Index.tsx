@@ -2,17 +2,17 @@ import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
-  Text,
-  Stack,
+  Grid,
   Group,
   Input,
   NumberInput,
   Select,
   Slider,
+  Stack,
+  Switch,
+  Text,
   Textarea,
   TextInput,
-  Grid,
-  Switch,
   Title,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
@@ -34,14 +34,14 @@ import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import {
-  ChallengeTypeItem,
-  ChallengeTypeLabelMap,
   ChallengeTagItem,
   ChallengeTagLabelMap,
+  ChallengeTypeItem,
+  ChallengeTypeLabelMap,
 } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useEditChallenge } from '@Utils/useEdit'
-import api, { ChallengeUpdateModel, ChallengeTag, ChallengeType, FileType } from '@Api'
+import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()

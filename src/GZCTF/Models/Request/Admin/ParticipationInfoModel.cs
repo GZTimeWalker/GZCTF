@@ -1,6 +1,4 @@
-﻿
-
-namespace GZCTF.Models.Request.Admin;
+﻿namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 比赛参与对象，用于审核查看（Admin）
@@ -33,7 +31,8 @@ public class ParticipationInfoModel
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 
     internal static ParticipationInfoModel FromParticipation(Participation part)
-        => new()
+    {
+        return new ParticipationInfoModel
         {
             Id = part.Id,
             Status = part.Status,
@@ -41,4 +40,5 @@ public class ParticipationInfoModel
             RegisteredMembers = part.Members.Select(m => m.UserId).ToArray(),
             Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };
+    }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace GZCTF.Models.Internal;
+﻿namespace GZCTF.Models.Internal;
 
 public class CheatCheckInfo
 {
@@ -29,7 +28,8 @@ public class CheatCheckInfo
     public string? Flag { get; set; }
 
     internal static CheatCheckInfo FromCheatInfo(CheatInfo info)
-        => new()
+    {
+        return new CheatCheckInfo
         {
             Flag = info.Submission.Answer,
             AnswerResult = AnswerResult.CheatDetected,
@@ -37,4 +37,5 @@ public class CheatCheckInfo
             SourceTeamName = info.SourceTeam.Team.Name,
             CheatUserName = info.Submission.UserName
         };
+    }
 }

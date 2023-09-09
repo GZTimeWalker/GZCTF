@@ -20,11 +20,12 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Generation;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -43,7 +44,9 @@ Log.Logger = LogHelper.GetInitLogger();
 #endregion Logging
 
 #region AppDbContext
-if (GZCTF.Program.IsTesting || (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("ConnectionStrings").Exists()))
+
+if (GZCTF.Program.IsTesting || (builder.Environment.IsDevelopment() &&
+                                !builder.Configuration.GetSection("ConnectionStrings").Exists()))
 {
     builder.Services.AddDbContext<AppDbContext>(
         options => options.UseInMemoryDatabase("TestDb")
@@ -67,11 +70,12 @@ else
         }
     );
 }
+
 #endregion AppDbContext
 
 #region Configuration
+
 if (!GZCTF.Program.IsTesting)
-{
     try
     {
         builder.Configuration.AddEntityConfiguration(options =>
@@ -88,10 +92,11 @@ if (!GZCTF.Program.IsTesting)
             Log.Logger.Error($"当前连接字符串：{builder.Configuration.GetConnectionString("Database")}");
         GZCTF.Program.ExitWithFatalMessage("数据库连接失败，请检查 Database 连接字符串配置");
     }
-}
+
 #endregion Configuration
 
 #region OpenApiDocument
+
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddOpenApiDocument(settings =>
 {
@@ -100,17 +105,17 @@ builder.Services.AddOpenApiDocument(settings =>
     settings.Title = "GZCTF Server API";
     settings.Description = "GZCTF Server 接口文档";
     settings.UseControllerSummaryAsTagDescription = true;
-    settings.SerializerSettings = SystemTextJsonUtilities.ConvertJsonOptionsToNewtonsoftSettings(new JsonSerializerOptions
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    });
+    settings.SerializerSettings =
+        SystemTextJsonUtilities.ConvertJsonOptionsToNewtonsoftSettings(
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
     settings.DefaultReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull;
 });
+
 #endregion OpenApiDocument
 
 #region SignalR
 
-var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
+ISignalRServerBuilder signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
 
 #endregion SignalR
 
@@ -155,15 +160,15 @@ builder.Services.AddAuthentication(o =>
 });
 
 builder.Services.AddIdentityCore<UserInfo>(options =>
-{
-    options.User.RequireUniqueEmail = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.SignIn.RequireConfirmedEmail = true;
-}).AddSignInManager<SignInManager<UserInfo>>()
-.AddUserManager<UserManager<UserInfo>>()
-.AddEntityFrameworkStores<AppDbContext>()
-.AddErrorDescriber<TranslatedIdentityErrorDescriber>()
-.AddDefaultTokenProviders();
+    {
+        options.User.RequireUniqueEmail = true;
+        options.Password.RequireNonAlphanumeric = false;
+        options.SignIn.RequireConfirmedEmail = true;
+    }).AddSignInManager<SignInManager<UserInfo>>()
+    .AddUserManager<UserManager<UserInfo>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddErrorDescriber<TranslatedIdentityErrorDescriber>()
+    .AddDefaultTokenProviders();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
     o.TokenLifespan = TimeSpan.FromHours(3)
@@ -184,17 +189,13 @@ builder.Services.Configure<ContainerProvider>(builder.Configuration.GetSection(n
 
 var forwardedOptions = builder.Configuration.GetSection(nameof(ForwardedOptions)).Get<ForwardedOptions>();
 if (forwardedOptions is null)
-{
     builder.Services.Configure<ForwardedHeadersOptions>(options =>
     {
         options.ForwardedHeaders =
             ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
     });
-}
 else
-{
     builder.Services.Configure<ForwardedHeadersOptions>(forwardedOptions.ToForwardedHeadersOptions);
-}
 
 builder.Services.AddCaptchaService(builder.Configuration);
 builder.Services.AddContainerService(builder.Configuration);
@@ -229,8 +230,8 @@ builder.Services.AddResponseCompression(options =>
 {
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
-    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
-        { "application/json", "text/javascript", "text/html", "text/css" }
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/json", "text/javascript", "text/html", "text/css" }
     );
 });
 
@@ -239,7 +240,7 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     options.InvalidModelStateResponseFactory = GZCTF.Program.InvalidModelStateHandler;
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
@@ -291,7 +292,7 @@ app.MapHub<AdminHub>("/hub/admin");
 
 app.MapFallbackToFile("index.html");
 
-await using var scope = app.Services.CreateAsyncScope();
+await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<GZCTF.Program>>();
 
 try
@@ -334,7 +335,7 @@ namespace GZCTF
             Console.WriteLine(banner);
 
             var versionStr = "";
-            var version = typeof(Codec).Assembly.GetName().Version;
+            Version? version = typeof(Codec).Assembly.GetName().Version;
             if (version is not null)
                 versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
 
@@ -360,8 +361,8 @@ namespace GZCTF
                 };
 
             errors = (from val in context.ModelState.Values
-                      where val.Errors.Count > 0
-                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                where val.Errors.Count > 0
+                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。"))
             {

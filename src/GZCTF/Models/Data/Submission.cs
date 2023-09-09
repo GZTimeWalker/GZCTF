@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
@@ -8,9 +7,7 @@ namespace GZCTF.Models.Data;
 [Index(nameof(UserId))]
 public class Submission
 {
-    [Key]
-    [JsonIgnore]
-    public int Id { get; set; }
+    [Key] [JsonIgnore] public int Id { get; set; }
 
     /// <summary>
     /// 提交的答案字符串

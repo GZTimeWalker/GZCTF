@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Group, Title, Text, createStyles, keyframes } from '@mantine/core'
+import { createStyles, Group, keyframes, Text, Title } from '@mantine/core'
 import LogoHeader from '@Components/LogoHeader'
 import { useConfig } from '@Utils/useConfig'
 
@@ -25,7 +25,12 @@ const useStyles = createStyles((theme) => ({
     },
   },
   blink: {
-    animation: `${keyframes`0%, 100% {opacity:0;} 50% {opacity:1;}`} 1s infinite steps(1,start)`,
+    animation: `${keyframes`0%, 100% {
+                              opacity: 0;
+                            }
+                              50% {
+                                opacity: 1;
+                              }`} 1s infinite steps(1,start)`,
   },
   subtitle: {
     fontFamily: theme.fontFamilyMonospace,

@@ -1,6 +1,4 @@
-﻿
-
-namespace GZCTF.Models.Request.Game;
+﻿namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 作弊行为信息
@@ -23,10 +21,12 @@ public class CheatInfoModel
     public Submission Submission { get; set; } = default!;
 
     internal static CheatInfoModel FromCheatInfo(CheatInfo info)
-        => new()
+    {
+        return new CheatInfoModel
         {
             Submission = info.Submission,
             OwnedTeam = ParticipationModel.FromParticipation(info.SourceTeam),
             SubmitTeam = ParticipationModel.FromParticipation(info.SubmitTeam)
         };
+    }
 }

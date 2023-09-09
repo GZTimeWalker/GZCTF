@@ -26,7 +26,7 @@ public enum Role : byte
     /// <summary>
     /// 管理员权限，可查看系统日志
     /// </summary>
-    Admin = 3,
+    Admin = 3
 }
 
 /// <summary>
@@ -90,7 +90,7 @@ public enum TaskStatus : sbyte
     /// <summary>
     /// 任务线程将要退出
     /// </summary>
-    Exit = 5,
+    Exit = 5
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -110,7 +110,7 @@ public enum FileType : byte
     /// <summary>
     /// 远程文件
     /// </summary>
-    Remote = 2,
+    Remote = 2
 }
 
 /// <summary>
@@ -169,19 +169,21 @@ public enum NoticeType : byte
     /// <summary>
     /// 发布新的题目
     /// </summary>
-    NewChallenge = 5,
+    NewChallenge = 5
 }
 
 public static class SubmissionTypeExtensions
 {
     public static string ToBloodString(this SubmissionType type)
-        => type switch
+    {
+        return type switch
         {
             SubmissionType.FirstBlood => "一血",
             SubmissionType.SecondBlood => "二血",
             SubmissionType.ThirdBlood => "三血",
             _ => throw new ArgumentException(type.ToString(), nameof(type))
         };
+    }
 }
 
 /// <summary>
@@ -245,7 +247,7 @@ public enum SubmissionType : byte
     /// <summary>
     /// 解出
     /// </summary>
-    Normal = 4,
+    Normal = 4
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -274,7 +276,7 @@ public enum ParticipationStatus : byte
     /// <summary>
     /// 未提交
     /// </summary>
-    Unsubmitted = 4,
+    Unsubmitted = 4
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -310,22 +312,34 @@ public static class ChallengeTypeExtensions
     /// <summary>
     /// 是否为静态题目
     /// </summary>
-    public static bool IsStatic(this ChallengeType type) => ((byte)type & 0b10) == 0;
+    public static bool IsStatic(this ChallengeType type)
+    {
+        return ((byte)type & 0b10) == 0;
+    }
 
     /// <summary>
     /// 是否为动态题目
     /// </summary>
-    public static bool IsDynamic(this ChallengeType type) => ((byte)type & 0b10) != 0;
+    public static bool IsDynamic(this ChallengeType type)
+    {
+        return ((byte)type & 0b10) != 0;
+    }
 
     /// <summary>
     /// 是否为附件题目
     /// </summary>
-    public static bool IsAttachment(this ChallengeType type) => ((byte)type & 0b01) == 0;
+    public static bool IsAttachment(this ChallengeType type)
+    {
+        return ((byte)type & 0b01) == 0;
+    }
 
     /// <summary>
     /// 是否为容器题目
     /// </summary>
-    public static bool IsContainer(this ChallengeType type) => ((byte)type & 0b01) != 0;
+    public static bool IsContainer(this ChallengeType type)
+    {
+        return ((byte)type & 0b01) != 0;
+    }
 }
 
 /// <summary>
@@ -381,7 +395,8 @@ public enum AnswerResult : byte
 public static class AnswerResultExtensions
 {
     public static string ToShortString(this AnswerResult result)
-        => result switch
+    {
+        return result switch
         {
             AnswerResult.FlagSubmitted => "成功提交",
             AnswerResult.Accepted => "答案正确",
@@ -390,4 +405,5 @@ public static class AnswerResultExtensions
             AnswerResult.CheatDetected => "作弊检测",
             _ => "??"
         };
+    }
 }

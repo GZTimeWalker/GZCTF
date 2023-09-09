@@ -28,7 +28,12 @@ export const useStyles = createStyles(
           theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[_color][5],
 
         '& div': {
-          animation: `${keyframes`0% {opacity: .3;} 100% {opacity: 1;}`} 2s linear 0s infinite alternate`,
+          animation: `${keyframes`0% {
+                                    opacity: .3;
+                                  }
+                                    100% {
+                                      opacity: 1;
+                                    }`} 2s linear 0s infinite alternate`,
         },
       },
       progressPulseContainer: {
@@ -41,7 +46,17 @@ export const useStyles = createStyles(
           width: '25%',
           height: '100%',
           background: `linear-gradient(-90deg, ${spikeColor}, #fff0)`,
-          animation: `${keyframes`0% { width: 0%;} 80% {opacity: 1; width: 100%;} 100% {opacity: 0; width: 100%;}`} 2s linear 0s infinite normal`,
+          animation: `${keyframes`0% {
+                                    width: 0%;
+                                  }
+                                    80% {
+                                      opacity: 1;
+                                      width: 100%;
+                                    }
+                                    100% {
+                                      opacity: 0;
+                                      width: 100%;
+                                    }`} 2s linear 0s infinite normal`,
         },
       },
       progressBar: {

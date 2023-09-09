@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using GZCTF.Models.Request.Edit;
-
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -13,9 +12,7 @@ namespace GZCTF.Models.Data;
 
 public class Game
 {
-    [Key]
-    [Required]
-    public int Id { get; set; }
+    [Key] [Required] public int Id { get; set; }
 
     /// <summary>
     /// 比赛标题
@@ -120,56 +117,9 @@ public class Game
     [JsonIgnore]
     public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
 
-    #region Db Relationship
+    [NotMapped] public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
 
-    /// <summary>
-    /// 比赛事件
-    /// </summary>
-    [JsonIgnore]
-    public List<GameEvent> GameEvents { get; set; } = new();
-
-    /// <summary>
-    /// 比赛通知
-    /// </summary>
-    [JsonIgnore]
-    public List<GameNotice> GameNotices { get; set; } = new();
-
-    /// <summary>
-    /// 比赛题目
-    /// </summary>
-    [JsonIgnore]
-    public List<Challenge> Challenges { get; set; } = new();
-
-    /// <summary>
-    /// 比赛提交
-    /// </summary>
-    [JsonIgnore]
-    public List<Submission> Submissions { get; set; } = new();
-
-    /// <summary>
-    /// 比赛队伍参赛对象
-    /// </summary>
-    [JsonIgnore]
-    public HashSet<Participation> Participations { get; set; } = new();
-
-    /// <summary>
-    /// 比赛队伍
-    /// </summary>
-    [JsonIgnore]
-    public ICollection<Team>? Teams { get; set; }
-
-    /// <summary>
-    /// 比赛是否为练习模式（比赛结束够依然可以进行大部分操作）
-    /// </summary>
-    public bool PracticeMode { get; set; } = true;
-
-    #endregion Db Relationship
-
-    [NotMapped]
-    public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
-
-    [NotMapped]
-    public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".StrSHA256();
+    [NotMapped] public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".StrSHA256();
 
     internal void GenerateKeyPair(byte[]? xorkey)
     {
@@ -177,8 +127,8 @@ public class Game
         Ed25519KeyPairGenerator kpg = new();
         kpg.Init(new Ed25519KeyGenerationParameters(sr));
         AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
-        Ed25519PrivateKeyParameters privateKey = (Ed25519PrivateKeyParameters)kp.Private;
-        Ed25519PublicKeyParameters publicKey = (Ed25519PublicKeyParameters)kp.Public;
+        var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
+        var publicKey = (Ed25519PublicKeyParameters)kp.Public;
 
         if (xorkey is null)
             PrivateKey = Base64.ToBase64String(privateKey.GetEncoded());
@@ -226,4 +176,49 @@ public class Game
 
         return this;
     }
+
+    #region Db Relationship
+
+    /// <summary>
+    /// 比赛事件
+    /// </summary>
+    [JsonIgnore]
+    public List<GameEvent> GameEvents { get; set; } = new();
+
+    /// <summary>
+    /// 比赛通知
+    /// </summary>
+    [JsonIgnore]
+    public List<GameNotice> GameNotices { get; set; } = new();
+
+    /// <summary>
+    /// 比赛题目
+    /// </summary>
+    [JsonIgnore]
+    public List<Challenge> Challenges { get; set; } = new();
+
+    /// <summary>
+    /// 比赛提交
+    /// </summary>
+    [JsonIgnore]
+    public List<Submission> Submissions { get; set; } = new();
+
+    /// <summary>
+    /// 比赛队伍参赛对象
+    /// </summary>
+    [JsonIgnore]
+    public HashSet<Participation> Participations { get; set; } = new();
+
+    /// <summary>
+    /// 比赛队伍
+    /// </summary>
+    [JsonIgnore]
+    public ICollection<Team>? Teams { get; set; }
+
+    /// <summary>
+    /// 比赛是否为练习模式（比赛结束够依然可以进行大部分操作）
+    /// </summary>
+    public bool PracticeMode { get; set; } = true;
+
+    #endregion Db Relationship
 }

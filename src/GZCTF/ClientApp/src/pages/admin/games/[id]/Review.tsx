@@ -18,11 +18,11 @@ import {
 import { showNotification } from '@mantine/notifications'
 import {
   mdiAccountOutline,
-  mdiKeyboardBackspace,
   mdiBadgeAccountHorizontalOutline,
   mdiCheck,
   mdiClose,
   mdiEmailOutline,
+  mdiKeyboardBackspace,
   mdiPhoneOutline,
   mdiStar,
 } from '@mdi/js'

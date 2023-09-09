@@ -1,10 +1,7 @@
 ﻿using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
-using GZCTF.Models;
-
 using GZCTF.Repositories.Interface;
-using GZCTF.Services;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -31,21 +28,27 @@ public class GameNoticeRepository(IDistributedCache cache,
     }
 
     public Task<GameNotice[]> GetNormalNotices(int gameId, CancellationToken token = default)
-        => context.GameNotices
+    {
+        return context.GameNotices
             .Where(n => n.GameId == gameId && n.Type == NoticeType.Normal)
             .ToArrayAsync(token);
+    }
 
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default)
-        => context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
+    {
+        return context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
+    }
 
     public Task<GameNotice[]> GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default)
-        => cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), (entry) =>
+    {
+        return cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             return context.GameNotices.Where(e => e.GameId == gameId)
                 .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUTC)
                 .Skip(skip).Take(count).ToArrayAsync(token);
         }, token);
+    }
 
     public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
     {

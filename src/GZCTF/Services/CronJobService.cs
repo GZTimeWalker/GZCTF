@@ -3,14 +3,19 @@ using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
-
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services;
 
 public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger) : IHostedService, IDisposable
 {
-    private Timer? _timer;
+    Timer? _timer;
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     public Task StartAsync(CancellationToken token)
     {
@@ -19,12 +24,19 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         return Task.CompletedTask;
     }
 
-    private async Task ContainerChecker(AsyncServiceScope scope)
+    public Task StopAsync(CancellationToken token)
+    {
+        _timer?.Change(Timeout.Infinite, 0);
+        logger.SystemLog("定时任务已停止", TaskStatus.Exit, LogLevel.Debug);
+        return Task.CompletedTask;
+    }
+
+    async Task ContainerChecker(AsyncServiceScope scope)
     {
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
         var containerService = scope.ServiceProvider.GetRequiredService<IContainerManager>();
 
-        foreach (var container in await containerRepo.GetDyingContainers())
+        foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
         {
             await containerService.DestroyContainerAsync(container);
             await containerRepo.RemoveContainer(container);
@@ -32,7 +44,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         }
     }
 
-    private async Task BootstrapCache(AsyncServiceScope scope)
+    async Task BootstrapCache(AsyncServiceScope scope)
     {
         var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var upcoming = await gameRepo.GetUpcomingGames();
@@ -55,24 +67,11 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         }
     }
 
-    private async void Execute(object? state)
+    async void Execute(object? state)
     {
-        await using var scope = provider.CreateAsyncScope();
+        await using AsyncServiceScope scope = provider.CreateAsyncScope();
 
         await ContainerChecker(scope);
         await BootstrapCache(scope);
-    }
-
-    public Task StopAsync(CancellationToken token)
-    {
-        _timer?.Change(Timeout.Infinite, 0);
-        logger.SystemLog("定时任务已停止", TaskStatus.Exit, LogLevel.Debug);
-        return Task.CompletedTask;
-    }
-
-    public void Dispose()
-    {
-        _timer?.Dispose();
-        GC.SuppressFinalize(this);
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading.Channels;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
 // ReSharper disable NotAccessedPositionalProperty.Global
 
 namespace GZCTF.Utils;
@@ -57,7 +58,9 @@ public record VerifyResult(SubmissionType SubType, AnswerResult AnsRes);
 public record TeamModel(int Id, string Name, string? Avatar)
 {
     internal static TeamModel FromTeam(Team team)
-        => new(team.Id, team.Name, team.AvatarUrl);
+    {
+        return new TeamModel(team.Id, team.Name, team.AvatarUrl);
+    }
 }
 
 /// <summary>
@@ -69,7 +72,9 @@ public record TeamModel(int Id, string Name, string? Avatar)
 public record ChallengeModel(int Id, string Title, ChallengeTag Tag)
 {
     internal static ChallengeModel FromChallenge(Challenge chal)
-        => new(chal.Id, chal.Title, chal.Tag);
+    {
+        return new ChallengeModel(chal.Id, chal.Title, chal.Tag);
+    }
 }
 
 /// <summary>
@@ -82,7 +87,9 @@ public record ChallengeModel(int Id, string Title, ChallengeTag Tag)
 public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Organization)
 {
     internal static ParticipationModel FromParticipation(Participation part)
-        => new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Organization);
+    {
+        return new ParticipationModel(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Organization);
+    }
 }
 
 /// <summary>
@@ -131,12 +138,9 @@ public class FileRecord
     public DateTimeOffset UpdateTime { get; set; } = DateTimeOffset.Now;
 
     internal static FileRecord FromFileInfo(FileInfo info)
-        => new()
-        {
-            FileName = info.Name,
-            UpdateTime = info.LastWriteTimeUtc,
-            Size = info.Length,
-        };
+    {
+        return new FileRecord { FileName = info.Name, UpdateTime = info.LastWriteTimeUtc, Size = info.Length };
+    }
 }
 
 /// <summary>

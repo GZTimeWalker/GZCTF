@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
 namespace GZCTF.Models.Request.Game;
 
 public class ChallengeTrafficModel
@@ -39,7 +38,7 @@ public class ChallengeTrafficModel
 
     internal static ChallengeTrafficModel FromChallenge(Challenge challenge)
     {
-        string trafficPath = $"{FilePath.Capture}/{challenge.Id}";
+        var trafficPath = $"{FilePath.Capture}/{challenge.Id}";
 
         return new()
         {
@@ -48,8 +47,9 @@ public class ChallengeTrafficModel
             Tag = challenge.Tag,
             Type = challenge.Type,
             IsEnabled = challenge.IsEnabled,
-            Count = Directory.Exists(trafficPath) ?
-                Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length : 0
+            Count = Directory.Exists(trafficPath)
+                ? Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length
+                : 0
         };
     }
 }

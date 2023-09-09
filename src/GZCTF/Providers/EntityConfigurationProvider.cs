@@ -1,7 +1,5 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using GZCTF.Models;
-
 using GZCTF.Models.Internal;
 using GZCTF.Services;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +9,23 @@ namespace GZCTF.Providers;
 
 public class EntityConfigurationProvider(EntityConfigurationSource source) : ConfigurationProvider, IDisposable
 {
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
-    private Task? _databaseWatcher;
-    private byte[] _lastHash = Array.Empty<byte>();
-    private bool _disposed;
+    readonly CancellationTokenSource _cancellationTokenSource = new();
+    Task? _databaseWatcher;
+    bool _disposed;
+    byte[] _lastHash = Array.Empty<byte>();
 
-    private static HashSet<Config> DefaultConfigs()
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+        _disposed = true;
+        GC.SuppressFinalize(this);
+    }
+
+    static HashSet<Config> DefaultConfigs()
     {
         HashSet<Config> configs = new();
 
@@ -27,31 +36,30 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         return configs;
     }
 
-    private async Task WatchDatabase(CancellationToken token)
+    async Task WatchDatabase(CancellationToken token)
     {
         while (!token.IsCancellationRequested)
-        {
             try
             {
                 await Task.Delay(source.PollingInterval, token);
                 IDictionary<string, string?> actualData = await GetDataAsync(token);
 
-                byte[] computedHash = ConfigHash(actualData);
+                var computedHash = ConfigHash(actualData);
                 if (!computedHash.SequenceEqual(_lastHash))
                 {
                     Data = actualData;
                     OnReload();
                 }
+
                 _lastHash = computedHash;
             }
             catch (Exception ex)
             {
                 Log.Logger?.Error(ex, "全局配置重载失败");
             }
-        }
     }
 
-    private AppDbContext CreateAppDbContext()
+    AppDbContext CreateAppDbContext()
     {
         var builder = new DbContextOptionsBuilder<AppDbContext>();
         source.OptionsAction(builder);
@@ -59,23 +67,25 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         return new AppDbContext(builder.Options);
     }
 
-    private async Task<IDictionary<string, string?>> GetDataAsync(CancellationToken token = default)
+    async Task<IDictionary<string, string?>> GetDataAsync(CancellationToken token = default)
     {
-        var context = CreateAppDbContext();
+        AppDbContext context = CreateAppDbContext();
         return await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value,
             StringComparer.OrdinalIgnoreCase, token);
     }
 
-    private static byte[] ConfigHash(IDictionary<string, string?> configs)
-        => SHA256.HashData(Encoding.UTF8.GetBytes(
-                string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))
-            ));
+    static byte[] ConfigHash(IDictionary<string, string?> configs)
+    {
+        return SHA256.HashData(Encoding.UTF8.GetBytes(
+            string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))
+        ));
+    }
 
     public override void Load()
     {
         if (_databaseWatcher is not null)
         {
-            var task = GetDataAsync();
+            Task<IDictionary<string, string?>> task = GetDataAsync();
             task.Wait();
             Data = task.Result;
 
@@ -83,7 +93,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             return;
         }
 
-        var context = CreateAppDbContext();
+        AppDbContext? context = CreateAppDbContext();
 
         if (!context.Database.IsInMemory())
             context.Database.Migrate();
@@ -94,7 +104,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         {
             Log.Logger.Debug("初始化数据库……");
 
-            var configs = DefaultConfigs();
+            HashSet<Config> configs = DefaultConfigs();
 
             if (context is not null)
             {
@@ -111,18 +121,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         _lastHash = ConfigHash(Data);
 
-        var cancellationToken = _cancellationTokenSource.Token;
+        CancellationToken cancellationToken = _cancellationTokenSource.Token;
         _databaseWatcher = Task.Run(() => WatchDatabase(cancellationToken), cancellationToken);
-    }
-
-    public void Dispose()
-    {
-        if (_disposed)
-            return;
-
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
-        _disposed = true;
-        GC.SuppressFinalize(this);
     }
 }

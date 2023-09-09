@@ -3,18 +3,18 @@ import routes from '~react-pages'
 import { FC, Suspense } from 'react'
 import { useRoutes } from 'react-router-dom'
 import {
-  MantineProvider,
-  Global,
+  Center,
   ColorScheme,
   ColorSchemeProvider,
-  Center,
+  Global,
   Loader,
+  MantineProvider,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { ThemeOverride } from '@Utils/ThemeOverride'
-import { useLocalStorageCache, useBanner } from '@Utils/useConfig'
+import { useBanner, useLocalStorageCache } from '@Utils/useConfig'
 import { fetcher } from '@Api'
 
 export const App: FC = () => {

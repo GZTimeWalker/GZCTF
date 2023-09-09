@@ -6,9 +6,7 @@ namespace GZCTF.Models.Data;
 
 public class Attachment
 {
-    [Key]
-    [Required]
-    public int Id { get; set; }
+    [Key] [Required] public int Id { get; set; }
 
     /// <summary>
     /// 附件类型
@@ -49,11 +47,14 @@ public class Attachment
     /// <summary>
     /// 附件访问链接
     /// </summary>
-    public string? UrlWithName(string? filename = null) => Type switch
+    public string? UrlWithName(string? filename = null)
     {
-        FileType.None => null,
-        FileType.Local => LocalFile?.Url(filename),
-        FileType.Remote => RemoteUrl,
-        _ => throw new ArgumentException(nameof(Type))
-    };
+        return Type switch
+        {
+            FileType.None => null,
+            FileType.Local => LocalFile?.Url(filename),
+            FileType.Remote => RemoteUrl,
+            _ => throw new ArgumentException(nameof(Type))
+        };
+    }
 }

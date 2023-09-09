@@ -1,5 +1,4 @@
 ﻿using GZCTF.Hubs.Clients;
-
 using Microsoft.AspNetCore.SignalR;
 
 namespace GZCTF.Hubs;

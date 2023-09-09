@@ -1,6 +1,4 @@
-﻿
-using GZCTF.Models.Request.Admin;
-using GZCTF.Models.Request.Game;
+﻿using GZCTF.Models.Request.Admin;
 
 namespace GZCTF.Repositories.Interface;
 
@@ -123,5 +121,6 @@ public interface IParticipationRepository : IRepository
     /// <param name="status">参与状态</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task UpdateParticipationStatus(Participation part, ParticipationStatus status, CancellationToken token = default);
+    public Task UpdateParticipationStatus(Participation part, ParticipationStatus status,
+        CancellationToken token = default);
 }

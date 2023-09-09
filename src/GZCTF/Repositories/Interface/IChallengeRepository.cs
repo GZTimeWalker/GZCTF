@@ -1,5 +1,4 @@
-﻿
-using GZCTF.Models.Request.Edit;
+﻿using GZCTF.Models.Request.Edit;
 
 namespace GZCTF.Repositories.Interface;
 

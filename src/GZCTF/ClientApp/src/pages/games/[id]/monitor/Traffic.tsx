@@ -2,23 +2,23 @@ import dayjs from 'dayjs'
 import { CSSProperties, FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  Group,
-  Grid,
-  Paper,
-  Text,
-  Divider,
-  rem,
   ActionIcon,
-  Tooltip,
   Center,
+  Divider,
+  Grid,
+  Group,
+  Paper,
+  rem,
   Stack,
+  Text,
   Title,
+  Tooltip,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose, mdiDownloadMultiple } from '@mdi/js'
 import Icon from '@mdi/react'
 import ScrollSelect from '@Components/ScrollSelect'
-import { ChallengeItem, TeamItem, FileItem } from '@Components/TrafficItems'
+import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { FileRecord } from '@Api'

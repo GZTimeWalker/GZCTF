@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
-
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Options;
@@ -28,21 +27,19 @@ public class K8sMetadata : ContainerProviderMetadata
 
 public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
 {
-    private const string NetworkPolicy = "gzctf-policy";
+    const string NetworkPolicy = "gzctf-policy";
+    readonly K8sMetadata _k8sMetadata;
 
-    private readonly Kubernetes _kubernetesClient;
-    private readonly K8sMetadata _k8sMetadata;
+    readonly Kubernetes _kubernetesClient;
 
-    public Kubernetes GetProvider() => _kubernetesClient;
-    public K8sMetadata GetMetadata() => _k8sMetadata;
-
-    public K8sProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> options, ILogger<K8sProvider> logger)
+    public K8sProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> options,
+        ILogger<K8sProvider> logger)
     {
         _k8sMetadata = new()
         {
             Config = options.Value.K8sConfig ?? new(),
             PortMappingType = options.Value.PortMappingType,
-            PublicEntry = options.Value.PublicEntry,
+            PublicEntry = options.Value.PublicEntry
         };
 
         if (!File.Exists(_k8sMetadata.Config.KubeConfig))
@@ -57,10 +54,10 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
 
         _kubernetesClient = new Kubernetes(config);
 
-        var registryValue = registry.Value;
+        RegistryConfig registryValue = registry.Value;
         var withAuth = !string.IsNullOrWhiteSpace(registryValue.ServerAddress)
-            && !string.IsNullOrWhiteSpace(registryValue.UserName)
-            && !string.IsNullOrWhiteSpace(registryValue.Password);
+                       && !string.IsNullOrWhiteSpace(registryValue.UserName)
+                       && !string.IsNullOrWhiteSpace(registryValue.Password);
 
         if (withAuth)
         {
@@ -81,14 +78,24 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         logger.SystemLog($"K8s 初始化成功 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
     }
 
-    private void InitK8s(bool withAuth, RegistryConfig? registry)
+    public Kubernetes GetProvider()
+    {
+        return _kubernetesClient;
+    }
+
+    public K8sMetadata GetMetadata()
+    {
+        return _k8sMetadata;
+    }
+
+    void InitK8s(bool withAuth, RegistryConfig? registry)
     {
         if (_kubernetesClient.CoreV1.ListNamespace().Items.All(ns => ns.Metadata.Name != _k8sMetadata.Config.Namespace))
-            _kubernetesClient.CoreV1.CreateNamespace(new() { Metadata = new() { Name = _k8sMetadata.Config.Namespace } });
+            _kubernetesClient.CoreV1.CreateNamespace(
+                new() { Metadata = new() { Name = _k8sMetadata.Config.Namespace } });
 
-        if (_kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(_k8sMetadata.Config.Namespace).Items.All(np => np.Metadata.Name != NetworkPolicy))
-        {
-
+        if (_kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(_k8sMetadata.Config.Namespace).Items
+            .All(np => np.Metadata.Name != NetworkPolicy))
             _kubernetesClient.NetworkingV1.CreateNamespacedNetworkPolicy(new()
             {
                 Metadata = new() { Name = NetworkPolicy },
@@ -98,54 +105,54 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                     PolicyTypes = new[] { "Egress" },
                     Egress = new[]
                     {
-                        new V1NetworkPolicyEgressRule()
+                        new V1NetworkPolicyEgressRule
                         {
                             To = new[]
                             {
-                                new V1NetworkPolicyPeer() {
-                                    IpBlock = new() {
+                                new V1NetworkPolicyPeer
+                                {
+                                    IpBlock = new()
+                                    {
                                         Cidr = "0.0.0.0/0",
-                                        // FIXME: remove nullable when JsonObjectCreationHandling release
-                                        Except = _k8sMetadata.Config.AllowCIDR ?? new[] { "10.0.0.0/8" }
+                                        Except
+                                            // FIXME: remove nullable when JsonObjectCreationHandling release
+                                            = _k8sMetadata.Config.AllowCIDR ?? new[] { "10.0.0.0/8" }
                                     }
-                                },
+                                }
                             }
                         }
                     }
                 }
             }, _k8sMetadata.Config.Namespace);
-        }
 
         if (withAuth && registry is not null && registry.ServerAddress is not null)
         {
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
             var dockerJsonObj = new
             {
-                auths = new Dictionary<string, object> {
+                auths = new Dictionary<string, object>
+                {
                     {
-                        registry.ServerAddress, new {
-                            auth,
-                            username = registry.UserName,
-                            password = registry.Password
-                        }
+                        registry.ServerAddress,
+                        new { auth, username = registry.UserName, password = registry.Password }
                     }
                 }
             };
             var dockerJsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj);
-            var secret = new V1Secret()
+            var secret = new V1Secret
             {
-                Metadata = new V1ObjectMeta()
+                Metadata = new V1ObjectMeta
                 {
-                    Name = _k8sMetadata.AuthSecretName,
-                    NamespaceProperty = _k8sMetadata.Config.Namespace,
+                    Name = _k8sMetadata.AuthSecretName, NamespaceProperty = _k8sMetadata.Config.Namespace
                 },
-                Data = new Dictionary<string, byte[]>() { [".dockerconfigjson"] = dockerJsonBytes },
+                Data = new Dictionary<string, byte[]> { [".dockerconfigjson"] = dockerJsonBytes },
                 Type = "kubernetes.io/dockerconfigjson"
             };
 
             try
             {
-                _kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, _k8sMetadata.AuthSecretName, _k8sMetadata.Config.Namespace);
+                _kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, _k8sMetadata.AuthSecretName,
+                    _k8sMetadata.Config.Namespace);
             }
             catch
             {

@@ -1,6 +1,4 @@
-﻿
-
-namespace GZCTF.Repositories.Interface;
+﻿namespace GZCTF.Repositories.Interface;
 
 public interface ICheatInfoRepository : IRepository
 {

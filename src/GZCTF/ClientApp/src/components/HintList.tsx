@@ -1,12 +1,12 @@
 import { FC } from 'react'
 import {
-  ScrollArea,
+  ActionIcon,
+  Button,
   Input,
+  ScrollArea,
   Stack,
   TextInput,
   TextInputProps,
-  Button,
-  ActionIcon,
 } from '@mantine/core'
 import { mdiClose, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'

@@ -1,6 +1,4 @@
-﻿
-
-namespace GZCTF.Models.Request.Game;
+﻿namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 题目详细信息
@@ -48,7 +46,8 @@ public class ChallengeDetailModel
     public ClientFlagContext Context { get; set; } = default!;
 
     internal static ChallengeDetailModel FromInstance(Instance instance)
-        => new()
+    {
+        return new ChallengeDetailModel
         {
             Id = instance.Challenge.Id,
             Content = instance.Challenge.Content,
@@ -62,9 +61,10 @@ public class ChallengeDetailModel
                 InstanceEntry = instance.Container?.Entry,
                 CloseTime = instance.Container?.ExpectStopAt,
                 Url = instance.AttachmentUrl,
-                FileSize = instance.Attachment?.FileSize,
+                FileSize = instance.Attachment?.FileSize
             }
         };
+    }
 }
 
 public class ClientFlagContext

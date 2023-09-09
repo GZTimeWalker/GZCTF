@@ -1,5 +1,4 @@
-﻿
-using GZCTF.Models.Internal;
+﻿using GZCTF.Models.Internal;
 
 namespace GZCTF.Repositories.Interface;
 
@@ -47,7 +46,8 @@ public interface IInstanceRepository : IRepository
     /// <param name="user">用户对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> CreateContainer(Instance instance, Team team, UserInfo user, int containerLimit = 3, CancellationToken token = default);
+    public Task<TaskResult<Container>> CreateContainer(Instance instance, Team team, UserInfo user,
+        int containerLimit = 3, CancellationToken token = default);
 
     /// <summary>
     /// 销毁容器实例

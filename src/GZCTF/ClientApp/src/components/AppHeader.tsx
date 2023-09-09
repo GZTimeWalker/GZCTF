@@ -2,12 +2,12 @@ import { FC, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Burger, createStyles, Group, Header, Menu, useMantineColorScheme } from '@mantine/core'
 import {
-  mdiWeatherSunny,
-  mdiWeatherNight,
   mdiAccountCircleOutline,
-  mdiLogout,
   mdiAccountGroupOutline,
   mdiCached,
+  mdiLogout,
+  mdiWeatherNight,
+  mdiWeatherSunny,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import LogoHeader from '@Components/LogoHeader'

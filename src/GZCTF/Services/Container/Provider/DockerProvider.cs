@@ -2,7 +2,6 @@
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
-
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Container.Provider;
@@ -25,41 +24,53 @@ public class DockerMetadata : ContainerProviderMetadata
     /// <param name="config"></param>
     /// <returns></returns>
     public static string GetName(ContainerConfig config)
-        => $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMd5()[..16]}";
+    {
+        return
+            $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMd5()[..16]}";
+    }
 }
 
 public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 {
-    private readonly DockerClient _dockerClient;
-    private readonly DockerMetadata _dockerMeta;
+    readonly DockerClient _dockerClient;
+    readonly DockerMetadata _dockerMeta;
 
-    public DockerMetadata GetMetadata() => _dockerMeta;
-    public DockerClient GetProvider() => _dockerClient;
-
-    public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistryConfig> registry, ILogger<DockerProvider> logger)
+    public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistryConfig> registry,
+        ILogger<DockerProvider> logger)
     {
         _dockerMeta = new()
         {
             Config = options.Value.DockerConfig ?? new(),
             PortMappingType = options.Value.PortMappingType,
-            PublicEntry = options.Value.PublicEntry,
+            PublicEntry = options.Value.PublicEntry
         };
 
-        DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? new() : new(new Uri(_dockerMeta.Config.Uri));
+        DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
+            ? new()
+            : new(new Uri(_dockerMeta.Config.Uri));
 
         // TODO: Docker Auth Required
         _dockerClient = cfg.CreateClient();
 
         // Auth for registry
         if (!string.IsNullOrWhiteSpace(registry.Value.UserName) && !string.IsNullOrWhiteSpace(registry.Value.Password))
-        {
-            _dockerMeta.Auth = new AuthConfig()
+            _dockerMeta.Auth = new AuthConfig
             {
-                Username = registry.Value.UserName,
-                Password = registry.Value.Password,
+                Username = registry.Value.UserName, Password = registry.Value.Password
             };
-        }
 
-        logger.SystemLog($"Docker 初始化成功 ({(string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri)})", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(
+            $"Docker 初始化成功 ({(string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri)})",
+            TaskStatus.Success, LogLevel.Debug);
+    }
+
+    public DockerMetadata GetMetadata()
+    {
+        return _dockerMeta;
+    }
+
+    public DockerClient GetProvider()
+    {
+        return _dockerClient;
     }
 }

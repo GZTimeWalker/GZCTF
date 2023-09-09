@@ -25,13 +25,14 @@ public class TestMailSender : IMailSender
         return true;
     }
 
+    public Task SendUrlAsync(string? title, string? infomation, string? btnmsg, string? userName, string? email,
+        string? url)
+    {
+        return Task.CompletedTask;
+    }
+
     public bool SendResetPwdUrl(string? userName, string? email, string? resetLink)
     {
         return true;
-    }
-
-    public Task SendUrlAsync(string? title, string? infomation, string? btnmsg, string? userName, string? email, string? url)
-    {
-        return Task.CompletedTask;
     }
 }

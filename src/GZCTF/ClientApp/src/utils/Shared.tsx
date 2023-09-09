@@ -247,11 +247,10 @@ const BonusLabelNameMap = new Map([
 ])
 
 export class BloodBonus {
-  private val: number = (50 << 20) + (30 << 10) + 10
+  static default = new BloodBonus()
   private static mask = 0x3ff
   private static base = 1000
-
-  static default = new BloodBonus()
+  private val: number = (50 << 20) + (30 << 10) + 10
 
   constructor(val?: number) {
     this.val = val ?? this.val
@@ -259,6 +258,11 @@ export class BloodBonus {
 
   get value() {
     return this.val
+  }
+
+  static fromBonus(first: number, second: number, third: number) {
+    const value = (first << 20) + (second << 10) + third
+    return new BloodBonus(value)
   }
 
   getBonusNum(type: SubmissionType) {
@@ -291,11 +295,6 @@ export class BloodBonus {
         ]
       })
     )
-  }
-
-  static fromBonus(first: number, second: number, third: number) {
-    const value = (first << 20) + (second << 10) + third
-    return new BloodBonus(value)
   }
 }
 

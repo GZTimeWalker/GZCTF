@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+
 // ReSharper disable CollectionNeverUpdated.Global
 
 
@@ -103,7 +104,7 @@ public enum ContainerPortMappingType
 {
     Default,
     PlatformProxy,
-    Frp,
+    Frp
 }
 
 public class ContainerProvider
@@ -182,9 +183,9 @@ public class ForwardedOptions : ForwardedHeadersOptions
     public void ToForwardedHeadersOptions(ForwardedHeadersOptions options)
     {
         // assign the same value to the base class via reflection
-        var type = typeof(ForwardedHeadersOptions);
-        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach (var property in properties)
+        Type type = typeof(ForwardedHeadersOptions);
+        PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (PropertyInfo property in properties)
         {
             // skip the properties that are not being set directly
             if (property.Name is nameof(KnownNetworks) or nameof(KnownProxies))
@@ -198,11 +199,9 @@ public class ForwardedOptions : ForwardedHeadersOptions
             // split the network into address and prefix length
             var parts = network.Split('/');
             if (parts.Length == 2 &&
-                IPAddress.TryParse(parts[0], out var prefix) &&
+                IPAddress.TryParse(parts[0], out IPAddress? prefix) &&
                 int.TryParse(parts[1], out var prefixLength))
-            {
                 options.KnownNetworks.Add(new IPNetwork(prefix, prefixLength));
-            }
         });
 
         TrustedProxies?.ForEach(proxy => proxy.ResolveIP().ToList().ForEach(ip => options.KnownProxies.Add(ip)));

@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import {
+  Button,
+  Group,
+  MultiSelect,
   Stack,
+  Text,
+  Textarea,
   TextInput,
   Title,
-  Textarea,
-  MultiSelect,
-  Group,
-  Text,
-  Button,
   useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'

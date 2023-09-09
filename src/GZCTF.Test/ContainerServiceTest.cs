@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GZCTF.Models.Internal;
-using GZCTF.Services.Interface;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -12,8 +5,8 @@ namespace GZCTF.Test;
 
 public class ContainerServiceTest : IClassFixture<TestWebAppFactory>
 {
-    private readonly TestWebAppFactory factory;
-    private readonly ITestOutputHelper output;
+    readonly TestWebAppFactory factory;
+    readonly ITestOutputHelper output;
 
     public ContainerServiceTest(ITestOutputHelper _output, TestWebAppFactory _factory)
     {

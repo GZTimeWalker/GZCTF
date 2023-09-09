@@ -1,5 +1,4 @@
-﻿
-using GZCTF.Models.Request.Admin;
+﻿using GZCTF.Models.Request.Admin;
 
 namespace GZCTF.Repositories.Interface;
 

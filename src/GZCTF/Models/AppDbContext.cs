@@ -10,21 +10,6 @@ namespace GZCTF.Models;
 public class AppDbContext(DbContextOptions<AppDbContext> options) :
     IdentityDbContext<UserInfo>(options), IDataProtectionKeyContext
 {
-    private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
-    {
-        var options = new JsonSerializerOptions() { WriteIndented = false };
-        return new ValueConverter<T?, string>(
-                    v => JsonSerializer.Serialize(v ?? new(), options),
-                    v => JsonSerializer.Deserialize<T>(v, options)
-               );
-    }
-
-    private static ValueComparer<TList> GetEnumerableComparer<TList, T>()
-        where T : notnull
-        where TList : IEnumerable<T>, new()
-        => new((c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
-            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
-
     public DbSet<Post> Posts { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;
     public DbSet<Team> Teams { get; set; } = default!;
@@ -44,14 +29,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
+    static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
+    {
+        var options = new JsonSerializerOptions { WriteIndented = false };
+        return new ValueConverter<T?, string>(
+            v => JsonSerializer.Serialize(v ?? new(), options),
+            v => JsonSerializer.Deserialize<T>(v, options)
+        );
+    }
+
+    static ValueComparer<TList> GetEnumerableComparer<TList, T>()
+        where T : notnull
+        where TList : IEnumerable<T>, new()
+    {
+        return new ValueComparer<TList>(
+            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        var listConverter = GetJsonConverter<List<string>>();
-        var setConverter = GetJsonConverter<HashSet<string>>();
-        var listComparer = GetEnumerableComparer<List<string>, string>();
-        var setComparer = GetEnumerableComparer<HashSet<string>, string>();
+        ValueConverter<List<string>?, string> listConverter = GetJsonConverter<List<string>>();
+        ValueConverter<HashSet<string>?, string> setConverter = GetJsonConverter<HashSet<string>>();
+        ValueComparer<List<string>> listComparer = GetEnumerableComparer<List<string>, string>();
+        ValueComparer<HashSet<string>> setComparer = GetEnumerableComparer<HashSet<string>, string>();
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -234,8 +237,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .SetValueComparer(listComparer);
 
             entity.HasMany(e => e.Flags)
-               .WithOne(e => e.Challenge)
-               .HasForeignKey(e => e.ChallengeId);
+                .WithOne(e => e.Challenge)
+                .HasForeignKey(e => e.ChallengeId);
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.Challenge)

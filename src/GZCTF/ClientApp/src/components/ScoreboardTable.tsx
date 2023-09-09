@@ -2,19 +2,19 @@ import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  Paper,
-  createStyles,
-  Table,
-  Group,
-  Text,
   Avatar,
   Box,
-  Stack,
-  Pagination,
-  Select,
-  Tooltip,
   Center,
+  createStyles,
+  Group,
   Input,
+  Pagination,
+  Paper,
+  Select,
+  Stack,
+  Table,
+  Text,
+  Tooltip,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import ScoreboardItemModal from '@Components/ScoreboardItemModal'

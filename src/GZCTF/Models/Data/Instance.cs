@@ -24,6 +24,20 @@ public class Instance
     /// </summary>
     public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;
 
+    /// <summary>
+    /// 获取实例附件
+    /// </summary>
+    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment
+        : Challenge.Attachment;
+
+    /// <summary>
+    /// 获取实例附件链接
+    /// </summary>
+    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
+        : Challenge.Attachment?.UrlWithName();
+
     #region Db Relationship
 
     public int? FlagId { get; set; }
@@ -33,8 +47,7 @@ public class Instance
     /// </summary>
     public FlagContext? FlagContext { get; set; } = default!;
 
-    [Required]
-    public int ChallengeId { get; set; }
+    [Required] public int ChallengeId { get; set; }
 
     /// <summary>
     /// 赛题对象
@@ -48,8 +61,7 @@ public class Instance
     /// </summary>
     public Container? Container { get; set; }
 
-    [Required]
-    public int ParticipationId { get; set; }
+    [Required] public int ParticipationId { get; set; }
 
     /// <summary>
     /// 参与队伍对象
@@ -57,17 +69,4 @@ public class Instance
     public Participation Participation { get; set; } = default!;
 
     #endregion Db Relationship
-
-    /// <summary>
-    /// 获取实例附件
-    /// </summary>
-    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment ?
-        FlagContext?.Attachment : Challenge.Attachment;
-
-    /// <summary>
-    /// 获取实例附件链接
-    /// </summary>
-    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment ?
-        FlagContext?.Attachment?.UrlWithName(Challenge.FileName) :
-        Challenge.Attachment?.UrlWithName();
 }

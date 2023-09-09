@@ -1,16 +1,16 @@
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import {
+  Box,
   Card,
+  createStyles,
   Divider,
   Group,
-  Tooltip,
+  keyframes,
   Stack,
   Text,
   Title,
-  createStyles,
-  keyframes,
-  Box,
+  Tooltip,
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -38,7 +38,12 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
     width: '70%',
     height: '200%',
     zIndex: 91,
-    animation: `${keyframes`0% {opacity: .3;} 100% {opacity: 1;}`} 2s linear 0s infinite alternate`,
+    animation: `${keyframes`0% {
+                              opacity: .3;
+                            }
+                              100% {
+                                opacity: 1;
+                              }`} 2s linear 0s infinite alternate`,
   },
   blood1: {
     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,

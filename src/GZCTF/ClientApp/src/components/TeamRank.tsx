@@ -2,17 +2,17 @@ import { FC, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Avatar,
-  Group,
+  Badge,
   Card,
-  Stack,
-  Title,
-  Text,
-  PaperProps,
   createStyles,
+  Group,
+  PaperProps,
+  PasswordInput,
   Progress,
   Skeleton,
-  PasswordInput,
-  Badge,
+  Stack,
+  Text,
+  Title,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'

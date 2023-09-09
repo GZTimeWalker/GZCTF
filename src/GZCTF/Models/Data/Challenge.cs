@@ -7,9 +7,7 @@ namespace GZCTF.Models.Data;
 
 public class Challenge
 {
-    [Key]
-    [Required]
-    public int Id { get; set; }
+    [Key] [Required] public int Id { get; set; }
 
     /// <summary>
     /// 题目名称
@@ -132,64 +130,12 @@ public class Challenge
     /// </summary>
     [NotMapped]
     public int CurrentScore =>
-        AcceptedCount <= 1 ? OriginalScore : (int)Math.Floor(
-        OriginalScore * (MinScoreRate +
-            (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
-        ));
-
-    #region Db Relationship
-
-    /// <summary>
-    /// 题目附件 Id
-    /// </summary>
-    public int? AttachmentId { get; set; }
-
-    /// <summary>
-    /// 题目附件（动态附件存放于 FlagContext）
-    /// </summary>
-    public Attachment? Attachment { get; set; }
-
-    /// <summary>
-    /// 测试容器 Id
-    /// </summary>
-    public string? TestContainerId { get; set; }
-
-    /// <summary>
-    /// 测试容器
-    /// </summary>
-    public Container? TestContainer { get; set; }
-
-    /// <summary>
-    /// 题目对应的 Flag 列表
-    /// </summary>
-    public List<FlagContext> Flags { get; set; } = new();
-
-    /// <summary>
-    /// 提交
-    /// </summary>
-    public List<Submission> Submissions { get; set; } = new();
-
-    /// <summary>
-    /// 赛题实例
-    /// </summary>
-    public List<Instance> Instances { get; set; } = new();
-
-    /// <summary>
-    /// 激活赛题的队伍
-    /// </summary>
-    public HashSet<Participation> Teams { get; set; } = new();
-
-    /// <summary>
-    /// 比赛 Id
-    /// </summary>
-    public int GameId { get; set; }
-
-    /// <summary>
-    /// 比赛对象
-    /// </summary>
-    public Game Game { get; set; } = default!;
-
-    #endregion Db Relationship
+        AcceptedCount <= 1
+            ? OriginalScore
+            : (int)Math.Floor(
+                OriginalScore * (MinScoreRate +
+                                 (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
+                ));
 
     internal string GenerateFlag(Participation part)
     {
@@ -256,8 +202,62 @@ public class Challenge
 
         // DynamicContainer only
         EnableTrafficCapture = Type == ChallengeType.DynamicContainer &&
-            (model.EnableTrafficCapture ?? EnableTrafficCapture);
+                               (model.EnableTrafficCapture ?? EnableTrafficCapture);
 
         return this;
     }
+
+    #region Db Relationship
+
+    /// <summary>
+    /// 题目附件 Id
+    /// </summary>
+    public int? AttachmentId { get; set; }
+
+    /// <summary>
+    /// 题目附件（动态附件存放于 FlagContext）
+    /// </summary>
+    public Attachment? Attachment { get; set; }
+
+    /// <summary>
+    /// 测试容器 Id
+    /// </summary>
+    public string? TestContainerId { get; set; }
+
+    /// <summary>
+    /// 测试容器
+    /// </summary>
+    public Container? TestContainer { get; set; }
+
+    /// <summary>
+    /// 题目对应的 Flag 列表
+    /// </summary>
+    public List<FlagContext> Flags { get; set; } = new();
+
+    /// <summary>
+    /// 提交
+    /// </summary>
+    public List<Submission> Submissions { get; set; } = new();
+
+    /// <summary>
+    /// 赛题实例
+    /// </summary>
+    public List<Instance> Instances { get; set; } = new();
+
+    /// <summary>
+    /// 激活赛题的队伍
+    /// </summary>
+    public HashSet<Participation> Teams { get; set; } = new();
+
+    /// <summary>
+    /// 比赛 Id
+    /// </summary>
+    public int GameId { get; set; }
+
+    /// <summary>
+    /// 比赛对象
+    /// </summary>
+    public Game Game { get; set; } = default!;
+
+    #endregion Db Relationship
 }

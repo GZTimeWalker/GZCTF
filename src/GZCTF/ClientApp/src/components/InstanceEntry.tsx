@@ -2,25 +2,25 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import {
+  ActionIcon,
+  Anchor,
+  Button,
+  Divider,
+  Group,
   Stack,
   Text,
-  Button,
-  Group,
-  Tooltip,
-  Anchor,
   TextInput,
-  ActionIcon,
-  Divider,
+  Tooltip,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiCheck,
-  mdiServerNetwork,
   mdiContentCopy,
-  mdiOpenInNew,
-  mdiOpenInApp,
   mdiExclamation,
+  mdiOpenInApp,
+  mdiOpenInNew,
+  mdiServerNetwork,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { getProxyUrl } from '@Utils/Shared'

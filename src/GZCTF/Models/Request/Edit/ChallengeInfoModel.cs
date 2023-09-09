@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
@@ -51,7 +50,8 @@ public class ChallengeInfoModel
     public int OriginalScore { get; set; } = 500;
 
     internal static ChallengeInfoModel FromChallenge(Challenge challenge)
-        => new()
+    {
+        return new ChallengeInfoModel
         {
             Id = challenge.Id,
             Title = challenge.Title,
@@ -62,4 +62,5 @@ public class ChallengeInfoModel
             OriginalScore = challenge.OriginalScore,
             IsEnabled = challenge.IsEnabled
         };
+    }
 }

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Text, Box, Center, PasswordInput, Popover, Progress } from '@mantine/core'
+import { Box, Center, PasswordInput, Popover, Progress, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'

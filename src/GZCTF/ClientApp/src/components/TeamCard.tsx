@@ -1,14 +1,14 @@
 import { FC } from 'react'
 import {
-  Group,
-  Title,
-  Text,
-  Divider,
   Avatar,
   Badge,
-  Card,
-  Stack,
   Box,
+  Card,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  Title,
   Tooltip,
 } from '@mantine/core'
 import { mdiLockOutline } from '@mdi/js'

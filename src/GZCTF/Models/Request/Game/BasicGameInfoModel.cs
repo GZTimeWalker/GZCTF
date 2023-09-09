@@ -10,8 +10,7 @@ namespace GZCTF.Models.Request.Game;
 [MemoryPackable]
 public partial class BasicGameInfoModel
 {
-    [Key]
-    public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     /// <summary>
     /// 比赛标题
@@ -48,7 +47,8 @@ public partial class BasicGameInfoModel
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     internal static BasicGameInfoModel FromGame(Data.Game game)
-        => new()
+    {
+        return new BasicGameInfoModel
         {
             Id = game.Id,
             Title = game.Title,
@@ -58,4 +58,5 @@ public partial class BasicGameInfoModel
             EndTimeUTC = game.EndTimeUTC,
             TeamMemberLimitCount = game.TeamMemberCountLimit
         };
+    }
 }

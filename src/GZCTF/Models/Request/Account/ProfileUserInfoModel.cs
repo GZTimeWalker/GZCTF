@@ -51,7 +51,8 @@ public class ProfileUserInfoModel
     public Role? Role { get; set; }
 
     internal static ProfileUserInfoModel FromUserInfo(UserInfo user)
-        => new()
+    {
+        return new ProfileUserInfoModel
         {
             UserId = user.Id,
             Bio = user.Bio,
@@ -63,4 +64,5 @@ public class ProfileUserInfoModel
             StdNumber = user.StdNumber,
             Role = user.Role
         };
+    }
 }

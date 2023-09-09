@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-
 using GZCTF.Models.Request.Info;
 
 namespace GZCTF.Models.Request.Admin;
@@ -36,12 +35,16 @@ public class WriteupInfoModel
     public LocalFile File { get; set; } = default!;
 
     internal static WriteupInfoModel? FromParticipation(Participation part)
-        => part.Writeup is null ? null : new()
-        {
-            Id = part.Id,
-            Team = TeamInfoModel.FromTeam(part.Team, false),
-            File = part.Writeup,
-            Url = part.Writeup.Url(),
-            UploadTimeUTC = part.Writeup.UploadTimeUTC
-        };
+    {
+        return part.Writeup is null
+            ? null
+            : new()
+            {
+                Id = part.Id,
+                Team = TeamInfoModel.FromTeam(part.Team, false),
+                File = part.Writeup,
+                Url = part.Writeup.Url(),
+                UploadTimeUTC = part.Writeup.UploadTimeUTC
+            };
+    }
 }

@@ -1,6 +1,4 @@
-﻿
-
-namespace GZCTF.Repositories.Interface;
+﻿namespace GZCTF.Repositories.Interface;
 
 public interface IGameEventRepository : IRepository
 {
@@ -21,5 +19,6 @@ public interface IGameEventRepository : IRepository
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0, CancellationToken token = default);
+    public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,
+        CancellationToken token = default);
 }

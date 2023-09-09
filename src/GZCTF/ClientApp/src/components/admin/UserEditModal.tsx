@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
-  Text,
   Button,
   Center,
   Grid,
@@ -13,6 +12,7 @@ import {
   SegmentedControl,
   SimpleGrid,
   Stack,
+  Text,
   Textarea,
   TextInput,
   useMantineTheme,
@@ -22,7 +22,7 @@ import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUser } from '@Utils/useUser'
-import api, { UserInfoModel, AdminUserInfoModel, Role } from '@Api'
+import api, { AdminUserInfoModel, Role, UserInfoModel } from '@Api'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],

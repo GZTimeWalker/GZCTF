@@ -1,19 +1,19 @@
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import {
+  Avatar,
+  Badge,
+  Center,
   Group,
-  Text,
+  LoadingOverlay,
   Modal,
   ModalProps,
+  Progress,
   ScrollArea,
   Stack,
   Table,
-  Progress,
-  Center,
-  LoadingOverlay,
-  Avatar,
+  Text,
   Title,
-  Badge,
 } from '@mantine/core'
 import TeamRadarMap from '@Components/TeamRadarMap'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'

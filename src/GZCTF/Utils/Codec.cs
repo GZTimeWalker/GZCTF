@@ -8,6 +8,126 @@ namespace GZCTF.Utils;
 
 public partial class Codec
 {
+    [GeneratedRegex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+]).{8,}$")]
+    private static partial Regex PasswordRegex();
+
+    /// <summary>
+    /// 生成随机密码
+    /// </summary>
+    /// <param name="length">密码长度</param>
+    /// <returns></returns>
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
+    public static string RandomPassword(int length)
+    {
+        var random = new Random();
+        const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
+
+        string pwd;
+        do
+        {
+            pwd = new string(Enumerable.Repeat(chars, length < 8 ? 8 : length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        } while (!PasswordRegex().IsMatch(pwd));
+
+        return pwd;
+    }
+
+    /// <summary>
+    /// 转换为对应进制
+    /// </summary>
+    /// <param name="source">源数据</param>
+    /// <param name="toBase">进制支持2,8,10,16</param>
+    /// <returns></returns>
+    public static List<string> ToBase(List<int> source, int toBase)
+    {
+        return new List<string>(source.ConvertAll(a => Convert.ToString(a, toBase)));
+    }
+
+    /// <summary>
+    /// 字节数组转换为16进制字符串
+    /// </summary>
+    /// <param name="bytes">原始字节数组</param>
+    /// <param name="useLower">是否使用小写</param>
+    /// <returns></returns>
+    public static string BytesToHex(byte[] bytes, bool useLower = true)
+    {
+        var output = BitConverter.ToString(bytes).Replace("-", "");
+        return useLower ? output.ToLowerInvariant() : output.ToUpperInvariant();
+    }
+
+    /// <summary>
+    /// 根据xor进行byte数异或
+    /// </summary>
+    /// <param name="data">原始数据</param>
+    /// <param name="xor">xor密钥</param>
+    /// <returns>异或结果</returns>
+    public static byte[] Xor(byte[] data, byte[] xor)
+    {
+        var res = new byte[data.Length];
+        for (var i = 0; i < data.Length; ++i) res[i] = (byte)(data[i] ^ xor[i % xor.Length]);
+        return res;
+    }
+
+    /// <summary>
+    /// 将文件打包为 zip 文件
+    /// </summary>
+    /// <param name="files">文件列表</param>
+    /// <param name="basePath">根目录</param>
+    /// <param name="zipName">压缩包根目录</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public static async Task<Stream> ZipFilesAsync(IEnumerable<LocalFile> files, string basePath, string zipName,
+        CancellationToken token = default)
+    {
+        var size = files.Select(f => f.FileSize).Sum();
+
+        Stream tmp = size <= 64 * 1024 * 1024
+            ? new MemoryStream()
+            : File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
+
+        using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
+
+        foreach (LocalFile file in files)
+        {
+            ZipArchiveEntry entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Optimal);
+            await using Stream entryStream = entry.Open();
+            await using FileStream fileStream = File.OpenRead(Path.Combine(basePath, file.Location, file.Hash));
+            await fileStream.CopyToAsync(entryStream, token);
+        }
+
+        await tmp.FlushAsync(token);
+        return tmp;
+    }
+
+    /// <summary>
+    /// 将文件夹打包为 zip 文件
+    /// </summary>
+    /// <param name="basePath">根目录</param>
+    /// <param name="zipName">压缩包根目录</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public static async Task<Stream> ZipFilesAsync(string basePath, string zipName, CancellationToken token = default)
+    {
+        List<FileRecord> records = FilePath.GetFileRecords(basePath, out var size);
+
+        Stream tmp = size <= 64 * 1024 * 1024
+            ? new MemoryStream()
+            : File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
+
+        using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
+
+        foreach (FileRecord file in records)
+        {
+            ZipArchiveEntry entry = zip.CreateEntry(Path.Combine(zipName, file.FileName), CompressionLevel.Optimal);
+            await using Stream entryStream = entry.Open();
+            await using FileStream fileStream = File.OpenRead(Path.Combine(basePath, file.FileName));
+            await fileStream.CopyToAsync(entryStream, token);
+        }
+
+        await tmp.FlushAsync(token);
+        return tmp;
+    }
+
     /// <summary>
     /// Base64编解码
     /// </summary>
@@ -61,8 +181,7 @@ public partial class Codec
             Span<char> buffer = new char[encoded.Length * 4 / 3 + 8];
             if (Convert.TryToBase64Chars(encoded, buffer, out var charsWritten))
                 return Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten].ToArray());
-            else
-                return Array.Empty<byte>();
+            return Array.Empty<byte>();
         }
 
         public static byte[] DecodeToBytes(string? str)
@@ -72,7 +191,7 @@ public partial class Codec
 
             Span<byte> buffer = new byte[str.Length * 3 / 4 + 8];
 
-            if (Convert.TryFromBase64String(str, buffer, out int bytesWritten))
+            if (Convert.TryFromBase64String(str, buffer, out var bytesWritten))
                 return buffer[..bytesWritten].ToArray();
 
             return Array.Empty<byte>();
@@ -84,7 +203,7 @@ public partial class Codec
     /// </summary>
     public static class Leet
     {
-        private static readonly Dictionary<char, string> CharMap = new()
+        static readonly Dictionary<char, string> CharMap = new()
         {
             ['A'] = "Aa4",
             ['B'] = "Bb68",
@@ -129,14 +248,12 @@ public partial class Codec
             double entropy = 0;
             var doLeet = false;
             foreach (var c in flag)
-            {
                 if (c is '{' or ']')
                     doLeet = true;
                 else if (doLeet && c is '}' or '[')
                     doLeet = false;
                 else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table))
                     entropy += Math.Log(table.Length, 2);
-            }
             return entropy;
         }
 
@@ -150,9 +267,13 @@ public partial class Codec
             foreach (var c in original)
             {
                 if (c is '{' or ']')
+                {
                     doLeet = true;
+                }
                 else if (doLeet && c is '}' or '[')
+                {
                     doLeet = false;
+                }
                 else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table))
                 {
                     var nc = table[random.Next(table.Length)];
@@ -166,130 +287,10 @@ public partial class Codec
             return sb.ToString();
         }
     }
-
-    [GeneratedRegex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+]).{8,}$")]
-    private static partial Regex PasswordRegex();
-
-    /// <summary>
-    /// 生成随机密码
-    /// </summary>
-    /// <param name="length">密码长度</param>
-    /// <returns></returns>
-    [SuppressMessage("ReSharper", "StringLiteralTypo")]
-    public static string RandomPassword(int length)
-    {
-        var random = new Random();
-        const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
-
-        string pwd;
-        do
-        {
-            pwd = new string(Enumerable.Repeat(chars, length < 8 ? 8 : length)
-                    .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-        while (!PasswordRegex().IsMatch(pwd));
-
-        return pwd;
-    }
-
-    /// <summary>
-    /// 转换为对应进制
-    /// </summary>
-    /// <param name="source">源数据</param>
-    /// <param name="toBase">进制支持2,8,10,16</param>
-    /// <returns></returns>
-    public static List<string> ToBase(List<int> source, int toBase)
-        => new(source.ConvertAll((a) => Convert.ToString(a, toBase)));
-
-    /// <summary>
-    /// 字节数组转换为16进制字符串
-    /// </summary>
-    /// <param name="bytes">原始字节数组</param>
-    /// <param name="useLower">是否使用小写</param>
-    /// <returns></returns>
-    public static string BytesToHex(byte[] bytes, bool useLower = true)
-    {
-        var output = BitConverter.ToString(bytes).Replace("-", "");
-        return useLower ? output.ToLowerInvariant() : output.ToUpperInvariant();
-    }
-
-    /// <summary>
-    /// 根据xor进行byte数异或
-    /// </summary>
-    /// <param name="data">原始数据</param>
-    /// <param name="xor">xor密钥</param>
-    /// <returns>异或结果</returns>
-    public static byte[] Xor(byte[] data, byte[] xor)
-    {
-        var res = new byte[data.Length];
-        for (var i = 0; i < data.Length; ++i)
-        {
-            res[i] = (byte)(data[i] ^ xor[i % xor.Length]);
-        }
-        return res;
-    }
-
-    /// <summary>
-    /// 将文件打包为 zip 文件
-    /// </summary>
-    /// <param name="files">文件列表</param>
-    /// <param name="basePath">根目录</param>
-    /// <param name="zipName">压缩包根目录</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public static async Task<Stream> ZipFilesAsync(IEnumerable<LocalFile> files, string basePath, string zipName, CancellationToken token = default)
-    {
-        var size = files.Select(f => f.FileSize).Sum();
-
-        Stream tmp = size <= 64 * 1024 * 1024 ? new MemoryStream() :
-            File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
-
-        using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
-
-        foreach (var file in files)
-        {
-            var entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Optimal);
-            await using var entryStream = entry.Open();
-            await using var fileStream = File.OpenRead(Path.Combine(basePath, file.Location, file.Hash));
-            await fileStream.CopyToAsync(entryStream, token);
-        }
-
-        await tmp.FlushAsync(token);
-        return tmp;
-    }
-
-    /// <summary>
-    /// 将文件夹打包为 zip 文件
-    /// </summary>
-    /// <param name="basePath">根目录</param>
-    /// <param name="zipName">压缩包根目录</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public static async Task<Stream> ZipFilesAsync(string basePath, string zipName, CancellationToken token = default)
-    {
-        var records = FilePath.GetFileRecords(basePath, out long size);
-
-        Stream tmp = size <= 64 * 1024 * 1024 ? new MemoryStream() :
-            File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
-
-        using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
-
-        foreach (var file in records)
-        {
-            var entry = zip.CreateEntry(Path.Combine(zipName, file.FileName), CompressionLevel.Optimal);
-            await using var entryStream = entry.Open();
-            await using var fileStream = File.OpenRead(Path.Combine(basePath, file.FileName));
-            await fileStream.CopyToAsync(entryStream, token);
-        }
-
-        await tmp.FlushAsync(token);
-        return tmp;
-    }
 }
 
 public static partial class CodecExtensions
 {
-
     [GeneratedRegex("[^a-zA-Z0-9]+")]
     private static partial Regex RFC1123ReplacePattern();
 
@@ -312,7 +313,10 @@ public static partial class CodecExtensions
     /// </summary>
     /// <param name="str">原字符串</param>
     /// <returns></returns>
-    public static byte[] Ascii(this string str) => Encoding.ASCII.GetBytes(str);
+    public static byte[] Ascii(this string str)
+    {
+        return Encoding.ASCII.GetBytes(str);
+    }
 
     /// <summary>
     /// 反转字符串
@@ -360,7 +364,9 @@ public static partial class CodecExtensions
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] BytesMd5(this string str)
-        => MD5.HashData(str.ToUTF8Bytes());
+    {
+        return MD5.HashData(str.ToUTF8Bytes());
+    }
 
     /// <summary>
     /// 获取 SHA256 哈希字节摘要
@@ -368,7 +374,9 @@ public static partial class CodecExtensions
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] BytesSHA256(this string str)
-        => SHA256.HashData(str.ToUTF8Bytes());
+    {
+        return SHA256.HashData(str.ToUTF8Bytes());
+    }
 
 
     /// <summary>
@@ -377,5 +385,7 @@ public static partial class CodecExtensions
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] ToUTF8Bytes(this string str)
-        => Encoding.UTF8.GetBytes(str);
+    {
+        return Encoding.UTF8.GetBytes(str);
+    }
 }

@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, PasswordInput } from '@mantine/core'
 import { getHotkeyHandler, useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'

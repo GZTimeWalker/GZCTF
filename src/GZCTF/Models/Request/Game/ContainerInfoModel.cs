@@ -1,6 +1,4 @@
-﻿
-
-namespace GZCTF.Models.Request.Game;
+﻿namespace GZCTF.Models.Request.Game;
 
 public class ContainerInfoModel
 {
@@ -25,11 +23,13 @@ public class ContainerInfoModel
     public string Entry { get; set; } = string.Empty;
 
     internal static ContainerInfoModel FromContainer(Container container)
-        => new()
+    {
+        return new ContainerInfoModel
         {
             Status = container.Status,
             StartedAt = container.StartedAt,
             ExpectStopAt = container.ExpectStopAt,
             Entry = container.Entry
         };
+    }
 }

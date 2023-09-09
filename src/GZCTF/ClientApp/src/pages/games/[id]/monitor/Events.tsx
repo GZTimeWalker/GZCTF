@@ -2,28 +2,28 @@ import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  Group,
-  Text,
-  useMantineTheme,
   ActionIcon,
+  Card,
+  Group,
+  Input,
   ScrollArea,
   Stack,
-  Card,
   Switch,
-  Input,
+  Text,
+  useMantineTheme,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
-  mdiFlag,
-  mdiLightningBolt,
-  mdiToggleSwitchOutline,
-  mdiToggleSwitchOffOutline,
-  mdiExclamationThick,
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiCheck,
   mdiClose,
+  mdiExclamationThick,
+  mdiFlag,
+  mdiLightningBolt,
+  mdiToggleSwitchOffOutline,
+  mdiToggleSwitchOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'

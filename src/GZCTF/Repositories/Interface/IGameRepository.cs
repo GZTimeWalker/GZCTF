@@ -1,5 +1,4 @@
-﻿
-using GZCTF.Models.Request.Game;
+﻿using GZCTF.Models.Request.Game;
 
 namespace GZCTF.Repositories.Interface;
 

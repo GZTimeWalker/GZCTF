@@ -7,8 +7,7 @@ namespace GZCTF.Models.Data;
 
 public class Team
 {
-    [Key]
-    public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     /// <summary>
     /// 队伍名称
@@ -45,6 +44,26 @@ public class Team
     [NotMapped]
     public string InviteCode => $"{Name}:{Id}:{InviteToken}";
 
+    [NotMapped] public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
+
+    public void UpdateInviteToken()
+    {
+        InviteToken = Guid.NewGuid().ToString("N");
+    }
+
+    internal void UpdateInfo(TeamUpdateModel model)
+    {
+        Name = string.IsNullOrEmpty(model.Name) ? Name : model.Name;
+        Bio = model.Bio;
+    }
+
+    internal void UpdateInfo(AdminTeamModel model)
+    {
+        Name = string.IsNullOrEmpty(model.Name) ? Name : model.Name;
+        Bio = string.IsNullOrEmpty(model.Bio) ? Bio : model.Bio;
+        Locked = model.Locked ?? Locked;
+    }
+
     #region Db Relationship
 
     /// <summary>
@@ -73,22 +92,4 @@ public class Team
     public HashSet<UserInfo> Members { get; set; } = new();
 
     #endregion Db Relationship
-
-    [NotMapped]
-    public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
-
-    public void UpdateInviteToken() => InviteToken = Guid.NewGuid().ToString("N");
-
-    internal void UpdateInfo(TeamUpdateModel model)
-    {
-        Name = string.IsNullOrEmpty(model.Name) ? Name : model.Name;
-        Bio = model.Bio;
-    }
-
-    internal void UpdateInfo(AdminTeamModel model)
-    {
-        Name = string.IsNullOrEmpty(model.Name) ? Name : model.Name;
-        Bio = string.IsNullOrEmpty(model.Bio) ? Bio : model.Bio;
-        Locked = model.Locked ?? Locked;
-    }
 }

@@ -2,21 +2,21 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  Center,
-  ScrollArea,
-  Stack,
-  Text,
-  Title,
-  Group,
   Accordion,
-  useMantineTheme,
-  Box,
   Avatar,
   Badge,
+  Box,
+  Center,
+  Group,
   Input,
-  Switch,
   Paper,
+  ScrollArea,
+  Stack,
+  Switch,
   Table,
+  Text,
+  Title,
+  useMantineTheme,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'

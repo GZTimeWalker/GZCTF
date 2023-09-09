@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Center, Group, Stack, Title, Text, ScrollArea } from '@mantine/core'
+import { Button, Center, Group, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import { mdiFolderDownloadOutline, mdiKeyboardBackspace } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import PDFViewer from '@Components/admin/PDFViewer'

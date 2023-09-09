@@ -27,23 +27,29 @@ public class ContainerProviderMetadata
 
 public static class ContainerServiceExtension
 {
-    internal static IServiceCollection AddContainerService(this IServiceCollection services, ConfigurationManager configuration)
+    internal static IServiceCollection AddContainerService(this IServiceCollection services,
+        ConfigurationManager configuration)
     {
-        var config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ?? new();
+        ContainerProvider config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ??
+                                   new();
 
         // FIXME: custom IPortMapper
         return services.AddProvider(config).AddManager(config);
     }
 
-    private static IServiceCollection AddProvider(this IServiceCollection services, ContainerProvider config)
-        => config.Type switch
+    static IServiceCollection AddProvider(this IServiceCollection services, ContainerProvider config)
+    {
+        return config.Type switch
         {
-            ContainerProviderType.Docker => services.AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
-            ContainerProviderType.Kubernetes => services.AddSingleton<IContainerProvider<Kubernetes, K8sMetadata>, K8sProvider>(),
+            ContainerProviderType.Docker => services
+                .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
+            ContainerProviderType.Kubernetes => services
+                .AddSingleton<IContainerProvider<Kubernetes, K8sMetadata>, K8sProvider>(),
             _ => throw new NotImplementedException()
         };
+    }
 
-    private static IServiceCollection AddManager(this IServiceCollection services, ContainerProvider config)
+    static IServiceCollection AddManager(this IServiceCollection services, ContainerProvider config)
     {
         if (config.Type == ContainerProviderType.Kubernetes)
             return services.AddSingleton<IContainerManager, K8sManager>();

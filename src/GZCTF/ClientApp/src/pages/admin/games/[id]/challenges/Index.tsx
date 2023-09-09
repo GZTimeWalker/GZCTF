@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiKeyboardBackspace, mdiCheck, mdiPlus, mdiHexagonSlice6 } from '@mdi/js'
+import { mdiCheck, mdiHexagonSlice6, mdiKeyboardBackspace, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import BloodBonusModel from '@Components/admin/BloodBonusModel'
 import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'

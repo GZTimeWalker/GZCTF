@@ -1,17 +1,17 @@
 import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
+  Alert,
+  Anchor,
+  BackgroundImage,
+  Badge,
   Button,
+  Center,
   Container,
   Group,
   Stack,
   Text,
   Title,
-  Center,
-  Alert,
-  Badge,
-  BackgroundImage,
-  Anchor,
 } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'

@@ -1,6 +1,5 @@
 ﻿using GZCTF.Hubs.Clients;
 using GZCTF.Repositories.Interface;
-
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Primitives;
 
@@ -10,19 +9,19 @@ public class UserHub : Hub<IUserClient>
 {
     public override async Task OnConnectedAsync()
     {
-        var context = Context.GetHttpContext();
+        HttpContext? context = Context.GetHttpContext();
 
         if (context is null
             || !await HubHelper.HasUser(context)
             || !context.Request.Query.TryGetValue("game", out StringValues gameId)
-            || !int.TryParse(gameId, out int gameNumId))
+            || !int.TryParse(gameId, out var gameNumId))
         {
             Context.Abort();
             return;
         }
 
         var gameRepository = context.RequestServices.GetRequiredService<IGameRepository>();
-        var game = await gameRepository.GetGameById(gameNumId);
+        Game? game = await gameRepository.GetGameById(gameNumId);
 
         if (game is null)
         {

@@ -36,12 +36,13 @@ public class RecordableNetworkStreamOptions
 /// </summary>
 public sealed class RecordableNetworkStream : NetworkStream
 {
-    private readonly RecordableNetworkStreamOptions _options;
-    private readonly CaptureFileWriterDevice? _device;
-    private readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
-    private readonly IPEndPoint _host = new(0, 65535);
+    readonly CaptureFileWriterDevice? _device;
+    readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
+    readonly IPEndPoint _host = new(0, 65535);
+    readonly RecordableNetworkStreamOptions _options;
 
-    public RecordableNetworkStream(Socket socket, byte[]? metadata, RecordableNetworkStreamOptions options) : base(socket)
+    public RecordableNetworkStream(Socket socket, byte[]? metadata, RecordableNetworkStreamOptions options) :
+        base(socket)
     {
         _options = options;
 
@@ -74,7 +75,8 @@ public sealed class RecordableNetworkStream : NetworkStream
         return count;
     }
 
-    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer,
+        CancellationToken cancellationToken = default)
     {
         if (_options.EnableCapture)
             WriteCapturedData(_options.Source, _options.Dest, buffer);

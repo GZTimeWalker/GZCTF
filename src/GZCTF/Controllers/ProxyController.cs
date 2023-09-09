@@ -2,10 +2,10 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -21,14 +21,24 @@ namespace GZCTF.Controllers;
 public class ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
     IOptions<ContainerProvider> provider, IContainerRepository containerRepository) : ControllerBase
 {
-    private readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
-    private readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
-    private const int BufferSize = 1024 * 4;
-    private const uint ConnectionLimit = 64;
-    private readonly JsonSerializerOptions _jsonOptions = new()
+    const int BufferSize = 1024 * 4;
+    const uint ConnectionLimit = 64;
+    readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
+    readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
+
+    readonly JsonSerializerOptions _jsonOptions = new()
     {
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-        WriteIndented = true,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true
+    };
+
+    readonly DistributedCacheEntryOptions _storeOption = new()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
+    };
+
+    readonly DistributedCacheEntryOptions _validOption = new()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
     };
 
     /// <summary>
@@ -56,17 +66,17 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (!await IncrementConnectionCount(id))
             return BadRequest(new RequestResponse("容器连接数已达上限"));
 
-        var container = await containerRepository.GetContainerWithInstanceById(id, token);
+        Container? container = await containerRepository.GetContainerWithInstanceById(id, token);
 
         if (container is null || container.Instance is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
-        var ipAddress = (await Dns.GetHostAddressesAsync(container.Ip, token)).FirstOrDefault();
+        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.Ip, token)).FirstOrDefault();
 
         if (ipAddress is null)
             return BadRequest(new RequestResponse("容器地址解析失败"));
 
-        var clientIp = HttpContext.Connection.RemoteIpAddress;
+        IPAddress? clientIp = HttpContext.Connection.RemoteIpAddress;
         var clientPort = HttpContext.Connection.RemotePort;
 
         if (clientIp is null)
@@ -76,30 +86,28 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         byte[]? metadata = null;
 
         if (enable)
-        {
-            metadata = JsonSerializer.SerializeToUtf8Bytes(new
-            {
-                Challenge = container.Instance.Challenge.Title,
-                container.Instance.ChallengeId,
-
-                Team = container.Instance.Participation.Team.Name,
-                container.Instance.Participation.TeamId,
-
-                container.ContainerId,
-                container.Instance.FlagContext?.Flag
-            }, _jsonOptions);
-        }
+            metadata = JsonSerializer.SerializeToUtf8Bytes(
+                new
+                {
+                    Challenge = container.Instance.Challenge.Title,
+                    container.Instance.ChallengeId,
+                    Team = container.Instance.Participation.Team.Name,
+                    container.Instance.Participation.TeamId,
+                    container.ContainerId,
+                    container.Instance.FlagContext?.Flag
+                }, _jsonOptions);
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
 
-        return await DoContainerProxy(id, client, target, metadata, new()
-        {
-            Source = client,
-            Dest = target,
-            EnableCapture = enable,
-            FilePath = container.TrafficPath(HttpContext.Connection.Id),
-        }, token);
+        return await DoContainerProxy(id, client, target, metadata,
+            new()
+            {
+                Source = client,
+                Dest = target,
+                EnableCapture = enable,
+                FilePath = container.TrafficPath(HttpContext.Connection.Id)
+            }, token);
     }
 
     /// <summary>
@@ -125,17 +133,17 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
 
-        var container = await containerRepository.GetContainerById(id, token);
+        Container? container = await containerRepository.GetContainerById(id, token);
 
         if (container is null || container.InstanceId != 0 || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
-        var ipAddress = (await Dns.GetHostAddressesAsync(container.Ip, token)).FirstOrDefault();
+        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.Ip, token)).FirstOrDefault();
 
         if (ipAddress is null)
             return BadRequest(new RequestResponse("容器地址解析失败"));
 
-        var clientIp = HttpContext.Connection.RemoteIpAddress;
+        IPAddress? clientIp = HttpContext.Connection.RemoteIpAddress;
         var clientPort = HttpContext.Connection.RemotePort;
 
         if (clientIp is null)
@@ -164,19 +172,21 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         }
         catch (SocketException e)
         {
-            logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}", TaskStatus.Failed, LogLevel.Debug);
+            logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}",
+                TaskStatus.Failed, LogLevel.Debug);
             return new JsonResult(new RequestResponse($"容器连接失败（{e.SocketErrorCode}）", StatusCodes.Status418ImATeapot))
             {
                 StatusCode = StatusCodes.Status418ImATeapot
             };
         }
 
-        using var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
+        using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
         try
         {
             var (tx, rx) = await RunProxy(stream, ws, token);
-            logger.SystemLog($"[{id}] {client.Address} -> {target.Address}:{target.Port}, tx {tx}, rx {rx}", TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog($"[{id}] {client.Address} -> {target.Address}:{target.Port}, tx {tx}, rx {rx}",
+                TaskStatus.Success, LogLevel.Debug);
         }
         catch (Exception e)
         {
@@ -198,22 +208,23 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     /// <param name="ws"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    static async Task<(ulong, ulong)> RunProxy(RecordableNetworkStream stream, WebSocket ws, CancellationToken token = default)
+    static async Task<(ulong, ulong)> RunProxy(RecordableNetworkStream stream, WebSocket ws,
+        CancellationToken token = default)
     {
         var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
         cts.CancelAfter(TimeSpan.FromMinutes(30));
 
-        var ct = cts.Token;
+        CancellationToken ct = cts.Token;
         ulong tx = 0, rx = 0;
 
-        var sender = Task.Run(async () =>
+        Task sender = Task.Run(async () =>
         {
             var buffer = new byte[BufferSize];
             try
             {
                 while (true)
                 {
-                    var status = await ws.ReceiveAsync(buffer, ct);
+                    WebSocketReceiveResult status = await ws.ReceiveAsync(buffer, ct);
                     if (status.CloseStatus.HasValue)
                         break;
                     if (status.Count > 0)
@@ -227,7 +238,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             finally { cts.Cancel(); }
         }, ct);
 
-        var receiver = Task.Run(async () =>
+        Task receiver = Task.Run(async () =>
         {
             var buffer = new byte[BufferSize];
             try
@@ -240,6 +251,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
                         await ws.CloseAsync(WebSocketCloseStatus.Empty, null, token);
                         break;
                     }
+
                     rx += (ulong)count;
                     await ws.SendAsync(buffer.AsMemory(0, count), WebSocketMessageType.Binary, true, ct);
                 }
@@ -252,16 +264,6 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
 
         return (tx, rx);
     }
-
-    private readonly DistributedCacheEntryOptions _validOption = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-    };
-
-    private readonly DistributedCacheEntryOptions _storeOption = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
-    };
 
     /// <summary>
     /// 容器存在性校验
@@ -324,12 +326,8 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         var count = BitConverter.ToInt32(bytes);
 
         if (count > 1)
-        {
             await cache.SetAsync(key, BitConverter.GetBytes(count - 1), _storeOption);
-        }
         else
-        {
             await cache.SetAsync(key, BitConverter.GetBytes(0), _validOption);
-        }
     }
 }

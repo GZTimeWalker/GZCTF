@@ -2,22 +2,22 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
+  ActionIcon,
   Button,
   Center,
   Grid,
   Group,
-  Input,
-  NumberInput,
-  Stack,
-  Textarea,
-  TextInput,
   Image,
-  Text,
+  Input,
   MultiSelect,
-  ActionIcon,
-  Switch,
+  NumberInput,
   PasswordInput,
   SimpleGrid,
+  Stack,
+  Switch,
+  Text,
+  Textarea,
+  TextInput,
 } from '@mantine/core'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
 import { Dropzone } from '@mantine/dropzone'
@@ -25,12 +25,12 @@ import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import {
-  mdiKeyboardBackspace,
   mdiCheck,
   mdiClose,
   mdiContentSaveOutline,
-  mdiRefresh,
   mdiDeleteOutline,
+  mdiKeyboardBackspace,
+  mdiRefresh,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
