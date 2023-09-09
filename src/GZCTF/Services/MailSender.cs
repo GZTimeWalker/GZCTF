@@ -2,7 +2,7 @@
 using System.Text;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;

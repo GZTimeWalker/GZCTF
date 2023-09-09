@@ -5,7 +5,6 @@ using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -51,7 +50,7 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse("验证码校验失败"));
 
-        var mailDomain = model.Email!.Split('@')[1];
+        var mailDomain = model.Email.Split('@')[1];
         if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
             accountPolicy.Value.EmailDomainList.Split(',').All(d => d != mailDomain))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
@@ -315,7 +314,7 @@ public class AccountController(
     public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
     {
         var user = await userManager.GetUserAsync(User);
-        var oname = user!.UserName;
+        var oldName = user!.UserName;
 
         user.UpdateUserInfo(model);
         var result = await userManager.UpdateAsync(user);
@@ -323,8 +322,8 @@ public class AccountController(
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
 
-        if (oname != user.UserName)
-            logger.Log($"用户更新：{oname} => {model.UserName}", user, TaskStatus.Success);
+        if (oldName != user.UserName)
+            logger.Log($"用户更新：{oldName} => {model.UserName}", user, TaskStatus.Success);
 
         return Ok();
     }

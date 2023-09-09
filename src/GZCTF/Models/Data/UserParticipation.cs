@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 [Index(nameof(ParticipationId))]
 public class UserParticipation

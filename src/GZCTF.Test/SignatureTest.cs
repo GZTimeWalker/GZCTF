@@ -88,7 +88,7 @@ public class SignatureTest
     [Fact]
     public void Ed25519ctxTest()
     {
-        var sAlgorithm = SignAlgorithm.Ed25519ctx;
+        var sAlgorithm = SignAlgorithm.Ed25519Ctx;
         var s = "Hello " + sAlgorithm.ToString();
         output.WriteLine(s);
         SecureRandom sr = new();
@@ -146,7 +146,7 @@ public class SignatureTest
     [Fact]
     public void SHA512withRSATest()
     {
-        var sAlgorithm = SignAlgorithm.SHA512withRSA;
+        var sAlgorithm = SignAlgorithm.SHA512WithRSA;
         var s = "Hello " + sAlgorithm.ToString();
         output.WriteLine(s);
         SecureRandom sr = new();

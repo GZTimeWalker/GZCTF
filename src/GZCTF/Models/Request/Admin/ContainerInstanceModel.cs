@@ -1,4 +1,4 @@
-﻿using GZCTF.Utils;
+﻿
 
 namespace GZCTF.Models.Request.Admin;
 
@@ -10,12 +10,12 @@ public class ContainerInstanceModel
     /// <summary>
     /// 队伍
     /// </summary>
-    public TeamModel? Team { get; set; } = default!;
+    public TeamModel? Team { get; set; }
 
     /// <summary>
     /// 题目
     /// </summary>
-    public ChallengeModel? Challenge { get; set; } = default!;
+    public ChallengeModel? Challenge { get; set; }
 
     /// <summary>
     /// 容器镜像
@@ -65,7 +65,7 @@ public class ContainerInstanceModel
             StartedAt = container.StartedAt,
             ExpectStopAt = container.ExpectStopAt,
             // fallback to host if public is null
-            IP = container.PublicIP ?? container.IP,
+            IP = container.PublicIp ?? container.Ip,
             Port = container.PublicPort ?? container.Port
         };
 

@@ -1,12 +1,12 @@
 ﻿using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Options;
 
-namespace GZCTF.Services;
+namespace GZCTF.Services.Container.Provider;
 
 public class K8sMetadata : ContainerProviderMetadata
 {
@@ -18,7 +18,7 @@ public class K8sMetadata : ContainerProviderMetadata
     /// <summary>
     /// K8s 集群 Host IP
     /// </summary>
-    public string HostIP { get; set; } = string.Empty;
+    public string HostIp { get; set; } = string.Empty;
 
     /// <summary>
     /// K8s 配置
@@ -47,13 +47,13 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
 
         if (!File.Exists(_k8sMetadata.Config.KubeConfig))
         {
-            LogHelper.SystemLog(logger, $"无法加载 K8s 配置文件，请确保配置文件存在 {_k8sMetadata.Config.KubeConfig}");
+            logger.SystemLog($"无法加载 K8s 配置文件，请确保配置文件存在 {_k8sMetadata.Config.KubeConfig}");
             throw new FileNotFoundException(_k8sMetadata.Config.KubeConfig);
         }
 
         var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_k8sMetadata.Config.KubeConfig);
 
-        _k8sMetadata.HostIP = config.Host[(config.Host.LastIndexOf('/') + 1)..config.Host.LastIndexOf(':')];
+        _k8sMetadata.HostIp = config.Host[(config.Host.LastIndexOf('/') + 1)..config.Host.LastIndexOf(':')];
 
         _kubernetesClient = new Kubernetes(config);
 
@@ -64,7 +64,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
 
         if (withAuth)
         {
-            var padding = $"{registryValue.UserName}@{registryValue.Password}@{registryValue.ServerAddress}".StrMD5();
+            var padding = $"{registryValue.UserName}@{registryValue.Password}@{registryValue.ServerAddress}".StrMd5();
             _k8sMetadata.AuthSecretName = $"{registryValue.UserName}-{padding}".ToValidRFC1123String("secret");
         }
 
@@ -119,7 +119,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         if (withAuth && registry is not null && registry.ServerAddress is not null)
         {
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
-            var dockerjsonObj = new
+            var dockerJsonObj = new
             {
                 auths = new Dictionary<string, object> {
                     {
@@ -131,7 +131,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                     }
                 }
             };
-            var dockerjsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerjsonObj);
+            var dockerJsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj);
             var secret = new V1Secret()
             {
                 Metadata = new V1ObjectMeta()
@@ -139,7 +139,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                     Name = _k8sMetadata.AuthSecretName,
                     NamespaceProperty = _k8sMetadata.Config.Namespace,
                 },
-                Data = new Dictionary<string, byte[]>() { [".dockerconfigjson"] = dockerjsonBytes },
+                Data = new Dictionary<string, byte[]>() { [".dockerconfigjson"] = dockerJsonBytes },
                 Type = "kubernetes.io/dockerconfigjson"
             };
 
@@ -154,4 +154,3 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         }
     }
 }
-

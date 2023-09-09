@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
@@ -32,7 +33,7 @@ public class ChallengeInfoModel
     /// <summary>
     /// 是否启用题目
     /// </summary>
-    public bool IsEnabled { get; set; } = false;
+    public bool IsEnabled { get; set; }
 
     /// <summary>
     /// 题目分值
@@ -42,7 +43,7 @@ public class ChallengeInfoModel
     /// <summary>
     /// 最低分值
     /// </summary>
-    public int MinScore { get; set; } = 0;
+    public int MinScore { get; set; }
 
     /// <summary>
     /// 最初分值

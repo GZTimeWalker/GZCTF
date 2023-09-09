@@ -2,9 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Info;
-using Microsoft.IdentityModel.Tokens;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Team
 {
@@ -33,7 +32,7 @@ public class Team
     /// <summary>
     /// 队伍是否为锁定状态
     /// </summary>
-    public bool Locked { get; set; } = false;
+    public bool Locked { get; set; }
 
     /// <summary>
     /// 邀请 Token

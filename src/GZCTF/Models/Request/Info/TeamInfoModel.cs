@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Info;
+﻿
+
+namespace GZCTF.Models.Request.Info;
 
 /// <summary>
 /// 队伍信息

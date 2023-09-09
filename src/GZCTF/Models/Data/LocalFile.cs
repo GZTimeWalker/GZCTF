@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 [Index(nameof(Hash))]
 public class LocalFile

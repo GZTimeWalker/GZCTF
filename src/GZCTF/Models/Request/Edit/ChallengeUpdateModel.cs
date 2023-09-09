@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using GZCTF.Extensions;
-using GZCTF.Utils;
 
 namespace GZCTF.Models.Request.Edit;
 

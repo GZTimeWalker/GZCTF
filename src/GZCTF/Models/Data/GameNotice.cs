@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+
 using MemoryPack;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 /// <summary>
 /// 比赛通知，会发往客户端。

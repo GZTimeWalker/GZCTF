@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Models.Data;
+
 using GZCTF.Models.Request.Game;
 
 namespace GZCTF.Models.Request.Edit;
@@ -120,7 +120,7 @@ public class ChallengeEditDetailModel
     /// 通过人数
     /// </summary>
     [Required]
-    public int AcceptedCount { get; set; } = 0;
+    public int AcceptedCount { get; set; }
 
     /// <summary>
     /// 统一文件名（仅用于动态附件）

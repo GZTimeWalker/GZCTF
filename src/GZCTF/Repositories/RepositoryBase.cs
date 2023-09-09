@@ -1,4 +1,5 @@
-﻿using GZCTF.Repositories.Interface;
+﻿using GZCTF.Models;
+using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

@@ -1,13 +1,15 @@
-﻿using System.Net.Mime;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
+
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -527,6 +529,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [SuppressMessage("ReSharper", "RouteTemplates.ParameterTypeCanBeMadeStricter")]
     public async Task<IActionResult> DestroyInstance(string id, CancellationToken token = default)
     {
         var container = await containerRepository.GetContainerById(id, token);

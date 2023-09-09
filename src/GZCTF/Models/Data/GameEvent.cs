@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 /// <summary>
 /// 比赛事件，记录但不会发往客户端。

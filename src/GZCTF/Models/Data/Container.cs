@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using GZCTF.Utils;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Container
 {
@@ -43,13 +42,13 @@ public class Container
     /// 是否具备反向代理
     /// </summary>
     [Required]
-    public bool IsProxy { get; set; } = false;
+    public bool IsProxy { get; set; }
 
     /// <summary>
     /// 本地 IP
     /// </summary>
     [Required]
-    public string IP { get; set; } = string.Empty;
+    public string Ip { get; set; } = string.Empty;
 
     /// <summary>
     /// 本地端口
@@ -60,7 +59,7 @@ public class Container
     /// <summary>
     /// 公开 IP
     /// </summary>
-    public string? PublicIP { get; set; }
+    public string? PublicIp { get; set; }
 
     /// <summary>
     /// 公开端口
@@ -71,7 +70,7 @@ public class Container
     /// 容器实例访问方式
     /// </summary>
     [NotMapped]
-    public string Entry => IsProxy ? Id : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
+    public string Entry => IsProxy ? Id : $"{PublicIp ?? Ip}:{PublicPort ?? Port}";
 
     /// <summary>
     /// 容器实例流量捕获存储路径

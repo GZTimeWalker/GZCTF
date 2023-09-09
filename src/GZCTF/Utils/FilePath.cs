@@ -9,7 +9,7 @@ internal enum DirType : byte
 
 internal static class FilePath
 {
-    internal const string Base = "files";
+    const string Base = "files";
 
     internal static void EnsureDirs()
     {
@@ -28,7 +28,7 @@ internal static class FilePath
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    internal static string GetDir(DirType type)
+    static string GetDir(DirType type)
         => Path.Combine(Base, type.ToString().ToLower());
 
     internal static string Logs => GetDir(DirType.Logs);
@@ -48,7 +48,7 @@ internal static class FilePath
 
         foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
         {
-            var info = new FileInfo(file)!;
+            var info = new FileInfo(file);
 
             records.Add(FileRecord.FromFileInfo(info));
 

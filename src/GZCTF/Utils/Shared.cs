@@ -2,6 +2,7 @@
 using System.Threading.Channels;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+// ReSharper disable NotAccessedPositionalProperty.Global
 
 namespace GZCTF.Utils;
 
@@ -88,19 +89,14 @@ public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Sta
 /// 列表响应
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class ArrayResponse<T> where T : class
+public class ArrayResponse<T>(T[] array, int? tot = null)
+    where T : class
 {
-    public ArrayResponse(T[] array, int? tot = null)
-    {
-        Data = array;
-        Total = tot ?? array.Length;
-    }
-
     /// <summary>
     /// 数据
     /// </summary>
     [Required]
-    public T[] Data { get; set; }
+    public T[] Data { get; set; } = array;
 
     /// <summary>
     /// 数据长度
@@ -111,7 +107,7 @@ public class ArrayResponse<T> where T : class
     /// <summary>
     /// 总长度
     /// </summary>
-    public int Total { get; set; }
+    public int Total { get; set; } = tot ?? array.Length;
 }
 
 /// <summary>
@@ -127,7 +123,7 @@ public class FileRecord
     /// <summary>
     /// 文件大小
     /// </summary>
-    public long Size { get; set; } = 0;
+    public long Size { get; set; }
 
     /// <summary>
     /// 文件修改日期
@@ -149,8 +145,8 @@ public class FileRecord
 public struct BloodBonus(long init = BloodBonus.DefaultValue)
 {
     public const long DefaultValue = (50 << 20) + (30 << 10) + 10;
-    public const int Mask = 0x3ff;
-    public const int Base = 1000;
+    const int Mask = 0x3ff;
+    const int Base = 1000;
 
     public static BloodBonus Default => new();
 

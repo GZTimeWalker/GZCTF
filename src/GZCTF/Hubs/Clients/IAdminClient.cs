@@ -1,6 +1,6 @@
 ﻿using GZCTF.Models.Request.Admin;
 
-namespace GZCTF.Hubs.Client;
+namespace GZCTF.Hubs.Clients;
 
 public interface IAdminClient
 {

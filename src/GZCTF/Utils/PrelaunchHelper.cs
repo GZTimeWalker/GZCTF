@@ -1,5 +1,4 @@
 ﻿using GZCTF.Models.Internal;
-using IdentityModel.OidcClient;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -9,7 +8,7 @@ namespace GZCTF.Utils;
 
 public static class PrelaunchHelper
 {
-    public async static Task RunPrelaunchWork(this WebApplication app)
+    public static async Task RunPrelaunchWork(this WebApplication app)
     {
         using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
@@ -37,8 +36,8 @@ public static class PrelaunchHelper
 
         if (app.Environment.IsDevelopment() || app.Configuration.GetSection("ADMIN_PASSWORD").Exists())
         {
-            var usermanager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
-            var admin = await usermanager.FindByNameAsync("Admin");
+            var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
+            var admin = await userManager.FindByNameAsync("Admin");
             var password = app.Environment.IsDevelopment() ? "Admin@2022" :
                 app.Configuration.GetValue<string>("ADMIN_PASSWORD");
 
@@ -53,7 +52,7 @@ public static class PrelaunchHelper
                     RegisterTimeUTC = DateTimeOffset.UtcNow
                 };
 
-                var result = await usermanager.CreateAsync(admin, password);
+                var result = await userManager.CreateAsync(admin, password);
                 if (!result.Succeeded)
                     logger.SystemLog($"管理员账户创建失败，错误信息：{result.Errors.FirstOrDefault()?.Description}", TaskStatus.Failed, LogLevel.Debug);
             }
@@ -67,7 +66,7 @@ public static class PrelaunchHelper
             Program.ExitWithFatalMessage("缓存配置无效，请检查 RedisCache 字段配置。如不使用 Redis 请将配置项置空。");
     }
 
-    public static bool CacheCheck(this IDistributedCache cache)
+    static bool CacheCheck(this IDistributedCache cache)
     {
         try
         {

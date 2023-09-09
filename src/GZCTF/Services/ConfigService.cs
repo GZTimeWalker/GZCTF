@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using GZCTF.Models.Data;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Services;
@@ -32,7 +31,7 @@ public class ConfigService(AppDbContext context,
         }
     }
 
-    public static HashSet<Config> GetConfigs(Type type, object? value)
+    static HashSet<Config> GetConfigs(Type type, object? value)
     {
         HashSet<Config> configs = new();
 

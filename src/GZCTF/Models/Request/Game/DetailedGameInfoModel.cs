@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
+
 namespace GZCTF.Models.Request.Game;
 
 /// <summary>
@@ -29,7 +30,7 @@ public class DetailedGameInfoModel
     /// <summary>
     /// 是否为隐藏比赛
     /// </summary>
-    public bool Hidden { get; set; } = false;
+    public bool Hidden { get; set; }
 
     /// <summary>
     /// 参赛所属单位列表
@@ -39,7 +40,7 @@ public class DetailedGameInfoModel
     /// <summary>
     /// 是否需要邀请码
     /// </summary>
-    public bool InviteCodeRequired { get; set; } = false;
+    public bool InviteCodeRequired { get; set; }
 
     /// <summary>
     /// 比赛头图
@@ -51,12 +52,12 @@ public class DetailedGameInfoModel
     /// 队员数量限制
     /// </summary>
     [JsonPropertyName("limit")]
-    public int TeamMemberCountLimit { get; set; } = 0;
+    public int TeamMemberCountLimit { get; set; }
 
     /// <summary>
     /// 报名参赛队伍数量
     /// </summary>
-    public int TeamCount { get; set; } = 0;
+    public int TeamCount { get; set; }
 
     /// <summary>
     /// 当前报名的组织
@@ -99,7 +100,7 @@ public class DetailedGameInfoModel
         return this;
     }
 
-    internal static DetailedGameInfoModel FromGame(Models.Game game, int count)
+    internal static DetailedGameInfoModel FromGame(Data.Game game, int count)
         => new()
         {
             Id = game.Id,

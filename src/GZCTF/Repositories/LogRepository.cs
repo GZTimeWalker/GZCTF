@@ -1,4 +1,6 @@
-﻿using GZCTF.Models.Request.Admin;
+﻿using GZCTF.Models;
+
+using GZCTF.Models.Request.Admin;
 using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 

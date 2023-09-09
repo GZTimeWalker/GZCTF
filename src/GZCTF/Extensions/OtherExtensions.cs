@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using GZCTF.Utils;
 
 namespace GZCTF.Extensions;
 

@@ -1,35 +1,34 @@
 using System.Net;
 using GZCTF.Models.Internal;
+using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
 
-namespace GZCTF.Services;
+namespace GZCTF.Services.Container.Manager;
 
 public class K8sManager : IContainerManager
 {
     private readonly ILogger<K8sManager> _logger;
-    private readonly IContainerProvider<Kubernetes, K8sMetadata> _provider;
     private readonly K8sMetadata _meta;
     private readonly Kubernetes _client;
 
     public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger)
     {
         _logger = logger;
-        _provider = provider;
-        _meta = _provider.GetMetadata();
-        _client = _provider.GetProvider();
+        _meta = provider.GetMetadata();
+        _client = provider.GetProvider();
 
         logger.SystemLog($"容器管理模式：K8s 集群 Pod 容器控制", TaskStatus.Success, LogLevel.Debug);
     }
 
-    public async Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
+    public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
     {
         var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
-        var _authSecretName = _meta.AuthSecretName;
-        var _options = _meta.Config;
+        var authSecretName = _meta.AuthSecretName;
+        var options = _meta.Config;
 
         if (imageName is null)
         {
@@ -44,7 +43,7 @@ public class K8sManager : IContainerManager
             Metadata = new V1ObjectMeta()
             {
                 Name = name,
-                NamespaceProperty = _options.Namespace,
+                NamespaceProperty = options.Namespace,
                 Labels = new Dictionary<string, string>()
                 {
                     ["ctf.gzti.me/ResourceId"] = name,
@@ -54,14 +53,14 @@ public class K8sManager : IContainerManager
             },
             Spec = new V1PodSpec()
             {
-                ImagePullSecrets = _authSecretName is null ?
+                ImagePullSecrets = authSecretName is null ?
                     Array.Empty<V1LocalObjectReference>() :
-                    new List<V1LocalObjectReference>() { new() { Name = _authSecretName } },
+                    new List<V1LocalObjectReference>() { new() { Name = authSecretName } },
                 DnsPolicy = "None",
                 DnsConfig = new()
                 {
                     // FIXME: remove nullable when JsonObjectCreationHandling release
-                    Nameservers = _options.DNS ?? new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" },
+                    Nameservers = options.DNS ?? new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" },
                 },
                 EnableServiceLinks = false,
                 Containers = new[]
@@ -98,7 +97,7 @@ public class K8sManager : IContainerManager
 
         try
         {
-            pod = await _client.CreateNamespacedPodAsync(pod, _options.Namespace, cancellationToken: token);
+            pod = await _client.CreateNamespacedPodAsync(pod, options.Namespace, cancellationToken: token);
         }
         catch (HttpOperationException e)
         {
@@ -119,7 +118,7 @@ public class K8sManager : IContainerManager
         }
 
         // Service is needed for port mapping
-        var container = new Container()
+        var container = new Models.Data.Container()
         {
             ContainerId = name,
             Image = config.Image,
@@ -159,7 +158,11 @@ public class K8sManager : IContainerManager
                 // remove the pod if service creation failed, ignore the error
                 await _client.CoreV1.DeleteNamespacedPodAsync(name, _meta.Config.Namespace, cancellationToken: token);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
+
             _logger.SystemLog($"服务 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
             _logger.SystemLog($"服务 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
             return null;
@@ -171,27 +174,31 @@ public class K8sManager : IContainerManager
                 // remove the pod if service creation failed, ignore the error
                 await _client.CoreV1.DeleteNamespacedPodAsync(name, _meta.Config.Namespace, cancellationToken: token);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
+
             _logger.LogError(e, "创建服务失败");
             return null;
         }
 
         container.StartedAt = DateTimeOffset.UtcNow;
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.IP = service.Spec.ClusterIP;
+        container.Ip = service.Spec.ClusterIP;
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
         if (_meta.ExposePort)
         {
-            container.PublicIP = _meta.PublicEntry;
+            container.PublicIp = _meta.PublicEntry;
             container.PublicPort = service.Spec.Ports[0].NodePort;
         }
 
         return container;
     }
 
-    public async Task DestroyContainerAsync(Container container, CancellationToken token = default)
+    public async Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default)
     {
         try
         {

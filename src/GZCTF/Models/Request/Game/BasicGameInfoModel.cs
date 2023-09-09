@@ -33,7 +33,7 @@ public partial class BasicGameInfoModel
     /// 队员数量限制
     /// </summary>
     [JsonPropertyName("limit")]
-    public int TeamMemberLimitCount { get; set; } = 0;
+    public int TeamMemberLimitCount { get; set; }
 
     /// <summary>
     /// 开始时间
@@ -47,7 +47,7 @@ public partial class BasicGameInfoModel
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
-    internal static BasicGameInfoModel FromGame(Models.Game game)
+    internal static BasicGameInfoModel FromGame(Data.Game game)
         => new()
         {
             Id = game.Id,

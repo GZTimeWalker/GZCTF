@@ -1,8 +1,9 @@
 ﻿using System.Threading.Channels;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services;

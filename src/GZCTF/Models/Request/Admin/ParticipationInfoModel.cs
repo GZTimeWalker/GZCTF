@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Admin;
+﻿
+
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 比赛参与对象，用于审核查看（Admin）

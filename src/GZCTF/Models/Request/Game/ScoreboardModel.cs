@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+
 using GZCTF.Models.Request.Admin;
-using GZCTF.Utils;
+
 using MemoryPack;
 
 namespace GZCTF.Models.Request.Game;

@@ -1,8 +1,8 @@
-﻿using System.IO.Compression;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using NPOI.HSSF.Record;
 
 namespace GZCTF.Utils;
 
@@ -46,7 +46,7 @@ public partial class Codec
         public static byte[] EncodeToBytes(string? str, string type = "utf-8")
         {
             if (str is null)
-                return [];
+                return Array.Empty<byte>();
 
             byte[] encoded;
             try
@@ -55,27 +55,27 @@ public partial class Codec
             }
             catch
             {
-                return [];
+                return Array.Empty<byte>();
             }
 
             Span<char> buffer = new char[encoded.Length * 4 / 3 + 8];
             if (Convert.TryToBase64Chars(encoded, buffer, out var charsWritten))
                 return Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten].ToArray());
             else
-                return [];
+                return Array.Empty<byte>();
         }
 
         public static byte[] DecodeToBytes(string? str)
         {
             if (str is null)
-                return [];
+                return Array.Empty<byte>();
 
             Span<byte> buffer = new byte[str.Length * 3 / 4 + 8];
 
             if (Convert.TryFromBase64String(str, buffer, out int bytesWritten))
                 return buffer[..bytesWritten].ToArray();
 
-            return [];
+            return Array.Empty<byte>();
         }
     }
 
@@ -84,7 +84,7 @@ public partial class Codec
     /// </summary>
     public static class Leet
     {
-        private readonly static Dictionary<char, string> CharMap = new()
+        private static readonly Dictionary<char, string> CharMap = new()
         {
             ['A'] = "Aa4",
             ['B'] = "Bb68",
@@ -130,11 +130,11 @@ public partial class Codec
             var doLeet = false;
             foreach (var c in flag)
             {
-                if (c == '{' || c == ']')
+                if (c is '{' or ']')
                     doLeet = true;
-                else if (doLeet && (c == '}' || c == '['))
+                else if (doLeet && c is '}' or '[')
                     doLeet = false;
-                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table) && table is not null)
+                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table))
                     entropy += Math.Log(table.Length, 2);
             }
             return entropy;
@@ -146,14 +146,14 @@ public partial class Codec
             Random random = new();
 
             var doLeet = false;
-            // note: only leet 'X' in flag{XXXX_XXX_[TEAM_HASH]_XXX}
+            // note: only leet 'X' in flag{XXX_XXX_[TEAM_HASH]_XXX}
             foreach (var c in original)
             {
-                if (c == '{' || c == ']')
+                if (c is '{' or ']')
                     doLeet = true;
-                else if (doLeet && (c == '}' || c == '['))
+                else if (doLeet && c is '}' or '[')
                     doLeet = false;
-                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table) && table is not null)
+                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table))
                 {
                     var nc = table[random.Next(table.Length)];
                     sb.Append(nc);
@@ -167,7 +167,7 @@ public partial class Codec
         }
     }
 
-    [GeneratedRegex("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\\-_=+]).{8,}$")]
+    [GeneratedRegex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+]).{8,}$")]
     private static partial Regex PasswordRegex();
 
     /// <summary>
@@ -175,6 +175,7 @@ public partial class Codec
     /// </summary>
     /// <param name="length">密码长度</param>
     /// <returns></returns>
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public static string RandomPassword(int length)
     {
         var random = new Random();
@@ -195,10 +196,10 @@ public partial class Codec
     /// 转换为对应进制
     /// </summary>
     /// <param name="source">源数据</param>
-    /// <param name="tobase">进制支持2,8,10,16</param>
+    /// <param name="toBase">进制支持2,8,10,16</param>
     /// <returns></returns>
-    public static List<string> ToBase(List<int> source, int tobase)
-        => new(source.ConvertAll((a) => Convert.ToString(a, tobase)));
+    public static List<string> ToBase(List<int> source, int toBase)
+        => new(source.ConvertAll((a) => Convert.ToString(a, toBase)));
 
     /// <summary>
     /// 字节数组转换为16进制字符串
@@ -232,11 +233,11 @@ public partial class Codec
     /// 将文件打包为 zip 文件
     /// </summary>
     /// <param name="files">文件列表</param>
-    /// <param name="basepath">根目录</param>
+    /// <param name="basePath">根目录</param>
     /// <param name="zipName">压缩包根目录</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async static Task<Stream> ZipFilesAsync(IEnumerable<LocalFile> files, string basepath, string zipName, CancellationToken token = default)
+    public static async Task<Stream> ZipFilesAsync(IEnumerable<LocalFile> files, string basePath, string zipName, CancellationToken token = default)
     {
         var size = files.Select(f => f.FileSize).Sum();
 
@@ -249,7 +250,7 @@ public partial class Codec
         {
             var entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Optimal);
             await using var entryStream = entry.Open();
-            await using var fileStream = File.OpenRead(Path.Combine(basepath, file.Location, file.Hash));
+            await using var fileStream = File.OpenRead(Path.Combine(basePath, file.Location, file.Hash));
             await fileStream.CopyToAsync(entryStream, token);
         }
 
@@ -264,7 +265,7 @@ public partial class Codec
     /// <param name="zipName">压缩包根目录</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async static Task<Stream> ZipFilesAsync(string basePath, string zipName, CancellationToken token = default)
+    public static async Task<Stream> ZipFilesAsync(string basePath, string zipName, CancellationToken token = default)
     {
         var records = FilePath.GetFileRecords(basePath, out long size);
 
@@ -311,12 +312,7 @@ public static partial class CodecExtensions
     /// </summary>
     /// <param name="str">原字符串</param>
     /// <returns></returns>
-    public static List<int> ASCII(this string str)
-    {
-        var buff = Encoding.ASCII.GetBytes(str);
-        List<int> res = [..buff];
-        return res;
-    }
+    public static byte[] Ascii(this string str) => Encoding.ASCII.GetBytes(str);
 
     /// <summary>
     /// 反转字符串
@@ -336,7 +332,7 @@ public static partial class CodecExtensions
     /// <param name="str">原始字符串</param>
     /// <param name="useBase64">是否使用Base64编码</param>
     /// <returns></returns>
-    public static string StrMD5(this string str, bool useBase64 = false)
+    public static string StrMd5(this string str, bool useBase64 = false)
     {
         var output = MD5.HashData(str.ToUTF8Bytes());
         if (useBase64)
@@ -363,7 +359,7 @@ public static partial class CodecExtensions
     /// </summary>
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
-    public static byte[] BytesMD5(this string str)
+    public static byte[] BytesMd5(this string str)
         => MD5.HashData(str.ToUTF8Bytes());
 
     /// <summary>
@@ -382,5 +378,4 @@ public static partial class CodecExtensions
     /// <returns></returns>
     public static byte[] ToUTF8Bytes(this string str)
         => Encoding.UTF8.GetBytes(str);
-
 }

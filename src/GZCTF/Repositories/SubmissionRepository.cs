@@ -1,7 +1,10 @@
 ﻿using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
+using GZCTF.Models;
+
 using GZCTF.Repositories.Interface;
+
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 

@@ -2,14 +2,14 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using GZCTF.Models.Request.Edit;
-using GZCTF.Utils;
+
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Game
 {
@@ -39,7 +39,7 @@ public class Game
     /// 是否隐藏
     /// </summary>
     [Required]
-    public bool Hidden { get; set; } = false;
+    public bool Hidden { get; set; }
 
     /// <summary>
     /// 头图哈希
@@ -60,7 +60,7 @@ public class Game
     /// <summary>
     /// 报名队伍免审核
     /// </summary>
-    public bool AcceptWithoutReview { get; set; } = false;
+    public bool AcceptWithoutReview { get; set; }
 
     /// <summary>
     /// 比赛邀请码
@@ -75,7 +75,7 @@ public class Game
     /// <summary>
     /// 队员数量限制, 0 为无上限
     /// </summary>
-    public int TeamMemberCountLimit { get; set; } = 0;
+    public int TeamMemberCountLimit { get; set; }
 
     /// <summary>
     /// 队伍同时开启的容器数量限制

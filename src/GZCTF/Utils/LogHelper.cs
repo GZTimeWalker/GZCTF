@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
 using System.Net;
 using GZCTF.Extensions;
+
 using NpgsqlTypes;
 using Serilog;
 using Serilog.Events;
@@ -46,8 +47,8 @@ public static class LogHelper
     /// <param name="level">Log 级别</param>
     public static void Log<T>(this ILogger<T> logger, string msg, HttpContext? context, TaskStatus status, LogLevel? level = null)
     {
-        var ip = context?.Connection?.RemoteIpAddress?.ToString() ?? IPAddress.Loopback.ToString();
-        var username = context?.User?.Identity?.Name ?? "Anonymous";
+        var ip = context?.Connection.RemoteIpAddress?.ToString() ?? IPAddress.Loopback.ToString();
+        var username = context?.User.Identity?.Name ?? "Anonymous";
 
         Log(logger, msg, username, ip, status, level);
     }
@@ -97,12 +98,12 @@ public static class LogHelper
         });
     }
 
-    public static IDictionary<string, ColumnWriterBase> ColumnWriters => new Dictionary<string, ColumnWriterBase>()
+    static IDictionary<string, ColumnWriterBase> ColumnWriters => new Dictionary<string, ColumnWriterBase>()
     {
-        {"Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
+        {"Message", new RenderedMessageColumnWriter() },
         {"Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
         {"TimeUTC", new TimeColumnWriter() },
-        {"Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
+        {"Exception", new ExceptionColumnWriter() },
         {"Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
         {"UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
         {"Status", new SinglePropertyColumnWriter("Status", PropertyWriteMethod.ToString, NpgsqlDbType.Varchar) },

@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using GZCTF.Middlewares;
+
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -38,7 +39,7 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
 
         if (!System.IO.File.Exists(path))
         {
-            var ip = HttpContext.Connection?.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
             logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", ip, TaskStatus.NotFound, LogLevel.Warning);
             return NotFound(new RequestResponse("文件不存在", StatusCodes.Status404NotFound));
         }

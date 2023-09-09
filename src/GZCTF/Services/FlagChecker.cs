@@ -1,6 +1,7 @@
 ﻿using System.Threading.Channels;
+
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
+using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Services;
@@ -35,10 +36,10 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                     var (type, ans) = await instanceRepository.VerifyAnswer(item, token);
 
                     if (ans == AnswerResult.NotFound)
-                        logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User!, TaskStatus.NotFound, LogLevel.Warning);
+                        logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User, TaskStatus.NotFound, LogLevel.Warning);
                     else if (ans == AnswerResult.Accepted)
                     {
-                        logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                        logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User, TaskStatus.Success, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
 
@@ -48,7 +49,7 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                     }
                     else
                     {
-                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User!, TaskStatus.Failed, LogLevel.Information);
+                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]", item.User, TaskStatus.Failed, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
 
@@ -57,7 +58,7 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
 
                         if (ans == AnswerResult.CheatDetected)
                         {
-                            logger.Log($"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeamName}]", item.User!, TaskStatus.Success, LogLevel.Information);
+                            logger.Log($"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeamName}]", item.User, TaskStatus.Success, LogLevel.Information);
                             await eventRepository.AddEvent(new()
                             {
                                 Type = EventType.CheatDetected,

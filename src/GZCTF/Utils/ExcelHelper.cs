@@ -1,4 +1,5 @@
-﻿using GZCTF.Models.Request.Game;
+﻿
+using GZCTF.Models.Request.Game;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -6,8 +7,8 @@ namespace GZCTF.Utils;
 
 public static class ExcelHelper
 {
-    private static readonly string[] CommonScoreboardHeader = ["排名", "战队", "队长", "队员", "学号", "手机号", "解题数量", "得分时间", "总分"];
-    private static readonly string[] CommonSubmissionHeader = ["提交状态", "提交时间", "战队", "用户", "题目", "提交内容", "用户邮箱"];
+    private static readonly string[] CommonScoreboardHeader = new[] { "排名", "战队", "队长", "队员", "学号", "手机号", "解题数量", "得分时间", "总分" };
+    private static readonly string[] CommonSubmissionHeader = new[] { "提交状态", "提交时间", "战队", "用户", "题目", "提交内容", "用户邮箱" };
 
     public static MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
     {

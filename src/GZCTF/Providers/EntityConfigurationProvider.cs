@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using GZCTF.Models.Data;
+using GZCTF.Models;
+
 using GZCTF.Models.Internal;
 using GZCTF.Services;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,12 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 {
     private readonly CancellationTokenSource _cancellationTokenSource = new();
     private Task? _databaseWatcher;
-    private byte[] _lastHash = [];
-    private bool _disposed = false;
+    private byte[] _lastHash = Array.Empty<byte>();
+    private bool _disposed;
 
     private static HashSet<Config> DefaultConfigs()
     {
-        HashSet<Config> configs = [];
+        HashSet<Config> configs = new();
 
         configs.UnionWith(ConfigService.GetConfigs(new AccountPolicy()));
         configs.UnionWith(ConfigService.GetConfigs(new GlobalConfig()));
@@ -66,7 +67,9 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
     }
 
     private static byte[] ConfigHash(IDictionary<string, string?> configs)
-        => SHA256.HashData(Encoding.UTF8.GetBytes(string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))));
+        => SHA256.HashData(Encoding.UTF8.GetBytes(
+                string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))
+            ));
 
     public override void Load()
     {

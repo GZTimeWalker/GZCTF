@@ -53,7 +53,7 @@ public class UserCreateModel
     [MaxLength(15, ErrorMessage = "队伍名称过长")]
     public string? TeamName { get; set; }
 
-    internal UserInfo ToUserInfo()
+    internal Data.UserInfo ToUserInfo()
        => new()
        {
            Email = Email,

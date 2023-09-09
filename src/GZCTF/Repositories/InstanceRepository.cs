@@ -1,7 +1,9 @@
-﻿using GZCTF.Models.Internal;
+﻿using GZCTF.Models;
+
+using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

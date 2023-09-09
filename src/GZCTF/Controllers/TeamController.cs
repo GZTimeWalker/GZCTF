@@ -1,9 +1,10 @@
 using System.Net.Mime;
 using System.Text.RegularExpressions;
 using GZCTF.Middlewares;
+
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -17,7 +18,7 @@ namespace GZCTF.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-public class TeamController(UserManager<UserInfo> userManager,
+public partial class TeamController(UserManager<UserInfo> userManager,
     IFileRepository fileService,
     ILogger<TeamController> logger,
     ITeamRepository teamRepository,
@@ -33,7 +34,7 @@ public class TeamController(UserManager<UserInfo> userManager,
     /// <param name="token"></param>
     /// <response code="200">成功获取队伍信息</response>
     /// <response code="400">队伍不存在</response>
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBasicInfo(int id, CancellationToken token)
@@ -160,7 +161,7 @@ public class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPut("{id}/Transfer")]
+    [HttpPut("{id:int}/Transfer")]
     [RequireUser]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -332,6 +333,9 @@ public class TeamController(UserManager<UserInfo> userManager,
         }
     }
 
+    [GeneratedRegex(":\\d+:[0-9a-f]{32}")]
+    private static partial Regex InviteCodeRegex();
+
     /// <summary>
     /// 接受邀请
     /// </summary>
@@ -352,10 +356,10 @@ public class TeamController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Accept([FromBody] string code, CancellationToken cancelToken)
     {
-        if (!Regex.IsMatch(code, @":\d+:[0-9a-f]{32}"))
+        if (!InviteCodeRegex().IsMatch(code))
             return BadRequest(new RequestResponse("Code 无效"));
 
-        var inviteCode = code[^32..];
+        var inviteToken = code[^32..];
         var preCode = code[..^33];
 
         var lastColon = preCode.LastIndexOf(':');
@@ -373,7 +377,7 @@ public class TeamController(UserManager<UserInfo> userManager,
             if (team is null)
                 return BadRequest(new RequestResponse($"{teamName} 队伍未找到"));
 
-            if (team.InviteCode != code)
+            if (team.InviteToken != inviteToken)
                 return BadRequest(new RequestResponse($"{teamName} 邀请无效"));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
@@ -535,9 +539,9 @@ public class TeamController(UserManager<UserInfo> userManager,
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse("队伍已锁定"));
 
-        await teamRepository.DeleteTeam(team!, token);
+        await teamRepository.DeleteTeam(team, token);
 
-        logger.Log($"删除队伍 {team!.Name}", user, TaskStatus.Success);
+        logger.Log($"删除队伍 {team.Name}", user, TaskStatus.Success);
 
         return Ok();
     }

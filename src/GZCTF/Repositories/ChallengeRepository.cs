@@ -1,6 +1,8 @@
-﻿using GZCTF.Models.Data;
+﻿using GZCTF.Models;
+
 using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;

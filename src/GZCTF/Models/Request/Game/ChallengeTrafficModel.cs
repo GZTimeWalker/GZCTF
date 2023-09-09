@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Utils;
+
 
 namespace GZCTF.Models.Request.Game;
 
@@ -30,12 +30,12 @@ public class ChallengeTrafficModel
     /// <summary>
     /// 是否启用题目
     /// </summary>
-    public bool IsEnabled { get; set; } = false;
+    public bool IsEnabled { get; set; }
 
     /// <summary>
     /// 题目所捕获到的队伍流量数量
     /// </summary>
-    public int Count { get; set; } = 0;
+    public int Count { get; set; }
 
     internal static ChallengeTrafficModel FromChallenge(Challenge challenge)
     {

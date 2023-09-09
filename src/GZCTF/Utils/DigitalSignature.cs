@@ -11,20 +11,9 @@ namespace GZCTF.Utils;
 public enum SignAlgorithm
 {
     Ed25519,
-    Ed25519ph,
-    Ed25519ctx,
+    Ed25519Ctx,
     Ed448,
-    Ed448ph,
-    MD5withRSA,
-    SHA256withRSA,
-    SHA384withRSA,
-    SHA512withRSA,
-    SHA256withDSA,
-    SHA384withDSA,
-    SHA512withDSA,
-    SHA256withECDSA,
-    SHA384withECDSA,
-    SHA512withECDSA,
+    SHA512WithRSA,
 }
 
 public static class DigitalSignature

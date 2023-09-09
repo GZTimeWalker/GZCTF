@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+
 using GZCTF.Models.Request.Info;
 
 namespace GZCTF.Models.Request.Game;
@@ -12,7 +13,7 @@ public class BasicWriteupInfoModel
     /// <summary>
     /// 是否已经提交
     /// </summary>
-    public bool Submitted { get; set; } = false;
+    public bool Submitted { get; set; }
 
     /// <summary>
     /// 文件名称
@@ -22,7 +23,7 @@ public class BasicWriteupInfoModel
     /// <summary>
     /// 文件大小
     /// </summary>
-    public long FileSize { get; set; } = 0;
+    public long FileSize { get; set; }
 
     /// <summary>
     /// Writeup 附加说明

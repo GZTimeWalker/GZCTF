@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
+
 using MemoryPack;
 using Microsoft.AspNetCore.Identity;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 [MemoryPackable]
 public partial class UserInfo : IdentityUser

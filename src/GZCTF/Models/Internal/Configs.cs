@@ -3,6 +3,8 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+// ReSharper disable CollectionNeverUpdated.Global
+
 
 namespace GZCTF.Models.Internal;
 
@@ -24,12 +26,12 @@ public class AccountPolicy
     /// <summary>
     /// 使用验证码校验
     /// </summary>
-    public bool UseCaptcha { get; set; } = false;
+    public bool UseCaptcha { get; set; }
 
     /// <summary>
     /// 注册、更换邮箱、找回密码需要邮件确认
     /// </summary>
-    public bool EmailConfirmationRequired { get; set; } = false;
+    public bool EmailConfirmationRequired { get; set; }
 
     /// <summary>
     /// 邮箱后缀域名，以逗号分割
@@ -45,7 +47,7 @@ public class GamePolicy
     /// <summary>
     /// 是否在达到数量限制时自动销毁最早的容器
     /// </summary>
-    public bool AutoDestroyOnLimitReached { get; set; } = false;
+    public bool AutoDestroyOnLimitReached { get; set; }
 }
 
 /// <summary>
@@ -108,7 +110,7 @@ public class ContainerProvider
 {
     public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
     public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
-    public bool EnableTrafficCapture { get; set; } = false;
+    public bool EnableTrafficCapture { get; set; }
 
     public string PublicEntry { get; set; } = string.Empty;
 
@@ -185,14 +187,13 @@ public class ForwardedOptions : ForwardedHeadersOptions
         foreach (var property in properties)
         {
             // skip the properties that are not being set directly
-            if (property.Name == nameof(KnownNetworks) ||
-                property.Name == nameof(KnownProxies))
+            if (property.Name is nameof(KnownNetworks) or nameof(KnownProxies))
                 continue;
 
             property.SetValue(options, property.GetValue(this));
         }
 
-        TrustedNetworks?.ForEach((network) =>
+        TrustedNetworks?.ForEach(network =>
         {
             // split the network into address and prefix length
             var parts = network.Split('/');
@@ -204,6 +205,6 @@ public class ForwardedOptions : ForwardedHeadersOptions
             }
         });
 
-        TrustedProxies?.ForEach((proxy) => proxy.ResolveIP().ToList().ForEach((ip) => options.KnownProxies.Add(ip)));
+        TrustedProxies?.ForEach(proxy => proxy.ResolveIP().ToList().ForEach(ip => options.KnownProxies.Add(ip)));
     }
 }

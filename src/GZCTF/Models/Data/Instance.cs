@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Models.Data;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Instance
 {

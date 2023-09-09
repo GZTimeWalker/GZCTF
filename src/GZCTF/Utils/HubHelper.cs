@@ -11,17 +11,15 @@ public static class HubHelper
     /// <param name="context">当前请求</param>
     /// <param name="privilege">权限</param>
     /// <returns></returns>
-    public static async Task<bool> HasPrivilege(HttpContext context, Role privilege)
+    static async Task<bool> HasPrivilege(HttpContext context, Role privilege)
     {
         var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if (dbContext is null || userId is null)
+        if (userId is null)
             return false;
 
         var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == userId);
-
-        var env = context.RequestServices.GetRequiredService<IHostEnvironment>();
 
         return currentUser is not null && currentUser.Role >= privilege;
     }

@@ -1,6 +1,6 @@
-using GZCTF.Utils;
 
-namespace GZCTF.Models;
+
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 队伍流量获取信息

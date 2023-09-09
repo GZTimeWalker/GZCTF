@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using GZCTF.Models.Request.Edit;
-using GZCTF.Utils;
+
 using MemoryPack;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 [MemoryPackable]
 public partial class Post
@@ -34,7 +34,7 @@ public partial class Post
     /// 是否置顶
     /// </summary>
     [Required]
-    public bool IsPinned { get; set; } = false;
+    public bool IsPinned { get; set; }
 
     /// <summary>
     /// 文章标签

@@ -2,10 +2,10 @@
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using Microsoft.Extensions.Options;
 
-namespace GZCTF.Services;
+namespace GZCTF.Services.Container.Provider;
 
 public class DockerMetadata : ContainerProviderMetadata
 {
@@ -25,7 +25,7 @@ public class DockerMetadata : ContainerProviderMetadata
     /// <param name="config"></param>
     /// <returns></returns>
     public static string GetName(ContainerConfig config)
-        => $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMD5()[..16]}";
+        => $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMd5()[..16]}";
 }
 
 public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
@@ -63,4 +63,3 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
         logger.SystemLog($"Docker 初始化成功 ({(string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri)})", TaskStatus.Success, LogLevel.Debug);
     }
 }
-

@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Admin;
+﻿
+
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 用户信息（Admin）
@@ -70,7 +72,7 @@ public class UserInfoModel
     /// </summary>
     public bool? EmailConfirmed { get; set; }
 
-    internal static UserInfoModel FromUserInfo(UserInfo user)
+    internal static UserInfoModel FromUserInfo(Data.UserInfo user)
         => new()
         {
             Id = user.Id,

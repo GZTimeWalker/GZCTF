@@ -2,30 +2,30 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
+using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 
-namespace GZCTF.Services;
+using ContainerStatus = GZCTF.Utils.ContainerStatus;
+
+namespace GZCTF.Services.Container.Manager;
 
 public class DockerManager : IContainerManager
 {
     private readonly ILogger<DockerManager> _logger;
-    private readonly IContainerProvider<DockerClient, DockerMetadata> _provider;
     private readonly DockerMetadata _meta;
     private readonly DockerClient _client;
 
     public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
     {
         _logger = logger;
-        _provider = provider;
-        _meta = _provider.GetMetadata();
-        _client = _provider.GetProvider();
+        _meta = provider.GetMetadata();
+        _client = provider.GetProvider();
 
         logger.SystemLog($"容器管理模式：Docker 单实例容器控制", TaskStatus.Success, LogLevel.Debug);
     }
 
 
-    public async Task DestroyContainerAsync(Container container, CancellationToken token = default)
+    public async Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default)
     {
         try
         {
@@ -63,7 +63,7 @@ public class DockerManager : IContainerManager
             Image = config.Image,
             Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
             Name = DockerMetadata.GetName(config),
-            Env = config.Flag is null ? Array.Empty<string>() : new string[] { $"GZCTF_FLAG={config.Flag}" },
+            Env = config.Flag is null ? Array.Empty<string>() : new[] { $"GZCTF_FLAG={config.Flag}" },
             HostConfig = new()
             {
                 Memory = config.MemoryLimit * 1024 * 1024,
@@ -72,7 +72,7 @@ public class DockerManager : IContainerManager
             },
         };
 
-    public async Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
+    public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
     {
         var parameters = GetCreateContainerParameters(config);
 
@@ -118,7 +118,7 @@ public class DockerManager : IContainerManager
             return null;
         }
 
-        var container = new Container()
+        var container = new Models.Data.Container()
         {
             ContainerId = containerRes.ID,
             Image = config.Image,
@@ -153,7 +153,7 @@ public class DockerManager : IContainerManager
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.IP = info.NetworkSettings.Networks.FirstOrDefault().Value.IPAddress;
+        container.Ip = info.NetworkSettings.Networks.FirstOrDefault().Value.IPAddress;
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
@@ -164,13 +164,13 @@ public class DockerManager : IContainerManager
                 p.Key.StartsWith(config.ExposedPort.ToString())
             ).Value.First().HostPort;
 
-            if (int.TryParse(port, out var numport))
-                container.PublicPort = numport;
+            if (int.TryParse(port, out var numPort))
+                container.PublicPort = numPort;
             else
                 _logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Failed, LogLevel.Warning);
 
             if (!string.IsNullOrEmpty(_meta.PublicEntry))
-                container.PublicIP = _meta.PublicEntry;
+                container.PublicIp = _meta.PublicEntry;
         }
 
         return container;

@@ -1,6 +1,4 @@
 ﻿using System.Text.Json;
-using GZCTF.Models.Data;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GZCTF.Models;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<UserInfo>(options), IDataProtectionKeyContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) :
+    IdentityDbContext<UserInfo>(options), IDataProtectionKeyContext
 {
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
     {

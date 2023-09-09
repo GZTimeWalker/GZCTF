@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Game;
+﻿
+
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 题目详细信息
@@ -75,15 +77,15 @@ public class ClientFlagContext
     /// <summary>
     /// 题目实例的连接方式
     /// </summary>
-    public string? InstanceEntry { get; set; } = null;
+    public string? InstanceEntry { get; set; }
 
     /// <summary>
     /// 附件 Url
     /// </summary>
-    public string? Url { get; set; } = null;
+    public string? Url { get; set; }
 
     /// <summary>
     /// 附件文件大小
     /// </summary>
-    public long? FileSize { get; set; } = null;
+    public long? FileSize { get; set; }
 }

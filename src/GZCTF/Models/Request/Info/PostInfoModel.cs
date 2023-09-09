@@ -29,7 +29,7 @@ public class PostInfoModel
     /// 是否置顶
     /// </summary>
     [Required]
-    public bool IsPinned { get; set; } = false;
+    public bool IsPinned { get; set; }
 
     /// <summary>
     /// 文章标签
@@ -52,7 +52,7 @@ public class PostInfoModel
     [Required]
     public DateTimeOffset Time { get; set; } = DateTimeOffset.UtcNow;
 
-    internal static PostInfoModel FromPost(Post post)
+    internal static PostInfoModel FromPost(Data.Post post)
         => new()
         {
             Id = post.Id,

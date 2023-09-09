@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+
 using GZCTF.Models.Request.Info;
 
 namespace GZCTF.Models.Request.Admin;

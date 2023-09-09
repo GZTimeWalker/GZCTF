@@ -1,8 +1,10 @@
 ﻿using GZCTF.Extensions;
+using GZCTF.Models;
+
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
-using GZCTF.Utils;
+using GZCTF.Services.Cache;
 using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -334,7 +336,7 @@ public class GameRepository(IDistributedCache cache,
 public class ScoreboardCacheHandler : ICacheRequestHandler
 {
     public static CacheRequest MakeCacheRequest(int id)
-        => new(Utils.CacheKey.ScoreBoardBase, new()
+        => new(Services.Cache.CacheKey.ScoreBoardBase, new()
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14)
         }, id.ToString());
@@ -344,7 +346,7 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
         if (request.Params.Length != 1)
             return null;
 
-        return Utils.CacheKey.ScoreBoard(request.Params[0]);
+        return Services.Cache.CacheKey.ScoreBoard(request.Params[0]);
     }
 
     public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)

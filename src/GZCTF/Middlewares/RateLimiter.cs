@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
-using GZCTF.Utils;
+
 using Microsoft.AspNetCore.RateLimiting;
 
 namespace GZCTF.Middlewares;

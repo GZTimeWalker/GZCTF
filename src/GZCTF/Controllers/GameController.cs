@@ -1,12 +1,11 @@
-﻿using System.Net.Mime;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Channels;
 using GZCTF.Middlewares;
 using GZCTF.Models.Request.Admin;
-using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -161,7 +160,7 @@ public class GameController(
         if (game.AcceptWithoutReview)
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
-        logger.Log($"[{team!.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
+        logger.Log($"[{team.Name}] 成功报名了比赛 [{game.Title}]", user, TaskStatus.Success);
 
         return Ok();
     }
@@ -396,9 +395,9 @@ public class GameController(
         if (participationIds.Count == 0)
             return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
 
-        var participations = await participationRepository.GetParticipationsByIds(participationIds, token);
+        var participation = await participationRepository.GetParticipationsByIds(participationIds, token);
 
-        return Ok(participations.Select(p => TeamTrafficModel.FromParticipation(p, challengeId)));
+        return Ok(participation.Select(p => TeamTrafficModel.FromParticipation(p, challengeId)));
     }
 
     /// <summary>
@@ -502,7 +501,7 @@ public class GameController(
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpGet("{id}/Details")]
+    [HttpGet("{id:int}/Details")]
     [ProducesResponseType(typeof(GameDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -515,10 +514,10 @@ public class GameController(
 
         var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
-        var boarditem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
+        var boardItem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
 
         // make sure team info is not null
-        boarditem ??= new ScoreboardItem()
+        boardItem ??= new ScoreboardItem()
         {
             Avatar = context.Participation!.Team.AvatarUrl,
             SolvedCount = 0,
@@ -529,7 +528,7 @@ public class GameController(
 
         return Ok(new GameDetailModel()
         {
-            ScoreboardItem = boarditem,
+            ScoreboardItem = boardItem,
             TeamToken = context.Participation!.Token,
             Challenges = scoreboard.Challenges,
             WriteupDeadline = context.Game!.WriteupDeadline
@@ -548,11 +547,11 @@ public class GameController(
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireAdmin]
-    [HttpGet("{id}/Participations")]
+    [HttpGet("{id:int}/Participation")]
     [ProducesResponseType(typeof(ParticipationInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Participations([FromRoute] int id, CancellationToken token = default)
+    public async Task<IActionResult> Participation([FromRoute] int id, CancellationToken token = default)
     {
         var context = await GetContextInfo(id, token: token);
 
@@ -575,10 +574,11 @@ public class GameController(
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireMonitor]
-    [HttpGet("{id}/ScoreboardSheet")]
+    [HttpGet("{id:int}/ScoreboardSheet")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public async Task<IActionResult> ScoreboardSheet([FromRoute] int id, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
@@ -619,10 +619,11 @@ public class GameController(
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireMonitor]
-    [HttpGet("{id}/SubmissionSheet")]
+    [HttpGet("{id:int}/SubmissionSheet")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public async Task<IActionResult> SubmissionSheet([FromRoute] int id, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
@@ -656,7 +657,7 @@ public class GameController(
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpGet("{id}/Challenges/{challengeId}")]
+    [HttpGet("{id:int}/Challenges/{challengeId:int}")]
     [ProducesResponseType(typeof(ChallengeDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -692,14 +693,14 @@ public class GameController(
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpPost("{id}/Challenges/{challengeId}")]
+    [HttpPost("{id:int}/Challenges/{challengeId:int}")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Submit))]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId, [FromBody] FlagSubmitModel model, CancellationToken token)
     {
-        var context = await GetContextInfo(id, challengeId, false, token: token);
+        var context = await GetContextInfo(id, challengeId, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -827,12 +828,7 @@ public class GameController(
         if (wp is not null)
             await fileService.DeleteFile(wp, token);
 
-        wp = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
-
-        if (wp is null)
-            return BadRequest(new RequestResponse("保存文件失败"));
-
-        part.Writeup = wp;
+        part.Writeup = await fileService.CreateOrUpdateFile(file, $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
 
         await participationRepository.SaveAsync(token);
 
@@ -1008,11 +1004,11 @@ public class GameController(
 
     private class ContextInfo
     {
-        public Game? Game = default!;
-        public UserInfo? User = default!;
-        public Challenge? Challenge = default!;
-        public Participation? Participation = default!;
-        public IActionResult? Result = null;
+        public Game? Game;
+        public UserInfo? User;
+        public Challenge? Challenge;
+        public Participation? Participation;
+        public IActionResult? Result;
 
         public ContextInfo WithResult(IActionResult res)
         {

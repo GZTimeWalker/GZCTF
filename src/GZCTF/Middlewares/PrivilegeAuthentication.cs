@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
-using GZCTF.Utils;
+using GZCTF.Models;
+
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;

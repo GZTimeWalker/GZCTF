@@ -1,5 +1,5 @@
 ﻿using GZCTF.Hubs;
-using GZCTF.Hubs.Client;
+using GZCTF.Hubs.Clients;
 using GZCTF.Models.Request.Admin;
 using Microsoft.AspNetCore.SignalR;
 using Serilog;
@@ -45,7 +45,9 @@ public class SignalRSink : ILogEventSink
                     }).Wait();
             }
             catch
-            { }
+            {
+                // ignored
+            }
         }
     }
 }

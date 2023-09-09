@@ -2,29 +2,29 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
+using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 
-namespace GZCTF.Services;
+using ContainerStatus = GZCTF.Utils.ContainerStatus;
+
+namespace GZCTF.Services.Container.Manager;
 
 public class SwarmManager : IContainerManager
 {
     private readonly ILogger<SwarmManager> _logger;
-    private readonly IContainerProvider<DockerClient, DockerMetadata> _provider;
     private readonly DockerMetadata _meta;
     private readonly DockerClient _client;
 
     public SwarmManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<SwarmManager> logger)
     {
         _logger = logger;
-        _provider = provider;
-        _meta = _provider.GetMetadata();
-        _client = _provider.GetProvider();
+        _meta = provider.GetMetadata();
+        _client = provider.GetProvider();
 
         logger.SystemLog($"容器管理模式：Docker Swarm 集群容器控制", TaskStatus.Success, LogLevel.Debug);
     }
 
-    public async Task DestroyContainerAsync(Container container, CancellationToken token = default)
+    public async Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default)
     {
         try
         {
@@ -71,7 +71,7 @@ public class SwarmManager : IContainerManager
                     ContainerSpec = new()
                     {
                         Image = config.Image,
-                        Env = config.Flag is null ? Array.Empty<string>() : new string[] { $"GZCTF_FLAG={config.Flag}" }
+                        Env = config.Flag is null ? Array.Empty<string>() : new[] { $"GZCTF_FLAG={config.Flag}" }
                     },
                     Resources = new()
                     {
@@ -93,7 +93,7 @@ public class SwarmManager : IContainerManager
             }
         };
 
-    public async Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
+    public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
     {
         var parameters = GetServiceCreateParameters(config);
         int retry = 0;
@@ -125,7 +125,7 @@ public class SwarmManager : IContainerManager
             return null;
         }
 
-        var container = new Container()
+        var container = new Models.Data.Container()
         {
             ContainerId = serviceRes.ID,
             Image = config.Image,
@@ -150,7 +150,7 @@ public class SwarmManager : IContainerManager
         container.Status = ContainerStatus.Running;
         container.StartedAt = res.CreatedAt;
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.IP = res.Endpoint.VirtualIPs.First().Addr;
+        container.Ip = res.Endpoint.VirtualIPs.First().Addr;
         container.Port = (int)res.Endpoint.Ports.First().PublishedPort;
         container.IsProxy = !_meta.ExposePort;
 
@@ -158,7 +158,7 @@ public class SwarmManager : IContainerManager
         {
             container.PublicPort = container.Port;
             if (!string.IsNullOrEmpty(_meta.PublicEntry))
-                container.PublicIP = _meta.PublicEntry;
+                container.PublicIp = _meta.PublicEntry;
         }
 
         return container;

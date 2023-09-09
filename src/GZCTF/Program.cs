@@ -1,4 +1,7 @@
-global using GZCTF.Models;
+global using GZCTF.Models.Data;
+global using GZCTF.Utils;
+global using AppDbContext = GZCTF.Models.AppDbContext;
+global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -9,8 +12,9 @@ using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
+using GZCTF.Services.Cache;
+using GZCTF.Services.Container;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-Banner();
+GZCTF.Program.Banner();
 
 FilePath.EnsureDirs();
 
@@ -39,7 +43,7 @@ Log.Logger = LogHelper.GetInitLogger();
 #endregion Logging
 
 #region AppDbContext
-if (IsTesting || (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("ConnectionStrings").Exists()))
+if (GZCTF.Program.IsTesting || (builder.Environment.IsDevelopment() && !builder.Configuration.GetSection("ConnectionStrings").Exists()))
 {
     builder.Services.AddDbContext<AppDbContext>(
         options => options.UseInMemoryDatabase("TestDb")
@@ -48,7 +52,7 @@ if (IsTesting || (builder.Environment.IsDevelopment() && !builder.Configuration.
 else
 {
     if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-        ExitWithFatalMessage("未找到数据库连接字符串字段 ConnectionStrings，请检查 appsettings.json 是否正常挂载及配置");
+        GZCTF.Program.ExitWithFatalMessage("未找到数据库连接字符串字段 ConnectionStrings，请检查 appsettings.json 是否正常挂载及配置");
 
     builder.Services.AddDbContext<AppDbContext>(
         options =>
@@ -66,7 +70,7 @@ else
 #endregion AppDbContext
 
 #region Configuration
-if (!IsTesting)
+if (!GZCTF.Program.IsTesting)
 {
     try
     {
@@ -82,7 +86,7 @@ if (!IsTesting)
     {
         if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
             Log.Logger.Error($"当前连接字符串：{builder.Configuration.GetConnectionString("Database")}");
-        ExitWithFatalMessage("数据库连接失败，请检查 Database 连接字符串配置");
+        GZCTF.Program.ExitWithFatalMessage("数据库连接失败，请检查 Database 连接字符串配置");
     }
 }
 #endregion Configuration
@@ -232,7 +236,7 @@ builder.Services.AddResponseCompression(options =>
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
 {
-    options.InvalidModelStateResponseFactory = InvalidModelStateHandler;
+    options.InvalidModelStateResponseFactory = GZCTF.Program.InvalidModelStateHandler;
 });
 
 var app = builder.Build();
@@ -273,7 +277,7 @@ app.UseAuthorization();
 if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
     app.UseConfiguredRateLimiter();
 
-if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging") is true)
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging"))
     app.UseRequestLogging();
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
@@ -288,12 +292,12 @@ app.MapHub<AdminHub>("/hub/admin");
 app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();
-var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<GZCTF.Program>>();
 
 try
 {
-    var version = typeof(Program).Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
-    logger.SystemLog(version ?? "GZ::CTF", GZCTF.TaskStatus.Pending, LogLevel.Debug);
+    var version = typeof(GZCTF.Program).Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
+    logger.SystemLog(version ?? "GZ::CTF", TaskStatus.Pending, LogLevel.Debug);
     await app.RunAsync();
 }
 catch (Exception exception)
@@ -303,64 +307,66 @@ catch (Exception exception)
 }
 finally
 {
-    logger.SystemLog("服务器已退出", GZCTF.TaskStatus.Exit, LogLevel.Debug);
+    logger.SystemLog("服务器已退出", TaskStatus.Exit, LogLevel.Debug);
     Log.CloseAndFlush();
 }
 
-public partial class Program
+namespace GZCTF
 {
-    public static bool IsTesting { get; set; } = false;
-
-    public static void Banner()
+    public class Program
     {
-        const string banner =
-            @"      ___           ___           ___                       ___   " + "\n" +
-            @"     /  /\         /  /\         /  /\          ___        /  /\  " + "\n" +
-            @"    /  /:/_       /  /::|       /  /:/         /  /\      /  /:/_ " + "\n" +
-            @"   /  /:/ /\     /  /:/:|      /  /:/         /  /:/     /  /:/ /\" + "\n" +
-            @"  /  /:/_/::\   /  /:/|:|__   /  /:/  ___    /  /:/     /  /:/ /:/" + "\n" +
-            @" /__/:/__\/\:\ /__/:/ |:| /\ /__/:/  /  /\  /  /::\    /__/:/ /:/ " + "\n" +
-            @" \  \:\ /~~/:/ \__\/  |:|/:/ \  \:\ /  /:/ /__/:/\:\   \  \:\/:/  " + "\n" +
-            @"  \  \:\  /:/      |  |:/:/   \  \:\  /:/  \__\/  \:\   \  \::/   " + "\n" +
-            @"   \  \:\/:/       |  |::/     \  \:\/:/        \  \:\   \  \:\   " + "\n" +
-            @"    \  \::/        |  |:/       \  \::/          \__\/    \  \:\  " + "\n" +
-            @"     \__\/         |__|/         \__\/                     \__\/  " + "\n";
-        Console.WriteLine(banner);
+        public static bool IsTesting { get; set; }
 
-        var versionStr = "";
-        var version = typeof(Codec).Assembly.GetName().Version;
-        if (version is not null)
-            versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
-
-        Console.WriteLine($"GZCTF © 2022-present GZTimeWalker {versionStr,33}\n");
-    }
-
-    public static void ExitWithFatalMessage(string msg)
-    {
-        Log.Logger.Fatal(msg);
-        Thread.Sleep(30000);
-        Environment.Exit(1);
-    }
-
-    public static IActionResult InvalidModelStateHandler(ActionContext context)
-    {
-        string? errmsg = null;
-
-        if (context.ModelState.ErrorCount > 0)
+        internal static void Banner()
         {
-            foreach (var val in context.ModelState.Values)
-            {
-                if (val.Errors.Count > 0)
-                {
-                    errmsg = val.Errors.FirstOrDefault()?.ErrorMessage;
-                    break;
-                }
-            }
+            const string banner =
+                @"      ___           ___           ___                       ___   " + "\n" +
+                @"     /  /\         /  /\         /  /\          ___        /  /\  " + "\n" +
+                @"    /  /:/_       /  /::|       /  /:/         /  /\      /  /:/_ " + "\n" +
+                @"   /  /:/ /\     /  /:/:|      /  /:/         /  /:/     /  /:/ /\" + "\n" +
+                @"  /  /:/_/::\   /  /:/|:|__   /  /:/  ___    /  /:/     /  /:/ /:/" + "\n" +
+                @" /__/:/__\/\:\ /__/:/ |:| /\ /__/:/  /  /\  /  /::\    /__/:/ /:/ " + "\n" +
+                @" \  \:\ /~~/:/ \__\/  |:|/:/ \  \:\ /  /:/ /__/:/\:\   \  \:\/:/  " + "\n" +
+                @"  \  \:\  /:/      |  |:/:/   \  \:\  /:/  \__\/  \:\   \  \::/   " + "\n" +
+                @"   \  \:\/:/       |  |::/     \  \:\/:/        \  \:\   \  \:\   " + "\n" +
+                @"    \  \::/        |  |:/       \  \::/          \__\/    \  \:\  " + "\n" +
+                @"     \__\/         |__|/         \__\/                     \__\/  " + "\n";
+            Console.WriteLine(banner);
+
+            var versionStr = "";
+            var version = typeof(Codec).Assembly.GetName().Version;
+            if (version is not null)
+                versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
+
+            Console.WriteLine($"GZCTF © 2022-present GZTimeWalker {versionStr,33}\n");
         }
 
-        return new JsonResult(new RequestResponse(errmsg is not null && errmsg.Length > 0 ? errmsg : "校验失败，请检查输入。"))
+        public static void ExitWithFatalMessage(string msg)
         {
-            StatusCode = 400
-        };
+            Log.Logger.Fatal(msg);
+            Thread.Sleep(30000);
+            Environment.Exit(1);
+        }
+
+        public static IActionResult InvalidModelStateHandler(ActionContext context)
+        {
+            string? errors = null;
+
+            if (context.ModelState.ErrorCount <= 0)
+                return new JsonResult(
+                    new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。"))
+                {
+                    StatusCode = 400
+                };
+
+            errors = (from val in context.ModelState.Values
+                      where val.Errors.Count > 0
+                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+
+            return new JsonResult(new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。"))
+            {
+                StatusCode = 400
+            };
+        }
     }
 }

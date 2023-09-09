@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using GZCTF.Models.Data;
 using GZCTF.Models.Request.Edit;
-using GZCTF.Utils;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Challenge
 {
@@ -29,7 +27,7 @@ public class Challenge
     /// <summary>
     /// 是否启用题目
     /// </summary>
-    public bool IsEnabled { get; set; } = false;
+    public bool IsEnabled { get; set; }
 
     /// <summary>
     /// 题目标签
@@ -83,20 +81,20 @@ public class Challenge
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool EnableTrafficCapture { get; set; } = false;
+    public bool EnableTrafficCapture { get; set; }
 
     /// <summary>
     /// 解决题目人数
     /// </summary>
     [Required]
-    public int AcceptedCount { get; set; } = 0;
+    public int AcceptedCount { get; set; }
 
     /// <summary>
     /// 提交答案的数量
     /// </summary>
     [Required]
     [JsonIgnore]
-    public int SubmissionCount { get; set; } = 0;
+    public int SubmissionCount { get; set; }
 
     /// <summary>
     /// 初始分数

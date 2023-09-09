@@ -1,6 +1,8 @@
 ﻿using System.Security.Cryptography;
+using GZCTF.Models;
+
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
+
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp.Formats.Gif;
 

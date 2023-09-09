@@ -1,9 +1,8 @@
 ﻿using System.Threading.Channels;
 using GZCTF.Repositories;
-using GZCTF.Utils;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace GZCTF.Services;
+namespace GZCTF.Services.Cache;
 
 /// <summary>
 /// 缓存更新请求
@@ -72,7 +71,7 @@ public class CacheMaker(
 
                 try
                 {
-                    await cache.SetAsync(updateLock, [], new DistributedCacheEntryOptions
+                    await cache.SetAsync(updateLock, Array.Empty<byte>(), new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60)
                     }, token);

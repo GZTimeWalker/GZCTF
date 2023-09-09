@@ -35,7 +35,7 @@ public class PostDetailModel
     /// 是否置顶
     /// </summary>
     [Required]
-    public bool IsPinned { get; set; } = false;
+    public bool IsPinned { get; set; }
 
     /// <summary>
     /// 文章标签
@@ -58,7 +58,7 @@ public class PostDetailModel
     [Required]
     public DateTimeOffset Time { get; set; } = DateTimeOffset.UtcNow;
 
-    internal static PostDetailModel FromPost(Post post)
+    internal static PostDetailModel FromPost(Data.Post post)
         => new()
         {
             Id = post.Id,

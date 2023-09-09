@@ -32,9 +32,9 @@ public class ModelWithCaptcha
 
 public class CaptchaExtensionBase(IOptions<CaptchaConfig>? options) : ICaptchaExtension
 {
-    protected readonly CaptchaConfig? _config = options?.Value;
+    protected readonly CaptchaConfig? Config = options?.Value;
 
-    public ClientCaptchaInfoModel ClientInfo() => new(_config);
+    public ClientCaptchaInfoModel ClientInfo() => new(Config);
 
     public virtual Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context, CancellationToken token = default)
         => Task.FromResult(true);
@@ -46,19 +46,19 @@ public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) :
 
     public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context, CancellationToken token = default)
     {
-        if (_config is null || string.IsNullOrWhiteSpace(_config.SecretKey))
+        if (Config is null || string.IsNullOrWhiteSpace(Config.SecretKey))
             return true;
 
         if (string.IsNullOrEmpty(model.Challenge) || context.Connection.RemoteIpAddress is null)
             return false;
 
         var ip = context.Connection.RemoteIpAddress;
-        var api = _config.GoogleRecaptcha.VerifyAPIAddress;
+        var api = Config.GoogleRecaptcha.VerifyAPIAddress;
 
-        var result = await _httpClient.GetAsync($"{api}?secret={_config.SecretKey}&response={model.Challenge}&remoteip={ip}", token);
+        var result = await _httpClient.GetAsync($"{api}?secret={Config.SecretKey}&response={model.Challenge}&remoteip={ip}", token);
         var res = await result.Content.ReadFromJsonAsync<RecaptchaResponseModel>(cancellationToken: token);
 
-        return res is not null && res.Success && res.Score >= _config.GoogleRecaptcha.RecaptchaThreshold;
+        return res is not null && res.Success && res.Score >= Config.GoogleRecaptcha.RecaptchaThreshold;
     }
 }
 
@@ -68,7 +68,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
     public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context, CancellationToken token = default)
     {
-        if (_config is null || string.IsNullOrWhiteSpace(_config.SecretKey))
+        if (Config is null || string.IsNullOrWhiteSpace(Config.SecretKey))
             return true;
 
         if (string.IsNullOrEmpty(model.Challenge) || context.Connection.RemoteIpAddress is null)
@@ -78,9 +78,9 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
         TurnstileRequestModel req = new()
         {
-            Secret = _config.SecretKey,
+            Secret = Config.SecretKey,
             Response = model.Challenge,
-            RemoteIP = ip.ToString()
+            RemoteIp = ip.ToString()
         };
 
         const string api = "https://challenges.cloudflare.com/turnstile/v0/siteverify";

@@ -1,4 +1,5 @@
-﻿using GZCTF.Models.Request.Info;
+﻿
+using GZCTF.Models.Request.Info;
 
 namespace GZCTF.Repositories.Interface;
 

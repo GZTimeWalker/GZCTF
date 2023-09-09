@@ -1,13 +1,15 @@
 ﻿using System.Net.Mime;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
+
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
+using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -229,7 +231,7 @@ public class EditController(
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">成功删除比赛</response>
-    [HttpDelete("Games/{id}")]
+    [HttpDelete("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -430,7 +432,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
-    [HttpPost("Games/{id}/Challenges")]
+    [HttpPost("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGameChallenge([FromRoute] int id, [FromBody] ChallengeInfoModel model, CancellationToken token)

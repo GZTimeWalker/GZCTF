@@ -2,7 +2,6 @@
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 

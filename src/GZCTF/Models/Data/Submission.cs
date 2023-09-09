@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+
 using Microsoft.EntityFrameworkCore;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 [Index(nameof(UserId))]
 public class Submission

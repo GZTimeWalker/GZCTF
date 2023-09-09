@@ -1,5 +1,4 @@
-﻿using GZCTF.Models.Data;
-
+﻿
 namespace GZCTF.Models.Internal;
 
 public class CheatCheckInfo
