@@ -47,7 +47,7 @@ public class Container
     /// 本地 IP
     /// </summary>
     [Required]
-    public string Ip { get; set; } = string.Empty;
+    public string IP { get; set; } = string.Empty;
 
     /// <summary>
     /// 本地端口
@@ -58,7 +58,7 @@ public class Container
     /// <summary>
     /// 公开 IP
     /// </summary>
-    public string? PublicIp { get; set; }
+    public string? PublicIP { get; set; }
 
     /// <summary>
     /// 公开端口
@@ -69,7 +69,7 @@ public class Container
     /// 容器实例访问方式
     /// </summary>
     [NotMapped]
-    public string Entry => IsProxy ? Id : $"{PublicIp ?? Ip}:{PublicPort ?? Port}";
+    public string Entry => IsProxy ? Id : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
 
     /// <summary>
     /// 容器实例流量捕获存储路径

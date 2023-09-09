@@ -89,7 +89,7 @@ public class EditController(
     /// <param name="token"></param>
     /// <response code="200">成功删除文章</response>
     /// <response code="404">未找到文章</response>
-    [HttpDelete("Posts/{id}")]
+    [HttpDelete("Posts/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletePost(string id, CancellationToken token)
@@ -156,7 +156,7 @@ public class EditController(
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛</response>
-    [HttpGet("Games/{id}")]
+    [HttpGet("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGame([FromRoute] int id, CancellationToken token)
@@ -178,7 +178,7 @@ public class EditController(
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛哈希加盐</response>
-    [HttpGet("Games/{id}/TeamHashSalt")]
+    [HttpGet("Games/{id:int}/TeamHashSalt")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetTeamHashSalt([FromRoute] int id, CancellationToken token)
@@ -203,7 +203,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功修改比赛</response>
-    [HttpPut("Games/{id}")]
+    [HttpPut("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGame([FromRoute] int id, [FromBody] GameInfoModel model,
@@ -259,7 +259,7 @@ public class EditController(
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">成功删除比赛 WriteUps</response>
-    [HttpDelete("Games/{id}/WriteUps")]
+    [HttpDelete("Games/{id:int}/WriteUps")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGameWriteUps([FromRoute] int id, CancellationToken token)
@@ -283,7 +283,7 @@ public class EditController(
     /// <response code="200">比赛头图URL</response>
     /// <response code="400">非法请求</response>
     /// <response code="401">未授权用户</response>
-    [HttpPut("Games/{id}/Poster")]
+    [HttpPut("Games/{id:int}/Poster")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -322,7 +322,7 @@ public class EditController(
     /// <param name="model">通知内容</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛通知</response>
-    [HttpPost("Games/{id}/Notices")]
+    [HttpPost("Games/{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGameNotice([FromRoute] int id, [FromBody] GameNoticeModel model,
@@ -354,7 +354,7 @@ public class EditController(
     /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛通知</response>
-    [HttpGet("Games/{id}/Notices")]
+    [HttpGet("Games/{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token = default)
@@ -378,7 +378,7 @@ public class EditController(
     /// <param name="model">通知内容</param>
     /// <param name="token"></param>
     /// <response code="200">成功更新通知</response>
-    [HttpPut("Games/{id}/Notices/{noticeId}")]
+    [HttpPut("Games/{id:int}/Notices/{noticeId:int}")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGameNotice([FromRoute] int id, [FromRoute] int noticeId,
@@ -407,7 +407,7 @@ public class EditController(
     /// <param name="token"></param>
     /// <response code="200">成功删除文章</response>
     /// <response code="404">未找到文章</response>
-    [HttpDelete("Games/{id}/Notices/{noticeId}")]
+    [HttpDelete("Games/{id:int}/Notices/{noticeId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGameNotice([FromRoute] int id, [FromRoute] int noticeId,
@@ -462,7 +462,7 @@ public class EditController(
     /// <param name="id">比赛Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛题目</response>
-    [HttpGet("Games/{id}/Challenges")]
+    [HttpGet("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
     {
@@ -479,7 +479,7 @@ public class EditController(
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
-    [HttpGet("Games/{id}/Challenges/{cId}")]
+    [HttpGet("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
@@ -508,7 +508,7 @@ public class EditController(
     /// <param name="model">题目信息</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
-    [HttpPut("Games/{id}/Challenges/{cId}")]
+    [HttpPut("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGameChallenge([FromRoute] int id, [FromRoute] int cId,
@@ -576,7 +576,7 @@ public class EditController(
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功开启比赛题目容器</response>
-    [HttpPost("Games/{id}/Challenges/{cId}/Container")]
+    [HttpPost("Games/{id:int}/Challenges/{cId:int}/Container")]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateTestContainer([FromRoute] int id, [FromRoute] int cId,
@@ -634,7 +634,7 @@ public class EditController(
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
-    [HttpDelete("Games/{id}/Challenges/{cId}/Container")]
+    [HttpDelete("Games/{id:int}/Challenges/{cId:int}/Container")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DestroyTestContainer([FromRoute] int id, [FromRoute] int cId,
@@ -669,7 +669,7 @@ public class EditController(
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
-    [HttpDelete("Games/{id}/Challenges/{cId}")]
+    [HttpDelete("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveGameChallenge([FromRoute] int id, [FromRoute] int cId,
@@ -704,7 +704,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目数量</response>
-    [HttpPost("Games/{id}/Challenges/{cId}/Attachment")]
+    [HttpPost("Games/{id:int}/Challenges/{cId:int}/Attachment")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateAttachment([FromRoute] int id, [FromRoute] int cId,
@@ -739,7 +739,7 @@ public class EditController(
     /// <param name="models"></param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目数量</response>
-    [HttpPost("Games/{id}/Challenges/{cId}/Flags")]
+    [HttpPost("Games/{id:int}/Challenges/{cId:int}/Flags")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddFlags([FromRoute] int id, [FromRoute] int cId,
@@ -771,7 +771,7 @@ public class EditController(
     /// <param name="fId">Flag ID</param>
     /// <param name="token"></param>
     /// <response code="200">成功添加比赛题目</response>
-    [HttpDelete("Games/{id}/Challenges/{cId}/Flags/{fId}")]
+    [HttpDelete("Games/{id:int}/Challenges/{cId:int}/Flags/{fId:int}")]
     [ProducesResponseType(typeof(TaskStatus), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveFlag([FromRoute] int id, [FromRoute] int cId, [FromRoute] int fId,

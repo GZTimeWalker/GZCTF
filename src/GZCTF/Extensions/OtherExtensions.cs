@@ -10,7 +10,7 @@ public static class ListExtensions
     }
 }
 
-public static class IQueryableExtensions
+public static class QueryableExtensions
 {
     /// <summary>
     /// 如果 count 大于 0 则只获取部分
@@ -42,7 +42,7 @@ public static class ArrayExtensions
 
 public static class IPAddressExtensions
 {
-    public static IPAddress[] ResolveIP(this string? host)
+    public static IEnumerable<IPAddress> ResolveIP(this string? host)
     {
         return !string.IsNullOrWhiteSpace(host)
             ? Dns.GetHostAddresses(host)

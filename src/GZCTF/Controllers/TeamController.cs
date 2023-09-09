@@ -120,8 +120,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPut("{id}")]
     [RequireUser]
+    [HttpPut("{id:int}")]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -161,8 +161,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPut("{id:int}/Transfer")]
     [RequireUser]
+    [HttpPut("{id:int}/Transfer")]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -212,8 +212,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpGet("{id}/Invite")]
     [RequireUser]
+    [HttpGet("{id:int}/Invite")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -247,8 +247,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPut("{id}/Invite")]
     [RequireUser]
+    [HttpPut("{id:int}/Invite")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -287,8 +287,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/Kick/{userid}")]
     [RequireUser]
+    [HttpPost("{id:int}/Kick/{userid}")]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -349,8 +349,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("Accept")]
     [RequireUser]
+    [HttpPost("Accept")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -416,8 +416,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
-    [HttpPost("{id}/Leave")]
     [RequireUser]
+    [HttpPost("{id:int}/Leave")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -465,8 +465,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <response code="200">用户头像URL</response>
     /// <response code="400">非法请求</response>
     /// <response code="401">未授权用户</response>
-    [HttpPut("{id}/Avatar")]
     [RequireUser]
+    [HttpPut("{id:int}/Avatar")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -517,8 +517,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// <param name="token"></param>
     /// <response code="200">成功获取队伍信息</response>
     /// <response code="400">队伍不存在</response>
-    [HttpDelete("{id}")]
     [RequireUser]
+    [HttpDelete("{id:int}")]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]

@@ -179,13 +179,13 @@ public class K8sManager : IContainerManager
 
         container.StartedAt = DateTimeOffset.UtcNow;
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.Ip = service.Spec.ClusterIP;
+        container.IP = service.Spec.ClusterIP;
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
         if (_meta.ExposePort)
         {
-            container.PublicIp = _meta.PublicEntry;
+            container.PublicIP = _meta.PublicEntry;
             container.PublicPort = service.Spec.Ports[0].NodePort;
         }
 

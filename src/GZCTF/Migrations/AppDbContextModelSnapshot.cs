@@ -202,7 +202,7 @@ namespace GZCTF.Migrations
                     b.Property<int>("InstanceId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Ip")
+                    b.Property<string>("IP")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -212,7 +212,7 @@ namespace GZCTF.Migrations
                     b.Property<int>("Port")
                         .HasColumnType("integer");
 
-                    b.Property<string>("PublicIp")
+                    b.Property<string>("PublicIP")
                         .HasColumnType("text");
 
                     b.Property<int?>("PublicPort")

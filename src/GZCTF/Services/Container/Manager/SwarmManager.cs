@@ -114,7 +114,7 @@ public class SwarmManager : IContainerManager
         container.Status = ContainerStatus.Running;
         container.StartedAt = res.CreatedAt;
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.Ip = res.Endpoint.VirtualIPs.First().Addr;
+        container.IP = res.Endpoint.VirtualIPs.First().Addr;
         container.Port = (int)res.Endpoint.Ports.First().PublishedPort;
         container.IsProxy = !_meta.ExposePort;
 
@@ -122,7 +122,7 @@ public class SwarmManager : IContainerManager
         {
             container.PublicPort = container.Port;
             if (!string.IsNullOrEmpty(_meta.PublicEntry))
-                container.PublicIp = _meta.PublicEntry;
+                container.PublicIP = _meta.PublicEntry;
         }
 
         return container;

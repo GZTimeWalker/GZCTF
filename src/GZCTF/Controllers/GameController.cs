@@ -63,7 +63,7 @@ public class GameController(
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="404">比赛未找到</response>
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(DetailedGameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Games(int id, CancellationToken token)
@@ -92,7 +92,7 @@ public class GameController(
     /// <response code="403">无权操作或操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpPost("{id}")]
+    [HttpPost("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
@@ -179,7 +179,7 @@ public class GameController(
     /// <response code="403">无权操作或操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
@@ -222,7 +222,7 @@ public class GameController(
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛信息</response>
     /// <response code="400">比赛未找到</response>
-    [HttpGet("{id}/Scoreboard")]
+    [HttpGet("{id:int}/Scoreboard")]
     [ProducesResponseType(typeof(ScoreboardModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
@@ -250,7 +250,7 @@ public class GameController(
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛通知</response>
     /// <response code="400">比赛未找到</response>
-    [HttpGet("{id}/Notices")]
+    [HttpGet("{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0,
@@ -281,7 +281,7 @@ public class GameController(
     /// <response code="200">成功获取比赛事件</response>
     /// <response code="400">比赛未找到</response>
     [RequireMonitor]
-    [HttpGet("{id}/Events")]
+    [HttpGet("{id:int}/Events")]
     [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Events([FromRoute] int id, [FromQuery] bool hideContainer = false,
@@ -312,7 +312,7 @@ public class GameController(
     /// <response code="200">成功获取比赛提交</response>
     /// <response code="400">比赛未找到</response>
     [RequireMonitor]
-    [HttpGet("{id}/Submissions")]
+    [HttpGet("{id:int}/Submissions")]
     [ProducesResponseType(typeof(Submission[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] AnswerResult? type = null,
@@ -340,7 +340,7 @@ public class GameController(
     /// <response code="200">成功获取比赛作弊数据</response>
     /// <response code="400">比赛未找到</response>
     [RequireMonitor]
-    [HttpGet("{id}/CheatInfo")]
+    [HttpGet("{id:int}/CheatInfo")]
     [ProducesResponseType(typeof(CheatInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CheatInfo([FromRoute] int id, CancellationToken token = default)
@@ -368,7 +368,7 @@ public class GameController(
     /// <response code="200">成功获取题目列表</response>
     /// <response code="404">未找到相关捕获信息</response>
     [RequireMonitor]
-    [HttpGet("Games/{id}/Captures")]
+    [HttpGet("Games/{id:int}/Captures")]
     [ProducesResponseType(typeof(ChallengeTrafficModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token)
     {
@@ -387,12 +387,12 @@ public class GameController(
     /// <response code="200">成功获取文件列表</response>
     /// <response code="404">未找到相关捕获信息</response>
     [RequireMonitor]
-    [HttpGet("Captures/{challengeId}")]
+    [HttpGet("Captures/{challengeId:int}")]
     [ProducesResponseType(typeof(TeamTrafficModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetChallengeTraffic([FromRoute] int challengeId, CancellationToken token)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId}";
+        var filePath = $"{FilePath.Capture}/{challengeId:int}";
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
@@ -418,12 +418,12 @@ public class GameController(
     /// <response code="200">成功获取文件列表</response>
     /// <response code="404">未找到相关捕获信息</response>
     [RequireMonitor]
-    [HttpGet("Captures/{challengeId}/{partId}")]
+    [HttpGet("Captures/{challengeId:int}/{partId:int}")]
     [ProducesResponseType(typeof(FileRecord[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public IActionResult GetTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
+        var filePath = $"{FilePath.Capture}/{challengeId:int}/{partId:int}";
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
@@ -443,18 +443,18 @@ public class GameController(
     /// <response code="200">成功获取文件</response>
     /// <response code="404">未找到相关捕获信息</response>
     [RequireMonitor]
-    [HttpGet("Captures/{challengeId}/{partId}/All")]
+    [HttpGet("Captures/{challengeId:int}/{partId:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetTeamTrafficZip([FromRoute] int challengeId, [FromRoute] int partId,
         CancellationToken token)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
+        var filePath = $"{FilePath.Capture}/{challengeId:int}/{partId:int}";
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
 
-        var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
+        var filename = $"Capture-{challengeId:int}-{partId:int}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
         Stream stream = await Codec.ZipFilesAsync(filePath, filename, token);
         stream.Seek(0, SeekOrigin.Begin);
 
@@ -473,7 +473,7 @@ public class GameController(
     /// <response code="200">成功获取文件</response>
     /// <response code="404">未找到相关捕获信息</response>
     [RequireMonitor]
-    [HttpGet("Captures/{challengeId}/{partId}/{filename}")]
+    [HttpGet("Captures/{challengeId:int}/{partId:int}/{filename}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public IActionResult GetTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
@@ -482,7 +482,7 @@ public class GameController(
         try
         {
             var file = Path.GetFileName(filename);
-            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId}/{partId}", file));
+            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId:int}/{partId:int}", file));
 
             if (Path.GetExtension(file) != ".pcap" || !Path.Exists(path))
                 return NotFound(new RequestResponse("未找到相关捕获信息"));
@@ -553,7 +553,7 @@ public class GameController(
     /// <response code="400">操作无效</response>
     /// <response code="404">比赛未找到</response>
     [RequireAdmin]
-    [HttpGet("{id:int}/Participation")]
+    [HttpGet("{id:int}/Participations")]
     [ProducesResponseType(typeof(ParticipationInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -746,7 +746,7 @@ public class GameController(
     /// <response code="200">成功获取比赛提交状态</response>
     /// <response code="404">提交未找到</response>
     [RequireUser]
-    [HttpGet("{id}/Challenges/{challengeId}/Status/{submitId}")]
+    [HttpGet("{id:int}/Challenges/{challengeId:int}/Status/{submitId:int}")]
     [ProducesResponseType(typeof(AnswerResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Status([FromRoute] int id, [FromRoute] int challengeId, [FromRoute] int submitId,
@@ -778,7 +778,7 @@ public class GameController(
     /// <response code="400">提交不符合要求</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpGet("{id}/Writeup")]
+    [HttpGet("{id:int}/Writeup")]
     [ProducesResponseType(typeof(BasicWriteupInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -805,7 +805,7 @@ public class GameController(
     /// <response code="400">提交不符合要求</response>
     /// <response code="404">比赛未找到</response>
     [RequireUser]
-    [HttpPost("{id}/Writeup")]
+    [HttpPost("{id:int}/Writeup")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -860,7 +860,7 @@ public class GameController(
     /// <response code="404">题目未找到</response>
     /// <response code="400">题目不可创建容器</response>
     [RequireUser]
-    [HttpPost("{id}/Container/{challengeId}")]
+    [HttpPost("{id:int}/Container/{challengeId:int}")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -920,7 +920,7 @@ public class GameController(
     /// <response code="404">题目未找到</response>
     /// <response code="400">容器未创建或无法延期</response>
     [RequireUser]
-    [HttpPost("{id}/Container/{challengeId}/Prolong")]
+    [HttpPost("{id:int}/Container/{challengeId:int}/Prolong")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -965,7 +965,7 @@ public class GameController(
     /// <response code="404">题目未找到</response>
     /// <response code="400">题目不可创建容器</response>
     [RequireUser]
-    [HttpDelete("{id}/Container/{challengeId}")]
+    [HttpDelete("{id:int}/Container/{challengeId:int}")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]

@@ -9,6 +9,7 @@ using Serilog.Sinks.File.Archive;
 using Serilog.Sinks.PostgreSQL;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
+using ILogger = Serilog.ILogger;
 
 namespace GZCTF.Utils;
 
@@ -126,7 +127,7 @@ public static class LogHelper
         });
     }
 
-    public static Serilog.ILogger GetInitLogger()
+    public static ILogger GetInitLogger()
     {
         return new LoggerConfiguration()
             .Enrich.FromLogContext()
@@ -141,7 +142,7 @@ public static class LogHelper
             .CreateBootstrapLogger();
     }
 
-    public static Serilog.ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
+    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
     {
         return new LoggerConfiguration()
             .Enrich.FromLogContext()
@@ -185,12 +186,8 @@ public static class LogHelper
     }
 }
 
-public class TimeColumnWriter : ColumnWriterBase
+public class TimeColumnWriter() : ColumnWriterBase(NpgsqlDbType.TimestampTz)
 {
-    public TimeColumnWriter() : base(NpgsqlDbType.TimestampTz)
-    {
-    }
-
     public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null)
     {
         return logEvent.Timestamp.ToUniversalTime();

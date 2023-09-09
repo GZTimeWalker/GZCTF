@@ -63,7 +63,7 @@ public class ContainerInstanceModel
             StartedAt = container.StartedAt,
             ExpectStopAt = container.ExpectStopAt,
             // fallback to host if public is null
-            IP = container.PublicIp ?? container.Ip,
+            IP = container.PublicIP ?? container.IP,
             Port = container.PublicPort ?? container.Port
         };
 

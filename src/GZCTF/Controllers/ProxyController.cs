@@ -71,7 +71,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (container is null || container.Instance is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
-        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.Ip, token)).FirstOrDefault();
+        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
         if (ipAddress is null)
             return BadRequest(new RequestResponse("容器地址解析失败"));
@@ -138,7 +138,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (container is null || container.InstanceId != 0 || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
-        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.Ip, token)).FirstOrDefault();
+        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
         if (ipAddress is null)
             return BadRequest(new RequestResponse("容器地址解析失败"));

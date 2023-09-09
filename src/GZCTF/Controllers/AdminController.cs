@@ -272,7 +272,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">队伍未找到</response>
-    [HttpPut("Teams/{id}")]
+    [HttpPut("Teams/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] AdminTeamModel model,
@@ -325,7 +325,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">用户未找到</response>
-    [HttpDelete("Users/{userid}/Password")]
+    [HttpDelete("Users/{userid:guid}/Password")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ResetPassword(string userid)
@@ -352,7 +352,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">用户未找到</response>
-    [HttpDelete("Users/{userid}")]
+    [HttpDelete("Users/{userid:guid}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(string userid, CancellationToken token = default)
@@ -385,7 +385,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">用户未找到</response>
-    [HttpDelete("Teams/{id}")]
+    [HttpDelete("Teams/{id:int}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTeam(int id, CancellationToken token = default)
@@ -409,7 +409,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="200">用户对象</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
-    [HttpGet("Users/{userid}")]
+    [HttpGet("Users/{userid:guid}")]
     [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UserInfo(string userid)
@@ -449,7 +449,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">参与对象未找到</response>
-    [HttpPut("Participation/{id}/{status}")]
+    [HttpPut("Participation/{id:int}/{status}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Participation(int id, ParticipationStatus status,
@@ -475,7 +475,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">比赛未找到</response>
-    [HttpGet("Writeups/{id}")]
+    [HttpGet("Writeups/{id:int}")]
     [ProducesResponseType(typeof(WriteupInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
@@ -498,7 +498,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">比赛未找到</response>
-    [HttpGet("Writeups/{id}/All")]
+    [HttpGet("Writeups/{id:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DownloadAllWriteups(int id, CancellationToken token = default)

@@ -138,7 +138,7 @@ public class DockerManager : IContainerManager
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.Ip = info.NetworkSettings.Networks.FirstOrDefault().Value.IPAddress;
+        container.IP = info.NetworkSettings.Networks.FirstOrDefault().Value.IPAddress;
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
@@ -155,7 +155,7 @@ public class DockerManager : IContainerManager
                 _logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Failed, LogLevel.Warning);
 
             if (!string.IsNullOrEmpty(_meta.PublicEntry))
-                container.PublicIp = _meta.PublicEntry;
+                container.PublicIP = _meta.PublicEntry;
         }
 
         return container;
