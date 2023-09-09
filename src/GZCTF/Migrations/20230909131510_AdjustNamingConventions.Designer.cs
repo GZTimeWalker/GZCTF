@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230909105633_AdjustNamingConventions")]
+    [Migration("20230909131510_AdjustNamingConventions")]
     partial class AdjustNamingConventions
     {
         /// <inheritdoc />

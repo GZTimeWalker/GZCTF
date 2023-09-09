@@ -121,7 +121,7 @@ csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
 # IDE1006: 命名样式
-dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.ide1006.severity = none
 
 # CA1848: 使用 LoggerMessage 委托
-dotnet_diagnostic.CA1848.severity = none
+dotnet_diagnostic.ca1848.severity = none

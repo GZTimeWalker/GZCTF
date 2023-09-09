@@ -9,9 +9,15 @@
  * ---------------------------------------------------------------
  */
 
-import type {AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType,} from 'axios'
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  HeadersDefaults,
+  ResponseType,
+} from 'axios'
 import axios from 'axios'
-import useSWR, {mutate, MutatorOptions, SWRConfiguration} from 'swr'
+import useSWR, { MutatorOptions, SWRConfiguration, mutate } from 'swr'
 
 /** 请求响应 */
 export interface RequestResponseOfRegisterStatus {
@@ -628,7 +634,6 @@ export interface ProblemDetails {
   status?: number | null
   detail?: string | null
   instance?: string | null
-
   [key: string]: any
 }
 
@@ -840,6 +845,19 @@ export interface ChallengeEditDetailModel {
   /** 是否启用题目 */
   isEnabled: boolean
   /**
+   * 通过人数
+   * @format int32
+   */
+  acceptedCount: number
+  /** 统一文件名（仅用于动态附件） */
+  fileName?: string | null
+  /** 题目附件（动态附件存放于 FlagInfoModel） */
+  attachment?: Attachment | null
+  /** 测试容器 */
+  testContainer?: ContainerInfoModel | null
+  /** 题目 Flag 信息 */
+  flags: FlagInfoModel[]
+  /**
    * 镜像名称与标签
    * @minLength 1
    */
@@ -851,7 +869,6 @@ export interface ChallengeEditDetailModel {
   memoryLimit: number
   /**
    * CPU 限制 (0.1 CPUs)
-   *
    * @format int32
    */
   cpuCount: number
@@ -884,19 +901,6 @@ export interface ChallengeEditDetailModel {
    * @format double
    */
   difficulty: number
-  /**
-   * 通过人数
-   * @format int32
-   */
-  acceptedCount: number
-  /** 统一文件名（仅用于动态附件） */
-  fileName?: string | null
-  /** 题目附件（动态附件存放于 FlagInfoModel） */
-  attachment?: Attachment | null
-  /** 测试容器 */
-  testContainer?: ContainerInfoModel | null
-  /** 题目 Flag 信息 */
-  flags: FlagInfoModel[]
 }
 
 export enum ChallengeType {
@@ -1018,6 +1022,8 @@ export interface ChallengeUpdateModel {
   hints?: string[] | null
   /** 是否启用题目 */
   isEnabled?: boolean | null
+  /** 统一文件名 */
+  fileName?: string | null
   /** 镜像名称与标签 */
   containerImage?: string | null
   /**
@@ -1065,8 +1071,6 @@ export interface ChallengeUpdateModel {
    * @format double
    */
   difficulty?: number | null
-  /** 统一文件名 */
-  fileName?: string | null
 }
 
 /** 新建附件信息（Edit） */
@@ -1745,9 +1749,9 @@ export class HttpClient<SecurityDataType = unknown> {
   private format?: ResponseType
 
   constructor(
-    {securityWorker, secure, format, ...axiosConfig}: ApiConfig<SecurityDataType> = {}
+    { securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}
   ) {
-    this.instance = axios.create({...axiosConfig, baseURL: axiosConfig.baseURL || ''})
+    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || '' })
     this.secure = secure
     this.format = format
     this.securityWorker = securityWorker
@@ -1755,38 +1759,6 @@ export class HttpClient<SecurityDataType = unknown> {
 
   public setSecurityData = (data: SecurityDataType | null) => {
     this.securityData = data
-  }
-
-  public request = async <T = any, _E = any>(
-    {secure, path, type, query, format, body, ...params}: FullRequestParams
-  ): Promise<AxiosResponse<T>> => {
-    const secureParams =
-      ((typeof secure === 'boolean' ? secure : this.secure) &&
-        this.securityWorker &&
-        (await this.securityWorker(this.securityData))) ||
-      {}
-    const requestParams = this.mergeRequestParams(params, secureParams)
-    const responseFormat = format || this.format || undefined
-
-    if (type === ContentType.FormData && body && body !== null && typeof body === 'object') {
-      body = this.createFormData(body as Record<string, unknown>)
-    }
-
-    if (type === ContentType.Text && body && body !== null && typeof body !== 'string') {
-      body = JSON.stringify(body)
-    }
-
-    return this.instance.request({
-      ...requestParams,
-      headers: {
-        ...(requestParams.headers || {}),
-        ...(type && type !== ContentType.FormData ? {'Content-Type': type} : {}),
-      },
-      params: query,
-      responseType: responseFormat,
-      data: body,
-      url: path,
-    })
   }
 
   protected mergeRequestParams(
@@ -1801,7 +1773,7 @@ export class HttpClient<SecurityDataType = unknown> {
       ...(params2 || {}),
       headers: {
         ...((method &&
-            this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) ||
+          this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) ||
           {}),
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
@@ -1829,6 +1801,38 @@ export class HttpClient<SecurityDataType = unknown> {
 
       return formData
     }, new FormData())
+  }
+
+  public request = async <T = any, _E = any>(
+    { secure, path, type, query, format, body, ...params }: FullRequestParams
+  ): Promise<AxiosResponse<T>> => {
+    const secureParams =
+      ((typeof secure === 'boolean' ? secure : this.secure) &&
+        this.securityWorker &&
+        (await this.securityWorker(this.securityData))) ||
+      {}
+    const requestParams = this.mergeRequestParams(params, secureParams)
+    const responseFormat = format || this.format || undefined
+
+    if (type === ContentType.FormData && body && body !== null && typeof body === 'object') {
+      body = this.createFormData(body as Record<string, unknown>)
+    }
+
+    if (type === ContentType.Text && body && body !== null && typeof body !== 'string') {
+      body = JSON.stringify(body)
+    }
+
+    return this.instance.request({
+      ...requestParams,
+      headers: {
+        ...(requestParams.headers || {}),
+        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+      },
+      params: query,
+      responseType: responseFormat,
+      data: body,
+      url: path,
+    })
   }
 }
 
@@ -4172,13 +4176,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipations
+     * @name GameParticipation
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
+     * @request GET:/api/game/{id}/participation
      */
-    gameParticipations: (id: number, params: RequestParams = {}) =>
+    gameParticipation: (id: number, params: RequestParams = {}) =>
       this.request<ParticipationInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/participations`,
+        path: `/api/game/${id}/participation`,
         method: 'GET',
         format: 'json',
         ...params,
@@ -4187,13 +4191,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipations
+     * @name GameParticipation
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
+     * @request GET:/api/game/{id}/participation
      */
-    useGameParticipations: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+    useGameParticipation: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ParticipationInfoModel[], RequestResponse>(
-        doFetch ? `/api/game/${id}/participations` : null,
+        doFetch ? `/api/game/${id}/participation` : null,
         options
       ),
 
@@ -4201,15 +4205,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipations
+     * @name GameParticipation
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
+     * @request GET:/api/game/{id}/participation
      */
-    mutateGameParticipations: (
+    mutateGameParticipation: (
       id: number,
       data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
+    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participation`, data, options),
 
     /**
      * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
@@ -5007,7 +5011,7 @@ export default api
 
 export const fetcher = async (path: string, query?: Record<string, unknown>) => {
   return await api
-    .request({path, query})
+    .request({ path, query })
     .then((res) => res.data)
     .catch((err) => {
       throw err.response.data
