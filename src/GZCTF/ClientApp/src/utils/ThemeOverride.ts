@@ -1,4 +1,4 @@
-import { createStyles, keyframes, MantineThemeOverride, useMantineTheme, rem } from '@mantine/core'
+import { createStyles, keyframes, MantineThemeOverride, rem, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 
 export const ThemeOverride: MantineThemeOverride = {
@@ -106,7 +106,12 @@ export const useTableStyles = createStyles((theme) => ({
     fontFamily: theme.fontFamilyMonospace,
   },
   fade: {
-    animation: `${keyframes`0% {opacity:0;} 100% {opacity:1;}`} 0.5s linear`,
+    animation: `${keyframes`0% {
+                              opacity: 0;
+                            }
+                              100% {
+                                opacity: 1;
+                              }`} 0.5s linear`,
   },
   table: {
     '& thead tr th': {
@@ -329,7 +334,12 @@ export const useLogoStyles = createStyles((theme) => ({
     color: theme.colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.dark[4],
   },
   blink: {
-    animation: `${keyframes`0%, 100% {opacity:0;} 50% {opacity:1;}`} 1s infinite steps(1,start)`,
+    animation: `${keyframes`0%, 100% {
+                              opacity: 0;
+                            }
+                              50% {
+                                opacity: 1;
+                              }`} 1s infinite steps(1,start)`,
   },
   watermark: {
     position: 'absolute',

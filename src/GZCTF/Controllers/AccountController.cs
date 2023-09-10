@@ -5,11 +5,11 @@ using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace GZCTF.Controllers;
 
@@ -51,25 +51,20 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse("验证码校验失败"));
 
-        var mailDomain = model.Email!.Split('@')[1];
+        var mailDomain = model.Email.Split('@')[1];
         if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
             accountPolicy.Value.EmailDomainList.Split(',').All(d => d != mailDomain))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
-        var user = new UserInfo
-        {
-            UserName = model.UserName,
-            Email = model.Email,
-            Role = Role.User
-        };
+        var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
 
         user.UpdateByHttpContext(HttpContext);
 
-        var result = await userManager.CreateAsync(user, model.Password);
+        IdentityResult result = await userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
         {
-            var current = await userManager.FindByEmailAsync(model.Email);
+            UserInfo? current = await userManager.FindByEmailAsync(model.Email);
 
             if (current is null)
                 return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
@@ -94,25 +89,26 @@ public class AccountController(
         {
             logger.Log("用户成功注册，待审核", user, TaskStatus.Success);
             return Ok(new RequestResponse<RegisterStatus>("注册成功，等待管理员审核",
-                    RegisterStatus.AdminConfirmationRequired, StatusCodes.Status200OK));
+                RegisterStatus.AdminConfirmationRequired, StatusCodes.Status200OK));
         }
 
         logger.Log("发送用户邮箱验证邮件", user, TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
+        var link = GetEmailLink("verify", rToken, model.Email);
+
         if (environment.IsDevelopment())
         {
-            logger.Log($"http://{HttpContext.Request.Host}/account/verify?token={rToken}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log(link, user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
-            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email,
-                $"https://{HttpContext.Request.Host}/account/verify?token={rToken}&email={Codec.Base64.Encode(model.Email)}"))
+            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email, link))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
 
         return Ok(new RequestResponse<RegisterStatus>("注册成功，等待邮箱验证",
-                    RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
+            RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
     }
 
     /// <summary>
@@ -136,7 +132,7 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse("验证码校验失败"));
 
-        var user = await userManager.FindByEmailAsync(model.Email!);
+        UserInfo? user = await userManager.FindByEmailAsync(model.Email!);
         if (user is null)
             return NotFound(new RequestResponse("用户不存在", StatusCodes.Status404NotFound));
 
@@ -149,15 +145,15 @@ public class AccountController(
         logger.Log("发送用户密码重置邮件", HttpContext, TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
+        var link = GetEmailLink("reset", rToken, model.Email);
 
         if (environment.IsDevelopment())
         {
-            logger.Log($"http://{HttpContext.Request.Host}/account/reset?token={rToken}&email={Codec.Base64.Encode(model.Email)}", user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log(link, user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
-            if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email,
-                $"https://{HttpContext.Request.Host}/account/reset?token={rToken}&email={Codec.Base64.Encode(model.Email)}"))
+            if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email, link))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
 
@@ -179,13 +175,14 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PasswordReset([FromBody] PasswordResetModel model)
     {
-        var user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
+        UserInfo? user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
         if (user is null)
             return BadRequest(new RequestResponse("无效的邮件地址"));
 
         user.UpdateByHttpContext(HttpContext);
 
-        var result = await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
+        IdentityResult result =
+            await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
@@ -211,12 +208,12 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Verify([FromBody] AccountVerifyModel model)
     {
-        var user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
+        UserInfo? user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
 
         if (user is null || user.EmailConfirmed)
             return BadRequest(new RequestResponse("无效的邮件地址"));
 
-        var result = await userManager.ConfirmEmailAsync(user, Codec.Base64.Decode(model.Token));
+        IdentityResult result = await userManager.ConfirmEmailAsync(user, Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
             return Unauthorized(new RequestResponse("邮箱验证失败", StatusCodes.Status401Unauthorized));
@@ -256,7 +253,7 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse("验证码校验失败"));
 
-        var user = await userManager.FindByNameAsync(model.UserName);
+        UserInfo? user = await userManager.FindByNameAsync(model.UserName);
         user ??= await userManager.FindByEmailAsync(model.UserName);
 
         if (user is null)
@@ -270,7 +267,7 @@ public class AccountController(
 
         await signInManager.SignOutAsync();
 
-        var result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
+        SignInResult result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
 
         if (!result.Succeeded)
             return Unauthorized(new RequestResponse("用户名或密码错误", StatusCodes.Status401Unauthorized));
@@ -314,17 +311,17 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
     {
-        var user = await userManager.GetUserAsync(User);
-        var oname = user!.UserName;
+        UserInfo? user = await userManager.GetUserAsync(User);
+        var oldName = user!.UserName;
 
         user.UpdateUserInfo(model);
-        var result = await userManager.UpdateAsync(user);
+        IdentityResult result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
 
-        if (oname != user.UserName)
-            logger.Log($"用户更新：{oname} => {model.UserName}", user, TaskStatus.Success);
+        if (oldName != user.UserName)
+            logger.Log($"用户更新：{oldName} => {model.UserName}", user, TaskStatus.Success);
 
         return Ok();
     }
@@ -345,8 +342,8 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
     {
-        var user = await userManager.GetUserAsync(User);
-        var result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
+        UserInfo? user = await userManager.GetUserAsync(User);
+        IdentityResult result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
@@ -377,7 +374,7 @@ public class AccountController(
         if (await userManager.FindByEmailAsync(model.NewMail) is not null)
             return BadRequest(new RequestResponse("邮箱已经被占用"));
 
-        var user = await userManager.GetUserAsync(User);
+        UserInfo? user = await userManager.GetUserAsync(User);
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse<bool>("请联系管理员修改邮箱", false));
@@ -385,15 +382,15 @@ public class AccountController(
         logger.Log("发送用户邮箱更改邮件", user, TaskStatus.Pending);
 
         var token = Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user!, model.NewMail));
+        var link = GetEmailLink("confirm", token, model.NewMail);
 
         if (environment.IsDevelopment())
         {
-            logger.Log($"http://{HttpContext.Request.Host}/account/confirm?token={token}&email={Codec.Base64.Encode(model.NewMail)}", user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log(link, user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
-            if (!mailSender.SendConfirmEmailUrl(user!.UserName, user.Email,
-                $"https://{HttpContext.Request.Host}/account/confirm?token={token}&email={Codec.Base64.Encode(model.NewMail)}"))
+            if (!mailSender.SendChangeEmailUrl(user!.UserName, model.NewMail, link))
                 return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
         }
 
@@ -418,8 +415,9 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> MailChangeConfirm([FromBody] AccountVerifyModel model)
     {
-        var user = await userManager.GetUserAsync(User);
-        var result = await userManager.ChangeEmailAsync(user!, Codec.Base64.Decode(model.Email), Codec.Base64.Decode(model.Token));
+        UserInfo? user = await userManager.GetUserAsync(User);
+        IdentityResult result = await userManager.ChangeEmailAsync(user!, Codec.Base64.Decode(model.Email),
+            Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
             return BadRequest(new RequestResponse("无效邮箱"));
@@ -444,7 +442,7 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Profile()
     {
-        var user = await userManager.GetUserAsync(User);
+        UserInfo? user = await userManager.GetUserAsync(User);
 
         return Ok(ProfileUserInfoModel.FromUserInfo(user!));
     }
@@ -471,18 +469,18 @@ public class AccountController(
         if (file.Length > 3 * 1024 * 1024)
             return BadRequest(new RequestResponse("文件过大"));
 
-        var user = await userManager.GetUserAsync(User);
+        UserInfo? user = await userManager.GetUserAsync(User);
 
         if (user!.AvatarHash is not null)
             await fileService.DeleteFileByHash(user.AvatarHash, token);
 
-        var avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
+        LocalFile? avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse("用户头像更新失败"));
 
         user.AvatarHash = avatar.Hash;
-        var result = await userManager.UpdateAsync(user);
+        IdentityResult result = await userManager.UpdateAsync(user);
 
         if (result != IdentityResult.Success)
             return BadRequest(new RequestResponse("用户更新失败"));
@@ -491,4 +489,8 @@ public class AccountController(
 
         return Ok(avatar.Url());
     }
+
+    string GetEmailLink(string action, string token, string? email)
+        => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/account/{action}?" +
+           $"token={token}&email={Codec.Base64.Encode(email)}";
 }

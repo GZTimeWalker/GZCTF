@@ -1,6 +1,4 @@
-﻿using GZCTF.Utils;
-
-namespace GZCTF.Models.Internal;
+﻿namespace GZCTF.Models.Internal;
 
 public class ContainerConfig
 {
@@ -40,7 +38,7 @@ public class ContainerConfig
     public int MemoryLimit { get; set; } = 64;
 
     /// <summary>
-    ///  CPU 限制 (0.1 CPUs)
+    /// CPU 限制 (0.1 CPUs)
     /// </summary>
     public int CPUCount { get; set; } = 1;
 

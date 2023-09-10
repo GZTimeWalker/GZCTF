@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 /// <summary>
 /// 比赛事件，记录但不会发往客户端。
@@ -62,13 +62,14 @@ public class GameEvent
     [JsonIgnore]
     public Game? Game { get; set; }
 
-    internal static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans)
-        => new()
+    internal static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans) =>
+        new()
         {
             TeamId = submission.TeamId,
             UserId = submission.UserId,
             GameId = submission.GameId,
             Type = EventType.FlagSubmit,
-            Content = $"[{ans.ToShortString()}] {submission.Answer}  {submission.Challenge.Title}#{submission.ChallengeId}"
+            Content =
+                $"[{ans.ToShortString()}] {submission.Answer}  {submission.Challenge.Title}#{submission.ChallengeId}"
         };
 }

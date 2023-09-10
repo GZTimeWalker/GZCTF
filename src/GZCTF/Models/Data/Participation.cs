@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 /// <summary>
 /// 比赛参与信息

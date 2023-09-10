@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import {
+  ActionIcon,
   Avatar,
   Box,
   Button,
@@ -9,20 +10,19 @@ import {
   Image,
   Modal,
   ModalProps,
+  PasswordInput,
+  ScrollArea,
   Stack,
   Text,
   Textarea,
   TextInput,
-  useMantineTheme,
-  PasswordInput,
-  ActionIcon,
-  ScrollArea,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
-import { showNotification, updateNotification, notifications } from '@mantine/notifications'
+import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'

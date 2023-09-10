@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using MemoryPack;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 /// <summary>
 /// 比赛通知，会发往客户端。
@@ -42,8 +42,8 @@ public partial class GameNotice
     [MemoryPackIgnore]
     public Game? Game { get; set; }
 
-    internal static GameNotice FromSubmission(Submission submission, SubmissionType type)
-        => new()
+    internal static GameNotice FromSubmission(Submission submission, SubmissionType type) =>
+        new()
         {
             Type = type switch
             {

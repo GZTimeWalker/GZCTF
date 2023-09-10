@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using GZCTF.Models.Data;
+using System.Reflection;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Services;
@@ -10,9 +9,15 @@ public class ConfigService(AppDbContext context,
     ILogger<ConfigService> logger,
     IConfiguration configuration) : IConfigService
 {
-    private readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
+    readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
-    private static void MapConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
+    public Task SaveConfig(Type type, object? value, CancellationToken token = default) => SaveConfigInternal(GetConfigs(type, value), token);
+
+    public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class => SaveConfigInternal(GetConfigs(config), token);
+
+    public void ReloadConfig() => _configuration?.Reload();
+
+    static void MapConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
     {
         if (value is null || type is null)
             return;
@@ -22,21 +27,17 @@ public class ConfigService(AppDbContext context,
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
         if (type == typeof(string) || type.IsValueType)
-        {
             configs.Add(new(key, converter.ConvertToString(value) ?? string.Empty));
-        }
         else if (type.IsClass)
-        {
-            foreach (var item in type.GetProperties())
+            foreach (PropertyInfo item in type.GetProperties())
                 MapConfigsInternal($"{key}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
-        }
     }
 
-    public static HashSet<Config> GetConfigs(Type type, object? value)
+    static HashSet<Config> GetConfigs(Type type, object? value)
     {
         HashSet<Config> configs = new();
 
-        foreach (var item in type.GetProperties())
+        foreach (PropertyInfo item in type.GetProperties())
             MapConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
 
         return configs;
@@ -45,26 +46,19 @@ public class ConfigService(AppDbContext context,
     public static HashSet<Config> GetConfigs<T>(T config) where T : class
     {
         HashSet<Config> configs = new();
-        var type = typeof(T);
+        Type type = typeof(T);
 
-        foreach (var item in type.GetProperties())
+        foreach (PropertyInfo item in type.GetProperties())
             MapConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(config));
 
         return configs;
     }
 
-    public Task SaveConfig(Type type, object? value, CancellationToken token = default)
-        => SaveConfigInternal(GetConfigs(type, value), token);
-
-    public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class
-        => SaveConfigInternal(GetConfigs(config), token);
-
-    private async Task SaveConfigInternal(HashSet<Config> configs, CancellationToken token = default)
+    async Task SaveConfigInternal(HashSet<Config> configs, CancellationToken token = default)
     {
-        var dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
-        foreach (var conf in configs)
-        {
-            if (dbConfigs.TryGetValue(conf.ConfigKey, out var dbConf))
+        Dictionary<string, Config> dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
+        foreach (Config conf in configs)
+            if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
             {
                 if (dbConf.Value != conf.Value)
                 {
@@ -77,24 +71,20 @@ public class ConfigService(AppDbContext context,
                 logger.SystemLog($"添加全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
                 await context.Configs.AddAsync(conf, token);
             }
-        }
 
         await context.SaveChangesAsync(token);
         _configuration?.Reload();
     }
 
-    private static bool IsArrayLikeInterface(Type type)
+    static bool IsArrayLikeInterface(Type type)
     {
-        if (!type.IsInterface || !type.IsConstructedGenericType)
-        { return false; }
+        if (!type.IsInterface || !type.IsConstructedGenericType) return false;
 
         Type genericTypeDefinition = type.GetGenericTypeDefinition();
         return genericTypeDefinition == typeof(IEnumerable<>)
-            || genericTypeDefinition == typeof(ICollection<>)
-            || genericTypeDefinition == typeof(IList<>)
-            || genericTypeDefinition == typeof(IDictionary<,>)
-            || genericTypeDefinition == typeof(ISet<>);
+               || genericTypeDefinition == typeof(ICollection<>)
+               || genericTypeDefinition == typeof(IList<>)
+               || genericTypeDefinition == typeof(IDictionary<,>)
+               || genericTypeDefinition == typeof(ISet<>);
     }
-
-    public void ReloadConfig() => _configuration?.Reload();
 }

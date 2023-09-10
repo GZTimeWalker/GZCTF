@@ -1,5 +1,4 @@
-﻿using GZCTF.Utils;
-using MemoryPack;
+﻿using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Extensions;
@@ -27,7 +26,10 @@ public static class CacheExtensions
                 result = MemoryPackSerializer.Deserialize<T>(value);
             }
             catch
-            { }
+            {
+                // ignored
+            }
+
             if (result is not null)
                 return result;
         }

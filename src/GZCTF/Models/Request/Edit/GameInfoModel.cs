@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using GZCTF.Utils;
 
 namespace GZCTF.Models.Request.Edit;
 
@@ -23,7 +22,7 @@ public class GameInfoModel
     /// <summary>
     /// 是否隐藏
     /// </summary>
-    public bool Hidden { get; set; } = false;
+    public bool Hidden { get; set; }
 
     /// <summary>
     /// 比赛描述
@@ -38,7 +37,7 @@ public class GameInfoModel
     /// <summary>
     /// 报名队伍免审核
     /// </summary>
-    public bool AcceptWithoutReview { get; set; } = false;
+    public bool AcceptWithoutReview { get; set; }
 
     /// <summary>
     /// 比赛邀请码
@@ -54,7 +53,7 @@ public class GameInfoModel
     /// <summary>
     /// 队员数量限制, 0 为无上限
     /// </summary>
-    public int TeamMemberCountLimit { get; set; } = 0;
+    public int TeamMemberCountLimit { get; set; }
 
     /// <summary>
     /// 队伍同时开启的容器数量限制
@@ -110,8 +109,8 @@ public class GameInfoModel
     [JsonPropertyName("bloodBonus")]
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
-    internal static GameInfoModel FromGame(Models.Game game)
-        => new()
+    internal static GameInfoModel FromGame(Data.Game game) =>
+        new()
         {
             Id = game.Id,
             Title = game.Title,

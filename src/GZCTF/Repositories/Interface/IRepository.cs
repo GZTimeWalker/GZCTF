@@ -4,9 +4,8 @@ namespace GZCTF.Repositories.Interface;
 
 public interface IRepository
 {
-    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default);
-
     public string ChangeTrackerView { get; }
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default);
 
     public void Detach(object item);
 

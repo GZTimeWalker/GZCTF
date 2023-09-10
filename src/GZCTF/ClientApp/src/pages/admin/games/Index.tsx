@@ -1,19 +1,18 @@
 import dayjs from 'dayjs'
-import { FC, useState } from 'react'
-import { useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Button,
+  Code,
   Group,
   Paper,
-  Text,
-  Table,
-  Badge,
   ScrollArea,
   Switch,
-  Code,
+  Table,
+  Text,
 } from '@mantine/core'
 import {
   mdiArrowLeftBold,

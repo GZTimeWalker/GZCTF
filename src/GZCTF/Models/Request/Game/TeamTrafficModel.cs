@@ -1,6 +1,4 @@
-using GZCTF.Utils;
-
-namespace GZCTF.Models;
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// 队伍流量获取信息
@@ -39,7 +37,7 @@ public class TeamTrafficModel
 
     internal static TeamTrafficModel FromParticipation(Participation part, int challengeId)
     {
-        string trafficPath = $"{FilePath.Capture}/{challengeId}/{part.Id}";
+        var trafficPath = $"{FilePath.Capture}/{challengeId}/{part.Id}";
 
         return new()
         {
@@ -48,8 +46,9 @@ public class TeamTrafficModel
             Name = part.Team.Name,
             Organization = part.Organization,
             Avatar = part.Team.AvatarUrl,
-            Count = Directory.Exists(trafficPath) ?
-                Directory.GetFiles(trafficPath, "*", SearchOption.TopDirectoryOnly).Length : 0
+            Count = Directory.Exists(trafficPath)
+                ? Directory.GetFiles(trafficPath, "*", SearchOption.TopDirectoryOnly).Length
+                : 0
         };
     }
 }

@@ -1,4 +1,4 @@
-import { Tuple, DefaultMantineColor } from '@mantine/core'
+import { DefaultMantineColor, Tuple } from '@mantine/core'
 
 type ExtendedCustomColors = 'gray' | 'brand' | 'dark' | 'alert' | 'white' | DefaultMantineColor
 

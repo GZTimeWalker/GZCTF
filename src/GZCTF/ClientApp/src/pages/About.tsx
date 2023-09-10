@@ -1,9 +1,9 @@
 import { FC } from 'react'
-import { Text, Stack, Badge, Group, HoverCard, Title, Anchor, Center } from '@mantine/core'
+import { Anchor, Badge, Center, Group, HoverCard, Stack, Text, Title } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 import { useLogoStyles } from '@Utils/ThemeOverride'
-import { ValidatedRepoMeta, useConfig } from '@Utils/useConfig'
+import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const About: FC = () => {

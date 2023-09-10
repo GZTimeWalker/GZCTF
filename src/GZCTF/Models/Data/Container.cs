@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using GZCTF.Utils;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Container
 {
@@ -43,7 +42,7 @@ public class Container
     /// 是否具备反向代理
     /// </summary>
     [Required]
-    public bool IsProxy { get; set; } = false;
+    public bool IsProxy { get; set; }
 
     /// <summary>
     /// 本地 IP
@@ -76,9 +75,11 @@ public class Container
     /// <summary>
     /// 容器实例流量捕获存储路径
     /// </summary>
-    public string TrafficPath(string conn) => Instance is null ? string.Empty :
-        Path.Combine(FilePath.Capture,
-            $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
+    public string TrafficPath(string conn) =>
+        Instance is null
+            ? string.Empty
+            : Path.Combine(FilePath.Capture,
+                $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
 
     #region Db Relationship
 

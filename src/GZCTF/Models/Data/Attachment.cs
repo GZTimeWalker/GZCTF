@@ -49,11 +49,12 @@ public class Attachment
     /// <summary>
     /// 附件访问链接
     /// </summary>
-    public string? UrlWithName(string? filename = null) => Type switch
-    {
-        FileType.None => null,
-        FileType.Local => LocalFile?.Url(filename),
-        FileType.Remote => RemoteUrl,
-        _ => throw new ArgumentException(nameof(Type))
-    };
+    public string? UrlWithName(string? filename = null) =>
+        Type switch
+        {
+            FileType.None => null,
+            FileType.Local => LocalFile?.Url(filename),
+            FileType.Remote => RemoteUrl,
+            _ => throw new ArgumentException(nameof(Type))
+        };
 }

@@ -1,20 +1,20 @@
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
+  ActionIcon,
   Button,
+  Card,
+  Center,
   FileButton,
+  Group,
   Modal,
   ModalProps,
-  Progress,
-  Text,
-  Stack,
-  ScrollArea,
-  Group,
-  ActionIcon,
   Overlay,
-  Center,
+  Progress,
+  ScrollArea,
+  Stack,
+  Text,
   Title,
-  Card,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'

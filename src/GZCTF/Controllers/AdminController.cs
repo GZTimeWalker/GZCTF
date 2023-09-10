@@ -1,4 +1,6 @@
-﻿using System.Net.Mime;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
+using System.Reflection;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
@@ -7,10 +9,10 @@ using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Controllers;
@@ -75,7 +77,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateConfigs([FromBody] ConfigEditModel model, CancellationToken token)
     {
-        foreach (var prop in typeof(ConfigEditModel).GetProperties())
+        foreach (PropertyInfo prop in typeof(ConfigEditModel).GetProperties())
         {
             var value = prop.GetValue(model);
             if (value is not null)
@@ -96,11 +98,12 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpGet("Users")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok((await (
+    public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0,
+        CancellationToken token = default) =>
+        Ok((await (
             from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
             select UserInfoModel.FromUserInfo(user)
-           ).ToArrayAsync(token)).ToResponse(await userManager.Users.CountAsync(token)));
+        ).ToArrayAsync(token)).ToResponse(await userManager.Users.CountAsync(token)));
 
     /// <summary>
     /// 批量添加用户
@@ -117,16 +120,16 @@ public class AdminController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddUsers([FromBody] UserCreateModel[] model, CancellationToken token = default)
     {
-        var currentUser = await userManager.GetUserAsync(User);
-        var trans = await teamRepository.BeginTransactionAsync(token);
+        UserInfo? currentUser = await userManager.GetUserAsync(User);
+        IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(token);
 
         try
         {
             var users = new List<(UserInfo, string?)>(model.Length);
-            foreach (var user in model)
+            foreach (UserCreateModel user in model)
             {
                 var userInfo = user.ToUserInfo();
-                var result = await userManager.CreateAsync(userInfo, user.Password);
+                IdentityResult result = await userManager.CreateAsync(userInfo, user.Password);
 
                 if (!result.Succeeded)
                 {
@@ -140,7 +143,8 @@ public class AdminController(UserManager<UserInfo> userManager,
                             break;
                         default:
                             await trans.RollbackAsync(token);
-                            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+                            return BadRequest(
+                                new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
                     }
 
                     if (userInfo is not null)
@@ -161,12 +165,12 @@ public class AdminController(UserManager<UserInfo> userManager,
             }
 
             var teams = new List<Team>();
-            foreach (var (user, teamName) in users)
+            foreach ((UserInfo user, var teamName) in users)
             {
                 if (teamName is null)
                     continue;
 
-                var team = teams.Find(team => team.Name == teamName);
+                Team? team = teams.Find(team => team.Name == teamName);
                 if (team is null)
                 {
                     team = await teamRepository.CreateTeam(new(teamName), user, token);
@@ -203,8 +207,8 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpPost("Users/Search")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
-        => Ok((await (
+    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default) =>
+        Ok((await (
             from user in userManager.Users
                 .Where(item =>
                     EF.Functions.Like(item.UserName!, $"%{hint}%") ||
@@ -215,7 +219,7 @@ public class AdminController(UserManager<UserInfo> userManager,
                 )
                 .OrderBy(e => e.Id).Take(30)
             select UserInfoModel.FromUserInfo(user)
-           ).ToArrayAsync(token)).ToResponse());
+        ).ToArrayAsync(token)).ToResponse());
 
     /// <summary>
     /// 获取全部队伍信息
@@ -228,10 +232,11 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpGet("Teams")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok((await teamRepository.GetTeams(count, skip, token))
-                .Select(team => TeamInfoModel.FromTeam(team))
-                .ToResponse(await teamRepository.CountAsync(token)));
+    public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0,
+        CancellationToken token = default) =>
+        Ok((await teamRepository.GetTeams(count, skip, token))
+            .Select(team => TeamInfoModel.FromTeam(team))
+            .ToResponse(await teamRepository.CountAsync(token)));
 
     /// <summary>
     /// 搜索队伍
@@ -244,10 +249,10 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpPost("Teams/Search")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default)
-        => Ok((await teamRepository.SearchTeams(hint, token))
-                .Select(team => TeamInfoModel.FromTeam(team))
-                .ToResponse());
+    public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default) =>
+        Ok((await teamRepository.SearchTeams(hint, token))
+            .Select(team => TeamInfoModel.FromTeam(team))
+            .ToResponse());
 
     /// <summary>
     /// 修改队伍信息
@@ -259,12 +264,13 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">队伍未找到</response>
-    [HttpPut("Teams/{id}")]
+    [HttpPut("Teams/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] AdminTeamModel model, CancellationToken token = default)
+    public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] AdminTeamModel model,
+        CancellationToken token = default)
     {
-        var team = await teamRepository.GetTeamById(id, token);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse("队伍未找到"));
@@ -290,7 +296,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUserInfo(string userid, [FromBody] AdminUserInfoModel model)
     {
-        var user = await userManager.FindByIdAsync(userid);
+        UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
@@ -311,12 +317,12 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">用户未找到</response>
-    [HttpDelete("Users/{userid}/Password")]
+    [HttpDelete("Users/{userid:guid}/Password")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ResetPassword(string userid)
     {
-        var user = await userManager.FindByIdAsync(userid);
+        UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
@@ -338,12 +344,12 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">用户未找到</response>
-    [HttpDelete("Users/{userid}")]
+    [HttpDelete("Users/{userid:guid}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(string userid, CancellationToken token = default)
     {
-        var user = await userManager.GetUserAsync(User);
+        UserInfo? user = await userManager.GetUserAsync(User);
 
         if (user!.Id == userid)
             return BadRequest(new RequestResponse("不可以删除自己"));
@@ -371,12 +377,12 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">用户未找到</response>
-    [HttpDelete("Teams/{id}")]
+    [HttpDelete("Teams/{id:int}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTeam(int id, CancellationToken token = default)
     {
-        var team = await teamRepository.GetTeamById(id, token);
+        Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
@@ -395,12 +401,12 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="200">用户对象</response>
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
-    [HttpGet("Users/{userid}")]
+    [HttpGet("Users/{userid:guid}")]
     [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UserInfo(string userid)
     {
-        var user = await userManager.FindByIdAsync(userid);
+        UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
@@ -419,8 +425,9 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpGet("Logs")]
     [ProducesResponseType(typeof(LogMessageModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Logs([FromQuery] string? level = "All", [FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(await logRepository.GetLogs(skip, count, level, token));
+    public async Task<IActionResult> Logs([FromQuery] string? level = "All", [FromQuery] int count = 50,
+        [FromQuery] int skip = 0, CancellationToken token = default) =>
+        Ok(await logRepository.GetLogs(skip, count, level, token));
 
     /// <summary>
     /// 更新参与状态
@@ -432,12 +439,13 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">参与对象未找到</response>
-    [HttpPut("Participation/{id}/{status}")]
+    [HttpPut("Participation/{id:int}/{status}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Participation(int id, ParticipationStatus status, CancellationToken token = default)
+    public async Task<IActionResult> Participation(int id, ParticipationStatus status,
+        CancellationToken token = default)
     {
-        var participation = await participationRepository.GetParticipationById(id, token);
+        Participation? participation = await participationRepository.GetParticipationById(id, token);
 
         if (participation is null)
             return NotFound(new RequestResponse("参与状态未找到", StatusCodes.Status404NotFound));
@@ -457,12 +465,12 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">比赛未找到</response>
-    [HttpGet("Writeups/{id}")]
+    [HttpGet("Writeups/{id:int}")]
     [ProducesResponseType(typeof(WriteupInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
     {
-        var game = await gameRepository.GetGameById(id, token);
+        Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
@@ -480,19 +488,19 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">比赛未找到</response>
-    [HttpGet("Writeups/{id}/All")]
+    [HttpGet("Writeups/{id:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DownloadAllWriteups(int id, CancellationToken token = default)
     {
-        var game = await gameRepository.GetGameById(id, token);
+        Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
-        var wps = await participationRepository.GetWriteups(game, token);
+        WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
-        var stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), FilePath.Uploads, filename, token);
+        Stream stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), FilePath.Uploads, filename, token);
         stream.Seek(0, SeekOrigin.Begin);
 
         return File(stream, "application/zip", $"{filename}.zip");
@@ -509,8 +517,8 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpGet("Instances")]
     [ProducesResponseType(typeof(ArrayResponse<ContainerInstanceModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Instances(CancellationToken token = default)
-        => Ok(new ArrayResponse<ContainerInstanceModel>(await containerRepository.GetContainerInstances(token)));
+    public async Task<IActionResult> Instances(CancellationToken token = default) =>
+        Ok(new ArrayResponse<ContainerInstanceModel>(await containerRepository.GetContainerInstances(token)));
 
     /// <summary>
     /// 删除容器实例
@@ -527,17 +535,17 @@ public class AdminController(UserManager<UserInfo> userManager,
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [SuppressMessage("ReSharper", "RouteTemplates.ParameterTypeCanBeMadeStricter")]
     public async Task<IActionResult> DestroyInstance(string id, CancellationToken token = default)
     {
-        var container = await containerRepository.GetContainerById(id, token);
+        Container? container = await containerRepository.GetContainerById(id, token);
 
         if (container is null)
             return NotFound(new RequestResponse("容器实例未找到", StatusCodes.Status404NotFound));
 
         if (await instanceRepository.DestroyContainer(container, token))
             return Ok();
-        else
-            return BadRequest(new RequestResponse("容器实例销毁失败"));
+        return BadRequest(new RequestResponse("容器实例销毁失败"));
     }
 
     /// <summary>
@@ -551,6 +559,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpGet("Files")]
     [ProducesResponseType(typeof(ArrayResponse<LocalFile>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0, CancellationToken token = default)
-        => Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
+    public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0,
+        CancellationToken token = default) =>
+        Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
 }

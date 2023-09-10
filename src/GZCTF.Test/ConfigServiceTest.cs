@@ -1,4 +1,6 @@
-﻿using GZCTF.Models.Internal;
+﻿using System.Collections.Generic;
+using GZCTF.Models.Data;
+using GZCTF.Models.Internal;
 using GZCTF.Services;
 using Xunit;
 using Xunit.Abstractions;
@@ -7,7 +9,7 @@ namespace GZCTF.Test;
 
 public class ConfigServiceTest
 {
-    private readonly ITestOutputHelper output;
+    readonly ITestOutputHelper output;
 
     public ConfigServiceTest(ITestOutputHelper _output)
     {
@@ -17,11 +19,11 @@ public class ConfigServiceTest
     [Fact]
     public void TestGetConfigs()
     {
-        var configs = ConfigService.GetConfigs(new TestConfig());
+        HashSet<Config>? configs = ConfigService.GetConfigs(new TestConfig());
         Assert.True(configs is not null);
         Assert.True(configs.Count > 0);
 
-        foreach (var config in configs)
+        foreach (Config config in configs)
             output.WriteLine($"{config.ConfigKey,-32}={config.Value}");
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Models.Data;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Instance
 {
@@ -24,6 +23,20 @@ public class Instance
     /// 最后一次容器操作的时间，确保单题目容器操作不会过于频繁
     /// </summary>
     public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;
+
+    /// <summary>
+    /// 获取实例附件
+    /// </summary>
+    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment
+        : Challenge.Attachment;
+
+    /// <summary>
+    /// 获取实例附件链接
+    /// </summary>
+    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
+        : Challenge.Attachment?.UrlWithName();
 
     #region Db Relationship
 
@@ -58,17 +71,4 @@ public class Instance
     public Participation Participation { get; set; } = default!;
 
     #endregion Db Relationship
-
-    /// <summary>
-    /// 获取实例附件
-    /// </summary>
-    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment ?
-        FlagContext?.Attachment : Challenge.Attachment;
-
-    /// <summary>
-    /// 获取实例附件链接
-    /// </summary>
-    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment ?
-        FlagContext?.Attachment?.UrlWithName(Challenge.FileName) :
-        Challenge.Attachment?.UrlWithName();
 }

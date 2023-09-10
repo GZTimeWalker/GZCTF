@@ -1,13 +1,13 @@
 import { FC } from 'react'
 import {
   ActionIcon,
+  Card,
   Group,
+  Input,
+  SimpleGrid,
   Stack,
   Text,
-  Card,
   useMantineTheme,
-  SimpleGrid,
-  Input,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'

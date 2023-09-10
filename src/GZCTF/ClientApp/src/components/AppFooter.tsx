@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Text, Stack, Divider, Anchor, Center } from '@mantine/core'
+import { Anchor, Center, Divider, Stack, Text } from '@mantine/core'
 import FooterRender from '@Components/FooterRender'
 import MainIcon from '@Components/icon/MainIcon'
 import { useFooterStyles, useIsMobile, useLogoStyles } from '@Utils/ThemeOverride'

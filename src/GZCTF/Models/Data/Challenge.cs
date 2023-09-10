@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using GZCTF.Models.Data;
 using GZCTF.Models.Request.Edit;
-using GZCTF.Utils;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class Challenge
 {
@@ -29,7 +27,7 @@ public class Challenge
     /// <summary>
     /// 是否启用题目
     /// </summary>
-    public bool IsEnabled { get; set; } = false;
+    public bool IsEnabled { get; set; }
 
     /// <summary>
     /// 题目标签
@@ -83,20 +81,20 @@ public class Challenge
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool EnableTrafficCapture { get; set; } = false;
+    public bool EnableTrafficCapture { get; set; }
 
     /// <summary>
     /// 解决题目人数
     /// </summary>
     [Required]
-    public int AcceptedCount { get; set; } = 0;
+    public int AcceptedCount { get; set; }
 
     /// <summary>
     /// 提交答案的数量
     /// </summary>
     [Required]
     [JsonIgnore]
-    public int SubmissionCount { get; set; } = 0;
+    public int SubmissionCount { get; set; }
 
     /// <summary>
     /// 初始分数
@@ -134,64 +132,12 @@ public class Challenge
     /// </summary>
     [NotMapped]
     public int CurrentScore =>
-        AcceptedCount <= 1 ? OriginalScore : (int)Math.Floor(
-        OriginalScore * (MinScoreRate +
-            (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
-        ));
-
-    #region Db Relationship
-
-    /// <summary>
-    /// 题目附件 Id
-    /// </summary>
-    public int? AttachmentId { get; set; }
-
-    /// <summary>
-    /// 题目附件（动态附件存放于 FlagContext）
-    /// </summary>
-    public Attachment? Attachment { get; set; }
-
-    /// <summary>
-    /// 测试容器 Id
-    /// </summary>
-    public string? TestContainerId { get; set; }
-
-    /// <summary>
-    /// 测试容器
-    /// </summary>
-    public Container? TestContainer { get; set; }
-
-    /// <summary>
-    /// 题目对应的 Flag 列表
-    /// </summary>
-    public List<FlagContext> Flags { get; set; } = new();
-
-    /// <summary>
-    /// 提交
-    /// </summary>
-    public List<Submission> Submissions { get; set; } = new();
-
-    /// <summary>
-    /// 赛题实例
-    /// </summary>
-    public List<Instance> Instances { get; set; } = new();
-
-    /// <summary>
-    /// 激活赛题的队伍
-    /// </summary>
-    public HashSet<Participation> Teams { get; set; } = new();
-
-    /// <summary>
-    /// 比赛 Id
-    /// </summary>
-    public int GameId { get; set; }
-
-    /// <summary>
-    /// 比赛对象
-    /// </summary>
-    public Game Game { get; set; } = default!;
-
-    #endregion Db Relationship
+        AcceptedCount <= 1
+            ? OriginalScore
+            : (int)Math.Floor(
+                OriginalScore * (MinScoreRate +
+                                 (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
+                ));
 
     internal string GenerateFlag(Participation part)
     {
@@ -258,8 +204,62 @@ public class Challenge
 
         // DynamicContainer only
         EnableTrafficCapture = Type == ChallengeType.DynamicContainer &&
-            (model.EnableTrafficCapture ?? EnableTrafficCapture);
+                               (model.EnableTrafficCapture ?? EnableTrafficCapture);
 
         return this;
     }
+
+    #region Db Relationship
+
+    /// <summary>
+    /// 题目附件 Id
+    /// </summary>
+    public int? AttachmentId { get; set; }
+
+    /// <summary>
+    /// 题目附件（动态附件存放于 FlagContext）
+    /// </summary>
+    public Attachment? Attachment { get; set; }
+
+    /// <summary>
+    /// 测试容器 Id
+    /// </summary>
+    public string? TestContainerId { get; set; }
+
+    /// <summary>
+    /// 测试容器
+    /// </summary>
+    public Container? TestContainer { get; set; }
+
+    /// <summary>
+    /// 题目对应的 Flag 列表
+    /// </summary>
+    public List<FlagContext> Flags { get; set; } = new();
+
+    /// <summary>
+    /// 提交
+    /// </summary>
+    public List<Submission> Submissions { get; set; } = new();
+
+    /// <summary>
+    /// 赛题实例
+    /// </summary>
+    public List<Instance> Instances { get; set; } = new();
+
+    /// <summary>
+    /// 激活赛题的队伍
+    /// </summary>
+    public HashSet<Participation> Teams { get; set; } = new();
+
+    /// <summary>
+    /// 比赛 Id
+    /// </summary>
+    public int GameId { get; set; }
+
+    /// <summary>
+    /// 比赛对象
+    /// </summary>
+    public Game Game { get; set; } = default!;
+
+    #endregion Db Relationship
 }

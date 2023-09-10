@@ -2,7 +2,6 @@
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -18,7 +17,6 @@ public class InfoController(ICaptchaExtension captcha,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     IOptionsSnapshot<AccountPolicy> accountPolicy) : ControllerBase
 {
-
     /// <summary>
     /// 获取最新文章
     /// </summary>
@@ -29,8 +27,8 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取文章</response>
     [HttpGet("Posts/Latest")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetLatestPosts(CancellationToken token)
-        => Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
+    public async Task<IActionResult> GetLatestPosts(CancellationToken token) =>
+        Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取全部文章
@@ -42,8 +40,7 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取文章</response>
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPosts(CancellationToken token)
-        => Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
+    public async Task<IActionResult> GetPosts(CancellationToken token) => Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取文章详情
@@ -60,7 +57,7 @@ public class InfoController(ICaptchaExtension captcha,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost(string id, CancellationToken token)
     {
-        var post = await postRepository.GetPostByIdFromCache(id, token);
+        Post? post = await postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse("文章不存在", StatusCodes.Status404NotFound));
@@ -88,6 +85,5 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取 Captcha 配置</response>
     [HttpGet("Captcha")]
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
-    public IActionResult GetClientCaptchaInfo()
-        => Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
+    public IActionResult GetClientCaptchaInfo() => Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
 }

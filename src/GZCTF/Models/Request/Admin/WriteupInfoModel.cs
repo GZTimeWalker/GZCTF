@@ -34,13 +34,15 @@ public class WriteupInfoModel
     [JsonIgnore]
     public LocalFile File { get; set; } = default!;
 
-    internal static WriteupInfoModel? FromParticipation(Participation part)
-        => part.Writeup is null ? null : new()
-        {
-            Id = part.Id,
-            Team = TeamInfoModel.FromTeam(part.Team, false),
-            File = part.Writeup,
-            Url = part.Writeup.Url(),
-            UploadTimeUTC = part.Writeup.UploadTimeUTC
-        };
+    internal static WriteupInfoModel? FromParticipation(Participation part) =>
+        part.Writeup is null
+            ? null
+            : new()
+            {
+                Id = part.Id,
+                Team = TeamInfoModel.FromTeam(part.Team, false),
+                File = part.Writeup,
+                Url = part.Writeup.Url(),
+                UploadTimeUTC = part.Writeup.UploadTimeUTC
+            };
 }

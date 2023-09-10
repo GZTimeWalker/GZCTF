@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
-import React from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import {
   ActionIcon,
   Box,

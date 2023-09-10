@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +14,6 @@ namespace GZCTF.Middlewares;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthorizationFilter
 {
-    public static IActionResult GetResult(string msg, int code)
-        => new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
-
     public static IActionResult RequireLoginResult => GetResult("请先登录", StatusCodes.Status401Unauthorized);
     public static IActionResult ForbiddenResult => GetResult("无权访问", StatusCodes.Status403Forbidden);
 
@@ -30,7 +26,8 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
 
         if (context.HttpContext.User.Identity?.IsAuthenticated is true)
             user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Id ==
-                context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                                                                   context.HttpContext.User.FindFirstValue(ClaimTypes
+                                                                       .NameIdentifier));
 
         if (user is null)
         {
@@ -52,6 +49,8 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
             context.Result = ForbiddenResult;
         }
     }
+
+    public static IActionResult GetResult(string msg, int code) => new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
 }
 
 /// <summary>

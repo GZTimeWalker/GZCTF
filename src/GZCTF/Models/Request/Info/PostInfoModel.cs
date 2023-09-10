@@ -29,7 +29,7 @@ public class PostInfoModel
     /// 是否置顶
     /// </summary>
     [Required]
-    public bool IsPinned { get; set; } = false;
+    public bool IsPinned { get; set; }
 
     /// <summary>
     /// 文章标签
@@ -52,8 +52,8 @@ public class PostInfoModel
     [Required]
     public DateTimeOffset Time { get; set; } = DateTimeOffset.UtcNow;
 
-    internal static PostInfoModel FromPost(Post post)
-        => new()
+    internal static PostInfoModel FromPost(Post post) =>
+        new()
         {
             Id = post.Id,
             Title = post.Title,
@@ -62,6 +62,6 @@ public class PostInfoModel
             Tags = post.Tags,
             Time = post.UpdateTimeUTC,
             AuthorAvatar = post.Author?.AvatarUrl,
-            AuthorName = post.Author?.UserName,
+            AuthorName = post.Author?.UserName
         };
 }

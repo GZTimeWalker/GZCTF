@@ -845,6 +845,19 @@ export interface ChallengeEditDetailModel {
   /** 是否启用题目 */
   isEnabled: boolean
   /**
+   * 通过人数
+   * @format int32
+   */
+  acceptedCount: number
+  /** 统一文件名（仅用于动态附件） */
+  fileName?: string | null
+  /** 题目附件（动态附件存放于 FlagInfoModel） */
+  attachment?: Attachment | null
+  /** 测试容器 */
+  testContainer?: ContainerInfoModel | null
+  /** 题目 Flag 信息 */
+  flags: FlagInfoModel[]
+  /**
    * 镜像名称与标签
    * @minLength 1
    */
@@ -856,7 +869,6 @@ export interface ChallengeEditDetailModel {
   memoryLimit: number
   /**
    * CPU 限制 (0.1 CPUs)
-   *
    * @format int32
    */
   cpuCount: number
@@ -889,19 +901,6 @@ export interface ChallengeEditDetailModel {
    * @format double
    */
   difficulty: number
-  /**
-   * 通过人数
-   * @format int32
-   */
-  acceptedCount: number
-  /** 统一文件名（仅用于动态附件） */
-  fileName?: string | null
-  /** 题目附件（动态附件存放于 FlagInfoModel） */
-  attachment?: Attachment | null
-  /** 测试容器 */
-  testContainer?: ContainerInfoModel | null
-  /** 题目 Flag 信息 */
-  flags: FlagInfoModel[]
 }
 
 export enum ChallengeType {
@@ -1023,6 +1022,8 @@ export interface ChallengeUpdateModel {
   hints?: string[] | null
   /** 是否启用题目 */
   isEnabled?: boolean | null
+  /** 统一文件名 */
+  fileName?: string | null
   /** 镜像名称与标签 */
   containerImage?: string | null
   /**
@@ -1070,8 +1071,6 @@ export interface ChallengeUpdateModel {
    * @format double
    */
   difficulty?: number | null
-  /** 统一文件名 */
-  fileName?: string | null
 }
 
 /** 新建附件信息（Edit） */
@@ -4177,13 +4176,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipations
+     * @name GameParticipation
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
+     * @request GET:/api/game/{id}/participation
      */
-    gameParticipations: (id: number, params: RequestParams = {}) =>
+    gameParticipation: (id: number, params: RequestParams = {}) =>
       this.request<ParticipationInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/participations`,
+        path: `/api/game/${id}/participation`,
         method: 'GET',
         format: 'json',
         ...params,
@@ -4192,13 +4191,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipations
+     * @name GameParticipation
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
+     * @request GET:/api/game/{id}/participation
      */
-    useGameParticipations: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+    useGameParticipation: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ParticipationInfoModel[], RequestResponse>(
-        doFetch ? `/api/game/${id}/participations` : null,
+        doFetch ? `/api/game/${id}/participation` : null,
         options
       ),
 
@@ -4206,15 +4205,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipations
+     * @name GameParticipation
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participations
+     * @request GET:/api/game/{id}/participation
      */
-    mutateGameParticipations: (
+    mutateGameParticipation: (
       id: number,
       data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
+    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participation`, data, options),
 
     /**
      * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时

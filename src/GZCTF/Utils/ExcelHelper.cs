@@ -6,8 +6,8 @@ namespace GZCTF.Utils;
 
 public static class ExcelHelper
 {
-    private static readonly string[] CommonScoreboardHeader = ["排名", "战队", "队长", "队员", "学号", "手机号", "解题数量", "得分时间", "总分"];
-    private static readonly string[] CommonSubmissionHeader = ["提交状态", "提交时间", "战队", "用户", "题目", "提交内容", "用户邮箱"];
+    static readonly string[] CommonScoreboardHeader = { "排名", "战队", "队长", "队员", "学号", "手机号", "解题数量", "得分时间", "总分" };
+    static readonly string[] CommonSubmissionHeader = { "提交状态", "提交时间", "战队", "用户", "题目", "提交内容", "用户邮箱" };
 
     public static MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
     {
@@ -15,8 +15,8 @@ public static class ExcelHelper
             throw new ArgumentException("Team is not loaded");
 
         var workbook = new XSSFWorkbook();
-        var boardSheet = workbook.CreateSheet("排行榜");
-        var headerStyle = GetHeaderStyle(workbook);
+        ISheet? boardSheet = workbook.CreateSheet("排行榜");
+        ICellStyle headerStyle = GetHeaderStyle(workbook);
         var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, game);
         WriteBoardContent(boardSheet, scoreboard, challIds, game);
 
@@ -28,8 +28,8 @@ public static class ExcelHelper
     public static MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions)
     {
         var workbook = new XSSFWorkbook();
-        var subSheet = workbook.CreateSheet("全部提交");
-        var headerStyle = GetHeaderStyle(workbook);
+        ISheet? subSheet = workbook.CreateSheet("全部提交");
+        ICellStyle headerStyle = GetHeaderStyle(workbook);
         WriteSubmissionHeader(subSheet, headerStyle);
         WriteSubmissionContent(subSheet, submissions);
 
@@ -38,10 +38,10 @@ public static class ExcelHelper
         return stream;
     }
 
-    private static ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
+    static ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
     {
-        var style = workbook.CreateCellStyle();
-        var boldFontStyle = workbook.CreateFont();
+        ICellStyle? style = workbook.CreateCellStyle();
+        IFont? boldFontStyle = workbook.CreateFont();
 
         boldFontStyle.IsBold = true;
         style.SetFont(boldFontStyle);
@@ -52,26 +52,26 @@ public static class ExcelHelper
         return style;
     }
 
-    private static void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
+    static void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
     {
-        var row = sheet.CreateRow(0);
+        IRow? row = sheet.CreateRow(0);
         var colIndex = 0;
 
         foreach (var col in CommonSubmissionHeader)
         {
-            var cell = row.CreateCell(colIndex++);
+            ICell? cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);
             cell.CellStyle = style;
         }
     }
 
-    private static void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions)
+    static void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions)
     {
         var rowIndex = 1;
 
-        foreach (var item in submissions)
+        foreach (Submission item in submissions)
         {
-            var row = sheet.CreateRow(rowIndex);
+            IRow? row = sheet.CreateRow(rowIndex);
             row.CreateCell(0).SetCellValue(item.Status.ToShortString());
             row.CreateCell(1).SetCellValue(item.SubmitTimeUTC.ToString("u"));
             row.CreateCell(2).SetCellValue(item.TeamName);
@@ -84,16 +84,16 @@ public static class ExcelHelper
         }
     }
 
-    private static int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
+    static int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
     {
-        var row = sheet.CreateRow(0);
+        IRow? row = sheet.CreateRow(0);
         var colIndex = 0;
         var challIds = new List<int>();
         var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
 
         foreach (var col in CommonScoreboardHeader)
         {
-            var cell = row.CreateCell(colIndex++);
+            ICell? cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);
             cell.CellStyle = style;
 
@@ -105,29 +105,27 @@ public static class ExcelHelper
             }
         }
 
-        foreach (var type in scoreboard.Challenges)
+        foreach (KeyValuePair<ChallengeTag, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
+        foreach (ChallengeInfo chall in type.Value)
         {
-            foreach (var chall in type.Value)
-            {
-                var cell = row.CreateCell(colIndex++);
-                cell.SetCellValue(chall.Title);
-                cell.CellStyle = style;
-                challIds.Add(chall.Id);
-            }
+            ICell? cell = row.CreateCell(colIndex++);
+            cell.SetCellValue(chall.Title);
+            cell.CellStyle = style;
+            challIds.Add(chall.Id);
         }
 
         return challIds.ToArray();
     }
 
-    private static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
+    static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
     {
         var rowIndex = 1;
         var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
 
-        foreach (var item in scoreboard.Items)
+        foreach (ScoreboardItem item in scoreboard.Items)
         {
             var colIndex = 0;
-            var row = sheet.CreateRow(rowIndex);
+            IRow? row = sheet.CreateRow(rowIndex);
             row.CreateCell(colIndex++).SetCellValue(item.Rank);
             row.CreateCell(colIndex++).SetCellValue(item.Name);
 
@@ -137,7 +135,8 @@ public static class ExcelHelper
             row.CreateCell(colIndex++).SetCellValue(item.TeamInfo!.Captain!.RealName);
             row.CreateCell(colIndex++).SetCellValue(string.Join("/", item.TeamInfo!.Members.Select(m => m.RealName)));
             row.CreateCell(colIndex++).SetCellValue(string.Join("/", item.TeamInfo!.Members.Select(m => m.StdNumber)));
-            row.CreateCell(colIndex++).SetCellValue(string.Join("/", item.TeamInfo!.Members.Select(m => m.PhoneNumber)));
+            row.CreateCell(colIndex++)
+                .SetCellValue(string.Join("/", item.TeamInfo!.Members.Select(m => m.PhoneNumber)));
 
             row.CreateCell(colIndex++).SetCellValue(item.SolvedCount);
             row.CreateCell(colIndex++).SetCellValue(item.LastSubmissionTime.ToString("u"));
@@ -145,7 +144,7 @@ public static class ExcelHelper
 
             foreach (var challId in challIds)
             {
-                var chall = item.Challenges.Single(c => c.Id == challId);
+                ChallengeItem chall = item.Challenges.Single(c => c.Id == challId);
                 row.CreateCell(colIndex++).SetCellValue(chall.Score);
             }
 

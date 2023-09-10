@@ -1,60 +1,19 @@
 ﻿using System.Security.Cryptography;
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp.Formats.Gif;
 
 namespace GZCTF.Repositories;
 
-public class FileRepository(AppDbContext context, ILogger<FileRepository> logger) : RepositoryBase(context), IFileRepository
+public class FileRepository(AppDbContext context, ILogger<FileRepository> logger) : RepositoryBase(context),
+    IFileRepository
 {
     public override Task<int> CountAsync(CancellationToken token = default) => context.Files.CountAsync(token);
 
-    private static Stream GetStream(long bufferSize) => bufferSize <= 16 * 1024 * 1024 ? new MemoryStream() :
-                File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
-
-    private async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream, CancellationToken token = default)
+    public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
+        CancellationToken token = default)
     {
-        contentStream.Position = 0;
-        var hash = await SHA256.HashDataAsync(contentStream, token);
-        var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-
-        var localFile = await GetFileByHash(fileHash, token);
-
-        if (localFile is not null)
-        {
-            localFile.FileSize = contentStream.Length;
-            localFile.Name = fileName; // allow rename
-            localFile.UploadTimeUTC = DateTimeOffset.UtcNow; // update upload time
-            localFile.ReferenceCount++; // same hash, add ref count
-
-            logger.SystemLog($"文件引用计数 [{localFile.Hash[..8]}] {localFile.Name} => {localFile.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
-
-            context.Update(localFile);
-        }
-        else
-        {
-            localFile = new() { Hash = fileHash, Name = fileName, FileSize = contentStream.Length };
-            await context.AddAsync(localFile, token);
-
-            var path = Path.Combine(FilePath.Uploads, localFile.Location);
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            using var fileStream = File.Create(Path.Combine(path, localFile.Hash));
-
-            contentStream.Position = 0;
-            await contentStream.CopyToAsync(fileStream, token);
-        }
-
-        await SaveAsync(token);
-        return localFile;
-    }
-
-    public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null, CancellationToken token = default)
-    {
-        using var tmp = GetStream(file.Length);
+        using Stream tmp = GetStream(file.Length);
 
         logger.SystemLog($"缓存位置：{tmp.GetType()}", TaskStatus.Pending, LogLevel.Trace);
 
@@ -62,7 +21,8 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return await StoreLocalFile(fileName ?? file.FileName, tmp, token);
     }
 
-    public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, int resize = 300, CancellationToken token = default)
+    public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, int resize = 300,
+        CancellationToken token = default)
     {
         // we do not process images larger than 32MB
         if (file.Length >= 32 * 1024 * 1024)
@@ -72,11 +32,11 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         {
             using Stream webpStream = new MemoryStream();
 
-            using (var tmp = GetStream(file.Length))
+            using (Stream tmp = GetStream(file.Length))
             {
                 await file.CopyToAsync(tmp, token);
                 tmp.Position = 0;
-                using var image = await Image.LoadAsync(tmp, token);
+                using Image image = await Image.LoadAsync(tmp, token);
 
                 if (image.Metadata.DecodedImageFormat is GifFormat)
                     return await StoreLocalFile($"{fileName}.gif", tmp, token);
@@ -104,7 +64,8 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         {
             file.ReferenceCount--; // other ref exists, decrease ref count
 
-            logger.SystemLog($"文件引用计数 [{file.Hash[..8]}] {file.Name} => {file.ReferenceCount}", TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog($"文件引用计数 [{file.Hash[..8]}] {file.Name} => {file.ReferenceCount}", TaskStatus.Success,
+                LogLevel.Debug);
 
             await SaveAsync(token);
 
@@ -130,7 +91,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
 
     public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token = default)
     {
-        var file = await GetFileByHash(fileHash, token);
+        LocalFile? file = await GetFileByHash(fileHash, token);
 
         if (file is null)
             return TaskStatus.NotFound;
@@ -138,9 +99,54 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return await DeleteFile(file, token);
     }
 
-    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)
-        => context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
+    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default) =>
+        context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
 
-    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default)
-        => context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
+    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default) =>
+        context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
+
+    static Stream GetStream(long bufferSize) =>
+        bufferSize <= 16 * 1024 * 1024
+            ? new MemoryStream()
+            : File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
+
+    async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream, CancellationToken token = default)
+    {
+        contentStream.Position = 0;
+        var hash = await SHA256.HashDataAsync(contentStream, token);
+        var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+
+        LocalFile? localFile = await GetFileByHash(fileHash, token);
+
+        if (localFile is not null)
+        {
+            localFile.FileSize = contentStream.Length;
+            localFile.Name = fileName; // allow rename
+            localFile.UploadTimeUTC = DateTimeOffset.UtcNow; // update upload time
+            localFile.ReferenceCount++; // same hash, add ref count
+
+            logger.SystemLog($"文件引用计数 [{localFile.Hash[..8]}] {localFile.Name} => {localFile.ReferenceCount}",
+                TaskStatus.Success, LogLevel.Debug);
+
+            context.Update(localFile);
+        }
+        else
+        {
+            localFile = new() { Hash = fileHash, Name = fileName, FileSize = contentStream.Length };
+            await context.AddAsync(localFile, token);
+
+            var path = Path.Combine(FilePath.Uploads, localFile.Location);
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
+
+            contentStream.Position = 0;
+            await contentStream.CopyToAsync(fileStream, token);
+        }
+
+        await SaveAsync(token);
+        return localFile;
+    }
 }

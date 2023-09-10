@@ -14,4 +14,3 @@ public interface IContainerProvider<T, M>
     /// <returns></returns>
     public M GetMetadata();
 }
-

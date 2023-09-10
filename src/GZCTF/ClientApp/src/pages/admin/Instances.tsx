@@ -1,18 +1,18 @@
 import dayjs from 'dayjs'
 import { FC, forwardRef, useEffect, useState } from 'react'
 import {
-  Text,
-  Select,
-  Stack,
-  useMantineTheme,
-  Group,
-  ScrollArea,
-  Paper,
-  Table,
   Badge,
   Box,
   Code,
+  Group,
+  Paper,
+  ScrollArea,
+  Select,
+  Stack,
+  Table,
+  Text,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'

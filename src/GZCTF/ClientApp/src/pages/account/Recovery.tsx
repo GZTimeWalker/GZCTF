@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { TextInput, Button, Anchor } from '@mantine/core'
+import { Anchor, Button, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'

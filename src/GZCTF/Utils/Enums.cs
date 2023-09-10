@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GZCTF;
+namespace GZCTF.Utils;
 
 /// <summary>
 /// 用户权限枚举
@@ -26,7 +26,7 @@ public enum Role : byte
     /// <summary>
     /// 管理员权限，可查看系统日志
     /// </summary>
-    Admin = 3,
+    Admin = 3
 }
 
 /// <summary>
@@ -90,7 +90,7 @@ public enum TaskStatus : sbyte
     /// <summary>
     /// 任务线程将要退出
     /// </summary>
-    Exit = 5,
+    Exit = 5
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -110,7 +110,7 @@ public enum FileType : byte
     /// <summary>
     /// 远程文件
     /// </summary>
-    Remote = 2,
+    Remote = 2
 }
 
 /// <summary>
@@ -169,13 +169,13 @@ public enum NoticeType : byte
     /// <summary>
     /// 发布新的题目
     /// </summary>
-    NewChallenge = 5,
+    NewChallenge = 5
 }
 
 public static class SubmissionTypeExtensions
 {
-    public static string ToBloodString(this SubmissionType type)
-        => type switch
+    public static string ToBloodString(this SubmissionType type) =>
+        type switch
         {
             SubmissionType.FirstBlood => "一血",
             SubmissionType.SecondBlood => "二血",
@@ -245,7 +245,7 @@ public enum SubmissionType : byte
     /// <summary>
     /// 解出
     /// </summary>
-    Normal = 4,
+    Normal = 4
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -274,7 +274,7 @@ public enum ParticipationStatus : byte
     /// <summary>
     /// 未提交
     /// </summary>
-    Unsubmitted = 4,
+    Unsubmitted = 4
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -380,8 +380,8 @@ public enum AnswerResult : byte
 
 public static class AnswerResultExtensions
 {
-    public static string ToShortString(this AnswerResult result)
-        => result switch
+    public static string ToShortString(this AnswerResult result) =>
+        result switch
         {
             AnswerResult.FlagSubmitted => "成功提交",
             AnswerResult.Accepted => "答案正确",

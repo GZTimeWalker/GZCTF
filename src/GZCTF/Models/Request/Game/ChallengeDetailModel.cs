@@ -45,8 +45,8 @@ public class ChallengeDetailModel
     /// </summary>
     public ClientFlagContext Context { get; set; } = default!;
 
-    internal static ChallengeDetailModel FromInstance(Instance instance)
-        => new()
+    internal static ChallengeDetailModel FromInstance(Instance instance) =>
+        new()
         {
             Id = instance.Challenge.Id,
             Content = instance.Challenge.Content,
@@ -60,7 +60,7 @@ public class ChallengeDetailModel
                 InstanceEntry = instance.Container?.Entry,
                 CloseTime = instance.Container?.ExpectStopAt,
                 Url = instance.AttachmentUrl,
-                FileSize = instance.Attachment?.FileSize,
+                FileSize = instance.Attachment?.FileSize
             }
         };
 }
@@ -75,15 +75,15 @@ public class ClientFlagContext
     /// <summary>
     /// 题目实例的连接方式
     /// </summary>
-    public string? InstanceEntry { get; set; } = null;
+    public string? InstanceEntry { get; set; }
 
     /// <summary>
     /// 附件 Url
     /// </summary>
-    public string? Url { get; set; } = null;
+    public string? Url { get; set; }
 
     /// <summary>
     /// 附件文件大小
     /// </summary>
-    public long? FileSize { get; set; } = null;
+    public long? FileSize { get; set; }
 }

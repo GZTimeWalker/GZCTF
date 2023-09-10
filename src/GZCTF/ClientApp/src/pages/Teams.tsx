@@ -1,16 +1,16 @@
 import { FC, useState } from 'react'
 import {
-  Stack,
-  SimpleGrid,
-  Loader,
+  Button,
   Center,
   Group,
-  Button,
+  Loader,
   Modal,
-  TextInput,
+  SimpleGrid,
+  Stack,
   Text,
-  useMantineTheme,
+  TextInput,
   Title,
+  useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js'
@@ -25,7 +25,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
-import api, { TeamInfoModel, Role } from '@Api'
+import api, { Role, TeamInfoModel } from '@Api'
 
 const Teams: FC = () => {
   const { user, error: userError } = useUser()

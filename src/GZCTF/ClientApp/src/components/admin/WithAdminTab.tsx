@@ -3,11 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Group, GroupProps, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
 import {
   mdiAccountCogOutline,
-  mdiFlagOutline,
   mdiAccountGroupOutline,
   mdiFileDocumentOutline,
-  mdiSitemapOutline,
+  mdiFlagOutline,
   mdiPackageVariantClosed,
+  mdiSitemapOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import IconTabs from '@Components/IconTabs'

@@ -40,8 +40,8 @@ public class LogMessageModel
     [JsonPropertyName("status")]
     public string? Status { get; set; }
 
-    public static LogMessageModel FromLogModel(LogModel logInfo)
-        => new()
+    public static LogMessageModel FromLogModel(LogModel logInfo) =>
+        new()
         {
             Time = logInfo.TimeUTC,
             Level = logInfo.Level,

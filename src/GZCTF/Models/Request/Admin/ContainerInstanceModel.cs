@@ -1,6 +1,4 @@
-﻿using GZCTF.Utils;
-
-namespace GZCTF.Models.Request.Admin;
+﻿namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// 容器实例信息（Admin）
@@ -10,12 +8,12 @@ public class ContainerInstanceModel
     /// <summary>
     /// 队伍
     /// </summary>
-    public TeamModel? Team { get; set; } = default!;
+    public TeamModel? Team { get; set; }
 
     /// <summary>
     /// 题目
     /// </summary>
-    public ChallengeModel? Challenge { get; set; } = default!;
+    public ChallengeModel? Challenge { get; set; }
 
     /// <summary>
     /// 容器镜像
@@ -54,10 +52,10 @@ public class ContainerInstanceModel
 
     internal static ContainerInstanceModel FromContainer(Container container)
     {
-        var team = container.Instance?.Participation?.Team;
-        var chal = container.Instance?.Challenge;
+        Team? team = container.Instance?.Participation?.Team;
+        Challenge? chal = container.Instance?.Challenge;
 
-        var model = new ContainerInstanceModel()
+        var model = new ContainerInstanceModel
         {
             Image = container.Image,
             ContainerGuid = container.Id,

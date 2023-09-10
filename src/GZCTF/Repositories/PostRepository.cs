@@ -1,6 +1,6 @@
 ﻿using GZCTF.Extensions;
 using GZCTF.Repositories.Interface;
-using GZCTF.Utils;
+using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -23,18 +23,17 @@ public class PostRepository(IDistributedCache cache,
         return post;
     }
 
-    public Task<Post?> GetPostById(string id, CancellationToken token = default)
-        => context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
+    public Task<Post?> GetPostById(string id, CancellationToken token = default) => context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
 
-    public async Task<Post?> GetPostByIdFromCache(string id, CancellationToken token = default)
-        => (await GetPosts(token)).FirstOrDefault(p => p.Id == id);
+    public async Task<Post?> GetPostByIdFromCache(string id, CancellationToken token = default) =>
+        (await GetPosts(token)).FirstOrDefault(p => p.Id == id);
 
-    public Task<Post[]> GetPosts(CancellationToken token = default)
-        => cache.GetOrCreateAsync(logger, CacheKey.Posts, entry =>
+    public Task<Post[]> GetPosts(CancellationToken token = default) =>
+        cache.GetOrCreateAsync(logger, CacheKey.Posts, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
             return context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
-                    .ThenByDescending(n => n.UpdateTimeUTC).ToArrayAsync(token);
+                .ThenByDescending(n => n.UpdateTimeUTC).ToArrayAsync(token);
         }, token);
 
     public async Task RemovePost(Post post, CancellationToken token = default)

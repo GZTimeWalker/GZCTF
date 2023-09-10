@@ -1,15 +1,15 @@
 import dayjs from 'dayjs'
-import { Avatar, Badge, Group, Stack, Text, rem, useMantineTheme } from '@mantine/core'
+import { Avatar, Badge, Group, rem, Stack, Text, useMantineTheme } from '@mantine/core'
 import { mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
 import { ChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
 import {
-  ChallengeTrafficModel,
-  TeamTrafficModel,
-  FileRecord,
   ChallengeTag,
+  ChallengeTrafficModel,
   ChallengeType,
+  FileRecord,
+  TeamTrafficModel,
 } from '@Api'
 
 const itemHeight = rem(60)

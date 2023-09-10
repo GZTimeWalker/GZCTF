@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Stack, Title, Text } from '@mantine/core'
+import { Stack, Text, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import IconWiderScreenRequired from '@Components/icon/WiderScreenRequiredIcon'
 

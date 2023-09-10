@@ -1,13 +1,13 @@
 import { FC, useState } from 'react'
 import {
-  MantineColor,
-  Popover,
   ActionIcon,
-  Stack,
-  Group,
   Button,
-  Text,
+  Group,
+  MantineColor,
   MantineNumberSize,
+  Popover,
+  Stack,
+  Text,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 

@@ -9,12 +9,29 @@ using Serilog.Sinks.File.Archive;
 using Serilog.Sinks.PostgreSQL;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+using ILogger = Serilog.ILogger;
 
 namespace GZCTF.Utils;
 
 public static class LogHelper
 {
+    const string LogTemplate =
+        "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
+
+    const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
+
+    static IDictionary<string, ColumnWriterBase> ColumnWriters => new Dictionary<string, ColumnWriterBase>
+    {
+        { "Message", new RenderedMessageColumnWriter() },
+        { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
+        { "TimeUTC", new TimeColumnWriter() },
+        { "Exception", new ExceptionColumnWriter() },
+        { "Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
+        { "UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
+        { "Status", new SinglePropertyColumnWriter("Status", PropertyWriteMethod.ToString, NpgsqlDbType.Varchar) },
+        { "RemoteIP", new SinglePropertyColumnWriter("IP", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) }
+    };
+
     /// <summary>
     /// 记录一条系统日志（无用户信息，默认Info）
     /// </summary>
@@ -22,8 +39,9 @@ public static class LogHelper
     /// <param name="msg">Log 消息</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void SystemLog<T>(this ILogger<T> logger, string msg, TaskStatus status = TaskStatus.Success, LogLevel? level = null)
-        => Log(logger, msg, "System", string.Empty, status, level ?? LogLevel.Information);
+    public static void SystemLog<T>(this ILogger<T> logger, string msg, TaskStatus status = TaskStatus.Success,
+        LogLevel? level = null) =>
+        Log(logger, msg, "System", string.Empty, status, level ?? LogLevel.Information);
 
     /// <summary>
     /// 登记一条 Log 记录
@@ -33,8 +51,9 @@ public static class LogHelper
     /// <param name="user">用户对象</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, UserInfo? user, TaskStatus status, LogLevel? level = null)
-        => Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP ?? "0.0.0.0", status, level);
+    public static void Log<T>(this ILogger<T> logger, string msg, UserInfo? user, TaskStatus status,
+        LogLevel? level = null) =>
+        Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP ?? "0.0.0.0", status, level);
 
     /// <summary>
     /// 登记一条 Log 记录
@@ -44,10 +63,11 @@ public static class LogHelper
     /// <param name="context">Http上下文</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, HttpContext? context, TaskStatus status, LogLevel? level = null)
+    public static void Log<T>(this ILogger<T> logger, string msg, HttpContext? context, TaskStatus status,
+        LogLevel? level = null)
     {
-        var ip = context?.Connection?.RemoteIpAddress?.ToString() ?? IPAddress.Loopback.ToString();
-        var username = context?.User?.Identity?.Name ?? "Anonymous";
+        var ip = context?.Connection.RemoteIpAddress?.ToString() ?? IPAddress.Loopback.ToString();
+        var username = context?.User.Identity?.Name ?? "Anonymous";
 
         Log(logger, msg, username, ip, status, level);
     }
@@ -60,8 +80,8 @@ public static class LogHelper
     /// <param name="ip">连接IP</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null)
-        => Log(logger, msg, "Anonymous", ip, status, level);
+    public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null) =>
+        Log(logger, msg, "Anonymous", ip, status, level);
 
     /// <summary>
     /// 登记一条 Log 记录
@@ -72,7 +92,8 @@ public static class LogHelper
     /// <param name="ip">当前IP</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, string uname, string ip, TaskStatus status, LogLevel? level = null)
+    public static void Log<T>(this ILogger<T> logger, string msg, string uname, string ip, TaskStatus status,
+        LogLevel? level = null)
     {
         using (logger.BeginScope("{UserName}{Status}{IP}", uname, status, ip))
         {
@@ -80,53 +101,37 @@ public static class LogHelper
         }
     }
 
-    public static void UseRequestLogging(this WebApplication app)
-    {
+    public static void UseRequestLogging(this WebApplication app) =>
         app.UseSerilogRequestLogging(options =>
         {
-            options.MessageTemplate = "[{StatusCode}] {Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath} @ {RemoteIP}";
+            options.MessageTemplate =
+                "[{StatusCode}] {Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath} @ {RemoteIP}";
             options.GetLevel = (context, time, ex) =>
                 context.Response.StatusCode == 204 ? LogEventLevel.Verbose :
                 time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
-                (context.Response.StatusCode > 499 || ex is not null) ? LogEventLevel.Error : LogEventLevel.Debug;
+                context.Response.StatusCode > 499 || ex is not null ? LogEventLevel.Error : LogEventLevel.Debug;
 
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
                 diagnosticContext.Set("RemoteIP", httpContext.Connection.RemoteIpAddress);
             };
         });
-    }
 
-    public static IDictionary<string, ColumnWriterBase> ColumnWriters => new Dictionary<string, ColumnWriterBase>()
-    {
-        {"Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
-        {"Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
-        {"TimeUTC", new TimeColumnWriter() },
-        {"Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
-        {"Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
-        {"UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
-        {"Status", new SinglePropertyColumnWriter("Status", PropertyWriteMethod.ToString, NpgsqlDbType.Varchar) },
-        {"RemoteIP", new SinglePropertyColumnWriter("IP", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) }
-    };
-
-    private const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
-    private const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
-
-    public static Serilog.ILogger GetInitLogger()
-        => new LoggerConfiguration()
+    public static ILogger GetInitLogger() =>
+        new LoggerConfiguration()
             .Enrich.FromLogContext()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
-                formatter: new ExpressionTemplate(InitLogTemplate, theme: TemplateTheme.Literate),
-                restrictedToMinimumLevel: LogEventLevel.Debug
+                new ExpressionTemplate(InitLogTemplate, theme: TemplateTheme.Literate),
+                LogEventLevel.Debug
             ))
             .CreateBootstrapLogger();
 
-    public static Serilog.ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
-        => new LoggerConfiguration()
+    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider) =>
+        new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
@@ -136,14 +141,14 @@ public static class LogHelper
             )
             .MinimumLevel.Debug()
             .Filter.ByExcluding(logEvent =>
-                 logEvent.Exception != null &&
-                 logEvent.Exception.GetType() == typeof(OperationCanceledException))
+                logEvent.Exception != null &&
+                logEvent.Exception.GetType() == typeof(OperationCanceledException))
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
-                formatter: new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
-                restrictedToMinimumLevel: LogEventLevel.Debug
+                new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+                LogEventLevel.Debug
             ))
             .WriteTo.Async(t => t.File(
                 path: $"{FilePath.Logs}/log_.log",
@@ -156,8 +161,8 @@ public static class LogHelper
                 hooks: new ArchiveHooks(CompressionLevel.Optimal, $"{FilePath.Logs}/archive/{{UtcDate:yyyy-MM}}")
             ))
             .WriteTo.Async(t => t.PostgreSQL(
-                connectionString: configuration.GetConnectionString("Database"),
-                tableName: "Logs",
+                configuration.GetConnectionString("Database"),
+                "Logs",
                 respectCase: true,
                 columnOptions: ColumnWriters,
                 restrictedToMinimumLevel: LogEventLevel.Information,
@@ -167,12 +172,7 @@ public static class LogHelper
             .CreateLogger();
 }
 
-public class TimeColumnWriter : ColumnWriterBase
+public class TimeColumnWriter() : ColumnWriterBase(NpgsqlDbType.TimestampTz)
 {
-    public TimeColumnWriter() : base(NpgsqlDbType.TimestampTz)
-    {
-    }
-
-    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null)
-        => logEvent.Timestamp.ToUniversalTime();
+    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null) => logEvent.Timestamp.ToUniversalTime();
 }

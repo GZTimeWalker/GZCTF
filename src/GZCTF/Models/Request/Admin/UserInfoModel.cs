@@ -70,8 +70,8 @@ public class UserInfoModel
     /// </summary>
     public bool? EmailConfirmed { get; set; }
 
-    internal static UserInfoModel FromUserInfo(UserInfo user)
-        => new()
+    internal static UserInfoModel FromUserInfo(UserInfo user) =>
+        new()
         {
             Id = user.Id,
             IP = user.IP,

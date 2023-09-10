@@ -1,11 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 [Index(nameof(ParticipationId))]
 public class UserParticipation
 {
+    /// <summary>
+    /// 参赛对象
+    /// </summary>
+    public Participation Participation = default!;
+
     public UserParticipation() { }
 
     public UserParticipation(UserInfo user, Game game, Team team)
@@ -53,9 +58,4 @@ public class UserParticipation
     /// </summary>
     [Required]
     public int ParticipationId { get; set; }
-
-    /// <summary>
-    /// 参赛对象
-    /// </summary>
-    public Participation Participation = default!;
 }

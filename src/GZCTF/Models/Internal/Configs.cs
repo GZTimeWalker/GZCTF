@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 
+// ReSharper disable CollectionNeverUpdated.Global
+
+
 namespace GZCTF.Models.Internal;
 
 /// <summary>
@@ -24,12 +27,12 @@ public class AccountPolicy
     /// <summary>
     /// 使用验证码校验
     /// </summary>
-    public bool UseCaptcha { get; set; } = false;
+    public bool UseCaptcha { get; set; }
 
     /// <summary>
     /// 注册、更换邮箱、找回密码需要邮件确认
     /// </summary>
-    public bool EmailConfirmationRequired { get; set; } = false;
+    public bool EmailConfirmationRequired { get; set; }
 
     /// <summary>
     /// 邮箱后缀域名，以逗号分割
@@ -45,7 +48,7 @@ public class GamePolicy
     /// <summary>
     /// 是否在达到数量限制时自动销毁最早的容器
     /// </summary>
-    public bool AutoDestroyOnLimitReached { get; set; } = false;
+    public bool AutoDestroyOnLimitReached { get; set; }
 }
 
 /// <summary>
@@ -101,14 +104,14 @@ public enum ContainerPortMappingType
 {
     Default,
     PlatformProxy,
-    Frp,
+    Frp
 }
 
 public class ContainerProvider
 {
     public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
     public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
-    public bool EnableTrafficCapture { get; set; } = false;
+    public bool EnableTrafficCapture { get; set; }
 
     public string PublicEntry { get; set; } = string.Empty;
 
@@ -180,30 +183,27 @@ public class ForwardedOptions : ForwardedHeadersOptions
     public void ToForwardedHeadersOptions(ForwardedHeadersOptions options)
     {
         // assign the same value to the base class via reflection
-        var type = typeof(ForwardedHeadersOptions);
-        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach (var property in properties)
+        Type type = typeof(ForwardedHeadersOptions);
+        PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (PropertyInfo property in properties)
         {
             // skip the properties that are not being set directly
-            if (property.Name == nameof(KnownNetworks) ||
-                property.Name == nameof(KnownProxies))
+            if (property.Name is nameof(KnownNetworks) or nameof(KnownProxies))
                 continue;
 
             property.SetValue(options, property.GetValue(this));
         }
 
-        TrustedNetworks?.ForEach((network) =>
+        TrustedNetworks?.ForEach(network =>
         {
             // split the network into address and prefix length
             var parts = network.Split('/');
             if (parts.Length == 2 &&
-                IPAddress.TryParse(parts[0], out var prefix) &&
+                IPAddress.TryParse(parts[0], out IPAddress? prefix) &&
                 int.TryParse(parts[1], out var prefixLength))
-            {
                 options.KnownNetworks.Add(new IPNetwork(prefix, prefixLength));
-            }
         });
 
-        TrustedProxies?.ForEach((proxy) => proxy.ResolveIP().ToList().ForEach((ip) => options.KnownProxies.Add(ip)));
+        TrustedProxies?.ForEach(proxy => proxy.ResolveIP().ToList().ForEach(ip => options.KnownProxies.Add(ip)));
     }
 }

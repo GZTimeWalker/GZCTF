@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Models.Data;
 using GZCTF.Models.Request.Game;
 
 namespace GZCTF.Models.Request.Edit;
@@ -54,6 +53,62 @@ public class ChallengeEditDetailModel
     [Required]
     public bool IsEnabled { get; set; }
 
+    /// <summary>
+    /// 通过人数
+    /// </summary>
+    [Required]
+    public int AcceptedCount { get; set; }
+
+    /// <summary>
+    /// 统一文件名（仅用于动态附件）
+    /// </summary>
+    public string? FileName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 题目附件（动态附件存放于 FlagInfoModel）
+    /// </summary>
+    public Attachment? Attachment { get; set; }
+
+    /// <summary>
+    /// 测试容器
+    /// </summary>
+    public ContainerInfoModel? TestContainer { get; set; }
+
+    /// <summary>
+    /// 题目 Flag 信息
+    /// </summary>
+    [Required]
+    public FlagInfoModel[] Flags { get; set; } = Array.Empty<FlagInfoModel>();
+
+    internal static ChallengeEditDetailModel FromChallenge(Challenge chal) =>
+        new()
+        {
+            Id = chal.Id,
+            Title = chal.Title,
+            Content = chal.Content,
+            Tag = chal.Tag,
+            Type = chal.Type,
+            FlagTemplate = chal.FlagTemplate,
+            Hints = chal.Hints?.ToArray() ?? Array.Empty<string>(),
+            IsEnabled = chal.IsEnabled,
+            ContainerImage = chal.ContainerImage,
+            MemoryLimit = chal.MemoryLimit,
+            CPUCount = chal.CPUCount,
+            StorageLimit = chal.StorageLimit,
+            ContainerExposePort = chal.ContainerExposePort,
+            EnableTrafficCapture = chal.EnableTrafficCapture,
+            OriginalScore = chal.OriginalScore,
+            MinScoreRate = chal.MinScoreRate,
+            Difficulty = chal.Difficulty,
+            FileName = chal.FileName,
+            AcceptedCount = chal.AcceptedCount,
+            Attachment = chal.Attachment,
+            TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
+            Flags = (from flag in chal.Flags
+                    select FlagInfoModel.FromFlagContext(flag))
+                .ToArray()
+        };
+
     #region Container
 
     /// <summary>
@@ -69,7 +124,7 @@ public class ChallengeEditDetailModel
     public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
-    ///  CPU 限制 (0.1 CPUs)
+    /// CPU 限制 (0.1 CPUs)
     /// </summary>
     [Required]
     public int? CPUCount { get; set; } = 1;
@@ -115,61 +170,4 @@ public class ChallengeEditDetailModel
     public double Difficulty { get; set; } = 3;
 
     #endregion Score
-
-    /// <summary>
-    /// 通过人数
-    /// </summary>
-    [Required]
-    public int AcceptedCount { get; set; } = 0;
-
-    /// <summary>
-    /// 统一文件名（仅用于动态附件）
-    /// </summary>
-    public string? FileName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 题目附件（动态附件存放于 FlagInfoModel）
-    /// </summary>
-    public Attachment? Attachment { get; set; }
-
-    /// <summary>
-    /// 测试容器
-    /// </summary>
-    public ContainerInfoModel? TestContainer { get; set; }
-
-    /// <summary>
-    /// 题目 Flag 信息
-    /// </summary>
-    [Required]
-    public FlagInfoModel[] Flags { get; set; } = Array.Empty<FlagInfoModel>();
-
-    internal static ChallengeEditDetailModel FromChallenge(Challenge chal)
-        => new()
-        {
-            Id = chal.Id,
-            Title = chal.Title,
-            Content = chal.Content,
-            Tag = chal.Tag,
-            Type = chal.Type,
-            FlagTemplate = chal.FlagTemplate,
-            Hints = chal.Hints?.ToArray() ?? Array.Empty<string>(),
-            IsEnabled = chal.IsEnabled,
-            ContainerImage = chal.ContainerImage,
-            MemoryLimit = chal.MemoryLimit,
-            CPUCount = chal.CPUCount,
-            StorageLimit = chal.StorageLimit,
-            ContainerExposePort = chal.ContainerExposePort,
-            EnableTrafficCapture = chal.EnableTrafficCapture,
-            OriginalScore = chal.OriginalScore,
-            MinScoreRate = chal.MinScoreRate,
-            Difficulty = chal.Difficulty,
-            FileName = chal.FileName,
-            AcceptedCount = chal.AcceptedCount,
-            Attachment = chal.Attachment,
-            TestContainer = chal.TestContainer is null ? null :
-                ContainerInfoModel.FromContainer(chal.TestContainer),
-            Flags = (from flag in chal.Flags
-                     select FlagInfoModel.FromFlagContext(flag))
-                    .ToArray()
-        };
 }

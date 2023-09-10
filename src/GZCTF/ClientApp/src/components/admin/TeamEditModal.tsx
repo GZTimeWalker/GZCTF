@@ -1,24 +1,24 @@
 import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
-  Text,
   Button,
   Center,
   Grid,
   Group,
   Modal,
   ModalProps,
+  ScrollArea,
   Stack,
+  Text,
   Textarea,
   TextInput,
-  ScrollArea,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiLockOutline, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamInfoModel, AdminTeamModel } from '@Api'
+import api, { AdminTeamModel, TeamInfoModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel

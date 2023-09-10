@@ -1,4 +1,4 @@
-import { SVGProps, FC } from 'react'
+import { FC, SVGProps } from 'react'
 import { createStyles } from '@mantine/core'
 
 const useStyles = createStyles((theme) => ({

@@ -2,30 +2,29 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
+using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
+using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
-namespace GZCTF.Services;
+namespace GZCTF.Services.Container.Manager;
 
 public class DockerManager : IContainerManager
 {
-    private readonly ILogger<DockerManager> _logger;
-    private readonly IContainerProvider<DockerClient, DockerMetadata> _provider;
-    private readonly DockerMetadata _meta;
-    private readonly DockerClient _client;
+    readonly DockerClient _client;
+    readonly ILogger<DockerManager> _logger;
+    readonly DockerMetadata _meta;
 
     public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
     {
         _logger = logger;
-        _provider = provider;
-        _meta = _provider.GetMetadata();
-        _client = _provider.GetProvider();
+        _meta = provider.GetMetadata();
+        _client = provider.GetProvider();
 
-        logger.SystemLog($"容器管理模式：Docker 单实例容器控制", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog("容器管理模式：Docker 单实例容器控制", TaskStatus.Success, LogLevel.Debug);
     }
 
 
-    public async Task DestroyContainerAsync(Container container, CancellationToken token = default)
+    public async Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default)
     {
         try
         {
@@ -43,8 +42,10 @@ public class DockerManager : IContainerManager
             }
             else
             {
-                _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
-                _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Failed, LogLevel.Error);
+                _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode}", TaskStatus.Failed,
+                    LogLevel.Warning);
+                _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Failed,
+                    LogLevel.Error);
                 return;
             }
         }
@@ -57,31 +58,14 @@ public class DockerManager : IContainerManager
         container.Status = ContainerStatus.Destroyed;
     }
 
-    private CreateContainerParameters GetCreateContainerParameters(ContainerConfig config)
-        => new()
-        {
-            Image = config.Image,
-            Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
-            Name = DockerMetadata.GetName(config),
-            Env = config.Flag is null ? Array.Empty<string>() : new string[] { $"GZCTF_FLAG={config.Flag}" },
-            HostConfig = new()
-            {
-                Memory = config.MemoryLimit * 1024 * 1024,
-                CPUPercent = config.CPUCount * 10,
-                NetworkMode = _meta.Config.ChallengeNetwork,
-            },
-        };
-
-    public async Task<Container?> CreateContainerAsync(ContainerConfig config, CancellationToken token = default)
+    public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
+        CancellationToken token = default)
     {
-        var parameters = GetCreateContainerParameters(config);
+        CreateContainerParameters parameters = GetCreateContainerParameters(config);
 
         if (_meta.ExposePort)
         {
-            parameters.ExposedPorts = new Dictionary<string, EmptyStruct>()
-            {
-                [config.ExposedPort.ToString()] = new EmptyStruct()
-            };
+            parameters.ExposedPorts = new Dictionary<string, EmptyStruct> { [config.ExposedPort.ToString()] = new() };
             parameters.HostConfig.PublishAllPorts = true;
         }
 
@@ -94,13 +78,11 @@ public class DockerManager : IContainerManager
         {
             _logger.SystemLog($"拉取容器镜像 {config.Image}", TaskStatus.Pending, LogLevel.Information);
 
-            await _client.Images.CreateImageAsync(new()
-            {
-                FromImage = config.Image
-            }, _meta.Auth, new Progress<JSONMessage>(msg =>
-            {
-                Console.WriteLine($"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
-            }), token);
+            await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, _meta.Auth,
+                new Progress<JSONMessage>(msg =>
+                {
+                    Console.WriteLine($"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
+                }), token);
         }
         catch (Exception e)
         {
@@ -118,11 +100,7 @@ public class DockerManager : IContainerManager
             return null;
         }
 
-        var container = new Container()
-        {
-            ContainerId = containerRes.ID,
-            Image = config.Image,
-        };
+        var container = new Models.Data.Container { ContainerId = containerRes.ID, Image = config.Image };
 
         var retry = 0;
         bool started;
@@ -133,21 +111,28 @@ public class DockerManager : IContainerManager
             retry++;
             if (retry == 3)
             {
-                _logger.SystemLog($"启动容器实例 {container.ContainerId[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败", TaskStatus.Failed, LogLevel.Warning);
+                _logger.SystemLog(
+                    $"启动容器实例 {container.ContainerId[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败",
+                    TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
+
             if (!started)
                 await Task.Delay(500, token);
         } while (!started);
 
-        var info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
+        ContainerInspectResponse? info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
 
-        container.Status = (info.State.Dead || info.State.OOMKilled || info.State.Restarting) ? ContainerStatus.Destroyed :
-                info.State.Running ? ContainerStatus.Running : ContainerStatus.Pending;
+        container.Status = info.State.Dead || info.State.OOMKilled || info.State.Restarting
+            ? ContainerStatus.Destroyed
+            : info.State.Running
+                ? ContainerStatus.Running
+                : ContainerStatus.Pending;
 
         if (container.Status != ContainerStatus.Running)
         {
-            _logger.SystemLog($"创建 {config.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}", TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog($"创建 {config.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}",
+                TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
 
@@ -160,12 +145,12 @@ public class DockerManager : IContainerManager
         if (_meta.ExposePort)
         {
             var port = info.NetworkSettings.Ports
-            .FirstOrDefault(p =>
-                p.Key.StartsWith(config.ExposedPort.ToString())
-            ).Value.First().HostPort;
+                .FirstOrDefault(p =>
+                    p.Key.StartsWith(config.ExposedPort.ToString())
+                ).Value.First().HostPort;
 
-            if (int.TryParse(port, out var numport))
-                container.PublicPort = numport;
+            if (int.TryParse(port, out var numPort))
+                container.PublicPort = numPort;
             else
                 _logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Failed, LogLevel.Warning);
 
@@ -175,4 +160,17 @@ public class DockerManager : IContainerManager
 
         return container;
     }
+
+    CreateContainerParameters GetCreateContainerParameters(ContainerConfig config) =>
+        new()
+        {
+            Image = config.Image,
+            Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
+            Name = DockerMetadata.GetName(config),
+            Env = config.Flag is null ? Array.Empty<string>() : new[] { $"GZCTF_FLAG={config.Flag}" },
+            HostConfig = new()
+            {
+                Memory = config.MemoryLimit * 1024 * 1024, CPUPercent = config.CPUCount * 10, NetworkMode = _meta.Config.ChallengeNetwork
+            }
+        };
 }

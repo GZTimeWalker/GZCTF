@@ -11,20 +11,9 @@ namespace GZCTF.Utils;
 public enum SignAlgorithm
 {
     Ed25519,
-    Ed25519ph,
-    Ed25519ctx,
+    Ed25519Ctx,
     Ed448,
-    Ed448ph,
-    MD5withRSA,
-    SHA256withRSA,
-    SHA384withRSA,
-    SHA512withRSA,
-    SHA256withDSA,
-    SHA384withDSA,
-    SHA512withDSA,
-    SHA256withECDSA,
-    SHA384withECDSA,
-    SHA512withECDSA,
+    SHA512WithRSA
 }
 
 public static class DigitalSignature
@@ -38,14 +27,15 @@ public static class DigitalSignature
             throw new ArgumentNullException(nameof(privateKey));
 
         var byteData = Encoding.UTF8.GetBytes(data);
-        var normalSig = SignerUtilities.GetSigner(signAlgorithm.ToString());
+        ISigner? normalSig = SignerUtilities.GetSigner(signAlgorithm.ToString());
         normalSig.Init(true, privateKey);
         normalSig.BlockUpdate(byteData, 0, data.Length);
         var normalResult = normalSig.GenerateSignature();
         return Base64.ToBase64String(normalResult);
     }
 
-    public static bool VerifySignature(string data, string sign, AsymmetricKeyParameter publicKey, SignAlgorithm signAlgorithm)
+    public static bool VerifySignature(string data, string sign, AsymmetricKeyParameter publicKey,
+        SignAlgorithm signAlgorithm)
     {
         if (string.IsNullOrEmpty(data))
             throw new ArgumentNullException(nameof(data));
@@ -58,7 +48,7 @@ public static class DigitalSignature
 
         var signBytes = Base64.Decode(sign);
         var plainBytes = Encoding.UTF8.GetBytes(data);
-        var verifier = SignerUtilities.GetSigner(signAlgorithm.ToString());
+        ISigner? verifier = SignerUtilities.GetSigner(signAlgorithm.ToString());
         verifier.Init(false, publicKey);
         verifier.BlockUpdate(plainBytes, 0, plainBytes.Length);
 

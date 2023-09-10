@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GZCTF.Models.Request.Edit;
+namespace GZCTF.Models.Request.Game;
 
 /// <summary>
 /// flag 提交

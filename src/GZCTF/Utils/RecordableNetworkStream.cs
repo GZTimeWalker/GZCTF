@@ -8,40 +8,41 @@ using SharpPcap.LibPcap;
 
 namespace GZCTF.Utils;
 
-public class CapturableNetworkStreamOptions
+public class RecordableNetworkStreamOptions
 {
     /// <summary>
     /// 流量源地址
     /// </summary>
-    public IPEndPoint Source { get; set; } = new(0, 0);
+    public IPEndPoint Source { get; init; } = new(0, 0);
 
     /// <summary>
     /// 流量目的地址
     /// </summary>
-    public IPEndPoint Dest { get; set; } = new(0, 0);
+    public IPEndPoint Dest { get; init; } = new(0, 0);
 
     /// <summary>
     /// 记录文件位置
     /// </summary>
-    public string FilePath { get; set; } = string.Empty;
+    public string FilePath { get; init; } = string.Empty;
 
     /// <summary>
     /// 启用文件流量捕获
     /// </summary>
-    public bool EnableCapture { get; set; } = false;
+    public bool EnableCapture { get; init; }
 }
 
 /// <summary>
-/// 能够被捕获的网络流（Socket）
+/// 捕获网络流（Socket）
 /// </summary>
-public sealed class CapturableNetworkStream : NetworkStream
+public sealed class RecordableNetworkStream : NetworkStream
 {
-    private readonly CapturableNetworkStreamOptions _options;
-    private readonly CaptureFileWriterDevice? _device = null;
-    private readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
-    private readonly IPEndPoint _host = new(0, 65535);
+    readonly CaptureFileWriterDevice? _device;
+    readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
+    readonly IPEndPoint _host = new(0, 65535);
+    readonly RecordableNetworkStreamOptions _options;
 
-    public CapturableNetworkStream(Socket socket, byte[]? metadata, CapturableNetworkStreamOptions options) : base(socket)
+    public RecordableNetworkStream(Socket socket, byte[]? metadata, RecordableNetworkStreamOptions options) :
+        base(socket)
     {
         _options = options;
 
@@ -55,7 +56,7 @@ public sealed class CapturableNetworkStream : NetworkStream
                 Directory.CreateDirectory(dir);
 
             _device = new(_options.FilePath, FileMode.Open);
-            _device.Open(LinkLayers.Ethernet);
+            _device.Open();
 
             if (metadata is not null)
                 WriteCapturedData(_host, _options.Source, metadata);
@@ -74,7 +75,8 @@ public sealed class CapturableNetworkStream : NetworkStream
         return count;
     }
 
-    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer,
+        CancellationToken cancellationToken = default)
     {
         if (_options.EnableCapture)
             WriteCapturedData(_options.Source, _options.Dest, buffer);
@@ -88,12 +90,9 @@ public sealed class CapturableNetworkStream : NetworkStream
     /// <param name="source">源地址</param>
     /// <param name="dest">目的地址</param>
     /// <param name="buffer">数据</param>
-    internal void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
+    void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
     {
-        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
-        {
-            PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
-        };
+        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port) { PayloadDataSegment = new ByteArraySegment(buffer.ToArray()) };
 
         var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)
         {

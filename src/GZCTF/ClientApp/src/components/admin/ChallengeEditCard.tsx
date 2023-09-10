@@ -1,15 +1,15 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
+  ActionIcon,
+  Badge,
   Card,
   Group,
-  Switch,
   Progress,
-  Badge,
-  ActionIcon,
+  Switch,
   Text,
-  useMantineTheme,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
 import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'

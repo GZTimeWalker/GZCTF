@@ -2,10 +2,10 @@ import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import {
+  mdiExclamationThick,
   mdiFileTableOutline,
   mdiFlag,
   mdiLightningBolt,
-  mdiExclamationThick,
   mdiPackageVariant,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'

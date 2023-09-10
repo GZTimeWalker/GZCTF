@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace GZCTF.Models.Internal;
 
 /// <summary>
@@ -31,13 +33,13 @@ public class TurnstileRequestModel
     [JsonPropertyName("response")]
     public string Response { get; set; } = string.Empty;
 
+    // ReSharper disable once StringLiteralTypo
     [JsonPropertyName("remoteip")]
-    public string RemoteIP { get; set; } = string.Empty;
+    public string RemoteIp { get; set; } = string.Empty;
 
     [JsonPropertyName("idempotency_key")]
     public string IdempotencyKey { get; set; } = string.Empty;
 }
-
 
 /// <summary>
 /// Response Model from Cloudflare Turnstile Verify API

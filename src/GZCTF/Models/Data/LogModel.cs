@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Data;
 
 public class LogModel
 {
