@@ -4176,13 +4176,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipation
+     * @name GameParticipations
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participation
+     * @request GET:/api/game/{id}/participations
      */
-    gameParticipation: (id: number, params: RequestParams = {}) =>
+    gameParticipations: (id: number, params: RequestParams = {}) =>
       this.request<ParticipationInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/participation`,
+        path: `/api/game/${id}/participations`,
         method: 'GET',
         format: 'json',
         ...params,
@@ -4191,13 +4191,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipation
+     * @name GameParticipations
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participation
+     * @request GET:/api/game/{id}/participations
      */
-    useGameParticipation: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+    useGameParticipations: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ParticipationInfoModel[], RequestResponse>(
-        doFetch ? `/api/game/${id}/participation` : null,
+        doFetch ? `/api/game/${id}/participations` : null,
         options
       ),
 
@@ -4205,15 +4205,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description 获取比赛的全部题目参与信息，需要Admin权限
      *
      * @tags Game
-     * @name GameParticipation
+     * @name GameParticipations
      * @summary 获取全部比赛参与信息
-     * @request GET:/api/game/{id}/participation
+     * @request GET:/api/game/{id}/participations
      */
-    mutateGameParticipation: (
+    mutateGameParticipations: (
       id: number,
       data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
       options?: MutatorOptions
-    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participation`, data, options),
+    ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
 
     /**
      * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时

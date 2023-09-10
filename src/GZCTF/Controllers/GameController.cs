@@ -546,7 +546,7 @@ public class GameController(
     [ProducesResponseType(typeof(ParticipationInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Participation([FromRoute] int id, CancellationToken token = default)
+    public async Task<IActionResult> Participations([FromRoute] int id, CancellationToken token = default)
     {
         ContextInfo context = await GetContextInfo(id, token: token);
 
