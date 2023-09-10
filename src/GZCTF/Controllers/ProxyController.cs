@@ -26,20 +26,11 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
     readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
-    readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true
-    };
+    readonly JsonSerializerOptions _jsonOptions = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
 
-    readonly DistributedCacheEntryOptions _storeOption = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10)
-    };
+    readonly DistributedCacheEntryOptions _storeOption = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
 
-    readonly DistributedCacheEntryOptions _validOption = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-    };
+    readonly DistributedCacheEntryOptions _validOption = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
 
     /// <summary>
     /// 采用 websocket 代理 TCP 流量
@@ -101,13 +92,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         IPEndPoint target = new(ipAddress, container.Port);
 
         return await DoContainerProxy(id, client, target, metadata,
-            new()
-            {
-                Source = client,
-                Dest = target,
-                EnableCapture = enable,
-                FilePath = container.TrafficPath(HttpContext.Connection.Id)
-            }, token);
+            new() { Source = client, Dest = target, EnableCapture = enable, FilePath = container.TrafficPath(HttpContext.Connection.Id) }, token);
     }
 
     /// <summary>

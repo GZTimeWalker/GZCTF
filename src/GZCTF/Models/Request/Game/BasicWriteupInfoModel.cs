@@ -28,14 +28,12 @@ public class BasicWriteupInfoModel
     [JsonPropertyName("note")]
     public string WriteupNote { get; set; } = string.Empty;
 
-    internal static BasicWriteupInfoModel FromParticipation(Participation part)
-    {
-        return new BasicWriteupInfoModel
+    internal static BasicWriteupInfoModel FromParticipation(Participation part) =>
+        new()
         {
             Submitted = part.Writeup is not null,
             Name = part.Writeup?.Name ?? "#",
             FileSize = part.Writeup?.FileSize ?? 0,
             WriteupNote = part.Game.WriteupNote
         };
-    }
 }

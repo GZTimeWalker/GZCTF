@@ -20,13 +20,11 @@ public class CheatInfoModel
     /// </summary>
     public Submission Submission { get; set; } = default!;
 
-    internal static CheatInfoModel FromCheatInfo(CheatInfo info)
-    {
-        return new CheatInfoModel
+    internal static CheatInfoModel FromCheatInfo(CheatInfo info) =>
+        new()
         {
             Submission = info.Submission,
             OwnedTeam = ParticipationModel.FromParticipation(info.SourceTeam),
             SubmitTeam = ParticipationModel.FromParticipation(info.SubmitTeam)
         };
-    }
 }

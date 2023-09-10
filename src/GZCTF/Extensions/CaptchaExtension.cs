@@ -35,16 +35,11 @@ public class CaptchaExtensionBase(IOptions<CaptchaConfig>? options) : ICaptchaEx
 {
     protected readonly CaptchaConfig? Config = options?.Value;
 
-    public ClientCaptchaInfoModel ClientInfo()
-    {
-        return new ClientCaptchaInfoModel(Config);
-    }
+    public ClientCaptchaInfoModel ClientInfo() => new(Config);
 
     public virtual Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context,
-        CancellationToken token = default)
-    {
-        return Task.FromResult(true);
-    }
+        CancellationToken token = default) =>
+        Task.FromResult(true);
 }
 
 public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) : CaptchaExtensionBase(options)
@@ -87,10 +82,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
         IPAddress? ip = context.Connection.RemoteIpAddress;
 
-        TurnstileRequestModel req = new()
-        {
-            Secret = Config.SecretKey, Response = model.Challenge, RemoteIp = ip.ToString()
-        };
+        TurnstileRequestModel req = new() { Secret = Config.SecretKey, Response = model.Challenge, RemoteIp = ip.ToString() };
 
         const string api = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 

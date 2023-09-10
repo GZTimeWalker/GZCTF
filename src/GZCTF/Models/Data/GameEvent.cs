@@ -9,7 +9,9 @@ namespace GZCTF.Models.Data;
 /// </summary>
 public class GameEvent
 {
-    [Key] [JsonIgnore] public int Id { get; set; }
+    [Key]
+    [JsonIgnore]
+    public int Id { get; set; }
 
     /// <summary>
     /// 事件类型
@@ -42,21 +44,26 @@ public class GameEvent
     [JsonPropertyName("team")]
     public string TeamName => Team?.Name ?? string.Empty;
 
-    [JsonIgnore] public string? UserId { get; set; }
+    [JsonIgnore]
+    public string? UserId { get; set; }
 
-    [JsonIgnore] public UserInfo? User { get; set; }
+    [JsonIgnore]
+    public UserInfo? User { get; set; }
 
-    [JsonIgnore] public int TeamId { get; set; }
+    [JsonIgnore]
+    public int TeamId { get; set; }
 
-    [JsonIgnore] public Team? Team { get; set; }
+    [JsonIgnore]
+    public Team? Team { get; set; }
 
-    [JsonIgnore] public int GameId { get; set; }
+    [JsonIgnore]
+    public int GameId { get; set; }
 
-    [JsonIgnore] public Game? Game { get; set; }
+    [JsonIgnore]
+    public Game? Game { get; set; }
 
-    internal static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans)
-    {
-        return new GameEvent
+    internal static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans) =>
+        new()
         {
             TeamId = submission.TeamId,
             UserId = submission.UserId,
@@ -65,5 +72,4 @@ public class GameEvent
             Content =
                 $"[{ans.ToShortString()}] {submission.Answer}  {submission.Challenge.Title}#{submission.ChallengeId}"
         };
-    }
 }

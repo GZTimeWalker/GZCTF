@@ -45,9 +45,8 @@ public class ChallengeDetailModel
     /// </summary>
     public ClientFlagContext Context { get; set; } = default!;
 
-    internal static ChallengeDetailModel FromInstance(Instance instance)
-    {
-        return new ChallengeDetailModel
+    internal static ChallengeDetailModel FromInstance(Instance instance) =>
+        new()
         {
             Id = instance.Challenge.Id,
             Content = instance.Challenge.Content,
@@ -64,7 +63,6 @@ public class ChallengeDetailModel
                 FileSize = instance.Attachment?.FileSize
             }
         };
-    }
 }
 
 public class ClientFlagContext

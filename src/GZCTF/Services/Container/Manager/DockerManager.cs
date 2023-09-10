@@ -161,9 +161,8 @@ public class DockerManager : IContainerManager
         return container;
     }
 
-    CreateContainerParameters GetCreateContainerParameters(ContainerConfig config)
-    {
-        return new CreateContainerParameters
+    CreateContainerParameters GetCreateContainerParameters(ContainerConfig config) =>
+        new()
         {
             Image = config.Image,
             Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
@@ -171,10 +170,7 @@ public class DockerManager : IContainerManager
             Env = config.Flag is null ? Array.Empty<string>() : new[] { $"GZCTF_FLAG={config.Flag}" },
             HostConfig = new()
             {
-                Memory = config.MemoryLimit * 1024 * 1024,
-                CPUPercent = config.CPUCount * 10,
-                NetworkMode = _meta.Config.ChallengeNetwork
+                Memory = config.MemoryLimit * 1024 * 1024, CPUPercent = config.CPUCount * 10, NetworkMode = _meta.Config.ChallengeNetwork
             }
         };
-    }
 }

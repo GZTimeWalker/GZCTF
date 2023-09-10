@@ -92,10 +92,7 @@ public sealed class RecordableNetworkStream : NetworkStream
     /// <param name="buffer">数据</param>
     void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
     {
-        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
-        {
-            PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
-        };
+        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port) { PayloadDataSegment = new ByteArraySegment(buffer.ToArray()) };
 
         var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)
         {

@@ -109,9 +109,8 @@ public class GameInfoModel
     [JsonPropertyName("bloodBonus")]
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
-    internal static GameInfoModel FromGame(Data.Game game)
-    {
-        return new GameInfoModel
+    internal static GameInfoModel FromGame(Data.Game game) =>
+        new()
         {
             Id = game.Id,
             Title = game.Title,
@@ -132,5 +131,4 @@ public class GameInfoModel
             WriteupNote = game.WriteupNote,
             BloodBonusValue = game.BloodBonus.Val
         };
-    }
 }

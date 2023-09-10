@@ -15,6 +15,7 @@ using GZCTF.Services;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Container;
 using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -355,19 +356,13 @@ namespace GZCTF
 
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(
-                    new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。"))
-                {
-                    StatusCode = 400
-                };
+                    new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。")) { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
                 where val.Errors.Count > 0
                 select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
-            return new JsonResult(new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。"))
-            {
-                StatusCode = 400
-            };
+            return new JsonResult(new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。")) { StatusCode = 400 };
         }
     }
 }

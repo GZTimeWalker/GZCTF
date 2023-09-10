@@ -42,9 +42,8 @@ public class TeamWithDetailedUserInfo
     /// </summary>
     public ProfileUserInfoModel[]? Members { get; set; }
 
-    internal static TeamWithDetailedUserInfo FromTeam(Team team)
-    {
-        return new TeamWithDetailedUserInfo
+    internal static TeamWithDetailedUserInfo FromTeam(Team team) =>
+        new()
         {
             Id = team.Id,
             Name = team.Name,
@@ -54,5 +53,4 @@ public class TeamWithDetailedUserInfo
             CaptainId = team.CaptainId,
             Members = team.Members.Select(ProfileUserInfoModel.FromUserInfo).ToArray()
         };
-    }
 }

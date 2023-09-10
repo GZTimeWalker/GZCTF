@@ -12,7 +12,9 @@ namespace GZCTF.Models.Data;
 
 public class Game
 {
-    [Key] [Required] public int Id { get; set; }
+    [Key]
+    [Required]
+    public int Id { get; set; }
 
     /// <summary>
     /// 比赛标题
@@ -117,9 +119,11 @@ public class Game
     [JsonIgnore]
     public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
 
-    [NotMapped] public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
+    [NotMapped]
+    public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
 
-    [NotMapped] public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".StrSHA256();
+    [NotMapped]
+    public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".StrSHA256();
 
     internal void GenerateKeyPair(byte[]? xorkey)
     {

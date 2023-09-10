@@ -26,43 +26,30 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
     }
 
     public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId,
-        CancellationToken token = default)
-    {
-        return context.Submissions.Where(s =>
+        CancellationToken token = default) =>
+        context.Submissions.Where(s =>
                 s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
             .SingleOrDefaultAsync(token);
-    }
 
-    public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default)
-    {
-        return context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
+    public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default) =>
+        context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
             .AsNoTracking().Include(e => e.Game).ToArrayAsync(token);
-    }
 
     public Task<Submission[]> GetSubmissions(Game game, AnswerResult? type = null, int count = 100, int skip = 0,
-        CancellationToken token = default)
-    {
-        return GetSubmissionsByType(type).Where(s => s.Game == game).TakeAllIfZero(count, skip).ToArrayAsync(token);
-    }
+        CancellationToken token = default) =>
+        GetSubmissionsByType(type).Where(s => s.Game == game).TakeAllIfZero(count, skip).ToArrayAsync(token);
 
     public Task<Submission[]> GetSubmissions(Challenge challenge, AnswerResult? type = null, int count = 100,
-        int skip = 0, CancellationToken token = default)
-    {
-        return GetSubmissionsByType(type).Where(s => s.Challenge == challenge).TakeAllIfZero(count, skip)
+        int skip = 0, CancellationToken token = default) =>
+        GetSubmissionsByType(type).Where(s => s.Challenge == challenge).TakeAllIfZero(count, skip)
             .ToArrayAsync(token);
-    }
 
     public Task<Submission[]> GetSubmissions(Participation team, AnswerResult? type = null, int count = 100,
-        int skip = 0, CancellationToken token = default)
-    {
-        return GetSubmissionsByType(type).Where(s => s.TeamId == team.TeamId).TakeAllIfZero(count, skip)
+        int skip = 0, CancellationToken token = default) =>
+        GetSubmissionsByType(type).Where(s => s.TeamId == team.TeamId).TakeAllIfZero(count, skip)
             .ToArrayAsync(token);
-    }
 
-    public Task SendSubmission(Submission submission)
-    {
-        return _hubContext.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
-    }
+    public Task SendSubmission(Submission submission) => _hubContext.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
 
     IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {

@@ -8,7 +8,9 @@ namespace GZCTF.Models.Data;
 [Index(nameof(Hash))]
 public class LocalFile
 {
-    [Key] [JsonIgnore] public int Id { get; set; }
+    [Key]
+    [JsonIgnore]
+    public int Id { get; set; }
 
     /// <summary>
     /// 文件哈希
@@ -50,8 +52,5 @@ public class LocalFile
     /// <summary>
     /// 获取文件Url
     /// </summary>
-    public string Url(string? filename = null)
-    {
-        return $"/assets/{Hash}/{filename ?? Name}";
-    }
+    public string Url(string? filename = null) => $"/assets/{Hash}/{filename ?? Name}";
 }

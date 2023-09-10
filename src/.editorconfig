@@ -80,7 +80,7 @@ dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_null_propagation = true:suggestion
 
 # Expression-bodied members
-csharp_style_expression_bodied_methods = false:none
+csharp_style_expression_bodied_methods = true:suggestion
 csharp_style_expression_bodied_constructors = false:none
 csharp_style_expression_bodied_operators = false:none
 csharp_style_expression_bodied_properties = true:none
@@ -125,3 +125,14 @@ dotnet_diagnostic.ide1006.severity = none
 
 # CA1848: 使用 LoggerMessage 委托
 dotnet_diagnostic.ca1848.severity = none
+
+# ReSharper properties
+resharper_csharp_max_line_length = 150
+resharper_local_function_body = expression_body
+resharper_place_accessorholder_attribute_on_same_line = false
+resharper_place_field_attribute_on_same_line = false
+resharper_wrap_switch_expression = wrap_if_long
+
+# ReSharper inspection severities
+resharper_arrange_local_function_body_highlighting = hint
+resharper_arrange_method_or_operator_body_highlighting = hint

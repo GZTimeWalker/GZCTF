@@ -8,10 +8,7 @@ namespace GZCTF.Repositories;
 public class FileRepository(AppDbContext context, ILogger<FileRepository> logger) : RepositoryBase(context),
     IFileRepository
 {
-    public override Task<int> CountAsync(CancellationToken token = default)
-    {
-        return context.Files.CountAsync(token);
-    }
+    public override Task<int> CountAsync(CancellationToken token = default) => context.Files.CountAsync(token);
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
         CancellationToken token = default)
@@ -102,22 +99,16 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return await DeleteFile(file, token);
     }
 
-    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)
-    {
-        return context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
-    }
+    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default) =>
+        context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
 
-    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default)
-    {
-        return context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
-    }
+    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default) =>
+        context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
 
-    static Stream GetStream(long bufferSize)
-    {
-        return bufferSize <= 16 * 1024 * 1024
+    static Stream GetStream(long bufferSize) =>
+        bufferSize <= 16 * 1024 * 1024
             ? new MemoryStream()
             : File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
-    }
 
     async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream, CancellationToken token = default)
     {

@@ -15,12 +15,10 @@ public record Config : IEquatable<Config>
         Value = value;
     }
 
-    [Key] public string ConfigKey { get; set; } = string.Empty;
+    [Key]
+    public string ConfigKey { get; set; } = string.Empty;
 
     public string? Value { get; set; }
 
-    public bool Equal(Config other)
-    {
-        return ConfigKey == other.ConfigKey;
-    }
+    public bool Equal(Config other) => ConfigKey == other.ConfigKey;
 }

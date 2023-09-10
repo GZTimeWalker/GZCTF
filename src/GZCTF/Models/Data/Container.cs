@@ -5,7 +5,8 @@ namespace GZCTF.Models.Data;
 
 public class Container
 {
-    [Key] public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Key]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
     /// 镜像名称
@@ -74,13 +75,11 @@ public class Container
     /// <summary>
     /// 容器实例流量捕获存储路径
     /// </summary>
-    public string TrafficPath(string conn)
-    {
-        return Instance is null
+    public string TrafficPath(string conn) =>
+        Instance is null
             ? string.Empty
             : Path.Combine(FilePath.Capture,
                 $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
-    }
 
     #region Db Relationship
 

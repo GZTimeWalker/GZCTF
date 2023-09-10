@@ -14,26 +14,18 @@ public class CheatInfoRepository(AppDbContext context,
         if (submit is null)
             throw new NullReferenceException(nameof(submit));
 
-        CheatInfo info = new()
-        {
-            GameId = submission.GameId,
-            Submission = submission,
-            SubmitTeam = submit,
-            SourceTeam = source.Participation
-        };
+        CheatInfo info = new() { GameId = submission.GameId, Submission = submission, SubmitTeam = submit, SourceTeam = source.Participation };
 
         await context.AddAsync(info, token);
 
         return info;
     }
 
-    public Task<CheatInfo[]> GetCheatInfoByGameId(int gameId, CancellationToken token = default)
-    {
-        return context.CheatInfo.IgnoreAutoIncludes().Where(i => i.GameId == gameId)
+    public Task<CheatInfo[]> GetCheatInfoByGameId(int gameId, CancellationToken token = default) =>
+        context.CheatInfo.IgnoreAutoIncludes().Where(i => i.GameId == gameId)
             .Include(i => i.SourceTeam).ThenInclude(t => t.Team)
             .Include(i => i.SubmitTeam).ThenInclude(t => t.Team)
             .Include(i => i.Submission).ThenInclude(s => s.User)
             .Include(i => i.Submission).ThenInclude(s => s.Challenge)
             .AsSplitQuery().ToArrayAsync(token);
-    }
 }

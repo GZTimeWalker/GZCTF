@@ -37,9 +37,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
     {
         _k8sMetadata = new()
         {
-            Config = options.Value.K8sConfig ?? new(),
-            PortMappingType = options.Value.PortMappingType,
-            PublicEntry = options.Value.PublicEntry
+            Config = options.Value.K8sConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
         };
 
         if (!File.Exists(_k8sMetadata.Config.KubeConfig))
@@ -78,15 +76,9 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         logger.SystemLog($"K8s 初始化成功 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
     }
 
-    public Kubernetes GetProvider()
-    {
-        return _kubernetesClient;
-    }
+    public Kubernetes GetProvider() => _kubernetesClient;
 
-    public K8sMetadata GetMetadata()
-    {
-        return _k8sMetadata;
-    }
+    public K8sMetadata GetMetadata() => _k8sMetadata;
 
     void InitK8s(bool withAuth, RegistryConfig? registry)
     {
@@ -132,19 +124,13 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
             {
                 auths = new Dictionary<string, object>
                 {
-                    {
-                        registry.ServerAddress,
-                        new { auth, username = registry.UserName, password = registry.Password }
-                    }
+                    { registry.ServerAddress, new { auth, username = registry.UserName, password = registry.Password } }
                 }
             };
             var dockerJsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj);
             var secret = new V1Secret
             {
-                Metadata = new V1ObjectMeta
-                {
-                    Name = _k8sMetadata.AuthSecretName, NamespaceProperty = _k8sMetadata.Config.Namespace
-                },
+                Metadata = new V1ObjectMeta { Name = _k8sMetadata.AuthSecretName, NamespaceProperty = _k8sMetadata.Config.Namespace },
                 Data = new Dictionary<string, byte[]> { [".dockerconfigjson"] = dockerJsonBytes },
                 Type = "kubernetes.io/dockerconfigjson"
             };

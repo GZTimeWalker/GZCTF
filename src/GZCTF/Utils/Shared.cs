@@ -57,10 +57,7 @@ public record VerifyResult(SubmissionType SubType, AnswerResult AnsRes);
 /// <param name="Avatar">队伍头像</param>
 public record TeamModel(int Id, string Name, string? Avatar)
 {
-    internal static TeamModel FromTeam(Team team)
-    {
-        return new TeamModel(team.Id, team.Name, team.AvatarUrl);
-    }
+    internal static TeamModel FromTeam(Team team) => new(team.Id, team.Name, team.AvatarUrl);
 }
 
 /// <summary>
@@ -71,10 +68,7 @@ public record TeamModel(int Id, string Name, string? Avatar)
 /// <param name="Tag">题目标签</param>
 public record ChallengeModel(int Id, string Title, ChallengeTag Tag)
 {
-    internal static ChallengeModel FromChallenge(Challenge chal)
-    {
-        return new ChallengeModel(chal.Id, chal.Title, chal.Tag);
-    }
+    internal static ChallengeModel FromChallenge(Challenge chal) => new(chal.Id, chal.Title, chal.Tag);
 }
 
 /// <summary>
@@ -86,10 +80,8 @@ public record ChallengeModel(int Id, string Title, ChallengeTag Tag)
 /// <param name="Organization">队伍所属组织</param>
 public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Organization)
 {
-    internal static ParticipationModel FromParticipation(Participation part)
-    {
-        return new ParticipationModel(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Organization);
-    }
+    internal static ParticipationModel FromParticipation(Participation part) =>
+        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Organization);
 }
 
 /// <summary>
@@ -137,10 +129,7 @@ public class FileRecord
     /// </summary>
     public DateTimeOffset UpdateTime { get; set; } = DateTimeOffset.Now;
 
-    internal static FileRecord FromFileInfo(FileInfo info)
-    {
-        return new FileRecord { FileName = info.Name, UpdateTime = info.LastWriteTimeUtc, Size = info.Length };
-    }
+    internal static FileRecord FromFileInfo(FileInfo info) => new() { FileName = info.Name, UpdateTime = info.LastWriteTimeUtc, Size = info.Length };
 }
 
 /// <summary>

@@ -60,21 +60,15 @@ public class ChallengeRepository(AppDbContext context, IFileRepository fileRepos
         return challenges.FirstOrDefaultAsync(token);
     }
 
-    public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default)
-    {
-        return context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
-    }
+    public Task<Challenge[]> GetChallenges(int gameId, CancellationToken token = default) =>
+        context.Challenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
-    public Task<Challenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default)
-    {
-        return context.Challenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
+    public Task<Challenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default) =>
+        context.Challenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
             .ToArrayAsync(token);
-    }
 
-    public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default)
-    {
-        return context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
-    }
+    public Task<bool> VerifyStaticAnswer(Challenge challenge, string flag, CancellationToken token = default) =>
+        context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
 
     public async Task RemoveChallenge(Challenge challenge, CancellationToken token = default)
     {
@@ -110,9 +104,7 @@ public class ChallengeRepository(AppDbContext context, IFileRepository fileRepos
             ? null
             : new()
             {
-                Type = model.AttachmentType,
-                LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
-                RemoteUrl = model.RemoteUrl
+                Type = model.AttachmentType, LocalFile = await fileRepository.GetFileByHash(model.FileHash, token), RemoteUrl = model.RemoteUrl
             };
 
         await DeleteAllAttachment(challenge, false, token);

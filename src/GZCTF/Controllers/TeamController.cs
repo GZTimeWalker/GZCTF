@@ -136,10 +136,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
-            {
-                StatusCode = StatusCodes.Status403Forbidden
-            };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         team.UpdateInfo(model);
 
@@ -177,10 +174,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
-            {
-                StatusCode = StatusCodes.Status403Forbidden
-            };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse("队伍已锁定"));
@@ -227,10 +221,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
-            {
-                StatusCode = StatusCodes.Status403Forbidden
-            };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         return Ok(team.InviteCode);
     }
@@ -262,10 +253,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
-            {
-                StatusCode = StatusCodes.Status403Forbidden
-            };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         team.UpdateInviteToken();
 
@@ -302,10 +290,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return BadRequest(new RequestResponse("队伍未找到"));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
-            {
-                StatusCode = StatusCodes.Status403Forbidden
-            };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(token);
 
@@ -480,10 +465,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
-            {
-                StatusCode = StatusCodes.Status403Forbidden
-            };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         if (file.Length == 0)
             return BadRequest(new RequestResponse("文件非法"));
@@ -532,10 +514,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden))
-            {
-                StatusCode = StatusCodes.Status403Forbidden
-            };
+            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse("队伍已锁定"));

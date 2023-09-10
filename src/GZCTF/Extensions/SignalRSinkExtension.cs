@@ -12,10 +12,8 @@ namespace GZCTF.Extensions;
 public static class SignalRSinkExtension
 {
     public static LoggerConfiguration SignalR(this LoggerSinkConfiguration loggerConfiguration,
-        IServiceProvider serviceProvider)
-    {
-        return loggerConfiguration.Sink(new SignalRSink(serviceProvider));
-    }
+        IServiceProvider serviceProvider) =>
+        loggerConfiguration.Sink(new SignalRSink(serviceProvider));
 }
 
 public class SignalRSink : ILogEventSink

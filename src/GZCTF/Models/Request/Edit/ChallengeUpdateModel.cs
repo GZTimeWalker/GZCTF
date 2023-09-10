@@ -50,11 +50,9 @@ public class ChallengeUpdateModel
     /// </summary>
     /// <param name="originalHash">原有哈希</param>
     /// <returns></returns>
-    internal bool IsHintUpdated(int? originalHash)
-    {
-        return Hints is not null && Hints.Count > 0 &&
-               Hints.GetSetHashCode() != originalHash;
-    }
+    internal bool IsHintUpdated(int? originalHash) =>
+        Hints is not null && Hints.Count > 0 &&
+        Hints.GetSetHashCode() != originalHash;
 
     /// <summary>
     /// 是否为有效的 Flag 模板

@@ -38,10 +38,7 @@ public partial class Codec
     /// <param name="source">源数据</param>
     /// <param name="toBase">进制支持2,8,10,16</param>
     /// <returns></returns>
-    public static List<string> ToBase(List<int> source, int toBase)
-    {
-        return new List<string>(source.ConvertAll(a => Convert.ToString(a, toBase)));
-    }
+    public static List<string> ToBase(List<int> source, int toBase) => new(source.ConvertAll(a => Convert.ToString(a, toBase)));
 
     /// <summary>
     /// 字节数组转换为16进制字符串
@@ -313,10 +310,7 @@ public static partial class CodecExtensions
     /// </summary>
     /// <param name="str">原字符串</param>
     /// <returns></returns>
-    public static byte[] Ascii(this string str)
-    {
-        return Encoding.ASCII.GetBytes(str);
-    }
+    public static byte[] Ascii(this string str) => Encoding.ASCII.GetBytes(str);
 
     /// <summary>
     /// 反转字符串
@@ -363,20 +357,14 @@ public static partial class CodecExtensions
     /// </summary>
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
-    public static byte[] BytesMd5(this string str)
-    {
-        return MD5.HashData(str.ToUTF8Bytes());
-    }
+    public static byte[] BytesMd5(this string str) => MD5.HashData(str.ToUTF8Bytes());
 
     /// <summary>
     /// 获取 SHA256 哈希字节摘要
     /// </summary>
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
-    public static byte[] BytesSHA256(this string str)
-    {
-        return SHA256.HashData(str.ToUTF8Bytes());
-    }
+    public static byte[] BytesSHA256(this string str) => SHA256.HashData(str.ToUTF8Bytes());
 
 
     /// <summary>
@@ -384,8 +372,5 @@ public static partial class CodecExtensions
     /// </summary>
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
-    public static byte[] ToUTF8Bytes(this string str)
-    {
-        return Encoding.UTF8.GetBytes(str);
-    }
+    public static byte[] ToUTF8Bytes(this string str) => Encoding.UTF8.GetBytes(str);
 }

@@ -7,7 +7,9 @@ namespace GZCTF.Models.Data;
 [MemoryPackable]
 public partial class Post
 {
-    [Key] [MaxLength(8)] public string Id { get; set; } = Guid.NewGuid().ToString()[..8];
+    [Key]
+    [MaxLength(8)]
+    public string Id { get; set; } = Guid.NewGuid().ToString()[..8];
 
     /// <summary>
     /// 文章标题
@@ -68,8 +70,5 @@ public partial class Post
         return this;
     }
 
-    internal void UpdateKeyWithHash()
-    {
-        Id = $"{Title}:{UpdateTimeUTC:s}:{Guid.NewGuid()}".StrSHA256()[4..12];
-    }
+    internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUTC:s}:{Guid.NewGuid()}".StrSHA256()[4..12];
 }

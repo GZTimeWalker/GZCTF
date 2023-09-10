@@ -9,7 +9,8 @@ namespace GZCTF.Models.Data;
 [Index(nameof(GameId))]
 public class CheatInfo
 {
-    [Key] public int Id { get; set; }
+    [Key]
+    public int Id { get; set; }
 
     #region Db Relationship
 

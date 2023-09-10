@@ -29,28 +29,19 @@ public static class HubHelper
     /// </summary>
     /// <param name="context">当前请求</param>
     /// <returns></returns>
-    public static Task<bool> HasAdmin(HttpContext context)
-    {
-        return HasPrivilege(context, Role.Admin);
-    }
+    public static Task<bool> HasAdmin(HttpContext context) => HasPrivilege(context, Role.Admin);
 
     /// <summary>
     /// 当前请求是否具有大于等于<see cref="Role.Monitor" />权限
     /// </summary>
     /// <param name="context">当前请求</param>
     /// <returns></returns>
-    public static Task<bool> HasMonitor(HttpContext context)
-    {
-        return HasPrivilege(context, Role.Monitor);
-    }
+    public static Task<bool> HasMonitor(HttpContext context) => HasPrivilege(context, Role.Monitor);
 
     /// <summary>
     /// 当前请求是否具有大于等于<see cref="Role.User" />权限
     /// </summary>
     /// <param name="context">当前请求</param>
     /// <returns></returns>
-    public static Task<bool> HasUser(HttpContext context)
-    {
-        return HasPrivilege(context, Role.User);
-    }
+    public static Task<bool> HasUser(HttpContext context) => HasPrivilege(context, Role.User);
 }

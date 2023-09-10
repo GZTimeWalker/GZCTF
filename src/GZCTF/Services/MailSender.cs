@@ -76,26 +76,20 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
     }
 
-    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink)
-    {
-        return SendUrlIfPossible("验证邮箱",
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>
+        SendUrlIfPossible("验证邮箱",
             $"你正在进行账户注册操作，我们需要验证你的注册邮箱：{email}，请点击下方按钮进行验证。",
             "确认验证邮箱", userName, email, confirmLink);
-    }
 
-    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink)
-    {
-        return SendUrlIfPossible("更换邮箱",
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink) =>
+        SendUrlIfPossible("更换邮箱",
             "你正在进行账户邮箱更换操作，请点击下方按钮验证你的新邮箱。",
             "确认更换邮箱", userName, email, resetLink);
-    }
 
-    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink)
-    {
-        return SendUrlIfPossible("重置密码",
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink) =>
+        SendUrlIfPossible("重置密码",
             "你正在进行账户密码重置操作，请点击下方按钮重置你的密码。",
             "确认重置密码", userName, email, resetLink);
-    }
 
     bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email,
         string? url)

@@ -11,7 +11,9 @@ namespace GZCTF.Models.Data;
 [MemoryPackable]
 public partial class GameNotice
 {
-    [Key] [Required] public int Id { get; set; }
+    [Key]
+    [Required]
+    public int Id { get; set; }
 
     /// <summary>
     /// 通知类型
@@ -32,13 +34,16 @@ public partial class GameNotice
     [JsonPropertyName("time")]
     public DateTimeOffset PublishTimeUTC { get; set; } = DateTimeOffset.UtcNow;
 
-    [JsonIgnore] [MemoryPackIgnore] public int GameId { get; set; }
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public int GameId { get; set; }
 
-    [JsonIgnore] [MemoryPackIgnore] public Game? Game { get; set; }
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public Game? Game { get; set; }
 
-    internal static GameNotice FromSubmission(Submission submission, SubmissionType type)
-    {
-        return new GameNotice
+    internal static GameNotice FromSubmission(Submission submission, SubmissionType type) =>
+        new()
         {
             Type = type switch
             {
@@ -50,5 +55,4 @@ public partial class GameNotice
             GameId = submission.GameId,
             Content = $"恭喜 {submission.Team.Name} 获得 「{submission.Challenge.Title}」 的{type.ToBloodString()}"
         };
-    }
 }

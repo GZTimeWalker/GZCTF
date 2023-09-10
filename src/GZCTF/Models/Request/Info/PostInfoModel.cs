@@ -52,9 +52,8 @@ public class PostInfoModel
     [Required]
     public DateTimeOffset Time { get; set; } = DateTimeOffset.UtcNow;
 
-    internal static PostInfoModel FromPost(Post post)
-    {
-        return new PostInfoModel
+    internal static PostInfoModel FromPost(Post post) =>
+        new()
         {
             Id = post.Id,
             Title = post.Title,
@@ -65,5 +64,4 @@ public class PostInfoModel
             AuthorAvatar = post.Author?.AvatarUrl,
             AuthorName = post.Author?.UserName
         };
-    }
 }

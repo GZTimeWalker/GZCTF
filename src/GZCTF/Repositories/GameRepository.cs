@@ -19,10 +19,7 @@ public class GameRepository(IDistributedCache cache,
 {
     readonly byte[]? _xorkey = configuration["XorKey"]?.ToUTF8Bytes();
 
-    public override Task<int> CountAsync(CancellationToken token = default)
-    {
-        return context.Games.CountAsync(token);
-    }
+    public override Task<int> CountAsync(CancellationToken token = default) => context.Games.CountAsync(token);
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
@@ -36,43 +33,31 @@ public class GameRepository(IDistributedCache cache,
         return game;
     }
 
-    public string GetToken(Game game, Team team)
-    {
-        return $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorkey)}";
-    }
+    public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorkey)}";
 
-    public Task<Game?> GetGameById(int id, CancellationToken token = default)
-    {
-        return context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
-    }
+    public Task<Game?> GetGameById(int id, CancellationToken token = default) => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
-    public Task<int[]> GetUpcomingGames(CancellationToken token = default)
-    {
-        return context.Games.Where(g => g.StartTimeUTC > DateTime.UtcNow
-                                        && g.StartTimeUTC - DateTime.UtcNow < TimeSpan.FromMinutes(5))
+    public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
+        context.Games.Where(g => g.StartTimeUTC > DateTime.UtcNow
+                                 && g.StartTimeUTC - DateTime.UtcNow < TimeSpan.FromMinutes(5))
             .OrderBy(g => g.StartTimeUTC).Select(g => g.Id).ToArrayAsync(token);
-    }
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0,
-        CancellationToken token = default)
-    {
-        return await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
+        CancellationToken token = default) =>
+        await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
             return context.Games.Where(g => !g.Hidden)
                 .OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
         }, token);
-    }
 
-    public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
-    {
-        return cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
+    public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default) =>
+        cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
             return GenScoreboard(game, token);
         }, token);
-    }
 
     public async Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default)
     {
@@ -139,15 +124,10 @@ public class GameRepository(IDistributedCache cache,
             await participationRepository.DeleteParticipationWriteUp(part, token);
     }
 
-    public Task<Game[]> GetGames(int count, int skip, CancellationToken token)
-    {
-        return context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
-    }
+    public Task<Game[]> GetGames(int count, int skip, CancellationToken token) =>
+        context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
 
-    public void FlushGameInfoCache()
-    {
-        cache.Remove(CacheKey.BasicGameInfo);
-    }
+    public void FlushGameInfoCache() => cache.Remove(CacheKey.BasicGameInfo);
 
     #region Generate Scoreboard
 
@@ -168,9 +148,8 @@ public class GameRepository(IDistributedCache cache,
         };
     }
 
-    Task<Data[]> FetchData(Game game, CancellationToken token = default)
-    {
-        return context.Instances
+    Task<Data[]> FetchData(Game game, CancellationToken token = default) =>
+        context.Instances
             .Include(i => i.Challenge)
             .Where(i => i.Challenge.Game == game
                         && i.Challenge.IsEnabled
@@ -185,11 +164,9 @@ public class GameRepository(IDistributedCache cache,
             ).SelectMany(j => j.Submissions.DefaultIfEmpty(),
                 (j, s) => new Data(j.Instance, s)
             ).AsSplitQuery().ToArrayAsync(token);
-    }
 
-    static IDictionary<int, Blood?[]> GenBloods(Data[] data)
-    {
-        return data.GroupBy(j => j.Instance.Challenge).Select(g => new
+    static IDictionary<int, Blood?[]> GenBloods(Data[] data) =>
+        data.GroupBy(j => j.Instance.Challenge).Select(g => new
         {
             g.Key,
             Value = g.GroupBy(c => c.Submission?.TeamId)
@@ -213,12 +190,10 @@ public class GameRepository(IDistributedCache cache,
                 .OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
                 .Take(3).ToArray()
         }).ToDictionary(a => a.Key.Id, a => a.Value);
-    }
 
     static Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data,
-        IDictionary<int, Blood?[]> bloods)
-    {
-        return data.GroupBy(g => g.Instance.Challenge)
+        IDictionary<int, Blood?[]> bloods) =>
+        data.GroupBy(g => g.Instance.Challenge)
             .Select(c => new ChallengeInfo
             {
                 Id = c.Key.Id,
@@ -230,7 +205,6 @@ public class GameRepository(IDistributedCache cache,
             }).GroupBy(c => c.Tag)
             .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
-    }
 
     static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
     {
@@ -291,12 +265,12 @@ public class GameRepository(IDistributedCache cache,
                                     {
                                         SubmissionType.Unaccepted => 0,
                                         SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore *
-                                            game.BloodBonus.FirstBloodFactor),
+                                                                                     game.BloodBonus.FirstBloodFactor),
                                         SubmissionType.SecondBlood => Convert.ToInt32(
                                             s.Instance.Challenge.CurrentScore *
                                             game.BloodBonus.SecondBloodFactor),
                                         SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore *
-                                            game.BloodBonus.ThirdBloodFactor),
+                                                                                     game.BloodBonus.ThirdBloodFactor),
                                         SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
                                         _ => throw new ArgumentException(nameof(status))
                                     }
@@ -332,16 +306,12 @@ public class GameRepository(IDistributedCache cache,
             ? items
                 .GroupBy(i => i.Organization ?? "all")
                 .ToDictionary(i => i.Key, i => i.Take(10)
-                    .Select(team => new TopTimeLine
-                    {
-                        Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges)
-                    }).ToArray().AsEnumerable())
+                    .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) }).ToArray()
+                    .AsEnumerable())
             : new();
 
-        timelines["all"] = items.Take(10).Select(team => new TopTimeLine
-        {
-            Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges)
-        }).ToArray();
+        timelines["all"] = items.Take(10).Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
+            .ToArray();
 
         return timelines;
     }
@@ -389,9 +359,7 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
         return MemoryPackSerializer.Serialize(scoreboard);
     }
 
-    public static CacheRequest MakeCacheRequest(int id)
-    {
-        return new CacheRequest(Services.Cache.CacheKey.ScoreBoardBase,
+    public static CacheRequest MakeCacheRequest(int id) =>
+        new(Services.Cache.CacheKey.ScoreBoardBase,
             new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14) }, id.ToString());
-    }
 }

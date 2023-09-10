@@ -7,7 +7,9 @@ namespace GZCTF.Models.Data;
 
 public class Challenge
 {
-    [Key] [Required] public int Id { get; set; }
+    [Key]
+    [Required]
+    public int Id { get; set; }
 
     /// <summary>
     /// 题目名称

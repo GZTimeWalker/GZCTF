@@ -11,7 +11,9 @@ namespace GZCTF.Models.Data;
 [Index(nameof(TeamId))]
 public class Participation
 {
-    [Key] [JsonIgnore] public int Id { get; set; }
+    [Key]
+    [JsonIgnore]
+    public int Id { get; set; }
 
     /// <summary>
     /// 参与状态
@@ -57,11 +59,13 @@ public class Participation
     /// </summary>
     public List<Submission> Submissions { get; set; } = new();
 
-    [Required] public int GameId { get; set; }
+    [Required]
+    public int GameId { get; set; }
 
     public Game Game { get; set; } = default!;
 
-    [Required] public int TeamId { get; set; }
+    [Required]
+    public int TeamId { get; set; }
 
     public Team Team { get; set; } = default!;
 

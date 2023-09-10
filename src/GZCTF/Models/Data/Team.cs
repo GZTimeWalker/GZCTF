@@ -7,7 +7,8 @@ namespace GZCTF.Models.Data;
 
 public class Team
 {
-    [Key] public int Id { get; set; }
+    [Key]
+    public int Id { get; set; }
 
     /// <summary>
     /// 队伍名称
@@ -44,12 +45,10 @@ public class Team
     [NotMapped]
     public string InviteCode => $"{Name}:{Id}:{InviteToken}";
 
-    [NotMapped] public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
+    [NotMapped]
+    public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
 
-    public void UpdateInviteToken()
-    {
-        InviteToken = Guid.NewGuid().ToString("N");
-    }
+    public void UpdateInviteToken() => InviteToken = Guid.NewGuid().ToString("N");
 
     internal void UpdateInfo(TeamUpdateModel model)
     {

@@ -23,11 +23,8 @@ public class DockerMetadata : ContainerProviderMetadata
     /// </summary>
     /// <param name="config"></param>
     /// <returns></returns>
-    public static string GetName(ContainerConfig config)
-    {
-        return
-            $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMd5()[..16]}";
-    }
+    public static string GetName(ContainerConfig config) =>
+        $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).StrMd5()[..16]}";
 }
 
 public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
@@ -40,9 +37,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
     {
         _dockerMeta = new()
         {
-            Config = options.Value.DockerConfig ?? new(),
-            PortMappingType = options.Value.PortMappingType,
-            PublicEntry = options.Value.PublicEntry
+            Config = options.Value.DockerConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
         };
 
         DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
@@ -54,23 +49,14 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 
         // Auth for registry
         if (!string.IsNullOrWhiteSpace(registry.Value.UserName) && !string.IsNullOrWhiteSpace(registry.Value.Password))
-            _dockerMeta.Auth = new AuthConfig
-            {
-                Username = registry.Value.UserName, Password = registry.Value.Password
-            };
+            _dockerMeta.Auth = new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
 
         logger.SystemLog(
             $"Docker 初始化成功 ({(string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri)})",
             TaskStatus.Success, LogLevel.Debug);
     }
 
-    public DockerMetadata GetMetadata()
-    {
-        return _dockerMeta;
-    }
+    public DockerMetadata GetMetadata() => _dockerMeta;
 
-    public DockerClient GetProvider()
-    {
-        return _dockerClient;
-    }
+    public DockerClient GetProvider() => _dockerClient;
 }

@@ -27,10 +27,8 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取文章</response>
     [HttpGet("Posts/Latest")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetLatestPosts(CancellationToken token)
-    {
-        return Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
-    }
+    public async Task<IActionResult> GetLatestPosts(CancellationToken token) =>
+        Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取全部文章
@@ -42,10 +40,7 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取文章</response>
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPosts(CancellationToken token)
-    {
-        return Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
-    }
+    public async Task<IActionResult> GetPosts(CancellationToken token) => Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取文章详情
@@ -79,10 +74,7 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取配置信息</response>
     [HttpGet("Config")]
     [ProducesResponseType(typeof(GlobalConfig), StatusCodes.Status200OK)]
-    public IActionResult GetGlobalConfig()
-    {
-        return Ok(globalConfig.Value);
-    }
+    public IActionResult GetGlobalConfig() => Ok(globalConfig.Value);
 
     /// <summary>
     /// 获取 Captcha 配置
@@ -93,8 +85,5 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取 Captcha 配置</response>
     [HttpGet("Captcha")]
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
-    public IActionResult GetClientCaptchaInfo()
-    {
-        return Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
-    }
+    public IActionResult GetClientCaptchaInfo() => Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
 }

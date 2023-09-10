@@ -48,10 +48,7 @@ public class GameController(
     /// <response code="200">成功获取比赛信息</response>
     [HttpGet]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Games(CancellationToken token)
-    {
-        return Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
-    }
+    public async Task<IActionResult> Games(CancellationToken token) => Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
 
     /// <summary>
     /// 获取比赛详细信息
@@ -135,13 +132,7 @@ public class GameController(
         if (part is null)
         {
             // 创建新的队伍参与对象，不添加三元组
-            part = new()
-            {
-                Game = game,
-                Team = team,
-                Organization = model.Organization,
-                Token = gameRepository.GetToken(game, team)
-            };
+            part = new() { Game = game, Team = team, Organization = model.Organization, Token = gameRepository.GetToken(game, team) };
 
             participationRepository.Add(part);
         }
@@ -370,11 +361,9 @@ public class GameController(
     [RequireMonitor]
     [HttpGet("Games/{id:int}/Captures")]
     [ProducesResponseType(typeof(ChallengeTrafficModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token)
-    {
-        return Ok((await challengeRepository.GetChallengesWithTrafficCapturing(id, token))
+    public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token) =>
+        Ok((await challengeRepository.GetChallengesWithTrafficCapturing(id, token))
             .Select(ChallengeTrafficModel.FromChallenge));
-    }
 
     /// <summary>
     /// 获取比赛题目中捕获到到队伍信息
@@ -1022,10 +1011,7 @@ public class GameController(
     async Task<ContextInfo> GetContextInfo(int id, int challengeId = 0, bool withFlag = false,
         bool denyAfterEnded = true, CancellationToken token = default)
     {
-        ContextInfo res = new()
-        {
-            User = await userManager.GetUserAsync(User), Game = await gameRepository.GetGameById(id, token)
-        };
+        ContextInfo res = new() { User = await userManager.GetUserAsync(User), Game = await gameRepository.GetGameById(id, token) };
 
         if (res.Game is null)
             return res.WithResult(NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound)));

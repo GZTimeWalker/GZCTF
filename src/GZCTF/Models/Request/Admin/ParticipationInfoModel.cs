@@ -30,9 +30,8 @@ public class ParticipationInfoModel
     /// </summary>
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 
-    internal static ParticipationInfoModel FromParticipation(Participation part)
-    {
-        return new ParticipationInfoModel
+    internal static ParticipationInfoModel FromParticipation(Participation part) =>
+        new()
         {
             Id = part.Id,
             Status = part.Status,
@@ -40,5 +39,4 @@ public class ParticipationInfoModel
             RegisteredMembers = part.Members.Select(m => m.UserId).ToArray(),
             Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };
-    }
 }

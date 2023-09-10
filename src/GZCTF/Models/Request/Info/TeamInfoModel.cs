@@ -35,9 +35,8 @@ public class TeamInfoModel
     /// </summary>
     public List<TeamUserInfoModel>? Members { get; set; } = new();
 
-    internal static TeamInfoModel FromTeam(Team team, bool includeMembers = true)
-    {
-        return new TeamInfoModel
+    internal static TeamInfoModel FromTeam(Team team, bool includeMembers = true) =>
+        new()
         {
             Id = team.Id,
             Name = team.Name,
@@ -57,11 +56,9 @@ public class TeamInfoModel
                 }).ToList()
                 : null
         };
-    }
 
-    internal static TeamInfoModel FromParticipation(Participation part)
-    {
-        return new TeamInfoModel
+    internal static TeamInfoModel FromParticipation(Participation part) =>
+        new()
         {
             Id = part.Team.Id,
             Name = part.Team.Name,
@@ -81,5 +78,4 @@ public class TeamInfoModel
                     StudentNumber = m.StdNumber
                 }).ToList()
         };
-    }
 }

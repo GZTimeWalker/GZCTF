@@ -37,9 +37,8 @@ public static class ContainerServiceExtension
         return services.AddProvider(config).AddManager(config);
     }
 
-    static IServiceCollection AddProvider(this IServiceCollection services, ContainerProvider config)
-    {
-        return config.Type switch
+    static IServiceCollection AddProvider(this IServiceCollection services, ContainerProvider config) =>
+        config.Type switch
         {
             ContainerProviderType.Docker => services
                 .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
@@ -47,7 +46,6 @@ public static class ContainerServiceExtension
                 .AddSingleton<IContainerProvider<Kubernetes, K8sMetadata>, K8sProvider>(),
             _ => throw new NotImplementedException()
         };
-    }
 
     static IServiceCollection AddManager(this IServiceCollection services, ContainerProvider config)
     {

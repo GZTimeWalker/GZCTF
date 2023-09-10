@@ -9,10 +9,7 @@ public class RepositoryBase(AppDbContext context) : IRepository
 {
     protected readonly AppDbContext context = context;
 
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default)
-    {
-        return context.Database.BeginTransactionAsync(token);
-    }
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default) => context.Database.BeginTransactionAsync(token);
 
     public string ChangeTrackerView => context.ChangeTracker.DebugView.LongView;
 
@@ -33,18 +30,9 @@ public class RepositoryBase(AppDbContext context) : IRepository
             }
     }
 
-    public void Detach(object item)
-    {
-        context.Entry(item).State = EntityState.Detached;
-    }
+    public void Detach(object item) => context.Entry(item).State = EntityState.Detached;
 
-    public void Add(object item)
-    {
-        context.Add(item);
-    }
+    public void Add(object item) => context.Add(item);
 
-    public virtual Task<int> CountAsync(CancellationToken token = default)
-    {
-        throw new NotImplementedException();
-    }
+    public virtual Task<int> CountAsync(CancellationToken token = default) => throw new NotImplementedException();
 }

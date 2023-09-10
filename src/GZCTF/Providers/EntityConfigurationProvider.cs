@@ -74,12 +74,10 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             StringComparer.OrdinalIgnoreCase, token);
     }
 
-    static byte[] ConfigHash(IDictionary<string, string?> configs)
-    {
-        return SHA256.HashData(Encoding.UTF8.GetBytes(
+    static byte[] ConfigHash(IDictionary<string, string?> configs) =>
+        SHA256.HashData(Encoding.UTF8.GetBytes(
             string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))
         ));
-    }
 
     public override void Load()
     {

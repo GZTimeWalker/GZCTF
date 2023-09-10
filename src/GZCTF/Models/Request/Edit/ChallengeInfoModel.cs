@@ -49,9 +49,8 @@ public class ChallengeInfoModel
     /// </summary>
     public int OriginalScore { get; set; } = 500;
 
-    internal static ChallengeInfoModel FromChallenge(Challenge challenge)
-    {
-        return new ChallengeInfoModel
+    internal static ChallengeInfoModel FromChallenge(Challenge challenge) =>
+        new()
         {
             Id = challenge.Id,
             Title = challenge.Title,
@@ -62,5 +61,4 @@ public class ChallengeInfoModel
             OriginalScore = challenge.OriginalScore,
             IsEnabled = challenge.IsEnabled
         };
-    }
 }

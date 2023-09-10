@@ -4,7 +4,8 @@ namespace GZCTF.Models.Data;
 
 public class FlagContext
 {
-    [Key] public int Id { get; set; }
+    [Key]
+    public int Id { get; set; }
 
     /// <summary>
     /// Flag 内容

@@ -128,9 +128,8 @@ public class SwarmManager : IContainerManager
         return container;
     }
 
-    ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config)
-    {
-        return new ServiceCreateParameters
+    ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config) =>
+        new()
         {
             RegistryAuth = _meta.Auth,
             Service = new()
@@ -151,27 +150,15 @@ public class SwarmManager : IContainerManager
                                     ? Array.Empty<string>()
                                     : new[] { $"GZCTF_FLAG={config.Flag}" }
                         },
-                    Resources = new()
-                    {
-                        Limits = new()
-                        {
-                            MemoryBytes = config.MemoryLimit * 1024 * 1024,
-                            NanoCPUs = config.CPUCount * 1_0000_0000
-                        }
-                    }
+                    Resources = new() { Limits = new() { MemoryBytes = config.MemoryLimit * 1024 * 1024, NanoCPUs = config.CPUCount * 1_0000_0000 } }
                 },
                 EndpointSpec = new()
                 {
                     Ports = new PortConfig[]
                     {
-                        new()
-                        {
-                            PublishMode = _meta.ExposePort ? "global" : "vip",
-                            TargetPort = (uint)config.ExposedPort
-                        }
+                        new() { PublishMode = _meta.ExposePort ? "global" : "vip", TargetPort = (uint)config.ExposedPort }
                     }
                 }
             }
         };
-    }
 }

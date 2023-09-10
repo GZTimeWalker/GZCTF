@@ -8,7 +8,8 @@ namespace GZCTF.Models.Request.Game;
 /// </summary>
 public class DetailedGameInfoModel
 {
-    [Key] public int Id { get; set; }
+    [Key]
+    public int Id { get; set; }
 
     /// <summary>
     /// 比赛标题
@@ -98,9 +99,8 @@ public class DetailedGameInfoModel
         return this;
     }
 
-    internal static DetailedGameInfoModel FromGame(Data.Game game, int count)
-    {
-        return new DetailedGameInfoModel
+    internal static DetailedGameInfoModel FromGame(Data.Game game, int count) =>
+        new()
         {
             Id = game.Id,
             Title = game.Title,
@@ -116,5 +116,4 @@ public class DetailedGameInfoModel
             EndTimeUTC = game.EndTimeUTC,
             TeamMemberCountLimit = game.TeamMemberCountLimit
         };
-    }
 }

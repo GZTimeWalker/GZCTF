@@ -29,10 +29,7 @@ static class FilePath
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    static string GetDir(DirType type)
-    {
-        return Path.Combine(Base, type.ToString().ToLower());
-    }
+    static string GetDir(DirType type) => Path.Combine(Base, type.ToString().ToLower());
 
     /// <summary>
     /// 获取文件夹内容

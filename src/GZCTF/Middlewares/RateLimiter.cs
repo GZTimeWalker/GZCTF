@@ -35,9 +35,8 @@ public class RateLimiter
         Submit
     }
 
-    public static RateLimiterOptions GetRateLimiterOptions()
-    {
-        return new RateLimiterOptions
+    public static RateLimiterOptions GetRateLimiterOptions() =>
+        new RateLimiterOptions
             {
                 RejectionStatusCode = StatusCodes.Status429TooManyRequests,
                 GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
@@ -109,13 +108,10 @@ public class RateLimiter
                 options.TokensPerPeriod = 30;
                 options.ReplenishmentPeriod = TimeSpan.FromSeconds(5);
             });
-    }
 }
 
 public static class RateLimiterExtensions
 {
-    public static IApplicationBuilder UseConfiguredRateLimiter(this IApplicationBuilder builder)
-    {
-        return builder.UseRateLimiter(RateLimiter.GetRateLimiterOptions());
-    }
+    public static IApplicationBuilder UseConfiguredRateLimiter(this IApplicationBuilder builder) =>
+        builder.UseRateLimiter(RateLimiter.GetRateLimiterOptions());
 }

@@ -34,9 +34,8 @@ public class WriteupInfoModel
     [JsonIgnore]
     public LocalFile File { get; set; } = default!;
 
-    internal static WriteupInfoModel? FromParticipation(Participation part)
-    {
-        return part.Writeup is null
+    internal static WriteupInfoModel? FromParticipation(Participation part) =>
+        part.Writeup is null
             ? null
             : new()
             {
@@ -46,5 +45,4 @@ public class WriteupInfoModel
                 Url = part.Writeup.Url(),
                 UploadTimeUTC = part.Writeup.UploadTimeUTC
             };
-    }
 }

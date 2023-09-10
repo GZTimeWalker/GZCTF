@@ -8,8 +8,5 @@ public class EntityConfigurationSource
     public Action<DbContextOptionsBuilder> OptionsAction { get; set; } = optionsAction;
     public int PollingInterval { get; private set; } = pollingInterval; // default to 3min
 
-    public IConfigurationProvider Build(IConfigurationBuilder builder)
-    {
-        return new EntityConfigurationProvider(this);
-    }
+    public IConfigurationProvider Build(IConfigurationBuilder builder) => new EntityConfigurationProvider(this);
 }

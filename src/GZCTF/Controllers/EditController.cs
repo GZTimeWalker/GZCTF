@@ -140,12 +140,10 @@ public class EditController(
     /// <response code="200">成功获取比赛列表</response>
     [HttpGet("Games")]
     [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token)
-    {
-        return Ok((await gameRepository.GetGames(count, skip, token))
+    public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token) =>
+        Ok((await gameRepository.GetGames(count, skip, token))
             .Select(GameInfoModel.FromGame)
             .ToResponse(await gameRepository.CountAsync(token)));
-    }
 
     /// <summary>
     /// 获取比赛
@@ -334,13 +332,7 @@ public class EditController(
             return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
 
         GameNotice res = await gameNoticeRepository.AddNotice(
-            new()
-            {
-                Content = model.Content,
-                GameId = game.Id,
-                Type = NoticeType.Normal,
-                PublishTimeUTC = DateTimeOffset.UtcNow
-            }, token);
+            new() { Content = model.Content, GameId = game.Id, Type = NoticeType.Normal, PublishTimeUTC = DateTimeOffset.UtcNow }, token);
 
         return Ok(res);
     }
@@ -464,10 +456,8 @@ public class EditController(
     /// <response code="200">成功获取比赛题目</response>
     [HttpGet("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
-    {
-        return Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
-    }
+    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token) =>
+        Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
     /// 获取比赛题目

@@ -5,10 +5,8 @@ namespace GZCTF.Services.Cache;
 
 public class CacheHelper(ChannelWriter<CacheRequest> channelWriter)
 {
-    public async Task FlushScoreboardCache(int gameId, CancellationToken token)
-    {
+    public async Task FlushScoreboardCache(int gameId, CancellationToken token) =>
         await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
-    }
 }
 
 /// <summary>
@@ -34,48 +32,30 @@ public static class CacheKey
     /// <summary>
     /// 缓存更新锁
     /// </summary>
-    public static string UpdateLock(string key)
-    {
-        return $"_CacheUpdateLock_{key}";
-    }
+    public static string UpdateLock(string key) => $"_CacheUpdateLock_{key}";
 
     /// <summary>
     /// 积分榜缓存
     /// </summary>
-    public static string ScoreBoard(int id)
-    {
-        return $"_ScoreBoard_{id}";
-    }
+    public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
 
     /// <summary>
     /// 积分榜缓存
     /// </summary>
-    public static string ScoreBoard(string id)
-    {
-        return $"_ScoreBoard_{id}";
-    }
+    public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
 
     /// <summary>
     /// 比赛通知缓存
     /// </summary>
-    public static string GameNotice(int id)
-    {
-        return $"_GameNotice_{id}";
-    }
+    public static string GameNotice(int id) => $"_GameNotice_{id}";
 
     /// <summary>
     /// 比赛通知缓存
     /// </summary>
-    public static string GameNotice(string id)
-    {
-        return $"_ScoreBoard_{id}";
-    }
+    public static string GameNotice(string id) => $"_ScoreBoard_{id}";
 
     /// <summary>
     /// 容器连接数缓存
     /// </summary>
-    public static string ConnectionCount(string id)
-    {
-        return $"_Container_Conn_{id}";
-    }
+    public static string ConnectionCount(string id) => $"_Container_Conn_{id}";
 }

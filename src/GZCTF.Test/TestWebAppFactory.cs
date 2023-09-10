@@ -13,12 +13,10 @@ public class TestWebAppFactory : WebApplicationFactory<Program>
         Program.IsTesting = true;
     }
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
+    protected override void ConfigureWebHost(IWebHostBuilder builder) =>
         builder.ConfigureServices(services =>
         {
             services.Remove(services.Single(d => d.ServiceType == typeof(IMailSender)));
             services.AddTransient<IMailSender, TestMailSender>();
         });
-    }
 }

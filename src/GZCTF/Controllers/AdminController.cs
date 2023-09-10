@@ -99,13 +99,11 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpGet("Users")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0,
-        CancellationToken token = default)
-    {
-        return Ok((await (
+        CancellationToken token = default) =>
+        Ok((await (
             from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
             select UserInfoModel.FromUserInfo(user)
         ).ToArrayAsync(token)).ToResponse(await userManager.Users.CountAsync(token)));
-    }
 
     /// <summary>
     /// 批量添加用户
@@ -209,9 +207,8 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpPost("Users/Search")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
-    {
-        return Ok((await (
+    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default) =>
+        Ok((await (
             from user in userManager.Users
                 .Where(item =>
                     EF.Functions.Like(item.UserName!, $"%{hint}%") ||
@@ -223,7 +220,6 @@ public class AdminController(UserManager<UserInfo> userManager,
                 .OrderBy(e => e.Id).Take(30)
             select UserInfoModel.FromUserInfo(user)
         ).ToArrayAsync(token)).ToResponse());
-    }
 
     /// <summary>
     /// 获取全部队伍信息
@@ -237,12 +233,10 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpGet("Teams")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0,
-        CancellationToken token = default)
-    {
-        return Ok((await teamRepository.GetTeams(count, skip, token))
+        CancellationToken token = default) =>
+        Ok((await teamRepository.GetTeams(count, skip, token))
             .Select(team => TeamInfoModel.FromTeam(team))
             .ToResponse(await teamRepository.CountAsync(token)));
-    }
 
     /// <summary>
     /// 搜索队伍
@@ -255,12 +249,10 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpPost("Teams/Search")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default)
-    {
-        return Ok((await teamRepository.SearchTeams(hint, token))
+    public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default) =>
+        Ok((await teamRepository.SearchTeams(hint, token))
             .Select(team => TeamInfoModel.FromTeam(team))
             .ToResponse());
-    }
 
     /// <summary>
     /// 修改队伍信息
@@ -434,10 +426,8 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpGet("Logs")]
     [ProducesResponseType(typeof(LogMessageModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromQuery] string? level = "All", [FromQuery] int count = 50,
-        [FromQuery] int skip = 0, CancellationToken token = default)
-    {
-        return Ok(await logRepository.GetLogs(skip, count, level, token));
-    }
+        [FromQuery] int skip = 0, CancellationToken token = default) =>
+        Ok(await logRepository.GetLogs(skip, count, level, token));
 
     /// <summary>
     /// 更新参与状态
@@ -527,10 +517,8 @@ public class AdminController(UserManager<UserInfo> userManager,
     /// <response code="403">禁止访问</response>
     [HttpGet("Instances")]
     [ProducesResponseType(typeof(ArrayResponse<ContainerInstanceModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Instances(CancellationToken token = default)
-    {
-        return Ok(new ArrayResponse<ContainerInstanceModel>(await containerRepository.GetContainerInstances(token)));
-    }
+    public async Task<IActionResult> Instances(CancellationToken token = default) =>
+        Ok(new ArrayResponse<ContainerInstanceModel>(await containerRepository.GetContainerInstances(token)));
 
     /// <summary>
     /// 删除容器实例
@@ -572,8 +560,6 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpGet("Files")]
     [ProducesResponseType(typeof(ArrayResponse<LocalFile>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0,
-        CancellationToken token = default)
-    {
-        return Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
-    }
+        CancellationToken token = default) =>
+        Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
 }

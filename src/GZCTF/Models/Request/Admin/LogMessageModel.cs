@@ -19,7 +19,8 @@ public class LogMessageModel
     [JsonPropertyName("name")]
     public string? UserName { get; set; }
 
-    [JsonPropertyName("level")] public string? Level { get; set; }
+    [JsonPropertyName("level")]
+    public string? Level { get; set; }
 
     /// <summary>
     /// IP地址
@@ -39,9 +40,8 @@ public class LogMessageModel
     [JsonPropertyName("status")]
     public string? Status { get; set; }
 
-    public static LogMessageModel FromLogModel(LogModel logInfo)
-    {
-        return new LogMessageModel
+    public static LogMessageModel FromLogModel(LogModel logInfo) =>
+        new()
         {
             Time = logInfo.TimeUTC,
             Level = logInfo.Level,
@@ -50,5 +50,4 @@ public class LogMessageModel
             Msg = logInfo.Message,
             Status = logInfo.Status
         };
-    }
 }

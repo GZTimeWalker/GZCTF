@@ -80,9 +80,8 @@ public class ChallengeEditDetailModel
     [Required]
     public FlagInfoModel[] Flags { get; set; } = Array.Empty<FlagInfoModel>();
 
-    internal static ChallengeEditDetailModel FromChallenge(Challenge chal)
-    {
-        return new ChallengeEditDetailModel
+    internal static ChallengeEditDetailModel FromChallenge(Challenge chal) =>
+        new()
         {
             Id = chal.Id,
             Title = chal.Title,
@@ -109,7 +108,6 @@ public class ChallengeEditDetailModel
                     select FlagInfoModel.FromFlagContext(flag))
                 .ToArray()
         };
-    }
 
     #region Container
 

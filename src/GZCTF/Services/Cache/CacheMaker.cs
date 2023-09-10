@@ -56,10 +56,7 @@ public class CacheMaker(
         return Task.CompletedTask;
     }
 
-    public void AddCacheRequestHandler<T>(string key) where T : ICacheRequestHandler, new()
-    {
-        _cacheHandlers.Add(key, new T());
-    }
+    public void AddCacheRequestHandler<T>(string key) where T : ICacheRequestHandler, new() => _cacheHandlers.Add(key, new T());
 
     async Task Maker(CancellationToken token = default)
     {

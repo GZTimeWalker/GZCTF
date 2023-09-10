@@ -200,11 +200,9 @@ public class InstanceRepository(AppDbContext context,
         await SaveAsync(token);
     }
 
-    public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default)
-    {
-        return context.Instances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
+    public Task<Instance[]> GetInstances(Challenge challenge, CancellationToken token = default) =>
+        context.Instances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
             .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
-    }
 
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
     {

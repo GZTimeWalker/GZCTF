@@ -26,9 +26,7 @@ public static class LogHelper
         { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
         { "TimeUTC", new TimeColumnWriter() },
         { "Exception", new ExceptionColumnWriter() },
-        {
-            "Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar)
-        },
+        { "Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
         { "UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
         { "Status", new SinglePropertyColumnWriter("Status", PropertyWriteMethod.ToString, NpgsqlDbType.Varchar) },
         { "RemoteIP", new SinglePropertyColumnWriter("IP", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) }
@@ -42,10 +40,8 @@ public static class LogHelper
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
     public static void SystemLog<T>(this ILogger<T> logger, string msg, TaskStatus status = TaskStatus.Success,
-        LogLevel? level = null)
-    {
+        LogLevel? level = null) =>
         Log(logger, msg, "System", string.Empty, status, level ?? LogLevel.Information);
-    }
 
     /// <summary>
     /// 登记一条 Log 记录
@@ -56,10 +52,8 @@ public static class LogHelper
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
     public static void Log<T>(this ILogger<T> logger, string msg, UserInfo? user, TaskStatus status,
-        LogLevel? level = null)
-    {
+        LogLevel? level = null) =>
         Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP ?? "0.0.0.0", status, level);
-    }
 
     /// <summary>
     /// 登记一条 Log 记录
@@ -86,10 +80,8 @@ public static class LogHelper
     /// <param name="ip">连接IP</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null)
-    {
+    public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null) =>
         Log(logger, msg, "Anonymous", ip, status, level);
-    }
 
     /// <summary>
     /// 登记一条 Log 记录
@@ -109,8 +101,7 @@ public static class LogHelper
         }
     }
 
-    public static void UseRequestLogging(this WebApplication app)
-    {
+    public static void UseRequestLogging(this WebApplication app) =>
         app.UseSerilogRequestLogging(options =>
         {
             options.MessageTemplate =
@@ -125,11 +116,9 @@ public static class LogHelper
                 diagnosticContext.Set("RemoteIP", httpContext.Connection.RemoteIpAddress);
             };
         });
-    }
 
-    public static ILogger GetInitLogger()
-    {
-        return new LoggerConfiguration()
+    public static ILogger GetInitLogger() =>
+        new LoggerConfiguration()
             .Enrich.FromLogContext()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -140,11 +129,9 @@ public static class LogHelper
                 LogEventLevel.Debug
             ))
             .CreateBootstrapLogger();
-    }
 
-    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
-    {
-        return new LoggerConfiguration()
+    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider) =>
+        new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
@@ -183,13 +170,9 @@ public static class LogHelper
             ))
             .WriteTo.SignalR(serviceProvider)
             .CreateLogger();
-    }
 }
 
 public class TimeColumnWriter() : ColumnWriterBase(NpgsqlDbType.TimestampTz)
 {
-    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null)
-    {
-        return logEvent.Timestamp.ToUniversalTime();
-    }
+    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null) => logEvent.Timestamp.ToUniversalTime();
 }

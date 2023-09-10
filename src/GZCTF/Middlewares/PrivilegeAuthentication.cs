@@ -50,10 +50,7 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         }
     }
 
-    public static IActionResult GetResult(string msg, int code)
-    {
-        return new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
-    }
+    public static IActionResult GetResult(string msg, int code) => new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
 }
 
 /// <summary>

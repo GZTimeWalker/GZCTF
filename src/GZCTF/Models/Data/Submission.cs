@@ -7,7 +7,9 @@ namespace GZCTF.Models.Data;
 [Index(nameof(UserId))]
 public class Submission
 {
-    [Key] [JsonIgnore] public int Id { get; set; }
+    [Key]
+    [JsonIgnore]
+    public int Id { get; set; }
 
     /// <summary>
     /// 提交的答案字符串

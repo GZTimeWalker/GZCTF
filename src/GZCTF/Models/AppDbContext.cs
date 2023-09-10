@@ -40,12 +40,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
     static ValueComparer<TList> GetEnumerableComparer<TList, T>()
         where T : notnull
-        where TList : IEnumerable<T>, new()
-    {
-        return new ValueComparer<TList>(
+        where TList : IEnumerable<T>, new() =>
+        new(
             (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
-    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

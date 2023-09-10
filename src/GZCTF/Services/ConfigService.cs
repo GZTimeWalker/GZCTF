@@ -11,20 +11,11 @@ public class ConfigService(AppDbContext context,
 {
     readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
-    public Task SaveConfig(Type type, object? value, CancellationToken token = default)
-    {
-        return SaveConfigInternal(GetConfigs(type, value), token);
-    }
+    public Task SaveConfig(Type type, object? value, CancellationToken token = default) => SaveConfigInternal(GetConfigs(type, value), token);
 
-    public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class
-    {
-        return SaveConfigInternal(GetConfigs(config), token);
-    }
+    public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class => SaveConfigInternal(GetConfigs(config), token);
 
-    public void ReloadConfig()
-    {
-        _configuration?.Reload();
-    }
+    public void ReloadConfig() => _configuration?.Reload();
 
     static void MapConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
     {
