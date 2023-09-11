@@ -60,7 +60,7 @@ public class PostInfoModel
             Summary = post.Summary,
             IsPinned = post.IsPinned,
             Tags = post.Tags,
-            Time = post.UpdateTimeUTC,
+            Time = post.UpdateTimeUtc,
             AuthorAvatar = post.Author?.AvatarUrl,
             AuthorName = post.Author?.UserName
         };

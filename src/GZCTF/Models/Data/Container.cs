@@ -6,7 +6,7 @@ namespace GZCTF.Models.Data;
 public class Container
 {
     [Key]
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// 镜像名称
@@ -70,7 +70,7 @@ public class Container
     /// 容器实例访问方式
     /// </summary>
     [NotMapped]
-    public string Entry => IsProxy ? Id : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
+    public string Entry => IsProxy ? Id.ToString() : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
 
     /// <summary>
     /// 容器实例流量捕获存储路径

@@ -269,19 +269,19 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     /// 踢除用户接口，踢出对应id的用户，需要队伍创建者权限
     /// </remarks>
     /// <param name="id">队伍Id</param>
-    /// <param name="userid">被踢除用户Id</param>
+    /// <param name="userId">被踢除用户Id</param>
     /// <param name="token"></param>
     /// <response code="200">成功获取队伍Token</response>
     /// <response code="400">队伍不存在</response>
     /// <response code="401">未授权</response>
     /// <response code="403">无权操作</response>
     [RequireUser]
-    [HttpPost("{id:int}/Kick/{userid}")]
+    [HttpPost("{id:int}/Kick/{userId:guid}")]
     [ProducesResponseType(typeof(TeamInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> KickUser([FromRoute] int id, [FromRoute] string userid, CancellationToken token)
+    public async Task<IActionResult> KickUser([FromRoute] int id, [FromRoute] Guid userId, CancellationToken token)
     {
         UserInfo? user = await userManager.GetUserAsync(User);
         Team? team = await teamRepository.GetTeamById(id, token);
@@ -299,7 +299,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))
                 return BadRequest(new RequestResponse("队伍已锁定"));
 
-            UserInfo? kickUser = team.Members.SingleOrDefault(m => m.Id == userid);
+            UserInfo? kickUser = team.Members.SingleOrDefault(m => m.Id == userId);
             if (kickUser is null)
                 return BadRequest(new RequestResponse("用户不在队伍中"));
 

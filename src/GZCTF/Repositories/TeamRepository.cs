@@ -17,11 +17,11 @@ public class TeamRepository : RepositoryBase, ITeamRepository
             .Where(p => p.Team == team && p.Game.EndTimeUTC > current)
             .AnyAsync(token);
 
-        if (team.Locked && !result)
-        {
-            team.Locked = false;
-            await SaveAsync(token);
-        }
+        if (!team.Locked || result) 
+            return result;
+        
+        team.Locked = false;
+        await SaveAsync(token);
 
         return result;
     }

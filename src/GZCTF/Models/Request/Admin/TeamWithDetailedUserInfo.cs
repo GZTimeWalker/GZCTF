@@ -35,7 +35,7 @@ public class TeamWithDetailedUserInfo
     /// <summary>
     /// 队长 Id
     /// </summary>
-    public string CaptainId { get; set; } = string.Empty;
+    public Guid CaptainId { get; set; }
 
     /// <summary>
     /// 队伍成员

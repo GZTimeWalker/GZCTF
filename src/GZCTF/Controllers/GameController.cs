@@ -741,9 +741,12 @@ public class GameController(
     public async Task<IActionResult> Status([FromRoute] int id, [FromRoute] int challengeId, [FromRoute] int submitId,
         CancellationToken token)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        Submission? submission = await submissionRepository.GetSubmission(id, challengeId, userId!, submitId, token);
+        var claimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (claimId is null)
+            return NotFound(new RequestResponse("提交未找到", StatusCodes.Status404NotFound));
+        
+        Submission? submission = await submissionRepository.GetSubmission(id, challengeId, Guid.Parse(claimId), submitId, token);
 
         if (submission is null)
             return NotFound(new RequestResponse("提交未找到", StatusCodes.Status404NotFound));
@@ -800,11 +803,13 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SubmitWriteup([FromRoute] int id, IFormFile file, CancellationToken token)
     {
-        if (file.Length == 0)
-            return BadRequest(new RequestResponse("文件非法"));
-
-        if (file.Length > 20 * 1024 * 1024)
-            return BadRequest(new RequestResponse("文件过大"));
+        switch (file.Length)
+        {
+            case 0:
+                return BadRequest(new RequestResponse("文件非法"));
+            case > 20 * 1024 * 1024:
+                return BadRequest(new RequestResponse("文件过大"));
+        }
 
         if (file.ContentType != "application/pdf" || Path.GetExtension(file.FileName) != ".pdf")
             return BadRequest(new RequestResponse("请上传 pdf 文件"));

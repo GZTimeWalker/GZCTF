@@ -8,7 +8,7 @@ public class UserInfoModel
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string? Id { get; set; }
+    public Guid? Id { get; set; }
 
     /// <summary>
     /// 用户名
@@ -83,8 +83,8 @@ public class UserInfoModel
             RealName = user.RealName,
             UserName = user.UserName,
             StdNumber = user.StdNumber,
-            LastVisitedUTC = user.LastVisitedUTC,
-            RegisterTimeUTC = user.RegisterTimeUTC,
+            LastVisitedUTC = user.LastVisitedUtc,
+            RegisterTimeUTC = user.RegisterTimeUtc,
             EmailConfirmed = user.EmailConfirmed
         };
 }

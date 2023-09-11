@@ -221,9 +221,9 @@ public class AccountController(
         logger.Log("通过邮箱验证", user, TaskStatus.Success);
         await signInManager.SignInAsync(user, true);
 
-        user.LastSignedInUTC = DateTimeOffset.UtcNow;
-        user.LastVisitedUTC = DateTimeOffset.UtcNow;
-        user.RegisterTimeUTC = DateTimeOffset.UtcNow;
+        user.LastSignedInUtc = DateTimeOffset.UtcNow;
+        user.LastVisitedUtc = DateTimeOffset.UtcNow;
+        user.RegisterTimeUtc = DateTimeOffset.UtcNow;
 
         result = await userManager.UpdateAsync(user);
 
@@ -262,7 +262,7 @@ public class AccountController(
         if (user.Role == Role.Banned)
             return Unauthorized(new RequestResponse("用户已被禁用", StatusCodes.Status401Unauthorized));
 
-        user.LastSignedInUTC = DateTimeOffset.UtcNow;
+        user.LastSignedInUtc = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
 
         await signInManager.SignOutAsync();

@@ -8,5 +8,5 @@ public class TeamTransferModel
     /// 新队长 Id
     /// </summary>
     [Required]
-    public string NewCaptainId { get; set; } = string.Empty;
+    public Guid NewCaptainId { get; set; }
 }

@@ -67,7 +67,7 @@ public class PostDetailModel
             IsPinned = post.IsPinned,
             Summary = post.Summary,
             Content = post.Content,
-            Time = post.UpdateTimeUTC,
+            Time = post.UpdateTimeUtc,
             AuthorAvatar = post.Author?.AvatarUrl,
             AuthorName = post.Author?.UserName
         };

@@ -8,7 +8,7 @@ public class ProfileUserInfoModel
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     /// <summary>
     /// 用户名

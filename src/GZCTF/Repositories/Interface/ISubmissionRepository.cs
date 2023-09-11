@@ -68,6 +68,6 @@ public interface ISubmissionRepository : IRepository
     /// <param name="submitId">提交Id</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId,
+    public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default);
 }

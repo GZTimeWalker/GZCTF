@@ -20,14 +20,13 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
-        var dbcontext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+        var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+        var id = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         UserInfo? user = null;
-
-        if (context.HttpContext.User.Identity?.IsAuthenticated is true)
-            user = await dbcontext.Users.SingleOrDefaultAsync(u => u.Id ==
-                                                                   context.HttpContext.User.FindFirstValue(ClaimTypes
-                                                                       .NameIdentifier));
+        
+        if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true && Guid.TryParse(id, out var guid))
+            user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == guid);
 
         if (user is null)
         {
@@ -35,10 +34,10 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
             return;
         }
 
-        if (DateTimeOffset.UtcNow - user.LastVisitedUTC > TimeSpan.FromSeconds(5))
+        if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
         {
             user.UpdateByHttpContext(context.HttpContext);
-            await dbcontext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
+            await dbContext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
         }
 
         if (user.Role < privilege)

@@ -45,7 +45,7 @@ public class GameEvent
     public string TeamName => Team?.Name ?? string.Empty;
 
     [JsonIgnore]
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     [JsonIgnore]
     public UserInfo? User { get; set; }

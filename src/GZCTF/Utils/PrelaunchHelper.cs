@@ -25,7 +25,7 @@ public static class PrelaunchHelper
         {
             await context.Posts.AddAsync(new()
             {
-                UpdateTimeUTC = DateTimeOffset.UtcNow,
+                UpdateTimeUtc = DateTimeOffset.UtcNow,
                 Title = "Welcome to GZ::CTF!",
                 Summary = "一个开源的CTF比赛平台。",
                 Content = "项目基于 AGPL-3.0 许可证，开源于 [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF)。"
@@ -50,7 +50,7 @@ public static class PrelaunchHelper
                     Email = "admin@gzti.me",
                     Role = Role.Admin,
                     EmailConfirmed = true,
-                    RegisterTimeUTC = DateTimeOffset.UtcNow
+                    RegisterTimeUtc = DateTimeOffset.UtcNow
                 };
 
                 IdentityResult result = await userManager.CreateAsync(admin, password);

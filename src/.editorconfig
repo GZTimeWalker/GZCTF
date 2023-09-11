@@ -127,6 +127,9 @@ dotnet_diagnostic.ide1006.severity = none
 dotnet_diagnostic.ca1848.severity = none
 
 # ReSharper properties
+resharper_braces_for_for = required_for_multiline
+resharper_braces_for_foreach = required_for_multiline
+resharper_braces_for_while = required_for_multiline
 resharper_csharp_max_line_length = 150
 resharper_local_function_body = expression_body
 resharper_place_accessorholder_attribute_on_same_line = false

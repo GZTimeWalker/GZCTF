@@ -24,7 +24,7 @@ public class UserParticipation
     /// 参赛用户 Id
     /// </summary>
     [Required]
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
 
     /// <summary>
     /// 参赛用户

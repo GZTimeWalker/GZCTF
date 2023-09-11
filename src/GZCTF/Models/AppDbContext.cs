@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GZCTF.Models;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) :
-    IdentityDbContext<UserInfo>(options), IDataProtectionKeyContext
+    IdentityDbContext<UserInfo, IdentityRole<Guid>, Guid>(options), IDataProtectionKeyContext
 {
     public DbSet<Post> Posts { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;

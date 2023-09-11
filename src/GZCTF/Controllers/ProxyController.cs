@@ -43,7 +43,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status418ImATeapot)]
-    public async Task<IActionResult> ProxyForInstance(string id, CancellationToken token = default)
+    public async Task<IActionResult> ProxyForInstance(Guid id, CancellationToken token = default)
     {
         if (!_enablePlatformProxy)
             return BadRequest(new RequestResponse("TCP 代理已禁用"));
@@ -51,15 +51,17 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (!await ValidateContainer(id, token))
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
+        var key = CacheKey.ConnectionCount(id);
+        
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
 
-        if (!await IncrementConnectionCount(id))
+        if (!await IncrementConnectionCount(key))
             return BadRequest(new RequestResponse("容器连接数已达上限"));
 
         Container? container = await containerRepository.GetContainerWithInstanceById(id, token);
 
-        if (container is null || container.Instance is null || !container.IsProxy)
+        if (container?.Instance is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
@@ -107,7 +109,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status418ImATeapot)]
     [SuppressMessage("ReSharper", "RouteTemplates.ParameterTypeCanBeMadeStricter")]
-    public async Task<IActionResult> ProxyForNoInstance(string id, CancellationToken token = default)
+    public async Task<IActionResult> ProxyForNoInstance(Guid id, CancellationToken token = default)
     {
         if (!_enablePlatformProxy)
             return BadRequest(new RequestResponse("TCP 代理已禁用"));
@@ -140,7 +142,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         return await DoContainerProxy(id, client, target, null, new(), token);
     }
 
-    async Task<IActionResult> DoContainerProxy(string id, IPEndPoint client, IPEndPoint target,
+    async Task<IActionResult> DoContainerProxy(Guid id, IPEndPoint client, IPEndPoint target,
         byte[]? metadata, RecordableNetworkStreamOptions options, CancellationToken token = default)
     {
         using var socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -179,7 +181,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         }
         finally
         {
-            await DecrementConnectionCount(id);
+            await DecrementConnectionCount(CacheKey.ConnectionCount(id));
             stream.Close();
         }
 
@@ -256,7 +258,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     /// <param name="id">容器 id</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    async Task<bool> ValidateContainer(string id, CancellationToken token = default)
+    async Task<bool> ValidateContainer(Guid id, CancellationToken token = default)
     {
         var key = CacheKey.ConnectionCount(id);
         var bytes = await cache.GetAsync(key, token);
@@ -275,11 +277,10 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     /// <summary>
     /// 实现容器 TCP 连接计数的 Fetch-Add 操作
     /// </summary>
-    /// <param name="id">容器 id</param>
+    /// <param name="key">缓存键值</param>
     /// <returns></returns>
-    async Task<bool> IncrementConnectionCount(string id)
+    async Task<bool> IncrementConnectionCount(string key)
     {
-        var key = CacheKey.ConnectionCount(id);
         var bytes = await cache.GetAsync(key);
 
         if (bytes is null)
@@ -298,11 +299,10 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     /// <summary>
     /// 实现容器 TCP 连接计数的减少操作
     /// </summary>
-    /// <param name="id">容器 id</param>
+    /// <param name="key">缓存键值</param>
     /// <returns></returns>
-    async Task DecrementConnectionCount(string id)
+    async Task DecrementConnectionCount(string key)
     {
-        var key = CacheKey.ConnectionCount(id);
         var bytes = await cache.GetAsync(key);
 
         if (bytes is null)

@@ -136,7 +136,11 @@ public class SwarmManager : IContainerManager
             {
                 Name = DockerMetadata.GetName(config),
                 Labels =
-                    new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
+                    new Dictionary<string, string>
+                    {
+                        ["TeamId"] = config.TeamId, 
+                        ["UserId"] = config.UserId.ToString()
+                    },
                 Mode = new() { Replicated = new() { Replicas = 1 } },
                 TaskTemplate = new()
                 {
@@ -150,7 +154,14 @@ public class SwarmManager : IContainerManager
                                     ? Array.Empty<string>()
                                     : new[] { $"GZCTF_FLAG={config.Flag}" }
                         },
-                    Resources = new() { Limits = new() { MemoryBytes = config.MemoryLimit * 1024 * 1024, NanoCPUs = config.CPUCount * 1_0000_0000 } }
+                    Resources = new()
+                    {
+                        Limits = new()
+                        {
+                            MemoryBytes = config.MemoryLimit * 1024 * 1024, 
+                            NanoCPUs = config.CPUCount * 1_0000_0000
+                        }
+                    }
                 },
                 EndpointSpec = new()
                 {

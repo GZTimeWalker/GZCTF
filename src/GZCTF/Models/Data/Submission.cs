@@ -52,7 +52,7 @@ public class Submission
     /// 用户数据库Id
     /// </summary>
     [JsonIgnore]
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     /// <summary>
     /// 用户

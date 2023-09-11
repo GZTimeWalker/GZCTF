@@ -165,7 +165,11 @@ public class DockerManager : IContainerManager
         new()
         {
             Image = config.Image,
-            Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId },
+            Labels = new Dictionary<string, string>
+            {
+                ["TeamId"] = config.TeamId, 
+                ["UserId"] = config.UserId.ToString()
+            },
             Name = DockerMetadata.GetName(config),
             Env = config.Flag is null ? Array.Empty<string>() : new[] { $"GZCTF_FLAG={config.Flag}" },
             HostConfig = new()

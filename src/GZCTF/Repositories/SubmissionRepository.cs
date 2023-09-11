@@ -7,16 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class SubmissionRepository : RepositoryBase, ISubmissionRepository
+public class SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
+    AppDbContext context) : RepositoryBase(context), ISubmissionRepository
 {
-    readonly IHubContext<MonitorHub, IMonitorClient> _hubContext;
-
-    public SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
-        AppDbContext context) : base(context)
-    {
-        _hubContext = hub;
-    }
-
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)
     {
         await context.AddAsync(submission, token);
@@ -25,9 +18,9 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
         return submission;
     }
 
-    public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId,
-        CancellationToken token = default) =>
-        context.Submissions.Where(s =>
+    public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
+        CancellationToken token = default)
+        => context.Submissions.Where(s =>
                 s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
             .SingleOrDefaultAsync(token);
 
@@ -49,7 +42,8 @@ public class SubmissionRepository : RepositoryBase, ISubmissionRepository
         GetSubmissionsByType(type).Where(s => s.TeamId == team.TeamId).TakeAllIfZero(count, skip)
             .ToArrayAsync(token);
 
-    public Task SendSubmission(Submission submission) => _hubContext.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
+    public Task SendSubmission(Submission submission)
+        => hub.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
 
     IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {
