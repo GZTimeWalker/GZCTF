@@ -25,75 +25,75 @@
         <TieredPgo>true</TieredPgo>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(RunConfiguration)' == 'GZCTF' "/>
+    <PropertyGroup Condition=" '$(RunConfiguration)' == 'GZCTF' " />
     <ItemGroup>
-        <PackageReference Include="Docker.DotNet" Version="3.125.15"/>
-        <PackageReference Include="KubernetesClient" Version="12.0.16"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10"/>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.10"/>
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.10"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+        <PackageReference Include="Docker.DotNet" Version="3.125.15" />
+        <PackageReference Include="KubernetesClient" Version="12.0.16" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4"/>
-        <PackageReference Include="NPOI" Version="2.6.1"/>
-        <PackageReference Include="NSwag.AspNetCore" Version="13.20.0"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+        <PackageReference Include="NPOI" Version="2.6.2" />
+        <PackageReference Include="NSwag.AspNetCore" Version="13.20.0" />
         <PackageReference Include="NSwag.MSBuild" Version="13.20.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Serilog.AspNetCore" Version="7.0.0"/>
-        <PackageReference Include="Serilog.Expressions" Version="3.4.1"/>
-        <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0"/>
-        <PackageReference Include="Serilog.Sinks.AspNetCore.SignalR" Version="0.4.0"/>
-        <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
-        <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.3"/>
-        <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0"/>
-        <PackageReference Include="MailKit" Version="4.2.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10"/>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.10"/>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.10"/>
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.10"/>
-        <PackageReference Include="MemoryPack" Version="1.9.16"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2"/>
-        <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1"/>
-        <PackageReference Include="PacketDotNet" Version="1.4.7"/>
-        <PackageReference Include="SharpPcap" Version="6.2.5"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+        <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
+        <PackageReference Include="Serilog.Sinks.AspNetCore.SignalR" Version="0.4.0" />
+        <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+        <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.3" />
+        <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
+        <PackageReference Include="MailKit" Version="4.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.11" />
+        <PackageReference Include="MemoryPack" Version="1.9.16" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
+        <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+        <PackageReference Include="PacketDotNet" Version="1.4.7" />
+        <PackageReference Include="SharpPcap" Version="6.2.5" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="GZCTF.Test"/>
+        <InternalsVisibleTo Include="GZCTF.Test" />
     </ItemGroup>
 
     <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
-        <Content Remove="$(SpaRoot)**"/>
-        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
+        <Content Remove="$(SpaRoot)**" />
+        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Services\Assets\URLEmailTemplate.html"/>
-        <None Remove="NETCore.MailKit"/>
-        <None Remove="MailKit"/>
-        <None Remove="Microsoft.Extensions.Caching.Redis"/>
-        <None Remove="Microsoft.EntityFrameworkCore.InMemory"/>
-        <None Remove="Microsoft.AspNetCore.DataProtection.StackExchangeRedis"/>
-        <None Remove="StackExchange.Redis"/>
-        <None Remove="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore"/>
-        <None Remove="Microsoft.AspNetCore.SignalR.StackExchangeRedis"/>
-        <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis"/>
-        <None Remove="MemoryPack"/>
-        <None Remove="MemoryPack.Core"/>
-        <None Remove="ClientApp\build\**"/>
+        <None Remove="Services\Assets\URLEmailTemplate.html" />
+        <None Remove="NETCore.MailKit" />
+        <None Remove="MailKit" />
+        <None Remove="Microsoft.Extensions.Caching.Redis" />
+        <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
+        <None Remove="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" />
+        <None Remove="StackExchange.Redis" />
+        <None Remove="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
+        <None Remove="Microsoft.AspNetCore.SignalR.StackExchangeRedis" />
+        <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis" />
+        <None Remove="MemoryPack" />
+        <None Remove="MemoryPack.Core" />
+        <None Remove="ClientApp\build\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Services\Assets\URLEmailTemplate.html"/>
+        <EmbeddedResource Include="Services\Assets\URLEmailTemplate.html" />
     </ItemGroup>
 
     <ItemGroup>
@@ -106,32 +106,32 @@
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
         <!-- Ensure Node.js is installed -->
         <Exec Command="node --version" ContinueOnError="true">
-            <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
         </Exec>
-        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE."/>
+        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
         <!-- Ensure pnpm is installed -->
         <Exec Command="pnpm --version" ContinueOnError="true">
-            <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
         </Exec>
-        <Error Condition="'$(ErrorCode)' != '0'" Text="pnpm is required to build and run this project. To continue, please install pnpm from https://pnpm.io/installation/, and then restart your command prompt or IDE."/>
-        <Message Importance="high" Text="Restoring dependencies using 'pnpm'. This may take several minutes..."/>
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install"/>
+        <Error Condition="'$(ErrorCode)' != '0'" Text="pnpm is required to build and run this project. To continue, please install pnpm from https://pnpm.io/installation/, and then restart your command prompt or IDE." />
+        <Message Importance="high" Text="Restoring dependencies using 'pnpm'. This may take several minutes..." />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
     </Target>
 
     <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'GenAPI'">
-        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) run"/>
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run genapi"/>
+        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) run" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run genapi" />
     </Target>
 
     <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish">
         <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install"/>
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run build"/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run build" />
 
         <!-- Include the newly-built files in the publish output -->
         <ItemGroup>
-            <DistFiles Include="$(SpaRoot)build\**"/>
-            <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+            <DistFiles Include="$(SpaRoot)build\**" />
+            <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
                 <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
                 <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
                 <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

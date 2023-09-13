@@ -15,7 +15,6 @@ using GZCTF.Services;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Container;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
