@@ -37,8 +37,6 @@ const Login: FC = () => {
   const onLogin = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    setDisabled(true)
-
     if (uname.length === 0 || pwd.length < 6) {
       showNotification({
         color: 'red',
@@ -61,6 +59,8 @@ const Login: FC = () => {
       })
       return
     }
+
+    setDisabled(true)
 
     showNotification({
       color: 'orange',
