@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.17.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.2..v0.17.3) - 2023-09-19
+
+### 🐛 Bug Fixes
+
+- **(api)** cannot delete post - ([0cb492](https://github.com/GZTimeWalker/GZCTF/commit/0cb492)) by **GZTime**
+
+---
 ## [0.17.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.1..v0.17.2) - 2023-09-16
 
 ### 🐛 Bug Fixes
