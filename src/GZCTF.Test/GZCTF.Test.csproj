@@ -6,7 +6,7 @@
         <IsPackable>false</IsPackable>
         <CollectCoverage>true</CollectCoverage>
         <Configurations>Debug;Release;GenAPI</Configurations>
-        <ReleaseVersion>0.17.2</ReleaseVersion>
+        <ReleaseVersion>0.17.3</ReleaseVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
     </PropertyGroup>
 
@@ -17,12 +17,12 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.11" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-        <PackageReference Include="xunit" Version="2.5.0" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
+        <PackageReference Include="xunit" Version="2.5.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="xunit.runner.console" Version="2.5.0">
+        <PackageReference Include="xunit.runner.console" Version="2.5.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

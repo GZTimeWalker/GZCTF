@@ -89,7 +89,7 @@ public class EditController(
     /// <param name="token"></param>
     /// <response code="200">成功删除文章</response>
     /// <response code="404">未找到文章</response>
-    [HttpDelete("Posts/{id:int}")]
+    [HttpDelete("Posts/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletePost(string id, CancellationToken token)

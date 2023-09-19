@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.17.2",
+  "version": "0.17.3",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,7 @@
     "genapi": "swagger-typescript-api -p template/swagger.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
-    "@babel/core": "^7.22.19",
+    "@babel/core": "^7.22.20",
     "@emotion/react": "^11.11.1",
     "@mantine/carousel": "^6.0.20",
     "@mantine/core": "^6.0.20",
@@ -33,7 +33,7 @@
     "embla-carousel-react": "^7.1.0",
     "katex": "^0.16.8",
     "lz-string": "^1.5.0",
-    "marked": "^9.0.1",
+    "marked": "^9.0.3",
     "marked-highlight": "^2.0.6",
     "pdfjs-dist": "3.6.172",
     "prismjs": "^1.29.0",
@@ -53,10 +53,10 @@
     "@types/katex": "^0.16.3",
     "@types/node": "20.6.2",
     "@types/prismjs": "^1.26.0",
-    "@types/react": "^18.2.21",
+    "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
     "@vitejs/plugin-react": "^4.0.4",
     "axios": "^1.5.0",
     "babel-plugin-prismjs": "^2.1.0",

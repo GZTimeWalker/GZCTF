@@ -1,0 +1,76 @@
+[changelog]
+
+trim = true
+
+header = """
+# Changelog\n
+All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.\n
+"""
+
+body = """
+---
+{% if version %}\
+    {% if previous.version %}\
+        ## [{{ version | trim_start_matches(pat="v") }}]($REPO/compare/{{ previous.version }}..{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% else %}\
+        ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% endif %}\
+{% else %}\
+    ## [unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | striptags | trim | upper_first }}
+    {% for commit in commits
+    | filter(attribute="scope")
+    | sort(attribute="scope") %}
+        - **({{commit.scope}})**{% if commit.breaking %} [**breaking**]{% endif %} \
+            {{ commit.message }} - ([{{ commit.id | truncate(length=6, end="") }}]($REPO/commit/{{ commit.id | truncate(length=6, end="") }})) by **{{ commit.author.name }}**
+    {%- endfor -%}
+    {% raw %}\n{% endraw %}\
+    {%- for commit in commits %}
+        {%- if commit.scope -%}
+        {% else -%}
+            - {% if commit.breaking %} [**breaking**]{% endif %}\
+                {{ commit.message }} - ([{{ commit.id | truncate(length=6, end="") }}]($REPO/commit/{{ commit.id | truncate(length=6, end="") }})) by **{{ commit.author.name }}**
+        {% endif -%}
+    {% endfor -%}
+{% endfor %}\n
+"""
+
+footer = """
+---
+GZCTF © 2022-present GZTimeWalker
+"""
+
+postprocessors = [
+  { pattern = '\$REPO', replace = "https://github.com/GZTimeWalker/GZCTF" },
+]
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+protect_breaking_commits = false
+filter_commits = false
+tag_pattern = "v[0-9]*"
+ignore_tags = ""
+topo_order = false
+sort_commits = "newest"
+
+commit_parsers = [
+  { message = "^feat|Feat", group = "<!-- 0 -->⛰️ Features" },
+  { message = "^fix", group = "<!-- 1 -->🐛 Bug Fixes" },
+  { message = "^style", group = "<!-- 2 -->🎨 Styling" },
+  { message = "^chore\\(release\\): prepare for", skip = true },
+  { message = "^chore\\(deps\\)|deps", skip = true },
+  { message = "^chore\\(pr\\)", skip = true },
+  { message = "^chore\\(pull\\)", skip = true },
+  { message = "^chore!", skip = true },
+  { message = "^wip", skip = true },
+  { message = "^docs|doc", skip = true },
+  { message = "^release", skip = true },
+  { message = "^[cC]hore", group = "<!-- 3 -->⚙️ Miscellaneous Tasks" },
+  { body = ".*security", group = "<!-- 4 -->🛡️ Security" },
+  { message = "^revert", skip = true },
+  { message = ".*", group = "<!-- 9 -->📦 Other Changes"}
+]
