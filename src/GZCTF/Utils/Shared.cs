@@ -68,7 +68,7 @@ public record TeamModel(int Id, string Name, string? Avatar)
 /// <param name="Tag">题目标签</param>
 public record ChallengeModel(int Id, string Title, ChallengeTag Tag)
 {
-    internal static ChallengeModel FromChallenge(Challenge chal) => new(chal.Id, chal.Title, chal.Tag);
+    internal static ChallengeModel FromChallenge(GameChallenge chal) => new(chal.Id, chal.Title, chal.Tag);
 }
 
 /// <summary>

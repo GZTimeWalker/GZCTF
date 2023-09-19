@@ -53,7 +53,7 @@ public class ContainerInstanceModel
     internal static ContainerInstanceModel FromContainer(Container container)
     {
         Team? team = container.Instance?.Participation.Team;
-        Challenge? chal = container.Instance?.Challenge;
+        GameChallenge? chal = container.Instance?.GameChallenge;
 
         var model = new ContainerInstanceModel
         {

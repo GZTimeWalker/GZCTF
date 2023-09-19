@@ -16,7 +16,7 @@ public class ContainerRepository(IDistributedCache cache,
 
     public Task<Container?> GetContainerWithInstanceById(Guid guid, CancellationToken token = default) =>
         context.Containers.IgnoreAutoIncludes()
-            .Include(c => c.Instance).ThenInclude(i => i!.Challenge)
+            .Include(c => c.Instance).ThenInclude(i => i!.GameChallenge)
             .Include(c => c.Instance).ThenInclude(i => i!.FlagContext)
             .Include(c => c.Instance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);

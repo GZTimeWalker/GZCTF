@@ -47,12 +47,12 @@ public class Participation
     /// <summary>
     /// 队伍激活的题目
     /// </summary>
-    public HashSet<Challenge> Challenges { get; set; } = new();
+    public HashSet<GameChallenge> Challenges { get; set; } = new();
 
     /// <summary>
     /// 赛题实例
     /// </summary>
-    public List<Instance> Instances { get; set; } = new();
+    public List<GameInstance> Instances { get; set; } = new();
 
     /// <summary>
     /// 提交

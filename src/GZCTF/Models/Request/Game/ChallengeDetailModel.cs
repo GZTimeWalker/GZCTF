@@ -45,22 +45,22 @@ public class ChallengeDetailModel
     /// </summary>
     public ClientFlagContext Context { get; set; } = default!;
 
-    internal static ChallengeDetailModel FromInstance(Instance instance) =>
+    internal static ChallengeDetailModel FromInstance(GameInstance gameInstance) =>
         new()
         {
-            Id = instance.Challenge.Id,
-            Content = instance.Challenge.Content,
-            Hints = instance.Challenge.Hints,
-            Score = instance.Challenge.CurrentScore,
-            Tag = instance.Challenge.Tag,
-            Title = instance.Challenge.Title,
-            Type = instance.Challenge.Type,
+            Id = gameInstance.GameChallenge.Id,
+            Content = gameInstance.GameChallenge.Content,
+            Hints = gameInstance.GameChallenge.Hints,
+            Score = gameInstance.GameChallenge.CurrentScore,
+            Tag = gameInstance.GameChallenge.Tag,
+            Title = gameInstance.GameChallenge.Title,
+            Type = gameInstance.GameChallenge.Type,
             Context = new()
             {
-                InstanceEntry = instance.Container?.Entry,
-                CloseTime = instance.Container?.ExpectStopAt,
-                Url = instance.AttachmentUrl,
-                FileSize = instance.Attachment?.FileSize
+                InstanceEntry = gameInstance.Container?.Entry,
+                CloseTime = gameInstance.Container?.ExpectStopAt,
+                Url = gameInstance.AttachmentUrl,
+                FileSize = gameInstance.Attachment?.FileSize
             }
         };
 }

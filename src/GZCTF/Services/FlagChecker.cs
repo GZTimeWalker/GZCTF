@@ -67,23 +67,23 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
 
                     if (ans == AnswerResult.NotFound)
                     {
-                        logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User,
+                        logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.GameChallenge.Title}] 的实例", item.User,
                             TaskStatus.NotFound, LogLevel.Warning);
                     }
                     else if (ans == AnswerResult.Accepted)
                     {
-                        logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]",
+                        logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.GameChallenge.Title}] 的答案 [{item.Answer}]",
                             item.User, TaskStatus.Success, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
 
                         // only flush the scoreboard if the contest is not ended and the submission is accepted
-                        if (item.Game.EndTimeUTC > item.SubmitTimeUTC)
+                        if (item.Game.EndTimeUtc > item.SubmitTimeUtc)
                             await cacheHelper.FlushScoreboardCache(item.GameId, token);
                     }
                     else
                     {
-                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]",
+                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.GameChallenge.Title}] 的答案 [{item.Answer}]",
                             item.User, TaskStatus.Failed, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
@@ -94,14 +94,14 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                         if (ans == AnswerResult.CheatDetected)
                         {
                             logger.Log(
-                                $"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeamName}]",
+                                $"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.GameChallenge.Title}]，相关队伍 [{result.SourceTeamName}]",
                                 item.User, TaskStatus.Success, LogLevel.Information);
                             await eventRepository.AddEvent(
                                 new()
                                 {
                                     Type = EventType.CheatDetected,
                                     Content =
-                                        $"题目 [{item.Challenge.Title}] 疑似发生违规，相关队伍 [{item.Team.Name}] 和 [{result.SourceTeamName}]",
+                                        $"题目 [{item.GameChallenge.Title}] 疑似发生违规，相关队伍 [{item.Team.Name}] 和 [{result.SourceTeamName}]",
                                     TeamId = item.TeamId,
                                     UserId = item.UserId,
                                     GameId = item.GameId
@@ -109,7 +109,7 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                         }
                     }
 
-                    if (item.Game.EndTimeUTC > DateTimeOffset.UtcNow
+                    if (item.Game.EndTimeUtc > DateTimeOffset.UtcNow
                         && type != SubmissionType.Unaccepted
                         && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(GameNotice.FromSubmission(item, type), token);

@@ -6,7 +6,7 @@ namespace GZCTF.Models.Data;
 public class Container
 {
     [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
 
     /// <summary>
     /// 镜像名称
@@ -86,7 +86,7 @@ public class Container
     /// <summary>
     /// 比赛题目实例对象
     /// </summary>
-    public Instance? Instance { get; set; }
+    public GameInstance? Instance { get; set; }
 
     /// <summary>
     /// 实例对象ID

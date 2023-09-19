@@ -17,15 +17,15 @@ public class GameRepository(IDistributedCache cache,
     ILogger<GameRepository> logger,
     AppDbContext context) : RepositoryBase(context), IGameRepository
 {
-    readonly byte[]? _xorkey = configuration["XorKey"]?.ToUTF8Bytes();
+    readonly byte[]? _xorKey = configuration["XorKey"]?.ToUTF8Bytes();
 
     public override Task<int> CountAsync(CancellationToken token = default) => context.Games.CountAsync(token);
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
-        game.GenerateKeyPair(_xorkey);
+        game.GenerateKeyPair(_xorKey);
 
-        if (_xorkey is null)
+        if (_xorKey is null)
             logger.SystemLog("配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。", TaskStatus.Pending, LogLevel.Warning);
 
         await context.AddAsync(game, token);
@@ -33,14 +33,14 @@ public class GameRepository(IDistributedCache cache,
         return game;
     }
 
-    public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorkey)}";
+    public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorKey)}";
 
     public Task<Game?> GetGameById(int id, CancellationToken token = default) => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
-        context.Games.Where(g => g.StartTimeUTC > DateTime.UtcNow
-                                 && g.StartTimeUTC - DateTime.UtcNow < TimeSpan.FromMinutes(5))
-            .OrderBy(g => g.StartTimeUTC).Select(g => g.Id).ToArrayAsync(token);
+        context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
+                                 && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(5))
+            .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0,
         CancellationToken token = default) =>
@@ -48,7 +48,7 @@ public class GameRepository(IDistributedCache cache,
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
             return context.Games.Where(g => !g.Hidden)
-                .OrderByDescending(g => g.StartTimeUTC).Skip(skip).Take(count)
+                .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
         }, token);
 
@@ -65,8 +65,7 @@ public class GameRepository(IDistributedCache cache,
         ScoreboardModel scoreboard = await GetScoreboard(game, token);
 
         foreach (ScoreboardItem item in scoreboard.Items)
-            item.TeamInfo = await teamRepository.GetTeamById(item.Id, token) ??
-                            throw new ArgumentNullException("team", "Team not found");
+            item.TeamInfo = await teamRepository.GetTeamById(item.Id, token);
 
         return scoreboard;
     }
@@ -83,7 +82,7 @@ public class GameRepository(IDistributedCache cache,
             logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Challenges.Count} 个题目的相关附件……", TaskStatus.Pending,
                 LogLevel.Debug);
 
-            foreach (Challenge chal in game.Challenges)
+            foreach (GameChallenge chal in game.Challenges)
                 await challengeRepository.RemoveChallenge(chal, token);
 
             await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
@@ -99,8 +98,8 @@ public class GameRepository(IDistributedCache cache,
             await SaveAsync(token);
             await trans.CommitAsync(token);
 
-            cache.Remove(CacheKey.BasicGameInfo);
-            cache.Remove(CacheKey.ScoreBoard(game.Id));
+            await cache.RemoveAsync(CacheKey.BasicGameInfo, token);
+            await cache.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
 
             return TaskStatus.Success;
         }
@@ -131,7 +130,7 @@ public class GameRepository(IDistributedCache cache,
 
     #region Generate Scoreboard
 
-    record Data(Instance Instance, Submission? Submission);
+    record Data(GameInstance GameInstance, Submission? Submission);
 
     // By xfoxfu & GZTimeWalker @ 2022/04/03
     public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
@@ -149,15 +148,15 @@ public class GameRepository(IDistributedCache cache,
     }
 
     Task<Data[]> FetchData(Game game, CancellationToken token = default) =>
-        context.Instances
-            .Include(i => i.Challenge)
-            .Where(i => i.Challenge.Game == game
-                        && i.Challenge.IsEnabled
+        context.GameInstances
+            .Include(i => i.GameChallenge)
+            .Where(i => i.GameChallenge.Game == game
+                        && i.GameChallenge.IsEnabled
                         && i.Participation.Status == ParticipationStatus.Accepted)
             .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
                 context.Submissions.Where(s => s.Status == AnswerResult.Accepted
-                                               && s.SubmitTimeUTC < game.EndTimeUTC),
+                                               && s.SubmitTimeUtc < game.EndTimeUtc),
                 i => new { i.ChallengeId, i.ParticipationId },
                 s => new { s.ChallengeId, s.ParticipationId },
                 (i, s) => new { Instance = i, Submissions = s }
@@ -166,34 +165,34 @@ public class GameRepository(IDistributedCache cache,
             ).AsSplitQuery().ToArrayAsync(token);
 
     static IDictionary<int, Blood?[]> GenBloods(Data[] data) =>
-        data.GroupBy(j => j.Instance.Challenge).Select(g => new
+        data.GroupBy(j => j.GameInstance.GameChallenge).Select(g => new
         {
             g.Key,
             Value = g.GroupBy(c => c.Submission?.TeamId)
                 .Where(t => t.Key is not null)
                 .Select(c =>
                 {
-                    Data? s = c.OrderBy(t => t.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                    Data? s = c.OrderBy(t => t.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
                         .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
 
                     return s is null
                         ? null
                         : new Blood
                         {
-                            Id = s.Instance.Participation.TeamId,
-                            Avatar = s.Instance.Participation.Team.AvatarUrl,
-                            Name = s.Instance.Participation.Team.Name,
-                            SubmitTimeUTC = s.Submission?.SubmitTimeUTC
+                            Id = s.GameInstance.Participation.TeamId,
+                            Avatar = s.GameInstance.Participation.Team.AvatarUrl,
+                            Name = s.GameInstance.Participation.Team.Name,
+                            SubmitTimeUtc = s.Submission?.SubmitTimeUtc
                         };
                 })
                 .Where(t => t is not null)
-                .OrderBy(t => t?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                .OrderBy(t => t?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
                 .Take(3).ToArray()
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
     static Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data,
         IDictionary<int, Blood?[]> bloods) =>
-        data.GroupBy(g => g.Instance.Challenge)
+        data.GroupBy(g => g.GameInstance.GameChallenge)
             .Select(c => new ChallengeInfo
             {
                 Id = c.Key.Id,
@@ -208,11 +207,11 @@ public class GameRepository(IDistributedCache cache,
 
     static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
     {
-        Dictionary<string, int> Ranks = new();
-        return data.GroupBy(j => j.Instance.Participation)
+        Dictionary<string, int> ranks = new();
+        return data.GroupBy(j => j.GameInstance.Participation)
             .Select(j =>
             {
-                IEnumerable<IGrouping<int, Data>> challengeGroup = j.GroupBy(s => s.Instance.ChallengeId);
+                IEnumerable<IGrouping<int, Data>> challengeGroup = j.GroupBy(s => s.GameInstance.ChallengeId);
 
                 return new ScoreboardItem
                 {
@@ -223,17 +222,17 @@ public class GameRepository(IDistributedCache cache,
                     Organization = j.Key.Organization,
                     Rank = 0,
                     LastSubmissionTime = j
-                        .Where(s => s.Submission?.SubmitTimeUTC < game.EndTimeUTC)
-                        .Select(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
-                        .OrderBy(t => t).LastOrDefault(game.StartTimeUTC),
+                        .Where(s => s.Submission?.SubmitTimeUtc < game.EndTimeUtc)
+                        .Select(s => s.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
+                        .OrderBy(t => t).LastOrDefault(game.StartTimeUtc),
                     SolvedCount = challengeGroup.Count(c => c.Any(
                         s => s.Submission?.Status == AnswerResult.Accepted
-                             && s.Submission.SubmitTimeUTC < game.EndTimeUTC)),
+                             && s.Submission.SubmitTimeUtc < game.EndTimeUtc)),
                     Challenges = challengeGroup
                         .Select(c =>
                         {
                             var cid = c.Key;
-                            Data? s = c.OrderBy(s => s.Submission?.SubmitTimeUTC ?? DateTimeOffset.UtcNow)
+                            Data? s = c.OrderBy(s => s.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
                                 .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
 
                             var status = SubmissionType.Normal;
@@ -241,13 +240,13 @@ public class GameRepository(IDistributedCache cache,
                             if (s?.Submission is null)
                                 status = SubmissionType.Unaccepted;
                             else if (bloods[cid][0] is not null &&
-                                     s.Submission.SubmitTimeUTC <= bloods[cid][0]!.SubmitTimeUTC)
+                                     s.Submission.SubmitTimeUtc <= bloods[cid][0]!.SubmitTimeUtc)
                                 status = SubmissionType.FirstBlood;
                             else if (bloods[cid][1] is not null &&
-                                     s.Submission.SubmitTimeUTC <= bloods[cid][1]!.SubmitTimeUTC)
+                                     s.Submission.SubmitTimeUtc <= bloods[cid][1]!.SubmitTimeUtc)
                                 status = SubmissionType.SecondBlood;
                             else if (bloods[cid][2] is not null &&
-                                     s.Submission.SubmitTimeUTC <= bloods[cid][2]!.SubmitTimeUTC)
+                                     s.Submission.SubmitTimeUtc <= bloods[cid][2]!.SubmitTimeUtc)
                                 status = SubmissionType.ThirdBlood;
 
                             return new ChallengeItem
@@ -255,23 +254,23 @@ public class GameRepository(IDistributedCache cache,
                                 Id = cid,
                                 Type = status,
                                 UserName = s?.Submission?.UserName,
-                                SubmitTimeUTC = s?.Submission?.SubmitTimeUTC,
+                                SubmitTimeUtc = s?.Submission?.SubmitTimeUtc,
                                 Score = s is null ? 0 :
                                     game.BloodBonus.NoBonus ? status switch
                                     {
                                         SubmissionType.Unaccepted => 0,
-                                        _ => s.Instance.Challenge.CurrentScore
+                                        _ => s.GameInstance.GameChallenge.CurrentScore
                                     } : status switch
                                     {
                                         SubmissionType.Unaccepted => 0,
-                                        SubmissionType.FirstBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore *
+                                        SubmissionType.FirstBlood => Convert.ToInt32(s.GameInstance.GameChallenge.CurrentScore *
                                                                                      game.BloodBonus.FirstBloodFactor),
                                         SubmissionType.SecondBlood => Convert.ToInt32(
-                                            s.Instance.Challenge.CurrentScore *
+                                            s.GameInstance.GameChallenge.CurrentScore *
                                             game.BloodBonus.SecondBloodFactor),
-                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.Instance.Challenge.CurrentScore *
+                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.GameInstance.GameChallenge.CurrentScore *
                                                                                      game.BloodBonus.ThirdBloodFactor),
-                                        SubmissionType.Normal => s.Instance.Challenge.CurrentScore,
+                                        SubmissionType.Normal => s.GameInstance.GameChallenge.CurrentScore,
                                         _ => throw new ArgumentException(nameof(status))
                                     }
                             };
@@ -284,15 +283,15 @@ public class GameRepository(IDistributedCache cache,
 
                 if (j.Organization is not null)
                 {
-                    if (Ranks.TryGetValue(j.Organization, out var rank))
+                    if (ranks.TryGetValue(j.Organization, out var rank))
                     {
                         j.OrganizationRank = rank + 1;
-                        Ranks[j.Organization]++;
+                        ranks[j.Organization]++;
                     }
                     else
                     {
                         j.OrganizationRank = 1;
-                        Ranks[j.Organization] = 1;
+                        ranks[j.Organization] = 1;
                     }
                 }
 
@@ -319,14 +318,14 @@ public class GameRepository(IDistributedCache cache,
     static IEnumerable<TimeLine> GenTimeLine(IEnumerable<ChallengeItem> items)
     {
         var score = 0;
-        return items.Where(i => i.SubmitTimeUTC is not null)
-            .OrderBy(i => i.SubmitTimeUTC)
+        return items.Where(i => i.SubmitTimeUtc is not null)
+            .OrderBy(i => i.SubmitTimeUtc)
             .Select(i =>
             {
                 score += i.Score;
                 return new TimeLine
                 {
-                    Score = score, Time = i.SubmitTimeUTC!.Value // 此处不为 null
+                    Score = score, Time = i.SubmitTimeUtc!.Value // 此处不为 null
                 };
             });
     }

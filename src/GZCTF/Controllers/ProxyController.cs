@@ -75,14 +75,14 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (clientIp is null)
             return BadRequest(new RequestResponse("无效的访问地址"));
 
-        var enable = _enableTrafficCapture && container.Instance.Challenge.EnableTrafficCapture;
+        var enable = _enableTrafficCapture && container.Instance.GameChallenge.EnableTrafficCapture;
         byte[]? metadata = null;
 
         if (enable)
             metadata = JsonSerializer.SerializeToUtf8Bytes(
                 new
                 {
-                    Challenge = container.Instance.Challenge.Title,
+                    Challenge = container.Instance.GameChallenge.Title,
                     container.Instance.ChallengeId,
                     Team = container.Instance.Participation.Team.Name,
                     container.Instance.Participation.TeamId,

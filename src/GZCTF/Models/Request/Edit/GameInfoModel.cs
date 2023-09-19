@@ -81,14 +81,14 @@ public class GameInfoModel
     /// </summary>
     [Required]
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [Required]
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// Writeup 提交截止时间
@@ -125,8 +125,8 @@ public class GameInfoModel
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
-            StartTimeUTC = game.StartTimeUTC,
-            EndTimeUTC = game.EndTimeUTC,
+            StartTimeUtc = game.StartTimeUtc,
+            EndTimeUtc = game.EndTimeUtc,
             WriteupDeadline = game.WriteupDeadline,
             WriteupNote = game.WriteupNote,
             BloodBonusValue = game.BloodBonus.Val

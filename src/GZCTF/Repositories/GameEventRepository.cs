@@ -31,6 +31,6 @@ public class GameEventRepository(
         if (hideContainer)
             data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);
 
-        return data.OrderByDescending(e => e.PublishTimeUTC).Skip(skip).Take(count).ToArrayAsync(token);
+        return data.OrderByDescending(e => e.PublishTimeUtc).Skip(skip).Take(count).ToArrayAsync(token);
     }
 }

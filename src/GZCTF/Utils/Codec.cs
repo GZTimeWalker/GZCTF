@@ -330,7 +330,7 @@ public static partial class CodecExtensions
     /// <param name="str">原始字符串</param>
     /// <param name="useBase64">是否使用Base64编码</param>
     /// <returns></returns>
-    public static string StrMd5(this string str, bool useBase64 = false)
+    public static string ToMD5String(this string str, bool useBase64 = false)
     {
         var output = MD5.HashData(str.ToUTF8Bytes());
         if (useBase64)
@@ -344,28 +344,14 @@ public static partial class CodecExtensions
     /// <param name="str">原始字符串</param>
     /// <param name="useBase64">是否使用Base64编码</param>
     /// <returns></returns>
-    public static string StrSHA256(this string str, bool useBase64 = false)
+    public static string ToSHA256String(this string str, bool useBase64 = false)
     {
         var output = SHA256.HashData(str.ToUTF8Bytes());
         if (useBase64)
             return Convert.ToBase64String(output);
         return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
     }
-
-    /// <summary>
-    /// 获取 MD5 哈希字节摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <returns></returns>
-    public static byte[] BytesMd5(this string str) => MD5.HashData(str.ToUTF8Bytes());
-
-    /// <summary>
-    /// 获取 SHA256 哈希字节摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <returns></returns>
-    public static byte[] BytesSHA256(this string str) => SHA256.HashData(str.ToUTF8Bytes());
-
+    
 
     /// <summary>
     /// 获取字符串 UTF-8 编码字节

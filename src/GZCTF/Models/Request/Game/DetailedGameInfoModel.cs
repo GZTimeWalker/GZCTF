@@ -83,13 +83,13 @@ public class DetailedGameInfoModel
     /// 开始时间
     /// </summary>
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     public DetailedGameInfoModel WithParticipation(Participation? part)
     {
@@ -112,8 +112,8 @@ public class DetailedGameInfoModel
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             TeamCount = count,
             PosterUrl = game.PosterUrl,
-            StartTimeUTC = game.StartTimeUTC,
-            EndTimeUTC = game.EndTimeUTC,
+            StartTimeUtc = game.StartTimeUtc,
+            EndTimeUtc = game.EndTimeUtc,
             TeamMemberCountLimit = game.TeamMemberCountLimit
         };
 }

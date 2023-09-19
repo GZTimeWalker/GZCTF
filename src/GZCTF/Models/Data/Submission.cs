@@ -26,7 +26,7 @@ public class Submission
     /// 答案提交的时间
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset SubmitTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset SubmitTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 提交用户
@@ -44,7 +44,7 @@ public class Submission
     /// 提交题目
     /// </summary>
     [JsonPropertyName("challenge")]
-    public string ChallengeName => Challenge?.Title ?? string.Empty;
+    public string ChallengeName => GameChallenge?.Title ?? string.Empty;
 
     #region Db Relationship
 
@@ -106,7 +106,7 @@ public class Submission
     /// 题目
     /// </summary>
     [JsonIgnore]
-    public Challenge Challenge { get; set; } = default!;
+    public GameChallenge GameChallenge { get; set; } = default!;
 
     #endregion Db Relationship
 }

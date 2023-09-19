@@ -26,7 +26,7 @@ public class WriteupInfoModel
     /// <summary>
     /// 文件上传时间
     /// </summary>
-    public DateTimeOffset UploadTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UploadTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// Writeup 文件对象
@@ -43,6 +43,6 @@ public class WriteupInfoModel
                 Team = TeamInfoModel.FromTeam(part.Team, false),
                 File = part.Writeup,
                 Url = part.Writeup.Url(),
-                UploadTimeUTC = part.Writeup.UploadTimeUTC
+                UploadTimeUtc = part.Writeup.UploadTimeUtc
             };
 }

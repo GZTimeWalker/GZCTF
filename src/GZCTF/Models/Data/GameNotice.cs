@@ -32,7 +32,7 @@ public partial class GameNotice
     /// </summary>
     [Required]
     [JsonPropertyName("time")]
-    public DateTimeOffset PublishTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset PublishTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
     [JsonIgnore]
     [MemoryPackIgnore]
@@ -53,6 +53,6 @@ public partial class GameNotice
                 _ => NoticeType.Normal
             },
             GameId = submission.GameId,
-            Content = $"恭喜 {submission.Team.Name} 获得 「{submission.Challenge.Title}」 的{type.ToBloodString()}"
+            Content = $"恭喜 {submission.Team.Name} 获得 「{submission.GameChallenge.Title}」 的{type.ToBloodString()}"
         };
 }

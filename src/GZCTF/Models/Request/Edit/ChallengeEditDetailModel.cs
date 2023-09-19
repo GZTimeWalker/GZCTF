@@ -80,7 +80,7 @@ public class ChallengeEditDetailModel
     [Required]
     public FlagInfoModel[] Flags { get; set; } = Array.Empty<FlagInfoModel>();
 
-    internal static ChallengeEditDetailModel FromChallenge(Challenge chal) =>
+    internal static ChallengeEditDetailModel FromChallenge(GameChallenge chal) =>
         new()
         {
             Id = chal.Id,

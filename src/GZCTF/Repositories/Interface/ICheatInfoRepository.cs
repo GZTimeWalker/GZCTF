@@ -9,7 +9,7 @@ public interface ICheatInfoRepository : IRepository
     /// <param name="source">flag 所属实例</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<CheatInfo> CreateCheatInfo(Submission submission, Instance source, CancellationToken token = default);
+    public Task<CheatInfo> CreateCheatInfo(Submission submission, GameInstance source, CancellationToken token = default);
 
     /// <summary>
     /// 获取作弊信息对象

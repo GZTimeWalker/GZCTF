@@ -73,7 +73,7 @@ public static class ExcelHelper
         {
             IRow? row = sheet.CreateRow(rowIndex);
             row.CreateCell(0).SetCellValue(item.Status.ToShortString());
-            row.CreateCell(1).SetCellValue(item.SubmitTimeUTC.ToString("u"));
+            row.CreateCell(1).SetCellValue(item.SubmitTimeUtc.ToString("u"));
             row.CreateCell(2).SetCellValue(item.TeamName);
             row.CreateCell(3).SetCellValue(item.UserName);
             row.CreateCell(4).SetCellValue(item.ChallengeName);

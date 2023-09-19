@@ -86,14 +86,14 @@ public class Game
     /// </summary>
     [Required]
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [Required]
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// Writeup 提交截止时间
@@ -117,15 +117,15 @@ public class Game
 
     [NotMapped]
     [JsonIgnore]
-    public bool IsActive => StartTimeUTC <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUTC;
+    public bool IsActive => StartTimeUtc <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUtc;
 
     [NotMapped]
     public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
 
     [NotMapped]
-    public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".StrSHA256();
+    public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".ToSHA256String();
 
-    internal void GenerateKeyPair(byte[]? xorkey)
+    internal void GenerateKeyPair(byte[]? xorKey)
     {
         SecureRandom sr = new();
         Ed25519KeyPairGenerator kpg = new();
@@ -134,21 +134,20 @@ public class Game
         var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
         var publicKey = (Ed25519PublicKeyParameters)kp.Public;
 
-        if (xorkey is null)
-            PrivateKey = Base64.ToBase64String(privateKey.GetEncoded());
-        else
-            PrivateKey = Base64.ToBase64String(Codec.Xor(privateKey.GetEncoded(), xorkey));
+        PrivateKey = Base64.ToBase64String(xorKey is null ? 
+            privateKey.GetEncoded() : 
+            Codec.Xor(privateKey.GetEncoded(), xorKey));
 
         PublicKey = Base64.ToBase64String(publicKey.GetEncoded());
     }
 
-    internal string Sign(string str, byte[]? xorkey)
+    internal string Sign(string str, byte[]? xorKey)
     {
         Ed25519PrivateKeyParameters privateKey;
-        if (xorkey is null)
+        if (xorKey is null)
             privateKey = new(Codec.Base64.DecodeToBytes(PrivateKey), 0);
         else
-            privateKey = new(Codec.Xor(Codec.Base64.DecodeToBytes(PrivateKey), xorkey), 0);
+            privateKey = new(Codec.Xor(Codec.Base64.DecodeToBytes(PrivateKey), xorKey), 0);
 
         return DigitalSignature.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
     }
@@ -170,8 +169,8 @@ public class Game
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
         Organizations = model.Organizations ?? Organizations;
-        EndTimeUTC = model.EndTimeUTC;
-        StartTimeUTC = model.StartTimeUTC;
+        EndTimeUtc = model.EndTimeUtc;
+        StartTimeUtc = model.StartTimeUtc;
         WriteupDeadline = model.WriteupDeadline;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
         ContainerCountLimit = model.ContainerCountLimit;
@@ -199,7 +198,7 @@ public class Game
     /// 比赛题目
     /// </summary>
     [JsonIgnore]
-    public List<Challenge> Challenges { get; set; } = new();
+    public List<GameChallenge> Challenges { get; set; } = new();
 
     /// <summary>
     /// 比赛提交

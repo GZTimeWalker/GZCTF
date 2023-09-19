@@ -38,7 +38,7 @@ public class FlagContext
     /// <summary>
     /// 赛题
     /// </summary>
-    public Challenge? Challenge { get; set; }
+    public GameChallenge? Challenge { get; set; }
 
     #endregion Db Relationship
 }

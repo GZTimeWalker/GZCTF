@@ -30,7 +30,7 @@ public class GameEvent
     /// </summary>
     [Required]
     [JsonPropertyName("time")]
-    public DateTimeOffset PublishTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset PublishTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// 相关用户名
@@ -70,6 +70,6 @@ public class GameEvent
             GameId = submission.GameId,
             Type = EventType.FlagSubmit,
             Content =
-                $"[{ans.ToShortString()}] {submission.Answer}  {submission.Challenge.Title}#{submission.ChallengeId}"
+                $"[{ans.ToShortString()}] {submission.Answer}  {submission.GameChallenge.Title}#{submission.ChallengeId}"
         };
 }

@@ -32,9 +32,9 @@ public class SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
         CancellationToken token = default) =>
         GetSubmissionsByType(type).Where(s => s.Game == game).TakeAllIfZero(count, skip).ToArrayAsync(token);
 
-    public Task<Submission[]> GetSubmissions(Challenge challenge, AnswerResult? type = null, int count = 100,
+    public Task<Submission[]> GetSubmissions(GameChallenge gameChallenge, AnswerResult? type = null, int count = 100,
         int skip = 0, CancellationToken token = default) =>
-        GetSubmissionsByType(type).Where(s => s.Challenge == challenge).TakeAllIfZero(count, skip)
+        GetSubmissionsByType(type).Where(s => s.GameChallenge == gameChallenge).TakeAllIfZero(count, skip)
             .ToArrayAsync(token);
 
     public Task<Submission[]> GetSubmissions(Participation team, AnswerResult? type = null, int count = 100,
@@ -51,6 +51,6 @@ public class SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
             ? context.Submissions.Where(s => s.Status == type.Value)
             : context.Submissions;
 
-        return subs.OrderByDescending(s => s.SubmitTimeUTC);
+        return subs.OrderByDescending(s => s.SubmitTimeUtc);
     }
 }

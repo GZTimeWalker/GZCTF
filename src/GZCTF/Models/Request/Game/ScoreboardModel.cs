@@ -14,7 +14,7 @@ public partial class ScoreboardModel
     /// 更新时间
     /// </summary>
     [Required]
-    public DateTimeOffset UpdateTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdateTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// 三血加分系数
@@ -166,7 +166,7 @@ public partial class ChallengeItem
     /// 题目提交的时间，为了计算时间线
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset? SubmitTimeUTC { get; set; }
+    public DateTimeOffset? SubmitTimeUtc { get; set; }
 }
 
 [MemoryPackable]
@@ -225,5 +225,5 @@ public partial class Blood
     /// <summary>
     /// 获得此血的时间
     /// </summary>
-    public DateTimeOffset? SubmitTimeUTC { get; set; }
+    public DateTimeOffset? SubmitTimeUtc { get; set; }
 }

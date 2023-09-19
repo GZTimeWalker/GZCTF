@@ -17,9 +17,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<LogModel> Logs { get; set; } = default!;
     public DbSet<Config> Configs { get; set; } = default!;
     public DbSet<LocalFile> Files { get; set; } = default!;
-    public DbSet<Instance> Instances { get; set; } = default!;
     public DbSet<CheatInfo> CheatInfo { get; set; } = default!;
-    public DbSet<Challenge> Challenges { get; set; } = default!;
+    public DbSet<GameInstance> GameInstances { get; set; } = default!;
+    public DbSet<GameChallenge> GameChallenges { get; set; } = default!;
+    public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = default!;
+    public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
     public DbSet<GameEvent> GameEvents { get; set; } = default!;
     public DbSet<Submission> Submissions { get; set; } = default!;
@@ -166,8 +168,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.HasMany(e => e.Challenges)
                 .WithMany(e => e.Teams)
-                .UsingEntity<Instance>(
-                    e => e.HasOne(e => e.Challenge)
+                .UsingEntity<GameInstance>(
+                    e => e.HasOne(e => e.GameChallenge)
                         .WithMany(c => c.Instances)
                         .HasForeignKey(e => e.ChallengeId),
                     e => e.HasOne(e => e.Participation)
@@ -178,7 +180,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 );
         });
 
-        builder.Entity<Instance>(entity =>
+        builder.Entity<GameInstance>(entity =>
         {
             entity.HasOne(e => e.FlagContext)
                 .WithMany()
@@ -191,7 +193,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .OnDelete(DeleteBehavior.NoAction);
 
             entity.Navigation(e => e.Container).AutoInclude();
-            entity.Navigation(e => e.Challenge).AutoInclude();
+            entity.Navigation(e => e.GameChallenge).AutoInclude();
 
             entity.HasIndex(e => e.FlagId).IsUnique();
         });
@@ -219,7 +221,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         {
             entity.HasOne(e => e.Instance)
                 .WithOne(e => e.Container)
-                .HasForeignKey<Instance>(e => e.ContainerId)
+                .HasForeignKey<GameInstance>(e => e.ContainerId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasIndex(e => e.InstanceId);
@@ -228,7 +230,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             //entity.Navigation(e => e.Instance).AutoInclude();
         });
 
-        builder.Entity<Challenge>(entity =>
+        builder.Entity<GameChallenge>(entity =>
         {
             entity.Property(e => e.Hints)
                 .HasConversion(listConverter)
@@ -240,7 +242,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasForeignKey(e => e.ChallengeId);
 
             entity.HasMany(e => e.Submissions)
-                .WithOne(e => e.Challenge)
+                .WithOne(e => e.GameChallenge)
                 .HasForeignKey(e => e.ChallengeId);
 
             entity.HasOne(e => e.Attachment)
@@ -266,7 +268,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.Navigation(e => e.Team).AutoInclude();
             entity.Navigation(e => e.User).AutoInclude();
-            entity.Navigation(e => e.Challenge).AutoInclude();
+            entity.Navigation(e => e.GameChallenge).AutoInclude();
 
             entity.HasIndex(e => e.Status);
             entity.HasIndex(e => new { e.TeamId, e.ChallengeId, e.GameId });

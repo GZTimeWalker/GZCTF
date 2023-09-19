@@ -49,16 +49,16 @@ public class ChallengeInfoModel
     /// </summary>
     public int OriginalScore { get; set; } = 500;
 
-    internal static ChallengeInfoModel FromChallenge(Challenge challenge) =>
+    internal static ChallengeInfoModel FromChallenge(GameChallenge gameChallenge) =>
         new()
         {
-            Id = challenge.Id,
-            Title = challenge.Title,
-            Tag = challenge.Tag,
-            Type = challenge.Type,
-            Score = challenge.CurrentScore,
-            MinScore = (int)Math.Floor(challenge.MinScoreRate * challenge.OriginalScore),
-            OriginalScore = challenge.OriginalScore,
-            IsEnabled = challenge.IsEnabled
+            Id = gameChallenge.Id,
+            Title = gameChallenge.Title,
+            Tag = gameChallenge.Tag,
+            Type = gameChallenge.Type,
+            Score = gameChallenge.CurrentScore,
+            MinScore = (int)Math.Floor(gameChallenge.MinScoreRate * gameChallenge.OriginalScore),
+            OriginalScore = gameChallenge.OriginalScore,
+            IsEnabled = gameChallenge.IsEnabled
         };
 }

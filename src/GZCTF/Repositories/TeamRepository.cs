@@ -14,7 +14,7 @@ public class TeamRepository : RepositoryBase, ITeamRepository
     {
         DateTimeOffset current = DateTimeOffset.UtcNow;
         var result = await context.Participations
-            .Where(p => p.Team == team && p.Game.EndTimeUTC > current)
+            .Where(p => p.Team == team && p.Game.EndTimeUtc > current)
             .AnyAsync(token);
 
         if (!team.Locked || result) 

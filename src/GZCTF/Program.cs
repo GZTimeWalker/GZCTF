@@ -76,6 +76,7 @@ else
 #region Configuration
 
 if (!GZCTF.Program.IsTesting)
+{
     try
     {
         builder.Configuration.AddEntityConfiguration(options =>
@@ -86,12 +87,13 @@ if (!GZCTF.Program.IsTesting)
                 options.UseInMemoryDatabase("TestDb");
         });
     }
-    catch
+    catch (Exception e)
     {
         if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
             Log.Logger.Error($"当前连接字符串：{builder.Configuration.GetConnectionString("Database")}");
-        GZCTF.Program.ExitWithFatalMessage("数据库连接失败，请检查 Database 连接字符串配置");
+        GZCTF.Program.ExitWithFatalMessage($"数据库连接失败({e.Message})，请检查 Database 连接字符串配置");
     }
+}
 
 #endregion Configuration
 
