@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.17.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.3..v0.17.4) - 2023-09-22
+
+### 🐛 Bug Fixes
+
+- can not empty post tags (#150) - ([d0b286](https://github.com/GZTimeWalker/GZCTF/commit/d0b286)) by **GZTime**
+
+---
 ## [0.17.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.2..v0.17.3) - 2023-09-19
 
 ### 🐛 Bug Fixes
