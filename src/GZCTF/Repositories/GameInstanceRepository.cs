@@ -7,13 +7,13 @@ using Microsoft.Extensions.Options;
 
 namespace GZCTF.Repositories;
 
-public class InstanceRepository(AppDbContext context,
+public class GameInstanceRepository(AppDbContext context,
     IContainerManager service,
     ICheatInfoRepository cheatInfoRepository,
     IContainerRepository containerRepository,
     IGameEventRepository gameEventRepository,
     IOptionsSnapshot<GamePolicy> gamePolicy,
-    ILogger<InstanceRepository> logger) : RepositoryBase(context), IInstanceRepository
+    ILogger<GameInstanceRepository> logger) : RepositoryBase(context), IGameInstanceRepository
 {
     public async Task<GameInstance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
@@ -37,18 +37,18 @@ public class InstanceRepository(AppDbContext context,
             return instance;
         }
 
-        if (instance.GameChallenge.IsEnabled)
+        if (instance.Challenge.IsEnabled)
         {
             await transaction.CommitAsync(token);
             return null;
         }
 
-        var challenge = instance.GameChallenge;
+        var challenge = instance.Challenge;
 
         try
         {
             // dynamic flag dispatch
-            switch (instance.GameChallenge.Type)
+            switch (instance.Challenge.Type)
             {
                 case ChallengeType.DynamicContainer:
                     instance.FlagContext = new()
@@ -117,9 +117,9 @@ public class InstanceRepository(AppDbContext context,
     public async Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
         int containerLimit = 3, CancellationToken token = default)
     {
-        if (string.IsNullOrEmpty(gameInstance.GameChallenge.ContainerImage) || gameInstance.GameChallenge.ContainerExposePort is null)
+        if (string.IsNullOrEmpty(gameInstance.Challenge.ContainerImage) || gameInstance.Challenge.ContainerExposePort is null)
         {
-            logger.SystemLog($"无法为题目 {gameInstance.GameChallenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
+            logger.SystemLog($"无法为题目 {gameInstance.Challenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
@@ -135,7 +135,7 @@ public class InstanceRepository(AppDbContext context,
                 GameInstance? first = running.FirstOrDefault();
                 if (running.Count >= containerLimit && first is not null)
                 {
-                    logger.Log($"{team.Name} 自动销毁题目 {first.GameChallenge.Title} 的容器实例 [{first.Container!.ContainerId}]",
+                    logger.Log($"{team.Name} 自动销毁题目 {first.Challenge.Title} 的容器实例 [{first.Container!.ContainerId}]",
                         user, TaskStatus.Success);
                     await DestroyContainer(running.First().Container!, token);
                 }
@@ -160,24 +160,24 @@ public class InstanceRepository(AppDbContext context,
             TeamId = team.Id.ToString(),
             UserId = user.Id,
             Flag = gameInstance.FlagContext?.Flag, // static challenge has no specific flag
-            Image = gameInstance.GameChallenge.ContainerImage,
-            CPUCount = gameInstance.GameChallenge.CPUCount ?? 1,
-            MemoryLimit = gameInstance.GameChallenge.MemoryLimit ?? 64,
-            StorageLimit = gameInstance.GameChallenge.StorageLimit ?? 256,
-            EnableTrafficCapture = gameInstance.GameChallenge.EnableTrafficCapture,
-            ExposedPort = gameInstance.GameChallenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口")
+            Image = gameInstance.Challenge.ContainerImage,
+            CPUCount = gameInstance.Challenge.CPUCount ?? 1,
+            MemoryLimit = gameInstance.Challenge.MemoryLimit ?? 64,
+            StorageLimit = gameInstance.Challenge.StorageLimit ?? 256,
+            EnableTrafficCapture = gameInstance.Challenge.EnableTrafficCapture,
+            ExposedPort = gameInstance.Challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口")
         }, token);
 
         if (container is null)
         {
-            logger.SystemLog($"为题目 {gameInstance.GameChallenge.Title} 启动容器实例失败", TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog($"为题目 {gameInstance.Challenge.Title} 启动容器实例失败", TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
         gameInstance.Container = container;
         gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-        logger.Log($"{team.Name} 启动题目 {gameInstance.GameChallenge.Title} 的容器实例 [{container.ContainerId}]", user,
+        logger.Log($"{team.Name} 启动题目 {gameInstance.Challenge.Title} 的容器实例 [{container.ContainerId}]", user,
             TaskStatus.Success);
 
         // will save instance together
@@ -185,10 +185,10 @@ public class InstanceRepository(AppDbContext context,
             new()
             {
                 Type = EventType.ContainerStart,
-                GameId = gameInstance.GameChallenge.GameId,
+                GameId = gameInstance.Challenge.GameId,
                 TeamId = gameInstance.Participation.TeamId,
                 UserId = user.Id,
-                Content = $"{gameInstance.GameChallenge.Title}#{gameInstance.GameChallenge.Id} 启动容器实例"
+                Content = $"{gameInstance.Challenge.Title}#{gameInstance.Challenge.Id} 启动容器实例"
             }, token);
 
         return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
@@ -201,7 +201,7 @@ public class InstanceRepository(AppDbContext context,
     }
 
     public Task<GameInstance[]> GetInstances(GameChallenge gameChallenge, CancellationToken token = default) =>
-        context.GameInstances.Where(i => i.GameChallenge == gameChallenge).OrderBy(i => i.ParticipationId)
+        context.GameInstances.Where(i => i.Challenge == gameChallenge).OrderBy(i => i.ParticipationId)
             .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
 
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Models.Data;
 
 [Index(nameof(UserId))]
+[Index(nameof(TeamId), nameof(ChallengeId), nameof(GameId))]
 public class Submission
 {
     [Key]

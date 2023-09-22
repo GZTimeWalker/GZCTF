@@ -57,7 +57,7 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
 
                 var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
                 var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
-                var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
+                var instanceRepository = scope.ServiceProvider.GetRequiredService<IGameInstanceRepository>();
                 var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
                 var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
 

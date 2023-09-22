@@ -26,9 +26,9 @@ public class ExerciseInstance : Instance
     public int ChallengeId { get; set; }
 
     /// <summary>
-    /// 练习对象
+    /// 练习题目对象
     /// </summary>
-    public ExerciseChallenge ExerciseChallenge { get; set; } = default!;
+    public ExerciseChallenge Challenge { get; set; } = default!;
     
     #endregion
 }

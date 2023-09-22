@@ -11,7 +11,7 @@ namespace GZCTF.Repositories;
 
 public class GameRepository(IDistributedCache cache,
     ITeamRepository teamRepository,
-    IChallengeRepository challengeRepository,
+    IGameChallengeRepository gameChallengeRepository,
     IParticipationRepository participationRepository,
     IConfiguration configuration,
     ILogger<GameRepository> logger,
@@ -83,7 +83,7 @@ public class GameRepository(IDistributedCache cache,
                 LogLevel.Debug);
 
             foreach (GameChallenge chal in game.Challenges)
-                await challengeRepository.RemoveChallenge(chal, token);
+                await gameChallengeRepository.RemoveChallenge(chal, token);
 
             await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
@@ -149,9 +149,9 @@ public class GameRepository(IDistributedCache cache,
 
     Task<Data[]> FetchData(Game game, CancellationToken token = default) =>
         context.GameInstances
-            .Include(i => i.GameChallenge)
-            .Where(i => i.GameChallenge.Game == game
-                        && i.GameChallenge.IsEnabled
+            .Include(i => i.Challenge)
+            .Where(i => i.Challenge.Game == game
+                        && i.Challenge.IsEnabled
                         && i.Participation.Status == ParticipationStatus.Accepted)
             .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
@@ -165,7 +165,7 @@ public class GameRepository(IDistributedCache cache,
             ).AsSplitQuery().ToArrayAsync(token);
 
     static IDictionary<int, Blood?[]> GenBloods(Data[] data) =>
-        data.GroupBy(j => j.GameInstance.GameChallenge).Select(g => new
+        data.GroupBy(j => j.GameInstance.Challenge).Select(g => new
         {
             g.Key,
             Value = g.GroupBy(c => c.Submission?.TeamId)
@@ -192,7 +192,7 @@ public class GameRepository(IDistributedCache cache,
 
     static Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data,
         IDictionary<int, Blood?[]> bloods) =>
-        data.GroupBy(g => g.GameInstance.GameChallenge)
+        data.GroupBy(g => g.GameInstance.Challenge)
             .Select(c => new ChallengeInfo
             {
                 Id = c.Key.Id,
@@ -259,18 +259,18 @@ public class GameRepository(IDistributedCache cache,
                                     game.BloodBonus.NoBonus ? status switch
                                     {
                                         SubmissionType.Unaccepted => 0,
-                                        _ => s.GameInstance.GameChallenge.CurrentScore
+                                        _ => s.GameInstance.Challenge.CurrentScore
                                     } : status switch
                                     {
                                         SubmissionType.Unaccepted => 0,
-                                        SubmissionType.FirstBlood => Convert.ToInt32(s.GameInstance.GameChallenge.CurrentScore *
+                                        SubmissionType.FirstBlood => Convert.ToInt32(s.GameInstance.Challenge.CurrentScore *
                                                                                      game.BloodBonus.FirstBloodFactor),
                                         SubmissionType.SecondBlood => Convert.ToInt32(
-                                            s.GameInstance.GameChallenge.CurrentScore *
+                                            s.GameInstance.Challenge.CurrentScore *
                                             game.BloodBonus.SecondBloodFactor),
-                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.GameInstance.GameChallenge.CurrentScore *
+                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.GameInstance.Challenge.CurrentScore *
                                                                                      game.BloodBonus.ThirdBloodFactor),
-                                        SubmissionType.Normal => s.GameInstance.GameChallenge.CurrentScore,
+                                        SubmissionType.Normal => s.GameInstance.Challenge.CurrentScore,
                                         _ => throw new ArgumentException(nameof(status))
                                     }
                             };

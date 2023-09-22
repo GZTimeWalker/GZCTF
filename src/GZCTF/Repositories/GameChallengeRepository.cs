@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class ChallengeRepository(AppDbContext context, IFileRepository fileRepository) : RepositoryBase(context),
-    IChallengeRepository
+public class GameChallengeRepository(AppDbContext context, IFileRepository fileRepository) : RepositoryBase(context),
+    IGameChallengeRepository
 {
     public async Task AddFlags(GameChallenge gameChallenge, FlagCreateModel[] models, CancellationToken token = default)
     {
@@ -39,10 +39,8 @@ public class ChallengeRepository(AppDbContext context, IFileRepository fileRepos
         await context.Entry(gameChallenge).Collection(c => c.Teams).LoadAsync(token);
         await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-        var update = false;
-
-        foreach (Participation participation in game.Participations)
-            update |= gameChallenge.Teams.Add(participation);
+        var update = game.Participations.Aggregate(false, 
+            (current, participation) => gameChallenge.Teams.Add(participation) || current);
 
         await SaveAsync(token);
 

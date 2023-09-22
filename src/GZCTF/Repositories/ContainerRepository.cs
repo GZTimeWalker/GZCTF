@@ -16,17 +16,17 @@ public class ContainerRepository(IDistributedCache cache,
 
     public Task<Container?> GetContainerWithInstanceById(Guid guid, CancellationToken token = default) =>
         context.Containers.IgnoreAutoIncludes()
-            .Include(c => c.Instance).ThenInclude(i => i!.GameChallenge)
-            .Include(c => c.Instance).ThenInclude(i => i!.FlagContext)
-            .Include(c => c.Instance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.Challenge)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.FlagContext)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);
 
     public Task<List<Container>> GetContainers(CancellationToken token = default) => context.Containers.ToListAsync(token);
 
     public async Task<ContainerInstanceModel[]> GetContainerInstances(CancellationToken token = default) =>
         (await context.Containers
-            .Where(c => c.Instance != null)
-            .Include(c => c.Instance).ThenInclude(i => i!.Participation)
+            .Where(c => c.GameInstance != null)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.Participation)
             .OrderBy(c => c.StartedAt).ToArrayAsync(token))
         .Select(ContainerInstanceModel.FromContainer)
         .ToArray();

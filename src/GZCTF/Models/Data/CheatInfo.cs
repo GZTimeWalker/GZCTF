@@ -7,11 +7,9 @@ namespace GZCTF.Models.Data;
 /// 抄袭行为记录
 /// </summary>
 [Index(nameof(GameId))]
+[Index(nameof(SubmissionId), IsUnique = true)]
 public class CheatInfo
 {
-    [Key]
-    public int Id { get; set; }
-
     #region Db Relationship
 
     /// <summary>

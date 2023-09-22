@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
+[Index(nameof(FlagId), IsUnique = true)]
 public class GameInstance : Instance
 {
     /// <summary>
@@ -12,16 +14,16 @@ public class GameInstance : Instance
     /// <summary>
     /// 获取实例附件
     /// </summary>
-    internal Attachment? Attachment => GameChallenge.Type == ChallengeType.DynamicAttachment
+    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
         ? FlagContext?.Attachment
-        : GameChallenge.Attachment;
+        : Challenge.Attachment;
 
     /// <summary>
     /// 获取实例附件链接
     /// </summary>
-    internal string? AttachmentUrl => GameChallenge.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment?.UrlWithName(GameChallenge.FileName)
-        : GameChallenge.Attachment?.UrlWithName();
+    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
+        : Challenge.Attachment?.UrlWithName();
 
     #region Db Relationship
 
@@ -38,7 +40,7 @@ public class GameInstance : Instance
     /// <summary>
     /// 赛题对象
     /// </summary>
-    public GameChallenge GameChallenge { get; set; } = default!;
+    public GameChallenge Challenge { get; set; } = default!;
 
     [Required]
     public int ParticipationId { get; set; }

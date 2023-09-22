@@ -2,7 +2,7 @@
 
 namespace GZCTF.Repositories.Interface;
 
-public interface IInstanceRepository : IRepository
+public interface IGameInstanceRepository : IRepository
 {
     /// <summary>
     /// 获取或创建队伍的题目实例

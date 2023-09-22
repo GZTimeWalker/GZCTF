@@ -2,7 +2,7 @@
 
 namespace GZCTF.Repositories.Interface;
 
-public interface IChallengeRepository : IRepository
+public interface IGameChallengeRepository : IRepository
 {
     /// <summary>
     /// 创建题目对象

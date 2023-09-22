@@ -48,13 +48,13 @@ public class ChallengeDetailModel
     internal static ChallengeDetailModel FromInstance(GameInstance gameInstance) =>
         new()
         {
-            Id = gameInstance.GameChallenge.Id,
-            Content = gameInstance.GameChallenge.Content,
-            Hints = gameInstance.GameChallenge.Hints,
-            Score = gameInstance.GameChallenge.CurrentScore,
-            Tag = gameInstance.GameChallenge.Tag,
-            Title = gameInstance.GameChallenge.Title,
-            Type = gameInstance.GameChallenge.Type,
+            Id = gameInstance.Challenge.Id,
+            Content = gameInstance.Challenge.Content,
+            Hints = gameInstance.Challenge.Hints,
+            Score = gameInstance.Challenge.CurrentScore,
+            Tag = gameInstance.Challenge.Tag,
+            Title = gameInstance.Challenge.Title,
+            Type = gameInstance.Challenge.Type,
             Context = new()
             {
                 InstanceEntry = gameInstance.Container?.Entry,

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
+[Index(nameof(ChallengeId))]
 public class FlagContext
 {
     [Key]

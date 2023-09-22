@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Models.Data;
 
 [Index(nameof(ParticipationId))]
+[Index(nameof(UserId), nameof(GameId), IsUnique = true)]
 public class UserParticipation
 {
     /// <summary>

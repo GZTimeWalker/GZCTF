@@ -33,7 +33,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     IConfigService configService,
     IGameRepository gameRepository,
     ITeamRepository teamRepository,
-    IInstanceRepository instanceRepository,
+    IGameInstanceRepository gameInstanceRepository,
     IContainerRepository containerRepository,
     IServiceProvider serviceProvider,
     IParticipationRepository participationRepository) : ControllerBase
@@ -542,7 +542,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         if (container is null)
             return NotFound(new RequestResponse("容器实例未找到", StatusCodes.Status404NotFound));
 
-        if (await instanceRepository.DestroyContainer(container, token))
+        if (await gameInstanceRepository.DestroyContainer(container, token))
             return Ok();
         return BadRequest(new RequestResponse("容器实例销毁失败"));
     }

@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
+[Index(nameof(GameInstanceId))]
 public class Container
 {
     [Key]
@@ -76,22 +78,32 @@ public class Container
     /// 容器实例流量捕获存储路径
     /// </summary>
     public string TrafficPath(string conn) =>
-        Instance is null
+        GameInstance is null
             ? string.Empty
             : Path.Combine(FilePath.Capture,
-                $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
+                $"{GameInstance.ChallengeId}/{GameInstance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
 
     #region Db Relationship
 
     /// <summary>
     /// 比赛题目实例对象
     /// </summary>
-    public GameInstance? Instance { get; set; }
+    public GameInstance? GameInstance { get; set; }
 
     /// <summary>
-    /// 实例对象ID
+    /// 比赛题目实例对象ID
     /// </summary>
-    public int InstanceId { get; set; }
+    public int GameInstanceId { get; set; }
+    
+    /// <summary>
+    /// 比赛题目实例对象
+    /// </summary>
+    public ExerciseInstance? ExerciseInstance { get; set; }
+
+    /// <summary>
+    /// 比赛题目实例对象ID
+    /// </summary>
+    public int ExerciseInstanceId { get; set; }
 
     #endregion Db Relationship
 }

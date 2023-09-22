@@ -9,6 +9,7 @@ namespace GZCTF.Models.Data;
 /// </summary>
 [Index(nameof(GameId))]
 [Index(nameof(TeamId))]
+[Index(nameof(TeamId), nameof(GameId))]
 public class Participation
 {
     [Key]

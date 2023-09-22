@@ -61,7 +61,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
 
         Container? container = await containerRepository.GetContainerWithInstanceById(id, token);
 
-        if (container?.Instance is null || !container.IsProxy)
+        if (container?.GameInstance is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
@@ -75,19 +75,19 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (clientIp is null)
             return BadRequest(new RequestResponse("无效的访问地址"));
 
-        var enable = _enableTrafficCapture && container.Instance.GameChallenge.EnableTrafficCapture;
+        var enable = _enableTrafficCapture && container.GameInstance.Challenge.EnableTrafficCapture;
         byte[]? metadata = null;
 
         if (enable)
             metadata = JsonSerializer.SerializeToUtf8Bytes(
                 new
                 {
-                    Challenge = container.Instance.GameChallenge.Title,
-                    container.Instance.ChallengeId,
-                    Team = container.Instance.Participation.Team.Name,
-                    container.Instance.Participation.TeamId,
+                    Challenge = container.GameInstance.Challenge.Title,
+                    container.GameInstance.ChallengeId,
+                    Team = container.GameInstance.Participation.Team.Name,
+                    container.GameInstance.Participation.TeamId,
                     container.ContainerId,
-                    container.Instance.FlagContext?.Flag
+                    container.GameInstance.FlagContext?.Flag
                 }, _jsonOptions);
 
         IPEndPoint client = new(clientIp, clientPort);
@@ -122,7 +122,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
 
         Container? container = await containerRepository.GetContainerById(id, token);
 
-        if (container is null || container.InstanceId != 0 || !container.IsProxy)
+        if (container is null || container.GameInstanceId != 0 || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
