@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -25,7 +25,7 @@
     "@mdi/js": "^7.2.96",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^7.0.11",
-    "dayjs": "^1.11.9",
+    "dayjs": "^1.11.10",
     "echarts": "^5.4.3",
     "echarts-for-react": "^3.0.2",
     "embla-carousel": "^7.1.0",
@@ -51,7 +51,7 @@
     "@nabla/vite-plugin-eslint": "^1.5.0",
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/katex": "^0.16.3",
-    "@types/node": "20.6.2",
+    "@types/node": "20.6.3",
     "@types/prismjs": "^1.26.0",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
