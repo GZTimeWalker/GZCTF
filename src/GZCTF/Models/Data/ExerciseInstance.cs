@@ -4,8 +4,23 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Models.Data;
 
 [Index(nameof(UserId))]
+[Index(nameof(FlagId))]
 public class ExerciseInstance : Instance
 {
+    /// <summary>
+    /// 获取实例附件
+    /// </summary>
+    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment
+        : Challenge.Attachment;
+
+    /// <summary>
+    /// 获取实例附件链接
+    /// </summary>
+    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
+        : Challenge.Attachment?.UrlWithName();
+    
     #region Db Relationship
 
     /// <summary>

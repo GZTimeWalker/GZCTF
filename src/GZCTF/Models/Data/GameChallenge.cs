@@ -41,33 +41,7 @@ public class GameChallenge : Challenge
                 OriginalScore * (MinScoreRate +
                                  (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
                 ));
-
-    internal string GenerateDynamicFlag(Participation part)
-    {
-        if (string.IsNullOrEmpty(FlagTemplate))
-            return $"flag{Guid.NewGuid():B}";
-
-        if (FlagTemplate.Contains("[GUID]"))
-            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
-
-        if (!FlagTemplate.Contains("[TEAM_HASH]"))
-            return Codec.Leet.LeetFlag(FlagTemplate);
-        
-        var flag = FlagTemplate;
-        if (FlagTemplate.StartsWith("[LEET]"))
-            flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
-
-        //   Using the signature private key of the game to generate a hash for the
-        // team is not a wise and sufficiently secure choice. Moreover, this private
-        // key should not exist outside of any backend systems, even if it is encrypted
-        // with a XOR key in a configuration file or provided to the organizers (admin)
-        // for third-party flag calculation and external distribution.
-        //   To address this issue, one possible solution is to use a salted hash of
-        // the private key as the salt for the team's hash.
-        var hash = $"{part.Token}::{part.Game.TeamHashSalt}::{Id}".ToSHA256String();
-        return flag.Replace("[TEAM_HASH]", hash[12..24]);
-    }
-
+    
     internal void Update(ChallengeUpdateModel model)
     {
         Title = model.Title ?? Title;

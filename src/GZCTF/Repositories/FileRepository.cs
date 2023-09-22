@@ -140,7 +140,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
+            await using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
 
             contentStream.Position = 0;
             await contentStream.CopyToAsync(fileStream, token);

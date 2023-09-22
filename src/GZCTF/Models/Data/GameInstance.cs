@@ -3,14 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
-[Index(nameof(FlagId), IsUnique = true)]
+[Index(nameof(FlagId))]
 public class GameInstance : Instance
 {
-    /// <summary>
-    /// 自定义成绩 (unused)
-    /// </summary>
-    public int Score { get; set; }
-
     /// <summary>
     /// 获取实例附件
     /// </summary>
@@ -26,13 +21,6 @@ public class GameInstance : Instance
         : Challenge.Attachment?.UrlWithName();
 
     #region Db Relationship
-
-    public int? FlagId { get; set; }
-
-    /// <summary>
-    /// Flag 上下文对象
-    /// </summary>
-    public FlagContext? FlagContext { get; set; }
 
     [Required]
     public int ChallengeId { get; set; }

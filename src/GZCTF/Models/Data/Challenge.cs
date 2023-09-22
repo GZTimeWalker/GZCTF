@@ -47,11 +47,6 @@ public class Challenge
     public bool IsEnabled { get; set; }
 
     /// <summary>
-    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
-    /// </summary>
-    public string? FlagTemplate { get; set; }
-
-    /// <summary>
     /// 解决题目人数
     /// </summary>
     [Required]
@@ -100,20 +95,6 @@ public class Challenge
     [ConcurrencyCheck]
     public Guid ConcurrencyStamp { get; set; }
     
-    internal string GenerateTestFlag()
-    {
-        if (string.IsNullOrEmpty(FlagTemplate))
-            return "flag{GZCTF_dynamic_flag_test}";
-
-        if (FlagTemplate.Contains("[GUID]"))
-            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
-
-        if (FlagTemplate.StartsWith("[LEET]"))
-            return Codec.Leet.LeetFlag(FlagTemplate[6..]);
-
-        return Codec.Leet.LeetFlag(FlagTemplate);
-    }
-    
     #region Db Relationship
 
     /// <summary>
@@ -135,6 +116,80 @@ public class Challenge
     /// 测试容器
     /// </summary>
     public Container? TestContainer { get; set; }
+    
+    /// <summary>
+    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// </summary>
+    public string? FlagTemplate { get; set; }
+    
+    /// <summary>
+    /// 为参赛对象生成动态 Flag
+    /// </summary>
+    /// <param name="part"></param>
+    /// <returns></returns>
+    internal string GenerateDynamicFlag(Participation part)
+    {
+        if (string.IsNullOrEmpty(FlagTemplate))
+            return $"flag{Guid.NewGuid():B}";
+
+        if (FlagTemplate.Contains("[GUID]"))
+            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
+
+        if (!FlagTemplate.Contains("[TEAM_HASH]"))
+            return Codec.Leet.LeetFlag(FlagTemplate);
+        
+        var flag = FlagTemplate;
+        if (FlagTemplate.StartsWith("[LEET]"))
+            flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
+
+        //   Using the signature private key of the game to generate a hash for the
+        // team is not a wise and sufficiently secure choice. Moreover, this private
+        // key should not exist outside of any backend systems, even if it is encrypted
+        // with a XOR key in a configuration file or provided to the organizers (admin)
+        // for third-party flag calculation and external distribution.
+        //   To address this issue, one possible solution is to use a salted hash of
+        // the private key as the salt for the team's hash.
+        var hash = $"{part.Token}::{part.Game.TeamHashSalt}::{Id}".ToSHA256String();
+        return flag.Replace("[TEAM_HASH]", hash[12..24]);
+    }
+    
+    /// <summary>
+    /// 为用户生成动态 Flag
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    internal string GenerateDynamicFlag(UserInfo user)
+    {
+        if (string.IsNullOrEmpty(FlagTemplate))
+            return $"flag{Guid.NewGuid():B}";
+
+        Guid guid = Guid.NewGuid();
+        if (FlagTemplate.Contains("[GUID]"))
+            return FlagTemplate.Replace("[GUID]", guid.ToString("D"));
+
+        if (!FlagTemplate.Contains("[TEAM_HASH]"))
+            return Codec.Leet.LeetFlag(FlagTemplate);
+        
+        var flag = FlagTemplate;
+        if (FlagTemplate.StartsWith("[LEET]"))
+            flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
+        
+        return flag.Replace("[TEAM_HASH]", guid.ToString("N")[..12]);
+    }
+    
+    internal string GenerateTestFlag()
+    {
+        if (string.IsNullOrEmpty(FlagTemplate))
+            return "flag{GZCTF_dynamic_flag_test}";
+
+        if (FlagTemplate.Contains("[GUID]"))
+            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
+
+        if (FlagTemplate.StartsWith("[LEET]"))
+            return Codec.Leet.LeetFlag(FlagTemplate[6..]);
+
+        return Codec.Leet.LeetFlag(FlagTemplate);
+    }
     
     #endregion
 }

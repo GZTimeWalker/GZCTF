@@ -19,6 +19,13 @@ public class Instance
     
     #region Db Relationship
 
+    public int? FlagId { get; set; }
+
+    /// <summary>
+    /// Flag 上下文对象
+    /// </summary>
+    public FlagContext? FlagContext { get; set; }
+    
     public Guid? ContainerId { get; set; }
 
     /// <summary>

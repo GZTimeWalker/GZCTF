@@ -25,11 +25,9 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     const uint ConnectionLimit = 64;
     readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
     readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
-
     readonly JsonSerializerOptions _jsonOptions = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
 
     readonly DistributedCacheEntryOptions _storeOption = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
-
     readonly DistributedCacheEntryOptions _validOption = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
 
     /// <summary>
@@ -61,7 +59,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
 
         Container? container = await containerRepository.GetContainerWithInstanceById(id, token);
 
-        if (container?.GameInstance is null || !container.IsProxy)
+        if (container is null || !container.IsProxy)
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
@@ -75,20 +73,9 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         if (clientIp is null)
             return BadRequest(new RequestResponse("无效的访问地址"));
 
-        var enable = _enableTrafficCapture && container.GameInstance.Challenge.EnableTrafficCapture;
-        byte[]? metadata = null;
-
-        if (enable)
-            metadata = JsonSerializer.SerializeToUtf8Bytes(
-                new
-                {
-                    Challenge = container.GameInstance.Challenge.Title,
-                    container.GameInstance.ChallengeId,
-                    Team = container.GameInstance.Participation.Team.Name,
-                    container.GameInstance.Participation.TeamId,
-                    container.ContainerId,
-                    container.GameInstance.FlagContext?.Flag
-                }, _jsonOptions);
+        var enable = _enableTrafficCapture && container.EnableTrafficCapture;
+        
+        byte[]? metadata = enable ? container.GenerateMetadata(_jsonOptions) : null;
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);

@@ -201,6 +201,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithOne(e => e.ExerciseInstance)
                 .HasForeignKey<Container>(e => e.ExerciseInstanceId)
                 .OnDelete(DeleteBehavior.NoAction);
+            
+            entity.HasOne(e => e.FlagContext)
+                .WithMany()
+                .HasForeignKey(e => e.FlagId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
