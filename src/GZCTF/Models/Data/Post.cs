@@ -62,7 +62,7 @@ public partial class Post
         Summary = string.IsNullOrEmpty(model.Summary) ? Summary : model.Summary;
         Content = string.IsNullOrEmpty(model.Content) ? Content : model.Content;
         IsPinned = model.IsPinned;
-        Tags = model.Tags.Length > 0 ? model.Tags.ToList() : Tags;
+        Tags = model.Tags.ToList();
         Author = user;
         AuthorId = user.Id;
         UpdateTimeUTC = DateTimeOffset.UtcNow;
