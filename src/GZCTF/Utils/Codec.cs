@@ -352,7 +352,7 @@ public static partial class CodecExtensions
             return Convert.ToBase64String(output);
         return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
     }
-    
+
 
     /// <summary>
     /// 获取字符串 UTF-8 编码字节

@@ -151,9 +151,9 @@ public class GameInstanceRepository(AppDbContext context,
             }
         }
 
-        if (gameInstance.Container is not null) 
+        if (gameInstance.Container is not null)
             return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
-        
+
         await context.Entry(gameInstance).Reference(e => e.FlagContext).LoadAsync(token);
         Container? container = await service.CreateContainerAsync(new ContainerConfig
         {
@@ -219,7 +219,7 @@ public class GameInstanceRepository(AppDbContext context,
                 Submission updateSub = await context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
 
                 CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
-                
+
                 checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
 
                 updateSub.Status = AnswerResult.CheatDetected;
@@ -271,7 +271,7 @@ public class GameInstanceRepository(AppDbContext context,
             var beforeEnd = submission.Game.EndTimeUtc > submission.SubmitTimeUtc;
 
             updateSub.GameChallenge.SubmissionCount++;
-            
+
             if (firstTime && beforeEnd)
             {
                 instance.IsSolved = true;

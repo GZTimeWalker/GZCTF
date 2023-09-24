@@ -371,7 +371,7 @@ public enum AnswerResult : sbyte
     /// 检测到抄袭
     /// </summary>
     CheatDetected = 3,
-    
+
     /// <summary>
     /// 提交的题目实例未找到
     /// </summary>

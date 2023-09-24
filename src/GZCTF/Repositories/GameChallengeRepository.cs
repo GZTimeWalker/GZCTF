@@ -39,7 +39,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
         await context.Entry(gameChallenge).Collection(c => c.Teams).LoadAsync(token);
         await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-        var update = game.Participations.Aggregate(false, 
+        var update = game.Participations.Aggregate(false,
             (current, participation) => gameChallenge.Teams.Add(participation) || current);
 
         await SaveAsync(token);
@@ -102,7 +102,9 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
             ? null
             : new()
             {
-                Type = model.AttachmentType, LocalFile = await fileRepository.GetFileByHash(model.FileHash, token), RemoteUrl = model.RemoteUrl
+                Type = model.AttachmentType,
+                LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
+                RemoteUrl = model.RemoteUrl
             };
 
         await DeleteAllAttachment(gameChallenge, false, token);

@@ -50,7 +50,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
 
         var key = CacheKey.ConnectionCount(id);
-        
+
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
 
@@ -74,7 +74,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return BadRequest(new RequestResponse("无效的访问地址"));
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
-        
+
         byte[]? metadata = enable ? container.GenerateMetadata(_jsonOptions) : null;
 
         IPEndPoint client = new(clientIp, clientPort);

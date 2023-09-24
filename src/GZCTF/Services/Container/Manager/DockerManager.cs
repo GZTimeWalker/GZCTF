@@ -167,7 +167,7 @@ public class DockerManager : IContainerManager
             Image = config.Image,
             Labels = new Dictionary<string, string>
             {
-                ["TeamId"] = config.TeamId, 
+                ["TeamId"] = config.TeamId,
                 ["UserId"] = config.UserId.ToString()
             },
             Name = DockerMetadata.GetName(config),

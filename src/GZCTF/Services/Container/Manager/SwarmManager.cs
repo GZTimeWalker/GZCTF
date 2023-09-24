@@ -138,7 +138,7 @@ public class SwarmManager : IContainerManager
                 Labels =
                     new Dictionary<string, string>
                     {
-                        ["TeamId"] = config.TeamId, 
+                        ["TeamId"] = config.TeamId,
                         ["UserId"] = config.UserId.ToString()
                     },
                 Mode = new() { Replicated = new() { Replicas = 1 } },
@@ -158,7 +158,7 @@ public class SwarmManager : IContainerManager
                     {
                         Limits = new()
                         {
-                            MemoryBytes = config.MemoryLimit * 1024 * 1024, 
+                            MemoryBytes = config.MemoryLimit * 1024 * 1024,
                             NanoCPUs = config.CPUCount * 1_0000_0000
                         }
                     }

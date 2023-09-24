@@ -17,9 +17,9 @@ public class TeamRepository : RepositoryBase, ITeamRepository
             .Where(p => p.Team == team && p.Game.EndTimeUtc > current)
             .AnyAsync(token);
 
-        if (!team.Locked || result) 
+        if (!team.Locked || result)
             return result;
-        
+
         team.Locked = false;
         await SaveAsync(token);
 

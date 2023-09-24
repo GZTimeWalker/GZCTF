@@ -194,14 +194,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
         });
-        
+
         builder.Entity<ExerciseInstance>(entity =>
         {
             entity.HasOne(e => e.Container)
                 .WithOne(e => e.ExerciseInstance)
                 .HasForeignKey<Container>(e => e.ExerciseInstanceId)
                 .OnDelete(DeleteBehavior.NoAction);
-            
+
             entity.HasOne(e => e.FlagContext)
                 .WithMany()
                 .HasForeignKey(e => e.FlagId)
@@ -217,7 +217,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithOne(e => e.Container)
                 .HasForeignKey<GameInstance>(e => e.ContainerId)
                 .OnDelete(DeleteBehavior.SetNull);
-            
+
             entity.HasOne(e => e.ExerciseInstance)
                 .WithOne(e => e.Container)
                 .HasForeignKey<ExerciseInstance>(e => e.ContainerId)
@@ -254,7 +254,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.HasIndex(e => e.GameId);
         });
-        
+
         builder.Entity<ExerciseChallenge>(entity =>
         {
             entity.Property(e => e.Hints)
@@ -336,10 +336,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasOne(e => e.Submission)
                 .WithMany()
                 .HasForeignKey(e => e.SubmissionId);
-            
+
             entity.HasKey(e => e.SubmissionId);
         });
-        
+
         builder.Entity<UserParticipation>(entity =>
         {
             entity.HasOne(e => e.User)

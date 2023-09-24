@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
@@ -75,13 +75,13 @@ public class Container
     /// </summary>
     [NotMapped]
     public string Entry => IsProxy ? Id.ToString() : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
-    
+
     /// <summary>
     /// 是否启用流量捕获
     /// </summary>
     [NotMapped]
     public bool EnableTrafficCapture => GameInstance?.Challenge.EnableTrafficCapture ?? false;
-    
+
     /// <summary>
     /// 容器实例流量捕获存储路径
     /// </summary>
@@ -108,7 +108,7 @@ public class Container
                     ContainerId,
                     GameInstance.FlagContext?.Flag
                 }, options);
-        
+
         if (ExerciseInstance is not null)
             return JsonSerializer.SerializeToUtf8Bytes(
                 new
@@ -123,7 +123,7 @@ public class Container
 
         return null;
     }
-    
+
     #region Db Relationship
 
     /// <summary>
@@ -135,7 +135,7 @@ public class Container
     /// 比赛题目实例对象 ID
     /// </summary>
     public int GameInstanceId { get; set; }
-    
+
     /// <summary>
     /// 练习题目实例对象
     /// </summary>

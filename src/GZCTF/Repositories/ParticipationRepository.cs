@@ -16,10 +16,10 @@ public class ParticipationRepository(
 
         // requery instead of Entry
         part = await context.Participations.Include(p => p.Challenges).SingleAsync(p => p.Id == part.Id, token);
-        
-        var update = challenges.Aggregate(false, 
+
+        var update = challenges.Aggregate(false,
             (current, challenge) => part.Challenges.Add(challenge) || current);
-        
+
         await SaveAsync(token);
 
         return update;

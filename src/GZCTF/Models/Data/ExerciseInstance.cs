@@ -20,7 +20,7 @@ public class ExerciseInstance : Instance
     internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
         ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
         : Challenge.Attachment?.UrlWithName();
-    
+
     #region Db Relationship
 
     /// <summary>
@@ -28,12 +28,12 @@ public class ExerciseInstance : Instance
     /// </summary>
     [Required]
     public Guid UserId { get; set; }
-    
+
     /// <summary>
     /// 参赛用户
     /// </summary>
     public UserInfo User { get; set; } = default!;
-    
+
     /// <summary>
     /// 题目 Id
     /// </summary>
@@ -44,6 +44,6 @@ public class ExerciseInstance : Instance
     /// 练习题目对象
     /// </summary>
     public ExerciseChallenge Challenge { get; set; } = default!;
-    
+
     #endregion
 }
