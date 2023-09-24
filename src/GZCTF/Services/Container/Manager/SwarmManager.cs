@@ -63,7 +63,7 @@ public class SwarmManager : IContainerManager
         ServiceCreateParameters parameters = GetServiceCreateParameters(config);
         var retry = 0;
         ServiceCreateResponse? serviceRes;
-        CreateContainer:
+    CreateContainer:
         try
         {
             serviceRes = await _client.Swarm.CreateServiceAsync(parameters, token);

@@ -48,8 +48,8 @@ public class K8sManager : IContainerManager
                 NamespaceProperty = options.Namespace,
                 Labels = new Dictionary<string, string>
                 {
-                    ["ctf.gzti.me/ResourceId"] = name, 
-                    ["ctf.gzti.me/TeamId"] = config.TeamId, 
+                    ["ctf.gzti.me/ResourceId"] = name,
+                    ["ctf.gzti.me/TeamId"] = config.TeamId,
                     ["ctf.gzti.me/UserId"] = config.UserId.ToString()
                 }
             },
@@ -88,7 +88,7 @@ public class K8sManager : IContainerManager
                             },
                             Requests = new Dictionary<string, ResourceQuantity>
                             {
-                                ["cpu"] = new("10m"), 
+                                ["cpu"] = new("10m"),
                                 ["memory"] = new("32Mi")
                             }
                         }
@@ -124,8 +124,8 @@ public class K8sManager : IContainerManager
         // Service is needed for port mapping
         var container = new Models.Data.Container
         {
-            ContainerId = name, 
-            Image = config.Image, 
+            ContainerId = name,
+            Image = config.Image,
             Port = config.ExposedPort
         };
 

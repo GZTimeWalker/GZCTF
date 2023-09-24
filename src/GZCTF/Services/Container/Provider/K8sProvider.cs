@@ -37,7 +37,9 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
     {
         _k8sMetadata = new()
         {
-            Config = options.Value.K8sConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
+            Config = options.Value.K8sConfig ?? new(),
+            PortMappingType = options.Value.PortMappingType,
+            PublicEntry = options.Value.PublicEntry
         };
 
         if (!File.Exists(_k8sMetadata.Config.KubeConfig))
