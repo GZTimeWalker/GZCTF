@@ -202,9 +202,8 @@ public class Challenge
         FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
             string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : model.FlagTemplate;
 
-        // DynamicContainer only
-        EnableTrafficCapture = Type == ChallengeType.DynamicContainer &&
-                               (model.EnableTrafficCapture ?? EnableTrafficCapture);
+        // Container only
+        EnableTrafficCapture = Type.IsContainer() && (model.EnableTrafficCapture ?? EnableTrafficCapture);
 
         return this;
     }

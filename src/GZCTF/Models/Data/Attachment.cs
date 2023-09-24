@@ -32,7 +32,7 @@ public class Attachment
     /// Flag 对应文件（本地文件）
     /// </summary>
     [JsonIgnore]
-    public LocalFile? LocalFile { get; set; } = default;
+    public LocalFile? LocalFile { get; set; }
 
     /// <summary>
     /// 文件默认 Url
