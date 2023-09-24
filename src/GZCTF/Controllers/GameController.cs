@@ -381,7 +381,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetChallengeTraffic([FromRoute] int challengeId, CancellationToken token)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId:int}";
+        var filePath = $"{FilePath.Capture}/{challengeId}";
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
@@ -412,7 +412,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public IActionResult GetTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId:int}/{partId:int}";
+        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
@@ -438,12 +438,12 @@ public class GameController(
     public async Task<IActionResult> GetTeamTrafficZip([FromRoute] int challengeId, [FromRoute] int partId,
         CancellationToken token)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId:int}/{partId:int}";
+        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
 
-        var filename = $"Capture-{challengeId:int}-{partId:int}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
+        var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
         Stream stream = await Codec.ZipFilesAsync(filePath, filename, token);
         stream.Seek(0, SeekOrigin.Begin);
 
@@ -471,7 +471,7 @@ public class GameController(
         try
         {
             var file = Path.GetFileName(filename);
-            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId:int}/{partId:int}", file));
+            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId}/{partId}", file));
 
             if (Path.GetExtension(file) != ".pcap" || !Path.Exists(path))
                 return NotFound(new RequestResponse("未找到相关捕获信息"));
