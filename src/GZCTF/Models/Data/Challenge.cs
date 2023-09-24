@@ -40,7 +40,7 @@ public class Challenge
     /// 题目提示
     /// </summary>
     public List<string>? Hints { get; set; }
-    
+
     /// <summary>
     /// 是否启用题目
     /// </summary>
@@ -82,19 +82,19 @@ public class Challenge
     /// 镜像暴露端口
     /// </summary>
     public int? ContainerExposePort { get; set; } = 80;
-    
+
     /// <summary>
     /// 下载文件名称，仅用于动态附件统一文件名
     /// </summary>
     public string? FileName { get; set; } = "attachment";
-    
+
     /// <summary>
     /// 并发检查
     /// </summary>
     [JsonIgnore]
     [ConcurrencyCheck]
     public Guid ConcurrencyStamp { get; set; }
-    
+
     #region Db Relationship
 
     /// <summary>
@@ -116,12 +116,12 @@ public class Challenge
     /// 测试容器
     /// </summary>
     public Container? TestContainer { get; set; }
-    
+
     /// <summary>
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
     /// </summary>
     public string? FlagTemplate { get; set; }
-    
+
     /// <summary>
     /// 为参赛对象生成动态 Flag
     /// </summary>
@@ -137,7 +137,7 @@ public class Challenge
 
         if (!FlagTemplate.Contains("[TEAM_HASH]"))
             return Codec.Leet.LeetFlag(FlagTemplate);
-        
+
         var flag = FlagTemplate;
         if (FlagTemplate.StartsWith("[LEET]"))
             flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
@@ -152,7 +152,7 @@ public class Challenge
         var hash = $"{part.Token}::{part.Game.TeamHashSalt}::{Id}".ToSHA256String();
         return flag.Replace("[TEAM_HASH]", hash[12..24]);
     }
-    
+
     /// <summary>
     /// 为用户生成动态 Flag
     /// </summary>
@@ -169,14 +169,14 @@ public class Challenge
 
         if (!FlagTemplate.Contains("[TEAM_HASH]"))
             return Codec.Leet.LeetFlag(FlagTemplate);
-        
+
         var flag = FlagTemplate;
         if (FlagTemplate.StartsWith("[LEET]"))
             flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
-        
+
         return flag.Replace("[TEAM_HASH]", guid.ToString("N")[..12]);
     }
-    
+
     internal string GenerateTestFlag()
     {
         if (string.IsNullOrEmpty(FlagTemplate))
@@ -190,6 +190,6 @@ public class Challenge
 
         return Codec.Leet.LeetFlag(FlagTemplate);
     }
-    
+
     #endregion
 }

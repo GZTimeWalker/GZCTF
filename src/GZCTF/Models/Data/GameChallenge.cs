@@ -41,7 +41,7 @@ public class GameChallenge : Challenge
                 OriginalScore * (MinScoreRate +
                                  (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
                 ));
-    
+
     internal void Update(ChallengeUpdateModel model)
     {
         Title = model.Title ?? Title;
@@ -63,13 +63,12 @@ public class GameChallenge : Challenge
         FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
             string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : model.FlagTemplate;
 
-        // DynamicContainer only
-        EnableTrafficCapture = Type == ChallengeType.DynamicContainer &&
-                               (model.EnableTrafficCapture ?? EnableTrafficCapture);
+        // Container only
+        EnableTrafficCapture = Type.IsContainer() && (model.EnableTrafficCapture ?? EnableTrafficCapture);
     }
 
     #region Db Relationship
-    
+
     /// <summary>
     /// 题目对应的 Flag 列表
     /// </summary>
