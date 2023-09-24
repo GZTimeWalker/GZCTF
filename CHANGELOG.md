@@ -3,6 +3,14 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.17.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.4..v0.17.5) - 2023-09-24
+
+### 🐛 Bug Fixes
+
+- cannot enable traffic capture for static container challenge - ([dc8972](https://github.com/GZTimeWalker/GZCTF/commit/dc8972)) by **GZTime**
+- cannot empty post summary & content - ([3feb43](https://github.com/GZTimeWalker/GZCTF/commit/3feb43)) by **GZTime**
+
+---
 ## [0.17.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.3..v0.17.4) - 2023-09-22
 
 ### 🐛 Bug Fixes
