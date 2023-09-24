@@ -61,7 +61,8 @@ public partial class Codec
     public static byte[] Xor(byte[] data, byte[] xor)
     {
         var res = new byte[data.Length];
-        for (var i = 0; i < data.Length; ++i) res[i] = (byte)(data[i] ^ xor[i % xor.Length]);
+        for (var i = 0; i < data.Length; ++i)
+            res[i] = (byte)(data[i] ^ xor[i % xor.Length]);
         return res;
     }
 

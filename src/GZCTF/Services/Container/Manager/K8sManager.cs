@@ -48,7 +48,9 @@ public class K8sManager : IContainerManager
                 NamespaceProperty = options.Namespace,
                 Labels = new Dictionary<string, string>
                 {
-                    ["ctf.gzti.me/ResourceId"] = name, ["ctf.gzti.me/TeamId"] = config.TeamId, ["ctf.gzti.me/UserId"] = config.UserId
+                    ["ctf.gzti.me/ResourceId"] = name,
+                    ["ctf.gzti.me/TeamId"] = config.TeamId,
+                    ["ctf.gzti.me/UserId"] = config.UserId
                 }
             },
             Spec = new V1PodSpec

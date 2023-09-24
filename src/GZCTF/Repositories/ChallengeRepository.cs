@@ -104,7 +104,9 @@ public class ChallengeRepository(AppDbContext context, IFileRepository fileRepos
             ? null
             : new()
             {
-                Type = model.AttachmentType, LocalFile = await fileRepository.GetFileByHash(model.FileHash, token), RemoteUrl = model.RemoteUrl
+                Type = model.AttachmentType,
+                LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
+                RemoteUrl = model.RemoteUrl
             };
 
         await DeleteAllAttachment(challenge, false, token);

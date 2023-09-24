@@ -37,29 +37,14 @@ public class RateLimiter
 
     public static RateLimiterOptions GetRateLimiterOptions() =>
         new RateLimiterOptions
+        {
+            RejectionStatusCode = StatusCodes.Status429TooManyRequests,
+            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
             {
-                RejectionStatusCode = StatusCodes.Status429TooManyRequests,
-                GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
-                {
-                    var userId = context?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userId = context?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                    if (userId is not null)
-                        return RateLimitPartition.GetSlidingWindowLimiter(userId,
-                            key => new()
-                            {
-                                PermitLimit = 150,
-                                Window = TimeSpan.FromMinutes(1),
-                                QueueLimit = 60,
-                                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                                SegmentsPerWindow = 6
-                            });
-
-                    IPAddress? address = context?.Connection?.RemoteIpAddress;
-
-                    if (address is null || IPAddress.IsLoopback(address))
-                        return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
-
-                    return RateLimitPartition.GetSlidingWindowLimiter(address.ToString(),
+                if (userId is not null)
+                    return RateLimitPartition.GetSlidingWindowLimiter(userId,
                         key => new()
                         {
                             PermitLimit = 150,
@@ -68,24 +53,39 @@ public class RateLimiter
                             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                             SegmentsPerWindow = 6
                         });
-                }),
-                OnRejected = async (context, cancellationToken) =>
-                {
-                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    context.HttpContext.Response.ContentType = MediaTypeNames.Application.Json;
 
-                    var afterSec = (int)TimeSpan.FromMinutes(1).TotalSeconds;
+                IPAddress? address = context?.Connection?.RemoteIpAddress;
 
-                    if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
-                        afterSec = (int)retryAfter.TotalSeconds;
+                if (address is null || IPAddress.IsLoopback(address))
+                    return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
 
-                    context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);
-                    await context.HttpContext.Response.WriteAsJsonAsync(
-                        new RequestResponse($"Too many requests, retry after {afterSec} seconds.",
-                            StatusCodes.Status429TooManyRequests
-                        ), cancellationToken);
-                }
+                return RateLimitPartition.GetSlidingWindowLimiter(address.ToString(),
+                    key => new()
+                    {
+                        PermitLimit = 150,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 60,
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        SegmentsPerWindow = 6
+                    });
+            }),
+            OnRejected = async (context, cancellationToken) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                context.HttpContext.Response.ContentType = MediaTypeNames.Application.Json;
+
+                var afterSec = (int)TimeSpan.FromMinutes(1).TotalSeconds;
+
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
+                    afterSec = (int)retryAfter.TotalSeconds;
+
+                context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);
+                await context.HttpContext.Response.WriteAsJsonAsync(
+                    new RequestResponse($"Too many requests, retry after {afterSec} seconds.",
+                        StatusCodes.Status429TooManyRequests
+                    ), cancellationToken);
             }
+        }
             .AddConcurrencyLimiter(nameof(LimitPolicy.Concurrency), options =>
             {
                 options.PermitLimit = 1;

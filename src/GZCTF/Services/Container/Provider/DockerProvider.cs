@@ -37,7 +37,9 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
     {
         _dockerMeta = new()
         {
-            Config = options.Value.DockerConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
+            Config = options.Value.DockerConfig ?? new(),
+            PortMappingType = options.Value.PortMappingType,
+            PublicEntry = options.Value.PublicEntry
         };
 
         DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)

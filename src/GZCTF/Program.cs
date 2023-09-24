@@ -355,11 +355,12 @@ namespace GZCTF
 
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(
-                    new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。")) { StatusCode = 400 };
+                    new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。"))
+                { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
-                where val.Errors.Count > 0
-                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                      where val.Errors.Count > 0
+                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。")) { StatusCode = 400 };
         }

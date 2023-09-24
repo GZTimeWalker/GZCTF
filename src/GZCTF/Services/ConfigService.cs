@@ -78,7 +78,8 @@ public class ConfigService(AppDbContext context,
 
     static bool IsArrayLikeInterface(Type type)
     {
-        if (!type.IsInterface || !type.IsConstructedGenericType) return false;
+        if (!type.IsInterface || !type.IsConstructedGenericType)
+            return false;
 
         Type genericTypeDefinition = type.GetGenericTypeDefinition();
         return genericTypeDefinition == typeof(IEnumerable<>)

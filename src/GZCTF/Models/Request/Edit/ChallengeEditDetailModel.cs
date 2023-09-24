@@ -105,7 +105,7 @@ public class ChallengeEditDetailModel
             Attachment = chal.Attachment,
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
             Flags = (from flag in chal.Flags
-                    select FlagInfoModel.FromFlagContext(flag))
+                     select FlagInfoModel.FromFlagContext(flag))
                 .ToArray()
         };
 

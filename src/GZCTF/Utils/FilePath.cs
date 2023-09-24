@@ -20,7 +20,8 @@ static class FilePath
         foreach (DirType type in Enum.GetValues<DirType>())
         {
             var path = Path.Combine(Base, type.ToString().ToLower());
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
         }
     }
 

@@ -326,7 +326,8 @@ public class GameRepository(IDistributedCache cache,
                 score += i.Score;
                 return new TimeLine
                 {
-                    Score = score, Time = i.SubmitTimeUTC!.Value // 此处不为 null
+                    Score = score,
+                    Time = i.SubmitTimeUTC!.Value // 此处不为 null
                 };
             });
     }
