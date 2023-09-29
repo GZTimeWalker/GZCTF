@@ -28,7 +28,7 @@
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'GZCTF' " />
     <ItemGroup>
         <PackageReference Include="Docker.DotNet" Version="3.125.15" />
-        <PackageReference Include="KubernetesClient" Version="12.0.16" />
+        <PackageReference Include="KubernetesClient" Version="12.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.11" />
