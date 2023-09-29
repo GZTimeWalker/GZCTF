@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <AssemblyVersion>0.17.5</AssemblyVersion>
+        <AssemblyVersion>0.17.6</AssemblyVersion>
         <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -18,7 +18,7 @@
         <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>pnpm run dev --host</SpaProxyLaunchCommand>
         <Configurations>Debug;Release;GenAPI</Configurations>
-        <ReleaseVersion>0.17.5</ReleaseVersion>
+        <ReleaseVersion>0.17.6</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
@@ -28,7 +28,7 @@
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'GZCTF' " />
     <ItemGroup>
         <PackageReference Include="Docker.DotNet" Version="3.125.15" />
-        <PackageReference Include="KubernetesClient" Version="12.0.16" />
+        <PackageReference Include="KubernetesClient" Version="12.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.11" />

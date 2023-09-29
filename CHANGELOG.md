@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.17.6](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.5..v0.17.6) - 2023-09-29
+
+### 🐛 Bug Fixes
+
+- game starts 1 minute later (#154) - ([77d1d2](https://github.com/GZTimeWalker/GZCTF/commit/77d1d2)) by **Monad**
+
+---
 ## [0.17.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.4..v0.17.5) - 2023-09-24
 
 ### 🐛 Bug Fixes
@@ -13,7 +20,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### ⚙️ Miscellaneous Tasks
 
-- format code - ([9d0da3](https://github.com/GZTimeWalker/GZCTF/commit/9d0da3)) by **GZTime**
+- format code - ([6051a1](https://github.com/GZTimeWalker/GZCTF/commit/6051a1)) by **GZTime**
 
 ---
 ## [0.17.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.3..v0.17.4) - 2023-09-22
