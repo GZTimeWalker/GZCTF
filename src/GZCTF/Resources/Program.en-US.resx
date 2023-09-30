@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,8 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Cache_GenerationFailed" xml:space="preserve">
+    <value>缓存生成失败：{0}</value>
+  </data>
+  <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
+    <value>无效的缓存更新请求：{0}</value>
+  </data>
+  <data name="Cache_NoMatchingRequest" xml:space="preserve">
+    <value>缓存更新线程未找到匹配的请求：{0}</value>
+  </data>
+  <data name="Cache_Rebuilt" xml:space="preserve">
+    <value>重建缓存：{0} @ {1} bytes</value>
+  </data>
   <data name="Cache_Stopped" xml:space="preserve">
     <value>Cache update has been stopped</value>
+  </data>
+  <data name="Cache_Updated" xml:space="preserve">
+    <value>缓存已更新：{0} @ {1} bytes</value>
+  </data>
+  <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
+    <value>缓存更新线程更新失败：{0} @ {1}</value>
+  </data>
+  <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
+    <value>缓存更新线程已锁定：{0}</value>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
     <value>Cache update worker is stopping because task has been cancelled</value>
@@ -147,6 +168,81 @@
   <data name="Config_TypeNotSupported" xml:space="preserve">
     <value>Unsupported configuration type</value>
   </data>
+  <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
+    <value>容器 {0} 创建失败</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
+    <value>容器 {0} 创建失败, 响应：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
+    <value>容器 {0} 创建失败, 状态：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
+    <value>容器 {0} 删除失败</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
+    <value>容器 {0} 删除失败, 响应：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
+    <value>容器 {0} 删除失败, 状态：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
+    <value>容器 {0} 已被销毁</value>
+  </data>
+  <data name="ContainerManager_ContainerExisted" xml:space="preserve">
+    <value>容器 {0} 已存在，尝试移除后重新创建</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
+    <value>容器实例 {0} 创建失败</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
+    <value>创建 {0} 实例遇到错误：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
+    <value>启动容器实例 {0} ({1}) 失败</value>
+  </data>
+  <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
+    <value>容器 {0} 创建后未获取到端口暴露信息，创建失败</value>
+  </data>
+  <data name="ContainerManager_DockerMode" xml:space="preserve">
+    <value>容器管理模式：Docker 单实例容器控制</value>
+  </data>
+  <data name="ContainerManager_K8sMode" xml:space="preserve">
+    <value>容器管理模式：K8s 集群 Pod 容器控制</value>
+  </data>
+  <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
+    <value>无法转换端口号：{0}，这是非预期的行为</value>
+  </data>
+  <data name="ContainerManager_PullContainerImage" xml:space="preserve">
+    <value>拉取容器镜像 {0}</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
+    <value>服务 {0} 创建失败</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
+    <value>服务 {0} 创建失败, 响应：{1}</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
+    <value>服务 {0} 创建失败, 状态：{1}</value>
+  </data>
+  <data name="ContainerManager_SwarmMode" xml:space="preserve">
+    <value>容器管理模式：Docker Swarm 集群容器控制</value>
+  </data>
+  <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
+    <value>无法解析镜像名称 '{0}'</value>
+  </data>
+  <data name="ContainerProvider_DockerInited" xml:space="preserve">
+    <value>Docker 初始化成功 ({0})</value>
+  </data>
+  <data name="ContainerProvider_K8sConfigLoadFailed" xml:space="preserve">
+    <value>无法加载 K8s 配置文件，请确保配置文件存在 {0}</value>
+  </data>
+  <data name="ContainerProvider_K8sInited" xml:space="preserve">
+    <value>K8s 初始化成功 ({0})</value>
+  </data>
+  <data name="ContainerProvider_K8sInitFailed" xml:space="preserve">
+    <value>K8s 初始化失败，请检查相关配置是否正确 ({0})</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>Game #{0} is about to start, adding scoreboard cache to the cache queue</value>
   </data>
@@ -167,6 +263,24 @@
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
     <value>The database connection string field 'ConnectionStrings' was not found, please check if appsettings.json has been properly mounted and configured</value>
+  </data>
+  <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
+    <value>[提交正确] 队伍 [{0}] 提交题目 [{1}] 的答案 [{2}]</value>
+  </data>
+  <data name="FlagChecker_AnswerRejected" xml:space="preserve">
+    <value>[提交错误] 队伍 [{0}] 提交题目 [{1}] 的答案 [{2}]</value>
+  </data>
+  <data name="FlagChecker_CheatDetected" xml:space="preserve">
+    <value>[作弊检查] 队伍 [{0}] 疑似违规 [{1}]，相关队伍 [{2}]</value>
+  </data>
+  <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
+    <value>题目 [{0}] 疑似发生违规，相关队伍 [{1}] 和 [{2}]</value>
+  </data>
+  <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
+    <value>[数据库并发] 未能更新提交 #{0} 的状态</value>
+  </data>
+  <data name="FlagChecker_UnknownInstance" xml:space="preserve">
+    <value>[实例未知] 未找到队伍 [{0}] 提交题目 [{1}] 的实例</value>
   </data>
   <data name="FlagsChecker_Recheck" xml:space="preserve">
     <value>Recheck {0} flags</value>
@@ -228,6 +342,45 @@
   <data name="Game_TeamNotFound" xml:space="preserve">
     <value>The team was not found</value>
   </data>
+  <data name="InstanceRepository_NoInstance" xml:space="preserve">
+    <value>队伍对应参与对象为空，这可能是非预期的情况 [{0}, {1}]</value>
+  </data>
+  <data name="MailSender_ChangeEmailButton" xml:space="preserve">
+    <value>确认验证邮箱</value>
+  </data>
+  <data name="MailSender_ChangeEmailContent" xml:space="preserve">
+    <value>你正在进行账户邮箱更换操作，请点击下方按钮验证你的新邮箱。</value>
+  </data>
+  <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
+    <value>更换邮箱</value>
+  </data>
+  <data name="MailSender_InvalidRequest" xml:space="preserve">
+    <value>无效的邮件发送调用</value>
+  </data>
+  <data name="MailSender_MailSendFailed" xml:space="preserve">
+    <value>邮件发送失败</value>
+  </data>
+  <data name="MailSender_ResetPasswordButton" xml:space="preserve">
+    <value>确认重置密码</value>
+  </data>
+  <data name="MailSender_ResetPasswordContent" xml:space="preserve">
+    <value>你正在进行账户密码重置操作，请点击下方按钮重置你的密码。</value>
+  </data>
+  <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
+    <value>重置密码</value>
+  </data>
+  <data name="MailSender_SendMail" xml:space="preserve">
+    <value>发送邮件：{0}</value>
+  </data>
+  <data name="MailSender_VerifyEmailButton" xml:space="preserve">
+    <value>确认验证邮箱</value>
+  </data>
+  <data name="MailSender_VerifyEmailContent" xml:space="preserve">
+    <value>你正在进行账户注册操作，我们需要验证你的注册邮箱：{0}，请点击下方按钮进行验证。</value>
+  </data>
+  <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
+    <value>验证邮箱</value>
+  </data>
   <data name="Model_ValicationFailed" xml:space="preserve">
     <value>Failed to validate the input, please check again</value>
   </data>
@@ -240,7 +393,31 @@
   <data name="Server_Failed" xml:space="preserve">
     <value>Server exited unexpectedly due to exceptions</value>
   </data>
+  <data name="Submission_Accepted" xml:space="preserve">
+    <value>答案正确</value>
+  </data>
+  <data name="Submission_CheatDetected" xml:space="preserve">
+    <value>作弊检测</value>
+  </data>
+  <data name="Submission_FirstBlood" xml:space="preserve">
+    <value>一血</value>
+  </data>
+  <data name="Submission_FlagSubmitted" xml:space="preserve">
+    <value>成功提交</value>
+  </data>
   <data name="Submission_NotFound" xml:space="preserve">
     <value>The submission was not found</value>
+  </data>
+  <data name="Submission_SecondBlood" xml:space="preserve">
+    <value>二血</value>
+  </data>
+  <data name="Submission_ThirdBlood" xml:space="preserve">
+    <value>三血</value>
+  </data>
+  <data name="Submission_UnknownInstance" xml:space="preserve">
+    <value>实例未知</value>
+  </data>
+  <data name="Submission_WrongAnswer" xml:space="preserve">
+    <value>答案错误</value>
   </data>
 </root>

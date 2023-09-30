@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,8 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Cache_GenerationFailed" xml:space="preserve">
+    <value>キャッシュの生成に失敗しました：{0}</value>
+  </data>
+  <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
+    <value>無効なキャッシュ更新リクエスト：{0}</value>
+  </data>
+  <data name="Cache_NoMatchingRequest" xml:space="preserve">
+    <value>キャッシュ更新ワーカーに一致するリクエストが見つかりませんでした：{0}</value>
+  </data>
+  <data name="Cache_Rebuilt" xml:space="preserve">
+    <value>キャッシュが再構築されました：{0} @ {1} bytes</value>
+  </data>
   <data name="Cache_Stopped" xml:space="preserve">
     <value>キャッシュの更新が停止されました</value>
+  </data>
+  <data name="Cache_Updated" xml:space="preserve">
+    <value>キャッシュが更新されました：{0} @ {1} bytes</value>
+  </data>
+  <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
+    <value>キャッシュ更新ワーカーが更新に失敗しました：{0} @ {1}</value>
+  </data>
+  <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
+    <value>キャッシュ更新ワーカーがロックされています：{0}</value>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
     <value>タスクがキャンセルされたため、キャッシュの更新ワーカーを停止します</value>
@@ -147,6 +168,81 @@
   <data name="Config_TypeNotSupported" xml:space="preserve">
     <value>設定のタイプがサポートされていません</value>
   </data>
+  <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
+    <value>コンテナ {0} を作成できませんでした</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
+    <value>コンテナ {0} を作成できませんでした、レスポンス：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
+    <value>コンテナ {0} を作成できませんでした、ステータス：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
+    <value>コンテナ {0} を削除できませんでした</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
+    <value>コンテナ {0} を削除できませんでした、レスポンス：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
+    <value>コンテナ {0} を削除できませんでした、ステータス：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
+    <value>コンテナ {0} は破壊されました</value>
+  </data>
+  <data name="ContainerManager_ContainerExisted" xml:space="preserve">
+    <value>コンテナの {0} は既に存在しているため、削除後に再作成します</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
+    <value>コンテナのインスタンス {0} を作成できませんでした</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
+    <value>コンテナ {0} を作成できませんでした：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
+    <value>コンテナ {0} ({1}) を起動できませんでした</value>
+  </data>
+  <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
+    <value>コンテナ{0} のポート情報を取得できませんでしたため作成に失敗しました</value>
+  </data>
+  <data name="ContainerManager_DockerMode" xml:space="preserve">
+    <value>コンテナ管理モード：Docker 単一インスタンスコンテナー制御</value>
+  </data>
+  <data name="ContainerManager_K8sMode" xml:space="preserve">
+    <value>コンテナ管理モード：K8s Pod コンテナー制御</value>
+  </data>
+  <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
+    <value>ポート番号を変換できませんでした：{0}</value>
+  </data>
+  <data name="ContainerManager_PullContainerImage" xml:space="preserve">
+    <value>コンテナイメージ {0} を取得しています</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
+    <value>サービス {0} を作成できませんでした</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
+    <value>サービス {0} を作成できませんでした、レスポンス：{1}</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
+    <value>サービス {0} を作成できませんでした、ステータス：{1}</value>
+  </data>
+  <data name="ContainerManager_SwarmMode" xml:space="preserve">
+    <value>コンテナ管理モード：Docker Swarm クラスタコンテナー制御</value>
+  </data>
+  <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
+    <value>コンテナイメージ名 '{0}' を解析できませんでした</value>
+  </data>
+  <data name="ContainerProvider_DockerInited" xml:space="preserve">
+    <value>Docker が正常に初期化されました ({0})</value>
+  </data>
+  <data name="ContainerProvider_K8sConfigLoadFailed" xml:space="preserve">
+    <value>K8s 設定ファイルをロードできませんでした、設定ファイルが存在していますでしょうか：{0}</value>
+  </data>
+  <data name="ContainerProvider_K8sInited" xml:space="preserve">
+    <value>K8s が正常に初期化されました ({0})</value>
+  </data>
+  <data name="ContainerProvider_K8sInitFailed" xml:space="preserve">
+    <value>K8s の初期化に失敗しました、設定が正しいかどうかを確認してください ({0})</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>ゲーム #{0} が間もなく開始されます、ランキング キャッシュがキャッシュ キューに追加されました</value>
   </data>
@@ -167,6 +263,24 @@
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
     <value>データベースの接続文字列フィールド 'ConnectionStrings' が検出されていませんでした、appsettings.json が正しくマウントおよび設定されていますでしょうか？</value>
+  </data>
+  <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
+    <value>[正しいサブミッション] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
+  </data>
+  <data name="FlagChecker_AnswerRejected" xml:space="preserve">
+    <value>[間違いサブミッション] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
+  </data>
+  <data name="FlagChecker_CheatDetected" xml:space="preserve">
+    <value>[不正検出] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
+  </data>
+  <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
+    <value>チャレンジ [{0}] はルール違反の疑いがあります、関連チーム [{1}] と [{2}]</value>
+  </data>
+  <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
+    <value>[データベースの同時実行性] サブミッション #{0} のステータスを更新できませんでした</value>
+  </data>
+  <data name="FlagChecker_UnknownInstance" xml:space="preserve">
+    <value>[インスタンス不明] チーム [{0}] をチャレンジ [{1}] に提出したレコードが見つかりませんでした</value>
   </data>
   <data name="FlagsChecker_Recheck" xml:space="preserve">
     <value>{0} flag を再度チェックします</value>
@@ -228,6 +342,45 @@
   <data name="Game_TeamNotFound" xml:space="preserve">
     <value>チームは見つかりませんでした</value>
   </data>
+  <data name="InstanceRepository_NoInstance" xml:space="preserve">
+    <value>チームを対応する参加者は空です。これは予期されていない状況かもしれません [{0}, {1}]</value>
+  </data>
+  <data name="MailSender_ChangeEmailButton" xml:space="preserve">
+    <value>メールを認証する</value>
+  </data>
+  <data name="MailSender_ChangeEmailContent" xml:space="preserve">
+    <value>アカウントのメールアドレスの変更を行っています。下のボタンをクリックして新しいメールアドレスを認証してください。</value>
+  </data>
+  <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
+    <value>メールの変更</value>
+  </data>
+  <data name="MailSender_InvalidRequest" xml:space="preserve">
+    <value>メール送信リクエストは無効です</value>
+  </data>
+  <data name="MailSender_MailSendFailed" xml:space="preserve">
+    <value>メールの送信に失敗しました</value>
+  </data>
+  <data name="MailSender_ResetPasswordButton" xml:space="preserve">
+    <value>パスワードをリセットする</value>
+  </data>
+  <data name="MailSender_ResetPasswordContent" xml:space="preserve">
+    <value>アカウントのパスワードのリセットを行っています。パスワードをリセットするには、下のボタンをクリックしてパスワードをリセットしてください。</value>
+  </data>
+  <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
+    <value>パスワードのリセット</value>
+  </data>
+  <data name="MailSender_SendMail" xml:space="preserve">
+    <value>{0} にメールを送信します</value>
+  </data>
+  <data name="MailSender_VerifyEmailButton" xml:space="preserve">
+    <value>メールを確認する</value>
+  </data>
+  <data name="MailSender_VerifyEmailContent" xml:space="preserve">
+    <value>アカウント登録を行っています。メールアドレス {0} を確認し、以下のボタンをクリックして認証を実行してください。</value>
+  </data>
+  <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
+    <value>メール認証</value>
+  </data>
   <data name="Model_ValicationFailed" xml:space="preserve">
     <value>入力が正しくありませんので確認してください。</value>
   </data>
@@ -240,7 +393,31 @@
   <data name="Server_Failed" xml:space="preserve">
     <value>サーバーは例外により予期せず終了しました</value>
   </data>
+  <data name="Submission_Accepted" xml:space="preserve">
+    <value>回答正解</value>
+  </data>
+  <data name="Submission_CheatDetected" xml:space="preserve">
+    <value>不正検知</value>
+  </data>
+  <data name="Submission_FirstBlood" xml:space="preserve">
+    <value>ファーストブラッド</value>
+  </data>
+  <data name="Submission_FlagSubmitted" xml:space="preserve">
+    <value>提出完了</value>
+  </data>
   <data name="Submission_NotFound" xml:space="preserve">
     <value>サブミッションは見つかりませんでした</value>
+  </data>
+  <data name="Submission_SecondBlood" xml:space="preserve">
+    <value>セコンドブラッド</value>
+  </data>
+  <data name="Submission_ThirdBlood" xml:space="preserve">
+    <value>サードブラッド</value>
+  </data>
+  <data name="Submission_UnknownInstance" xml:space="preserve">
+    <value>インスタンス不明</value>
+  </data>
+  <data name="Submission_WrongAnswer" xml:space="preserve">
+    <value>間違った回答</value>
   </data>
 </root>
