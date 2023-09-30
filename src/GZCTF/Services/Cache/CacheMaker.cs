@@ -1,6 +1,7 @@
 ﻿using System.Threading.Channels;
 using GZCTF.Repositories;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services.Cache;
 
@@ -27,7 +28,8 @@ public class CacheMaker(
     ILogger<CacheMaker> logger,
     IDistributedCache cache,
     ChannelReader<CacheRequest> channelReader,
-    IServiceScopeFactory serviceScopeFactory) : IHostedService
+    IServiceScopeFactory serviceScopeFactory,
+    IStringLocalizer<Program> localizer) : IHostedService
 {
     readonly Dictionary<string, ICacheRequestHandler> _cacheHandlers = new();
     CancellationTokenSource _tokenSource { get; set; } = new();
@@ -51,7 +53,7 @@ public class CacheMaker(
     {
         _tokenSource.Cancel();
 
-        logger.SystemLog("缓存更新已停用", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(localizer["Cache_Stopped"], TaskStatus.Success, LogLevel.Debug);
 
         return Task.CompletedTask;
     }
@@ -60,7 +62,7 @@ public class CacheMaker(
 
     async Task Maker(CancellationToken token = default)
     {
-        logger.SystemLog("缓存更新线程已启动", TaskStatus.Pending, LogLevel.Debug);
+        logger.SystemLog(localizer["Cache_WorkerStarted"], TaskStatus.Pending, LogLevel.Debug);
 
         try
         {
@@ -124,11 +126,11 @@ public class CacheMaker(
         }
         catch (OperationCanceledException)
         {
-            logger.SystemLog("任务取消，缓存更新线程将退出", TaskStatus.Exit, LogLevel.Debug);
+            logger.SystemLog(localizer["Cache_WorkerCancelled"], TaskStatus.Exit, LogLevel.Debug);
         }
         finally
         {
-            logger.SystemLog("缓存更新线程已退出", TaskStatus.Exit, LogLevel.Debug);
+            logger.SystemLog(localizer["Cache_WorkerStopped"], TaskStatus.Exit, LogLevel.Debug);
         }
     }
 }

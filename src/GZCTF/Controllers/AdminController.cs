@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Controllers;
@@ -36,7 +37,8 @@ public class AdminController(UserManager<UserInfo> userManager,
     IInstanceRepository instanceRepository,
     IContainerRepository containerRepository,
     IServiceProvider serviceProvider,
-    IParticipationRepository participationRepository) : ControllerBase
+    IParticipationRepository participationRepository,
+    IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
     /// 获取配置
@@ -473,7 +475,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         return Ok(await participationRepository.GetWriteups(game, token));
     }
@@ -496,7 +498,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";

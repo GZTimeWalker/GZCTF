@@ -4,10 +4,11 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services;
 
-public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger) : IHostedService, IDisposable
+public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger, IStringLocalizer<Program> localizer) : IHostedService, IDisposable
 {
     Timer? _timer;
 
@@ -20,14 +21,14 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
     public Task StartAsync(CancellationToken token)
     {
         _timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(3));
-        logger.SystemLog("定时任务已启动", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(localizer["CronJob_Started"], TaskStatus.Success, LogLevel.Debug);
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken token)
     {
         _timer?.Change(Timeout.Infinite, 0);
-        logger.SystemLog("定时任务已停止", TaskStatus.Exit, LogLevel.Debug);
+        logger.SystemLog(localizer["CronJob_Stopped"], TaskStatus.Exit, LogLevel.Debug);
         return Task.CompletedTask;
     }
 
@@ -40,7 +41,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         {
             await containerService.DestroyContainerAsync(container);
             await containerRepo.RemoveContainer(container);
-            logger.SystemLog($"移除到期容器 [{container.ContainerId}]", TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog(localizer["CronJob_RemoveExpiredContainer", container.ContainerId], TaskStatus.Success, LogLevel.Debug);
         }
     }
 
@@ -62,7 +63,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
             if (value is null)
             {
                 await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-                logger.SystemLog($"比赛 #{key} 即将开始，积分榜缓存已加入缓存队列", TaskStatus.Success, LogLevel.Debug);
+                logger.SystemLog(localizer["CronJob_BootstrapRankingCache", key], TaskStatus.Success, LogLevel.Debug);
             }
         }
     }

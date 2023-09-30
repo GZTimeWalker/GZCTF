@@ -3,6 +3,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Controllers;
@@ -15,7 +16,8 @@ namespace GZCTF.Controllers;
 public class InfoController(ICaptchaExtension captcha,
     IPostRepository postRepository,
     IOptionsSnapshot<GlobalConfig> globalConfig,
-    IOptionsSnapshot<AccountPolicy> accountPolicy) : ControllerBase
+    IOptionsSnapshot<AccountPolicy> accountPolicy,
+    IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
     /// 获取最新文章
@@ -60,7 +62,7 @@ public class InfoController(ICaptchaExtension captcha,
         Post? post = await postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
-            return NotFound(new RequestResponse("文章不存在", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Post_NotFound"], StatusCodes.Status404NotFound));
 
         return Ok(PostDetailModel.FromPost(post));
     }

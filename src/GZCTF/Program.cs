@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using NJsonSchema.Generation;
 using Serilog;
 
@@ -32,6 +33,12 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 GZCTF.Program.Banner();
 
 FilePath.EnsureDirs();
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+GZCTF.Program.SetProgramLocalizer(builder.Services.BuildServiceProvider().GetRequiredService<IStringLocalizer<GZCTF.Program>>());
+#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 
 #region Logging
 
@@ -55,7 +62,7 @@ if (GZCTF.Program.IsTesting || (builder.Environment.IsDevelopment() &&
 else
 {
     if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-        GZCTF.Program.ExitWithFatalMessage("未找到数据库连接字符串字段 ConnectionStrings，请检查 appsettings.json 是否正常挂载及配置");
+        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.Localizer["Database_NoConnectionString"]);
 
     builder.Services.AddDbContext<AppDbContext>(
         options =>
@@ -89,8 +96,8 @@ if (!GZCTF.Program.IsTesting)
     catch
     {
         if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-            Log.Logger.Error($"当前连接字符串：{builder.Configuration.GetConnectionString("Database")}");
-        GZCTF.Program.ExitWithFatalMessage("数据库连接失败，请检查 Database 连接字符串配置");
+            Log.Logger.Error(GZCTF.Program.Localizer["Database_CurrentConnectionString", builder.Configuration.GetConnectionString("Database") ?? "null"]);
+        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.Localizer["Database_ConnectionFailed"]);
     }
 
 #endregion Configuration
@@ -103,7 +110,7 @@ builder.Services.AddOpenApiDocument(settings =>
     settings.DocumentName = "v1";
     settings.Version = "v1";
     settings.Title = "GZCTF Server API";
-    settings.Description = "GZCTF Server 接口文档";
+    settings.Description = "GZCTF Server API Document";
     settings.UseControllerSummaryAsTagDescription = true;
     settings.SerializerSettings =
         SystemTextJsonUtilities.ConvertJsonOptionsToNewtonsoftSettings(
@@ -242,6 +249,13 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 
 WebApplication app = builder.Build();
 
+app.UseRequestLocalization(options =>
+{
+    options.ApplyCurrentCultureToResponseHeaders = true;
+    options.SupportedCultures = [new("zh-CN"), new("en-US"), new("ja-JP")];
+    options.SupportedUICultures = options.SupportedUICultures;
+});
+
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
 await app.RunPrelaunchWork();
@@ -303,12 +317,12 @@ try
 }
 catch (Exception exception)
 {
-    logger.LogError(exception, "因异常，应用程序意外终止");
+    logger.LogError(exception, GZCTF.Program.Localizer["Server_Failed"]);
     throw;
 }
 finally
 {
-    logger.SystemLog("服务器已退出", TaskStatus.Exit, LogLevel.Debug);
+    logger.SystemLog(GZCTF.Program.Localizer["Server_Exited"], TaskStatus.Exit, LogLevel.Debug);
     Log.CloseAndFlush();
 }
 
@@ -317,6 +331,12 @@ namespace GZCTF
     public class Program
     {
         public static bool IsTesting { get; set; }
+        internal static IStringLocalizer<Program> Localizer { get; private set; } = default!;
+
+        internal static void SetProgramLocalizer(IStringLocalizer<Program> localizer)
+        {
+            Localizer = localizer;
+        }
 
         internal static void Banner()
         {
@@ -355,14 +375,14 @@ namespace GZCTF
 
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(
-                    new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。"))
+                    new RequestResponse(errors is [_, ..] ? errors : Localizer["Model_ValicationFailed"]))
                 { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
                       where val.Errors.Count > 0
                       select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
-            return new JsonResult(new RequestResponse(errors is not null && errors.Length > 0 ? errors : "校验失败，请检查输入。")) { StatusCode = 400 };
+            return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : Localizer["Model_ValicationFailed"])) { StatusCode = 400 };
         }
     }
 }

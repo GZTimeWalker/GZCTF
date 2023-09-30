@@ -55,7 +55,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             }
             catch (Exception ex)
             {
-                Log.Logger?.Error(ex, "全局配置重载失败");
+                Log.Logger?.Error(ex, Program.Localizer["Config_ReloadFailed"]);
             }
     }
 
@@ -100,7 +100,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         if (context is null || !context.Configs.Any())
         {
-            Log.Logger.Debug("初始化数据库……");
+            Log.Logger.Debug(Program.Localizer["Config_InitializingDatabase"]);
 
             HashSet<Config> configs = DefaultConfigs();
 

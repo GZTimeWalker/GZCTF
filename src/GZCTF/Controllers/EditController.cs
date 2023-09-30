@@ -9,6 +9,7 @@ using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Controllers;
 
@@ -31,7 +32,8 @@ public class EditController(
     IGameNoticeRepository gameNoticeRepository,
     IGameRepository gameRepository,
     IContainerManager containerService,
-    IFileRepository fileService) : Controller
+    IFileRepository fileService,
+    IStringLocalizer<Program> localizer) : Controller
 {
     /// <summary>
     /// 添加文章
@@ -162,7 +164,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -184,7 +186,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         // ref: TeamToken =>
         // Codec.StrSHA256($"{part.Token}::{part.Game.TeamHashSalt}::{Id}");
@@ -210,7 +212,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         game.Update(model);
         await gameRepository.SaveAsync(token);
@@ -238,7 +240,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         return await gameRepository.DeleteGame(game, token) switch
         {
@@ -265,7 +267,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         await gameRepository.DeleteAllWriteUps(game, token);
 
@@ -296,7 +298,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         LocalFile? poster = await fileService.CreateOrUpdateImage(file, "poster", 0, token);
 
@@ -329,7 +331,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         GameNotice res = await gameNoticeRepository.AddNotice(
             new() { Content = model.Content, GameId = game.Id, Type = NoticeType.Normal, PublishTimeUTC = DateTimeOffset.UtcNow }, token);
@@ -354,7 +356,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         return Ok(await gameNoticeRepository.GetNormalNotices(id, token));
     }
@@ -437,7 +439,7 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge res = await challengeRepository.CreateChallenge(game,
             new Challenge { Title = model.Title, Type = model.Type, Tag = model.Tag }, token);
@@ -477,12 +479,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
@@ -507,12 +509,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         // NOTE: IsEnabled can only be updated outside of the edit page
         if (model.IsEnabled == true && !res.Flags.Any() && res.Type != ChallengeType.DynamicContainer)
@@ -575,12 +577,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         if (!challenge.Type.IsContainer())
             return BadRequest(new RequestResponse("题目类型不可创建容器"));
@@ -633,12 +635,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         if (challenge.TestContainer is null)
             return Ok();
@@ -668,12 +670,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         await challengeRepository.RemoveChallenge(res, token);
 
@@ -703,12 +705,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         if (challenge.Type == ChallengeType.DynamicAttachment)
             return BadRequest(new RequestResponse("动态附件题目请使用 assets API 上传附件"));
@@ -738,12 +740,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         await challengeRepository.AddFlags(challenge, models, token);
 
@@ -770,12 +772,12 @@ public class EditController(
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse("比赛未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
-            return NotFound(new RequestResponse("题目未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
         return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
     }

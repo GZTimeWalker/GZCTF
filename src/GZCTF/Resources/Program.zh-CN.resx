@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Cache_Stopped" xml:space="preserve">
+    <value>缓存更新已停用</value>
+  </data>
+  <data name="Cache_WorkerCancelled" xml:space="preserve">
+    <value>任务取消，缓存更新线程将退出</value>
+  </data>
+  <data name="Cache_WorkerStarted" xml:space="preserve">
+    <value>缓存更新线程已启动</value>
+  </data>
+  <data name="Cache_WorkerStopped" xml:space="preserve">
+    <value>缓存更新线程已退出</value>
+  </data>
+  <data name="Challenge_NotFound" xml:space="preserve">
+    <value>题目未找到</value>
+  </data>
+  <data name="Config_GlobalConfigAdded" xml:space="preserve">
+    <value>添加全局设置：{0} =&gt; {1}</value>
+  </data>
+  <data name="Config_GlobalConfigUpdated" xml:space="preserve">
+    <value>更新全局设置：{0} =&gt; {1}</value>
+  </data>
+  <data name="Config_InitializingDatabase" xml:space="preserve">
+    <value>初始化数据库……</value>
+  </data>
+  <data name="Config_ReloadFailed" xml:space="preserve">
+    <value>全局配置重载失败</value>
+  </data>
+  <data name="Config_TypeNotSupported" xml:space="preserve">
+    <value>不支持的配置项类型</value>
+  </data>
+  <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
+    <value>比赛 #{0} 即将开始，积分榜缓存已加入缓存队列</value>
+  </data>
+  <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
+    <value>移除到期容器 [{0}]</value>
+  </data>
+  <data name="CronJob_Started" xml:space="preserve">
+    <value>定时任务已启动</value>
+  </data>
+  <data name="CronJob_Stopped" xml:space="preserve">
+    <value>定时任务已停止</value>
+  </data>
+  <data name="Database_ConnectionFailed" xml:space="preserve">
+    <value>数据库连接失败，请检查数据库连接字符串配置</value>
+  </data>
+  <data name="Database_CurrentConnectionString" xml:space="preserve">
+    <value>当前连接字符串：{0}</value>
+  </data>
+  <data name="Database_NoConnectionString" xml:space="preserve">
+    <value>未找到数据库连接字符串字段 'ConnectionStrings'，请检查 appsettings.json 是否正常挂载及配置</value>
+  </data>
+  <data name="FlagsChecker_Recheck" xml:space="preserve">
+    <value>重新开始检查 {0} 个 flag</value>
+  </data>
+  <data name="FlagsChecker_Started" xml:space="preserve">
+    <value>Flag 检查已启用</value>
+  </data>
+  <data name="FlagsChecker_Stopped" xml:space="preserve">
+    <value>Flag 检查已停止</value>
+  </data>
+  <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
+    <value>任务取消，检查线程 #{0} 将退出</value>
+  </data>
+  <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
+    <value>检查线程 #{0} 发生异常</value>
+  </data>
+  <data name="FlagsChecker_WorkerStarted" xml:space="preserve">
+    <value>检查线程 #{0} 已启动</value>
+  </data>
+  <data name="FlagsChecker_WorkerStartProcessing" xml:space="preserve">
+    <value>检查线程 #{0} 开始处理提交：{1}</value>
+  </data>
+  <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
+    <value>检查线程 #{0} 已退出</value>
+  </data>
+  <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
+    <value>审核通过后无法退出比赛</value>
+  </data>
+  <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
+    <value>无法退出未报名的比赛</value>
+  </data>
+  <data name="Game_End" xml:space="preserve">
+    <value>比赛已结束</value>
+  </data>
+  <data name="Game_InOtherTeam" xml:space="preserve">
+    <value>您已经在其他队伍报名参赛</value>
+  </data>
+  <data name="Game_InvalidInvitationCode" xml:space="preserve">
+    <value>比赛邀请码错误</value>
+  </data>
+  <data name="Game_InvalidOrganization" xml:space="preserve">
+    <value>无效的参赛单位</value>
+  </data>
+  <data name="Game_JoinSucceeded" xml:space="preserve">
+    <value>{0} 成功报名了比赛 {1}</value>
+  </data>
+  <data name="Game_NotFound" xml:space="preserve">
+    <value>比赛未找到</value>
+  </data>
+  <data name="Game_NotMemberOfTeam" xml:space="preserve">
+    <value>您不是此队伍的队员</value>
+  </data>
+  <data name="Game_NotStarted" xml:space="preserve">
+    <value>比赛未开始</value>
+  </data>
+  <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
+    <value>队伍参与人数超过比赛限制</value>
+  </data>
+  <data name="Game_TeamNotFound" xml:space="preserve">
+    <value>队伍未找到</value>
+  </data>
+  <data name="Model_ValicationFailed" xml:space="preserve">
+    <value>校验失败，请检查输入。</value>
+  </data>
+  <data name="Post_NotFound" xml:space="preserve">
+    <value>文章不存在</value>
+  </data>
+  <data name="Server_Exited" xml:space="preserve">
+    <value>服务器已退出</value>
+  </data>
+  <data name="Server_Failed" xml:space="preserve">
+    <value>因异常，应用程序意外终止</value>
+  </data>
+  <data name="Submission_NotFound" xml:space="preserve">
+    <value>提交未找到</value>
+  </data>
+</root>

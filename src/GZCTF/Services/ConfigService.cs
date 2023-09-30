@@ -2,12 +2,14 @@
 using System.Reflection;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services;
 
 public class ConfigService(AppDbContext context,
     ILogger<ConfigService> logger,
-    IConfiguration configuration) : IConfigService
+    IConfiguration configuration,
+    IStringLocalizer<Program> localizer) : IConfigService
 {
     readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
@@ -23,7 +25,7 @@ public class ConfigService(AppDbContext context,
             return;
 
         if (type.IsArray || IsArrayLikeInterface(type))
-            throw new InvalidOperationException("不支持的配置项类型");
+            throw new NotSupportedException(Program.Localizer["Config_TypeNotSupported"]);
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
         if (type == typeof(string) || type.IsValueType)
@@ -63,12 +65,12 @@ public class ConfigService(AppDbContext context,
                 if (dbConf.Value != conf.Value)
                 {
                     dbConf.Value = conf.Value;
-                    logger.SystemLog($"更新全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
+                    logger.SystemLog(localizer["Config_GlobalConfigUpdated", conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
                 }
             }
             else
             {
-                logger.SystemLog($"添加全局设置：{conf.ConfigKey} => {conf.Value}", TaskStatus.Success, LogLevel.Debug);
+                logger.SystemLog(localizer["Config_GlobalConfigAdded", conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
                 await context.Configs.AddAsync(conf, token);
             }
 

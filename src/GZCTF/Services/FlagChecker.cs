@@ -3,13 +3,15 @@ using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services;
 
 public class FlagChecker(ChannelReader<Submission> channelReader,
     ChannelWriter<Submission> channelWriter,
     ILogger<FlagChecker> logger,
-    IServiceScopeFactory serviceScopeFactory) : IHostedService
+    IServiceScopeFactory serviceScopeFactory,
+    IStringLocalizer<Program> localizer) : IHostedService
 {
     CancellationTokenSource TokenSource { get; set; } = new();
 
@@ -29,29 +31,29 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
             await channelWriter.WriteAsync(item, TokenSource.Token);
 
         if (flags.Length > 0)
-            logger.SystemLog($"重新开始检查 {flags.Length} 个 flag", TaskStatus.Pending, LogLevel.Debug);
+            logger.SystemLog(localizer["FlagsChecker_Recheck", flags.Length], TaskStatus.Pending, LogLevel.Debug);
 
-        logger.SystemLog("Flag 检查已启用", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(localizer["FlagsChecker_Started"], TaskStatus.Success, LogLevel.Debug);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         TokenSource.Cancel();
 
-        logger.SystemLog("Flag 检查已停止", TaskStatus.Exit, LogLevel.Debug);
+        logger.SystemLog(localizer["FlagsChecker_Stopped"], TaskStatus.Exit, LogLevel.Debug);
 
         return Task.CompletedTask;
     }
 
     async Task Checker(int id, CancellationToken token = default)
     {
-        logger.SystemLog($"检查线程 #{id} 已启动", TaskStatus.Pending, LogLevel.Debug);
+        logger.SystemLog(localizer["FlagsChecker_WorkerStarted", id], TaskStatus.Pending, LogLevel.Debug);
 
         try
         {
             await foreach (Submission item in channelReader.ReadAllAsync(token))
             {
-                logger.SystemLog($"检查线程 #{id} 开始处理提交：{item.Answer}", TaskStatus.Pending, LogLevel.Debug);
+                logger.SystemLog(localizer["FlagsChecker_WorkerStartProcessing", id, item.Answer], TaskStatus.Pending, LogLevel.Debug);
 
                 await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
 
@@ -124,7 +126,7 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                 }
                 catch (Exception e)
                 {
-                    logger.SystemLog($"检查线程 #{id} 发生异常", TaskStatus.Failed, LogLevel.Debug);
+                    logger.SystemLog(localizer["FlagsChecker_WorkerExceptionOccurred", id], TaskStatus.Failed, LogLevel.Debug);
                     logger.LogError(e.Message, e);
                 }
 
@@ -133,11 +135,11 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
         }
         catch (OperationCanceledException)
         {
-            logger.SystemLog($"任务取消，检查线程 #{id} 将退出", TaskStatus.Exit, LogLevel.Debug);
+            logger.SystemLog(localizer["FlagsChecker_WorkerCancelled", id], TaskStatus.Exit, LogLevel.Debug);
         }
         finally
         {
-            logger.SystemLog($"检查线程 #{id} 已退出", TaskStatus.Exit, LogLevel.Debug);
+            logger.SystemLog(localizer["FlagsChecker_WorkerStopped", id], TaskStatus.Exit, LogLevel.Debug);
         }
     }
 }
