@@ -1,4 +1,5 @@
 ﻿using GZCTF.Models.Request.Game;
+using Microsoft.Extensions.Localization;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -25,13 +26,13 @@ public static class ExcelHelper
         return stream;
     }
 
-    public static MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions)
+    public static MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
     {
         var workbook = new XSSFWorkbook();
         ISheet? subSheet = workbook.CreateSheet("全部提交");
         ICellStyle headerStyle = GetHeaderStyle(workbook);
         WriteSubmissionHeader(subSheet, headerStyle);
-        WriteSubmissionContent(subSheet, submissions);
+        WriteSubmissionContent(subSheet, submissions, localizer);
 
         var stream = new MemoryStream();
         workbook.Write(stream, true);
@@ -65,14 +66,14 @@ public static class ExcelHelper
         }
     }
 
-    static void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions)
+    static void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
     {
         var rowIndex = 1;
 
         foreach (Submission item in submissions)
         {
             IRow? row = sheet.CreateRow(rowIndex);
-            row.CreateCell(0).SetCellValue(item.Status.ToShortString());
+            row.CreateCell(0).SetCellValue(item.Status.ToShortString(localizer));
             row.CreateCell(1).SetCellValue(item.SubmitTimeUTC.ToString("u"));
             row.CreateCell(2).SetCellValue(item.TeamName);
             row.CreateCell(3).SetCellValue(item.UserName);

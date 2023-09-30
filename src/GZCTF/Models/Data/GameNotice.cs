@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MemoryPack;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Models.Data;
 
@@ -42,7 +43,7 @@ public partial class GameNotice
     [MemoryPackIgnore]
     public Game? Game { get; set; }
 
-    internal static GameNotice FromSubmission(Submission submission, SubmissionType type) =>
+    internal static GameNotice FromSubmission(Submission submission, SubmissionType type, IStringLocalizer<Program> localizer) =>
         new()
         {
             Type = type switch
@@ -53,6 +54,6 @@ public partial class GameNotice
                 _ => NoticeType.Normal
             },
             GameId = submission.GameId,
-            Content = $"恭喜 {submission.Team.Name} 获得 「{submission.Challenge.Title}」 的{type.ToBloodString()}"
+            Content = $"恭喜 {submission.Team.Name} 获得 「{submission.Challenge.Title}」 的{type.ToBloodString(localizer)}"
         };
 }

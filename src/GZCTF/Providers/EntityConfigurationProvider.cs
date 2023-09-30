@@ -55,7 +55,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             }
             catch (Exception ex)
             {
-                Log.Logger?.Error(ex, Program.Localizer["Config_ReloadFailed"]);
+                Log.Logger?.Error(ex, Program.StaticLocalizer["Config_ReloadFailed"]);
             }
     }
 
@@ -100,7 +100,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         if (context is null || !context.Configs.Any())
         {
-            Log.Logger.Debug(Program.Localizer["Config_InitializingDatabase"]);
+            Log.Logger.Debug(Program.StaticLocalizer["Config_InitializingDatabase"]);
 
             HashSet<Config> configs = DefaultConfigs();
 

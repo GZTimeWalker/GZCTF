@@ -3,13 +3,14 @@ using System.Text;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 
 namespace GZCTF.Services;
 
-public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger) : IMailSender
+public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger, IStringLocalizer<Program> localizer) : IMailSender
 {
     readonly EmailConfig? _options = options.Value;
 
@@ -36,12 +37,12 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            logger.SystemLog("发送邮件：" + to, TaskStatus.Success, LogLevel.Information);
+            logger.SystemLog(localizer["MailSender_SendMail", to], TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
-            logger.LogError(e, "邮件发送遇到问题");
+            logger.LogError(e, localizer["MailSender_MailSendFailed"]);
             return false;
         }
     }
@@ -51,7 +52,7 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
     {
         if (email is null || userName is null || title is null)
         {
-            logger.SystemLog("无效的邮件发送调用！", TaskStatus.Failed);
+            logger.SystemLog(localizer["MailSender_InvalidRequest"], TaskStatus.Failed);
             return;
         }
 
@@ -73,23 +74,23 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             .ToString();
 
         if (!await SendEmailAsync(title, emailContent, email))
-            logger.SystemLog("邮件发送失败！", TaskStatus.Failed);
+            logger.SystemLog(localizer["MailSender_MailSendFailed"], TaskStatus.Failed);
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>
-        SendUrlIfPossible("验证邮箱",
-            $"你正在进行账户注册操作，我们需要验证你的注册邮箱：{email}，请点击下方按钮进行验证。",
-            "确认验证邮箱", userName, email, confirmLink);
+        SendUrlIfPossible(localizer["MailSender_VerifyEmailTitle"],
+            localizer["MailSender_VerifyEmailContent", email ?? ""],
+            localizer["MailSender_VerifyEmailButton"], userName, email, confirmLink);
 
     public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible("更换邮箱",
-            "你正在进行账户邮箱更换操作，请点击下方按钮验证你的新邮箱。",
-            "确认更换邮箱", userName, email, resetLink);
+        SendUrlIfPossible(localizer["MailSender_ChangeEmailTitle"],
+            localizer["MailSender_ChangeEmailContent"],
+            localizer["MailSender_ChangeEmailButton"], userName, email, resetLink);
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible("重置密码",
-            "你正在进行账户密码重置操作，请点击下方按钮重置你的密码。",
-            "确认重置密码", userName, email, resetLink);
+        SendUrlIfPossible(localizer["MailSender_ResetPasswordTitle"],
+            localizer["MailSender_ResetPasswordContent"],
+            localizer["MailSender_ResetPasswordButton"], userName, email, resetLink);
 
     bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email,
         string? url)

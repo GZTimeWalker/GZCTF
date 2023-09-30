@@ -69,15 +69,15 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
 
                     if (ans == AnswerResult.NotFound)
                     {
-                        logger.Log($"[实例未知] 未找到队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的实例", item.User,
+                        logger.Log(localizer["FlagChecker_UnknownInstance", item.Team.Name, item.Challenge.Title], item.User,
                             TaskStatus.NotFound, LogLevel.Warning);
                     }
                     else if (ans == AnswerResult.Accepted)
                     {
-                        logger.Log($"[提交正确] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]",
+                        logger.Log(localizer["FlagChecker_AnswerAccepted", item.Team.Name, item.Challenge.Title, item.Answer],
                             item.User, TaskStatus.Success, LogLevel.Information);
 
-                        await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
+                        await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans, localizer), token);
 
                         // only flush the scoreboard if the contest is not ended and the submission is accepted
                         if (item.Game.EndTimeUTC > item.SubmitTimeUTC)
@@ -85,10 +85,10 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                     }
                     else
                     {
-                        logger.Log($"[提交错误] 队伍 [{item.Team.Name}] 提交题目 [{item.Challenge.Title}] 的答案 [{item.Answer}]",
+                        logger.Log(localizer["FlagChecker_AnswerRejected", item.Team.Name, item.Challenge.Title, item.Answer],
                             item.User, TaskStatus.Failed, LogLevel.Information);
 
-                        await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans), token);
+                        await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans, localizer), token);
 
                         CheatCheckInfo result = await instanceRepository.CheckCheat(item, token);
                         ans = result.AnswerResult;
@@ -96,14 +96,14 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                         if (ans == AnswerResult.CheatDetected)
                         {
                             logger.Log(
-                                $"[作弊检查] 队伍 [{item.Team.Name}] 疑似违规 [{item.Challenge.Title}]，相关队伍 [{result.SourceTeamName}]",
+                                localizer["FlagChecker_CheatDetected", item.Team.Name, item.Challenge.Title, result.SourceTeamName ?? ""],
                                 item.User, TaskStatus.Success, LogLevel.Information);
                             await eventRepository.AddEvent(
                                 new()
                                 {
                                     Type = EventType.CheatDetected,
                                     Content =
-                                        $"题目 [{item.Challenge.Title}] 疑似发生违规，相关队伍 [{item.Team.Name}] 和 [{result.SourceTeamName}]",
+                                        localizer["FlagChecker_CheatDetectedEvent", item.Challenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
                                     TeamId = item.TeamId,
                                     UserId = item.UserId,
                                     GameId = item.GameId
@@ -114,14 +114,14 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                     if (item.Game.EndTimeUTC > DateTimeOffset.UtcNow
                         && type != SubmissionType.Unaccepted
                         && type != SubmissionType.Normal)
-                        await gameNoticeRepository.AddNotice(GameNotice.FromSubmission(item, type), token);
+                        await gameNoticeRepository.AddNotice(GameNotice.FromSubmission(item, type, localizer), token);
 
                     item.Status = ans;
                     await submissionRepository.SendSubmission(item);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    logger.SystemLog($"[数据库并发] 未能更新提交 #{item.Id} 的状态", TaskStatus.Failed, LogLevel.Warning);
+                    logger.SystemLog(localizer["FlagChecker_ConcurrencyFailed", item.Id], TaskStatus.Failed, LogLevel.Warning);
                     await channelWriter.WriteAsync(item, token);
                 }
                 catch (Exception e)

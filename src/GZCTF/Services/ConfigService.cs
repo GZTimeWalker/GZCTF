@@ -25,7 +25,7 @@ public class ConfigService(AppDbContext context,
             return;
 
         if (type.IsArray || IsArrayLikeInterface(type))
-            throw new NotSupportedException(Program.Localizer["Config_TypeNotSupported"]);
+            throw new NotSupportedException(Program.StaticLocalizer["Config_TypeNotSupported"]);
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
         if (type == typeof(string) || type.IsValueType)

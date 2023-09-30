@@ -4,6 +4,7 @@ using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
+using Microsoft.Extensions.Localization;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
 namespace GZCTF.Services.Container.Manager;
@@ -12,15 +13,17 @@ public class DockerManager : IContainerManager
 {
     readonly DockerClient _client;
     readonly ILogger<DockerManager> _logger;
+    readonly IStringLocalizer<Program> _localizer;
     readonly DockerMetadata _meta;
 
-    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
+    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger, IStringLocalizer<Program> localizer)
     {
         _logger = logger;
+        _localizer = localizer;
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog("容器管理模式：Docker 单实例容器控制", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(_localizer["ContainerManager_DockerMode"], TaskStatus.Success, LogLevel.Debug);
     }
 
 
@@ -32,26 +35,24 @@ public class DockerManager : IContainerManager
         }
         catch (DockerContainerNotFoundException)
         {
-            _logger.SystemLog($"容器 {container.ContainerId} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+            _logger.SystemLog(_localizer["ContainerManager_ContainerDestroyed", container.ContainerId], TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
         {
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
-                _logger.SystemLog($"容器 {container.ContainerId} 已被销毁", TaskStatus.Success, LogLevel.Debug);
+                _logger.SystemLog(_localizer["ContainerManager_ContainerDestroyed", container.ContainerId], TaskStatus.Success, LogLevel.Debug);
             }
             else
             {
-                _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.StatusCode}", TaskStatus.Failed,
-                    LogLevel.Warning);
-                _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.ResponseBody}", TaskStatus.Failed,
-                    LogLevel.Error);
+                _logger.SystemLog(_localizer["ContainerManager_ContainerDeletionFailedStatus", container.ContainerId, e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+                _logger.SystemLog(_localizer["ContainerManager_ContainerDeletionFailedResponse", container.ContainerId, e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
                 return;
             }
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"容器 {container.ContainerId} 删除失败");
+            _logger.LogError(e, _localizer["ContainerManager_ContainerDeletionFailed", container.ContainerId]);
             return;
         }
 
@@ -76,7 +77,7 @@ public class DockerManager : IContainerManager
         }
         catch (DockerImageNotFoundException)
         {
-            _logger.SystemLog($"拉取容器镜像 {config.Image}", TaskStatus.Pending, LogLevel.Information);
+            _logger.SystemLog(_localizer["ContainerManager_PullContainerImage", config.Image], TaskStatus.Pending, LogLevel.Information);
 
             await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, _meta.Auth,
                 new Progress<JSONMessage>(msg =>
@@ -86,7 +87,7 @@ public class DockerManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"容器 {parameters.Name} 创建失败");
+            _logger.LogError(e, _localizer["ContainerManager_ContainerCreationFailed", parameters.Name]);
             return null;
         }
 
@@ -96,7 +97,7 @@ public class DockerManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"容器 {parameters.Name} 创建失败");
+            _logger.LogError(e, _localizer["ContainerManager_ContainerCreationFailed", parameters.Name]);
             return null;
         }
 
@@ -112,7 +113,7 @@ public class DockerManager : IContainerManager
             if (retry == 3)
             {
                 _logger.SystemLog(
-                    $"启动容器实例 {container.ContainerId[..12]} ({config.Image.Split("/").LastOrDefault()}) 失败",
+                    _localizer["ContainerManager_ContainerInstanceStartFailed", container.ContainerId[..12], config.Image.Split("/").LastOrDefault() ?? ""],
                     TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
@@ -131,7 +132,7 @@ public class DockerManager : IContainerManager
 
         if (container.Status != ContainerStatus.Running)
         {
-            _logger.SystemLog($"创建 {config.Image.Split("/").LastOrDefault()} 实例遇到错误：{info.State.Error}",
+            _logger.SystemLog(_localizer["ContainerManager_ContainerInstanceCreationFailedWithError", config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
@@ -152,7 +153,7 @@ public class DockerManager : IContainerManager
             if (int.TryParse(port, out var numPort))
                 container.PublicPort = numPort;
             else
-                _logger.SystemLog($"无法转换端口号：{port}，这是非预期的行为", TaskStatus.Failed, LogLevel.Warning);
+                _logger.SystemLog(_localizer["ContainerManager_PortParsingFailed", port], TaskStatus.Failed, LogLevel.Warning);
 
             if (!string.IsNullOrEmpty(_meta.PublicEntry))
                 container.PublicIP = _meta.PublicEntry;

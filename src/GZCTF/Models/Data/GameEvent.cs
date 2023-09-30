@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Models.Data;
 
@@ -62,7 +63,7 @@ public class GameEvent
     [JsonIgnore]
     public Game? Game { get; set; }
 
-    internal static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans) =>
+    internal static GameEvent FromSubmission(Submission submission, SubmissionType type, AnswerResult ans, IStringLocalizer<Program> localizer) =>
         new()
         {
             TeamId = submission.TeamId,
@@ -70,6 +71,6 @@ public class GameEvent
             GameId = submission.GameId,
             Type = EventType.FlagSubmit,
             Content =
-                $"[{ans.ToShortString()}] {submission.Answer}  {submission.Challenge.Title}#{submission.ChallengeId}"
+                $"[{ans.ToShortString(localizer)}] {submission.Answer}  {submission.Challenge.Title}#{submission.ChallengeId}"
         };
 }

@@ -3,9 +3,11 @@ using System.Net;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
+using GZCTF.Utils;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services.Container.Manager;
 
@@ -14,15 +16,17 @@ public class K8sManager : IContainerManager
 {
     readonly Kubernetes _client;
     readonly ILogger<K8sManager> _logger;
+    readonly IStringLocalizer<Program> _localizer;
     readonly K8sMetadata _meta;
 
-    public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger)
+    public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger, IStringLocalizer<Program> localizer)
     {
         _logger = logger;
+        _localizer = localizer;
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog("容器管理模式：K8s 集群 Pod 容器控制", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(_localizer["ContainerManager_K8sMode"], TaskStatus.Success, LogLevel.Debug);
     }
 
     public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
@@ -34,7 +38,7 @@ public class K8sManager : IContainerManager
 
         if (imageName is null)
         {
-            _logger.SystemLog($"无法解析镜像名称 {config.Image}", TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(_localizer["ContainerManager_UnresolvedImageName", config.Image], TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
 
@@ -100,19 +104,19 @@ public class K8sManager : IContainerManager
         }
         catch (HttpOperationException e)
         {
-            _logger.SystemLog($"容器 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog($"容器 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(_localizer["ContainerManager_ContainerCreationFailedStatus", name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(_localizer["ContainerManager_ContainerCreationFailedResponse", name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "创建容器失败");
+            _logger.LogError(e, _localizer["ContainerManager_ContainerCreationFailed", name]);
             return null;
         }
 
         if (pod is null)
         {
-            _logger.SystemLog($"创建容器实例 {config.Image.Split("/").LastOrDefault()} 失败", TaskStatus.Failed,
+            _logger.SystemLog(_localizer["ContainerManager_ContainerInstanceCreationFailed", config.Image.Split("/").LastOrDefault() ?? ""], TaskStatus.Failed,
                 LogLevel.Warning);
             return null;
         }
@@ -153,8 +157,8 @@ public class K8sManager : IContainerManager
                 // ignored
             }
 
-            _logger.SystemLog($"服务 {name} 创建失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog($"服务 {name} 创建失败, 响应：{e.Response.Content}", TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(_localizer["ContainerManager_ServiceCreationFailedStatus", name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(_localizer["ContainerManager_ServiceCreationFailedResponse", name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
@@ -169,7 +173,7 @@ public class K8sManager : IContainerManager
                 // ignored
             }
 
-            _logger.LogError(e, "创建服务失败");
+            _logger.LogError(e, _localizer["ContainerManager_ServiceCreationFailed", name]);
             return null;
         }
 
@@ -205,14 +209,12 @@ public class K8sManager : IContainerManager
                 return;
             }
 
-            _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 状态：{e.Response.StatusCode}", TaskStatus.Failed,
-                LogLevel.Warning);
-            _logger.SystemLog($"容器 {container.ContainerId} 删除失败, 响应：{e.Response.Content}", TaskStatus.Failed,
-                LogLevel.Error);
+            _logger.SystemLog(_localizer["ContainerManager_ContainerDeletionFailedStatus", container.ContainerId, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(_localizer["ContainerManager_ContainerDeletionFailedResponse", container.ContainerId, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "删除容器失败");
+            _logger.LogError(e, _localizer["ContainerManager_ContainerDeletionFailed", container.ContainerId]);
             return;
         }
 

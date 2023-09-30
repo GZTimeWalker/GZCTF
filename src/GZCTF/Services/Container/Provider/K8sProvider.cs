@@ -3,6 +3,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
 using k8s;
 using k8s.Models;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Container.Provider;
@@ -31,9 +32,10 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
     readonly K8sMetadata _k8sMetadata;
 
     readonly Kubernetes _kubernetesClient;
+    readonly IStringLocalizer<Program> _localizer;
 
     public K8sProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> options,
-        ILogger<K8sProvider> logger)
+        ILogger<K8sProvider> logger, IStringLocalizer<Program> localizer)
     {
         _k8sMetadata = new()
         {
@@ -41,10 +43,11 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
             PortMappingType = options.Value.PortMappingType,
             PublicEntry = options.Value.PublicEntry
         };
+        _localizer = localizer;
 
         if (!File.Exists(_k8sMetadata.Config.KubeConfig))
         {
-            logger.SystemLog($"无法加载 K8s 配置文件，请确保配置文件存在 {_k8sMetadata.Config.KubeConfig}");
+            logger.SystemLog(_localizer["ContainerProvider_K8sConfigLoadFailed", _k8sMetadata.Config.KubeConfig]);
             throw new FileNotFoundException(_k8sMetadata.Config.KubeConfig);
         }
 
@@ -71,11 +74,11 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"K8s 初始化失败，请检查相关配置是否正确 ({config.Host})");
-            Program.ExitWithFatalMessage($"K8s 初始化失败，请检查相关配置是否正确 ({config.Host})");
+            logger.LogError(e, _localizer["ContainerProvider_K8sInitFailed", config.Host]);
+            Program.ExitWithFatalMessage(_localizer["ContainerProvider_K8sInitFailed", config.Host]);
         }
 
-        logger.SystemLog($"K8s 初始化成功 ({config.Host})", TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(_localizer["ContainerProvider_K8sInited", config.Host], TaskStatus.Success, LogLevel.Debug);
     }
 
     public Kubernetes GetProvider() => _kubernetesClient;

@@ -2,6 +2,7 @@
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Container.Provider;
@@ -31,9 +32,10 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 {
     readonly DockerClient _dockerClient;
     readonly DockerMetadata _dockerMeta;
+    readonly IStringLocalizer<Program> _localizer;
 
     public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistryConfig> registry,
-        ILogger<DockerProvider> logger)
+        ILogger<DockerProvider> logger, IStringLocalizer<Program> localizer)
     {
         _dockerMeta = new()
         {
@@ -41,6 +43,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             PortMappingType = options.Value.PortMappingType,
             PublicEntry = options.Value.PublicEntry
         };
+        _localizer = localizer;
 
         DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
             ? new()
@@ -54,7 +57,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             _dockerMeta.Auth = new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
 
         logger.SystemLog(
-            $"Docker 初始化成功 ({(string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri)})",
+            _localizer["ContainerProvider_DockerInited", string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri],
             TaskStatus.Success, LogLevel.Debug);
     }
 

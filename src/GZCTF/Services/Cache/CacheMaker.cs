@@ -70,7 +70,7 @@ public class CacheMaker(
             {
                 if (!_cacheHandlers.ContainsKey(item.Key))
                 {
-                    logger.SystemLog($"缓存更新线程未找到匹配的请求：{item.Key}", TaskStatus.NotFound, LogLevel.Warning);
+                    logger.SystemLog(localizer["Cache_NoMatchingRequest", item.Key], TaskStatus.NotFound, LogLevel.Warning);
                     continue;
                 }
 
@@ -79,7 +79,7 @@ public class CacheMaker(
 
                 if (key is null)
                 {
-                    logger.SystemLog($"无效的缓存更新请求：{item.Key}", TaskStatus.NotFound, LogLevel.Warning);
+                    logger.SystemLog(localizer["Cache_InvalidUpdateRequest", item.Key], TaskStatus.NotFound, LogLevel.Warning);
                     continue;
                 }
 
@@ -88,7 +88,7 @@ public class CacheMaker(
                 if (await cache.GetAsync(updateLock, token) is not null)
                 {
                     // only one GZCTF instance will never encounter this problem
-                    logger.SystemLog($"缓存更新线程已锁定：{key}", TaskStatus.Pending, LogLevel.Debug);
+                    logger.SystemLog(localizer["Cache_InvalidUpdateRequest", key], TaskStatus.Pending, LogLevel.Debug);
                     continue;
                 }
 
@@ -105,16 +105,16 @@ public class CacheMaker(
                     if (bytes is not null && bytes.Length > 0)
                     {
                         await cache.SetAsync(key, bytes, item.Options ?? new DistributedCacheEntryOptions(), token);
-                        logger.SystemLog($"缓存已更新：{key} @ {bytes.Length} bytes", TaskStatus.Success, LogLevel.Debug);
+                        logger.SystemLog(localizer["Cache_Updated", key, bytes.Length], TaskStatus.Success, LogLevel.Debug);
                     }
                     else
                     {
-                        logger.SystemLog($"缓存生成失败：{key}", TaskStatus.Failed, LogLevel.Warning);
+                        logger.SystemLog(localizer["Cache_GenerationFailed", key], TaskStatus.Failed, LogLevel.Warning);
                     }
                 }
                 catch (Exception e)
                 {
-                    logger.SystemLog($"缓存更新线程更新失败：{key} @ {e.Message}", TaskStatus.Failed, LogLevel.Error);
+                    logger.SystemLog(localizer["Cache_UpdateWorkerFailed", key, e.Message], TaskStatus.Failed, LogLevel.Error);
                 }
                 finally
                 {

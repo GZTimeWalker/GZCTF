@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Utils;
 
@@ -174,12 +175,12 @@ public enum NoticeType : byte
 
 public static class SubmissionTypeExtensions
 {
-    public static string ToBloodString(this SubmissionType type) =>
+    public static string ToBloodString(this SubmissionType type, IStringLocalizer<Program> localizer) =>
         type switch
         {
-            SubmissionType.FirstBlood => "一血",
-            SubmissionType.SecondBlood => "二血",
-            SubmissionType.ThirdBlood => "三血",
+            SubmissionType.FirstBlood => localizer["Submission_FirstBlood"],
+            SubmissionType.SecondBlood => localizer["Submission_SecondBlood"],
+            SubmissionType.ThirdBlood => localizer["Submission_ThirdBlood"],
             _ => throw new ArgumentException(type.ToString(), nameof(type))
         };
 }
@@ -380,14 +381,14 @@ public enum AnswerResult : byte
 
 public static class AnswerResultExtensions
 {
-    public static string ToShortString(this AnswerResult result) =>
+    public static string ToShortString(this AnswerResult result, IStringLocalizer<Program> localizer) =>
         result switch
         {
-            AnswerResult.FlagSubmitted => "成功提交",
-            AnswerResult.Accepted => "答案正确",
-            AnswerResult.WrongAnswer => "答案错误",
-            AnswerResult.NotFound => "实例未知",
-            AnswerResult.CheatDetected => "作弊检测",
+            AnswerResult.FlagSubmitted => localizer["Submission_FlagSubmitted"],
+            AnswerResult.Accepted => localizer["Submission_Accepted"],
+            AnswerResult.WrongAnswer => localizer["Submission_WrongAnswer"],
+            AnswerResult.NotFound => localizer["Submission_UnknownInstance"],
+            AnswerResult.CheatDetected => localizer["Submission_CheatDetected"],
             _ => "??"
         };
 }
