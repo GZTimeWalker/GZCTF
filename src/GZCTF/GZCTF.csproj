@@ -16,7 +16,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
         <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
-        <SpaProxyLaunchCommand>pnpm run dev --host</SpaProxyLaunchCommand>
+        <SpaProxyLaunchCommand>npm run dev --host</SpaProxyLaunchCommand>
         <Configurations>Debug;Release;GenAPI</Configurations>
         <ReleaseVersion>0.17.6</ReleaseVersion>
         <WarningLevel>4</WarningLevel>

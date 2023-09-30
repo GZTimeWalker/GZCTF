@@ -126,6 +126,9 @@
   <data name="Cache_NoMatchingRequest" xml:space="preserve">
     <value>缓存更新线程未找到匹配的请求：{0}</value>
   </data>
+  <data name="Cache_Rebuilt" xml:space="preserve">
+    <value>重建缓存：{0} @ {1} bytes</value>
+  </data>
   <data name="Cache_Stopped" xml:space="preserve">
     <value>缓存更新已停用</value>
   </data>
@@ -338,6 +341,9 @@
   </data>
   <data name="Game_TeamNotFound" xml:space="preserve">
     <value>队伍未找到</value>
+  </data>
+  <data name="InstanceRepository_NoInstance" xml:space="preserve">
+    <value>队伍对应参与对象为空，这可能是非预期的情况 [{0}, {1}]</value>
   </data>
   <data name="MailSender_ChangeEmailButton" xml:space="preserve">
     <value>确认验证邮箱</value>

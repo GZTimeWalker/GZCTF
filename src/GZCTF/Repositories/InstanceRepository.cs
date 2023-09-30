@@ -3,6 +3,7 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Repositories;
@@ -13,7 +14,8 @@ public class InstanceRepository(AppDbContext context,
     IContainerRepository containerRepository,
     IGameEventRepository gameEventRepository,
     IOptionsSnapshot<GamePolicy> gamePolicy,
-    ILogger<InstanceRepository> logger) : RepositoryBase(context), IInstanceRepository
+    ILogger<InstanceRepository> logger,
+    IStringLocalizer<Program> localizer) : RepositoryBase(context), IInstanceRepository
 {
     public async Task<Instance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
@@ -26,7 +28,7 @@ public class InstanceRepository(AppDbContext context,
 
         if (instance is null)
         {
-            logger.SystemLog($"队伍对应参与对象为空，这可能是非预期的情况 [{part.Id}, {challengeId}]", TaskStatus.NotFound,
+            logger.SystemLog(localizer["InstanceRepository_NoInstance", part.Id, challengeId], TaskStatus.NotFound,
                 LogLevel.Warning);
             return null;
         }
