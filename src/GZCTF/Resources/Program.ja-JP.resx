@@ -265,10 +265,10 @@
     <value>データベースの接続文字列フィールド 'ConnectionStrings' が検出されていませんでした、appsettings.json が正しくマウントおよび設定されていますでしょうか？</value>
   </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
-    <value>[正しいサブミッション] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
+    <value>[正しい回答] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
   </data>
   <data name="FlagChecker_AnswerRejected" xml:space="preserve">
-    <value>[間違いサブミッション] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
+    <value>[間違い回答] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
     <value>[不正検出] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
@@ -418,6 +418,6 @@
     <value>インスタンス不明</value>
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
-    <value>間違った回答</value>
+    <value>間違い回答</value>
   </data>
 </root>
