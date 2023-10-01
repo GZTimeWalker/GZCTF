@@ -43,7 +43,7 @@ public partial class Post
     /// <summary>
     /// 作者信息
     /// </summary>
-    public string? AuthorId { get; set; }
+    public Guid? AuthorId { get; set; }
 
     /// <summary>
     /// 作者
@@ -54,7 +54,7 @@ public partial class Post
     /// 发布时间
     /// </summary>
     [Required]
-    public DateTimeOffset UpdateTimeUTC { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdateTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
     internal Post Update(PostEditModel model, UserInfo user)
     {
@@ -65,10 +65,10 @@ public partial class Post
         Tags = model.Tags.ToList();
         Author = user;
         AuthorId = user.Id;
-        UpdateTimeUTC = DateTimeOffset.UtcNow;
+        UpdateTimeUtc = DateTimeOffset.UtcNow;
 
         return this;
     }
 
-    internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUTC:s}:{Guid.NewGuid()}".StrSHA256()[4..12];
+    internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUtc:s}:{Guid.NewGuid()}".ToSHA256String()[4..12];
 }

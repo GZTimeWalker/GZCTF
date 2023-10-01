@@ -1,12 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
+[Index(nameof(GameInstanceId))]
+[Index(nameof(ExerciseInstanceId))]
 public class Container
 {
     [Key]
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; set; }
 
     /// <summary>
     /// 镜像名称
@@ -70,28 +74,77 @@ public class Container
     /// 容器实例访问方式
     /// </summary>
     [NotMapped]
-    public string Entry => IsProxy ? Id : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
+    public string Entry => IsProxy ? Id.ToString() : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
+
+    /// <summary>
+    /// 是否启用流量捕获
+    /// </summary>
+    [NotMapped]
+    public bool EnableTrafficCapture => GameInstance?.Challenge.EnableTrafficCapture ?? false;
 
     /// <summary>
     /// 容器实例流量捕获存储路径
     /// </summary>
     public string TrafficPath(string conn) =>
-        Instance is null
+        GameInstance is null
             ? string.Empty
             : Path.Combine(FilePath.Capture,
-                $"{Instance.ChallengeId}/{Instance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
+                $"{GameInstance.ChallengeId}/{GameInstance.ParticipationId}/{DateTimeOffset.Now:yyyyMMdd-HH.mm.ss}-{conn}.pcap");
+
+    /// <summary>
+    /// 生成容器的元数据信息
+    /// </summary>
+    /// <returns></returns>
+    public byte[]? GenerateMetadata(JsonSerializerOptions? options = null)
+    {
+        if (GameInstance is not null)
+            return JsonSerializer.SerializeToUtf8Bytes(
+                new
+                {
+                    Challenge = GameInstance.Challenge.Title,
+                    GameInstance.ChallengeId,
+                    Team = GameInstance.Participation.Team.Name,
+                    GameInstance.Participation.TeamId,
+                    ContainerId,
+                    GameInstance.FlagContext?.Flag
+                }, options);
+
+        if (ExerciseInstance is not null)
+            return JsonSerializer.SerializeToUtf8Bytes(
+                new
+                {
+                    Challenge = ExerciseInstance.Challenge.Title,
+                    ExerciseInstance.ChallengeId,
+                    ExerciseInstance.User.UserName,
+                    ExerciseInstance.UserId,
+                    ContainerId,
+                    ExerciseInstance.FlagContext?.Flag
+                }, options);
+
+        return null;
+    }
 
     #region Db Relationship
 
     /// <summary>
     /// 比赛题目实例对象
     /// </summary>
-    public Instance? Instance { get; set; }
+    public GameInstance? GameInstance { get; set; }
 
     /// <summary>
-    /// 实例对象ID
+    /// 比赛题目实例对象 ID
     /// </summary>
-    public int InstanceId { get; set; }
+    public int GameInstanceId { get; set; }
+
+    /// <summary>
+    /// 练习题目实例对象
+    /// </summary>
+    public ExerciseInstance? ExerciseInstance { get; set; }
+
+    /// <summary>
+    /// 练习题目实例对象 ID
+    /// </summary>
+    public int ExerciseInstanceId { get; set; }
 
     #endregion Db Relationship
 }

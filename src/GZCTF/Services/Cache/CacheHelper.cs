@@ -57,5 +57,5 @@ public static class CacheKey
     /// <summary>
     /// 容器连接数缓存
     /// </summary>
-    public static string ConnectionCount(string id) => $"_Container_Conn_{id}";
+    public static string ConnectionCount(Guid id) => $"_Container_Conn_{id}";
 }

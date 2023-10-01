@@ -8,7 +8,7 @@ public class UserInfoModel
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string? Id { get; set; }
+    public Guid? Id { get; set; }
 
     /// <summary>
     /// 用户名
@@ -38,12 +38,12 @@ public class UserInfoModel
     /// <summary>
     /// 注册时间
     /// </summary>
-    public DateTimeOffset RegisterTimeUTC { get; set; }
+    public DateTimeOffset RegisterTimeUtc { get; set; }
 
     /// <summary>
     /// 用户最近访问时间
     /// </summary>
-    public DateTimeOffset LastVisitedUTC { get; set; }
+    public DateTimeOffset LastVisitedUtc { get; set; }
 
     /// <summary>
     /// 用户最近访问IP
@@ -83,8 +83,8 @@ public class UserInfoModel
             RealName = user.RealName,
             UserName = user.UserName,
             StdNumber = user.StdNumber,
-            LastVisitedUTC = user.LastVisitedUTC,
-            RegisterTimeUTC = user.RegisterTimeUTC,
+            LastVisitedUtc = user.LastVisitedUtc,
+            RegisterTimeUtc = user.RegisterTimeUtc,
             EmailConfirmed = user.EmailConfirmed
         };
 }

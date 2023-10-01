@@ -351,7 +351,7 @@ public enum ChallengeTag : byte
 /// 判定结果
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum AnswerResult : byte
+public enum AnswerResult : sbyte
 {
     /// <summary>
     /// 成功提交
@@ -369,14 +369,14 @@ public enum AnswerResult : byte
     WrongAnswer = 2,
 
     /// <summary>
-    /// 提交的题目实例未找到
-    /// </summary>
-    NotFound = 3,
-
-    /// <summary>
     /// 检测到抄袭
     /// </summary>
-    CheatDetected = 4
+    CheatDetected = 3,
+
+    /// <summary>
+    /// 提交的题目实例未找到
+    /// </summary>
+    NotFound = -1
 }
 
 public static class AnswerResultExtensions
@@ -387,8 +387,8 @@ public static class AnswerResultExtensions
             AnswerResult.FlagSubmitted => localizer["Submission_FlagSubmitted"],
             AnswerResult.Accepted => localizer["Submission_Accepted"],
             AnswerResult.WrongAnswer => localizer["Submission_WrongAnswer"],
-            AnswerResult.NotFound => localizer["Submission_UnknownInstance"],
             AnswerResult.CheatDetected => localizer["Submission_CheatDetected"],
+            AnswerResult.NotFound => localizer["Submission_UnknownInstance"],
             _ => "??"
         };
 }

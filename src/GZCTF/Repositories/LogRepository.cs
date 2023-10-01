@@ -12,7 +12,7 @@ public class LogRepository(AppDbContext context) : RepositoryBase(context), ILog
 
         if (level is not null && level != "All")
             data = data.Where(x => x.Level == level);
-        data = data.OrderByDescending(x => x.TimeUTC).Skip(skip).Take(count);
+        data = data.OrderByDescending(x => x.TimeUtc).Skip(skip).Take(count);
 
         return (from log in data select LogMessageModel.FromLogModel(log)).ToArrayAsync(token);
     }

@@ -59,7 +59,7 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
 
                 var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
                 var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
-                var instanceRepository = scope.ServiceProvider.GetRequiredService<IInstanceRepository>();
+                var instanceRepository = scope.ServiceProvider.GetRequiredService<IGameInstanceRepository>();
                 var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
                 var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
 
@@ -69,23 +69,23 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
 
                     if (ans == AnswerResult.NotFound)
                     {
-                        logger.Log(localizer["FlagChecker_UnknownInstance", item.Team.Name, item.Challenge.Title], item.User,
+                        logger.Log(localizer["FlagChecker_UnknownInstance", item.Team.Name, item.GameChallenge.Title], item.User,
                             TaskStatus.NotFound, LogLevel.Warning);
                     }
                     else if (ans == AnswerResult.Accepted)
                     {
-                        logger.Log(localizer["FlagChecker_AnswerAccepted", item.Team.Name, item.Challenge.Title, item.Answer],
+                        logger.Log(localizer["FlagChecker_AnswerAccepted", item.Team.Name, item.GameChallenge.Title, item.Answer],
                             item.User, TaskStatus.Success, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans, localizer), token);
 
                         // only flush the scoreboard if the contest is not ended and the submission is accepted
-                        if (item.Game.EndTimeUTC > item.SubmitTimeUTC)
+                        if (item.Game.EndTimeUtc > item.SubmitTimeUtc)
                             await cacheHelper.FlushScoreboardCache(item.GameId, token);
                     }
                     else
                     {
-                        logger.Log(localizer["FlagChecker_AnswerRejected", item.Team.Name, item.Challenge.Title, item.Answer],
+                        logger.Log(localizer["FlagChecker_AnswerRejected", item.Team.Name, item.GameChallenge.Title, item.Answer],
                             item.User, TaskStatus.Failed, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans, localizer), token);
@@ -96,14 +96,14 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                         if (ans == AnswerResult.CheatDetected)
                         {
                             logger.Log(
-                                localizer["FlagChecker_CheatDetected", item.Team.Name, item.Challenge.Title, result.SourceTeamName ?? ""],
+                                localizer["FlagChecker_CheatDetected", item.Team.Name, item.GameChallenge.Title, result.SourceTeamName ?? ""],
                                 item.User, TaskStatus.Success, LogLevel.Information);
                             await eventRepository.AddEvent(
                                 new()
                                 {
                                     Type = EventType.CheatDetected,
                                     Content =
-                                        localizer["FlagChecker_CheatDetectedEvent", item.Challenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
+                                        localizer["FlagChecker_CheatDetectedEvent", item.GameChallenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
                                     TeamId = item.TeamId,
                                     UserId = item.UserId,
                                     GameId = item.GameId
@@ -111,7 +111,7 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                         }
                     }
 
-                    if (item.Game.EndTimeUTC > DateTimeOffset.UtcNow
+                    if (item.Game.EndTimeUtc > DateTimeOffset.UtcNow
                         && type != SubmissionType.Unaccepted
                         && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(GameNotice.FromSubmission(item, type, localizer), token);

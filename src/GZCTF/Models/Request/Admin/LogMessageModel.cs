@@ -43,7 +43,7 @@ public class LogMessageModel
     public static LogMessageModel FromLogModel(LogModel logInfo) =>
         new()
         {
-            Time = logInfo.TimeUTC,
+            Time = logInfo.TimeUtc,
             Level = logInfo.Level,
             UserName = logInfo.UserName,
             IP = logInfo.RemoteIP,

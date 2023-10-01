@@ -28,7 +28,7 @@ public class EditController(
     ILogger<EditController> logger,
     IPostRepository postRepository,
     IContainerRepository containerRepository,
-    IChallengeRepository challengeRepository,
+    IGameChallengeRepository gameChallengeRepository,
     IGameNoticeRepository gameNoticeRepository,
     IGameRepository gameRepository,
     IContainerManager containerService,
@@ -334,7 +334,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
         GameNotice res = await gameNoticeRepository.AddNotice(
-            new() { Content = model.Content, GameId = game.Id, Type = NoticeType.Normal, PublishTimeUTC = DateTimeOffset.UtcNow }, token);
+            new() { Content = model.Content, GameId = game.Id, Type = NoticeType.Normal, PublishTimeUtc = DateTimeOffset.UtcNow }, token);
 
         return Ok(res);
     }
@@ -441,8 +441,8 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge res = await challengeRepository.CreateChallenge(game,
-            new Challenge { Title = model.Title, Type = model.Type, Tag = model.Tag }, token);
+        GameChallenge res = await gameChallengeRepository.CreateChallenge(game,
+            new GameChallenge { Title = model.Title, Type = model.Type, Tag = model.Tag }, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
@@ -459,7 +459,7 @@ public class EditController(
     [HttpGet("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token) =>
-        Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
+        Ok((await gameChallengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
     /// 获取比赛题目
@@ -481,7 +481,7 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? res = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
@@ -511,7 +511,7 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? res = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
@@ -537,7 +537,7 @@ public class EditController(
         if (model.IsEnabled == true)
         {
             // will also update IsEnabled
-            await challengeRepository.EnsureInstances(res, game, token);
+            await gameChallengeRepository.EnsureInstances(res, game, token);
 
             if (game.IsActive)
                 await gameNoticeRepository.AddNotice(
@@ -545,7 +545,7 @@ public class EditController(
         }
         else
         {
-            await challengeRepository.SaveAsync(token);
+            await gameChallengeRepository.SaveAsync(token);
         }
 
         if (game.IsActive && res.IsEnabled && hintUpdated)
@@ -579,7 +579,7 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
@@ -609,7 +609,7 @@ public class EditController(
             return BadRequest(new RequestResponse("容器创建失败"));
 
         challenge.TestContainer = container;
-        await challengeRepository.SaveAsync(token);
+        await gameChallengeRepository.SaveAsync(token);
 
         logger.Log($"成功创建测试容器 {container.ContainerId}", user, TaskStatus.Success);
 
@@ -637,7 +637,7 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
@@ -672,12 +672,12 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? res = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
-        await challengeRepository.RemoveChallenge(res, token);
+        await gameChallengeRepository.RemoveChallenge(res, token);
 
         // always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
@@ -707,7 +707,7 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
@@ -715,7 +715,7 @@ public class EditController(
         if (challenge.Type == ChallengeType.DynamicAttachment)
             return BadRequest(new RequestResponse("动态附件题目请使用 assets API 上传附件"));
 
-        await challengeRepository.UpdateAttachment(challenge, model, token);
+        await gameChallengeRepository.UpdateAttachment(challenge, model, token);
 
         return Ok();
     }
@@ -742,12 +742,12 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
-        await challengeRepository.AddFlags(challenge, models, token);
+        await gameChallengeRepository.AddFlags(challenge, models, token);
 
         return Ok();
     }
@@ -774,11 +774,11 @@ public class EditController(
         if (game is null)
             return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
 
-        Challenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await gameChallengeRepository.GetChallenge(id, cId, true, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer["Challenge_NotFound"], StatusCodes.Status404NotFound));
 
-        return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
+        return Ok(await gameChallengeRepository.RemoveFlag(challenge, fId, token));
     }
 }

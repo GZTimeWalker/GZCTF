@@ -8,7 +8,7 @@ public class LogModel
     public int Id { get; set; }
 
     [Required]
-    public DateTimeOffset TimeUTC { get; set; }
+    public DateTimeOffset TimeUtc { get; set; }
 
     [Required]
     [MaxLength(50)]

@@ -12,15 +12,13 @@ public class ParticipationRepository(
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
-        Challenge[] challenges = await context.Challenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
+        GameChallenge[] challenges = await context.GameChallenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
 
         // requery instead of Entry
         part = await context.Participations.Include(p => p.Challenges).SingleAsync(p => p.Id == part.Id, token);
 
-        var update = false;
-
-        foreach (Challenge challenge in challenges)
-            update |= part.Challenges.Add(challenge);
+        var update = challenges.Aggregate(false,
+            (current, challenge) => part.Challenges.Add(challenge) || current);
 
         await SaveAsync(token);
 
@@ -48,7 +46,7 @@ public class ParticipationRepository(
 
     public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default) =>
         context.Participations.Where(p => p.Game == game && p.Writeup != null)
-            .OrderByDescending(p => p.Writeup!.UploadTimeUTC)
+            .OrderByDescending(p => p.Writeup!.UploadTimeUtc)
             .Select(p => WriteupInfoModel.FromParticipation(p)!)
             .ToArrayAsync(token);
 

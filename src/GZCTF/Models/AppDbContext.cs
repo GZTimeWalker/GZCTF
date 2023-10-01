@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GZCTF.Models;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) :
-    IdentityDbContext<UserInfo>(options), IDataProtectionKeyContext
+    IdentityDbContext<UserInfo, IdentityRole<Guid>, Guid>(options), IDataProtectionKeyContext
 {
     public DbSet<Post> Posts { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;
@@ -16,9 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<LogModel> Logs { get; set; } = default!;
     public DbSet<Config> Configs { get; set; } = default!;
     public DbSet<LocalFile> Files { get; set; } = default!;
-    public DbSet<Instance> Instances { get; set; } = default!;
     public DbSet<CheatInfo> CheatInfo { get; set; } = default!;
-    public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
     public DbSet<GameEvent> GameEvents { get; set; } = default!;
     public DbSet<Submission> Submissions { get; set; } = default!;
@@ -26,6 +25,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<GameNotice> GameNotices { get; set; } = default!;
     public DbSet<FlagContext> FlagContexts { get; set; } = default!;
     public DbSet<Participation> Participations { get; set; } = default!;
+    public DbSet<GameInstance> GameInstances { get; set; } = default!;
+    public DbSet<GameChallenge> GameChallenges { get; set; } = default!;
+    public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = default!;
+    public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = default!;
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
@@ -100,13 +103,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasMany(e => e.Teams)
                 .WithMany(e => e.Games)
                 .UsingEntity<Participation>(
-                    e => e.HasOne(e => e.Team)
-                        .WithMany(e => e.Participations)
-                        .HasForeignKey(e => e.TeamId),
-                    e => e.HasOne(e => e.Game)
-                        .WithMany(e => e.Participations)
-                        .HasForeignKey(e => e.GameId),
-                    e => e.HasIndex(e => new { e.TeamId, e.GameId })
+                    e => e.HasOne(p => p.Team)
+                        .WithMany(t => t.Participations)
+                        .HasForeignKey(p => p.TeamId),
+                    e => e.HasOne(p => p.Game)
+                        .WithMany(g => g.Participations)
+                        .HasForeignKey(p => p.GameId)
                 );
         });
 
@@ -165,19 +167,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.HasMany(e => e.Challenges)
                 .WithMany(e => e.Teams)
-                .UsingEntity<Instance>(
-                    e => e.HasOne(e => e.Challenge)
+                .UsingEntity<GameInstance>(
+                    e => e.HasOne(i => i.Challenge)
                         .WithMany(c => c.Instances)
-                        .HasForeignKey(e => e.ChallengeId),
-                    e => e.HasOne(e => e.Participation)
-                        .WithMany(e => e.Instances)
-                        .HasForeignKey(e => e.ParticipationId)
+                        .HasForeignKey(i => i.ChallengeId),
+                    e => e.HasOne(i => i.Participation)
+                        .WithMany(p => p.Instances)
+                        .HasForeignKey(i => i.ParticipationId)
                         .OnDelete(DeleteBehavior.Cascade),
-                    e => e.HasKey(e => new { e.ChallengeId, e.ParticipationId })
+                    e => e.HasKey(i => new { i.ChallengeId, i.ParticipationId })
                 );
         });
 
-        builder.Entity<Instance>(entity =>
+        builder.Entity<GameInstance>(entity =>
         {
             entity.HasOne(e => e.FlagContext)
                 .WithMany()
@@ -185,49 +187,44 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(e => e.Container)
-                .WithOne(e => e.Instance)
-                .HasForeignKey<Container>(e => e.InstanceId)
+                .WithOne(e => e.GameInstance)
+                .HasForeignKey<Container>(e => e.GameInstanceId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             entity.Navigation(e => e.Container).AutoInclude();
             entity.Navigation(e => e.Challenge).AutoInclude();
-
-            entity.HasIndex(e => e.FlagId).IsUnique();
         });
 
-        builder.Entity<UserParticipation>(entity =>
+        builder.Entity<ExerciseInstance>(entity =>
         {
-            entity.HasOne(e => e.User)
+            entity.HasOne(e => e.Container)
+                .WithOne(e => e.ExerciseInstance)
+                .HasForeignKey<Container>(e => e.ExerciseInstanceId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(e => e.FlagContext)
                 .WithMany()
-                .HasForeignKey(e => e.UserId);
+                .HasForeignKey(e => e.FlagId)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            entity.HasOne(e => e.Team)
-                .WithMany()
-                .HasForeignKey(e => e.TeamId);
-
-            entity.HasOne(e => e.Game)
-                .WithMany()
-                .HasForeignKey(e => e.GameId);
-
-            entity.HasKey(e => new { e.GameId, e.TeamId, e.UserId });
-
-            entity.HasIndex(e => new { e.UserId, e.GameId }).IsUnique();
+            entity.Navigation(e => e.Container).AutoInclude();
+            entity.Navigation(e => e.Challenge).AutoInclude();
         });
 
         builder.Entity<Container>(entity =>
         {
-            entity.HasOne(e => e.Instance)
+            entity.HasOne(e => e.GameInstance)
                 .WithOne(e => e.Container)
-                .HasForeignKey<Instance>(e => e.ContainerId)
+                .HasForeignKey<GameInstance>(e => e.ContainerId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            entity.HasIndex(e => e.InstanceId);
-
-            // FIXME: Which API will be affected by AutoInclude
-            //entity.Navigation(e => e.Instance).AutoInclude();
+            entity.HasOne(e => e.ExerciseInstance)
+                .WithOne(e => e.Container)
+                .HasForeignKey<ExerciseInstance>(e => e.ContainerId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
-        builder.Entity<Challenge>(entity =>
+        builder.Entity<GameChallenge>(entity =>
         {
             entity.Property(e => e.Hints)
                 .HasConversion(listConverter)
@@ -239,7 +236,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasForeignKey(e => e.ChallengeId);
 
             entity.HasMany(e => e.Submissions)
-                .WithOne(e => e.Challenge)
+                .WithOne(e => e.GameChallenge)
                 .HasForeignKey(e => e.ChallengeId);
 
             entity.HasOne(e => e.Attachment)
@@ -258,17 +255,34 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasIndex(e => e.GameId);
         });
 
+        builder.Entity<ExerciseChallenge>(entity =>
+        {
+            entity.Property(e => e.Hints)
+                .HasConversion(listConverter)
+                .Metadata
+                .SetValueComparer(listComparer);
+
+            entity.HasOne(e => e.Attachment)
+                .WithMany()
+                .HasForeignKey(e => e.AttachmentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.TestContainer)
+                .WithMany()
+                .HasForeignKey(e => e.TestContainerId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Navigation(e => e.Attachment).AutoInclude();
+            entity.Navigation(e => e.TestContainer).AutoInclude();
+        });
+
         builder.Entity<Submission>(entity =>
         {
-            entity.Property(e => e.Status)
-                .HasConversion<string>();
+            entity.Property(e => e.Status).HasConversion<string>();
 
             entity.Navigation(e => e.Team).AutoInclude();
             entity.Navigation(e => e.User).AutoInclude();
-            entity.Navigation(e => e.Challenge).AutoInclude();
-
-            entity.HasIndex(e => e.Status);
-            entity.HasIndex(e => new { e.TeamId, e.ChallengeId, e.GameId });
+            entity.Navigation(e => e.GameChallenge).AutoInclude();
         });
 
         builder.Entity<FlagContext>(entity =>
@@ -279,8 +293,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Attachment).AutoInclude();
-
-            entity.HasIndex(e => e.ChallengeId);
         });
 
         builder.Entity<Attachment>(entity =>
@@ -324,6 +336,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasOne(e => e.Submission)
                 .WithMany()
                 .HasForeignKey(e => e.SubmissionId);
+
+            entity.HasKey(e => e.SubmissionId);
+        });
+
+        builder.Entity<UserParticipation>(entity =>
+        {
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId);
+
+            entity.HasOne(e => e.Team)
+                .WithMany()
+                .HasForeignKey(e => e.TeamId);
+
+            entity.HasOne(e => e.Game)
+                .WithMany()
+                .HasForeignKey(e => e.GameId);
+
+            entity.HasKey(e => new { e.GameId, e.TeamId, e.UserId });
         });
     }
 }

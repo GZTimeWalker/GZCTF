@@ -14,13 +14,13 @@ public class Team
     /// 队伍名称
     /// </summary>
     [Required]
-    [MaxLength(15)]
+    [MaxLength(16)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// 队伍 Bio
     /// </summary>
-    [MaxLength(31)]
+    [MaxLength(32)]
     public string? Bio { get; set; } = string.Empty;
 
     /// <summary>
@@ -37,6 +37,7 @@ public class Team
     /// <summary>
     /// 邀请 Token
     /// </summary>
+    [MaxLength(32)]
     public string InviteToken { get; set; } = Guid.NewGuid().ToString("N");
 
     /// <summary>
@@ -68,7 +69,7 @@ public class Team
     /// <summary>
     /// 队长用户ID
     /// </summary>
-    public string CaptainId { get; set; } = string.Empty;
+    public Guid CaptainId { get; set; }
 
     /// <summary>
     /// 队长

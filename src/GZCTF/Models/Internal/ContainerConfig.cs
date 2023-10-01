@@ -15,7 +15,7 @@ public class ContainerConfig
     /// <summary>
     /// 用户 Id
     /// </summary>
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
 
     /// <summary>
     /// 容器需要暴露的端口
@@ -30,7 +30,7 @@ public class ContainerConfig
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool EnableTrafficCapture { get; set; } = false;
+    public bool EnableTrafficCapture { get; set; }
 
     /// <summary>
     /// 内存限制（MB）

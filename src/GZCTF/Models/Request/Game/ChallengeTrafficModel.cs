@@ -36,17 +36,17 @@ public class ChallengeTrafficModel
     /// </summary>
     public int Count { get; set; }
 
-    internal static ChallengeTrafficModel FromChallenge(Challenge challenge)
+    internal static ChallengeTrafficModel FromChallenge(GameChallenge gameChallenge)
     {
-        var trafficPath = $"{FilePath.Capture}/{challenge.Id}";
+        var trafficPath = $"{FilePath.Capture}/{gameChallenge.Id}";
 
         return new()
         {
-            Id = challenge.Id,
-            Title = challenge.Title,
-            Tag = challenge.Tag,
-            Type = challenge.Type,
-            IsEnabled = challenge.IsEnabled,
+            Id = gameChallenge.Id,
+            Title = gameChallenge.Title,
+            Tag = gameChallenge.Tag,
+            Type = gameChallenge.Type,
+            IsEnabled = gameChallenge.IsEnabled,
             Count = Directory.Exists(trafficPath)
                 ? Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length
                 : 0

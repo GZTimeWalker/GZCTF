@@ -1,5 +1,3 @@
-﻿using System.ComponentModel.DataAnnotations;
-
 namespace GZCTF.Models.Data;
 
 public class Instance
@@ -7,36 +5,17 @@ public class Instance
     /// <summary>
     /// 题目是否已经解决
     /// </summary>
-    public bool IsSolved { get; set; } = false;
+    public bool IsSolved { get; set; }
 
     /// <summary>
     /// 题目是否已经加载
     /// </summary>
-    public bool IsLoaded { get; set; } = false;
-
-    /// <summary>
-    /// 自定义成绩 (unused)
-    /// </summary>
-    public int Score { get; set; } = 0;
+    public bool IsLoaded { get; set; }
 
     /// <summary>
     /// 最后一次容器操作的时间，确保单题目容器操作不会过于频繁
     /// </summary>
     public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;
-
-    /// <summary>
-    /// 获取实例附件
-    /// </summary>
-    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment
-        : Challenge.Attachment;
-
-    /// <summary>
-    /// 获取实例附件链接
-    /// </summary>
-    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
-        : Challenge.Attachment?.UrlWithName();
 
     #region Db Relationship
 
@@ -45,30 +24,14 @@ public class Instance
     /// <summary>
     /// Flag 上下文对象
     /// </summary>
-    public FlagContext? FlagContext { get; set; } = default!;
+    public FlagContext? FlagContext { get; set; }
 
-    [Required]
-    public int ChallengeId { get; set; }
-
-    /// <summary>
-    /// 赛题对象
-    /// </summary>
-    public Challenge Challenge { get; set; } = default!;
-
-    public string? ContainerId { get; set; }
+    public Guid? ContainerId { get; set; }
 
     /// <summary>
     /// 容器对象
     /// </summary>
     public Container? Container { get; set; }
 
-    [Required]
-    public int ParticipationId { get; set; }
-
-    /// <summary>
-    /// 参与队伍对象
-    /// </summary>
-    public Participation Participation { get; set; } = default!;
-
-    #endregion Db Relationship
+    #endregion
 }

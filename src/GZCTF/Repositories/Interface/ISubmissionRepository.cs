@@ -17,13 +17,13 @@ public interface ISubmissionRepository : IRepository
     /// <summary>
     /// 获取题目的提交，按时间降序
     /// </summary>
-    /// <param name="challenge">题目对象</param>
+    /// <param name="gameChallenge">题目对象</param>
     /// <param name="type">提交类型</param>
     /// <param name="count">数量</param>
     /// <param name="skip">跳过数量</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Submission[]> GetSubmissions(Challenge challenge, AnswerResult? type = null, int count = 100,
+    public Task<Submission[]> GetSubmissions(GameChallenge gameChallenge, AnswerResult? type = null, int count = 100,
         int skip = 0, CancellationToken token = default);
 
     /// <summary>
@@ -68,6 +68,6 @@ public interface ISubmissionRepository : IRepository
     /// <param name="submitId">提交Id</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Submission?> GetSubmission(int gameId, int challengeId, string userId, int submitId,
+    public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default);
 }

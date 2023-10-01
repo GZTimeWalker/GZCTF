@@ -83,6 +83,7 @@ else
 #region Configuration
 
 if (!GZCTF.Program.IsTesting)
+{
     try
     {
         builder.Configuration.AddEntityConfiguration(options =>
@@ -93,12 +94,13 @@ if (!GZCTF.Program.IsTesting)
                 options.UseInMemoryDatabase("TestDb");
         });
     }
-    catch
+    catch (Exception e)
     {
         if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
             Log.Logger.Error(GZCTF.Program.StaticLocalizer["Database_CurrentConnectionString", builder.Configuration.GetConnectionString("Database") ?? "null"]);
-        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.StaticLocalizer["Database_ConnectionFailed"]);
+        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.StaticLocalizer["Database_ConnectionFailed", e.Message]);
     }
+}
 
 #endregion Configuration
 
@@ -213,9 +215,9 @@ builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
-builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
+builder.Services.AddScoped<IGameInstanceRepository, GameInstanceRepository>();
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
-builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
+builder.Services.AddScoped<IGameChallengeRepository, GameChallengeRepository>();
 builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
 builder.Services.AddScoped<ICheatInfoRepository, CheatInfoRepository>();
 builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();

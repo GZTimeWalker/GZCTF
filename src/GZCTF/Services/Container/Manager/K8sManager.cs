@@ -54,7 +54,7 @@ public class K8sManager : IContainerManager
                 {
                     ["ctf.gzti.me/ResourceId"] = name,
                     ["ctf.gzti.me/TeamId"] = config.TeamId,
-                    ["ctf.gzti.me/UserId"] = config.UserId
+                    ["ctf.gzti.me/UserId"] = config.UserId.ToString()
                 }
             },
             Spec = new V1PodSpec
@@ -90,7 +90,11 @@ public class K8sManager : IContainerManager
                                 ["memory"] = new($"{config.MemoryLimit}Mi"),
                                 ["ephemeral-storage"] = new($"{config.StorageLimit}Mi")
                             },
-                            Requests = new Dictionary<string, ResourceQuantity> { ["cpu"] = new("10m"), ["memory"] = new("32Mi") }
+                            Requests = new Dictionary<string, ResourceQuantity>
+                            {
+                                ["cpu"] = new("10m"),
+                                ["memory"] = new("32Mi")
+                            }
                         }
                     }
                 },
@@ -122,7 +126,12 @@ public class K8sManager : IContainerManager
         }
 
         // Service is needed for port mapping
-        var container = new Models.Data.Container { ContainerId = name, Image = config.Image, Port = config.ExposedPort };
+        var container = new Models.Data.Container
+        {
+            ContainerId = name,
+            Image = config.Image,
+            Port = config.ExposedPort
+        };
 
         var service = new V1Service("v1", "Service")
         {

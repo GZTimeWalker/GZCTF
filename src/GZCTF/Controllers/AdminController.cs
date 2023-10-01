@@ -34,7 +34,7 @@ public class AdminController(UserManager<UserInfo> userManager,
     IConfigService configService,
     IGameRepository gameRepository,
     ITeamRepository teamRepository,
-    IInstanceRepository instanceRepository,
+    IGameInstanceRepository gameInstanceRepository,
     IContainerRepository containerRepository,
     IServiceProvider serviceProvider,
     IParticipationRepository participationRepository,
@@ -210,18 +210,17 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpPost("Users/Search")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default) =>
-        Ok((await (
-            from user in userManager.Users
+        Ok((await userManager.Users
                 .Where(item =>
                     EF.Functions.Like(item.UserName!, $"%{hint}%") ||
                     EF.Functions.Like(item.StdNumber, $"%{hint}%") ||
                     EF.Functions.Like(item.Email!, $"%{hint}%") ||
-                    EF.Functions.Like(item.Id, $"%{hint}%") ||
+                    EF.Functions.Like(item.Id.ToString(), $"%{hint}%") ||
                     EF.Functions.Like(item.RealName, $"%{hint}%")
                 )
-                .OrderBy(e => e.Id).Take(30)
-            select UserInfoModel.FromUserInfo(user)
-        ).ToArrayAsync(token)).ToResponse());
+                .OrderBy(e => e.Id).Take(30).Select(user => UserInfoModel.FromUserInfo(user))
+                .ToArrayAsync(token)
+            ).ToResponse());
 
     /// <summary>
     /// 获取全部队伍信息
@@ -349,14 +348,14 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpDelete("Users/{userid:guid}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteUser(string userid, CancellationToken token = default)
+    public async Task<IActionResult> DeleteUser(Guid userid, CancellationToken token = default)
     {
         UserInfo? user = await userManager.GetUserAsync(User);
 
         if (user!.Id == userid)
             return BadRequest(new RequestResponse("不可以删除自己"));
 
-        user = await userManager.FindByIdAsync(userid);
+        user = await userManager.FindByIdAsync(userid.ToString());
 
         if (user is null)
             return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
@@ -538,14 +537,14 @@ public class AdminController(UserManager<UserInfo> userManager,
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [SuppressMessage("ReSharper", "RouteTemplates.ParameterTypeCanBeMadeStricter")]
-    public async Task<IActionResult> DestroyInstance(string id, CancellationToken token = default)
+    public async Task<IActionResult> DestroyInstance(Guid id, CancellationToken token = default)
     {
         Container? container = await containerRepository.GetContainerById(id, token);
 
         if (container is null)
             return NotFound(new RequestResponse("容器实例未找到", StatusCodes.Status404NotFound));
 
-        if (await instanceRepository.DestroyContainer(container, token))
+        if (await gameInstanceRepository.DestroyContainer(container, token))
             return Ok();
         return BadRequest(new RequestResponse("容器实例销毁失败"));
     }

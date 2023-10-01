@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 namespace GZCTF.Models.Data;
 
 [MemoryPackable]
-public partial class UserInfo : IdentityUser
+public partial class UserInfo : IdentityUser<Guid>
 {
     /// <summary>
     /// 用户角色
@@ -26,17 +26,17 @@ public partial class UserInfo : IdentityUser
     /// <summary>
     /// 用户最近登录时间
     /// </summary>
-    public DateTimeOffset LastSignedInUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset LastSignedInUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 用户最近访问时间
     /// </summary>
-    public DateTimeOffset LastVisitedUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset LastVisitedUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 用户注册时间
     /// </summary>
-    public DateTimeOffset RegisterTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset RegisterTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 个性签名
@@ -68,7 +68,7 @@ public partial class UserInfo : IdentityUser
     /// <param name="context"></param>
     public void UpdateByHttpContext(HttpContext context)
     {
-        LastVisitedUTC = DateTimeOffset.UtcNow;
+        LastVisitedUtc = DateTimeOffset.UtcNow;
 
         IPAddress? remoteAddress = context.Connection.RemoteIpAddress;
 

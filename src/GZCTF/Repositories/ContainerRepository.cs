@@ -11,22 +11,22 @@ public class ContainerRepository(IDistributedCache cache,
 {
     public override Task<int> CountAsync(CancellationToken token = default) => context.Containers.CountAsync(token);
 
-    public Task<Container?> GetContainerById(string guid, CancellationToken token = default) =>
+    public Task<Container?> GetContainerById(Guid guid, CancellationToken token = default) =>
         context.Containers.FirstOrDefaultAsync(i => i.Id == guid, token);
 
-    public Task<Container?> GetContainerWithInstanceById(string guid, CancellationToken token = default) =>
+    public Task<Container?> GetContainerWithInstanceById(Guid guid, CancellationToken token = default) =>
         context.Containers.IgnoreAutoIncludes()
-            .Include(c => c.Instance).ThenInclude(i => i!.Challenge)
-            .Include(c => c.Instance).ThenInclude(i => i!.FlagContext)
-            .Include(c => c.Instance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.Challenge)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.FlagContext)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);
 
     public Task<List<Container>> GetContainers(CancellationToken token = default) => context.Containers.ToListAsync(token);
 
     public async Task<ContainerInstanceModel[]> GetContainerInstances(CancellationToken token = default) =>
         (await context.Containers
-            .Where(c => c.Instance != null)
-            .Include(c => c.Instance).ThenInclude(i => i!.Participation)
+            .Where(c => c.GameInstance != null)
+            .Include(c => c.GameInstance).ThenInclude(i => i!.Participation)
             .OrderBy(c => c.StartedAt).ToArrayAsync(token))
         .Select(ContainerInstanceModel.FromContainer)
         .ToArray();
@@ -49,6 +49,6 @@ public class ContainerRepository(IDistributedCache cache,
         await SaveAsync(token);
     }
 
-    public async Task<bool> ValidateContainer(string guid, CancellationToken token = default) =>
+    public async Task<bool> ValidateContainer(Guid guid, CancellationToken token = default) =>
         await context.Containers.AnyAsync(c => c.Id == guid, token);
 }

@@ -91,24 +91,21 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             return;
         }
 
-        AppDbContext? context = CreateAppDbContext();
+        AppDbContext context = CreateAppDbContext();
 
         if (!context.Database.IsInMemory())
             context.Database.Migrate();
 
         context.Database.EnsureCreated();
 
-        if (context is null || !context.Configs.Any())
+        if (!context.Configs.Any())
         {
             Log.Logger.Debug(Program.StaticLocalizer["Config_InitializingDatabase"]);
 
             HashSet<Config> configs = DefaultConfigs();
 
-            if (context is not null)
-            {
-                context.Configs.AddRange(configs);
-                context.SaveChanges();
-            }
+            context.Configs.AddRange(configs);
+            context.SaveChanges();
 
             Data = configs.ToDictionary(c => c.ConfigKey, c => c.Value, StringComparer.OrdinalIgnoreCase);
         }

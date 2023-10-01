@@ -23,7 +23,7 @@ public class ContainerInstanceModel
     /// <summary>
     /// 容器数据库 ID
     /// </summary>
-    public string ContainerGuid { get; set; } = string.Empty;
+    public Guid ContainerGuid { get; set; }
 
     /// <summary>
     /// 容器 ID
@@ -52,8 +52,8 @@ public class ContainerInstanceModel
 
     internal static ContainerInstanceModel FromContainer(Container container)
     {
-        Team? team = container.Instance?.Participation?.Team;
-        Challenge? chal = container.Instance?.Challenge;
+        Team? team = container.GameInstance?.Participation.Team;
+        GameChallenge? chal = container.GameInstance?.Challenge;
 
         var model = new ContainerInstanceModel
         {

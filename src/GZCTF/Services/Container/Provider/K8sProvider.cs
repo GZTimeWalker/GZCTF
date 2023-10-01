@@ -64,7 +64,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
 
         if (withAuth)
         {
-            var padding = $"{registryValue.UserName}@{registryValue.Password}@{registryValue.ServerAddress}".StrMd5();
+            var padding = $"{registryValue.UserName}@{registryValue.Password}@{registryValue.ServerAddress}".ToMD5String();
             _k8sMetadata.AuthSecretName = $"{registryValue.UserName}-{padding}".ToValidRFC1123String("secret");
         }
 

@@ -10,7 +10,7 @@ public class TeamUserInfoModel
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string? Id { get; set; }
+    public Guid? Id { get; set; }
 
     /// <summary>
     /// 用户名

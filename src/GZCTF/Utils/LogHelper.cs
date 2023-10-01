@@ -24,7 +24,7 @@ public static class LogHelper
     {
         { "Message", new RenderedMessageColumnWriter() },
         { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
-        { "TimeUTC", new TimeColumnWriter() },
+        { "TimeUtc", new TimeColumnWriter() },
         { "Exception", new ExceptionColumnWriter() },
         { "Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
         { "UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },

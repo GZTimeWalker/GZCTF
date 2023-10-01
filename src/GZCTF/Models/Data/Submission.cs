@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Models.Data;
 
 [Index(nameof(UserId))]
+[Index(nameof(TeamId), nameof(ChallengeId), nameof(GameId))]
 public class Submission
 {
     [Key]
@@ -26,7 +27,7 @@ public class Submission
     /// 答案提交的时间
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset SubmitTimeUTC { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset SubmitTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// 提交用户
@@ -44,7 +45,7 @@ public class Submission
     /// 提交题目
     /// </summary>
     [JsonPropertyName("challenge")]
-    public string ChallengeName => Challenge?.Title ?? string.Empty;
+    public string ChallengeName => GameChallenge?.Title ?? string.Empty;
 
     #region Db Relationship
 
@@ -52,7 +53,7 @@ public class Submission
     /// 用户数据库Id
     /// </summary>
     [JsonIgnore]
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     /// <summary>
     /// 用户
@@ -106,7 +107,7 @@ public class Submission
     /// 题目
     /// </summary>
     [JsonIgnore]
-    public Challenge Challenge { get; set; } = default!;
+    public GameChallenge GameChallenge { get; set; } = default!;
 
     #endregion Db Relationship
 }
