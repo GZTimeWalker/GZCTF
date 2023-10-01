@@ -29,17 +29,17 @@ using StackExchange.Redis;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-GZCTF.Program.Banner();
-
-FilePath.EnsureDirs();
-
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 GZCTF.Program.StaticLocalizer = builder.Services.BuildServiceProvider().GetRequiredService<IStringLocalizer<GZCTF.Program>>();
 #pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+GZCTF.Program.Banner();
+
+FilePath.EnsureDirs();
 
 #region Logging
 
