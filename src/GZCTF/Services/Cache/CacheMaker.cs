@@ -1,7 +1,6 @@
 ﻿using System.Threading.Channels;
 using GZCTF.Repositories;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services.Cache;
 

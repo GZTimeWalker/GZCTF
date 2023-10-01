@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using SixLabors.ImageSharp.Formats.Gif;
 
 namespace GZCTF.Repositories;

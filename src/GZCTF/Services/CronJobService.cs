@@ -4,7 +4,6 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services;
 

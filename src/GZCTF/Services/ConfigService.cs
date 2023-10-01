@@ -2,7 +2,6 @@
 using System.Reflection;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services;
 

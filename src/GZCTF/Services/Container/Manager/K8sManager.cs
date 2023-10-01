@@ -3,7 +3,6 @@ using System.Net;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
-using GZCTF.Utils;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;

@@ -6,7 +6,6 @@ using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Repositories;
 

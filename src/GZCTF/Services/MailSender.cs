@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
 using MailKit.Net.Smtp;
