@@ -25,6 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using NJsonSchema.Generation;
 using Serilog;
+using StackExchange.Redis;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -144,7 +145,7 @@ else
 
     signalrBuilder.AddStackExchangeRedis(redisConStr, options =>
     {
-        options.Configuration.ChannelPrefix = "GZCTF";
+        options.Configuration.ChannelPrefix = new RedisChannel("GZCTF", RedisChannel.PatternMode.Literal);
     });
 }
 
