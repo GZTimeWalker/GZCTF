@@ -256,7 +256,7 @@
     <value>スケジュールされたタスクが停止されました</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
-    <value>データベースに接続できませんでした、データベースの接続文字列を確認してください</value>
+    <value>データベースに接続できませんでした({0})、データベースの接続文字列を確認してください</value>
   </data>
   <data name="Database_CurrentConnectionString" xml:space="preserve">
     <value>使っているデータベースの接続文字列：{0}</value>

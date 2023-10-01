@@ -256,7 +256,7 @@
     <value>Cron job has been stopped</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
-    <value>Failed to connect to the database, please check the database connection string</value>
+    <value>Failed to connect to the database ({0}), please check the database connection string</value>
   </data>
   <data name="Database_CurrentConnectionString" xml:space="preserve">
     <value>Current connection string: {0}</value>
