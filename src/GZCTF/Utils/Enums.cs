@@ -178,9 +178,9 @@ public static class SubmissionTypeExtensions
     public static string ToBloodString(this SubmissionType type, IStringLocalizer<Program> localizer) =>
         type switch
         {
-            SubmissionType.FirstBlood => localizer["Submission_FirstBlood"],
-            SubmissionType.SecondBlood => localizer["Submission_SecondBlood"],
-            SubmissionType.ThirdBlood => localizer["Submission_ThirdBlood"],
+            SubmissionType.FirstBlood => localizer[nameof(Resources.Program.Submission_FirstBlood)],
+            SubmissionType.SecondBlood => localizer[nameof(Resources.Program.Submission_SecondBlood)],
+            SubmissionType.ThirdBlood => localizer[nameof(Resources.Program.Submission_ThirdBlood)],
             _ => throw new ArgumentException(type.ToString(), nameof(type))
         };
 }
@@ -384,11 +384,11 @@ public static class AnswerResultExtensions
     public static string ToShortString(this AnswerResult result, IStringLocalizer<Program> localizer) =>
         result switch
         {
-            AnswerResult.FlagSubmitted => localizer["Submission_FlagSubmitted"],
-            AnswerResult.Accepted => localizer["Submission_Accepted"],
-            AnswerResult.WrongAnswer => localizer["Submission_WrongAnswer"],
-            AnswerResult.CheatDetected => localizer["Submission_CheatDetected"],
-            AnswerResult.NotFound => localizer["Submission_UnknownInstance"],
+            AnswerResult.FlagSubmitted => localizer[nameof(Resources.Program.Submission_FlagSubmitted)],
+            AnswerResult.Accepted => localizer[nameof(Resources.Program.Submission_Accepted)],
+            AnswerResult.WrongAnswer => localizer[nameof(Resources.Program.Submission_WrongAnswer)],
+            AnswerResult.CheatDetected => localizer[nameof(Resources.Program.Submission_CheatDetected)],
+            AnswerResult.NotFound => localizer[nameof(Resources.Program.Submission_UnknownInstance)],
             _ => "??"
         };
 }

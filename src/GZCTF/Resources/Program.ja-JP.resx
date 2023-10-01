@@ -264,6 +264,18 @@
   <data name="Database_NoConnectionString" xml:space="preserve">
     <value>データベースの接続文字列フィールド 'ConnectionStrings' が検出されていませんでした、appsettings.json が正しくマウントおよび設定されていますでしょうか？</value>
   </data>
+  <data name="FileRepository_CacheLocation" xml:space="preserve">
+    <value>缓存位置：{0}</value>
+  </data>
+  <data name="FileRepository_DeleteFile" xml:space="preserve">
+    <value>删除文件 [{0}] {1}</value>
+  </data>
+  <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
+    <value>无法存储图像文件：{0}</value>
+  </data>
+  <data name="FileRepository_ReferenceCounting" xml:space="preserve">
+    <value>文件引用计数 [{0}] {1} =&gt; {2}</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[正しい回答] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
   </data>
@@ -306,6 +318,18 @@
   <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
     <value>チェッカー ワーカー #{0} が停止されました</value>
   </data>
+  <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
+    <value>正在清理比赛 {0} 的 {1} 个题目的相关附件……</value>
+  </data>
+  <data name="GameRepository_GameDeletionFailed" xml:space="preserve">
+    <value>删除比赛失败，相关文件可能已受损，请重新删除</value>
+  </data>
+  <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
+    <value>正在清理比赛 {0} 的 {1} 个队伍相关文件……</value>
+  </data>
+  <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
+    <value>配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。</value>
+  </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>参加審査通過後はゲームから抜けられません</value>
   </data>
@@ -342,6 +366,30 @@
   <data name="Game_TeamNotFound" xml:space="preserve">
     <value>チームは見つかりませんでした</value>
   </data>
+  <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
+    <value>{0} 自动销毁题目 {1} 的容器实例 [{2}]</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
+    <value>{0} 启动题目 {1} 的容器实例 [{2}]</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreationEvent" xml:space="preserve">
+    <value>{0}#{1} 启动容器实例</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
+    <value>无法为题目 {0} 启动容器实例</value>
+  </data>
+  <data name="InstanceRepository_ContainerDestroyFailed" xml:space="preserve">
+    <value>销毁容器 [{0}] ({1}): {2}</value>
+  </data>
+  <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
+    <value>题目 {0}#{1} 请求分配的动态附件数量不足</value>
+  </data>
+  <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
+    <value>为队伍 {0} 获取题目 {1}#{2} 的实例时遇到问题（可能由于并发错误），回滚中</value>
+  </data>
+  <data name="InstanceRepository_InvalidPort" xml:space="preserve">
+    <value>创建容器时遇到无效的端口</value>
+  </data>
   <data name="InstanceRepository_NoInstance" xml:space="preserve">
     <value>チームを対応する参加者は空です。これは予期されていない状況かもしれません [{0}, {1}]</value>
   </data>
@@ -371,6 +419,46 @@
   </data>
   <data name="MailSender_SendMail" xml:space="preserve">
     <value>{0} にメールを送信します</value>
+  </data>
+  <data name="MailSender_Template" xml:space="preserve">
+    <value>&lt;head&gt;
+    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;
+    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;
+    &lt;p&gt;你好，{userName}！&lt;/p&gt;
+    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;
+    &lt;p style="text-align: center; padding: 20px"&gt;
+        &lt;a
+                href="{url}"
+                style="
+          font: 1rem Arial;
+          white-space: nowrap;
+          text-decoration: none;
+          background-color: #000000;
+          color: #ffffff;
+          padding: 10px 20px 10px 20px;
+          border: 1px solid #888888;
+          border-radius: 7px;
+          margin: 10px auto;
+        "
+        &gt;
+            {btnmsg}
+        &lt;/a&gt;
+    &lt;/p&gt;
+    &lt;div style="font-size: 0.8rem"&gt;
+        &lt;p&gt;
+            如果以上按钮无效，请复制此链接到浏览器访问：&lt;br/&gt;&lt;span
+                style="word-break: break-all; font: 0.8em monospace"
+        &gt;{url}
+        &lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p&gt;如果你没有进行相关操作，请忽略此封邮件。&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;GZCTF @ {nowtime}&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>メールを確認する</value>

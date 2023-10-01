@@ -62,7 +62,7 @@ public class InfoController(ICaptchaExtension captcha,
         Post? post = await postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
-            return NotFound(new RequestResponse(localizer["Post_NotFound"], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)], StatusCodes.Status404NotFound));
 
         return Ok(PostDetailModel.FromPost(post));
     }

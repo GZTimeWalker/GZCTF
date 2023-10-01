@@ -8,8 +8,7 @@ namespace GZCTF.Services;
 
 public class ConfigService(AppDbContext context,
     ILogger<ConfigService> logger,
-    IConfiguration configuration,
-    IStringLocalizer<Program> localizer) : IConfigService
+    IConfiguration configuration) : IConfigService
 {
     readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
@@ -25,7 +24,7 @@ public class ConfigService(AppDbContext context,
             return;
 
         if (type.IsArray || IsArrayLikeInterface(type))
-            throw new NotSupportedException(Program.StaticLocalizer["Config_TypeNotSupported"]);
+            throw new NotSupportedException(Program.LocalizerForLogging[nameof(Resources.Program.Config_TypeNotSupported)]);
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
         if (type == typeof(string) || type.IsValueType)
@@ -65,12 +64,12 @@ public class ConfigService(AppDbContext context,
                 if (dbConf.Value != conf.Value)
                 {
                     dbConf.Value = conf.Value;
-                    logger.SystemLog(localizer["Config_GlobalConfigUpdated", conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
+                    logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
                 }
             }
             else
             {
-                logger.SystemLog(localizer["Config_GlobalConfigAdded", conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
+                logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
                 await context.Configs.AddAsync(conf, token);
             }
 

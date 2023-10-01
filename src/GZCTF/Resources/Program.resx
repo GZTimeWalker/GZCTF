@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -264,6 +264,18 @@
   <data name="Database_NoConnectionString" xml:space="preserve">
     <value>未找到数据库连接字符串字段 'ConnectionStrings'，请检查 appsettings.json 是否正常挂载及配置</value>
   </data>
+  <data name="FileRepository_CacheLocation" xml:space="preserve">
+    <value>缓存位置：{0}</value>
+  </data>
+  <data name="FileRepository_DeleteFile" xml:space="preserve">
+    <value>删除文件 [{0}] {1}</value>
+  </data>
+  <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
+    <value>无法存储图像文件：{0}</value>
+  </data>
+  <data name="FileRepository_ReferenceCounting" xml:space="preserve">
+    <value>文件引用计数 [{0}] {1} =&gt; {2}</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[提交正确] 队伍 [{0}] 提交题目 [{1}] 的答案 [{2}]</value>
   </data>
@@ -306,6 +318,18 @@
   <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
     <value>检查线程 #{0} 已退出</value>
   </data>
+  <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
+    <value>正在清理比赛 {0} 的 {1} 个题目的相关附件……</value>
+  </data>
+  <data name="GameRepository_GameDeletionFailed" xml:space="preserve">
+    <value>删除比赛失败，相关文件可能已受损，请重新删除</value>
+  </data>
+  <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
+    <value>正在清理比赛 {0} 的 {1} 个队伍相关文件……</value>
+  </data>
+  <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
+    <value>配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。</value>
+  </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>审核通过后无法退出比赛</value>
   </data>
@@ -342,6 +366,30 @@
   <data name="Game_TeamNotFound" xml:space="preserve">
     <value>队伍未找到</value>
   </data>
+  <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
+    <value>{0} 自动销毁题目 {1} 的容器实例 [{2}]</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
+    <value>{0} 启动题目 {1} 的容器实例 [{2}]</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreationEvent" xml:space="preserve">
+    <value>{0}#{1} 启动容器实例</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
+    <value>无法为题目 {0} 启动容器实例</value>
+  </data>
+  <data name="InstanceRepository_ContainerDestroyFailed" xml:space="preserve">
+    <value>销毁容器 [{0}] ({1}): {2}</value>
+  </data>
+  <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
+    <value>题目 {0}#{1} 请求分配的动态附件数量不足</value>
+  </data>
+  <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
+    <value>为队伍 {0} 获取题目 {1}#{2} 的实例时遇到问题（可能由于并发错误），回滚中</value>
+  </data>
+  <data name="InstanceRepository_InvalidPort" xml:space="preserve">
+    <value>创建容器时遇到无效的端口</value>
+  </data>
   <data name="InstanceRepository_NoInstance" xml:space="preserve">
     <value>队伍对应参与对象为空，这可能是非预期的情况 [{0}, {1}]</value>
   </data>
@@ -371,6 +419,46 @@
   </data>
   <data name="MailSender_SendMail" xml:space="preserve">
     <value>发送邮件：{0}</value>
+  </data>
+  <data name="MailSender_Template" xml:space="preserve">
+    <value>&lt;head&gt;
+    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;
+    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;
+    &lt;p&gt;你好，{userName}！&lt;/p&gt;
+    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;
+    &lt;p style="text-align: center; padding: 20px"&gt;
+        &lt;a
+                href="{url}"
+                style="
+          font: 1rem Arial;
+          white-space: nowrap;
+          text-decoration: none;
+          background-color: #000000;
+          color: #ffffff;
+          padding: 10px 20px 10px 20px;
+          border: 1px solid #888888;
+          border-radius: 7px;
+          margin: 10px auto;
+        "
+        &gt;
+            {btnmsg}
+        &lt;/a&gt;
+    &lt;/p&gt;
+    &lt;div style="font-size: 0.8rem"&gt;
+        &lt;p&gt;
+            如果以上按钮无效，请复制此链接到浏览器访问：&lt;br/&gt;&lt;span
+                style="word-break: break-all; font: 0.8em monospace"
+        &gt;{url}
+        &lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p&gt;如果你没有进行相关操作，请忽略此封邮件。&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;GZCTF @ {nowtime}&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>确认验证邮箱</value>

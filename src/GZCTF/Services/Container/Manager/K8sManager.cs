@@ -26,7 +26,7 @@ public class K8sManager : IContainerManager
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog(_localizer["ContainerManager_K8sMode"], TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_K8sMode)], TaskStatus.Success, LogLevel.Debug);
     }
 
     public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
@@ -38,7 +38,7 @@ public class K8sManager : IContainerManager
 
         if (imageName is null)
         {
-            _logger.SystemLog(_localizer["ContainerManager_UnresolvedImageName", config.Image], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image], TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
 
@@ -108,19 +108,19 @@ public class K8sManager : IContainerManager
         }
         catch (HttpOperationException e)
         {
-            _logger.SystemLog(_localizer["ContainerManager_ContainerCreationFailedStatus", name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(_localizer["ContainerManager_ContainerCreationFailedResponse", name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus), name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse), name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, _localizer["ContainerManager_ContainerCreationFailed", name]);
+            _logger.LogError(e, Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), name]);
             return null;
         }
 
         if (pod is null)
         {
-            _logger.SystemLog(_localizer["ContainerManager_ContainerInstanceCreationFailed", config.Image.Split("/").LastOrDefault() ?? ""], TaskStatus.Failed,
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailed), config.Image.Split("/").LastOrDefault() ?? ""], TaskStatus.Failed,
                 LogLevel.Warning);
             return null;
         }
@@ -166,8 +166,8 @@ public class K8sManager : IContainerManager
                 // ignored
             }
 
-            _logger.SystemLog(_localizer["ContainerManager_ServiceCreationFailedStatus", name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(_localizer["ContainerManager_ServiceCreationFailedResponse", name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus), name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse), name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
@@ -182,7 +182,7 @@ public class K8sManager : IContainerManager
                 // ignored
             }
 
-            _logger.LogError(e, _localizer["ContainerManager_ServiceCreationFailed", name]);
+            _logger.LogError(e, Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ServiceCreationFailed), name]);
             return null;
         }
 
@@ -218,12 +218,12 @@ public class K8sManager : IContainerManager
                 return;
             }
 
-            _logger.SystemLog(_localizer["ContainerManager_ContainerDeletionFailedStatus", container.ContainerId, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(_localizer["ContainerManager_ContainerDeletionFailedResponse", container.ContainerId, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus), container.ContainerId, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse), container.ContainerId, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, _localizer["ContainerManager_ContainerDeletionFailed", container.ContainerId]);
+            _logger.LogError(e, Program.LocalizerForLogging[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
             return;
         }
 

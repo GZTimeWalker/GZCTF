@@ -39,7 +39,7 @@ public static class CacheExtensions
         var bytes = MemoryPackSerializer.Serialize(result);
 
         await cache.SetAsync(key, bytes, cacheOptions, token);
-        logger.SystemLog(Program.StaticLocalizer["Cache_Rebuilt", key, bytes.Length], TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.Cache_Rebuilt), key, bytes.Length], TaskStatus.Success, LogLevel.Debug);
 
         return result;
     }

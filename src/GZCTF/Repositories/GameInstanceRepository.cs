@@ -28,7 +28,7 @@ public class GameInstanceRepository(AppDbContext context,
 
         if (instance is null)
         {
-            logger.SystemLog(localizer["InstanceRepository_NoInstance", part.Id, challengeId], TaskStatus.NotFound,
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId], TaskStatus.NotFound,
                 LogLevel.Warning);
             return null;
         }
@@ -69,7 +69,7 @@ public class GameInstanceRepository(AppDbContext context,
 
                     if (flags.Count == 0)
                     {
-                        logger.SystemLog($"题目 {challenge.Title}#{challenge.Id} 请求分配的动态附件数量不足", TaskStatus.Failed,
+                        logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough), challenge.Title, challenge.Id], TaskStatus.Failed,
                             LogLevel.Warning);
                         return null;
                     }
@@ -90,7 +90,7 @@ public class GameInstanceRepository(AppDbContext context,
         }
         catch
         {
-            logger.SystemLog($"为队伍 {part.Team.Name} 获取题目 {challenge.Title}#{challenge.Id} 的实例时遇到问题（可能由于并发错误），回滚中",
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), part.Team.Name, challenge.Title, challenge.Id],
                 TaskStatus.Failed, LogLevel.Warning);
             await transaction.RollbackAsync(token);
             return null;
@@ -110,7 +110,7 @@ public class GameInstanceRepository(AppDbContext context,
         catch (Exception ex)
         {
             logger.SystemLog(
-                $"销毁容器 [{container.ContainerId[..12]}] ({container.Image.Split("/").LastOrDefault()}): {ex.Message}",
+                Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_ContainerDestroyFailed), container.ContainerId[..12], container.Image.Split("/").LastOrDefault() ?? "", ex.Message],
                 TaskStatus.Failed, LogLevel.Warning);
             return false;
         }
@@ -121,7 +121,7 @@ public class GameInstanceRepository(AppDbContext context,
     {
         if (string.IsNullOrEmpty(gameInstance.Challenge.ContainerImage) || gameInstance.Challenge.ContainerExposePort is null)
         {
-            logger.SystemLog($"无法为题目 {gameInstance.Challenge.Title} 启动容器实例", TaskStatus.Denied, LogLevel.Warning);
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title], TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
@@ -137,7 +137,7 @@ public class GameInstanceRepository(AppDbContext context,
                 GameInstance? first = running.FirstOrDefault();
                 if (running.Count >= containerLimit && first is not null)
                 {
-                    logger.Log($"{team.Name} 自动销毁题目 {first.Challenge.Title} 的容器实例 [{first.Container!.ContainerId}]",
+                    logger.Log(Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), team.Name, first.Challenge.Title, first.Container!.ContainerId],
                         user, TaskStatus.Success);
                     await DestroyContainer(running.First().Container!, token);
                 }
@@ -167,19 +167,19 @@ public class GameInstanceRepository(AppDbContext context,
             MemoryLimit = gameInstance.Challenge.MemoryLimit ?? 64,
             StorageLimit = gameInstance.Challenge.StorageLimit ?? 256,
             EnableTrafficCapture = gameInstance.Challenge.EnableTrafficCapture,
-            ExposedPort = gameInstance.Challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口")
+            ExposedPort = gameInstance.Challenge.ContainerExposePort ?? throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
         }, token);
 
         if (container is null)
         {
-            logger.SystemLog($"为题目 {gameInstance.Challenge.Title} 启动容器实例失败", TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title], TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
         gameInstance.Container = container;
         gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-        logger.Log($"{team.Name} 启动题目 {gameInstance.Challenge.Title} 的容器实例 [{container.ContainerId}]", user,
+        logger.Log(Program.LocalizerForLogging[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name, gameInstance.Challenge.Title, container.ContainerId], user,
             TaskStatus.Success);
 
         // will save instance together
@@ -190,7 +190,7 @@ public class GameInstanceRepository(AppDbContext context,
                 GameId = gameInstance.Challenge.GameId,
                 TeamId = gameInstance.Participation.TeamId,
                 UserId = user.Id,
-                Content = $"{gameInstance.Challenge.Title}#{gameInstance.Challenge.Id} 启动容器实例"
+                Content = localizer[nameof(Resources.Program.InstanceRepository_ContainerCreationEvent), gameInstance.Challenge.Title, gameInstance.Challenge.Id]
             }, token);
 
         return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);

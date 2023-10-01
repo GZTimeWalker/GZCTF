@@ -474,7 +474,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)], StatusCodes.Status404NotFound));
 
         return Ok(await participationRepository.GetWriteups(game, token));
     }
@@ -497,7 +497,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse(localizer["Game_NotFound"], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)], StatusCodes.Status404NotFound));
 
         WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";

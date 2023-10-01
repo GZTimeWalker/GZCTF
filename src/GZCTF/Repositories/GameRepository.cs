@@ -6,6 +6,7 @@ using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Repositories;
 
@@ -26,7 +27,7 @@ public class GameRepository(IDistributedCache cache,
         game.GenerateKeyPair(_xorKey);
 
         if (_xorKey is null)
-            logger.SystemLog("配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。", TaskStatus.Pending, LogLevel.Warning);
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)], TaskStatus.Pending, LogLevel.Warning);
 
         await context.AddAsync(game, token);
         await SaveAsync(token);
@@ -79,7 +80,7 @@ public class GameRepository(IDistributedCache cache,
         {
             await context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
 
-            logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Challenges.Count} 个题目的相关附件……", TaskStatus.Pending,
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, game.Challenges.Count], TaskStatus.Pending,
                 LogLevel.Debug);
 
             foreach (GameChallenge chal in game.Challenges)
@@ -87,7 +88,7 @@ public class GameRepository(IDistributedCache cache,
 
             await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-            logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Participations.Count} 个队伍相关文件……", TaskStatus.Pending,
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
                 LogLevel.Debug);
 
             foreach (Participation part in game.Participations)
@@ -105,7 +106,7 @@ public class GameRepository(IDistributedCache cache,
         }
         catch
         {
-            logger.SystemLog("删除比赛失败，相关文件可能已受损，请重新删除", TaskStatus.Pending, LogLevel.Debug);
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionFailed)], TaskStatus.Pending, LogLevel.Debug);
             await trans.RollbackAsync(token);
 
             return TaskStatus.Failed;
@@ -116,7 +117,7 @@ public class GameRepository(IDistributedCache cache,
     {
         await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-        logger.SystemLog($"正在清理比赛 {game.Title} 的 {game.Participations.Count} 个队伍相关文件……", TaskStatus.Pending,
+        logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
             LogLevel.Debug);
 
         foreach (Participation part in game.Participations)

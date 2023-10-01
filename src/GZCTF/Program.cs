@@ -38,7 +38,7 @@ FilePath.EnsureDirs();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
-GZCTF.Program.SetProgramLocalizer(builder.Services.BuildServiceProvider().GetRequiredService<IStringLocalizer<GZCTF.Program>>());
+GZCTF.Program.LocalizerForLogging = builder.Services.BuildServiceProvider().GetRequiredService<IStringLocalizer<GZCTF.Program>>();
 #pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 
 #region Logging
@@ -63,7 +63,7 @@ if (GZCTF.Program.IsTesting || (builder.Environment.IsDevelopment() &&
 else
 {
     if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.StaticLocalizer["Database_NoConnectionString"]);
+        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.LocalizerForLogging[nameof(GZCTF.Resources.Program.Database_NoConnectionString)]);
 
     builder.Services.AddDbContext<AppDbContext>(
         options =>
@@ -98,8 +98,8 @@ if (!GZCTF.Program.IsTesting)
     catch (Exception e)
     {
         if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-            Log.Logger.Error(GZCTF.Program.StaticLocalizer["Database_CurrentConnectionString", builder.Configuration.GetConnectionString("Database") ?? "null"]);
-        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.StaticLocalizer["Database_ConnectionFailed", e.Message]);
+            Log.Logger.Error(GZCTF.Program.LocalizerForLogging[nameof(GZCTF.Resources.Program.Database_CurrentConnectionString), builder.Configuration.GetConnectionString("Database") ?? "null"]);
+        GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.LocalizerForLogging[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
     }
 }
 
@@ -320,12 +320,12 @@ try
 }
 catch (Exception exception)
 {
-    logger.LogError(exception, GZCTF.Program.StaticLocalizer["Server_Failed"]);
+    logger.LogError(exception, GZCTF.Program.LocalizerForLogging[nameof(GZCTF.Resources.Program.Server_Failed)]);
     throw;
 }
 finally
 {
-    logger.SystemLog(GZCTF.Program.StaticLocalizer["Server_Exited"], TaskStatus.Exit, LogLevel.Debug);
+    logger.SystemLog(GZCTF.Program.LocalizerForLogging[nameof(GZCTF.Resources.Program.Server_Exited)], TaskStatus.Exit, LogLevel.Debug);
     Log.CloseAndFlush();
 }
 
@@ -334,12 +334,8 @@ namespace GZCTF
     public class Program
     {
         public static bool IsTesting { get; set; }
-        internal static IStringLocalizer<Program> StaticLocalizer { get; private set; } = default!;
 
-        internal static void SetProgramLocalizer(IStringLocalizer<Program> localizer)
-        {
-            StaticLocalizer = localizer;
-        }
+        internal static IStringLocalizer<Program> LocalizerForLogging { get; set; } = default!;
 
         internal static void Banner()
         {
@@ -378,14 +374,14 @@ namespace GZCTF
 
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(
-                    new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer["Model_ValicationFailed"]))
+                    new RequestResponse(errors is [_, ..] ? errors : LocalizerForLogging[nameof(Resources.Program.Model_ValicationFailed)]))
                 { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
                       where val.Errors.Count > 0
                       select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
-            return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer["Model_ValicationFailed"])) { StatusCode = 400 };
+            return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : LocalizerForLogging[nameof(Resources.Program.Model_ValicationFailed)])) { StatusCode = 400 };
         }
     }
 }

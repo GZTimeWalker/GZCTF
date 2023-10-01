@@ -37,12 +37,12 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            logger.SystemLog(localizer["MailSender_SendMail", to], TaskStatus.Success, LogLevel.Information);
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
-            logger.LogError(e, localizer["MailSender_MailSendFailed"]);
+            logger.LogError(e, Program.LocalizerForLogging[nameof(Resources.Program.MailSender_MailSendFailed)]);
             return false;
         }
     }
@@ -52,18 +52,11 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
     {
         if (email is null || userName is null || title is null)
         {
-            logger.SystemLog(localizer["MailSender_InvalidRequest"], TaskStatus.Failed);
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
             return;
         }
 
-        var ns = typeof(MailSender).Namespace ?? "GZCTF.Services";
-        Assembly asm = typeof(MailSender).Assembly;
-        var resourceName = $"{ns}.Assets.URLEmailTemplate.html";
-        var emailContent = await
-            new StreamReader(asm.GetManifestResourceStream(resourceName)!)
-                .ReadToEndAsync();
-
-        emailContent = new StringBuilder(emailContent)
+        var emailContent = new StringBuilder(localizer[nameof(Resources.Program.MailSender_Template)])
             .Replace("{title}", title)
             .Replace("{information}", information)
             .Replace("{btnmsg}", btnmsg)
@@ -74,23 +67,23 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             .ToString();
 
         if (!await SendEmailAsync(title, emailContent, email))
-            logger.SystemLog(localizer["MailSender_MailSendFailed"], TaskStatus.Failed);
+            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>
-        SendUrlIfPossible(localizer["MailSender_VerifyEmailTitle"],
-            localizer["MailSender_VerifyEmailContent", email ?? ""],
-            localizer["MailSender_VerifyEmailButton"], userName, email, confirmLink);
+        SendUrlIfPossible(localizer[nameof(Resources.Program.MailSender_VerifyEmailTitle)],
+            localizer[nameof(Resources.Program.MailSender_VerifyEmailContent), email ?? ""],
+            localizer[nameof(Resources.Program.MailSender_VerifyEmailButton)], userName, email, confirmLink);
 
     public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible(localizer["MailSender_ChangeEmailTitle"],
-            localizer["MailSender_ChangeEmailContent"],
-            localizer["MailSender_ChangeEmailButton"], userName, email, resetLink);
+        SendUrlIfPossible(localizer[nameof(Resources.Program.MailSender_ChangeEmailTitle)],
+            localizer[nameof(Resources.Program.MailSender_ChangeEmailContent)],
+            localizer[nameof(Resources.Program.MailSender_ChangeEmailButton)], userName, email, resetLink);
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible(localizer["MailSender_ResetPasswordTitle"],
-            localizer["MailSender_ResetPasswordContent"],
-            localizer["MailSender_ResetPasswordButton"], userName, email, resetLink);
+        SendUrlIfPossible(localizer[nameof(Resources.Program.MailSender_ResetPasswordTitle)],
+            localizer[nameof(Resources.Program.MailSender_ResetPasswordContent)],
+            localizer[nameof(Resources.Program.MailSender_ResetPasswordButton)], userName, email, resetLink);
 
     bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email,
         string? url)
