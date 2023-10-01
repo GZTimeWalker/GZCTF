@@ -12,14 +12,14 @@ public class Challenge
     /// <summary>
     /// 题目名称
     /// </summary>
-    [Required(ErrorMessage = "标题是必需的")]
-    [MinLength(1, ErrorMessage = "标题过短")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// 题目内容
     /// </summary>
-    [Required(ErrorMessage = "题目内容是必需的")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Content { get; set; } = string.Empty;
 
     /// <summary>

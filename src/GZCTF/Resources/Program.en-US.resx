@@ -117,6 +117,147 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Account_AvailableEmailDomain" xml:space="preserve">
+    <value>可用邮箱后缀：{0}</value>
+  </data>
+  <data name="Account_AvatarUpdated" xml:space="preserve">
+    <value>更改新头像：[{0}]</value>
+  </data>
+  <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
+    <value>请联系管理员修改邮箱</value>
+  </data>
+  <data name="Account_EmailChanged" xml:space="preserve">
+    <value>更改邮箱成功</value>
+  </data>
+  <data name="Account_EmailNotConfirmed" xml:space="preserve">
+    <value>账户未激活，请重新注册</value>
+  </data>
+  <data name="Account_EmailSendFailed" xml:space="preserve">
+    <value>邮件无法发送，请联系管理员</value>
+  </data>
+  <data name="Account_EmailSent" xml:space="preserve">
+    <value>邮件发送成功</value>
+  </data>
+  <data name="Account_EmailUsed" xml:space="preserve">
+    <value>邮箱已经被占用</value>
+  </data>
+  <data name="Account_EmailVerificationFailed" xml:space="preserve">
+    <value>邮箱验证失败</value>
+  </data>
+  <data name="Account_EmailVerificationPending" xml:space="preserve">
+    <value>邮箱待验证</value>
+  </data>
+  <data name="Account_EmailVerified" xml:space="preserve">
+    <value>通过邮箱验证</value>
+  </data>
+  <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
+    <value>用户名或密码错误</value>
+  </data>
+  <data name="Account_InvalidEmail" xml:space="preserve">
+    <value>无效的邮件地址</value>
+  </data>
+  <data name="Account_PasswordChanged" xml:space="preserve">
+    <value>用户更新密码</value>
+  </data>
+  <data name="Account_PasswordReset" xml:space="preserve">
+    <value>用户成功重置密码</value>
+  </data>
+  <data name="Account_RegisterNotEnabled" xml:space="preserve">
+    <value>注册功能已禁用</value>
+  </data>
+  <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
+    <value>请联系管理员重置密码</value>
+  </data>
+  <data name="Account_SendEmailChange" xml:space="preserve">
+    <value>发送用户邮箱更改邮件</value>
+  </data>
+  <data name="Account_SendEmailVerification" xml:space="preserve">
+    <value>发送用户邮箱验证邮件</value>
+  </data>
+  <data name="Account_TokenValidationFailed" xml:space="preserve">
+    <value>验证码校验失败</value>
+  </data>
+  <data name="Account_UserDisabled" xml:space="preserve">
+    <value>用户已被禁用</value>
+  </data>
+  <data name="Account_UserExisting" xml:space="preserve">
+    <value>此账户已存在</value>
+  </data>
+  <data name="Account_UserLogined" xml:space="preserve">
+    <value>用户成功登录</value>
+  </data>
+  <data name="Account_UserNotExist" xml:space="preserve">
+    <value>用户不存在</value>
+  </data>
+  <data name="Account_UserRegistered" xml:space="preserve">
+    <value>注册成功</value>
+  </data>
+  <data name="Account_UserRegisteredLog" xml:space="preserve">
+    <value>用户成功注册</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
+    <value>注册成功，等待管理员审核</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
+    <value>用户成功注册，待审核</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
+    <value>注册成功，等待邮箱验证</value>
+  </data>
+  <data name="Account_UserUpdated" xml:space="preserve">
+    <value>用户更新：{0} =&gt; {1}</value>
+  </data>
+  <data name="Account_UserUpdateFailed" xml:space="preserve">
+    <value>用户更新失败</value>
+  </data>
+  <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
+    <value>不可以删除队长</value>
+  </data>
+  <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
+    <value>容器实例销毁失败</value>
+  </data>
+  <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
+    <value>容器实例未找到</value>
+  </data>
+  <data name="Admin_ParticipationNotFound" xml:space="preserve">
+    <value>参与状态未找到</value>
+  </data>
+  <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
+    <value>不可以删除自己</value>
+  </data>
+  <data name="Team_NotFound" xml:space="preserve">
+    <value>队伍未找到</value>
+  </data>
+  <data name="Admin_UserBatchAdded" xml:space="preserve">
+    <value>成功批量添加 {0} 个用户</value>
+  </data>
+  <data name="Admin_UserNotFound" xml:space="preserve">
+    <value>用户未找到</value>
+  </data>
+  <data name="Assets_DeleteFile" xml:space="preserve">
+    <value>删除文件 [{0}]...</value>
+  </data>
+  <data name="Assets_IOError" xml:space="preserve">
+    <value>遇到IO错误</value>
+  </data>
+  <data name="Assets_FileNotFound" xml:space="preserve">
+    <value>尝试获取不存在的文件 [{0}] {1}</value>
+  </data>
+  <data name="Assets_UpdateFile" xml:space="preserve">
+    <value>更新文件 [{0}] {1} @ {} bytes</value>
+  </data>
+  <data name="Auth_AccessForbidden" xml:space="preserve">
+    <value>无权访问</value>
+  </data>
+  <data name="Auth_LoginRequired" xml:space="preserve">
+    <value>请先登录</value>
+  </data>
+  <data name="Auth_PathAccessForbidden" xml:space="preserve">
+    <value>未经授权的访问：{0}</value>
+  </data>
+  <data name="Avatar_UpdateFailed" xml:space="preserve">
+    <value>用户头像更新失败</value>
+  </data>
   <data name="Cache_GenerationFailed" xml:space="preserve">
     <value>缓存生成失败：{0}</value>
   </data>
@@ -276,6 +417,21 @@
   <data name="FileRepository_ReferenceCounting" xml:space="preserve">
     <value>文件引用计数 [{0}] {1} =&gt; {2}</value>
   </data>
+  <data name="File_DeletionFailed" xml:space="preserve">
+    <value>文件删除失败</value>
+  </data>
+  <data name="File_NotFound" xml:space="preserve">
+    <value>文件不存在</value>
+  </data>
+  <data name="File_PdfOnly" xml:space="preserve">
+    <value>请上传 pdf 文件</value>
+  </data>
+  <data name="File_SizeTooLarge" xml:space="preserve">
+    <value>文件过大</value>
+  </data>
+  <data name="File_SizeZero" xml:space="preserve">
+    <value>文件非法</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[提交正确] 队伍 [{0}] 提交题目 [{1}] 的答案 [{2}]</value>
   </data>
@@ -321,7 +477,7 @@
   <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
     <value>正在清理比赛 {0} 的 {1} 个题目的相关附件……</value>
   </data>
-  <data name="GameRepository_GameDeletionFailed" xml:space="preserve">
+  <data name="Game_DeletionFailed" xml:space="preserve">
     <value>删除比赛失败，相关文件可能已受损，请重新删除</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
@@ -335,6 +491,42 @@
   </data>
   <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
     <value>Can not exit the game you are not joining</value>
+  </data>
+  <data name="Game_CaptureNotFound" xml:space="preserve">
+    <value>未找到相关捕获信息</value>
+  </data>
+  <data name="Game_ChallengeNotFound" xml:space="preserve">
+    <value>题目未找到或动态附件分配失败</value>
+  </data>
+  <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
+    <value>题目已经创建容器</value>
+  </data>
+  <data name="Game_ContainerCreationFailed" xml:space="preserve">
+    <value>题目创建容器失败</value>
+  </data>
+  <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
+    <value>题目不可创建容器</value>
+  </data>
+  <data name="Game_ContainerDeleted" xml:space="preserve">
+    <value>{0} 销毁题目 {1} 的容器实例 [{2}]</value>
+  </data>
+  <data name="Game_ContainerDeletedEvent" xml:space="preserve">
+    <value>{0}#{1} 销毁容器实例</value>
+  </data>
+  <data name="Game_ContainerDeletionFailed" xml:space="preserve">
+    <value>题目删除容器失败</value>
+  </data>
+  <data name="Game_ContainerExpireExtensionNotAllowed" xml:space="preserve">
+    <value>容器时间尚不可延长</value>
+  </data>
+  <data name="Game_ContainerNotCreated" xml:space="preserve">
+    <value>题目未创建容器</value>
+  </data>
+  <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
+    <value>队伍容器数目不能超过 {0}</value>
+  </data>
+  <data name="Game_DeadlineExpired" xml:space="preserve">
+    <value>提交截止时间已过</value>
   </data>
   <data name="Game_End" xml:space="preserve">
     <value>The game has ended</value>
@@ -357,14 +549,164 @@
   <data name="Game_NotMemberOfTeam" xml:space="preserve">
     <value>You are not a member of the team</value>
   </data>
+  <data name="Game_NotParticipated" xml:space="preserve">
+    <value>您尚未参赛</value>
+  </data>
   <data name="Game_NotStarted" xml:space="preserve">
     <value>The game has not started</value>
+  </data>
+  <data name="Game_OperationTooFrequent" xml:space="preserve">
+    <value>容器操作过于频繁</value>
+  </data>
+  <data name="Game_ParticipationNotAccepted" xml:space="preserve">
+    <value>您的参赛申请尚未通过或被禁赛</value>
+  </data>
+  <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
+    <value>积分榜下载失败</value>
+  </data>
+  <data name="Game_SubmissionNotFound" xml:space="preserve">
+    <value>提交未找到</value>
+  </data>
+  <data name="Game_SubmissionNotice" xml:space="preserve">
+    <value>恭喜 {0} 获得 「{1}」 的{2}</value>
   </data>
   <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
     <value>The number of participants in the team exceeds the limit</value>
   </data>
-  <data name="Game_TeamNotFound" xml:space="preserve">
-    <value>The team was not found</value>
+  <data name="Game_WriteupSubmitted" xml:space="preserve">
+    <value>{0} 成功提交 {1} 的 Writeup</value>
+  </data>
+  <data name="Header_Captain" xml:space="preserve">
+    <value>队长</value>
+  </data>
+  <data name="Header_Challenge" xml:space="preserve">
+    <value>题目</value>
+  </data>
+  <data name="Header_Email" xml:space="preserve">
+    <value>用户邮箱</value>
+  </data>
+  <data name="Header_Member" xml:space="preserve">
+    <value>队员</value>
+  </data>
+  <data name="Header_PhoneNumber" xml:space="preserve">
+    <value>手机号</value>
+  </data>
+  <data name="Header_Ranking" xml:space="preserve">
+    <value>排名</value>
+  </data>
+  <data name="Header_ScoringTime" xml:space="preserve">
+    <value>得分时间</value>
+  </data>
+  <data name="Header_SolvedNumber" xml:space="preserve">
+    <value>解题数量</value>
+  </data>
+  <data name="Header_StdNumber" xml:space="preserve">
+    <value>学号</value>
+  </data>
+  <data name="Header_SubmitContent" xml:space="preserve">
+    <value>提交内容</value>
+  </data>
+  <data name="Header_SubmitStatus" xml:space="preserve">
+    <value>提交状态</value>
+  </data>
+  <data name="Header_SubmitTime" xml:space="preserve">
+    <value>提交时间</value>
+  </data>
+  <data name="Header_Team" xml:space="preserve">
+    <value>战队</value>
+  </data>
+  <data name="Header_TotalScore" xml:space="preserve">
+    <value>总分</value>
+  </data>
+  <data name="Header_User" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="Identity_ConcurrencyFailure" xml:space="preserve">
+    <value>发生并发错误，请稍后再试</value>
+  </data>
+  <data name="Identity_DefaultError" xml:space="preserve">
+    <value>发生错误，请稍后再试</value>
+  </data>
+  <data name="Identity_DuplicateEmail" xml:space="preserve">
+    <value>邮箱地址 {0} 已存在</value>
+  </data>
+  <data name="Identity_DuplicateRoleName" xml:space="preserve">
+    <value>角色名 {0} 已存在</value>
+  </data>
+  <data name="Identity_DuplicateUserName" xml:space="preserve">
+    <value>用户名 {0} 已存在</value>
+  </data>
+  <data name="Identity_InvalidEmail" xml:space="preserve">
+    <value>邮箱地址 {0} 无效</value>
+  </data>
+  <data name="Identity_InvalidRoleName" xml:space="preserve">
+    <value>角色名 {0} 无效</value>
+  </data>
+  <data name="Identity_InvalidToken" xml:space="preserve">
+    <value>验证码无效</value>
+  </data>
+  <data name="Identity_InvalidUserName" xml:space="preserve">
+    <value>用户名 {0} 无效</value>
+  </data>
+  <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
+    <value>登录已经关联</value>
+  </data>
+  <data name="Identity_PasswordMismatch" xml:space="preserve">
+    <value>密码输入错误</value>
+  </data>
+  <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
+    <value>密码中需要数字</value>
+  </data>
+  <data name="Identity_PasswordRequiresLower" xml:space="preserve">
+    <value>密码中需要小写字母</value>
+  </data>
+  <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>密码中需要符号</value>
+  </data>
+  <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
+    <value>密码中至少需要 {0} 种不同的字符</value>
+  </data>
+  <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
+    <value>密码中需要大写字母</value>
+  </data>
+  <data name="Identity_PasswordTooShort" xml:space="preserve">
+    <value>密码长度 {0} 太短</value>
+  </data>
+  <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
+    <value>恢复代码找回失败</value>
+  </data>
+  <data name="Identity_UnknownError" xml:space="preserve">
+    <value>未知错误</value>
+  </data>
+  <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
+    <value>用户密码已存在</value>
+  </data>
+  <data name="Identity_UserAlreadyInRole" xml:space="preserve">
+    <value>用户已在角色 {0} 中</value>
+  </data>
+  <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
+    <value>用户锁定未启用</value>
+  </data>
+  <data name="Identity_UserNotInRole" xml:space="preserve">
+    <value>用户在角色 {0} 中不存在</value>
+  </data>
+  <data name="Init_AdminCreationFailed" xml:space="preserve">
+    <value>管理员账户创建失败，错误信息：{0}</value>
+  </data>
+  <data name="Init_CaptureNotAvailable" xml:space="preserve">
+    <value>在不使用平台代理模式时无法进行流量捕获！</value>
+  </data>
+  <data name="Init_InvalidCacheConfig" xml:space="preserve">
+    <value>缓存配置无效，请检查 RedisCache 字段配置。如不使用 Redis 请将配置项置空。</value>
+  </data>
+  <data name="Init_PostContent" xml:space="preserve">
+    <value>项目基于 AGPL-3.0 许可证，开源于 [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF)。</value>
+  </data>
+  <data name="Init_PostSummary" xml:space="preserve">
+    <value>一个开源的CTF比赛平台</value>
+  </data>
+  <data name="Init_PostTitle" xml:space="preserve">
+    <value>Welcome to GZ::CTF!</value>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} 自动销毁题目 {1} 的容器实例 [{2}]</value>
@@ -469,11 +811,104 @@
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>验证邮箱</value>
   </data>
-  <data name="Model_ValicationFailed" xml:space="preserve">
-    <value>Failed to validate the input, please check again</value>
+  <data name="Model_BioTooLong" xml:space="preserve">
+    <value>描述过长</value>
+  </data>
+  <data name="Model_ContentRequired" xml:space="preserve">
+    <value>内容是必需的</value>
+  </data>
+  <data name="Model_EmailMalformed" xml:space="preserve">
+    <value>邮箱地址无效</value>
+  </data>
+  <data name="Model_EmailRequired" xml:space="preserve">
+    <value>邮箱是必需的</value>
+  </data>
+  <data name="Model_FlagRequired" xml:space="preserve">
+    <value>flag 是必需的</value>
+  </data>
+  <data name="Model_FlagTooLong" xml:space="preserve">
+    <value>flag 字符串过长</value>
+  </data>
+  <data name="Model_InvitationCodeTooLong" xml:space="preserve">
+    <value>邀请码过长</value>
+  </data>
+  <data name="Model_MalformedPhoneNumber" xml:space="preserve">
+    <value>手机号格式错误</value>
+  </data>
+  <data name="Model_NewPasswordRequired" xml:space="preserve">
+    <value>新密码是必需的</value>
+  </data>
+  <data name="Model_NewPasswordTooShort" xml:space="preserve">
+    <value>新密码过短</value>
+  </data>
+  <data name="Model_OldPasswordRequired" xml:space="preserve">
+    <value>旧密码是必需的</value>
+  </data>
+  <data name="Model_OldPasswordTooShort" xml:space="preserve">
+    <value>旧密码过短</value>
+  </data>
+  <data name="Model_OutOfRange" xml:space="preserve">
+    <value>{0} 的值必须介于 {1} - {2}</value>
+  </data>
+  <data name="Model_PasswordRequired" xml:space="preserve">
+    <value>密码是必需的</value>
+  </data>
+  <data name="Model_PasswordTooShort" xml:space="preserve">
+    <value>密码过短</value>
+  </data>
+  <data name="Model_RealNameTooLong" xml:space="preserve">
+    <value>真实姓名过长</value>
+  </data>
+  <data name="Model_StdNumberTooLong" xml:space="preserve">
+    <value>学工号过长</value>
+  </data>
+  <data name="Model_TeamBioTooLong" xml:space="preserve">
+    <value>队伍签名过长</value>
+  </data>
+  <data name="Model_TeamNameTooLong" xml:space="preserve">
+    <value>队伍名称过长</value>
+  </data>
+  <data name="Model_TitleRequired" xml:space="preserve">
+    <value>标题是必需的</value>
+  </data>
+  <data name="Model_TitleTooLong" xml:space="preserve">
+    <value>标题过长</value>
+  </data>
+  <data name="Model_TitleTooShort" xml:space="preserve">
+    <value>标题过短</value>
+  </data>
+  <data name="Model_TokenRequired" xml:space="preserve">
+    <value>Token是必需的</value>
+  </data>
+  <data name="Model_UserNameRequired" xml:space="preserve">
+    <value>用户名是必需的</value>
+  </data>
+  <data name="Model_UserNameTooLong" xml:space="preserve">
+    <value>用户名过长</value>
+  </data>
+  <data name="Model_UserNameTooShort" xml:space="preserve">
+    <value>用户名过短</value>
+  </data>
+  <data name="Model_ValidationFailed" xml:space="preserve">
+    <value>校验失败，请检查输入。</value>
   </data>
   <data name="Post_NotFound" xml:space="preserve">
     <value>The post was not found</value>
+  </data>
+  <data name="RateLimit_TooManyRequests" xml:space="preserve">
+    <value>请求次数过多，请 {0} 秒后再试。</value>
+  </data>
+  <data name="Scoreboard_AllSubmissions" xml:space="preserve">
+    <value>全部提交</value>
+  </data>
+  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+    <value>所属组织</value>
+  </data>
+  <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
+    <value>队伍尚未加载</value>
+  </data>
+  <data name="Scoreboard_Title" xml:space="preserve">
+    <value>排行榜</value>
   </data>
   <data name="Server_Exited" xml:space="preserve">
     <value>Server exited</value>
@@ -507,5 +942,140 @@
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
     <value>答案错误</value>
+  </data>
+  <data name="Game_CreationFailed" xml:space="preserve">
+    <value>比赛创建失败</value>
+  </data>
+  <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
+    <value>只有容器题目可以进行流量捕获</value>
+  </data>
+  <data name="Challenge_Created" xml:space="preserve">
+    <value>新增了题目 「{0}」</value>
+  </data>
+  <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
+    <value>动态附件名不可为空</value>
+  </data>
+  <data name="Challenge_FlagTooTrivial" xml:space="preserve">
+    <value>flag 复杂度不足，请考虑添加队伍哈希或增加长度</value>
+  </data>
+  <data name="Challenge_HintUpdated" xml:space="preserve">
+    <value>「{0}」 更新了提示</value>
+  </data>
+  <data name="Challenge_NoFlag" xml:space="preserve">
+    <value>题目无 flag，不可启用</value>
+  </data>
+  <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
+    <value>动态附件题目请使用 assets API 上传附件</value>
+  </data>
+  <data name="Container_AddressResolveFailed" xml:space="preserve">
+    <value>容器地址解析失败</value>
+  </data>
+  <data name="Container_ConfigError" xml:space="preserve">
+    <value>容器配置错误</value>
+  </data>
+  <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
+    <value>容器连接数已达上限</value>
+  </data>
+  <data name="Container_CreationFailed" xml:space="preserve">
+    <value>容器创建失败</value>
+  </data>
+  <data name="Container_InvalidClientAddress" xml:space="preserve">
+    <value>无效的访问地址</value>
+  </data>
+  <data name="Container_InvalidPort" xml:space="preserve">
+    <value>创建容器时遇到无效的端口</value>
+  </data>
+  <data name="Container_NotFound" xml:space="preserve">
+    <value>不存在的容器</value>
+  </data>
+  <data name="Container_TestContainerCreated" xml:space="preserve">
+    <value>成功创建测试容器 {0}</value>
+  </data>
+  <data name="File_CreationFailed" xml:space="preserve">
+    <value>文件创建失败</value>
+  </data>
+  <data name="Notification_NotFound" xml:space="preserve">
+    <value>通知未找到</value>
+  </data>
+  <data name="Notification_SystemNotDeletable" xml:space="preserve">
+    <value>不能删除系统通知</value>
+  </data>
+  <data name="Notification_SystemNotEditable" xml:space="preserve">
+    <value>不能更改系统通知</value>
+  </data>
+  <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
+    <value>容器连接失败（{0}）</value>
+  </data>
+  <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
+    <value>容器连接失败（{0}），可能正在启动中或请检查网络配置 -&gt; {1}</value>
+  </data>
+  <data name="Proxy_Error" xml:space="preserve">
+    <value>代理过程发生错误</value>
+  </data>
+  <data name="Proxy_TcpDisabled" xml:space="preserve">
+    <value>TCP 代理已禁用</value>
+  </data>
+  <data name="Team_AvatarUpdated" xml:space="preserve">
+    <value>队伍 {0} 更改新头像：[{1}]</value>
+  </data>
+  <data name="Team_AvatarUpdateFailed" xml:space="preserve">
+    <value>队伍头像更新失败</value>
+  </data>
+  <data name="Team_Created" xml:space="preserve">
+    <value>创建队伍 {0}</value>
+  </data>
+  <data name="Team_CreationFailed" xml:space="preserve">
+    <value>队伍创建失败</value>
+  </data>
+  <data name="Team_Deleted" xml:space="preserve">
+    <value>删除队伍 {0}</value>
+  </data>
+  <data name="Team_IdTransformFailed" xml:space="preserve">
+    <value>队伍 Id 转换错误：{0}</value>
+  </data>
+  <data name="Team_InvalidCode" xml:space="preserve">
+    <value>Code 无效</value>
+  </data>
+  <data name="Team_Locked" xml:space="preserve">
+    <value>队伍已锁定</value>
+  </data>
+  <data name="Team_MemberRemoved" xml:space="preserve">
+    <value>从队伍 {0} 踢除 {1}</value>
+  </data>
+  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
+    <value>不允许创建多个队伍</value>
+  </data>
+  <data name="Team_NameEmpty" xml:space="preserve">
+    <value>队伍名不能为空</value>
+  </data>
+  <data name="Team_NameInvalidInvitation" xml:space="preserve">
+    <value>{0} 邀请无效</value>
+  </data>
+  <data name="Team_NameLocked" xml:space="preserve">
+    <value>{0} 队伍已锁定</value>
+  </data>
+  <data name="Team_NameNotFound" xml:space="preserve">
+    <value>{0} 队伍未找到</value>
+  </data>
+  <data name="Team_NewCaptainNotFound" xml:space="preserve">
+    <value>移交的用户不存在</value>
+  </data>
+  <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
+    <value>被移交者所管理的队伍过多</value>
+  </data>
+  <data name="Team_UserJoined" xml:space="preserve">
+    <value>加入队伍 {0}</value>
+  </data>
+  <data name="Team_UserLeft" xml:space="preserve">
+    <value>离开队伍 {0}</value>
+  </data>
+  <data name="User_AlreadyInTeam" xml:space="preserve">
+    <value>你已经加入此队伍，无需重复加入</value>
+  </data>
+  <data name="User_LeaveNotInTeam" xml:space="preserve">
+    <value>你不在此队伍中，无法离队</value>
+  </data>
+  <data name="User_NotInTeam" xml:space="preserve">
+    <value>用户不在队伍中</value>
   </data>
 </root>

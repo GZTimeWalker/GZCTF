@@ -376,14 +376,14 @@ namespace GZCTF
 
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(
-                    new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValicationFailed)]))
+                    new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
                 { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
                       where val.Errors.Count > 0
                       select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
-            return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValicationFailed)])) { StatusCode = 400 };
+            return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
         }
     }
 }

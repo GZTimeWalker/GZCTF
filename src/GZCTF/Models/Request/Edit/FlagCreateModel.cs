@@ -10,8 +10,8 @@ public class FlagCreateModel
     /// <summary>
     /// Flag文本
     /// </summary>
-    [Required]
-    [MaxLength(125, ErrorMessage = "flag 字符串过长")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_FlagRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(125, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>

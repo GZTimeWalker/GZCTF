@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Middlewares;
 
@@ -74,6 +75,7 @@ public class RateLimiter
                 context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
                 context.HttpContext.Response.ContentType = MediaTypeNames.Application.Json;
 
+                var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
                 var afterSec = (int)TimeSpan.FromMinutes(1).TotalSeconds;
 
                 if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
@@ -81,7 +83,7 @@ public class RateLimiter
 
                 context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);
                 await context.HttpContext.Response.WriteAsJsonAsync(
-                    new RequestResponse($"Too many requests, retry after {afterSec} seconds.",
+                    new RequestResponse(localizer[nameof(Resources.Program.RateLimit_TooManyRequests)],
                         StatusCodes.Status429TooManyRequests
                     ), cancellationToken);
             }

@@ -10,31 +10,31 @@ public class ProfileUpdateModel
     /// <summary>
     /// 用户名
     /// </summary>
-    [MinLength(3, ErrorMessage = "用户名过短")]
-    [MaxLength(15, ErrorMessage = "用户名过长")]
+    [MinLength(3, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? UserName { get; set; }
 
     /// <summary>
     /// 描述
     /// </summary>
-    [MaxLength(55, ErrorMessage = "描述过长")]
+    [MaxLength(55, ErrorMessageResourceName = nameof(Resources.Program.Model_BioTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Bio { get; set; }
 
     /// <summary>
     /// 手机号
     /// </summary>
-    [Phone(ErrorMessage = "手机号格式错误")]
+    [Phone(ErrorMessageResourceName = nameof(Resources.Program.Model_MalformedPhoneNumber), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Phone { get; set; }
 
     /// <summary>
     /// 真实姓名
     /// </summary>
-    [MaxLength(7, ErrorMessage = "真实姓名过长")]
+    [MaxLength(7, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? RealName { get; set; }
 
     /// <summary>
     /// 学工号
     /// </summary>
-    [MaxLength(24, ErrorMessage = "学工号过长")]
+    [MaxLength(24, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? StdNumber { get; set; }
 }

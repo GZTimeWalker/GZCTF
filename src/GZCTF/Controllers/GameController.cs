@@ -115,7 +115,7 @@ public class GameController(
         Team? team = await teamRepository.GetTeamById(model.TeamId, token);
 
         if (team is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_TeamNotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)], StatusCodes.Status404NotFound));
 
         if (team.Members.All(u => u.Id != user!.Id))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotMemberOfTeam)]));
@@ -386,12 +386,12 @@ public class GameController(
         var filePath = $"{FilePath.Capture}/{challengeId}";
 
         if (!Path.Exists(filePath))
-            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)], StatusCodes.Status404NotFound));
 
         List<int> participationIds = await GetDirNamesAsInt(filePath);
 
         if (participationIds.Count == 0)
-            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)], StatusCodes.Status404NotFound));
 
         Participation[] participation = await participationRepository.GetParticipationsByIds(participationIds, token);
 
@@ -417,7 +417,7 @@ public class GameController(
         var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
 
         if (!Path.Exists(filePath))
-            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)], StatusCodes.Status404NotFound));
 
         return Ok(FilePath.GetFileRecords(filePath, out var _));
     }
@@ -443,7 +443,7 @@ public class GameController(
         var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
 
         if (!Path.Exists(filePath))
-            return NotFound(new RequestResponse("未找到相关捕获信息", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)], StatusCodes.Status404NotFound));
 
         var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
         Stream stream = await Codec.ZipFilesAsync(filePath, filename, token);
@@ -476,13 +476,13 @@ public class GameController(
             var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId}/{partId}", file));
 
             if (Path.GetExtension(file) != ".pcap" || !Path.Exists(path))
-                return NotFound(new RequestResponse("未找到相关捕获信息"));
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
 
             return new PhysicalFileResult(path, MediaTypeNames.Application.Octet) { FileDownloadName = file };
         }
         catch
         {
-            return NotFound(new RequestResponse("未找到相关捕获信息"));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
         }
     }
 
@@ -566,6 +566,7 @@ public class GameController(
     /// 下载比赛积分榜，需要Monitor权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
+    /// <param name="excelHelper"></param>
     /// <param name="token"></param>
     /// <response code="200">成功下载比赛积分榜</response>
     /// <response code="400">操作无效</response>
@@ -576,7 +577,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
-    public async Task<IActionResult> ScoreboardSheet([FromRoute] int id, CancellationToken token = default)
+    public async Task<IActionResult> ScoreboardSheet([FromRoute] int id, [FromServices] ExcelHelper excelHelper, CancellationToken token = default)
     {
         Game? game = await gameRepository.GetGameById(id, token);
 
@@ -589,7 +590,7 @@ public class GameController(
         try
         {
             ScoreboardModel scoreboard = await gameRepository.GetScoreboardWithMembers(game, token);
-            MemoryStream stream = ExcelHelper.GetScoreboardExcel(scoreboard, game);
+            MemoryStream stream = excelHelper.GetScoreboardExcel(scoreboard, game);
             stream.Seek(0, SeekOrigin.Begin);
 
             return File(stream,
@@ -598,9 +599,9 @@ public class GameController(
         }
         catch (Exception ex)
         {
-            logger.SystemLog("下载积分榜遇到错误", TaskStatus.Failed, LogLevel.Error);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_ScoreboardDownloadFailed)], TaskStatus.Failed, LogLevel.Error);
             logger.LogError(ex, ex.Message);
-            return BadRequest(new RequestResponse("遇到问题，请重试"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ScoreboardDownloadFailed)]));
         }
     }
 
@@ -611,6 +612,7 @@ public class GameController(
     /// 下载比赛全部提交，需要Monitor权限
     /// </remarks>
     /// <param name="id">比赛Id</param>
+    /// <param name="excelHelper"></param>
     /// <param name="token"></param>
     /// <response code="200">成功下载比赛全部提交</response>
     /// <response code="400">操作无效</response>
@@ -621,7 +623,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
-    public async Task<IActionResult> SubmissionSheet([FromRoute] int id, CancellationToken token = default)
+    public async Task<IActionResult> SubmissionSheet([FromRoute] int id, [FromServices] ExcelHelper excelHelper, CancellationToken token = default)
     {
         Game? game = await gameRepository.GetGameById(id, token);
 
@@ -633,7 +635,7 @@ public class GameController(
 
         Submission[] submissions = await submissionRepository.GetSubmissions(game, count: 0, token: token);
 
-        MemoryStream stream = ExcelHelper.GetSubmissionExcel(submissions, localizer);
+        MemoryStream stream = excelHelper.GetSubmissionExcel(submissions, localizer);
         stream.Seek(0, SeekOrigin.Begin);
 
         return File(stream,
@@ -672,7 +674,7 @@ public class GameController(
         GameInstance? instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
-            return NotFound(new RequestResponse("题目未找到或动态附件分配失败", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)], StatusCodes.Status404NotFound));
 
         return Ok(ChallengeDetailModel.FromInstance(instance));
     }
@@ -746,7 +748,7 @@ public class GameController(
         var claimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (claimId is null)
-            return NotFound(new RequestResponse("提交未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_SubmissionNotFound)], StatusCodes.Status404NotFound));
 
         Submission? submission = await submissionRepository.GetSubmission(id, challengeId, Guid.Parse(claimId), submitId, token);
 
@@ -808,13 +810,13 @@ public class GameController(
         switch (file.Length)
         {
             case 0:
-                return BadRequest(new RequestResponse("文件非法"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
             case > 20 * 1024 * 1024:
-                return BadRequest(new RequestResponse("文件过大"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
         }
 
         if (file.ContentType != "application/pdf" || Path.GetExtension(file.FileName) != ".pdf")
-            return BadRequest(new RequestResponse("请上传 pdf 文件"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_PdfOnly)]));
 
         ContextInfo context = await GetContextInfo(id, denyAfterEnded: false, token: token);
 
@@ -826,7 +828,7 @@ public class GameController(
         Team team = part.Team;
 
         if (DateTimeOffset.UtcNow > game.WriteupDeadline)
-            return BadRequest(new RequestResponse("提交截止时间已过"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_DeadlineExpired)]));
 
         LocalFile? wp = context.Participation!.Writeup;
 
@@ -838,7 +840,7 @@ public class GameController(
 
         await participationRepository.SaveAsync(token);
 
-        logger.Log($"{team.Name} 成功提交 {game.Title} 的 Writeup", context.User!, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_WriteupSubmitted), team.Name, game.Title], context.User!, TaskStatus.Success);
 
         return Ok();
     }
@@ -876,10 +878,10 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)], StatusCodes.Status404NotFound));
 
         if (!instance.Challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目不可创建容器"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
-            return new JsonResult(new RequestResponse("容器操作过于频繁", StatusCodes.Status429TooManyRequests))
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)], StatusCodes.Status429TooManyRequests))
             {
                 StatusCode = StatusCodes.Status429TooManyRequests
             };
@@ -887,7 +889,7 @@ public class GameController(
         if (instance.Container is not null)
         {
             if (instance.Container.Status == ContainerStatus.Running)
-                return BadRequest(new RequestResponse("题目已经创建容器"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerAlreadyCreated)]));
 
             await containerRepository.RemoveContainer(instance.Container, token);
         }
@@ -895,9 +897,9 @@ public class GameController(
         return await gameInstanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!,
                 context.Game!.ContainerCountLimit, token) switch
         {
-            null or (TaskStatus.Failed, null) => BadRequest(new RequestResponse("题目创建容器失败")),
+            null or (TaskStatus.Failed, null) => BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
             (TaskStatus.Denied, null) => BadRequest(
-                new RequestResponse($"队伍容器数目不能超过 {context.Game.ContainerCountLimit}")),
+                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded), context.Game.ContainerCountLimit])),
             (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
             _ => throw new NotImplementedException()
         };
@@ -935,13 +937,13 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)], StatusCodes.Status404NotFound));
 
         if (!instance.Challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目不可创建容器"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
         if (instance.Container is null)
-            return BadRequest(new RequestResponse("题目未创建容器"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
         if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(10))
-            return BadRequest(new RequestResponse("容器时间尚不可延长"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExpireExtensionNotAllowed)]));
 
         await gameInstanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
 
@@ -981,13 +983,13 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)], StatusCodes.Status404NotFound));
 
         if (!instance.Challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目不可创建容器"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
         if (instance.Container is null)
-            return BadRequest(new RequestResponse("题目未创建容器"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
-            return new JsonResult(new RequestResponse("容器操作过于频繁", StatusCodes.Status429TooManyRequests))
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)], StatusCodes.Status429TooManyRequests))
             {
                 StatusCode = StatusCodes.Status429TooManyRequests
             };
@@ -995,7 +997,7 @@ public class GameController(
         var destroyId = instance.Container.ContainerId;
 
         if (!await gameInstanceRepository.DestroyContainer(instance.Container, token))
-            return BadRequest(new RequestResponse("题目删除容器失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerDeletionFailed)]));
 
         instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
@@ -1006,10 +1008,10 @@ public class GameController(
                 GameId = context.Game!.Id,
                 TeamId = context.Participation!.TeamId,
                 UserId = context.User!.Id,
-                Content = $"{instance.Challenge.Title}#{instance.Challenge.Id} 销毁容器实例"
+                Content = localizer[nameof(Resources.Program.Game_ContainerDeletedEvent), instance.Challenge.Title, instance.Challenge.Id]
             }, token);
 
-        logger.Log($"{context.Participation!.Team.Name} 销毁题目 {instance.Challenge.Title} 的容器实例 [{destroyId}]",
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_ContainerDeleted), context.Participation!.Team.Name, instance.Challenge.Title, destroyId],
             context.User, TaskStatus.Success);
 
         return Ok();
@@ -1026,12 +1028,12 @@ public class GameController(
         Participation? part = await participationRepository.GetParticipation(res.User!, res.Game, token);
 
         if (part is null)
-            return res.WithResult(BadRequest(new RequestResponse("您尚未参赛")));
+            return res.WithResult(BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotParticipated)])));
 
         res.Participation = part;
 
         if (part.Status != ParticipationStatus.Accepted)
-            return res.WithResult(BadRequest(new RequestResponse("您的参赛申请尚未通过或被禁赛")));
+            return res.WithResult(BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ParticipationNotAccepted)])));
 
         if (DateTimeOffset.UtcNow < res.Game.StartTimeUtc)
             return res.WithResult(BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)])));

@@ -10,13 +10,13 @@ public class AdminTeamModel
     /// <summary>
     /// 队伍名称
     /// </summary>
-    [MaxLength(15, ErrorMessage = "队伍名称过长")]
+    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Name { get; set; } = string.Empty;
 
     /// <summary>
     /// 队伍签名
     /// </summary>
-    [MaxLength(31, ErrorMessage = "队伍签名过长")]
+    [MaxLength(31, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamBioTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Bio { get; set; }
 
     /// <summary>

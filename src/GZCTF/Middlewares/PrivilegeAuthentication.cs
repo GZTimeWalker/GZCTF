@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Middlewares;
 
@@ -14,13 +15,11 @@ namespace GZCTF.Middlewares;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthorizationFilter
 {
-    public static IActionResult RequireLoginResult => GetResult("请先登录", StatusCodes.Status401Unauthorized);
-    public static IActionResult ForbiddenResult => GetResult("无权访问", StatusCodes.Status403Forbidden);
-
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
         var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+        var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
         var id = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         UserInfo? user = null;
@@ -30,7 +29,7 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
 
         if (user is null)
         {
-            context.Result = RequireLoginResult;
+            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_LoginRequired)], StatusCodes.Status401Unauthorized);
             return;
         }
 
@@ -43,9 +42,9 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         if (user.Role < privilege)
         {
             if (privilege > Role.User)
-                logger.Log($"未经授权的访问：{context.HttpContext.Request.Path}", user, TaskStatus.Denied);
+                logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden), context.HttpContext.Request.Path], user, TaskStatus.Denied);
 
-            context.Result = ForbiddenResult;
+            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden);
         }
     }
 

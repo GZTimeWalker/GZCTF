@@ -5,18 +5,38 @@ using NPOI.XSSF.UserModel;
 
 namespace GZCTF.Utils;
 
-public static class ExcelHelper
+public class ExcelHelper(IStringLocalizer<Program> localizer)
 {
-    static readonly string[] CommonScoreboardHeader = { "排名", "战队", "队长", "队员", "学号", "手机号", "解题数量", "得分时间", "总分" };
-    static readonly string[] CommonSubmissionHeader = { "提交状态", "提交时间", "战队", "用户", "题目", "提交内容", "用户邮箱" };
+    readonly string[] CommonScoreboardHeader =
+    {
+        localizer[nameof(Resources.Program.Header_Ranking)],
+        localizer[nameof(Resources.Program.Header_Team)],
+        localizer[nameof(Resources.Program.Header_Captain)],
+        localizer[nameof(Resources.Program.Header_Member)],
+        localizer[nameof(Resources.Program.Header_StdNumber)],
+        localizer[nameof(Resources.Program.Header_PhoneNumber)],
+        localizer[nameof(Resources.Program.Header_SolvedNumber)],
+        localizer[nameof(Resources.Program.Header_ScoringTime)],
+        localizer[nameof(Resources.Program.Header_TotalScore)],
+    };
+    readonly string[] CommonSubmissionHeader =
+    {
+        localizer[nameof(Resources.Program.Header_SubmitStatus)],
+        localizer[nameof(Resources.Program.Header_SubmitTime)],
+        localizer[nameof(Resources.Program.Header_Team)],
+        localizer[nameof(Resources.Program.Header_User)],
+        localizer[nameof(Resources.Program.Header_Challenge)],
+        localizer[nameof(Resources.Program.Header_SubmitContent)],
+        localizer[nameof(Resources.Program.Header_Email)],
+    };
 
-    public static MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
+    public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
     {
         if (scoreboard.Items.FirstOrDefault()?.TeamInfo is null)
-            throw new ArgumentException("Team is not loaded");
+            throw new ArgumentException(localizer[nameof(Resources.Program.Scoreboard_TeamNotLoaded)]);
 
         var workbook = new XSSFWorkbook();
-        ISheet? boardSheet = workbook.CreateSheet("排行榜");
+        ISheet? boardSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_Title)]);
         ICellStyle headerStyle = GetHeaderStyle(workbook);
         var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, game);
         WriteBoardContent(boardSheet, scoreboard, challIds, game);
@@ -26,10 +46,10 @@ public static class ExcelHelper
         return stream;
     }
 
-    public static MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
+    public MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
     {
         var workbook = new XSSFWorkbook();
-        ISheet? subSheet = workbook.CreateSheet("全部提交");
+        ISheet? subSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_AllSubmissions)]);
         ICellStyle headerStyle = GetHeaderStyle(workbook);
         WriteSubmissionHeader(subSheet, headerStyle);
         WriteSubmissionContent(subSheet, submissions, localizer);
@@ -39,7 +59,7 @@ public static class ExcelHelper
         return stream;
     }
 
-    static ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
+    ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
     {
         ICellStyle? style = workbook.CreateCellStyle();
         IFont? boldFontStyle = workbook.CreateFont();
@@ -53,7 +73,7 @@ public static class ExcelHelper
         return style;
     }
 
-    static void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
+    void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
     {
         IRow? row = sheet.CreateRow(0);
         var colIndex = 0;
@@ -66,7 +86,7 @@ public static class ExcelHelper
         }
     }
 
-    static void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
+    void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
     {
         var rowIndex = 1;
 
@@ -85,7 +105,7 @@ public static class ExcelHelper
         }
     }
 
-    static int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
+    int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
     {
         IRow? row = sheet.CreateRow(0);
         var colIndex = 0;
@@ -101,7 +121,7 @@ public static class ExcelHelper
             if (withOrg && colIndex == 2)
             {
                 cell = row.CreateCell(colIndex++);
-                cell.SetCellValue("所属组织");
+                cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingOrganization)]);
                 cell.CellStyle = style;
             }
         }
@@ -118,7 +138,7 @@ public static class ExcelHelper
         return challIds.ToArray();
     }
 
-    static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
+    void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
     {
         var rowIndex = 1;
         var withOrg = game.Organizations is not null && game.Organizations.Count > 0;

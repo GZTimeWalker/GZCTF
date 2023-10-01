@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Controllers;
 
@@ -21,7 +22,8 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     IFileRepository fileService,
     ILogger<TeamController> logger,
     ITeamRepository teamRepository,
-    IParticipationRepository participationRepository) : ControllerBase
+    IParticipationRepository participationRepository,
+    IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
     /// 获取队伍信息
@@ -41,7 +43,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return NotFound(new RequestResponse("队伍不存在", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)], StatusCodes.Status404NotFound));
 
         return Ok(TeamInfoModel.FromTeam(team));
     }
@@ -90,19 +92,19 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team[] teams = await teamRepository.GetUserTeams(user!, token);
 
         if (teams.Length > 1 && teams.Any(t => t.CaptainId == user!.Id))
-            return BadRequest(new RequestResponse("不允许创建多个队伍"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_MultipleCreationNotAllowed)]));
 
         if (string.IsNullOrEmpty(model.Name))
-            return BadRequest(new RequestResponse("队伍名不能为空"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameEmpty)]));
 
         Team? team = await teamRepository.CreateTeam(model, user!, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍创建失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_CreationFailed)]));
 
         await userManager.UpdateAsync(user!);
 
-        logger.Log($"创建队伍 {team.Name}", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Created), team.Name], user, TaskStatus.Success);
 
         return Ok(TeamInfoModel.FromTeam(team));
     }
@@ -133,10 +135,10 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         team.UpdateInfo(model);
 
@@ -171,23 +173,23 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
-            return BadRequest(new RequestResponse("队伍已锁定"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));
 
         UserInfo? newCaptain = await userManager.Users.SingleOrDefaultAsync(u => u.Id == model.NewCaptainId, token);
 
         if (newCaptain is null)
-            return BadRequest(new RequestResponse("移交的用户不存在"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NewCaptainNotFound)]));
 
         Team[] newCaptainTeams = await teamRepository.GetUserTeams(newCaptain, token);
 
         if (newCaptainTeams.Count(t => t.CaptainId == newCaptain.Id) >= 3)
-            return BadRequest(new RequestResponse("被移交者所管理的队伍过多"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NewCaptainTeamTooMany)]));
 
         await teamRepository.Transfer(team, newCaptain, token);
 
@@ -218,10 +220,10 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         return Ok(team.InviteCode);
     }
@@ -250,10 +252,10 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         team.UpdateInviteToken();
 
@@ -287,21 +289,21 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(token);
 
         try
         {
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))
-                return BadRequest(new RequestResponse("队伍已锁定"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));
 
             UserInfo? kickUser = team.Members.SingleOrDefault(m => m.Id == userId);
             if (kickUser is null)
-                return BadRequest(new RequestResponse("用户不在队伍中"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.User_NotInTeam)]));
 
             team.Members.Remove(kickUser);
             await participationRepository.RemoveUserParticipations(user, team, token);
@@ -309,7 +311,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
-            logger.Log($"从队伍 {team.Name} 踢除 {kickUser.UserName}", user, TaskStatus.Success);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_MemberRemoved), team.Name, kickUser.UserName ?? "null"], user, TaskStatus.Success);
             return Ok(TeamInfoModel.FromTeam(team));
         }
         catch
@@ -343,7 +345,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
     public async Task<IActionResult> Accept([FromBody] string code, CancellationToken cancelToken)
     {
         if (!InviteCodeRegex().IsMatch(code))
-            return BadRequest(new RequestResponse("Code 无效"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_InvalidCode)]));
 
         var inviteToken = code[^32..];
         var preCode = code[..^33];
@@ -351,7 +353,7 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         var lastColon = preCode.LastIndexOf(':');
 
         if (!int.TryParse(preCode[(lastColon + 1)..], out var teamId))
-            return BadRequest(new RequestResponse($"队伍 Id 转换错误：{preCode[(lastColon + 1)..]}"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_IdTransformFailed), preCode[(lastColon + 1)..]]));
 
         var teamName = preCode[..lastColon];
         IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(cancelToken);
@@ -361,25 +363,25 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             Team? team = await teamRepository.GetTeamById(teamId, cancelToken);
 
             if (team is null)
-                return BadRequest(new RequestResponse($"{teamName} 队伍未找到"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameNotFound), teamName]));
 
             if (team.InviteToken != inviteToken)
-                return BadRequest(new RequestResponse($"{teamName} 邀请无效"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameInvalidInvitation), teamName]));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
-                return BadRequest(new RequestResponse($"{teamName} 队伍已锁定"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameLocked), teamName]));
 
             UserInfo? user = await userManager.GetUserAsync(User);
 
             if (team.Members.Any(m => m.Id == user!.Id))
-                return BadRequest(new RequestResponse("你已经加入此队伍，无需重复加入"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.User_AlreadyInTeam)]));
 
             team.Members.Add(user!);
 
             await teamRepository.SaveAsync(cancelToken);
             await trans.CommitAsync(cancelToken);
 
-            logger.Log($"加入队伍 {team.Name}", user, TaskStatus.Success);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_UserJoined), team.Name], user, TaskStatus.Success);
             return Ok();
         }
         catch
@@ -416,22 +418,22 @@ public partial class TeamController(UserManager<UserInfo> userManager,
             Team? team = await teamRepository.GetTeamById(id, token);
 
             if (team is null)
-                return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)], StatusCodes.Status404NotFound));
 
             UserInfo? user = await userManager.GetUserAsync(User);
 
             if (team.Members.All(m => m.Id != user!.Id))
-                return BadRequest(new RequestResponse("你不在此队伍中，无法离队"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.User_LeaveNotInTeam)]));
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))
-                return BadRequest(new RequestResponse("队伍已锁定"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));
 
             team.Members.Remove(user!);
 
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
-            logger.Log($"离开队伍 {team.Name}", user, TaskStatus.Success);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_UserLeft), team.Name], user, TaskStatus.Success);
             return Ok();
         }
         catch
@@ -462,16 +464,16 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)], StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         if (file.Length == 0)
-            return BadRequest(new RequestResponse("文件非法"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
 
         if (file.Length > 3 * 1024 * 1024)
-            return BadRequest(new RequestResponse("文件过大"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
 
         if (team.AvatarHash is not null)
             _ = await fileService.DeleteFileByHash(team.AvatarHash, token);
@@ -479,12 +481,12 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         LocalFile? avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
-            return BadRequest(new RequestResponse("队伍头像更新失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_AvatarUpdateFailed)]));
 
         team.AvatarHash = avatar.Hash;
         await teamRepository.SaveAsync(token);
 
-        logger.Log($"队伍 {team.Name} 更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_AvatarUpdated), team.Name, avatar.Hash[..8]], user, TaskStatus.Success);
 
         return Ok(avatar.Url());
     }
@@ -511,17 +513,17 @@ public partial class TeamController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)], StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse("无权访问", StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
-            return BadRequest(new RequestResponse("队伍已锁定"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));
 
         await teamRepository.DeleteTeam(team, token);
 
-        logger.Log($"删除队伍 {team.Name}", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Deleted)], user, TaskStatus.Success);
 
         return Ok();
     }

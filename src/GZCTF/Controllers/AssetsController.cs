@@ -4,6 +4,7 @@ using GZCTF.Middlewares;
 using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Controllers;
 
@@ -13,7 +14,7 @@ namespace GZCTF.Controllers;
 [ApiController]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class AssetsController(IFileRepository fileService, ILogger<AssetsController> logger) : ControllerBase
+public class AssetsController(IFileRepository fileService, ILogger<AssetsController> logger, IStringLocalizer<Program> localizer) : ControllerBase
 {
     readonly FileExtensionContentTypeProvider _extProvider = new();
 
@@ -38,8 +39,8 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
         if (!System.IO.File.Exists(path))
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-            logger.Log($"尝试获取不存在的文件 [{hash[..8]}] {filename}", ip, TaskStatus.NotFound, LogLevel.Warning);
-            return NotFound(new RequestResponse("文件不存在", StatusCodes.Status404NotFound));
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip, TaskStatus.NotFound, LogLevel.Warning);
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.File_NotFound)], StatusCodes.Status404NotFound));
         }
 
         if (!_extProvider.TryGetContentType(filename, out var contentType))
@@ -77,7 +78,7 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
                 if (file.Length > 0)
                 {
                     LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
-                    logger.SystemLog($"更新文件 [{res.Hash[..8]}] {filename ?? file.FileName} @ {file.Length} bytes",
+                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8], filename ?? file.FileName, file.Length],
                         TaskStatus.Success, LogLevel.Debug);
                     results.Add(res);
                 }
@@ -87,7 +88,7 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);
-            return BadRequest(new RequestResponse("遇到IO错误"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Assets_IOError)]));
         }
     }
 
@@ -112,13 +113,13 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
     {
         TaskStatus result = await fileService.DeleteFileByHash(hash, token);
 
-        logger.SystemLog($"删除文件 [{hash[..8]}]...", result, LogLevel.Information);
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Assets_DeleteFile), hash[..8]], result, LogLevel.Information);
 
         return result switch
         {
             TaskStatus.Success => Ok(),
             TaskStatus.NotFound => NotFound(),
-            _ => BadRequest(new RequestResponse("文件删除失败"))
+            _ => BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_DeletionFailed)]))
         };
     }
 }

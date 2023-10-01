@@ -54,6 +54,6 @@ public partial class GameNotice
                 _ => NoticeType.Normal
             },
             GameId = submission.GameId,
-            Content = $"恭喜 {submission.Team.Name} 获得 「{submission.GameChallenge.Title}」 的{type.ToBloodString(localizer)}"
+            Content = localizer[nameof(Resources.Program.Game_SubmissionNotice), submission.Team.Name, submission.GameChallenge.Title, type.ToBloodString(localizer)]
         };
 }

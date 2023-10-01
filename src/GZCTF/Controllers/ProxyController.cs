@@ -9,6 +9,7 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Controllers;
@@ -19,7 +20,8 @@ namespace GZCTF.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
-    IOptions<ContainerProvider> provider, IContainerRepository containerRepository) : ControllerBase
+    IOptions<ContainerProvider> provider, IContainerRepository containerRepository,
+    IStringLocalizer<Program> localizer) : ControllerBase
 {
     const int BufferSize = 1024 * 4;
     const uint ConnectionLimit = 64;
@@ -44,10 +46,10 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     public async Task<IActionResult> ProxyForInstance(Guid id, CancellationToken token = default)
     {
         if (!_enablePlatformProxy)
-            return BadRequest(new RequestResponse("TCP 代理已禁用"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Proxy_TcpDisabled)]));
 
         if (!await ValidateContainer(id, token))
-            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
 
         var key = CacheKey.ConnectionCount(id);
 
@@ -55,23 +57,23 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return NoContent();
 
         if (!await IncrementConnectionCount(key))
-            return BadRequest(new RequestResponse("容器连接数已达上限"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_ConnectionLimitExceeded)]));
 
         Container? container = await containerRepository.GetContainerWithInstanceById(id, token);
 
         if (container is null || !container.IsProxy)
-            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
         if (ipAddress is null)
-            return BadRequest(new RequestResponse("容器地址解析失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
         IPAddress? clientIp = HttpContext.Connection.RemoteIpAddress;
         var clientPort = HttpContext.Connection.RemotePort;
 
         if (clientIp is null)
-            return BadRequest(new RequestResponse("无效的访问地址"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_InvalidClientAddress)]));
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
 
@@ -99,10 +101,10 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
     public async Task<IActionResult> ProxyForNoInstance(Guid id, CancellationToken token = default)
     {
         if (!_enablePlatformProxy)
-            return BadRequest(new RequestResponse("TCP 代理已禁用"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Proxy_TcpDisabled)]));
 
         if (!await ValidateContainer(id, token))
-            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
 
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
@@ -110,18 +112,18 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         Container? container = await containerRepository.GetContainerById(id, token);
 
         if (container is null || container.GameInstanceId != 0 || !container.IsProxy)
-            return NotFound(new RequestResponse("不存在的容器", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
         if (ipAddress is null)
-            return BadRequest(new RequestResponse("容器地址解析失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
         IPAddress? clientIp = HttpContext.Connection.RemoteIpAddress;
         var clientPort = HttpContext.Connection.RemotePort;
 
         if (clientIp is null)
-            return BadRequest(new RequestResponse("无效的访问地址"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_InvalidClientAddress)]));
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
@@ -146,9 +148,9 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         }
         catch (SocketException e)
         {
-            logger.SystemLog($"容器连接失败（{e.SocketErrorCode}），可能正在启动中或请检查网络配置 -> {target.Address}:{target.Port}",
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog), e.SocketErrorCode, $"{target.Address}:{target.Port}"],
                 TaskStatus.Failed, LogLevel.Debug);
-            return new JsonResult(new RequestResponse($"容器连接失败（{e.SocketErrorCode}）", StatusCodes.Status418ImATeapot))
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode], StatusCodes.Status418ImATeapot))
             {
                 StatusCode = StatusCodes.Status418ImATeapot
             };
@@ -164,7 +166,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "代理过程发生错误");
+            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.Proxy_Error)]);
         }
         finally
         {

@@ -10,8 +10,8 @@ public class PostEditModel
     /// <summary>
     /// 通知标题
     /// </summary>
-    [Required(ErrorMessage = "标题是必需的")]
-    [MaxLength(50, ErrorMessage = "标题过长")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(50, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>

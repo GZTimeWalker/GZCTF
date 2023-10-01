@@ -146,7 +146,7 @@ public class AdminController(UserManager<UserInfo> userManager,
                         default:
                             await trans.RollbackAsync(token);
                             return BadRequest(
-                                new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+                                new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
                     }
 
                     if (userInfo is not null)
@@ -159,7 +159,7 @@ public class AdminController(UserManager<UserInfo> userManager,
                     if (!result.Succeeded || userInfo is null)
                     {
                         await trans.RollbackAsync(token);
-                        return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+                        return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
                     }
                 }
 
@@ -187,7 +187,7 @@ public class AdminController(UserManager<UserInfo> userManager,
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
-            logger.Log($"成功批量添加 {users.Count} 个用户", currentUser, TaskStatus.Success);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), users.Count], currentUser, TaskStatus.Success);
 
             return Ok();
         }
@@ -274,7 +274,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return BadRequest(new RequestResponse("队伍未找到"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         team.UpdateInfo(model);
         await teamRepository.SaveAsync(token);
@@ -300,7 +300,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
 
         user.UpdateUserInfo(model);
         await userManager.UpdateAsync(user);
@@ -326,7 +326,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
 
         var pwd = Codec.RandomPassword(16);
         var code = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -353,15 +353,15 @@ public class AdminController(UserManager<UserInfo> userManager,
         UserInfo? user = await userManager.GetUserAsync(User);
 
         if (user!.Id == userid)
-            return BadRequest(new RequestResponse("不可以删除自己"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_SelfDeletionNotAllowed)]));
 
         user = await userManager.FindByIdAsync(userid.ToString());
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
 
         if (await teamRepository.CheckIsCaptain(user, token))
-            return BadRequest(new RequestResponse("不可以删除队长"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_CaptainDeletionNotAllowed)]));
 
         await userManager.DeleteAsync(user);
 
@@ -386,7 +386,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return NotFound(new RequestResponse("队伍未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)], StatusCodes.Status404NotFound));
 
         await teamRepository.DeleteTeam(team, token);
 
@@ -410,7 +410,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse("用户未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
 
         return Ok(ProfileUserInfoModel.FromUserInfo(user));
     }
@@ -449,7 +449,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         Participation? participation = await participationRepository.GetParticipationById(id, token);
 
         if (participation is null)
-            return NotFound(new RequestResponse("参与状态未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)], StatusCodes.Status404NotFound));
 
         await participationRepository.UpdateParticipationStatus(participation, status, token);
 
@@ -542,11 +542,11 @@ public class AdminController(UserManager<UserInfo> userManager,
         Container? container = await containerRepository.GetContainerById(id, token);
 
         if (container is null)
-            return NotFound(new RequestResponse("容器实例未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceNotFound)], StatusCodes.Status404NotFound));
 
         if (await gameInstanceRepository.DestroyContainer(container, token))
             return Ok();
-        return BadRequest(new RequestResponse("容器实例销毁失败"));
+        return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceDestroyFailed)]));
     }
 
     /// <summary>

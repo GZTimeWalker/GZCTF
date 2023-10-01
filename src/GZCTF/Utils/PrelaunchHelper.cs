@@ -26,9 +26,9 @@ public static class PrelaunchHelper
             await context.Posts.AddAsync(new()
             {
                 UpdateTimeUtc = DateTimeOffset.UtcNow,
-                Title = "Welcome to GZ::CTF!",
-                Summary = "一个开源的CTF比赛平台。",
-                Content = "项目基于 AGPL-3.0 许可证，开源于 [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF)。"
+                Title = Program.StaticLocalizer[nameof(Resources.Program.Init_PostTitle)],
+                Summary = Program.StaticLocalizer[nameof(Resources.Program.Init_PostSummary)],
+                Content = Program.StaticLocalizer[nameof(Resources.Program.Init_PostContent)]
             });
 
             await context.SaveChangesAsync();
@@ -55,7 +55,7 @@ public static class PrelaunchHelper
 
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (!result.Succeeded)
-                    logger.SystemLog($"管理员账户创建失败，错误信息：{result.Errors.FirstOrDefault()?.Description}", TaskStatus.Failed,
+                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Init_AdminCreationFailed), result.Errors.FirstOrDefault()?.Description ?? "null"], TaskStatus.Failed,
                         LogLevel.Debug);
             }
         }
@@ -63,10 +63,10 @@ public static class PrelaunchHelper
         var containerConfig = serviceScope.ServiceProvider.GetRequiredService<IOptions<ContainerProvider>>();
         if (containerConfig.Value.EnableTrafficCapture &&
             containerConfig.Value.PortMappingType != ContainerPortMappingType.PlatformProxy)
-            logger.SystemLog("在不使用平台代理模式时无法进行流量捕获！", TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Init_CaptureNotAvailable)], TaskStatus.Failed, LogLevel.Warning);
 
         if (!cache.CacheCheck())
-            Program.ExitWithFatalMessage("缓存配置无效，请检查 RedisCache 字段配置。如不使用 Redis 请将配置项置空。");
+            Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);
     }
 
     static bool CacheCheck(this IDistributedCache cache)

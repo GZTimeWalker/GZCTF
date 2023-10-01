@@ -10,47 +10,47 @@ public class UserCreateModel
     /// <summary>
     /// 用户名
     /// </summary>
-    [Required(ErrorMessage = "用户名是必需的")]
-    [MinLength(3, ErrorMessage = "用户名过短")]
-    [MaxLength(15, ErrorMessage = "用户名过长")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(3, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string UserName { get; set; } = string.Empty;
 
     /// <summary>
     /// 密码
     /// </summary>
-    [Required(ErrorMessage = "密码是必需的")]
-    [MinLength(6)]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
     /// 邮箱
     /// </summary>
-    [Required(ErrorMessage = "邮箱是必需的")]
-    [EmailAddress(ErrorMessage = "邮箱地址无效")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [EmailAddress(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailMalformed), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// 真实姓名
     /// </summary>
-    [MaxLength(7, ErrorMessage = "真实姓名过长")]
+    [MaxLength(7, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? RealName { get; set; }
 
     /// <summary>
     /// 学号
     /// </summary>
-    [MaxLength(15, ErrorMessage = "学工号过长")]
+    [MaxLength(24, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? StdNumber { get; set; }
 
     /// <summary>
     /// 联系电话
     /// </summary>
-    [Phone(ErrorMessage = "手机号格式错误")]
+    [Phone(ErrorMessageResourceName = nameof(Resources.Program.Model_MalformedPhoneNumber), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Phone { get; set; }
 
     /// <summary>
     /// 用户加入的队伍
     /// </summary>
-    [MaxLength(15, ErrorMessage = "队伍名称过长")]
+    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? TeamName { get; set; }
 
     internal UserInfo ToUserInfo() =>

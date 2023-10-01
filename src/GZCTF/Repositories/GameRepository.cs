@@ -105,7 +105,7 @@ public class GameRepository(IDistributedCache cache,
         }
         catch
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionFailed)], TaskStatus.Pending, LogLevel.Debug);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending, LogLevel.Debug);
             await trans.RollbackAsync(token);
 
             return TaskStatus.Failed;

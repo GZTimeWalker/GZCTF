@@ -72,7 +72,7 @@ public class EditController(
         Post? post = await postRepository.GetPostById(id, token);
 
         if (post is null)
-            return NotFound(new RequestResponse("文章未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)], StatusCodes.Status404NotFound));
 
         UserInfo? user = await userManager.GetUserAsync(User);
 
@@ -99,7 +99,7 @@ public class EditController(
         Post? post = await postRepository.GetPostById(id, token);
 
         if (post is null)
-            return NotFound(new RequestResponse("文章未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)], StatusCodes.Status404NotFound));
 
         await postRepository.RemovePost(post, token);
 
@@ -123,7 +123,7 @@ public class EditController(
         Game? game = await gameRepository.CreateGame(new Game().Update(model), token);
 
         if (game is null)
-            return BadRequest(new RequestResponse("比赛创建失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CreationFailed)]));
 
         gameRepository.FlushGameInfoCache();
 
@@ -245,7 +245,7 @@ public class EditController(
         return await gameRepository.DeleteGame(game, token) switch
         {
             TaskStatus.Success => Ok(),
-            TaskStatus.Failed => BadRequest(new RequestResponse("比赛删除失败，文件可能已受损，请重试")),
+            TaskStatus.Failed => BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_DeletionFailed)])),
             _ => throw new NotImplementedException()
         };
     }
@@ -290,10 +290,10 @@ public class EditController(
     public async Task<IActionResult> UpdateGamePoster([FromRoute] int id, IFormFile file, CancellationToken token)
     {
         if (file.Length == 0)
-            return BadRequest(new RequestResponse("文件非法"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
 
         if (file.Length > 3 * 1024 * 1024)
-            return BadRequest(new RequestResponse("文件过大"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
 
         Game? game = await gameRepository.GetGameById(id, token);
 
@@ -303,7 +303,7 @@ public class EditController(
         LocalFile? poster = await fileService.CreateOrUpdateImage(file, "poster", 0, token);
 
         if (poster is null)
-            return BadRequest(new RequestResponse("文件创建失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_CreationFailed)]));
 
         game.PosterHash = poster.Hash;
         await gameRepository.SaveAsync(token);
@@ -381,10 +381,10 @@ public class EditController(
         GameNotice? notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
-            return NotFound(new RequestResponse("通知未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Notification_NotFound)], StatusCodes.Status404NotFound));
 
         if (notice.Type != NoticeType.Normal)
-            return BadRequest(new RequestResponse("不能更改系统通知"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Notification_SystemNotEditable)]));
 
         notice.Content = model.Content;
         return Ok(await gameNoticeRepository.UpdateNotice(notice, token));
@@ -410,10 +410,10 @@ public class EditController(
         GameNotice? notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
-            return NotFound(new RequestResponse("通知未找到", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Notification_SystemNotEditable)], StatusCodes.Status404NotFound));
 
         if (notice.Type != NoticeType.Normal)
-            return BadRequest(new RequestResponse("不能删除系统通知"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Notification_SystemNotDeletable)]));
 
         await gameNoticeRepository.RemoveNotice(notice, token);
 
@@ -518,19 +518,19 @@ public class EditController(
 
         // NOTE: IsEnabled can only be updated outside of the edit page
         if (model.IsEnabled == true && !res.Flags.Any() && res.Type != ChallengeType.DynamicContainer)
-            return BadRequest(new RequestResponse("题目无 flag，不可启用"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NoFlag)]));
 
         if (model.EnableTrafficCapture is true && !res.Type.IsContainer())
-            return BadRequest(new RequestResponse("只有容器题目可以进行流量捕获"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_CaptureNotAllowed)]));
 
         if (model.FileName is not null && string.IsNullOrWhiteSpace(model.FileName))
-            return BadRequest(new RequestResponse("动态附件名不可为空"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_DynamicAssetsNotNullable)]));
 
         var hintUpdated = model.IsHintUpdated(res.Hints?.GetSetHashCode());
 
         if (!string.IsNullOrWhiteSpace(model.FlagTemplate) && res.Type == ChallengeType.DynamicContainer &&
             !model.IsValidFlagTemplate())
-            return BadRequest(new RequestResponse("flag 复杂度不足，请考虑添加队伍哈希或增加长度"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_FlagTooTrivial)]));
 
         res.Update(model);
 
@@ -541,7 +541,7 @@ public class EditController(
 
             if (game.IsActive)
                 await gameNoticeRepository.AddNotice(
-                    new() { Game = game, Type = NoticeType.NewChallenge, Content = $"新增了题目 「{res.Title}」" }, token);
+                    new() { Game = game, Type = NoticeType.NewChallenge, Content = localizer[nameof(Resources.Program.Challenge_Created), res.Title] }, token);
         }
         else
         {
@@ -550,7 +550,7 @@ public class EditController(
 
         if (game.IsActive && res.IsEnabled && hintUpdated)
             await gameNoticeRepository.AddNotice(
-                new() { Game = game, Type = NoticeType.NewHint, Content = $"「{res.Title}」 更新了提示" }, token);
+                new() { Game = game, Type = NoticeType.NewHint, Content = localizer[nameof(Resources.Program.Challenge_HintUpdated), res.Title] }, token);
 
         // always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
@@ -585,10 +585,10 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)], StatusCodes.Status404NotFound));
 
         if (!challenge.Type.IsContainer())
-            return BadRequest(new RequestResponse("题目类型不可创建容器"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
         if (challenge.ContainerImage is null || challenge.ContainerExposePort is null)
-            return BadRequest(new RequestResponse("容器配置错误"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_ConfigError)]));
 
         UserInfo? user = await userManager.GetUserAsync(User);
 
@@ -602,16 +602,16 @@ public class EditController(
                 CPUCount = challenge.CPUCount ?? 1,
                 MemoryLimit = challenge.MemoryLimit ?? 64,
                 StorageLimit = challenge.StorageLimit ?? 256,
-                ExposedPort = challenge.ContainerExposePort ?? throw new ArgumentException("创建容器时遇到无效的端口")
+                ExposedPort = challenge.ContainerExposePort ?? throw new ArgumentException(localizer[nameof(Resources.Program.Container_InvalidPort)])
             }, token);
 
         if (container is null)
-            return BadRequest(new RequestResponse("容器创建失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_CreationFailed)]));
 
         challenge.TestContainer = container;
         await gameChallengeRepository.SaveAsync(token);
 
-        logger.Log($"成功创建测试容器 {container.ContainerId}", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Container_TestContainerCreated), container.ContainerId], user, TaskStatus.Success);
 
         return Ok(ContainerInfoModel.FromContainer(container));
     }
@@ -713,7 +713,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)], StatusCodes.Status404NotFound));
 
         if (challenge.Type == ChallengeType.DynamicAttachment)
-            return BadRequest(new RequestResponse("动态附件题目请使用 assets API 上传附件"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_UseAssetsApiForDynamic)]));
 
         await gameChallengeRepository.UpdateAttachment(challenge, model, token);
 

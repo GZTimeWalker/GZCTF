@@ -11,7 +11,7 @@ public class RecoveryModel : ModelWithCaptcha
     /// <summary>
     /// 用户邮箱
     /// </summary>
-    [Required(ErrorMessage = "邮箱是必需的")]
-    [EmailAddress(ErrorMessage = "邮箱地址无效")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [EmailAddress(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailMalformed), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Email { get; set; }
 }

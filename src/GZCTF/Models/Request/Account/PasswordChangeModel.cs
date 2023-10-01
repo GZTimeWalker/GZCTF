@@ -10,14 +10,14 @@ public class PasswordChangeModel
     /// <summary>
     /// 旧密码
     /// </summary>
-    [Required(ErrorMessage = "旧密码是必需的")]
-    [MinLength(6, ErrorMessage = "旧密码过短")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_OldPasswordRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_OldPasswordTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Old { get; set; } = string.Empty;
 
     /// <summary>
     /// 新密码
     /// </summary>
-    [Required(ErrorMessage = "新密码是必需的")]
-    [MinLength(6, ErrorMessage = "新密码过短")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_NewPasswordRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_NewPasswordTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
     public string New { get; set; } = string.Empty;
 }

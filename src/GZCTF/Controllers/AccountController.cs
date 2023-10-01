@@ -8,6 +8,7 @@ using GZCTF.Services.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -27,7 +28,8 @@ public class AccountController(
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
-    ILogger<AccountController> logger) : ControllerBase
+    ILogger<AccountController> logger,
+    IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
     /// 用户注册接口
@@ -46,15 +48,15 @@ public class AccountController(
     public async Task<IActionResult> Register([FromBody] RegisterModel model, CancellationToken token = default)
     {
         if (!accountPolicy.Value.AllowRegister)
-            return BadRequest(new RequestResponse("注册功能已禁用"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_RegisterNotEnabled)]));
 
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
-            return BadRequest(new RequestResponse("验证码校验失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_TokenValidationFailed)]));
 
         var mailDomain = model.Email.Split('@')[1];
         if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
             accountPolicy.Value.EmailDomainList.Split(',').All(d => d != mailDomain))
-            return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain), accountPolicy.Value.EmailDomainList]));
 
         var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
 
@@ -67,10 +69,10 @@ public class AccountController(
             UserInfo? current = await userManager.FindByEmailAsync(model.Email);
 
             if (current is null)
-                return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+                return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
             if (await userManager.IsEmailConfirmedAsync(current))
-                return BadRequest(new RequestResponse("此账户已存在"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserExisting)]));
 
             user = current;
         }
@@ -81,18 +83,18 @@ public class AccountController(
             await userManager.UpdateAsync(user);
             await signInManager.SignInAsync(user, true);
 
-            logger.Log("用户成功注册", user, TaskStatus.Success);
-            return Ok(new RequestResponse<RegisterStatus>("注册成功", RegisterStatus.LoggedIn, StatusCodes.Status200OK));
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user, TaskStatus.Success);
+            return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)], RegisterStatus.LoggedIn, StatusCodes.Status200OK));
         }
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
         {
-            logger.Log("用户成功注册，待审核", user, TaskStatus.Success);
-            return Ok(new RequestResponse<RegisterStatus>("注册成功，等待管理员审核",
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredWaitingApprovalLog)], user, TaskStatus.Success);
+            return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegisteredWaitingApproval)],
                 RegisterStatus.AdminConfirmationRequired, StatusCodes.Status200OK));
         }
 
-        logger.Log("发送用户邮箱验证邮件", user, TaskStatus.Pending);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], user, TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
         var link = GetEmailLink("verify", rToken, model.Email);
@@ -104,10 +106,10 @@ public class AccountController(
         else
         {
             if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email, link))
-                return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
-        return Ok(new RequestResponse<RegisterStatus>("注册成功，等待邮箱验证",
+        return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegisteredWaitingEmailVerification)],
             RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
     }
 
@@ -130,19 +132,19 @@ public class AccountController(
     public async Task<IActionResult> Recovery([FromBody] RecoveryModel model, CancellationToken token = default)
     {
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
-            return BadRequest(new RequestResponse("验证码校验失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_TokenValidationFailed)]));
 
         UserInfo? user = await userManager.FindByEmailAsync(model.Email!);
         if (user is null)
-            return NotFound(new RequestResponse("用户不存在", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)], StatusCodes.Status404NotFound));
 
         if (!user.EmailConfirmed)
-            return NotFound(new RequestResponse("账户未激活，请重新注册", StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailNotConfirmed)], StatusCodes.Status404NotFound));
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
-            return BadRequest(new RequestResponse("请联系管理员重置密码"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_ResetPasswordFromAdmin)]));
 
-        logger.Log("发送用户密码重置邮件", HttpContext, TaskStatus.Pending);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], HttpContext, TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
         var link = GetEmailLink("reset", rToken, model.Email);
@@ -154,10 +156,10 @@ public class AccountController(
         else
         {
             if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email, link))
-                return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
-        return Ok(new RequestResponse("邮件发送成功", StatusCodes.Status200OK));
+        return Ok(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSent)], StatusCodes.Status200OK));
     }
 
     /// <summary>
@@ -177,7 +179,7 @@ public class AccountController(
     {
         UserInfo? user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
         if (user is null)
-            return BadRequest(new RequestResponse("无效的邮件地址"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_InvalidEmail)]));
 
         user.UpdateByHttpContext(HttpContext);
 
@@ -185,9 +187,9 @@ public class AccountController(
             await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
-        logger.Log("用户成功重置密码", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordReset)], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -211,14 +213,14 @@ public class AccountController(
         UserInfo? user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
 
         if (user is null || user.EmailConfirmed)
-            return BadRequest(new RequestResponse("无效的邮件地址"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_InvalidEmail)]));
 
         IdentityResult result = await userManager.ConfirmEmailAsync(user, Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse("邮箱验证失败", StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailVerificationFailed)], StatusCodes.Status401Unauthorized));
 
-        logger.Log("通过邮箱验证", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_EmailVerified)], user, TaskStatus.Success);
         await signInManager.SignInAsync(user, true);
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
@@ -228,7 +230,7 @@ public class AccountController(
         result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
         return Ok();
     }
@@ -251,16 +253,16 @@ public class AccountController(
     public async Task<IActionResult> LogIn([FromBody] LoginModel model, CancellationToken token = default)
     {
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
-            return BadRequest(new RequestResponse("验证码校验失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_TokenValidationFailed)]));
 
         UserInfo? user = await userManager.FindByNameAsync(model.UserName);
         user ??= await userManager.FindByEmailAsync(model.UserName);
 
         if (user is null)
-            return Unauthorized(new RequestResponse("用户名或密码错误", StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)], StatusCodes.Status401Unauthorized));
 
         if (user.Role == Role.Banned)
-            return Unauthorized(new RequestResponse("用户已被禁用", StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)], StatusCodes.Status401Unauthorized));
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
@@ -270,9 +272,9 @@ public class AccountController(
         SignInResult result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse("用户名或密码错误", StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)], StatusCodes.Status401Unauthorized));
 
-        logger.Log("用户成功登录", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserLogined)], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -318,10 +320,10 @@ public class AccountController(
         IdentityResult result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
         if (oldName != user.UserName)
-            logger.Log($"用户更新：{oldName} => {model.UserName}", user, TaskStatus.Success);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -346,9 +348,9 @@ public class AccountController(
         IdentityResult result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? "未知错误"));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
-        logger.Log("用户更新密码", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordChanged)], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -372,14 +374,14 @@ public class AccountController(
     public async Task<IActionResult> ChangeEmail([FromBody] MailChangeModel model)
     {
         if (await userManager.FindByEmailAsync(model.NewMail) is not null)
-            return BadRequest(new RequestResponse("邮箱已经被占用"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailUsed)]));
 
         UserInfo? user = await userManager.GetUserAsync(User);
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
-            return BadRequest(new RequestResponse<bool>("请联系管理员修改邮箱", false));
+            return BadRequest(new RequestResponse<bool>(localizer[nameof(Resources.Program.Account_ChangeEmailFromAdmin)], false));
 
-        logger.Log("发送用户邮箱更改邮件", user, TaskStatus.Pending);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailChange)], user, TaskStatus.Pending);
 
         var token = Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user!, model.NewMail));
         var link = GetEmailLink("confirm", token, model.NewMail);
@@ -391,10 +393,10 @@ public class AccountController(
         else
         {
             if (!mailSender.SendChangeEmailUrl(user!.UserName, model.NewMail, link))
-                return BadRequest(new RequestResponse("邮件无法发送，请联系管理员"));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
-        return Ok(new RequestResponse<bool>("邮箱待验证", true, StatusCodes.Status200OK));
+        return Ok(new RequestResponse<bool>(localizer[nameof(Resources.Program.Account_EmailVerificationPending)], true, StatusCodes.Status200OK));
     }
 
     /// <summary>
@@ -420,9 +422,9 @@ public class AccountController(
             Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse("无效邮箱"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_InvalidEmail)]));
 
-        logger.Log("更改邮箱成功", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_EmailChanged)], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -464,10 +466,10 @@ public class AccountController(
     public async Task<IActionResult> Avatar(IFormFile file, CancellationToken token)
     {
         if (file.Length == 0)
-            return BadRequest(new RequestResponse("文件非法"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
 
         if (file.Length > 3 * 1024 * 1024)
-            return BadRequest(new RequestResponse("文件过大"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
 
         UserInfo? user = await userManager.GetUserAsync(User);
 
@@ -477,15 +479,15 @@ public class AccountController(
         LocalFile? avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
-            return BadRequest(new RequestResponse("用户头像更新失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Avatar_UpdateFailed)]));
 
         user.AvatarHash = avatar.Hash;
         IdentityResult result = await userManager.UpdateAsync(user);
 
         if (result != IdentityResult.Success)
-            return BadRequest(new RequestResponse("用户更新失败"));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserUpdateFailed)]));
 
-        logger.Log($"更改新头像：[{avatar.Hash[..8]}]", user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_AvatarUpdated)], user, TaskStatus.Success);
 
         return Ok(avatar.Url());
     }

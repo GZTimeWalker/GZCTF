@@ -16,8 +16,8 @@ public class ChallengeEditDetailModel
     /// <summary>
     /// 题目名称
     /// </summary>
-    [Required]
-    [MinLength(1, ErrorMessage = "标题过短")]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
