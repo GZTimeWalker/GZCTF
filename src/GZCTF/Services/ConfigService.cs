@@ -23,7 +23,7 @@ public class ConfigService(AppDbContext context,
             return;
 
         if (type.IsArray || IsArrayLikeInterface(type))
-            throw new NotSupportedException(Program.LocalizerForLogging[nameof(Resources.Program.Config_TypeNotSupported)]);
+            throw new NotSupportedException(Program.StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
         if (type == typeof(string) || type.IsValueType)
@@ -63,12 +63,12 @@ public class ConfigService(AppDbContext context,
                 if (dbConf.Value != conf.Value)
                 {
                     dbConf.Value = conf.Value;
-                    logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
+                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
                 }
             }
             else
             {
-                logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
+                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
                 await context.Configs.AddAsync(conf, token);
             }
 

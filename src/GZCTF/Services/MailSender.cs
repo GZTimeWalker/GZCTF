@@ -36,12 +36,12 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
-            logger.LogError(e, Program.LocalizerForLogging[nameof(Resources.Program.MailSender_MailSendFailed)]);
+            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             return false;
         }
     }
@@ -51,7 +51,7 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
     {
         if (email is null || userName is null || title is null)
         {
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
             return;
         }
 
@@ -66,7 +66,7 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             .ToString();
 
         if (!await SendEmailAsync(title, emailContent, email))
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>

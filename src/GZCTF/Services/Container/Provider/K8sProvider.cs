@@ -47,7 +47,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
 
         if (!File.Exists(_k8sMetadata.Config.KubeConfig))
         {
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerProvider_K8sConfigLoadFailed), _k8sMetadata.Config.KubeConfig]);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sConfigLoadFailed), _k8sMetadata.Config.KubeConfig]);
             throw new FileNotFoundException(_k8sMetadata.Config.KubeConfig);
         }
 
@@ -74,11 +74,11 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         }
         catch (Exception e)
         {
-            logger.LogError(e, Program.LocalizerForLogging[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
-            Program.ExitWithFatalMessage(Program.LocalizerForLogging[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
+            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
+            Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
         }
 
-        logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.ContainerProvider_K8sInited), config.Host], TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInited), config.Host], TaskStatus.Success, LogLevel.Debug);
     }
 
     public Kubernetes GetProvider() => _kubernetesClient;

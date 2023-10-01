@@ -26,7 +26,7 @@ public class GameRepository(IDistributedCache cache,
         game.GenerateKeyPair(_xorKey);
 
         if (_xorKey is null)
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)], TaskStatus.Pending, LogLevel.Warning);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)], TaskStatus.Pending, LogLevel.Warning);
 
         await context.AddAsync(game, token);
         await SaveAsync(token);
@@ -79,7 +79,7 @@ public class GameRepository(IDistributedCache cache,
         {
             await context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
 
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, game.Challenges.Count], TaskStatus.Pending,
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, game.Challenges.Count], TaskStatus.Pending,
                 LogLevel.Debug);
 
             foreach (GameChallenge chal in game.Challenges)
@@ -87,7 +87,7 @@ public class GameRepository(IDistributedCache cache,
 
             await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
                 LogLevel.Debug);
 
             foreach (Participation part in game.Participations)
@@ -105,7 +105,7 @@ public class GameRepository(IDistributedCache cache,
         }
         catch
         {
-            logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionFailed)], TaskStatus.Pending, LogLevel.Debug);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionFailed)], TaskStatus.Pending, LogLevel.Debug);
             await trans.RollbackAsync(token);
 
             return TaskStatus.Failed;
@@ -116,7 +116,7 @@ public class GameRepository(IDistributedCache cache,
     {
         await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-        logger.SystemLog(Program.LocalizerForLogging[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
             LogLevel.Debug);
 
         foreach (Participation part in game.Participations)

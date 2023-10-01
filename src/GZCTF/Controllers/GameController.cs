@@ -155,7 +155,7 @@ public class GameController(
         if (game.AcceptWithoutReview)
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
-        logger.Log(Program.LocalizerForLogging[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user, TaskStatus.Success);
 
         return Ok();
     }
