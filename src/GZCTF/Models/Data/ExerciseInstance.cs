@@ -5,6 +5,7 @@ namespace GZCTF.Models.Data;
 
 [Index(nameof(UserId))]
 [Index(nameof(FlagId))]
+[PrimaryKey(nameof(UserId), nameof(ChallengeId))]
 public class ExerciseInstance : Instance
 {
     /// <summary>
