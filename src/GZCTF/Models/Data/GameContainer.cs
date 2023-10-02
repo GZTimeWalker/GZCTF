@@ -1,2 +1,0 @@
-namespace GZCTF.Models.Data;
-

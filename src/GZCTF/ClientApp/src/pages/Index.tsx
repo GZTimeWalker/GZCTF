@@ -12,6 +12,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { PostInfoModel } from '@Api'
+import AppTrans from '../utils/AppTrans'
 
 const useStyles = createStyles((theme) => ({
   posts: {
@@ -117,7 +118,7 @@ const Home: FC = () => {
                 <Stack>
                   <Group>
                     <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
-                    <Title order={3}>最近比赛</Title>
+                    <Title order={3}><AppTrans i18nKey="RecentGame"></AppTrans></Title>
                   </Group>
                   {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}
                 </Stack>
