@@ -1,3 +1,8 @@
 {
-  "RecentGame": "最近比赛"
+  "Game_Recent": "最近比赛",
+  "About": "关于",
+  "ErrorEncountered": "遇到了问题",
+  "Team_InvalidInvitationCodeFormat": "队伍邀请码格式不正确",
+  "Team_Joined": "加入队伍成功",
+  "Team_Updated": "队伍信息已更新"
 }

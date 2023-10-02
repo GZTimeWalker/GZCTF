@@ -1,3 +1,8 @@
 {
-  "RecentGame": "Recent games"
+  "Game_Recent": "Recent games",
+  "About": "About",
+  "ErrorEncountered": "An error has occurred",
+  "Team_InvalidInvitationCodeFormat": "Invalid format of team invitation code",
+  "Team_Joined": "Successfully joined the team",
+  "Team_Updated": "Successfully updated the team"
 }

@@ -1,3 +1,8 @@
 {
-  "RecentGame": "最近のゲーム"
+  "Game_Recent": "最近のゲーム",
+  "About": "プラットフォーム情報",
+  "ErrorEncountered": "エラーが発生しました",
+  "Team_InvalidInvitationCodeFormat": "チーム招待コードのフォマードは無効です",
+  "Team_Joined": "チームに参加しました",
+  "Team_Updated": "チームを更新しました"
 }

@@ -5,13 +5,16 @@ import MainIcon from '@Components/icon/MainIcon'
 import { useLogoStyles } from '@Utils/ThemeOverride'
 import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
+import { useTranslation } from 'react-i18next'
+import i18nKeyOf from '../utils/i18n'
 
 const About: FC = () => {
   const { classes, theme } = useLogoStyles()
   const { config } = useConfig()
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
+  const { t } = useTranslation()
 
-  usePageTitle('关于')
+  usePageTitle(t(i18nKeyOf('About')))
 
   return (
     <WithNavBar>

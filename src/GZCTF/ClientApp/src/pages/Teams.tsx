@@ -26,6 +26,8 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { Role, TeamInfoModel } from '@Api'
+import { useTranslation } from 'react-i18next'
+import i18nKeyOf from '../utils/i18n'
 
 const Teams: FC = () => {
   const { user, error: userError } = useUser()
@@ -45,6 +47,8 @@ const Teams: FC = () => {
 
   const isMobile = useIsMobile()
 
+  const { t } = useTranslation()
+
   const onEditTeam = (team: TeamInfoModel) => {
     setEditTeam(team)
     setEditOpened(true)
@@ -56,8 +60,8 @@ const Teams: FC = () => {
     if (!codePartten.test(joinTeamCode)) {
       showNotification({
         color: 'red',
-        title: '遇到了问题',
-        message: '队伍邀请码格式不正确',
+        title: t(i18nKeyOf('ErrorEncountered')),
+        message: t(i18nKeyOf('Team_InvalidInvitationCode')),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -68,8 +72,8 @@ const Teams: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '加入队伍成功',
-          message: '队伍信息已更新',
+          title: t(i18nKeyOf('Team_Joined')),
+          message: t(i18nKeyOf('Team_Updated')),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutateTeams()
