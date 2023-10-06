@@ -6,7 +6,7 @@ import { useLogoStyles } from '@Utils/ThemeOverride'
 import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTranslation } from 'react-i18next'
-import i18nKeyOf from '../utils/i18n'
+import i18nKeyOf from '../utils/I18n'
 
 const About: FC = () => {
   const { classes, theme } = useLogoStyles()

@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { resources } from './utils/i18n'
+import { resources } from './utils/I18n'
 
 i18n
   .use(LanguageDetector)

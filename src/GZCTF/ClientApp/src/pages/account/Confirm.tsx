@@ -8,7 +8,7 @@ import AccountView from '@Components/AccountView'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 import { Trans, useTranslation } from 'react-i18next'
-import i18nKeyOf from '../../utils/i18n'
+import i18nKeyOf from '../../utils/I18n'
 
 const Confirm: FC = () => {
   const navigate = useNavigate()
