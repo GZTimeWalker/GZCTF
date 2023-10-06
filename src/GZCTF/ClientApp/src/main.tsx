@@ -1,10 +1,10 @@
 import { App } from '@App'
+import i18n from 'i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
+import { initReactI18next } from 'react-i18next'
 import { BrowserRouter as Router } from 'react-router-dom'
-import i18n from "i18next"
-import { initReactI18next } from "react-i18next"
-import LanguageDetector from 'i18next-browser-languagedetector';
 import { resources } from './utils/I18n'
 
 i18n
@@ -12,14 +12,14 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: "zh-CN",
+    fallbackLng: 'zh-CN',
     interpolation: {
-      escapeValue: false
+      escapeValue: false,
     },
     detection: {
-      convertDetectedLanguage: 'Iso15897'
-    }
-  });
+      convertDetectedLanguage: 'Iso15897',
+    },
+  })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>

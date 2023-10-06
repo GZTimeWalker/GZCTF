@@ -38,6 +38,9 @@
       ],
       "@Utils/*": [
         "src/utils/*"
+      ],
+      "@Resources/*": [
+        "src/resources/*"
       ]
     }
   },

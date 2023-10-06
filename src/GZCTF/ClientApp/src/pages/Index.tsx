@@ -9,11 +9,10 @@ import RecentGameCarousel from '@Components/RecentGameCarousel'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { Trans } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { PostInfoModel } from '@Api'
-import { Trans } from 'react-i18next'
-import i18nKeyOf from '../utils/I18n'
 
 const useStyles = createStyles((theme) => ({
   posts: {
@@ -119,7 +118,9 @@ const Home: FC = () => {
                 <Stack>
                   <Group>
                     <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
-                    <Title order={3}><Trans i18nKey={i18nKeyOf("Game_Recent")}></Trans></Title>
+                    <Title order={3}>
+                      <Trans i18nKey={'Game_Recent'}></Trans>
+                    </Title>
                   </Group>
                   {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}
                 </Stack>

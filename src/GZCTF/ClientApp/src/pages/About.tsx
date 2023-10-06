@@ -1,12 +1,11 @@
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Anchor, Badge, Center, Group, HoverCard, Stack, Text, Title } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 import { useLogoStyles } from '@Utils/ThemeOverride'
 import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
-import { useTranslation } from 'react-i18next'
-import i18nKeyOf from '../utils/I18n'
 
 const About: FC = () => {
   const { classes, theme } = useLogoStyles()
@@ -14,7 +13,7 @@ const About: FC = () => {
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
   const { t } = useTranslation()
 
-  usePageTitle(t(i18nKeyOf('About')))
+  usePageTitle(t('About'))
 
   return (
     <WithNavBar>
