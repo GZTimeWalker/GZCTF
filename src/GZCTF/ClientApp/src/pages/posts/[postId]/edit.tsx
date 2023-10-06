@@ -188,7 +188,6 @@ const PostEdit: FC = () => {
                           <Text size="sm">你确定要删除文章 &quot;{post.title}&quot; 吗？</Text>
                         ),
                         onConfirm: onDelete,
-                        labels: { confirm: '确认', cancel: '取消' },
                         confirmProps: { color: 'red' },
                       })
                     }
@@ -203,7 +202,6 @@ const PostEdit: FC = () => {
                         modals.openConfirmModal({
                           title: '文章已更改',
                           children: <Text size="sm">文章内容已更改，是否保存？</Text>,
-                          labels: { confirm: '确认', cancel: '取消' },
                           onConfirm: () => {
                             onUpdate()
                             navigate(`/posts/${postId}`)

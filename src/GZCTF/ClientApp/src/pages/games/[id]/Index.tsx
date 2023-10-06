@@ -181,7 +181,6 @@ const GameDetail: FC = () => {
         </Stack>
       ),
       onConfirm: () => setJoinModalOpen(true),
-      labels: { confirm: '确认报名', cancel: '取消' },
       confirmProps: { color: 'brand' },
     })
 
@@ -195,7 +194,6 @@ const GameDetail: FC = () => {
         </Stack>
       ),
       onConfirm: onSubmitLeave,
-      labels: { confirm: '确认退出', cancel: '取消' },
       confirmProps: { color: 'brand' },
     })
 

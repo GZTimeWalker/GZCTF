@@ -17,6 +17,7 @@ const Confirm: FC = () => {
   const email = sp.get('email')
   const [disabled, setDisabled] = useState(false)
   const { t } = useTranslation()
+  const decodeEmail = window.atob(email ?? '')
 
   usePageTitle(t('Page_ConfirmEmail'))
 
@@ -63,7 +64,9 @@ const Confirm: FC = () => {
       {email && token ? (
         <>
           <Text size="md" fw={500}>
-            {window.atob(email)} {t('HelloWithHand')}
+            <Trans i18nKey={'Email_HelloWithHand'} decodeEmail={decodeEmail}>
+              {{ decodeEmail }}, 你好👋
+            </Trans>
           </Text>
           <Text size="md" fw={500}>
             <Trans i18nKey={'Email_ConfirmInstruction'} />

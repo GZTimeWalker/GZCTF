@@ -13,6 +13,7 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
+import { useTranslation } from '@Utils/I18n'
 import { ThemeOverride } from '@Utils/ThemeOverride'
 import { useBanner, useLocalStorageCache } from '@Utils/useConfig'
 import { fetcher } from '@Api'
@@ -29,6 +30,7 @@ export const App: FC = () => {
 
   useBanner()
 
+  const { t } = useTranslation()
   const { localCacheProvider } = useLocalStorageCache()
 
   return (
@@ -36,7 +38,7 @@ export const App: FC = () => {
       <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
         <Notifications zIndex={5000} />
         {StyledGlobal}
-        <ModalsProvider labels={{ confirm: '确认', cancel: '取消' }}>
+        <ModalsProvider labels={{ confirm: t('Modal_Confirm'), cancel: t('Modal_Cancel') }}>
           <SWRConfig
             value={{
               refreshInterval: 10000,

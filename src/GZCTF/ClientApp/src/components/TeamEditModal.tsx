@@ -379,7 +379,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                         </Text>
                       ),
                       onConfirm: () => onTransferCaptain(user.id!),
-                      labels: { confirm: '确认', cancel: '取消' },
+
                       confirmProps: { color: 'orange' },
                       zIndex: 10000,
                     })
@@ -390,7 +390,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
                       children: <Text size="sm">你确定要踢出队员 "{user.userName}" 吗？</Text>,
                       onConfirm: () => onConfirmKickUser(user.id!),
-                      labels: { confirm: '确认', cancel: '取消' },
+
                       confirmProps: { color: 'orange' },
                       zIndex: 10000,
                     })
@@ -415,7 +415,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   <Text size="sm">你确定要退出队伍吗？</Text>
                 ),
                 onConfirm: isCaptain ? onConfirmDisbandTeam : onConfirmLeaveTeam,
-                labels: { confirm: '确认', cancel: '取消' },
+
                 confirmProps: { color: 'red' },
                 zIndex: 10000,
               })

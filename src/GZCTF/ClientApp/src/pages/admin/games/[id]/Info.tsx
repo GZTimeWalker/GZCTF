@@ -192,7 +192,7 @@ const GameInfoEdit: FC = () => {
                   title: `删除比赛`,
                   children: <Text size="sm">你确定要删除比赛 "{game?.title}" 吗？</Text>,
                   onConfirm: () => onConfirmDelete(),
-                  labels: { confirm: '确认', cancel: '取消' },
+
                   confirmProps: { color: 'red' },
                 })
               }

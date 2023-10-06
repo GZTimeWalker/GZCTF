@@ -226,7 +226,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                   title: '清除附件',
                   children: <Text size="sm">你确定要清除本题的附件吗？</Text>,
                   onConfirm: onConfirmClear,
-                  labels: { confirm: '确认', cancel: '取消' },
                   confirmProps: { color: 'orange' },
                 })
               } else {
@@ -434,8 +433,6 @@ const GameChallengeEdit: FC = () => {
         </Stack>
       ),
       onConfirm: () => flag.id && onConfirmDeleteFlag(flag.id),
-
-      labels: { confirm: '确认', cancel: '取消' },
       confirmProps: { color: 'red' },
     })
   }

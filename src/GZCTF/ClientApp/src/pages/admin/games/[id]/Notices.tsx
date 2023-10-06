@@ -27,8 +27,6 @@ const GameNoticeEdit: FC = () => {
       title: '删除通知',
       children: <Text> 你确定要删除通知该通知吗？</Text>,
       onConfirm: () => onConfirmDelete(gameNotice),
-
-      labels: { confirm: '删除通知', cancel: '取消' },
       confirmProps: { color: 'red' },
     })
   }

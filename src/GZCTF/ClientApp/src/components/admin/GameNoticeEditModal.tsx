@@ -5,6 +5,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import api, { GameNotice } from '@Api'
 
 interface GameNoticeEditModalProps extends ModalProps {
@@ -19,6 +20,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
 
   const [content, setContent] = useState<string>(gameNotice?.content || '')
   const [disabled, setDisabled] = useState(false)
+  const { t } = useTranslation()
 
   useEffect(() => {
     setContent(gameNotice?.content || '')
@@ -100,7 +102,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onConfirm}>
-            确认
+            {t('Modal_Confirm')}
           </Button>
         </Group>
       </Stack>

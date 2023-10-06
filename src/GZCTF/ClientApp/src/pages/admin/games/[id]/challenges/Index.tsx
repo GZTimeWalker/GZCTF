@@ -53,8 +53,6 @@ const GameChallengeEdit: FC = () => {
         </Text>
       ),
       onConfirm: () => onConfirmToggle(challenge, setDisabled),
-
-      labels: { confirm: '确认', cancel: '取消' },
       confirmProps: { color: 'orange' },
     })
   }

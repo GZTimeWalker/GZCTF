@@ -198,8 +198,6 @@ const GameChallengeEdit: FC = () => {
                   title: `删除题目`,
                   children: <Text size="sm">你确定要删除题目 "{challengeInfo.title}" 吗？</Text>,
                   onConfirm: () => onConfirmDelete(),
-
-                  labels: { confirm: '确认', cancel: '取消' },
                   confirmProps: { color: 'red' },
                 })
               }
