@@ -26,11 +26,6 @@
                 "/Views": "${workspaceFolder}/Views",
             },
             "checkForDevCert": false
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
         }
     ]
 }
