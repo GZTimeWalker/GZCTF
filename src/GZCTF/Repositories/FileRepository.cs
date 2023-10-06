@@ -134,17 +134,17 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         {
             localFile = new() { Hash = fileHash, Name = fileName, FileSize = contentStream.Length };
             await context.AddAsync(localFile, token);
-
-            var path = Path.Combine(FilePath.Uploads, localFile.Location);
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            await using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
-
-            contentStream.Position = 0;
-            await contentStream.CopyToAsync(fileStream, token);
         }
+
+        var path = Path.Combine(FilePath.Uploads, localFile.Location);
+
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
+
+        contentStream.Position = 0;
+        await contentStream.CopyToAsync(fileStream, token);
 
         await SaveAsync(token);
         return localFile;
