@@ -61,7 +61,7 @@ const Teams: FC = () => {
       showNotification({
         color: 'red',
         title: t(i18nKeyOf('ErrorEncountered')),
-        message: t(i18nKeyOf('Team_InvalidInvitationCode')),
+        message: t(i18nKeyOf('Team_InvalidInvitationCodeFormat')),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
