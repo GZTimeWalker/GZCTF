@@ -7,6 +7,8 @@ import { Icon } from '@mdi/react'
 import AccountView from '@Components/AccountView'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
+import { Trans, useTranslation } from 'react-i18next'
+import i18nKeyOf from '../../utils/i18n'
 
 const Confirm: FC = () => {
   const navigate = useNavigate()
@@ -15,8 +17,9 @@ const Confirm: FC = () => {
   const token = sp.get('token')
   const email = sp.get('email')
   const [disabled, setDisabled] = useState(false)
+  const { t } = useTranslation()
 
-  usePageTitle('邮箱验证')
+  usePageTitle(t(i18nKeyOf('Page_ConfirmEmail')))
 
   const verify = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -24,8 +27,8 @@ const Confirm: FC = () => {
     if (!token || !email) {
       showNotification({
         color: 'red',
-        title: '邮箱验证失败',
-        message: '参数缺失，请检查',
+        title: t(i18nKeyOf('Email_ConfirmFailed')),
+        message: t(i18nKeyOf('Param_Missing')),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -37,7 +40,7 @@ const Confirm: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '邮箱已验证',
+          title: t(i18nKeyOf('Email_Confirm')),
           message: window.atob(email),
           icon: <Icon path={mdiCheck} size={1} />,
         })
@@ -46,8 +49,8 @@ const Confirm: FC = () => {
       .catch(() => {
         showNotification({
           color: 'red',
-          title: '邮箱验证失败',
-          message: '参数错误，请检查',
+          title: t(i18nKeyOf('Email_ConfirmFailed')),
+          message: t(i18nKeyOf('Param_Error')),
           icon: <Icon path={mdiClose} size={1} />,
         })
       })
@@ -61,22 +64,22 @@ const Confirm: FC = () => {
       {email && token ? (
         <>
           <Text size="md" fw={500}>
-            {window.atob(email)} 你好👋
+            {window.atob(email)} {t(i18nKeyOf('HelloWithHand'))}
           </Text>
           <Text size="md" fw={500}>
-            请点击下方按钮确认更改邮箱
+            <Trans i18nKey={i18nKeyOf('Email_ConfirmInstruction')} />
           </Text>
           <Button mt="lg" type="submit" w="50%" disabled={disabled}>
-            确认邮箱
+            <Trans i18nKey={i18nKeyOf('Email_Confirm')} />
           </Button>
         </>
       ) : (
         <>
           <Text size="md" fw={500}>
-            Ouch! 你的链接好像有问题
+            <Trans i18nKey={i18nKeyOf('Email_ConfirmInvalidLink')} />
           </Text>
           <Text size="md" fw={500}>
-            请检查链接是否正确后再次访问
+            <Trans i18nKey={i18nKeyOf('Email_ConfirmInvalidLinkInstruction')} />
           </Text>
         </>
       )}
