@@ -7,7 +7,7 @@ namespace GZCTF.Repositories;
 public class GameChallengeRepository(AppDbContext context, IFileRepository fileRepository) : RepositoryBase(context),
     IGameChallengeRepository
 {
-    public async Task AddFlags(GameChallenge gameChallenge, FlagCreateModel[] models, CancellationToken token = default)
+    public async Task AddFlags(GameChallenge challenge, FlagCreateModel[] models, CancellationToken token = default)
     {
         foreach (FlagCreateModel model in models)
         {
@@ -20,27 +20,27 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
                     RemoteUrl = model.RemoteUrl
                 };
 
-            gameChallenge.Flags.Add(new() { Flag = model.Flag, Challenge = gameChallenge, Attachment = attachment });
+            challenge.Flags.Add(new() { Flag = model.Flag, Challenge = challenge, Attachment = attachment });
         }
 
         await SaveAsync(token);
     }
 
-    public async Task<GameChallenge> CreateChallenge(Game game, GameChallenge gameChallenge, CancellationToken token = default)
+    public async Task<GameChallenge> CreateChallenge(Game game, GameChallenge challenge, CancellationToken token = default)
     {
-        await context.AddAsync(gameChallenge, token);
-        game.Challenges.Add(gameChallenge);
+        await context.AddAsync(challenge, token);
+        game.Challenges.Add(challenge);
         await SaveAsync(token);
-        return gameChallenge;
+        return challenge;
     }
 
-    public async Task<bool> EnsureInstances(GameChallenge gameChallenge, Game game, CancellationToken token = default)
+    public async Task<bool> EnsureInstances(GameChallenge challenge, Game game, CancellationToken token = default)
     {
-        await context.Entry(gameChallenge).Collection(c => c.Teams).LoadAsync(token);
+        await context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
         await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
         var update = game.Participations.Aggregate(false,
-            (current, participation) => gameChallenge.Teams.Add(participation) || current);
+            (current, participation) => challenge.Teams.Add(participation) || current);
 
         await SaveAsync(token);
 
@@ -65,20 +65,20 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
         context.GameChallenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
             .ToArrayAsync(token);
 
-    public Task<bool> VerifyStaticAnswer(GameChallenge gameChallenge, string flag, CancellationToken token = default) =>
-        context.Entry(gameChallenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
+    public Task<bool> VerifyStaticAnswer(GameChallenge challenge, string flag, CancellationToken token = default) =>
+        context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
 
-    public async Task RemoveChallenge(GameChallenge gameChallenge, CancellationToken token = default)
+    public async Task RemoveChallenge(GameChallenge challenge, CancellationToken token = default)
     {
-        await DeleteAllAttachment(gameChallenge, true, token);
+        await DeleteAllAttachment(challenge, true, token);
 
-        context.Remove(gameChallenge);
+        context.Remove(challenge);
         await SaveAsync(token);
     }
 
-    public async Task<TaskStatus> RemoveFlag(GameChallenge gameChallenge, int flagId, CancellationToken token = default)
+    public async Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default)
     {
-        FlagContext? flag = gameChallenge.Flags.FirstOrDefault(f => f.Id == flagId);
+        FlagContext? flag = challenge.Flags.FirstOrDefault(f => f.Id == flagId);
 
         if (flag is null)
             return TaskStatus.NotFound;
@@ -87,15 +87,15 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
 
         context.Remove(flag);
 
-        if (gameChallenge.Flags.Count == 0)
-            gameChallenge.IsEnabled = false;
+        if (challenge.Flags.Count == 0)
+            challenge.IsEnabled = false;
 
         await SaveAsync(token);
 
         return TaskStatus.Success;
     }
 
-    public async Task UpdateAttachment(GameChallenge gameChallenge, AttachmentCreateModel model,
+    public async Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,
         CancellationToken token = default)
     {
         Attachment? attachment = model.AttachmentType == FileType.None
@@ -107,26 +107,26 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
                 RemoteUrl = model.RemoteUrl
             };
 
-        await DeleteAllAttachment(gameChallenge, false, token);
+        await DeleteAllAttachment(challenge, false, token);
 
         if (attachment is not null)
             await context.AddAsync(attachment, token);
 
-        gameChallenge.Attachment = attachment;
+        challenge.Attachment = attachment;
 
         await SaveAsync(token);
     }
 
-    internal async Task DeleteAllAttachment(GameChallenge gameChallenge, bool purge = false, CancellationToken token = default)
+    internal async Task DeleteAllAttachment(GameChallenge challenge, bool purge = false, CancellationToken token = default)
     {
-        await DeleteAttachment(gameChallenge.Attachment, token);
+        await DeleteAttachment(challenge.Attachment, token);
 
-        if (purge && gameChallenge.Type == ChallengeType.DynamicAttachment)
+        if (purge && challenge.Type == ChallengeType.DynamicAttachment)
         {
-            foreach (FlagContext flag in gameChallenge.Flags)
+            foreach (FlagContext flag in challenge.Flags)
                 await DeleteAttachment(flag.Attachment, token);
 
-            context.RemoveRange(gameChallenge.Flags);
+            context.RemoveRange(challenge.Flags);
         }
     }
 

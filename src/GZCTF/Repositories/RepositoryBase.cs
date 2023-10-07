@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Repositories;
 
-public class RepositoryBase(AppDbContext context) : IRepository
+public abstract class RepositoryBase(AppDbContext context) : IRepository
 {
     protected readonly AppDbContext context = context;
 

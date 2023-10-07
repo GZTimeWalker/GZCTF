@@ -24,10 +24,10 @@ public interface IGameInstanceRepository : IRepository
     /// <summary>
     /// 获取题目实例
     /// </summary>
-    /// <param name="gameChallenge">当前题目</param>
+    /// <param name="challenge">当前题目</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameInstance[]> GetInstances(GameChallenge gameChallenge, CancellationToken token = default);
+    public Task<GameInstance[]> GetInstances(GameChallenge challenge, CancellationToken token = default);
 
     /// <summary>
     /// 检查抄袭行为

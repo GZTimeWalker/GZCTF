@@ -202,8 +202,8 @@ public class GameInstanceRepository(AppDbContext context,
         await SaveAsync(token);
     }
 
-    public Task<GameInstance[]> GetInstances(GameChallenge gameChallenge, CancellationToken token = default) =>
-        context.GameInstances.Where(i => i.Challenge == gameChallenge).OrderBy(i => i.ParticipationId)
+    public Task<GameInstance[]> GetInstances(GameChallenge challenge, CancellationToken token = default) =>
+        context.GameInstances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
             .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
 
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)

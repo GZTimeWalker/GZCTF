@@ -33,7 +33,7 @@ public class GameController(
     IGameNoticeRepository noticeRepository,
     IGameInstanceRepository gameInstanceRepository,
     ICheatInfoRepository cheatInfoRepository,
-    IGameChallengeRepository gameChallengeRepository,
+    IGameChallengeRepository challengeRepository,
     IContainerRepository containerRepository,
     IGameEventRepository gameEventRepository,
     ISubmissionRepository submissionRepository,
@@ -364,7 +364,7 @@ public class GameController(
     [HttpGet("Games/{id:int}/Captures")]
     [ProducesResponseType(typeof(ChallengeTrafficModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetChallengesWithTrafficCapturing([FromRoute] int id, CancellationToken token) =>
-        Ok((await gameChallengeRepository.GetChallengesWithTrafficCapturing(id, token))
+        Ok((await challengeRepository.GetChallengesWithTrafficCapturing(id, token))
             .Select(ChallengeTrafficModel.FromChallenge));
 
     /// <summary>
@@ -1043,7 +1043,7 @@ public class GameController(
 
         if (challengeId > 0)
         {
-            GameChallenge? challenge = await gameChallengeRepository.GetChallenge(id, challengeId, withFlag, token);
+            GameChallenge? challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
 
             if (challenge is null)
                 return res.WithResult(NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)], StatusCodes.Status404NotFound)));

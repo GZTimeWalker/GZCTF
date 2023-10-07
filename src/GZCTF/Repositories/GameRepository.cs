@@ -11,7 +11,7 @@ namespace GZCTF.Repositories;
 
 public class GameRepository(IDistributedCache cache,
     ITeamRepository teamRepository,
-    IGameChallengeRepository gameChallengeRepository,
+    IGameChallengeRepository challengeRepository,
     IParticipationRepository participationRepository,
     IConfiguration configuration,
     ILogger<GameRepository> logger,
@@ -83,7 +83,7 @@ public class GameRepository(IDistributedCache cache,
                 LogLevel.Debug);
 
             foreach (GameChallenge chal in game.Challenges)
-                await gameChallengeRepository.RemoveChallenge(chal, token);
+                await challengeRepository.RemoveChallenge(chal, token);
 
             await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
