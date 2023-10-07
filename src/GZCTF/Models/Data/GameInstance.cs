@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Models.Data;
 
 [Index(nameof(FlagId))]
+[PrimaryKey(nameof(ParticipationId), nameof(ChallengeId))]
 public class GameInstance : Instance
 {
     /// <summary>

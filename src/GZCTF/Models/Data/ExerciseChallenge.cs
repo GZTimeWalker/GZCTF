@@ -6,4 +6,13 @@ public class ExerciseChallenge : Challenge
     /// 题目的积分
     /// </summary>
     public bool Credit { get; set; }
+
+    #region Db Relationship
+
+    /// <summary>
+    /// 依赖的题目
+    /// </summary>
+    public List<ExerciseChallenge> Dependencies { get; set; } = new();
+
+    #endregion
 }

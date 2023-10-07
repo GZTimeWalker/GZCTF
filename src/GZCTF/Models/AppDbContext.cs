@@ -31,6 +31,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = default!;
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
+    public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = default!;
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
     {
@@ -271,6 +272,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithMany()
                 .HasForeignKey(e => e.TestContainerId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasMany(e => e.Dependencies)
+                .WithMany()
+                .UsingEntity<ExerciseDependency>(
+                    l => l.HasOne(e => e.Source).WithMany().HasForeignKey(e => e.SourceId),
+                    r => r.HasOne(e => e.Target).WithMany().HasForeignKey(e => e.TargetId)
+                );
 
             entity.Navigation(e => e.Attachment).AutoInclude();
             entity.Navigation(e => e.TestContainer).AutoInclude();
