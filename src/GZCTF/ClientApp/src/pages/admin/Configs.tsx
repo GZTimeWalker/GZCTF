@@ -7,7 +7,7 @@ import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig, useConfig } from '@Utils/useConfig'
-import api, { AccountPolicy, ConfigEditModel, GamePolicy, GlobalConfig } from '@Api'
+import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs(OnceSWRConfig)
@@ -16,7 +16,7 @@ const Configs: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
-  const [gamePolicy, setGamePolicy] = useState<GamePolicy | null>()
+  const [containerPolicy, setContainerPolicy] = useState<ContainerPolicy | null>()
 
   const [saved, setSaved] = useState(true)
   const { classes: btnClasses } = useFixedButtonStyles({
@@ -26,7 +26,7 @@ const Configs: FC = () => {
 
   useEffect(() => {
     if (configs) {
-      setGamePolicy(configs.gamePolicy)
+      setContainerPolicy(configs.containerPolicy)
       setGlobalConfig(configs.globalConfig)
       setAccountPolicy(configs.accountPolicy)
     }
@@ -55,7 +55,7 @@ const Configs: FC = () => {
         size="md"
         leftIcon={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
         onClick={() => {
-          updateConfig({ globalConfig, accountPolicy, gamePolicy })
+          updateConfig({ globalConfig, accountPolicy, containerPolicy })
           setSaved(false)
           setTimeout(() => setSaved(true), 500)
         }}
@@ -169,15 +169,15 @@ const Configs: FC = () => {
           <Divider />
           <SimpleGrid cols={2}>
             <Switch
-              checked={gamePolicy?.autoDestroyOnLimitReached ?? true}
+              checked={containerPolicy?.autoDestroyOnLimitReached ?? true}
               disabled={disabled}
               label={SwitchLabel(
                 '自动销毁旧实例',
                 '是否在用户开启题目实例但达到上限时自动销毁旧实例'
               )}
               onChange={(e) =>
-                setGamePolicy({
-                  ...(gamePolicy ?? {}),
+                setContainerPolicy({
+                  ...(containerPolicy ?? {}),
                   autoDestroyOnLimitReached: e.currentTarget.checked,
                 })
               }

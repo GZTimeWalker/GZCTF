@@ -20,5 +20,5 @@ public class ConfigEditModel
     /// <summary>
     /// 比赛策略
     /// </summary>
-    public GamePolicy? GamePolicy { get; set; }
+    public ContainerPolicy? ContainerPolicy { get; set; }
 }

@@ -237,7 +237,7 @@ export interface ConfigEditModel {
   /** 全局配置项 */
   globalConfig?: GlobalConfig | null
   /** 比赛策略 */
-  gamePolicy?: GamePolicy | null
+  containerPolicy?: ContainerPolicy | null
 }
 
 /** 账户策略 */
@@ -265,7 +265,7 @@ export interface GlobalConfig {
 }
 
 /** 比赛策略 */
-export interface GamePolicy {
+export interface ContainerPolicy {
   /** 是否在达到数量限制时自动销毁最早的容器 */
   autoDestroyOnLimitReached?: boolean
 }

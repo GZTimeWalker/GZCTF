@@ -194,7 +194,7 @@ builder.Services.AddTransient<IMailSender, MailSender>()
 builder.Services.Configure<RegistryConfig>(builder.Configuration.GetSection(nameof(RegistryConfig)));
 builder.Services.Configure<AccountPolicy>(builder.Configuration.GetSection(nameof(AccountPolicy)));
 builder.Services.Configure<GlobalConfig>(builder.Configuration.GetSection(nameof(GlobalConfig)));
-builder.Services.Configure<GamePolicy>(builder.Configuration.GetSection(nameof(GamePolicy)));
+builder.Services.Configure<ContainerPolicy>(builder.Configuration.GetSection(nameof(ContainerPolicy)));
 builder.Services.Configure<ContainerProvider>(builder.Configuration.GetSection(nameof(ContainerProvider)));
 
 var forwardedOptions = builder.Configuration.GetSection(nameof(ForwardedOptions)).Get<ForwardedOptions>();
@@ -216,14 +216,16 @@ builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
-builder.Services.AddScoped<IGameInstanceRepository, GameInstanceRepository>();
 builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
-builder.Services.AddScoped<IGameChallengeRepository, GameChallengeRepository>();
 builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
 builder.Services.AddScoped<ICheatInfoRepository, CheatInfoRepository>();
 builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
+builder.Services.AddScoped<IGameInstanceRepository, GameInstanceRepository>();
+builder.Services.AddScoped<IGameChallengeRepository, GameChallengeRepository>();
 builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
+builder.Services.AddScoped<IExerciseInstanceRepository, ExerciseInstanceRepository>();
+builder.Services.AddScoped<IExerciseChallengeRepository, ExerciseChallengeRepository>();
 
 builder.Services.AddChannel<Submission>();
 builder.Services.AddChannel<CacheRequest>();
@@ -341,22 +343,22 @@ namespace GZCTF
         {
             const string banner =
                 """
-                      ___           ___           ___                       ___   
-                     /  /\         /  /\         /  /\          ___        /  /\  
-                    /  /:/_       /  /::|       /  /:/         /  /\      /  /:/_ 
+                      ___           ___           ___                       ___
+                     /  /\         /  /\         /  /\          ___        /  /\
+                    /  /:/_       /  /::|       /  /:/         /  /\      /  /:/_
                    /  /:/ /\     /  /:/:|      /  /:/         /  /:/     /  /:/ /\
                   /  /:/_/::\   /  /:/|:|__   /  /:/  ___    /  /:/     /  /:/ /:/
-                 /__/:/__\/\:\ /__/:/ |:| /\ /__/:/  /  /\  /  /::\    /__/:/ /:/ 
-                 \  \:\ /~~/:/ \__\/  |:|/:/ \  \:\ /  /:/ /__/:/\:\   \  \:\/:/  
-                  \  \:\  /:/      |  |:/:/   \  \:\  /:/  \__\/  \:\   \  \::/   
-                   \  \:\/:/       |  |::/     \  \:\/:/        \  \:\   \  \:\   
-                    \  \::/        |  |:/       \  \::/          \__\/    \  \:\  
-                     \__\/         |__|/         \__\/                     \__\/  
+                 /__/:/__\/\:\ /__/:/ |:| /\ /__/:/  /  /\  /  /::\    /__/:/ /:/
+                 \  \:\ /~~/:/ \__\/  |:|/:/ \  \:\ /  /:/ /__/:/\:\   \  \:\/:/
+                  \  \:\  /:/      |  |:/:/   \  \:\  /:/  \__\/  \:\   \  \::/
+                   \  \:\/:/       |  |::/     \  \:\/:/        \  \:\   \  \:\
+                    \  \::/        |  |:/       \  \::/          \__\/    \  \:\
+                     \__\/         |__|/         \__\/                     \__\/
                 """;
             Console.WriteLine(banner);
 
             var versionStr = "";
-            Version? version = typeof(Codec).Assembly.GetName().Version;
+            Version? version = typeof(Program).Assembly.GetName().Version;
             if (version is not null)
                 versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
 

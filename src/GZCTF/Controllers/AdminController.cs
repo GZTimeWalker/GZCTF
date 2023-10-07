@@ -59,7 +59,7 @@ public class AdminController(UserManager<UserInfo> userManager,
         {
             AccountPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value,
             GlobalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,
-            GamePolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<GamePolicy>>().Value
+            ContainerPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerPolicy>>().Value
         };
 
         return Ok(config);

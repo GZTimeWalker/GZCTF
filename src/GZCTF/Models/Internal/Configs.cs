@@ -41,14 +41,19 @@ public class AccountPolicy
 }
 
 /// <summary>
-/// 比赛策略
+/// 容器策略
 /// </summary>
-public class GamePolicy
+public class ContainerPolicy
 {
     /// <summary>
     /// 是否在达到数量限制时自动销毁最早的容器
     /// </summary>
     public bool AutoDestroyOnLimitReached { get; set; }
+
+    /// <summary>
+    /// 用户容器数量限制，用于限制练习题目的容器数量
+    /// </summary>
+    public int MaxExerciseContainerCountPerUser { get; set; } = 1;
 }
 
 /// <summary>

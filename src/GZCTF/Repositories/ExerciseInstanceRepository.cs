@@ -1,15 +1,18 @@
+using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace GZCTF.Repositories;
 
 public class ExerciseInstanceRepository(AppDbContext context,
     IContainerManager service,
     IContainerRepository containerRepository,
+     IOptionsSnapshot<ContainerPolicy> containerPolicy,
     ILogger<ExerciseInstanceRepository> logger,
     IStringLocalizer<Program> localizer
 ) : RepositoryBase(context),
@@ -74,7 +77,65 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
         return instance;
     }
-    public Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, int containerLimit = 3, CancellationToken token = default) => throw new NotImplementedException();
+    public async Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, CancellationToken token = default)
+    {
+        if (string.IsNullOrEmpty(instance.Exercise.ContainerImage) || instance.Exercise.ContainerExposePort is null)
+        {
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title], TaskStatus.Denied, LogLevel.Warning);
+            return new TaskResult<Container>(TaskStatus.Failed);
+        }
+
+        // containerLimit == 0 means unlimited
+        int containerLimit = containerPolicy.Value.MaxExerciseContainerCountPerUser;
+        if (containerLimit > 0)
+        {
+            List<ExerciseInstance> running = await context.ExerciseInstances
+                .Where(i => i.User == user && i.Container != null)
+                .OrderBy(i => i.Container!.StartedAt).ToListAsync(token);
+
+            ExerciseInstance? first = running.FirstOrDefault();
+            if (running.Count >= containerLimit && first is not null)
+            {
+                logger.Log(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), user.UserName!, first.Exercise.Title, first.Container!.ContainerId],
+                    user, TaskStatus.Success);
+                await containerRepository.DestroyContainer(running.First().Container!, token);
+            }
+        }
+
+        if (instance.Container is not null)
+            return new TaskResult<Container>(TaskStatus.Success, instance.Container);
+
+        await context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
+
+        Container? container = await service.CreateContainerAsync(new ContainerConfig
+        {
+            TeamId = "exercise",
+            UserId = user.Id,
+            Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
+            Image = instance.Exercise.ContainerImage,
+            CPUCount = instance.Exercise.CPUCount ?? 1,
+            MemoryLimit = instance.Exercise.MemoryLimit ?? 64,
+            StorageLimit = instance.Exercise.StorageLimit ?? 256,
+            EnableTrafficCapture = false,
+            ExposedPort = instance.Exercise.ContainerExposePort ?? throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
+        }, token);
+
+        if (container is null)
+        {
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title], TaskStatus.Failed, LogLevel.Warning);
+            return new TaskResult<Container>(TaskStatus.Failed);
+        }
+
+        instance.Container = container;
+        instance.LastContainerOperation = DateTimeOffset.UtcNow;
+
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!, instance.Exercise.Title, container.ContainerId], user,
+            TaskStatus.Success);
+
+        await SaveAsync(token);
+
+        return new TaskResult<Container>(TaskStatus.Success, instance.Container);
+    }
     public Task<ExerciseInstance[]> GetExerciseInstances(UserInfo user, CancellationToken token = default) => throw new NotImplementedException();
     public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default) => throw new NotImplementedException();
     public Task<VerifyResult> VerifyAnswer(string answer, CancellationToken token = default) => throw new NotImplementedException();

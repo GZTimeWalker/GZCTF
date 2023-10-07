@@ -38,8 +38,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
 
         foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
         {
-            await containerService.DestroyContainerAsync(container);
-            await containerRepo.RemoveContainer(container);
+            await containerRepo.DestroyContainer(container);
             logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer), container.ContainerId], TaskStatus.Success, LogLevel.Debug);
         }
     }

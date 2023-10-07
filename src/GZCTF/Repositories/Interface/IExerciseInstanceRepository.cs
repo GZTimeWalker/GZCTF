@@ -35,11 +35,10 @@ public interface IExerciseInstanceRepository : IRepository
     /// 创建容器实例
     /// </summary>
     /// <param name="instance">实例对象</param>
-    /// <param name="containerLimit">容器数量限制</param>
     /// <param name="user">用户对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, int containerLimit = 3, CancellationToken token = default);
+    public Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, CancellationToken token = default);
 
     /// <summary>
     /// 容器延期

@@ -31,7 +31,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         configs.UnionWith(ConfigService.GetConfigs(new AccountPolicy()));
         configs.UnionWith(ConfigService.GetConfigs(new GlobalConfig()));
-        configs.UnionWith(ConfigService.GetConfigs(new GamePolicy()));
+        configs.UnionWith(ConfigService.GetConfigs(new ContainerPolicy()));
 
         return configs;
     }

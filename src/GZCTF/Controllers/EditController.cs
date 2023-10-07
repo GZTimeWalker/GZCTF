@@ -645,8 +645,7 @@ public class EditController(
         if (challenge.TestContainer is null)
             return Ok();
 
-        await containerService.DestroyContainerAsync(challenge.TestContainer, token);
-        await containerRepository.RemoveContainer(challenge.TestContainer, token);
+        await containerRepository.DestroyContainer(challenge.TestContainer, token);
 
         return Ok();
     }

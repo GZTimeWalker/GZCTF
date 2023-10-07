@@ -13,7 +13,7 @@ public class GameInstanceRepository(AppDbContext context,
     ICheatInfoRepository cheatInfoRepository,
     IContainerRepository containerRepository,
     IGameEventRepository gameEventRepository,
-    IOptionsSnapshot<GamePolicy> gamePolicy,
+    IOptionsSnapshot<ContainerPolicy> containerPolicy,
     ILogger<GameInstanceRepository> logger,
     IStringLocalizer<Program> localizer) : RepositoryBase(context), IGameInstanceRepository
 {
@@ -111,7 +111,7 @@ public class GameInstanceRepository(AppDbContext context,
         // containerLimit == 0 means unlimited
         if (containerLimit > 0)
         {
-            if (gamePolicy.Value.AutoDestroyOnLimitReached)
+            if (containerPolicy.Value.AutoDestroyOnLimitReached)
             {
                 List<GameInstance> running = await context.GameInstances
                     .Where(i => i.Participation == gameInstance.Participation && i.Container != null)
