@@ -19,4 +19,15 @@ public class AttachmentCreateModel
     /// 文件 Url（远程文件）
     /// </summary>
     public string? RemoteUrl { get; set; } = string.Empty;
+
+    internal Attachment? ToAttachment(LocalFile? localFile) => AttachmentType switch
+    {
+        FileType.None => null,
+        _ => new()
+        {
+            Type = AttachmentType,
+            LocalFile = localFile,
+            RemoteUrl = RemoteUrl
+        },
+    };
 }

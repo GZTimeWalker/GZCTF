@@ -42,5 +42,15 @@ public class FlagContext
     /// </summary>
     public GameChallenge? Challenge { get; set; }
 
+    /// <summary>
+    /// 练习题Id
+    /// </summary>
+    public int ExerciseId { get; set; }
+
+    /// <summary>
+    /// 练习题
+    /// </summary>
+    public ExerciseChallenge? Exercise { get; set; }
+
     #endregion Db Relationship
 }

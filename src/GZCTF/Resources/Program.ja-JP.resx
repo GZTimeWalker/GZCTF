@@ -921,7 +921,7 @@
     <value>チャレンジ {0} のコンテナインスタンスを起動できませんでした</value>
     <comment/>
   </data>
-  <data name="InstanceRepository_ContainerDestroyFailed" xml:space="preserve">
+  <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
     <value>コンテナ [{0}] ({1}) を破棄できませんでした: {2}</value>
     <comment/>
   </data>
@@ -930,7 +930,7 @@
     <comment/>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>チーム {0} のチャレンジ {1}#{2} のインスタンスを取得中に問題が発生しました（同時実行エラーが原因である可能性があります）。ロールバックします。</value>
+    <value>{0} のチャレンジ {1}#{2} のインスタンスを取得中に問題が発生しました（同時実行エラーが原因である可能性があります）。ロールバックします。</value>
     <comment/>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">

@@ -1,12 +1,16 @@
 ﻿using GZCTF.Models.Request.Admin;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Repositories;
 
 public class ContainerRepository(IDistributedCache cache,
+IContainerManager service,
+    ILogger<ContainerRepository> logger,
+
     AppDbContext context) : RepositoryBase(context), IContainerRepository
 {
     public override Task<int> CountAsync(CancellationToken token = default) => context.Containers.CountAsync(token);
@@ -37,18 +41,30 @@ public class ContainerRepository(IDistributedCache cache,
         return context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
     }
 
-    public async Task RemoveContainer(Container container, CancellationToken token = default)
-    {
-        // Do not remove running container from database
-        if (container.Status != ContainerStatus.Destroyed)
-            return;
-
-        await cache.RemoveAsync(CacheKey.ConnectionCount(container.Id), token);
-
-        context.Containers.Remove(container);
-        await SaveAsync(token);
-    }
-
     public async Task<bool> ValidateContainer(Guid guid, CancellationToken token = default) =>
         await context.Containers.AnyAsync(c => c.Id == guid, token);
+    public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)
+    {
+        try
+        {
+            await service.DestroyContainerAsync(container, token);
+
+            if (container.Status != ContainerStatus.Destroyed)
+                return false;
+
+            await cache.RemoveAsync(CacheKey.ConnectionCount(container.Id), token);
+
+            context.Containers.Remove(container);
+            await SaveAsync(token);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerRepository_ContainerDestroyFailed), container.ContainerId[..12], container.Image.Split("/").LastOrDefault() ?? "", ex.Message],
+                TaskStatus.Failed, LogLevel.Warning);
+            return false;
+        }
+    }
 }

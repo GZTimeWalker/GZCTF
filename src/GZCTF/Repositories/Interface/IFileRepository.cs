@@ -55,4 +55,12 @@ public interface IFileRepository : IRepository
     /// <param name="token">取消Token</param>
     /// <returns>文件对象列表</returns>
     public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default);
+
+    /// <summary>
+    /// 删除一个附件
+    /// </summary>
+    /// <param name="attachment"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task DeleteAttachment(Attachment? attachment, CancellationToken token = default);
 }

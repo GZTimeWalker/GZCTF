@@ -209,7 +209,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Container).AutoInclude();
-            entity.Navigation(e => e.Challenge).AutoInclude();
+            entity.Navigation(e => e.Exercise).AutoInclude();
         });
 
         builder.Entity<Container>(entity =>
@@ -267,6 +267,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithMany()
                 .HasForeignKey(e => e.AttachmentId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasMany(e => e.Flags)
+                .WithOne(e => e.Exercise)
+                .HasForeignKey(e => e.ExerciseId);
 
             entity.HasOne(e => e.TestContainer)
                 .WithMany()

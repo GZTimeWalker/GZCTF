@@ -105,6 +105,17 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
     public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default) =>
         context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
 
+    public async Task DeleteAttachment(Attachment? attachment, CancellationToken token = default)
+    {
+        if (attachment is null)
+            return;
+
+        if (attachment.Type == FileType.Local && attachment.LocalFile is not null)
+            await DeleteFile(attachment.LocalFile, token);
+
+        context.Remove(attachment);
+    }
+
     static Stream GetStream(long bufferSize) =>
         bufferSize <= 16 * 1024 * 1024
             ? new MemoryStream()

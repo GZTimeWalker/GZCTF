@@ -891,7 +891,7 @@ public class GameController(
             if (instance.Container.Status == ContainerStatus.Running)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerAlreadyCreated)]));
 
-            await containerRepository.RemoveContainer(instance.Container, token);
+            await containerRepository.DestroyContainer(instance.Container, token);
         }
 
         return await gameInstanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!,
@@ -996,7 +996,7 @@ public class GameController(
 
         var destroyId = instance.Container.ContainerId;
 
-        if (!await gameInstanceRepository.DestroyContainer(instance.Container, token))
+        if (!await containerRepository.DestroyContainer(instance.Container, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerDeletionFailed)]));
 
         instance.LastContainerOperation = DateTimeOffset.UtcNow;

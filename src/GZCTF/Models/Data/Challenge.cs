@@ -95,6 +95,11 @@ public class Challenge
     [ConcurrencyCheck]
     public Guid ConcurrencyStamp { get; set; }
 
+    /// <summary>
+    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// </summary>
+    public string? FlagTemplate { get; set; }
+
     #region Db Relationship
 
     /// <summary>
@@ -118,9 +123,9 @@ public class Challenge
     public Container? TestContainer { get; set; }
 
     /// <summary>
-    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// 题目对应的 Flag 列表
     /// </summary>
-    public string? FlagTemplate { get; set; }
+    public List<FlagContext> Flags { get; set; } = new();
 
     /// <summary>
     /// 为参赛对象生成动态 Flag
@@ -154,11 +159,9 @@ public class Challenge
     }
 
     /// <summary>
-    /// 为用户生成动态 Flag
+    /// 直接生成动态 Flag
     /// </summary>
-    /// <param name="user"></param>
-    /// <returns></returns>
-    internal string GenerateDynamicFlag(UserInfo user)
+    internal string GenerateDynamicFlag()
     {
         if (string.IsNullOrEmpty(FlagTemplate))
             return $"flag{Guid.NewGuid():B}";

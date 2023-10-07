@@ -34,7 +34,6 @@ public class AdminController(UserManager<UserInfo> userManager,
     IConfigService configService,
     IGameRepository gameRepository,
     ITeamRepository teamRepository,
-    IGameInstanceRepository gameInstanceRepository,
     IContainerRepository containerRepository,
     IServiceProvider serviceProvider,
     IParticipationRepository participationRepository,
@@ -544,8 +543,9 @@ public class AdminController(UserManager<UserInfo> userManager,
         if (container is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceNotFound)], StatusCodes.Status404NotFound));
 
-        if (await gameInstanceRepository.DestroyContainer(container, token))
+        if (await containerRepository.DestroyContainer(container, token))
             return Ok();
+
         return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceDestroyFailed)]));
     }
 

@@ -50,14 +50,6 @@ public interface IGameInstanceRepository : IRepository
         int containerLimit = 3, CancellationToken token = default);
 
     /// <summary>
-    /// 销毁容器实例
-    /// </summary>
-    /// <param name="container">容器实例对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<bool> DestroyContainer(Container container, CancellationToken token = default);
-
-    /// <summary>
     /// 容器延期
     /// </summary>
     /// <param name="container">容器实例对象</param>

@@ -113,8 +113,8 @@ public class Container
             return JsonSerializer.SerializeToUtf8Bytes(
                 new
                 {
-                    Challenge = ExerciseInstance.Challenge.Title,
-                    ExerciseInstance.ChallengeId,
+                    Challenge = ExerciseInstance.Exercise.Title,
+                    ExerciseInstance.ExerciseId,
                     ExerciseInstance.User.UserName,
                     ExerciseInstance.UserId,
                     ContainerId,

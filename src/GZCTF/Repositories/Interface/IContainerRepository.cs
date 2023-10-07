@@ -50,10 +50,10 @@ public interface IContainerRepository : IRepository
     public Task<List<Container>> GetDyingContainers(CancellationToken token = default);
 
     /// <summary>
-    /// 移除指定的容器（已经销毁的容器）
+    /// 创建容器
     /// </summary>
-    /// <param name="container">容器对象</param>
+    /// <param name="container"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task RemoveContainer(Container container, CancellationToken token = default);
+    public Task<bool> DestroyContainer(Container container, CancellationToken token = default);
 }

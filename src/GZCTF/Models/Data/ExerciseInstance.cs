@@ -5,22 +5,22 @@ namespace GZCTF.Models.Data;
 
 [Index(nameof(UserId))]
 [Index(nameof(FlagId))]
-[PrimaryKey(nameof(UserId), nameof(ChallengeId))]
+[PrimaryKey(nameof(UserId), nameof(ExerciseId))]
 public class ExerciseInstance : Instance
 {
     /// <summary>
     /// 获取实例附件
     /// </summary>
-    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
+    internal Attachment? Attachment => Exercise.Type == ChallengeType.DynamicAttachment
         ? FlagContext?.Attachment
-        : Challenge.Attachment;
+        : Exercise.Attachment;
 
     /// <summary>
     /// 获取实例附件链接
     /// </summary>
-    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
-        : Challenge.Attachment?.UrlWithName();
+    internal string? AttachmentUrl => Exercise.Type == ChallengeType.DynamicAttachment
+        ? FlagContext?.Attachment?.UrlWithName(Exercise.FileName)
+        : Exercise.Attachment?.UrlWithName();
 
     #region Db Relationship
 
@@ -39,12 +39,12 @@ public class ExerciseInstance : Instance
     /// 题目 Id
     /// </summary>
     [Required]
-    public int ChallengeId { get; set; }
+    public int ExerciseId { get; set; }
 
     /// <summary>
     /// 练习题目对象
     /// </summary>
-    public ExerciseChallenge Challenge { get; set; } = default!;
+    public ExerciseChallenge Exercise { get; set; } = default!;
 
     #endregion
 }

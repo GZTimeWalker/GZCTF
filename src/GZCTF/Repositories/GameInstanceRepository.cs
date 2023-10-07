@@ -39,13 +39,13 @@ public class GameInstanceRepository(AppDbContext context,
             return instance;
         }
 
-        if (instance.Challenge.IsEnabled)
+        var challenge = instance.Challenge;
+
+        if (challenge is null || !challenge.IsEnabled)
         {
             await transaction.CommitAsync(token);
             return null;
         }
-
-        var challenge = instance.Challenge;
 
         try
         {
@@ -99,23 +99,6 @@ public class GameInstanceRepository(AppDbContext context,
         return instance;
     }
 
-    public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)
-    {
-        try
-        {
-            await service.DestroyContainerAsync(container, token);
-            await containerRepository.RemoveContainer(container, token);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerDestroyFailed), container.ContainerId[..12], container.Image.Split("/").LastOrDefault() ?? "", ex.Message],
-                TaskStatus.Failed, LogLevel.Warning);
-            return false;
-        }
-    }
-
     public async Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
         int containerLimit = 3, CancellationToken token = default)
     {
@@ -139,7 +122,7 @@ public class GameInstanceRepository(AppDbContext context,
                 {
                     logger.Log(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), team.Name, first.Challenge.Title, first.Container!.ContainerId],
                         user, TaskStatus.Success);
-                    await DestroyContainer(running.First().Container!, token);
+                    await containerRepository.DestroyContainer(running.First().Container!, token);
                 }
             }
             else

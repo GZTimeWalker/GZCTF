@@ -720,14 +720,14 @@
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
     <value>无法为题目 {0} 启动容器实例</value>
   </data>
-  <data name="InstanceRepository_ContainerDestroyFailed" xml:space="preserve">
+  <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
     <value>销毁容器 [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
     <value>题目 {0}#{1} 请求分配的动态附件数量不足</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>为队伍 {0} 获取题目 {1}#{2} 的实例时遇到问题（可能由于并发错误），回滚中</value>
+    <value>为 {0} 获取题目 {1}#{2} 的实例时遇到问题（可能由于并发错误），回滚中</value>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>创建容器时遇到无效的端口</value>
