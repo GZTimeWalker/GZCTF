@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,40 +26,40 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -119,963 +119,1234 @@
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
     <value>有効なメールドメイン：{0}</value>
+    <comment/>
   </data>
   <data name="Account_AvatarUpdated" xml:space="preserve">
     <value>アバターを変更しました：[{0}]</value>
+    <comment/>
   </data>
   <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
     <value>メールアドレスを変更するには管理者にお問い合わせください。</value>
+    <comment/>
   </data>
   <data name="Account_EmailChanged" xml:space="preserve">
     <value>メールを正常に変更しました</value>
+    <comment/>
   </data>
   <data name="Account_EmailNotConfirmed" xml:space="preserve">
     <value>アカウントは有効化されていません。もう一度登録してください。</value>
+    <comment/>
   </data>
   <data name="Account_EmailSendFailed" xml:space="preserve">
     <value>メールを送信できませんでした。システム管理者に連絡してください。</value>
+    <comment/>
   </data>
   <data name="Account_EmailSent" xml:space="preserve">
     <value>メールを送信しました</value>
+    <comment/>
   </data>
   <data name="Account_EmailUsed" xml:space="preserve">
     <value>メールは既に使用されています</value>
+    <comment/>
   </data>
   <data name="Account_EmailVerificationFailed" xml:space="preserve">
     <value>メールの確認に失敗しました</value>
+    <comment/>
   </data>
   <data name="Account_EmailVerificationPending" xml:space="preserve">
     <value>メール確認待ち</value>
+    <comment/>
   </data>
   <data name="Account_EmailVerified" xml:space="preserve">
     <value>メールを確認しました</value>
+    <comment/>
   </data>
   <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
     <value>ユーザー名またはパスワードが正しくありません</value>
+    <comment/>
   </data>
   <data name="Account_InvalidEmail" xml:space="preserve">
     <value>無効なメールアドレス</value>
+    <comment/>
   </data>
   <data name="Account_PasswordChanged" xml:space="preserve">
     <value>ユーザーはパスワードを更新しました</value>
+    <comment/>
   </data>
   <data name="Account_PasswordReset" xml:space="preserve">
     <value>ユーザーはパスワードリセットに成功しました</value>
+    <comment/>
   </data>
   <data name="Account_RegisterNotEnabled" xml:space="preserve">
     <value>登録機能は無効になっています</value>
+    <comment/>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
     <value>パスワードをリセットするには管理者の管理者にお問い合わせください。</value>
+    <comment/>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
     <value>メールアドレスの更新メールを送信します</value>
+    <comment/>
   </data>
   <data name="Account_SendEmailVerification" xml:space="preserve">
     <value>メールアドレスの確認メールを送信します</value>
+    <comment/>
   </data>
   <data name="Account_TokenValidationFailed" xml:space="preserve">
     <value>コードの認証に失敗しました</value>
+    <comment/>
   </data>
   <data name="Account_UserDisabled" xml:space="preserve">
     <value>アカウントは無効になっています</value>
+    <comment/>
   </data>
   <data name="Account_UserExisting" xml:space="preserve">
     <value>アカウントはすでに存在しています</value>
+    <comment/>
   </data>
   <data name="Account_UserLogined" xml:space="preserve">
     <value>ユーザーは正常にログインしました</value>
+    <comment/>
   </data>
   <data name="Account_UserNotExist" xml:space="preserve">
     <value>ユーザーが存在しません</value>
+    <comment/>
   </data>
   <data name="Account_UserRegistered" xml:space="preserve">
     <value>登録が完了しました</value>
+    <comment/>
   </data>
   <data name="Account_UserRegisteredLog" xml:space="preserve">
     <value>ユーザーは正常に登録されました</value>
+    <comment/>
   </data>
   <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
     <value>正常に登録されました。アカウントは管理者の承認後有効となります。</value>
+    <comment/>
   </data>
   <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
     <value>正常に登録されました。管理者に承認されるまでしばらくお待ちください。</value>
+    <comment/>
   </data>
   <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
     <value>正常に登録されました。メールは確認待ちです。</value>
+    <comment/>
   </data>
   <data name="Account_UserUpdated" xml:space="preserve">
     <value>ユーザーは更新されました：{0} =&gt; {1}</value>
+    <comment/>
   </data>
   <data name="Account_UserUpdateFailed" xml:space="preserve">
     <value>ユーザーの更新に失敗しました</value>
+    <comment/>
   </data>
   <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
     <value>チームリーダーを削除することはできません</value>
+    <comment/>
   </data>
   <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
     <value>コンテナインスタンス破棄に失敗しました</value>
+    <comment/>
   </data>
   <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
     <value>コンテナインスタンスを見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Admin_ParticipationNotFound" xml:space="preserve">
     <value>参加状況を見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
     <value>自分自身を削除することはできません</value>
+    <comment/>
   </data>
   <data name="Team_NotFound" xml:space="preserve">
     <value>チームは見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Admin_UserBatchAdded" xml:space="preserve">
     <value>{0} 人のユーザーを一括追加しました</value>
+    <comment/>
   </data>
   <data name="Admin_UserNotFound" xml:space="preserve">
     <value>ユーザーが見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Assets_DeleteFile" xml:space="preserve">
     <value>ファイル [{0}] を削除しています...</value>
+    <comment/>
   </data>
   <data name="Assets_IOError" xml:space="preserve">
     <value>I/O エラーが発生しました</value>
+    <comment/>
   </data>
   <data name="Assets_FileNotFound" xml:space="preserve">
     <value>存在しないファイル [{0}] {1} を取得しようとしています</value>
+    <comment/>
   </data>
   <data name="Assets_UpdateFile" xml:space="preserve">
     <value>ファイルを更新します [{0}] {1} @ {} bytes</value>
+    <comment/>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
     <value>アクセスが拒否されました</value>
+    <comment/>
   </data>
   <data name="Auth_LoginRequired" xml:space="preserve">
     <value>ログインしてください</value>
+    <comment/>
   </data>
   <data name="Auth_PathAccessForbidden" xml:space="preserve">
     <value>アクセスが許可されていません：{0}</value>
+    <comment/>
   </data>
   <data name="Avatar_UpdateFailed" xml:space="preserve">
     <value>アバターの更新に失敗しました</value>
+    <comment/>
   </data>
   <data name="Cache_GenerationFailed" xml:space="preserve">
     <value>キャッシュの生成に失敗しました：{0}</value>
+    <comment/>
   </data>
   <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
     <value>無効なキャッシュ更新リクエスト：{0}</value>
+    <comment/>
   </data>
   <data name="Cache_NoMatchingRequest" xml:space="preserve">
     <value>キャッシュ更新ワーカーに一致するリクエストが見つかりませんでした：{0}</value>
+    <comment/>
   </data>
   <data name="Cache_Rebuilt" xml:space="preserve">
     <value>キャッシュが再構築されました：{0} @ {1} bytes</value>
+    <comment/>
   </data>
   <data name="Cache_Stopped" xml:space="preserve">
     <value>キャッシュの更新が停止されました</value>
+    <comment/>
   </data>
   <data name="Cache_Updated" xml:space="preserve">
     <value>キャッシュが更新されました：{0} @ {1} bytes</value>
+    <comment/>
   </data>
   <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
     <value>キャッシュ更新ワーカーが更新に失敗しました：{0} @ {1}</value>
+    <comment/>
   </data>
   <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
     <value>キャッシュ更新ワーカーがロックされています：{0}</value>
+    <comment/>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
     <value>タスクがキャンセルされたため、キャッシュの更新ワーカーを停止します</value>
+    <comment/>
   </data>
   <data name="Cache_WorkerStarted" xml:space="preserve">
     <value>キャッシュの更新ワーカーが起動されました</value>
+    <comment/>
   </data>
   <data name="Cache_WorkerStopped" xml:space="preserve">
     <value>キャッシュの更新ワーカーが停止されました</value>
+    <comment/>
   </data>
   <data name="Challenge_NotFound" xml:space="preserve">
     <value>チャレンジは見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Config_GlobalConfigAdded" xml:space="preserve">
     <value>グローバル構成が追加されました：{0} =&gt; {1}</value>
+    <comment/>
   </data>
   <data name="Config_GlobalConfigUpdated" xml:space="preserve">
     <value>グローバル構成が更新されました：{0} =&gt; {1}</value>
+    <comment/>
   </data>
   <data name="Config_InitializingDatabase" xml:space="preserve">
     <value>データベースを初期化しています...</value>
+    <comment/>
   </data>
   <data name="Config_ReloadFailed" xml:space="preserve">
     <value>グローバル構成がリロードできませんでした</value>
+    <comment/>
   </data>
   <data name="Config_TypeNotSupported" xml:space="preserve">
     <value>構成のタイプがサポートされていません</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
     <value>コンテナ {0} を作成できませんでした</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
     <value>コンテナ {0} を作成できませんでした、レスポンス：{1}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
     <value>コンテナ {0} を作成できませんでした、ステータス：{1}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
     <value>コンテナ {0} を削除できませんでした</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
     <value>コンテナ {0} を削除できませんでした、レスポンス：{1}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
     <value>コンテナ {0} を削除できませんでした、ステータス：{1}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
     <value>コンテナ {0} は破壊されました</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerExisted" xml:space="preserve">
     <value>コンテナの {0} は既に存在しているため、削除後に再作成します</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
     <value>コンテナのインスタンス {0} を作成できませんでした</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
     <value>コンテナ {0} を作成できませんでした：{1}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
     <value>コンテナ {0} ({1}) を起動できませんでした</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
     <value>コンテナ{0} のポート情報を取得できませんでしたため作成に失敗しました</value>
+    <comment/>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>コンテナ管理モード：Docker 単一インスタンスコンテナー制御</value>
+    <comment/>
   </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>コンテナ管理モード：K8s Pod コンテナー制御</value>
+    <comment/>
   </data>
   <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
     <value>ポート番号を変換できませんでした：{0}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_PullContainerImage" xml:space="preserve">
     <value>コンテナイメージ {0} を取得しています</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
     <value>サービス {0} を作成できませんでした</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
     <value>サービス {0} を作成できませんでした、レスポンス：{1}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
     <value>サービス {0} を作成できませんでした、ステータス：{1}</value>
+    <comment/>
   </data>
   <data name="ContainerManager_SwarmMode" xml:space="preserve">
     <value>コンテナ管理モード：Docker Swarm クラスタコンテナー制御</value>
+    <comment/>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
     <value>コンテナイメージ名 '{0}' を解析できませんでした</value>
+    <comment/>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Docker が正常に初期化されました ({0})</value>
+    <comment/>
   </data>
   <data name="ContainerProvider_K8sConfigLoadFailed" xml:space="preserve">
     <value>K8s 構成ファイルをロードできませんでした、設定ファイルが存在していますでしょうか：{0}</value>
+    <comment/>
   </data>
   <data name="ContainerProvider_K8sInited" xml:space="preserve">
     <value>K8s が正常に初期化されました ({0})</value>
+    <comment/>
   </data>
   <data name="ContainerProvider_K8sInitFailed" xml:space="preserve">
     <value>K8s の初期化に失敗しました、構成が正しいかどうかを確認してください ({0})</value>
+    <comment/>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>ゲーム #{0} が間もなく開始されます、ランキング キャッシュがキャッシュ キューに追加されました</value>
+    <comment/>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>期限切れのコンテナ [{0}] が削除されました</value>
+    <comment/>
   </data>
   <data name="CronJob_Started" xml:space="preserve">
     <value>スケジュールされたタスクが起動されました</value>
+    <comment/>
   </data>
   <data name="CronJob_Stopped" xml:space="preserve">
     <value>スケジュールされたタスクが停止されました</value>
+    <comment/>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>データベースに接続できませんでした({0})、データベースの接続文字列を確認してください</value>
+    <comment/>
   </data>
   <data name="Database_CurrentConnectionString" xml:space="preserve">
     <value>使っているデータベースの接続文字列：{0}</value>
+    <comment/>
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
     <value>データベースの接続文字列フィールド 'ConnectionStrings' が検出されていませんでした、appsettings.json が正しくマウントおよび設定されていますでしょうか？</value>
+    <comment/>
   </data>
   <data name="FileRepository_CacheLocation" xml:space="preserve">
     <value>キャッシュの場所：{0}</value>
+    <comment/>
   </data>
   <data name="FileRepository_DeleteFile" xml:space="preserve">
     <value>ファイル [{0}] {1} を削除します</value>
+    <comment/>
   </data>
   <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
     <value>画像ファイルを保存できませんでした：{0}</value>
+    <comment/>
   </data>
   <data name="FileRepository_ReferenceCounting" xml:space="preserve">
     <value>ファイルイン参照数 [{0}] {1} =&gt; {2}</value>
+    <comment/>
   </data>
   <data name="File_DeletionFailed" xml:space="preserve">
     <value>ファイルを削除できませんでした</value>
+    <comment/>
   </data>
   <data name="File_NotFound" xml:space="preserve">
     <value>ファイルは存在しません</value>
+    <comment/>
   </data>
   <data name="File_PdfOnly" xml:space="preserve">
     <value>PDF ファイルをアップロードしてください</value>
+    <comment/>
   </data>
   <data name="File_SizeTooLarge" xml:space="preserve">
     <value>ファイルが大きすぎます</value>
+    <comment/>
   </data>
   <data name="File_SizeZero" xml:space="preserve">
     <value>無効なファイルです</value>
+    <comment/>
   </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[正しい回答] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
+    <comment/>
   </data>
   <data name="FlagChecker_AnswerRejected" xml:space="preserve">
     <value>[間違い回答] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
+    <comment/>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
     <value>[不正検出] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
+    <comment/>
   </data>
   <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
     <value>チャレンジ [{0}] はルール違反の疑いがあります、関連チーム [{1}] と [{2}]</value>
+    <comment/>
   </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
     <value>[データベースの同時実行性] サブミッション #{0} のステータスを更新できませんでした</value>
+    <comment/>
   </data>
   <data name="FlagChecker_UnknownInstance" xml:space="preserve">
     <value>[インスタンス不明] チーム [{0}] をチャレンジ [{1}] に提出したレコードが見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_Recheck" xml:space="preserve">
     <value>{0} flag を再度チェックします</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_Started" xml:space="preserve">
     <value>Flag チェッカーが起動されました</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_Stopped" xml:space="preserve">
     <value>Flag チェッカーが停止されました</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
     <value>タスクがキャンセルされたため、チェッカー ワーカー #{0} を停止します</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
     <value>チェッカー ワーカー #{0} に例外が発生しました</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_WorkerStarted" xml:space="preserve">
     <value>チェッカー ワーカー #{0} が起動されました</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_WorkerStartProcessing" xml:space="preserve">
     <value>チェッカー ワーカー #{0} はサブミッション {1} をチェックしています</value>
+    <comment/>
   </data>
   <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
     <value>チェッカー ワーカー #{0} が停止されました</value>
+    <comment/>
   </data>
   <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
     <value>ゲーム {0} での {1} 個のチャレンジに関するファイルを削除しています...</value>
+    <comment/>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
     <value>ゲームを削除できませんでした。関連ファイルが破損している可能性があります。再試行してください。</value>
+    <comment/>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>ゲーム {0} での {1} 個のチームに関するファイルを削除しています...</value>
+    <comment/>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
     <value>設定ファイルの XOR キーが指定されていません。ゲームキーはデータベースに暗号化せず保存します。</value>
+    <comment/>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>参加審査通過後はゲームから抜けられません</value>
+    <comment/>
   </data>
   <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
     <value>未参加のゲームから抜けられません</value>
+    <comment/>
   </data>
   <data name="Game_CaptureNotFound" xml:space="preserve">
     <value>該当のキャプチャが見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
     <value>チャレンジは見つかりませんでしたか、または動的添付ファイルを割り当てられませんでした。</value>
+    <comment/>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>このチャレンジにはすでにコンテナを作成しました</value>
+    <comment/>
   </data>
   <data name="Game_ContainerCreationFailed" xml:space="preserve">
     <value>チャレンジのコンテナを作成できませんでした</value>
+    <comment/>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
     <value>このチャレンジはコンテナの作成はできません</value>
+    <comment/>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} はチャレンジ {1} のコンテナインスタンス [{2}] を破棄しました</value>
+    <comment/>
   </data>
   <data name="Game_ContainerDeletedEvent" xml:space="preserve">
     <value>{0}#{1} はコンテナインスタンスを破棄しました</value>
+    <comment/>
   </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
     <value>チャレンジのコンテナを削除できませんでした</value>
+    <comment/>
   </data>
   <data name="Game_ContainerExpireExtensionNotAllowed" xml:space="preserve">
     <value>コンテナの有効時間を延長できません</value>
+    <comment/>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">
     <value>このチャレンジのコンテナはまだ作成されていません</value>
+    <comment/>
   </data>
   <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
     <value>チームコンテナの数は {0} を超えることはできません</value>
+    <comment/>
   </data>
   <data name="Game_DeadlineExpired" xml:space="preserve">
     <value>提出期限が過ぎました</value>
+    <comment/>
   </data>
   <data name="Game_End" xml:space="preserve">
     <value>ゲームは終了しました</value>
+    <comment/>
   </data>
   <data name="Game_InOtherTeam" xml:space="preserve">
     <value>すでに別のゲームに参加しています</value>
+    <comment/>
   </data>
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>無効なゲーム招待コード</value>
+    <comment/>
   </data>
   <data name="Game_InvalidOrganization" xml:space="preserve">
     <value>無効な参戦組織</value>
+    <comment/>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} はゲーム {1} に正常に参加しました</value>
+    <comment/>
   </data>
   <data name="Game_NotFound" xml:space="preserve">
     <value>ゲームは見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Game_NotMemberOfTeam" xml:space="preserve">
     <value>このチームのメンバーではありません</value>
+    <comment/>
   </data>
   <data name="Game_NotParticipated" xml:space="preserve">
     <value>ゲームに参加していません</value>
+    <comment/>
   </data>
   <data name="Game_NotStarted" xml:space="preserve">
     <value>ゲームはまだ開始されていません</value>
+    <comment/>
   </data>
   <data name="Game_OperationTooFrequent" xml:space="preserve">
     <value>コンテナ操作の試行が多すぎます</value>
+    <comment/>
   </data>
   <data name="Game_ParticipationNotAccepted" xml:space="preserve">
     <value>あなたはまだ参加申請の審査に通過されていませんか、または参加禁止されています。</value>
+    <comment/>
   </data>
   <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
     <value>ランキングダウンロードに失敗しました</value>
+    <comment/>
   </data>
   <data name="Game_SubmissionNotFound" xml:space="preserve">
     <value>提出は見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Game_SubmissionNotice" xml:space="preserve">
-    <value>{0} が「{1}」の {2} を獲得しました。おめでとうございます！</value>
+    <value>{0} が "{1}" の {2} を獲得しました。おめでとうございます！</value>
+    <comment/>
   </data>
   <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
     <value>チームの参加者数が制限を超えています</value>
+    <comment/>
   </data>
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} は {1} の Writeup を正常に提出しました</value>
+    <comment/>
   </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>リーダー</value>
+    <comment/>
   </data>
   <data name="Header_Challenge" xml:space="preserve">
     <value>チャレンジ</value>
+    <comment/>
   </data>
   <data name="Header_Email" xml:space="preserve">
     <value>メール</value>
+    <comment/>
   </data>
   <data name="Header_Member" xml:space="preserve">
     <value>メンバー</value>
+    <comment/>
   </data>
   <data name="Header_PhoneNumber" xml:space="preserve">
     <value>電話番号</value>
+    <comment/>
   </data>
   <data name="Header_Ranking" xml:space="preserve">
     <value>順位</value>
+    <comment/>
   </data>
   <data name="Header_ScoringTime" xml:space="preserve">
     <value>得点日時</value>
+    <comment/>
   </data>
   <data name="Header_SolvedNumber" xml:space="preserve">
     <value>解問題数</value>
+    <comment/>
   </data>
   <data name="Header_StdNumber" xml:space="preserve">
     <value>ID 番号</value>
+    <comment/>
   </data>
   <data name="Header_SubmitContent" xml:space="preserve">
     <value>提出内容</value>
+    <comment/>
   </data>
   <data name="Header_SubmitStatus" xml:space="preserve">
     <value>提出状態</value>
+    <comment/>
   </data>
   <data name="Header_SubmitTime" xml:space="preserve">
     <value>提出日時</value>
+    <comment/>
   </data>
   <data name="Header_Team" xml:space="preserve">
     <value>チーム</value>
+    <comment/>
   </data>
   <data name="Header_TotalScore" xml:space="preserve">
     <value>合計得点</value>
+    <comment/>
   </data>
   <data name="Header_User" xml:space="preserve">
     <value>ユーザー</value>
+    <comment/>
   </data>
   <data name="Identity_ConcurrencyFailure" xml:space="preserve">
     <value>同時実行中にエラーが発生しました。後でもう一度試してください。</value>
+    <comment/>
   </data>
   <data name="Identity_DefaultError" xml:space="preserve">
     <value>エラー発生しました。しばらくしてからもう一度お試しください。</value>
+    <comment/>
   </data>
   <data name="Identity_DuplicateEmail" xml:space="preserve">
     <value>メールアドレス {0} はすでに存在しています</value>
+    <comment/>
   </data>
   <data name="Identity_DuplicateRoleName" xml:space="preserve">
     <value>ロール名 {0} は既に存在しています</value>
+    <comment/>
   </data>
   <data name="Identity_DuplicateUserName" xml:space="preserve">
     <value>ユーザー名 {0} は既に使用されています</value>
+    <comment/>
   </data>
   <data name="Identity_InvalidEmail" xml:space="preserve">
     <value>メールアドレス {0} は無効です</value>
+    <comment/>
   </data>
   <data name="Identity_InvalidRoleName" xml:space="preserve">
     <value>無効なロール {0}</value>
+    <comment/>
   </data>
   <data name="Identity_InvalidToken" xml:space="preserve">
     <value>無効な認証コード</value>
+    <comment/>
   </data>
   <data name="Identity_InvalidUserName" xml:space="preserve">
     <value>無効なユーザー名 {0}</value>
+    <comment/>
   </data>
   <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
     <value>ログインはすでにリンクされました</value>
+    <comment/>
   </data>
   <data name="Identity_PasswordMismatch" xml:space="preserve">
     <value>パスワードが正しくありません</value>
+    <comment/>
   </data>
   <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
     <value>パスワードは、数字を含める必要があります。</value>
+    <comment/>
   </data>
   <data name="Identity_PasswordRequiresLower" xml:space="preserve">
     <value>パスワードは、小文字を含める必要があります。</value>
+    <comment/>
   </data>
   <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
     <value>パスワードは、記号を含める必要があります。</value>
+    <comment/>
   </data>
   <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
     <value>パスワードは、少なくとも {0} 文字が必要となります。</value>
+    <comment/>
   </data>
   <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
     <value>パスワードは、大文字を含める必要があります。</value>
+    <comment/>
   </data>
   <data name="Identity_PasswordTooShort" xml:space="preserve">
     <value>パスワードの長さ {0} が短すぎます。</value>
+    <comment/>
   </data>
   <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
     <value>復元コードの引き換えに失敗しました</value>
+    <comment/>
   </data>
   <data name="Identity_UnknownError" xml:space="preserve">
     <value>不明なエラー</value>
+    <comment/>
   </data>
   <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
     <value>ユーザーパスワードは既に存在しています</value>
+    <comment/>
   </data>
   <data name="Identity_UserAlreadyInRole" xml:space="preserve">
     <value>ユーザーは既にロール {0} に割り当てられています。</value>
+    <comment/>
   </data>
   <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
     <value>ユーザー ロックが有効になっていません</value>
+    <comment/>
   </data>
   <data name="Identity_UserNotInRole" xml:space="preserve">
     <value>ユーザーはロール {0} に割り当てられていません。</value>
+    <comment/>
   </data>
   <data name="Init_AdminCreationFailed" xml:space="preserve">
     <value>管理者のアカウント作成に失敗しました。エラー：{0}</value>
+    <comment/>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>プラットフォームプロキシを利用していない時にトラフィックのキャプチャを行うことができません！</value>
+    <comment/>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
     <value>キャッシュ構成は無効です。RedisCache フィールドを確認してください。Redis を使用しない場合は、構成を空に設定してください。</value>
+    <comment/>
   </data>
   <data name="Init_PostContent" xml:space="preserve">
     <value>プロジェクトは AGPL-3.0 ライセンスで [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF) にオープンソースされています。</value>
+    <comment/>
   </data>
   <data name="Init_PostSummary" xml:space="preserve">
     <value>オープンソース CTF プラットフォーム</value>
+    <comment/>
   </data>
   <data name="Init_PostTitle" xml:space="preserve">
     <value>GZ::CTF へようこそ！</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} はチャレンジ {1} のコンテナインスタンス [{2}] を自動的に破棄しました</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
     <value>{0} はチャレンジ {1} のコンテナインスタンス [{2}] を起動しました</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_ContainerCreationEvent" xml:space="preserve">
     <value>{0}#{1} はコンテナインスタンスを起動しました</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
     <value>チャレンジ {0} のコンテナインスタンスを起動できませんでした</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_ContainerDestroyFailed" xml:space="preserve">
     <value>コンテナ [{0}] ({1}) を破棄できませんでした: {2}</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
     <value>チャレンジ {0}#{1} がリクエストした動的添付数量は不足しています</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
     <value>チーム {0} のチャレンジ {1}#{2} のインスタンスを取得中に問題が発生しました（同時実行エラーが原因である可能性があります）。ロールバックします。</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>コンテナの作成中に無効なポートを遭遇しました</value>
+    <comment/>
   </data>
   <data name="InstanceRepository_NoInstance" xml:space="preserve">
     <value>チームを対応する参加者は空です。これは予期されていない状況かもしれません [{0}, {1}]</value>
+    <comment/>
   </data>
   <data name="MailSender_ChangeEmailButton" xml:space="preserve">
     <value>メールを認証する</value>
+    <comment/>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
     <value>アカウントのメールアドレスの変更を行っています。下のボタンをクリックして新しいメールアドレスを認証してください。</value>
+    <comment/>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>メールの変更</value>
+    <comment/>
   </data>
   <data name="MailSender_InvalidRequest" xml:space="preserve">
     <value>メール送信リクエストは無効です</value>
+    <comment/>
   </data>
   <data name="MailSender_MailSendFailed" xml:space="preserve">
     <value>メールの送信に失敗しました</value>
+    <comment/>
   </data>
   <data name="MailSender_ResetPasswordButton" xml:space="preserve">
     <value>パスワードをリセットする</value>
+    <comment/>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
     <value>アカウントのパスワードのリセットを行っています。パスワードをリセットするには、下のボタンをクリックしてパスワードをリセットしてください。</value>
+    <comment/>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>パスワードのリセット</value>
+    <comment/>
   </data>
   <data name="MailSender_SendMail" xml:space="preserve">
     <value>{0} にメールを送信します</value>
+    <comment/>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;
-    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;
-    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;
-    &lt;p&gt;ようこそ，{userName}！&lt;/p&gt;
-    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;
-    &lt;p style="text-align: center; padding: 20px"&gt;
-        &lt;a
-                href="{url}"
-                style="
-          font: 1rem Arial;
-          white-space: nowrap;
-          text-decoration: none;
-          background-color: #000000;
-          color: #ffffff;
-          padding: 10px 20px 10px 20px;
-          border: 1px solid #888888;
-          border-radius: 7px;
-          margin: 10px auto;
-        "
-        &gt;
-            {btnmsg}
-        &lt;/a&gt;
-    &lt;/p&gt;
-    &lt;div style="font-size: 0.8rem"&gt;
-        &lt;p&gt;
-            上のボタンが機能しない場合は、このリンクをブラウザにコピーしてアクセスしてください：&lt;br/&gt;&lt;span
-                style="word-break: break-all; font: 0.8em monospace"
-        &gt;{url}
-        &lt;/span&gt;
-        &lt;/p&gt;
-        &lt;p&gt;このメールに心当たりがない場合はこのメールを無視してください。。&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;GZCTF @ {nowtime}&lt;/p&gt;
-&lt;/div&gt;
-&lt;/body&gt;</value>
+    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;ようこそ，{userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a                href="{url}"                style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            上のボタンが機能しない場合は、このリンクをブラウザにコピーしてアクセスしてください：&lt;br/&gt;&lt;span                style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;このメールに心当たりがない場合はこのメールを無視してください。。&lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;GZCTF @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <comment/>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>メールを確認する</value>
+    <comment/>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
     <value>アカウント登録を行っています。メールアドレス {0} を確認し、以下のボタンをクリックして認証を実行してください。</value>
+    <comment/>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>メール認証</value>
+    <comment/>
   </data>
   <data name="Model_BioTooLong" xml:space="preserve">
     <value>説明が長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_ContentRequired" xml:space="preserve">
     <value>内容は必須です</value>
+    <comment/>
   </data>
   <data name="Model_EmailMalformed" xml:space="preserve">
     <value>メールアドレスが無効です</value>
+    <comment/>
   </data>
   <data name="Model_EmailRequired" xml:space="preserve">
     <value>メールアドレスは必須です</value>
+    <comment/>
   </data>
   <data name="Model_FlagRequired" xml:space="preserve">
     <value>flag は必須です</value>
+    <comment/>
   </data>
   <data name="Model_FlagTooLong" xml:space="preserve">
     <value>flag 文字列が長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_InvitationCodeTooLong" xml:space="preserve">
     <value>招待コードが長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_MalformedPhoneNumber" xml:space="preserve">
     <value>電話番号は無効です</value>
+    <comment/>
   </data>
   <data name="Model_NewPasswordRequired" xml:space="preserve">
     <value>新しいパスワードは必須です</value>
+    <comment/>
   </data>
   <data name="Model_NewPasswordTooShort" xml:space="preserve">
     <value>新しいパスワードが短すぎます</value>
+    <comment/>
   </data>
   <data name="Model_OldPasswordRequired" xml:space="preserve">
     <value>古いパスワードは必須です</value>
+    <comment/>
   </data>
   <data name="Model_OldPasswordTooShort" xml:space="preserve">
     <value>古いパスワードが短すぎます</value>
+    <comment/>
   </data>
   <data name="Model_OutOfRange" xml:space="preserve">
     <value>{0} の値は {1} - {2} である必要があります</value>
+    <comment/>
   </data>
   <data name="Model_PasswordRequired" xml:space="preserve">
     <value>パスワードは必須です</value>
+    <comment/>
   </data>
   <data name="Model_PasswordTooShort" xml:space="preserve">
     <value>パスワードが短すぎます。</value>
+    <comment/>
   </data>
   <data name="Model_RealNameTooLong" xml:space="preserve">
     <value>本名が長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_StdNumberTooLong" xml:space="preserve">
     <value>ID 番号が長すぎます。</value>
+    <comment/>
   </data>
   <data name="Model_TeamBioTooLong" xml:space="preserve">
     <value>チーム署名が長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_TeamNameTooLong" xml:space="preserve">
     <value>チーム名が長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_TitleRequired" xml:space="preserve">
     <value>タイトルは必須です</value>
+    <comment/>
   </data>
   <data name="Model_TitleTooLong" xml:space="preserve">
     <value>タイトルが長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_TitleTooShort" xml:space="preserve">
     <value>タイトルが短すぎます。</value>
+    <comment/>
   </data>
   <data name="Model_TokenRequired" xml:space="preserve">
     <value>Token は必須です</value>
+    <comment/>
   </data>
   <data name="Model_UserNameRequired" xml:space="preserve">
     <value>ユーザー名は必須です</value>
+    <comment/>
   </data>
   <data name="Model_UserNameTooLong" xml:space="preserve">
     <value>ユーザー名が長すぎます</value>
+    <comment/>
   </data>
   <data name="Model_UserNameTooShort" xml:space="preserve">
     <value>ユーザー名が短すぎます</value>
+    <comment/>
   </data>
   <data name="Model_ValidationFailed" xml:space="preserve">
     <value>入力が正しくありませんので確認してください。</value>
+    <comment/>
   </data>
   <data name="Post_NotFound" xml:space="preserve">
     <value>投稿は見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="RateLimit_TooManyRequests" xml:space="preserve">
     <value>リクエストが多すぎます。{0} 秒後にもう一度お試しください。</value>
+    <comment/>
   </data>
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>すべて提出します</value>
+    <comment/>
   </data>
   <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
     <value>所属組織</value>
+    <comment/>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
     <value>チームがロードされていません</value>
+    <comment/>
   </data>
   <data name="Scoreboard_Title" xml:space="preserve">
     <value>スコアボード</value>
+    <comment/>
   </data>
   <data name="Server_Exited" xml:space="preserve">
     <value>サーバーは終了しました</value>
+    <comment/>
   </data>
   <data name="Server_Failed" xml:space="preserve">
     <value>サーバーは例外により予期せず終了しました</value>
+    <comment/>
   </data>
   <data name="Submission_Accepted" xml:space="preserve">
     <value>回答正解</value>
+    <comment/>
   </data>
   <data name="Submission_CheatDetected" xml:space="preserve">
     <value>不正検知</value>
+    <comment/>
   </data>
   <data name="Submission_FirstBlood" xml:space="preserve">
     <value>ファーストブラッド</value>
+    <comment/>
   </data>
   <data name="Submission_FlagSubmitted" xml:space="preserve">
     <value>提出完了</value>
+    <comment/>
   </data>
   <data name="Submission_NotFound" xml:space="preserve">
     <value>サブミッションは見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Submission_SecondBlood" xml:space="preserve">
     <value>セコンドブラッド</value>
+    <comment/>
   </data>
   <data name="Submission_ThirdBlood" xml:space="preserve">
     <value>サードブラッド</value>
+    <comment/>
   </data>
   <data name="Submission_UnknownInstance" xml:space="preserve">
     <value>インスタンス不明</value>
+    <comment/>
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
     <value>間違い回答</value>
+    <comment/>
   </data>
   <data name="Game_CreationFailed" xml:space="preserve">
     <value>ゲームの作成に失敗しました</value>
+    <comment/>
   </data>
   <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
     <value>トラフィックキャプチャを使用できるのはコンテナチャレンジのみです</value>
+    <comment/>
   </data>
   <data name="Challenge_Created" xml:space="preserve">
-    <value>新しいチャレンジ「{0} 」が追加されました</value>
+    <value>新しいチャレンジ [{0}] が追加されました</value>
+    <comment/>
   </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
     <value>動的添付名は空にはできません</value>
+    <comment/>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
     <value>flag の複雑性は不十分です。チームハッシュを追加するか長さを増やすことを検討してください。</value>
+    <comment/>
   </data>
   <data name="Challenge_HintUpdated" xml:space="preserve">
-    <value>「{0}」のヒントが更新されました</value>
+    <value>[{0}]のヒントが更新されました</value>
+    <comment/>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>チャレンジは flag がないため使用できません</value>
+    <comment/>
   </data>
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>動的添付チャレンジについては、Assets API を使用して添付ファイルをアップロードしてください。</value>
+    <comment/>
   </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>コンテナのアドレスを解析できませんでした</value>
+    <comment/>
   </data>
   <data name="Container_ConfigError" xml:space="preserve">
     <value>コンテナ構成エラー</value>
+    <comment/>
   </data>
   <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
     <value>コンテナ接続の上限に達しています</value>
+    <comment/>
   </data>
   <data name="Container_CreationFailed" xml:space="preserve">
     <value>コンテナを作成できませんでした</value>
+    <comment/>
   </data>
   <data name="Container_InvalidClientAddress" xml:space="preserve">
     <value>無効なアクセスアドレス</value>
+    <comment/>
   </data>
   <data name="Container_InvalidPort" xml:space="preserve">
     <value>コンテナの作成中に無効なポートを遭遇しました</value>
+    <comment/>
   </data>
   <data name="Container_NotFound" xml:space="preserve">
     <value>コンテナが存在しません</value>
+    <comment/>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
     <value>テストコンテナ {0} を正常に作成しました</value>
+    <comment/>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
     <value>ファイルを作成できませんでした</value>
+    <comment/>
   </data>
   <data name="Notification_NotFound" xml:space="preserve">
     <value>通知が見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Notification_SystemNotDeletable" xml:space="preserve">
     <value>システム通知は削除できません</value>
+    <comment/>
   </data>
   <data name="Notification_SystemNotEditable" xml:space="preserve">
     <value>システム通知を変更できません</value>
+    <comment/>
   </data>
   <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
     <value>コンテナへの接続に失敗しました ({0})</value>
+    <comment/>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
     <value>コンテナへの接続に失敗しました ({0})。起動中であるか、ネットワーク構成を確認してください -&gt; {1}</value>
+    <comment/>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
     <value>プロキシ処理中にエラーが発生しました</value>
+    <comment/>
   </data>
   <data name="Proxy_TcpDisabled" xml:space="preserve">
     <value>TCP プロキシは無効になっています</value>
+    <comment/>
   </data>
   <data name="Team_AvatarUpdated" xml:space="preserve">
     <value>チーム {0} はアバターを更新しました：[{1}]</value>
+    <comment/>
   </data>
   <data name="Team_AvatarUpdateFailed" xml:space="preserve">
     <value>チームアバターの更新に失敗しました</value>
+    <comment/>
   </data>
   <data name="Team_Created" xml:space="preserve">
     <value>チーム {0} が作成されました</value>
+    <comment/>
   </data>
   <data name="Team_CreationFailed" xml:space="preserve">
     <value>チームを作成できませんでした</value>
+    <comment/>
   </data>
   <data name="Team_Deleted" xml:space="preserve">
     <value>チーム {0} が削除されました</value>
+    <comment/>
   </data>
   <data name="Team_IdTransformFailed" xml:space="preserve">
     <value>チーム ID 変換エラー：{0}</value>
+    <comment/>
   </data>
   <data name="Team_InvalidCode" xml:space="preserve">
     <value>コードが無効です</value>
+    <comment/>
   </data>
   <data name="Team_Locked" xml:space="preserve">
     <value>チームはロックされています</value>
+    <comment/>
   </data>
   <data name="Team_MemberRemoved" xml:space="preserve">
     <value>チーム {0} から {1} を追放しました</value>
+    <comment/>
   </data>
   <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
     <value>複数のチームを作成することはできません</value>
+    <comment/>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>チーム名は空にできません</value>
+    <comment/>
   </data>
   <data name="Team_NameInvalidInvitation" xml:space="preserve">
     <value>{0} からの招待は無効です</value>
+    <comment/>
   </data>
   <data name="Team_NameLocked" xml:space="preserve">
     <value>チーム {0} はロックされています</value>
+    <comment/>
   </data>
   <data name="Team_NameNotFound" xml:space="preserve">
     <value>チーム {0} は見つかりませんでした</value>
+    <comment/>
   </data>
   <data name="Team_NewCaptainNotFound" xml:space="preserve">
     <value>移送先のユーザーは存在しません</value>
+    <comment/>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
     <value>移送先が管理しているチームが多すぎます</value>
+    <comment/>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>チーム {0} に参加しました</value>
+    <comment/>
   </data>
   <data name="Team_UserLeft" xml:space="preserve">
     <value>チーム {0} から離れました</value>
+    <comment/>
   </data>
   <data name="User_AlreadyInTeam" xml:space="preserve">
     <value>すでにこのチームに参加しています。重複して参加する必要はありません。</value>
+    <comment/>
   </data>
   <data name="User_LeaveNotInTeam" xml:space="preserve">
     <value>このチームに参加していないため、チームから離れることはできません</value>
+    <comment/>
   </data>
   <data name="User_NotInTeam" xml:space="preserve">
     <value>ユーザーはチームに属していません</value>
+    <comment/>
   </data>
 </root>
