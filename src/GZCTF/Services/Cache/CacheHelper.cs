@@ -30,6 +30,11 @@ public static class CacheKey
     public const string Posts = "_Posts";
 
     /// <summary>
+    /// 练习是否可用（题目总数不为空）
+    /// </summary>
+    public const string ExerciseAvailable = "_ExerciseAvailable";
+
+    /// <summary>
     /// 缓存更新锁
     /// </summary>
     public static string UpdateLock(string key) => $"_CacheUpdateLock_{key}";

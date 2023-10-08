@@ -1,26 +1,64 @@
+using GZCTF.Extensions;
 using GZCTF.Models.Internal;
-using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Repositories;
 
 public class ExerciseInstanceRepository(AppDbContext context,
+    IDistributedCache cache,
     IContainerManager service,
     IContainerRepository containerRepository,
-     IOptionsSnapshot<ContainerPolicy> containerPolicy,
+    IOptionsSnapshot<ContainerPolicy> containerPolicy,
     ILogger<ExerciseInstanceRepository> logger,
     IStringLocalizer<Program> localizer
 ) : RepositoryBase(context),
     IExerciseInstanceRepository
 {
-    public Task<ExerciseInstance[]> GetExerciseInstances(UserInfo user, CancellationToken token = default)
-        => context.ExerciseInstances.Include(i => i.Exercise).Where(i => i.UserId == user.Id)
+    public async Task<ExerciseInstance[]> GetExerciseInstances(UserInfo user, CancellationToken token = default)
+    {
+        if (!await IsExerciseAvailable(token))
+            return Array.Empty<ExerciseInstance>();
+
+        var exercises = await context.ExerciseInstances
+            .Where(i => i.UserId == user.Id && i.Exercise.IsEnabled)
             .ToArrayAsync(token);
+
+        if (exercises.Length > 0)
+            return exercises;
+
+        var result = new List<ExerciseInstance>();
+
+        foreach (var instance in context.ExerciseChallenges.Include(e => e.Dependencies)
+            .Where(e => e.IsEnabled && e.Dependencies.Count == 0))
+        {
+            var newInst = new ExerciseInstance
+            {
+                Exercise = instance,
+                UserId = user.Id,
+                IsLoaded = false
+            };
+
+            context.ExerciseInstances.Add(newInst);
+            result.Add(newInst);
+        }
+
+        await SaveAsync(token);
+        return result.ToArray();
+    }
+
+    Task<bool> IsExerciseAvailable(CancellationToken token = default) =>
+        cache.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+            return context.ExerciseChallenges.AnyAsync(e => e.IsEnabled, token);
+        }, token);
 
     public async Task<ExerciseInstance?> GetInstance(UserInfo user, int exerciseId, CancellationToken token = default)
     {

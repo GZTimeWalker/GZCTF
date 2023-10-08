@@ -70,27 +70,28 @@ public class GameRepository(IDistributedCache cache,
         return scoreboard;
     }
 
-
     public async Task<TaskStatus> DeleteGame(Game game, CancellationToken token = default)
     {
         IDbContextTransaction trans = await BeginTransactionAsync(token);
 
         try
         {
-            await context.Entry(game).Collection(g => g.Challenges).LoadAsync(token);
+            var count = await context.GameChallenges.Where(i => i.Game == game).CountAsync(token);
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, count], TaskStatus.Pending, LogLevel.Debug
+            );
 
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, game.Challenges.Count], TaskStatus.Pending,
-                LogLevel.Debug);
-
-            foreach (GameChallenge chal in game.Challenges)
+            foreach (GameChallenge chal in context.GameChallenges.Where(c => c.Game == game))
                 await challengeRepository.RemoveChallenge(chal, token);
 
-            await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+            count = await context.Participations.Where(i => i.Game == game).CountAsync(token);
 
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
-                LogLevel.Debug);
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, count],
+                TaskStatus.Pending, LogLevel.Debug
+            );
 
-            foreach (Participation part in game.Participations)
+            foreach (Participation part in context.Participations.Where(p => p.Game == game))
                 await participationRepository.RemoveParticipation(part, token);
 
             context.Remove(game);
@@ -103,9 +104,10 @@ public class GameRepository(IDistributedCache cache,
 
             return TaskStatus.Success;
         }
-        catch
+        catch (Exception e)
         {
             logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending, LogLevel.Debug);
+            logger.SystemLog(e.Message, TaskStatus.Failed, LogLevel.Warning);
             await trans.RollbackAsync(token);
 
             return TaskStatus.Failed;
@@ -263,13 +265,15 @@ public class GameRepository(IDistributedCache cache,
                                     } : status switch
                                     {
                                         SubmissionType.Unaccepted => 0,
-                                        SubmissionType.FirstBlood => Convert.ToInt32(s.GameInstance.Challenge.CurrentScore *
-                                                                                     game.BloodBonus.FirstBloodFactor),
+                                        SubmissionType.FirstBlood => Convert.ToInt32(
+                                            s.GameInstance.Challenge.CurrentScore *
+                                            game.BloodBonus.FirstBloodFactor),
                                         SubmissionType.SecondBlood => Convert.ToInt32(
                                             s.GameInstance.Challenge.CurrentScore *
                                             game.BloodBonus.SecondBloodFactor),
-                                        SubmissionType.ThirdBlood => Convert.ToInt32(s.GameInstance.Challenge.CurrentScore *
-                                                                                     game.BloodBonus.ThirdBloodFactor),
+                                        SubmissionType.ThirdBlood => Convert.ToInt32(
+                                            s.GameInstance.Challenge.CurrentScore *
+                                            game.BloodBonus.ThirdBloodFactor),
                                         SubmissionType.Normal => s.GameInstance.Challenge.CurrentScore,
                                         _ => throw new ArgumentException(nameof(status))
                                     }
@@ -305,11 +309,22 @@ public class GameRepository(IDistributedCache cache,
             ? items
                 .GroupBy(i => i.Organization ?? "all")
                 .ToDictionary(i => i.Key, i => i.Take(10)
-                    .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) }).ToArray()
+                    .Select(team => new TopTimeLine
+                    {
+                        Id = team.Id,
+                        Name = team.Name,
+                        Items = GenTimeLine(team.Challenges)
+                    }).ToArray()
                     .AsEnumerable())
             : new();
 
-        timelines["all"] = items.Take(10).Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
+        timelines["all"] = items.Take(10)
+            .Select(team => new TopTimeLine
+            {
+                Id = team.Id,
+                Name = team.Name,
+                Items = GenTimeLine(team.Challenges)
+            })
             .ToArray();
 
         return timelines;

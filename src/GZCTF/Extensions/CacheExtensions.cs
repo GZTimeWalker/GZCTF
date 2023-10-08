@@ -14,7 +14,6 @@ public static class CacheExtensions
         string key,
         Func<DistributedCacheEntryOptions, Task<T>> func,
         CancellationToken token = default)
-        where T : class
     {
         var value = await cache.GetAsync(key, token);
         T? result = default;

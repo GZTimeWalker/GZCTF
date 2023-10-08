@@ -15,7 +15,7 @@ public class GameChallenge : Challenge
     /// 初始分数
     /// </summary>
     [Required]
-    public int OriginalScore { get; set; } = 500;
+    public int OriginalScore { get; set; } = 1000;
 
     /// <summary>
     /// 最低分数比例

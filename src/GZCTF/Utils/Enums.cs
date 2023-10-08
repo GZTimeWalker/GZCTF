@@ -348,6 +348,22 @@ public enum ChallengeTag : byte
 }
 
 /// <summary>
+/// 题目难度
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum Difficulty : byte
+{
+    Baby,
+    Trivial,
+    Easy,
+    Normal,
+    Medium,
+    Hard,
+    Expert,
+    Insane
+}
+
+/// <summary>
 /// 判定结果
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]

@@ -268,6 +268,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasForeignKey(e => e.AttachmentId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            entity.Property(e => e.Tags)
+                .HasConversion(listConverter)
+                .Metadata
+                .SetValueComparer(listComparer);
+
             entity.HasMany(e => e.Flags)
                 .WithOne(e => e.Exercise)
                 .HasForeignKey(e => e.ExerciseId);
@@ -280,8 +285,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasMany(e => e.Dependencies)
                 .WithMany()
                 .UsingEntity<ExerciseDependency>(
-                    l => l.HasOne(e => e.Source).WithMany().HasForeignKey(e => e.SourceId),
-                    r => r.HasOne(e => e.Target).WithMany().HasForeignKey(e => e.TargetId)
+                    l => l.HasOne(e => e.Target).WithMany().HasForeignKey(e => e.TargetId),
+                    r => r.HasOne(e => e.Source).WithMany().HasForeignKey(e => e.SourceId)
                 );
 
             entity.Navigation(e => e.Attachment).AutoInclude();

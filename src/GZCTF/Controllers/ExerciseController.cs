@@ -1,4 +1,5 @@
 using GZCTF.Middlewares;
+using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
@@ -12,6 +13,9 @@ namespace GZCTF.Controllers;
 [Route("api/[controller]")]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class ExerciseController(ILogger<ExerciseController> logger, IStringLocalizer<Program> localizer) : ControllerBase
+public class ExerciseController(ILogger<ExerciseController> logger,
+    IExerciseInstanceRepository exerciseInstanceRepository,
+    IStringLocalizer<Program> localizer) : ControllerBase
 {
+
 }
