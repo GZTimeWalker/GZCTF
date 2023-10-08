@@ -48,13 +48,4 @@ public interface IGameInstanceRepository : IRepository
     /// <returns></returns>
     public Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
         int containerLimit = 3, CancellationToken token = default);
-
-    /// <summary>
-    /// 容器延期
-    /// </summary>
-    /// <param name="container">容器实例对象</param>
-    /// <param name="time">延长时间</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default);
 }

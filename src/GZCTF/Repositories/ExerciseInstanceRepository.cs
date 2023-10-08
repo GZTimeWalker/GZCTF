@@ -18,6 +18,10 @@ public class ExerciseInstanceRepository(AppDbContext context,
 ) : RepositoryBase(context),
     IExerciseInstanceRepository
 {
+    public Task<ExerciseInstance[]> GetExerciseInstances(UserInfo user, CancellationToken token = default)
+        => context.ExerciseInstances.Include(i => i.Exercise).Where(i => i.UserId == user.Id)
+            .ToArrayAsync(token);
+
     public async Task<ExerciseInstance?> GetInstance(UserInfo user, int exerciseId, CancellationToken token = default)
     {
         await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
@@ -27,8 +31,9 @@ public class ExerciseInstanceRepository(AppDbContext context,
             .Where(e => e.ExerciseId == exerciseId && e.UserId == user.Id)
             .SingleOrDefaultAsync(token);
 
+        // we assume that the user has no permission to access the challenge
+        // if the instance does not exist
         if (instance is null)
-            // we assume that the user has no permission to access the challenge
             return null;
 
         if (instance.IsLoaded)
@@ -77,6 +82,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
         return instance;
     }
+
     public async Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Exercise.ContainerImage) || instance.Exercise.ContainerExposePort is null)
@@ -136,7 +142,23 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
         return new TaskResult<Container>(TaskStatus.Success, instance.Container);
     }
-    public Task<ExerciseInstance[]> GetExerciseInstances(UserInfo user, CancellationToken token = default) => throw new NotImplementedException();
-    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default) => throw new NotImplementedException();
-    public Task<VerifyResult> VerifyAnswer(string answer, CancellationToken token = default) => throw new NotImplementedException();
+
+    public async Task<AnswerResult> VerifyAnswer(ExerciseInstance instance, string answer, CancellationToken token = default)
+    {
+        if (instance.Exercise.Type == ChallengeType.DynamicContainer)
+        {
+            if (instance.FlagContext is null)
+                return AnswerResult.NotFound;
+
+            if (instance.FlagContext.Flag == answer)
+                return AnswerResult.Accepted;
+
+            return AnswerResult.WrongAnswer;
+        }
+
+        var ret = await context.FlagContexts.AsNoTracking()
+            .AnyAsync(f => f.ExerciseId == instance.ExerciseId && f.Flag == answer, token);
+
+        return ret ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+    }
 }

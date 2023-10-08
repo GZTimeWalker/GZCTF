@@ -22,8 +22,8 @@ public class ExerciseChallengeRepository(AppDbContext context, IFileRepository f
 
         context.Remove(exercise);
         await SaveAsync(token);
-
     }
+
     public async Task UpdateAttachment(ExerciseChallenge exercise, AttachmentCreateModel model, CancellationToken token = default)
     {
         Attachment? attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));

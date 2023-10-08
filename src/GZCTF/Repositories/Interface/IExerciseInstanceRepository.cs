@@ -26,10 +26,11 @@ public interface IExerciseInstanceRepository : IRepository
     /// <summary>
     /// 验证答案
     /// </summary>
+    /// <param name="instance">当前实例</param>
     /// <param name="answer">当前提交</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<VerifyResult> VerifyAnswer(string answer, CancellationToken token = default);
+    public Task<AnswerResult> VerifyAnswer(ExerciseInstance instance, string answer, CancellationToken token = default);
 
     /// <summary>
     /// 创建容器实例
@@ -39,13 +40,4 @@ public interface IExerciseInstanceRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, CancellationToken token = default);
-
-    /// <summary>
-    /// 容器延期
-    /// </summary>
-    /// <param name="container">容器实例对象</param>
-    /// <param name="time">延长时间</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default);
 }

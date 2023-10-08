@@ -50,6 +50,15 @@ public interface IContainerRepository : IRepository
     public Task<List<Container>> GetDyingContainers(CancellationToken token = default);
 
     /// <summary>
+    /// 容器延期
+    /// </summary>
+    /// <param name="container">容器实例对象</param>
+    /// <param name="time">延长时间</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default);
+
+    /// <summary>
     /// 创建容器
     /// </summary>
     /// <param name="container"></param>

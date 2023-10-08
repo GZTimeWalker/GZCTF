@@ -179,12 +179,6 @@ public class GameInstanceRepository(AppDbContext context,
         return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
     }
 
-    public async Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default)
-    {
-        container.ExpectStopAt += time;
-        await SaveAsync(token);
-    }
-
     public Task<GameInstance[]> GetInstances(GameChallenge challenge, CancellationToken token = default) =>
         context.GameInstances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
             .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
@@ -240,8 +234,7 @@ public class GameInstanceRepository(AppDbContext context,
             Submission updateSub = await context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
             if (instance.FlagContext is null && submission.GameChallenge.Type.IsStatic())
-                updateSub.Status = await context.FlagContexts
-                    .AsNoTracking()
+                updateSub.Status = await context.FlagContexts.AsNoTracking()
                     .AnyAsync(
                         f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
                         token)

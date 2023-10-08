@@ -945,7 +945,7 @@ public class GameController(
         if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(10))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExpireExtensionNotAllowed)]));
 
-        await gameInstanceRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
+        await containerRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }

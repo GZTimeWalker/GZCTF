@@ -11,14 +11,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
     {
         foreach (FlagCreateModel model in models)
         {
-            Attachment? attachment = model.AttachmentType == FileType.None
-                ? null
-                : new()
-                {
-                    Type = model.AttachmentType,
-                    LocalFile = await fileRepository.GetFileByHash(model.FileHash, token),
-                    RemoteUrl = model.RemoteUrl
-                };
+            Attachment? attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
 
             challenge.Flags.Add(new() { Flag = model.Flag, Challenge = challenge, Attachment = attachment });
         }

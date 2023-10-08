@@ -41,6 +41,12 @@ IContainerManager service,
         return context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
     }
 
+    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default)
+    {
+        container.ExpectStopAt += time;
+        return SaveAsync(token);
+    }
+
     public async Task<bool> ValidateContainer(Guid guid, CancellationToken token = default) =>
         await context.Containers.AnyAsync(c => c.Id == guid, token);
     public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)

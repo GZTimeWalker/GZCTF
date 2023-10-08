@@ -99,8 +99,13 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return await DeleteFile(file, token);
     }
 
-    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default) =>
-        context.Files.SingleOrDefaultAsync(f => f.Hash == fileHash, token);
+    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)
+    {
+        if (fileHash is null)
+            return Task.FromResult<LocalFile?>(null);
+
+        return context.Files.SingleOrDefaultAsync(e => e.Hash == fileHash, token);
+    }
 
     public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default) =>
         context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
@@ -116,10 +121,13 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         context.Remove(attachment);
     }
 
-    static Stream GetStream(long bufferSize) =>
-        bufferSize <= 16 * 1024 * 1024
-            ? new MemoryStream()
-            : File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
+    static Stream GetStream(long bufferSize)
+    {
+        if (bufferSize <= 16 * 1024 * 1024)
+            return new MemoryStream();
+
+        return File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
+    }
 
     async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream, CancellationToken token = default)
     {
@@ -154,6 +162,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
 
         using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
 
+        // always overwrite the file in file system
         contentStream.Position = 0;
         await contentStream.CopyToAsync(fileStream, token);
 
