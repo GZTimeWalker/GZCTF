@@ -1,0 +1,5 @@
+files:
+  - source: /src/GZCTF/Resources/Program.resx
+    translation: /src/GZCTF/Resources/Program.%locale%.resx
+  - source: /src/GZCTF/ClientApp/src/resources/strings.json
+    translation: /src/GZCTF/ClientApp/src/resources/strings.%locale%.json
