@@ -118,143 +118,143 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
-    <value>可用邮箱后缀：{0}</value>
+    <value>Available email suffix: {0}</value>
     <comment/>
   </data>
   <data name="Account_AvatarUpdated" xml:space="preserve">
-    <value>更改新头像：[{0}]</value>
+    <value>Change new avatar: [{0}]</value>
     <comment/>
   </data>
   <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
-    <value>请联系管理员修改邮箱</value>
+    <value>Please contact the administrator to change the email</value>
     <comment/>
   </data>
   <data name="Account_EmailChanged" xml:space="preserve">
-    <value>更改邮箱成功</value>
+    <value>Email changed successfully</value>
     <comment/>
   </data>
   <data name="Account_EmailNotConfirmed" xml:space="preserve">
-    <value>账户未激活，请重新注册</value>
+    <value>Account not activated, please register again</value>
     <comment/>
   </data>
   <data name="Account_EmailSendFailed" xml:space="preserve">
-    <value>邮件无法发送，请联系管理员</value>
+    <value>Unable to send email, please contact the administrator</value>
     <comment/>
   </data>
   <data name="Account_EmailSent" xml:space="preserve">
-    <value>邮件发送成功</value>
+    <value>Email sent successfully</value>
     <comment/>
   </data>
   <data name="Account_EmailUsed" xml:space="preserve">
-    <value>邮箱已经被占用</value>
+    <value>Email address is already in use</value>
     <comment/>
   </data>
   <data name="Account_EmailVerificationFailed" xml:space="preserve">
-    <value>邮箱验证失败</value>
+    <value>Email verification failed</value>
     <comment/>
   </data>
   <data name="Account_EmailVerificationPending" xml:space="preserve">
-    <value>邮箱待验证</value>
+    <value>Email pending verification</value>
     <comment/>
   </data>
   <data name="Account_EmailVerified" xml:space="preserve">
-    <value>通过邮箱验证</value>
+    <value>Email verified</value>
     <comment/>
   </data>
   <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
-    <value>用户名或密码错误</value>
+    <value>Wrong username or password</value>
     <comment/>
   </data>
   <data name="Account_InvalidEmail" xml:space="preserve">
-    <value>无效的邮件地址</value>
+    <value>Invalid email address</value>
     <comment/>
   </data>
   <data name="Account_PasswordChanged" xml:space="preserve">
-    <value>用户更新密码</value>
+    <value>User updated password</value>
     <comment/>
   </data>
   <data name="Account_PasswordReset" xml:space="preserve">
-    <value>用户成功重置密码</value>
+    <value>User password reset successful</value>
     <comment/>
   </data>
   <data name="Account_RegisterNotEnabled" xml:space="preserve">
-    <value>注册功能已禁用</value>
+    <value>Registration has been disabled</value>
     <comment/>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>请联系管理员重置密码</value>
+    <value>Please contact the administrator to reset the password</value>
     <comment/>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
-    <value>发送用户邮箱更改邮件</value>
+    <value>Send email to user for email change</value>
     <comment/>
   </data>
   <data name="Account_SendEmailVerification" xml:space="preserve">
-    <value>发送用户邮箱验证邮件</value>
+    <value>Send email to user for email verification</value>
     <comment/>
   </data>
   <data name="Account_TokenValidationFailed" xml:space="preserve">
-    <value>验证码校验失败</value>
+    <value>Captcha failed</value>
     <comment/>
   </data>
   <data name="Account_UserDisabled" xml:space="preserve">
-    <value>用户已被禁用</value>
+    <value>User is disabled</value>
     <comment/>
   </data>
   <data name="Account_UserExisting" xml:space="preserve">
-    <value>此账户已存在</value>
+    <value>This account already exists</value>
     <comment/>
   </data>
   <data name="Account_UserLogined" xml:space="preserve">
-    <value>用户成功登录</value>
+    <value>User successfully logged in</value>
     <comment/>
   </data>
   <data name="Account_UserNotExist" xml:space="preserve">
-    <value>用户不存在</value>
+    <value>User does not exist</value>
     <comment/>
   </data>
   <data name="Account_UserRegistered" xml:space="preserve">
-    <value>注册成功</value>
+    <value>Successfully registered</value>
     <comment/>
   </data>
   <data name="Account_UserRegisteredLog" xml:space="preserve">
-    <value>用户成功注册</value>
+    <value>User successfully registered</value>
     <comment/>
   </data>
   <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
-    <value>注册成功，等待管理员审核</value>
+    <value>Successfully registered, waiting for moderator approval</value>
     <comment/>
   </data>
   <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
-    <value>用户成功注册，待审核</value>
+    <value>User successfully registered, pending approval</value>
     <comment/>
   </data>
   <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
-    <value>注册成功，等待邮箱验证</value>
+    <value>Successfully registered, waiting for email verification</value>
     <comment/>
   </data>
   <data name="Account_UserUpdated" xml:space="preserve">
-    <value>用户更新：{0} =&gt; {1}</value>
+    <value>User updated: {0} =&gt; {1}</value>
     <comment/>
   </data>
   <data name="Account_UserUpdateFailed" xml:space="preserve">
-    <value>用户更新失败</value>
+    <value>User update failed</value>
     <comment/>
   </data>
   <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
-    <value>不可以删除队长</value>
+    <value>You cannot delete captain</value>
     <comment/>
   </data>
   <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
-    <value>容器实例销毁失败</value>
+    <value>Container destruction failed</value>
     <comment/>
   </data>
   <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
-    <value>容器实例未找到</value>
+    <value>Container not found</value>
     <comment/>
   </data>
   <data name="Admin_ParticipationNotFound" xml:space="preserve">
-    <value>参与状态未找到</value>
+    <value>Participation not found</value>
     <comment/>
   </data>
   <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
