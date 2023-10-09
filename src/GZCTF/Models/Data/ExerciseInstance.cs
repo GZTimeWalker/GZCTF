@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Models.Data;
 
 [Index(nameof(UserId))]
-[Index(nameof(FlagId))]
 [PrimaryKey(nameof(UserId), nameof(ExerciseId))]
 public class ExerciseInstance : Instance
 {
@@ -21,6 +20,11 @@ public class ExerciseInstance : Instance
     internal string? AttachmentUrl => Exercise.Type == ChallengeType.DynamicAttachment
         ? FlagContext?.Attachment?.UrlWithName(Exercise.FileName)
         : Exercise.Attachment?.UrlWithName();
+
+    /// <summary>
+    /// 答案解出的时间
+    /// </summary>
+    public DateTimeOffset SolveTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     #region Db Relationship
 

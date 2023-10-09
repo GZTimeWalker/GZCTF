@@ -33,14 +33,17 @@ public class ExerciseInstanceRepository(AppDbContext context,
         if (exercises.Length > 0)
             return exercises;
 
+        using var transaction = await context.Database.BeginTransactionAsync(token);
+
         var result = new List<ExerciseInstance>();
 
-        foreach (var instance in context.ExerciseChallenges.Include(e => e.Dependencies)
-            .Where(e => e.IsEnabled && e.Dependencies.Count == 0))
+        await foreach (var id in context.ExerciseChallenges
+            .Where(e => e.IsEnabled && context.ExerciseDependencies.All(d => d.TargetId != e.Id))
+            .Select(e => e.Id).AsAsyncEnumerable())
         {
             var newInst = new ExerciseInstance
             {
-                Exercise = instance,
+                ExerciseId = id,
                 UserId = user.Id,
                 IsLoaded = false
             };
@@ -50,6 +53,8 @@ public class ExerciseInstanceRepository(AppDbContext context,
         }
 
         await SaveAsync(token);
+        await transaction.CommitAsync(token);
+
         return result.ToArray();
     }
 
@@ -181,7 +186,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
         return new TaskResult<Container>(TaskStatus.Success, instance.Container);
     }
 
-    public async Task<AnswerResult> VerifyAnswer(ExerciseInstance instance, string answer, CancellationToken token = default)
+    public async Task<AnswerResult> VerifyAnswer(UserInfo user, ExerciseInstance instance, string answer, CancellationToken token = default)
     {
         if (instance.Exercise.Type == ChallengeType.DynamicContainer)
         {
@@ -189,14 +194,61 @@ public class ExerciseInstanceRepository(AppDbContext context,
                 return AnswerResult.NotFound;
 
             if (instance.FlagContext.Flag == answer)
+            {
+                await MarkSolved(instance, token);
+                await UnlockExercises(user, token);
                 return AnswerResult.Accepted;
+            }
 
             return AnswerResult.WrongAnswer;
         }
 
-        var ret = await context.FlagContexts.AsNoTracking()
-            .AnyAsync(f => f.ExerciseId == instance.ExerciseId && f.Flag == answer, token);
+        if (await context.FlagContexts.AsNoTracking()
+            .AnyAsync(f => f.ExerciseId == instance.ExerciseId && f.Flag == answer, token))
+        {
+            await MarkSolved(instance, token);
+            await UnlockExercises(user, token);
+            return AnswerResult.Accepted;
+        }
 
-        return ret ? AnswerResult.Accepted : AnswerResult.WrongAnswer;
+        return AnswerResult.WrongAnswer;
+    }
+
+    internal async Task MarkSolved(ExerciseInstance instance, CancellationToken token = default)
+    {
+        if (instance.IsSolved)
+            return;
+
+        using var transaction = await context.Database.BeginTransactionAsync(token);
+
+        instance.IsSolved = true;
+        instance.SolveTimeUtc = DateTimeOffset.UtcNow;
+        await SaveAsync(token);
+
+        await transaction.CommitAsync(token);
+    }
+
+    internal async Task UnlockExercises(UserInfo user, CancellationToken token = default)
+    {
+        using var transaction = await context.Database.BeginTransactionAsync(token);
+
+        await foreach (var id in context.ExerciseChallenges.Where(chal => chal.IsEnabled &&
+            context.ExerciseInstances.All(i => i.UserId == user.Id && i.ExerciseId != chal.Id) &&
+            context.ExerciseDependencies.All(dep => dep.TargetId == chal.Id &&
+                context.ExerciseInstances.Any(e => e.IsSolved && e.ExerciseId == dep.SourceId
+            ))).Select(e => e.Id).AsAsyncEnumerable())
+        {
+            var newInst = new ExerciseInstance
+            {
+                ExerciseId = id,
+                UserId = user.Id,
+                IsLoaded = false
+            };
+
+            context.ExerciseInstances.Add(newInst);
+        }
+
+        await SaveAsync(token);
+        await transaction.CommitAsync(token);
     }
 }

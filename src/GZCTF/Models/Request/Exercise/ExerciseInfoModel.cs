@@ -11,9 +11,19 @@ public class ExerciseInfoModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
+    /// 练习题目的难度，用作标签、排序等
+    /// </summary>
+    public Difficulty Difficulty { get; set; }
+
+    /// <summary>
     /// 练习标签
     /// </summary>
     public ChallengeTag Tag { get; set; }
+
+    /// <summary>
+    /// 练习附加标签
+    /// </summary>
+    public List<string>? Tags { get; set; } = new();
 
     /// <summary>
     /// 练习积分
@@ -21,12 +31,12 @@ public class ExerciseInfoModel
     public int Credit { get; set; }
 
     /// <summary>
-    /// 解出队伍数量
+    /// 解决题目人数
     /// </summary>
-    public int SolvedCount { get; set; }
+    public int AcceptedCount { get; set; }
 
     /// <summary>
-    /// 提交数量
+    /// 提交答案的数量
     /// </summary>
     public int SubmissionCount { get; set; }
 }

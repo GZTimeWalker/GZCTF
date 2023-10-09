@@ -58,6 +58,11 @@ public partial class UserInfo : IdentityUser<Guid>
     [ProtectedPersonalData]
     public string StdNumber { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 在练习排行榜中隐藏
+    /// </summary>
+    public bool ExerciseVisible { get; set; } = true;
+
     [NotMapped]
     [MemoryPackIgnore]
     public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";

@@ -24,13 +24,14 @@ public interface IExerciseInstanceRepository : IRepository
     public Task<ExerciseInstance[]> GetExerciseInstances(UserInfo user, CancellationToken token = default);
 
     /// <summary>
-    /// 验证答案
+    /// 验证答案并解锁题目
     /// </summary>
+    /// <param name="user">当前用户</param>
     /// <param name="instance">当前实例</param>
     /// <param name="answer">当前提交</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<AnswerResult> VerifyAnswer(ExerciseInstance instance, string answer, CancellationToken token = default);
+    public Task<AnswerResult> VerifyAnswer(UserInfo user, ExerciseInstance instance, string answer, CancellationToken token = default);
 
     /// <summary>
     /// 创建容器实例

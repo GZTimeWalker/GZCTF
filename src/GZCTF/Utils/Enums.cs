@@ -353,14 +353,14 @@ public enum ChallengeTag : byte
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Difficulty : byte
 {
-    Baby,
-    Trivial,
-    Easy,
-    Normal,
-    Medium,
-    Hard,
-    Expert,
-    Insane
+    Baby = 0,
+    Trivial = 1,
+    Easy = 2,
+    Normal = 3,
+    Medium = 4,
+    Hard = 5,
+    Expert = 6,
+    Insane = 7
 }
 
 /// <summary>

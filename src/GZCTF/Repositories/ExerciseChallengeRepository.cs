@@ -14,6 +14,9 @@ public class ExerciseChallengeRepository(AppDbContext context, IFileRepository f
         return exercise;
     }
 
+    public Task<int[]> GetDependencies(ExerciseChallenge exercise, CancellationToken token = default)
+        => context.ExerciseDependencies.Where(d => d.TargetId == exercise.Id).Select(d => d.SourceId).ToArrayAsync(token);
+
     public Task<ExerciseChallenge[]> GetExercises(CancellationToken token = default) => context.ExerciseChallenges.OrderBy(e => e.Id).ToArrayAsync(token);
 
     public async Task RemoveExercise(ExerciseChallenge exercise, CancellationToken token = default)

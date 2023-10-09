@@ -66,6 +66,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Property(e => e.UserName)
                 .HasMaxLength(16);
 
+            entity.Property(e => e.ExerciseVisible)
+                .HasDefaultValue(true);
+
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
