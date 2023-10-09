@@ -258,67 +258,67 @@
     <comment/>
   </data>
   <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
-    <value>不可以删除自己</value>
+    <value>You cannot delete yourself</value>
     <comment/>
   </data>
   <data name="Team_NotFound" xml:space="preserve">
-    <value>队伍未找到</value>
+    <value>Team not found</value>
     <comment/>
   </data>
   <data name="Admin_UserBatchAdded" xml:space="preserve">
-    <value>成功批量添加 {0} 个用户</value>
+    <value>Successfully added {0} users</value>
     <comment/>
   </data>
   <data name="Admin_UserNotFound" xml:space="preserve">
-    <value>用户未找到</value>
+    <value>User not found</value>
     <comment/>
   </data>
   <data name="Assets_DeleteFile" xml:space="preserve">
-    <value>删除文件 [{0}]...</value>
+    <value>Deleting file [{0}]...</value>
     <comment/>
   </data>
   <data name="Assets_IOError" xml:space="preserve">
-    <value>遇到IO错误</value>
+    <value>Encountered an IO error</value>
     <comment/>
   </data>
   <data name="Assets_FileNotFound" xml:space="preserve">
-    <value>尝试获取不存在的文件 [{0}] {1}</value>
+    <value>Attempting to fetch non-existing file [{0}] {1}</value>
     <comment/>
   </data>
   <data name="Assets_UpdateFile" xml:space="preserve">
-    <value>更新文件 [{0}] {1} @ {} bytes</value>
+    <value>File updated [{0}] {1} @ {2} bytes</value>
     <comment/>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
-    <value>无权访问</value>
+    <value>Access denied</value>
     <comment/>
   </data>
   <data name="Auth_LoginRequired" xml:space="preserve">
-    <value>请先登录</value>
+    <value>Please log in first</value>
     <comment/>
   </data>
   <data name="Auth_PathAccessForbidden" xml:space="preserve">
-    <value>未经授权的访问：{0}</value>
+    <value>Unauthorized access: {0}</value>
     <comment/>
   </data>
   <data name="Avatar_UpdateFailed" xml:space="preserve">
-    <value>用户头像更新失败</value>
+    <value>User avatar update failed</value>
     <comment/>
   </data>
   <data name="Cache_GenerationFailed" xml:space="preserve">
-    <value>缓存生成失败：{0}</value>
+    <value>Cache generation failed: {0}</value>
     <comment/>
   </data>
   <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
-    <value>无效的缓存更新请求：{0}</value>
+    <value>Invalid cache request: {0}</value>
     <comment/>
   </data>
   <data name="Cache_NoMatchingRequest" xml:space="preserve">
-    <value>缓存更新线程未找到匹配的请求：{0}</value>
+    <value>No matching request found for cache worker: {0}</value>
     <comment/>
   </data>
   <data name="Cache_Rebuilt" xml:space="preserve">
-    <value>重建缓存：{0} @ {1} bytes</value>
+    <value>Rebuild cache: {0} @ {1} bytes</value>
     <comment/>
   </data>
   <data name="Cache_Stopped" xml:space="preserve">
@@ -326,15 +326,15 @@
     <comment/>
   </data>
   <data name="Cache_Updated" xml:space="preserve">
-    <value>缓存已更新：{0} @ {1} bytes</value>
+    <value>Cache updated: {0} @ {1} bytes</value>
     <comment/>
   </data>
   <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
-    <value>缓存更新线程更新失败：{0} @ {1}</value>
+    <value>Cache update failed: {0} @ {1}</value>
     <comment/>
   </data>
   <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
-    <value>缓存更新线程已锁定：{0}</value>
+    <value>Cache update worker locked: {0}</value>
     <comment/>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
@@ -374,35 +374,35 @@
     <comment/>
   </data>
   <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
-    <value>容器 {0} 创建失败</value>
+    <value>Failed to create container {0}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
-    <value>容器 {0} 创建失败, 响应：{1}</value>
+    <value>Failed to create container {0}, response: {1}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
-    <value>容器 {0} 创建失败, 状态：{1}</value>
+    <value>Failed to create container {0}, status: {1}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
-    <value>容器 {0} 删除失败</value>
+    <value>Failed to delete container {0}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
-    <value>容器 {0} 删除失败, 响应：{1}</value>
+    <value>Failed to delete container {0}, response: {1}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
-    <value>容器 {0} 删除失败, 状态：{1}</value>
+    <value>Failed to delete container {0}, status: {1}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
-    <value>容器 {0} 已被销毁</value>
+    <value>Container {0} has been destroyed</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerExisted" xml:space="preserve">
-    <value>容器 {0} 已存在，尝试移除后重新创建</value>
+    <value>Container {0} already exists, try removing it and recreating it</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
