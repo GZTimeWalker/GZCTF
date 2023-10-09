@@ -15,7 +15,8 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
     {
         using Stream tmp = GetStream(file.Length);
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation), tmp.GetType()], TaskStatus.Pending, LogLevel.Trace);
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation), tmp.GetType()], TaskStatus.Pending,
+            LogLevel.Trace);
 
         await file.CopyToAsync(tmp, token);
         return await StoreLocalFile(fileName ?? file.FileName, tmp, token);
@@ -51,7 +52,8 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         }
         catch
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ImageSaveFailed), file.Name], TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ImageSaveFailed), file.Name], TaskStatus.Failed,
+                LogLevel.Warning);
             return null;
         }
     }
@@ -64,7 +66,9 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         {
             file.ReferenceCount--; // other ref exists, decrease ref count
 
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting), file.Hash[..8], file.Name, file.ReferenceCount], TaskStatus.Success,
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting), file.Hash[..8], file.Name, file.ReferenceCount],
+                TaskStatus.Success,
                 LogLevel.Debug);
 
             await SaveAsync(token);
@@ -72,7 +76,8 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
             return TaskStatus.Success;
         }
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_DeleteFile), file.Hash[..8], file.Name], TaskStatus.Pending, LogLevel.Information);
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_DeleteFile), file.Hash[..8], file.Name], TaskStatus.Pending,
+            LogLevel.Information);
 
         if (File.Exists(path))
         {
@@ -144,7 +149,9 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
             localFile.UploadTimeUtc = DateTimeOffset.UtcNow; // update upload time
             localFile.ReferenceCount++; // same hash, add ref count
 
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting), localFile.Hash[..8], localFile.Name, localFile.ReferenceCount],
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting), localFile.Hash[..8], localFile.Name,
+                    localFile.ReferenceCount],
                 TaskStatus.Success, LogLevel.Debug);
 
             context.Update(localFile);

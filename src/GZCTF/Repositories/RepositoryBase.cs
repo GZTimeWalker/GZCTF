@@ -17,6 +17,7 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
     {
         var saved = false;
         while (!saved)
+        {
             try
             {
                 await context.SaveChangesAsync(token);
@@ -28,6 +29,7 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
                 foreach (EntityEntry entry in ex.Entries)
                     entry.Reload();
             }
+        }
     }
 
     public void Detach(object item) => context.Entry(item).State = EntityState.Detached;

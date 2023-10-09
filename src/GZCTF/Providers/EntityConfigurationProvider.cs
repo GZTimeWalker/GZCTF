@@ -39,6 +39,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
     async Task WatchDatabase(CancellationToken token)
     {
         while (!token.IsCancellationRequested)
+        {
             try
             {
                 await Task.Delay(source.PollingInterval, token);
@@ -57,6 +58,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             {
                 Log.Logger?.Error(ex, Program.StaticLocalizer[nameof(Resources.Program.Config_ReloadFailed)]);
             }
+        }
     }
 
     AppDbContext CreateAppDbContext()

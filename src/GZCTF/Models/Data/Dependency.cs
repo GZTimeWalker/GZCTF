@@ -36,4 +36,6 @@ public abstract class Dependency<T> where T : class
 /// <summary>
 /// 练习题目依赖关系
 /// </summary>
-public class ExerciseDependency : Dependency<ExerciseChallenge> { }
+public class ExerciseDependency : Dependency<ExerciseChallenge>
+{
+}

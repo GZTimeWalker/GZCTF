@@ -39,9 +39,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
     {
         _dockerMeta = new()
         {
-            Config = options.Value.DockerConfig ?? new(),
-            PortMappingType = options.Value.PortMappingType,
-            PublicEntry = options.Value.PublicEntry
+            Config = options.Value.DockerConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
         };
         _localizer = localizer;
 
@@ -57,7 +55,8 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             _dockerMeta.Auth = new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
 
         logger.SystemLog(
-            Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_DockerInited), string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri],
+            Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_DockerInited),
+                string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri],
             TaskStatus.Success, LogLevel.Debug);
     }
 

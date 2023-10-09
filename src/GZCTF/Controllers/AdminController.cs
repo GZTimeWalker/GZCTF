@@ -145,7 +145,8 @@ public class AdminController(UserManager<UserInfo> userManager,
                         default:
                             await trans.RollbackAsync(token);
                             return BadRequest(
-                                new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
+                                new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                    localizer[nameof(Resources.Program.Identity_UnknownError)]));
                     }
 
                     if (userInfo is not null)
@@ -158,7 +159,8 @@ public class AdminController(UserManager<UserInfo> userManager,
                     if (!result.Succeeded || userInfo is null)
                     {
                         await trans.RollbackAsync(token);
-                        return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
+                        return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                              localizer[nameof(Resources.Program.Identity_UnknownError)]));
                     }
                 }
 

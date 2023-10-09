@@ -12,11 +12,12 @@ namespace GZCTF.Services.Container.Manager;
 public class DockerManager : IContainerManager
 {
     readonly DockerClient _client;
-    readonly ILogger<DockerManager> _logger;
     readonly IStringLocalizer<Program> _localizer;
+    readonly ILogger<DockerManager> _logger;
     readonly DockerMetadata _meta;
 
-    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger, IStringLocalizer<Program> localizer)
+    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger,
+        IStringLocalizer<Program> localizer)
     {
         _logger = logger;
         _localizer = localizer;
@@ -35,18 +36,24 @@ public class DockerManager : IContainerManager
         }
         catch (DockerContainerNotFoundException)
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId], TaskStatus.Success, LogLevel.Debug);
+            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
         {
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
-                _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId], TaskStatus.Success, LogLevel.Debug);
+                _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                    TaskStatus.Success, LogLevel.Debug);
             }
             else
             {
-                _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus), container.ContainerId, e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-                _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse), container.ContainerId, e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
+                _logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus), container.ContainerId,
+                        e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+                _logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse), container.ContainerId,
+                        e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
                 return;
             }
         }
@@ -77,7 +84,8 @@ public class DockerManager : IContainerManager
         }
         catch (DockerImageNotFoundException)
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image], TaskStatus.Pending, LogLevel.Information);
+            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
+                TaskStatus.Pending, LogLevel.Information);
 
             await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, _meta.Auth,
                 new Progress<JSONMessage>(msg =>
@@ -113,7 +121,8 @@ public class DockerManager : IContainerManager
             if (retry == 3)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed), container.ContainerId[..12], config.Image.Split("/").LastOrDefault() ?? ""],
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed), container.ContainerId[..12],
+                        config.Image.Split("/").LastOrDefault() ?? ""],
                     TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
@@ -132,7 +141,9 @@ public class DockerManager : IContainerManager
 
         if (container.Status != ContainerStatus.Running)
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError), config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
+                    config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
@@ -153,7 +164,8 @@ public class DockerManager : IContainerManager
             if (int.TryParse(port, out var numPort))
                 container.PublicPort = numPort;
             else
-                _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port], TaskStatus.Failed, LogLevel.Warning);
+                _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port], TaskStatus.Failed,
+                    LogLevel.Warning);
 
             if (!string.IsNullOrEmpty(_meta.PublicEntry))
                 container.PublicIP = _meta.PublicEntry;
@@ -166,18 +178,12 @@ public class DockerManager : IContainerManager
         new()
         {
             Image = config.Image,
-            Labels = new Dictionary<string, string>
-            {
-                ["TeamId"] = config.TeamId,
-                ["UserId"] = config.UserId.ToString()
-            },
+            Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId.ToString() },
             Name = DockerMetadata.GetName(config),
             Env = config.Flag is null ? Array.Empty<string>() : new[] { $"GZCTF_FLAG={config.Flag}" },
             HostConfig = new()
             {
-                Memory = config.MemoryLimit * 1024 * 1024,
-                CPUPercent = config.CPUCount * 10,
-                NetworkMode = _meta.Config.ChallengeNetwork
+                Memory = config.MemoryLimit * 1024 * 1024, CPUPercent = config.CPUCount * 10, NetworkMode = _meta.Config.ChallengeNetwork
             }
         };
 }

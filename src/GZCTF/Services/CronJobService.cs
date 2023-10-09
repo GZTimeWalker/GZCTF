@@ -39,7 +39,8 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
         {
             await containerRepo.DestroyContainer(container);
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer), container.ContainerId], TaskStatus.Success, LogLevel.Debug);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer), container.ContainerId],
+                TaskStatus.Success, LogLevel.Debug);
         }
     }
 
@@ -61,7 +62,8 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
             if (value is null)
             {
                 await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key], TaskStatus.Success, LogLevel.Debug);
+                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key], TaskStatus.Success,
+                    LogLevel.Debug);
             }
         }
     }

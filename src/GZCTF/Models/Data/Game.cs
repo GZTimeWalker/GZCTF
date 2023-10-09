@@ -134,9 +134,7 @@ public class Game
         var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
         var publicKey = (Ed25519PublicKeyParameters)kp.Public;
 
-        PrivateKey = Base64.ToBase64String(xorKey is null ?
-            privateKey.GetEncoded() :
-            Codec.Xor(privateKey.GetEncoded(), xorKey));
+        PrivateKey = Base64.ToBase64String(xorKey is null ? privateKey.GetEncoded() : Codec.Xor(privateKey.GetEncoded(), xorKey));
 
         PublicKey = Base64.ToBase64String(publicKey.GetEncoded());
     }

@@ -14,8 +14,8 @@ namespace GZCTF.Services.Container.Manager;
 public class K8sManager : IContainerManager
 {
     readonly Kubernetes _client;
-    readonly ILogger<K8sManager> _logger;
     readonly IStringLocalizer<Program> _localizer;
+    readonly ILogger<K8sManager> _logger;
     readonly K8sMetadata _meta;
 
     public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger, IStringLocalizer<Program> localizer)
@@ -37,7 +37,8 @@ public class K8sManager : IContainerManager
 
         if (imageName is null)
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
+                TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
 
@@ -89,11 +90,7 @@ public class K8sManager : IContainerManager
                                 ["memory"] = new($"{config.MemoryLimit}Mi"),
                                 ["ephemeral-storage"] = new($"{config.StorageLimit}Mi")
                             },
-                            Requests = new Dictionary<string, ResourceQuantity>
-                            {
-                                ["cpu"] = new("10m"),
-                                ["memory"] = new("32Mi")
-                            }
+                            Requests = new Dictionary<string, ResourceQuantity> { ["cpu"] = new("10m"), ["memory"] = new("32Mi") }
                         }
                     }
                 },
@@ -107,8 +104,12 @@ public class K8sManager : IContainerManager
         }
         catch (HttpOperationException e)
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus), name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse), name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus), name, e.Response.StatusCode],
+                TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse), name, e.Response.Content],
+                TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
@@ -119,18 +120,15 @@ public class K8sManager : IContainerManager
 
         if (pod is null)
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailed), config.Image.Split("/").LastOrDefault() ?? ""], TaskStatus.Failed,
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailed),
+                    config.Image.Split("/").LastOrDefault() ?? ""], TaskStatus.Failed,
                 LogLevel.Warning);
             return null;
         }
 
         // Service is needed for port mapping
-        var container = new Models.Data.Container
-        {
-            ContainerId = name,
-            Image = config.Image,
-            Port = config.ExposedPort
-        };
+        var container = new Models.Data.Container { ContainerId = name, Image = config.Image, Port = config.ExposedPort };
 
         var service = new V1Service("v1", "Service")
         {
@@ -165,8 +163,12 @@ public class K8sManager : IContainerManager
                 // ignored
             }
 
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus), name, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse), name, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus), name, e.Response.StatusCode],
+                TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse), name, e.Response.Content],
+                TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
@@ -217,8 +219,12 @@ public class K8sManager : IContainerManager
                 return;
             }
 
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus), container.ContainerId, e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse), container.ContainerId, e.Response.Content], TaskStatus.Failed, LogLevel.Error);
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus), container.ContainerId,
+                    e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse), container.ContainerId,
+                    e.Response.Content], TaskStatus.Failed, LogLevel.Error);
         }
         catch (Exception e)
         {

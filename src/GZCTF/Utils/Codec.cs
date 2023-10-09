@@ -246,12 +246,15 @@ public partial class Codec
             double entropy = 0;
             var doLeet = false;
             foreach (var c in flag)
+            {
                 if (c is '{' or ']')
                     doLeet = true;
                 else if (doLeet && c is '}' or '[')
                     doLeet = false;
                 else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table))
                     entropy += Math.Log(table.Length, 2);
+            }
+
             return entropy;
         }
 

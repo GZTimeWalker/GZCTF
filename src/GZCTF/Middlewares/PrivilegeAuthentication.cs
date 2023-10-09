@@ -24,7 +24,7 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
 
         UserInfo? user = null;
 
-        if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true && Guid.TryParse(id, out var guid))
+        if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true && Guid.TryParse(id, out Guid guid))
             user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == guid);
 
         if (user is null)
@@ -42,7 +42,8 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         if (user.Role < privilege)
         {
             if (privilege > Role.User)
-                logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden), context.HttpContext.Request.Path], user, TaskStatus.Denied);
+                logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden), context.HttpContext.Request.Path], user,
+                    TaskStatus.Denied);
 
             context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden);
         }

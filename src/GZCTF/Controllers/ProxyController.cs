@@ -77,7 +77,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
 
-        byte[]? metadata = enable ? container.GenerateMetadata(_jsonOptions) : null;
+        var metadata = enable ? container.GenerateMetadata(_jsonOptions) : null;
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
@@ -148,12 +148,12 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         }
         catch (SocketException e)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog), e.SocketErrorCode, $"{target.Address}:{target.Port}"],
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog), e.SocketErrorCode,
+                    $"{target.Address}:{target.Port}"],
                 TaskStatus.Failed, LogLevel.Debug);
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode], StatusCodes.Status418ImATeapot))
-            {
-                StatusCode = StatusCodes.Status418ImATeapot
-            };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
+                StatusCodes.Status418ImATeapot)) { StatusCode = StatusCodes.Status418ImATeapot };
         }
 
         using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();

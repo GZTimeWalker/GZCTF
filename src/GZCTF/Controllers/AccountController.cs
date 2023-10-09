@@ -56,7 +56,8 @@ public class AccountController(
         var mailDomain = model.Email.Split('@')[1];
         if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
             accountPolicy.Value.EmailDomainList.Split(',').All(d => d != mailDomain))
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain), accountPolicy.Value.EmailDomainList]));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
+                accountPolicy.Value.EmailDomainList]));
 
         var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
 
@@ -69,7 +70,8 @@ public class AccountController(
             UserInfo? current = await userManager.FindByEmailAsync(model.Email);
 
             if (current is null)
-                return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
+                return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                      localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
             if (await userManager.IsEmailConfirmedAsync(current))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserExisting)]));
@@ -84,7 +86,8 @@ public class AccountController(
             await signInManager.SignInAsync(user, true);
 
             logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user, TaskStatus.Success);
-            return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)], RegisterStatus.LoggedIn, StatusCodes.Status200OK));
+            return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)], RegisterStatus.LoggedIn,
+                StatusCodes.Status200OK));
         }
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
@@ -187,7 +190,8 @@ public class AccountController(
             await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordReset)], user, TaskStatus.Success);
 
@@ -218,7 +222,8 @@ public class AccountController(
         IdentityResult result = await userManager.ConfirmEmailAsync(user, Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailVerificationFailed)], StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailVerificationFailed)],
+                StatusCodes.Status401Unauthorized));
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_EmailVerified)], user, TaskStatus.Success);
         await signInManager.SignInAsync(user, true);
@@ -230,7 +235,8 @@ public class AccountController(
         result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
         return Ok();
     }
@@ -259,7 +265,8 @@ public class AccountController(
         user ??= await userManager.FindByEmailAsync(model.UserName);
 
         if (user is null)
-            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)], StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
+                StatusCodes.Status401Unauthorized));
 
         if (user.Role == Role.Banned)
             return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)], StatusCodes.Status401Unauthorized));
@@ -272,7 +279,8 @@ public class AccountController(
         SignInResult result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)], StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
+                StatusCodes.Status401Unauthorized));
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserLogined)], user, TaskStatus.Success);
 
@@ -320,7 +328,8 @@ public class AccountController(
         IdentityResult result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
         if (oldName != user.UserName)
             logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!], user, TaskStatus.Success);
@@ -348,7 +357,8 @@ public class AccountController(
         IdentityResult result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ?? localizer[nameof(Resources.Program.Identity_UnknownError)]));
+            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordChanged)], user, TaskStatus.Success);
 

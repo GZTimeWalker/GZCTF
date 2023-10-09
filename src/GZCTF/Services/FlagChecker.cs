@@ -31,7 +31,8 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
             await channelWriter.WriteAsync(item, TokenSource.Token);
 
         if (flags.Length > 0)
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagsChecker_Recheck), flags.Length], TaskStatus.Pending, LogLevel.Debug);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagsChecker_Recheck), flags.Length], TaskStatus.Pending,
+                LogLevel.Debug);
 
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagsChecker_Started)], TaskStatus.Success, LogLevel.Debug);
     }
@@ -53,7 +54,8 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
         {
             await foreach (Submission item in channelReader.ReadAllAsync(token))
             {
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerStartProcessing), id, item.Answer], TaskStatus.Pending, LogLevel.Debug);
+                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerStartProcessing), id, item.Answer],
+                    TaskStatus.Pending, LogLevel.Debug);
 
                 await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
 
@@ -69,12 +71,16 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
 
                     if (ans == AnswerResult.NotFound)
                     {
-                        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_UnknownInstance), item.Team.Name, item.GameChallenge.Title], item.User,
+                        logger.Log(
+                            Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_UnknownInstance), item.Team.Name, item.GameChallenge.Title],
+                            item.User,
                             TaskStatus.NotFound, LogLevel.Warning);
                     }
                     else if (ans == AnswerResult.Accepted)
                     {
-                        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerAccepted), item.Team.Name, item.GameChallenge.Title, item.Answer],
+                        logger.Log(
+                            Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerAccepted), item.Team.Name, item.GameChallenge.Title,
+                                item.Answer],
                             item.User, TaskStatus.Success, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans, localizer), token);
@@ -85,7 +91,9 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                     }
                     else
                     {
-                        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerRejected), item.Team.Name, item.GameChallenge.Title, item.Answer],
+                        logger.Log(
+                            Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerRejected), item.Team.Name, item.GameChallenge.Title,
+                                item.Answer],
                             item.User, TaskStatus.Failed, LogLevel.Information);
 
                         await eventRepository.AddEvent(GameEvent.FromSubmission(item, type, ans, localizer), token);
@@ -96,14 +104,16 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                         if (ans == AnswerResult.CheatDetected)
                         {
                             logger.Log(
-                                Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected), item.Team.Name, item.GameChallenge.Title, result.SourceTeamName ?? ""],
+                                Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected), item.Team.Name, item.GameChallenge.Title,
+                                    result.SourceTeamName ?? ""],
                                 item.User, TaskStatus.Success, LogLevel.Information);
                             await eventRepository.AddEvent(
                                 new()
                                 {
                                     Type = EventType.CheatDetected,
                                     Content =
-                                        localizer[nameof(Resources.Program.FlagChecker_CheatDetectedEvent), item.GameChallenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
+                                        localizer[nameof(Resources.Program.FlagChecker_CheatDetectedEvent), item.GameChallenge.Title, item.Team.Name,
+                                            result.SourceTeamName ?? ""],
                                     TeamId = item.TeamId,
                                     UserId = item.UserId,
                                     GameId = item.GameId
@@ -121,12 +131,14 @@ public class FlagChecker(ChannelReader<Submission> channelReader,
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_ConcurrencyFailed), item.Id], TaskStatus.Failed, LogLevel.Warning);
+                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_ConcurrencyFailed), item.Id], TaskStatus.Failed,
+                        LogLevel.Warning);
                     await channelWriter.WriteAsync(item, token);
                 }
                 catch (Exception e)
                 {
-                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerExceptionOccurred), id], TaskStatus.Failed, LogLevel.Debug);
+                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerExceptionOccurred), id], TaskStatus.Failed,
+                        LogLevel.Debug);
                     logger.LogError(e.Message, e);
                 }
 

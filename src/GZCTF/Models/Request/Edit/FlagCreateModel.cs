@@ -32,11 +32,6 @@ public class FlagCreateModel
     internal Attachment? ToAttachment(LocalFile? localFile) => AttachmentType switch
     {
         FileType.None => null,
-        _ => new()
-        {
-            Type = AttachmentType,
-            LocalFile = localFile,
-            RemoteUrl = RemoteUrl
-        },
+        _ => new() { Type = AttachmentType, LocalFile = localFile, RemoteUrl = RemoteUrl }
     };
 }

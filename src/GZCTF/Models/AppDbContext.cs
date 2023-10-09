@@ -30,8 +30,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = default!;
     public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = default!;
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = default!;
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
     {

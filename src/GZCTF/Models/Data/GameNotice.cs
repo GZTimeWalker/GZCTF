@@ -54,6 +54,7 @@ public partial class GameNotice
                 _ => NoticeType.Normal
             },
             GameId = submission.GameId,
-            Content = localizer[nameof(Resources.Program.Game_SubmissionNotice), submission.Team.Name, submission.GameChallenge.Title, type.ToBloodString(localizer)]
+            Content = localizer[nameof(Resources.Program.Game_SubmissionNotice), submission.Team.Name, submission.GameChallenge.Title,
+                type.ToBloodString(localizer)]
         };
 }

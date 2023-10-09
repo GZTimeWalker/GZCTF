@@ -26,27 +26,22 @@ public class ExerciseInstanceRepository(AppDbContext context,
         if (!await IsExerciseAvailable(token))
             return Array.Empty<ExerciseInstance>();
 
-        var exercises = await context.ExerciseInstances
+        ExerciseInstance[] exercises = await context.ExerciseInstances
             .Where(i => i.UserId == user.Id && i.Exercise.IsEnabled)
             .ToArrayAsync(token);
 
         if (exercises.Length > 0)
             return exercises;
 
-        using var transaction = await context.Database.BeginTransactionAsync(token);
+        using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
 
         var result = new List<ExerciseInstance>();
 
         await foreach (var id in context.ExerciseChallenges
-            .Where(e => e.IsEnabled && context.ExerciseDependencies.All(d => d.TargetId != e.Id))
-            .Select(e => e.Id).AsAsyncEnumerable())
+                           .Where(e => e.IsEnabled && context.ExerciseDependencies.All(d => d.TargetId != e.Id))
+                           .Select(e => e.Id).AsAsyncEnumerable())
         {
-            var newInst = new ExerciseInstance
-            {
-                ExerciseId = id,
-                UserId = user.Id,
-                IsLoaded = false
-            };
+            var newInst = new ExerciseInstance { ExerciseId = id, UserId = user.Id, IsLoaded = false };
 
             context.ExerciseInstances.Add(newInst);
             result.Add(newInst);
@@ -57,13 +52,6 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
         return result.ToArray();
     }
-
-    Task<bool> IsExerciseAvailable(CancellationToken token = default) =>
-        cache.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
-            return context.ExerciseChallenges.AnyAsync(e => e.IsEnabled, token);
-        }, token);
 
     public async Task<ExerciseInstance?> GetInstance(UserInfo user, int exerciseId, CancellationToken token = default)
     {
@@ -85,7 +73,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
             return instance;
         }
 
-        var exercise = instance.Exercise;
+        ExerciseChallenge? exercise = instance.Exercise;
 
         if (exercise is null || !exercise.IsEnabled)
         {
@@ -97,7 +85,6 @@ public class ExerciseInstanceRepository(AppDbContext context,
         {
             // dynamic flag dispatch
             if (instance.Exercise.Type == ChallengeType.DynamicContainer)
-            {
                 instance.FlagContext = new()
                 {
                     Exercise = exercise,
@@ -106,7 +93,6 @@ public class ExerciseInstanceRepository(AppDbContext context,
                     Flag = exercise.GenerateDynamicFlag(),
                     IsOccupied = true
                 };
-            }
 
             // instance.FlagContext is null by default
             // static flag does not need to be dispatched
@@ -130,12 +116,13 @@ public class ExerciseInstanceRepository(AppDbContext context,
     {
         if (string.IsNullOrEmpty(instance.Exercise.ContainerImage) || instance.Exercise.ContainerExposePort is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title], TaskStatus.Denied, LogLevel.Warning);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title],
+                TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
         // containerLimit == 0 means unlimited
-        int containerLimit = containerPolicy.Value.MaxExerciseContainerCountPerUser;
+        var containerLimit = containerPolicy.Value.MaxExerciseContainerCountPerUser;
         if (containerLimit > 0)
         {
             List<ExerciseInstance> running = await context.ExerciseInstances
@@ -145,7 +132,9 @@ public class ExerciseInstanceRepository(AppDbContext context,
             ExerciseInstance? first = running.FirstOrDefault();
             if (running.Count >= containerLimit && first is not null)
             {
-                logger.Log(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), user.UserName!, first.Exercise.Title, first.Container!.ContainerId],
+                logger.Log(
+                    Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), user.UserName!, first.Exercise.Title,
+                        first.Container!.ContainerId],
                     user, TaskStatus.Success);
                 await containerRepository.DestroyContainer(running.First().Container!, token);
             }
@@ -166,19 +155,23 @@ public class ExerciseInstanceRepository(AppDbContext context,
             MemoryLimit = instance.Exercise.MemoryLimit ?? 64,
             StorageLimit = instance.Exercise.StorageLimit ?? 256,
             EnableTrafficCapture = false,
-            ExposedPort = instance.Exercise.ContainerExposePort ?? throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
+            ExposedPort = instance.Exercise.ContainerExposePort ??
+                          throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
         }, token);
 
         if (container is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title], TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title],
+                TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
         instance.Container = container;
         instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!, instance.Exercise.Title, container.ContainerId], user,
+        logger.Log(
+            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!, instance.Exercise.Title,
+                container.ContainerId], user,
             TaskStatus.Success);
 
         await SaveAsync(token);
@@ -204,7 +197,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
         }
 
         if (await context.FlagContexts.AsNoTracking()
-            .AnyAsync(f => f.ExerciseId == instance.ExerciseId && f.Flag == answer, token))
+                .AnyAsync(f => f.ExerciseId == instance.ExerciseId && f.Flag == answer, token))
         {
             await MarkSolved(instance, token);
             await UnlockExercises(user, token);
@@ -214,12 +207,19 @@ public class ExerciseInstanceRepository(AppDbContext context,
         return AnswerResult.WrongAnswer;
     }
 
+    Task<bool> IsExerciseAvailable(CancellationToken token = default) =>
+        cache.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+            return context.ExerciseChallenges.AnyAsync(e => e.IsEnabled, token);
+        }, token);
+
     internal async Task MarkSolved(ExerciseInstance instance, CancellationToken token = default)
     {
         if (instance.IsSolved)
             return;
 
-        using var transaction = await context.Database.BeginTransactionAsync(token);
+        using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
 
         instance.IsSolved = true;
         instance.SolveTimeUtc = DateTimeOffset.UtcNow;
@@ -230,20 +230,17 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
     internal async Task UnlockExercises(UserInfo user, CancellationToken token = default)
     {
-        using var transaction = await context.Database.BeginTransactionAsync(token);
+        using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
 
         await foreach (var id in context.ExerciseChallenges.Where(chal => chal.IsEnabled &&
-            context.ExerciseInstances.All(i => i.UserId == user.Id && i.ExerciseId != chal.Id) &&
-            context.ExerciseDependencies.All(dep => dep.TargetId == chal.Id &&
-                context.ExerciseInstances.Any(e => e.IsSolved && e.ExerciseId == dep.SourceId
-            ))).Select(e => e.Id).AsAsyncEnumerable())
+                                                                          context.ExerciseInstances.All(i =>
+                                                                              i.UserId == user.Id && i.ExerciseId != chal.Id) &&
+                                                                          context.ExerciseDependencies.All(dep => dep.TargetId == chal.Id &&
+                                                                              context.ExerciseInstances.Any(
+                                                                                  e => e.IsSolved && e.ExerciseId == dep.SourceId
+                                                                              ))).Select(e => e.Id).AsAsyncEnumerable())
         {
-            var newInst = new ExerciseInstance
-            {
-                ExerciseId = id,
-                UserId = user.Id,
-                IsLoaded = false
-            };
+            var newInst = new ExerciseInstance { ExerciseId = id, UserId = user.Id, IsLoaded = false };
 
             context.ExerciseInstances.Add(newInst);
         }

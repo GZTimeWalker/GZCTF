@@ -28,14 +28,6 @@ public interface IExerciseChallengeRepository : IRepository
     public Task<ExerciseChallenge[]> GetExercises(CancellationToken token = default);
 
     /// <summary>
-    /// 获取练习题目依赖
-    /// </summary>
-    /// <param name="exercise">练习题目</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<int[]> GetDependencies(ExerciseChallenge exercise, CancellationToken token = default);
-
-    /// <summary>
     /// 更新附件
     /// </summary>
     /// <param name="exercise">比赛题目对象</param>

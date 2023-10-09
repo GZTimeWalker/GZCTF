@@ -17,5 +17,4 @@ public class ExerciseController(ILogger<ExerciseController> logger,
     IExerciseInstanceRepository exerciseInstanceRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
-
 }

@@ -55,7 +55,9 @@ public static class PrelaunchHelper
 
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (!result.Succeeded)
-                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Init_AdminCreationFailed), result.Errors.FirstOrDefault()?.Description ?? "null"], TaskStatus.Failed,
+                    logger.SystemLog(
+                        Program.StaticLocalizer[nameof(Resources.Program.Init_AdminCreationFailed),
+                            result.Errors.FirstOrDefault()?.Description ?? "null"], TaskStatus.Failed,
                         LogLevel.Debug);
             }
         }

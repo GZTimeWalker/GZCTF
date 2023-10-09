@@ -39,7 +39,8 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
         if (!System.IO.File.Exists(path))
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip, TaskStatus.NotFound, LogLevel.Warning);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip, TaskStatus.NotFound,
+                LogLevel.Warning);
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.File_NotFound)], StatusCodes.Status404NotFound));
         }
 
@@ -75,13 +76,16 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
         {
             List<LocalFile> results = new();
             foreach (IFormFile file in files)
+            {
                 if (file.Length > 0)
                 {
                     LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
-                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8], filename ?? file.FileName, file.Length],
+                    logger.SystemLog(
+                        Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8], filename ?? file.FileName, file.Length],
                         TaskStatus.Success, LogLevel.Debug);
                     results.Add(res);
                 }
+            }
 
             return Ok(results);
         }

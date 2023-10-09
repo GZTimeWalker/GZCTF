@@ -166,7 +166,7 @@ public class Challenge
         if (string.IsNullOrEmpty(FlagTemplate))
             return $"flag{Guid.NewGuid():B}";
 
-        Guid guid = Guid.NewGuid();
+        var guid = Guid.NewGuid();
         if (FlagTemplate.Contains("[GUID]"))
             return FlagTemplate.Replace("[GUID]", guid.ToString("D"));
 

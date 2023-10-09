@@ -58,19 +58,24 @@ public class ConfigService(AppDbContext context,
     {
         Dictionary<string, Config> dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
         foreach (Config conf in configs)
+        {
             if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
             {
                 if (dbConf.Value != conf.Value)
                 {
                     dbConf.Value = conf.Value;
-                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
+                    logger.SystemLog(
+                        Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"],
+                        TaskStatus.Success, LogLevel.Debug);
                 }
             }
             else
             {
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey, conf.Value ?? "null"], TaskStatus.Success, LogLevel.Debug);
+                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey, conf.Value ?? "null"],
+                    TaskStatus.Success, LogLevel.Debug);
                 await context.Configs.AddAsync(conf, token);
             }
+        }
 
         await context.SaveChangesAsync(token);
         _configuration?.Reload();

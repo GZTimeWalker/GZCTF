@@ -11,7 +11,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
     {
         foreach (FlagCreateModel model in models)
         {
-            Attachment? attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
+            var attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
 
             challenge.Flags.Add(new() { Flag = model.Flag, Challenge = challenge, Attachment = attachment });
         }
@@ -91,7 +91,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
     public async Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,
         CancellationToken token = default)
     {
-        Attachment? attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
+        var attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
 
         await DeleteAllAttachment(challenge, false, token);
 

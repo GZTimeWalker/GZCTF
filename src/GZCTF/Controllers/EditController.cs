@@ -541,7 +541,10 @@ public class EditController(
 
             if (game.IsActive)
                 await gameNoticeRepository.AddNotice(
-                    new() { Game = game, Type = NoticeType.NewChallenge, Content = localizer[nameof(Resources.Program.Challenge_Created), res.Title] }, token);
+                    new()
+                    {
+                        Game = game, Type = NoticeType.NewChallenge, Content = localizer[nameof(Resources.Program.Challenge_Created), res.Title]
+                    }, token);
         }
         else
         {
@@ -550,7 +553,8 @@ public class EditController(
 
         if (game.IsActive && res.IsEnabled && hintUpdated)
             await gameNoticeRepository.AddNotice(
-                new() { Game = game, Type = NoticeType.NewHint, Content = localizer[nameof(Resources.Program.Challenge_HintUpdated), res.Title] }, token);
+                new() { Game = game, Type = NoticeType.NewHint, Content = localizer[nameof(Resources.Program.Challenge_HintUpdated), res.Title] },
+                token);
 
         // always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
@@ -602,7 +606,8 @@ public class EditController(
                 CPUCount = challenge.CPUCount ?? 1,
                 MemoryLimit = challenge.MemoryLimit ?? 64,
                 StorageLimit = challenge.StorageLimit ?? 256,
-                ExposedPort = challenge.ContainerExposePort ?? throw new ArgumentException(localizer[nameof(Resources.Program.Container_InvalidPort)])
+                ExposedPort = challenge.ContainerExposePort ??
+                              throw new ArgumentException(localizer[nameof(Resources.Program.Container_InvalidPort)])
             }, token);
 
         if (container is null)
@@ -611,7 +616,8 @@ public class EditController(
         challenge.TestContainer = container;
         await challengeRepository.SaveAsync(token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Container_TestContainerCreated), container.ContainerId], user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Container_TestContainerCreated), container.ContainerId], user,
+            TaskStatus.Success);
 
         return Ok(ContainerInfoModel.FromContainer(container));
     }

@@ -840,7 +840,8 @@ public class GameController(
 
         await participationRepository.SaveAsync(token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_WriteupSubmitted), team.Name, game.Title], context.User!, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_WriteupSubmitted), team.Name, game.Title], context.User!,
+            TaskStatus.Success);
 
         return Ok();
     }
@@ -881,10 +882,8 @@ public class GameController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)], StatusCodes.Status429TooManyRequests))
-            {
-                StatusCode = StatusCodes.Status429TooManyRequests
-            };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
+                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
 
         if (instance.Container is not null)
         {
@@ -896,13 +895,14 @@ public class GameController(
 
         return await gameInstanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!,
                 context.Game!.ContainerCountLimit, token) switch
-        {
-            null or (TaskStatus.Failed, null) => BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
-            (TaskStatus.Denied, null) => BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded), context.Game.ContainerCountLimit])),
-            (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
-            _ => throw new NotImplementedException()
-        };
+            {
+                null or (TaskStatus.Failed, null) => BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
+                (TaskStatus.Denied, null) => BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded), context.Game.ContainerCountLimit])),
+                (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
+                _ => throw new NotImplementedException()
+            };
     }
 
     /// <summary>
@@ -989,10 +989,8 @@ public class GameController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)], StatusCodes.Status429TooManyRequests))
-            {
-                StatusCode = StatusCodes.Status429TooManyRequests
-            };
+            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
+                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
 
         var destroyId = instance.Container.ContainerId;
 
@@ -1011,7 +1009,9 @@ public class GameController(
                 Content = localizer[nameof(Resources.Program.Game_ContainerDeletedEvent), instance.Challenge.Title, instance.Challenge.Id]
             }, token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_ContainerDeleted), context.Participation!.Team.Name, instance.Challenge.Title, destroyId],
+        logger.Log(
+            Program.StaticLocalizer[nameof(Resources.Program.Game_ContainerDeleted), context.Participation!.Team.Name, instance.Challenge.Title,
+                destroyId],
             context.User, TaskStatus.Success);
 
         return Ok();
@@ -1046,7 +1046,8 @@ public class GameController(
             GameChallenge? challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
 
             if (challenge is null)
-                return res.WithResult(NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)], StatusCodes.Status404NotFound)));
+                return res.WithResult(NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
+                    StatusCodes.Status404NotFound)));
 
             res.Challenge = challenge;
         }

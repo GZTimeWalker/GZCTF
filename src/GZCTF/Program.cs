@@ -2,6 +2,7 @@ global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -84,7 +85,6 @@ else
 #region Configuration
 
 if (!GZCTF.Program.IsTesting)
-{
     try
     {
         builder.Configuration.AddEntityConfiguration(options =>
@@ -98,10 +98,10 @@ if (!GZCTF.Program.IsTesting)
     catch (Exception e)
     {
         if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-            Log.Logger.Error(GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_CurrentConnectionString), builder.Configuration.GetConnectionString("Database") ?? "null"]);
+            Log.Logger.Error(GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_CurrentConnectionString),
+                builder.Configuration.GetConnectionString("Database") ?? "null"]);
         GZCTF.Program.ExitWithFatalMessage(GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
     }
-}
 
 #endregion Configuration
 
@@ -257,7 +257,7 @@ WebApplication app = builder.Build();
 app.UseRequestLocalization(options =>
 {
     options.ApplyCurrentCultureToResponseHeaders = true;
-    options.SupportedCultures = [new("zh-CN"), new("en-US"), new("ja-JP")];
+    options.SupportedCultures = new[] { new CultureInfo("zh-CN"), new CultureInfo("en-US"), new CultureInfo("ja-JP") };
     options.SupportedUICultures = options.SupportedUICultures;
 });
 
@@ -362,6 +362,7 @@ namespace GZCTF
             if (version is not null)
                 versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
 
+            // ReSharper disable once LocalizableElement
             Console.WriteLine($"GZCTF © 2022-present GZTimeWalker {versionStr,33}\n");
         }
 
@@ -379,13 +380,18 @@ namespace GZCTF
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(
                     new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
-                { StatusCode = 400 };
+                {
+                    StatusCode = 400
+                };
 
             errors = (from val in context.ModelState.Values
-                      where val.Errors.Count > 0
-                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                where val.Errors.Count > 0
+                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
-            return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
+            return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
+            {
+                StatusCode = 400
+            };
         }
     }
 }

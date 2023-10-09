@@ -8,9 +8,8 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace GZCTF.Repositories;
 
 public class ContainerRepository(IDistributedCache cache,
-IContainerManager service,
+    IContainerManager service,
     ILogger<ContainerRepository> logger,
-
     AppDbContext context) : RepositoryBase(context), IContainerRepository
 {
     public override Task<int> CountAsync(CancellationToken token = default) => context.Containers.CountAsync(token);
@@ -49,6 +48,7 @@ IContainerManager service,
 
     public async Task<bool> ValidateContainer(Guid guid, CancellationToken token = default) =>
         await context.Containers.AnyAsync(c => c.Id == guid, token);
+
     public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)
     {
         try
@@ -68,7 +68,8 @@ IContainerManager service,
         catch (Exception ex)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerRepository_ContainerDestroyFailed), container.ContainerId[..12], container.Image.Split("/").LastOrDefault() ?? "", ex.Message],
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerRepository_ContainerDestroyFailed), container.ContainerId[..12],
+                    container.Image.Split("/").LastOrDefault() ?? "", ex.Message],
                 TaskStatus.Failed, LogLevel.Warning);
             return false;
         }

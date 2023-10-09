@@ -28,7 +28,8 @@ public class GameInstanceRepository(AppDbContext context,
 
         if (instance is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId], TaskStatus.NotFound,
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId],
+                TaskStatus.NotFound,
                 LogLevel.Warning);
             return null;
         }
@@ -39,7 +40,7 @@ public class GameInstanceRepository(AppDbContext context,
             return instance;
         }
 
-        var challenge = instance.Challenge;
+        GameChallenge? challenge = instance.Challenge;
 
         if (challenge is null || !challenge.IsEnabled)
         {
@@ -69,7 +70,9 @@ public class GameInstanceRepository(AppDbContext context,
 
                     if (flags.Count == 0)
                     {
-                        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough), challenge.Title, challenge.Id], TaskStatus.Failed,
+                        logger.SystemLog(
+                            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough), challenge.Title,
+                                challenge.Id], TaskStatus.Failed,
                             LogLevel.Warning);
                         return null;
                     }
@@ -90,7 +93,9 @@ public class GameInstanceRepository(AppDbContext context,
         }
         catch
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), part.Team.Name, challenge.Title, challenge.Id],
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), part.Team.Name, challenge.Title,
+                    challenge.Id],
                 TaskStatus.Failed, LogLevel.Warning);
             await transaction.RollbackAsync(token);
             return null;
@@ -104,7 +109,9 @@ public class GameInstanceRepository(AppDbContext context,
     {
         if (string.IsNullOrEmpty(gameInstance.Challenge.ContainerImage) || gameInstance.Challenge.ContainerExposePort is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title], TaskStatus.Denied, LogLevel.Warning);
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title],
+                TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
@@ -120,7 +127,9 @@ public class GameInstanceRepository(AppDbContext context,
                 GameInstance? first = running.FirstOrDefault();
                 if (running.Count >= containerLimit && first is not null)
                 {
-                    logger.Log(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), team.Name, first.Challenge.Title, first.Container!.ContainerId],
+                    logger.Log(
+                        Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), team.Name, first.Challenge.Title,
+                            first.Container!.ContainerId],
                         user, TaskStatus.Success);
                     await containerRepository.DestroyContainer(running.First().Container!, token);
                 }
@@ -150,19 +159,24 @@ public class GameInstanceRepository(AppDbContext context,
             MemoryLimit = gameInstance.Challenge.MemoryLimit ?? 64,
             StorageLimit = gameInstance.Challenge.StorageLimit ?? 256,
             EnableTrafficCapture = gameInstance.Challenge.EnableTrafficCapture,
-            ExposedPort = gameInstance.Challenge.ContainerExposePort ?? throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
+            ExposedPort = gameInstance.Challenge.ContainerExposePort ??
+                          throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
         }, token);
 
         if (container is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title], TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title],
+                TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
         gameInstance.Container = container;
         gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name, gameInstance.Challenge.Title, container.ContainerId], user,
+        logger.Log(
+            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name, gameInstance.Challenge.Title,
+                container.ContainerId], user,
             TaskStatus.Success);
 
         // will save instance together
@@ -173,7 +187,8 @@ public class GameInstanceRepository(AppDbContext context,
                 GameId = gameInstance.Challenge.GameId,
                 TeamId = gameInstance.Participation.TeamId,
                 UserId = user.Id,
-                Content = localizer[nameof(Resources.Program.InstanceRepository_ContainerCreationEvent), gameInstance.Challenge.Title, gameInstance.Challenge.Id]
+                Content = localizer[nameof(Resources.Program.InstanceRepository_ContainerCreationEvent), gameInstance.Challenge.Title,
+                    gameInstance.Challenge.Id]
             }, token);
 
         return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
@@ -188,11 +203,12 @@ public class GameInstanceRepository(AppDbContext context,
         CheatCheckInfo checkInfo = new();
 
         GameInstance[] instances = await context.GameInstances.Where(i => i.ChallengeId == submission.ChallengeId &&
-                                                                  i.ParticipationId != submission.ParticipationId)
+                                                                          i.ParticipationId != submission.ParticipationId)
             .Include(i => i.FlagContext).Include(i => i.Participation)
             .ThenInclude(i => i.Team).ToArrayAsync(token);
 
         foreach (GameInstance instance in instances)
+        {
             if (instance.FlagContext?.Flag == submission.Answer)
             {
                 Submission updateSub = await context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
@@ -207,6 +223,7 @@ public class GameInstanceRepository(AppDbContext context,
 
                 return checkInfo;
             }
+        }
 
         return checkInfo;
     }

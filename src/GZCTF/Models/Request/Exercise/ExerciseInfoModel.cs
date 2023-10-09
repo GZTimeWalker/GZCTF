@@ -1,3 +1,8 @@
+namespace GZCTF.Models.Request.Exercise;
+
+/// <summary>
+/// 练习基本信息
+/// </summary>
 public class ExerciseInfoModel
 {
     /// <summary>

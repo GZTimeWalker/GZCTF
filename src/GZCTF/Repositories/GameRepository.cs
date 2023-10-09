@@ -26,7 +26,8 @@ public class GameRepository(IDistributedCache cache,
         game.GenerateKeyPair(_xorKey);
 
         if (_xorKey is null)
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)], TaskStatus.Pending, LogLevel.Warning);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)], TaskStatus.Pending,
+                LogLevel.Warning);
 
         await context.AddAsync(game, token);
         await SaveAsync(token);
@@ -78,7 +79,8 @@ public class GameRepository(IDistributedCache cache,
         {
             var count = await context.GameChallenges.Where(i => i.Game == game).CountAsync(token);
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, count], TaskStatus.Pending, LogLevel.Debug
+                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, count], TaskStatus.Pending,
+                LogLevel.Debug
             );
 
             foreach (GameChallenge chal in context.GameChallenges.Where(c => c.Game == game))
@@ -118,7 +120,8 @@ public class GameRepository(IDistributedCache cache,
     {
         await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count], TaskStatus.Pending,
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count],
+            TaskStatus.Pending,
             LogLevel.Debug);
 
         foreach (Participation part in game.Participations)
@@ -309,22 +312,12 @@ public class GameRepository(IDistributedCache cache,
             ? items
                 .GroupBy(i => i.Organization ?? "all")
                 .ToDictionary(i => i.Key, i => i.Take(10)
-                    .Select(team => new TopTimeLine
-                    {
-                        Id = team.Id,
-                        Name = team.Name,
-                        Items = GenTimeLine(team.Challenges)
-                    }).ToArray()
+                    .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) }).ToArray()
                     .AsEnumerable())
             : new();
 
         timelines["all"] = items.Take(10)
-            .Select(team => new TopTimeLine
-            {
-                Id = team.Id,
-                Name = team.Name,
-                Items = GenTimeLine(team.Challenges)
-            })
+            .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
             .ToArray();
 
         return timelines;
@@ -340,8 +333,7 @@ public class GameRepository(IDistributedCache cache,
                 score += i.Score;
                 return new TimeLine
                 {
-                    Score = score,
-                    Time = i.SubmitTimeUtc!.Value // 此处不为 null
+                    Score = score, Time = i.SubmitTimeUtc!.Value // 此处不为 null
                 };
             });
     }
