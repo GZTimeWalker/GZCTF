@@ -286,7 +286,7 @@
     <comment/>
   </data>
   <data name="Assets_UpdateFile" xml:space="preserve">
-    <value>ファイルを更新します [{0}] {1} @ {} bytes</value>
+    <value>ファイルを更新します [{0}] {1} @ {2} bytes</value>
     <comment/>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
