@@ -7,10 +7,10 @@ namespace GZCTF.Services.Cache;
 /// <summary>
 /// 缓存更新请求
 /// </summary>
-public class CacheRequest(string key, DistributedCacheEntryOptions? options = null, params string[] _params)
+public class CacheRequest(string key, DistributedCacheEntryOptions? options = null, params string[] @params)
 {
     public string Key { get; set; } = key;
-    public string[] Params { get; set; } = _params;
+    public string[] Params { get; set; } = @params;
     public DistributedCacheEntryOptions? Options { get; set; } = options;
 }
 
@@ -30,11 +30,11 @@ public class CacheMaker(
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     readonly Dictionary<string, ICacheRequestHandler> _cacheHandlers = new();
-    CancellationTokenSource _tokenSource { get; set; } = new();
+    CancellationTokenSource TokenSource { get; set; } = new();
 
     public Task StartAsync(CancellationToken token)
     {
-        _tokenSource = new CancellationTokenSource();
+        TokenSource = new CancellationTokenSource();
 
         #region Add Handlers
 
@@ -42,14 +42,14 @@ public class CacheMaker(
 
         #endregion
 
-        _ = Maker(_tokenSource.Token);
+        _ = Maker(TokenSource.Token);
 
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken token)
     {
-        _tokenSource.Cancel();
+        TokenSource.Cancel();
 
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_Stopped)], TaskStatus.Success, LogLevel.Debug);
 
@@ -103,7 +103,7 @@ public class CacheMaker(
 
                     var bytes = await handler.Handler(scope, item, token);
 
-                    if (bytes is not null && bytes.Length > 0)
+                    if (bytes.Length > 0)
                     {
                         await cache.SetAsync(key, bytes, item.Options ?? new DistributedCacheEntryOptions(), token);
                         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_Updated), key, bytes.Length], TaskStatus.Success,

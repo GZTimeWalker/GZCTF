@@ -13,7 +13,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
-        using Stream tmp = GetStream(file.Length);
+        await using Stream tmp = GetStream(file.Length);
 
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation), tmp.GetType()], TaskStatus.Pending,
             LogLevel.Trace);
@@ -31,9 +31,9 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
 
         try
         {
-            using Stream webpStream = new MemoryStream();
+            await using Stream webpStream = new MemoryStream();
 
-            using (Stream tmp = GetStream(file.Length))
+            await using (Stream tmp = GetStream(file.Length))
             {
                 await file.CopyToAsync(tmp, token);
                 tmp.Position = 0;
@@ -120,7 +120,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         if (attachment is null)
             return;
 
-        if (attachment.Type == FileType.Local && attachment.LocalFile is not null)
+        if (attachment is { Type: FileType.Local, LocalFile: not null })
             await DeleteFile(attachment.LocalFile, token);
 
         context.Remove(attachment);
@@ -167,7 +167,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
 
-        using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
+        await using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
 
         // always overwrite the file in file system
         contentStream.Position = 0;

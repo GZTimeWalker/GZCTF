@@ -32,16 +32,14 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 {
     readonly DockerClient _dockerClient;
     readonly DockerMetadata _dockerMeta;
-    readonly IStringLocalizer<Program> _localizer;
 
     public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistryConfig> registry,
-        ILogger<DockerProvider> logger, IStringLocalizer<Program> localizer)
+        ILogger<DockerProvider> logger)
     {
         _dockerMeta = new()
         {
             Config = options.Value.DockerConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
         };
-        _localizer = localizer;
 
         DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
             ? new()

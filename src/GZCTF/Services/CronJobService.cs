@@ -34,7 +34,6 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
     async Task ContainerChecker(AsyncServiceScope scope)
     {
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
-        var containerService = scope.ServiceProvider.GetRequiredService<IContainerManager>();
 
         foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
         {

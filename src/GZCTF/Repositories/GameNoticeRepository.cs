@@ -19,7 +19,7 @@ public class GameNoticeRepository(IDistributedCache cache,
         await context.AddAsync(notice, token);
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.GameNotice(notice.GameId));
+        await cache.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
 
         await hub.Clients.Group($"Game_{notice.GameId}")
             .ReceivedGameNotice(notice);
@@ -57,7 +57,7 @@ public class GameNoticeRepository(IDistributedCache cache,
         notice.PublishTimeUtc = DateTimeOffset.UtcNow;
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.GameNotice(notice.GameId));
+        await cache.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
 
         return notice;
     }

@@ -7,7 +7,7 @@ namespace GZCTF.Utils;
 
 public class ExcelHelper(IStringLocalizer<Program> localizer)
 {
-    readonly string[] CommonScoreboardHeader =
+    readonly string[] _commonScoreboardHeader =
     {
         localizer[nameof(Resources.Program.Header_Ranking)], localizer[nameof(Resources.Program.Header_Team)],
         localizer[nameof(Resources.Program.Header_Captain)], localizer[nameof(Resources.Program.Header_Member)],
@@ -16,7 +16,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_TotalScore)]
     };
 
-    readonly string[] CommonSubmissionHeader =
+    readonly string[] _commonSubmissionHeader =
     {
         localizer[nameof(Resources.Program.Header_SubmitStatus)], localizer[nameof(Resources.Program.Header_SubmitTime)],
         localizer[nameof(Resources.Program.Header_Team)], localizer[nameof(Resources.Program.Header_User)],
@@ -72,7 +72,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         IRow? row = sheet.CreateRow(0);
         var colIndex = 0;
 
-        foreach (var col in CommonSubmissionHeader)
+        foreach (var col in _commonSubmissionHeader)
         {
             ICell? cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);
@@ -106,7 +106,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var challIds = new List<int>();
         var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
 
-        foreach (var col in CommonScoreboardHeader)
+        foreach (var col in _commonScoreboardHeader)
         {
             ICell? cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);

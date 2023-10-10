@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using GZCTF.Extensions;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
@@ -33,13 +34,13 @@ public class ExerciseInstanceRepository(AppDbContext context,
         if (exercises.Length > 0)
             return exercises;
 
-        using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
+        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
 
         var result = new List<ExerciseInstance>();
 
         await foreach (var id in context.ExerciseChallenges
                            .Where(e => e.IsEnabled && context.ExerciseDependencies.All(d => d.TargetId != e.Id))
-                           .Select(e => e.Id).AsAsyncEnumerable())
+                           .Select(e => e.Id).AsAsyncEnumerable().WithCancellation(token))
         {
             var newInst = new ExerciseInstance { ExerciseId = id, UserId = user.Id, IsLoaded = false };
 
@@ -73,9 +74,9 @@ public class ExerciseInstanceRepository(AppDbContext context,
             return instance;
         }
 
-        ExerciseChallenge? exercise = instance.Exercise;
+        ExerciseChallenge exercise = instance.Exercise;
 
-        if (exercise is null || !exercise.IsEnabled)
+        if (!exercise.IsEnabled)
         {
             await transaction.CommitAsync(token);
             return null;
@@ -186,14 +187,12 @@ public class ExerciseInstanceRepository(AppDbContext context,
             if (instance.FlagContext is null)
                 return AnswerResult.NotFound;
 
-            if (instance.FlagContext.Flag == answer)
-            {
-                await MarkSolved(instance, token);
-                await UnlockExercises(user, token);
-                return AnswerResult.Accepted;
-            }
+            if (instance.FlagContext.Flag != answer)
+                return AnswerResult.WrongAnswer;
 
-            return AnswerResult.WrongAnswer;
+            await MarkSolved(instance, token);
+            await UnlockExercises(user, token);
+            return AnswerResult.Accepted;
         }
 
         if (await context.FlagContexts.AsNoTracking()
@@ -219,7 +218,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
         if (instance.IsSolved)
             return;
 
-        using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
+        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
 
         instance.IsSolved = true;
         instance.SolveTimeUtc = DateTimeOffset.UtcNow;
@@ -230,22 +229,26 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
     internal async Task UnlockExercises(UserInfo user, CancellationToken token = default)
     {
-        using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
+        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
 
-        await foreach (var id in context.ExerciseChallenges.Where(chal => chal.IsEnabled &&
-                                                                          context.ExerciseInstances.All(i =>
-                                                                              i.UserId == user.Id && i.ExerciseId != chal.Id) &&
-                                                                          context.ExerciseDependencies.All(dep => dep.TargetId == chal.Id &&
-                                                                              context.ExerciseInstances.Any(
-                                                                                  e => e.IsSolved && e.ExerciseId == dep.SourceId
-                                                                              ))).Select(e => e.Id).AsAsyncEnumerable())
+        await foreach (var id in FetchNewChallenges(user, token))
         {
             var newInst = new ExerciseInstance { ExerciseId = id, UserId = user.Id, IsLoaded = false };
-
             context.ExerciseInstances.Add(newInst);
         }
 
         await SaveAsync(token);
         await transaction.CommitAsync(token);
     }
+
+    internal ConfiguredCancelableAsyncEnumerable<int> FetchNewChallenges(UserInfo user, CancellationToken token = default)
+        => context.ExerciseChallenges.Where(chal =>
+                chal.IsEnabled && context.ExerciseInstances.All(i =>
+                    i.UserId == user.Id && i.ExerciseId != chal.Id) &&
+                context.ExerciseDependencies.All(dep =>
+                    dep.TargetId == chal.Id &&
+                    context.ExerciseInstances.Any(e =>
+                        e.IsSolved && e.ExerciseId == dep.SourceId
+                    ))).Select(e => e.Id).AsAsyncEnumerable()
+            .WithCancellation(token);
 }

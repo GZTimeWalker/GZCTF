@@ -27,7 +27,7 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
             {
                 // FIXME: detect change
                 foreach (EntityEntry entry in ex.Entries)
-                    entry.Reload();
+                    await entry.ReloadAsync(token);
             }
         }
     }

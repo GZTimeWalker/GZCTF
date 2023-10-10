@@ -11,7 +11,7 @@ namespace GZCTF.Middlewares;
 /// <summary>
 /// 请求频率限制
 /// </summary>
-public class RateLimiter
+public static class RateLimiter
 {
     public enum LimitPolicy
     {
@@ -42,11 +42,11 @@ public class RateLimiter
                 RejectionStatusCode = StatusCodes.Status429TooManyRequests,
                 GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
                 {
-                    var userId = context?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                     if (userId is not null)
                         return RateLimitPartition.GetSlidingWindowLimiter(userId,
-                            key => new()
+                            _ => new()
                             {
                                 PermitLimit = 150,
                                 Window = TimeSpan.FromMinutes(1),
@@ -55,13 +55,13 @@ public class RateLimiter
                                 SegmentsPerWindow = 6
                             });
 
-                    IPAddress? address = context?.Connection?.RemoteIpAddress;
+                    IPAddress? address = context.Connection.RemoteIpAddress;
 
                     if (address is null || IPAddress.IsLoopback(address))
                         return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
 
                     return RateLimitPartition.GetSlidingWindowLimiter(address.ToString(),
-                        key => new()
+                        _ => new()
                         {
                             PermitLimit = 150,
                             Window = TimeSpan.FromMinutes(1),

@@ -16,37 +16,32 @@ public static class SignalRSinkExtension
         loggerConfiguration.Sink(new SignalRSink(serviceProvider));
 }
 
-public class SignalRSink : ILogEventSink
+public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
 {
-    readonly IServiceProvider _serviceProvider;
     IHubContext<AdminHub, IAdminClient>? _hubContext;
-
-    public SignalRSink(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
 
     public void Emit(LogEvent logEvent)
     {
-        _hubContext ??= _serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
+        _hubContext ??= serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
-        if (logEvent.Level >= LogEventLevel.Information)
-            try
-            {
-                _hubContext.Clients.All.ReceivedLog(
-                    new LogMessageModel
-                    {
-                        Time = logEvent.Timestamp,
-                        Level = logEvent.Level.ToString(),
-                        UserName = logEvent.Properties["UserName"].ToString()[1..^1],
-                        IP = logEvent.Properties["IP"].ToString()[1..^1],
-                        Msg = logEvent.RenderMessage(),
-                        Status = logEvent.Properties["Status"].ToString()
-                    }).Wait();
-            }
-            catch
-            {
-                // ignored
-            }
+        if (logEvent.Level < LogEventLevel.Information) return;
+        
+        try
+        {
+            _hubContext.Clients.All.ReceivedLog(
+                new LogMessageModel
+                {
+                    Time = logEvent.Timestamp,
+                    Level = logEvent.Level.ToString(),
+                    UserName = logEvent.Properties["UserName"].ToString()[1..^1],
+                    IP = logEvent.Properties["IP"].ToString()[1..^1],
+                    Msg = logEvent.RenderMessage(),
+                    Status = logEvent.Properties["Status"].ToString()
+                }).Wait();
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }

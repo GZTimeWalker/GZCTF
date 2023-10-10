@@ -41,7 +41,7 @@ public class PostRepository(IDistributedCache cache,
         context.Remove(post);
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.Posts);
+        await cache.RemoveAsync(CacheKey.Posts, token);
     }
 
     public async Task UpdatePost(Post post, CancellationToken token = default)
@@ -49,6 +49,6 @@ public class PostRepository(IDistributedCache cache,
         context.Update(post);
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.Posts);
+        await cache.RemoveAsync(CacheKey.Posts, token);
     }
 }

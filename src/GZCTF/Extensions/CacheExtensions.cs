@@ -9,20 +9,20 @@ public static class CacheExtensions
     /// 获取缓存或重新构建，如果缓存不存在会阻塞
     /// 使用 CacheMaker 和 CacheRequest 代替处理耗时更久的缓存
     /// </summary>
-    public static async Task<T> GetOrCreateAsync<T, L>(this IDistributedCache cache,
-        ILogger<L> logger,
+    public static async Task<TResult> GetOrCreateAsync<TResult, TLogger>(this IDistributedCache cache,
+        ILogger<TLogger> logger,
         string key,
-        Func<DistributedCacheEntryOptions, Task<T>> func,
+        Func<DistributedCacheEntryOptions, Task<TResult>> func,
         CancellationToken token = default)
     {
         var value = await cache.GetAsync(key, token);
-        T? result = default;
+        TResult? result = default;
 
         if (value is not null)
         {
             try
             {
-                result = MemoryPackSerializer.Deserialize<T>(value);
+                result = MemoryPackSerializer.Deserialize<TResult>(value);
             }
             catch
             {
