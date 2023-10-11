@@ -5,10 +5,11 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D270C86C-F293-4A9C-97C7-2A10404E8283}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.build.props = Directory.build.props
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GZCTF", "GZCTF\GZCTF.csproj", "{9AAEFC0F-73F3-44F0-B8AC-140640792603}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GZCTF", "GZCTF\GZCTF.csproj", "{9AAEFC0F-73F3-44F0-B8AC-140640792603}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GZCTF.Test", "GZCTF.Test\GZCTF.Test.csproj", "{A2B5B2F3-0861-4503-9AE4-2152701726DF}"
 EndProject

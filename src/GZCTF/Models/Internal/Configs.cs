@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
-using Microsoft.AspNetCore.HttpOverrides;
+using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 // ReSharper disable CollectionNeverUpdated.Global
 namespace GZCTF.Models.Internal;

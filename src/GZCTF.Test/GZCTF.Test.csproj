@@ -1,36 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <CollectCoverage>true</CollectCoverage>
         <Configurations>Debug;Release;GenAPI</Configurations>
         <ReleaseVersion>0.17.6</ReleaseVersion>
+        <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
+
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.11" />
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.11" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-        <PackageReference Include="xunit" Version="2.5.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.runner.visualstudio">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="xunit.runner.console" Version="2.5.1">
+        <PackageReference Include="xunit.runner.console">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="6.0.0">
+        <PackageReference Include="coverlet.collector">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.msbuild" Version="6.0.0">
+        <PackageReference Include="coverlet.msbuild">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>

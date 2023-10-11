@@ -36,84 +36,77 @@ public static class RateLimiter
         Submit
     }
 
-    public static RateLimiterOptions GetRateLimiterOptions() =>
-        new RateLimiterOptions
-            {
-                RejectionStatusCode = StatusCodes.Status429TooManyRequests,
-                GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    public static void ConfigureRateLimiter(RateLimiterOptions options)
+    {
+        options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        {
+            var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId is not null)
+                return RateLimitPartition.GetSlidingWindowLimiter(userId,
+                    _ => new()
+                    {
+                        PermitLimit = 150,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 60,
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        SegmentsPerWindow = 6
+                    });
+
+            IPAddress? address = context.Connection.RemoteIpAddress;
+
+            if (address is null || IPAddress.IsLoopback(address))
+                return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
+
+            return RateLimitPartition.GetSlidingWindowLimiter(address.ToString(),
+                _ => new()
                 {
-                    var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    PermitLimit = 150,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 60,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    SegmentsPerWindow = 6
+                });
+        });
+        options.OnRejected = async (context, cancellationToken) =>
+        {
+            context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+            context.HttpContext.Response.ContentType = MediaTypeNames.Application.Json;
 
-                    if (userId is not null)
-                        return RateLimitPartition.GetSlidingWindowLimiter(userId,
-                            _ => new()
-                            {
-                                PermitLimit = 150,
-                                Window = TimeSpan.FromMinutes(1),
-                                QueueLimit = 60,
-                                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                                SegmentsPerWindow = 6
-                            });
+            var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
+            var afterSec = (int)TimeSpan.FromMinutes(1).TotalSeconds;
 
-                    IPAddress? address = context.Connection.RemoteIpAddress;
+            if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
+                afterSec = (int)retryAfter.TotalSeconds;
 
-                    if (address is null || IPAddress.IsLoopback(address))
-                        return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
-
-                    return RateLimitPartition.GetSlidingWindowLimiter(address.ToString(),
-                        _ => new()
-                        {
-                            PermitLimit = 150,
-                            Window = TimeSpan.FromMinutes(1),
-                            QueueLimit = 60,
-                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                            SegmentsPerWindow = 6
-                        });
-                }),
-                OnRejected = async (context, cancellationToken) =>
-                {
-                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    context.HttpContext.Response.ContentType = MediaTypeNames.Application.Json;
-
-                    var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
-                    var afterSec = (int)TimeSpan.FromMinutes(1).TotalSeconds;
-
-                    if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
-                        afterSec = (int)retryAfter.TotalSeconds;
-
-                    context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);
-                    await context.HttpContext.Response.WriteAsJsonAsync(
-                        new RequestResponse(localizer[nameof(Resources.Program.RateLimit_TooManyRequests)],
-                            StatusCodes.Status429TooManyRequests
-                        ), cancellationToken);
-                }
-            }
-            .AddConcurrencyLimiter(nameof(LimitPolicy.Concurrency), options =>
-            {
-                options.PermitLimit = 1;
-                options.QueueLimit = 20;
-            })
-            .AddFixedWindowLimiter(nameof(LimitPolicy.Register), options =>
-            {
-                options.PermitLimit = 20;
-                options.Window = TimeSpan.FromSeconds(150);
-            })
-            .AddTokenBucketLimiter(nameof(LimitPolicy.Container), options =>
-            {
-                options.TokenLimit = 120;
-                options.TokensPerPeriod = 30;
-                options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
-            })
-            .AddTokenBucketLimiter(nameof(LimitPolicy.Submit), options =>
-            {
-                options.TokenLimit = 60;
-                options.TokensPerPeriod = 30;
-                options.ReplenishmentPeriod = TimeSpan.FromSeconds(5);
-            });
-}
-
-public static class RateLimiterExtensions
-{
-    public static IApplicationBuilder UseConfiguredRateLimiter(this IApplicationBuilder builder) =>
-        builder.UseRateLimiter(RateLimiter.GetRateLimiterOptions());
+            context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);
+            await context.HttpContext.Response.WriteAsJsonAsync(
+                new RequestResponse(localizer[nameof(Resources.Program.RateLimit_TooManyRequests)],
+                    StatusCodes.Status429TooManyRequests
+                ), cancellationToken);
+        };
+        options.AddConcurrencyLimiter(nameof(LimitPolicy.Concurrency), options =>
+        {
+            options.PermitLimit = 1;
+            options.QueueLimit = 20;
+        });
+        options.AddFixedWindowLimiter(nameof(LimitPolicy.Register), options =>
+        {
+            options.PermitLimit = 20;
+            options.Window = TimeSpan.FromSeconds(150);
+        });
+        options.AddTokenBucketLimiter(nameof(LimitPolicy.Container), options =>
+        {
+            options.TokenLimit = 120;
+            options.TokensPerPeriod = 30;
+            options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+        });
+        options.AddTokenBucketLimiter(nameof(LimitPolicy.Submit), options =>
+        {
+            options.TokenLimit = 60;
+            options.TokensPerPeriod = 30;
+            options.ReplenishmentPeriod = TimeSpan.FromSeconds(5);
+        });
+    }
 }

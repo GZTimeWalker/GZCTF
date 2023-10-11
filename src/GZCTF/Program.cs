@@ -238,6 +238,7 @@ builder.Services.AddHostedService<CronJobService>();
 #endregion Services and Repositories
 
 builder.Services.AddHealthChecks();
+builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
 builder.Services.AddResponseCompression(options =>
 {
     options.Providers.Add<BrotliCompressionProvider>();
@@ -295,7 +296,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
-    app.UseConfiguredRateLimiter();
+    app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging"))
     app.UseRequestLogging();

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <AssemblyVersion>0.17.6</AssemblyVersion>
         <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
         <Nullable>enable</Nullable>
@@ -22,52 +22,50 @@
         <WarningLevel>4</WarningLevel>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
-        <TieredPgo>true</TieredPgo>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(RunConfiguration)' == 'GZCTF' " />
     <ItemGroup>
-        <PackageReference Include="Aigamo.ResXGenerator" Version="4.2.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Docker.DotNet" Version="3.125.15" />
-        <PackageReference Include="KubernetesClient" Version="12.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.11" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.11" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
+        <PackageReference Include="Aigamo.ResXGenerator">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
-        <PackageReference Include="NPOI" Version="2.6.2" />
-        <PackageReference Include="NSwag.AspNetCore" Version="13.20.0" />
-        <PackageReference Include="NSwag.MSBuild" Version="13.20.0">
+        <PackageReference Include="Docker.DotNet" />
+        <PackageReference Include="KubernetesClient" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
-        <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
-        <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
-        <PackageReference Include="Serilog.Sinks.AspNetCore.SignalR" Version="0.4.0" />
-        <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-        <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.3" />
-        <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
-        <PackageReference Include="MailKit" Version="4.2.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.11" />
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.11" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="7.0.11" />
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.11" />
-        <PackageReference Include="MemoryPack" Version="1.9.16" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
-        <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
-        <PackageReference Include="PacketDotNet" Version="1.4.7" />
-        <PackageReference Include="SharpPcap" Version="6.2.5" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="NPOI" />
+        <PackageReference Include="NSwag.AspNetCore" />
+        <PackageReference Include="NSwag.MSBuild">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Expressions" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Sinks.AspNetCore.SignalR" />
+        <PackageReference Include="Serilog.Sinks.Async" />
+        <PackageReference Include="Serilog.Sinks.File" />
+        <PackageReference Include="Serilog.Sinks.File.Archive" />
+        <PackageReference Include="Serilog.Sinks.PostgreSQL" />
+        <PackageReference Include="MailKit" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+        <PackageReference Include="MemoryPack" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="SixLabors.ImageSharp" />
+        <PackageReference Include="BouncyCastle.Cryptography" />
+        <PackageReference Include="PacketDotNet" />
+        <PackageReference Include="SharpPcap" />
     </ItemGroup>
 
     <ItemGroup>
@@ -81,17 +79,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="NETCore.MailKit" />
-        <None Remove="MailKit" />
-        <None Remove="Microsoft.Extensions.Caching.Redis" />
-        <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
-        <None Remove="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" />
-        <None Remove="StackExchange.Redis" />
-        <None Remove="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
-        <None Remove="Microsoft.AspNetCore.SignalR.StackExchangeRedis" />
-        <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis" />
-        <None Remove="MemoryPack" />
-        <None Remove="MemoryPack.Core" />
         <None Remove="ClientApp\build\**" />
     </ItemGroup>
 
