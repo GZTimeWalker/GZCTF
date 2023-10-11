@@ -546,7 +546,7 @@
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
-    <value>[不正検出] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
+    <value>[不正検知] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
