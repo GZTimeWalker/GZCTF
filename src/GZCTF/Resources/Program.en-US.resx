@@ -502,39 +502,39 @@
     <comment/>
   </data>
   <data name="FileRepository_CacheLocation" xml:space="preserve">
-    <value>缓存位置：{0}</value>
+    <value>Cache location: {0}</value>
     <comment/>
   </data>
   <data name="FileRepository_DeleteFile" xml:space="preserve">
-    <value>删除文件 [{0}] {1}</value>
+    <value>Delete file [{0}] {1}</value>
     <comment/>
   </data>
   <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
-    <value>无法存储图像文件：{0}</value>
+    <value>Unable to save image: {0}</value>
     <comment/>
   </data>
   <data name="FileRepository_ReferenceCounting" xml:space="preserve">
-    <value>文件引用计数 [{0}] {1} =&gt; {2}</value>
+    <value>File reference count [{0}] {1} =&gt; {2}</value>
     <comment/>
   </data>
   <data name="File_DeletionFailed" xml:space="preserve">
-    <value>文件删除失败</value>
+    <value>Failed to delete file</value>
     <comment/>
   </data>
   <data name="File_NotFound" xml:space="preserve">
-    <value>文件不存在</value>
+    <value>File not exists</value>
     <comment/>
   </data>
   <data name="File_PdfOnly" xml:space="preserve">
-    <value>请上传 pdf 文件</value>
+    <value>Please upload a PDF file</value>
     <comment/>
   </data>
   <data name="File_SizeTooLarge" xml:space="preserve">
-    <value>文件过大</value>
+    <value>File too large</value>
     <comment/>
   </data>
   <data name="File_SizeZero" xml:space="preserve">
-    <value>文件非法</value>
+    <value>Invalid file</value>
     <comment/>
   </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
@@ -550,7 +550,7 @@
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
-    <value>题目 [{0}] 疑似发生违规，相关队伍 [{1}] 和 [{2}]</value>
+    <value>Challenge [{0}] cheating detected, associated team [{1}] and [{2}]</value>
     <comment/>
   </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment/>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>删除比赛失败，相关文件可能已受损，请重新删除</value>
+    <value>Failed to delete game, related files may have been corrupted, please try again</value>
     <comment/>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
@@ -618,7 +618,7 @@
     <comment/>
   </data>
   <data name="Game_CaptureNotFound" xml:space="preserve">
-    <value>未找到相关捕获信息</value>
+    <value>No captured traffic found</value>
     <comment/>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
@@ -694,7 +694,7 @@
     <comment/>
   </data>
   <data name="Game_NotParticipated" xml:space="preserve">
-    <value>您尚未参赛</value>
+    <value>You have not participated in the game</value>
     <comment/>
   </data>
   <data name="Game_NotStarted" xml:space="preserve">
@@ -710,11 +710,11 @@
     <comment/>
   </data>
   <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
-    <value>积分榜下载失败</value>
+    <value>Failed to download scoreboard</value>
     <comment/>
   </data>
   <data name="Game_SubmissionNotFound" xml:space="preserve">
-    <value>提交未找到</value>
+    <value>The submission was not found</value>
     <comment/>
   </data>
   <data name="Game_SubmissionNotice" xml:space="preserve">
@@ -730,91 +730,91 @@
     <comment/>
   </data>
   <data name="Header_Captain" xml:space="preserve">
-    <value>队长</value>
+    <value>Captain</value>
     <comment/>
   </data>
   <data name="Header_Challenge" xml:space="preserve">
-    <value>题目</value>
+    <value>Challenge</value>
     <comment/>
   </data>
   <data name="Header_Email" xml:space="preserve">
-    <value>用户邮箱</value>
+    <value>User email</value>
     <comment/>
   </data>
   <data name="Header_Member" xml:space="preserve">
-    <value>队员</value>
+    <value>Crew</value>
     <comment/>
   </data>
   <data name="Header_PhoneNumber" xml:space="preserve">
-    <value>手机号</value>
+    <value>Phone number</value>
     <comment/>
   </data>
   <data name="Header_Ranking" xml:space="preserve">
-    <value>排名</value>
+    <value>Rank</value>
     <comment/>
   </data>
   <data name="Header_ScoringTime" xml:space="preserve">
-    <value>得分时间</value>
+    <value>Scoring time</value>
     <comment/>
   </data>
   <data name="Header_SolvedNumber" xml:space="preserve">
-    <value>解题数量</value>
+    <value>Solved</value>
     <comment/>
   </data>
   <data name="Header_StdNumber" xml:space="preserve">
-    <value>学号</value>
+    <value>Student number</value>
     <comment/>
   </data>
   <data name="Header_SubmitContent" xml:space="preserve">
-    <value>提交内容</value>
+    <value>Submission content</value>
     <comment/>
   </data>
   <data name="Header_SubmitStatus" xml:space="preserve">
-    <value>提交状态</value>
+    <value>Submission status</value>
     <comment/>
   </data>
   <data name="Header_SubmitTime" xml:space="preserve">
-    <value>提交时间</value>
+    <value>Submitted time</value>
     <comment/>
   </data>
   <data name="Header_Team" xml:space="preserve">
-    <value>战队</value>
+    <value>Team</value>
     <comment/>
   </data>
   <data name="Header_TotalScore" xml:space="preserve">
-    <value>总分</value>
+    <value>Score</value>
     <comment/>
   </data>
   <data name="Header_User" xml:space="preserve">
-    <value>用户</value>
+    <value>User</value>
     <comment/>
   </data>
   <data name="Identity_ConcurrencyFailure" xml:space="preserve">
-    <value>发生并发错误，请稍后再试</value>
+    <value>Concurrent error occurred, please try again later</value>
     <comment/>
   </data>
   <data name="Identity_DefaultError" xml:space="preserve">
-    <value>发生错误，请稍后再试</value>
+    <value>An error has occurred. Please try again later.</value>
     <comment/>
   </data>
   <data name="Identity_DuplicateEmail" xml:space="preserve">
-    <value>邮箱地址 {0} 已存在</value>
+    <value>Email address {0} already exists</value>
     <comment/>
   </data>
   <data name="Identity_DuplicateRoleName" xml:space="preserve">
-    <value>角色名 {0} 已存在</value>
+    <value>Role name {0} already exists</value>
     <comment/>
   </data>
   <data name="Identity_DuplicateUserName" xml:space="preserve">
-    <value>用户名 {0} 已存在</value>
+    <value>Username {0} already exists</value>
     <comment/>
   </data>
   <data name="Identity_InvalidEmail" xml:space="preserve">
-    <value>邮箱地址 {0} 无效</value>
+    <value>Email address {0} is invalid</value>
     <comment/>
   </data>
   <data name="Identity_InvalidRoleName" xml:space="preserve">
-    <value>角色名 {0} 无效</value>
+    <value>Role name {0} is invalid</value>
     <comment/>
   </data>
   <data name="Identity_InvalidToken" xml:space="preserve">
@@ -834,15 +834,15 @@
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
-    <value>密码中需要数字</value>
+    <value>Password requires digits</value>
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresLower" xml:space="preserve">
-    <value>密码中需要小写字母</value>
+    <value>Password requires lowercase letters</value>
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
-    <value>密码中需要符号</value>
+    <value>Password requires symbols</value>
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
@@ -850,19 +850,19 @@
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
-    <value>密码中需要大写字母</value>
+    <value>Password requires uppercase letters</value>
     <comment/>
   </data>
   <data name="Identity_PasswordTooShort" xml:space="preserve">
-    <value>密码长度 {0} 太短</value>
+    <value>Password length {0} is too short</value>
     <comment/>
   </data>
   <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
-    <value>恢复代码找回失败</value>
+    <value>Recovery code retrieval failed</value>
     <comment/>
   </data>
   <data name="Identity_UnknownError" xml:space="preserve">
-    <value>未知错误</value>
+    <value>Unknown error</value>
     <comment/>
   </data>
   <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
@@ -882,23 +882,23 @@
     <comment/>
   </data>
   <data name="Init_AdminCreationFailed" xml:space="preserve">
-    <value>管理员账户创建失败，错误信息：{0}</value>
+    <value>Failed to create the administrator account, error message: {0}</value>
     <comment/>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
-    <value>在不使用平台代理模式时无法进行流量捕获！</value>
+    <value>Unable to capture traffic when not using platform proxy mode!</value>
     <comment/>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
-    <value>缓存配置无效，请检查 RedisCache 字段配置。如不使用 Redis 请将配置项置空。</value>
+    <value>Invalid cache configuration, please check the "RedisCache" field configuration. If you're not using Redis, please leave the configuration item empty.</value>
     <comment/>
   </data>
   <data name="Init_PostContent" xml:space="preserve">
-    <value>项目基于 AGPL-3.0 许可证，开源于 [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF)。</value>
+    <value>The project is based on the AGPL-3.0 license, open sourced at [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
     <comment/>
   </data>
   <data name="Init_PostSummary" xml:space="preserve">
-    <value>一个开源的CTF比赛平台</value>
+    <value>An open-source CTF platform</value>
     <comment/>
   </data>
   <data name="Init_PostTitle" xml:space="preserve">
@@ -942,39 +942,39 @@
     <comment/>
   </data>
   <data name="MailSender_ChangeEmailButton" xml:space="preserve">
-    <value>确认验证邮箱</value>
+    <value>Verify Email</value>
     <comment/>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
-    <value>你正在进行账户邮箱更换操作，请点击下方按钮验证你的新邮箱。</value>
+    <value>You are performing an account email change operation, please click the button below to verify your new email.</value>
     <comment/>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
-    <value>更换邮箱</value>
+    <value>Change Email</value>
     <comment/>
   </data>
   <data name="MailSender_InvalidRequest" xml:space="preserve">
-    <value>无效的邮件发送调用</value>
+    <value>Invalid mail request</value>
     <comment/>
   </data>
   <data name="MailSender_MailSendFailed" xml:space="preserve">
-    <value>邮件发送失败</value>
+    <value>Failed to delivery mail</value>
     <comment/>
   </data>
   <data name="MailSender_ResetPasswordButton" xml:space="preserve">
-    <value>确认重置密码</value>
+    <value>Confirm reset password</value>
     <comment/>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
-    <value>你正在进行账户密码重置操作，请点击下方按钮重置你的密码。</value>
+    <value>You are performing an account password reset operation. Please click the button below to reset your password.</value>
     <comment/>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
-    <value>重置密码</value>
+    <value>Reset password</value>
     <comment/>
   </data>
   <data name="MailSender_SendMail" xml:space="preserve">
-    <value>发送邮件：{0}</value>
+    <value>Send mail: {0}</value>
     <comment/>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
@@ -1035,107 +1035,107 @@
     <comment/>
   </data>
   <data name="Model_ContentRequired" xml:space="preserve">
-    <value>内容是必需的</value>
+    <value>Content is required</value>
     <comment/>
   </data>
   <data name="Model_EmailMalformed" xml:space="preserve">
-    <value>邮箱地址无效</value>
+    <value>Email is invalid</value>
     <comment/>
   </data>
   <data name="Model_EmailRequired" xml:space="preserve">
-    <value>邮箱是必需的</value>
+    <value>Email is required</value>
     <comment/>
   </data>
   <data name="Model_FlagRequired" xml:space="preserve">
-    <value>flag 是必需的</value>
+    <value>Flag is required</value>
     <comment/>
   </data>
   <data name="Model_FlagTooLong" xml:space="preserve">
-    <value>flag 字符串过长</value>
+    <value>Flag is too long</value>
     <comment/>
   </data>
   <data name="Model_InvitationCodeTooLong" xml:space="preserve">
-    <value>邀请码过长</value>
+    <value>Invitation code is too long</value>
     <comment/>
   </data>
   <data name="Model_MalformedPhoneNumber" xml:space="preserve">
-    <value>手机号格式错误</value>
+    <value>Invalid phone number</value>
     <comment/>
   </data>
   <data name="Model_NewPasswordRequired" xml:space="preserve">
-    <value>新密码是必需的</value>
+    <value>A new password is required</value>
     <comment/>
   </data>
   <data name="Model_NewPasswordTooShort" xml:space="preserve">
-    <value>新密码过短</value>
+    <value>New password is too short</value>
     <comment/>
   </data>
   <data name="Model_OldPasswordRequired" xml:space="preserve">
-    <value>旧密码是必需的</value>
+    <value>The old password is required</value>
     <comment/>
   </data>
   <data name="Model_OldPasswordTooShort" xml:space="preserve">
-    <value>旧密码过短</value>
+    <value>Old password is too short</value>
     <comment/>
   </data>
   <data name="Model_OutOfRange" xml:space="preserve">
-    <value>{0} 的值必须介于 {1} - {2}</value>
+    <value>The value of {0} must be between {1} and {2}</value>
     <comment/>
   </data>
   <data name="Model_PasswordRequired" xml:space="preserve">
-    <value>密码是必需的</value>
+    <value>Password is required</value>
     <comment/>
   </data>
   <data name="Model_PasswordTooShort" xml:space="preserve">
-    <value>密码过短</value>
+    <value>Password too short</value>
     <comment/>
   </data>
   <data name="Model_RealNameTooLong" xml:space="preserve">
-    <value>真实姓名过长</value>
+    <value>Real name is too long</value>
     <comment/>
   </data>
   <data name="Model_StdNumberTooLong" xml:space="preserve">
-    <value>学工号过长</value>
+    <value>Student number is too long</value>
     <comment/>
   </data>
   <data name="Model_TeamBioTooLong" xml:space="preserve">
-    <value>队伍签名过长</value>
+    <value>Team bio is too long</value>
     <comment/>
   </data>
   <data name="Model_TeamNameTooLong" xml:space="preserve">
-    <value>队伍名称过长</value>
+    <value>Team name is too long</value>
     <comment/>
   </data>
   <data name="Model_TitleRequired" xml:space="preserve">
-    <value>标题是必需的</value>
+    <value>Title is required</value>
     <comment/>
   </data>
   <data name="Model_TitleTooLong" xml:space="preserve">
-    <value>标题过长</value>
+    <value>Title is too long</value>
     <comment/>
   </data>
   <data name="Model_TitleTooShort" xml:space="preserve">
-    <value>标题过短</value>
+    <value>Title is too short</value>
     <comment/>
   </data>
   <data name="Model_TokenRequired" xml:space="preserve">
-    <value>Token是必需的</value>
+    <value>Token is required</value>
     <comment/>
   </data>
   <data name="Model_UserNameRequired" xml:space="preserve">
-    <value>用户名是必需的</value>
+    <value>Username is required</value>
     <comment/>
   </data>
   <data name="Model_UserNameTooLong" xml:space="preserve">
-    <value>用户名过长</value>
+    <value>Username is too long</value>
     <comment/>
   </data>
   <data name="Model_UserNameTooShort" xml:space="preserve">
-    <value>用户名过短</value>
+    <value>Username is too short</value>
     <comment/>
   </data>
   <data name="Model_ValidationFailed" xml:space="preserve">
-    <value>校验失败，请检查输入。</value>
+    <value>Failed to validate the input, please check again</value>
     <comment/>
   </data>
   <data name="Post_NotFound" xml:space="preserve">
@@ -1143,23 +1143,23 @@
     <comment/>
   </data>
   <data name="RateLimit_TooManyRequests" xml:space="preserve">
-    <value>请求次数过多，请 {0} 秒后再试。</value>
+    <value>Too many requests. Please try again in {0} seconds.</value>
     <comment/>
   </data>
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
-    <value>全部提交</value>
+    <value>All Submissions</value>
     <comment/>
   </data>
   <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
-    <value>所属组织</value>
+    <value>Organization</value>
     <comment/>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
-    <value>队伍尚未加载</value>
+    <value>Team not loaded yet</value>
     <comment/>
   </data>
   <data name="Scoreboard_Title" xml:space="preserve">
-    <value>排行榜</value>
+    <value>Scoreboard</value>
     <comment/>
   </data>
   <data name="Server_Exited" xml:space="preserve">
@@ -1171,19 +1171,19 @@
     <comment/>
   </data>
   <data name="Submission_Accepted" xml:space="preserve">
-    <value>答案正确</value>
+    <value>Answer accepted</value>
     <comment/>
   </data>
   <data name="Submission_CheatDetected" xml:space="preserve">
-    <value>作弊检测</value>
+    <value>Cheat detection</value>
     <comment/>
   </data>
   <data name="Submission_FirstBlood" xml:space="preserve">
-    <value>一血</value>
+    <value>First blood</value>
     <comment/>
   </data>
   <data name="Submission_FlagSubmitted" xml:space="preserve">
-    <value>成功提交</value>
+    <value>Successfully submitted</value>
     <comment/>
   </data>
   <data name="Submission_NotFound" xml:space="preserve">
@@ -1191,31 +1191,31 @@
     <comment/>
   </data>
   <data name="Submission_SecondBlood" xml:space="preserve">
-    <value>二血</value>
+    <value>Second blood</value>
     <comment/>
   </data>
   <data name="Submission_ThirdBlood" xml:space="preserve">
-    <value>三血</value>
+    <value>Third blood</value>
     <comment/>
   </data>
   <data name="Submission_UnknownInstance" xml:space="preserve">
-    <value>实例未知</value>
+    <value>Unknown instance</value>
     <comment/>
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
-    <value>答案错误</value>
+    <value>Answer incorrect</value>
     <comment/>
   </data>
   <data name="Game_CreationFailed" xml:space="preserve">
-    <value>比赛创建失败</value>
+    <value>Failed to create game</value>
     <comment/>
   </data>
   <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
-    <value>只有容器题目可以进行流量捕获</value>
+    <value>Enable traffic capture only for challenge with containers</value>
     <comment/>
   </data>
   <data name="Challenge_Created" xml:space="preserve">
-    <value>新增了题目 [{0}]</value>
+    <value>Added challenge [{0}]</value>
     <comment/>
   </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
@@ -1223,15 +1223,15 @@
     <comment/>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>flag 复杂度不足，请考虑添加队伍哈希或增加长度</value>
+    <value>Flag is not sufficiently complicated, please consider adding team hash or adding length</value>
     <comment/>
   </data>
   <data name="Challenge_HintUpdated" xml:space="preserve">
-    <value>[{0}] 更新了提示</value>
+    <value>[{0}] updated the hints</value>
     <comment/>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
-    <value>题目无 flag，不可启用</value>
+    <value>The challenge has no flag and cannot be enabled</value>
     <comment/>
   </data>
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
@@ -1263,7 +1263,7 @@
     <comment/>
   </data>
   <data name="Container_NotFound" xml:space="preserve">
-    <value>不存在的容器</value>
+    <value>Container does not exist</value>
     <comment/>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
@@ -1271,19 +1271,19 @@
     <comment/>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
-    <value>文件创建失败</value>
+    <value>Failed to create file</value>
     <comment/>
   </data>
   <data name="Notification_NotFound" xml:space="preserve">
-    <value>通知未找到</value>
+    <value>Notification not found</value>
     <comment/>
   </data>
   <data name="Notification_SystemNotDeletable" xml:space="preserve">
-    <value>不能删除系统通知</value>
+    <value>System notifications could not be deleted</value>
     <comment/>
   </data>
   <data name="Notification_SystemNotEditable" xml:space="preserve">
-    <value>不能更改系统通知</value>
+    <value>System notifications cannot be modified</value>
     <comment/>
   </data>
   <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
