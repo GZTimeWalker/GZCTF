@@ -97,8 +97,8 @@ public partial class UserInfo : IdentityUser<Guid>
 
     internal void UpdateUserInfo(UserCreateModel model)
     {
-        UserName = model.UserName ?? UserName;
-        Email = model.Email ?? Email;
+        UserName = model.UserName;
+        Email = model.Email;
         StdNumber = model.StdNumber ?? StdNumber;
         RealName = model.RealName ?? RealName;
         PhoneNumber = model.Phone ?? PhoneNumber;
@@ -113,7 +113,7 @@ public partial class UserInfo : IdentityUser<Guid>
         StdNumber = model.StdNumber ?? StdNumber;
     }
 
-    #region 数据库关系
+    #region Db Relationship
 
     /// <summary>
     /// 头像哈希
@@ -133,5 +133,5 @@ public partial class UserInfo : IdentityUser<Guid>
     [MemoryPackIgnore]
     public List<Team> Teams { get; set; } = new();
 
-    #endregion 数据库关系
+    #endregion
 }

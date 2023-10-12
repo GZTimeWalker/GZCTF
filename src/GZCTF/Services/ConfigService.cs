@@ -26,6 +26,7 @@ public class ConfigService(AppDbContext context,
             throw new NotSupportedException(Program.StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
+        
         if (type == typeof(string) || type.IsValueType)
             configs.Add(new(key, converter.ConvertToString(value) ?? string.Empty));
         else if (type.IsClass)
@@ -61,13 +62,12 @@ public class ConfigService(AppDbContext context,
         {
             if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
             {
-                if (dbConf.Value != conf.Value)
-                {
-                    dbConf.Value = conf.Value;
-                    logger.SystemLog(
-                        Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"],
-                        TaskStatus.Success, LogLevel.Debug);
-                }
+                if (dbConf.Value == conf.Value) continue;
+                
+                dbConf.Value = conf.Value;
+                logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"],
+                    TaskStatus.Success, LogLevel.Debug);
             }
             else
             {

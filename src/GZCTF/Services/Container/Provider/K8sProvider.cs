@@ -111,9 +111,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                                     IpBlock = new()
                                     {
                                         Cidr = "0.0.0.0/0",
-                                        Except
-                                            // FIXME: remove nullable when JsonObjectCreationHandling release
-                                            = _k8sMetadata.Config.AllowCIDR ?? new[] { "10.0.0.0/8" }
+                                        Except = _k8sMetadata.Config.AllowCidr
                                     }
                                 }
                             }
@@ -122,7 +120,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                 }
             }, _k8sMetadata.Config.Namespace);
 
-        if (withAuth && registry is not null && registry.ServerAddress is not null)
+        if (withAuth && registry?.ServerAddress is not null)
         {
             var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
             var dockerJsonObj = new

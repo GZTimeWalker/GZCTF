@@ -112,12 +112,11 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             cell.SetCellValue(col);
             cell.CellStyle = style;
 
-            if (withOrg && colIndex == 2)
-            {
-                cell = row.CreateCell(colIndex++);
-                cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingOrganization)]);
-                cell.CellStyle = style;
-            }
+            if (!withOrg || colIndex != 2) continue;
+            
+            cell = row.CreateCell(colIndex++);
+            cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingOrganization)]);
+            cell.CellStyle = style;
         }
 
         foreach (KeyValuePair<ChallengeTag, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)

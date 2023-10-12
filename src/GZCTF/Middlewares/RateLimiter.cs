@@ -86,27 +86,27 @@ public static class RateLimiter
                     StatusCodes.Status429TooManyRequests
                 ), cancellationToken);
         };
-        options.AddConcurrencyLimiter(nameof(LimitPolicy.Concurrency), options =>
+        options.AddConcurrencyLimiter(nameof(LimitPolicy.Concurrency), o =>
         {
-            options.PermitLimit = 1;
-            options.QueueLimit = 20;
+            o.PermitLimit = 1;
+            o.QueueLimit = 20;
         });
-        options.AddFixedWindowLimiter(nameof(LimitPolicy.Register), options =>
+        options.AddFixedWindowLimiter(nameof(LimitPolicy.Register), o =>
         {
-            options.PermitLimit = 20;
-            options.Window = TimeSpan.FromSeconds(150);
+            o.PermitLimit = 20;
+            o.Window = TimeSpan.FromSeconds(150);
         });
-        options.AddTokenBucketLimiter(nameof(LimitPolicy.Container), options =>
+        options.AddTokenBucketLimiter(nameof(LimitPolicy.Container), o =>
         {
-            options.TokenLimit = 120;
-            options.TokensPerPeriod = 30;
-            options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+            o.TokenLimit = 120;
+            o.TokensPerPeriod = 30;
+            o.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
         });
-        options.AddTokenBucketLimiter(nameof(LimitPolicy.Submit), options =>
+        options.AddTokenBucketLimiter(nameof(LimitPolicy.Submit), o =>
         {
-            options.TokenLimit = 60;
-            options.TokensPerPeriod = 30;
-            options.ReplenishmentPeriod = TimeSpan.FromSeconds(5);
+            o.TokenLimit = 60;
+            o.TokensPerPeriod = 30;
+            o.ReplenishmentPeriod = TimeSpan.FromSeconds(5);
         });
     }
 }

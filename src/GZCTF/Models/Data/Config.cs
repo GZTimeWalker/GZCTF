@@ -5,7 +5,7 @@ namespace GZCTF.Models.Data;
 /// <summary>
 /// 用于存放配置项
 /// </summary>
-public record Config : IEquatable<Config>
+public record Config
 {
     public Config() { }
 

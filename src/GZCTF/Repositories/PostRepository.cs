@@ -10,20 +10,20 @@ public class PostRepository(IDistributedCache cache,
     ILogger<PostRepository> logger,
     AppDbContext context) : RepositoryBase(context), IPostRepository
 {
-    public override Task<int> CountAsync(CancellationToken token = default) => context.Posts.CountAsync(token);
+    public override Task<int> CountAsync(CancellationToken token = default) => Context.Posts.CountAsync(token);
 
     public async Task<Post> CreatePost(Post post, CancellationToken token = default)
     {
         post.UpdateKeyWithHash();
-        await context.AddAsync(post, token);
+        await Context.AddAsync(post, token);
         await SaveAsync(token);
 
-        cache.Remove(CacheKey.Posts);
+        await cache.RemoveAsync(CacheKey.Posts, token);
 
         return post;
     }
 
-    public Task<Post?> GetPostById(string id, CancellationToken token = default) => context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
+    public Task<Post?> GetPostById(string id, CancellationToken token = default) => Context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
 
     public async Task<Post?> GetPostByIdFromCache(string id, CancellationToken token = default) =>
         (await GetPosts(token)).FirstOrDefault(p => p.Id == id);
@@ -32,13 +32,13 @@ public class PostRepository(IDistributedCache cache,
         cache.GetOrCreateAsync(logger, CacheKey.Posts, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-            return context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
+            return Context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
                 .ThenByDescending(n => n.UpdateTimeUtc).ToArrayAsync(token);
         }, token);
 
     public async Task RemovePost(Post post, CancellationToken token = default)
     {
-        context.Remove(post);
+        Context.Remove(post);
         await SaveAsync(token);
 
         await cache.RemoveAsync(CacheKey.Posts, token);
@@ -46,7 +46,7 @@ public class PostRepository(IDistributedCache cache,
 
     public async Task UpdatePost(Post post, CancellationToken token = default)
     {
-        context.Update(post);
+        Context.Update(post);
         await SaveAsync(token);
 
         await cache.RemoveAsync(CacheKey.Posts, token);

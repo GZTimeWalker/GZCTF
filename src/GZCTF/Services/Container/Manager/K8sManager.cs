@@ -66,8 +66,7 @@ public class K8sManager : IContainerManager
                 DnsPolicy = "None",
                 DnsConfig = new()
                 {
-                    // FIXME: remove nullable when JsonObjectCreationHandling release
-                    Nameservers = options.DNS ?? new[] { "8.8.8.8", "223.5.5.5", "114.114.114.114" }
+                    Nameservers = options.Dns
                 },
                 EnableServiceLinks = false,
                 Containers = new[]

@@ -7,11 +7,11 @@ namespace GZCTF.Repositories;
 
 public abstract class RepositoryBase(AppDbContext context) : IRepository
 {
-    protected readonly AppDbContext context = context;
+    protected readonly AppDbContext Context = context;
 
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default) => context.Database.BeginTransactionAsync(token);
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default) => Context.Database.BeginTransactionAsync(token);
 
-    public string ChangeTrackerView => context.ChangeTracker.DebugView.LongView;
+    public string ChangeTrackerView => Context.ChangeTracker.DebugView.LongView;
 
     public async Task SaveAsync(CancellationToken token = default)
     {
@@ -20,7 +20,7 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
         {
             try
             {
-                await context.SaveChangesAsync(token);
+                await Context.SaveChangesAsync(token);
                 saved = true;
             }
             catch (DbUpdateConcurrencyException ex)
@@ -32,9 +32,9 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
         }
     }
 
-    public void Detach(object item) => context.Entry(item).State = EntityState.Detached;
+    public void Detach(object item) => Context.Entry(item).State = EntityState.Detached;
 
-    public void Add(object item) => context.Add(item);
+    public void Add(object item) => Context.Add(item);
 
     public virtual Task<int> CountAsync(CancellationToken token = default) => throw new NotImplementedException();
 }

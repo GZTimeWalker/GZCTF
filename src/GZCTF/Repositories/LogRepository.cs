@@ -8,7 +8,7 @@ public class LogRepository(AppDbContext context) : RepositoryBase(context), ILog
 {
     public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, CancellationToken token)
     {
-        IQueryable<LogModel> data = context.Logs;
+        IQueryable<LogModel> data = Context.Logs;
 
         if (level is not null && level != "All")
             data = data.Where(x => x.Level == level);

@@ -9,7 +9,10 @@ using MimeKit.Text;
 
 namespace GZCTF.Services;
 
-public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logger, IStringLocalizer<Program> localizer) : IMailSender
+public class MailSender(IOptions<EmailConfig> options, 
+    IOptionsSnapshot<GlobalConfig> globalConfig,
+    ILogger<MailSender> logger, 
+    IStringLocalizer<Program> localizer) : IMailSender
 {
     readonly EmailConfig? _options = options.Value;
 
@@ -54,8 +57,14 @@ public class MailSender(IOptions<EmailConfig> options, ILogger<MailSender> logge
             logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
             return;
         }
-
-        var emailContent = new StringBuilder(localizer[nameof(Resources.Program.MailSender_Template)])
+        
+        var template = globalConfig.Value.EmailTemplate switch
+        {
+            GlobalConfig.DefaultEmailTemplate => localizer[nameof(Resources.Program.MailSender_Template)],
+            _ => globalConfig.Value.EmailTemplate
+        };
+        
+        var emailContent = new StringBuilder(template)
             .Replace("{title}", title)
             .Replace("{information}", information)
             .Replace("{btnmsg}", btnmsg)

@@ -55,29 +55,14 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
 /// <summary>
 /// 需要已登录用户权限
 /// </summary>
-public class RequireUserAttribute : RequirePrivilegeAttribute
-{
-    public RequireUserAttribute() : base(Role.User)
-    {
-    }
-}
+public class RequireUserAttribute() : RequirePrivilegeAttribute(Role.User);
 
 /// <summary>
 /// 需要监控者权限
 /// </summary>
-public class RequireMonitorAttribute : RequirePrivilegeAttribute
-{
-    public RequireMonitorAttribute() : base(Role.Monitor)
-    {
-    }
-}
+public class RequireMonitorAttribute() : RequirePrivilegeAttribute(Role.Monitor);
 
 /// <summary>
 /// 需要Admin权限
 /// </summary>
-public class RequireAdminAttribute : RequirePrivilegeAttribute
-{
-    public RequireAdminAttribute() : base(Role.Admin)
-    {
-    }
-}
+public class RequireAdminAttribute() : RequirePrivilegeAttribute(Role.Admin);

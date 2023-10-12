@@ -12,22 +12,22 @@ public class ContainerRepository(IDistributedCache cache,
     ILogger<ContainerRepository> logger,
     AppDbContext context) : RepositoryBase(context), IContainerRepository
 {
-    public override Task<int> CountAsync(CancellationToken token = default) => context.Containers.CountAsync(token);
+    public override Task<int> CountAsync(CancellationToken token = default) => Context.Containers.CountAsync(token);
 
     public Task<Container?> GetContainerById(Guid guid, CancellationToken token = default) =>
-        context.Containers.FirstOrDefaultAsync(i => i.Id == guid, token);
+        Context.Containers.FirstOrDefaultAsync(i => i.Id == guid, token);
 
     public Task<Container?> GetContainerWithInstanceById(Guid guid, CancellationToken token = default) =>
-        context.Containers.IgnoreAutoIncludes()
+        Context.Containers.IgnoreAutoIncludes()
             .Include(c => c.GameInstance).ThenInclude(i => i!.Challenge)
             .Include(c => c.GameInstance).ThenInclude(i => i!.FlagContext)
             .Include(c => c.GameInstance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);
 
-    public Task<List<Container>> GetContainers(CancellationToken token = default) => context.Containers.ToListAsync(token);
+    public Task<List<Container>> GetContainers(CancellationToken token = default) => Context.Containers.ToListAsync(token);
 
     public async Task<ContainerInstanceModel[]> GetContainerInstances(CancellationToken token = default) =>
-        (await context.Containers
+        (await Context.Containers
             .Where(c => c.GameInstance != null)
             .Include(c => c.GameInstance).ThenInclude(i => i!.Participation)
             .OrderBy(c => c.StartedAt).ToArrayAsync(token))
@@ -37,7 +37,7 @@ public class ContainerRepository(IDistributedCache cache,
     public Task<List<Container>> GetDyingContainers(CancellationToken token = default)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        return context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
+        return Context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
     }
 
     public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default)
@@ -47,7 +47,7 @@ public class ContainerRepository(IDistributedCache cache,
     }
 
     public async Task<bool> ValidateContainer(Guid guid, CancellationToken token = default) =>
-        await context.Containers.AnyAsync(c => c.Id == guid, token);
+        await Context.Containers.AnyAsync(c => c.Id == guid, token);
 
     public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)
     {
@@ -60,7 +60,7 @@ public class ContainerRepository(IDistributedCache cache,
 
             await cache.RemoveAsync(CacheKey.ConnectionCount(container.Id), token);
 
-            context.Containers.Remove(container);
+            Context.Containers.Remove(container);
             await SaveAsync(token);
 
             return true;

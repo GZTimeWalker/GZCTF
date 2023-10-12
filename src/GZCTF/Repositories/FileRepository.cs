@@ -8,7 +8,7 @@ namespace GZCTF.Repositories;
 public class FileRepository(AppDbContext context, ILogger<FileRepository> logger) : RepositoryBase(context),
     IFileRepository
 {
-    public override Task<int> CountAsync(CancellationToken token = default) => context.Files.CountAsync(token);
+    public override Task<int> CountAsync(CancellationToken token = default) => Context.Files.CountAsync(token);
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
         CancellationToken token = default)
@@ -82,13 +82,13 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         if (File.Exists(path))
         {
             File.Delete(path);
-            context.Files.Remove(file);
+            Context.Files.Remove(file);
             await SaveAsync(token);
 
             return TaskStatus.Success;
         }
 
-        context.Files.Remove(file);
+        Context.Files.Remove(file);
         await SaveAsync(token);
 
         return TaskStatus.NotFound;
@@ -109,11 +109,11 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         if (fileHash is null)
             return Task.FromResult<LocalFile?>(null);
 
-        return context.Files.SingleOrDefaultAsync(e => e.Hash == fileHash, token);
+        return Context.Files.SingleOrDefaultAsync(e => e.Hash == fileHash, token);
     }
 
     public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default) =>
-        context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
+        Context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
 
     public async Task DeleteAttachment(Attachment? attachment, CancellationToken token = default)
     {
@@ -123,7 +123,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         if (attachment is { Type: FileType.Local, LocalFile: not null })
             await DeleteFile(attachment.LocalFile, token);
 
-        context.Remove(attachment);
+        Context.Remove(attachment);
     }
 
     static Stream GetStream(long bufferSize)
@@ -154,12 +154,12 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
                     localFile.ReferenceCount],
                 TaskStatus.Success, LogLevel.Debug);
 
-            context.Update(localFile);
+            Context.Update(localFile);
         }
         else
         {
             localFile = new() { Hash = fileHash, Name = fileName, FileSize = contentStream.Length };
-            await context.AddAsync(localFile, token);
+            await Context.AddAsync(localFile, token);
         }
 
         var path = Path.Combine(FilePath.Uploads, localFile.Location);

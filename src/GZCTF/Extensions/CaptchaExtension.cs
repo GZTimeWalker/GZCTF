@@ -56,7 +56,7 @@ public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) :
             return false;
 
         IPAddress? ip = context.Connection.RemoteIpAddress;
-        var api = Config.GoogleRecaptcha.VerifyAPIAddress;
+        var api = Config.GoogleRecaptcha.VerifyApiAddress;
 
         HttpResponseMessage result =
             await _httpClient.GetAsync($"{api}?secret={Config.SecretKey}&response={model.Challenge}&remoteip={ip}",

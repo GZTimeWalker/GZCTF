@@ -23,8 +23,7 @@ public static class DigitalSignature
         if (string.IsNullOrEmpty(data))
             throw new ArgumentNullException(nameof(data));
 
-        if (privateKey is null)
-            throw new ArgumentNullException(nameof(privateKey));
+        ArgumentNullException.ThrowIfNull(privateKey);
 
         var byteData = Encoding.UTF8.GetBytes(data);
         ISigner? normalSig = SignerUtilities.GetSigner(signAlgorithm.ToString());

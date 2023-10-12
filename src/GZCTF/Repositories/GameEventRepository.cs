@@ -12,10 +12,10 @@ public class GameEventRepository(
 {
     public async Task<GameEvent> AddEvent(GameEvent gameEvent, CancellationToken token = default)
     {
-        await context.AddAsync(gameEvent, token);
+        await Context.AddAsync(gameEvent, token);
         await SaveAsync(token);
 
-        gameEvent = await context.GameEvents.SingleAsync(s => s.Id == gameEvent.Id, token);
+        gameEvent = await Context.GameEvents.SingleAsync(s => s.Id == gameEvent.Id, token);
 
         await hub.Clients.Group($"Game_{gameEvent.GameId}")
             .ReceivedGameEvent(gameEvent);
@@ -26,7 +26,7 @@ public class GameEventRepository(
     public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,
         CancellationToken token = default)
     {
-        IQueryable<GameEvent> data = context.GameEvents.Where(e => e.GameId == gameId);
+        IQueryable<GameEvent> data = Context.GameEvents.Where(e => e.GameId == gameId);
 
         if (hideContainer)
             data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);

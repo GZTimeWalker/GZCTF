@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
@@ -73,6 +74,12 @@ public class GlobalConfig
     /// 页脚显示的信息
     /// </summary>
     public string? FooterInfo { get; set; }
+
+    /// <summary>
+    /// 邮件模版
+    /// </summary>
+    public string EmailTemplate { get; set; } = DefaultEmailTemplate;
+    public const string DefaultEmailTemplate = "default";
 }
 
 #region Mail Config
@@ -106,8 +113,8 @@ public enum ContainerProviderType
 public enum ContainerPortMappingType
 {
     Default,
-    PlatformProxy,
-    Frp
+    PlatformProxy
+    // Frp
 }
 
 public class ContainerProvider
@@ -133,13 +140,12 @@ public class K8sConfig
 {
     public string Namespace { get; set; } = "gzctf-challenges";
     public string KubeConfig { get; set; } = "k8sconfig.yaml";
-
-    // TODO：wait for JsonObjectCreationHandling release
-    //public List<string> AllowCIDR { get; set; } = new() { "10.0.0.0/8" };
-    //public List<string> DNS { get; set; } = new() { "8.8.8.8", "223.5.5.5", "114.114.114.114" };
-
-    public string[]? AllowCIDR { get; set; }
-    public string[]? DNS { get; set; }
+    
+    [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
+    public List<string> AllowCidr { get; set; } = new() { "10.0.0.0/8" };
+    
+    [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
+    public List<string> Dns { get; set; } = new() { "8.8.8.8", "223.5.5.5", "114.114.114.114" };
 }
 
 public class RegistryConfig
@@ -172,7 +178,7 @@ public class CaptchaConfig
 
 public class GoogleRecaptchaConfig
 {
-    public string VerifyAPIAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
+    public string VerifyApiAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
     public float RecaptchaThreshold { get; set; } = 0.5f;
 }
 

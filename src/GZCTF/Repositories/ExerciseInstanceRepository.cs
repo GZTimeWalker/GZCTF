@@ -27,24 +27,24 @@ public class ExerciseInstanceRepository(AppDbContext context,
         if (!await IsExerciseAvailable(token))
             return Array.Empty<ExerciseInstance>();
 
-        ExerciseInstance[] exercises = await context.ExerciseInstances
+        ExerciseInstance[] exercises = await Context.ExerciseInstances
             .Where(i => i.UserId == user.Id && i.Exercise.IsEnabled)
             .ToArrayAsync(token);
 
         if (exercises.Length > 0)
             return exercises;
 
-        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
+        await using IDbContextTransaction transaction = await Context.Database.BeginTransactionAsync(token);
 
         var result = new List<ExerciseInstance>();
 
-        await foreach (var id in context.ExerciseChallenges
-                           .Where(e => e.IsEnabled && context.ExerciseDependencies.All(d => d.TargetId != e.Id))
+        await foreach (var id in Context.ExerciseChallenges
+                           .Where(e => e.IsEnabled && Context.ExerciseDependencies.All(d => d.TargetId != e.Id))
                            .Select(e => e.Id).AsAsyncEnumerable().WithCancellation(token))
         {
             var newInst = new ExerciseInstance { ExerciseId = id, UserId = user.Id, IsLoaded = false };
 
-            context.ExerciseInstances.Add(newInst);
+            Context.ExerciseInstances.Add(newInst);
             result.Add(newInst);
         }
 
@@ -56,9 +56,9 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
     public async Task<ExerciseInstance?> GetInstance(UserInfo user, int exerciseId, CancellationToken token = default)
     {
-        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
+        await using IDbContextTransaction transaction = await Context.Database.BeginTransactionAsync(token);
 
-        ExerciseInstance? instance = await context.ExerciseInstances
+        ExerciseInstance? instance = await Context.ExerciseInstances
             .Include(i => i.FlagContext)
             .Where(e => e.ExerciseId == exerciseId && e.UserId == user.Id)
             .SingleOrDefaultAsync(token);
@@ -126,7 +126,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
         var containerLimit = containerPolicy.Value.MaxExerciseContainerCountPerUser;
         if (containerLimit > 0)
         {
-            List<ExerciseInstance> running = await context.ExerciseInstances
+            List<ExerciseInstance> running = await Context.ExerciseInstances
                 .Where(i => i.User == user && i.Container != null)
                 .OrderBy(i => i.Container!.StartedAt).ToListAsync(token);
 
@@ -144,7 +144,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
         if (instance.Container is not null)
             return new TaskResult<Container>(TaskStatus.Success, instance.Container);
 
-        await context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
+        await Context.Entry(instance).Reference(e => e.FlagContext).LoadAsync(token);
 
         Container? container = await service.CreateContainerAsync(new ContainerConfig
         {
@@ -195,7 +195,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
             return AnswerResult.Accepted;
         }
 
-        if (await context.FlagContexts.AsNoTracking()
+        if (await Context.FlagContexts.AsNoTracking()
                 .AnyAsync(f => f.ExerciseId == instance.ExerciseId && f.Flag == answer, token))
         {
             await MarkSolved(instance, token);
@@ -210,7 +210,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
         cache.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
-            return context.ExerciseChallenges.AnyAsync(e => e.IsEnabled, token);
+            return Context.ExerciseChallenges.AnyAsync(e => e.IsEnabled, token);
         }, token);
 
     internal async Task MarkSolved(ExerciseInstance instance, CancellationToken token = default)
@@ -218,7 +218,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
         if (instance.IsSolved)
             return;
 
-        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
+        await using IDbContextTransaction transaction = await Context.Database.BeginTransactionAsync(token);
 
         instance.IsSolved = true;
         instance.SolveTimeUtc = DateTimeOffset.UtcNow;
@@ -229,12 +229,12 @@ public class ExerciseInstanceRepository(AppDbContext context,
 
     internal async Task UnlockExercises(UserInfo user, CancellationToken token = default)
     {
-        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(token);
+        await using IDbContextTransaction transaction = await Context.Database.BeginTransactionAsync(token);
 
         await foreach (var id in FetchNewChallenges(user, token))
         {
             var newInst = new ExerciseInstance { ExerciseId = id, UserId = user.Id, IsLoaded = false };
-            context.ExerciseInstances.Add(newInst);
+            Context.ExerciseInstances.Add(newInst);
         }
 
         await SaveAsync(token);
@@ -242,12 +242,12 @@ public class ExerciseInstanceRepository(AppDbContext context,
     }
 
     internal ConfiguredCancelableAsyncEnumerable<int> FetchNewChallenges(UserInfo user, CancellationToken token = default)
-        => context.ExerciseChallenges.Where(chal =>
-                chal.IsEnabled && context.ExerciseInstances.All(i =>
+        => Context.ExerciseChallenges.Where(chal =>
+                chal.IsEnabled && Context.ExerciseInstances.All(i =>
                     i.UserId == user.Id && i.ExerciseId != chal.Id) &&
-                context.ExerciseDependencies.All(dep =>
+                Context.ExerciseDependencies.All(dep =>
                     dep.TargetId == chal.Id &&
-                    context.ExerciseInstances.Any(e =>
+                    Context.ExerciseInstances.Any(e =>
                         e.IsSolved && e.ExerciseId == dep.SourceId
                     ))).Select(e => e.Id).AsAsyncEnumerable()
             .WithCancellation(token);

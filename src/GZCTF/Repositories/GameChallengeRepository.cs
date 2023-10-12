@@ -21,7 +21,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
 
     public async Task<GameChallenge> CreateChallenge(Game game, GameChallenge challenge, CancellationToken token = default)
     {
-        await context.AddAsync(challenge, token);
+        await Context.AddAsync(challenge, token);
         game.Challenges.Add(challenge);
         await SaveAsync(token);
         return challenge;
@@ -29,8 +29,8 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
 
     public async Task<bool> EnsureInstances(GameChallenge challenge, Game game, CancellationToken token = default)
     {
-        await context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
-        await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+        await Context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
+        await Context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
         var update = game.Participations.Aggregate(false,
             (current, participation) => challenge.Teams.Add(participation) || current);
@@ -42,7 +42,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
 
     public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default)
     {
-        IQueryable<GameChallenge> challenges = context.GameChallenges
+        IQueryable<GameChallenge> challenges = Context.GameChallenges
             .Where(c => c.Id == id && c.GameId == gameId);
 
         if (withFlag)
@@ -52,20 +52,20 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
     }
 
     public Task<GameChallenge[]> GetChallenges(int gameId, CancellationToken token = default) =>
-        context.GameChallenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
+        Context.GameChallenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
     public Task<GameChallenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default) =>
-        context.GameChallenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
+        Context.GameChallenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
             .ToArrayAsync(token);
 
     public Task<bool> VerifyStaticAnswer(GameChallenge challenge, string flag, CancellationToken token = default) =>
-        context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
+        Context.Entry(challenge).Collection(e => e.Flags).Query().AnyAsync(f => f.Flag == flag, token);
 
     public async Task RemoveChallenge(GameChallenge challenge, CancellationToken token = default)
     {
         await DeleteAllAttachment(challenge, true, token);
 
-        context.Remove(challenge);
+        Context.Remove(challenge);
         await SaveAsync(token);
     }
 
@@ -78,7 +78,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
 
         await fileRepository.DeleteAttachment(flag.Attachment, token);
 
-        context.Remove(flag);
+        Context.Remove(flag);
 
         if (challenge.Flags.Count == 0)
             challenge.IsEnabled = false;
@@ -96,7 +96,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
         await DeleteAllAttachment(challenge, false, token);
 
         if (attachment is not null)
-            await context.AddAsync(attachment, token);
+            await Context.AddAsync(attachment, token);
 
         challenge.Attachment = attachment;
 
@@ -112,7 +112,7 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
             foreach (FlagContext flag in challenge.Flags)
                 await fileRepository.DeleteAttachment(flag.Attachment, token);
 
-            context.RemoveRange(challenge.Flags);
+            Context.RemoveRange(challenge.Flags);
         }
     }
 }

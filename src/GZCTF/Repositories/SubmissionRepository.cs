@@ -12,20 +12,20 @@ public class SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
 {
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)
     {
-        await context.AddAsync(submission, token);
-        await context.SaveChangesAsync(token);
+        await Context.AddAsync(submission, token);
+        await Context.SaveChangesAsync(token);
 
         return submission;
     }
 
     public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default)
-        => context.Submissions.Where(s =>
+        => Context.Submissions.Where(s =>
                 s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
             .SingleOrDefaultAsync(token);
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default) =>
-        context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
+        Context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
             .AsNoTracking().Include(e => e.Game).ToArrayAsync(token);
 
     public Task<Submission[]> GetSubmissions(Game game, AnswerResult? type = null, int count = 100, int skip = 0,
@@ -48,8 +48,8 @@ public class SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
     IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {
         IQueryable<Submission> subs = type is not null
-            ? context.Submissions.Where(s => s.Status == type.Value)
-            : context.Submissions;
+            ? Context.Submissions.Where(s => s.Status == type.Value)
+            : Context.Submissions;
 
         return subs.OrderByDescending(s => s.SubmitTimeUtc);
     }

@@ -19,7 +19,7 @@ public class GameRepository(IDistributedCache cache,
 {
     readonly byte[]? _xorKey = configuration["XorKey"]?.ToUTF8Bytes();
 
-    public override Task<int> CountAsync(CancellationToken token = default) => context.Games.CountAsync(token);
+    public override Task<int> CountAsync(CancellationToken token = default) => Context.Games.CountAsync(token);
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
@@ -29,17 +29,17 @@ public class GameRepository(IDistributedCache cache,
             logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)], TaskStatus.Pending,
                 LogLevel.Warning);
 
-        await context.AddAsync(game, token);
+        await Context.AddAsync(game, token);
         await SaveAsync(token);
         return game;
     }
 
     public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorKey)}";
 
-    public Task<Game?> GetGameById(int id, CancellationToken token = default) => context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
+    public Task<Game?> GetGameById(int id, CancellationToken token = default) => Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
-        context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
+        Context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
                                  && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(5))
             .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
@@ -48,7 +48,7 @@ public class GameRepository(IDistributedCache cache,
         await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
-            return context.Games.Where(g => !g.Hidden)
+            return Context.Games.Where(g => !g.Hidden)
                 .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
         }, token);
@@ -77,26 +77,26 @@ public class GameRepository(IDistributedCache cache,
 
         try
         {
-            var count = await context.GameChallenges.Where(i => i.Game == game).CountAsync(token);
+            var count = await Context.GameChallenges.Where(i => i.Game == game).CountAsync(token);
             logger.SystemLog(
                 Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, count], TaskStatus.Pending,
                 LogLevel.Debug
             );
 
-            foreach (GameChallenge chal in context.GameChallenges.Where(c => c.Game == game))
+            foreach (GameChallenge chal in Context.GameChallenges.Where(c => c.Game == game))
                 await challengeRepository.RemoveChallenge(chal, token);
 
-            count = await context.Participations.Where(i => i.Game == game).CountAsync(token);
+            count = await Context.Participations.Where(i => i.Game == game).CountAsync(token);
 
             logger.SystemLog(
                 Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, count],
                 TaskStatus.Pending, LogLevel.Debug
             );
 
-            foreach (Participation part in context.Participations.Where(p => p.Game == game))
+            foreach (Participation part in Context.Participations.Where(p => p.Game == game))
                 await participationRepository.RemoveParticipation(part, token);
 
-            context.Remove(game);
+            Context.Remove(game);
 
             await SaveAsync(token);
             await trans.CommitAsync(token);
@@ -118,7 +118,7 @@ public class GameRepository(IDistributedCache cache,
 
     public async Task DeleteAllWriteUps(Game game, CancellationToken token = default)
     {
-        await context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+        await Context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count],
             TaskStatus.Pending,
@@ -129,7 +129,7 @@ public class GameRepository(IDistributedCache cache,
     }
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token) =>
-        context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
+        Context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
 
     public void FlushGameInfoCache() => cache.Remove(CacheKey.BasicGameInfo);
 
@@ -153,14 +153,14 @@ public class GameRepository(IDistributedCache cache,
     }
 
     Task<Data[]> FetchData(Game game, CancellationToken token = default) =>
-        context.GameInstances
+        Context.GameInstances
             .Include(i => i.Challenge)
             .Where(i => i.Challenge.Game == game
                         && i.Challenge.IsEnabled
                         && i.Participation.Status == ParticipationStatus.Accepted)
             .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
-                context.Submissions.Where(s => s.Status == AnswerResult.Accepted
+                Context.Submissions.Where(s => s.Status == AnswerResult.Accepted
                                                && s.SubmitTimeUtc < game.EndTimeUtc),
                 i => new { i.ChallengeId, i.ParticipationId },
                 s => new { s.ChallengeId, s.ParticipationId },
@@ -344,12 +344,11 @@ public class GameRepository(IDistributedCache cache,
 public class ScoreboardCacheHandler : ICacheRequestHandler
 {
     public string? CacheKey(CacheRequest request)
-    {
-        if (request.Params.Length != 1)
-            return null;
-
-        return Services.Cache.CacheKey.ScoreBoard(request.Params[0]);
-    }
+        => request.Params.Length switch
+        {
+            1 => Services.Cache.CacheKey.ScoreBoard(request.Params[0]),
+            _ => null
+        };
 
     public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
     {

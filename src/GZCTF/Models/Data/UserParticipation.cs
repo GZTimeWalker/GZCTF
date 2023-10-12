@@ -21,6 +21,8 @@ public class UserParticipation
         Team = team;
     }
 
+    #region Db Relationship
+    
     /// <summary>
     /// 参赛用户 Id
     /// </summary>
@@ -59,4 +61,6 @@ public class UserParticipation
     /// </summary>
     [Required]
     public int ParticipationId { get; set; }
+    
+    #endregion
 }

@@ -16,7 +16,7 @@ public class GameNoticeRepository(IDistributedCache cache,
 {
     public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default)
     {
-        await context.AddAsync(notice, token);
+        await Context.AddAsync(notice, token);
         await SaveAsync(token);
 
         await cache.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
@@ -28,28 +28,28 @@ public class GameNoticeRepository(IDistributedCache cache,
     }
 
     public Task<GameNotice[]> GetNormalNotices(int gameId, CancellationToken token = default) =>
-        context.GameNotices
+        Context.GameNotices
             .Where(n => n.GameId == gameId && n.Type == NoticeType.Normal)
             .ToArrayAsync(token);
 
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default) =>
-        context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
+        Context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
     public Task<GameNotice[]> GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default) =>
         cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-            return context.GameNotices.Where(e => e.GameId == gameId)
+            return Context.GameNotices.Where(e => e.GameId == gameId)
                 .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUtc)
                 .Skip(skip).Take(count).ToArrayAsync(token);
         }, token);
 
-    public Task RemoveNotice(GameNotice notice, CancellationToken token = default)
+    public async Task RemoveNotice(GameNotice notice, CancellationToken token = default)
     {
-        context.Remove(notice);
-        cache.Remove(CacheKey.GameNotice(notice.GameId));
-
-        return SaveAsync(token);
+        Context.Remove(notice);
+        await SaveAsync(token);
+        
+        await cache.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
     }
 
     public async Task<GameNotice> UpdateNotice(GameNotice notice, CancellationToken token = default)
