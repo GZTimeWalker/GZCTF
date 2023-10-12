@@ -78,6 +78,7 @@ public class GlobalConfig
     /// <summary>
     /// 邮件模版
     /// </summary>
+    // TODO: email template validation for MailContent
     public string EmailTemplate { get; set; } = DefaultEmailTemplate;
     public const string DefaultEmailTemplate = "default";
 }

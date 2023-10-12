@@ -14,14 +14,8 @@ public interface IMailSender
     /// <summary>
     /// 发送带有链接的邮件
     /// </summary>
-    /// <param name="title">邮件标题</param>
-    /// <param name="information">邮件正文</param>
-    /// <param name="btnmsg">按钮信息</param>
-    /// <param name="userName">用户名</param>
-    /// <param name="email">电子邮件地址</param>
-    /// <param name="url">链接</param>
-    public Task SendUrlAsync(string? title, string? information, string? btnmsg, string? userName, string? email,
-        string? url);
+    /// <param name="content">邮件内容</param>
+    public Task SendUrlAsync(MailContent content);
 
     /// <summary>
     /// 发送新用户验证URL

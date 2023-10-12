@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GZCTF.Services;
 using GZCTF.Services.Interface;
 
 namespace GZCTF.Test;
@@ -13,9 +14,6 @@ public class TestMailSender : IMailSender
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink) => true;
 
-    public Task SendUrlAsync(string? title, string? infomation, string? btnmsg, string? userName, string? email,
-        string? url) =>
+    public Task SendUrlAsync(MailContent _) =>
         Task.CompletedTask;
-
-    public bool SendResetPwdUrl(string? userName, string? email, string? resetLink) => true;
 }

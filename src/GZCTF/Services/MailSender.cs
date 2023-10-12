@@ -39,67 +39,134 @@ public class MailSender(IOptions<EmailConfig> options,
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
+            logger.SystemLog(localizer[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
-            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+            logger.LogError(e, localizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             return false;
         }
     }
 
-    public async Task SendUrlAsync(string? title, string? information, string? btnmsg, string? userName, string? email,
-        string? url)
+    public async Task SendUrlAsync(MailContent content)
     {
-        if (email is null || userName is null || title is null)
-        {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
-            return;
-        }
-        
         var template = globalConfig.Value.EmailTemplate switch
         {
             GlobalConfig.DefaultEmailTemplate => localizer[nameof(Resources.Program.MailSender_Template)],
             _ => globalConfig.Value.EmailTemplate
         };
         
+        // TODO: use a string formatter library
+        // TODO: update default template with new names
         var emailContent = new StringBuilder(template)
-            .Replace("{title}", title)
-            .Replace("{information}", information)
-            .Replace("{btnmsg}", btnmsg)
-            .Replace("{email}", email)
-            .Replace("{userName}", userName)
-            .Replace("{url}", url)
-            .Replace("{nowtime}", DateTimeOffset.UtcNow.ToString("u"))
+            .Replace("{title}", content.Title)
+            .Replace("{information}", content.Information)
+            .Replace("{btnmsg}", content.ButtonMessage)
+            .Replace("{email}", content.Email)
+            .Replace("{userName}", content.UserName)
+            .Replace("{url}", content.Url)
+            .Replace("{nowtime}", content.Time)
             .ToString();
 
-        if (!await SendEmailAsync(title, emailContent, email))
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
+        if (!await SendEmailAsync(content.Title, emailContent, content.Email))
+            logger.SystemLog(localizer[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>
-        SendUrlIfPossible(localizer[nameof(Resources.Program.MailSender_VerifyEmailTitle)],
-            localizer[nameof(Resources.Program.MailSender_VerifyEmailContent), email ?? ""],
-            localizer[nameof(Resources.Program.MailSender_VerifyEmailButton)], userName, email, confirmLink);
+        SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail);
 
     public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible(localizer[nameof(Resources.Program.MailSender_ChangeEmailTitle)],
-            localizer[nameof(Resources.Program.MailSender_ChangeEmailContent)],
-            localizer[nameof(Resources.Program.MailSender_ChangeEmailButton)], userName, email, resetLink);
+        SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail);
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible(localizer[nameof(Resources.Program.MailSender_ResetPasswordTitle)],
-            localizer[nameof(Resources.Program.MailSender_ResetPasswordContent)],
-            localizer[nameof(Resources.Program.MailSender_ResetPasswordButton)], userName, email, resetLink);
-
-    bool SendUrlIfPossible(string? title, string? information, string? btnmsg, string? userName, string? email,
-        string? url)
+        SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword);
+    
+    bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type)
     {
         if (_options?.SendMailAddress is null)
             return false;
-
-        Task _ = SendUrlAsync(title, information, btnmsg, userName, email, url);
+        
+        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(resetLink))
+        {
+            logger.SystemLog(localizer[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
+            return false;
+        }
+        
+        var content = new MailContent(userName, email, resetLink, type);
+        
+        // do not await
+        Task _ = SendUrlAsync(content);
+        
         return true;
     }
+}
+
+/// <summary>
+/// 邮件类型
+/// </summary>
+public enum MailType
+{
+    ConfirmEmail,
+    ChangeEmail,
+    ResetPassword
+}
+
+/// <summary>
+/// 邮件内容
+/// </summary>
+public class MailContent(string userName, string email, string resetLink, MailType type)
+{
+    /// <summary>
+    /// 邮件标题
+    /// </summary>
+    public string Title { get; set; } = type switch
+    {
+        MailType.ConfirmEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_VerifyEmailTitle)],
+        MailType.ChangeEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ChangeEmailTitle)],
+        MailType.ResetPassword => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ResetPasswordTitle)],
+        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    };
+
+    /// <summary>
+    /// 邮件信息
+    /// </summary>
+    public string Information { get; set; } = type switch
+    {
+        MailType.ConfirmEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_VerifyEmailContent), email],
+        MailType.ChangeEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ChangeEmailContent)],
+        MailType.ResetPassword => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ResetPasswordContent)],
+        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    };
+
+    /// <summary>
+    /// 邮件按钮显示内容
+    /// </summary>
+    public string ButtonMessage { get; set; } = type switch
+    {
+        MailType.ConfirmEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_VerifyEmailButton)],
+        MailType.ChangeEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ChangeEmailButton)],
+        MailType.ResetPassword => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ResetPasswordButton)],
+        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    };
+
+    /// <summary>
+    /// 用户名
+    /// </summary>
+    public string UserName { get; set; } = userName;
+
+    /// <summary>
+    /// 用户邮箱
+    /// </summary>
+    public string Email { get; set; } = email;
+
+    /// <summary>
+    /// 邮件链接
+    /// </summary>
+    public string Url { get; set; } = resetLink;
+
+    /// <summary>
+    /// 发信时间
+    /// </summary>
+    public string Time { get; set; } = DateTimeOffset.UtcNow.ToString("u");
 }
