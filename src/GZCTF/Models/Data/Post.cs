@@ -58,6 +58,13 @@ public partial class Post
 
     internal Post Update(PostEditModel model, UserInfo user)
     {
+        // update IsPinned should not change other fields
+        if (model.IsPinned != IsPinned)
+        {
+            model.IsPinned = IsPinned;
+            return this;
+        }
+
         Title = model.Title;
         Summary = model.Summary;
         Content = model.Content;
