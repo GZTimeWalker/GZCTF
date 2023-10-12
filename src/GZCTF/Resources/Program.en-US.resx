@@ -1287,7 +1287,7 @@
     <comment/>
   </data>
   <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
-    <value>容器连接失败（{0}）</value>
+    <value>Failed to connect to the container ({0})</value>
     <comment/>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
@@ -1295,11 +1295,11 @@
     <comment/>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
-    <value>代理过程发生错误</value>
+    <value>An error occurred during the proxy process</value>
     <comment/>
   </data>
   <data name="Proxy_TcpDisabled" xml:space="preserve">
-    <value>TCP 代理已禁用</value>
+    <value>TCP proxy is disabled</value>
     <comment/>
   </data>
   <data name="Team_AvatarUpdated" xml:space="preserve">
@@ -1311,7 +1311,7 @@
     <comment/>
   </data>
   <data name="Team_Created" xml:space="preserve">
-    <value>创建队伍 {0}</value>
+    <value>Create team {0}</value>
     <comment/>
   </data>
   <data name="Team_CreationFailed" xml:space="preserve">
@@ -1319,7 +1319,7 @@
     <comment/>
   </data>
   <data name="Team_Deleted" xml:space="preserve">
-    <value>删除队伍 {0}</value>
+    <value>Delete team {0}</value>
     <comment/>
   </data>
   <data name="Team_IdTransformFailed" xml:space="preserve">
@@ -1327,11 +1327,11 @@
     <comment/>
   </data>
   <data name="Team_InvalidCode" xml:space="preserve">
-    <value>Code 无效</value>
+    <value>Invalid code</value>
     <comment/>
   </data>
   <data name="Team_Locked" xml:space="preserve">
-    <value>队伍已锁定</value>
+    <value>Team is locked</value>
     <comment/>
   </data>
   <data name="Team_MemberRemoved" xml:space="preserve">
@@ -1339,11 +1339,11 @@
     <comment/>
   </data>
   <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
-    <value>不允许创建多个队伍</value>
+    <value>Not allowed creating more than one team</value>
     <comment/>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
-    <value>队伍名不能为空</value>
+    <value>Team name cannot be empty</value>
     <comment/>
   </data>
   <data name="Team_NameInvalidInvitation" xml:space="preserve">
@@ -1351,11 +1351,11 @@
     <comment/>
   </data>
   <data name="Team_NameLocked" xml:space="preserve">
-    <value>{0} 队伍已锁定</value>
+    <value>The team {0} is locked</value>
     <comment/>
   </data>
   <data name="Team_NameNotFound" xml:space="preserve">
-    <value>{0} 队伍未找到</value>
+    <value>Team {0} not found</value>
     <comment/>
   </data>
   <data name="Team_NewCaptainNotFound" xml:space="preserve">
@@ -1367,23 +1367,23 @@
     <comment/>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
-    <value>加入队伍 {0}</value>
+    <value>Join Team {0}</value>
     <comment/>
   </data>
   <data name="Team_UserLeft" xml:space="preserve">
-    <value>离开队伍 {0}</value>
+    <value>Left the team {0}</value>
     <comment/>
   </data>
   <data name="User_AlreadyInTeam" xml:space="preserve">
-    <value>你已经加入此队伍，无需重复加入</value>
+    <value>You have already joined this team, no need to join again</value>
     <comment/>
   </data>
   <data name="User_LeaveNotInTeam" xml:space="preserve">
-    <value>你不在此队伍中，无法离队</value>
+    <value>You are not in this team and cannot leave</value>
     <comment/>
   </data>
   <data name="User_NotInTeam" xml:space="preserve">
-    <value>用户不在队伍中</value>
+    <value>User not in the team</value>
     <comment/>
   </data>
 </root>
