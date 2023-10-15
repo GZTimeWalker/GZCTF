@@ -39,12 +39,12 @@ public class MailSender(IOptions<EmailConfig> options,
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            logger.SystemLog(localizer[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
-            logger.LogError(e, localizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             return false;
         }
     }
@@ -70,7 +70,7 @@ public class MailSender(IOptions<EmailConfig> options,
             .ToString();
 
         if (!await SendEmailAsync(content.Title, emailContent, content.Email))
-            logger.SystemLog(localizer[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>
@@ -89,11 +89,11 @@ public class MailSender(IOptions<EmailConfig> options,
         
         if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(resetLink))
         {
-            logger.SystemLog(localizer[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
             return false;
         }
         
-        var content = new MailContent(userName, email, resetLink, type);
+        var content = new MailContent(userName, email, resetLink, type, localizer);
         
         // do not await
         Task _ = SendUrlAsync(content);
@@ -115,16 +115,16 @@ public enum MailType
 /// <summary>
 /// 邮件内容
 /// </summary>
-public class MailContent(string userName, string email, string resetLink, MailType type)
+public class MailContent(string userName, string email, string resetLink, MailType type, IStringLocalizer<Program> localizer)
 {
     /// <summary>
     /// 邮件标题
     /// </summary>
     public string Title { get; set; } = type switch
     {
-        MailType.ConfirmEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_VerifyEmailTitle)],
-        MailType.ChangeEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ChangeEmailTitle)],
-        MailType.ResetPassword => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ResetPasswordTitle)],
+        MailType.ConfirmEmail => localizer[nameof(Resources.Program.MailSender_VerifyEmailTitle)],
+        MailType.ChangeEmail => localizer[nameof(Resources.Program.MailSender_ChangeEmailTitle)],
+        MailType.ResetPassword => localizer[nameof(Resources.Program.MailSender_ResetPasswordTitle)],
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
 
@@ -133,9 +133,9 @@ public class MailContent(string userName, string email, string resetLink, MailTy
     /// </summary>
     public string Information { get; set; } = type switch
     {
-        MailType.ConfirmEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_VerifyEmailContent), email],
-        MailType.ChangeEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ChangeEmailContent)],
-        MailType.ResetPassword => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ResetPasswordContent)],
+        MailType.ConfirmEmail => localizer[nameof(Resources.Program.MailSender_VerifyEmailContent), email],
+        MailType.ChangeEmail => localizer[nameof(Resources.Program.MailSender_ChangeEmailContent)],
+        MailType.ResetPassword => localizer[nameof(Resources.Program.MailSender_ResetPasswordContent)],
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
 
@@ -144,9 +144,9 @@ public class MailContent(string userName, string email, string resetLink, MailTy
     /// </summary>
     public string ButtonMessage { get; set; } = type switch
     {
-        MailType.ConfirmEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_VerifyEmailButton)],
-        MailType.ChangeEmail => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ChangeEmailButton)],
-        MailType.ResetPassword => Program.StaticLocalizer[nameof(Resources.Program.MailSender_ResetPasswordButton)],
+        MailType.ConfirmEmail => localizer[nameof(Resources.Program.MailSender_VerifyEmailButton)],
+        MailType.ChangeEmail => localizer[nameof(Resources.Program.MailSender_ChangeEmailButton)],
+        MailType.ResetPassword => localizer[nameof(Resources.Program.MailSender_ResetPasswordButton)],
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
 
