@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -286,7 +286,7 @@
     <comment/>
   </data>
   <data name="Assets_UpdateFile" xml:space="preserve">
-    <value>ファイルを更新します [{0}] {1} @ {} bytes</value>
+    <value>ファイルを更新します [{0}] {1} @ {2} bytes</value>
     <comment/>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
@@ -546,7 +546,7 @@
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
-    <value>[不正検出] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
+    <value>[不正検知] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
