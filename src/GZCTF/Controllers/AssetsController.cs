@@ -75,16 +75,13 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
         try
         {
             List<LocalFile> results = new();
-            foreach (IFormFile file in files)
+            foreach (var file in files.Where(file => file.Length > 0))
             {
-                if (file.Length > 0)
-                {
-                    LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
-                    logger.SystemLog(
-                        Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8], filename ?? file.FileName, file.Length],
-                        TaskStatus.Success, LogLevel.Debug);
-                    results.Add(res);
-                }
+                LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
+                logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8], filename ?? file.FileName, file.Length],
+                    TaskStatus.Success, LogLevel.Debug);
+                results.Add(res);
             }
 
             return Ok(results);

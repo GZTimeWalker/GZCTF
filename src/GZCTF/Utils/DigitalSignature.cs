@@ -20,9 +20,7 @@ public static class DigitalSignature
 {
     public static string GenerateSignature(string data, AsymmetricKeyParameter privateKey, SignAlgorithm signAlgorithm)
     {
-        if (string.IsNullOrEmpty(data))
-            throw new ArgumentNullException(nameof(data));
-
+        ArgumentException.ThrowIfNullOrEmpty(data);
         ArgumentNullException.ThrowIfNull(privateKey);
 
         var byteData = Encoding.UTF8.GetBytes(data);
@@ -36,14 +34,9 @@ public static class DigitalSignature
     public static bool VerifySignature(string data, string sign, AsymmetricKeyParameter publicKey,
         SignAlgorithm signAlgorithm)
     {
-        if (string.IsNullOrEmpty(data))
-            throw new ArgumentNullException(nameof(data));
-
-        if (string.IsNullOrEmpty(sign))
-            throw new ArgumentNullException(nameof(sign));
-
-        if (publicKey == null)
-            throw new ArgumentNullException(nameof(publicKey));
+        ArgumentException.ThrowIfNullOrEmpty(data);
+        ArgumentException.ThrowIfNullOrEmpty(sign);
+        ArgumentNullException.ThrowIfNull(publicKey);
 
         var signBytes = Base64.Decode(sign);
         var plainBytes = Encoding.UTF8.GetBytes(data);

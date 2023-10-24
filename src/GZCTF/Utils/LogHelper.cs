@@ -100,7 +100,7 @@ public static class LogHelper
             logger.Log(level ?? LogLevel.Information, msg);
         }
     }
-
+    
     public static void UseRequestLogging(this WebApplication app) =>
         app.UseSerilogRequestLogging(options =>
         {
@@ -136,20 +136,17 @@ public static class LogHelper
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
                     "/healthz".Equals(v, StringComparison.OrdinalIgnoreCase) ||
-                    v.StartsWith("/assets", StringComparison.OrdinalIgnoreCase)
-                )
-            )
-            .MinimumLevel.Debug()
+                    v.StartsWith("/assets", StringComparison.OrdinalIgnoreCase)))
             .Filter.ByExcluding(logEvent =>
                 logEvent.Exception != null &&
                 logEvent.Exception.GetType() == typeof(OperationCanceledException))
+            .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
                 new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
-                LogEventLevel.Debug
-            ))
+                LogEventLevel.Debug))
             .WriteTo.Async(t => t.File(
                 path: $"{FilePath.Logs}/log_.log",
                 formatter: new ExpressionTemplate(LogTemplate),

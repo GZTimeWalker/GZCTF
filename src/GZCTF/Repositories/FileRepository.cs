@@ -13,7 +13,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
-        await using Stream tmp = GetStream(file.Length);
+        await using Stream tmp = GetTempStream(file.Length);
 
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation), tmp.GetType()], TaskStatus.Pending,
             LogLevel.Trace);
@@ -33,7 +33,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         {
             await using Stream webpStream = new MemoryStream();
 
-            await using (Stream tmp = GetStream(file.Length))
+            await using (Stream tmp = GetTempStream(file.Length))
             {
                 await file.CopyToAsync(tmp, token);
                 tmp.Position = 0;
@@ -117,16 +117,19 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
 
     public async Task DeleteAttachment(Attachment? attachment, CancellationToken token = default)
     {
-        if (attachment is null)
-            return;
-
-        if (attachment is { Type: FileType.Local, LocalFile: not null })
-            await DeleteFile(attachment.LocalFile, token);
+        switch (attachment)
+        {
+            case null:
+                return;
+            case { Type: FileType.Local, LocalFile: not null }:
+                await DeleteFile(attachment.LocalFile, token);
+                break;
+        }
 
         Context.Remove(attachment);
     }
 
-    static Stream GetStream(long bufferSize)
+    static Stream GetTempStream(long bufferSize)
     {
         if (bufferSize <= 16 * 1024 * 1024)
             return new MemoryStream();

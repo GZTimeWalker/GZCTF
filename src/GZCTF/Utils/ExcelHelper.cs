@@ -40,13 +40,13 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return stream;
     }
 
-    public MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
+    public MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions)
     {
         var workbook = new XSSFWorkbook();
         ISheet? subSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_AllSubmissions)]);
         ICellStyle headerStyle = GetHeaderStyle(workbook);
         WriteSubmissionHeader(subSheet, headerStyle);
-        WriteSubmissionContent(subSheet, submissions, localizer);
+        WriteSubmissionContent(subSheet, submissions);
 
         var stream = new MemoryStream();
         workbook.Write(stream, true);
@@ -80,7 +80,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
     }
 
-    void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions, IStringLocalizer<Program> localizer)
+    void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions)
     {
         var rowIndex = 1;
 

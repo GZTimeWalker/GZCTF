@@ -635,7 +635,7 @@ public class GameController(
 
         Submission[] submissions = await submissionRepository.GetSubmissions(game, count: 0, token: token);
 
-        MemoryStream stream = excelHelper.GetSubmissionExcel(submissions, localizer);
+        MemoryStream stream = excelHelper.GetSubmissionExcel(submissions);
         stream.Seek(0, SeekOrigin.Begin);
 
         return File(stream,

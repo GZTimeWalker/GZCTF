@@ -211,7 +211,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
                 }
             }
             catch (TaskCanceledException) { }
-            finally { cts.Cancel(); }
+            finally { await cts.CancelAsync(); }
         }, ct);
 
         Task receiver = Task.Run(async () =>
@@ -233,7 +233,7 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
                 }
             }
             catch (TaskCanceledException) { }
-            finally { cts.Cancel(); }
+            finally { await cts.CancelAsync(); }
         }, ct);
 
         await Task.WhenAny(sender, receiver);
