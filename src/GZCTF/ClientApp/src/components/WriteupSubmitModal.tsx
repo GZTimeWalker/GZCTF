@@ -130,22 +130,8 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
             <Text>
               请将全部解出题目整理为
               <Text mx={5} fw={600} span c="yellow">
-                一份标准 PDF 文档
+                一份小于 20MB 的标准 PDF 文档
               </Text>
-              ，除题解外还需附有每道题目获得
-              <Text mx={5} span ff={theme.fontFamilyMonospace}>
-                flag
-              </Text>
-              字符串时的相关截图。
-            </Text>
-          </List.Item>
-          <List.Item>
-            <Text>
-              请上传小于
-              <Text mx={5} fw={600} span c="yellow">
-                20MB
-              </Text>
-              的 PDF 文档。
             </Text>
           </List.Item>
         </List>
