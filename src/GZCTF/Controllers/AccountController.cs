@@ -53,9 +53,7 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_TokenValidationFailed)]));
 
-        var mailDomain = model.Email.Split('@')[1];
-        if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
-            accountPolicy.Value.EmailDomainList.Split(',').All(d => d != mailDomain))
+        if (!VerifyEmailDomain(model.Email.Split('@')[1]))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
                 accountPolicy.Value.EmailDomainList]));
 
@@ -114,6 +112,14 @@ public class AccountController(
 
         return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegisteredWaitingEmailVerification)],
             RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
+    }
+
+    private bool VerifyEmailDomain(string email)
+    {
+        var mailDomain = email.Split('@')[1];
+
+        return string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList)
+            || accountPolicy.Value.EmailDomainList.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(d => d.Equals(mailDomain, StringComparison.InvariantCulture));
     }
 
     /// <summary>
@@ -385,6 +391,10 @@ public class AccountController(
     {
         if (await userManager.FindByEmailAsync(model.NewMail) is not null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailUsed)]));
+
+        if (!VerifyEmailDomain(model.NewMail.Split('@')[1]))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
+                accountPolicy.Value.EmailDomainList]));
 
         UserInfo? user = await userManager.GetUserAsync(User);
 
