@@ -36,6 +36,13 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 GZCTF.Program.StaticLocalizer = builder.Services.BuildServiceProvider().GetRequiredService<IStringLocalizer<GZCTF.Program>>();
 #pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    options.Configure(kestrelSection);
+    kestrelSection.Bind(options);
+});
+
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 GZCTF.Program.Banner();
