@@ -51,9 +51,7 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse("验证码校验失败"));
 
-        var mailDomain = model.Email.Split('@')[1];
-        if (!string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList) &&
-            accountPolicy.Value.EmailDomainList.Split(',').All(d => d != mailDomain))
+        if (!VerifyEmailDomain(model.Email.Split('@')[1]))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
         var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
@@ -109,6 +107,14 @@ public class AccountController(
 
         return Ok(new RequestResponse<RegisterStatus>("注册成功，等待邮箱验证",
             RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
+    }
+
+    private bool VerifyEmailDomain(string email)
+    {
+        var mailDomain = email.Split('@')[1];
+
+        return string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList)
+            || accountPolicy.Value.EmailDomainList.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(d => d.Equals(mailDomain, StringComparison.InvariantCulture));
     }
 
     /// <summary>
@@ -373,6 +379,9 @@ public class AccountController(
     {
         if (await userManager.FindByEmailAsync(model.NewMail) is not null)
             return BadRequest(new RequestResponse("邮箱已经被占用"));
+
+        if (!VerifyEmailDomain(model.NewMail.Split('@')[1]))
+            return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
         UserInfo? user = await userManager.GetUserAsync(User);
 
