@@ -43,6 +43,13 @@ builder.WebHost.ConfigureKestrel(options =>
     kestrelSection.Bind(options);
 });
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    options.Configure(kestrelSection);
+    kestrelSection.Bind(options);
+});
+
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 GZCTF.Program.Banner();

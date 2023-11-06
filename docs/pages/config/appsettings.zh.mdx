@@ -88,6 +88,26 @@ import { Callout } from "nextra-theme-docs";
     // use the following options to allow proxy
     "TrustedNetworks": ["10.0.0.0/8"],
     "TrustedProxies": ["10.0.0.1"]
+  },
+  "Kestrel": {
+    "Limits": {
+      "MaxResponseBufferSize": 2048,
+      "MaxRequestBufferSize": 1048576,
+      "MaxRequestLineSize": 8192,
+      "MaxRequestHeadersTotalSize": 32768,
+      "MaxRequestHeaderCount": 100,
+      "MaxRequestBodySize": 27262946,
+      "KeepAliveTimeout": "0.0:5:0",
+      "RequestHeadersTimeout": "0.0:5:0",
+      "MaxConcurrentConnections": null,
+      "MaxConcurrentUpgradedConnections": null
+    },
+    "AddServerHeader": true,
+    "AllowResponseHeaderCompression": true,
+    "AllowSynchronousIO": false,
+    "AllowAlternateSchemes": false,
+    "DisableStringReuse": false,
+    "ConfigurationLoader": null
   }
 }
 ```
@@ -220,3 +240,9 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 </Callout>
 
 其他字段请参考官方文档描述：[配置 ASP.NET Core 以使用代理服务器和负载均衡器](https://learn.microsoft.com/zh-cn/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0) 及 [ForwardedHeadersOptions 类](https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.aspnetcore.builder.forwardedheadersoptions?view=aspnetcore-7.0)
+
+### Kestrel
+
+Kestrel 为 GZCTF 自带并使用的 Web 服务器。利用此配置可以自行控制 Kestrel 的行为，例如指定 HTTP 协议、修改请求大小上限等等。
+
+具体可配置字段请参照官方文档中 `KestrelServerOptions` 类的属性: [KestrelServerOptions 类](https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions?view=aspnetcore-7.0)
