@@ -396,6 +396,9 @@ public class AccountController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
                 accountPolicy.Value.EmailDomainList]));
 
+        if (!VerifyEmailDomain(model.NewMail.Split('@')[1]))
+            return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
+
         UserInfo? user = await userManager.GetUserAsync(User);
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
