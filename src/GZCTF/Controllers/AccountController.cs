@@ -51,7 +51,7 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse("验证码校验失败"));
 
-        if (!VerifyEmailDomain(model.Email.Split('@')[1]))
+        if (!VerifyEmailDomain(model.Email))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
         var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
@@ -380,7 +380,7 @@ public class AccountController(
         if (await userManager.FindByEmailAsync(model.NewMail) is not null)
             return BadRequest(new RequestResponse("邮箱已经被占用"));
 
-        if (!VerifyEmailDomain(model.NewMail.Split('@')[1]))
+        if (!VerifyEmailDomain(model.NewMail))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
         UserInfo? user = await userManager.GetUserAsync(User);
