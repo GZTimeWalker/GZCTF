@@ -53,7 +53,7 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_TokenValidationFailed)]));
 
-        if (!VerifyEmailDomain(model.Email.Split('@')[1]))
+        if (!VerifyEmailDomain(model.Email))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
                 accountPolicy.Value.EmailDomainList]));
 
@@ -396,7 +396,7 @@ public class AccountController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
                 accountPolicy.Value.EmailDomainList]));
 
-        if (!VerifyEmailDomain(model.NewMail.Split('@')[1]))
+        if (!VerifyEmailDomain(model.NewMail))
             return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
         UserInfo? user = await userManager.GetUserAsync(User);
