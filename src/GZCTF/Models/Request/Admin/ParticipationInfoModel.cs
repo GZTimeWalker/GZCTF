@@ -18,7 +18,7 @@ public class ParticipationInfoModel
     /// <summary>
     /// 注册的成员
     /// </summary>
-    public Guid[] RegisteredMembers { get; set; } = Array.Empty<Guid>();
+    public Guid[] RegisteredMembers { get; set; } = [];
 
     /// <summary>
     /// 参赛所属组织

@@ -28,7 +28,7 @@ public static class ArrayExtensions
     public static ArrayResponse<T> ToResponse<T>(this IEnumerable<T> array, int? tot = null) where T : class =>
         array switch
         {
-            null => new(Array.Empty<T>()),
+            null => new([]),
             T[] arr => new(arr, tot),
             _ => new(array.ToArray(), tot)
         };
@@ -39,5 +39,5 @@ public static class IPAddressExtensions
     public static IEnumerable<IPAddress> ResolveIP(this string? host) =>
         !string.IsNullOrWhiteSpace(host)
             ? Dns.GetHostAddresses(host)
-            : Array.Empty<IPAddress>();
+            : [];
 }

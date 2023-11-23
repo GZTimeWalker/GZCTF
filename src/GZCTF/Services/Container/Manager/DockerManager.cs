@@ -180,10 +180,12 @@ public class DockerManager : IContainerManager
             Image = config.Image,
             Labels = new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId.ToString() },
             Name = DockerMetadata.GetName(config),
-            Env = config.Flag is null ? Array.Empty<string>() : new[] { $"GZCTF_FLAG={config.Flag}" },
+            Env = config.Flag is null ? [] : [$"GZCTF_FLAG={config.Flag}"],
             HostConfig = new()
             {
-                Memory = config.MemoryLimit * 1024 * 1024, CPUPercent = config.CPUCount * 10, NetworkMode = _meta.Config.ChallengeNetwork
+                Memory = config.MemoryLimit * 1024 * 1024,
+                CPUPercent = config.CPUCount * 10,
+                NetworkMode = _meta.Config.ChallengeNetwork
             }
         };
 }

@@ -353,13 +353,13 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
     public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
     {
         if (!int.TryParse(request.Params[0], out var id))
-            return Array.Empty<byte>();
+            return [];
 
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return Array.Empty<byte>();
+            return [];
 
         ScoreboardModel scoreboard = await gameRepository.GenScoreboard(game, token);
         return MemoryPackSerializer.Serialize(scoreboard);

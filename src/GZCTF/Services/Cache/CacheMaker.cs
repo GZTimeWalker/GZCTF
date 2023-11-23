@@ -97,7 +97,7 @@ public class CacheMaker(
 
                 try
                 {
-                    await cache.SetAsync(updateLock, Array.Empty<byte>(),
+                    await cache.SetAsync(updateLock, [],
                         new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60) },
                         token);
 

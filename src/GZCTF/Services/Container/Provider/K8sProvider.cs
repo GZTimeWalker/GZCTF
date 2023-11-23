@@ -99,13 +99,13 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                 Spec = new()
                 {
                     PodSelector = new(),
-                    PolicyTypes = new[] { "Egress" },
-                    Egress = new[]
-                    {
+                    PolicyTypes = ["Egress"],
+                    Egress =
+                    [
                         new V1NetworkPolicyEgressRule
                         {
-                            To = new[]
-                            {
+                            To =
+                            [
                                 new V1NetworkPolicyPeer
                                 {
                                     IpBlock = new()
@@ -114,9 +114,9 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                                         Except = _k8sMetadata.Config.AllowCidr
                                     }
                                 }
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
             }, _k8sMetadata.Config.Namespace);
 

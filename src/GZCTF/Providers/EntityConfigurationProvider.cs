@@ -12,7 +12,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
     readonly CancellationTokenSource _cancellationTokenSource = new();
     Task? _databaseWatcher;
     bool _disposed;
-    byte[] _lastHash = Array.Empty<byte>();
+    byte[] _lastHash = [];
 
     public void Dispose()
     {
@@ -85,18 +85,17 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
     {
         if (_databaseWatcher is not null)
         {
-            Task<IDictionary<string, string?>> task = GetDataAsync();
-            task.Wait();
-            Data = task.Result;
-
+            Data = GetDataAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             _lastHash = ConfigHash(Data);
             return;
         }
 
         AppDbContext context = CreateAppDbContext();
 
-        if (!context.Database.IsInMemory())
+        if (!context.Database.IsInMemory() && context.Database.GetMigrations().Any())
+        {
             context.Database.Migrate();
+        }
 
         context.Database.EnsureCreated();
 

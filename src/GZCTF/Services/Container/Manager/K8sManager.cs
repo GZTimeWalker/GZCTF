@@ -69,8 +69,8 @@ public class K8sManager : IContainerManager
                     Nameservers = options.Dns
                 },
                 EnableServiceLinks = false,
-                Containers = new[]
-                {
+                Containers =
+                [
                     new V1Container
                     {
                         Name = name,
@@ -79,8 +79,8 @@ public class K8sManager : IContainerManager
                         Env =
                             config.Flag is null
                                 ? new List<V1EnvVar>()
-                                : new[] { new V1EnvVar("GZCTF_FLAG", config.Flag) },
-                        Ports = new[] { new V1ContainerPort(config.ExposedPort) },
+                                : [new V1EnvVar("GZCTF_FLAG", config.Flag)],
+                        Ports = [new V1ContainerPort(config.ExposedPort)],
                         Resources = new V1ResourceRequirements
                         {
                             Limits = new Dictionary<string, ResourceQuantity>
@@ -92,7 +92,7 @@ public class K8sManager : IContainerManager
                             Requests = new Dictionary<string, ResourceQuantity> { ["cpu"] = new("10m"), ["memory"] = new("32Mi") }
                         }
                     }
-                },
+                ],
                 RestartPolicy = "Never"
             }
         };
@@ -140,7 +140,7 @@ public class K8sManager : IContainerManager
             Spec = new V1ServiceSpec
             {
                 Type = _meta.ExposePort ? "NodePort" : "ClusterIP",
-                Ports = new[] { new V1ServicePort(config.ExposedPort, targetPort: config.ExposedPort) },
+                Ports = [new V1ServicePort(config.ExposedPort, targetPort: config.ExposedPort)],
                 Selector = new Dictionary<string, string> { ["ctf.gzti.me/ResourceId"] = name }
             }
         };

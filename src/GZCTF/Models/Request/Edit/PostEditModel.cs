@@ -27,7 +27,7 @@ public class PostEditModel
     /// <summary>
     /// 文章标签
     /// </summary>
-    public string[] Tags { get; set; } = Array.Empty<string>();
+    public string[] Tags { get; set; } = [];
 
     /// <summary>
     /// 是否置顶

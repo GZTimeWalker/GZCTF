@@ -33,12 +33,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
+    internal static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = false };
+
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
     {
-        var options = new JsonSerializerOptions { WriteIndented = false };
         return new ValueConverter<T?, string>(
-            v => JsonSerializer.Serialize(v ?? new(), options),
-            v => JsonSerializer.Deserialize<T>(v, options)
+            v => JsonSerializer.Serialize(v ?? new(), _jsonOptions),
+            v => JsonSerializer.Deserialize<T>(v, _jsonOptions)
         );
     }
 
@@ -81,12 +82,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion(setConverter)
                 .Metadata
                 .SetValueComparer(setComparer);
-
-            entity.Property(e => e.BloodBonus)
-                .HasDefaultValue(BloodBonus.Default)
-                .HasConversion(BloodBonus.Converter)
-                .Metadata
-                .SetValueComparer(BloodBonus.Comparer);
 
             entity.HasMany(e => e.GameEvents)
                 .WithOne(e => e.Game)

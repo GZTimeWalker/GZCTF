@@ -40,7 +40,7 @@ public class ChallengeEditDetailModel
     /// <summary>
     /// 题目提示
     /// </summary>
-    public string[] Hints { get; set; } = Array.Empty<string>();
+    public string[] Hints { get; set; } = [];
 
     /// <summary>
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
@@ -78,7 +78,7 @@ public class ChallengeEditDetailModel
     /// 题目 Flag 信息
     /// </summary>
     [Required]
-    public FlagInfoModel[] Flags { get; set; } = Array.Empty<FlagInfoModel>();
+    public FlagInfoModel[] Flags { get; set; } = [];
 
     internal static ChallengeEditDetailModel FromChallenge(GameChallenge chal) =>
         new()
@@ -89,7 +89,7 @@ public class ChallengeEditDetailModel
             Tag = chal.Tag,
             Type = chal.Type,
             FlagTemplate = chal.FlagTemplate,
-            Hints = chal.Hints?.ToArray() ?? Array.Empty<string>(),
+            Hints = chal.Hints?.ToArray() ?? [],
             IsEnabled = chal.IsEnabled,
             ContainerImage = chal.ContainerImage,
             MemoryLimit = chal.MemoryLimit,

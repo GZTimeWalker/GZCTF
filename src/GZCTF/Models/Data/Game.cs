@@ -109,11 +109,26 @@ public class Game
     [JsonPropertyName("wpnote")]
     public string WriteupNote { get; set; } = string.Empty;
 
+    [JsonIgnore]
+    [Column(nameof(BloodBonus))]
+    public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
+
     /// <summary>
     /// 三血加分
     /// </summary>
+    [NotMapped]
     [Required]
-    public BloodBonus BloodBonus { get; set; } = BloodBonus.Default;
+    public BloodBonus BloodBonus
+    {
+        get
+        {
+            return BloodBonus.FromValue(BloodBonusValue);
+        }
+        set
+        {
+            BloodBonusValue = value.Val;
+        }
+    }
 
     [NotMapped]
     [JsonIgnore]

@@ -141,8 +141,6 @@ public struct BloodBonus(long init = BloodBonus.DefaultValue)
     const int Mask = 0x3ff;
     const int Base = 1000;
 
-    public static BloodBonus Default => new();
-
     public long Val { get; private set; } = init;
 
     public static BloodBonus FromValue(long value)
@@ -165,8 +163,4 @@ public struct BloodBonus(long init = BloodBonus.DefaultValue)
     public readonly float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
 
     public readonly bool NoBonus => Val == 0;
-
-    public static ValueConverter<BloodBonus, long> Converter => new(v => v.Val, v => new(v));
-
-    public static ValueComparer<BloodBonus> Comparer => new((a, b) => a.Val == b.Val, c => c.Val.GetHashCode());
 }

@@ -164,7 +164,7 @@ public partial class Codec
         public static byte[] EncodeToBytes(string? str, string type = "utf-8")
         {
             if (str is null)
-                return Array.Empty<byte>();
+                return [];
 
             byte[] encoded;
             try
@@ -173,26 +173,26 @@ public partial class Codec
             }
             catch
             {
-                return Array.Empty<byte>();
+                return [];
             }
 
             Span<char> buffer = new char[encoded.Length * 4 / 3 + 8];
             if (Convert.TryToBase64Chars(encoded, buffer, out var charsWritten))
                 return Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten].ToArray());
-            return Array.Empty<byte>();
+            return [];
         }
 
         public static byte[] DecodeToBytes(string? str)
         {
             if (str is null)
-                return Array.Empty<byte>();
+                return [];
 
             Span<byte> buffer = new byte[str.Length * 3 / 4 + 8];
 
             if (Convert.TryFromBase64String(str, buffer, out var bytesWritten))
                 return buffer[..bytesWritten].ToArray();
 
-            return Array.Empty<byte>();
+            return [];
         }
     }
 

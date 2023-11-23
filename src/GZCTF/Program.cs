@@ -24,7 +24,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using NJsonSchema.Generation;
 using Serilog;
 using StackExchange.Redis;
 
@@ -129,10 +128,6 @@ builder.Services.AddOpenApiDocument(settings =>
     settings.Title = "GZCTF Server API";
     settings.Description = "GZCTF Server API Document";
     settings.UseControllerSummaryAsTagDescription = true;
-    settings.SerializerSettings =
-        SystemTextJsonUtilities.ConvertJsonOptionsToNewtonsoftSettings(
-            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-    settings.DefaultReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull;
 });
 
 #endregion OpenApiDocument
@@ -258,7 +253,7 @@ builder.Services.AddResponseCompression(options =>
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        new[] { "application/json", "text/javascript", "text/html", "text/css" }
+        ["application/json", "text/javascript", "text/html", "text/css"]
     );
 });
 
@@ -272,7 +267,7 @@ WebApplication app = builder.Build();
 app.UseRequestLocalization(options =>
 {
     options.ApplyCurrentCultureToResponseHeaders = true;
-    options.SupportedCultures = new[] { new CultureInfo("zh-CN"), new CultureInfo("en-US"), new CultureInfo("ja-JP") };
+    options.SupportedCultures = [new CultureInfo("zh-CN"), new CultureInfo("en-US"), new CultureInfo("ja-JP")];
     options.SupportedUICultures = options.SupportedUICultures;
 });
 
@@ -296,7 +291,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
-    app.UseSwaggerUi3();
+    app.UseSwaggerUi();
 }
 else
 {
@@ -400,8 +395,8 @@ namespace GZCTF
                 };
 
             errors = (from val in context.ModelState.Values
-                where val.Errors.Count > 0
-                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                      where val.Errors.Count > 0
+                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is [_, ..] ? errors : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
             {

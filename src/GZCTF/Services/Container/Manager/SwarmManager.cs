@@ -70,7 +70,7 @@ public class SwarmManager : IContainerManager
         ServiceCreateParameters parameters = GetServiceCreateParameters(config);
         var retry = 0;
         ServiceCreateResponse? serviceRes;
-        CreateContainer:
+    CreateContainer:
         try
         {
             serviceRes = await _client.Swarm.CreateServiceAsync(parameters, token);
@@ -158,17 +158,17 @@ public class SwarmManager : IContainerManager
                             Image = config.Image,
                             Env =
                                 config.Flag is null
-                                    ? Array.Empty<string>()
-                                    : new[] { $"GZCTF_FLAG={config.Flag}" }
+                                    ? []
+                                    : [$"GZCTF_FLAG={config.Flag}"]
                         },
                     Resources = new() { Limits = new() { MemoryBytes = config.MemoryLimit * 1024 * 1024, NanoCPUs = config.CPUCount * 1_0000_0000 } }
                 },
                 EndpointSpec = new()
                 {
-                    Ports = new PortConfig[]
-                    {
+                    Ports =
+                    [
                         new() { PublishMode = _meta.ExposePort ? "global" : "vip", TargetPort = (uint)config.ExposedPort }
-                    }
+                    ]
                 }
             }
         };

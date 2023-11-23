@@ -25,7 +25,7 @@ public class ExerciseInstanceRepository(AppDbContext context,
     public async Task<ExerciseInstance[]> GetExerciseInstances(UserInfo user, CancellationToken token = default)
     {
         if (!await IsExerciseAvailable(token))
-            return Array.Empty<ExerciseInstance>();
+            return [];
 
         ExerciseInstance[] exercises = await Context.ExerciseInstances
             .Where(i => i.UserId == user.Id && i.Exercise.IsEnabled)
