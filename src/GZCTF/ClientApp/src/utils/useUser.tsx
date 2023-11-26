@@ -4,9 +4,11 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import api from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 export const useUser = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const {
     data: user,
@@ -22,7 +24,7 @@ export const useUser = () => {
           navigate('/')
           showNotification({
             color: 'red',
-            message: '账户已被禁用',
+            message: t('Account_Disabled'),
             icon: <Icon path={mdiClose} size={1} />,
           })
         })
@@ -66,6 +68,7 @@ export const useLoginOut = () => {
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
   const { mutate: mutateProfile } = useUser()
+  const { t } = useTranslation()
 
   return () => {
     api.account
@@ -78,7 +81,7 @@ export const useLoginOut = () => {
         mutateProfile(undefined, { revalidate: false })
         showNotification({
           color: 'teal',
-          message: '登出成功',
+          message: t('Account_SignedOut'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })

@@ -39,6 +39,7 @@ import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const GenerateRandomCode = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -64,6 +65,8 @@ const GameInfoEdit: FC = () => {
 
   const modals = useModals()
   const clipboard = useClipboard()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (numId < 0) {
@@ -117,7 +120,7 @@ const GameInfoEdit: FC = () => {
           id: 'upload-poster',
           color: 'red',
           title: '比赛海报更新失败',
-          message: tryGetErrorMsg(err),
+          message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
         })
@@ -148,7 +151,7 @@ const GameInfoEdit: FC = () => {
         mutate()
         api.game.mutateGameGamesAll()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -166,7 +169,7 @@ const GameInfoEdit: FC = () => {
         })
         navigate('/admin/games')
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   return (

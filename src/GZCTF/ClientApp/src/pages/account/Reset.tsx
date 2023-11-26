@@ -10,6 +10,7 @@ import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const Reset: FC = () => {
   const location = useLocation()
@@ -20,6 +21,8 @@ const Reset: FC = () => {
   const [pwd, setPwd] = useInputState('')
   const [retypedPwd, setRetypedPwd] = useInputState('')
   const [disabled, setDisabled] = useState(false)
+
+  const { t } = useTranslation()
 
   usePageTitle('重置密码')
 
@@ -61,7 +64,7 @@ const Reset: FC = () => {
         navigate('/account/login')
       })
       .catch((err) => {
-        showErrorNotification(err)
+        showErrorNotification(err, t)
         setDisabled(false)
       })
   }

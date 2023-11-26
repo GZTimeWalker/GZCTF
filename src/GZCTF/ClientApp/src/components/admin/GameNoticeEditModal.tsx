@@ -61,7 +61,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           mutateGameNotice(data.data)
           modalProps.onClose()
         })
-        .catch(showErrorNotification)
+        .catch(e => showErrorNotification(e, t))
         .finally(() => {
           setDisabled(false)
         })
@@ -80,7 +80,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           setDisabled(false)
           modalProps.onClose()
         })
-        .catch(showErrorNotification)
+        .catch(e => showErrorNotification(e ,t))
         .finally(() => {
           setDisabled(false)
           setContent('')

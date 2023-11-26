@@ -19,6 +19,7 @@ import { mdiCheck, mdiLockOutline, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { AdminTeamModel, TeamInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel
@@ -32,6 +33,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const [activeTeam, setActiveTeam] = useState<TeamInfoModel>(team)
   const [teamInfo, setTeamInfo] = useState<AdminTeamModel>({})
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     setTeamInfo({ ...team })
@@ -56,7 +59,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         })
         modalProps.onClose()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

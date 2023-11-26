@@ -59,7 +59,7 @@ const Teams: FC = () => {
     if (!codePartten.test(joinTeamCode)) {
       showNotification({
         color: 'red',
-        title: t('ErrorEncountered'),
+        title: t('Error_Encountered'),
         message: t('Team_InvalidInvitationCodeFormat'),
         icon: <Icon path={mdiClose} size={1} />,
       })
@@ -77,7 +77,7 @@ const Teams: FC = () => {
         })
         mutateTeams()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setJoinTeamCode('')
         setJoinOpened(false)

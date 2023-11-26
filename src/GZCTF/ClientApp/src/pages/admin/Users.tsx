@@ -35,6 +35,7 @@ import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { useUser } from '@Utils/useUser'
 import api, { Role, UserInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -58,6 +59,8 @@ const Users: FC = () => {
   const { user: currentUser } = useUser()
   const clipboard = useClipboard()
   const { classes, theme } = useTableStyles()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     api.admin
@@ -95,7 +98,7 @@ const Users: FC = () => {
         setUsers(res.data)
         setCurrent(res.data.length)
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setSearching(false)
       })
@@ -120,7 +123,7 @@ const Users: FC = () => {
             )
           )
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -162,7 +165,7 @@ const Users: FC = () => {
         ),
       })
     } catch (err: any) {
-      showErrorNotification(err)
+      showErrorNotification(err, t)
     } finally {
       setDisabled(false)
     }
@@ -183,7 +186,7 @@ const Users: FC = () => {
       setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
-      showErrorNotification(e)
+      showErrorNotification(e, t)
     } finally {
       setDisabled(false)
     }

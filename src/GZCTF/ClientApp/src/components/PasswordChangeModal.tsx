@@ -8,6 +8,7 @@ import { Icon } from '@mdi/react'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {
   const [oldPwd, setOldPwd] = useInputState('')
@@ -15,6 +16,8 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
   const [retypedPwd, setRetypedPwd] = useInputState('')
 
   const navigate = useNavigate()
+
+  const { t } = useTranslation()
 
   const onChangePwd = () => {
     if (!pwd || !retypedPwd) {
@@ -40,7 +43,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           api.account.accountLogOut()
           navigate('/account/login')
         })
-        .catch(showErrorNotification)
+        .catch(e => showErrorNotification(e, t))
     } else {
       showNotification({
         color: 'red',

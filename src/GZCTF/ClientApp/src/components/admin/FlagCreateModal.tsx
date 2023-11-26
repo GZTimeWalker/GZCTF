@@ -8,6 +8,7 @@ import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useEditChallenge } from '@Utils/useEdit'
 import api from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const FlagCreateModal: FC<ModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
@@ -17,6 +18,8 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
   const [flags, setFlags] = useInputState('')
 
   const { challenge, mutate } = useEditChallenge(numId, numCId)
+
+  const { t } = useTranslation()
 
   const onCreate = () => {
     if (!flags) {
@@ -44,7 +47,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
           })
       })
       .catch((err) => {
-        showErrorNotification(err)
+        showErrorNotification(err, t)
         setDisabled(false)
       })
       .finally(() => {

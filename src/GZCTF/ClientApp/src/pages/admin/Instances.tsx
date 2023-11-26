@@ -30,6 +30,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 type SelectTeamItemProps = TeamModel & React.ComponentPropsWithoutRef<'div'>
 type SelectChallengeItemProps = ChallengeModel & React.ComponentPropsWithoutRef<'div'>
@@ -80,6 +81,8 @@ const Instances: FC = () => {
   const { classes, theme } = useTableStyles()
   const clipBoard = useClipboard()
   const { classes: tooltipClasses } = useTooltipStyles()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (instances) {
@@ -140,7 +143,7 @@ const Instances: FC = () => {
           data: instances.data.filter((instance) => instance.containerGuid !== instanceGuid),
         })
     } catch (e: any) {
-      showErrorNotification(e)
+      showErrorNotification(e, t)
     } finally {
       setDisabled(false)
     }

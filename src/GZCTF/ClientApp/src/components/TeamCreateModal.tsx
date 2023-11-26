@@ -16,6 +16,7 @@ import { mdiCheck, mdiCloseCircle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { TeamUpdateModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean
@@ -26,6 +27,8 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
   const { isOwnTeam, mutate, ...modalProps } = props
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' })
   const theme = useMantineTheme()
+
+  const { t } = useTranslation()
 
   const onCreateTeam = () => {
     api.team
@@ -39,7 +42,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
         })
         mutate()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         modalProps.onClose()
       })

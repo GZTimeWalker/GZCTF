@@ -30,6 +30,7 @@ import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { getGameStatus } from '@Utils/useGame'
 import api, { GameInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -47,6 +48,7 @@ const Games: FC = () => {
 
   const navigate = useNavigate()
   const { classes } = useTableStyles()
+  const { t } = useTranslation()
 
   const onToggleHidden = (game: GameInfoModel) => {
     if (!game.id) return
@@ -60,7 +62,7 @@ const Games: FC = () => {
       .then(() => {
         games && updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 

@@ -21,11 +21,14 @@ import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api, { PostEditModel, Role } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const PostEdit: FC = () => {
   const { postId } = useParams()
   const theme = useMantineTheme()
   const navigate = useNavigate()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (postId?.length !== 8 && postId !== 'new') {
@@ -106,7 +109,7 @@ const PostEdit: FC = () => {
         api.info.mutateInfoGetLatestPosts()
         navigate('/posts')
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

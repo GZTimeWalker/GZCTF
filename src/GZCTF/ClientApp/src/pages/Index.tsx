@@ -9,7 +9,7 @@ import RecentGameCarousel from '@Components/RecentGameCarousel'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { Trans } from '@Utils/I18n'
+import { Trans, useTranslation } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { PostInfoModel } from '@Api'
@@ -48,6 +48,8 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const Home: FC = () => {
+  const { t } = useTranslation()
+
   const { data: posts, mutate } = api.info.useInfoGetLatestPosts({
     refreshInterval: 5 * 60 * 1000,
   })
@@ -78,7 +80,7 @@ const Home: FC = () => {
         }
         api.info.mutateInfoGetPosts()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

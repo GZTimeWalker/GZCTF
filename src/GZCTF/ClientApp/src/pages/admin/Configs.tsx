@@ -8,6 +8,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig, useConfig } from '@Utils/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs(OnceSWRConfig)
@@ -17,6 +18,8 @@ const Configs: FC = () => {
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
   const [containerPolicy, setContainerPolicy] = useState<ContainerPolicy | null>()
+
+  const { t } = useTranslation()
 
   const [saved, setSaved] = useState(true)
   const { classes: btnClasses } = useFixedButtonStyles({
@@ -39,7 +42,7 @@ const Configs: FC = () => {
       .then(() => {
         mutate({ ...conf })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         mutateConfig({ ...conf.globalConfig })
         setDisabled(false)

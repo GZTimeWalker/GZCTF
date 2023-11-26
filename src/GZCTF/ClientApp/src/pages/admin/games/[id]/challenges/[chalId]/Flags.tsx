@@ -32,6 +32,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],
@@ -56,6 +57,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const [flagTemplate, setFlagTemplate] = useState(challenge?.flagTemplate ?? '')
 
   const modals = useModals()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (challenge) {
@@ -82,7 +84,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             attachment: null,
           })
       })
-      .catch((err) => showErrorNotification(err))
+      .catch((err) => showErrorNotification(err, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -127,13 +129,13 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             })
-            .catch((err) => showErrorNotification(err))
+            .catch((err) => showErrorNotification(err, t))
             .finally(() => {
               setDisabled(false)
             })
         }
       })
-      .catch((err) => showErrorNotification(err))
+      .catch((err) => showErrorNotification(err, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -154,7 +156,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
-      .catch((err) => showErrorNotification(err))
+      .catch((err) => showErrorNotification(err, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -175,7 +177,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         })
         challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -422,6 +424,8 @@ const GameChallengeEdit: FC = () => {
 
   const { challenge, mutate } = useEditChallenge(numId, numCId)
 
+  const { t } = useTranslation()
+
   const onDeleteFlag = (flag: FlagInfoModel) => {
     modals.openConfirmModal({
       title: '删除 flag',
@@ -452,7 +456,7 @@ const GameChallengeEdit: FC = () => {
             flags: challenge.flags.filter((f) => f.id !== id),
           })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   return (

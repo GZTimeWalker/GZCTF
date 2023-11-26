@@ -23,6 +23,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ChallengeTagItem, ChallengeTagLabelMap } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const GameChallengeEdit: FC = () => {
   const { id } = useParams()
@@ -32,6 +33,8 @@ const GameChallengeEdit: FC = () => {
   const [createOpened, setCreateOpened] = useState(false)
   const [bonusOpened, setBonusOpened] = useState(false)
   const [category, setCategory] = useState<ChallengeTag | null>(null)
+
+  const { t } = useTranslation()
 
   const { data: challenges, mutate } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
 
@@ -79,7 +82,7 @@ const GameChallengeEdit: FC = () => {
           )
         )
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

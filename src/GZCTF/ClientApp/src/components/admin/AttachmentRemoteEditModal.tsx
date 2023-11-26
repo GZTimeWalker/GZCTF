@@ -7,6 +7,7 @@ import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType, FlagCreateModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()
@@ -20,6 +21,8 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const [flags, setFlags] = useState<FlagCreateModel[]>([])
 
   const theme = useMantineTheme()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     const list: FlagCreateModel[] = []
@@ -52,7 +55,7 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
         mutate()
         props.onClose()
       })
-      .catch((err) => showErrorNotification(err))
+      .catch((err) => showErrorNotification(err, t))
       .finally(() => {
         setDisabled(false)
       })

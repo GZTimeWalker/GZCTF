@@ -24,6 +24,7 @@ import { HunamizeSize } from '@Utils/Shared'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number
@@ -39,6 +40,8 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
   const [disabled, setDisabled] = useState(dayjs().isAfter(wpddl))
   const [progress, setProgress] = useState(0)
   const noteColor = data?.submitted ? theme.colors.teal[5] : theme.colors.red[5]
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     setDdl(dayjs(wpddl))
@@ -71,7 +74,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
         mutate()
         setDisabled(false)
       })
-      .catch((err) => showErrorNotification(err))
+      .catch((err) => showErrorNotification(err, t))
       .finally(() => {
         setProgress(0)
         setDisabled(false)

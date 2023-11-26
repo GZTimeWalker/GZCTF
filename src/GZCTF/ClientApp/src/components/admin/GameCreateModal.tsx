@@ -9,6 +9,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { GameInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 interface GameCreateModalProps extends ModalProps {
   onAddGame: (game: GameInfoModel) => void
@@ -21,6 +22,9 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
   const [title, setTitle] = useInputState('')
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs().add(2, 'h'))
+
+  const { t } = useTranslation()
+
 
   const onCreate = () => {
     if (!title || end < start) {
@@ -51,7 +55,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         navigate(`/admin/games/${data.data.id}/info`)
       })
       .catch((err) => {
-        showErrorNotification(err)
+        showErrorNotification(err, t)
         setDisabled(false)
       })
   }

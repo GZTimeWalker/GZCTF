@@ -28,6 +28,7 @@ import { Icon } from '@mdi/react'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -45,7 +46,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
   const { user, isCaptain, onKick, onTransferCaptain } = props
   const theme = useMantineTheme()
   const [showBtns, setShowBtns] = useState(false)
-
+  
   return (
     <Group
       position="apart"
@@ -95,6 +96,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
   const modals = useModals()
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     setTeamInfo(team)
   }, [team])
@@ -122,7 +125,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         mutateTeams(teams?.filter((x) => x.id !== teamInfo?.id))
         props.onClose()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const onConfirmDisbandTeam = () => {
@@ -141,7 +144,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         mutateTeams(teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
         props.onClose()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const onTransferCaptain = (userId: string) => {
@@ -162,7 +165,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           revalidate: false,
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const onConfirmKickUser = (userId: string) => {
@@ -180,7 +183,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           revalidate: false,
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const onRefreshInviteCode = () => {
@@ -196,7 +199,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const onChangeAvatar = () => {
@@ -235,7 +238,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           id: 'upload-avatar',
           color: 'red',
           title: '头像更新失败',
-          message: tryGetErrorMsg(err),
+          message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
         })
@@ -260,7 +263,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           revalidate: false,
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   return (

@@ -23,6 +23,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()
@@ -36,6 +37,8 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const [files, setFiles] = useState<File[]>([])
 
   const { classes, theme } = useUploadStyles()
+
+  const { t } = useTranslation()
 
   const onUpload = () => {
     if (files.length <= 0) {
@@ -86,13 +89,13 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               mutate()
               props.onClose()
             })
-            .catch((err) => showErrorNotification(err))
+            .catch((err) => showErrorNotification(err, t))
             .finally(() => {
               setDisabled(false)
             })
         }
       })
-      .catch((err) => showErrorNotification(err))
+      .catch((err) => showErrorNotification(err, t))
       .finally(() => {
         setDisabled(false)
       })

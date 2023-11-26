@@ -23,6 +23,7 @@ import { Icon } from '@mdi/react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useUser } from '@Utils/useUser'
 import api, { AdminUserInfoModel, Role, UserInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],
@@ -46,6 +47,8 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
   const [activeUser, setActiveUser] = useState<UserInfoModel>(user)
   const [profile, setProfile] = useState<AdminUserInfoModel>({})
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     setProfile({ ...user })
     setActiveUser(user)
@@ -64,7 +67,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         mutateUser({ ...activeUser, ...profile })
         modalProps.onClose()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

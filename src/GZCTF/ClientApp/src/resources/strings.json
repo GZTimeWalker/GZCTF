@@ -1,5 +1,7 @@
 {
   "About": "关于",
+  "Account_Disabled": "账户已被禁用",
+  "Account_SignedOut": "登出成功",
   "Email_Confirm": "确认邮箱",
   "Email_ConfirmFailed": "邮箱验证失败",
   "Email_ConfirmInstruction": "请点击下方按钮确认更改邮箱",
@@ -7,7 +9,7 @@
   "Email_ConfirmInvalidLinkInstruction": "请检查链接是否正确后再次访问",
   "Email_Confirmed": "邮箱已验证",
   "Email_HelloWithHand": "{{ decodeEmail }}, 你好👋",
-  "ErrorEncountered": "遇到了问题",
+  "Error_Encountered": "遇到了问题",
   "Game_Recent": "最近比赛",
   "Modal_Cancel": "取消",
   "Modal_Confirm": "确认",
@@ -16,5 +18,7 @@
   "Param_Missing": "参数缺失，请检查",
   "Team_InvalidInvitationCodeFormat": "队伍邀请码格式不正确",
   "Team_Joined": "加入队伍成功",
-  "Team_Updated": "队伍信息已更新"
+  "Error_Unknown": "未知错误",
+  "Team_Updated": "队伍信息已更新",
+  "Request_TooFrequent": "操作过于频繁，请稍后再试"
 }

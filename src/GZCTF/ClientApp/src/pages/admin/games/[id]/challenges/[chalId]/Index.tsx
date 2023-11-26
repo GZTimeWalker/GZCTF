@@ -42,6 +42,7 @@ import {
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -65,6 +66,8 @@ const GameChallengeEdit: FC = () => {
   const [previewOpend, setPreviewOpend] = useState(false)
 
   const modals = useModals()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (challenge) {
@@ -96,7 +99,7 @@ const GameChallengeEdit: FC = () => {
         mutate(data.data)
         mutateChals()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         if (!noFeedback) {
           setDisabled(false)
@@ -116,7 +119,7 @@ const GameChallengeEdit: FC = () => {
         mutateChals(chals?.filter((chal) => chal.id !== numCId), { revalidate: false })
         navigate(`/admin/games/${id}/challenges`)
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -133,7 +136,7 @@ const GameChallengeEdit: FC = () => {
         })
         if (challenge) mutate({ ...challenge, testContainer: res.data })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -150,7 +153,7 @@ const GameChallengeEdit: FC = () => {
         })
         if (challenge) mutate({ ...challenge, testContainer: undefined })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

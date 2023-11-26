@@ -11,6 +11,7 @@ import WithGameTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameNotice } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const GameNoticeEdit: FC = () => {
   const { id } = useParams()
@@ -19,6 +20,8 @@ const GameNoticeEdit: FC = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeGameNotice, setActiveGameNotice] = useState<GameNotice | null>(null)
+
+  const { t } = useTranslation()
 
   // delete
   const modals = useModals()
@@ -41,7 +44,7 @@ const GameNoticeEdit: FC = () => {
         })
         mutate(gameNotices?.filter((t) => t.id !== gameNotice.id) ?? [])
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const navigate = useNavigate()

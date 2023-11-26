@@ -28,6 +28,7 @@ import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const GameAlertMap = new Map([
   [
@@ -102,11 +103,13 @@ const GameDetail: FC = () => {
   const modals = useModals()
   const isMobile = useIsMobile()
 
+  const { t } = useTranslation()
+
   usePageTitle(game?.title)
 
   useEffect(() => {
     if (error) {
-      showErrorNotification(error)
+      showErrorNotification(error, t)
       navigate('/games')
     }
   }, [error])
@@ -129,7 +132,7 @@ const GameDetail: FC = () => {
       })
       mutate()
     } catch (err) {
-      return showErrorNotification(err)
+      return showErrorNotification(err, t)
     }
   }
 
@@ -145,7 +148,7 @@ const GameDetail: FC = () => {
       })
       mutate()
     } catch (err) {
-      return showErrorNotification(err)
+      return showErrorNotification(err, t)
     }
   }
 

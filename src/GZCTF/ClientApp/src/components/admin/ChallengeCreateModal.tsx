@@ -13,6 +13,7 @@ import {
   ChallengeTypeLabelMap,
 } from '@Utils/Shared'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void
@@ -27,6 +28,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const [title, setTitle] = useInputState('')
   const [tag, setTag] = useState<string | null>(null)
   const [type, setType] = useState<string | null>(null)
+
+  const { t } = useTranslation()
 
   const onCreate = () => {
     if (!title || !tag || !type) return
@@ -50,7 +53,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
         navigate(`/admin/games/${id}/challenges/${data.data.id}`)
       })
       .catch((err) => {
-        showErrorNotification(err)
+        showErrorNotification(err, t)
         setDisabled(false)
       })
   }

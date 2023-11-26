@@ -33,6 +33,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { ParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 interface MemberItemProps {
   user: ProfileUserInfoModel
@@ -174,6 +175,8 @@ const GameTeamReview: FC = () => {
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
   const { classes } = useAccordionStyles()
 
+  const { t } = useTranslation()
+
   const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
     setDisabled(true)
     try {
@@ -188,7 +191,7 @@ const GameTeamReview: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
-      showErrorNotification(err)
+      showErrorNotification(err, t)
     } finally {
       setDisabled(false)
     }

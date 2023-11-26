@@ -28,6 +28,7 @@ import { ACCEPT_IMAGE_MIME_TYPE, useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api, { ProfileUpdateModel } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -50,6 +51,8 @@ const Profile: FC = () => {
   const [email, setEmail] = useState('')
 
   const isMobile = useIsMobile()
+
+  const { t } = useTranslation()
 
   usePageTitle('个人信息')
 
@@ -97,7 +100,7 @@ const Profile: FC = () => {
           id: 'upload-avatar',
           color: 'red',
           title: '头像更新失败',
-          message: tryGetErrorMsg(err),
+          message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
         })
@@ -120,7 +123,7 @@ const Profile: FC = () => {
         })
         mutate({ ...user })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const onChangeEmail = () => {
@@ -143,7 +146,7 @@ const Profile: FC = () => {
         }
         setMailEditOpened(false)
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   const context = (

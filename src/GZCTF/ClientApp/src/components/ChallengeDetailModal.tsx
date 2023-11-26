@@ -26,6 +26,7 @@ import { OnceSWRConfig } from '@Utils/useConfig'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
 import InstanceEntry from './InstanceEntry'
+import { useTranslation } from '@Utils/I18n'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
@@ -113,6 +114,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
 
+  const { t } = useTranslation()
+
   const onCreateContainer = () => {
     if (!challengeId) return
     setDisabled(true)
@@ -134,7 +137,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 
@@ -159,7 +162,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 
@@ -177,7 +180,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           },
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 
@@ -210,7 +213,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           autoClose: false,
         })
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
   }
 
   useEffect(() => {
@@ -232,7 +235,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         .catch((err) => {
           setOnSubmitting(false)
           setFlag('')
-          showErrorNotification(err)
+          showErrorNotification(err, t)
           clearInterval(polling)
           setDisabled(false)
         })

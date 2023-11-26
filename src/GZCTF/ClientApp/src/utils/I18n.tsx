@@ -9,7 +9,7 @@ import {
 } from 'react-i18next'
 import { _DefaultNamespace } from 'react-i18next/TransWithoutContext'
 
-type I18nKey = keyof typeof sources
+export type I18nKey = keyof typeof sources
 type Language = {
   translation: {
     [K in I18nKey]: string

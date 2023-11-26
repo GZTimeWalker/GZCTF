@@ -13,6 +13,7 @@ import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { PostInfoModel, Role } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const ITEMS_PER_PAGE = 10
 
@@ -26,6 +27,8 @@ const Posts: FC = () => {
   const [activePage, setPage] = useState(1)
   const navigate = useNavigate()
   const { role } = useUserRole()
+
+  const { t } = useTranslation()
 
   usePageTitle('文章')
 
@@ -49,7 +52,7 @@ const Posts: FC = () => {
         }
         api.info.mutateInfoGetLatestPosts()
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

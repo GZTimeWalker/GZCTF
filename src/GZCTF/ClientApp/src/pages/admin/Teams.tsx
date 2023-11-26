@@ -33,6 +33,7 @@ import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -54,6 +55,8 @@ const Teams: FC = () => {
 
   const { classes } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     api.admin
@@ -91,7 +94,7 @@ const Teams: FC = () => {
         setTeams(res.data)
         setCurrent(res.data.length)
       })
-      .catch(showErrorNotification)
+      .catch(e => showErrorNotification(e, t))
       .finally(() => {
         setSearching(false)
       })
@@ -113,7 +116,7 @@ const Teams: FC = () => {
       setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
-      showErrorNotification(e)
+      showErrorNotification(e, t)
     } finally {
       setDisabled(false)
     }
@@ -141,7 +144,7 @@ const Teams: FC = () => {
       )
       setUpdate(new Date())
     } catch (e: any) {
-      showErrorNotification(e)
+      showErrorNotification(e, t)
     } finally {
       setDisabled(false)
     }

@@ -32,6 +32,7 @@ import { useAccordionStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
 import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
+import { useTranslation } from '@Utils/I18n'
 
 enum CheatType {
   Submit = 'Submit',
@@ -394,6 +395,8 @@ const CheatInfo: FC = () => {
     getInitialValueInEffect: false,
   })
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (!cheatInfo) return
 
@@ -418,7 +421,7 @@ const CheatInfo: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
-      showErrorNotification(err)
+      showErrorNotification(err, t)
     } finally {
       setDisabled(false)
     }
