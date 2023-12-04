@@ -1,4 +1,3 @@
-import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
   Button,
@@ -17,9 +16,10 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiLockOutline, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { AdminTeamModel, TeamInfoModel } from '@Api'
 import { useTranslation } from '@Utils/I18n'
+import api, { AdminTeamModel, TeamInfoModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel
@@ -59,7 +59,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         })
         modalProps.onClose()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

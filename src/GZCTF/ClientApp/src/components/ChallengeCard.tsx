@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-import { FC } from 'react'
 import {
   Box,
   Card,
@@ -14,6 +12,8 @@ import {
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC } from 'react'
 import { BloodsTypes, ChallengeTagLabelMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'

@@ -1,6 +1,6 @@
+import { Carousel, CarouselProps } from '@mantine/carousel'
 import Autoplay from 'embla-carousel-autoplay'
 import { FC, useRef } from 'react'
-import { Carousel, CarouselProps } from '@mantine/carousel'
 import RecentGameSlide from '@Components/RecentGameSlide'
 import { BasicGameInfoModel } from '@Api'
 

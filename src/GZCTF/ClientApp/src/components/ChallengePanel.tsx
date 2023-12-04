@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import React, { FC, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import {
   Button,
   Card,
@@ -19,6 +16,9 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import React, { FC, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import ChallengeCard from '@Components/ChallengeCard'
 import ChallengeDetailModal from '@Components/ChallengeDetailModal'
 import Empty from '@Components/Empty'

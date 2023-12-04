@@ -1,4 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
 import {
   ActionIcon,
   Avatar,
@@ -26,14 +25,15 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useEffect, useState } from 'react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import TeamEditModal from '@Components/admin/TeamEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -94,7 +94,7 @@ const Teams: FC = () => {
         setTeams(res.data)
         setCurrent(res.data.length)
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setSearching(false)
       })

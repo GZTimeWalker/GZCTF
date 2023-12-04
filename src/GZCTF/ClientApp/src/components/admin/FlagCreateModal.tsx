@@ -1,14 +1,14 @@
-import { FC, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, Stack, Text, Textarea } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useEditChallenge } from '@Utils/useEdit'
 import api from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const FlagCreateModal: FC<ModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)

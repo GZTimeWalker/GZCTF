@@ -1,5 +1,3 @@
-import { FC, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   Center,
@@ -23,16 +21,18 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
 import AttachmentUploadModal from '@Components/admin/AttachmentUploadModal'
 import FlagCreateModal from '@Components/admin/FlagCreateModal'
 import FlagEditPanel from '@Components/admin/FlagEditPanel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
   [FileType.None, '无附件'],
@@ -177,7 +177,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         })
         challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -456,7 +456,7 @@ const GameChallengeEdit: FC = () => {
             flags: challenge.flags.filter((f) => f.id !== id),
           })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   return (

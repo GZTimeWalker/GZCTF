@@ -1,6 +1,6 @@
+import { createStyles, TypographyStylesProvider } from '@mantine/core'
 import { marked } from 'marked'
 import { forwardRef } from 'react'
-import { createStyles, TypographyStylesProvider } from '@mantine/core'
 import { MarkdownProps } from '@Components/MarkdownRender'
 import { useIsMobile } from '@Utils/ThemeOverride'
 

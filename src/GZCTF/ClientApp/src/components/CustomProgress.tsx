@@ -1,5 +1,5 @@
-import { FC } from 'react'
 import { BoxProps, Center, createStyles, Group, keyframes, MantineColor } from '@mantine/core'
+import { FC } from 'react'
 
 export interface CustomProgressProps extends BoxProps {
   thickness?: number

@@ -1,7 +1,7 @@
+import { Badge, createStyles, Group, Paper, Stack, Title } from '@mantine/core'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { Badge, createStyles, Group, Paper, Stack, Title } from '@mantine/core'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
 import { getGameStatus } from '@Utils/useGame'

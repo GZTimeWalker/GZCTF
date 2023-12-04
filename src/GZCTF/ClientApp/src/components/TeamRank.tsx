@@ -1,5 +1,3 @@
-import { FC, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   Avatar,
   Badge,
@@ -18,6 +16,8 @@ import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api from '@Api'
 

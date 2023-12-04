@@ -1,8 +1,8 @@
-import React, { FC } from 'react'
 import { Box, Center, PasswordInput, Popover, Progress, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC } from 'react'
 import { useIsMobile } from '@Utils/ThemeOverride'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {

@@ -1,6 +1,6 @@
+import { Button, Group, Modal, ModalProps, NumberInput, Stack, Text } from '@mantine/core'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Group, Modal, ModalProps, NumberInput, Stack, Text } from '@mantine/core'
 import { BloodBonus } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { SubmissionType } from '@Api'

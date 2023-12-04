@@ -1,14 +1,14 @@
-import { FC } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, PasswordInput, Stack } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC } from 'react'
+import { useNavigate } from 'react-router-dom'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api from '@Api'
 import { useTranslation } from '@Utils/I18n'
+import api from '@Api'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {
   const [oldPwd, setOldPwd] = useInputState('')
@@ -43,7 +43,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           api.account.accountLogOut()
           navigate('/account/login')
         })
-        .catch(e => showErrorNotification(e, t))
+        .catch((e) => showErrorNotification(e, t))
     } else {
       showNotification({
         color: 'red',

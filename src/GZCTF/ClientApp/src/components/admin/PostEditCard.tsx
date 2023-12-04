@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import {
   ActionIcon,
   Badge,
@@ -11,6 +10,7 @@ import {
 } from '@mantine/core'
 import { mdiDeleteOutline, mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC } from 'react'
 import MarkdownRender from '@Components/MarkdownRender'
 import { PostInfoModel } from '@Api'
 

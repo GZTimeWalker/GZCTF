@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   ActionIcon,
   Avatar,
@@ -22,15 +19,18 @@ import {
   mdiPlus,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { GameColorMap } from '@Components/GameCard'
 import AdminPage from '@Components/admin/AdminPage'
 import GameCreateModal from '@Components/admin/GameCreateModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { getGameStatus } from '@Utils/useGame'
 import api, { GameInfoModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -62,7 +62,7 @@ const Games: FC = () => {
       .then(() => {
         games && updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 

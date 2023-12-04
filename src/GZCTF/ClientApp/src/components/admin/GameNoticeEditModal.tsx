@@ -1,9 +1,9 @@
-import { FC, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, Stack, Text, Textarea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTranslation } from '@Utils/I18n'
 import api, { GameNotice } from '@Api'
@@ -61,7 +61,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           mutateGameNotice(data.data)
           modalProps.onClose()
         })
-        .catch(e => showErrorNotification(e, t))
+        .catch((e) => showErrorNotification(e, t))
         .finally(() => {
           setDisabled(false)
         })
@@ -80,7 +80,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           setDisabled(false)
           modalProps.onClose()
         })
-        .catch(e => showErrorNotification(e ,t))
+        .catch((e) => showErrorNotification(e, t))
         .finally(() => {
           setDisabled(false)
           setContent('')

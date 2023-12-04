@@ -1,4 +1,3 @@
-import { FC, useState } from 'react'
 import {
   Button,
   Center,
@@ -15,6 +14,7 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useState } from 'react'
 import LogoHeader from '@Components/LogoHeader'
 import TeamCard from '@Components/TeamCard'
 import TeamCreateModal from '@Components/TeamCreateModal'
@@ -77,7 +77,7 @@ const Teams: FC = () => {
         })
         mutateTeams()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setJoinTeamCode('')
         setJoinOpened(false)

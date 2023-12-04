@@ -1,11 +1,11 @@
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
-import React, { FC, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, LoadingOverlay, Stack, Text, Title, useMantineTheme } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+import React, { FC, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CustomProgress from '@Components/CustomProgress'
 import IconTabs from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
@@ -72,8 +72,8 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
         {countdown.asHours() > 999
           ? '比赛还会很久'
           : countdown.asSeconds() > 0
-          ? `${Math.floor(countdown.asHours())} : ${countdown.format('mm : ss')}`
-          : '比赛已结束'}
+            ? `${Math.floor(countdown.asHours())} : ${countdown.format('mm : ss')}`
+            : '比赛已结束'}
       </Text>
       <Card.Section mt={4}>
         <CustomProgress percentage={progress} py={0} />

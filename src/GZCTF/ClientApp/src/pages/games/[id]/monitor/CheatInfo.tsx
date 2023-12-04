@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import {
   Accordion,
   Avatar,
@@ -22,17 +19,20 @@ import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiKeyAlert, mdiTarget } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { RequireRole } from '@Components/WithRole'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
 import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 enum CheatType {
   Submit = 'Submit',

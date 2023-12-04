@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import("prettier").Config} */
+export default {
   useTabs: false,
   tabWidth: 2,
   singleQuote: true,
@@ -6,12 +7,9 @@ module.exports = {
   semi: false,
   printWidth: 100,
   htmlWhitespaceSensitivity: 'ignore',
-  plugins: [require.resolve('@trivago/prettier-plugin-sort-imports')],
+  plugins: ['@trivago/prettier-plugin-sort-imports'],
   importOrder: [
-    '^react(.*)$',
-    '^@mantine/(.*)$',
-    '^@mdi/(.*)$',
-    '^@[a-z](.*)$',
+    '<THIRD_PARTY_MODULES>',
     '^@Components/(.*)$',
     '^@Utils/(.*)$',
     '^@Api$',

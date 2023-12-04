@@ -1,5 +1,3 @@
-import { FC, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import {
   ActionIcon,
   Button,
@@ -19,11 +17,13 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()

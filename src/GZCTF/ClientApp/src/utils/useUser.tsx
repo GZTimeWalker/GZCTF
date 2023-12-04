@@ -1,10 +1,10 @@
-import { useSWRConfig } from 'swr'
-import { useNavigate } from 'react-router'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import api from '@Api'
+import { useNavigate } from 'react-router'
+import { useSWRConfig } from 'swr'
 import { useTranslation } from '@Utils/I18n'
+import api from '@Api'
 
 export const useUser = () => {
   const navigate = useNavigate()

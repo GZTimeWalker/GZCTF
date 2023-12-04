@@ -1,5 +1,5 @@
-import { FC, SVGProps } from 'react'
 import { createStyles } from '@mantine/core'
+import { FC, SVGProps } from 'react'
 
 const useStyles = createStyles((theme) => ({
   triangle: {

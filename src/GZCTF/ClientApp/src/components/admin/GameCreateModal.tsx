@@ -1,15 +1,15 @@
-import dayjs from 'dayjs'
-import { FC, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Button, Group, Modal, ModalProps, Stack, TextInput } from '@mantine/core'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { GameInfoModel } from '@Api'
 import { useTranslation } from '@Utils/I18n'
+import api, { GameInfoModel } from '@Api'
 
 interface GameCreateModalProps extends ModalProps {
   onAddGame: (game: GameInfoModel) => void
@@ -24,7 +24,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
   const [end, setEnd] = useInputState(dayjs().add(2, 'h'))
 
   const { t } = useTranslation()
-
 
   const onCreate = () => {
     if (!title || end < start) {

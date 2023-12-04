@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
   Button,
@@ -20,10 +18,12 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC, useEffect, useState } from 'react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useUser } from '@Utils/useUser'
 import api, { AdminUserInfoModel, Role, UserInfoModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 export const RoleColorMap = new Map<Role, string>([
   [Role.Admin, 'blue'],
@@ -67,7 +67,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
         mutateUser({ ...activeUser, ...profile })
         modalProps.onClose()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

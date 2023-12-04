@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import {
   ActionIcon,
   Button,
@@ -10,6 +9,7 @@ import {
 } from '@mantine/core'
 import { mdiClose, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC } from 'react'
 
 interface HintListProps extends TextInputProps {
   hints: string[]

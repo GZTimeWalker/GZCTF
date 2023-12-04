@@ -1,7 +1,7 @@
-import { FC } from 'react'
 import { createStyles, Group, Stack, Title } from '@mantine/core'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC } from 'react'
 import MobilePostCard from '@Components/MobilePostCard'
 import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
@@ -80,7 +80,7 @@ const Home: FC = () => {
         }
         api.info.mutateInfoGetPosts()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

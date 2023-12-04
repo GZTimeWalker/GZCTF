@@ -1,6 +1,6 @@
+import { useMantineTheme } from '@mantine/core'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
-import { useMantineTheme } from '@mantine/core'
 
 interface ScoreFuncProps {
   originalScore: number

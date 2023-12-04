@@ -1,5 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { Group, GroupProps, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
 import {
   mdiAccountCogOutline,
@@ -10,6 +8,8 @@ import {
   mdiSitemapOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import IconTabs from '@Components/IconTabs'
 import { usePageTitle } from '@Utils/usePageTitle'
 

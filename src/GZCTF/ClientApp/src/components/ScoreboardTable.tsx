@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import React, { FC, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import {
   Avatar,
   Box,
@@ -17,6 +14,9 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import React, { FC, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import ScoreboardItemModal from '@Components/ScoreboardItemModal'
 import { BloodBonus, BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'

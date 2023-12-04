@@ -1,4 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
 import {
   ActionIcon,
   Box,
@@ -18,15 +17,16 @@ import { useInputState } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useEffect, useState } from 'react'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
 import InstanceEntry from './InstanceEntry'
-import { useTranslation } from '@Utils/I18n'
 
 interface ChallengeDetailModalProps extends ModalProps {
   gameId: number
@@ -137,7 +137,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 
@@ -162,7 +162,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 
@@ -180,7 +180,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           },
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 
@@ -213,7 +213,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           autoClose: false,
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   useEffect(() => {

@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-import { FC, forwardRef, useEffect, useState } from 'react'
 import {
   Badge,
   Box,
@@ -24,13 +22,15 @@ import {
   mdiPuzzleOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC, forwardRef, useEffect, useState } from 'react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 type SelectTeamItemProps = TeamModel & React.ComponentPropsWithoutRef<'div'>
 type SelectChallengeItemProps = ChallengeModel & React.ComponentPropsWithoutRef<'div'>

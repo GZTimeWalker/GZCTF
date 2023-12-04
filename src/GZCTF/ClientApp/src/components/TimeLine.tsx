@@ -1,8 +1,8 @@
+import { useMantineTheme } from '@mantine/core'
 import dayjs from 'dayjs'
 import ReactEcharts from 'echarts-for-react'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useMantineTheme } from '@mantine/core'
 import { getGameStatus, useGame, useGameScoreboard } from '@Utils/useGame'
 
 interface TimeLineProps {

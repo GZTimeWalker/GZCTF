@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import { CSSProperties, FC, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import {
   ActionIcon,
   Center,
@@ -17,6 +14,9 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiClose, mdiDownloadMultiple } from '@mdi/js'
 import Icon from '@mdi/react'
+import dayjs from 'dayjs'
+import { CSSProperties, FC, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'

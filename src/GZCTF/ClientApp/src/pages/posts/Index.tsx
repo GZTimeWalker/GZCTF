@@ -1,19 +1,19 @@
-import { FC, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { Button, Pagination, Stack } from '@mantine/core'
 import { mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useState } from 'react'
+import { useNavigate } from 'react-router'
 import PostCard from '@Components/PostCard'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { PostInfoModel, Role } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const ITEMS_PER_PAGE = 10
 
@@ -52,7 +52,7 @@ const Posts: FC = () => {
         }
         api.info.mutateInfoGetLatestPosts()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

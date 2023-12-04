@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-import React, { FC, useEffect, useState } from 'react'
 import {
   ActionIcon,
   Box,
@@ -19,6 +17,8 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import React, { FC, useEffect, useState } from 'react'
 import { FlagPlaceholders } from '@Components/ChallengeDetailModal'
 import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'

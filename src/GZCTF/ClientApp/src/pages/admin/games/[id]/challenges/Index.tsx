@@ -1,5 +1,3 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   Center,
@@ -15,15 +13,17 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiHexagonSlice6, mdiKeyboardBackspace, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import BloodBonusModel from '@Components/admin/BloodBonusModel'
 import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagItem, ChallengeTagLabelMap } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const GameChallengeEdit: FC = () => {
   const { id } = useParams()
@@ -82,7 +82,7 @@ const GameChallengeEdit: FC = () => {
           )
         )
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

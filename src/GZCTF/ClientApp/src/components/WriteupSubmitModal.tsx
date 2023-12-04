@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -18,13 +16,15 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiFileDocumentOutline, mdiFileHidden } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC, useEffect, useState } from 'react'
 import MarkdownRender from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number
@@ -182,8 +182,8 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
                 {dayjs().isAfter(ddl)
                   ? '提交截止时间已过'
                   : progress !== 0
-                  ? '上传中'
-                  : '上传 Writeup'}
+                    ? '上传中'
+                    : '上传 Writeup'}
               </div>
               {progress !== 0 && (
                 <Progress

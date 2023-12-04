@@ -1,7 +1,3 @@
-import { SWRConfig } from 'swr'
-import routes from '~react-pages'
-import { FC, Suspense } from 'react'
-import { useRoutes } from 'react-router-dom'
 import {
   Center,
   ColorScheme,
@@ -13,6 +9,10 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
+import { FC, Suspense } from 'react'
+import { useRoutes } from 'react-router-dom'
+import { SWRConfig } from 'swr'
+import routes from '~react-pages'
 import { useTranslation } from '@Utils/I18n'
 import { ThemeOverride } from '@Utils/ThemeOverride'
 import { useBanner, useLocalStorageCache } from '@Utils/useConfig'

@@ -1,13 +1,13 @@
-import { FC, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { Button, Modal, ModalProps, Stack, Text, Textarea, useMantineTheme } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType, FlagCreateModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()

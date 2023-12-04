@@ -1,5 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import {
   mdiExclamationThick,
@@ -9,6 +7,8 @@ import {
   mdiPackageVariant,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'

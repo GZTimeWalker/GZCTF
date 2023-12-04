@@ -1,17 +1,17 @@
-import React, { FC, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Center, Group, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiKeyboardBackspace, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameNotice } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const GameNoticeEdit: FC = () => {
   const { id } = useParams()
@@ -44,7 +44,7 @@ const GameNoticeEdit: FC = () => {
         })
         mutate(gameNotices?.filter((t) => t.id !== gameNotice.id) ?? [])
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const navigate = useNavigate()

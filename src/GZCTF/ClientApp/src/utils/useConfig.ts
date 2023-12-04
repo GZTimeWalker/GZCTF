@@ -1,8 +1,8 @@
+import { useLocalStorage } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import LZString from 'lz-string'
-import { Cache, SWRConfiguration } from 'swr'
 import { useEffect, useRef } from 'react'
-import { useLocalStorage } from '@mantine/hooks'
+import { Cache, SWRConfiguration } from 'swr'
 import api, { GlobalConfig } from '@Api'
 
 export const OnceSWRConfig: SWRConfiguration = {

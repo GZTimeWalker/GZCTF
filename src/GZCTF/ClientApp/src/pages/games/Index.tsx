@@ -1,5 +1,5 @@
-import { FC } from 'react'
 import { Stack } from '@mantine/core'
+import { FC } from 'react'
 import GameCard from '@Components/GameCard'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'

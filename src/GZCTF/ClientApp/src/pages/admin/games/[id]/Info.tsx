@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   ActionIcon,
   Button,
@@ -33,13 +30,16 @@ import {
   mdiRefresh,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const GenerateRandomCode = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -151,7 +151,7 @@ const GameInfoEdit: FC = () => {
         mutate()
         api.game.mutateGameGamesAll()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -169,7 +169,7 @@ const GameInfoEdit: FC = () => {
         })
         navigate('/admin/games')
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   return (

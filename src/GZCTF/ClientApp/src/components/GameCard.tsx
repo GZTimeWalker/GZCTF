@@ -1,5 +1,3 @@
-import { FC } from 'react'
-import { Link } from 'react-router-dom'
 import {
   BackgroundImage,
   Badge,
@@ -14,6 +12,8 @@ import {
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC } from 'react'
+import { Link } from 'react-router-dom'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 

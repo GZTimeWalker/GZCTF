@@ -1,6 +1,6 @@
+import { Stack, Text, Title } from '@mantine/core'
 import { FC, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Stack, Text, Title } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import Icon404 from '@Components/icon/404Icon'
 import { usePageTitle } from '@Utils/usePageTitle'

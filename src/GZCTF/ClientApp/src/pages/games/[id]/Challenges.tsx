@@ -1,5 +1,5 @@
-import { FC } from 'react'
 import { Group, Stack } from '@mantine/core'
+import { FC } from 'react'
 import ChallengePanel from '@Components/ChallengePanel'
 import GameNoticePanel from '@Components/GameNoticePanel'
 import TeamRank from '@Components/TeamRank'

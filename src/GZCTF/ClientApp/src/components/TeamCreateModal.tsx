@@ -1,4 +1,3 @@
-import { FC, useState } from 'react'
 import {
   Button,
   Center,
@@ -14,9 +13,10 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiCloseCircle } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useState } from 'react'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import api, { TeamUpdateModel } from '@Api'
 import { useTranslation } from '@Utils/I18n'
+import api, { TeamUpdateModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   isOwnTeam: boolean
@@ -42,7 +42,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
         })
         mutate()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         modalProps.onClose()
       })

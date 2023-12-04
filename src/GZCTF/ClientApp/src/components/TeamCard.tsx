@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import {
   Avatar,
   Badge,
@@ -13,6 +12,7 @@ import {
 } from '@mantine/core'
 import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC } from 'react'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
 

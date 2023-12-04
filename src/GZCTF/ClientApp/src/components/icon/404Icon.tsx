@@ -1,5 +1,5 @@
-import { FC } from 'react'
 import { createStyles, keyframes } from '@mantine/core'
+import { FC } from 'react'
 
 const spinning = keyframes({
   from: { transform: 'rotate(0deg)' },

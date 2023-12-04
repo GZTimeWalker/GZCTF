@@ -1,6 +1,6 @@
+import { Avatar, Box, Group, Input, Pagination, Paper, Select, Stack, Table } from '@mantine/core'
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Avatar, Box, Group, Input, Pagination, Paper, Select, Stack, Table } from '@mantine/core'
 import MobileScoreboardItemModal from '@Components/MobileScoreboardItemModal'
 import { ScoreboardProps, useScoreboardStyles } from '@Components/ScoreboardTable'
 import { BloodBonus } from '@Utils/Shared'

@@ -1,5 +1,5 @@
-import { FC } from 'react'
 import { createStyles } from '@mantine/core'
+import { FC } from 'react'
 
 const useStyles = createStyles((theme) => ({
   triangle: {

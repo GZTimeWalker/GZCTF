@@ -1,5 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   ActionIcon,
   Avatar,
@@ -26,6 +24,8 @@ import {
   mdiWrenchOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
@@ -126,8 +126,8 @@ const getLabel = (path: string) =>
     item.link === '/'
       ? path === '/'
       : item.link.startsWith('/admin')
-      ? path.startsWith('/admin')
-      : path.startsWith(item.link)
+        ? path.startsWith('/admin')
+        : path.startsWith(item.link)
   )?.label
 
 const AppNavbar: FC = () => {

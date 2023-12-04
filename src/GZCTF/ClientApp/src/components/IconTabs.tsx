@@ -1,4 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
 import {
   Box,
   createStyles,
@@ -9,6 +8,7 @@ import {
   MantineColor,
 } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
+import React, { FC, useEffect, useState } from 'react'
 import LogoHeader from '@Components/LogoHeader'
 
 interface TabStyleProps {

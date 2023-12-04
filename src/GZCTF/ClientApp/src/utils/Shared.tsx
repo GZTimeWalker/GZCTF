@@ -1,4 +1,3 @@
-import { forwardRef } from 'react'
 import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
 import {
   mdiBomb,
@@ -24,6 +23,7 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { forwardRef } from 'react'
 import {
   ChallengeTag,
   ChallengeType,

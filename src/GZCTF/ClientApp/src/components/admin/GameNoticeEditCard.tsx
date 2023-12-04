@@ -1,8 +1,8 @@
-import dayjs from 'dayjs'
-import { FC } from 'react'
 import { ActionIcon, Card, Group, PaperProps, Stack, Text } from '@mantine/core'
 import { mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC } from 'react'
 import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { GameNotice } from '@Api'
 

@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-import { FC } from 'react'
 import {
   Avatar,
   Badge,
@@ -15,6 +13,8 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import dayjs from 'dayjs'
+import { FC } from 'react'
 import TeamRadarMap from '@Components/TeamRadarMap'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'

@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import { FC } from 'react'
-import { Link } from 'react-router-dom'
 import {
   Badge,
   Card,
@@ -14,6 +11,9 @@ import {
 } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC } from 'react'
+import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'

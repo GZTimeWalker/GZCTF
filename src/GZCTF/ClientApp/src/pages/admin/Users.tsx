@@ -1,4 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
 import {
   ActionIcon,
   Avatar,
@@ -27,15 +26,16 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useEffect, useState } from 'react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { useUser } from '@Utils/useUser'
 import api, { Role, UserInfoModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -98,7 +98,7 @@ const Users: FC = () => {
         setUsers(res.data)
         setCurrent(res.data.length)
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setSearching(false)
       })
@@ -123,7 +123,7 @@ const Users: FC = () => {
             )
           )
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

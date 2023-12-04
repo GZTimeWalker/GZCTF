@@ -1,8 +1,8 @@
-import dayjs from 'dayjs'
-import { FC } from 'react'
 import { ActionIcon, Avatar, Card, Group, PaperProps, Stack, Text } from '@mantine/core'
 import { mdiDownload } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import dayjs from 'dayjs'
+import { FC } from 'react'
 import { WriteupInfoModel } from '@Api'
 
 interface TeamWriteupCardProps extends PaperProps {

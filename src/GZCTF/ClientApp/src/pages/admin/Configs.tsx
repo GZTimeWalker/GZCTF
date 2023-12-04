@@ -1,14 +1,14 @@
-import { FC, useEffect, useState } from 'react'
 import { Button, Divider, Grid, SimpleGrid, Stack, Switch, TextInput, Title } from '@mantine/core'
 import { mdiCheck, mdiContentSaveOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
 import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig, useConfig } from '@Utils/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs(OnceSWRConfig)
@@ -42,7 +42,7 @@ const Configs: FC = () => {
       .then(() => {
         mutate({ ...conf })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         mutateConfig({ ...conf.globalConfig })
         setDisabled(false)

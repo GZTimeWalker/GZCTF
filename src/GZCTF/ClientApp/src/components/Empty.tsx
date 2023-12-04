@@ -1,7 +1,7 @@
-import { FC, ReactNode } from 'react'
 import { MantineNumberSize, Stack, Text } from '@mantine/core'
 import { mdiInbox } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, ReactNode } from 'react'
 
 interface EmptyProps {
   bordered?: boolean

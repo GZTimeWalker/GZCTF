@@ -1,5 +1,3 @@
-import React, { FC, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Group, GroupProps, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import {
   mdiAccountGroupOutline,
@@ -9,6 +7,8 @@ import {
   mdiTextBoxOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import React, { FC, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import AdminPage from '@Components/admin/AdminPage'
 
 const pages = [

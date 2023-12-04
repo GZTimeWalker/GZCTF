@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import {
   ActionIcon,
   Card,
@@ -13,6 +12,7 @@ import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC } from 'react'
 import { Attachment, FlagInfoModel } from '@Api'
 
 interface FlagCardProps {

@@ -1,6 +1,6 @@
+import { Anchor, Badge, Center, Group, HoverCard, Stack, Text, Title } from '@mantine/core'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Anchor, Badge, Center, Group, HoverCard, Stack, Text, Title } from '@mantine/core'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 import { useLogoStyles } from '@Utils/ThemeOverride'

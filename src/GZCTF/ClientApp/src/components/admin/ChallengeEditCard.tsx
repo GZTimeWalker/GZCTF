@@ -1,5 +1,3 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   ActionIcon,
   Badge,
@@ -13,6 +11,8 @@ import {
 } from '@mantine/core'
 import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfoModel, ChallengeTag } from '@Api'
 

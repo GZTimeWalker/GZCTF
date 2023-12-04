@@ -1,5 +1,5 @@
-import { FC } from 'react'
 import { createStyles, Group, keyframes, Text, Title } from '@mantine/core'
+import { FC } from 'react'
 import LogoHeader from '@Components/LogoHeader'
 import { useConfig } from '@Utils/useConfig'
 

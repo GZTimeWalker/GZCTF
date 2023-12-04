@@ -1,4 +1,3 @@
-import { FC, forwardRef } from 'react'
 import {
   Center,
   createStyles,
@@ -9,6 +8,7 @@ import {
   UnstyledButton,
   UnstyledButtonProps,
 } from '@mantine/core'
+import { FC, forwardRef } from 'react'
 
 export interface SelectableItemProps extends UnstyledButtonProps {
   onClick: () => void

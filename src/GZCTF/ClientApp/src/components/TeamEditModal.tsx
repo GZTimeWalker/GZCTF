@@ -1,4 +1,3 @@
-import { FC, useEffect, useState } from 'react'
 import {
   ActionIcon,
   Avatar,
@@ -25,10 +24,11 @@ import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -46,7 +46,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
   const { user, isCaptain, onKick, onTransferCaptain } = props
   const theme = useMantineTheme()
   const [showBtns, setShowBtns] = useState(false)
-  
+
   return (
     <Group
       position="apart"
@@ -125,7 +125,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         mutateTeams(teams?.filter((x) => x.id !== teamInfo?.id))
         props.onClose()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const onConfirmDisbandTeam = () => {
@@ -144,7 +144,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         mutateTeams(teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
         props.onClose()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const onTransferCaptain = (userId: string) => {
@@ -165,7 +165,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           revalidate: false,
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const onConfirmKickUser = (userId: string) => {
@@ -183,7 +183,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           revalidate: false,
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const onRefreshInviteCode = () => {
@@ -199,7 +199,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const onChangeAvatar = () => {
@@ -263,7 +263,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           revalidate: false,
         })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   return (

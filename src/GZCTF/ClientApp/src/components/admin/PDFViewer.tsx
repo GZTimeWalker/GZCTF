@@ -1,8 +1,8 @@
+import { createStyles, Paper, ScrollArea, Stack } from '@mantine/core'
 import { FC, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
-import { createStyles, Paper, ScrollArea, Stack } from '@mantine/core'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useTranslation } from '@Utils/I18n'
 
@@ -52,7 +52,6 @@ const PDFViewer: FC<PDFViewerProps> = (props) => {
 
   const { t } = useTranslation()
 
-
   return (
     <ScrollArea className={classes.layout} type="never">
       <Document
@@ -61,7 +60,7 @@ const PDFViewer: FC<PDFViewerProps> = (props) => {
         onLoadSuccess={({ numPages }) => {
           setNumPages(numPages)
         }}
-        onLoadError={e => showErrorNotification(e, t)}
+        onLoadError={(e) => showErrorNotification(e, t)}
       >
         <Stack>
           {Array.from(new Array(numPages), (_, index) => (

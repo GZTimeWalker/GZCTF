@@ -1,6 +1,6 @@
-import { FC } from 'react'
 import { Stack, Text, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
+import { FC } from 'react'
 import IconWiderScreenRequired from '@Components/icon/WiderScreenRequiredIcon'
 
 interface WithWiderScreenProps extends React.PropsWithChildren {

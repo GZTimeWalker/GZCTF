@@ -1,5 +1,3 @@
-import { FC, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   Grid,
@@ -26,6 +24,8 @@ import {
   mdiKeyboardBackspace,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import HintList from '@Components/HintList'
 import InstanceEntry from '@Components/InstanceEntry'
 import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
@@ -33,6 +33,7 @@ import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import {
   ChallengeTagItem,
   ChallengeTagLabelMap,
@@ -42,7 +43,6 @@ import {
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -99,7 +99,7 @@ const GameChallengeEdit: FC = () => {
         mutate(data.data)
         mutateChals()
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         if (!noFeedback) {
           setDisabled(false)
@@ -119,7 +119,7 @@ const GameChallengeEdit: FC = () => {
         mutateChals(chals?.filter((chal) => chal.id !== numCId), { revalidate: false })
         navigate(`/admin/games/${id}/challenges`)
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -136,7 +136,7 @@ const GameChallengeEdit: FC = () => {
         })
         if (challenge) mutate({ ...challenge, testContainer: res.data })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })
@@ -153,7 +153,7 @@ const GameChallengeEdit: FC = () => {
         })
         if (challenge) mutate({ ...challenge, testContainer: undefined })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

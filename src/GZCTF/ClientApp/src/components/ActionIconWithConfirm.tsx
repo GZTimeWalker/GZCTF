@@ -1,4 +1,3 @@
-import { FC, useState } from 'react'
 import {
   ActionIcon,
   Button,
@@ -10,6 +9,7 @@ import {
   Text,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
+import { FC, useState } from 'react'
 
 export interface ActionIconWithConfirmProps {
   iconPath: string

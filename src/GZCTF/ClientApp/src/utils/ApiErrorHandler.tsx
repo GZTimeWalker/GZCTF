@@ -1,10 +1,10 @@
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { I18nKey } from './I18n';
+import { I18nKey } from './I18n'
 
 export const tryGetErrorMsg = (err: any, t: (key: I18nKey) => string) => {
-  return err?.response?.data?.title ?? err?.title ?? err ?? t('Error_Unknown');
+  return err?.response?.data?.title ?? err?.title ?? err ?? t('Error_Unknown')
 }
 
 export const showErrorNotification = (err: any, t: (key: I18nKey) => string) => {

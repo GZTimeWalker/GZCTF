@@ -1,5 +1,3 @@
-import { FC, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Alert,
   Anchor,
@@ -18,17 +16,19 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiAlertCircle, mdiCheck, mdiFlagOutline, mdiTimerSand } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import CustomProgress from '@Components/CustomProgress'
 import GameJoinModal from '@Components/GameJoinModal'
 import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useBannerStyles, useIsMobile } from '@Utils/ThemeOverride'
 import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const GameAlertMap = new Map([
   [

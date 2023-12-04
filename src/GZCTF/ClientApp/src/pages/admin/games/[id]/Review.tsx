@@ -1,5 +1,3 @@
-import { FC, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   Accordion,
   Avatar,
@@ -27,13 +25,15 @@ import {
   mdiStar,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 interface MemberItemProps {
   user: ProfileUserInfoModel

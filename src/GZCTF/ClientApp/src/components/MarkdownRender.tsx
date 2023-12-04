@@ -1,10 +1,10 @@
+import { Sx, Text, TextProps, TypographyStylesProvider } from '@mantine/core'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import { Marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
 import Prism from 'prismjs'
 import { forwardRef } from 'react'
-import { Sx, Text, TextProps, TypographyStylesProvider } from '@mantine/core'
 import { useInlineStyles, useTypographyStyles } from '@Utils/useTypographyStyles'
 
 export interface MarkdownProps extends React.ComponentPropsWithoutRef<'div'> {

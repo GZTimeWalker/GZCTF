@@ -1,5 +1,3 @@
-import { FC, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
 import {
   Button,
   Group,
@@ -15,13 +13,15 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiContentSaveOutline, mdiDeleteOutline, mdiFileCheckOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api, { PostEditModel, Role } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const PostEdit: FC = () => {
   const { postId } = useParams()
@@ -109,7 +109,7 @@ const PostEdit: FC = () => {
         api.info.mutateInfoGetLatestPosts()
         navigate('/posts')
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
       .finally(() => {
         setDisabled(false)
       })

@@ -1,4 +1,3 @@
-import { FC, useEffect, useState } from 'react'
 import {
   Avatar,
   Box,
@@ -21,14 +20,15 @@ import { Dropzone } from '@mantine/dropzone'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { ACCEPT_IMAGE_MIME_TYPE, useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api, { ProfileUpdateModel } from '@Api'
-import { useTranslation } from '@Utils/I18n'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -123,7 +123,7 @@ const Profile: FC = () => {
         })
         mutate({ ...user })
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const onChangeEmail = () => {
@@ -146,7 +146,7 @@ const Profile: FC = () => {
         }
         setMailEditOpened(false)
       })
-      .catch(e => showErrorNotification(e, t))
+      .catch((e) => showErrorNotification(e, t))
   }
 
   const context = (
