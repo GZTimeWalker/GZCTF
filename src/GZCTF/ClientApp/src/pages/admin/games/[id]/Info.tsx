@@ -261,7 +261,6 @@ const GameInfoEdit: FC = () => {
         />
         <DatePickerInput
           label="开始日期"
-          placeholder="Start Date"
           value={start.toDate()}
           disabled={disabled}
           clearable={false}
@@ -280,7 +279,6 @@ const GameInfoEdit: FC = () => {
         <TimeInput
           label="开始时间"
           disabled={disabled}
-          placeholder="Start Time"
           value={start.format('HH:mm:ss')}
           onChange={(e) => {
             const newTime = e.target.value.split(':')
@@ -301,7 +299,6 @@ const GameInfoEdit: FC = () => {
           label="结束日期"
           disabled={disabled}
           minDate={start.toDate()}
-          placeholder="End time"
           value={end.toDate()}
           clearable={false}
           onChange={(e) => {
@@ -314,7 +311,6 @@ const GameInfoEdit: FC = () => {
         <TimeInput
           label="结束时间"
           disabled={disabled}
-          placeholder="End time"
           value={end.format('HH:mm:ss')}
           onChange={(e) => {
             const newTime = e.target.value.split(':')

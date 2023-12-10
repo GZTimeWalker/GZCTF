@@ -75,7 +75,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         <Group grow position="apart">
           <DatePickerInput
             label="开始日期"
-            placeholder="Start Date"
             value={start.toDate()}
             clearable={false}
             onChange={(e) => {
@@ -92,7 +91,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           />
           <TimeInput
             label="开始时间"
-            placeholder="Start Time"
             value={start.format('HH:mm:ss')}
             onChange={(e) => {
               const newTime = e.target.value.split(':')
@@ -114,7 +112,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           <DatePickerInput
             label="结束日期"
             minDate={start.toDate()}
-            placeholder="End time"
             value={end.toDate()}
             clearable={false}
             onChange={(e) => {
@@ -126,7 +123,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           />
           <TimeInput
             label="结束时间"
-            placeholder="End time"
             value={end.format('HH:mm:ss')}
             onChange={(e) => {
               const newTime = e.target.value.split(':')
