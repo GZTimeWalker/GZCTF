@@ -11,17 +11,19 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     {
         localizer[nameof(Resources.Program.Header_Ranking)], localizer[nameof(Resources.Program.Header_Team)],
         localizer[nameof(Resources.Program.Header_Captain)], localizer[nameof(Resources.Program.Header_Member)],
-        localizer[nameof(Resources.Program.Header_StdNumber)], localizer[nameof(Resources.Program.Header_PhoneNumber)],
-        localizer[nameof(Resources.Program.Header_SolvedNumber)], localizer[nameof(Resources.Program.Header_ScoringTime)],
+        localizer[nameof(Resources.Program.Header_StdNumber)],
+        localizer[nameof(Resources.Program.Header_PhoneNumber)],
+        localizer[nameof(Resources.Program.Header_SolvedNumber)],
+        localizer[nameof(Resources.Program.Header_ScoringTime)],
         localizer[nameof(Resources.Program.Header_TotalScore)]
     };
 
     readonly string[] _commonSubmissionHeader =
     {
-        localizer[nameof(Resources.Program.Header_SubmitStatus)], localizer[nameof(Resources.Program.Header_SubmitTime)],
-        localizer[nameof(Resources.Program.Header_Team)], localizer[nameof(Resources.Program.Header_User)],
-        localizer[nameof(Resources.Program.Header_Challenge)], localizer[nameof(Resources.Program.Header_SubmitContent)],
-        localizer[nameof(Resources.Program.Header_Email)]
+        localizer[nameof(Resources.Program.Header_SubmitStatus)],
+        localizer[nameof(Resources.Program.Header_SubmitTime)], localizer[nameof(Resources.Program.Header_Team)],
+        localizer[nameof(Resources.Program.Header_User)], localizer[nameof(Resources.Program.Header_Challenge)],
+        localizer[nameof(Resources.Program.Header_SubmitContent)], localizer[nameof(Resources.Program.Header_Email)]
     };
 
     public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
@@ -113,7 +115,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             cell.CellStyle = style;
 
             if (!withOrg || colIndex != 2) continue;
-            
+
             cell = row.CreateCell(colIndex++);
             cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingOrganization)]);
             cell.CellStyle = style;

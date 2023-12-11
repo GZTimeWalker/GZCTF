@@ -39,7 +39,9 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
     {
         _k8sMetadata = new()
         {
-            Config = options.Value.K8sConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
+            Config = options.Value.K8sConfig ?? new(),
+            PortMappingType = options.Value.PortMappingType,
+            PublicEntry = options.Value.PublicEntry
         };
         _localizer = localizer;
 
@@ -63,7 +65,8 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
 
         if (withAuth)
         {
-            var padding = $"{registryValue.UserName}@{registryValue.Password}@{registryValue.ServerAddress}".ToMD5String();
+            var padding =
+                $"{registryValue.UserName}@{registryValue.Password}@{registryValue.ServerAddress}".ToMD5String();
             _k8sMetadata.AuthSecretName = $"{registryValue.UserName}-{padding}".ToValidRFC1123String("secret");
         }
 
@@ -73,11 +76,14 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         }
         catch (Exception e)
         {
-            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
-            Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
+            logger.LogError(e,
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
+            Program.ExitWithFatalMessage(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInitFailed), config.Host]);
         }
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInited), config.Host], TaskStatus.Success,
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_K8sInited), config.Host],
+            TaskStatus.Success,
             LogLevel.Debug);
     }
 
@@ -108,11 +114,7 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                             [
                                 new V1NetworkPolicyPeer
                                 {
-                                    IpBlock = new()
-                                    {
-                                        Cidr = "0.0.0.0/0",
-                                        Except = _k8sMetadata.Config.AllowCidr
-                                    }
+                                    IpBlock = new() { Cidr = "0.0.0.0/0", Except = _k8sMetadata.Config.AllowCidr }
                                 }
                             ]
                         }
@@ -127,13 +129,20 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
             {
                 auths = new Dictionary<string, object>
                 {
-                    { registry.ServerAddress, new { auth, username = registry.UserName, password = registry.Password } }
+                    {
+                        registry.ServerAddress,
+                        new { auth, username = registry.UserName, password = registry.Password }
+                    }
                 }
             };
             var dockerJsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj);
             var secret = new V1Secret
             {
-                Metadata = new V1ObjectMeta { Name = _k8sMetadata.AuthSecretName, NamespaceProperty = _k8sMetadata.Config.Namespace },
+                Metadata =
+                    new V1ObjectMeta
+                    {
+                        Name = _k8sMetadata.AuthSecretName, NamespaceProperty = _k8sMetadata.Config.Namespace
+                    },
                 Data = new Dictionary<string, byte[]> { [".dockerconfigjson"] = dockerJsonBytes },
                 Type = "kubernetes.io/dockerconfigjson"
             };

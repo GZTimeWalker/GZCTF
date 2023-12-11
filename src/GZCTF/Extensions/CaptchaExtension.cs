@@ -82,7 +82,10 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
         IPAddress? ip = context.Connection.RemoteIpAddress;
 
-        TurnstileRequestModel req = new() { Secret = Config.SecretKey, Response = model.Challenge, RemoteIp = ip.ToString() };
+        TurnstileRequestModel req = new()
+        {
+            Secret = Config.SecretKey, Response = model.Challenge, RemoteIp = ip.ToString()
+        };
 
         const string api = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 

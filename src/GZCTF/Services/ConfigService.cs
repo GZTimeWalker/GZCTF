@@ -5,15 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Services;
 
-public class ConfigService(AppDbContext context,
+public class ConfigService(
+    AppDbContext context,
     ILogger<ConfigService> logger,
     IConfiguration configuration) : IConfigService
 {
     readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
-    public Task SaveConfig(Type type, object? value, CancellationToken token = default) => SaveConfigInternal(GetConfigs(type, value), token);
+    public Task SaveConfig(Type type, object? value, CancellationToken token = default) =>
+        SaveConfigInternal(GetConfigs(type, value), token);
 
-    public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class => SaveConfigInternal(GetConfigs(config), token);
+    public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class =>
+        SaveConfigInternal(GetConfigs(config), token);
 
     public void ReloadConfig() => _configuration?.Reload();
 
@@ -26,7 +29,7 @@ public class ConfigService(AppDbContext context,
             throw new NotSupportedException(Program.StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
-        
+
         if (type == typeof(string) || type.IsValueType)
             configs.Add(new(key, converter.ConvertToString(value) ?? string.Empty));
         else if (type.IsClass)
@@ -63,15 +66,18 @@ public class ConfigService(AppDbContext context,
             if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
             {
                 if (dbConf.Value == conf.Value) continue;
-                
+
                 dbConf.Value = conf.Value;
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey, conf.Value ?? "null"],
+                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey,
+                        conf.Value ?? "null"],
                     TaskStatus.Success, LogLevel.Debug);
             }
             else
             {
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey, conf.Value ?? "null"],
+                logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey,
+                        conf.Value ?? "null"],
                     TaskStatus.Success, LogLevel.Debug);
                 await context.Configs.AddAsync(conf, token);
             }

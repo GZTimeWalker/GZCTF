@@ -23,5 +23,11 @@ public class ContainerInfoModel
     public string Entry { get; set; } = string.Empty;
 
     internal static ContainerInfoModel FromContainer(Container container) =>
-        new() { Status = container.Status, StartedAt = container.StartedAt, ExpectStopAt = container.ExpectStopAt, Entry = container.Entry };
+        new()
+        {
+            Status = container.Status,
+            StartedAt = container.StartedAt,
+            ExpectStopAt = container.ExpectStopAt,
+            Entry = container.Entry
+        };
 }

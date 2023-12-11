@@ -7,7 +7,8 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Repositories;
 
-public class ContainerRepository(IDistributedCache cache,
+public class ContainerRepository(
+    IDistributedCache cache,
     IContainerManager service,
     ILogger<ContainerRepository> logger,
     AppDbContext context) : RepositoryBase(context), IContainerRepository
@@ -24,7 +25,8 @@ public class ContainerRepository(IDistributedCache cache,
             .Include(c => c.GameInstance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);
 
-    public Task<List<Container>> GetContainers(CancellationToken token = default) => Context.Containers.ToListAsync(token);
+    public Task<List<Container>> GetContainers(CancellationToken token = default) =>
+        Context.Containers.ToListAsync(token);
 
     public async Task<ContainerInstanceModel[]> GetContainerInstances(CancellationToken token = default) =>
         (await Context.Containers
@@ -68,7 +70,8 @@ public class ContainerRepository(IDistributedCache cache,
         catch (Exception ex)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerRepository_ContainerDestroyFailed), container.ContainerId[..12],
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerRepository_ContainerDestroyFailed),
+                    container.ContainerId[..12],
                     container.Image.Split("/").LastOrDefault() ?? "", ex.Message],
                 TaskStatus.Failed, LogLevel.Warning);
             return false;

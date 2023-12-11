@@ -2,7 +2,6 @@
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Container.Provider;
@@ -38,7 +37,9 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
     {
         _dockerMeta = new()
         {
-            Config = options.Value.DockerConfig ?? new(), PortMappingType = options.Value.PortMappingType, PublicEntry = options.Value.PublicEntry
+            Config = options.Value.DockerConfig ?? new(),
+            PortMappingType = options.Value.PortMappingType,
+            PublicEntry = options.Value.PublicEntry
         };
 
         DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
@@ -50,7 +51,8 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 
         // Auth for registry
         if (!string.IsNullOrWhiteSpace(registry.Value.UserName) && !string.IsNullOrWhiteSpace(registry.Value.Password))
-            _dockerMeta.Auth = new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
+            _dockerMeta.Auth =
+                new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
 
         logger.SystemLog(
             Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_DockerInited),

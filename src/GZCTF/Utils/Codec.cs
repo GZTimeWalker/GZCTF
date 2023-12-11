@@ -38,7 +38,8 @@ public partial class Codec
     /// <param name="source">源数据</param>
     /// <param name="toBase">进制支持2,8,10,16</param>
     /// <returns></returns>
-    public static List<string> ToBase(List<int> source, int toBase) => new(source.ConvertAll(a => Convert.ToString(a, toBase)));
+    public static List<string> ToBase(List<int> source, int toBase) =>
+        [..source.ConvertAll(a => Convert.ToString(a, toBase))];
 
     /// <summary>
     /// 字节数组转换为16进制字符串
@@ -77,7 +78,8 @@ public partial class Codec
     public static async Task<Stream> ZipFilesAsync(IEnumerable<LocalFile> files, string basePath, string zipName,
         CancellationToken token = default)
     {
-        var size = files.Select(f => f.FileSize).Sum();
+        LocalFile[] localFiles = files as LocalFile[] ?? files.ToArray();
+        var size = localFiles.Select(f => f.FileSize).Sum();
 
         Stream tmp = size <= 64 * 1024 * 1024
             ? new MemoryStream()
@@ -85,7 +87,7 @@ public partial class Codec
 
         using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
 
-        foreach (LocalFile file in files)
+        foreach (LocalFile file in localFiles)
         {
             ZipArchiveEntry entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Optimal);
             await using Stream entryStream = entry.Open();
@@ -177,9 +179,9 @@ public partial class Codec
             }
 
             Span<char> buffer = new char[encoded.Length * 4 / 3 + 8];
-            if (Convert.TryToBase64Chars(encoded, buffer, out var charsWritten))
-                return Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten].ToArray());
-            return [];
+            return Convert.TryToBase64Chars(encoded, buffer, out var charsWritten)
+                ? Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten].ToArray())
+                : [];
         }
 
         public static byte[] DecodeToBytes(string? str)
@@ -189,10 +191,9 @@ public partial class Codec
 
             Span<byte> buffer = new byte[str.Length * 3 / 4 + 8];
 
-            if (Convert.TryFromBase64String(str, buffer, out var bytesWritten))
-                return buffer[..bytesWritten].ToArray();
-
-            return [];
+            return Convert.TryFromBase64String(str, buffer, out var bytesWritten)
+                ? buffer[..bytesWritten].ToArray()
+                : [];
         }
     }
 

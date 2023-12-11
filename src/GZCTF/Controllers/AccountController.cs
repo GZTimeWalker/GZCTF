@@ -83,19 +83,24 @@ public class AccountController(
             await userManager.UpdateAsync(user);
             await signInManager.SignInAsync(user, true);
 
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user, TaskStatus.Success);
-            return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)], RegisterStatus.LoggedIn,
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user,
+                TaskStatus.Success);
+            return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)],
+                RegisterStatus.LoggedIn,
                 StatusCodes.Status200OK));
         }
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
         {
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredWaitingApprovalLog)], user, TaskStatus.Success);
-            return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegisteredWaitingApproval)],
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredWaitingApprovalLog)],
+                user, TaskStatus.Success);
+            return Ok(new RequestResponse<RegisterStatus>(
+                localizer[nameof(Resources.Program.Account_UserRegisteredWaitingApproval)],
                 RegisterStatus.AdminConfirmationRequired, StatusCodes.Status200OK));
         }
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], user, TaskStatus.Pending);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], user,
+            TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
         var link = GetEmailLink("verify", rToken, model.Email);
@@ -110,7 +115,8 @@ public class AccountController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
-        return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegisteredWaitingEmailVerification)],
+        return Ok(new RequestResponse<RegisterStatus>(
+            localizer[nameof(Resources.Program.Account_UserRegisteredWaitingEmailVerification)],
             RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
     }
 
@@ -119,7 +125,9 @@ public class AccountController(
         var mailDomain = email.Split('@')[1];
 
         return string.IsNullOrWhiteSpace(accountPolicy.Value.EmailDomainList)
-            || accountPolicy.Value.EmailDomainList.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(d => d.Equals(mailDomain, StringComparison.InvariantCulture));
+               || accountPolicy.Value.EmailDomainList
+                   .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                   .Any(d => d.Equals(mailDomain, StringComparison.InvariantCulture));
     }
 
     /// <summary>
@@ -145,15 +153,18 @@ public class AccountController(
 
         UserInfo? user = await userManager.FindByEmailAsync(model.Email!);
         if (user is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)],
+                StatusCodes.Status404NotFound));
 
         if (!user.EmailConfirmed)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailNotConfirmed)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailNotConfirmed)],
+                StatusCodes.Status404NotFound));
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_ResetPasswordFromAdmin)]));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], HttpContext, TaskStatus.Pending);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], HttpContext,
+            TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
         var link = GetEmailLink("reset", rToken, model.Email);
@@ -228,7 +239,8 @@ public class AccountController(
         IdentityResult result = await userManager.ConfirmEmailAsync(user, Codec.Base64.Decode(model.Token));
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailVerificationFailed)],
+            return Unauthorized(new RequestResponse(
+                localizer[nameof(Resources.Program.Account_EmailVerificationFailed)],
                 StatusCodes.Status401Unauthorized));
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_EmailVerified)], user, TaskStatus.Success);
@@ -271,11 +283,13 @@ public class AccountController(
         user ??= await userManager.FindByEmailAsync(model.UserName);
 
         if (user is null)
-            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
+            return Unauthorized(new RequestResponse(
+                localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
                 StatusCodes.Status401Unauthorized));
 
         if (user.Role == Role.Banned)
-            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)], StatusCodes.Status401Unauthorized));
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)],
+                StatusCodes.Status401Unauthorized));
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
@@ -285,7 +299,8 @@ public class AccountController(
         SignInResult result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
 
         if (!result.Succeeded)
-            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
+            return Unauthorized(new RequestResponse(
+                localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
                 StatusCodes.Status401Unauthorized));
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserLogined)], user, TaskStatus.Success);
@@ -338,7 +353,8 @@ public class AccountController(
                                                   localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
         if (oldName != user.UserName)
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!], user, TaskStatus.Success);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
+                user, TaskStatus.Success);
 
         return Ok();
     }
@@ -366,7 +382,8 @@ public class AccountController(
             return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
                                                   localizer[nameof(Resources.Program.Identity_UnknownError)]));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordChanged)], user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordChanged)], user,
+            TaskStatus.Success);
 
         return Ok();
     }
@@ -392,19 +409,18 @@ public class AccountController(
         if (await userManager.FindByEmailAsync(model.NewMail) is not null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailUsed)]));
 
-        if (!VerifyEmailDomain(model.NewMail.Split('@')[1]))
+        if (!VerifyEmailDomain(model.NewMail))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
                 accountPolicy.Value.EmailDomainList]));
-
-        if (!VerifyEmailDomain(model.NewMail))
-            return BadRequest(new RequestResponse($"可用邮箱后缀：{accountPolicy.Value.EmailDomainList}"));
 
         UserInfo? user = await userManager.GetUserAsync(User);
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
-            return BadRequest(new RequestResponse<bool>(localizer[nameof(Resources.Program.Account_ChangeEmailFromAdmin)], false));
+            return BadRequest(
+                new RequestResponse<bool>(localizer[nameof(Resources.Program.Account_ChangeEmailFromAdmin)], false));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailChange)], user, TaskStatus.Pending);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailChange)], user,
+            TaskStatus.Pending);
 
         var token = Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user!, model.NewMail));
         var link = GetEmailLink("confirm", token, model.NewMail);
@@ -419,7 +435,8 @@ public class AccountController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
-        return Ok(new RequestResponse<bool>(localizer[nameof(Resources.Program.Account_EmailVerificationPending)], true, StatusCodes.Status200OK));
+        return Ok(new RequestResponse<bool>(localizer[nameof(Resources.Program.Account_EmailVerificationPending)], true,
+            StatusCodes.Status200OK));
     }
 
     /// <summary>

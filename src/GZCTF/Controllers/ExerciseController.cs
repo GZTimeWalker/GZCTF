@@ -13,7 +13,8 @@ namespace GZCTF.Controllers;
 [Route("api/[controller]")]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class ExerciseController(ILogger<ExerciseController> logger,
+public class ExerciseController(
+    ILogger<ExerciseController> logger,
     IExerciseInstanceRepository exerciseInstanceRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {

@@ -2,7 +2,6 @@
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
-using GZCTF.Services.Interface;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services;
@@ -20,14 +19,16 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
     public Task StartAsync(CancellationToken token)
     {
         _timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(3));
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)], TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)], TaskStatus.Success,
+            LogLevel.Debug);
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken token)
     {
         _timer?.Change(Timeout.Infinite, 0);
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Stopped)], TaskStatus.Exit, LogLevel.Debug);
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Stopped)], TaskStatus.Exit,
+            LogLevel.Debug);
         return Task.CompletedTask;
     }
 
@@ -38,7 +39,9 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
         {
             await containerRepo.DestroyContainer(container);
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer), container.ContainerId],
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
+                    container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
     }
@@ -61,7 +64,8 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
             if (value is null)
             {
                 await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key], TaskStatus.Success,
+                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
+                    TaskStatus.Success,
                     LogLevel.Debug);
             }
         }

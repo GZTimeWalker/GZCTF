@@ -16,8 +16,10 @@ public class ChallengeEditDetailModel
     /// <summary>
     /// 题目名称
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired), ErrorMessageResourceType = typeof(Resources.Program))]
-    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -104,9 +106,7 @@ public class ChallengeEditDetailModel
             AcceptedCount = chal.AcceptedCount,
             Attachment = chal.Attachment,
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
-            Flags = (from flag in chal.Flags
-                    select FlagInfoModel.FromFlagContext(flag))
-                .ToArray()
+            Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToArray()
         };
 
     #region Container

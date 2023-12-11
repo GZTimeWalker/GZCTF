@@ -19,7 +19,8 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
         await SaveAsync(token);
     }
 
-    public async Task<GameChallenge> CreateChallenge(Game game, GameChallenge challenge, CancellationToken token = default)
+    public async Task<GameChallenge> CreateChallenge(Game game, GameChallenge challenge,
+        CancellationToken token = default)
     {
         await Context.AddAsync(challenge, token);
         game.Challenges.Add(challenge);
@@ -40,7 +41,8 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
         return update;
     }
 
-    public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default)
+    public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false,
+        CancellationToken token = default)
     {
         IQueryable<GameChallenge> challenges = Context.GameChallenges
             .Where(c => c.Id == id && c.GameId == gameId);
@@ -103,7 +105,8 @@ public class GameChallengeRepository(AppDbContext context, IFileRepository fileR
         await SaveAsync(token);
     }
 
-    internal async Task DeleteAllAttachment(GameChallenge challenge, bool purge = false, CancellationToken token = default)
+    internal async Task DeleteAllAttachment(GameChallenge challenge, bool purge = false,
+        CancellationToken token = default)
     {
         await fileRepository.DeleteAttachment(challenge.Attachment, token);
 

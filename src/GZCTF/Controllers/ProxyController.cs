@@ -19,18 +19,26 @@ namespace GZCTF.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ProxyController(ILogger<ProxyController> logger, IDistributedCache cache,
-    IOptions<ContainerProvider> provider, IContainerRepository containerRepository,
+public class ProxyController(
+    ILogger<ProxyController> logger,
+    IDistributedCache cache,
+    IOptions<ContainerProvider> provider,
+    IContainerRepository containerRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     const int BufferSize = 1024 * 4;
     const uint ConnectionLimit = 64;
     readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
     readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
-    readonly JsonSerializerOptions _jsonOptions = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
 
-    readonly DistributedCacheEntryOptions _storeOption = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
-    readonly DistributedCacheEntryOptions _validOption = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
+    readonly JsonSerializerOptions _jsonOptions =
+        new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
+
+    readonly DistributedCacheEntryOptions _storeOption =
+        new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
+
+    readonly DistributedCacheEntryOptions _validOption =
+        new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
 
     /// <summary>
     /// 采用 websocket 代理 TCP 流量
@@ -49,7 +57,8 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Proxy_TcpDisabled)]));
 
         if (!await ValidateContainer(id, token))
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
+                StatusCodes.Status404NotFound));
 
         var key = CacheKey.ConnectionCount(id);
 
@@ -57,12 +66,14 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return NoContent();
 
         if (!await IncrementConnectionCount(key))
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_ConnectionLimitExceeded)]));
+            return BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Container_ConnectionLimitExceeded)]));
 
         Container? container = await containerRepository.GetContainerWithInstanceById(id, token);
 
         if (container is null || !container.IsProxy)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
+                StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
@@ -83,7 +94,13 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         IPEndPoint target = new(ipAddress, container.Port);
 
         return await DoContainerProxy(id, client, target, metadata,
-            new() { Source = client, Dest = target, EnableCapture = enable, FilePath = container.TrafficPath(HttpContext.Connection.Id) }, token);
+            new()
+            {
+                Source = client,
+                Dest = target,
+                EnableCapture = enable,
+                FilePath = container.TrafficPath(HttpContext.Connection.Id)
+            }, token);
     }
 
     /// <summary>
@@ -104,7 +121,8 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Proxy_TcpDisabled)]));
 
         if (!await ValidateContainer(id, token))
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
+                StatusCodes.Status404NotFound));
 
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
@@ -112,7 +130,8 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
         Container? container = await containerRepository.GetContainerById(id, token);
 
         if (container is null || container.GameInstanceId != 0 || !container.IsProxy)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
+                StatusCodes.Status404NotFound));
 
         IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
@@ -152,7 +171,8 @@ public class ProxyController(ILogger<ProxyController> logger, IDistributedCache 
                 Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog), e.SocketErrorCode,
                     $"{target.Address}:{target.Port}"],
                 TaskStatus.Failed, LogLevel.Debug);
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
+            return new JsonResult(new RequestResponse(
+                localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
                 StatusCodes.Status418ImATeapot)) { StatusCode = StatusCodes.Status418ImATeapot };
         }
 

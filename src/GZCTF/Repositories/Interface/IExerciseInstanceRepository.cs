@@ -31,7 +31,8 @@ public interface IExerciseInstanceRepository : IRepository
     /// <param name="answer">当前提交</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<AnswerResult> VerifyAnswer(UserInfo user, ExerciseInstance instance, string answer, CancellationToken token = default);
+    public Task<AnswerResult> VerifyAnswer(UserInfo user, ExerciseInstance instance, string answer,
+        CancellationToken token = default);
 
     /// <summary>
     /// 创建容器实例
@@ -40,5 +41,6 @@ public interface IExerciseInstanceRepository : IRepository
     /// <param name="user">用户对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, CancellationToken token = default);
+    public Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user,
+        CancellationToken token = default);
 }

@@ -18,6 +18,7 @@ public class LoginModel : ModelWithCaptcha
     /// 密码
     /// </summary>
     [Required]
-    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordTooShort),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
 }

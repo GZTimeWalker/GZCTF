@@ -7,24 +7,28 @@ using SixLabors.ImageSharp.Processing;
 
 namespace GZCTF.Repositories;
 
-public class FileRepository(AppDbContext context, ILogger<FileRepository> logger) : RepositoryBase(context),
-    IFileRepository
+public class FileRepository(AppDbContext context, ILogger<FileRepository> logger)
+    : RepositoryBase(context), IFileRepository
 {
-    public override Task<int> CountAsync(CancellationToken token = default) => Context.Files.CountAsync(token);
+    public override Task<int> CountAsync(CancellationToken token = default) =>
+        Context.Files.CountAsync(token);
 
     public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
         await using Stream tmp = GetTempStream(file.Length);
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation), tmp.GetType()], TaskStatus.Pending,
+        logger.SystemLog(
+            Program.StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation),
+                tmp.GetType()], TaskStatus.Pending,
             LogLevel.Trace);
 
         await file.CopyToAsync(tmp, token);
         return await StoreLocalFile(fileName ?? file.FileName, tmp, token);
     }
 
-    public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, int resize = 300,
+    public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName,
+        int resize = 300,
         CancellationToken token = default)
     {
         // we do not process images larger than 32MB
@@ -54,8 +58,10 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         }
         catch
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ImageSaveFailed), file.Name], TaskStatus.Failed,
-                LogLevel.Warning);
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ImageSaveFailed),
+                    file.Name],
+                TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
     }
@@ -64,39 +70,59 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
     {
         var path = Path.Combine(FilePath.Uploads, file.Location, file.Hash);
 
+        // check if file exists
+        if (!File.Exists(path))
+        {
+            Context.Files.Remove(file);
+            await SaveAsync(token);
+            return TaskStatus.NotFound;
+        }
+
+        // check if other ref exists
         if (file.ReferenceCount > 1)
         {
             file.ReferenceCount--; // other ref exists, decrease ref count
 
-            logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting), file.Hash[..8], file.Name, file.ReferenceCount],
-                TaskStatus.Success,
-                LogLevel.Debug);
+            logger.SystemLog(Program.StaticLocalizer[
+                    nameof(Resources.Program.FileRepository_ReferenceCounting),
+                    file.Hash[..8], file.Name, file.ReferenceCount],
+                TaskStatus.Success, LogLevel.Debug);
 
             await SaveAsync(token);
 
             return TaskStatus.Success;
         }
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.FileRepository_DeleteFile), file.Hash[..8], file.Name], TaskStatus.Pending,
-            LogLevel.Information);
-
-        if (File.Exists(path))
+        // delete file
+        try
         {
             File.Delete(path);
-            Context.Files.Remove(file);
-            await SaveAsync(token);
+        }
+        catch (Exception e)
+        {
+            // log the exception and return failed
+            logger.LogError(e, Program.StaticLocalizer[
+                nameof(Resources.Program.FileRepository_DeleteFile),
+                file.Hash[..8], file.Name]);
 
-            return TaskStatus.Success;
+            return TaskStatus.Failed;
         }
 
+        // delete file record
         Context.Files.Remove(file);
         await SaveAsync(token);
 
-        return TaskStatus.NotFound;
+        // log success
+        logger.SystemLog(Program.StaticLocalizer[
+                nameof(Resources.Program.FileRepository_DeleteFile),
+                file.Hash[..8], file.Name],
+            TaskStatus.Success, LogLevel.Information);
+
+        return TaskStatus.Success;
     }
 
-    public async Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token = default)
+    public async Task<TaskStatus> DeleteFileByHash(string fileHash,
+        CancellationToken token = default)
     {
         LocalFile? file = await GetFileByHash(fileHash, token);
 
@@ -139,7 +165,8 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
     }
 
-    async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream, CancellationToken token = default)
+    async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream,
+        CancellationToken token = default)
     {
         contentStream.Position = 0;
         var hash = await SHA256.HashDataAsync(contentStream, token);
@@ -155,7 +182,8 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
             localFile.ReferenceCount++; // same hash, add ref count
 
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting), localFile.Hash[..8], localFile.Name,
+                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting),
+                    localFile.Hash[..8], localFile.Name,
                     localFile.ReferenceCount],
                 TaskStatus.Success, LogLevel.Debug);
 

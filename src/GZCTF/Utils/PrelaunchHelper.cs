@@ -65,7 +65,8 @@ public static class PrelaunchHelper
         var containerConfig = serviceScope.ServiceProvider.GetRequiredService<IOptions<ContainerProvider>>();
         if (containerConfig.Value.EnableTrafficCapture &&
             containerConfig.Value.PortMappingType != ContainerPortMappingType.PlatformProxy)
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Init_CaptureNotAvailable)], TaskStatus.Failed, LogLevel.Warning);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Init_CaptureNotAvailable)],
+                TaskStatus.Failed, LogLevel.Warning);
 
         if (!cache.CacheCheck())
             Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);

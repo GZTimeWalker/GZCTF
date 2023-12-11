@@ -9,7 +9,8 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Repositories;
 
-public class GameNoticeRepository(IDistributedCache cache,
+public class GameNoticeRepository(
+    IDistributedCache cache,
     ILogger<GameNoticeRepository> logger,
     IHubContext<UserHub, IUserClient> hub,
     AppDbContext context) : RepositoryBase(context), IGameNoticeRepository
@@ -35,7 +36,8 @@ public class GameNoticeRepository(IDistributedCache cache,
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default) =>
         Context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
-    public Task<GameNotice[]> GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default) =>
+    public Task<GameNotice[]>
+        GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default) =>
         cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
@@ -48,7 +50,7 @@ public class GameNoticeRepository(IDistributedCache cache,
     {
         Context.Remove(notice);
         await SaveAsync(token);
-        
+
         await cache.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
     }
 

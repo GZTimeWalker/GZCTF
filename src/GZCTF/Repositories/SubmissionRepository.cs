@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class SubmissionRepository(IHubContext<MonitorHub, IMonitorClient> hub,
+public class SubmissionRepository(
+    IHubContext<MonitorHub, IMonitorClient> hub,
     AppDbContext context) : RepositoryBase(context), ISubmissionRepository
 {
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)

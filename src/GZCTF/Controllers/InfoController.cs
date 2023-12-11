@@ -13,7 +13,8 @@ namespace GZCTF.Controllers;
 /// </summary>
 [Route("api")]
 [ApiController]
-public class InfoController(ICaptchaExtension captcha,
+public class InfoController(
+    ICaptchaExtension captcha,
     IPostRepository postRepository,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
@@ -42,7 +43,8 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取文章</response>
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPosts(CancellationToken token) => Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
+    public async Task<IActionResult> GetPosts(CancellationToken token) =>
+        Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
 
     /// <summary>
     /// 获取文章详情
@@ -62,7 +64,8 @@ public class InfoController(ICaptchaExtension captcha,
         Post? post = await postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)],
+                StatusCodes.Status404NotFound));
 
         return Ok(PostDetailModel.FromPost(post));
     }
@@ -87,5 +90,6 @@ public class InfoController(ICaptchaExtension captcha,
     /// <response code="200">成功获取 Captcha 配置</response>
     [HttpGet("Captcha")]
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
-    public IActionResult GetClientCaptchaInfo() => Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
+    public IActionResult GetClientCaptchaInfo() =>
+        Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
 }

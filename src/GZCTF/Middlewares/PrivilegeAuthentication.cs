@@ -24,12 +24,14 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
 
         UserInfo? user = null;
 
-        if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true && Guid.TryParse(id, out Guid guid))
+        if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true &&
+            Guid.TryParse(id, out Guid guid))
             user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == guid);
 
         if (user is null)
         {
-            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_LoginRequired)], StatusCodes.Status401Unauthorized);
+            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_LoginRequired)],
+                StatusCodes.Status401Unauthorized);
             return;
         }
 
@@ -42,14 +44,18 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         if (user.Role < privilege)
         {
             if (privilege > Role.User)
-                logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden), context.HttpContext.Request.Path], user,
+                logger.Log(
+                    Program.StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden),
+                        context.HttpContext.Request.Path], user,
                     TaskStatus.Denied);
 
-            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)], StatusCodes.Status403Forbidden);
+            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                StatusCodes.Status403Forbidden);
         }
     }
 
-    public static IActionResult GetResult(string msg, int code) => new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
+    public static IActionResult GetResult(string msg, int code) =>
+        new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
 }
 
 /// <summary>

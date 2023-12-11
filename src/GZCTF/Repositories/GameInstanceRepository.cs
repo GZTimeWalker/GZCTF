@@ -8,7 +8,8 @@ using Microsoft.Extensions.Options;
 
 namespace GZCTF.Repositories;
 
-public class GameInstanceRepository(AppDbContext context,
+public class GameInstanceRepository(
+    AppDbContext context,
     IContainerManager service,
     ICheatInfoRepository cheatInfoRepository,
     IContainerRepository containerRepository,
@@ -28,7 +29,8 @@ public class GameInstanceRepository(AppDbContext context,
 
         if (instance is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId],
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId],
                 TaskStatus.NotFound,
                 LogLevel.Warning);
             return null;
@@ -71,7 +73,8 @@ public class GameInstanceRepository(AppDbContext context,
                     if (flags.Count == 0)
                     {
                         logger.SystemLog(
-                            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough), challenge.Title,
+                            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough),
+                                challenge.Title,
                                 challenge.Id], TaskStatus.Failed,
                             LogLevel.Warning);
                         return null;
@@ -94,7 +97,8 @@ public class GameInstanceRepository(AppDbContext context,
         catch
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), part.Team.Name, challenge.Title,
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), part.Team.Name,
+                    challenge.Title,
                     challenge.Id],
                 TaskStatus.Failed, LogLevel.Warning);
             await transaction.RollbackAsync(token);
@@ -107,10 +111,12 @@ public class GameInstanceRepository(AppDbContext context,
     public async Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
         int containerLimit = 3, CancellationToken token = default)
     {
-        if (string.IsNullOrEmpty(gameInstance.Challenge.ContainerImage) || gameInstance.Challenge.ContainerExposePort is null)
+        if (string.IsNullOrEmpty(gameInstance.Challenge.ContainerImage) ||
+            gameInstance.Challenge.ContainerExposePort is null)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title],
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                    gameInstance.Challenge.Title],
                 TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
@@ -128,7 +134,8 @@ public class GameInstanceRepository(AppDbContext context,
                 if (running.Count >= containerLimit && first is not null)
                 {
                     logger.Log(
-                        Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), team.Name, first.Challenge.Title,
+                        Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
+                            team.Name, first.Challenge.Title,
                             first.Container!.ContainerId],
                         user, TaskStatus.Success);
                     await containerRepository.DestroyContainer(running.First().Container!, token);
@@ -160,13 +167,15 @@ public class GameInstanceRepository(AppDbContext context,
             StorageLimit = gameInstance.Challenge.StorageLimit ?? 256,
             EnableTrafficCapture = gameInstance.Challenge.EnableTrafficCapture,
             ExposedPort = gameInstance.Challenge.ContainerExposePort ??
-                          throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
+                          throw new ArgumentException(
+                              localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
         }, token);
 
         if (container is null)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), gameInstance.Challenge.Title],
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                    gameInstance.Challenge.Title],
                 TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
@@ -175,7 +184,8 @@ public class GameInstanceRepository(AppDbContext context,
         gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
 
         logger.Log(
-            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name, gameInstance.Challenge.Title,
+            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name,
+                gameInstance.Challenge.Title,
                 container.ContainerId], user,
             TaskStatus.Success);
 
@@ -187,7 +197,8 @@ public class GameInstanceRepository(AppDbContext context,
                 GameId = gameInstance.Challenge.GameId,
                 TeamId = gameInstance.Participation.TeamId,
                 UserId = user.Id,
-                Content = localizer[nameof(Resources.Program.InstanceRepository_ContainerCreationEvent), gameInstance.Challenge.Title,
+                Content = localizer[nameof(Resources.Program.InstanceRepository_ContainerCreationEvent),
+                    gameInstance.Challenge.Title,
                     gameInstance.Challenge.Id]
             }, token);
 
@@ -203,7 +214,8 @@ public class GameInstanceRepository(AppDbContext context,
         CheatCheckInfo checkInfo = new();
 
         GameInstance[] instances = await Context.GameInstances.Where(i => i.ChallengeId == submission.ChallengeId &&
-                                                                          i.ParticipationId != submission.ParticipationId)
+                                                                          i.ParticipationId !=
+                                                                          submission.ParticipationId)
             .Include(i => i.FlagContext).Include(i => i.Participation)
             .ThenInclude(i => i.Team).ToArrayAsync(token);
 

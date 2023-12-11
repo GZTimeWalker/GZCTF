@@ -9,7 +9,8 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Repositories;
 
-public class GameRepository(IDistributedCache cache,
+public class GameRepository(
+    IDistributedCache cache,
     ITeamRepository teamRepository,
     IGameChallengeRepository challengeRepository,
     IParticipationRepository participationRepository,
@@ -26,7 +27,8 @@ public class GameRepository(IDistributedCache cache,
         game.GenerateKeyPair(_xorKey);
 
         if (_xorKey is null)
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)], TaskStatus.Pending,
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)],
+                TaskStatus.Pending,
                 LogLevel.Warning);
 
         await Context.AddAsync(game, token);
@@ -36,7 +38,8 @@ public class GameRepository(IDistributedCache cache,
 
     public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorKey)}";
 
-    public Task<Game?> GetGameById(int id, CancellationToken token = default) => Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
+    public Task<Game?> GetGameById(int id, CancellationToken token = default) =>
+        Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
         Context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
@@ -79,7 +82,8 @@ public class GameRepository(IDistributedCache cache,
         {
             var count = await Context.GameChallenges.Where(i => i.Game == game).CountAsync(token);
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title, count], TaskStatus.Pending,
+                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title,
+                    count], TaskStatus.Pending,
                 LogLevel.Debug
             );
 
@@ -108,7 +112,8 @@ public class GameRepository(IDistributedCache cache,
         }
         catch (Exception e)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending, LogLevel.Debug);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending,
+                LogLevel.Debug);
             logger.SystemLog(e.Message, TaskStatus.Failed, LogLevel.Warning);
             await trans.RollbackAsync(token);
 
@@ -120,7 +125,9 @@ public class GameRepository(IDistributedCache cache,
     {
         await Context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, game.Participations.Count],
+        logger.SystemLog(
+            Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title,
+                game.Participations.Count],
             TaskStatus.Pending,
             LogLevel.Debug);
 
@@ -312,7 +319,9 @@ public class GameRepository(IDistributedCache cache,
             ? items
                 .GroupBy(i => i.Organization ?? "all")
                 .ToDictionary(i => i.Key, i => i.Take(10)
-                    .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) }).ToArray()
+                    .Select(team =>
+                        new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
+                    .ToArray()
                     .AsEnumerable())
             : new();
 

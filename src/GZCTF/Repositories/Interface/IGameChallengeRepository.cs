@@ -37,7 +37,8 @@ public interface IGameChallengeRepository : IRepository
     /// <param name="withFlag">是否加载Flag</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false, CancellationToken token = default);
+    public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false,
+        CancellationToken token = default);
 
     /// <summary>
     /// 获取全部需要捕获流量的题目
@@ -72,7 +73,8 @@ public interface IGameChallengeRepository : IRepository
     /// <param name="model">附件信息</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model, CancellationToken token = default);
+    public Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,
+        CancellationToken token = default);
 
     /// <summary>
     /// 删除 Flag，确保 Flags 字段已加载

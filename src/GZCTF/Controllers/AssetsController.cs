@@ -14,7 +14,10 @@ namespace GZCTF.Controllers;
 [ApiController]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class AssetsController(IFileRepository fileService, ILogger<AssetsController> logger, IStringLocalizer<Program> localizer) : ControllerBase
+public class AssetsController(
+    IFileRepository fileService,
+    ILogger<AssetsController> logger,
+    IStringLocalizer<Program> localizer) : ControllerBase
 {
     readonly FileExtensionContentTypeProvider _extProvider = new();
 
@@ -39,9 +42,11 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
         if (!System.IO.File.Exists(path))
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip, TaskStatus.NotFound,
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip,
+                TaskStatus.NotFound,
                 LogLevel.Warning);
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.File_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.File_NotFound)],
+                StatusCodes.Status404NotFound));
         }
 
         if (!_extProvider.TryGetContentType(filename, out var contentType))
@@ -79,7 +84,8 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
             {
                 LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8], filename ?? file.FileName, file.Length],
+                    Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8],
+                        filename ?? file.FileName, file.Length],
                     TaskStatus.Success, LogLevel.Debug);
                 results.Add(res);
             }
@@ -114,7 +120,8 @@ public class AssetsController(IFileRepository fileService, ILogger<AssetsControl
     {
         TaskStatus result = await fileService.DeleteFileByHash(hash, token);
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Assets_DeleteFile), hash[..8]], result, LogLevel.Information);
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Assets_DeleteFile), hash[..8]], result,
+            LogLevel.Information);
 
         return result switch
         {

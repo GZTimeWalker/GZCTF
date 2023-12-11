@@ -4,8 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class ExerciseChallengeRepository(AppDbContext context, IFileRepository fileRepository) : RepositoryBase(context),
-    IExerciseChallengeRepository
+public class ExerciseChallengeRepository(AppDbContext context, IFileRepository fileRepository)
+    : RepositoryBase(context),
+        IExerciseChallengeRepository
 {
     public async Task<ExerciseChallenge> CreateExercise(ExerciseChallenge exercise, CancellationToken token = default)
     {
@@ -25,7 +26,8 @@ public class ExerciseChallengeRepository(AppDbContext context, IFileRepository f
         await SaveAsync(token);
     }
 
-    public async Task UpdateAttachment(ExerciseChallenge exercise, AttachmentCreateModel model, CancellationToken token = default)
+    public async Task UpdateAttachment(ExerciseChallenge exercise, AttachmentCreateModel model,
+        CancellationToken token = default)
     {
         var attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
 

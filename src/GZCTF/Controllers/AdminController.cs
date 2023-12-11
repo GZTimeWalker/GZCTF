@@ -27,7 +27,8 @@ namespace GZCTF.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-public class AdminController(UserManager<UserInfo> userManager,
+public class AdminController(
+    UserManager<UserInfo> userManager,
     ILogger<AdminController> logger,
     IFileRepository fileService,
     ILogRepository logRepository,
@@ -132,37 +133,26 @@ public class AdminController(UserManager<UserInfo> userManager,
                 var userInfo = user.ToUserInfo();
                 IdentityResult result = await userManager.CreateAsync(userInfo, user.Password);
 
-                if (!result.Succeeded)
+                if (result.Succeeded)
+                    continue;
+
+                userInfo = result.Errors.FirstOrDefault()?.Code switch
                 {
-                    switch (result.Errors.FirstOrDefault()?.Code)
-                    {
-                        case "DuplicateEmail":
-                            userInfo = await userManager.FindByEmailAsync(user.Email);
-                            break;
-                        case "DuplicateUserName":
-                            userInfo = await userManager.FindByNameAsync(user.UserName);
-                            break;
-                        default:
-                            await trans.RollbackAsync(token);
-                            return BadRequest(
-                                new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                    localizer[nameof(Resources.Program.Identity_UnknownError)]));
-                    }
+                    "DuplicateEmail" => await userManager.FindByEmailAsync(user.Email),
+                    "DuplicateUserName" => await userManager.FindByNameAsync(user.UserName),
+                    _ => null
+                };
 
-                    if (userInfo is not null)
-                    {
-                        userInfo.UpdateUserInfo(user);
-                        var code = await userManager.GeneratePasswordResetTokenAsync(userInfo);
-                        result = await userManager.ResetPasswordAsync(userInfo, code, user.Password);
-                    }
-
-                    if (!result.Succeeded || userInfo is null)
-                    {
-                        await trans.RollbackAsync(token);
-                        return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                              localizer[nameof(Resources.Program.Identity_UnknownError)]));
-                    }
+                if (userInfo is null)
+                {
+                    await trans.RollbackAsync(token);
+                    return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
+                                                          localizer[nameof(Resources.Program.Identity_UnknownError)]));
                 }
+
+                userInfo.UpdateUserInfo(user);
+                var code = await userManager.GeneratePasswordResetTokenAsync(userInfo);
+                await userManager.ResetPasswordAsync(userInfo, code, user.Password);
 
                 users.Add((userInfo, user.TeamName));
             }
@@ -188,7 +178,8 @@ public class AdminController(UserManager<UserInfo> userManager,
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), users.Count], currentUser, TaskStatus.Success);
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), users.Count],
+                currentUser, TaskStatus.Success);
 
             return Ok();
         }
@@ -211,17 +202,16 @@ public class AdminController(UserManager<UserInfo> userManager,
     [HttpPost("Users/Search")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default) =>
-        Ok((await userManager.Users
-                .Where(item =>
+        Ok((await userManager.Users.Where(item =>
                     EF.Functions.Like(item.UserName!, $"%{hint}%") ||
                     EF.Functions.Like(item.StdNumber, $"%{hint}%") ||
                     EF.Functions.Like(item.Email!, $"%{hint}%") ||
                     EF.Functions.Like(item.Id.ToString(), $"%{hint}%") ||
                     EF.Functions.Like(item.RealName, $"%{hint}%")
                 )
-                .OrderBy(e => e.Id).Take(30).Select(user => UserInfoModel.FromUserInfo(user))
-                .ToArrayAsync(token)
-            ).ToResponse());
+                .OrderBy(e => e.Id).Take(30).ToArrayAsync(token))
+            .Select(UserInfoModel.FromUserInfo)
+            .ToResponse());
 
     /// <summary>
     /// 获取全部队伍信息
@@ -301,7 +291,8 @@ public class AdminController(UserManager<UserInfo> userManager,
         UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
+                StatusCodes.Status404NotFound));
 
         user.UpdateUserInfo(model);
         await userManager.UpdateAsync(user);
@@ -327,7 +318,8 @@ public class AdminController(UserManager<UserInfo> userManager,
         UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
+                StatusCodes.Status404NotFound));
 
         var pwd = Codec.RandomPassword(16);
         var code = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -359,10 +351,12 @@ public class AdminController(UserManager<UserInfo> userManager,
         user = await userManager.FindByIdAsync(userid.ToString());
 
         if (user is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
+                StatusCodes.Status404NotFound));
 
         if (await teamRepository.CheckIsCaptain(user, token))
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_CaptainDeletionNotAllowed)]));
+            return BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Admin_CaptainDeletionNotAllowed)]));
 
         await userManager.DeleteAsync(user);
 
@@ -387,7 +381,8 @@ public class AdminController(UserManager<UserInfo> userManager,
         Team? team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)],
+                StatusCodes.Status404NotFound));
 
         await teamRepository.DeleteTeam(team, token);
 
@@ -411,7 +406,8 @@ public class AdminController(UserManager<UserInfo> userManager,
         UserInfo? user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
+                StatusCodes.Status404NotFound));
 
         return Ok(ProfileUserInfoModel.FromUserInfo(user));
     }
@@ -450,7 +446,8 @@ public class AdminController(UserManager<UserInfo> userManager,
         Participation? participation = await participationRepository.GetParticipationById(id, token);
 
         if (participation is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)],
+                StatusCodes.Status404NotFound));
 
         await participationRepository.UpdateParticipationStatus(participation, status, token);
 
@@ -475,7 +472,8 @@ public class AdminController(UserManager<UserInfo> userManager,
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
 
         return Ok(await participationRepository.GetWriteups(game, token));
     }
@@ -498,7 +496,8 @@ public class AdminController(UserManager<UserInfo> userManager,
         Game? game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
 
         WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
@@ -543,12 +542,14 @@ public class AdminController(UserManager<UserInfo> userManager,
         Container? container = await containerRepository.GetContainerById(id, token);
 
         if (container is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceNotFound)], StatusCodes.Status404NotFound));
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceNotFound)],
+                StatusCodes.Status404NotFound));
 
         if (await containerRepository.DestroyContainer(container, token))
             return Ok();
 
-        return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceDestroyFailed)]));
+        return BadRequest(
+            new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceDestroyFailed)]));
     }
 
     /// <summary>

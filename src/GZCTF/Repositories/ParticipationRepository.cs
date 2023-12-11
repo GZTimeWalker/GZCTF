@@ -12,7 +12,8 @@ public class ParticipationRepository(
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
-        GameChallenge[] challenges = await Context.GameChallenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
+        GameChallenge[] challenges =
+            await Context.GameChallenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
 
         // requery instead of Entry
         part = await Context.Participations.Include(p => p.Challenges).SingleAsync(p => p.Id == part.Id, token);

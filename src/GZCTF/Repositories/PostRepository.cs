@@ -6,7 +6,8 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Repositories;
 
-public class PostRepository(IDistributedCache cache,
+public class PostRepository(
+    IDistributedCache cache,
     ILogger<PostRepository> logger,
     AppDbContext context) : RepositoryBase(context), IPostRepository
 {
@@ -23,7 +24,8 @@ public class PostRepository(IDistributedCache cache,
         return post;
     }
 
-    public Task<Post?> GetPostById(string id, CancellationToken token = default) => Context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
+    public Task<Post?> GetPostById(string id, CancellationToken token = default) =>
+        Context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
 
     public async Task<Post?> GetPostByIdFromCache(string id, CancellationToken token = default) =>
         (await GetPosts(token)).FirstOrDefault(p => p.Id == id);

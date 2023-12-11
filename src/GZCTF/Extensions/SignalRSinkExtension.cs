@@ -25,7 +25,7 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
         _hubContext ??= serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
         if (logEvent.Level < LogEventLevel.Information) return;
-        
+
         try
         {
             _hubContext.Clients.All.ReceivedLog(

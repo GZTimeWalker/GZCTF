@@ -34,5 +34,6 @@ public interface IExerciseChallengeRepository : IRepository
     /// <param name="model">附件信息</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task UpdateAttachment(ExerciseChallenge exercise, AttachmentCreateModel model, CancellationToken token = default);
+    public Task UpdateAttachment(ExerciseChallenge exercise, AttachmentCreateModel model,
+        CancellationToken token = default);
 }

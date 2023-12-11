@@ -16,14 +16,16 @@ public class SwarmManager : IContainerManager
     readonly ILogger<SwarmManager> _logger;
     readonly DockerMetadata _meta;
 
-    public SwarmManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<SwarmManager> logger, IStringLocalizer<Program> localizer)
+    public SwarmManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<SwarmManager> logger,
+        IStringLocalizer<Program> localizer)
     {
         _logger = logger;
         _localizer = localizer;
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_SwarmMode)], TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_SwarmMode)], TaskStatus.Success,
+            LogLevel.Debug);
     }
 
     public async Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default)
@@ -34,30 +36,35 @@ public class SwarmManager : IContainerManager
         }
         catch (DockerContainerNotFoundException)
         {
-            _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+            _logger.SystemLog(
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
         {
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
-                _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                _logger.SystemLog(
+                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
                     TaskStatus.Success, LogLevel.Debug);
             }
             else
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus), container.ContainerId,
+                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
+                        container.ContainerId,
                         e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse), container.ContainerId,
+                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
+                        container.ContainerId,
                         e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
                 return;
             }
         }
         catch (Exception e)
         {
-            _logger.LogError(e, _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
+            _logger.LogError(e,
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
             return;
         }
 
@@ -70,7 +77,7 @@ public class SwarmManager : IContainerManager
         ServiceCreateParameters parameters = GetServiceCreateParameters(config);
         var retry = 0;
         ServiceCreateResponse? serviceRes;
-    CreateContainer:
+        CreateContainer:
         try
         {
             serviceRes = await _client.Swarm.CreateServiceAsync(parameters, token);
@@ -79,7 +86,8 @@ public class SwarmManager : IContainerManager
         {
             if (e.StatusCode == HttpStatusCode.Conflict && retry < 3)
             {
-                _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_ContainerExisted), parameters.Service.Name],
+                _logger.SystemLog(
+                    _localizer[nameof(Resources.Program.ContainerManager_ContainerExisted), parameters.Service.Name],
                     TaskStatus.Duplicate,
                     LogLevel.Warning);
                 await _client.Swarm.RemoveServiceAsync(parameters.Service.Name, token);
@@ -88,16 +96,20 @@ public class SwarmManager : IContainerManager
             }
 
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus), parameters.Service.Name,
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus),
+                    parameters.Service.Name,
                     e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse), parameters.Service.Name,
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse),
+                    parameters.Service.Name,
                     e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
             return null;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), parameters.Service.Name]);
+            _logger.LogError(e,
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
+                    parameters.Service.Name]);
             return null;
         }
 
@@ -111,7 +123,9 @@ public class SwarmManager : IContainerManager
             retry++;
             if (retry == 3)
             {
-                _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_ContainerPortNotExposed), container.ContainerId],
+                _logger.SystemLog(
+                    _localizer[nameof(Resources.Program.ContainerManager_ContainerPortNotExposed),
+                        container.ContainerId],
                     TaskStatus.Failed,
                     LogLevel.Warning);
                 return null;
@@ -147,7 +161,10 @@ public class SwarmManager : IContainerManager
             {
                 Name = DockerMetadata.GetName(config),
                 Labels =
-                    new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId.ToString() },
+                    new Dictionary<string, string>
+                    {
+                        ["TeamId"] = config.TeamId, ["UserId"] = config.UserId.ToString()
+                    },
                 Mode = new() { Replicated = new() { Replicas = 1 } },
                 TaskTemplate = new()
                 {
@@ -161,13 +178,23 @@ public class SwarmManager : IContainerManager
                                     ? []
                                     : [$"GZCTF_FLAG={config.Flag}"]
                         },
-                    Resources = new() { Limits = new() { MemoryBytes = config.MemoryLimit * 1024 * 1024, NanoCPUs = config.CPUCount * 1_0000_0000 } }
+                    Resources = new()
+                    {
+                        Limits = new()
+                        {
+                            MemoryBytes = config.MemoryLimit * 1024 * 1024,
+                            NanoCPUs = config.CPUCount * 1_0000_0000
+                        }
+                    }
                 },
                 EndpointSpec = new()
                 {
                     Ports =
                     [
-                        new() { PublishMode = _meta.ExposePort ? "global" : "vip", TargetPort = (uint)config.ExposedPort }
+                        new()
+                        {
+                            PublishMode = _meta.ExposePort ? "global" : "vip", TargetPort = (uint)config.ExposedPort
+                        }
                     ]
                 }
             }

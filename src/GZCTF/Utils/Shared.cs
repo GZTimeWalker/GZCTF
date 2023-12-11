@@ -1,21 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Channels;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-// ReSharper disable NotAccessedPositionalProperty.Global
 
 namespace GZCTF.Utils;
 
 public static class ChannelService
 {
-    internal static IServiceCollection AddChannel<T>(this IServiceCollection services)
+    internal static void AddChannel<T>(this IServiceCollection services)
     {
         var channel = Channel.CreateUnbounded<T>();
         services.AddSingleton(channel);
         services.AddSingleton(channel.Reader);
         services.AddSingleton(channel.Writer);
-        return services;
     }
 }
 
@@ -129,7 +124,10 @@ public class FileRecord
     /// </summary>
     public DateTimeOffset UpdateTime { get; set; } = DateTimeOffset.Now;
 
-    internal static FileRecord FromFileInfo(FileInfo info) => new() { FileName = info.Name, UpdateTime = info.LastWriteTimeUtc, Size = info.Length };
+    internal static FileRecord FromFileInfo(FileInfo info) => new()
+    {
+        FileName = info.Name, UpdateTime = info.LastWriteTimeUtc, Size = info.Length
+    };
 }
 
 /// <summary>

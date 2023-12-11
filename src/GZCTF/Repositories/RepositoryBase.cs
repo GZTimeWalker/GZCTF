@@ -9,7 +9,8 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
 {
     protected readonly AppDbContext Context = context;
 
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default) => Context.Database.BeginTransactionAsync(token);
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default) =>
+        Context.Database.BeginTransactionAsync(token);
 
     public string ChangeTrackerView => Context.ChangeTracker.DebugView.LongView;
 

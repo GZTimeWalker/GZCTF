@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class CheatInfoRepository(AppDbContext context,
+public class CheatInfoRepository(
+    AppDbContext context,
     IParticipationRepository participationRepository) : RepositoryBase(context), ICheatInfoRepository
 {
     public async Task<CheatInfo> CreateCheatInfo(Submission submission, GameInstance source,
@@ -14,7 +15,13 @@ public class CheatInfoRepository(AppDbContext context,
         if (submit is null)
             throw new NullReferenceException(nameof(submit));
 
-        CheatInfo info = new() { GameId = submission.GameId, Submission = submission, SubmitTeam = submit, SourceTeam = source.Participation };
+        CheatInfo info = new()
+        {
+            GameId = submission.GameId,
+            Submission = submission,
+            SubmitTeam = submit,
+            SourceTeam = source.Participation
+        };
 
         await Context.AddAsync(info, token);
 

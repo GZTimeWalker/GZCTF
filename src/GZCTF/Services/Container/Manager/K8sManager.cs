@@ -18,14 +18,16 @@ public class K8sManager : IContainerManager
     readonly ILogger<K8sManager> _logger;
     readonly K8sMetadata _meta;
 
-    public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger, IStringLocalizer<Program> localizer)
+    public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger,
+        IStringLocalizer<Program> localizer)
     {
         _logger = logger;
         _localizer = localizer;
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_K8sMode)], TaskStatus.Success, LogLevel.Debug);
+        logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_K8sMode)], TaskStatus.Success,
+            LogLevel.Debug);
     }
 
     public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
@@ -64,10 +66,7 @@ public class K8sManager : IContainerManager
                         ? Array.Empty<V1LocalObjectReference>()
                         : new List<V1LocalObjectReference> { new() { Name = authSecretName } },
                 DnsPolicy = "None",
-                DnsConfig = new()
-                {
-                    Nameservers = options.Dns
-                },
+                DnsConfig = new() { Nameservers = options.Dns },
                 EnableServiceLinks = false,
                 Containers =
                 [
@@ -89,7 +88,10 @@ public class K8sManager : IContainerManager
                                 ["memory"] = new($"{config.MemoryLimit}Mi"),
                                 ["ephemeral-storage"] = new($"{config.StorageLimit}Mi")
                             },
-                            Requests = new Dictionary<string, ResourceQuantity> { ["cpu"] = new("10m"), ["memory"] = new("32Mi") }
+                            Requests = new Dictionary<string, ResourceQuantity>
+                            {
+                                ["cpu"] = new("10m"), ["memory"] = new("32Mi")
+                            }
                         }
                     }
                 ],
@@ -104,10 +106,12 @@ public class K8sManager : IContainerManager
         catch (HttpOperationException e)
         {
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus), name, e.Response.StatusCode],
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus), name,
+                    e.Response.StatusCode],
                 TaskStatus.Failed, LogLevel.Warning);
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse), name, e.Response.Content],
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse), name,
+                    e.Response.Content],
                 TaskStatus.Failed, LogLevel.Error);
             return null;
         }
@@ -127,7 +131,8 @@ public class K8sManager : IContainerManager
         }
 
         // Service is needed for port mapping
-        var container = new Models.Data.Container { ContainerId = name, Image = config.Image, Port = config.ExposedPort };
+        var container =
+            new Models.Data.Container { ContainerId = name, Image = config.Image, Port = config.ExposedPort };
 
         var service = new V1Service("v1", "Service")
         {
@@ -163,10 +168,12 @@ public class K8sManager : IContainerManager
             }
 
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus), name, e.Response.StatusCode],
+                _localizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus), name,
+                    e.Response.StatusCode],
                 TaskStatus.Failed, LogLevel.Warning);
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse), name, e.Response.Content],
+                _localizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse), name,
+                    e.Response.Content],
                 TaskStatus.Failed, LogLevel.Error);
             return null;
         }
@@ -219,15 +226,18 @@ public class K8sManager : IContainerManager
             }
 
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus), container.ContainerId,
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
+                    container.ContainerId,
                     e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse), container.ContainerId,
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
+                    container.ContainerId,
                     e.Response.Content], TaskStatus.Failed, LogLevel.Error);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
+            _logger.LogError(e,
+                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
             return;
         }
 

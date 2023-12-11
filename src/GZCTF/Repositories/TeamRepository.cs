@@ -4,12 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class TeamRepository : RepositoryBase, ITeamRepository
+public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITeamRepository
 {
-    public TeamRepository(AppDbContext context) : base(context)
-    {
-    }
-
     public async Task<bool> AnyActiveGame(Team team, CancellationToken token = default)
     {
         DateTimeOffset current = DateTimeOffset.UtcNow;
@@ -28,7 +24,8 @@ public class TeamRepository : RepositoryBase, ITeamRepository
 
     public override Task<int> CountAsync(CancellationToken token = default) => Context.Teams.CountAsync(token);
 
-    public Task<bool> CheckIsCaptain(UserInfo user, CancellationToken token = default) => Context.Teams.AnyAsync(t => t.Captain == user, token);
+    public Task<bool> CheckIsCaptain(UserInfo user, CancellationToken token = default) =>
+        Context.Teams.AnyAsync(t => t.Captain == user, token);
 
     public async Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
     {

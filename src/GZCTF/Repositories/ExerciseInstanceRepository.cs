@@ -12,7 +12,8 @@ using Microsoft.Extensions.Options;
 
 namespace GZCTF.Repositories;
 
-public class ExerciseInstanceRepository(AppDbContext context,
+public class ExerciseInstanceRepository(
+    AppDbContext context,
     IDistributedCache cache,
     IContainerManager service,
     IContainerRepository containerRepository,
@@ -104,7 +105,9 @@ public class ExerciseInstanceRepository(AppDbContext context,
         }
         catch
         {
-            logger.SystemLog(localizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), user.UserName!, exercise.Title, exercise.Id],
+            logger.SystemLog(
+                localizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), user.UserName!,
+                    exercise.Title, exercise.Id],
                 TaskStatus.Failed, LogLevel.Warning);
             await transaction.RollbackAsync(token);
             return null;
@@ -113,11 +116,14 @@ public class ExerciseInstanceRepository(AppDbContext context,
         return instance;
     }
 
-    public async Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user, CancellationToken token = default)
+    public async Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user,
+        CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(instance.Exercise.ContainerImage) || instance.Exercise.ContainerExposePort is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title],
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                    instance.Exercise.Title],
                 TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
@@ -134,7 +140,8 @@ public class ExerciseInstanceRepository(AppDbContext context,
             if (running.Count >= containerLimit && first is not null)
             {
                 logger.Log(
-                    Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy), user.UserName!, first.Exercise.Title,
+                    Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
+                        user.UserName!, first.Exercise.Title,
                         first.Container!.ContainerId],
                     user, TaskStatus.Success);
                 await containerRepository.DestroyContainer(running.First().Container!, token);
@@ -157,12 +164,15 @@ public class ExerciseInstanceRepository(AppDbContext context,
             StorageLimit = instance.Exercise.StorageLimit ?? 256,
             EnableTrafficCapture = false,
             ExposedPort = instance.Exercise.ContainerExposePort ??
-                          throw new ArgumentException(localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
+                          throw new ArgumentException(
+                              localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
         }, token);
 
         if (container is null)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed), instance.Exercise.Title],
+            logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                    instance.Exercise.Title],
                 TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
         }
@@ -171,7 +181,8 @@ public class ExerciseInstanceRepository(AppDbContext context,
         instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
         logger.Log(
-            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!, instance.Exercise.Title,
+            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!,
+                instance.Exercise.Title,
                 container.ContainerId], user,
             TaskStatus.Success);
 
@@ -180,7 +191,8 @@ public class ExerciseInstanceRepository(AppDbContext context,
         return new TaskResult<Container>(TaskStatus.Success, instance.Container);
     }
 
-    public async Task<AnswerResult> VerifyAnswer(UserInfo user, ExerciseInstance instance, string answer, CancellationToken token = default)
+    public async Task<AnswerResult> VerifyAnswer(UserInfo user, ExerciseInstance instance, string answer,
+        CancellationToken token = default)
     {
         if (instance.Exercise.Type == ChallengeType.DynamicContainer)
         {
@@ -241,7 +253,8 @@ public class ExerciseInstanceRepository(AppDbContext context,
         await transaction.CommitAsync(token);
     }
 
-    internal ConfiguredCancelableAsyncEnumerable<int> FetchNewChallenges(UserInfo user, CancellationToken token = default)
+    internal ConfiguredCancelableAsyncEnumerable<int> FetchNewChallenges(UserInfo user,
+        CancellationToken token = default)
         => Context.ExerciseChallenges.Where(chal =>
                 chal.IsEnabled && Context.ExerciseInstances.All(i =>
                     i.UserId == user.Id && i.ExerciseId != chal.Id) &&

@@ -43,7 +43,8 @@ public partial class GameNotice
     [MemoryPackIgnore]
     public Game? Game { get; set; }
 
-    internal static GameNotice FromSubmission(Submission submission, SubmissionType type, IStringLocalizer<Program> localizer) =>
+    internal static GameNotice FromSubmission(Submission submission, SubmissionType type,
+        IStringLocalizer<Program> localizer) =>
         new()
         {
             Type = type switch
@@ -54,7 +55,8 @@ public partial class GameNotice
                 _ => NoticeType.Normal
             },
             GameId = submission.GameId,
-            Content = localizer[nameof(Resources.Program.Game_SubmissionNotice), submission.Team.Name, submission.GameChallenge.Title,
+            Content = localizer[nameof(Resources.Program.Game_SubmissionNotice), submission.Team.Name,
+                submission.GameChallenge.Title,
                 type.ToBloodString(localizer)]
         };
 }

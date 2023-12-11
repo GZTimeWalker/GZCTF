@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
-// ReSharper disable CollectionNeverUpdated.Global
 namespace GZCTF.Models.Internal;
 
 /// <summary>
@@ -80,6 +79,7 @@ public class GlobalConfig
     /// </summary>
     // TODO: email template validation for MailContent
     public string EmailTemplate { get; set; } = DefaultEmailTemplate;
+
     public const string DefaultEmailTemplate = "default";
 }
 
@@ -113,9 +113,11 @@ public enum ContainerProviderType
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ContainerPortMappingType
 {
+    // Use default to map the container port to a random port on the host
     Default,
+
+    // Use platform proxy to map the container tcp to wss 
     PlatformProxy
-    // Frp
 }
 
 public class ContainerProvider
@@ -141,12 +143,12 @@ public class K8sConfig
 {
     public string Namespace { get; set; } = "gzctf-challenges";
     public string KubeConfig { get; set; } = "k8sconfig.yaml";
-    
+
     [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
-    public List<string> AllowCidr { get; set; } = new() { "10.0.0.0/8" };
-    
+    public List<string> AllowCidr { get; set; } = ["10.0.0.0/8"];
+
     [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
-    public List<string> Dns { get; set; } = new() { "8.8.8.8", "223.5.5.5", "114.114.114.114" };
+    public List<string> Dns { get; set; } = ["8.8.8.8", "223.5.5.5", "114.114.114.114"];
 }
 
 public class RegistryConfig

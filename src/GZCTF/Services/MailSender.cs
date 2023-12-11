@@ -9,9 +9,10 @@ using MimeKit.Text;
 
 namespace GZCTF.Services;
 
-public class MailSender(IOptions<EmailConfig> options, 
+public class MailSender(
+    IOptions<EmailConfig> options,
     IOptionsSnapshot<GlobalConfig> globalConfig,
-    ILogger<MailSender> logger, 
+    ILogger<MailSender> logger,
     IStringLocalizer<Program> localizer) : IMailSender
 {
     readonly EmailConfig? _options = options.Value;
@@ -39,7 +40,8 @@ public class MailSender(IOptions<EmailConfig> options,
             await client.SendAsync(msg);
             await client.DisconnectAsync(true);
 
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to], TaskStatus.Success, LogLevel.Information);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to],
+                TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
@@ -56,7 +58,7 @@ public class MailSender(IOptions<EmailConfig> options,
             GlobalConfig.DefaultEmailTemplate => localizer[nameof(Resources.Program.MailSender_Template)],
             _ => globalConfig.Value.EmailTemplate
         };
-        
+
         // TODO: use a string formatter library
         // TODO: update default template with new names
         var emailContent = new StringBuilder(template)
@@ -70,7 +72,8 @@ public class MailSender(IOptions<EmailConfig> options,
             .ToString();
 
         if (!await SendEmailAsync(content.Title, emailContent, content.Email))
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)], TaskStatus.Failed);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)],
+                TaskStatus.Failed);
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>
@@ -81,23 +84,24 @@ public class MailSender(IOptions<EmailConfig> options,
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink) =>
         SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword);
-    
+
     bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type)
     {
         if (_options?.SendMailAddress is null)
             return false;
-        
+
         if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(resetLink))
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)], TaskStatus.Failed);
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)],
+                TaskStatus.Failed);
             return false;
         }
-        
+
         var content = new MailContent(userName, email, resetLink, type, localizer);
-        
+
         // do not await
         Task _ = SendUrlAsync(content);
-        
+
         return true;
     }
 }
@@ -115,7 +119,12 @@ public enum MailType
 /// <summary>
 /// 邮件内容
 /// </summary>
-public class MailContent(string userName, string email, string resetLink, MailType type, IStringLocalizer<Program> localizer)
+public class MailContent(
+    string userName,
+    string email,
+    string resetLink,
+    MailType type,
+    IStringLocalizer<Program> localizer)
 {
     /// <summary>
     /// 邮件标题

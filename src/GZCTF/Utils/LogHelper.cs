@@ -16,7 +16,10 @@ namespace GZCTF.Utils;
 public static class LogHelper
 {
     const string LogTemplate =
-        "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
+        "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
+        "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
+        "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
+        "{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
 
     const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
@@ -26,7 +29,9 @@ public static class LogHelper
         { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
         { "TimeUtc", new TimeColumnWriter() },
         { "Exception", new ExceptionColumnWriter() },
-        { "Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
+        {
+            "Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar)
+        },
         { "UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
         { "Status", new SinglePropertyColumnWriter("Status", PropertyWriteMethod.ToString, NpgsqlDbType.Varchar) },
         { "RemoteIP", new SinglePropertyColumnWriter("IP", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) }
@@ -80,8 +85,8 @@ public static class LogHelper
     /// <param name="ip">连接IP</param>
     /// <param name="status">操作执行结果</param>
     /// <param name="level">Log 级别</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null) =>
-        Log(logger, msg, "Anonymous", ip, status, level);
+    public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null)
+        => Log(logger, msg, "Anonymous", ip, status, level);
 
     /// <summary>
     /// 登记一条 Log 记录
@@ -100,7 +105,7 @@ public static class LogHelper
             logger.Log(level ?? LogLevel.Information, msg);
         }
     }
-    
+
     public static void UseRequestLogging(this WebApplication app) =>
         app.UseSerilogRequestLogging(options =>
         {
@@ -171,5 +176,6 @@ public static class LogHelper
 
 public class TimeColumnWriter() : ColumnWriterBase(NpgsqlDbType.TimestampTz)
 {
-    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null) => logEvent.Timestamp.ToUniversalTime();
+    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null) =>
+        logEvent.Timestamp.ToUniversalTime();
 }

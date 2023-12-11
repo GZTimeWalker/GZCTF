@@ -49,18 +49,17 @@ public sealed class RecordableNetworkStream : NetworkStream
         options.Source.Address = options.Source.Address.MapToIPv6();
         options.Dest.Address = options.Dest.Address.MapToIPv6();
 
-        if (_options.EnableCapture && !string.IsNullOrEmpty(_options.FilePath))
-        {
-            var dir = Path.GetDirectoryName(_options.FilePath);
-            if (!Path.Exists(dir) && dir is not null)
-                Directory.CreateDirectory(dir);
+        if (!_options.EnableCapture || string.IsNullOrEmpty(_options.FilePath)) return;
 
-            _device = new(_options.FilePath, FileMode.Open);
-            _device.Open();
+        var dir = Path.GetDirectoryName(_options.FilePath);
+        if (!Path.Exists(dir) && dir is not null)
+            Directory.CreateDirectory(dir);
 
-            if (metadata is not null)
-                WriteCapturedData(_host, _options.Source, metadata);
-        }
+        _device = new(_options.FilePath, FileMode.Open);
+        _device.Open();
+
+        if (metadata is not null)
+            WriteCapturedData(_host, _options.Source, metadata);
     }
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
@@ -75,13 +74,12 @@ public sealed class RecordableNetworkStream : NetworkStream
         return count;
     }
 
-    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer,
-        CancellationToken cancellationToken = default)
+    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         if (_options.EnableCapture)
             WriteCapturedData(_options.Source, _options.Dest, buffer);
 
-        await base.WriteAsync(buffer, cancellationToken);
+        return base.WriteAsync(buffer, cancellationToken);
     }
 
     /// <summary>
@@ -92,7 +90,10 @@ public sealed class RecordableNetworkStream : NetworkStream
     /// <param name="buffer">数据</param>
     void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
     {
-        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port) { PayloadDataSegment = new ByteArraySegment(buffer.ToArray()) };
+        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
+        {
+            PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
+        };
 
         var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)
         {
