@@ -49,7 +49,7 @@ public class ConfigService(
 
     public static HashSet<Config> GetConfigs<T>(T config) where T : class
     {
-        HashSet<Config> configs = new();
+        HashSet<Config> configs = [];
         Type type = typeof(T);
 
         foreach (PropertyInfo item in type.GetProperties())

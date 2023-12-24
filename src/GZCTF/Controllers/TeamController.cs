@@ -100,10 +100,10 @@ public partial class TeamController(
         if (string.IsNullOrEmpty(model.Name))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameEmpty)]));
 
-        Team? team = await teamRepository.CreateTeam(model, user!, token);
-
-        if (team is null)
+        if (model.Name is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_CreationFailed)]));
+
+        Team team = await teamRepository.CreateTeam(model, user!, token);
 
         await userManager.UpdateAsync(user!);
 

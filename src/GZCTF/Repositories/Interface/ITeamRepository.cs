@@ -11,7 +11,7 @@ public interface ITeamRepository : IRepository
     /// <param name="user">创建的用户</param>
     /// <param name="token"></param>
     /// <returns>队伍对象</returns>
-    public Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default);
+    public Task<Team> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default);
 
     /// <summary>
     /// 通过队伍Id获取队伍对象

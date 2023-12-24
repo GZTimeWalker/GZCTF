@@ -134,7 +134,8 @@ public class ExerciseInstanceRepository(
         {
             List<ExerciseInstance> running = await Context.ExerciseInstances
                 .Where(i => i.User == user && i.Container != null)
-                .OrderBy(i => i.Container!.StartedAt).ToListAsync(token);
+                .OrderBy(i => i.Container!.StartedAt)
+                .ToListAsync(token);
 
             ExerciseInstance? first = running.FirstOrDefault();
             if (running.Count >= containerLimit && first is not null)

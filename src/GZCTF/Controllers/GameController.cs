@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Channels;
@@ -935,7 +936,7 @@ public class GameController(
                     new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
                         context.Game.ContainerCountLimit])),
                 (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
-                _ => throw new NotImplementedException()
+                _ => throw new UnreachableException()
             };
     }
 

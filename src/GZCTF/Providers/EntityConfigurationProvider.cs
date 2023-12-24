@@ -27,7 +27,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
     static HashSet<Config> DefaultConfigs()
     {
-        HashSet<Config> configs = new();
+        HashSet<Config> configs = [];
 
         configs.UnionWith(ConfigService.GetConfigs(new AccountPolicy()));
         configs.UnionWith(ConfigService.GetConfigs(new GlobalConfig()));

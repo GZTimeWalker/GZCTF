@@ -27,10 +27,10 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
     public Task<bool> CheckIsCaptain(UserInfo user, CancellationToken token = default) =>
         Context.Teams.AnyAsync(t => t.Captain == user, token);
 
-    public async Task<Team?> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
+    public async Task<Team> CreateTeam(TeamUpdateModel model, UserInfo user, CancellationToken token = default)
     {
         if (model.Name is null)
-            return null;
+            throw new ArgumentNullException(nameof(model.Name).ToLower());
 
         Team team = new() { Name = model.Name, Captain = user, Bio = model.Bio };
 

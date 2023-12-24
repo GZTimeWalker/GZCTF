@@ -14,10 +14,15 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
 
     public string ChangeTrackerView => Context.ChangeTracker.DebugView.LongView;
 
+    /// <summary>
+    /// 调用此方法保存更改，如果发生并发冲突则重试
+    /// </summary>
+    /// <param name="token"></param>
     public async Task SaveAsync(CancellationToken token = default)
     {
         var saved = false;
-        while (!saved)
+        var retry = 0;
+        while (!saved && retry++ < 3)
         {
             try
             {
@@ -32,8 +37,6 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
             }
         }
     }
-
-    public void Detach(object item) => Context.Entry(item).State = EntityState.Detached;
 
     public void Add(object item) => Context.Add(item);
 

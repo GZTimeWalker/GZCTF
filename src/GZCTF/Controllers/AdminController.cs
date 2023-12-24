@@ -167,7 +167,7 @@ public class AdminController(
                 if (team is null)
                 {
                     team = await teamRepository.CreateTeam(new(teamName), user, token);
-                    teams.Add(team!);
+                    teams.Add(team);
                 }
                 else
                 {
