@@ -126,8 +126,8 @@ const getLabel = (path: string) =>
     item.link === '/'
       ? path === '/'
       : item.link.startsWith('/admin')
-      ? path.startsWith('/admin')
-      : path.startsWith(item.link)
+        ? path.startsWith('/admin')
+        : path.startsWith(item.link)
   )?.label
 
 const AppNavbar: FC = () => {

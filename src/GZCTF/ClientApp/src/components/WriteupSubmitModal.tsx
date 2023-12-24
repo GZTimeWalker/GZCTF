@@ -193,8 +193,8 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl,
                 {dayjs().isAfter(ddl)
                   ? '提交截止时间已过'
                   : progress !== 0
-                  ? '上传中'
-                  : '上传 Writeup'}
+                    ? '上传中'
+                    : '上传 Writeup'}
               </div>
               {progress !== 0 && (
                 <Progress

@@ -258,7 +258,6 @@ const GameInfoEdit: FC = () => {
         />
         <DatePickerInput
           label="开始日期"
-          placeholder="Start Date"
           value={start.toDate()}
           disabled={disabled}
           clearable={false}
@@ -298,7 +297,6 @@ const GameInfoEdit: FC = () => {
           label="结束日期"
           disabled={disabled}
           minDate={start.toDate()}
-          placeholder="End time"
           value={end.toDate()}
           clearable={false}
           onChange={(e) => {

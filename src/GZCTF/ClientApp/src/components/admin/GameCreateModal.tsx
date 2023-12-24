@@ -72,7 +72,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         <Group grow position="apart">
           <DatePickerInput
             label="开始日期"
-            placeholder="Start Date"
             value={start.toDate()}
             clearable={false}
             onChange={(e) => {
@@ -111,7 +110,6 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           <DatePickerInput
             label="结束日期"
             minDate={start.toDate()}
-            placeholder="End time"
             value={end.toDate()}
             clearable={false}
             onChange={(e) => {
