@@ -97,7 +97,7 @@ public static class LogHelper
     {
         using (logger.BeginScope("{UserName}{Status}{IP}", uname, status, ip))
         {
-            logger.Log(level ?? LogLevel.Information, msg);
+            logger.Log(level ?? LogLevel.Information, "{msg}", msg);
         }
     }
 
