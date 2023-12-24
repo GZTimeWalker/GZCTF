@@ -3,6 +3,19 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.17.7](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.6..v0.17.7) - 2023-12-24
+
+### ⛰️ Features
+
+- expose Kestrel options in appsettings.json (#174) - ([dfb614](https://github.com/GZTimeWalker/GZCTF/commit/dfb614)) by **Steve**
+- always store file to fs - ([3f1132](https://github.com/GZTimeWalker/GZCTF/commit/3f1132)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- avoid logging injection - ([81c1e7](https://github.com/GZTimeWalker/GZCTF/commit/81c1e7)) by **GZTime**
+- verify email domain in ChangeEmail as well (#175) - ([93c7be](https://github.com/GZTimeWalker/GZCTF/commit/93c7be)) by **Steve**
+
+---
 ## [0.17.6](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.5..v0.17.6) - 2023-09-29
 
 ### 🐛 Bug Fixes
