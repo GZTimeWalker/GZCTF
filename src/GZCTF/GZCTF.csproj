@@ -22,6 +22,8 @@
         <WarningLevel>4</WarningLevel>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
     </PropertyGroup>
 
     <ItemGroup>
