@@ -28,25 +28,26 @@ public class SignalRSink : ILogEventSink
 
     public void Emit(LogEvent logEvent)
     {
+        if (logEvent.Level < LogEventLevel.Information) return;
+
         _hubContext ??= _serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
-        if (logEvent.Level >= LogEventLevel.Information)
-            try
-            {
-                _hubContext.Clients.All.ReceivedLog(
-                    new LogMessageModel
-                    {
-                        Time = logEvent.Timestamp,
-                        Level = logEvent.Level.ToString(),
-                        UserName = logEvent.Properties["UserName"].ToString()[1..^1],
-                        IP = logEvent.Properties["IP"].ToString()[1..^1],
-                        Msg = logEvent.RenderMessage(),
-                        Status = logEvent.Properties["Status"].ToString()
-                    }).Wait();
-            }
-            catch
-            {
-                // ignored
-            }
+        try
+        {
+            _hubContext.Clients.All.ReceivedLog(
+                new LogMessageModel
+                {
+                    Time = logEvent.Timestamp,
+                    Level = logEvent.Level.ToString(),
+                    UserName = logEvent.Properties["UserName"].ToString()[1..^1],
+                    IP = logEvent.Properties["IP"].ToString()[1..^1],
+                    Msg = logEvent.RenderMessage(),
+                    Status = logEvent.Properties["Status"].ToString()
+                }).Wait();
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }

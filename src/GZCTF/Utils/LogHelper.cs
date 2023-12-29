@@ -1,12 +1,10 @@
 ﻿using System.IO.Compression;
 using System.Net;
 using GZCTF.Extensions;
-using NpgsqlTypes;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.File.Archive;
-using Serilog.Sinks.PostgreSQL;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
 using ILogger = Serilog.ILogger;
@@ -15,22 +13,12 @@ namespace GZCTF.Utils;
 
 public static class LogHelper
 {
-    const string LogTemplate =
-        "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: {@m} {#if Length(Status) > 0}#{Status} <{UserName}>{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
+    const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
+                               "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
+                               "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
+                               "{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
 
     const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
-
-    static IDictionary<string, ColumnWriterBase> ColumnWriters => new Dictionary<string, ColumnWriterBase>
-    {
-        { "Message", new RenderedMessageColumnWriter() },
-        { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
-        { "TimeUTC", new TimeColumnWriter() },
-        { "Exception", new ExceptionColumnWriter() },
-        { "Logger", new SinglePropertyColumnWriter("SourceContext", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
-        { "UserName", new SinglePropertyColumnWriter("UserName", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) },
-        { "Status", new SinglePropertyColumnWriter("Status", PropertyWriteMethod.ToString, NpgsqlDbType.Varchar) },
-        { "RemoteIP", new SinglePropertyColumnWriter("IP", PropertyWriteMethod.Raw, NpgsqlDbType.Varchar) }
-    };
 
     /// <summary>
     /// 记录一条系统日志（无用户信息，默认Info）
@@ -97,7 +85,7 @@ public static class LogHelper
     {
         using (logger.BeginScope("{UserName}{Status}{IP}", uname, status, ip))
         {
-            logger.Log(level ?? LogLevel.Information, "{msg}", msg);
+            logger.Log(level ?? LogLevel.Information, "{msg:l}", msg);
         }
     }
 
@@ -160,19 +148,7 @@ public static class LogHelper
                 retainedFileCountLimit: 5,
                 hooks: new ArchiveHooks(CompressionLevel.Optimal, $"{FilePath.Logs}/archive/{{UtcDate:yyyy-MM}}")
             ))
-            .WriteTo.Async(t => t.PostgreSQL(
-                configuration.GetConnectionString("Database"),
-                "Logs",
-                respectCase: true,
-                columnOptions: ColumnWriters,
-                restrictedToMinimumLevel: LogEventLevel.Information,
-                period: TimeSpan.FromSeconds(30)
-            ))
+            .WriteTo.Database(serviceProvider)
             .WriteTo.SignalR(serviceProvider)
             .CreateLogger();
-}
-
-public class TimeColumnWriter() : ColumnWriterBase(NpgsqlDbType.TimestampTz)
-{
-    public override object GetValue(LogEvent logEvent, IFormatProvider? formatProvider = null) => logEvent.Timestamp.ToUniversalTime();
 }
