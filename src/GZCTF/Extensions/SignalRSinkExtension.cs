@@ -22,9 +22,9 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
 
     public void Emit(LogEvent logEvent)
     {
-        _hubContext ??= serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
-
         if (logEvent.Level < LogEventLevel.Information) return;
+
+        _hubContext ??= serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
         try
         {
