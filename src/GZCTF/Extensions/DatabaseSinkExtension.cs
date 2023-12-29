@@ -14,7 +14,7 @@ public static class DatabaseSinkExtension
 
 public class DatabaseSink(IServiceProvider serviceProvider) : ILogEventSink
 {
-    static DateTimeOffset LastFlushTime = DateTimeOffset.Now;
+    static DateTimeOffset LastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
     static readonly List<LogModel> LockedLogBuffer = new();
     static readonly List<LogModel> LogBuffer = new();
 
