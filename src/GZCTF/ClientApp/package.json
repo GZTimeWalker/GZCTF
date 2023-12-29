@@ -11,7 +11,7 @@
     "genapi": "swagger-typescript-api -p template/swagger.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
-    "@babel/core": "^7.23.6",
+    "@babel/core": "^7.23.7",
     "@emotion/react": "^11.11.3",
     "@mantine/carousel": "^6.0.20",
     "@mantine/core": "^6.0.20",
@@ -22,7 +22,7 @@
     "@mantine/modals": "^6.0.20",
     "@mantine/notifications": "^6.0.20",
     "@marsidev/react-turnstile": "^0.4.0",
-    "@mdi/js": "^7.3.67",
+    "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^7.0.12",
     "dayjs": "^1.11.10",
@@ -44,7 +44,7 @@
     "react-router": "^6.21.1",
     "react-router-dom": "^6.21.1",
     "swr": "2.2.4",
-    "vite-tsconfig-paths": "^4.2.2"
+    "vite-tsconfig-paths": "^4.2.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.3",
@@ -53,12 +53,12 @@
     "@types/katex": "^0.16.7",
     "@types/node": "20.10.5",
     "@types/prismjs": "^1.26.3",
-    "@types/react": "^18.2.45",
+    "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "axios": "^1.6.2",
+    "axios": "^1.6.3",
     "babel-plugin-prismjs": "^2.1.0",
     "eslint": "8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
