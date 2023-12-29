@@ -68,7 +68,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 ## 关于 i18n 🌐
 
-暂不考虑进行多语言适配。
+目前多语言适配工作正在进行中，请在[#156](https://github.com/GZTimeWalker/GZCTF/issues/156)中了解详情或参与翻译工作。
 
 ## 贡献者 👋
 

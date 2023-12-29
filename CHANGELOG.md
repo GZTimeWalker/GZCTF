@@ -3,12 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.17.7](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.6..v0.17.7) - 2023-12-24
+## [0.17.7](https://github.com/GZTimeWalker/GZCTF/compare/v0.17.6..v0.17.7) - 2023-12-30
 
 ### ⛰️ Features
 
 - expose Kestrel options in appsettings.json (#174) - ([dfb614](https://github.com/GZTimeWalker/GZCTF/commit/dfb614)) by **Steve**
 - always store file to fs - ([3f1132](https://github.com/GZTimeWalker/GZCTF/commit/3f1132)) by **GZTime**
+- database sink - ([aba911](https://github.com/GZTimeWalker/GZCTF/commit/aba911)) by **GZTime**
 
 ### 🐛 Bug Fixes
 
