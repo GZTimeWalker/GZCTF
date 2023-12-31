@@ -26,11 +26,14 @@ interface TeamEditModalProps extends ModalProps {
 const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
   const { isOwnTeam, mutate, ...modalProps } = props
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' })
+  const [disabled, setDisabled] = useState(false)
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
 
   const onCreateTeam = () => {
+    setDisabled(true)
+
     api.team
       .teamCreateTeam(createTeam)
       .then((res) => {
@@ -44,6 +47,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
       })
       .catch((e) => showErrorNotification(e, t))
       .finally(() => {
+        setDisabled(false)
         modalProps.onClose()
       })
   }
@@ -85,7 +89,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
             maxRows={4}
             onChange={(event) => setCreateTeam({ ...createTeam, bio: event.currentTarget.value })}
           />
-          <Button fullWidth variant="outline" onClick={onCreateTeam}>
+          <Button fullWidth variant="outline" onClick={onCreateTeam} disabled={disabled}>
             创建队伍
           </Button>
         </Stack>
