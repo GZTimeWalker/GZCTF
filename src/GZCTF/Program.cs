@@ -5,7 +5,6 @@ global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Middlewares;
@@ -38,14 +37,14 @@ GZCTF.Program.StaticLocalizer =
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    IConfigurationSection? kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
 });
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    IConfigurationSection? kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
 });
@@ -396,17 +395,15 @@ namespace GZCTF
                 return new JsonResult(
                     new RequestResponse(errors is [_, ..]
                         ? errors
-                        : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
-                { StatusCode = 400 };
+                        : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
-                      where val.Errors.Count > 0
-                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                where val.Errors.Count > 0
+                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is [_, ..]
                 ? errors
-                : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
-            { StatusCode = 400 };
+                : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
         }
     }
 }

@@ -78,7 +78,7 @@ sudo k3s kubectl cluster-info
 
 </Callout>
 
-将上述输出的内容保存为 `k8sconfig.yaml`，并更改 `server` 字段为 k3s control-panel 所在机器的 IP，例如
+将上述输出的内容保存为 `kube-config.yaml`，并更改 `server` 字段为 k3s control-panel 所在机器的 IP，例如
 
 ```yaml
 apiVersion: v1
@@ -90,7 +90,7 @@ clusters:
 # ...
 ```
 
-将其存储至部署 GZCTF 的机器上，和 `docker-compose.yml` 在一个文件夹内，例如 `k8sconfig.yaml`。
+将其存储至部署 GZCTF 的机器上，和 `docker-compose.yml` 在一个文件夹内，例如 `kube-config.yaml`。
 之后更改 `docker-compose.yml` 中的挂载信息：
 
 ```yaml
@@ -104,7 +104,7 @@ gzctf:
   volumes:
     - "./data/files:/app/files"
     - "./appsettings.json:/app/appsettings.json:ro"
-    - "./k8sconfig.yaml:/app/k8sconfig.yaml:ro" # this is required for k8s deployment
+    - "./kube-config.yaml:/app/kube-config.yaml:ro" # this is required for k8s deployment
     # - "/var/run/docker.sock:/var/run/docker.sock" # this is required for docker deployment
   depends_on:
     - db

@@ -461,15 +461,15 @@
     <value>Docker が正常に初期化されました ({0})</value>
     <comment/>
   </data>
-  <data name="ContainerProvider_K8sConfigLoadFailed" xml:space="preserve">
+    <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
     <value>K8s 構成ファイルをロードできませんでした、設定ファイルが存在していますでしょうか：{0}</value>
     <comment/>
   </data>
-  <data name="ContainerProvider_K8sInited" xml:space="preserve">
+    <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
     <value>K8s が正常に初期化されました ({0})</value>
     <comment/>
   </data>
-  <data name="ContainerProvider_K8sInitFailed" xml:space="preserve">
+    <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s の初期化に失敗しました、構成が正しいかどうかを確認してください ({0})</value>
     <comment/>
   </data>

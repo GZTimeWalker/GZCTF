@@ -61,7 +61,7 @@ public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) :
         HttpResponseMessage result =
             await _httpClient.GetAsync($"{api}?secret={Config.SecretKey}&response={model.Challenge}&remoteip={ip}",
                 token);
-        var res = await result.Content.ReadFromJsonAsync<RecaptchaResponseModel>(cancellationToken: token);
+        var res = await result.Content.ReadFromJsonAsync<RecaptchaResponseModel>(token);
 
         return res is not null && res.Success && res.Score >= Config.GoogleRecaptcha.RecaptchaThreshold;
     }
@@ -84,15 +84,13 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
         TurnstileRequestModel req = new()
         {
-            Secret = Config.SecretKey,
-            Response = model.Challenge,
-            RemoteIp = ip.ToString()
+            Secret = Config.SecretKey, Response = model.Challenge, RemoteIp = ip.ToString()
         };
 
         const string api = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
         HttpResponseMessage result = await _httpClient.PostAsJsonAsync(api, req, token);
-        var res = await result.Content.ReadFromJsonAsync<TurnstileResponseModel>(cancellationToken: token);
+        var res = await result.Content.ReadFromJsonAsync<TurnstileResponseModel>(token);
 
         return res is not null && res.Success;
     }

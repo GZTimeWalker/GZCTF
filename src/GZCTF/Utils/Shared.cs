@@ -126,9 +126,7 @@ public class FileRecord
 
     internal static FileRecord FromFileInfo(FileInfo info) => new()
     {
-        FileName = info.Name,
-        UpdateTime = info.LastWriteTimeUtc,
-        Size = info.Length
+        FileName = info.Name, UpdateTime = info.LastWriteTimeUtc, Size = info.Length
     };
 }
 

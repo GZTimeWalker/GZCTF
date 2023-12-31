@@ -120,7 +120,7 @@ public class AccountController(
             RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
     }
 
-    private bool VerifyEmailDomain(string email)
+    bool VerifyEmailDomain(string email)
     {
         var mailDomain = email.Split('@')[1];
 

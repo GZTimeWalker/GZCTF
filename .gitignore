@@ -240,7 +240,7 @@ _Pvt_Extensions
 **/appsettings.json
 **/appsettings.*.json
 !**/appsettings.Template.json
-**/k8sconfig.yaml
+**/kube-config.yaml
 
 .VSCodeCounter/*
 .idea/**
@@ -254,4 +254,3 @@ _Pvt_Extensions
 **/files/**
 **/uploads/**
 **/.DS_Store
-               

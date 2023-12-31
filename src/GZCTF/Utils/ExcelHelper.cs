@@ -8,7 +8,7 @@ namespace GZCTF.Utils;
 public class ExcelHelper(IStringLocalizer<Program> localizer)
 {
     readonly string[] _commonScoreboardHeader =
-    {
+    [
         localizer[nameof(Resources.Program.Header_Ranking)], localizer[nameof(Resources.Program.Header_Team)],
         localizer[nameof(Resources.Program.Header_Captain)], localizer[nameof(Resources.Program.Header_Member)],
         localizer[nameof(Resources.Program.Header_StdNumber)],
@@ -16,15 +16,15 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_SolvedNumber)],
         localizer[nameof(Resources.Program.Header_ScoringTime)],
         localizer[nameof(Resources.Program.Header_TotalScore)]
-    };
+    ];
 
     readonly string[] _commonSubmissionHeader =
-    {
+    [
         localizer[nameof(Resources.Program.Header_SubmitStatus)],
         localizer[nameof(Resources.Program.Header_SubmitTime)], localizer[nameof(Resources.Program.Header_Team)],
         localizer[nameof(Resources.Program.Header_User)], localizer[nameof(Resources.Program.Header_Challenge)],
         localizer[nameof(Resources.Program.Header_SubmitContent)], localizer[nameof(Resources.Program.Header_Email)]
-    };
+    ];
 
     public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
     {
@@ -123,13 +123,13 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
 
         foreach (KeyValuePair<ChallengeTag, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
-            foreach (ChallengeInfo chall in type.Value)
-            {
-                ICell? cell = row.CreateCell(colIndex++);
-                cell.SetCellValue(chall.Title);
-                cell.CellStyle = style;
-                challIds.Add(chall.Id);
-            }
+        foreach (ChallengeInfo chall in type.Value)
+        {
+            ICell? cell = row.CreateCell(colIndex++);
+            cell.SetCellValue(chall.Title);
+            cell.CellStyle = style;
+            challIds.Add(chall.Id);
+        }
 
         return challIds.ToArray();
     }

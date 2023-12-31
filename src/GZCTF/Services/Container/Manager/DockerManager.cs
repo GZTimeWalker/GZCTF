@@ -163,23 +163,22 @@ public class DockerManager : IContainerManager
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
-        if (_meta.ExposePort)
-        {
-            var port = info.NetworkSettings.Ports
-                .FirstOrDefault(p =>
-                    p.Key.StartsWith(config.ExposedPort.ToString())
-                ).Value.First().HostPort;
+        if (!_meta.ExposePort) return container;
 
-            if (int.TryParse(port, out var numPort))
-                container.PublicPort = numPort;
-            else
-                _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
-                    TaskStatus.Failed,
-                    LogLevel.Warning);
+        var port = info.NetworkSettings.Ports
+            .FirstOrDefault(p =>
+                p.Key.StartsWith(config.ExposedPort.ToString())
+            ).Value.First().HostPort;
 
-            if (!string.IsNullOrEmpty(_meta.PublicEntry))
-                container.PublicIP = _meta.PublicEntry;
-        }
+        if (int.TryParse(port, out var numPort))
+            container.PublicPort = numPort;
+        else
+            _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
+                TaskStatus.Failed,
+                LogLevel.Warning);
+
+        if (!string.IsNullOrEmpty(_meta.PublicEntry))
+            container.PublicIP = _meta.PublicEntry;
 
         return container;
     }
@@ -188,7 +187,8 @@ public class DockerManager : IContainerManager
         new()
         {
             Image = config.Image,
-            Labels = { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId.ToString() },
+            Labels =
+                new Dictionary<string, string> { ["TeamId"] = config.TeamId, ["UserId"] = config.UserId.ToString() },
             Name = DockerMetadata.GetName(config),
             Env = config.Flag is null ? [] : [$"GZCTF_FLAG={config.Flag}"],
             HostConfig = new()

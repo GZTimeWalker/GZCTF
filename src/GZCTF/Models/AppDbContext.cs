@@ -35,13 +35,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
     internal static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = false };
 
-    static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new()
-    {
-        return new ValueConverter<T?, string>(
+    static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
+        new(
             v => JsonSerializer.Serialize(v ?? new(), _jsonOptions),
             v => JsonSerializer.Deserialize<T>(v, _jsonOptions)
         );
-    }
 
     static ValueComparer<TList> GetEnumerableComparer<TList, T>()
         where T : notnull

@@ -120,14 +120,8 @@ public class Game
     [Required]
     public BloodBonus BloodBonus
     {
-        get
-        {
-            return BloodBonus.FromValue(BloodBonusValue);
-        }
-        set
-        {
-            BloodBonusValue = value.Val;
-        }
+        get => BloodBonus.FromValue(BloodBonusValue);
+        set => BloodBonusValue = value.Val;
     }
 
     [NotMapped]

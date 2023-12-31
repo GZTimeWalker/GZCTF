@@ -43,14 +43,14 @@ public static class ContainerServiceExtension
             ContainerProviderType.Docker => services
                 .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
             ContainerProviderType.Kubernetes => services
-                .AddSingleton<IContainerProvider<Kubernetes, K8sMetadata>, K8sProvider>(),
+                .AddSingleton<IContainerProvider<Kubernetes, KubernetesMetadata>, KubernetesProvider>(),
             _ => throw new NotImplementedException()
         };
 
     static IServiceCollection AddManager(this IServiceCollection services, ContainerProvider config)
     {
         if (config.Type == ContainerProviderType.Kubernetes)
-            return services.AddSingleton<IContainerManager, K8sManager>();
+            return services.AddSingleton<IContainerManager, KubernetesManager>();
 
         if (config.DockerConfig?.SwarmMode is true)
             return services.AddSingleton<IContainerManager, SwarmManager>();

@@ -80,7 +80,7 @@ public class AssetsController(
         try
         {
             List<LocalFile> results = new();
-            foreach (var file in files.Where(file => file.Length > 0))
+            foreach (IFormFile? file in files.Where(file => file.Length > 0))
             {
                 LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
                 logger.SystemLog(

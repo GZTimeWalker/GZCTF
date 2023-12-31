@@ -342,8 +342,7 @@ public class GameRepository(
                 score += i.Score;
                 return new TimeLine
                 {
-                    Score = score,
-                    Time = i.SubmitTimeUtc!.Value // 此处不为 null
+                    Score = score, Time = i.SubmitTimeUtc!.Value // 此处不为 null
                 };
             });
     }

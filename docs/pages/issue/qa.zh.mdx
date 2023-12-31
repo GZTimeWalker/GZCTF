@@ -54,7 +54,7 @@ Description of the challenge...
 
 更一般的情况下最方便的部署方式为 Docker + K3s 分离部署，只需要执行 `docker-compose` 即可完成 GZCTF 平台的部署，而 K3s 的部署则只需要执行安装后导出 kubeconfig 挂载给 GZCTF 即可。
 
-如果需要使用 K3s 集群内部署，需要提供两个 PVC（用于数据库及附件存储）、一个 ConfigMap（用于存储 `appsettings.json`）、一个 Secret（用于存储指向自己集群的 `k8sconfig.yaml`）。你可以按需进行数据库部署及 Redis 部署，如果只运行一个 GZCTF 实例，可以不部署 Redis。
+如果需要使用 K3s 集群内部署，需要提供两个 PVC（用于数据库及附件存储）、一个 ConfigMap（用于存储 `appsettings.json`）、一个 Secret（用于存储指向自己集群的 `kube-config.yaml`）。你可以按需进行数据库部署及 Redis 部署，如果只运行一个 GZCTF 实例，可以不部署 Redis。
 
 **经测试，出于数据库性能考量，暂不建议使用多实例分布部署，单实例多性能足以支持大多数比赛。**
 

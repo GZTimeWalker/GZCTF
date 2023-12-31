@@ -50,10 +50,10 @@ import { Callout } from "nextra-theme-docs";
       "ChallengeNetwork": "",
       "Uri": "unix:///var/run/docker.sock"
     },
-    "K8sConfig": {
+    "KubernetesConfig": {
       // optional
       "Namespace": "gzctf-challenges",
-      "ConfigPath": "k8sconfig.yaml",
+      "ConfigPath": "kube-config.yaml",
       "AllowCIDR": [
         // allow the cluster CIDR for LB
         "10.0.0.0/8"
@@ -174,15 +174,15 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 #### Kubernetes
 
 - **Namespace:** Kubernetes 命名空间，用于创建题目实例的命名空间，默认为 `gzctf-challenges`
-- **ConfigPath:** Kubernetes 配置文件路径，用于连接集群，默认为 `k8sconfig.yaml`
+- **ConfigPath:** Kubernetes 配置文件路径，用于连接集群，默认为 `kube-config.yaml`
 - **AllowCIDR:** 允许访问 Pod 的 CIDR 白名单
 - **DNS:** 避免使用集群 DNS 的自定义 DNS 服务器列表
 
-默认行为请将集群连接配置放入 `k8sconfig.yaml` 文件中，并将其挂载到 `/app` 目录下。实验功能若非了解行为请勿更改。
+默认行为请将集群连接配置放入 `kube-config.yaml` 文件中，并将其挂载到 `/app` 目录下。实验功能若非了解行为请勿更改。
 
 <Callout type="info">
 
-请注意更改 `k8sconfig.yaml` 文件中的 `server` 字段，将其指向集群的 API Server 地址。集群默认地址一般为 `https://127.0.0.1:6443`，需要更改为集群实际地址。
+请注意更改 `kube-config.yaml` 文件中的 `server` 字段，将其指向集群的 API Server 地址。集群默认地址一般为 `https://127.0.0.1:6443`，需要更改为集群实际地址。
 
 </Callout>
 

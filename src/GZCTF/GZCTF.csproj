@@ -84,7 +84,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="k8sconfig.yaml">
+        <None Update="kube-config.yaml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </None>

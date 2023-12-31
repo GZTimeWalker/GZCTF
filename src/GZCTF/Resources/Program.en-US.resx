@@ -461,15 +461,15 @@
     <value>Docker 初始化成功 ({0})</value>
     <comment/>
   </data>
-  <data name="ContainerProvider_K8sConfigLoadFailed" xml:space="preserve">
+    <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
     <value>无法加载 K8s 配置文件，请确保配置文件存在 {0}</value>
     <comment/>
   </data>
-  <data name="ContainerProvider_K8sInited" xml:space="preserve">
+    <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
     <value>K8s 初始化成功 ({0})</value>
     <comment/>
   </data>
-  <data name="ContainerProvider_K8sInitFailed" xml:space="preserve">
+    <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s 初始化失败，请检查相关配置是否正确 ({0})</value>
     <comment/>
   </data>

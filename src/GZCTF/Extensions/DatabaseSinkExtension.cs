@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Namotion.Reflection;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -45,10 +46,10 @@ public class DatabaseSink : ILogEventSink, IDisposable
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
             Message = logEvent.RenderMessage(),
-            UserName = logEvent.Properties["UserName"].ToString()[1..^1],
-            Logger = logEvent.Properties["SourceContext"].ToString()[1..^1],
-            RemoteIP = logEvent.Properties["IP"].ToString()[1..^1],
-            Status = logEvent.Properties["Status"].ToString(),
+            UserName = logEvent.TryGetPropertyValue<string>("UserName")?[1..^1],
+            Logger = logEvent.TryGetPropertyValue<string>("SourceContext")?[1..^1] ?? "",
+            RemoteIP = logEvent.TryGetPropertyValue<string>("IP")?[1..^1],
+            Status = logEvent.TryGetPropertyValue<TaskStatus>("Status").ToString(),
             Exception = logEvent.Exception?.ToString()
         };
 

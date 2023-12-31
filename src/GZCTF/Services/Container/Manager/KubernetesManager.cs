@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
@@ -10,15 +9,15 @@ using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services.Container.Manager;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
-public class K8sManager : IContainerManager
+public class KubernetesManager : IContainerManager
 {
     readonly Kubernetes _client;
     readonly IStringLocalizer<Program> _localizer;
-    readonly ILogger<K8sManager> _logger;
-    readonly K8sMetadata _meta;
+    readonly ILogger<KubernetesManager> _logger;
+    readonly KubernetesMetadata _meta;
 
-    public K8sManager(IContainerProvider<Kubernetes, K8sMetadata> provider, ILogger<K8sManager> logger,
+    public KubernetesManager(IContainerProvider<Kubernetes, KubernetesMetadata> provider,
+        ILogger<KubernetesManager> logger,
         IStringLocalizer<Program> localizer)
     {
         _logger = logger;
@@ -35,7 +34,7 @@ public class K8sManager : IContainerManager
     {
         var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
         var authSecretName = _meta.AuthSecretName;
-        K8sConfig options = _meta.Config;
+        KubernetesConfig options = _meta.Config;
 
         if (imageName is null)
         {
@@ -52,7 +51,7 @@ public class K8sManager : IContainerManager
             {
                 Name = name,
                 NamespaceProperty = options.Namespace,
-                Labels =
+                Labels = new Dictionary<string, string>
                 {
                     ["ctf.gzti.me/ResourceId"] = name,
                     ["ctf.gzti.me/TeamId"] = config.TeamId,
@@ -82,16 +81,15 @@ public class K8sManager : IContainerManager
                         Ports = [new V1ContainerPort(config.ExposedPort)],
                         Resources = new V1ResourceRequirements
                         {
-                            Limits =
+                            Limits = new Dictionary<string, ResourceQuantity>
                             {
                                 ["cpu"] = new($"{config.CPUCount * 100}m"),
                                 ["memory"] = new($"{config.MemoryLimit}Mi"),
                                 ["ephemeral-storage"] = new($"{config.StorageLimit}Mi")
                             },
-                            Requests =
+                            Requests = new Dictionary<string, ResourceQuantity>
                             {
-                                ["cpu"] = new("10m"),
-                                ["memory"] = new("32Mi")
+                                ["cpu"] = new("10m"), ["memory"] = new("32Mi")
                             }
                         }
                     }
@@ -141,13 +139,13 @@ public class K8sManager : IContainerManager
             {
                 Name = name,
                 NamespaceProperty = _meta.Config.Namespace,
-                Labels = { ["ctf.gzti.me/ResourceId"] = name }
+                Labels = new Dictionary<string, string> { ["ctf.gzti.me/ResourceId"] = name }
             },
             Spec = new V1ServiceSpec
             {
                 Type = _meta.ExposePort ? "NodePort" : "ClusterIP",
                 Ports = [new V1ServicePort(config.ExposedPort, targetPort: config.ExposedPort)],
-                Selector = { ["ctf.gzti.me/ResourceId"] = name }
+                Selector = new Dictionary<string, string> { ["ctf.gzti.me/ResourceId"] = name }
             }
         };
 
@@ -200,11 +198,10 @@ public class K8sManager : IContainerManager
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
-        if (_meta.ExposePort)
-        {
-            container.PublicIP = _meta.PublicEntry;
-            container.PublicPort = service.Spec.Ports[0].NodePort;
-        }
+        if (!_meta.ExposePort) return container;
+
+        container.PublicIP = _meta.PublicEntry;
+        container.PublicPort = service.Spec.Ports[0].NodePort;
 
         return container;
     }

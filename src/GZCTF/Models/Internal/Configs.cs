@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Net;
+﻿using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
@@ -128,7 +127,7 @@ public class ContainerProvider
 
     public string PublicEntry { get; set; } = string.Empty;
 
-    public K8sConfig? K8sConfig { get; set; }
+    public KubernetesConfig? KubernetesConfig { get; set; }
     public DockerConfig? DockerConfig { get; set; }
 }
 
@@ -139,10 +138,10 @@ public class DockerConfig
     public string? ChallengeNetwork { get; set; }
 }
 
-public class K8sConfig
+public class KubernetesConfig
 {
     public string Namespace { get; set; } = "gzctf-challenges";
-    public string KubeConfig { get; set; } = "k8sconfig.yaml";
+    public string KubeConfig { get; set; } = "kube-config.yaml";
 
     [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
     public List<string> AllowCidr { get; set; } = ["10.0.0.0/8"];
