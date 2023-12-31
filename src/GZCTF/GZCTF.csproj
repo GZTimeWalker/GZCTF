@@ -17,7 +17,7 @@
         <NoWarn>$(NoWarn);1591</NoWarn>
         <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
-        <Configurations>Debug;Release;GenAPI</Configurations>
+        <Configurations>Debug;Release</Configurations>
         <ReleaseVersion>0.17.7</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <LangVersion>preview</LangVersion>
@@ -103,11 +103,6 @@
         <Error Condition="'$(ErrorCode)' != '0'" Text="pnpm is required to build and run this project. To continue, please install pnpm from https://pnpm.io/installation/, and then restart your command prompt or IDE." />
         <Message Importance="high" Text="Restoring dependencies using 'pnpm'. This may take several minutes..." />
         <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
-    </Target>
-
-    <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'GenAPI'">
-        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) run" />
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run genapi" />
     </Target>
 
     <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish">
