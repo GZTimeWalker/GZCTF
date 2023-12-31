@@ -550,6 +550,7 @@ public class GameController(
             ScoreboardItem = boardItem,
             TeamToken = context.Participation!.Token,
             Challenges = scoreboard.Challenges,
+            WriteupRequired = context.Game!.WriteupRequired,
             WriteupDeadline = context.Game!.WriteupDeadline
         });
     }
@@ -854,6 +855,10 @@ public class GameController(
             return context.Result;
 
         Game game = context.Game!;
+        
+        if (!game.WriteupRequired)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_WriteupNotNeeded)]));
+        
         Participation part = context.Participation!;
         Team team = part.Team;
 

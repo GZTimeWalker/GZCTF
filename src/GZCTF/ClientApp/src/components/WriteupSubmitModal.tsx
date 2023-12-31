@@ -28,10 +28,14 @@ import api from '@Api'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number
-  wpddl: string
+  writeupDeadline: string
 }
 
-export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, wpddl, ...props }) => {
+export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
+  gameId,
+  writeupDeadline: wpddl,
+  ...props
+}) => {
   const { data, mutate } = api.game.useGameGetWriteup(gameId, OnceSWRConfig)
 
   const theme = useMantineTheme()

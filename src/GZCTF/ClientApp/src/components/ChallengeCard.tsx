@@ -108,7 +108,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                       <Stack spacing={0}>
                         <Text c={theme.colorScheme === 'dark' ? '' : 'dark'}>{blood?.name}</Text>
                         <Text size="xs" c="dimmed">
-                          {dayjs(blood?.submitTimeUTC).format('YY/MM/DD HH:mm:ss')}
+                          {dayjs(blood?.submitTimeUtc).format('YY/MM/DD HH:mm:ss')}
                         </Text>
                       </Stack>
                     }

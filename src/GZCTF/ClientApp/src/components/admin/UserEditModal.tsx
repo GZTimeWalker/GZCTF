@@ -170,7 +170,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
               最后访问时间
             </Text>
             <Text size="sm" span fw={500} ff={theme.fontFamilyMonospace}>
-              {dayjs(user.lastVisitedUTC).format('YYYY-MM-DD HH:mm:ss')}
+              {dayjs(user.lastVisitedUtc).format('YYYY-MM-DD HH:mm:ss')}
             </Text>
           </Group>
         </Stack>

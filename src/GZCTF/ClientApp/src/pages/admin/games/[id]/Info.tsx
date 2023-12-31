@@ -8,7 +8,6 @@ import {
   Input,
   MultiSelect,
   NumberInput,
-  PasswordInput,
   SimpleGrid,
   Stack,
   Switch,
@@ -23,6 +22,7 @@ import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import {
   mdiCheck,
+  mdiClipboard,
   mdiClose,
   mdiContentSaveOutline,
   mdiDeleteOutline,
@@ -85,7 +85,7 @@ const GameInfoEdit: FC = () => {
       setEnd(dayjs(gameSource.end))
       setOrganizations(gameSource.organizations || [])
 
-      const wpddl = dayjs(gameSource.wpddl).diff(gameSource.end, 'h')
+      const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
     }
   }, [id, gameSource])
@@ -140,7 +140,7 @@ const GameInfoEdit: FC = () => {
         inviteCode: game.inviteCode?.length ?? 0 > 6 ? game.inviteCode : null,
         start: start.toJSON(),
         end: end.toJSON(),
-        wpddl: end.add(wpddl, 'h').toJSON(),
+        writeupDeadline: end.add(wpddl, 'h').toJSON(),
       })
       .then(() => {
         showNotification({
@@ -172,6 +172,15 @@ const GameInfoEdit: FC = () => {
       .catch((e) => showErrorNotification(e, t))
   }
 
+  const onCopyPublicKey = () => {
+    clipboard.copy(game?.publicKey || '')
+    showNotification({
+      color: 'teal',
+      message: '公钥已复制到剪贴板',
+      icon: <Icon path={mdiCheck} size={1} />,
+    })
+  }
+
   return (
     <WithGameEditTab
       headProps={{ position: 'apart' }}
@@ -201,6 +210,13 @@ const GameInfoEdit: FC = () => {
               }
             >
               删除比赛
+            </Button>
+            <Button
+              leftIcon={<Icon path={mdiClipboard} size={1} />}
+              disabled={disabled}
+              onClick={onCopyPublicKey}
+            >
+              复制公钥
             </Button>
             <Button
               leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
@@ -240,24 +256,20 @@ const GameInfoEdit: FC = () => {
           value={game?.containerCountLimit}
           onChange={(e) => game && setGame({ ...game, containerCountLimit: Number(e) })}
         />
-        <PasswordInput
-          value={game?.publicKey || ''}
-          label="比赛签名公钥"
-          description="用于校验队伍 Token"
-          readOnly
-          onClick={() => {
-            clipboard.copy(game?.publicKey || '')
-            showNotification({
-              color: 'teal',
-              message: '公钥已复制到剪贴板',
-              icon: <Icon path={mdiCheck} size={1} />,
-            })
-          }}
-          styles={{
-            innerInput: {
-              cursor: 'copy',
-            },
-          }}
+
+        <TextInput
+          label="邀请码"
+          description="留空则不启用邀请码报名"
+          value={game?.inviteCode || ''}
+          disabled={disabled}
+          onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
+          rightSection={
+            <ActionIcon
+              onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
+            >
+              <Icon path={mdiRefresh} size={1} />
+            </ActionIcon>
+          }
         />
         <DatePickerInput
           label="开始日期"
@@ -342,19 +354,11 @@ const GameInfoEdit: FC = () => {
         </Grid.Col>
         <Grid.Col span={3}>
           <Stack spacing="xs">
-            <TextInput
-              label="邀请码"
-              description="留空则不启用邀请码报名"
-              value={game?.inviteCode || ''}
+            <Switch
               disabled={disabled}
-              onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
-              rightSection={
-                <ActionIcon
-                  onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
-                >
-                  <Icon path={mdiRefresh} size={1} />
-                </ActionIcon>
-              }
+              checked={game?.writeupRequired ?? false}
+              label={SwitchLabel('需要 Writeup', '是否启用比赛的 Writeup 提交功能')}
+              onChange={(e) => game && setGame({ ...game, writeupRequired: e.target.checked })}
             />
             <Switch
               disabled={disabled}
@@ -394,13 +398,13 @@ const GameInfoEdit: FC = () => {
               </Text>
             </Group>
           }
-          value={game?.wpNote}
+          value={game?.writeupNote}
           w="100%"
           autosize
           disabled={disabled}
           minRows={3}
           maxRows={3}
-          onChange={(e) => game && setGame({ ...game, wpNote: e.target.value })}
+          onChange={(e) => game && setGame({ ...game, writeupNote: e.target.value })}
         />
         <MultiSelect
           label={

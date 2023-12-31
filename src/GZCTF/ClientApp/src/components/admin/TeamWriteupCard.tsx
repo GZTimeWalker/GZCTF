@@ -34,7 +34,7 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
               {writeup.team?.name}
             </Text>
             <Text lineClamp={1} size="xs" c="dimmed">
-              {dayjs(writeup.uploadTimeUTC).format('YYYY-MM-DD HH:mm')}
+              {dayjs(writeup.uploadTimeUtc).format('YYYY-MM-DD HH:mm')}
             </Text>
           </Stack>
         </Group>

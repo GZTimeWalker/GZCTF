@@ -26,12 +26,14 @@ public class Game
     /// Token 签名公钥
     /// </summary>
     [Required]
+    [MaxLength(63)]
     public string PublicKey { get; set; } = string.Empty;
 
     /// <summary>
     /// Token 签名私钥
     /// </summary>
     [Required]
+    [MaxLength(63)]
     public string PrivateKey { get; set; } = string.Empty;
 
     /// <summary>
@@ -60,6 +62,11 @@ public class Game
     /// 报名队伍免审核
     /// </summary>
     public bool AcceptWithoutReview { get; set; }
+    
+    /// <summary>
+    /// 是否需要提交 Writeup
+    /// </summary>
+    public bool WriteupRequired { get; set; }
 
     /// <summary>
     /// 比赛邀请码
@@ -99,14 +106,12 @@ public class Game
     /// Writeup 提交截止时间
     /// </summary>
     [Required]
-    [JsonPropertyName("wpddl")]
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// Writeup 附加说明
     /// </summary>
     [Required]
-    [JsonPropertyName("wpnote")]
     public string WriteupNote { get; set; } = string.Empty;
 
     [JsonIgnore]
@@ -181,10 +186,11 @@ public class Game
         Organizations = model.Organizations ?? Organizations;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
-        WriteupDeadline = model.WriteupDeadline;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
         ContainerCountLimit = model.ContainerCountLimit;
         WriteupNote = model.WriteupNote;
+        WriteupRequired = model.WriteupRequired;
+        WriteupDeadline = model.WriteupDeadline;
         BloodBonus = BloodBonus.FromValue(model.BloodBonusValue);
 
         return this;

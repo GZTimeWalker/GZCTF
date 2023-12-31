@@ -42,6 +42,11 @@ public class DetailedGameInfoModel
     public bool InviteCodeRequired { get; set; }
 
     /// <summary>
+    /// 是否需要提交 Writeup
+    /// </summary>
+    public bool WriteupRequired { get; set; }
+    
+    /// <summary>
     /// 比赛头图
     /// </summary>
     [JsonPropertyName("poster")]
@@ -110,6 +115,7 @@ public class DetailedGameInfoModel
             PracticeMode = game.PracticeMode,
             Organizations = game.Organizations,
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
+            WriteupRequired = game.WriteupRequired,
             TeamCount = count,
             PosterUrl = game.PosterUrl,
             StartTimeUtc = game.StartTimeUtc,

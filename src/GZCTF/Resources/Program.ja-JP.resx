@@ -1349,4 +1349,7 @@
     <value>ユーザーはチームに属していません</value>
     <comment/>
   </data>
+  <data name="Game_WriteupNotNeeded" xml:space="preserve">
+      <value>本次比赛不可提交 Writeup</value>
+  </data>
 </root>

@@ -40,6 +40,11 @@ public class GameInfoModel
     public bool AcceptWithoutReview { get; set; }
 
     /// <summary>
+    /// 是否需要提交 Writeup
+    /// </summary>
+    public bool WriteupRequired { get; set; }
+    
+    /// <summary>
     /// 比赛邀请码
     /// </summary>
     [MaxLength(32, ErrorMessageResourceName = nameof(Resources.Program.Model_InvitationCodeTooLong),
@@ -94,14 +99,11 @@ public class GameInfoModel
     /// <summary>
     /// Writeup 提交截止时间
     /// </summary>
-    [Required]
-    [JsonPropertyName("wpddl")]
-    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// Writeup 附加说明
     /// </summary>
-    [JsonPropertyName("wpNote")]
     public string WriteupNote { get; set; } = string.Empty;
 
     /// <summary>
@@ -130,6 +132,7 @@ public class GameInfoModel
             EndTimeUtc = game.EndTimeUtc,
             WriteupDeadline = game.WriteupDeadline,
             WriteupNote = game.WriteupNote,
+            WriteupRequired = game.WriteupRequired,
             BloodBonusValue = game.BloodBonus.Val
         };
 }

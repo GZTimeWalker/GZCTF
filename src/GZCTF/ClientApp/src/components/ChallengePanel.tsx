@@ -142,13 +142,17 @@ const ChallengePanel: FC = () => {
   return (
     <Group spacing="sm" noWrap position="apart" align="flex-start" miw="calc(100% - 20rem)">
       <Stack miw="10rem">
-        <Button
-          leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
-          onClick={() => setWriteupSubmitOpened(true)}
-        >
-          提交 Writeup
-        </Button>
-        <Divider />
+        {game?.writeupRequired && (
+          <>
+            <Button
+              leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
+              onClick={() => setWriteupSubmitOpened(true)}
+            >
+              提交 Writeup
+            </Button>
+            <Divider />
+          </>
+        )}
         <Switch
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}
@@ -236,14 +240,16 @@ const ChallengePanel: FC = () => {
           </Stack>
         )}
       </ScrollArea>
-      <WriteupSubmitModal
-        opened={writeupSubmitOpened}
-        onClose={() => setWriteupSubmitOpened(false)}
-        withCloseButton={false}
-        size="40%"
-        gameId={numId}
-        wpddl={data.wpddl}
-      />
+      {game?.writeupRequired && (
+        <WriteupSubmitModal
+          opened={writeupSubmitOpened}
+          onClose={() => setWriteupSubmitOpened(false)}
+          withCloseButton={false}
+          size="40%"
+          gameId={numId}
+          writeupDeadline={data.writeupDeadline}
+        />
+      )}
       {challenge?.id && (
         <ChallengeDetailModal
           size="40%"

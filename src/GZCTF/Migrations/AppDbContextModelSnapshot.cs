@@ -362,11 +362,13 @@ namespace GZCTF.Migrations
 
                     b.Property<string>("PrivateKey")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(63)
+                        .HasColumnType("character varying(63)");
 
                     b.Property<string>("PublicKey")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(63)
+                        .HasColumnType("character varying(63)");
 
                     b.Property<DateTimeOffset>("StartTimeUtc")
                         .HasColumnType("timestamp with time zone")
@@ -384,13 +386,14 @@ namespace GZCTF.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("WriteupDeadline")
-                        .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "wpddl");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("WriteupNote")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "wpnote");
+                        .HasColumnType("text");
+
+                    b.Property<bool>("WriteupRequired")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
