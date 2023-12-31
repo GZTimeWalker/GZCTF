@@ -1,14 +1,20 @@
+import { Callout } from "nextra-theme-docs";
+
 # GZ::CTF
 
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台，采用 Docker 或 K8s 作为容器部署后端，提供了可自定义的题目类型、动态容器和动态分值功能。
 
 本项目缘起于作者认为 CTFd 的实现不优雅，动态容器配置需要采用插件的方式，且前端不好看，同时为了办校赛和帮助其他学校的同学办赛，于是自己动手写了一个。
 
-GZ::CTF 基于 AGPLv3 协议开源，使用和修改均需遵守开源协议。
+GZ::CTF 基于 AGPLv3 协议开源，使用和修改均需遵守开源协议。开始部署请参考 [快速上手](/quick-start)。
 
-**Warning: 本文档目前仍然处于编写中，如有问题或其他文档需求请加入 README 中提到的用户群。**
+<Callout type="warning">
 
-开始部署请参考 [快速上手](/quick-start)。
+2024/01/01 起，`develop` 镜像的数据库结构不再与之前的版本兼容，如果继续使用请转至 `v0.17`。
+
+在新特性的快速开发期，不建议使用 `develop` 镜像进行生产部署，相关数据库结构变更将导致数据丢失。
+
+</Callout>
 
 ## 特性 🛠️
 
@@ -24,7 +30,7 @@ GZ::CTF 基于 AGPLv3 协议开源，使用和修改均需遵守开源协议。
 
     - 分值曲线：
 
-      $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
+      $$ f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
 
       其中 $S$ 为原始分值、 $r$ 为最低分值比例、 $d$ 为难度系数、 $x$ 为提交次数。前三个参数可通过自定义实现绝大部分的动态分值需求。
 

@@ -2,7 +2,7 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: ["develop", "ci-test*"]
+    branches: ["develop", "ci-test*", "v*"]
     tags: ["v*"]
     paths: ["src/GZCTF/**"]
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
           global-json-file: src/global.json
 
