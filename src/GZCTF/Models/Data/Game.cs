@@ -62,7 +62,7 @@ public class Game
     /// 报名队伍免审核
     /// </summary>
     public bool AcceptWithoutReview { get; set; }
-    
+
     /// <summary>
     /// 是否需要提交 Writeup
     /// </summary>
@@ -165,13 +165,6 @@ public class Game
             privateKey = new(Codec.Xor(Codec.Base64.DecodeToBytes(PrivateKey), xorKey), 0);
 
         return DigitalSignature.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
-    }
-
-    internal bool Verify(string data, string sign)
-    {
-        Ed25519PublicKeyParameters publicKey = new(Codec.Base64.DecodeToBytes(PublicKey), 0);
-
-        return DigitalSignature.VerifySignature(data, sign, publicKey, SignAlgorithm.Ed25519);
     }
 
     internal Game Update(GameInfoModel model)

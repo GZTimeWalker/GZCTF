@@ -762,7 +762,6 @@ export interface GameInfoModel {
   /**
    * Writeup 提交截止时间
    * @format date-time
-   * @minLength 1
    */
   writeupDeadline?: string;
   /** Writeup 附加说明 */
@@ -1689,6 +1688,20 @@ export interface PostInfoModel {
   time: string;
 }
 
+/** 签名校验 */
+export interface SignatureVerifyModel {
+  /**
+   * 队伍 Token
+   * @minLength 1
+   */
+  teamToken: string;
+  /**
+   * 比赛公钥，Base64 编码
+   * @minLength 1
+   */
+  publicKey: string;
+}
+
 /** 验证码配置 */
 export interface ClientCaptchaInfoModel {
   /** 验证码类型 */
@@ -1726,8 +1739,9 @@ export interface TeamTransferModel {
   newCaptainId: string;
 }
 
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
+import type {AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType} from "axios";
 import axios from "axios";
+import useSWR, {mutate, MutatorOptions, SWRConfiguration} from "swr";
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -1856,8 +1870,6 @@ export class HttpClient<SecurityDataType = unknown> {
     });
   };
 }
-
-import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 
 /**
  * @title GZCTF Server API
@@ -4562,6 +4574,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateInfoGetPosts: (data?: PostInfoModel[] | Promise<PostInfoModel[]>, options?: MutatorOptions) =>
       mutate<PostInfoModel[]>(`/api/posts`, data, options),
+
+    /**
+     * @description 进行签名校验
+     *
+     * @tags Info
+     * @name InfoVerifySignature
+     * @summary 进行签名校验
+     * @request GET:/api/verify
+     */
+    infoVerifySignature: (data: SignatureVerifyModel, params: RequestParams = {}) =>
+      this.request<void, ProblemDetails>({
+        path: `/api/verify`,
+        method: "GET",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
   };
   proxy = {
     /**
