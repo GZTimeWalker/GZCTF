@@ -49,7 +49,8 @@ public sealed class RecordableNetworkStream : NetworkStream
         options.Source.Address = options.Source.Address.MapToIPv6();
         options.Dest.Address = options.Dest.Address.MapToIPv6();
 
-        if (!_options.EnableCapture || string.IsNullOrEmpty(_options.FilePath)) return;
+        if (!_options.EnableCapture || string.IsNullOrEmpty(_options.FilePath))
+            return;
 
         var dir = Path.GetDirectoryName(_options.FilePath);
         if (!Path.Exists(dir) && dir is not null)

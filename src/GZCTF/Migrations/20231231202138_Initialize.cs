@@ -166,7 +166,7 @@ namespace GZCTF.Migrations
                     TimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Level = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Logger = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    RemoteIP = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    RemoteIP = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     UserName = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     Message = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),

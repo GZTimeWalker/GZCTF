@@ -650,8 +650,8 @@ namespace GZCTF.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("RemoteIP")
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(20)

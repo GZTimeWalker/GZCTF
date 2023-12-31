@@ -114,7 +114,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             cell.SetCellValue(col);
             cell.CellStyle = style;
 
-            if (!withOrg || colIndex != 2) continue;
+            if (!withOrg || colIndex != 2)
+                continue;
 
             cell = row.CreateCell(colIndex++);
             cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingOrganization)]);
@@ -122,13 +123,13 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
 
         foreach (KeyValuePair<ChallengeTag, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
-        foreach (ChallengeInfo chall in type.Value)
-        {
-            ICell? cell = row.CreateCell(colIndex++);
-            cell.SetCellValue(chall.Title);
-            cell.CellStyle = style;
-            challIds.Add(chall.Id);
-        }
+            foreach (ChallengeInfo chall in type.Value)
+            {
+                ICell? cell = row.CreateCell(colIndex++);
+                cell.SetCellValue(chall.Title);
+                cell.CellStyle = style;
+                challIds.Add(chall.Id);
+            }
 
         return challIds.ToArray();
     }

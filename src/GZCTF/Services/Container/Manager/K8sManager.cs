@@ -52,7 +52,7 @@ public class K8sManager : IContainerManager
             {
                 Name = name,
                 NamespaceProperty = options.Namespace,
-                Labels = new Dictionary<string, string>
+                Labels =
                 {
                     ["ctf.gzti.me/ResourceId"] = name,
                     ["ctf.gzti.me/TeamId"] = config.TeamId,
@@ -82,15 +82,16 @@ public class K8sManager : IContainerManager
                         Ports = [new V1ContainerPort(config.ExposedPort)],
                         Resources = new V1ResourceRequirements
                         {
-                            Limits = new Dictionary<string, ResourceQuantity>
+                            Limits =
                             {
                                 ["cpu"] = new($"{config.CPUCount * 100}m"),
                                 ["memory"] = new($"{config.MemoryLimit}Mi"),
                                 ["ephemeral-storage"] = new($"{config.StorageLimit}Mi")
                             },
-                            Requests = new Dictionary<string, ResourceQuantity>
+                            Requests =
                             {
-                                ["cpu"] = new("10m"), ["memory"] = new("32Mi")
+                                ["cpu"] = new("10m"),
+                                ["memory"] = new("32Mi")
                             }
                         }
                     }
@@ -140,13 +141,13 @@ public class K8sManager : IContainerManager
             {
                 Name = name,
                 NamespaceProperty = _meta.Config.Namespace,
-                Labels = new Dictionary<string, string> { ["ctf.gzti.me/ResourceId"] = name }
+                Labels = { ["ctf.gzti.me/ResourceId"] = name }
             },
             Spec = new V1ServiceSpec
             {
                 Type = _meta.ExposePort ? "NodePort" : "ClusterIP",
                 Ports = [new V1ServicePort(config.ExposedPort, targetPort: config.ExposedPort)],
-                Selector = new Dictionary<string, string> { ["ctf.gzti.me/ResourceId"] = name }
+                Selector = { ["ctf.gzti.me/ResourceId"] = name }
             }
         };
 

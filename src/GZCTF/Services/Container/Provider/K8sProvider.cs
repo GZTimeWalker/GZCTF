@@ -141,9 +141,10 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
                 Metadata =
                     new V1ObjectMeta
                     {
-                        Name = _k8sMetadata.AuthSecretName, NamespaceProperty = _k8sMetadata.Config.Namespace
+                        Name = _k8sMetadata.AuthSecretName,
+                        NamespaceProperty = _k8sMetadata.Config.Namespace
                     },
-                Data = new Dictionary<string, byte[]> { [".dockerconfigjson"] = dockerJsonBytes },
+                Data = { [".dockerconfigjson"] = dockerJsonBytes },
                 Type = "kubernetes.io/dockerconfigjson"
             };
 

@@ -149,7 +149,7 @@ public class GameRepository(
     {
         Data[] data = await FetchData(game, token);
         IDictionary<int, Blood?[]> bloods = GenBloods(data);
-        IEnumerable<ScoreboardItem> items = GenScoreboardItems(data, game, bloods);
+        ScoreboardItem[] items = GenScoreboardItems(data, game, bloods);
         return new()
         {
             Challenges = GenChallenges(data, bloods),
@@ -217,9 +217,9 @@ public class GameRepository(
             .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
-    static IEnumerable<ScoreboardItem> GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
+    static ScoreboardItem[] GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
     {
-        Dictionary<string, int> ranks = new();
+        Dictionary<string, int> ranks = [];
         return data.GroupBy(j => j.GameInstance.Participation)
             .Select(j =>
             {
@@ -323,7 +323,7 @@ public class GameRepository(
                         new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
                     .ToArray()
                     .AsEnumerable())
-            : new();
+            : [];
 
         timelines["all"] = items.Take(10)
             .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
@@ -342,7 +342,8 @@ public class GameRepository(
                 score += i.Score;
                 return new TimeLine
                 {
-                    Score = score, Time = i.SubmitTimeUtc!.Value // 此处不为 null
+                    Score = score,
+                    Time = i.SubmitTimeUtc!.Value // 此处不为 null
                 };
             });
     }

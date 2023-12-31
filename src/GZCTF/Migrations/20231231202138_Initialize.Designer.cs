@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231224074254_Initialize")]
+    [Migration("20231231202138_Initialize")]
     partial class Initialize
     {
         /// <inheritdoc />
@@ -653,8 +653,8 @@ namespace GZCTF.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("RemoteIP")
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(20)

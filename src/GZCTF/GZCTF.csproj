@@ -55,7 +55,6 @@
         <PackageReference Include="Serilog.Sinks.Async" />
         <PackageReference Include="Serilog.Sinks.File" />
         <PackageReference Include="Serilog.Sinks.File.Archive" />
-        <PackageReference Include="Serilog.Sinks.PostgreSQL" />
         <PackageReference Include="MailKit" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />

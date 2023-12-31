@@ -65,7 +65,8 @@ public class ConfigService(
         {
             if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
             {
-                if (dbConf.Value == conf.Value) continue;
+                if (dbConf.Value == conf.Value)
+                    continue;
 
                 dbConf.Value = conf.Value;
                 logger.SystemLog(

@@ -39,7 +39,7 @@ public partial class Codec
     /// <param name="toBase">进制支持2,8,10,16</param>
     /// <returns></returns>
     public static List<string> ToBase(List<int> source, int toBase) =>
-        [..source.ConvertAll(a => Convert.ToString(a, toBase))];
+        [.. source.ConvertAll(a => Convert.ToString(a, toBase))];
 
     /// <summary>
     /// 字节数组转换为16进制字符串
