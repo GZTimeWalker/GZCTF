@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -12,22 +13,30 @@ public static class DatabaseSinkExtension
         loggerConfiguration.Sink(new DatabaseSink(serviceProvider));
 }
 
-public class DatabaseSink : ILogEventSink
+public class DatabaseSink : ILogEventSink, IDisposable
 {
     readonly IServiceProvider _serviceProvider;
 
-    static DateTimeOffset LastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
-    static readonly List<LogModel> LockedLogBuffer = new();
-    static readonly List<LogModel> LogBuffer = new();
+    DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
+    readonly CancellationTokenSource _tokenSource = new();
+    readonly ConcurrentQueue<LogModel> _logBuffer = new();
 
     public DatabaseSink(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
+        Task.Run(() => WriteToDatabase(_tokenSource.Token), _tokenSource.Token);
+    }
+
+    public void Dispose()
+    {
+        _tokenSource.Cancel();
+        GC.SuppressFinalize(this);
     }
 
     public void Emit(LogEvent logEvent)
     {
-        if (logEvent.Level < LogEventLevel.Information) return;
+        if (logEvent.Level < LogEventLevel.Information)
+            return;
 
         LogModel logModel = new()
         {
@@ -41,28 +50,41 @@ public class DatabaseSink : ILogEventSink
             Exception = logEvent.Exception?.ToString()
         };
 
-        lock (LogBuffer)
-        {
-            LogBuffer.Add(logModel);
-
-            var needFlush = DateTimeOffset.Now - LastFlushTime > TimeSpan.FromSeconds(10);
-            if (!needFlush && LogBuffer.Count < 100) return;
-
-            LockedLogBuffer.AddRange(LogBuffer);
-            LogBuffer.Clear();
-
-            Task.Run(Flush);
-        }
+        _logBuffer.Enqueue(logModel);
     }
 
-    async Task Flush()
+    async Task WriteToDatabase(CancellationToken token = default)
     {
-        using var scope = _serviceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await dbContext.Logs.AddRangeAsync(LockedLogBuffer);
-        await dbContext.SaveChangesAsync();
+        List<LogModel> lockedLogBuffer = new();
 
-        LockedLogBuffer.Clear();
-        LastFlushTime = DateTimeOffset.Now;
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                while (_logBuffer.TryDequeue(out LogModel? logModel))
+                    lockedLogBuffer.Add(logModel);
+
+                if (lockedLogBuffer.Count > 50 || DateTimeOffset.Now - _lastFlushTime > TimeSpan.FromSeconds(10))
+                {
+                    await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
+
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
+
+                    try
+                    {
+                        await dbContext.SaveChangesAsync(token);
+                    }
+                    finally
+                    {
+                        lockedLogBuffer.Clear();
+                        _lastFlushTime = DateTimeOffset.Now;
+                    }
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(1), token);
+            }
+        }
+        catch (TaskCanceledException) { }
     }
 }

@@ -18,7 +18,7 @@ public class LogModel
     [MaxLength(250)]
     public string Logger { get; set; } = string.Empty;
 
-    [MaxLength(25)]
+    [MaxLength(40)]
     public string? RemoteIP { get; set; }
 
     [MaxLength(25)]

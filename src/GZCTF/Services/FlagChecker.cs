@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Services;
 
-public class FlagChecker(ChannelReader<Submission> channelReader,
+public class FlagChecker(
+    ChannelReader<Submission> channelReader,
     ChannelWriter<Submission> channelWriter,
     ILogger<FlagChecker> logger,
     IServiceScopeFactory serviceScopeFactory) : IHostedService
