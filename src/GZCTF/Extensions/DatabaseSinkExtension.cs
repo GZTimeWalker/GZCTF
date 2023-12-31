@@ -24,7 +24,9 @@ public class DatabaseSink : ILogEventSink, IDisposable
     public DatabaseSink(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        Task.Run(() => WriteToDatabase(_tokenSource.Token), _tokenSource.Token);
+        Task.Factory.StartNew(
+            () => WriteToDatabase(_tokenSource.Token),
+            _tokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
 
     public void Dispose()
