@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Localization;
+using Org.BouncyCastle.Crypto.Parameters;
 
 namespace GZCTF.Controllers;
 
@@ -549,5 +550,47 @@ public partial class TeamController(
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Deleted)], user, TaskStatus.Success);
 
         return Ok();
+    }
+
+    /// <summary>
+    /// 进行签名校验
+    /// </summary>
+    /// <remarks>
+    /// 进行签名校验
+    /// </remarks>
+    /// <response code="200">签名有效</response>
+    /// <response code="400">输入格式错误</response>
+    /// <response code="401">签名无效</response>
+    [HttpPost("Verify")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    public IActionResult VerifySignature(SignatureVerifyModel model)
+    {
+        // Token: <id>:<signature>
+        // Data: $"GZCTF_TEAM_{team.Id}"
+
+        var pk = Codec.Base64.DecodeToBytes(model.PublicKey);
+
+        if (pk.Length != 32)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Signature_Invalid)]));
+
+        var pos = model.TeamToken.IndexOf(':');
+
+        if (pos == -1)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Signature_Invalid)]));
+
+        var id = model.TeamToken[..pos];
+        var sign = model.TeamToken[(pos + 1)..];
+
+        if (!int.TryParse(id, out _) || string.IsNullOrEmpty(sign))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Signature_Invalid)]));
+
+        Ed25519PublicKeyParameters publicKey = new(pk, 0);
+
+        if (DigitalSignature.VerifySignature($"GZCTF_TEAM_{id}", sign, publicKey, SignAlgorithm.Ed25519))
+            return Ok();
+
+        return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Signature_Invalid)]));
     }
 }

@@ -1688,20 +1688,6 @@ export interface PostInfoModel {
   time: string;
 }
 
-/** 签名校验 */
-export interface SignatureVerifyModel {
-  /**
-   * 队伍 Token
-   * @minLength 1
-   */
-  teamToken: string;
-  /**
-   * 比赛公钥，Base64 编码
-   * @minLength 1
-   */
-  publicKey: string;
-}
-
 /** 验证码配置 */
 export interface ClientCaptchaInfoModel {
   /** 验证码类型 */
@@ -1737,6 +1723,20 @@ export interface TeamTransferModel {
    * @minLength 1
    */
   newCaptainId: string;
+}
+
+/** 签名校验 */
+export interface SignatureVerifyModel {
+  /**
+   * 队伍 Token
+   * @minLength 1
+   */
+  teamToken: string;
+  /**
+   * 比赛公钥，Base64 编码
+   * @minLength 1
+   */
+  publicKey: string;
 }
 
 import type {AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType} from "axios";
@@ -4574,23 +4574,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateInfoGetPosts: (data?: PostInfoModel[] | Promise<PostInfoModel[]>, options?: MutatorOptions) =>
       mutate<PostInfoModel[]>(`/api/posts`, data, options),
-
-    /**
-     * @description 进行签名校验
-     *
-     * @tags Info
-     * @name InfoVerifySignature
-     * @summary 进行签名校验
-     * @request GET:/api/verify
-     */
-    infoVerifySignature: (data: SignatureVerifyModel, params: RequestParams = {}) =>
-      this.request<void, ProblemDetails>({
-        path: `/api/verify`,
-        method: "GET",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
   };
   proxy = {
     /**
@@ -4891,6 +4874,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 进行签名校验
+     *
+     * @tags Team
+     * @name TeamVerifySignature
+     * @summary 进行签名校验
+     * @request POST:/api/team/verify
+     */
+    teamVerifySignature: (data: SignatureVerifyModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/team/verify`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
   };
