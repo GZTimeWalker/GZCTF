@@ -2,10 +2,13 @@ import { Button, Center, Group, ScrollArea, Stack, Text, Title } from '@mantine/
 import { mdiFolderDownloadOutline, mdiKeyboardBackspace } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useNavigate, useParams } from 'react-router-dom'
 import PDFViewer from '@Components/admin/PDFViewer'
 import TeamWriteupCard from '@Components/admin/TeamWriteupCard'
 import WithGameTab from '@Components/admin/WithGameEditTab'
+import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { useTranslation } from '@Utils/I18n'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { WriteupInfoModel } from '@Api'
 
@@ -16,6 +19,7 @@ const GameWriteups: FC = () => {
   const [selected, setSelected] = useState<WriteupInfoModel>()
 
   const { data: writeups } = api.admin.useAdminWriteups(numId, OnceSWRConfig)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (writeups?.length && !selected) {
@@ -57,7 +61,16 @@ const GameWriteups: FC = () => {
       ) : (
         <Group noWrap align="flex-start" position="apart">
           <Stack pos="relative" mt="-3rem" w="calc(100% - 16rem)">
-            <PDFViewer url={selected.url} height="calc(100vh - 110px)" />
+            <ErrorBoundary
+              fallback={
+                <Center mih="calc(100vh - 110px)">
+                  <Text>未能成功加载 PDF</Text>
+                </Center>
+              }
+              onError={(e) => showErrorNotification(e, t)}
+            >
+              <PDFViewer url={selected?.url} height="calc(100vh - 110px)" />
+            </ErrorBoundary>
           </Stack>
           <ScrollArea miw="15rem" maw="15rem" h="calc(100vh - 110px - 3rem)" type="never">
             <Stack>

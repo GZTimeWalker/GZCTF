@@ -76,6 +76,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
             type="text"
             placeholder="team"
             w="100%"
+            disabled={disabled}
             value={createTeam?.name ?? ''}
             onChange={(event) => setCreateTeam({ ...createTeam, name: event.currentTarget.value })}
           />
@@ -87,6 +88,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
             autosize
             minRows={2}
             maxRows={4}
+            disabled={disabled}
             onChange={(event) => setCreateTeam({ ...createTeam, bio: event.currentTarget.value })}
           />
           <Button fullWidth variant="outline" onClick={onCreateTeam} disabled={disabled}>
