@@ -59,34 +59,36 @@ export const ValidatedRepoMeta = () => {
 
 const showBanner = () => {
   const { sha, tag, buildtime, repo, valid } = ValidatedRepoMeta()
-  const rst = '\x1b[0m'
-  const bold = '\x1b[1m'
-  const brand = '\x1b[38;2;4;202;171m'
-  const alert = '\x1b[38;2;254;48;48m'
   const padding = ' '.repeat(45)
 
-  const showtag = valid ? `${brand}${tag}` : `${alert}Unknown`
-  const commit = valid ? `${brand}${sha}` : `${alert}Unofficial build version`
+  const bannerClr = ['color: #4ccaaa', 'color: unset']
+  const textClr = ['font-weight: bold', 'font-weight: bold; color: #4ccaaa']
+  const badClr = ['font-weight: bold', 'font-weight: bold; color: #fe3030']
 
-  const title = `
- ██████╗ ███████╗ ${brand}        ${rst}  ██████╗████████╗███████╗
-██╔════╝ ╚══███╔╝ ${brand} ██╗██╗ ${rst} ██╔════╝╚══██╔══╝██╔════╝
-██║  ███╗  ███╔╝  ${brand} ╚═╝╚═╝ ${rst} ██║        ██║   █████╗
-██║   ██║ ███╔╝   ${brand} ██╗██╗ ${rst} ██║        ██║   ██╔══╝
-╚██████╔╝███████╗ ${brand} ╚═╝╚═╝ ${rst} ╚██████╗   ██║   ██║
- ╚═════╝ ╚══════╝ ${brand}        ${rst}  ╚═════╝   ╚═╝   ╚═╝
+  const banner = `
+  ██████╗ ███████╗           ██████╗████████╗███████╗
+ ██╔════╝ ╚══███╔╝ %c ██╗██╗ %c ██╔════╝╚══██╔══╝██╔════╝
+ ██║  ███╗  ███╔╝  %c ╚═╝╚═╝ %c ██║        ██║   █████╗
+ ██║   ██║ ███╔╝   %c ██╗██╗ %c ██║        ██║   ██╔══╝
+ ╚██████╔╝███████╗ %c ╚═╝╚═╝ %c ╚██████╗   ██║   ██║
+  ╚═════╝ ╚══════╝           ╚═════╝   ╚═╝   ╚═╝
+  ${padding}%c@ %c${valid ? tag : 'Unknown'}
 
-${padding}${bold}@ ${showtag}${rst}
-`
+%cCopyright (C) 2022-now, GZTimeWalker, All rights reserved.
 
+%cLicense  : %cGNU Affero General Public License v3.0
+%cCommit   : %c${valid ? sha : 'Unofficial build version'}
+%cBuilt at : %c${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}
+%cIssues   : %c${repo}/issues
+ `
+
+  // rewrite the show banner function with %c and css
   console.log(
-    `${title}` +
-      `\n${bold}Copyright (C) 2022-now, GZTimeWalker, All rights reserved.${rst}\n` +
-      `\n${bold}License  : ${brand}GNU Affero General Public License v3.0${rst}` +
-      `\n${bold}Commit   : ${commit}${rst}` +
-      `\n${bold}Built at : ${brand}${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}${rst}` +
-      `\n${bold}Issues   : ${repo}/issues` +
-      '\n'
+    banner,
+    ...bannerClr.concat(bannerClr, bannerClr, bannerClr),
+    ...(valid ? textClr : badClr),
+    'font-weight: bold',
+    ...textClr.concat(valid ? textClr : badClr, textClr, textClr)
   )
 }
 
