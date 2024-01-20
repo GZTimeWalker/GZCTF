@@ -5,20 +5,23 @@
   <ItemGroup>
     <PackageVersion Include="Aigamo.ResXGenerator" Version="4.2.0" />
     <PackageVersion Include="Docker.DotNet" Version="3.125.15" />
-    <PackageVersion Include="KubernetesClient" Version="12.1.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
-    <PackageVersion Include="NPOI" Version="2.6.2" />
-      <PackageVersion Include="NSwag.AspNetCore" Version="14.0.0"/>
-      <PackageVersion Include="NSwag.MSBuild" Version="14.0.0">
+    <PackageVersion Include="KubernetesClient" Version="13.0.1"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageVersion Include="NPOI" Version="2.6.2" />
+    <PackageVersion Include="NSwag.AspNetCore" Version="14.0.2"/>
+    <PackageVersion Include="NSwag.MSBuild" Version="14.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1"/>
     <PackageVersion Include="Serilog.Expressions" Version="4.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.AspNetCore.SignalR" Version="0.4.0" />
@@ -26,26 +29,26 @@
     <PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageVersion Include="Serilog.Sinks.File.Archive" Version="1.0.4" />
     <PackageVersion Include="MailKit" Version="4.3.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.1"/>
     <PackageVersion Include="MemoryPack" Version="1.10.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
-      <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.2"/>
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.1"/>
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.2"/>
     <PackageVersion Include="BouncyCastle.Cryptography" Version="2.2.1" />
     <PackageVersion Include="PacketDotNet" Version="1.4.7" />
     <PackageVersion Include="SharpPcap" Version="6.2.5" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.1"/>
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-      <PackageVersion Include="xunit" Version="2.6.5"/>
+    <PackageVersion Include="xunit" Version="2.6.6"/>
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-      <PackageVersion Include="xunit.runner.console" Version="2.6.5">
+    <PackageVersion Include="xunit.runner.console" Version="2.6.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
