@@ -18,9 +18,9 @@
       "clean_cache": "清除缓存"
     },
     "language": {
-      "en": "English",
-      "zh": "中文",
-      "switch_to": "切换到{{language}}"
+      "zh-CN": "中文",
+      "en-US": "English",
+      "ja-JP": "日本語"
     }
   },
   "title": {

@@ -19,6 +19,7 @@ import {
   mdiInformationOutline,
   mdiLogout,
   mdiNoteTextOutline,
+  mdiSignLanguage,
   mdiWeatherNight,
   mdiWeatherSunny,
   mdiWrenchOutline,
@@ -28,6 +29,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
+import { useLanguage } from '@Utils/I18n'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
@@ -123,6 +125,7 @@ const AppNavbar: FC = () => {
   const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
   const { t } = useTranslation()
+  const { language, setLanguage, supportedLanguages } = useLanguage()
 
   const items: NavbarItem[] = [
     { icon: mdiHomeVariantOutline, label: t('common.tab.home'), link: '/' },
@@ -198,6 +201,27 @@ const AppNavbar: FC = () => {
               )}
             </ActionIcon>
           </Tooltip>
+
+          {/* Language */}
+          <Menu position="right-end" offset={24} width={160}>
+            <Menu.Target>
+              <ActionIcon className={classes.link}>
+                <Icon path={mdiSignLanguage} size={1} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {supportedLanguages.map((lang) => (
+                <Menu.Item
+                  key={lang}
+                  onClick={() => setLanguage(lang)}
+                  icon={<Icon path={mdiSignLanguage} size={1} />}
+                >
+                  {lang}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
 
           {/* User Info */}
           {user && !error ? (
