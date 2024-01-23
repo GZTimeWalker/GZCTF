@@ -21,10 +21,10 @@ import { notifications, showNotification, updateNotification } from '@mantine/no
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { ACCEPT_IMAGE_MIME_TYPE, useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
@@ -54,7 +54,7 @@ const Profile: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle('个人信息')
+  usePageTitle(t('account.title.profile'))
 
   useEffect(() => {
     setProfile({
@@ -74,7 +74,7 @@ const Profile: FC = () => {
     showNotification({
       id: 'upload-avatar',
       color: 'orange',
-      message: '正在上传头像',
+      message: t('account.notification.profile.avatar_uploading'),
       loading: true,
       autoClose: false,
     })
@@ -87,7 +87,7 @@ const Profile: FC = () => {
         updateNotification({
           id: 'upload-avatar',
           color: 'teal',
-          message: '头像已更新',
+          message: t('account.notification.profile.avatar_uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
         })
@@ -99,7 +99,7 @@ const Profile: FC = () => {
         updateNotification({
           id: 'upload-avatar',
           color: 'red',
-          title: '头像更新失败',
+          title: t('account.notification.profile.avatar_upload_failed'),
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
@@ -117,8 +117,7 @@ const Profile: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '更改成功',
-          message: '个人信息已更新',
+          message: t('account.notification.profile.profile_updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutate({ ...user })
@@ -137,8 +136,8 @@ const Profile: FC = () => {
         if (res.data.data) {
           showNotification({
             color: 'teal',
-            title: '验证邮件已发送',
-            message: '请检查你的邮箱及垃圾邮件~',
+            title: t('common.email.sent.title'),
+            message: t('common.email.sent.message'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
         } else {
@@ -151,12 +150,12 @@ const Profile: FC = () => {
 
   const context = (
     <>
-      <Title order={2}>个人信息</Title>
+      <Title order={2}>{t('account.title.profile')}</Title>
       <Divider mt="xs" mb="md" />
       <Stack spacing="md" m="auto">
         <Group noWrap>
           <TextInput
-            label="用户名"
+            label={t('account.label.username')}
             type="text"
             w="100%"
             value={profile.userName ?? 'ctfer'}
@@ -177,7 +176,7 @@ const Profile: FC = () => {
         </Group>
         <SimpleGrid cols={2}>
           <TextInput
-            label="邮箱"
+            label={t('account.label.email')}
             type="email"
             w="100%"
             value={user?.email ?? 'ctfer@gzti.me'}
@@ -185,7 +184,7 @@ const Profile: FC = () => {
             readOnly
           />
           <TextInput
-            label="手机号"
+            label={t('account.label.phone')}
             type="tel"
             w="100%"
             value={profile.phone ?? ''}
@@ -193,7 +192,7 @@ const Profile: FC = () => {
             onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
           />
           <TextInput
-            label="学工号"
+            label={t('account.label.student_id')}
             type="number"
             w="100%"
             value={profile.stdNumber ?? ''}
@@ -201,7 +200,7 @@ const Profile: FC = () => {
             onChange={(event) => setProfile({ ...profile, stdNumber: event.target.value })}
           />
           <TextInput
-            label="真实姓名"
+            label={t('account.label.real_name')}
             type="text"
             w="100%"
             value={profile.realName ?? ''}
@@ -210,8 +209,8 @@ const Profile: FC = () => {
           />
         </SimpleGrid>
         <Textarea
-          label="描述"
-          value={profile.bio ?? '这个人很懒，什么都没有写'}
+          label={t('account.label.bio')}
+          value={profile.bio ?? t('account.placeholder.bio')}
           w="100%"
           disabled={disabled}
           autosize
@@ -229,7 +228,7 @@ const Profile: FC = () => {
                 disabled={disabled}
                 onClick={() => setMailEditOpened(true)}
               >
-                更改邮箱
+                {t('account.button.update_email')}
               </Button>
             </Grid.Col>
             <Grid.Col span={4}>
@@ -240,12 +239,12 @@ const Profile: FC = () => {
                 disabled={disabled}
                 onClick={() => setPwdChangeOpened(true)}
               >
-                更改密码
+                {t('account.button.change_password')}
               </Button>
             </Grid.Col>
             <Grid.Col span={4}>
               <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
-                保存信息
+                {t('account.button.save_profile')}
               </Button>
             </Grid.Col>
           </Grid>
@@ -269,19 +268,21 @@ const Profile: FC = () => {
       <PasswordChangeModal
         opened={pwdChangeOpened}
         onClose={() => setPwdChangeOpened(false)}
-        title="更改密码"
+        title={t('account.button.change_password')}
       />
 
-      <Modal opened={mailEditOpened} onClose={() => setMailEditOpened(false)} title="更改邮箱">
+      <Modal
+        opened={mailEditOpened}
+        onClose={() => setMailEditOpened(false)}
+        title={t('account.button.update_email')}
+      >
         <Stack>
           <Text>
-            更改邮箱后，您将不能通过原邮箱登录。
-            <br />
-            一封邮件将会发送至新邮箱，请点击邮件中的链接完成验证。
+            <Trans i18nKey="account.content.profile.update_email_note"></Trans>
           </Text>
           <TextInput
             required
-            label="新邮箱"
+            label={t('account.label.email_new')}
             type="email"
             w="100%"
             placeholder={user?.email ?? 'ctfer@gzti.me'}
@@ -296,10 +297,10 @@ const Profile: FC = () => {
                 setMailEditOpened(false)
               }}
             >
-              取消
+              {t('common.modal.cancel')}
             </Button>
             <Button color="orange" onClick={onChangeEmail}>
-              确认修改
+              {t('common.modal.confirm')}
             </Button>
           </Group>
         </Stack>
@@ -315,8 +316,8 @@ const Profile: FC = () => {
           onReject={() => {
             showNotification({
               color: 'red',
-              title: '文件获取失败',
-              message: '请检查文件格式和大小',
+              title: t('common.error.file_invalid.title'),
+              message: t('common.error.file_invalid.message'),
               icon: <Icon path={mdiClose} size={1} />,
             })
           }}
@@ -332,10 +333,10 @@ const Profile: FC = () => {
             ) : (
               <Box>
                 <Text size="xl" inline>
-                  拖放图片或点击此处以选择头像
+                  {t('account.placeholder.drop_zone.content')}
                 </Text>
                 <Text size="sm" c="dimmed" inline mt={7}>
-                  请选择小于 3MB 的图片
+                  {t('account.placeholder.drop_zone.hint')}
                 </Text>
               </Box>
             )}

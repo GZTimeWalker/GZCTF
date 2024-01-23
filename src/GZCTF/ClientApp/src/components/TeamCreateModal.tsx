@@ -14,8 +14,8 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiCloseCircle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import api, { TeamUpdateModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {

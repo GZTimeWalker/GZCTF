@@ -4,10 +4,10 @@ import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import Captcha, { useCaptchaRef } from '@Components/Captcha'
-import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api from '@Api'
@@ -26,7 +26,7 @@ const Login: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle('登录')
+  usePageTitle(t('account.title.login'))
 
   useEffect(() => {
     if (needRedirect && user) {
@@ -43,8 +43,8 @@ const Login: FC = () => {
     if (uname.length === 0 || pwd.length < 6) {
       showNotification({
         color: 'red',
-        title: '请检查输入',
-        message: '无效的用户名或密码',
+        title: t('account.notification.login.invalid'),
+        message: t('common.error.check_input'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       setDisabled(false)
@@ -56,8 +56,8 @@ const Login: FC = () => {
     if (!valid) {
       showNotification({
         color: 'orange',
-        title: '请等待验证码……',
-        message: '请稍后重试',
+        title: t('account.notification.captcha.not_valid'),
+        message: t('common.error.try_later'),
         loading: true,
       })
       return
@@ -68,8 +68,8 @@ const Login: FC = () => {
     showNotification({
       color: 'orange',
       id: 'login-status',
-      title: '请求已发送……',
-      message: '等待服务器验证',
+      title: t('account.notification.captcha.request_sent.title'),
+      message: t('account.notification.captcha.request_sent.message'),
       loading: true,
       autoClose: false,
     })
@@ -84,8 +84,8 @@ const Login: FC = () => {
       updateNotification({
         id: 'login-status',
         color: 'teal',
-        title: '登录成功',
-        message: '跳转回登录前页面',
+        title: t('account.notification.login.success.title'),
+        message: t('account.notification.login.success.message'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
       setNeedRedirect(true)
@@ -94,7 +94,7 @@ const Login: FC = () => {
       updateNotification({
         id: 'login-status',
         color: 'red',
-        title: '遇到了问题',
+        title: t('common.error.encountered'),
         message: `${err.response.data.title}`,
         icon: <Icon path={mdiClose} size={1} />,
       })
@@ -107,7 +107,7 @@ const Login: FC = () => {
     <AccountView onSubmit={onLogin}>
       <TextInput
         required
-        label="用户名或邮箱"
+        label={t('account.label.username_or_email')}
         placeholder="ctfer"
         type="text"
         w="100%"
@@ -117,7 +117,7 @@ const Login: FC = () => {
       />
       <PasswordInput
         required
-        label="密码"
+        label={t('account.label.password')}
         id="your-password"
         placeholder="P4ssW@rd"
         w="100%"
@@ -134,17 +134,17 @@ const Login: FC = () => {
         component={Link}
         to="/account/recovery"
       >
-        忘记密码？
+        {t('account.anchor.recovery')}
       </Anchor>
       <Grid grow w="100%">
         <Grid.Col span={2}>
           <Button fullWidth variant="outline" component={Link} to="/account/register">
-            注册
+            {t('account.button.register')}
           </Button>
         </Grid.Col>
         <Grid.Col span={2}>
           <Button fullWidth disabled={disabled} onClick={onLogin}>
-            登录
+            {t('account.button.login')}
           </Button>
         </Grid.Col>
       </Grid>

@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.3",
+    "@kainstar/vite-plugin-i18next-loader": "^1.0.2",
     "@nabla/vite-plugin-eslint": "^2.0.2",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/katex": "^0.16.7",

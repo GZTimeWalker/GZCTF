@@ -1,8 +1,8 @@
 import { Stack, Text, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import IconWiderScreenRequired from '@Components/icon/WiderScreenRequiredIcon'
-import { useTranslation } from '@Utils/I18n'
 
 interface WithWiderScreenProps extends React.PropsWithChildren {
   minWidth?: number

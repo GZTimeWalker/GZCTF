@@ -2,8 +2,8 @@ import { Avatar, Badge, Group, rem, Stack, Text, useMantineTheme } from '@mantin
 import { mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
+import { useTranslation } from 'react-i18next'
 import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
-import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
 import {
   ChallengeTag,

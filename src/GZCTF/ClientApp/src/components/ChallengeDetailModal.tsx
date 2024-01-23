@@ -18,9 +18,9 @@ import { notifications, showNotification, updateNotification } from '@mantine/no
 import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
@@ -39,53 +39,53 @@ interface ChallengeDetailModalProps extends ModalProps {
 }
 
 export const FlagPlaceholders: string[] = [
-  t('横看成岭侧成峰，flag 高低各不同'),
-  t('flag 当关，万夫莫开'),
-  t('寻寻觅觅，冷冷清清，flag 惨惨戚戚'),
-  t('问君能有几多愁？恰似一江 flag 向东流'),
-  t('人生得意须尽欢，莫使 flag 空对月'),
-  t('汉皇重色思 flag，御宇多年求不得'),
-  t('flag 几时有？把酒问青天'),
-  t('羽扇纶巾，谈笑间，flag 灰飞烟灭'),
-  t('浊酒一杯家万里，flag 未勒归无计'),
-  t('孤帆远影碧空尽，唯见 flag 天际流'),
-  t('安得 flag 千万间，大庇天下 ctfer 俱欢颜！'),
-  t('两个黄鹂鸣翠柳，一行 flag 上青天'),
-  t('flag 一场大梦，人生几度秋凉？'),
-  t('剪不断，理还乱，是 flag'),
-  t('蓦然回首，flag 却在，灯火阑珊处'),
-  t('稻花香里说丰年，听取 flag 一片'),
-  t('采菊东篱下，悠然见 flag'),
-  t('不畏 flag 遮望眼，自缘身在最高层'),
-  t('便纵有千种 flag，更与何人说？'),
-  t('人生自古谁无死？留取 flag 照汗青'),
-  t('借问 flag 何处有？牧童遥指杏花村'),
+  '横看成岭侧成峰，flag 高低各不同',
+  'flag 当关，万夫莫开',
+  '寻寻觅觅，冷冷清清，flag 惨惨戚戚',
+  '问君能有几多愁？恰似一江 flag 向东流',
+  '人生得意须尽欢，莫使 flag 空对月',
+  '汉皇重色思 flag，御宇多年求不得',
+  'flag 几时有？把酒问青天',
+  '羽扇纶巾，谈笑间，flag 灰飞烟灭',
+  '浊酒一杯家万里，flag 未勒归无计',
+  '孤帆远影碧空尽，唯见 flag 天际流',
+  '安得 flag 千万间，大庇天下 ctfer 俱欢颜！',
+  '两个黄鹂鸣翠柳，一行 flag 上青天',
+  'flag 一场大梦，人生几度秋凉？',
+  '剪不断，理还乱，是 flag',
+  '蓦然回首，flag 却在，灯火阑珊处',
+  '稻花香里说丰年，听取 flag 一片',
+  '采菊东篱下，悠然见 flag',
+  '不畏 flag 遮望眼，自缘身在最高层',
+  '便纵有千种 flag，更与何人说？',
+  '人生自古谁无死？留取 flag 照汗青',
+  '借问 flag 何处有？牧童遥指杏花村',
 ]
 
 export const WrongFlagHints: string[] = [
-  t('饮水思源，重新审题吧。'),
-  t('诗云：路漫漫其修远兮，再接再厉吧。'),
-  t('沉着冷静，可能会有意想不到的收获。'),
-  t('失败乃成功之母，回去再琢磨琢磨。'),
-  t('非也非也，不是这个 flag。'),
-  t('望眼欲穿，flag 却不在这里。'),
-  t('不要浮躁，仔细再思考思考。'),
-  t('翻遍天涯，也不是这个答案。'),
-  t('走马观花，可找不到 flag。'),
-  t('反复推敲，答案应该就在你手边。'),
-  t('深谋远虑，flag 不是那么简单。'),
-  t('山高水远，flag 藏得真是深啊！'),
-  t('时运不济，碾过你的难道是寂寞？'),
-  t('兴奋过头，还需要学会更加冷静的思考。'),
-  t('碰壁了，难道是你已经到了巅峰？'),
-  t('岁月静好，flag 却已然远去。'),
-  t('浅水已涸，flag 不可复得。'),
-  t('白雪纷纷何所似，似此 flag 被错过。'),
-  t('旧事追思，往事如烟。flag 已然消逝。'),
-  t('桃花潭水深千尺，不及 flag 不见了踪迹。'),
-  t('万籁俱寂，唯有 flag 的错误提示在耳边响起。'),
-  t('陌上花开，可缓缓归矣。flag 未得而返。'),
-  t('风萧萧兮易水寒，无奈 flag 仍未到彼岸。'),
+  '饮水思源，重新审题吧。',
+  '诗云：路漫漫其修远兮，再接再厉吧。',
+  '沉着冷静，可能会有意想不到的收获。',
+  '失败乃成功之母，回去再琢磨琢磨。',
+  '非也非也，不是这个 flag。',
+  '望眼欲穿，flag 却不在这里。',
+  '不要浮躁，仔细再思考思考。',
+  '翻遍天涯，也不是这个答案。',
+  '走马观花，可找不到 flag。',
+  '反复推敲，答案应该就在你手边。',
+  '深谋远虑，flag 不是那么简单。',
+  '山高水远，flag 藏得真是深啊！',
+  '时运不济，碾过你的难道是寂寞？',
+  '兴奋过头，还需要学会更加冷静的思考。',
+  '碰壁了，难道是你已经到了巅峰？',
+  '岁月静好，flag 却已然远去。',
+  '浅水已涸，flag 不可复得。',
+  '白雪纷纷何所似，似此 flag 被错过。',
+  '旧事追思，往事如烟。flag 已然消逝。',
+  '桃花潭水深千尺，不及 flag 不见了踪迹。',
+  '万籁俱寂，唯有 flag 的错误提示在耳边响起。',
+  '陌上花开，可缓缓归矣。flag 未得而返。',
+  '风萧萧兮易水寒，无奈 flag 仍未到彼岸。',
 ]
 
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {

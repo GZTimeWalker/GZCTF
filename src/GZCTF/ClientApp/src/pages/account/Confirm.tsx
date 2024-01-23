@@ -3,9 +3,9 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
-import { Trans, useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
@@ -19,7 +19,7 @@ const Confirm: FC = () => {
   const { t } = useTranslation()
   const decodeEmail = window.atob(email ?? '')
 
-  usePageTitle(t('Page_ConfirmEmail'))
+  usePageTitle(t('account.title.confirm'))
 
   const verify = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -27,8 +27,8 @@ const Confirm: FC = () => {
     if (!token || !email) {
       showNotification({
         color: 'red',
-        title: t('Email_ConfirmFailed'),
-        message: t('Param_Missing'),
+        title: t('account.notification.confirm.failed'),
+        message: t('common.error.param_missing'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -40,7 +40,7 @@ const Confirm: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: t('Email_Confirm'),
+          title: t('account.notification.confirm.success'),
           message: window.atob(email),
           icon: <Icon path={mdiCheck} size={1} />,
         })
@@ -49,8 +49,8 @@ const Confirm: FC = () => {
       .catch(() => {
         showNotification({
           color: 'red',
-          title: t('Email_ConfirmFailed'),
-          message: t('Param_Error'),
+          title: t('account.notification.confirm.failed'),
+          message: t('common.error.param_error'),
           icon: <Icon path={mdiClose} size={1} />,
         })
       })
@@ -64,24 +64,22 @@ const Confirm: FC = () => {
       {email && token ? (
         <>
           <Text size="md" fw={500}>
-            <Trans i18nKey={'Email_HelloWithHand'} decodeEmail={decodeEmail}>
-              {{ decodeEmail }}, 你好👋
-            </Trans>
+            {t('account.content.welcome', { decodeEmail })}
           </Text>
           <Text size="md" fw={500}>
-            <Trans i18nKey={'Email_ConfirmInstruction'} />
+            {t('account.content.confirm.message')}
           </Text>
           <Button mt="lg" type="submit" w="50%" disabled={disabled}>
-            <Trans i18nKey={'Email_Confirm'} />
+            {t('account.button.confirm_email')}
           </Button>
         </>
       ) : (
         <>
           <Text size="md" fw={500}>
-            <Trans i18nKey={'Email_ConfirmInvalidLink'} />
+            {t('account.content.link_invalid')}
           </Text>
           <Text size="md" fw={500}>
-            <Trans i18nKey={'Email_ConfirmInvalidLinkInstruction'} />
+            {t('account.content.link_check')}
           </Text>
         </>
       )}

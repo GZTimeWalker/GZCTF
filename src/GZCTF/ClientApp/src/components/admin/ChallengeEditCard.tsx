@@ -12,8 +12,8 @@ import {
 import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfoModel, ChallengeTag } from '@Api'
 

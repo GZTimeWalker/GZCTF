@@ -13,8 +13,8 @@ import {
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { useTranslation } from '@Utils/I18n'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 

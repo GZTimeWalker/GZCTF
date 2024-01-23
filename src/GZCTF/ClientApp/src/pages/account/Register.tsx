@@ -4,37 +4,13 @@ import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
-import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { RegisterStatus } from '@Api'
-
-const RegisterStatusMap = new Map([
-  [
-    RegisterStatus.LoggedIn,
-    {
-      message: '注册成功',
-    },
-  ],
-  [
-    RegisterStatus.AdminConfirmationRequired,
-    {
-      title: '注册请求已发送',
-      message: '请等待管理员审核激活~',
-    },
-  ],
-  [
-    RegisterStatus.EmailConfirmationRequired,
-    {
-      title: '一封注册邮件已发送',
-      message: '请检查你的邮箱及垃圾邮件~',
-    },
-  ],
-  [undefined, undefined],
-])
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -48,7 +24,31 @@ const Register: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle('注册')
+  const RegisterStatusMap = new Map([
+    [
+      RegisterStatus.LoggedIn,
+      {
+        message: t('account.notification.register.logged_in'),
+      },
+    ],
+    [
+      RegisterStatus.AdminConfirmationRequired,
+      {
+        title: t('account.notification.register.request_sent.title'),
+        message: t('account.notification.register.request_sent.message'),
+      },
+    ],
+    [
+      RegisterStatus.EmailConfirmationRequired,
+      {
+        title: t('common.email.sent.title'),
+        message: t('common.email.sent.message'),
+      },
+    ],
+    [undefined, undefined],
+  ])
+
+  usePageTitle(t('account.title.register'))
 
   const onRegister = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -56,8 +56,8 @@ const Register: FC = () => {
     if (pwd !== retypedPwd) {
       showNotification({
         color: 'red',
-        title: '请检查输入',
-        message: '重复密码有误',
+        title: t('common.error.check_input'),
+        message: t('account.password.not_match'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -68,8 +68,8 @@ const Register: FC = () => {
     if (!valid) {
       showNotification({
         color: 'orange',
-        title: '请等待验证码……',
-        message: '请稍后重试',
+        title: t('account.notification.captcha.not_valid'),
+        message: t('common.error.try_later'),
         loading: true,
       })
       return
@@ -80,8 +80,8 @@ const Register: FC = () => {
     showNotification({
       color: 'orange',
       id: 'register-status',
-      title: '请求已发送……',
-      message: '等待服务器验证',
+      title: t('account.notification.captcha.request_sent.title'),
+      message: t('account.notification.captcha.request_sent.message'),
       loading: true,
       autoClose: false,
     })
@@ -110,7 +110,7 @@ const Register: FC = () => {
       updateNotification({
         id: 'register-status',
         color: 'red',
-        title: '遇到了问题',
+        title: t('common.error.encountered'),
         message: `${err.response.data.title}`,
         icon: <Icon path={mdiClose} size={1} />,
       })
@@ -123,7 +123,7 @@ const Register: FC = () => {
     <AccountView onSubmit={onRegister}>
       <TextInput
         required
-        label="邮箱"
+        label={t('account.label.email')}
         type="email"
         placeholder="ctf@example.com"
         w="100%"
@@ -133,7 +133,7 @@ const Register: FC = () => {
       />
       <TextInput
         required
-        label="用户名"
+        label={t('account.label.username')}
         type="text"
         placeholder="ctfer"
         w="100%"
@@ -148,10 +148,10 @@ const Register: FC = () => {
       />
       <PasswordInput
         required
+        label={t('account.label.password_retype')}
         value={retypedPwd}
         onChange={(event) => setRetypedPwd(event.currentTarget.value)}
         disabled={disabled}
-        label="重复密码"
         w="100%"
         error={pwd !== retypedPwd}
       />
@@ -164,10 +164,10 @@ const Register: FC = () => {
         component={Link}
         to="/account/login"
       >
-        已经拥有账户？
+        {t('account.anchor.login')}
       </Anchor>
       <Button type="submit" fullWidth onClick={onRegister} disabled={disabled}>
-        注册
+        {t('account.button.register')}
       </Button>
     </AccountView>
   )

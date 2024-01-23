@@ -9,9 +9,9 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import IconTabs from '@Components/IconTabs'
-import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const pages = [

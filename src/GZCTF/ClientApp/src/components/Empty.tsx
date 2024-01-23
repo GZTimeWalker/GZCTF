@@ -2,7 +2,7 @@ import { MantineNumberSize, Stack, Text } from '@mantine/core'
 import { mdiInbox } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, ReactNode } from 'react'
-import { useTranslation } from '@Utils/I18n'
+import { useTranslation } from 'react-i18next'
 
 interface EmptyProps {
   bordered?: boolean

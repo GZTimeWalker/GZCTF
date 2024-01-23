@@ -10,7 +10,7 @@ import {
 import { mdiClose, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
-import { useTranslation } from '@Utils/I18n'
+import { useTranslation } from 'react-i18next'
 
 interface HintListProps extends TextInputProps {
   hints: string[]

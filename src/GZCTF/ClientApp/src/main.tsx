@@ -5,14 +5,14 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { initReactI18next } from 'react-i18next'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { resources } from './utils/I18n'
+import resources from 'virtual:i18next-loader'
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'zh-CN',
+    fallbackLng: 'zh_CN',
     interpolation: {
       escapeValue: false,
     },

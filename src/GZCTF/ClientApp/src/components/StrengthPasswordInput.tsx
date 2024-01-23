@@ -3,7 +3,7 @@ import { useDisclosure } from '@mantine/hooks'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC } from 'react'
-import { useTranslation } from '@Utils/I18n'
+import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@Utils/ThemeOverride'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {
@@ -15,25 +15,6 @@ const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, lab
       </Center>
     </Text>
   )
-}
-
-const requirements = [
-  { re: /[0-9]/, label: t('包含数字') },
-  { re: /[a-z]/, label: t('包含小写字母') },
-  { re: /[A-Z]/, label: t('包含大写字母') },
-  { re: /[`$&+,:;=?@#|'<>.^*()%!-]/, label: t('包含特殊字符') },
-]
-
-const getStrength = (password: string) => {
-  let multiplier = password.length > 5 ? 0 : 1
-
-  requirements.forEach((requirement) => {
-    if (!requirement.re.test(password)) {
-      multiplier += 1
-    }
-  })
-
-  return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0)
 }
 
 interface StrengthPasswordInputProps {
@@ -51,8 +32,31 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
 
   const { t } = useTranslation()
 
+  const requirements = [
+    { re: /[0-9]/, label: t('account.password.include_number') },
+    { re: /[a-z]/, label: t('account.password.include_lowercase') },
+    { re: /[A-Z]/, label: t('account.password.include_uppercase') },
+    { re: /[`$&+,:;=?@#|'<>.^*()%!-]/, label: t('account.password.include_symbol') },
+  ]
+
+  const getStrength = (password: string) => {
+    let multiplier = password.length > 5 ? 0 : 1
+
+    requirements.forEach((requirement) => {
+      if (!requirement.re.test(password)) {
+        multiplier += 1
+      }
+    })
+
+    return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0)
+  }
+
   const checks = [
-    <PasswordRequirement key={0} label="至少 6 个字符" meets={pwd.length >= 6} />,
+    <PasswordRequirement
+      key={0}
+      label={t('account.password.min_length')}
+      meets={pwd.length >= 6}
+    />,
     ...requirements.map((requirement, index) => (
       <PasswordRequirement
         key={index + 1}
@@ -81,7 +85,7 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
       <Popover.Target>
         <PasswordInput
           required
-          label={props.label ?? '密码'}
+          label={props.label ?? t('account.label.password')}
           placeholder="P4ssW@rd"
           value={props.value}
           onFocusCapture={open}

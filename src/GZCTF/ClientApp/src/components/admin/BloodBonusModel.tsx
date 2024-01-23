@@ -1,7 +1,7 @@
 import { Button, Group, Modal, ModalProps, NumberInput, Stack, Text } from '@mantine/core'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { useTranslation } from '@Utils/I18n'
 import { BloodBonus } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { SubmissionType } from '@Api'

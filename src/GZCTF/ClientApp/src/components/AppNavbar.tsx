@@ -25,9 +25,9 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
-import { useTranslation } from '@Utils/I18n'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
@@ -88,15 +88,6 @@ interface NavbarItem {
   admin?: boolean
 }
 
-const items: NavbarItem[] = [
-  { icon: mdiHomeVariantOutline, label: t('主页'), link: '/' },
-  { icon: mdiNoteTextOutline, label: t('文章'), link: '/posts' },
-  { icon: mdiFlagOutline, label: t('赛事'), link: '/games' },
-  { icon: mdiAccountGroupOutline, label: t('队伍'), link: '/teams' },
-  { icon: mdiInformationOutline, label: t('关于'), link: '/about' },
-  { icon: mdiWrenchOutline, label: t('管理'), link: '/admin/games', admin: true },
-]
-
 export interface NavbarLinkProps {
   icon: string
   label?: string
@@ -122,28 +113,36 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   )
 }
 
-const getLabel = (path: string) =>
-  items.find((item) =>
-    item.link === '/'
-      ? path === '/'
-      : item.link.startsWith('/admin')
-        ? path.startsWith('/admin')
-        : path.startsWith(item.link)
-  )?.label
-
 const AppNavbar: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { classes } = useStyles()
-
-  const [active, setActive] = useState(getLabel(location.pathname) ?? '')
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const logout = useLoginOut()
   const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
-
   const { t } = useTranslation()
+
+  const items: NavbarItem[] = [
+    { icon: mdiHomeVariantOutline, label: t('common.tab.home'), link: '/' },
+    { icon: mdiNoteTextOutline, label: t('common.tab.post'), link: '/posts' },
+    { icon: mdiFlagOutline, label: t('common.tab.game'), link: '/games' },
+    { icon: mdiAccountGroupOutline, label: t('common.tab.team'), link: '/teams' },
+    { icon: mdiInformationOutline, label: t('common.tab.about'), link: '/about' },
+    { icon: mdiWrenchOutline, label: t('common.tab.manage'), link: '/admin/games', admin: true },
+  ]
+
+  const getLabel = (path: string) =>
+    items.find((item) =>
+      item.link === '/'
+        ? path === '/'
+        : item.link.startsWith('/admin')
+          ? path.startsWith('/admin')
+          : path.startsWith(item.link)
+    )?.label
+
+  const [active, setActive] = useState(getLabel(location.pathname) ?? '')
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -184,7 +183,10 @@ const AppNavbar: FC = () => {
         <Stack align="center" spacing={5}>
           {/* Color Mode */}
           <Tooltip
-            label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
+            label={t('common.tab.theme.switch_to', {
+              theme:
+                colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
+            })}
             classNames={{ tooltip: classes.tooltipBody }}
             position="right"
           >
@@ -219,18 +221,22 @@ const AppNavbar: FC = () => {
                   to="/account/profile"
                   icon={<Icon path={mdiAccountCircleOutline} size={1} />}
                 >
-                  用户信息
+                  {t('common.tab.account.profile')}
                 </Menu.Item>
                 <Menu.Item onClick={clearLocalCache} icon={<Icon path={mdiCached} size={1} />}>
-                  清除缓存
+                  {t('common.tab.account.clean_cache')}
                 </Menu.Item>
                 <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
-                  登出
+                  {t('common.tab.account.logout')}
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           ) : (
-            <Tooltip label="登录" classNames={{ tooltip: classes.tooltipBody }} position="right">
+            <Tooltip
+              label={t('common.tab.account.login')}
+              classNames={{ tooltip: classes.tooltipBody }}
+              position="right"
+            >
               <ActionIcon
                 component={Link}
                 to={`/account/login?from=${location.pathname}`}

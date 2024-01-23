@@ -1,9 +1,9 @@
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useSWRConfig } from 'swr'
-import { useTranslation } from '@Utils/I18n'
 import api from '@Api'
 
 export const useUser = () => {

@@ -13,7 +13,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
-import { useTranslation } from '@Utils/I18n'
+import { useTranslation } from 'react-i18next'
 import { Attachment, FlagInfoModel } from '@Api'
 
 interface FlagCardProps {

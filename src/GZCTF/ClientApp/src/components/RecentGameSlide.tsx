@@ -1,10 +1,10 @@
 import { Badge, createStyles, Group, Paper, Stack, Title } from '@mantine/core'
 import dayjs from 'dayjs'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
-import { useTranslation } from '@Utils/I18n'
 import { getGameStatus } from '@Utils/useGame'
 
 const useStyles = createStyles((theme) => ({

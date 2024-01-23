@@ -1,7 +1,7 @@
 import { useMantineTheme } from '@mantine/core'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
-import { useTranslation } from '@Utils/I18n'
+import { useTranslation } from 'react-i18next'
 
 interface ScoreFuncProps {
   originalScore: number

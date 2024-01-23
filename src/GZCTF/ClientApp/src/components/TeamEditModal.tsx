@@ -18,17 +18,17 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core'
-import {Dropzone} from '@mantine/dropzone'
-import {useClipboard} from '@mantine/hooks'
-import {useModals} from '@mantine/modals'
-import {notifications, showNotification, updateNotification} from '@mantine/notifications'
-import {mdiCheck, mdiClose, mdiRefresh, mdiStar} from '@mdi/js'
-import {Icon} from '@mdi/react'
-import {FC, useEffect, useState} from 'react'
-import {showErrorNotification, tryGetErrorMsg} from '@Utils/ApiErrorHandler'
-import {useTranslation} from '@Utils/I18n'
-import {ACCEPT_IMAGE_MIME_TYPE} from '@Utils/ThemeOverride'
-import api, {TeamInfoModel, TeamUserInfoModel} from '@Api'
+import { Dropzone } from '@mantine/dropzone'
+import { useClipboard } from '@mantine/hooks'
+import { useModals } from '@mantine/modals'
+import { notifications, showNotification, updateNotification } from '@mantine/notifications'
+import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
+import { Icon } from '@mdi/react'
+import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
+import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
+import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -145,7 +145,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         setTeamInfo(null)
         mutateTeams(
           teams?.filter((x) => x.id !== teamInfo.id),
-          {revalidate: false}
+          { revalidate: false }
         )
         props.onClose()
       })
@@ -461,8 +461,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           onReject={() => {
             showNotification({
               color: 'red',
-              title: '文件获取失败',
-              message: '请检查文件格式和大小',
+              title: t('common.error.file_invalid.title'),
+              message: t('common.error.file_invalid.message'),
               icon: <Icon path={mdiClose} size={1} />,
             })
           }}
@@ -479,10 +479,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             ) : (
               <Box>
                 <Text size="xl" inline>
-                  拖放图片或点击此处以选择头像
+                  {t('account.placeholder.drop_zone.content')}
                 </Text>
                 <Text size="sm" c="dimmed" inline mt={7}>
-                  请选择小于 3MB 的图片
+                  {t('account.placeholder.drop_zone.hint')}
                 </Text>
               </Box>
             )}

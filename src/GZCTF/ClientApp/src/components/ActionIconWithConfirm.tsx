@@ -10,7 +10,7 @@ import {
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
-import { useTranslation } from '@Utils/I18n'
+import { useTranslation } from 'react-i18next'
 
 export interface ActionIconWithConfirmProps {
   iconPath: string

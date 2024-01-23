@@ -32,11 +32,11 @@ import {
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
@@ -464,8 +464,8 @@ const GameInfoEdit: FC = () => {
               onReject={() => {
                 showNotification({
                   color: 'red',
-                  title: '文件获取失败',
-                  message: '请检查文件格式和大小',
+                  title: t('common.error.file_invalid.title'),
+                  message: t('common.error.file_invalid.message'),
                   icon: <Icon path={mdiClose} size={1} />,
                 })
               }}

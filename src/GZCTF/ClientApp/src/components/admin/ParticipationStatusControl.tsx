@@ -1,7 +1,7 @@
 import { Group, GroupProps, MantineNumberSize, useMantineTheme } from '@mantine/core'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
-import { useTranslation } from '@Utils/I18n'
 import { ParticipationStatusMap } from '@Utils/Shared'
 import { ParticipationStatus } from '@Api'
 
