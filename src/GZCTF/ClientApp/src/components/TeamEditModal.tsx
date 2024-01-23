@@ -63,12 +63,12 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
       </Group>
       {isCaptain && showBtns && (
         <Group spacing="xs" position="right">
-          <Tooltip label="移交队长">
+          <Tooltip label={t('team.label.transfer')}>
             <ActionIcon variant="transparent" onClick={() => onTransferCaptain(user)}>
               <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label="移除成员">
+          <Tooltip label={t('team.label.kick')}>
             <ActionIcon variant="transparent" onClick={() => onKick(user)}>
               <Icon path={mdiClose} size={1} color={theme.colors.alert[4]} />
             </ActionIcon>
@@ -120,8 +120,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '退出队伍成功',
-          message: '队伍信息已更新',
+          title: t('team.notification.leave.success'),
+          message: t('team.notification.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutateTeams(teams?.filter((x) => x.id !== teamInfo?.id))
@@ -137,8 +137,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '解散队伍成功',
-          message: '队伍信息已更新',
+          title: t('team.notification.disband.success'),
+          message: t('team.notification.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setInviteCode('')
@@ -161,8 +161,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       .then((team) => {
         showNotification({
           color: 'teal',
-          title: '队伍成功',
-          message: '队伍信息已更新',
+          title: t('team.notification.transfer.success'),
+          message: t('team.notification.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setTeamInfo(team.data)
@@ -182,8 +182,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       .then((data) => {
         showNotification({
           color: 'teal',
-          title: '踢出成员成功',
-          message: '队伍信息已更新',
+          title: t('team.notification.kick.success'),
+          message: t('team.notification.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setTeamInfo(data.data)
@@ -206,7 +206,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         setInviteCode(data.data)
         showNotification({
           color: 'teal',
-          message: '队伍邀请码已更新',
+          message: t('team.notification.invite_code.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
@@ -220,7 +220,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     showNotification({
       id: 'upload-avatar',
       color: 'orange',
-      message: '正在上传头像',
+      message: t('common.avatar.uploading'),
       loading: true,
       autoClose: false,
     })
@@ -233,7 +233,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         updateNotification({
           id: 'upload-avatar',
           color: 'teal',
-          message: '头像已更新',
+          message: t('common.avatar.uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
         })
@@ -251,7 +251,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         updateNotification({
           id: 'upload-avatar',
           color: 'red',
-          title: '头像更新失败',
+          title: t('common.avatar.upload_failed'),
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
@@ -270,7 +270,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '队伍信息已更新',
+          message: t('team.notification.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutateTeams(
@@ -296,7 +296,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
-              label="队伍名称"
+              label={t('team.label.name')}
               type="text"
               placeholder={team?.name ?? 'ctfteam'}
               w="100%"
@@ -323,7 +323,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           <PasswordInput
             label={
               <Group spacing="xs">
-                <Text size="sm">邀请码</Text>
+                <Text size="sm">{t('team.label.invite_code')}</Text>
                 <ActionIcon
                   size="sm"
                   onClick={onRefreshInviteCode}
@@ -349,7 +349,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               clipboard.copy(inviteCode)
               showNotification({
                 color: 'teal',
-                message: '邀请码已复制',
+                message: t('team.notification.invite_code.copied'),
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
@@ -358,9 +358,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         )}
 
         <Textarea
-          label="队伍签名"
-          placeholder={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
-          value={teamInfo?.bio ?? '这个人很懒，什么都没有写'}
+          label={t('team.label.bio')}
+          placeholder={teamInfo?.bio ?? t('team.placeholder.bio')}
+          value={teamInfo?.bio ?? ''}
           w="100%"
           disabled={!isCaptain}
           autosize
@@ -369,7 +369,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
 
-        <Text size="sm">队员管理</Text>
+        <Text size="sm">{t('team.label.members')}</Text>
         <ScrollArea h={140} offsetScrollbars>
           <Stack spacing="xs">
             {captain && (
@@ -391,11 +391,13 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   user={user}
                   onTransferCaptain={(user: TeamUserInfoModel) => {
                     modals.openConfirmModal({
-                      title: '确认转移队长',
-
+                      title: t('team.content.transfer.confirm.title'),
                       children: (
                         <Text size="sm">
-                          你确定要将队伍 "{teamInfo?.name}" 的队长移交给 "{user.userName}" 吗？
+                          {t('team.content.transfer.confirm.message', {
+                            team: teamInfo?.name,
+                            user: user.userName,
+                          })}
                         </Text>
                       ),
                       onConfirm: () => onTransferCaptain(user.id!),
@@ -406,9 +408,15 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   }}
                   onKick={(user: TeamUserInfoModel) => {
                     modals.openConfirmModal({
-                      title: '确认删除',
+                      title: t('team.content.kick.confirm.title'),
 
-                      children: <Text size="sm">你确定要踢出队员 "{user.userName}" 吗？</Text>,
+                      children: (
+                        <Text size="sm">
+                          {t('team.content.kick.confirm.message', {
+                            user: user.userName,
+                          })}
+                        </Text>
+                      ),
                       onConfirm: () => onConfirmKickUser(user.id!),
 
                       confirmProps: { color: 'orange' },
@@ -427,12 +435,18 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             variant="outline"
             onClick={() => {
               modals.openConfirmModal({
-                title: isCaptain ? '确认解散' : '确认退出',
+                title: t(
+                  isCaptain
+                    ? 'team.content.disband.confirm.title'
+                    : 'team.content.leave.confirm.title'
+                ),
 
-                children: isCaptain ? (
-                  <Text size="sm">你确定要解散队伍吗？</Text>
-                ) : (
-                  <Text size="sm">你确定要退出队伍吗？</Text>
+                children: (
+                  <Text size="sm">
+                    {t(isCaptain ? 'team.content.disband.confirm' : 'team.content.leave.confirm', {
+                      team: teamInfo?.name,
+                    })}
+                  </Text>
                 ),
                 onConfirm: isCaptain ? onConfirmDisbandTeam : onConfirmLeaveTeam,
 
@@ -441,10 +455,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               })
             }}
           >
-            {isCaptain ? '解散队伍' : '退出队伍'}
+            {t(isCaptain ? 'team.button.disband' : 'team.button.leave')}
           </Button>
           <Button fullWidth disabled={!isCaptain} onClick={onSaveChange}>
-            更新信息
+            {t('team.button.save')}
           </Button>
         </Group>
       </Stack>
@@ -489,7 +503,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           </Group>
         </Dropzone>
         <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
-          更新头像
+          {t('common.avatar.save')}
         </Button>
       </Modal>
     </Modal>

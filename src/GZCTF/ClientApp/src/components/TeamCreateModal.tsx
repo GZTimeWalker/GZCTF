@@ -14,7 +14,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiCloseCircle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import api, { TeamUpdateModel } from '@Api'
 
@@ -39,8 +39,8 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
       .then((res) => {
         showNotification({
           color: 'teal',
-          title: '队伍已创建',
-          message: `${res.data.name} 创建成功，快去邀请队友吧！`,
+          title: t('team.notification.create.success.title'),
+          message: t('team.notification.create.success.message', { team: res.data.name }),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutate()
@@ -59,20 +59,16 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
           <Center>
             <Icon color={theme.colors.red[7]} path={mdiCloseCircle} size={4} />
           </Center>
-          <Title order={3}>你已经创建了一个队伍</Title>
+          <Title order={3}>{t('team.content.no_create.title')}</Title>
           <Text>
-            每个人只能拥有一个队伍
-            <br />
-            你可以删除队伍后重新创建
+            <Trans i18nKey="team.content.no_create.content" />
           </Text>
         </Stack>
       ) : (
         <Stack>
-          <Text>
-            创建一个队伍，你可以组织一个队伍，并且可以邀请其他人加入。每个人只能拥有一个队伍。
-          </Text>
+          <Text>{t('team.content.create')}</Text>
           <TextInput
-            label="队伍名称"
+            label={t('team.label.name')}
             type="text"
             placeholder="team"
             w="100%"
@@ -81,8 +77,8 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
             onChange={(event) => setCreateTeam({ ...createTeam, name: event.currentTarget.value })}
           />
           <Textarea
-            label="队伍签名"
-            placeholder={createTeam?.bio ?? '这个人很懒，什么都没有写'}
+            label={t('team.label.bio')}
+            placeholder={createTeam?.bio ?? t('team.placeholder.bio')}
             value={createTeam?.bio ?? ''}
             w="100%"
             autosize
@@ -92,7 +88,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
             onChange={(event) => setCreateTeam({ ...createTeam, bio: event.currentTarget.value })}
           />
           <Button fullWidth variant="outline" onClick={onCreateTeam} disabled={disabled}>
-            创建队伍
+            {t('team.button.create')}
           </Button>
         </Stack>
       )}

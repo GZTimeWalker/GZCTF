@@ -74,7 +74,7 @@ const Profile: FC = () => {
     showNotification({
       id: 'upload-avatar',
       color: 'orange',
-      message: t('account.notification.profile.avatar_uploading'),
+      message: t('common.avatar.uploading'),
       loading: true,
       autoClose: false,
     })
@@ -87,7 +87,7 @@ const Profile: FC = () => {
         updateNotification({
           id: 'upload-avatar',
           color: 'teal',
-          message: t('account.notification.profile.avatar_uploaded'),
+          message: t('common.avatar.uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
         })
@@ -99,7 +99,7 @@ const Profile: FC = () => {
         updateNotification({
           id: 'upload-avatar',
           color: 'red',
-          title: t('account.notification.profile.avatar_upload_failed'),
+          title: t('common.avatar.upload_failed'),
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
@@ -343,7 +343,7 @@ const Profile: FC = () => {
           </Group>
         </Dropzone>
         <Button fullWidth variant="outline" disabled={disabled} onClick={onChangeAvatar}>
-          修改头像
+          {t('common.avatar.save')}
         </Button>
       </Modal>
     </WithNavBar>

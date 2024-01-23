@@ -121,7 +121,7 @@ const Home: FC = () => {
                   <Group>
                     <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
                     <Title order={3}>
-                      <Trans i18nKey={'Game_Recent'}></Trans>
+                      <Trans i18nKey="common.content.home.recent_games" />
                     </Title>
                   </Group>
                   {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}

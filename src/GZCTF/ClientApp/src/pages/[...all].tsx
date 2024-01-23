@@ -12,7 +12,7 @@ const Error404: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle('The Nowhere')
+  usePageTitle(t('common.title.404'))
 
   useEffect(() => {
     if (location.pathname !== '/404') {
@@ -25,9 +25,9 @@ const Error404: FC = () => {
       <Stack spacing={0} align="center" justify="center" h="calc(100vh - 32px)">
         <Icon404 />
         <Title order={1} color="#00bfa5" fw="lighter">
-          页面不存在
+          {t('common.content.404.title')}
         </Title>
-        <Text fw="bold">一处荒芜，为何于此驻足</Text>
+        <Text fw="bold">{t('common.content.404.text')}</Text>
       </Stack>
     </WithNavBar>
   )

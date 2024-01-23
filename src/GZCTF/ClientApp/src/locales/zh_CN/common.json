@@ -23,6 +23,10 @@
       "switch_to": "切换到{{language}}"
     }
   },
+  "title": {
+    "404": "The Nowhere",
+    "about": "关于"
+  },
   "email": {
     "sent": {
       "title": "邮件已发送",
@@ -49,5 +53,23 @@
     "confirm": "确认",
     "confirm_delete": "确认删除",
     "confirm_update": "确认修改"
+  },
+  "avatar": {
+    "save": "保存头像",
+    "uploaded": "头像已更新",
+    "uploading": "正在上传头像",
+    "upload_failed": "头像更新失败"
+  },
+  "content": {
+    "404": {
+      "text": "一处荒芜，为何于此驻足",
+      "title": "页面不存在"
+    },
+    "home": {
+      "recent_games": "近期比赛"
+    },
+    "about": {
+      "slogan": "Hack for fun not for profit"
+    }
   }
 }
