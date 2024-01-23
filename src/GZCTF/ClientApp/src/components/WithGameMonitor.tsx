@@ -16,10 +16,10 @@ import { useTranslation } from '@Utils/I18n'
 import { Role } from '@Api'
 
 const pages = [
-  { icon: mdiLightningBolt, title: '事件监控', path: 'events' },
-  { icon: mdiFlag, title: '提交记录', path: 'submissions' },
-  { icon: mdiExclamationThick, title: '作弊信息', path: 'cheatinfo' },
-  { icon: mdiPackageVariant, title: '流量捕获', path: 'traffic' },
+  { icon: mdiLightningBolt, title: t('事件监控'), path: 'events' },
+  { icon: mdiFlag, title: t('提交记录'), path: 'submissions' },
+  { icon: mdiExclamationThick, title: t('作弊信息'), path: 'cheatinfo' },
+  { icon: mdiPackageVariant, title: t('流量捕获'), path: 'traffic' },
 ]
 
 interface WithGameMonitorProps extends React.PropsWithChildren {

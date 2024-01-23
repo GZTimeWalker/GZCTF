@@ -89,12 +89,12 @@ interface NavbarItem {
 }
 
 const items: NavbarItem[] = [
-  { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
-  { icon: mdiNoteTextOutline, label: '文章', link: '/posts' },
-  { icon: mdiFlagOutline, label: '赛事', link: '/games' },
-  { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
-  { icon: mdiInformationOutline, label: '关于', link: '/about' },
-  { icon: mdiWrenchOutline, label: '管理', link: '/admin/games', admin: true },
+  { icon: mdiHomeVariantOutline, label: t('主页'), link: '/' },
+  { icon: mdiNoteTextOutline, label: t('文章'), link: '/posts' },
+  { icon: mdiFlagOutline, label: t('赛事'), link: '/games' },
+  { icon: mdiAccountGroupOutline, label: t('队伍'), link: '/teams' },
+  { icon: mdiInformationOutline, label: t('关于'), link: '/about' },
+  { icon: mdiWrenchOutline, label: t('管理'), link: '/admin/games', admin: true },
 ]
 
 export interface NavbarLinkProps {

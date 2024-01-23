@@ -18,7 +18,7 @@ import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
 const pages = [
   {
     icon: mdiFlagOutline,
-    title: '比赛题目',
+    title: t('比赛题目'),
     path: 'challenges',
     link: 'challenges',
     color: 'blue',
@@ -27,7 +27,7 @@ const pages = [
   },
   {
     icon: mdiChartLine,
-    title: '积分总榜',
+    title: t('积分总榜'),
     path: 'scoreboard',
     link: 'scoreboard',
     color: 'yellow',
@@ -36,7 +36,7 @@ const pages = [
   },
   {
     icon: mdiMonitorEye,
-    title: '比赛监控',
+    title: t('比赛监控'),
     path: 'monitor',
     link: 'monitor/events',
     color: 'green',

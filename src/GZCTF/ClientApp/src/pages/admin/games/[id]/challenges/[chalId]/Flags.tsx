@@ -35,9 +35,9 @@ import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 
 const FileTypeDesrcMap = new Map<FileType, string>([
-  [FileType.None, '无附件'],
-  [FileType.Remote, '远程文件'],
-  [FileType.Local, '平台附件'],
+  [FileType.None, t('无附件')],
+  [FileType.Remote, t('远程文件')],
+  [FileType.Local, t('平台附件')],
 ])
 
 interface FlagEditProps {

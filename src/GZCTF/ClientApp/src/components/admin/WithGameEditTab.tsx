@@ -12,10 +12,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import AdminPage from '@Components/admin/AdminPage'
 
 const pages = [
-  { icon: mdiTextBoxOutline, title: '信息编辑', path: 'info' },
-  { icon: mdiBullhornOutline, title: '比赛通知', path: 'notices' },
-  { icon: mdiFlagOutline, title: '题目编辑', path: 'challenges' },
-  { icon: mdiAccountGroupOutline, title: '队伍审核', path: 'review' },
+  { icon: mdiTextBoxOutline, title: t('信息编辑'), path: 'info' },
+  { icon: mdiBullhornOutline, title: t('比赛通知'), path: 'notices' },
+  { icon: mdiFlagOutline, title: t('题目编辑'), path: 'challenges' },
+  { icon: mdiAccountGroupOutline, title: t('队伍审核'), path: 'review' },
   { icon: mdiFileDocumentCheckOutline, title: 'Writeups', path: 'writeups' },
 ]
 

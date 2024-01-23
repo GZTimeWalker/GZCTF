@@ -36,8 +36,8 @@ const GameAlertMap = new Map([
     {
       color: 'yellow',
       icon: mdiTimerSand,
-      label: '你已经以队伍 {TEAM} 成员身份成功报名',
-      content: '请耐心等待审核结果',
+      label: t('你已经以队伍 {TEAM} 成员身份成功报名'),
+      content: t('请耐心等待审核结果'),
     },
   ],
   [ParticipationStatus.Accepted, null],
@@ -46,8 +46,8 @@ const GameAlertMap = new Map([
     {
       color: 'red',
       icon: mdiAlertCircle,
-      label: '您的参赛申请未通过',
-      content: '请确保具备参赛资格和满足参赛要求后重新报名',
+      label: t('您的参赛申请未通过'),
+      content: t('请确保具备参赛资格和满足参赛要求后重新报名'),
     },
   ],
   [
@@ -55,19 +55,19 @@ const GameAlertMap = new Map([
     {
       color: 'red',
       icon: mdiAlertCircle,
-      label: '您的队伍 {TEAM} 已被禁赛',
-      content: '如有异议，请联系管理员进行申诉',
+      label: t('您的队伍 {TEAM} 已被禁赛'),
+      content: t('如有异议，请联系管理员进行申诉'),
     },
   ],
   [ParticipationStatus.Unsubmitted, null],
 ])
 
 const GameActionMap = new Map([
-  [ParticipationStatus.Pending, '等待审核'],
-  [ParticipationStatus.Accepted, '通过审核'],
-  [ParticipationStatus.Rejected, '重新报名'],
-  [ParticipationStatus.Suspended, '通过审核'],
-  [ParticipationStatus.Unsubmitted, '报名参赛'],
+  [ParticipationStatus.Pending, t('等待审核')],
+  [ParticipationStatus.Accepted, t('通过审核')],
+  [ParticipationStatus.Rejected, t('重新报名')],
+  [ParticipationStatus.Suspended, t('通过审核')],
+  [ParticipationStatus.Unsubmitted, t('报名参赛')],
 ])
 
 const GetAlert = (status: ParticipationStatus, team: string) => {

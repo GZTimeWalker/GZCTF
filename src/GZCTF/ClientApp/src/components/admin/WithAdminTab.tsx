@@ -15,12 +15,12 @@ import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const pages = [
-  { icon: mdiFlagOutline, title: '比赛管理', path: 'games', color: 'yellow' },
-  { icon: mdiAccountGroupOutline, title: '队伍管理', path: 'teams', color: 'green' },
-  { icon: mdiAccountCogOutline, title: '用户管理', path: 'users', color: 'cyan' },
-  { icon: mdiPackageVariantClosed, title: '容器管理', path: 'instances', color: 'blue' },
-  { icon: mdiFileDocumentOutline, title: '系统日志', path: 'logs', color: 'red' },
-  { icon: mdiSitemapOutline, title: '全局设置', path: 'configs', color: 'orange' },
+  { icon: mdiFlagOutline, title: t('比赛管理'), path: 'games', color: 'yellow' },
+  { icon: mdiAccountGroupOutline, title: t('队伍管理'), path: 'teams', color: 'green' },
+  { icon: mdiAccountCogOutline, title: t('用户管理'), path: 'users', color: 'cyan' },
+  { icon: mdiPackageVariantClosed, title: t('容器管理'), path: 'instances', color: 'blue' },
+  { icon: mdiFileDocumentOutline, title: t('系统日志'), path: 'logs', color: 'red' },
+  { icon: mdiSitemapOutline, title: t('全局设置'), path: 'configs', color: 'orange' },
 ]
 
 export interface AdminTabProps extends React.PropsWithChildren {
