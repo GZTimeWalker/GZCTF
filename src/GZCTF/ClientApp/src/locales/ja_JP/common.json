@@ -16,11 +16,6 @@
       "logout": "ログアウト",
       "profile": "ユーザー情報",
       "clean_cache": "キャッシュを消去"
-    },
-    "language": {
-      "en": "English",
-      "zh": "中国語",
-      "switch_to": "切换到{{language}}"
     }
   },
   "title": {

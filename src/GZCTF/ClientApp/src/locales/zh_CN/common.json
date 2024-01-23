@@ -16,11 +16,6 @@
       "logout": "登出",
       "profile": "用户信息",
       "clean_cache": "清除缓存"
-    },
-    "language": {
-      "zh-CN": "中文",
-      "en-US": "English",
-      "ja-JP": "日本語"
     }
   },
   "title": {

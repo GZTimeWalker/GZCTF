@@ -1,9 +1,9 @@
 {
   "tab": {
     "game": "Games",
-    "home": "Home page",
-    "post": "Articles",
-    "team": "Battle Team",
+    "home": "Home",
+    "post": "Posts",
+    "team": "Team",
     "about": "About",
     "theme": {
       "dark": "dark mode",
@@ -16,11 +16,6 @@
       "logout": "Logout",
       "profile": "User Information",
       "clean_cache": "Clear Cache"
-    },
-    "language": {
-      "en": "English",
-      "zh": "Chinese",
-      "switch_to": "Switch to {{language}}"
     }
   },
   "title": {
@@ -66,7 +61,7 @@
       "title": "Page does not exist"
     },
     "home": {
-      "recent_games": "Recent Matches"
+      "recent_games": "Recent Games"
     },
     "about": {
       "slogan": "Hack for un not for profit"

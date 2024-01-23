@@ -19,7 +19,7 @@ import {
   mdiInformationOutline,
   mdiLogout,
   mdiNoteTextOutline,
-  mdiSignLanguage,
+  mdiTranslate,
   mdiWeatherNight,
   mdiWeatherSunny,
   mdiWrenchOutline,
@@ -29,7 +29,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
-import { useLanguage } from '@Utils/I18n'
+import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
@@ -92,7 +92,7 @@ interface NavbarItem {
 
 export interface NavbarLinkProps {
   icon: string
-  label?: string
+  label: string
   link?: string
   onClick?: () => void
   isActive?: boolean
@@ -100,9 +100,10 @@ export interface NavbarLinkProps {
 
 const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles()
+  const { t } = useTranslation()
 
   return (
-    <Tooltip label={props.label} classNames={{ tooltip: classes.tooltipBody }} position="right">
+    <Tooltip label={t(props.label)} classNames={{ tooltip: classes.tooltipBody }} position="right">
       <ActionIcon
         onClick={props.onClick}
         component={Link}
@@ -125,15 +126,15 @@ const AppNavbar: FC = () => {
   const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
   const { t } = useTranslation()
-  const { language, setLanguage, supportedLanguages } = useLanguage()
+  const { setLanguage, supportedLanguages } = useLanguage()
 
   const items: NavbarItem[] = [
-    { icon: mdiHomeVariantOutline, label: t('common.tab.home'), link: '/' },
-    { icon: mdiNoteTextOutline, label: t('common.tab.post'), link: '/posts' },
-    { icon: mdiFlagOutline, label: t('common.tab.game'), link: '/games' },
-    { icon: mdiAccountGroupOutline, label: t('common.tab.team'), link: '/teams' },
-    { icon: mdiInformationOutline, label: t('common.tab.about'), link: '/about' },
-    { icon: mdiWrenchOutline, label: t('common.tab.manage'), link: '/admin/games', admin: true },
+    { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
+    { icon: mdiNoteTextOutline, label: 'common.tab.post', link: '/posts' },
+    { icon: mdiFlagOutline, label: 'common.tab.game', link: '/games' },
+    { icon: mdiAccountGroupOutline, label: 'common.tab.team', link: '/teams' },
+    { icon: mdiInformationOutline, label: 'common.tab.about', link: '/about' },
+    { icon: mdiWrenchOutline, label: 'common.tab.manage', link: '/admin/games', admin: true },
   ]
 
   const getLabel = (path: string) =>
@@ -184,6 +185,26 @@ const AppNavbar: FC = () => {
         style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
       >
         <Stack align="center" spacing={5}>
+          {/* Language */}
+          <Menu position="right-end" offset={24} width={160}>
+            <Menu.Target>
+              <ActionIcon className={classes.link}>
+                <Icon path={mdiTranslate} size={1} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {supportedLanguages.map((lang: SupportedLanguages) => (
+                <Menu.Item
+                  key={lang}
+                  onClick={() => setLanguage(lang)}
+                >
+                  {LanguageMap[lang] ?? lang}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+
           {/* Color Mode */}
           <Tooltip
             label={t('common.tab.theme.switch_to', {
@@ -201,27 +222,6 @@ const AppNavbar: FC = () => {
               )}
             </ActionIcon>
           </Tooltip>
-
-          {/* Language */}
-          <Menu position="right-end" offset={24} width={160}>
-            <Menu.Target>
-              <ActionIcon className={classes.link}>
-                <Icon path={mdiSignLanguage} size={1} />
-              </ActionIcon>
-            </Menu.Target>
-
-            <Menu.Dropdown>
-              {supportedLanguages.map((lang) => (
-                <Menu.Item
-                  key={lang}
-                  onClick={() => setLanguage(lang)}
-                  icon={<Icon path={mdiSignLanguage} size={1} />}
-                >
-                  {lang}
-                </Menu.Item>
-              ))}
-            </Menu.Dropdown>
-          </Menu>
 
           {/* User Info */}
           {user && !error ? (
