@@ -18,6 +18,7 @@ import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api from '@Api'
 
@@ -40,6 +41,8 @@ const TeamRank: FC<PaperProps> = (props) => {
 
   const clipboard = useClipboard()
   const isMobile = useIsMobile(1080)
+
+  const { t } = useTranslation()
 
   const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
 

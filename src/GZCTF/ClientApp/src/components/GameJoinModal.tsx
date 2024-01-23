@@ -4,6 +4,7 @@ import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from '@Utils/I18n'
 import { useGame } from '@Utils/useGame'
 import { useTeams } from '@Utils/useUser'
 import { GameJoinModel } from '@Api'
@@ -23,6 +24,8 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const [organization, setOrganization] = useState('')
   const [team, setTeam] = useState('')
   const [disabled, setDisabled] = useState(false)
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (teams && teams.length === 1) {

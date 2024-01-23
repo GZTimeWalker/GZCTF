@@ -12,6 +12,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
+import { useTranslation } from '@Utils/I18n'
 import { Role } from '@Api'
 
 const pages = [
@@ -35,6 +36,8 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const location = useLocation()
   const theme = useMantineTheme()
   const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     const tab = getTab(location.pathname)

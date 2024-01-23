@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC } from 'react'
+import { useTranslation } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {
@@ -47,6 +48,8 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
   const [opened, { close, open }] = useDisclosure(false)
   const pwd = props.value
   const isMobile = useIsMobile()
+
+  const { t } = useTranslation()
 
   const checks = [
     <PasswordRequirement key={0} label="至少 6 个字符" meets={pwd.length >= 6} />,

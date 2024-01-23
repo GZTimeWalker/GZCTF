@@ -29,6 +29,7 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
+import { useTranslation } from '@Utils/I18n'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { EventType, GameEvent } from '@Api'
@@ -80,6 +81,8 @@ const Events: FC = () => {
 
   const iconMap = EventTypeIconMap(1.15)
   const { classes } = useTableStyles()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     api.game

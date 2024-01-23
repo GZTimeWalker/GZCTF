@@ -8,6 +8,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Empty from '@Components/Empty'
 import { InlineMarkdownRender } from '@Components/MarkdownRender'
+import { useTranslation } from '@Utils/I18n'
 import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
 
@@ -49,6 +50,8 @@ const GameNoticePanel: FC = () => {
   const [notices, setNotices] = useState<GameNotice[]>()
   const [filter, setFilter] = useState<NoticeFilter>(NoticeFilter.All)
   const iconMap = NoticTypeIconMap(0.8)
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     api.game

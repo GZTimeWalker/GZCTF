@@ -16,6 +16,7 @@ import {
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import TeamRadarMap from '@Components/TeamRadarMap'
+import { useTranslation } from '@Utils/I18n'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
@@ -29,6 +30,8 @@ interface ScoreboardItemModalProps extends ModalProps {
 const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, challenges, bloodBonusMap, ...modalProps } = props
   const { classes } = useTableStyles()
+
+  const { t } = useTranslation()
 
   const challengeIdMap =
     challenges &&

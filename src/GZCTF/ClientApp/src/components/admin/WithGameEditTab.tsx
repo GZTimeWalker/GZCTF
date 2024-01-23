@@ -72,6 +72,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
               theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
             }
           />
+
           {children}
         </Stack>
       </Group>

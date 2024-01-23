@@ -4,6 +4,7 @@ import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
+import { useTranslation } from '@Utils/I18n'
 import { getGameStatus } from '@Utils/useGame'
 
 const useStyles = createStyles((theme) => ({
@@ -29,6 +30,8 @@ const useStyles = createStyles((theme) => ({
 
 const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
   const { classes } = useStyles()
+
+  const { t } = useTranslation()
 
   const { title, poster } = game
 

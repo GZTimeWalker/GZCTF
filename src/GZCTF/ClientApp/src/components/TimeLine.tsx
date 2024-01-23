@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import ReactEcharts from 'echarts-for-react'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from '@Utils/I18n'
 import { getGameStatus, useGame, useGameScoreboard } from '@Utils/useGame'
 
 interface TimeLineProps {
@@ -29,6 +30,8 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
 
   const [now, setNow] = useState<Date>(new Date())
   const [chartData, setChartData] = useState<any>()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (!scoreboard?.timeLines || !game) return
@@ -171,6 +174,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
             showDetail: false,
           },
         ],
+
         series: chartData,
       }}
       opts={{

@@ -17,6 +17,7 @@ import { FC, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import MarkdownRender from '@Components/MarkdownRender'
 import { RequireRole } from '@Components/WithRole'
+import { useTranslation } from '@Utils/I18n'
 import { useUserRole } from '@Utils/useUser'
 import { PostInfoModel, Role } from '@Api'
 
@@ -30,6 +31,8 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const navigate = useNavigate()
   const { role } = useUserRole()
   const [disabled, setDisabled] = useState(false)
+
+  const { t } = useTranslation()
 
   return (
     <Card shadow="sm" p="xs">

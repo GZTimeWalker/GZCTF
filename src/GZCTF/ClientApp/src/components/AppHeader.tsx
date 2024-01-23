@@ -11,6 +11,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import LogoHeader from '@Components/LogoHeader'
+import { useTranslation } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
@@ -38,6 +39,8 @@ const AppHeader: FC = () => {
 
   const logout = useLoginOut()
   const isMobile = useIsMobile()
+
+  const { t } = useTranslation()
 
   return (
     <Header fixed hidden={!isMobile} height={isMobile ? 60 : 0} className={headerClasses.header}>

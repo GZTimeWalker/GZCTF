@@ -374,6 +374,8 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
   const [attachmentUploadModalOpened, setAttachmentUploadModalOpened] = useState(false)
   const [remoteAttachmentModalOpened, setRemoteAttachmentModalOpened] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <Stack>
       <Group position="apart" mt={20}>

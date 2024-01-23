@@ -23,6 +23,7 @@ import ChallengeCard from '@Components/ChallengeCard'
 import ChallengeDetailModal from '@Components/ChallengeDetailModal'
 import Empty from '@Components/Empty'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
+import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame } from '@Utils/useGame'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
@@ -71,6 +72,8 @@ const ChallengePanel: FC = () => {
   const [detailOpened, setDetailOpened] = useState(false)
   const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
   const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
+
+  const { t } = useTranslation()
 
   // skeleton for loading
   if (!challenges) {

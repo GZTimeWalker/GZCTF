@@ -22,6 +22,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { FlagPlaceholders } from '@Components/ChallengeDetailModal'
 import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
+import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useTypographyStyles } from '@Utils/useTypographyStyles'
@@ -50,6 +51,8 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
     closeTime: null,
     instanceEntry: null,
   })
+
+  const { t } = useTranslation()
 
   const onCreate = () => {
     setContext({

@@ -13,6 +13,7 @@ import {
 import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from '@Utils/I18n'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
 
@@ -31,6 +32,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
   const members = team.members?.filter((m) => !m?.captain)
 
   const { classes: tooltipClasses, theme } = useTooltipStyles()
+
+  const { t } = useTranslation()
 
   return (
     <Card

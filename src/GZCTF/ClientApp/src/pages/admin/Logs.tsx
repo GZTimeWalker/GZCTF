@@ -17,6 +17,7 @@ import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import AdminPage from '@Components/admin/AdminPage'
+import { useTranslation } from '@Utils/I18n'
 import { TaskStatusColorMap } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { LogMessageModel, TaskStatus } from '@Api'
@@ -53,6 +54,8 @@ const Logs: FC = () => {
   const [, update] = useState(new Date())
   const newLogs = useRef<LogMessageModel[]>([])
   const [logs, setLogs] = useState<LogMessageModel[]>()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     api.admin

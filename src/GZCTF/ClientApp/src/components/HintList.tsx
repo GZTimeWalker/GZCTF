@@ -10,6 +10,7 @@ import {
 import { mdiClose, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from '@Utils/I18n'
 
 interface HintListProps extends TextInputProps {
   hints: string[]
@@ -20,6 +21,8 @@ interface HintListProps extends TextInputProps {
 
 export const HintList: FC<HintListProps> = (props) => {
   const { hints, onChangeHint, disabled, height, ...rest } = props
+
+  const { t } = useTranslation()
 
   const hintdict = hints.map((hint, key) => ({ hint, key }))
 

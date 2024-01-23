@@ -7,6 +7,7 @@ import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import Captcha, { useCaptchaRef } from '@Components/Captcha'
+import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
@@ -14,6 +15,8 @@ const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
   const [disabled, setDisabled] = useState(false)
   const { captchaRef, getToken } = useCaptchaRef()
+
+  const { t } = useTranslation()
 
   usePageTitle('找回账号')
 

@@ -3,11 +3,14 @@ import { FC, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import WithNavBar from '@Components/WithNavbar'
 import Icon404 from '@Components/icon/404Icon'
+import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const Error404: FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+
+  const { t } = useTranslation()
 
   usePageTitle('The Nowhere')
 

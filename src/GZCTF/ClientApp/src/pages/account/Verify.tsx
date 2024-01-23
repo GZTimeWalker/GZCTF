@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
+import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
@@ -15,6 +16,8 @@ const Verify: FC = () => {
   const token = sp.get('token')
   const email = sp.get('email')
   const [disabled, setDisabled] = useState(false)
+
+  const { t } = useTranslation()
 
   usePageTitle('账户验证')
 

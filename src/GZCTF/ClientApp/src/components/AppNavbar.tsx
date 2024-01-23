@@ -27,6 +27,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
+import { useTranslation } from '@Utils/I18n'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
@@ -141,6 +142,8 @@ const AppNavbar: FC = () => {
   const logout = useLoginOut()
   const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (location.pathname === '/') {

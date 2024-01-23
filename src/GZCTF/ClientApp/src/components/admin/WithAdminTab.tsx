@@ -11,6 +11,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import IconTabs from '@Components/IconTabs'
+import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const pages = [
@@ -37,6 +38,8 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   const theme = useMantineTheme()
   const tabIndex = getTab(location.pathname)
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
+
+  const { t } = useTranslation()
 
   const onChange = (active: number, tabKey: string) => {
     setActiveTab(active)

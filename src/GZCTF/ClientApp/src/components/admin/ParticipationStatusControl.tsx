@@ -1,6 +1,7 @@
 import { Group, GroupProps, MantineNumberSize, useMantineTheme } from '@mantine/core'
 import { FC } from 'react'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
+import { useTranslation } from '@Utils/I18n'
 import { ParticipationStatusMap } from '@Utils/Shared'
 import { ParticipationStatus } from '@Api'
 
@@ -16,6 +17,8 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
   const { disabled, participateId, status, setParticipationStatus, size, ...others } = props
   const part = ParticipationStatusMap.get(status)!
   const theme = useMantineTheme()
+
+  const { t } = useTranslation()
 
   return (
     <Group

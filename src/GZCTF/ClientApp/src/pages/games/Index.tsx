@@ -3,11 +3,14 @@ import { FC } from 'react'
 import GameCard from '@Components/GameCard'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
+import { useTranslation } from '@Utils/I18n'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
 const Games: FC = () => {
+  const { t } = useTranslation()
+
   const { data: allGames } = api.game.useGameGamesAll(OnceSWRConfig)
 
   allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())

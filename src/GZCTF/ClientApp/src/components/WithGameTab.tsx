@@ -9,6 +9,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CustomProgress from '@Components/CustomProgress'
 import IconTabs from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
+import { useTranslation } from '@Utils/I18n'
 import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
@@ -50,6 +51,8 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   const { endTime, progress } = getGameStatus(game)
 
   const [now, setNow] = useState(dayjs())
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (!game || dayjs() > dayjs(game.end)) return
@@ -108,6 +111,8 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
 
   const tabIndex = getTab(location.pathname)
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
+
+  const { t } = useTranslation()
 
   const onChange = (active: number, tabKey: string) => {
     setActiveTab(active)

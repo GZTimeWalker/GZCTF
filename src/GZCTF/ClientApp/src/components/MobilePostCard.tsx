@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import MarkdownRender from '@Components/MarkdownRender'
 import { PostCardProps } from '@Components/PostCard'
 import { RequireRole } from '@Components/WithRole'
+import { useTranslation } from '@Utils/I18n'
 import { useUserRole } from '@Utils/useUser'
 import { Role } from '@Api'
 
@@ -14,6 +15,8 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const navigate = useNavigate()
   const { role } = useUserRole()
   const [disabled, setDisabled] = useState(false)
+
+  const { t } = useTranslation()
 
   return (
     <Card shadow="sm" p="sm">

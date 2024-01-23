@@ -1,6 +1,7 @@
 import { useMantineTheme } from '@mantine/core'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
+import { useTranslation } from '@Utils/I18n'
 
 interface ScoreFuncProps {
   originalScore: number
@@ -27,6 +28,8 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
   const showCount = currentAcceptCount > 5.8 * difficulty ? 5.8 * difficulty : currentAcceptCount
   const theme = useMantineTheme()
   const plotData = [...Array(100).keys()].map((x) => [toX(x), func(toX(x))])
+
+  const { t } = useTranslation()
 
   return (
     <ReactEcharts

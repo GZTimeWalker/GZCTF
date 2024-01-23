@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
+import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { RegisterStatus } from '@Api'
 
@@ -44,6 +45,8 @@ const Register: FC = () => {
 
   const navigate = useNavigate()
   const { captchaRef, getToken } = useCaptchaRef()
+
+  const { t } = useTranslation()
 
   usePageTitle('注册')
 

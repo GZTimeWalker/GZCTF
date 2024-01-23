@@ -10,6 +10,7 @@ import {
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from '@Utils/I18n'
 
 export interface ActionIconWithConfirmProps {
   iconPath: string
@@ -23,6 +24,8 @@ export interface ActionIconWithConfirmProps {
 export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
   const [opened, setOpened] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const { t } = useTranslation()
 
   return (
     <Popover shadow="md" width="max-content" position="top" opened={opened} onChange={setOpened}>

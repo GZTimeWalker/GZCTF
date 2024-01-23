@@ -7,6 +7,7 @@ import { FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import Captcha, { useCaptchaRef } from '@Components/Captcha'
+import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api from '@Api'
@@ -22,6 +23,8 @@ const Login: FC = () => {
 
   const { captchaRef, getToken } = useCaptchaRef()
   const { user, mutate } = useUser()
+
+  const { t } = useTranslation()
 
   usePageTitle('登录')
 

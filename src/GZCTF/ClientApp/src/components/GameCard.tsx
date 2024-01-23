@@ -14,6 +14,7 @@ import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from '@Utils/I18n'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 
@@ -35,6 +36,8 @@ interface GameCardProps {
 
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
+
+  const { t } = useTranslation()
 
   const { summary, title, poster, limit } = game
   const { startTime, endTime, status } = getGameStatus(game)

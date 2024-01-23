@@ -29,6 +29,7 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { useTranslation } from '@Utils/I18n'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
@@ -86,6 +87,8 @@ const Submissions: FC = () => {
   const iconMap = AnswerResultIconMap(0.8)
   const { classes, cx, theme } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     api.game

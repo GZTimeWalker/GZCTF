@@ -18,6 +18,7 @@ import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ScoreboardItemModal from '@Components/ScoreboardItemModal'
+import { useTranslation } from '@Utils/I18n'
 import { BloodBonus, BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
@@ -71,6 +72,8 @@ Lefts.forEach((val, idx) => {
 
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const { classes, cx, theme } = useScoreboardStyles()
+
+  const { t } = useTranslation()
 
   const hiddenCol = [...Array(5).keys()].map((i) => (
     <th
@@ -273,6 +276,8 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
 
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (scoreboard) {

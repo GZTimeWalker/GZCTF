@@ -47,6 +47,8 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
   const theme = useMantineTheme()
   const [showBtns, setShowBtns] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <Group
       position="apart"

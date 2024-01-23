@@ -2,6 +2,7 @@ import { Stack, Text, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import { FC } from 'react'
 import IconWiderScreenRequired from '@Components/icon/WiderScreenRequiredIcon'
+import { useTranslation } from '@Utils/I18n'
 
 interface WithWiderScreenProps extends React.PropsWithChildren {
   minWidth?: number
@@ -9,6 +10,8 @@ interface WithWiderScreenProps extends React.PropsWithChildren {
 
 const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 1080 }) => {
   const view = useViewportSize()
+
+  const { t } = useTranslation()
 
   const tooSmall = minWidth > 0 && view.width > 0 && view.width < minWidth
 

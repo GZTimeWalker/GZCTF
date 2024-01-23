@@ -23,6 +23,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from '@Utils/I18n'
 import { getProxyUrl } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ClientFlagContext } from '@Api'
@@ -83,6 +84,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry, test) : instanceEntry
 
   const [canProlong, setCanProlong] = useState(false)
+
+  const { t } = useTranslation()
 
   const prolongNotice = () => {
     if (canProlong) return

@@ -2,6 +2,7 @@ import { MantineNumberSize, Stack, Text } from '@mantine/core'
 import { mdiInbox } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, ReactNode } from 'react'
+import { useTranslation } from '@Utils/I18n'
 
 interface EmptyProps {
   bordered?: boolean
@@ -12,6 +13,8 @@ interface EmptyProps {
 }
 
 const Empty: FC<EmptyProps> = (props) => {
+  const { t } = useTranslation()
+
   return (
     <Stack
       align="center"

@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import MobileScoreboardItemModal from '@Components/MobileScoreboardItemModal'
 import { ScoreboardProps, useScoreboardStyles } from '@Components/ScoreboardTable'
+import { useTranslation } from '@Utils/I18n'
 import { BloodBonus } from '@Utils/Shared'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ScoreboardItem, SubmissionType } from '@Api'
@@ -81,6 +82,8 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
 
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (scoreboard) {

@@ -13,6 +13,7 @@ import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfoModel, ChallengeTag } from '@Api'
 
@@ -29,6 +30,8 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
 
   const colors = theme.colors[data?.color ?? 'brand']
   const [disabled, setDisabled] = useState(false)
+
+  const { t } = useTranslation()
 
   const [min, cur, tot] = [
     challenge.minScore ?? 0,

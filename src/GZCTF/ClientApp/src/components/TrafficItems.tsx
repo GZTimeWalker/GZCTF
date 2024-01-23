@@ -3,6 +3,7 @@ import { mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
+import { useTranslation } from '@Utils/I18n'
 import { ChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
 import {
   ChallengeTag,
@@ -19,6 +20,8 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
   const data = ChallengeTagLabelMap.get(item.tag as ChallengeTag)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
+
+  const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
@@ -48,6 +51,8 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 
 export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
+
+  const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>

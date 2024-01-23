@@ -50,6 +50,8 @@ const MemberItem: FC<MemberItemProps> = (props) => {
   const { user, isCaptain, isRegistered } = props
   const theme = useMantineTheme()
 
+  const { t } = useTranslation()
+
   return (
     <Group spacing="xl" position="apart">
       <Group w="calc(100% - 10rem)">
@@ -108,6 +110,8 @@ interface ParticipationItemProps {
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   const { participation, disabled, setParticipationStatus } = props
   const part = ParticipationStatusMap.get(participation.status!)!
+
+  const { t } = useTranslation()
 
   return (
     <Accordion.Item value={participation.id!.toString()}>

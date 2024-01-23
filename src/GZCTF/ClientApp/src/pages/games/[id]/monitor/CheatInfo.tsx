@@ -191,6 +191,8 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
   const theme = useMantineTheme()
   const part = ParticipationStatusMap.get(cheatTeamInfo.status!)!
 
+  const { t } = useTranslation()
+
   return (
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -259,6 +261,8 @@ const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
   const { classes } = useAccordionStyles()
   const { cheatTeamInfo, disabled, setParticipationStatus } = props
 
+  const { t } = useTranslation()
+
   return (
     <ScrollArea offsetScrollbars h="calc(100vh - 180px)">
       <Stack spacing="xs" w="100%">
@@ -301,6 +305,8 @@ interface CheatInfoTableViewProps {
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const { classes, cx, theme } = useTableStyles()
+
+  const { t } = useTranslation()
 
   const rows = props.cheatInfo
     .sort(

@@ -15,6 +15,7 @@ import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
+import { useTranslation } from '@Utils/I18n'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 
@@ -26,6 +27,8 @@ const POSTER_HEIGHT = '15vh'
 
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
+
+  const { t } = useTranslation()
 
   const { title, poster } = game
   const { startTime, endTime, status } = getGameStatus(game)

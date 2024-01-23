@@ -13,6 +13,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from '@Utils/I18n'
 import { Attachment, FlagInfoModel } from '@Api'
 
 interface FlagCardProps {
@@ -26,6 +27,8 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
   const clipboard = useClipboard()
   const attachment = unifiedAttachment ?? flag.attachment
   const shortURL = attachment?.url?.split('/').slice(-2)[0].slice(0, 8)
+
+  const { t } = useTranslation()
 
   return (
     <Card>

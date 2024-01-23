@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom'
 import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { useTranslation } from '@Utils/I18n'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { FileRecord } from '@Api'
 
@@ -36,6 +37,8 @@ const Traffic: FC = () => {
   const [challengeId, setChallengeId] = useState<number | null>(null)
   const [participationId, setParticipationId] = useState<number | null>(null)
   const { classes: tooltipClasses, theme } = useTooltipStyles()
+
+  const { t } = useTranslation()
 
   const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(
     gameId,
