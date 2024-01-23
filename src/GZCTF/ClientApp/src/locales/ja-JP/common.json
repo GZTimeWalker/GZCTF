@@ -1,0 +1,75 @@
+{
+  "tab": {
+    "game": "イベント",
+    "home": "ホーム",
+    "post": "記事",
+    "team": "開くべきクリック ギルドVault 4",
+    "about": "アプリについて",
+    "theme": {
+      "dark": "ダーク",
+      "light": "ライト",
+      "switch_to": "切换到{{theme}}主题"
+    },
+    "manage": "アドミニストレーション",
+    "account": {
+      "login": "ログイン",
+      "logout": "ログアウト",
+      "profile": "ユーザー情報",
+      "clean_cache": "キャッシュを消去"
+    },
+    "language": {
+      "en": "English",
+      "zh": "中国語",
+      "switch_to": "切换到{{language}}"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "アプリについて"
+  },
+  "email": {
+    "sent": {
+      "title": "メールが送信されました",
+      "message": "メールアドレスと迷惑メールをご確認ください"
+    }
+  },
+  "error": {
+    "try_later": "後で再度お試し下さい",
+    "check_input": "入力内容を確認する",
+    "encountered": "問題がありました",
+    "param_error": "パラメータが間違っています。確認してください",
+    "file_invalid": {
+      "title": "ファイルの読み込みに失敗しました",
+      "message": "ファイル形式とサイズを確認してください"
+    },
+    "param_invalid": "無効なパラメータ",
+    "param_missing": "引数が足りません",
+    "param_unknown": "不明なパラメータ",
+    "invalid_username_or_password": "ユーザー名またはパスワードが正しくありません"
+  },
+  "modal": {
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "confirm": "確認",
+    "confirm_delete": "削除の確認",
+    "confirm_update": "変更"
+  },
+  "avatar": {
+    "save": "アバターを保存する",
+    "uploaded": "プロフィールが更新されました",
+    "uploading": "アバターをアップロードしています",
+    "upload_failed": "アバターを更新できませんでした"
+  },
+  "content": {
+    "404": {
+      "text": "どこでもしまい、なぜここに？",
+      "title": "ページが存在しません"
+    },
+    "home": {
+      "recent_games": "最近の試合"
+    },
+    "about": {
+      "slogan": "Hack for fun not for profit"
+    }
+  }
+}

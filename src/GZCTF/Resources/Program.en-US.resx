@@ -406,35 +406,35 @@
     <comment/>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
-    <value>容器实例 {0} 创建失败</value>
+    <value>Container instance {0} failed to create</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
-    <value>创建 {0} 实例遇到错误：{1}</value>
+    <value>Error creating {0} instance：{1}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
-    <value>启动容器实例 {0} ({1}) 失败</value>
+    <value>Failed to start container instance {0} ({1})</value>
     <comment/>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>容器 {0} 创建后未获取到端口暴露信息，创建失败</value>
+    <value>Failed to get port exposure information after container {0} was created</value>
     <comment/>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
-    <value>容器管理模式：Docker 单实例容器控制</value>
+    <value>Container mode：Docker Instance Container Controls</value>
     <comment/>
   </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
-    <value>容器管理模式：K8s 集群 Pod 容器控制</value>
+    <value>Container Mode：K8s Cluster Pod Container Control</value>
     <comment/>
   </data>
   <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
-    <value>无法转换端口号：{0}，这是非预期的行为</value>
+    <value>Cannot convert port number：{0}, this is an unexpected action</value>
     <comment/>
   </data>
   <data name="ContainerManager_PullContainerImage" xml:space="preserve">
-    <value>拉取容器镜像 {0}</value>
+    <value>Pull container image {0}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
@@ -450,27 +450,27 @@
     <comment/>
   </data>
   <data name="ContainerManager_SwarmMode" xml:space="preserve">
-    <value>容器管理模式：Docker Swarm 集群容器控制</value>
+    <value>Container mode：Docker Swarm Cluster Container Control</value>
     <comment/>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>无法解析镜像名称 '{0}'</value>
+    <value>Could not parse image name `{0}'</value>
     <comment/>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
-    <value>Docker 初始化成功 ({0})</value>
+    <value>Docker Initialization Success ({0})</value>
     <comment/>
   </data>
-    <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
-    <value>无法加载 K8s 配置文件，请确保配置文件存在 {0}</value>
+  <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
+    <value>Could not load K8s profile, make sure that the profile exists in {0}</value>
     <comment/>
   </data>
-    <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
-    <value>K8s 初始化成功 ({0})</value>
+  <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
+    <value>K8s Initialization Success ({0})</value>
     <comment/>
   </data>
-    <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
-    <value>K8s 初始化失败，请检查相关配置是否正确 ({0})</value>
+  <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
+    <value>K8s initialization failed, please check if the configuration is correct ({0})</value>
     <comment/>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
@@ -546,7 +546,7 @@
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
-    <value>[作弊检查] 队伍 [{0}] 疑似违规 [{1}]，相关队伍 [{2}]</value>
+    <value>[作弊检查] Team [{0}] suspected violation [{1}], related team [{2}]</value>
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
@@ -554,11 +554,11 @@
     <comment/>
   </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
-    <value>[数据库并发] 未能更新提交 #{0} 的状态</value>
+    <value>[数据库并发] Failed to update commit #{0}</value>
     <comment/>
   </data>
   <data name="FlagChecker_UnknownInstance" xml:space="preserve">
-    <value>[实例未知] 未找到队伍 [{0}] 提交题目 [{1}] 的实例</value>
+    <value>[实例未知] No instance found for team [{0}] submission [{1}]</value>
     <comment/>
   </data>
   <data name="FlagsChecker_Recheck" xml:space="preserve">
@@ -606,7 +606,7 @@
     <comment/>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>配置文件中的异或密钥未设置，比赛私钥将会被明文存储至数据库。</value>
+    <value>The different or key in the configuration file is not set and the match key will be stored explicitly in the database.</value>
     <comment/>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
@@ -622,23 +622,23 @@
     <comment/>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>题目未找到或动态附件分配失败</value>
+    <value>Title not found or dynamic attachment allocation failed</value>
     <comment/>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
-    <value>题目已经创建容器</value>
+    <value>The problem has been created container</value>
     <comment/>
   </data>
   <data name="Game_ContainerCreationFailed" xml:space="preserve">
-    <value>题目创建容器失败</value>
+    <value>Problem creating container failed</value>
     <comment/>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
-    <value>题目不可创建容器</value>
+    <value>The title cannot create a container</value>
     <comment/>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
-    <value>{0} 销毁题目 {1} 的容器实例 [{2}]</value>
+    <value>{0} destroyed container instance of problem {1} [{2}]</value>
     <comment/>
   </data>
   <data name="Game_ContainerDeletedEvent" xml:space="preserve">
@@ -646,23 +646,23 @@
     <comment/>
   </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
-    <value>题目删除容器失败</value>
+    <value>Problem deleting container failed</value>
     <comment/>
   </data>
   <data name="Game_ContainerExpireExtensionNotAllowed" xml:space="preserve">
-    <value>容器时间尚不可延长</value>
+    <value>Container time cannot be extended yet</value>
     <comment/>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">
-    <value>题目未创建容器</value>
+    <value>No container created for the problem</value>
     <comment/>
   </data>
   <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
-    <value>队伍容器数目不能超过 {0}</value>
+    <value>The number of team containers cannot exceed {0}</value>
     <comment/>
   </data>
   <data name="Game_DeadlineExpired" xml:space="preserve">
-    <value>提交截止时间已过</value>
+    <value>Submission due date has passed</value>
     <comment/>
   </data>
   <data name="Game_End" xml:space="preserve">
@@ -702,11 +702,11 @@
     <comment/>
   </data>
   <data name="Game_OperationTooFrequent" xml:space="preserve">
-    <value>容器操作过于频繁</value>
+    <value>Container operation too often</value>
     <comment/>
   </data>
   <data name="Game_ParticipationNotAccepted" xml:space="preserve">
-    <value>您的参赛申请尚未通过或被禁赛</value>
+    <value>Your entry request has not been passed or banned</value>
     <comment/>
   </data>
   <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
@@ -726,7 +726,7 @@
     <comment/>
   </data>
   <data name="Game_WriteupSubmitted" xml:space="preserve">
-    <value>{0} 成功提交 {1} 的 Writeup</value>
+    <value>{0} successfully submitted {1} Write-Up</value>
     <comment/>
   </data>
   <data name="Header_Captain" xml:space="preserve">
@@ -818,19 +818,19 @@
     <comment/>
   </data>
   <data name="Identity_InvalidToken" xml:space="preserve">
-    <value>验证码无效</value>
+    <value>Invalid verification code</value>
     <comment/>
   </data>
   <data name="Identity_InvalidUserName" xml:space="preserve">
-    <value>用户名 {0} 无效</value>
+    <value>Invalid username {0}</value>
     <comment/>
   </data>
   <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
-    <value>登录已经关联</value>
+    <value>Login already associated</value>
     <comment/>
   </data>
   <data name="Identity_PasswordMismatch" xml:space="preserve">
-    <value>密码输入错误</value>
+    <value>Wrong password entered</value>
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
@@ -866,19 +866,19 @@
     <comment/>
   </data>
   <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
-    <value>用户密码已存在</value>
+    <value>User password already exists</value>
     <comment/>
   </data>
   <data name="Identity_UserAlreadyInRole" xml:space="preserve">
-    <value>用户已在角色 {0} 中</value>
+    <value>User already in role {0}</value>
     <comment/>
   </data>
   <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
-    <value>用户锁定未启用</value>
+    <value>User Lock is not enabled</value>
     <comment/>
   </data>
   <data name="Identity_UserNotInRole" xml:space="preserve">
-    <value>用户在角色 {0} 中不存在</value>
+    <value>User does not exist in role {0}</value>
     <comment/>
   </data>
   <data name="Init_AdminCreationFailed" xml:space="preserve">
@@ -906,27 +906,27 @@
     <comment/>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
-    <value>{0} 自动销毁题目 {1} 的容器实例 [{2}]</value>
+    <value>{0} Auto-destroy container instance of problem {1} [{2}]</value>
     <comment/>
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
-    <value>{0} 启动题目 {1} 的容器实例 [{2}]</value>
+    <value>{0} launches container instance of problem {1} [{2}]</value>
     <comment/>
   </data>
   <data name="InstanceRepository_ContainerCreationEvent" xml:space="preserve">
-    <value>{0}#{1} 启动容器实例</value>
+    <value>{0}#{1} Launch Container Instance</value>
     <comment/>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
-    <value>无法为题目 {0} 启动容器实例</value>
+    <value>Could not start container instance for problem {0}</value>
     <comment/>
   </data>
   <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
-    <value>销毁容器 [{0}] ({1}): {2}</value>
+    <value>Destroy container [{0}] ({1}): {2}</value>
     <comment/>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>题目 {0}#{1} 请求分配的动态附件数量不足</value>
+    <value>Insufficient number of dynamic attachments requested for problem {0}#{1}</value>
     <comment/>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
@@ -934,11 +934,11 @@
     <comment/>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
-    <value>创建容器时遇到无效的端口</value>
+    <value>Invalid port when creating a container</value>
     <comment/>
   </data>
   <data name="InstanceRepository_NoInstance" xml:space="preserve">
-    <value>队伍对应参与对象为空，这可能是非预期的情况 [{0}, {1}]</value>
+    <value>Team participants are empty, this may be unexpectedly [{0}, {1}]</value>
     <comment/>
   </data>
   <data name="MailSender_ChangeEmailButton" xml:space="preserve">
@@ -1019,19 +1019,19 @@
     <comment/>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
-    <value>确认验证邮箱</value>
+    <value>Verify Email</value>
     <comment/>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
-    <value>你正在进行账户注册操作，我们需要验证你的注册邮箱：{0}，请点击下方按钮进行验证。</value>
+    <value>You are in the process of registering your account. We need to verify your registration email：{0}. Please click the button below to verify it.</value>
     <comment/>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
-    <value>验证邮箱</value>
+    <value>Verify Email</value>
     <comment/>
   </data>
   <data name="Model_BioTooLong" xml:space="preserve">
-    <value>描述过长</value>
+    <value>Description is too long</value>
     <comment/>
   </data>
   <data name="Model_ContentRequired" xml:space="preserve">
@@ -1219,7 +1219,7 @@
     <comment/>
   </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
-    <value>动态附件名不可为空</value>
+    <value>Dynamic attachment name cannot be empty</value>
     <comment/>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
@@ -1235,31 +1235,31 @@
     <comment/>
   </data>
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
-    <value>动态附件题目请使用 assets API 上传附件</value>
+    <value>Use assets API to upload attachments</value>
     <comment/>
   </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
-    <value>容器地址解析失败</value>
+    <value>Container address parse failed</value>
     <comment/>
   </data>
   <data name="Container_ConfigError" xml:space="preserve">
-    <value>容器配置错误</value>
+    <value>Container Configuration Error</value>
     <comment/>
   </data>
   <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
-    <value>容器连接数已达上限</value>
+    <value>Container connection limit reached</value>
     <comment/>
   </data>
   <data name="Container_CreationFailed" xml:space="preserve">
-    <value>容器创建失败</value>
+    <value>Failed to create container</value>
     <comment/>
   </data>
   <data name="Container_InvalidClientAddress" xml:space="preserve">
-    <value>无效的访问地址</value>
+    <value>Invalid access address</value>
     <comment/>
   </data>
   <data name="Container_InvalidPort" xml:space="preserve">
-    <value>创建容器时遇到无效的端口</value>
+    <value>Invalid port when creating a container</value>
     <comment/>
   </data>
   <data name="Container_NotFound" xml:space="preserve">
@@ -1267,7 +1267,7 @@
     <comment/>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>成功创建测试容器 {0}</value>
+    <value>Successfully created test container {0}</value>
     <comment/>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
@@ -1291,7 +1291,7 @@
     <comment/>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
-    <value>容器连接失败（{0}），可能正在启动中或请检查网络配置 -&gt; {1}</value>
+    <value>Container connection failed ({0}), may be starting up or check network configuration -&gt; {1}</value>
     <comment/>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
@@ -1307,7 +1307,7 @@
     <comment/>
   </data>
   <data name="Team_AvatarUpdateFailed" xml:space="preserve">
-    <value>队伍头像更新失败</value>
+    <value>Team avatar update failed</value>
     <comment/>
   </data>
   <data name="Team_Created" xml:space="preserve">
@@ -1315,7 +1315,7 @@
     <comment/>
   </data>
   <data name="Team_CreationFailed" xml:space="preserve">
-    <value>队伍创建失败</value>
+    <value>Team creation failed</value>
     <comment/>
   </data>
   <data name="Team_Deleted" xml:space="preserve">
@@ -1323,7 +1323,7 @@
     <comment/>
   </data>
   <data name="Team_IdTransformFailed" xml:space="preserve">
-    <value>队伍 Id 转换错误：{0}</value>
+    <value>Team Id conversion error：{0}</value>
     <comment/>
   </data>
   <data name="Team_InvalidCode" xml:space="preserve">
@@ -1347,7 +1347,7 @@
     <comment/>
   </data>
   <data name="Team_NameInvalidInvitation" xml:space="preserve">
-    <value>{0} 邀请无效</value>
+    <value>{0} invitation is invalid</value>
     <comment/>
   </data>
   <data name="Team_NameLocked" xml:space="preserve">
@@ -1359,11 +1359,11 @@
     <comment/>
   </data>
   <data name="Team_NewCaptainNotFound" xml:space="preserve">
-    <value>移交的用户不存在</value>
+    <value>Transferred user does not exist</value>
     <comment/>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>被移交者所管理的队伍过多</value>
+    <value>Too many handed over teams</value>
     <comment/>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
@@ -1387,9 +1387,9 @@
     <comment/>
   </data>
   <data name="Game_WriteupNotNeeded" xml:space="preserve">
-      <value>本次比赛不可提交 Writeup</value>
+      <value>This match cannot be submitted</value>
   </data>
-    <data name="Signature_Invalid" xml:space="preserve">
-      <value>无效的签名</value>
+  <data name="Signature_Invalid" xml:space="preserve">
+      <value>Invalid signature</value>
   </data>
 </root>

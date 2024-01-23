@@ -1,0 +1,75 @@
+{
+  "tab": {
+    "game": "Games",
+    "home": "Home page",
+    "post": "Articles",
+    "team": "Battle Team",
+    "about": "About",
+    "theme": {
+      "dark": "dark mode",
+      "light": "light mode",
+      "switch_to": "Switch to {{theme}}"
+    },
+    "manage": "Manage",
+    "account": {
+      "login": "Sign in",
+      "logout": "Logout",
+      "profile": "User Information",
+      "clean_cache": "Clear Cache"
+    },
+    "language": {
+      "en": "English",
+      "zh": "Chinese",
+      "switch_to": "Switch to {{language}}"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "About"
+  },
+  "email": {
+    "sent": {
+      "title": "Email Sent",
+      "message": "Please check your email and spam mail!"
+    }
+  },
+  "error": {
+    "try_later": "Please try again later",
+    "check_input": "Please check input",
+    "encountered": "Problems encountered",
+    "param_error": "Parameter error, please check",
+    "file_invalid": {
+      "title": "File loading failed",
+      "message": "Please check file format and size"
+    },
+    "param_invalid": "Invalid argument",
+    "param_missing": "Missing parameter",
+    "param_unknown": "Unknown parameter",
+    "invalid_username_or_password": "Wrong username or password"
+  },
+  "modal": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "confirm_delete": "Confirm delete",
+    "confirm_update": "Confirm modification"
+  },
+  "avatar": {
+    "save": "Save Avatar",
+    "uploaded": "Avatar updated",
+    "uploading": "Uploading avatar",
+    "upload_failed": "Avatar update failed"
+  },
+  "content": {
+    "404": {
+      "text": "A desolation, why is it here",
+      "title": "Page does not exist"
+    },
+    "home": {
+      "recent_games": "Recent Matches"
+    },
+    "about": {
+      "slogan": "Hack for un not for profit"
+    }
+  }
+}

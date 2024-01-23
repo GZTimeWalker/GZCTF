@@ -1,0 +1,85 @@
+{
+  "title": {
+    "index": "チーム管理"
+  },
+  "label": {
+    "bio": "チーム署名",
+    "name": "チーム名",
+    "kick": "パーティーから退出させる",
+    "members": "グループメンバー",
+    "transfer": "チーム",
+    "invite_code": "招待コード"
+  },
+  "button": {
+    "join": "チームに参加",
+    "edit": "チーム詳細",
+    "save": "更新情報",
+    "leave": "チーム脱退",
+    "create": "チーム作成",
+    "disband": "パーティーを解散"
+  },
+  "content": {
+    "join": "チームに招待元をチームに招待したい。招待コードを入力して下さい。",
+    "kick": {
+      "confirm": {
+        "title": "キックファクションを確認",
+        "message": "あなたは退室しようと\"{{user}}\"をキックしますか？"
+      }
+    },
+    "leave": {
+      "confirm": {
+        "title": "チームから離脱する",
+        "message": "你确定要退出队伍 \"{{team}}\" 吗？"
+      }
+    },
+    "create": "チームを作成すると、1チームを結成し、他のメンバーを招待することができます。チームのみがそのチームに参加できます。",
+    "disband": {
+      "confirm": {
+        "title": "チーム解散を確認",
+        "message": "你确定要解散队伍 \"{{team}}\" 吗？"
+      }
+    },
+    "transfer": {
+      "confirm": {
+        "title": "組織移転確認",
+        "message": "你确定要将队伍 \"{{team}}\" 转让给 \"{{user}}\" 吗？"
+      }
+    },
+    "no_create": {
+      "title": "パーティーを作成しました",
+      "content": "每个人只能拥有一个队伍<br/>你可以删除队伍后重新创建"
+    }
+  },
+  "placeholder": {
+    "bio": "この隊は内容がありません。"
+  },
+  "notification": {
+    "join": {
+      "success": "チームに加入しました",
+      "wrong_invite_code": "チーム招待コードが正しくフォーマットされていません"
+    },
+    "kick": {
+      "success": "退室成功"
+    },
+    "leave": {
+      "success": "チームから離脱しました"
+    },
+    "create": {
+      "success": {
+        "title": "チームが作成されました",
+        "message": "{{team}}が創設されました。チームメイトを今すぐ招待しましょう！"
+      }
+    },
+    "updated": "チーム情報を更新しました",
+    "disband": {
+      "success": "チームを解散しました"
+    },
+    "transfer": {
+      "success": "チーム移転が成功しました"
+    },
+    "invite_code": {
+      "copied": "僅用於中文",
+      "updated": "チーム招待コードが更新されました"
+    }
+  }
+}

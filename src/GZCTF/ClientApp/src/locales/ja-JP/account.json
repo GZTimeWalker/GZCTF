@@ -1,0 +1,114 @@
+{
+  "label": {
+    "bio": "説明",
+    "email": "メール",
+    "phone": "携帯電話",
+    "password": "パスワード",
+    "username": "ユーザー名",
+    "email_new": "新しいメールボックス",
+    "real_name": "リアルネーム",
+    "student_id": "工学号",
+    "password_old": "古いパスワード",
+    "password_retype": "パスワード確認",
+    "username_or_email": "ユーザー名またはEメール"
+  },
+  "title": {
+    "login": "ログイン",
+    "reset": "パスワードをリセット",
+    "verify": "アカウントの認証",
+    "confirm": "メールで認証",
+    "profile": "プロフィール",
+    "register": "登録",
+    "recovery": "アカウントの復元"
+  },
+  "anchor": {
+    "login": "サインインする準備ができましたか？",
+    "recovery": "パスワードをお忘れですか？"
+  },
+  "button": {
+    "login": "ログイン",
+    "reset": "パスワードをリセット",
+    "recovery": "リセットメール送信",
+    "register": "登録",
+    "save_profile": "プロファイルを保存",
+    "update_email": "Eメールを変更する",
+    "confirm_email": "このEmailアドレスはすでに使用されています",
+    "verify_account": "アカウントを認証する",
+    "change_password": "パスワードを変更"
+  },
+  "content": {
+    "verify": {
+      "message": "下のボタンをクリックしてアカウントを認証してください"
+    },
+    "welcome": "{{decodeEmail}}さん、こんにちは:waving_hand：",
+    "confirm": {
+      "message": "下のボタンをクリックしてメールをあなたのメールアドレスに変更してください。"
+    },
+    "profile": {
+      "update_email_note": "更改邮箱后，您将不能通过原邮箱登录。<br/>一封邮件将发送至新邮箱，点击其中链接完成验证。"
+    },
+    "link_check": "リンクが正しいことを確認するために再度アクセスしてください",
+    "link_invalid": "Ouch ！接続に問題があるようです。"
+  },
+  "password": {
+    "empty": "パスワードは空欄にできません",
+    "not_match": "パスワードの再設定",
+    "min_length": "最低 6 文字",
+    "include_number": "数字を含む",
+    "include_symbol": "特殊文字が含まれています",
+    "include_lowercase": "小文字",
+    "include_uppercase": "大文字を含める"
+  },
+  "placeholder": {
+    "bio": "これは怠け者なんていない",
+    "drop_zone": {
+      "hint": "3MB未満の画像を選択してください",
+      "content": "画像をドラッグアンドドロップするか、ここをクリック"
+    }
+  },
+  "notification": {
+    "login": {
+      "banned": "ユーザーは無効な状態です",
+      "invalid": "ユーザー名またはパスワードが正しくありません",
+      "success": {
+        "title": "ログイン成功",
+        "message": "ログインページへ移動"
+      }
+    },
+    "reset": {
+      "success": {
+        "title": "パスワードがリセットされました",
+        "message": "ログインし直してください"
+      }
+    },
+    "logout": {
+      "logged_out": "ログアウト成功"
+    },
+    "verify": {
+      "failed": "アカウントを認証できませんでした",
+      "success": "アカウント認証済みです。ログインしてください"
+    },
+    "captcha": {
+      "not_valid": "認証コード番号……お待ちください",
+      "request_sent": {
+        "title": "…… リクエストが送信されました",
+        "message": "サーバーの認証を待っています"
+      }
+    },
+    "confirm": {
+      "failed": "電子メールの検証に失敗しました",
+      "success": "Eメールアドレスはすでに確認済みです"
+    },
+    "profile": {
+      "profile_updated": "アカウント情報が更新されました。",
+      "password_updated": "パスワードが変更されました。ログインし直してください。"
+    },
+    "register": {
+      "logged_in": "登録が完了しました",
+      "request_sent": {
+        "title": "登録リクエストが送られました",
+        "message": "管理者の審査までお待ちください～"
+      }
+    }
+  }
+}
