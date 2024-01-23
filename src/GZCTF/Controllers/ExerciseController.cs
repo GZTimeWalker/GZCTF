@@ -14,8 +14,9 @@ namespace GZCTF.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class ExerciseController(
-    ILogger<ExerciseController> logger,
-    IExerciseInstanceRepository exerciseInstanceRepository,
-    IStringLocalizer<Program> localizer) : ControllerBase
+    ILogger<ExerciseController> _logger,
+    IExerciseInstanceRepository _exerciseInstanceRepository,
+    IStringLocalizer<Program> _localizer) : ControllerBase
 {
+    // TODO: exercise mode support
 }
