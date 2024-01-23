@@ -18,17 +18,17 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core'
-import { Dropzone } from '@mantine/dropzone'
-import { useClipboard } from '@mantine/hooks'
-import { useModals } from '@mantine/modals'
-import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
-import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
-import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
-import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
-import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
+import {Dropzone} from '@mantine/dropzone'
+import {useClipboard} from '@mantine/hooks'
+import {useModals} from '@mantine/modals'
+import {notifications, showNotification, updateNotification} from '@mantine/notifications'
+import {mdiCheck, mdiClose, mdiRefresh, mdiStar} from '@mdi/js'
+import {Icon} from '@mdi/react'
+import {FC, useEffect, useState} from 'react'
+import {showErrorNotification, tryGetErrorMsg} from '@Utils/ApiErrorHandler'
+import {useTranslation} from '@Utils/I18n'
+import {ACCEPT_IMAGE_MIME_TYPE} from '@Utils/ThemeOverride'
+import api, {TeamInfoModel, TeamUserInfoModel} from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -141,7 +141,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         })
         setInviteCode('')
         setTeamInfo(null)
-        mutateTeams(teams?.filter((x) => x.id !== teamInfo.id), { revalidate: false })
+        mutateTeams(
+          teams?.filter((x) => x.id !== teamInfo.id),
+          {revalidate: false}
+        )
         props.onClose()
       })
       .catch((e) => showErrorNotification(e, t))
@@ -161,9 +164,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setTeamInfo(team.data)
-        mutateTeams(teams?.map((x) => (x.id === teamInfo.id ? team.data : x)), {
-          revalidate: false,
-        })
+        mutateTeams(
+          teams?.map((x) => (x.id === teamInfo.id ? team.data : x)),
+          {
+            revalidate: false,
+          }
+        )
       })
       .catch((e) => showErrorNotification(e, t))
   }
@@ -179,9 +185,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setTeamInfo(data.data)
-        mutateTeams(teams?.map((x) => (x.id === teamInfo?.id ? data.data : x)), {
-          revalidate: false,
-        })
+        mutateTeams(
+          teams?.map((x) => (x.id === teamInfo?.id ? data.data : x)),
+          {
+            revalidate: false,
+          }
+        )
       })
       .catch((e) => showErrorNotification(e, t))
   }
@@ -229,9 +238,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         setAvatarFile(null)
         const newTeamInfo = { ...teamInfo, avatar: data.data }
         setTeamInfo(newTeamInfo)
-        mutateTeams(teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)), {
-          revalidate: false,
-        })
+        mutateTeams(
+          teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)),
+          {
+            revalidate: false,
+          }
+        )
       })
       .catch((err) => {
         updateNotification({
@@ -259,9 +271,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           message: '队伍信息已更新',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        mutateTeams(teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)), {
-          revalidate: false,
-        })
+        mutateTeams(
+          teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)),
+          {
+            revalidate: false,
+          }
+        )
       })
       .catch((e) => showErrorNotification(e, t))
   }

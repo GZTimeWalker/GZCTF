@@ -13,8 +13,8 @@ import {
   TextInput,
   Title,
 } from '@mantine/core'
-import { useModals } from '@mantine/modals'
-import { showNotification } from '@mantine/notifications'
+import {useModals} from '@mantine/modals'
+import {showNotification} from '@mantine/notifications'
 import {
   mdiCheck,
   mdiContentSaveOutline,
@@ -23,26 +23,21 @@ import {
   mdiEyeOutline,
   mdiKeyboardBackspace,
 } from '@mdi/js'
-import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import {Icon} from '@mdi/react'
+import {FC, useEffect, useState} from 'react'
+import {useNavigate, useParams} from 'react-router-dom'
 import HintList from '@Components/HintList'
 import InstanceEntry from '@Components/InstanceEntry'
 import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
 import ScoreFunc from '@Components/admin/ScoreFunc'
-import { SwitchLabel } from '@Components/admin/SwitchLabel'
+import {SwitchLabel} from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
-import {
-  ChallengeTagItem,
-  ChallengeTagLabelMap,
-  ChallengeTypeItem,
-  ChallengeTypeLabelMap,
-} from '@Utils/Shared'
-import { OnceSWRConfig } from '@Utils/useConfig'
-import { useEditChallenge } from '@Utils/useEdit'
-import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
+import {showErrorNotification} from '@Utils/ApiErrorHandler'
+import {useTranslation} from '@Utils/I18n'
+import {ChallengeTagItem, ChallengeTagLabelMap, ChallengeTypeItem, ChallengeTypeLabelMap,} from '@Utils/Shared'
+import {OnceSWRConfig} from '@Utils/useConfig'
+import {useEditChallenge} from '@Utils/useEdit'
+import api, {ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType} from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -116,7 +111,10 @@ const GameChallengeEdit: FC = () => {
           message: '题目已删除',
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        mutateChals(chals?.filter((chal) => chal.id !== numCId), { revalidate: false })
+        mutateChals(
+          chals?.filter((chal) => chal.id !== numCId),
+          {revalidate: false}
+        )
         navigate(`/admin/games/${id}/challenges`)
       })
       .catch((e) => showErrorNotification(e, t))
