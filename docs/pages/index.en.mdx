@@ -1,0 +1,60 @@
+import { Callout } from "nextra-theme-docs";
+
+# GZ::CTF
+
+GZ::CTF is an open source CTF platform based on ASP.NET Core, using Docker or K8s as the container deployment backend, providing customizable challenges types, dynamic containers and dynamic scores.
+
+This project originated from the author's idea that the implementation of CTFd is not elegant enough, the dynamic container configuration needs to be implemented by plug-ins, and the front-end is not good-looking. At the same time, in order to hold school CTF and help students from other schools to run their CTF, I wrote one by myself.
+
+GZ::CTF is open source under AGPLv3 license, use and modification are subject to the open source license. Please refer to [Quick Start](/quick-start) for deployment.
+
+<Callout type="warning">
+
+Since 01/01/2024, the database structure of the `develop` image is no longer compatible with previous versions. If you prefer to use it, please go to `v0.17`.
+
+During the rapid development of new features, it is not recommended to use the `develop` image for production deployment, and the database structure changes will cause data loss.
+
+</Callout>
+
+## Features 🛠️
+
+- Create highly customizable challenges
+
+  - Type of challenges: Static Attachment, Dynamic Attachment, Static Container, Dynamic Container
+    - Static Attachment: Shared attachments, any configured flag can be accepted.
+    - Dynamic Attachment: The number of flags and attachments must be at least the number of teams. Attachments and flags are distributed according to the teams.
+    - Static Container: Shared container templates, no dynamic flag is issued, and any configured flag can be submitted.
+    - Dynamic Container: Automatically generate and issue flags through container environment variables, and flag of each team is unique.
+
+  - Dynamic Scores
+    
+    - Curve of scores:
+
+      $$ f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
+
+      Where $S$ is the original score, $r$ is the minimum score ratio, $d$ is the difficulty coefficient, and $x$ is the number of submissions. The first three parameters can be customized to satisfy most of the dynamic score requirements.
+
+    - Bonus for first three solves: 
+      The platform rewards 5%, 3%, and 1% of the current score for the first three solves respectively.
+
+  - Disable or enable challenges during the competition, and release new challenges at any time.
+  - Dynamic flag sharing detection, optional flag template, leet flag
+  
+
+- **Teams** score timeline, scoreboard. Teams can be grouped
+- Dynamic container distribution, management, and multiple port mapping methods based on **Docker or K8s**
+- **Real-time** competition notification, competition events and flag submission monitoring, and log monitoring based on SignalR
+- SMTP email verification, malicious registration protection based on Google ReCaptchav3
+- Ban specific user, three-level user permission management
+- Optional team review, invitation code, registration email restriction
+- Writeup collection, review, and batch download in the platform
+- Download exported scoreboard, export all submission records
+- Monitor submissions and major event logs during the competition
+- Challenges traffic forwarding based on **TCP over WebSocket proxy**, configurable traffic capture
+- Cluster cache based on Redis, database storage backend based on PGSQL
+- Customizable global configuration, platform title, record information
+- And more...
+
+## Stars ✨
+
+[![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg)](https://starchart.cc/GZTimeWalker/GZCTF)
