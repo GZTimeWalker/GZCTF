@@ -34,6 +34,8 @@
     "encountered": "Problems encountered",
     "param_error": "Parameter error, please check",
     "unknown": "Unknown error",
+    "empty": "Content can't be empty",
+    "no_change": "There seems to be no change",
     "request_too_frequent": "Too often requests",
     "file_invalid": {
       "title": "File loading failed",

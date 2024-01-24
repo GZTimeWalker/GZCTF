@@ -11,6 +11,16 @@
     "forensics": "Forensics",
     "blockchain": "blockchain"
   },
+  "file_type": {
+    "none": "None",
+    "remote": "Remote Url",
+    "local": "Self hosted"
+  },
+  "bonus": {
+    "first_blood": "First Blood",
+    "second_blood": "Second blood",
+    "third_blood": "Third Blood"
+  },
   "type": {
     "static_container": {
       "label": "Static Container",
@@ -29,14 +39,8 @@
       "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams"
     }
   },
-  "bonus": {
-    "first_blood": "First Blood",
-    "third_blood": "Third Blood",
-    "second_blood": "Second blood"
-  },
-  "file_type": {
-    "none": "None",
-    "local": "Self hosted",
-    "remote": "Remote Url"
+  "button": {
+    "submit_flag": "Submit flag",
+    "download_attachment": "Download Attachment"
   }
 }

@@ -1,118 +1,275 @@
 {
-  "tab": {
-    "logs": "登録が無効となりました",
-    "games": {
-      "info": "メッセージの編集",
-      "index": "試合管理",
-      "review": "チーム監査",
-      "notices": "トーナメントのお知らせ",
-      "writeups": "ログ先行書き込み",
-      "challenges": "課題の管理"
-    },
-    "teams": "チーム管理",
-    "users": "ユーザー管理",
-    "settings": "システム設定",
-    "instances": "インスタンス管理"
-  },
   "button": {
     "back": "親に戻る",
-    "save": "変更を保存",
+    "challenges": {
+      "attachment": {
+        "save_url": "リンクを保存",
+        "upload": "添付ファイルをアップロード",
+        "uploading": "アップロード中……"
+      },
+      "bonus": "3血獎勵",
+      "delete": "課題削除",
+      "edit": "課題を編集する",
+      "edit_more": "添付ファイルやフラグを編集",
+      "flag": {
+        "add": "フラッシュを追加",
+        "save": "フラッシュテンプレートを保存"
+      },
+      "new": "新規課題",
+      "preview": "課題をプレビュー",
+      "test_container": {
+        "create": "テストコンテナーの作成",
+        "destroy": "テストコンテナーの破棄する"
+      }
+    },
     "games": {
-      "delete": "レース削除",
-      "copy_public_key": "パブリックキーをコピー"
+      "copy_public_key": "パブリックキーをコピー",
+      "delete": "レース削除"
     },
     "notices": {
-      "new": "新しいお知らせ",
       "delete": "お知らせを削除",
-      "edit": "お知らせを編集"
+      "edit": "お知らせを編集",
+      "new": "新しいお知らせ"
+    },
+    "save": "変更を保存",
+    "writeups": {
+      "download_all": "すべてのログファイルをダウンロード"
     }
   },
   "content": {
     "games": {
+      "challenges": {
+        "attachment": {
+          "clear": {
+            "description": "この課題の添付ファイルを削除しても良いですか？",
+            "title": "添付ファイルをパージする"
+          },
+          "link": "添付ファイルのリンク",
+          "title": "添付ファイルの管理",
+          "type": "添付タイプ"
+        },
+        "attachment_name": {
+          "description": "動的な添付ファイルは同じファイル名でダウンロードされます",
+          "label": "グローバル添付ファイル"
+        },
+        "bonus": {
+          "description": "3血ボーナスは、課題が上位3つのチームに解かれる、各チームのポイント値を与えるときに得点を適用することを指します。 3 血の報酬は課題に対する現在の点値点の値に基づいて固定された定率のいずれかに追加されます。",
+          "first_blood": "1体力（%）",
+          "second_blood": "B2HP報酬 (%)",
+          "third_blood": "B3体力（%）"
+        },
+        "container_image": "コンテナイメージ",
+        "cpu_limit": {
+          "description": "0.1で CPU コア数になります",
+          "label": "CPU 制限 (0.1 CPU)"
+        },
+        "delete": "{{name}} を削除してもよろしいですか。",
+        "description": "課題の説明",
+        "difficulty": "難易度",
+        "empty": {
+          "description": "右上にある最初の課題をタップ",
+          "title": "オッシ！このコンテストに課題はありません"
+        },
+        "flag": {
+          "instructions": {
+            "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情况下启用 Leet 字符串功能，请在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 标记，此时不会检查 flag 模版字符串的熵",
+            "description": "flag テンプレート文字列を生成するには空のランダムなGUIDを生成してください",
+            "example": "フラッシュテンプレートの例を作成",
+            "guid": "任意の <1>[GUID]</1>が GUID に置き換えて下さい",
+            "leave_empty": "無効にする場合は空白のまま",
+            "leet": "未指定の <1>[TEAM_HASH]</1> を指定していない場合は Leet 文字列が有効になっている場合、テンプレートが適用されます。フラッシュテンプレートを使ったテンプレートを使ったエントリーの変換が必要不可欠です。",
+            "team_hash": "入力値 <1>[TEAM_HASH]</1> を指定した場合、トークンやゲーム情報から生成されるハッシュ値を自動的に置き換えられます。",
+            "will_generate": "今後生成する"
+          },
+          "template": "フラッシュテンプレート",
+          "title": "flag マネージャー",
+          "empty": {
+            "description": "右上の角で flag を追加してください",
+            "title": "フラッシュリストは空です"
+          },
+          "create": "创建 flag，多个 flag 按行分割，每行一个。<br />每道题目可以拥有多个 flag，获取任意 flag 均可得分。"
+        },
+        "hints": "ヒント",
+        "memory_limit": {
+          "description": "コンテナで使用するRAM",
+          "label": "メモリ制限 (MB)"
+        },
+        "min_score_radio": {
+          "description": "最小値：{{min_score}}pts",
+          "label": "最小の割合"
+        },
+        "original_score": "問題の得点",
+        "service_port": {
+          "description": "コンテナ内サービスのポート番号",
+          "label": "サービスポート"
+        },
+        "storage_limit": {
+          "description": "イメージサイズの制限値",
+          "label": "ストレージ上限 (MB)"
+        },
+        "tag": "課題のラベル",
+        "title": "問題",
+        "traffic_capture": {
+          "description": "チームの分割トラフィックをキャプチャします。ネットワークプロキシを有効にする必要があります",
+          "label": "トラフィックのキャプチャを無効化"
+        },
+        "type": {
+          "description": "作成後にこの変更はできません",
+          "label": "課題のタイプ"
+        }
+      },
       "info": {
-        "title": {
-          "label": "試合タイトル",
-          "description": "長すぎる効果の影響あり"
-        },
-        "delete": "{{name}} のレースを削除してもよろしいですか？",
-        "summary": {
-          "label": "ゲームの説明",
-          "description": "トーナメントリストに表示"
-        },
-        "end_date": "検索終了日",
-        "end_time": "終了時刻",
-        "start_date": "配送製品の総重量",
-        "start_time": "開始時刻",
-        "invite_code": {
-          "label": "招待コード",
-          "description": "空白の場合は招待コードを入力して下さい。"
-        },
-        "writeup_deadline": {
-          "label": "ログ書き込み失敗時間",
-          "description": "試合が終了したら、ログの表示数を有効にします"
-        },
-        "member_limit": {
-          "label": "チーム人数制限",
-          "description": "0は無制限チーム人数を表します"
-        },
-        "organizations": {
-          "label": "参加可能なオプションの組織一覧",
-          "description": "グループダッシュボードを立ち上げる",
-          "add": "+ 組織「{{org}} 」を追加する"
-        },
-        "practice_mode": {
-          "label": "練習モード",
-          "description": "試合が終了した後も課題や提出が見られます"
+        "accept_without_review": {
+          "description": "申し込み時にAcceptステータスを直接設定",
+          "label": "チーム申し込み自動審査"
         },
         "container_limit": {
-          "label": "チームコンテナーの制限",
-          "description": "共有可能なコンテナの数 (0 が割り当てられていません)"
-        },
-        "writeup_required": {
-          "label": "Writeup が必要です",
-          "description": "レースの「Write」機能が有効であるかどうかを制御しますか？"
+          "description": "共有可能なコンテナの数 (0 が割り当てられていません)",
+          "label": "チームコンテナーの制限"
         },
         "content": "試合詳細",
+        "delete": "{{name}} のレースを削除してもよろしいですか？",
+        "end_date": "検索終了日",
+        "end_time": "終了時刻",
+        "invite_code": {
+          "description": "空白の場合は招待コードを入力して下さい。",
+          "label": "招待コード"
+        },
+        "member_limit": {
+          "description": "0は無制限チーム人数を表します",
+          "label": "チーム人数制限"
+        },
+        "organizations": {
+          "add": "+ 組織「{{org}} 」を追加する",
+          "description": "グループダッシュボードを立ち上げる",
+          "label": "参加可能なオプションの組織一覧"
+        },
         "poster": "試合のポスター",
+        "practice_mode": {
+          "description": "試合が終了した後も課題や提出が見られます",
+          "label": "練習モード"
+        },
+        "start_date": "配送製品の総重量",
+        "start_time": "開始時刻",
+        "summary": {
+          "description": "トーナメントリストに表示",
+          "label": "ゲームの説明"
+        },
+        "title": {
+          "description": "長すぎる効果の影響あり",
+          "label": "試合タイトル"
+        },
+        "writeup_deadline": {
+          "description": "試合が終了したら、ログの表示数を有効にします",
+          "label": "ログ書き込み失敗時間"
+        },
         "writeup_instruction": "書き込み利便性説明",
-        "accept_without_review": {
-          "label": "チーム申し込み自動審査",
-          "description": "申し込み時にAcceptステータスを直接設定"
+        "writeup_required": {
+          "description": "レースの「Write」機能が有効であるかどうかを制御しますか？",
+          "label": "Writeup が必要です"
         }
       },
       "notices": {
+        "delete": "この通知を削除するよろしいですか。",
         "empty": {
-          "title": "お知らせはありません",
-          "description": "新しいお知らせは右上のボタンをクリックして下さい"
+          "description": "新しいお知らせは右上のボタンをクリックして下さい",
+          "title": "お知らせはありません"
+        }
+      },
+      "review": {
+        "empty": {
+          "description": "アドバンスト……急ぐ！",
+          "title": "Ouchi! この試合にまだチーム登録していません。"
         },
-        "delete": "この通知を削除するよろしいですか。"
+        "participation": {
+          "joined": "申込済み",
+          "not_joined": "未報名",
+          "stats": "{{count}}/{{total}} 已报名"
+        }
+      },
+      "writeups": {
+        "empty": {
+          "description": "新たに投稿された Writeがここに表示されます",
+          "title": "Ouch! チーム提出のない"
+        },
+        "pdf_fallback": "PDF ファイルの読み込みに失敗しました"
       }
     },
+    "markdown_inline_support": "インライン マークダウン記法のサポート",
     "markdown_support": "マークダウン構文のサポート",
-    "markdown_inline_support": "インライン マークダウン記法のサポート"
-  },
-  "placeholder": {
-    "games": {
-      "organizations": "参加が許可されていない組織構成が切り替えられます"
-    }
+    "nothing_found": "何も見つかりません",
+    "show_all": "すべて表示"
   },
   "notification": {
     "games": {
-      "info": {
-        "poster": {
-          "uploaded": "ポスターは正常にアップロードされました。",
-          "uploading": "ポスターをアップロード中...",
-          "upload_failed": "ポスターをアップロードできませんでした"
+      "challenges": {
+        "attachment": {
+          "updated": "添付ファイルが更新されました"
         },
+        "created": "作成された課題",
+        "deleted": "課題を削除しました",
+        "flag_template": {
+          "updated": "フラッシュテンプレートを更新しました"
+        },
+        "preview": {
+          "attachment_downloaded": "付属品のチェックが終了しました！",
+          "flag_submitted": "flag は正しい投稿されました！"
+        },
+        "updated": "課題を更新しました",
+        "flag": {
+          "created": "flag が作成されました",
+          "deleted": "flag を削除しました"
+        }
+      },
+      "info": {
         "deleted": "マッチは削除されました",
         "info_updated": "トーナメント情報を更新しました",
+        "poster": {
+          "upload_failed": "ポスターをアップロードできませんでした",
+          "uploaded": "ポスターは正常にアップロードされました。",
+          "uploading": "ポスターをアップロード中..."
+        },
         "public_key_copied": "公開鍵がクリップボードにコピーされました"
       },
+      "instances": {
+        "created": "インスタンスが作成されました",
+        "deleted": "マシンは破壊されました"
+      },
       "notices": {
-        "deleted": "お知らせを削除しました",
         "created": "お知らせが作成されました",
+        "deleted": "お知らせを削除しました",
         "updated": "お知らせが更新されました"
+      },
+      "review": {
+        "participation": {
+          "updated": "チーム監査状態が更新されました"
+        }
       }
     }
+  },
+  "placeholder": {
+    "empty": "値なし",
+    "games": {
+      "organizations": "参加が許可されていない組織構成が切り替えられます",
+      "participation": {
+        "bio": "(自己紹介なし)",
+        "team": "(名無し)"
+      }
+    }
+  },
+  "tab": {
+    "games": {
+      "challenges": "課題の管理",
+      "index": "試合管理",
+      "info": "メッセージの編集",
+      "notices": "トーナメントのお知らせ",
+      "review": "チーム監査",
+      "writeups": "ログ先行書き込み"
+    },
+    "instances": "インスタンス管理",
+    "logs": "登録が無効となりました",
+    "settings": "システム設定",
+    "teams": "チーム管理",
+    "users": "ユーザー管理"
   }
 }

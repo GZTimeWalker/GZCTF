@@ -34,6 +34,8 @@
     "encountered": "問題がありました",
     "param_error": "パラメータが間違っています。確認してください",
     "unknown": "不明なエラー",
+    "empty": "内容を入力してください。",
+    "no_change": "変更がないようです",
     "request_too_frequent": "リクエストがあまりに多い",
     "file_invalid": {
       "title": "ファイルの読み込みに失敗しました",
