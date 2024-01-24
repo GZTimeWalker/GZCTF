@@ -1,17 +1,17 @@
 {
   "tab": {
     "games": {
-      "index": "Match management",
-      "info": "Message editing",
-      "notices": "Match announcement",
-      "challenges": "Issue management",
-      "review": "Team Review",
-      "writeups": "Writing"
+      "index": "Games",
+      "info": "Information",
+      "notices": "Notices",
+      "challenges": "Challenges",
+      "review": "Teams",
+      "writeups": "Writeups"
     },
-    "teams": "Team management",
-    "users": "User management",
-    "instances": "Instance management",
-    "logs": "System Logs",
-    "settings": "System Settings"
+    "teams": "Teams",
+    "users": "Users",
+    "instances": "Instances",
+    "logs": "Logs",
+    "settings": "Settings"
   }
 }

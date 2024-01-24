@@ -10,7 +10,7 @@
       "light": "ライト",
       "switch_to": "切换到{{theme}}主题"
     },
-    "manage": "アドミニストレーション",
+    "admin": "アドミニストレーション",
     "account": {
       "login": "ログイン",
       "logout": "ログアウト",

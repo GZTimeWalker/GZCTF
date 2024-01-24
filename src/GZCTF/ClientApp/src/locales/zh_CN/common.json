@@ -10,7 +10,7 @@
       "light": "浅色",
       "switch_to": "切换到{{theme}}主题"
     },
-    "manage": "管理",
+    "admin": "管理",
     "account": {
       "login": "登录",
       "logout": "登出",

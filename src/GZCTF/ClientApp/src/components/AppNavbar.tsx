@@ -134,7 +134,7 @@ const AppNavbar: FC = () => {
     { icon: mdiFlagOutline, label: 'common.tab.game', link: '/games' },
     { icon: mdiAccountGroupOutline, label: 'common.tab.team', link: '/teams' },
     { icon: mdiInformationOutline, label: 'common.tab.about', link: '/about' },
-    { icon: mdiWrenchOutline, label: 'common.tab.manage', link: '/admin/games', admin: true },
+    { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/games', admin: true },
   ]
 
   const getLabel = (path: string) =>

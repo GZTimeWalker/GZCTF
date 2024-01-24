@@ -10,7 +10,7 @@
       "light": "light mode",
       "switch_to": "Switch to {{theme}}"
     },
-    "manage": "Manage",
+    "admin": "Admin",
     "account": {
       "login": "Sign in",
       "logout": "Logout",
