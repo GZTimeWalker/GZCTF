@@ -34,6 +34,8 @@
     "encountered": "遇到了问题",
     "param_error": "参数错误，请检查",
     "unknown": "未知错误",
+    "empty": "内容不能为空",
+    "no_change": "似乎没有修改",
     "request_too_frequent": "请求过于频繁",
     "file_invalid": {
       "title": "文件加载失败",

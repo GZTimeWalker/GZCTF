@@ -30,8 +30,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
     if (!content) {
       showNotification({
         color: 'red',
-        title: '输入不能为空',
-        message: '请输入内容',
+        message: t('common.error.empty'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -39,7 +38,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
     if (content === gameNotice?.content) {
       showNotification({
         color: 'orange',
-        message: '似乎没有变化哦',
+        message: t('common.error.no_change'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -55,7 +54,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         .then((data) => {
           showNotification({
             color: 'teal',
-            message: '通知已修改',
+            message: t('admin.notification.games.notices.updated'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
           mutateGameNotice(data.data)
@@ -73,7 +72,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         .then((data) => {
           showNotification({
             color: 'teal',
-            message: '通知已添加',
+            message: t('admin.notification.games.notices.created'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
           mutateGameNotice(data.data)
@@ -91,7 +90,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       <Stack>
-        <Text>编辑比赛通知详情，支持 Inline Markdown 语法。</Text>
+        <Text>{t('admin.content.markdown_inline_support')}</Text>
         <Textarea
           value={content}
           w="100%"
@@ -102,7 +101,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
         />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onConfirm}>
-            {t('Modal_Confirm')}
+            {t('common.modal.confirm')}
           </Button>
         </Group>
       </Stack>
