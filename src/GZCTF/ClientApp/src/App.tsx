@@ -38,7 +38,9 @@ export const App: FC = () => {
       <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
         <Notifications zIndex={5000} />
         {StyledGlobal}
-        <ModalsProvider labels={{ confirm: t('Modal_Confirm'), cancel: t('Modal_Cancel') }}>
+        <ModalsProvider
+          labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
+        >
           <SWRConfig
             value={{
               refreshInterval: 10000,

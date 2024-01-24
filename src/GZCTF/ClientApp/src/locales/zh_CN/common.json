@@ -67,6 +67,14 @@
     },
     "about": {
       "slogan": "Hack for fun not for profit"
+    },
+    "drop_zone": {
+      "type": {
+        "avatar": "头像",
+        "poster": "海报"
+      },
+      "content": "拖放图片或点击此处以选择{{type}}",
+      "limit": "请选择小于 3MB 的图片"
     }
   }
 }

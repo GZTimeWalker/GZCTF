@@ -60,11 +60,7 @@
     "include_uppercase": "包含大写字母"
   },
   "placeholder": {
-    "bio": "这个人很懒，什么都没有写",
-    "drop_zone": {
-      "hint": "请选择小于 3MB 的图片",
-      "content": "拖放图片或点击此处以选择头像"
-    }
+    "bio": "这个人很懒，什么都没有写"
   },
   "notification": {
     "login": {
@@ -81,9 +77,7 @@
         "message": "请重新登录"
       }
     },
-    "logout": {
-      "logged_out": "登出成功"
-    },
+    "logout": "登出成功",
     "verify": {
       "failed": "账户验证失败",
       "success": "账户已验证，请登录"

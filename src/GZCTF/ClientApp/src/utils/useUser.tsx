@@ -24,7 +24,7 @@ export const useUser = () => {
           navigate('/')
           showNotification({
             color: 'red',
-            message: t('Account_Disabled'),
+            message: t('account.notification.login.banned'),
             icon: <Icon path={mdiClose} size={1} />,
           })
         })
@@ -81,7 +81,7 @@ export const useLoginOut = () => {
         mutateProfile(undefined, { revalidate: false })
         showNotification({
           color: 'teal',
-          message: t('Account_SignedOut'),
+          message: t('account.notification.logout'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })

@@ -27,8 +27,8 @@ const GameNoticeEdit: FC = () => {
   const modals = useModals()
   const onDeleteGameNotice = (gameNotice: GameNotice) => {
     modals.openConfirmModal({
-      title: '删除通知',
-      children: <Text> 你确定要删除通知该通知吗？</Text>,
+      title: t('admin.button.notices.delete'),
+      children: <Text> {t('admin.content.games.notices.delete')}</Text>,
       onConfirm: () => onConfirmDelete(gameNotice),
       confirmProps: { color: 'red' },
     })
@@ -39,7 +39,7 @@ const GameNoticeEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '通知已删除',
+          message: t('admin.notification.games.notices.deleted'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutate(gameNotices?.filter((t) => t.id !== gameNotice.id) ?? [])
@@ -57,7 +57,7 @@ const GameNoticeEdit: FC = () => {
             leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate('/admin/games')}
           >
-            返回上级
+            {t('admin.button.back')}
           </Button>
 
           <Group position="right">
@@ -68,7 +68,7 @@ const GameNoticeEdit: FC = () => {
                 setIsEditModalOpen(true)
               }}
             >
-              新建通知
+              {t('admin.button.notices.new')}
             </Button>
           </Group>
         </>
@@ -78,8 +78,8 @@ const GameNoticeEdit: FC = () => {
         {!gameNotices || gameNotices?.length === 0 ? (
           <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
-              <Title order={2}>Ouch! 这个比赛还没有通知</Title>
-              <Text>安然无事真好！</Text>
+              <Title order={2}>{t('admin.content.games.notices.empty.title')}</Title>
+              <Text>{t('admin.content.games.notices.empty.description')}</Text>
             </Stack>
           </Center>
         ) : (
@@ -103,7 +103,7 @@ const GameNoticeEdit: FC = () => {
       </ScrollArea>
       <GameNoticeEditModal
         size="30%"
-        title={activeGameNotice ? '编辑通知' : '新建通知'}
+        title={activeGameNotice ? t('admin.button.notices.edit') : t('admin.button.notices.new')}
         opened={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         gameNotice={activeGameNotice}

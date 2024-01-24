@@ -1,17 +1,118 @@
 {
   "tab": {
+    "logs": "系统日志",
     "games": {
-      "index": "比赛管理",
       "info": "信息编辑",
-      "notices": "比赛公告",
-      "challenges": "题目管理",
+      "index": "比赛管理",
       "review": "队伍审核",
-      "writeups": "Writeups"
+      "notices": "比赛公告",
+      "writeups": "Writeups",
+      "challenges": "题目管理"
     },
     "teams": "队伍管理",
     "users": "用户管理",
-    "instances": "实例管理",
-    "logs": "系统日志",
-    "settings": "系统设置"
+    "settings": "系统设置",
+    "instances": "实例管理"
+  },
+  "button": {
+    "back": "返回上级",
+    "save": "保存更改",
+    "games": {
+      "delete": "删除比赛",
+      "copy_public_key": "复制公钥"
+    },
+    "notices": {
+      "new": "新建公告",
+      "delete": "删除公告",
+      "edit": "编辑公告"
+    }
+  },
+  "content": {
+    "games": {
+      "info": {
+        "title": {
+          "label": "比赛标题",
+          "description": "过长会影响显示效果"
+        },
+        "delete": "你确定要删除比赛 {{name}} 吗？",
+        "summary": {
+          "label": "比赛简介",
+          "description": "将会显示在比赛列表中"
+        },
+        "end_date": "结束日期",
+        "end_time": "结束时间",
+        "start_date": "开始日期",
+        "start_time": "开始时间",
+        "invite_code": {
+          "label": "邀请码",
+          "description": "留空表示不使用邀请码"
+        },
+        "writeup_deadline": {
+          "label": "Writeup 提交时限",
+          "description": "比赛结束后允许提交 Writeup 的小时数"
+        },
+        "member_limit": {
+          "label": "队伍人数限制",
+          "description": "0 表示不限制队伍人数"
+        },
+        "organizations": {
+          "label": "参赛可选组织列表",
+          "description": "添加参赛组织以开启分组榜单",
+          "add": "+ 添加组织 \"{{org}}\""
+        },
+        "practice_mode": {
+          "label": "练习模式",
+          "description": "比赛结束后仍然可以查看题目和提交"
+        },
+        "container_limit": {
+          "label": "队伍容器限制",
+          "description": "队伍共享的容器数量 (0 表示不限制)"
+        },
+        "writeup_required": {
+          "label": "需要 Writeup",
+          "description": "是否启用比赛的 Writeup 提交功能"
+        },
+        "content": "比赛详情",
+        "poster": "比赛海报",
+        "writeup_instruction": "Writeup 提交说明",
+        "accept_without_review": {
+          "label": "队伍报名免审核",
+          "description": "队伍报名后直接设置为 Accept 状态"
+        }
+      },
+      "notices": {
+        "empty": {
+          "title": "暂无公告",
+          "description": "点击右上角按钮新建公告"
+        },
+        "delete":"你确定要删除通知该通知吗？"
+      }
+    },
+    "markdown_support": "支持 Markdown 语法",
+    "markdown_inline_suppoer": "支持 Inline Markdown 语法"
+  },
+  "placeholder": {
+    "games": {
+      "organizations": "无指定可选参赛组织，将允许无组织队伍参赛"
+    }
+  },
+  "notification": {
+    "games": {
+      "info": {
+        "poster": {
+          "uploaded": "海报上传成功",
+          "uploading": "正在上传海报...",
+          "upload_failed": "海报上传失败"
+        },
+        "deleted": "比赛已删除",
+        "info_updated": "比赛信息已更新",
+        "public_key_copied": "公钥已复制到剪贴板"
+      },
+      "notices": {
+        "deleted": "公告已删除",
+        "created": "公告已创建",
+        "updated": "公告已更新"
+      }
+    }
   }
 }

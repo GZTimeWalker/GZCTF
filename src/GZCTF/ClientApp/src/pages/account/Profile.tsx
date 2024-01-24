@@ -333,10 +333,12 @@ const Profile: FC = () => {
             ) : (
               <Box>
                 <Text size="xl" inline>
-                  {t('account.placeholder.drop_zone.content')}
+                  {t('common.content.drop_zone.content', {
+                    type: t('common.content.drop_zone.type.avatar'),
+                  })}
                 </Text>
                 <Text size="sm" c="dimmed" inline mt={7}>
-                  {t('account.placeholder.drop_zone.hint')}
+                  {t('common.content.drop_zone.limit')}
                 </Text>
               </Box>
             )}
