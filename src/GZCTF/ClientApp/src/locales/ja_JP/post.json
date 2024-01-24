@@ -10,7 +10,7 @@
     "metadata": "{{author}} が {{date}} に公開されました"
   },
   "label": {
-    "add_tag": "+ タグ \"{{query}}\" を追加する",
+    "add_tag": "+ タグ「{{query}}」を追加する",
     "content": "記事内容",
     "summary": "記事要約",
     "tag": "記事タグ",

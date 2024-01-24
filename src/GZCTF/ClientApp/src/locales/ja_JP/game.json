@@ -1,174 +1,174 @@
 {
   "button": {
-    "challenges": "レースに入る",
-    "download_all_traffic": "すべてのトラフィックをダウンロード",
-    "download_submissionsheet": "すべてのコミットをダウンロード",
-    "finished": "試合終了",
+    "challenges": "ゲームに移動",
+    "download_all_traffic": "表示されたトラフィックをすべてダウンロード",
+    "download_submissionsheet": "サブミッションをすべてダウンロード",
+    "finished": "ゲーム終了",
     "hide_container_events": {
       "desrc": "コンテナ開始/破棄イベントを非表示にする",
-      "title": "コンテナイベントの非表示"
+      "title": "コンテナイベントを非表示にする"
     },
-    "hide_solved": "解説を非表示",
-    "join": "コンテストに登録する",
-    "leave": "申込みをキャンセル",
+    "hide_solved": "解いたものを非表示にする",
+    "join": "ゲームに参加",
+    "leave": "参加申込みをキャンセル",
     "login_required": "先にログインしてください",
-    "scoreboard": "チャートの検索",
-    "submit_writeup": "ログ先行書き込み",
+    "scoreboard": "ランキングを見る",
+    "submit_writeup": "記事を提出",
     "team_view": {
-      "desrc": "チーム表示でチート情報を出力します。",
+      "desrc": "チームビューでの不正行為情報を表示",
       "title": "チームビュー"
     }
   },
   "content": {
     "all_solved": {
-      "comment": "あなたにはさらに困難な挑戦が待っているかもしれません……",
-      "title": "問題も解き放たれ!"
+      "comment": "より困難な挑戦があなたを待っているかもしれません……",
+      "title": "問題はすべて解かれました！"
     },
-    "end_time": "終了時刻",
+    "end_time": "終了日時",
     "game_ended": "ゲームは終了しました",
-    "game_lasts_long": "試合は長く続きます",
+    "game_lasts_long": "ゲームはまだ長く続くでしょう",
     "join": {
-      "confirm": "申込み",
+      "confirm": "申込確認",
       "content": [
-        "このトーナメントにサインアップしますか？",
-        "参加登録と審査が完了すると、参加チームはロックされ、メンバーの変更や<strong>の招待や蹴り出しはできなくなります。</strong> リクエストが却下されるか、試合が終了した後にロックが解除されます。",
-        "チームの人数は、チームメンバーの選択人数に基づいています。<strong>が試合に参加するかどうかは関係ありません。</strong>"
+        "このゲームに参加しますか？",
+        "参加登録と審査が完了すると、参加チームはロックされ、メンバーの変更（<strong>招待と追放</strong>）はできなくなります。 リクエストが却下されるか、試合が終了した後にロックが解除されます。",
+        "チームの人数要件は、チームのメンバー数に基づいています。<strong>チームのメンバーが試合に参加するかどうかに関係ありません</strong>"
       ],
       "invite_code": {
-        "description": "今回の試合は招待を開始しました。参加には招待コードを申し込む必要があります。",
-        "label": "インバイパスを入力してください"
+        "description": "このゲームは招待制ため、参加するには招待コードが必要です",
+        "label": "招待コードをご入力ください"
       },
       "organization": {
-        "description": "この試合には参加している組織があります。参加組織を選択してください。",
+        "description": "このゲームは複数の組織によって開催されていますので、参加組織を選択してください",
         "label": "参加組織を選択"
       },
       "team": {
-        "description": "対戦するチームを選択して選択後、変更できません",
+        "description": "ゲームに参加するにはチームを選択してください。選択後は変更できません。",
         "label": "参加チームを選択"
       },
-      "title": "申し込み情報を入力"
+      "title": "参加情報を完全にする"
     },
-    "joined_status": "<strong>{{count}}</strong>のチームからの出席者",
+    "joined_status": "<strong>{{count}}</strong>のチームが参加登録しました",
     "leave": {
-      "confirm": "申込みをキャンセル",
+      "confirm": "参加申込みをキャンセル",
       "content": [
-        "このマッチを終了しますか？",
-        "脱退すると、チーム登録者の出席者が空になっても、チーム参加情報は消去されます。"
+        "このゲームから退出しますか？",
+        "退出後、もしチームの参加者が空の場合、チームの参加情報は削除されます。"
       ]
     },
-    "no_challenge": "これはまだ利用可能ではありません!……",
+    "no_challenge": "あかん！このゲームにはまだ問題がありません……",
     "no_cheat": {
-      "comment": "みんな親しく見えますね",
-      "title": "現在列のチート情報がありません"
+      "comment": "みんなはちゃんとルールを守っているように見えます",
+      "title": "現在のところ、チームの不正行為情報はありません"
     },
-    "no_notice": "通知なし",
+    "no_notice": "お知らせはありません",
     "no_traffic": {
-      "comment": "プラットフォームの設定と問題は２要素で有効になります",
-      "title": "流行のフローが無効となっていませんでした"
+      "comment": "プラットフォームの設定とチャレンジの両方から有効にしらければなりません",
+      "title": "トラフィックキャプチャーを有効しているチャレンジはまだありません"
     },
-    "scoreboard_note": "：チームにフォーカスを当てて順位づける",
-    "scoreboard_tip": "Tip: 左矢じるしキーがおされた課題の一覧を スクロールできます",
-    "start_time": "開始時刻"
+    "scoreboard_note": "注：同じスコアのあるチームは時間順にランク付けされます",
+    "scoreboard_tip": "Tip: 左矢印キーと右矢印キーを使ってチャレンジ一覧をスクロールできます",
+    "start_time": "開始日時"
   },
   "label": {
     "challenge": "チャレンジ",
     "cheat_info": {
-      "owned_team": "原始的チーム",
-      "submit_team": "チームを作る",
-      "submit_user": "ユーザーを提出"
+      "owned_team": "フラッグを持っているチーム",
+      "submit_team": "フラッグを提出したチーム",
+      "submit_user": "フラッグを提出したユーザー"
     },
-    "flag": "flag",
+    "flag": "フラッグ",
     "notice_type": {
       "all": "すべて",
       "challenge": "チャレンジ",
-      "events": "ダイナミック",
+      "events": "イベント",
       "game": "お知らせ"
     },
     "score": "スコア",
-    "score_formatter": "{value} 分",
+    "score_formatter": "{value} 点",
     "score_table": {
       "rank_all_organization": "総合ランキング",
       "rank_organization": "順位",
       "rank_total": "総合ランキング",
-      "score": "スコア",
+      "score": "得点",
       "score_total": "合計得点",
       "solved_count": "解問題数",
       "team": "チーム"
     },
-    "team": "開くべきクリック ギルドVault 4",
+    "team": "チーム",
     "time": "時間",
-    "traffic": "データ通信",
+    "traffic": "トラフィックファイル",
     "user": "ユーザー"
   },
   "notification": {
-    "ended": "試合は既に終了しています",
-    "event_connection_succeed": "ライブイベントが接続されました",
+    "ended": "ゲームは終了しました",
+    "event_connection_succeed": "リアルタイムイベントの接続に成功しました",
     "event_fetch_failed": "イベントを取得できませんでした",
     "joined": "申し込み成功",
     "left": "申し込みをキャンセルしました",
-    "no_chal_or_part": "最初に課題とチームを選んでください",
+    "no_chal_or_part": "先にチャレンジとチームを選んでください",
     "no_invite_code": "招待コードは空にできません",
-    "no_organization": "参加組織を選択してください",
-    "no_team": "参加チームを選択してください。",
-    "not_started": "試合は未開始",
+    "no_organization": "参加する組織を選択してください",
+    "no_team": "参加するチームを選択してください",
+    "not_started": "ゲームはまだ開始されていません",
     "notice_fetch_failed": "通知を取得できませんでした",
-    "submission_connection_succeed": "接続に成功しました",
-    "submission_fetch_failed": "コミットの取得に失敗しました",
-    "suspended": "セッション禁止されました"
+    "submission_connection_succeed": "リアルタイムサブミッションの接続に成功しました",
+    "submission_fetch_failed": "サブミッションの取得に失敗しました",
+    "suspended": "あなたはブロックされました"
   },
   "participation": {
     "actions": {
-      "accepted": "承認済",
+      "accepted": "承認済み",
       "pending": "承認待ち",
-      "rejected": "再登録",
-      "suspended": "BAN 中",
-      "unsubmitted": "コンテストに登録する"
+      "rejected": "再申込",
+      "suspended": "制限中",
+      "unsubmitted": "ゲームに参加"
     },
     "alert": {
       "not_started": {
-        "content": "あなたは既に {{team}} 隊員として申し立てに成功し、ゲームを終了した後、コンテストページへ行きます。",
-        "mobile": "レースに参加してどれが正しいのかを知るには、コンピュータを使ってください。",
-        "title": "試合は未開始"
+        "content": "あなたはチーム {{team}} のメンバーとして登録し、承認されました。ゲームが始まったら、ゲームページにアクセスしてください。",
+        "mobile": "ゲームの参加と詳細の表示には、パソコンをご利用ください。",
+        "title": "ゲームはまだ開始されていません"
       },
       "pending": {
         "content": "しばらくお待ちください",
-        "title": "あなたはチーム {{team}} のメンバーとして有名になりました"
+        "title": "あなたはチーム {{team}} のメンバーとして申し込みを完了しました"
       },
       "rejected": {
-        "content": "参加資格及び参加要件を満たした後で再報したことを確認してください。",
-        "title": "参加申請が許可されていません"
+        "content": "参加資格を持ち、参加要件を満たしてからもう一度申し込んでください",
+        "title": "参加申請が承認されませんでした"
       },
       "suspended": {
-        "content": "有効な場合、管理者に問い合わせてください",
-        "title": "あなたのチーム{{team} は既にセッション禁止されました"
+        "content": "不明な事項については、管理者にお問い合わせください",
+        "title": "あなたのチーム {{team} はブロックされています"
       },
       "team_required": {
-        "content": "どのチームにも加入していません、<1>チーム管理</1>ページにてチームに参加してください。",
-        "title": "當前無法報名字"
+        "content": "どのチームにも参加していません、<1>チーム管理</1>ページにてチームを作成し、または参加してください。",
+        "title": "現在参加できません"
       }
     },
     "status": {
-      "accepted": "承認済",
+      "accepted": "承認済み",
       "pending": "承認待ち",
-      "rejected": "監査に失敗しました",
-      "suspended": "BAN 中"
+      "rejected": "承認されませんでした",
+      "suspended": "制限中"
     }
   },
   "tab": {
-    "challenge": "コンテストの課題",
+    "challenge": "ゲームのチャレンジ",
     "monitor": {
-      "cheatinfo": "チート情報",
+      "cheatinfo": "不正行為情報",
       "events": "イベント監視",
-      "index": "スケジュールモニタリング",
+      "index": "ゲーム監視",
       "submissions": "提出物",
       "traffic": "トラフィックキャプチャ"
     },
-    "scoreboard": "リーダー ボード"
+    "scoreboard": "ランキング"
   },
   "tag": {
-    "hidden": "試合は非表示です",
-    "individual": "ミーティング",
-    "limited": "{{count}}人の試合",
+    "hidden": "ゲームは非表示になっています",
+    "individual": "ソロ戦",
+    "limited": "{{count}}人戦",
     "mutiplayer": "チーム戦"
   },
   "title": {
