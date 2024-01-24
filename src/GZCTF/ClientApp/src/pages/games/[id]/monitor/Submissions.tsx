@@ -235,7 +235,11 @@ const Submissions: FC = () => {
           ]}
         />
         <Group position="right">
-          <Tooltip label={t('game.button.download_submissionsheet')} position="left" classNames={tooltipClasses}>
+          <Tooltip
+            label={t('game.button.download_submissionsheet')}
+            position="left"
+            classNames={tooltipClasses}
+          >
             <ActionIcon
               size="lg"
               onClick={() => window.open(`/api/game/${numId}/submissionsheet`, '_blank')}

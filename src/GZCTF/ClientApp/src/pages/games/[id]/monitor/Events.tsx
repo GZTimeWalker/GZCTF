@@ -155,7 +155,10 @@ const Events: FC = () => {
     <WithGameMonitorTab>
       <Group position="apart" w="100%">
         <Switch
-          label={SwitchLabel(t('game.button.hide_container_events.title'), t('game.button.hide_container_events.desrc'))}
+          label={SwitchLabel(
+            t('game.button.hide_container_events.title'),
+            t('game.button.hide_container_events.desrc')
+          )}
           checked={hideContainerEvents}
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
         />

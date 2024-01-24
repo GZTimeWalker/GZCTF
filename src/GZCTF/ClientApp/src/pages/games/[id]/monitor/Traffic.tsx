@@ -133,9 +133,13 @@ const Traffic: FC = () => {
             <Grid.Col span={6}>
               <Group h={headerHeight} pb="3px" px="xs" position="apart">
                 <Text size="md" weight={700}>
-                  {t('game.label.traffic_file')}
+                  {t('game.label.traffic')}
                 </Text>
-                <Tooltip label={t('game.button.download_all_traffic')} position="left" classNames={tooltipClasses}>
+                <Tooltip
+                  label={t('game.button.download_all_traffic')}
+                  position="left"
+                  classNames={tooltipClasses}
+                >
                   <ActionIcon size="md" onClick={onDownloadAll}>
                     <Icon path={mdiDownloadMultiple} size={1} />
                   </ActionIcon>

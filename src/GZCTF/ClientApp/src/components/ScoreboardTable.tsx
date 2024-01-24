@@ -131,7 +131,13 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       </tr>
       {/* Headers & Score */}
       <tr>
-        {[t('game.label.score_table.rank_total'), t('game.label.score_table.rank_organization'), t('game.label.score_table.team'), t('game.label.score_table.solved_count'), t('game.label.score_table.score_total')].map((header, idx) => (
+        {[
+          t('game.label.score_table.rank_total'),
+          t('game.label.score_table.rank_organization'),
+          t('game.label.score_table.team'),
+          t('game.label.score_table.solved_count'),
+          t('game.label.score_table.score_total'),
+        ].map((header, idx) => (
           <th
             key={idx}
             className={cx(classes.theadFixLeft, classes.theadHeader)}

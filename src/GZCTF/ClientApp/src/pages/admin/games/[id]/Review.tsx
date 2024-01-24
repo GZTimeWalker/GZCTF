@@ -95,8 +95,8 @@ const MemberItem: FC<MemberItemProps> = (props) => {
         )}
         <Text size="sm" fw={700} c={isRegistered ? 'teal' : 'orange'}>
           {isRegistered
-            ? t('admin.content.games.review.participation.joined')
-            : t('admin.content.games.review.participation.not_joined')}
+            ? t('admin.content.games.participation.joined')
+            : t('admin.content.games.participation.not_joined')}
         </Text>
       </Group>
     </Group>
@@ -141,7 +141,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               <Box>
                 <Text>{participation.organization}</Text>
                 <Text size="sm" c="dimmed" fw={700}>
-                  {t('admin.content.games.review.participation.stats', {
+                  {t('admin.content.games.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
                     total: participation.team?.members?.length ?? 0,
                   })}
@@ -199,7 +199,7 @@ const GameTeamReview: FC = () => {
       )
       showNotification({
         color: 'teal',
-        message: t('admin.notification.games.review.participation.updated'),
+        message: t('admin.notification.games.participation.updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {

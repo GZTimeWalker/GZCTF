@@ -140,10 +140,10 @@ const GameNoticePanel: FC = () => {
           }}
           onChange={(value: NoticeFilter) => setFilter(value)}
           data={[
-            { value: NoticeFilter.All, label: t('game.label.notice_filter.all') },
-            { value: NoticeFilter.Game, label: t('game.label.notice_filter.game') },
-            { value: NoticeFilter.Events, label: t('game.label.notice_filter.events') },
-            { value: NoticeFilter.Challenge, label: t('game.label.notice_filter.challenge') },
+            { value: NoticeFilter.All, label: t('game.label.notice_type.all') },
+            { value: NoticeFilter.Game, label: t('game.label.notice_type.game') },
+            { value: NoticeFilter.Events, label: t('game.label.notice_type.events') },
+            { value: NoticeFilter.Challenge, label: t('game.label.notice_type.challenge') },
           ]}
         />
         {filteredNotices.length ? (

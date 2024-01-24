@@ -71,6 +71,11 @@
           "title": "Ouch! 这个比赛还没有题目"
         },
         "flag": {
+          "create": "创建 flag，多个 flag 按行分割，每行一个。<br />每道题目可以拥有多个 flag，获取任意 flag 均可得分。",
+          "empty": {
+            "description": "请通过右上角添加 flag",
+            "title": "flag 列表为空"
+          },
           "instructions": {
             "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情况下启用 Leet 字符串功能，请在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 标记，此时不会检查 flag 模版字符串的熵",
             "description": "请输入 flag 模版字符串，留空以生成随机 GUID 作为 flag",
@@ -82,12 +87,7 @@
             "will_generate": "将会生成"
           },
           "template": "flag 模版",
-          "title": "flag 管理",
-          "empty": {
-            "description": "请通过右上角添加 flag",
-            "title": "flag 列表为空"
-          },
-          "create": "创建 flag，多个 flag 按行分割，每行一个。<br />每道题目可以拥有多个 flag，获取任意 flag 均可得分。"
+          "title": "flag 管理"
         },
         "hints": "题目提示",
         "memory_limit": {
@@ -208,6 +208,10 @@
         },
         "created": "题目已创建",
         "deleted": "题目已删除",
+        "flag": {
+          "created": "flag 已创建",
+          "deleted": "flag 已删除"
+        },
         "flag_template": {
           "updated": "flag 模板已更新"
         },
@@ -215,11 +219,7 @@
           "attachment_downloaded": "假装附件已经下载了！",
           "flag_submitted": "flag 似乎被正确提交了！"
         },
-        "updated": "题目已更新",
-        "flag": {
-          "created": "flag 已创建",
-          "deleted": "flag 已删除"
-        }
+        "updated": "题目已更新"
       },
       "info": {
         "deleted": "比赛已删除",
@@ -240,10 +240,8 @@
         "deleted": "公告已删除",
         "updated": "公告已更新"
       },
-      "review": {
-        "participation": {
-          "updated": "队伍审核状态已更新"
-        }
+      "participation": {
+        "updated": "队伍审核状态已更新"
       }
     }
   },

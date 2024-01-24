@@ -51,10 +51,7 @@
     "joined_status": "<strong>{{count}}</strong>支队伍已报名",
     "leave": {
       "confirm": "确认取消报名",
-      "content": [
-        "你确定要退出此比赛吗？",
-        "退出后如果队伍报名人数为空，队伍参与信息将被删除。"
-      ]
+      "content": ["你确定要退出此比赛吗？", "退出后如果队伍报名人数为空，队伍参与信息将被删除。"]
     },
     "no_challenge": "Ouch! 这个比赛还没有可用题目呢……",
     "no_cheat": {
@@ -78,7 +75,7 @@
       "submit_user": "提交用户"
     },
     "flag": "flag",
-    "notice_filter": {
+    "notice_type": {
       "all": "全部",
       "challenge": "题目",
       "events": "动态",
@@ -97,7 +94,7 @@
     },
     "team": "队伍",
     "time": "时间",
-    "traffic_file": "流量文件",
+    "traffic": "流量文件",
     "user": "用户"
   },
   "notification": {
@@ -112,10 +109,6 @@
     "no_team": "请选择参赛队伍",
     "not_started": "比赛尚未开始",
     "notice_fetch_failed": "获取通知失败",
-    "participation_updated": {
-      "message": "参与状态已更新",
-      "title": "操作成功"
-    },
     "submission_connection_succeed": "实时提交连接成功",
     "submission_fetch_failed": "获取提交失败",
     "suspended": "您已被禁赛"

@@ -205,7 +205,9 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
               <Stack spacing={0}>
                 <Group spacing={4}>
                   <Title order={4} lineClamp={1} fw="bold">
-                    {!cheatTeamInfo.name ? t('admin.placeholder.games.participation.team') : cheatTeamInfo.name}
+                    {!cheatTeamInfo.name
+                      ? t('admin.placeholder.games.participation.team')
+                      : cheatTeamInfo.name}
                   </Title>
                   {cheatTeamInfo?.organization && (
                     <Badge size="sm" variant="outline">
@@ -422,8 +424,7 @@ const CheatInfo: FC = () => {
         )
       showNotification({
         color: 'teal',
-        title: t('game.notification.participation_updated.title'),
-        message: t('game.notification.participation_updated.message'),
+        message: t('admin.notification.games.participation.updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {

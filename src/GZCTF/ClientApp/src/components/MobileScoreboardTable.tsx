@@ -128,7 +128,11 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             <Table className={classes.table}>
               <thead className={classes.thead}>
                 <tr>
-                  {[t('game.label.score_table.rank_total'), t('game.label.score_table.team'), t('game.label.score_table.score_total')].map((header, idx) => (
+                  {[
+                    t('game.label.score_table.rank_total'),
+                    t('game.label.score_table.team'),
+                    t('game.label.score_table.score_total'),
+                  ].map((header, idx) => (
                     <th key={idx} className={cx(classes.theadFixLeft, classes.theadHeader)}>
                       {header}
                     </th>
