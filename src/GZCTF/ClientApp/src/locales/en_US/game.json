@@ -1,1 +1,105 @@
-{}
+{
+  "participation": {
+    "status": {
+      "pending": "待审核",
+      "accepted": "审核通过",
+      "rejected": "审核未通过",
+      "suspended": "禁赛中"
+    },
+    "actions": {
+      "pending": "等待审核",
+      "accepted": "审核通过",
+      "rejected": "重新报名",
+      "suspended": "禁赛中",
+      "unsubmitted": "报名参赛"
+    },
+    "alert": {
+      "pending": {
+        "title": "你已经以队伍 {{team}} 成员身份成功报名",
+        "content": "请耐心等待审核结果"
+      },
+      "rejected": {
+        "title": "你的参赛申请未通过",
+        "content": "请确保具备参赛资格和满足参赛要求后重新报名"
+      },
+      "suspended": {
+        "title": "您的队伍 {{team} 已被禁赛",
+        "content": "如有异议，请联系管理员进行申诉"
+      },
+      "team_required": {
+        "title": "当前无法报名",
+        "content": "你没有加入任何队伍，请在<1>队伍管理</1>页面创建、加入队伍。"
+      },
+      "not_started": {
+        "title": "比赛尚未开始",
+        "content": "你已经以队伍 {{team}} 成员身份成功报名并通过审核，请在比赛开始后进入比赛页面。",
+        "mobile": "请使用电脑端参与比赛及查看比赛详情。"
+      }
+    }
+  },
+  "notification": {
+    "joined": "报名成功",
+    "left": "取消报名成功",
+    "no_team": "请选择参赛队伍",
+    "no_invite_code": "邀请码不能为空",
+    "no_organization": "请选择参赛组织"
+  },
+  "button": {
+    "join": "报名参赛",
+    "leave": "取消报名",
+    "scoreboard": "查看榜单",
+    "challenges": "进入比赛",
+    "finished": "比赛结束",
+    "login_required": "请先登录"
+  },
+  "tag": {
+    "individual": "个人赛",
+    "mutiplayer": "团队赛",
+    "limited": "{{count}}人赛",
+    "hidden": "比赛已隐藏"
+  },
+  "content": {
+    "joined_status": "<strong>{{count}}</strong>支队伍已报名",
+    "join": {
+      "title": "补全报名信息",
+      "confirm": "确认报名",
+      "content": [
+        "你确定要报名此比赛吗？",
+        "报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动，<strong>即邀请、踢出队员。</strong> 队伍将在比赛结束后或驳回请求时解锁。",
+        "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
+      ],
+      "team": {
+        "label": "选择参赛队伍",
+        "description": "请选择一个队伍参与比赛，选定后不可更改"
+      },
+      "invite_code": {
+        "label": "请输入邀请码",
+        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码"
+      },
+      "organization": {
+        "label": "选择参赛组织",
+        "description": "本场比赛具有多个参赛组织，请选择你的参赛组织"
+      }
+    },
+    "leave": {
+      "confirm": "确认取消报名",
+      "content": [
+        "你确定要退出此比赛吗？",
+        "退出后如果队伍报名人数为空，队伍参与信息将被删除。"
+      ]
+    },
+    "start_time": "开始时间",
+    "end_time": "结束时间"
+  },
+  "tab": {
+    "challenge": "比赛题目",
+    "scoreboard": "积分总榜",
+    "monitor": {
+      "index": "比赛监控",
+      "events": "事件监控",
+      "submissions": "提交记录",
+      "cheatinfo": "作弊信息",
+      "traffic": "流量捕获"
+    }
+  }
+}
