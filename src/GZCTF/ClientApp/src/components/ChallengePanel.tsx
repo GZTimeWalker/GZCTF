@@ -133,7 +133,7 @@ const ChallengePanel: FC = () => {
       <Center miw="calc(100% - 20rem)" h="calc(100vh - 100px)">
         <Empty
           bordered
-          description="Ouch! 这个比赛还没有可用题目呢……"
+          description={t('game.content.no_challenge')}
           fontSize="xl"
           mdiPath={mdiFlagOutline}
           iconSize={8}
@@ -151,7 +151,7 @@ const ChallengePanel: FC = () => {
               leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
               onClick={() => setWriteupSubmitOpened(true)}
             >
-              提交 Writeup
+              {t('game.button.submit_writeup')}
             </Button>
             <Divider />
           </>
@@ -161,7 +161,7 @@ const ChallengePanel: FC = () => {
           onChange={(e) => setHideSolved(e.target.checked)}
           label={
             <Text size="md" fw={700}>
-              隐藏已解出
+              {t('game.button.hide_solved')}
             </Text>
           }
         />
@@ -238,8 +238,8 @@ const ChallengePanel: FC = () => {
           </SimpleGrid>
         ) : (
           <Stack spacing={0} pt="20vh" w="20em" m="auto">
-            <Title order={2}>题目都被解出啦！</Title>
-            <Text>或许还有更难的挑战在等着你……</Text>
+            <Title order={2}>{t('game.content.all_solved.title')}</Title>
+            <Text>{t('game.content.all_solved.comment')}</Text>
           </Stack>
         )}
       </ScrollArea>

@@ -43,10 +43,10 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
     >
       <Text fw={700} lineClamp={1}>
         {countdown.asHours() > 999
-          ? '比赛还会很久'
+          ? t('game.content.game_lasts_long')
           : countdown.asSeconds() > 0
             ? `${Math.floor(countdown.asHours())} : ${countdown.format('mm : ss')}`
-            : '比赛已结束'}
+            : t('game.content.game_ended')}
       </Text>
       <Card.Section mt={4}>
         <CustomProgress percentage={progress} py={0} />
@@ -135,7 +135,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         showNotification({
           id: 'no-access',
           color: 'yellow',
-          message: '比赛尚未开始',
+          message: t('game.notification.not_started'),
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       } else if (
@@ -147,7 +147,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         showNotification({
           id: 'no-access',
           color: 'yellow',
-          message: '您已被禁赛',
+          message: t('game.notification.suspended'),
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       } else if (
@@ -160,7 +160,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         showNotification({
           id: 'no-access',
           color: 'yellow',
-          message: '比赛已经结束',
+          message: t('game.notification.ended'),
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       }

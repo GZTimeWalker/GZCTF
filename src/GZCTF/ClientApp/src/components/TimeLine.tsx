@@ -98,7 +98,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
         },
         xAxis: {
           type: 'time',
-          name: '时间',
+          name: t('game.label.time'),
           min: dayjs(game?.start).toDate(),
           max: dayjs(game?.end).toDate(),
           splitLine: {
@@ -107,10 +107,10 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
         },
         yAxis: {
           type: 'value',
-          name: '分数',
+          name: t('game.label.score'),
           boundaryGap: [0, '100%'],
           axisLabel: {
-            formatter: '{value} 分',
+            formatter: t('game.label.score_formatter'),
             color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
           max: (value: any) => (Math.floor(value.max / 1000) + 1) * 1000,

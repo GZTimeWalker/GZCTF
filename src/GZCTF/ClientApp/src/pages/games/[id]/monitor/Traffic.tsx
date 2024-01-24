@@ -66,8 +66,8 @@ const Traffic: FC = () => {
     if (!challengeId || !participationId) {
       showNotification({
         color: 'red',
-        title: '遇到了问题',
-        message: '请先选择题目和队伍',
+        title: t('common.error.encountered'),
+        message: t('game.notification.no_chal_or_part'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -93,8 +93,8 @@ const Traffic: FC = () => {
       {!challengeTraffic || challengeTraffic?.length === 0 ? (
         <Center h="calc(100vh - 140px)">
           <Stack spacing={0}>
-            <Title order={2}>暂时没有启用流量捕获的题目</Title>
-            <Text>需要平台配置和题目双重启用</Text>
+            <Title order={2}>{t('game.content.no_traffic.title')}</Title>
+            <Text>{t('game.content.no_traffic.comment')}</Text>
           </Stack>
         </Center>
       ) : (
@@ -103,7 +103,7 @@ const Traffic: FC = () => {
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
                 <Text size="md" weight={700}>
-                  题目
+                  {t('game.label.challenge')}
                 </Text>
               </Group>
               <Divider size="sm" />
@@ -118,7 +118,7 @@ const Traffic: FC = () => {
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
                 <Text size="md" weight={700}>
-                  队伍
+                  {t('game.label.team')}
                 </Text>
               </Group>
               <Divider size="sm" />
@@ -133,9 +133,9 @@ const Traffic: FC = () => {
             <Grid.Col span={6}>
               <Group h={headerHeight} pb="3px" px="xs" position="apart">
                 <Text size="md" weight={700}>
-                  流量文件
+                  {t('game.label.traffic_file')}
                 </Text>
-                <Tooltip label="下载全部列出流量" position="left" classNames={tooltipClasses}>
+                <Tooltip label={t('game.button.download_all_traffic')} position="left" classNames={tooltipClasses}>
                   <ActionIcon size="md" onClick={onDownloadAll}>
                     <Icon path={mdiDownloadMultiple} size={1} />
                   </ActionIcon>

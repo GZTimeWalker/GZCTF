@@ -103,7 +103,7 @@ const Submissions: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: '获取提交失败',
+          title: t('game.notification.submission_fetch_failed'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -135,7 +135,7 @@ const Submissions: FC = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            message: '实时提交连接成功',
+            message: t('game.notification.submission_connection_succeed'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
         })
@@ -235,7 +235,7 @@ const Submissions: FC = () => {
           ]}
         />
         <Group position="right">
-          <Tooltip label="下载全部提交" position="left" classNames={tooltipClasses}>
+          <Tooltip label={t('game.button.download_submissionsheet')} position="left" classNames={tooltipClasses}>
             <ActionIcon
               size="lg"
               onClick={() => window.open(`/api/game/${numId}/submissionsheet`, '_blank')}
@@ -265,11 +265,11 @@ const Submissions: FC = () => {
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
                 </th>
-                <th style={{ width: '8rem' }}>时间</th>
-                <th style={{ minWidth: '5rem' }}>队伍</th>
-                <th style={{ minWidth: '5rem' }}>用户</th>
-                <th style={{ minWidth: '3rem' }}>题目</th>
-                <th className={cx(classes.mono)}>flag</th>
+                <th style={{ width: '8rem' }}>{t('game.label.time')}</th>
+                <th style={{ minWidth: '5rem' }}>{t('game.label.team')}</th>
+                <th style={{ minWidth: '5rem' }}>{t('game.label.user')}</th>
+                <th style={{ minWidth: '3rem' }}>{t('game.label.challenge')}</th>
+                <th className={cx(classes.mono)}>{t('game.label.flag')}</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>

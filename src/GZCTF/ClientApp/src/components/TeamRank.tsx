@@ -47,11 +47,12 @@ const TeamRank: FC<PaperProps> = (props) => {
   const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
 
   useEffect(() => {
+    // FIXME: Rely on server message
     if (error?.title?.includes('已结束')) {
       navigate(`/games/${numId}`)
       showNotification({
         color: 'yellow',
-        message: '比赛已经结束',
+        message: t('game.notification.ended'),
         icon: <Icon path={mdiExclamationThick} size={1} />,
       })
     }
@@ -82,27 +83,27 @@ const TeamRank: FC<PaperProps> = (props) => {
             <Skeleton visible={!data}>
               <Text className={classes.number}>{data?.rank?.rank ?? '0'}</Text>
             </Skeleton>
-            <Text size="xs">总排名</Text>
+            <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
           </Stack>
           {data?.rank?.organization && (
             <Stack spacing={2}>
               <Skeleton visible={!data}>
                 <Text className={classes.number}>{data?.rank?.organizationRank ?? '0'}</Text>
               </Skeleton>
-              <Text size="xs">排名</Text>
+              <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
             </Stack>
           )}
           <Stack spacing={2}>
             <Skeleton visible={!data}>
               <Text className={classes.number}>{data?.rank?.score ?? '0'}</Text>
             </Skeleton>
-            <Text size="xs">得分</Text>
+            <Text size="xs">{t('game.label.score_table.score')}</Text>
           </Stack>
           <Stack spacing={2}>
             <Skeleton visible={!data}>
               <Text className={classes.number}>{data?.rank?.solvedCount ?? '0'}</Text>
             </Skeleton>
-            <Text size="xs">攻克数量</Text>
+            <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
           </Stack>
         </Group>
         <Progress value={solved * 100} />

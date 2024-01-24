@@ -62,7 +62,7 @@ const GameNoticePanel: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: '获取通知失败',
+          title: t('game.notification.notice_fetch_failed'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -140,10 +140,10 @@ const GameNoticePanel: FC = () => {
           }}
           onChange={(value: NoticeFilter) => setFilter(value)}
           data={[
-            { value: NoticeFilter.All, label: '全部' },
-            { value: NoticeFilter.Game, label: '通知' },
-            { value: NoticeFilter.Events, label: '动态' },
-            { value: NoticeFilter.Challenge, label: '题目' },
+            { value: NoticeFilter.All, label: t('game.label.notice_filter.all') },
+            { value: NoticeFilter.Game, label: t('game.label.notice_filter.game') },
+            { value: NoticeFilter.Events, label: t('game.label.notice_filter.events') },
+            { value: NoticeFilter.Challenge, label: t('game.label.notice_filter.challenge') },
           ]}
         />
         {filteredNotices.length ? (
@@ -172,7 +172,7 @@ const GameNoticePanel: FC = () => {
           </ScrollArea>
         ) : (
           <Stack justify="center" h="calc(100vh - 25rem)">
-            <Empty description="暂无通知" />
+            <Empty description={t('game.content.no_notice')} />
           </Stack>
         )}
       </Stack>
