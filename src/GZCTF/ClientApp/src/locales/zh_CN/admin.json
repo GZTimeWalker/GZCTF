@@ -2,24 +2,24 @@
   "button": {
     "back": "返回上级",
     "challenges": {
+      "attachment": {
+        "save_url": "保存链接",
+        "upload": "上传附件",
+        "uploading": "上传中……"
+      },
       "bonus": "三血奖励",
       "delete": "删除题目",
       "edit": "编辑题目",
       "edit_more": "编辑附件及 flag",
+      "flag": {
+        "add": "添加 flag",
+        "save": "保存 flag 模版"
+      },
       "new": "新建题目",
       "preview": "预览题目",
       "test_container": {
         "create": "创建测试容器",
         "destroy": "销毁测试容器"
-      },
-      "attachment": {
-        "upload": "上传附件",
-        "uploading": "上传中……",
-        "save_url": "保存链接"
-      },
-      "flag": {
-        "save": "保存 flag 模版",
-        "add": "添加 flag"
       }
     },
     "games": {
@@ -39,11 +39,29 @@
   "content": {
     "games": {
       "challenges": {
+        "attachment": {
+          "clear": {
+            "description": "你确定要清除本题的附件吗？",
+            "title": "清除附件"
+          },
+          "link": "附件链接",
+          "title": "附件管理",
+          "type": "附件类型"
+        },
+        "attachment_name": {
+          "description": "所有动态附件均会以此文件名下载",
+          "label": "全局附件名"
+        },
         "bonus": {
           "description": "三血奖励加成是指当一个题目被前三个队伍解出时，每个队伍可以得到的分值奖励。三血的奖励基于题目的当前分值，并以一个固定百分比的形式累加至该队伍的得分中。",
           "first_blood": "一血奖励 (%)",
           "second_blood": "二血奖励 (%)",
           "third_blood": "三血奖励 (%)"
+        },
+        "container_image": "容器镜像",
+        "cpu_limit": {
+          "description": "乘以 0.1 即为 CPU 核心数",
+          "label": "CPU 限制 (0.1 CPUs)"
         },
         "delete": "你确定要删除题目 {{name}} 吗？",
         "description": "题目描述",
@@ -52,54 +70,52 @@
           "description": "点击右上角创建第一个题目",
           "title": "Ouch! 这个比赛还没有题目"
         },
+        "flag": {
+          "instructions": {
+            "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情况下启用 Leet 字符串功能，请在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 标记，此时不会检查 flag 模版字符串的熵",
+            "description": "请输入 flag 模版字符串，留空以生成随机 GUID 作为 flag",
+            "example": "flag 模板编写示例",
+            "guid": "指定 <1>[GUID]</1>则会仅替换此处的占位符为随机 GUID",
+            "leave_empty": "留空",
+            "leet": "若未指定 <1>[TEAM_HASH]</1> 则将启用 Leet 字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高",
+            "team_hash": "若指定 <1>[TEAM_HASH]</1> 则它将会被自动替换为队伍 Token 和比赛信息所生成的哈希值",
+            "will_generate": "将会生成"
+          },
+          "template": "flag 模版",
+          "title": "flag 管理",
+          "empty": {
+            "description": "请通过右上角添加 flag",
+            "title": "flag 列表为空"
+          },
+          "create": "创建 flag，多个 flag 按行分割，每行一个。<br />每道题目可以拥有多个 flag，获取任意 flag 均可得分。"
+        },
         "hints": "题目提示",
+        "memory_limit": {
+          "description": "限制容器使用的 RAM",
+          "label": "内存限制 (MB)"
+        },
         "min_score_radio": {
-          "label": "最低分比例",
-          "description": "最低分值：{{min_score}}pts"
+          "description": "最低分值：{{min_score}}pts",
+          "label": "最低分比例"
         },
         "original_score": "题目分值",
+        "service_port": {
+          "description": "容器内服务的端口号",
+          "label": "服务端口"
+        },
+        "storage_limit": {
+          "description": "限制存储空间，含镜像大小",
+          "label": "存储限制 (MB)"
+        },
         "tag": "题目标签",
         "title": "题目标题",
-        "attachment_name": {
-          "label": "全局附件名",
-          "description": "所有动态附件均会以此文件名下载"
+        "traffic_capture": {
+          "description": "捕获队伍解题流量，需要开启平台代理",
+          "label": "开启流量捕获"
         },
         "type": {
           "description": "创建后不可更改",
           "label": "题目类型"
-        },
-        "container_image": "容器镜像",
-        "service_port": {
-          "label": "服务端口",
-          "description": "容器内服务的端口号"
-        },
-        "cpu_limit": {
-          "label": "CPU 限制 (0.1 CPUs)",
-          "description": "乘以 0.1 即为 CPU 核心数"
-        },
-        "memory_limit": {
-          "label": "内存限制 (MB)",
-          "description": "限制容器使用的 RAM"
-        },
-        "storage_limit": {
-          "label": "存储限制 (MB)",
-          "description": "限制存储空间，含镜像大小"
-        },
-        "traffic_capture": {
-          "label": "开启流量捕获",
-          "description": "捕获队伍解题流量，需要开启平台代理"
-        },
-        "attachment": {
-          "title": "附件管理",
-          "type": "附件类型",
-          "link": "附件链接",
-          "clear": {
-            "title": "清除附件",
-            "description": "你确定要清除本题的附件吗？"
-          }
-        },
-        "flag": {
-          "title": "flag 管理"
         }
       },
       "info": {
@@ -187,18 +203,22 @@
   "notification": {
     "games": {
       "challenges": {
-        "created": "题目已创建",
-        "deleted": "题目已删除",
-        "updated": "题目已更新",
-        "preview": {
-          "flag_submitted": "flag 似乎被正确提交了！",
-          "attachment_downloaded": "假装附件已经下载了！"
-        },
         "attachment": {
           "updated": "附件已更新"
         },
+        "created": "题目已创建",
+        "deleted": "题目已删除",
         "flag_template": {
           "updated": "flag 模板已更新"
+        },
+        "preview": {
+          "attachment_downloaded": "假装附件已经下载了！",
+          "flag_submitted": "flag 似乎被正确提交了！"
+        },
+        "updated": "题目已更新",
+        "flag": {
+          "created": "flag 已创建",
+          "deleted": "flag 已删除"
         }
       },
       "info": {

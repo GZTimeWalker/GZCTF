@@ -22,7 +22,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
 import AttachmentUploadModal from '@Components/admin/AttachmentUploadModal'
@@ -182,6 +182,9 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       })
   }
 
+  const will_gererate =
+    ' ' + t('admin.content.games.challenges.flag.instructions.will_generate') + ' '
+
   return (
     <Stack>
       <Group position="apart">
@@ -288,7 +291,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       {challenge?.type === ChallengeType.DynamicContainer ? (
         <Stack>
           <TextInput
-            label="flag 模板"
+            label={t('admin.content.games.challenges.flag.template')}
             size="sm"
             value={flagTemplate}
             placeholder="flag{[GUID]}"
@@ -300,42 +303,52 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             }}
           />
           <Stack spacing={6} pb={8}>
-            <Text size="sm">请输入 flag 模版字符串，留空以生成随机 GUID 作为 flag</Text>
             <Text size="sm">
-              指定 <Code>[GUID]</Code>则会仅替换此处的占位符为随机 GUID
+              {t('admin.content.games.challenges.flag.instructions.description')}
             </Text>
             <Text size="sm">
-              若指定 <Code>[TEAM_HASH]</Code> 则它将会被自动替换为队伍 Token
-              与相关信息所生成的哈希值
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.guid">
+                _<Code>_</Code>_
+              </Trans>
             </Text>
             <Text size="sm">
-              若未指定 <Code>[TEAM_HASH]</Code> 则将启用 Leet
-              字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.team_hash">
+                _<Code>_</Code>_
+              </Trans>
             </Text>
             <Text size="sm">
-              若需要在指定 <Code>[TEAM_HASH]</Code> 的情况下启用 Leet 字符串功能，请在 flag
-              模版字符串
-              <Text span fw={700}>
-                之前
-              </Text>
-              添加 <Code>[LEET]</Code> 标记，此时不会检查 flag 模版字符串的熵
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.leet">
+                _<Code>_</Code>_
+              </Trans>
+            </Text>
+            <Text size="sm">
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.both">
+                _<Code>_</Code>
+                <Code>_</Code>_
+              </Trans>
             </Text>
             <Text size="sm" fw="bold">
-              flag 模板编写示例
+              {t('admin.content.games.challenges.flag.instructions.example')}
             </Text>
             <List size="sm" spacing={6}>
               <List.Item>
-                留空会得到 <Code>{`flag{1bab71b8-117f-4dea-a047-340b72101d7b}`}</Code>
+                {t('admin.content.games.challenges.flag.instructions.leave_empty')}
+                {will_gererate}
+                <Code>{`flag{1bab71b8-117f-4dea-a047-340b72101d7b}`}</Code>
               </List.Item>
               <List.Item>
-                <Code>{`flag{hello world}`}</Code> 会得到 <Code>{`flag{He1lo_w0r1d}`}</Code>
+                <Code>{`flag{hello world}`}</Code>
+                {will_gererate}
+                <Code>{`flag{He1lo_w0r1d}`}</Code>
               </List.Item>
               <List.Item>
-                <Code>{`flag{hello_world_[TEAM_HASH]}`}</Code> 会得到{' '}
+                <Code>{`flag{hello_world_[TEAM_HASH]}`}</Code>
+                {will_gererate}
                 <Code>{`flag{hello_world_5418ce4d815c}`}</Code>
               </List.Item>
               <List.Item>
-                <Code>{`[LEET]flag{hello world [TEAM_HASH]}`}</Code> 会得到{' '}
+                <Code>{`[LEET]flag{hello world [TEAM_HASH]}`}</Code>
+                {will_gererate}
                 <Code>{`flag{He1lo_w0r1d_5418ce4d815c}`}</Code>
               </List.Item>
             </List>
@@ -348,8 +361,8 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
               <Center h="calc(100vh - 430px)">
                 <Stack spacing={0}>
-                  <Title order={2}>flag 列表为空</Title>
-                  <Text>请通过右上角添加 flag</Text>
+                  <Title order={2}>{t('admin.content.games.challenges.flag.empty.title')}</Title>
+                  <Text>{t('admin.content.games.challenges.flag.empty.description')}</Text>
                 </Stack>
               </Center>
             </>
@@ -362,7 +375,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         </ScrollArea>
       )}
       <FlagCreateModal
-        title="添加 flag"
+        title={t('admin.button.challenges.flag.add')}
         opened={flagCreateModalOpen}
         onClose={() => setFlagCreateModalOpen(false)}
       />

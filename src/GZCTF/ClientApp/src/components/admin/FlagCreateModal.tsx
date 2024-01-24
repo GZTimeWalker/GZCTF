@@ -4,7 +4,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import { useEditChallenge } from '@Utils/useEdit'
@@ -37,7 +37,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: 'flag 已创建',
+          message: t('admin.notification.games.challenges.flag.created'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         challenge &&
@@ -61,9 +61,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
     <Modal {...props}>
       <Stack>
         <Text>
-          创建 flag，多个 flag 按行分割，每行一个。
-          <br />
-          每道题目可以拥有多个 flag，获取任意 flag 均可得分。
+          <Trans i18nKey="admin.content.games.challenges.flag.create" />
         </Text>
         <Textarea
           value={flags}
@@ -81,7 +79,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
         />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onCreate}>
-            创建 flag
+            {t('admin.button.challenges.flag.add')}
           </Button>
         </Group>
       </Stack>
