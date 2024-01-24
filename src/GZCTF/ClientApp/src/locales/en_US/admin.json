@@ -71,6 +71,11 @@
           "title": "Ouch! This match has no problem yet"
         },
         "flag": {
+          "create": "Create flag,multiple flag split by line, one per line.<br />can own multiple flags per topic, score any flag for each title.",
+          "empty": {
+            "description": "Please add flag via top right corner",
+            "title": "flag list is empty"
+          },
           "instructions": {
             "both": "If you need to enable leet flag with <1>[TEAM_HASH]</1>, add the <2>[LEET]</2> tag <strong> before </strong> the flag template string. The entropy of the flag template string will not be checked.",
             "description": "Please enter flag template string, leave blank to generate random GUID as flag",
@@ -82,12 +87,7 @@
             "will_generate": "Will generate"
           },
           "template": "flag template",
-          "title": "flag management",
-          "empty": {
-            "description": "Please add flag via top right corner",
-            "title": "flag list is empty"
-          },
-          "create": "Create flag,multiple flag split by line, one per line.<br />can own multiple flags per topic, score any flag for each title."
+          "title": "flag management"
         },
         "hints": "Question tips",
         "memory_limit": {
@@ -208,6 +208,10 @@
         },
         "created": "Title created",
         "deleted": "Title deleted",
+        "flag": {
+          "created": "flag created",
+          "deleted": "flag deleted"
+        },
         "flag_template": {
           "updated": "flag template updated"
         },
@@ -215,11 +219,7 @@
           "attachment_downloaded": "Predicted attachments have been downloaded!",
           "flag_submitted": "Flag seems to have been correctly submitted!"
         },
-        "updated": "Title updated",
-        "flag": {
-          "created": "flag created",
-          "deleted": "flag deleted"
-        }
+        "updated": "Title updated"
       },
       "info": {
         "deleted": "Game deleted",
@@ -240,10 +240,8 @@
         "deleted": "Notice deleted",
         "updated": "Notice updated"
       },
-      "review": {
-        "participation": {
-          "updated": "Team Review Status Updated"
-        }
+      "participation": {
+        "updated": "Team Review Status Updated"
       }
     }
   },

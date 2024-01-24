@@ -71,6 +71,11 @@
           "title": "オッシ！このコンテストに課題はありません"
         },
         "flag": {
+          "create": "フラグを作成します。複数のフラグは行で区切られ、1行に1つのフラグがあります。<br />各チャレンジには複数のフラグを持つことができ、どのフラグを取得しても得点がもらえます。",
+          "empty": {
+            "description": "右上の角で flag を追加してください",
+            "title": "フラッシュリストは空です"
+          },
           "instructions": {
             "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情况下启用 Leet 字符串功能，请在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 标记，此时不会检查 flag 模版字符串的熵",
             "description": "flag テンプレート文字列を生成するには空のランダムなGUIDを生成してください",
@@ -82,12 +87,7 @@
             "will_generate": "今後生成する"
           },
           "template": "フラッシュテンプレート",
-          "title": "flag マネージャー",
-          "empty": {
-            "description": "右上の角で flag を追加してください",
-            "title": "フラッシュリストは空です"
-          },
-          "create": "创建 flag，多个 flag 按行分割，每行一个。<br />每道题目可以拥有多个 flag，获取任意 flag 均可得分。"
+          "title": "flag マネージャー"
         },
         "hints": "ヒント",
         "memory_limit": {
@@ -184,7 +184,7 @@
         "participation": {
           "joined": "申込済み",
           "not_joined": "未報名",
-          "stats": "{{count}}/{{total}} 已报名"
+          "stats": "{{count}}/{{total}} 参加済み"
         }
       },
       "writeups": {
@@ -208,6 +208,10 @@
         },
         "created": "作成された課題",
         "deleted": "課題を削除しました",
+        "flag": {
+          "created": "flag が作成されました",
+          "deleted": "flag を削除しました"
+        },
         "flag_template": {
           "updated": "フラッシュテンプレートを更新しました"
         },
@@ -215,11 +219,7 @@
           "attachment_downloaded": "付属品のチェックが終了しました！",
           "flag_submitted": "flag は正しい投稿されました！"
         },
-        "updated": "課題を更新しました",
-        "flag": {
-          "created": "flag が作成されました",
-          "deleted": "flag を削除しました"
-        }
+        "updated": "課題を更新しました"
       },
       "info": {
         "deleted": "マッチは削除されました",
@@ -240,10 +240,8 @@
         "deleted": "お知らせを削除しました",
         "updated": "お知らせが更新されました"
       },
-      "review": {
-        "participation": {
-          "updated": "チーム監査状態が更新されました"
-        }
+      "participation": {
+        "updated": "チーム監査状態が更新されました"
       }
     }
   },
