@@ -1,105 +1,105 @@
 {
   "participation": {
     "status": {
-      "pending": "待审核",
-      "accepted": "审核通过",
-      "rejected": "审核未通过",
-      "suspended": "禁赛中"
+      "pending": "Pending approval",
+      "accepted": "Approve",
+      "rejected": "Review not approved",
+      "suspended": "Banning"
     },
     "actions": {
-      "pending": "等待审核",
-      "accepted": "审核通过",
-      "rejected": "重新报名",
-      "suspended": "禁赛中",
-      "unsubmitted": "报名参赛"
+      "pending": "Awaiting Review",
+      "accepted": "Approve",
+      "rejected": "Re-Sign Up",
+      "suspended": "Banning",
+      "unsubmitted": "Enrollment"
     },
     "alert": {
       "pending": {
         "title": "你已经以队伍 {{team}} 成员身份成功报名",
-        "content": "请耐心等待审核结果"
+        "content": "Please wait for review results"
       },
       "rejected": {
-        "title": "你的参赛申请未通过",
-        "content": "请确保具备参赛资格和满足参赛要求后重新报名"
+        "title": "Your entry request was not approved",
+        "content": "Please make sure you are eligible to re-register after you meet your requirements"
       },
       "suspended": {
         "title": "您的队伍 {{team} 已被禁赛",
-        "content": "如有异议，请联系管理员进行申诉"
+        "content": "If you hear any objection, please contact the administrator to make an appeal"
       },
       "team_required": {
-        "title": "当前无法报名",
-        "content": "你没有加入任何队伍，请在<1>队伍管理</1>页面创建、加入队伍。"
+        "title": "Unable to register at this time",
+        "content": "You didn't join any team, please create and join a team on the <1> Team Management </1> page."
       },
       "not_started": {
-        "title": "比赛尚未开始",
+        "title": "Match not yet started",
         "content": "你已经以队伍 {{team}} 成员身份成功报名并通过审核，请在比赛开始后进入比赛页面。",
-        "mobile": "请使用电脑端参与比赛及查看比赛详情。"
+        "mobile": "Please use computer to play and see the details of the match."
       }
     }
   },
   "notification": {
-    "joined": "报名成功",
-    "left": "取消报名成功",
-    "no_team": "请选择参赛队伍",
-    "no_invite_code": "邀请码不能为空",
-    "no_organization": "请选择参赛组织"
+    "joined": "Registration successful",
+    "left": "Cancellation successful",
+    "no_team": "Please select the team to join",
+    "no_invite_code": "Invitation code cannot be empty",
+    "no_organization": "Please select the organization"
   },
   "button": {
-    "join": "报名参赛",
-    "leave": "取消报名",
-    "scoreboard": "查看榜单",
-    "challenges": "进入比赛",
-    "finished": "比赛结束",
-    "login_required": "请先登录"
+    "join": "Enrollment",
+    "leave": "Cancel Registration",
+    "scoreboard": "View list",
+    "challenges": "Enter Match",
+    "finished": "End of match",
+    "login_required": "Please login first"
   },
   "tag": {
-    "individual": "个人赛",
-    "mutiplayer": "团队赛",
+    "individual": "Personal Games",
+    "mutiplayer": "Team Matches",
     "limited": "{{count}}人赛",
-    "hidden": "比赛已隐藏"
+    "hidden": "Match hidden"
   },
   "content": {
     "joined_status": "<strong>{{count}}</strong>支队伍已报名",
     "join": {
-      "title": "补全报名信息",
-      "confirm": "确认报名",
+      "title": "Completion Registration Information",
+      "confirm": "Confirm Registration",
       "content": [
-        "你确定要报名此比赛吗？",
-        "报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动，<strong>即邀请、踢出队员。</strong> 队伍将在比赛结束后或驳回请求时解锁。",
-        "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
+        "Are you sure you want to register for this game?",
+        "Once you sign up for and approve the match, the team will be locked and will no longer be able to make changes to people,<strong>invites and kicks the team.</strong> The team will be unlocked after the match ends or when the request is denied.",
+        "The number of players requires that the number of members of the team be selected, and<strong>whether or not the team participates in the match in that capacity.</strong>"
       ],
       "team": {
-        "label": "选择参赛队伍",
-        "description": "请选择一个队伍参与比赛，选定后不可更改"
+        "label": "Select team to compete",
+        "description": "Please select a team to participate in a match that cannot be changed after selection"
       },
       "invite_code": {
-        "label": "请输入邀请码",
-        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码"
+        "label": "Please enter the invitation code",
+        "description": "This match opens the invitation match. Enrollment needs to provide an invitation code."
       },
       "organization": {
-        "label": "选择参赛组织",
-        "description": "本场比赛具有多个参赛组织，请选择你的参赛组织"
+        "label": "Select Organization",
+        "description": "This match has more than one participant. Please select your organization"
       }
     },
     "leave": {
-      "confirm": "确认取消报名",
+      "confirm": "Confirm Cancel Registration",
       "content": [
-        "你确定要退出此比赛吗？",
-        "退出后如果队伍报名人数为空，队伍参与信息将被删除。"
+        "Are you sure you want to exit this match?",
+        "The team participation information will be deleted after exiting if the number of people is empty."
       ]
     },
-    "start_time": "开始时间",
-    "end_time": "结束时间"
+    "start_time": "Start Time",
+    "end_time": "End Time"
   },
   "tab": {
-    "challenge": "比赛题目",
-    "scoreboard": "积分总榜",
+    "challenge": "Match problem",
+    "scoreboard": "Leaderboard",
     "monitor": {
-      "index": "比赛监控",
-      "events": "事件监控",
-      "submissions": "提交记录",
-      "cheatinfo": "作弊信息",
-      "traffic": "流量捕获"
+      "index": "Match monitoring",
+      "events": "Event Monitor",
+      "submissions": "Commits",
+      "cheatinfo": "Cheats",
+      "traffic": "Traffic Capture"
     }
   }
 }
