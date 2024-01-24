@@ -1,105 +1,105 @@
 {
   "participation": {
     "status": {
-      "pending": "待审核",
-      "accepted": "审核通过",
-      "rejected": "审核未通过",
-      "suspended": "禁赛中"
+      "pending": "承認待ち",
+      "accepted": "承認済",
+      "rejected": "監査に失敗しました",
+      "suspended": "BAN 中"
     },
     "actions": {
-      "pending": "等待审核",
-      "accepted": "审核通过",
-      "rejected": "重新报名",
-      "suspended": "禁赛中",
-      "unsubmitted": "报名参赛"
+      "pending": "承認待ち",
+      "accepted": "承認済",
+      "rejected": "再登録",
+      "suspended": "BAN 中",
+      "unsubmitted": "コンテストに登録する"
     },
     "alert": {
       "pending": {
-        "title": "你已经以队伍 {{team}} 成员身份成功报名",
-        "content": "请耐心等待审核结果"
+        "title": "あなたはチーム {{team}} のメンバーとして有名になりました",
+        "content": "しばらくお待ちください"
       },
       "rejected": {
-        "title": "你的参赛申请未通过",
-        "content": "请确保具备参赛资格和满足参赛要求后重新报名"
+        "title": "参加申請が許可されていません",
+        "content": "参加資格及び参加要件を満たした後で再報したことを確認してください。"
       },
       "suspended": {
-        "title": "您的队伍 {{team} 已被禁赛",
-        "content": "如有异议，请联系管理员进行申诉"
+        "title": "あなたのチーム{{team} は既にセッション禁止されました",
+        "content": "有効な場合、管理者に問い合わせてください"
       },
       "team_required": {
-        "title": "当前无法报名",
-        "content": "你没有加入任何队伍，请在<1>队伍管理</1>页面创建、加入队伍。"
+        "title": "當前無法報名字",
+        "content": "どのチームにも加入していません、<1>チーム管理</1>ページにてチームに参加してください。"
       },
       "not_started": {
-        "title": "比赛尚未开始",
-        "content": "你已经以队伍 {{team}} 成员身份成功报名并通过审核，请在比赛开始后进入比赛页面。",
-        "mobile": "请使用电脑端参与比赛及查看比赛详情。"
+        "title": "試合は未開始",
+        "content": "あなたは既に {{team}} 隊員として申し立てに成功し、ゲームを終了した後、コンテストページへ行きます。",
+        "mobile": "レースに参加してどれが正しいのかを知るには、コンピュータを使ってください。"
       }
     }
   },
   "notification": {
-    "joined": "报名成功",
-    "left": "取消报名成功",
-    "no_team": "请选择参赛队伍",
-    "no_invite_code": "邀请码不能为空",
-    "no_organization": "请选择参赛组织"
+    "joined": "申し込み成功",
+    "left": "申し込みをキャンセルしました",
+    "no_team": "参加チームを選択してください。",
+    "no_invite_code": "招待コードは空にできません",
+    "no_organization": "参加組織を選択してください"
   },
   "button": {
-    "join": "报名参赛",
-    "leave": "取消报名",
-    "scoreboard": "查看榜单",
-    "challenges": "进入比赛",
-    "finished": "比赛结束",
-    "login_required": "请先登录"
+    "join": "コンテストに登録する",
+    "leave": "申込みをキャンセル",
+    "scoreboard": "チャートの検索",
+    "challenges": "レースに入る",
+    "finished": "試合終了",
+    "login_required": "先にログインしてください"
   },
   "tag": {
-    "individual": "个人赛",
-    "mutiplayer": "团队赛",
+    "individual": "ミーティング",
+    "mutiplayer": "チーム戦",
     "limited": "{{count}}人赛",
-    "hidden": "比赛已隐藏"
+    "hidden": "試合は非表示です"
   },
   "content": {
-    "joined_status": "<strong>{{count}}</strong>支队伍已报名",
+    "joined_status": "<strong>{{count}}</strong>のチームからの出席者",
     "join": {
-      "title": "补全报名信息",
-      "confirm": "确认报名",
+      "title": "申し込み情報を入力",
+      "confirm": "申込み",
       "content": [
-        "你确定要报名此比赛吗？",
+        "このトーナメントにサインアップしますか？",
         "报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动，<strong>即邀请、踢出队员。</strong> 队伍将在比赛结束后或驳回请求时解锁。",
         "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
       ],
       "team": {
-        "label": "选择参赛队伍",
-        "description": "请选择一个队伍参与比赛，选定后不可更改"
+        "label": "参加チームを選択",
+        "description": "対戦するチームを選択して選択後、変更できません"
       },
       "invite_code": {
-        "label": "请输入邀请码",
-        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码"
+        "label": "インバイパスを入力してください",
+        "description": "今回の試合は招待を開始しました。参加には招待コードを申し込む必要があります。"
       },
       "organization": {
-        "label": "选择参赛组织",
-        "description": "本场比赛具有多个参赛组织，请选择你的参赛组织"
+        "label": "参加組織を選択",
+        "description": "この試合には参加している組織があります。参加組織を選択してください。"
       }
     },
     "leave": {
-      "confirm": "确认取消报名",
+      "confirm": "申込みをキャンセル",
       "content": [
-        "你确定要退出此比赛吗？",
-        "退出后如果队伍报名人数为空，队伍参与信息将被删除。"
+        "このマッチを終了しますか？",
+        "脱退すると、チーム登録者の出席者が空になっても、チーム参加情報は消去されます。"
       ]
     },
-    "start_time": "开始时间",
-    "end_time": "结束时间"
+    "start_time": "開始時刻",
+    "end_time": "終了時刻"
   },
   "tab": {
-    "challenge": "比赛题目",
-    "scoreboard": "积分总榜",
+    "challenge": "コンテストの課題",
+    "scoreboard": "リーダー ボード",
     "monitor": {
-      "index": "比赛监控",
-      "events": "事件监控",
-      "submissions": "提交记录",
-      "cheatinfo": "作弊信息",
-      "traffic": "流量捕获"
+      "index": "スケジュールモニタリング",
+      "events": "イベント監視",
+      "submissions": "提出物",
+      "cheatinfo": "チート情報",
+      "traffic": "トラフィックキャプチャ"
     }
   }
 }
