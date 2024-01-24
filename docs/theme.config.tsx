@@ -17,7 +17,7 @@ const config: DocsThemeConfig = {
   search: {
     component: null,
   },
-  i18n: [{ locale: "zh", text: "中文" }],
+  i18n: [{ locale: "zh", text: "中文" }, { locale: "en", text: "English" }],
   feedback: {
     content: "文档有问题？欢迎反馈 →",
   },
