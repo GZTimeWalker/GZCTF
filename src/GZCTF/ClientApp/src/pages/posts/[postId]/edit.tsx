@@ -234,7 +234,7 @@ const PostEdit: FC = () => {
               <Group spacing="sm">
                 <Text size="sm">{t('post.label.summary')}</Text>
                 <Text size="xs" c="dimmed">
-                  {t('post.label.markdown_supported')}
+                  {t('admin.content.markdown_support')}
                 </Text>
               </Group>
             }
@@ -248,7 +248,7 @@ const PostEdit: FC = () => {
               <Group spacing="sm">
                 <Text size="sm">{t('post.label.content')}</Text>
                 <Text size="xs" c="dimmed">
-                  {t('post.label.markdown_supported')}
+                  {t('admin.content.markdown_support')}
                 </Text>
               </Group>
             }

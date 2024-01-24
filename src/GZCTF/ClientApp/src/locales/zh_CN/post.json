@@ -12,7 +12,6 @@
   "label": {
     "add_tag": "+ 添加标签 \"{{query}}\"",
     "content": "文章内容",
-    "markdown_supported": "支持 Markdown 语法",
     "summary": "文章梗概",
     "tag": "文章标签",
     "title": "文章标题"
