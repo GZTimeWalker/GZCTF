@@ -31,7 +31,7 @@
         "content": "You didn't join any team, please create and join a team on the <1> Team Management </1> page."
       },
       "not_started": {
-        "title": "Match not yet started",
+        "title": "Game not yet started",
         "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
         "mobile": "Please use computer to play and see the details of the match."
       }
@@ -53,10 +53,10 @@
     "login_required": "Please login"
   },
   "tag": {
-    "individual": "Personal Games",
-    "mutiplayer": "Team Matches",
+    "individual": "Personal",
+    "mutiplayer": "Team",
     "limited": "{{count}} players",
-    "hidden": "Match hidden"
+    "hidden": "Hidden"
   },
   "content": {
     "joined_status": "<strong>{{count}}</strong> teams have already registered",
@@ -92,10 +92,10 @@
     "end_time": "End Time"
   },
   "tab": {
-    "challenge": "Match problem",
+    "challenge": "Game problem",
     "scoreboard": "Leaderboard",
     "monitor": {
-      "index": "Match monitoring",
+      "index": "Game monitoring",
       "events": "Event Monitor",
       "submissions": "Commits",
       "cheatinfo": "Cheats",

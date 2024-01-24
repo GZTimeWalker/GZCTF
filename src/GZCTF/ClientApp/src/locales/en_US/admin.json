@@ -64,7 +64,7 @@
         },
         "container_limit": {
           "label": "Team Container Limit",
-          "description": "Containers shared by teams (0 = unlimited)"
+          "description": "Containers shared by one team (0 = unlimited)"
         },
         "writeup_deadline": {
           "label": "Writeup Submission Time",
