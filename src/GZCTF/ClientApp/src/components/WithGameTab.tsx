@@ -15,36 +15,6 @@ import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
 
-const pages = [
-  {
-    icon: mdiFlagOutline,
-    title: t('比赛题目'),
-    path: 'challenges',
-    link: 'challenges',
-    color: 'blue',
-    requireJoin: true,
-    requireRole: Role.User,
-  },
-  {
-    icon: mdiChartLine,
-    title: t('积分总榜'),
-    path: 'scoreboard',
-    link: 'scoreboard',
-    color: 'yellow',
-    requireJoin: false,
-    requireRole: Role.User,
-  },
-  {
-    icon: mdiMonitorEye,
-    title: t('比赛监控'),
-    path: 'monitor',
-    link: 'monitor/events',
-    color: 'green',
-    requireJoin: false,
-    requireRole: Role.Monitor,
-  },
-]
-
 dayjs.extend(duration)
 
 const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
@@ -94,8 +64,40 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const theme = useMantineTheme()
   const { role } = useUserRole()
   const { game, status } = useGame(numId)
+  const { t } = useTranslation()
 
   const finished = dayjs() > dayjs(game?.end ?? new Date())
+
+  const pages = [
+    {
+      icon: mdiFlagOutline,
+      title: t('game.tab.challenge'),
+      path: 'challenges',
+      link: 'challenges',
+      color: 'blue',
+      requireJoin: true,
+      requireRole: Role.User,
+    },
+    {
+      icon: mdiChartLine,
+      title: t('game.tab.scoreboard'),
+      path: 'scoreboard',
+      link: 'scoreboard',
+      color: 'yellow',
+      requireJoin: false,
+      requireRole: Role.User,
+    },
+    {
+      icon: mdiMonitorEye,
+      title: t('game.tab.monitor.index'),
+      path: 'monitor',
+      link: 'monitor/events',
+      color: 'green',
+      requireJoin: false,
+      requireRole: Role.Monitor,
+    },
+  ]
+
   const filteredPages = pages
     .filter((p) => RequireRole(p.requireRole, role))
     .filter((p) => !p.requireJoin || game?.status === ParticipationStatus.Accepted)
@@ -111,8 +113,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
 
   const tabIndex = getTab(location.pathname)
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
-
-  const { t } = useTranslation()
 
   const onChange = (active: number, tabKey: string) => {
     setActiveTab(active)

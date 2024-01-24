@@ -28,7 +28,7 @@ import { RequireRole } from '@Components/WithRole'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { ParticipationStatusMap } from '@Utils/Shared'
+import { useParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
@@ -189,7 +189,7 @@ interface CheatInfoItemProps {
 const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
   const { cheatTeamInfo, disabled, userRole, setParticipationStatus } = props
   const theme = useMantineTheme()
-  const part = ParticipationStatusMap.get(cheatTeamInfo.status!)!
+  const part = useParticipationStatusMap().get(cheatTeamInfo.status!)!
 
   const { t } = useTranslation()
 

@@ -15,7 +15,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BloodsTypes, ChallengeTagLabelMap } from '@Utils/Shared'
+import { BloodsTypes, useChallengeTagLabelMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'
 
@@ -59,8 +59,8 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { challenge, solved, onClick, iconMap, teamId } = props
-
-  const tagData = ChallengeTagLabelMap.get(challenge.tag!)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const tagData = challengeTagLabelMap.get(challenge.tag!)
   const { classes, cx, theme } = useStyles(props)
   const { classes: tooltipClasses } = useTooltipStyles()
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]

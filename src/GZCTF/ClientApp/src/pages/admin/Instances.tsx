@@ -28,7 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { ChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
+import { useChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
 
@@ -50,7 +50,8 @@ const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
 
 const SelectChallengeItem = forwardRef<HTMLDivElement, SelectChallengeItemProps>(
   ({ title, id, tag, ...others }: SelectChallengeItemProps, ref) => {
-    const tagInfo = ChallengeTagLabelMap.get(tag ?? ChallengeTag.Misc)!
+    const challengeTagLabelMap = useChallengeTagLabelMap()
+    const tagInfo = challengeTagLabelMap.get(tag ?? ChallengeTag.Misc)!
     const theme = useMantineTheme()
 
     return (
@@ -81,6 +82,7 @@ const Instances: FC = () => {
   const { classes, theme } = useTableStyles()
   const clipBoard = useClipboard()
   const { classes: tooltipClasses } = useTooltipStyles()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const { t } = useTranslation()
 
@@ -217,7 +219,7 @@ const Instances: FC = () => {
             <tbody>
               {filteredInstances &&
                 filteredInstances.map((inst) => {
-                  const color = ChallengeTagLabelMap.get(
+                  const color = challengeTagLabelMap.get(
                     inst.challenge?.tag ?? ChallengeTag.Misc
                   )!.color
                   return (

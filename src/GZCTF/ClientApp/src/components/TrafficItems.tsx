@@ -4,7 +4,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
-import { ChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
+import { useChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
 import {
   ChallengeTag,
   ChallengeTrafficModel,
@@ -17,7 +17,8 @@ const itemHeight = rem(60)
 
 export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
-  const data = ChallengeTagLabelMap.get(item.tag as ChallengeTag)!
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const data = challengeTagLabelMap.get(item.tag as ChallengeTag)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
 

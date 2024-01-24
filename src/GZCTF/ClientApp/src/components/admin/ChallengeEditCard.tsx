@@ -14,7 +14,7 @@ import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ChallengeTagLabelMap } from '@Utils/Shared'
+import { useChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfoModel, ChallengeTag } from '@Api'
 
 interface ChallengeEditCardProps {
@@ -23,7 +23,8 @@ interface ChallengeEditCardProps {
 }
 
 const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) => {
-  const data = ChallengeTagLabelMap.get(challenge.tag as ChallengeTag)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const data = challengeTagLabelMap.get(challenge.tag as ChallengeTag)
   const theme = useMantineTheme()
   const navigate = useNavigate()
   const { id } = useParams()

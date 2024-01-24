@@ -21,7 +21,7 @@ import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { ChallengeTagItem, ChallengeTagLabelMap } from '@Utils/Shared'
+import { ChallengeTagItem, useChallengeTagLabelMap } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
 
@@ -33,6 +33,7 @@ const GameChallengeEdit: FC = () => {
   const [createOpened, setCreateOpened] = useState(false)
   const [bonusOpened, setBonusOpened] = useState(false)
   const [category, setCategory] = useState<ChallengeTag | null>(null)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const { t } = useTranslation()
 
@@ -110,7 +111,7 @@ const GameChallengeEdit: FC = () => {
               onChange={(value: ChallengeTag) => setCategory(value)}
               itemComponent={ChallengeTagItem}
               data={Object.entries(ChallengeTag).map((tag) => {
-                const data = ChallengeTagLabelMap.get(tag[1])
+                const data = challengeTagLabelMap.get(tag[1])
                 return { value: tag[1], ...data }
               })}
             />

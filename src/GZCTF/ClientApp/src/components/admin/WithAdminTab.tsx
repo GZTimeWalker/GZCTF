@@ -14,32 +14,36 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import IconTabs from '@Components/IconTabs'
 import { usePageTitle } from '@Utils/usePageTitle'
 
-const pages = [
-  { icon: mdiFlagOutline, title: t('比赛管理'), path: 'games', color: 'yellow' },
-  { icon: mdiAccountGroupOutline, title: t('队伍管理'), path: 'teams', color: 'green' },
-  { icon: mdiAccountCogOutline, title: t('用户管理'), path: 'users', color: 'cyan' },
-  { icon: mdiPackageVariantClosed, title: t('容器管理'), path: 'instances', color: 'blue' },
-  { icon: mdiFileDocumentOutline, title: t('系统日志'), path: 'logs', color: 'red' },
-  { icon: mdiSitemapOutline, title: t('全局设置'), path: 'configs', color: 'orange' },
-]
-
 export interface AdminTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
   isLoading?: boolean
   headProps?: GroupProps
 }
 
-const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
-
 const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
   const theme = useMantineTheme()
-  const tabIndex = getTab(location.pathname)
-  const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
-
   const { t } = useTranslation()
+
+  const pages = [
+    { icon: mdiFlagOutline, title: t('admin.tab.games.index'), path: 'games', color: 'yellow' },
+    { icon: mdiAccountGroupOutline, title: t('admin.tab.teams'), path: 'teams', color: 'green' },
+    { icon: mdiAccountCogOutline, title: t('admin.tab.users'), path: 'users', color: 'cyan' },
+    {
+      icon: mdiPackageVariantClosed,
+      title: t('admin.tab.instances'),
+      path: 'instances',
+      color: 'blue',
+    },
+    { icon: mdiFileDocumentOutline, title: t('admin.tab.logs'), path: 'logs', color: 'red' },
+    { icon: mdiSitemapOutline, title: t('admin.tab.settings'), path: 'settings', color: 'orange' },
+  ]
+  const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
+  const tabIndex = getTab(location.pathname)
+
+  const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
   const onChange = (active: number, tabKey: string) => {
     setActiveTab(active)

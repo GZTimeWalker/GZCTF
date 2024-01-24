@@ -36,9 +36,9 @@ import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import {
   ChallengeTagItem,
-  ChallengeTagLabelMap,
+  useChallengeTagLabelMap,
   ChallengeTypeItem,
-  ChallengeTypeLabelMap,
+  useChallengeTypeLabelMap,
 } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useEditChallenge } from '@Utils/useEdit'
@@ -66,6 +66,8 @@ const GameChallengeEdit: FC = () => {
   const [previewOpend, setPreviewOpend] = useState(false)
 
   const modals = useModals()
+  const challengeTypeLabelMap = useChallengeTypeLabelMap()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const { t } = useTranslation()
 
@@ -268,7 +270,7 @@ const GameChallengeEdit: FC = () => {
               readOnly
               itemComponent={ChallengeTypeItem}
               data={Object.entries(ChallengeType).map((type) => {
-                const data = ChallengeTypeLabelMap.get(type[1])
+                const data = challengeTypeLabelMap.get(type[1])
                 return { value: type[1], ...data }
               })}
             />
@@ -286,7 +288,7 @@ const GameChallengeEdit: FC = () => {
               }}
               itemComponent={ChallengeTagItem}
               data={Object.entries(ChallengeTag).map((tag) => {
-                const data = ChallengeTagLabelMap.get(tag[1])
+                const data = challengeTagLabelMap.get(tag[1])
                 return { value: tag[1], ...data }
               })}
             />
@@ -511,7 +513,7 @@ const GameChallengeEdit: FC = () => {
         size="40%"
         type={challenge?.type ?? ChallengeType.StaticAttachment}
         tagData={
-          ChallengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
+          challengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
         }
         attachmentType={challenge?.attachment?.type ?? FileType.None}
       />

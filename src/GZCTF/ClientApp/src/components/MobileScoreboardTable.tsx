@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import MobileScoreboardItemModal from '@Components/MobileScoreboardItemModal'
 import { ScoreboardProps, useScoreboardStyles } from '@Components/ScoreboardTable'
-import { BloodBonus } from '@Utils/Shared'
+import { BloodBonus, useBonusLabels } from '@Utils/Shared'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ScoreboardItem, SubmissionType } from '@Api'
 
@@ -91,7 +91,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
     }
   }, [scoreboard])
 
-  const BloodData = bloodBonus.getBonusLabels()
+  const bloodData = useBonusLabels(bloodBonus)
 
   return (
     <Paper shadow="xs" p="sm">
@@ -164,7 +164,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
       </Stack>
       <MobileScoreboardItemModal
         challenges={scoreboard?.challenges}
-        bloodBonusMap={BloodData}
+        bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}
         size="40rem"

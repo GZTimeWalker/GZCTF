@@ -34,12 +34,6 @@ import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 
-const FileTypeDesrcMap = new Map<FileType, string>([
-  [FileType.None, t('无附件')],
-  [FileType.Remote, t('远程文件')],
-  [FileType.Local, t('平台附件')],
-])
-
 interface FlagEditProps {
   onDelete: (flag: FlagInfoModel) => void
 }
@@ -93,6 +87,11 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const { classes, theme } = useUploadStyles()
   const [progress, setProgress] = useState(0)
   const [flagCreateModalOpen, setFlagCreateModalOpen] = useState(false)
+  const FileTypeDesrcMap = new Map<FileType, string>([
+    [FileType.None, t('challenge.file_type.none')],
+    [FileType.Remote, t('challenge.file_type.remote')],
+    [FileType.Local, t('challenge.file_type.local')],
+  ])
 
   const onUpload = (file: File) => {
     setProgress(0)

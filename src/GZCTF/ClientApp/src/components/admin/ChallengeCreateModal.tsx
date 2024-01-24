@@ -9,9 +9,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
 import {
   ChallengeTagItem,
-  ChallengeTagLabelMap,
+  useChallengeTagLabelMap,
   ChallengeTypeItem,
-  ChallengeTypeLabelMap,
+  useChallengeTypeLabelMap,
 } from '@Utils/Shared'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
 
@@ -24,6 +24,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { onAddChallenge, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeTypeLabelMap = useChallengeTypeLabelMap()
 
   const [title, setTitle] = useInputState('')
   const [tag, setTag] = useState<string | null>(null)
@@ -79,7 +81,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           itemComponent={ChallengeTypeItem}
           withinPortal
           data={Object.entries(ChallengeType).map((type) => {
-            const data = ChallengeTypeLabelMap.get(type[1])
+            const data = challengeTypeLabelMap.get(type[1])
             return { value: type[1], ...data }
           })}
         />
@@ -92,7 +94,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           itemComponent={ChallengeTagItem}
           withinPortal
           data={Object.entries(ChallengeTag).map((tag) => {
-            const data = ChallengeTagLabelMap.get(tag[1])
+            const data = challengeTagLabelMap.get(tag[1])
             return { value: tag[1], ...data }
           })}
         />

@@ -15,18 +15,9 @@ import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { Role } from '@Api'
 
-const pages = [
-  { icon: mdiLightningBolt, title: t('事件监控'), path: 'events' },
-  { icon: mdiFlag, title: t('提交记录'), path: 'submissions' },
-  { icon: mdiExclamationThick, title: t('作弊信息'), path: 'cheatinfo' },
-  { icon: mdiPackageVariant, title: t('流量捕获'), path: 'traffic' },
-]
-
 interface WithGameMonitorProps extends React.PropsWithChildren {
   isLoading?: boolean
 }
-
-const getTab = (path: string) => pages.find((page) => path.endsWith(page.path))
 
 const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const { id } = useParams()
@@ -35,9 +26,19 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const theme = useMantineTheme()
-  const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
 
   const { t } = useTranslation()
+
+  const pages = [
+    { icon: mdiLightningBolt, title: t('game.tab.monitor.events'), path: 'events' },
+    { icon: mdiFlag, title: t('game.tab.monitor.submissions'), path: 'submissions' },
+    { icon: mdiExclamationThick, title: t('game.tab.monitor.cheatinfo'), path: 'cheatinfo' },
+    { icon: mdiPackageVariant, title: t('game.tab.monitor.traffic'), path: 'traffic' },
+  ]
+
+  const getTab = (path: string) => pages.find((page) => path.endsWith(page.path))
+
+  const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
 
   useEffect(() => {
     const tab = getTab(location.pathname)

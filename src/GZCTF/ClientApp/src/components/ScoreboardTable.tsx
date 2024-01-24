@@ -19,7 +19,13 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ScoreboardItemModal from '@Components/ScoreboardItemModal'
-import { BloodBonus, BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
+import {
+  BloodBonus,
+  BloodsTypes,
+  useChallengeTagLabelMap,
+  SubmissionTypeIconMap,
+  useBonusLabels,
+} from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
@@ -74,6 +80,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const { classes, cx, theme } = useScoreboardStyles()
 
   const { t } = useTranslation()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const hiddenCol = [...Array(5).keys()].map((i) => (
     <th
@@ -91,7 +98,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       <tr>
         {hiddenCol}
         {Object.keys(table).map((key) => {
-          const tag = ChallengeTagLabelMap.get(key as ChallengeTag)!
+          const tag = challengeTagLabelMap.get(key as ChallengeTag)!
           return (
             <th
               key={key}
@@ -155,7 +162,9 @@ const TableRow: FC<{
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
   const { classes, cx, theme } = useScoreboardStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
+
   return (
     <tr>
       <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
@@ -215,7 +224,7 @@ const TableRow: FC<{
 
             if (!icon) return <td key={item.id} className={classes.theadMono} />
 
-            const tag = ChallengeTagLabelMap.get(item.tag as ChallengeTag)!
+            const tag = challengeTagLabelMap.get(item.tag as ChallengeTag)!
             const textStyle = {
               fontSize: '0.9em',
               fontFamily: theme.fontFamilyMonospace,
@@ -285,7 +294,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
     }
   }, [scoreboard])
 
-  const BloodData = bloodBonus.getBonusLabels()
+  const bloodData = useBonusLabels(bloodBonus)
 
   return (
     <Paper shadow="md" p="md">
@@ -354,9 +363,9 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                 {BloodsTypes.map((type, idx) => (
                   <Group key={idx} position="left" spacing={2}>
                     {iconMap.get(type)}
-                    <Text size="sm">{BloodData.get(type)?.name}</Text>
+                    <Text size="sm">{bloodData.get(type)?.name}</Text>
                     <Text size="xs" c="dimmed">
-                      {BloodData.get(type)?.desrc}
+                      {bloodData.get(type)?.desrc}
                     </Text>
                   </Group>
                 ))}
@@ -383,7 +392,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
       </Stack>
       <ScoreboardItemModal
         challenges={scoreboard?.challenges}
-        bloodBonusMap={BloodData}
+        bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}
         size="45rem"

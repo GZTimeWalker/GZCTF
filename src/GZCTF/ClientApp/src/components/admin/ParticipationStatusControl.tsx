@@ -2,7 +2,7 @@ import { Group, GroupProps, MantineNumberSize, useMantineTheme } from '@mantine/
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
-import { ParticipationStatusMap } from '@Utils/Shared'
+import { useParticipationStatusMap } from '@Utils/Shared'
 import { ParticipationStatus } from '@Api'
 
 interface ParticipationStatusControlProps extends GroupProps {
@@ -15,7 +15,8 @@ interface ParticipationStatusControlProps extends GroupProps {
 
 export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (props) => {
   const { disabled, participateId, status, setParticipationStatus, size, ...others } = props
-  const part = ParticipationStatusMap.get(status)!
+  const partStatusMap = useParticipationStatusMap()
+  const part = partStatusMap.get(status)!
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
@@ -29,7 +30,7 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
       {...others}
     >
       {part.transformTo.map((value) => {
-        const s = ParticipationStatusMap.get(value)!
+        const s = partStatusMap.get(value)!
         return (
           <ActionIconWithConfirm
             key={`${participateId}@${value}`}

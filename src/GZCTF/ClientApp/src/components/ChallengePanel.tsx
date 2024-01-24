@@ -24,7 +24,7 @@ import ChallengeCard from '@Components/ChallengeCard'
 import ChallengeDetailModal from '@Components/ChallengeDetailModal'
 import Empty from '@Components/Empty'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
-import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
+import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame } from '@Utils/useGame'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 
@@ -72,7 +72,7 @@ const ChallengePanel: FC = () => {
   const [detailOpened, setDetailOpened] = useState(false)
   const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
   const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
-
+  const challengeTagLabelMap = useChallengeTagLabelMap()
   const { t } = useTranslation()
 
   // skeleton for loading
@@ -190,7 +190,7 @@ const ChallengePanel: FC = () => {
               </Group>
             </Tabs.Tab>
             {tags.map((tab) => {
-              const data = ChallengeTagLabelMap.get(tab as ChallengeTag)!
+              const data = challengeTagLabelMap.get(tab as ChallengeTag)!
               return (
                 <Tabs.Tab
                   key={tab}
@@ -266,7 +266,7 @@ const ChallengePanel: FC = () => {
             data.rank?.challenges?.find((c) => c.id === challenge?.id)?.type !==
               SubmissionType.Unaccepted
           }
-          tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
+          tagData={challengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
           title={challenge?.title ?? ''}
           score={challenge?.score ?? 0}
           challengeId={challenge.id}

@@ -31,7 +31,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { ParticipationStatusMap } from '@Utils/Shared'
+import { useParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 
@@ -109,7 +109,7 @@ interface ParticipationItemProps {
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   const { participation, disabled, setParticipationStatus } = props
-  const part = ParticipationStatusMap.get(participation.status!)!
+  const part = useParticipationStatusMap().get(participation.status!)!
 
   const { t } = useTranslation()
 
@@ -178,6 +178,7 @@ const GameTeamReview: FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
   const { classes } = useAccordionStyles()
+  const participationStatusMap = useParticipationStatusMap()
 
   const { t } = useTranslation()
 
@@ -233,7 +234,7 @@ const GameTeamReview: FC = () => {
             <Select
               placeholder="全部显示"
               clearable
-              data={Array.from(ParticipationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
+              data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
               value={selectedStatus}
               onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
             />
