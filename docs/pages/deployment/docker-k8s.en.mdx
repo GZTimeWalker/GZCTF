@@ -54,17 +54,17 @@ curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIR
 
 </Callout>
 
-多机安装和集群组建请参考 [官方文档](https://docs.k3s.io/zh/quick-start)。
+For multi-node installation and cluster setup, please refer to the [official documentation](https://docs.k3s.io/en/quick-start).
 
 ## 配置 GZCTF
 
-k3s 的连接配置文件位于 `/etc/rancher/k3s/k3s.yaml`，可以使用以下命令导出：
+The connection configuration file for k3s is located at `/etc/rancher/k3s/k3s.yaml`, and it can be exported using the following command:
 
 ```bash
 sudo cat /etc/rancher/k3s/k3s.yaml
 ```
 
-使用如下命令获取 k3s control-panel 所在机器的 IP：
+Use the following command to obtain the IP address of the k3s control-panel machine:
 
 ```bash
 sudo k3s kubectl cluster-info
@@ -72,13 +72,13 @@ sudo k3s kubectl cluster-info
 
 <Callout type="info">
 
-若显示 `127.0.0.1` 则说明 k3s control-panel 就是当前的机器，请使用 `ip a` 查看当前机器的 IP。
+If it shows `127.0.0.1`, it means that the k3s control-panel is on the current machine. Please use `ip a` to check the IP address of the current machine.
 
-你可以直接使用 IP 地址，或者使用域名，但是需要确保域名解析到 k3s control-panel 所在的机器，确保 GZCTF 的机器可以访问它的 6443 端口。
+You can directly use the IP address or use a domain name, but make sure the domain name resolves to the machine where the k3s control-panel is located, and ensure that the machine running GZCTF can access port 6443 on it.
 
 </Callout>
 
-将上述输出的内容保存为 `kube-config.yaml`，并更改 `server` 字段为 k3s control-panel 所在机器的 IP，例如
+Save the above output as `kube-config.yaml` and change the `server` field to the IP address of the machine where the k3s control-panel is located, for example:
 
 ```yaml
 apiVersion: v1
@@ -90,8 +90,8 @@ clusters:
 # ...
 ```
 
-将其存储至部署 GZCTF 的机器上，和 `docker-compose.yml` 在一个文件夹内，例如 `kube-config.yaml`。
-之后更改 `docker-compose.yml` 中的挂载信息：
+Save it to the machine where GZCTF is deployed, in the same folder as `docker-compose.yml`, for example, `kube-config.yaml`.
+Then modify the mount configuration in `docker-compose.yml`:
 
 ```yaml
 gzctf:
@@ -110,7 +110,7 @@ gzctf:
     - db
 ```
 
-同时更改 `appsettings.json`，设置 `ContainerProvider` 字段：
+Also, change the `appsettings.json` file and set the `ContainerProvider` field:
 
 ```json
 {
@@ -119,16 +119,16 @@ gzctf:
 }
 ```
 
-重新启动 GZCTF，之后就可以使用 k3s 作为容器后端了。已经使用过 k8s 的用户也可以参考上述的配置过程，让 GZCTF 接入现有的 k8s 集群。
+Restart GZCTF, and then you can use k3s as the container backend. Users who have already used k8s can also refer to the above configuration process to integrate GZCTF into an existing k8s cluster.
 
-## 更改 NodePort 端口范围
+## Change NodePort Port Range
 
-k3s 默认的 NodePort 端口范围为 30000-32767，这可能会与需求不太符合，因此可以根据需要更改 k3s 的 NodePort 端口范围。
+The default NodePort port range for k3s is 30000-32767, which may not meet your requirements. Therefore, you can modify the NodePort port range of k3s according to your needs.
 
-在 k3s control-panel 所在的机器上执行以下命令：
+Run the following commands on the machine where the k3s control-panel is located:
 
 - `sudo nano /etc/systemd/system/k3s.service`
-- 编辑如下设置中的 `ExecStart`，指定`service-node-port-range`
+- Edit the `ExecStart` setting below to specify `service-node-port-range`
 
   ```bash
   ExecStart=/usr/local/bin/k3s \
@@ -139,9 +139,9 @@ k3s 默认的 NodePort 端口范围为 30000-32767，这可能会与需求不太
 - `sudo systemctl daemon-reload`
 - `sudo systemctl restart k3s`
 
-## 更改 K3s 的容器数量限制
+## Change the container limit of K3s
 
-k3s 默认的容器数量限制为 110，这可能不适用于比赛中的大量小容器，因此可以根据需要更改 k3s 的容器数量限制。
+The default container limit of K3s is 110, which may not be suitable for a large number of small containers in a competition. Therefore, you can change the container limit of K3s according to your needs.
 
 <Callout type="info">
 
@@ -149,10 +149,10 @@ Reference: [How do you increase maximum pods per node in K3S?](https://stackover
 
 </Callout>
 
-在 k3s control-panel 所在的机器上执行以下命令：
+Run the following commands on the machine where the k3s control-panel is located:
 
 - `sudo nano /etc/rancher/k3s/kubelet.config`
-- 编辑如下设置中的 `maxPods`
+- Edit the `maxPods` setting as follows
 
   ```yaml
   apiVersion: kubelet.config.k8s.io/v1beta1
@@ -162,7 +162,7 @@ Reference: [How do you increase maximum pods per node in K3S?](https://stackover
 
 - `sudo nano /etc/systemd/system/k3s.service`
 
-- 编辑如下设置中的 `ExecStart`，指定`kubelet-arg`
+- Edit the `ExecStart` setting below to specify `kubelet-arg`
 
   ```bash
   ExecStart=/usr/local/bin/k3s \
@@ -175,13 +175,13 @@ Reference: [How do you increase maximum pods per node in K3S?](https://stackover
 
 <Callout type="info">
 
-如果需要在一台 k3s 实例上运行超过 255 个 Pod 可能会超过默认的子网大小，需要在安装 k3s 时指定 `INSTALL_K3S_EXEC`，并更改 `node-cidr-mask-size` 为所需的子网大小。
+If you need to run more than 255 Pods on a single k3s instance, it may exceed the default subnet size. You need to specify `INSTALL_K3S_EXEC` during k3s installation and change `node-cidr-mask-size` to the desired subnet size.
 
 ```bash
 INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
 ```
 
-并使用如下格式安装 k3s，如需更多信息请参考 [k3s 安装配置](https://docs.k3s.io/installation/configuration)：
+Install k3s using the following format, for more information please refer to [k3s installation configuration](https://docs.k3s.io/installation/configuration):
 
 ```bash
 curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXEC="..." sh -
@@ -189,15 +189,15 @@ curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXE
 
 </Callout>
 
-## 添加容器镜像仓库
+## Add Container Image Registry
 
-直接使用外部的容器镜像仓库无法直接在 k3s 中使用，需要在 k3s 中添加镜像仓库。
+Using an external container image registry directly is not supported in k3s. You need to add the image registry to k3s.
 
-在 k3s control-panel 所在的机器上执行以下命令：
+Run the following commands on the machine where the k3s control-panel is located:
 
 - `sudo nano /etc/rancher/k3s/registries.yaml`
 
-- 编辑如下设置中的 `mirrors`，指定你所需要的镜像仓库地址
+- Edit the `mirrors` setting below to specify the address of the image registry you need
 
   ```yaml
   mirrors:
