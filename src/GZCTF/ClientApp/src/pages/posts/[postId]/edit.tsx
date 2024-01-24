@@ -71,7 +71,7 @@ const PostEdit: FC = () => {
           api.info.mutateInfoGetPosts()
           showNotification({
             color: 'teal',
-            message: '文章已创建',
+            message: t('post.notification.created'),
             icon: <Icon path={mdiCheck} size={24} />,
           })
           navigate(`/posts/${res.data}/edit`)
@@ -89,7 +89,7 @@ const PostEdit: FC = () => {
           api.info.mutateInfoGetPosts()
           showNotification({
             color: 'teal',
-            message: '文章已保存',
+            message: t('post.notification.saved'),
             icon: <Icon path={mdiCheck} size={24} />,
           })
         })
@@ -137,14 +137,14 @@ const PostEdit: FC = () => {
   const titlePart = (
     <>
       <TextInput
-        label="文章标题"
+        label={t('post.label.title')}
         value={post.title}
         onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
       />
       <MultiSelect
-        label="文章标签"
+        label={t('post.label.tag')}
         data={tags.map((o) => ({ value: o, label: o })) || []}
-        getCreateLabel={(query) => `+ 添加标签 "${query}"`}
+        getCreateLabel={(query) => t('post.label.add_tag', { query })}
         maxSelectedValues={5}
         value={post?.tags ?? []}
         onChange={(values) => setPost({ ...post, tags: values })}
@@ -173,7 +173,7 @@ const PostEdit: FC = () => {
                   0.5
                 )}
               >
-                {`> ${postId === 'new' ? '新建' : '编辑'}文章`}
+                {`> ${postId === 'new' ? t('post.button.new') : t('post.button.edit')}`}
               </Title>
             )}
             <Group position="right">
@@ -195,7 +195,7 @@ const PostEdit: FC = () => {
                       })
                     }
                   >
-                    删除文章
+                    {t('post.button.delete')}
                   </Button>
                   <Button
                     disabled={disabled}
@@ -215,7 +215,7 @@ const PostEdit: FC = () => {
                       }
                     }}
                   >
-                    转到文章
+                    {t('post.button.goto')}
                   </Button>
                 </>
               )}
@@ -224,7 +224,7 @@ const PostEdit: FC = () => {
                 leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
                 onClick={onUpdate}
               >
-                {`${postId === 'new' ? '创建' : '保存'}文章`}
+                {postId === 'new' ? t('post.button.new') : t('post.button.save')}
               </Button>
             </Group>
           </Group>
@@ -232,9 +232,9 @@ const PostEdit: FC = () => {
           <Textarea
             label={
               <Group spacing="sm">
-                <Text size="sm">文章梗概</Text>
+                <Text size="sm">{t('post.label.summary')}</Text>
                 <Text size="xs" c="dimmed">
-                  支持 Markdown 语法
+                  {t('post.label.markdown_supported')}
                 </Text>
               </Group>
             }
@@ -246,9 +246,9 @@ const PostEdit: FC = () => {
           <Textarea
             label={
               <Group spacing="sm">
-                <Text size="sm">文章内容</Text>
+                <Text size="sm">{t('post.label.content')}</Text>
                 <Text size="xs" c="dimmed">
-                  支持 Markdown 语法
+                  {t('post.label.markdown_supported')}
                 </Text>
               </Group>
             }

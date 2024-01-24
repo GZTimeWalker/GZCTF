@@ -30,7 +30,7 @@ const Posts: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle('文章')
+  usePageTitle(t('post.title.index'))
 
   const onTogglePinned = (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
     setDisabled(true)
@@ -86,7 +86,7 @@ const Posts: FC = () => {
           leftIcon={<Icon path={mdiPlus} size={1} />}
           onClick={() => navigate('/posts/new/edit')}
         >
-          新建文章
+          {t('post.button.new')}
         </Button>
       )}
     </WithNavBar>
