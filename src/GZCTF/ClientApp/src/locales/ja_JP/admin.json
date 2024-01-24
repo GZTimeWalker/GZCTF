@@ -1,0 +1,17 @@
+{
+  "tab": {
+    "games": {
+      "index": "比赛管理",
+      "info": "信息编辑",
+      "notices": "比赛公告",
+      "challenges": "题目管理",
+      "review": "队伍审核",
+      "writeups": "Writeups"
+    },
+    "teams": "队伍管理",
+    "users": "用户管理",
+    "instances": "实例管理",
+    "logs": "系统日志",
+    "settings": "系统设置"
+  }
+}
