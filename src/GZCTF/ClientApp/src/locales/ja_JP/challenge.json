@@ -1,42 +1,42 @@
 {
   "tag": {
-    "web": "Web",
+    "web": "Webサイト",
     "pwn": "Pwn",
-    "ppc": "编程",
-    "misc": "杂项",
-    "crypto": "密码学",
-    "mobile": "移动安全",
-    "reverse": "逆向",
-    "hardware": "硬件",
-    "forensics": "取证",
-    "blockchain": "区块链"
+    "ppc": "プログラミング",
+    "misc": "その他",
+    "crypto": "暗号学",
+    "mobile": "モバイル セキュリティ",
+    "reverse": "逆方向",
+    "hardware": "ハードウェア",
+    "forensics": "取得",
+    "blockchain": "ブロックチェーン"
   },
   "file_type": {
-    "none": "无附件",
-    "remote": "远程附件",
-    "local": "本地附件"
+    "none": "まだ添付されていません",
+    "remote": "リモート添付ファイル",
+    "local": "ローカルの添付ファイル"
   },
   "bonus": {
-    "first_blood": "一血",
-    "second_blood": "二血",
-    "third_blood": "三血"
+    "first_blood": "一粒だ",
+    "second_blood": "ノブ",
+    "third_blood": "ブラッドリード"
   },
   "type": {
     "static_container": {
-      "label": "静态容器",
-      "desrc": "共用容器，任意 flag 均可提交"
+      "label": "スタティックコンテナ",
+      "desrc": "コンテナを共有flagあなたが提出できます"
     },
     "static_attachment": {
-      "label": "静态附件",
-      "desrc": "共用附件，任意 flag 均可提交"
+      "label": "静的添付ファイル",
+      "desrc": "添付ファイルを共有します。 flag"
     },
     "dynamic_container": {
-      "label": "动态容器",
-      "desrc": "自动生成下发 flag，每队均唯一"
+      "label": "動的コンテナ",
+      "desrc": "各チームは異なるメッセージで生成されます"
     },
     "dynamic_attachment": {
-      "label": "动态附件",
-      "desrc": "按照队伍分发附件，需保证附件数量大于队伍数"
+      "label": "ダイナミック添付",
+      "desrc": "添付したチームで添付ファイルの1部隊上限を確認する必要があります。"
     }
   }
 }
