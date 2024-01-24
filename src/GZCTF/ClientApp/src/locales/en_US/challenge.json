@@ -1,1 +1,42 @@
-{}
+{
+  "tag": {
+    "web": "Web",
+    "pwn": "Pwn",
+    "ppc": "Programming",
+    "misc": "Miscellaneous",
+    "crypto": "Password",
+    "mobile": "Mobile Security",
+    "reverse": "Reverse",
+    "hardware": "Hardware",
+    "forensics": "Forensics",
+    "blockchain": "blockchain"
+  },
+  "file_type": {
+    "none": "No attachments",
+    "remote": "Remote Attachment",
+    "local": "Local Attachment"
+  },
+  "bonus": {
+    "first_blood": "First Blood",
+    "second_blood": "Second blood",
+    "third_blood": "Triple Blood"
+  },
+  "type": {
+    "static_container": {
+      "label": "Static Container",
+      "desrc": "Shared containers, any flag can be submitted"
+    },
+    "static_attachment": {
+      "label": "Static Attachments",
+      "desrc": "Commit attachments, any flag can be submitted"
+    },
+    "dynamic_container": {
+      "label": "Dynamic Container",
+      "desrc": "Auto-generate settlement flag, unique to each team"
+    },
+    "dynamic_attachment": {
+      "label": "Dynamic Attachments",
+      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams"
+    }
+  }
+}

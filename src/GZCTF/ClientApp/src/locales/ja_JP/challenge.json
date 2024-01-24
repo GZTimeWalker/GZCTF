@@ -1,1 +1,42 @@
-{}
+{
+  "tag": {
+    "web": "Webサイト",
+    "pwn": "Pwn",
+    "ppc": "プログラミング",
+    "misc": "その他",
+    "crypto": "暗号学",
+    "mobile": "モバイル セキュリティ",
+    "reverse": "逆方向",
+    "hardware": "ハードウェア",
+    "forensics": "取得",
+    "blockchain": "ブロックチェーン"
+  },
+  "file_type": {
+    "none": "まだ添付されていません",
+    "remote": "リモート添付ファイル",
+    "local": "ローカルの添付ファイル"
+  },
+  "bonus": {
+    "first_blood": "一粒だ",
+    "second_blood": "ノブ",
+    "third_blood": "ブラッドリード"
+  },
+  "type": {
+    "static_container": {
+      "label": "スタティックコンテナ",
+      "desrc": "コンテナを共有flagあなたが提出できます"
+    },
+    "static_attachment": {
+      "label": "静的添付ファイル",
+      "desrc": "添付ファイルを共有します。 flag"
+    },
+    "dynamic_container": {
+      "label": "動的コンテナ",
+      "desrc": "各チームは異なるメッセージで生成されます"
+    },
+    "dynamic_attachment": {
+      "label": "ダイナミック添付",
+      "desrc": "添付したチームで添付ファイルの1部隊上限を確認する必要があります。"
+    }
+  }
+}

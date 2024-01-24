@@ -33,6 +33,8 @@
     "check_input": "Please check input",
     "encountered": "Problems encountered",
     "param_error": "Parameter error, please check",
+    "unknown": "Unknown error",
+    "request_too_frequent": "Too often requests",
     "file_invalid": {
       "title": "File loading failed",
       "message": "Please check file format and size"

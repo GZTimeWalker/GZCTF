@@ -1,1 +1,105 @@
-{}
+{
+  "participation": {
+    "status": {
+      "pending": "承認待ち",
+      "accepted": "承認済",
+      "rejected": "監査に失敗しました",
+      "suspended": "BAN 中"
+    },
+    "actions": {
+      "pending": "承認待ち",
+      "accepted": "承認済",
+      "rejected": "再登録",
+      "suspended": "BAN 中",
+      "unsubmitted": "コンテストに登録する"
+    },
+    "alert": {
+      "pending": {
+        "title": "あなたはチーム {{team}} のメンバーとして有名になりました",
+        "content": "しばらくお待ちください"
+      },
+      "rejected": {
+        "title": "参加申請が許可されていません",
+        "content": "参加資格及び参加要件を満たした後で再報したことを確認してください。"
+      },
+      "suspended": {
+        "title": "あなたのチーム{{team} は既にセッション禁止されました",
+        "content": "有効な場合、管理者に問い合わせてください"
+      },
+      "team_required": {
+        "title": "當前無法報名字",
+        "content": "どのチームにも加入していません、<1>チーム管理</1>ページにてチームに参加してください。"
+      },
+      "not_started": {
+        "title": "試合は未開始",
+        "content": "あなたは既に {{team}} 隊員として申し立てに成功し、ゲームを終了した後、コンテストページへ行きます。",
+        "mobile": "レースに参加してどれが正しいのかを知るには、コンピュータを使ってください。"
+      }
+    }
+  },
+  "notification": {
+    "joined": "申し込み成功",
+    "left": "申し込みをキャンセルしました",
+    "no_team": "参加チームを選択してください。",
+    "no_invite_code": "招待コードは空にできません",
+    "no_organization": "参加組織を選択してください"
+  },
+  "button": {
+    "join": "コンテストに登録する",
+    "leave": "申込みをキャンセル",
+    "scoreboard": "チャートの検索",
+    "challenges": "レースに入る",
+    "finished": "試合終了",
+    "login_required": "先にログインしてください"
+  },
+  "tag": {
+    "individual": "ミーティング",
+    "mutiplayer": "チーム戦",
+    "limited": "{{count}}人赛",
+    "hidden": "試合は非表示です"
+  },
+  "content": {
+    "joined_status": "<strong>{{count}}</strong>のチームからの出席者",
+    "join": {
+      "title": "申し込み情報を入力",
+      "confirm": "申込み",
+      "content": [
+        "このトーナメントにサインアップしますか？",
+        "报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动，<strong>即邀请、踢出队员。</strong> 队伍将在比赛结束后或驳回请求时解锁。",
+        "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
+      ],
+      "team": {
+        "label": "参加チームを選択",
+        "description": "対戦するチームを選択して選択後、変更できません"
+      },
+      "invite_code": {
+        "label": "インバイパスを入力してください",
+        "description": "今回の試合は招待を開始しました。参加には招待コードを申し込む必要があります。"
+      },
+      "organization": {
+        "label": "参加組織を選択",
+        "description": "この試合には参加している組織があります。参加組織を選択してください。"
+      }
+    },
+    "leave": {
+      "confirm": "申込みをキャンセル",
+      "content": [
+        "このマッチを終了しますか？",
+        "脱退すると、チーム登録者の出席者が空になっても、チーム参加情報は消去されます。"
+      ]
+    },
+    "start_time": "開始時刻",
+    "end_time": "終了時刻"
+  },
+  "tab": {
+    "challenge": "コンテストの課題",
+    "scoreboard": "リーダー ボード",
+    "monitor": {
+      "index": "スケジュールモニタリング",
+      "events": "イベント監視",
+      "submissions": "提出物",
+      "cheatinfo": "チート情報",
+      "traffic": "トラフィックキャプチャ"
+    }
+  }
+}
