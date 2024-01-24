@@ -68,7 +68,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '附件已更新',
+          message: t('admin.notification.games.challenges.attachment.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setType(FileType.None)
@@ -124,7 +124,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               mutate()
               showNotification({
                 color: 'teal',
-                message: '附件已更新',
+                message: t('admin.notification.games.challenges.attachment.updated'),
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             })
@@ -151,7 +151,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '附件已更新',
+          message: t('admin.notification.games.challenges.attachment.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
@@ -171,7 +171,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: 'flag 模板已更新',
+          message: t('admin.notification.games.challenges.flag_template.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
@@ -185,7 +185,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   return (
     <Stack>
       <Group position="apart">
-        <Title order={2}>附件管理</Title>
+        <Title order={2}>{t('admin.content.games.challenges.attachment.title')}</Title>
         {type !== FileType.Remote ? (
           <FileButton onChange={onUpload}>
             {(props) => (
@@ -198,7 +198,11 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 mt="24px"
                 color={progress !== 0 ? 'cyan' : theme.primaryColor}
               >
-                <div className={classes.uploadLabel}>{progress !== 0 ? '上传中' : '上传附件'}</div>
+                <div className={classes.uploadLabel}>
+                  {progress !== 0
+                    ? t('admin.button.challenges.attachment.uploading')
+                    : t('admin.button.challenges.attachment.upload')}
+                </div>
                 {progress !== 0 && (
                   <Progress
                     value={progress}
@@ -212,20 +216,24 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           </FileButton>
         ) : (
           <Button disabled={disabled} w="122px" mt="24px" onClick={onRemote}>
-            保存链接
+            {t('admin.button.challenges.attachment.save_url')}
           </Button>
         )}
       </Group>
       <Divider />
       <Group position="apart">
-        <Input.Wrapper label="附件类型" required>
+        <Input.Wrapper label={t('admin.content.games.challenges.attachment.type')} required>
           <Chip.Group
             value={type}
             onChange={(e) => {
               if (e === FileType.None) {
                 modals.openConfirmModal({
-                  title: '清除附件',
-                  children: <Text size="sm">你确定要清除本题的附件吗？</Text>,
+                  title: t('admin.content.games.challenges.attachment.clear.title'),
+                  children: (
+                    <Text size="sm">
+                      {t('admin.content.games.challenges.attachment.clear.description')}
+                    </Text>
+                  ),
                   onConfirm: onConfirmClear,
                   confirmProps: { color: 'orange' },
                 })
@@ -245,7 +253,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         </Input.Wrapper>
         {type !== FileType.Remote ? (
           <TextInput
-            label="附件链接"
+            label={t('admin.content.games.challenges.attachment.link')}
             readOnly
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
@@ -256,7 +264,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           />
         ) : (
           <TextInput
-            label="附件链接"
+            label={t('admin.content.games.challenges.attachment.link')}
             disabled={disabled}
             value={remoteUrl}
             w="calc(100% - 400px)"
@@ -265,14 +273,14 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         )}
       </Group>
       <Group position="apart" mt={20}>
-        <Title order={2}>flag 管理</Title>
+        <Title order={2}>{t('admin.content.games.challenges.flag.title')}</Title>
         {challenge?.type === ChallengeType.DynamicContainer ? (
           <Button disabled={disabled} onClick={onChangeFlagTemplate}>
-            保存 flag 模版
+            {t('admin.button.challenges.flag.save')}
           </Button>
         ) : (
           <Button disabled={disabled} w="122px" onClick={() => setFlagCreateModalOpen(true)}>
-            添加 flag
+            {t('admin.button.challenges.flag.add')}
           </Button>
         )}
       </Group>

@@ -38,5 +38,9 @@
       "label": "动态附件",
       "desrc": "按照队伍分发附件，需保证附件数量大于队伍数"
     }
+  },
+  "button": {
+    "submit_flag": "提交 flag",
+    "download_attachment": "下载附件"
   }
 }
