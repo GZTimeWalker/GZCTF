@@ -67,6 +67,14 @@
     },
     "about": {
       "slogan": "Hack for un not for profit"
+    },
+    "drop_zone": {
+      "type": {
+        "avatar": "avatar",
+        "poster": "poster"
+      },
+      "content": "Drag and drop an image or click here to select {{type}}",
+      "limit": "Please select an image less than 3MB"
     }
   }
 }

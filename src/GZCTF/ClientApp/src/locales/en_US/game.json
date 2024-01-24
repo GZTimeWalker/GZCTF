@@ -15,7 +15,7 @@
     },
     "alert": {
       "pending": {
-        "title": "你已经以队伍 {{team}} 成员身份成功报名",
+        "title": "You have successfully registered as a member of team {{team}}",
         "content": "Please wait for review results"
       },
       "rejected": {
@@ -23,7 +23,7 @@
         "content": "Please make sure you are eligible to re-register after you meet your requirements"
       },
       "suspended": {
-        "title": "您的队伍 {{team} 已被禁赛",
+        "title": "Your team {{team}} has been suspended",
         "content": "If you hear any objection, please contact the administrator to make an appeal"
       },
       "team_required": {
@@ -32,7 +32,7 @@
       },
       "not_started": {
         "title": "Match not yet started",
-        "content": "你已经以队伍 {{team}} 成员身份成功报名并通过审核，请在比赛开始后进入比赛页面。",
+        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
         "mobile": "Please use computer to play and see the details of the match."
       }
     }
@@ -55,11 +55,11 @@
   "tag": {
     "individual": "Personal Games",
     "mutiplayer": "Team Matches",
-    "limited": "{{count}}人赛",
+    "limited": "{{count}} players",
     "hidden": "Match hidden"
   },
   "content": {
-    "joined_status": "<strong>{{count}}</strong>支队伍已报名",
+    "joined_status": "<strong>{{count}}</strong> teams have already registered",
     "join": {
       "title": "Completion Registration Information",
       "confirm": "Confirm Registration",

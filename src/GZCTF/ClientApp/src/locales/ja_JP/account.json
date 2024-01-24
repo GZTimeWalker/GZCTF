@@ -60,11 +60,7 @@
     "include_uppercase": "大文字を含める"
   },
   "placeholder": {
-    "bio": "これは怠け者なんていない",
-    "drop_zone": {
-      "hint": "3MB未満の画像を選択してください",
-      "content": "画像をドラッグアンドドロップするか、ここをクリック"
-    }
+    "bio": "これは怠け者なんていない"
   },
   "notification": {
     "login": {
@@ -81,9 +77,7 @@
         "message": "ログインし直してください"
       }
     },
-    "logout": {
-      "logged_out": "ログアウト成功"
-    },
+    "logout": "ログアウト成功",
     "verify": {
       "failed": "アカウントを認証できませんでした",
       "success": "アカウント認証済みです。ログインしてください"

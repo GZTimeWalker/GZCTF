@@ -1,17 +1,118 @@
 {
   "tab": {
+    "logs": "登録が無効となりました",
     "games": {
-      "index": "試合管理",
       "info": "メッセージの編集",
-      "notices": "トーナメントのお知らせ",
-      "challenges": "課題の管理",
+      "index": "試合管理",
       "review": "チーム監査",
-      "writeups": "ログ先行書き込み"
+      "notices": "トーナメントのお知らせ",
+      "writeups": "ログ先行書き込み",
+      "challenges": "課題の管理"
     },
     "teams": "チーム管理",
     "users": "ユーザー管理",
-    "instances": "インスタンス管理",
-    "logs": "登録が無効となりました",
-    "settings": "システム設定"
+    "settings": "システム設定",
+    "instances": "インスタンス管理"
+  },
+  "button": {
+    "back": "親に戻る",
+    "save": "変更を保存",
+    "games": {
+      "delete": "レース削除",
+      "copy_public_key": "パブリックキーをコピー"
+    },
+    "notices": {
+      "new": "新しいお知らせ",
+      "delete": "お知らせを削除",
+      "edit": "お知らせを編集"
+    }
+  },
+  "content": {
+    "games": {
+      "info": {
+        "title": {
+          "label": "試合タイトル",
+          "description": "長すぎる効果の影響あり"
+        },
+        "delete": "{{name}} のレースを削除してもよろしいですか？",
+        "summary": {
+          "label": "ゲームの説明",
+          "description": "トーナメントリストに表示"
+        },
+        "end_date": "検索終了日",
+        "end_time": "終了時刻",
+        "start_date": "配送製品の総重量",
+        "start_time": "開始時刻",
+        "invite_code": {
+          "label": "招待コード",
+          "description": "空白の場合は招待コードを入力して下さい。"
+        },
+        "writeup_deadline": {
+          "label": "ログ書き込み失敗時間",
+          "description": "試合が終了したら、ログの表示数を有効にします"
+        },
+        "member_limit": {
+          "label": "チーム人数制限",
+          "description": "0は無制限チーム人数を表します"
+        },
+        "organizations": {
+          "label": "参加可能なオプションの組織一覧",
+          "description": "グループダッシュボードを立ち上げる",
+          "add": "+ 組織「{{org}} 」を追加する"
+        },
+        "practice_mode": {
+          "label": "練習モード",
+          "description": "試合が終了した後も課題や提出が見られます"
+        },
+        "container_limit": {
+          "label": "チームコンテナーの制限",
+          "description": "共有可能なコンテナの数 (0 が割り当てられていません)"
+        },
+        "writeup_required": {
+          "label": "Writeup が必要です",
+          "description": "レースの「Write」機能が有効であるかどうかを制御しますか？"
+        },
+        "content": "試合詳細",
+        "poster": "試合のポスター",
+        "writeup_instruction": "書き込み利便性説明",
+        "accept_without_review": {
+          "label": "チーム申し込み自動審査",
+          "description": "申し込み時にAcceptステータスを直接設定"
+        }
+      },
+      "notices": {
+        "empty": {
+          "title": "お知らせはありません",
+          "description": "新しいお知らせは右上のボタンをクリックして下さい"
+        },
+        "delete": "この通知を削除するよろしいですか。"
+      }
+    },
+    "markdown_support": "マークダウン構文のサポート",
+    "markdown_inline_suppoer": "インライン マークダウン記法のサポート"
+  },
+  "placeholder": {
+    "games": {
+      "organizations": "参加が許可されていない組織構成が切り替えられます"
+    }
+  },
+  "notification": {
+    "games": {
+      "info": {
+        "poster": {
+          "uploaded": "ポスターは正常にアップロードされました。",
+          "uploading": "ポスターをアップロード中...",
+          "upload_failed": "ポスターをアップロードできませんでした"
+        },
+        "deleted": "マッチは削除されました",
+        "info_updated": "トーナメント情報を更新しました",
+        "public_key_copied": "公開鍵がクリップボードにコピーされました"
+      },
+      "notices": {
+        "deleted": "お知らせを削除しました",
+        "created": "お知らせが作成されました",
+        "updated": "お知らせが更新されました"
+      }
+    }
   }
 }

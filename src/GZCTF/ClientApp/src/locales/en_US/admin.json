@@ -1,17 +1,118 @@
 {
   "tab": {
+    "logs": "Logs",
     "games": {
-      "index": "Games",
       "info": "Information",
-      "notices": "Notices",
-      "challenges": "Challenges",
+      "index": "Games",
       "review": "Teams",
-      "writeups": "Writeups"
+      "notices": "Notices",
+      "writeups": "Writing",
+      "challenges": "Challenges"
     },
     "teams": "Teams",
     "users": "Users",
-    "instances": "Instances",
-    "logs": "Logs",
-    "settings": "Settings"
+    "settings": "Settings",
+    "instances": "Instances"
+  },
+  "button": {
+    "back": "Back to Parent",
+    "save": "Save Changes",
+    "games": {
+      "delete": "Remove Match",
+      "copy_public_key": "Duplicate Public Key"
+    },
+    "notices": {
+      "new": "New announcement",
+      "delete": "Delete Announcement",
+      "edit": "Edit Announcement"
+    }
+  },
+  "content": {
+    "games": {
+      "info": {
+        "title": {
+          "label": "Match Title",
+          "description": "Too long to show effect"
+        },
+        "delete": "Are you sure you want to delete game {{name}}?",
+        "summary": {
+          "label": "Match Overview",
+          "description": "Will be displayed in the match list"
+        },
+        "end_date": "End date",
+        "end_time": "End Time",
+        "start_date": "Start date",
+        "start_time": "Start Time",
+        "invite_code": {
+          "label": "Invitation Code",
+          "description": "Leave empty for no invitation code"
+        },
+        "writeup_deadline": {
+          "label": "Writeup Submission Time",
+          "description": "Hours allowed to submit Writeup after the match ends"
+        },
+        "member_limit": {
+          "label": "Team Number Limit",
+          "description": "0 means unlimited number of teams"
+        },
+        "organizations": {
+          "label": "Candidate Organization List",
+          "description": "Add your organization to open group list",
+          "add": "+ Add organization \"{{org}}\""
+        },
+        "practice_mode": {
+          "label": "Practice Mode",
+          "description": "You can still view topics and submit them after the match ends"
+        },
+        "container_limit": {
+          "label": "Team Container Limit",
+          "description": "Number of containers shared by teams (0 = unlimited)"
+        },
+        "writeup_required": {
+          "label": "Writeup required",
+          "description": "Whether to enable competition's Writeup submission"
+        },
+        "content": "Match Details",
+        "poster": "Match poster",
+        "writeup_instruction": "Writeup Submission Instructions",
+        "accept_without_review": {
+          "label": "Team Registration is not moderated",
+          "description": "Set to Accept status directly after team registration"
+        }
+      },
+      "notices": {
+        "empty": {
+          "title": "No announcement yet",
+          "description": "Click on the top right button to create a new announcement"
+        },
+        "delete": "Are you sure you want to delete this notification?"
+      }
+    },
+    "markdown_support": "Support Markdown syntax",
+    "markdown_inline_suppoer": "Support Inline Markdown syntax"
+  },
+  "placeholder": {
+    "games": {
+      "organizations": "No selected organizations have been specified and no teams will be allowed to compete"
+    }
+  },
+  "notification": {
+    "games": {
+      "info": {
+        "poster": {
+          "uploaded": "Poster successfully uploaded",
+          "uploading": "Uploading poster...",
+          "upload_failed": "Post upload failed"
+        },
+        "deleted": "Match deleted",
+        "info_updated": "Match information updated",
+        "public_key_copied": "Public key copied to clipboard"
+      },
+      "notices": {
+        "deleted": "Announcement deleted",
+        "created": "Announcement created",
+        "updated": "Announcement updated"
+      }
+    }
   }
 }

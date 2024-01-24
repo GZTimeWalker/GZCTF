@@ -60,11 +60,7 @@
     "include_uppercase": "Include upper case letters"
   },
   "placeholder": {
-    "bio": "This person is lazy, nothing written",
-    "drop_zone": {
-      "hint": "Please select an image less than 3MB",
-      "content": "Drag and drop image or click here to select avatar"
-    }
+    "bio": "This person is lazy, nothing written"
   },
   "notification": {
     "login": {
@@ -81,9 +77,7 @@
         "message": "Please login again"
       }
     },
-    "logout": {
-      "logged_out": "Logout successful"
-    },
+    "logout": "Logout successful",
     "verify": {
       "failed": "Account verification failed",
       "success": "Account verified, please login"
