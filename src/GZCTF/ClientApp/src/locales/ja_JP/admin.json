@@ -1,17 +1,17 @@
 {
   "tab": {
     "games": {
-      "index": "比赛管理",
-      "info": "信息编辑",
-      "notices": "比赛公告",
-      "challenges": "题目管理",
-      "review": "队伍审核",
-      "writeups": "Writeups"
+      "index": "試合管理",
+      "info": "メッセージの編集",
+      "notices": "トーナメントのお知らせ",
+      "challenges": "課題の管理",
+      "review": "チーム監査",
+      "writeups": "ログ先行書き込み"
     },
-    "teams": "队伍管理",
-    "users": "用户管理",
-    "instances": "实例管理",
-    "logs": "系统日志",
-    "settings": "系统设置"
+    "teams": "チーム管理",
+    "users": "ユーザー管理",
+    "instances": "インスタンス管理",
+    "logs": "登録が無効となりました",
+    "settings": "システム設定"
   }
 }
