@@ -1,19 +1,19 @@
 {
   "button": {
     "challenges": "Enter game",
-    "download_all_traffic": "Download list traffic",
-    "download_submissionsheet": "Download All Submissions",
+    "download_all_traffic": "Download all listed traffic",
+    "download_submissionsheet": "Download all submissions",
     "finished": "Game ended",
     "hide_container_events": {
       "desrc": "Hide container starting/destruction events",
-      "title": "Hide Container Events"
+      "title": "Hide container events"
     },
-    "hide_solved": "Hide Excluded",
+    "hide_solved": "Hide solved",
     "join": "Join game",
     "leave": "Leave game",
     "login_required": "Please login",
     "scoreboard": "Scoreboard",
-    "submit_writeup": "Submit Writeup",
+    "submit_writeup": "Submit writeup",
     "team_view": {
       "desrc": "Use team view to display cheats",
       "title": "Team View"
@@ -85,7 +85,7 @@
       "game": "Announcements"
     },
     "score": "Score",
-    "score_formatter": "{value} 分",
+    "score_formatter": "{value} pts",
     "score_table": {
       "rank_all_organization": "TOTAL LINS",
       "rank_organization": "Rank",

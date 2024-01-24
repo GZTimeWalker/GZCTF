@@ -13,12 +13,12 @@
     "add_tag": "+ タグ \"{{query}}\" を追加する",
     "content": "記事内容",
     "summary": "記事要約",
-    "tag": "記事ラベル",
+    "tag": "記事タグ",
     "title": "記事タイトル"
   },
   "notification": {
     "created": "記事が作成されました",
-    "saved": "記事を保存しました"
+    "saved": "記事が保存されました"
   },
   "title": {
     "index": "記事"

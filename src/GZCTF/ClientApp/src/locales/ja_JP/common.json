@@ -1,16 +1,16 @@
 {
   "tab": {
-    "game": "イベント",
+    "game": "コンテスト",
     "home": "ホーム",
     "post": "記事",
-    "team": "開くべきクリック ギルドVault 4",
-    "about": "アプリについて",
+    "team": "チーム",
+    "about": "プラットフォーム情報",
     "theme": {
       "dark": "ダーク",
       "light": "ライト",
       "switch_to": "テーマを{{theme}}に切り替える"
     },
-    "admin": "アドミニストレーション",
+    "admin": "管理",
     "account": {
       "login": "ログイン",
       "logout": "ログアウト",
@@ -20,7 +20,7 @@
   },
   "title": {
     "404": "The Nowhere",
-    "about": "アプリについて"
+    "about": "プラットフォーム情報"
   },
   "email": {
     "sent": {
@@ -31,18 +31,18 @@
   "error": {
     "try_later": "後で再度お試し下さい",
     "check_input": "入力内容を確認する",
-    "encountered": "問題がありました",
+    "encountered": "エラーが発生しました",
     "param_error": "パラメータが間違っています。確認してください",
     "unknown": "不明なエラー",
     "empty": "内容を入力してください。",
     "no_change": "変更がないようです",
-    "request_too_frequent": "リクエストがあまりに多い",
+    "request_too_frequent": "リクエストが頻繁すぎます",
     "file_invalid": {
       "title": "ファイルの読み込みに失敗しました",
       "message": "ファイル形式とサイズを確認してください"
     },
     "param_invalid": "無効なパラメータ",
-    "param_missing": "引数が足りません",
+    "param_missing": "パラメータが不足しています",
     "param_unknown": "不明なパラメータ",
     "invalid_username_or_password": "ユーザー名またはパスワードが正しくありません"
   },
@@ -54,10 +54,10 @@
     "confirm_update": "変更"
   },
   "avatar": {
-    "save": "アバターを保存する",
-    "uploaded": "プロフィールが更新されました",
-    "uploading": "アバターをアップロードしています",
-    "upload_failed": "アバターを更新できませんでした"
+    "save": "アイコンを保存する",
+    "uploaded": "アイコンが更新されました",
+    "uploading": "アイコンをアップロードしています",
+    "upload_failed": "アイコンを更新できませんでした"
   },
   "content": {
     "404": {
@@ -65,18 +65,18 @@
       "title": "ページが存在しません"
     },
     "home": {
-      "recent_games": "最近の試合"
+      "recent_games": "最近のコンテスト"
     },
     "about": {
       "slogan": "Hack for fun not for profit"
     },
     "drop_zone": {
       "type": {
-        "avatar": "アバター",
+        "avatar": "アイコン",
         "poster": "ポスター"
       },
-      "content": "画像をドラッグアンドドロップするか、ここをクリックして選択してください{{type}}",
-      "limit": "3MB未満の画像を選択してください"
+      "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください",
+      "limit": "3MB以下の画像を選択してください"
     }
   }
 }
