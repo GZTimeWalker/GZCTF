@@ -438,15 +438,15 @@
     <comment/>
   </data>
   <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
-    <value>服务 {0} 创建失败</value>
+    <value>Service {0} failed to create</value>
     <comment/>
   </data>
   <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
-    <value>服务 {0} 创建失败, 响应：{1}</value>
+    <value>The service {0} failed to create, response: {1}</value>
     <comment/>
   </data>
   <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
-    <value>服务 {0} 创建失败, 状态：{1}</value>
+    <value>The service {0} failed to create, status: {1}</value>
     <comment/>
   </data>
   <data name="ContainerManager_SwarmMode" xml:space="preserve">
@@ -538,11 +538,11 @@
     <comment/>
   </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
-    <value>[提交正确] 队伍 [{0}] 提交题目 [{1}] 的答案 [{2}]</value>
+    <value>[AC] Team [{0}] submitted the answer [{2}] for challenge [{1}]</value>
     <comment/>
   </data>
   <data name="FlagChecker_AnswerRejected" xml:space="preserve">
-    <value>[提交错误] 队伍 [{0}] 提交题目 [{1}] 的答案 [{2}]</value>
+    <value>[WA] Team [{0}] submitted answer [{2}] for challenge [{1}]</value>
     <comment/>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
@@ -594,7 +594,7 @@
     <comment/>
   </data>
   <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
-    <value>正在清理比赛 {0} 的 {1} 个题目的相关附件……</value>
+    <value>Cleaning up {1} challenge attachments for game {0}...</value>
     <comment/>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
@@ -602,7 +602,7 @@
     <comment/>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
-    <value>正在清理比赛 {0} 的 {1} 个队伍相关文件……</value>
+    <value>Cleaning up {1} team files for game {0}...</value>
     <comment/>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
@@ -642,7 +642,7 @@
     <comment/>
   </data>
   <data name="Game_ContainerDeletedEvent" xml:space="preserve">
-    <value>{0}#{1} 销毁容器实例</value>
+    <value>{0}#{1} destroy container instance</value>
     <comment/>
   </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
@@ -846,7 +846,7 @@
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
-    <value>密码中至少需要 {0} 种不同的字符</value>
+    <value>The password needs at least {0} different characters</value>
     <comment/>
   </data>
   <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
@@ -930,7 +930,7 @@
     <comment/>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>为 {0} 获取题目 {1}#{2} 的实例时遇到问题（可能由于并发错误），回滚中</value>
+    <value>{0} fail to create instance for challenge {1}#{2} (may cause by concurrent conflicts), rolling back...</value>
     <comment/>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
@@ -1303,7 +1303,7 @@
     <comment/>
   </data>
   <data name="Team_AvatarUpdated" xml:space="preserve">
-    <value>队伍 {0} 更改新头像：[{1}]</value>
+    <value>Team {0} changed avatar: [{1}]</value>
     <comment/>
   </data>
   <data name="Team_AvatarUpdateFailed" xml:space="preserve">
@@ -1335,7 +1335,7 @@
     <comment/>
   </data>
   <data name="Team_MemberRemoved" xml:space="preserve">
-    <value>从队伍 {0} 踢除 {1}</value>
+    <value>Kick {0} from Team {1}</value>
     <comment/>
   </data>
   <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
