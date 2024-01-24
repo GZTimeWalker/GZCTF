@@ -33,6 +33,8 @@
     "check_input": "入力内容を確認する",
     "encountered": "問題がありました",
     "param_error": "パラメータが間違っています。確認してください",
+    "unknown": "未知错误",
+    "request_too_frequent": "请求过于频繁",
     "file_invalid": {
       "title": "ファイルの読み込みに失敗しました",
       "message": "ファイル形式とサイズを確認してください"
