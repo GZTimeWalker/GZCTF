@@ -249,7 +249,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             readOnly
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
-            w="calc(100% - 320px)"
+            w="calc(100% - 400px)"
             onClick={() =>
               challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')
             }
@@ -259,7 +259,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             label="附件链接"
             disabled={disabled}
             value={remoteUrl}
-            w="calc(100% - 320px)"
+            w="calc(100% - 400px)"
             onChange={(e) => setRemoteUrl(e.target.value)}
           />
         )}

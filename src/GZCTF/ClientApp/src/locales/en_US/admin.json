@@ -18,27 +18,29 @@
     "back": "Back to Parent",
     "save": "Save Changes",
     "games": {
-      "delete": "Remove Match",
-      "copy_public_key": "Duplicate Public Key"
+      "delete": "Delete Game",
+      "copy_public_key": "Copy Public Key"
     },
     "notices": {
-      "new": "New announcement",
-      "delete": "Delete Announcement",
-      "edit": "Edit Announcement"
+      "new": "New Notice",
+      "edit": "Edit Notice",
+      "delete": "Delete Notice"
     }
   },
   "content": {
     "games": {
       "info": {
         "title": {
-          "label": "Match Title",
+          "label": "Game Title",
           "description": "Too long to show effect"
         },
         "delete": "Are you sure you want to delete game {{name}}?",
+        "poster": "Game poster",
         "summary": {
-          "label": "Match Overview",
-          "description": "Will be displayed in the match list"
+          "label": "Game Overview",
+          "description": "Will be displayed in the game list"
         },
+        "content": "Game Details",
         "end_date": "End date",
         "end_time": "End Time",
         "start_date": "Start date",
@@ -47,53 +49,51 @@
           "label": "Invitation Code",
           "description": "Leave empty for no invitation code"
         },
-        "writeup_deadline": {
-          "label": "Writeup Submission Time",
-          "description": "Hours allowed to submit Writeup after the match ends"
-        },
         "member_limit": {
           "label": "Team Number Limit",
           "description": "0 means unlimited number of teams"
         },
         "organizations": {
+          "add": "+ Add organization \"{{org}}\"",
           "label": "Candidate Organization List",
-          "description": "Add your organization to open group list",
-          "add": "+ Add organization \"{{org}}\""
+          "description": "Add your organization to enable group scoreboard"
         },
         "practice_mode": {
           "label": "Practice Mode",
-          "description": "You can still view topics and submit them after the match ends"
+          "description": "View challenges after the game ends"
         },
         "container_limit": {
           "label": "Team Container Limit",
-          "description": "Number of containers shared by teams (0 = unlimited)"
+          "description": "Containers shared by teams (0 = unlimited)"
+        },
+        "writeup_deadline": {
+          "label": "Writeup Submission Time",
+          "description": "Hours allowed to submit Writeup after game ends"
         },
         "writeup_required": {
           "label": "Writeup required",
-          "description": "Whether to enable competition's Writeup submission"
+          "description": "Enable Writeup submission"
         },
-        "content": "Match Details",
-        "poster": "Match poster",
         "writeup_instruction": "Writeup Submission Instructions",
         "accept_without_review": {
-          "label": "Team Registration is not moderated",
-          "description": "Set to Accept status directly after team registration"
+          "label": "Accept without review",
+          "description": "Accept directly after team registration"
         }
       },
       "notices": {
         "empty": {
-          "title": "No announcement yet",
-          "description": "Click on the top right button to create a new announcement"
+          "title": "No notice yet",
+          "description": "Click on the top right button to create a new notice"
         },
         "delete": "Are you sure you want to delete this notification?"
       }
     },
-    "markdown_support": "Support Markdown syntax",
-    "markdown_inline_suppoer": "Support Inline Markdown syntax"
+    "markdown_support": "Support markdown syntax",
+    "markdown_inline_suppoer": "Support inline markdown syntax"
   },
   "placeholder": {
     "games": {
-      "organizations": "No selected organizations have been specified and no teams will be allowed to compete"
+      "organizations": "No selected organizations have been specified"
     }
   },
   "notification": {
@@ -104,14 +104,14 @@
           "uploading": "Uploading poster...",
           "upload_failed": "Post upload failed"
         },
-        "deleted": "Match deleted",
-        "info_updated": "Match information updated",
+        "deleted": "Game deleted",
+        "info_updated": "Game information updated",
         "public_key_copied": "Public key copied to clipboard"
       },
       "notices": {
-        "deleted": "Announcement deleted",
-        "created": "Announcement created",
-        "updated": "Announcement updated"
+        "deleted": "Notice deleted",
+        "created": "Notice created",
+        "updated": "Notice updated"
       }
     }
   }

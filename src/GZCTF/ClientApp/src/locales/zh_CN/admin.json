@@ -85,7 +85,7 @@
           "title": "暂无公告",
           "description": "点击右上角按钮新建公告"
         },
-        "delete":"你确定要删除通知该通知吗？"
+        "delete": "你确定要删除通知该通知吗？"
       }
     },
     "markdown_support": "支持 Markdown 语法",

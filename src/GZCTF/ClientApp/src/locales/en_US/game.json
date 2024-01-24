@@ -45,12 +45,12 @@
     "no_organization": "Please select the organization"
   },
   "button": {
-    "join": "Enrollment",
-    "leave": "Cancel Registration",
-    "scoreboard": "View list",
-    "challenges": "Enter Match",
-    "finished": "End of match",
-    "login_required": "Please login first"
+    "join": "Join game",
+    "leave": "Leave game",
+    "scoreboard": "Scoreboard",
+    "challenges": "Enter game",
+    "finished": "Game ended",
+    "login_required": "Please login"
   },
   "tag": {
     "individual": "Personal Games",

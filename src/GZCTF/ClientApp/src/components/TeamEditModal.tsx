@@ -493,12 +493,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             ) : (
               <Box>
                 <Text size="xl" inline>
-                {t('common.content.drop_zone.content', {
-                          type: t('common.content.drop_zone.type.avatar'),
-                        })}
+                  {t('common.content.drop_zone.content', {
+                    type: t('common.content.drop_zone.type.avatar'),
+                  })}
                 </Text>
                 <Text size="sm" c="dimmed" inline mt={7}>
-                {t('common.content.drop_zone.limit')}
+                  {t('common.content.drop_zone.limit')}
                 </Text>
               </Box>
             )}

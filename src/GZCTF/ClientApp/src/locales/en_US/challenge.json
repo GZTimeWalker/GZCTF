@@ -11,16 +11,6 @@
     "forensics": "Forensics",
     "blockchain": "blockchain"
   },
-  "file_type": {
-    "none": "No attachments",
-    "remote": "Remote Attachment",
-    "local": "Local Attachment"
-  },
-  "bonus": {
-    "first_blood": "First Blood",
-    "second_blood": "Second blood",
-    "third_blood": "Triple Blood"
-  },
   "type": {
     "static_container": {
       "label": "Static Container",
@@ -38,5 +28,15 @@
       "label": "Dynamic Attachments",
       "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams"
     }
+  },
+  "bonus": {
+    "first_blood": "First Blood",
+    "third_blood": "Third Blood",
+    "second_blood": "Second blood"
+  },
+  "file_type": {
+    "none": "None",
+    "local": "Self hosted",
+    "remote": "Remote Url"
   }
 }
