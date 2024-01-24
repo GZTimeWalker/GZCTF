@@ -13,7 +13,7 @@
     "username_or_email": "Username or Email"
   },
   "title": {
-    "login": "Sign in",
+    "login": "Login",
     "reset": "Reset password",
     "verify": "Account Validation",
     "confirm": "Email Validation",
