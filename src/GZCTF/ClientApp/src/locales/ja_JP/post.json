@@ -3,8 +3,8 @@
     "tag": "記事タグ",
     "title": "記事タイトル",
     "add_tag": "+ タグ「{{query}}」を追加する",
-    "content": "記事内容",
-    "summary": "記事要約"
+    "content": "内容",
+    "summary": "概要"
   },
   "title": {
     "index": "記事"
