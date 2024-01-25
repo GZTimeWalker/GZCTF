@@ -7,7 +7,7 @@
     "username": "ユーザー名",
     "email_new": "新しいメール",
     "real_name": "氏名",
-    "student_id": "学生番号",
+    "student_id": "学生/職員番号",
     "password_old": "現在のパスワード",
     "password_retype": "パスワード再確認",
     "username_or_email": "ユーザー名またはEメール"
@@ -101,7 +101,7 @@
       "logged_in": "新規登録が完了しました",
       "request_sent": {
         "title": "新規登録リクエストが送信されました",
-        "message": "管理者の承認を待ってください~"
+        "message": "管理者の承認までしばらくお待ちください~"
       }
     }
   }
