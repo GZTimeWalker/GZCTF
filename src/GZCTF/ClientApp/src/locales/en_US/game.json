@@ -4,20 +4,12 @@
     "download_all_traffic": "Download all listed traffic",
     "download_submissionsheet": "Download all submissions",
     "finished": "Game ended",
-    "hide_container_events": {
-      "desrc": "Hide container starting/destruction events",
-      "title": "Hide container events"
-    },
     "hide_solved": "Hide solved",
     "join": "Join game",
     "leave": "Leave game",
     "login_required": "Please login",
     "scoreboard": "Scoreboard",
-    "submit_writeup": "Submit writeup",
-    "team_view": {
-      "desrc": "Use team view to display cheats",
-      "title": "Team View"
-    }
+    "submit_writeup": "Submit writeup"
   },
   "content": {
     "all_solved": {
@@ -27,6 +19,10 @@
     "end_time": "End Time",
     "game_ended": "The game has ended",
     "game_lasts_long": "Match will also be an employee",
+    "hide_container_events": {
+      "description": "Hide container starting/destruction events",
+      "label": "Hide container events"
+    },
     "join": {
       "confirm": "Confirm Registration",
       "content": [
@@ -68,16 +64,18 @@
     },
     "scoreboard_note": "Note：is ranked in time",
     "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
-    "start_time": "Start Time"
+    "start_time": "Start Time",
+    "team_view": {
+      "description": "Use team view to display cheats",
+      "label": "Team View"
+    }
   },
   "label": {
-    "challenge": "Challenge",
     "cheat_info": {
       "owned_team": "Raw Team",
       "submit_team": "Submit Team",
       "submit_user": "Submit User"
     },
-    "flag": "flag",
     "notice_type": {
       "all": "All",
       "challenge": "Challenge",
@@ -87,7 +85,6 @@
     "score": "Score",
     "score_formatter": "{value} pts",
     "score_table": {
-      "rank_all_organization": "TOTAL LINS",
       "rank_organization": "Rank",
       "rank_total": "Total Rankings",
       "score": "Score",
@@ -95,10 +92,7 @@
       "solved_count": "Solved",
       "team": "Team"
     },
-    "team": "Team",
-    "time": "Time",
-    "traffic": "Traffic File",
-    "user": "User"
+    "traffic": "Traffic File"
   },
   "notification": {
     "ended": "Match has ended",
@@ -106,12 +100,12 @@
     "event_fetch_failed": "Failed to get event",
     "joined": "Registration successful",
     "left": "Cancellation successful",
-    "select_chal_and_part": "Please select topics and teams first",
     "no_invite_code": "Invitation code cannot be empty",
     "no_organization": "Please select the organization",
     "no_team": "Please select the team to join",
     "not_started": "Game not yet started",
     "notice_fetch_failed": "Failed to get notification",
+    "select_chal_and_part": "Please select topics and teams first",
     "submission_connection_succeed": "Connection submitted in real time",
     "submission_fetch_failed": "Failed to get submission",
     "suspended": "You have been banned"
