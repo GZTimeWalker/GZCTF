@@ -200,7 +200,19 @@
     "nothing_found": "何も見つかりませんでした",
     "show_all": "すべてを表示"
   },
+  "label": {
+    "logs": {
+      "message": "情報",
+      "ip": "IP",
+      "status": "状態"
+    }
+  },
   "notification": {
+    "logs": {
+      "realtime": {
+        "connected": "ライブログの接続に成功しました"
+      }
+    },
     "games": {
       "challenges": {
         "attachment": {
