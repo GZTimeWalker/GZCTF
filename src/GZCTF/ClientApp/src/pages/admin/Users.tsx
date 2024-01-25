@@ -289,7 +289,7 @@ const Users: FC = () => {
                     <td>{user.realName ?? t('admin.placeholder.users.real_name')}</td>
                     <td>
                       <Text size="sm" ff={theme.fontFamilyMonospace}>
-                        {!user.stdNumber ?? t('admin.placeholder.users.student_id')}
+                        {user.stdNumber ?? t('admin.placeholder.users.student_id')}
                       </Text>
                     </td>
                     <td align="right">
