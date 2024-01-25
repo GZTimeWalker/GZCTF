@@ -58,7 +58,7 @@
     "user": "ユーザー",
     "team": "チーム",
     "flag": "フラッグ",
-    "game": "レース",
+    "game": "ゲーム",
     "ip": "IP",
     "challenge": "チャレンジ"
   },
@@ -74,7 +74,7 @@
       "title": "ページが存在しません"
     },
     "home": {
-      "recent_games": "最近のコンテスト"
+      "recent_games": "最近のコンテストゲーム"
     },
     "about": {
       "slogan": "Hack for fun not for profit"
