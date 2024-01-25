@@ -108,7 +108,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **The First Network Security Freshman Challenge of Shangqiu Normal University**
 - **SVUCTF-WINTER-2023: Suzhou Vocational University 2023 Winter Freshman Competition**
 
-_Rankings are not in any particular order, and PR submissions are welcome for additions._
+_The list is not in any particular order, and PRs are welcome for additions._
 
 ## Special Thanks ❤️‍🔥
 

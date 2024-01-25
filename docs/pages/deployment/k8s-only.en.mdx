@@ -220,7 +220,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
            app: gzctf-db
        spec:
          nodeSelector:
-           kubernetes.io/hostname: xxx # 指定部署节点，强制和 GZCTF 位于同一节点
+             kubernetes.io/hostname: xxx # Specify the deployment node, need to be on the same node as GZCTF
          containers:
            - name: gzctf-db
              image: postgres:alpine
@@ -230,7 +230,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
                  name: postgres
              env:
                - name: POSTGRES_PASSWORD
-                 value: xxx # 数据库密码，需要和 appsettings.json 中的数据库密码一致
+                 value: xxx # Database password, needs to be consistent with the database password in appsettings.json
              volumeMounts:
                - name: gzctf-db
                  mountPath: /var/lib/postgresql/data
@@ -244,7 +244,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
                claimName: gzctf-db
    ```
 
-4. 创建 Service 和 Ingress
+4. Create Service and Ingress
 
    ```yaml
    apiVersion: v1
@@ -252,7 +252,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
    metadata:
      name: gzctf
      namespace: gzctf-server
-     annotations: # 开启 Traefik 的 Sticky Session
+    annotations: # Enable Traefik Sticky Session
        traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
        traefik.ingress.kubernetes.io/service.sticky.cookie.name: "LB_Session"
        traefik.ingress.kubernetes.io/service.sticky.cookie.httponly: "true"
@@ -295,17 +295,17 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
    metadata:
      name: gzctf
      namespace: gzctf-server
-     annotations: # 一些 Traefik 的 TLS 设置，可以根据自己的需求修改
+     annotations: # Some TLS settings for Traefik, you can modify them to satisfy your needs
        kubernetes.io/ingress.class: "traefik"
        traefik.ingress.kubernetes.io/router.tls: "true"
        ingress.kubernetes.io/force-ssl-redirect: "true"
    spec:
      tls:
        - hosts:
-           - ctf.example.com # 域名
-         secretName: gzctf-tls # 证书名称，需要自行创建对应的 Secret
+           - ctf.example.com # Domain name
+         secretName: gzctf-tls # Certificate name, you need to create the corresponding Secret yourself
      rules:
-       - host: ctf.example.com # 域名
+       - host: ctf.example.com # Domain name
          http:
            paths:
              - path: /
@@ -319,17 +319,17 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
 
 5. Traefik 的额外配置
 
-   为了让 GZCTF 能够正常通过 XFF 获取用户真实 IP，需要让 Traefik 能够正确地添加 XFF 头。请注意如下内容不一定总是具有时效性和适用于所有版本的 Traefik，此处举例为 helm values，请自行查找最新的配置方法。
+  In order to make GZCTF able to obtain the real IP address of users through XFF, Traefik needs to be able to add the XFF header correctly. Please note that the following content may not always be up-to-date and applicable to all versions of Traefik. This is an example of helm values, please search for the latest configuration method yourself.
 
    ```yaml
    service:
      spec:
-     externalTrafficPolicy: Local # 为了让 XFF 能够正常工作，需要将 externalTrafficPolicy 设置为 Local
+    externalTrafficPolicy: Local # To make XFF work properly, set externalTrafficPolicy to Local
    deployment:
      kind: DaemonSet
    ports:
      web:
-     redirectTo: websecure # 重定向 HTTP 到 HTTPS
+     redirectTo: websecure # Redirect HTTP to HTTPS
    additionalArguments:
      - "--entryPoints.web.proxyProtocol.insecure"
      - "--entryPoints.web.forwardedHeaders.insecure"
@@ -337,9 +337,9 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
      - "--entryPoints.websecure.forwardedHeaders.insecure"
    ```
 
-## 部署提示
+## Deployment Tips
 
-1. 如果需要让 GZCTF 在初始化时自动创建管理员账户请注意传递 `GZCTF_ADMIN_PASSWORD` 环境变量，否则需要手动创建管理员账户。
-2. 请在系统日志界面调试并参考是否能够正常获取用户真实 IP，如果不能请检查 Traefik 的配置是否正确。
-3. 如有监控需求，请自行部署 Prometheus 和 Grafana，并打开 Traefik 的 Prometheus 支持，并且你可以通过 node exporter 监控题目容器的资源使用情况。
-4. 如果需要根据配置文件更改自动更新 GZCTF 的部署，请参考 [Reloader](https://github.com/stakater/Reloader)。
+1. If you want GZCTF to automatically create an admin account during initialization, make sure to pass the `GZCTF_ADMIN_PASSWORD` environment variable. Otherwise, you will need to manually create the admin account.
+2. Please debug and verify if GZCTF can correctly retrieve the real IP address of users on the system log page. If not, check if the Traefik configuration is correct.
+3. If you want to monitor the resource usage, please deploy Prometheus and Grafana on your own, enable Prometheus support in Traefik, and monitor the resource usage of the challenge containers using node exporter.
+4. If you need to automatically update the deployment of GZCTF based on the configuration file, please refer to [Reloader](https://github.com/stakater/Reloader).
