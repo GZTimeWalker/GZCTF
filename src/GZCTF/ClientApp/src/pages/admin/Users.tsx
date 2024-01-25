@@ -27,7 +27,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
@@ -42,7 +42,7 @@ const ITEM_COUNT_PER_PAGE = 30
 const Users: FC = () => {
   const [page, setPage] = useState(1)
   const [update, setUpdate] = useState(new Date())
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editModalOpened, setEditModalOpened] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
   const {
     data: users,
@@ -135,16 +135,14 @@ const Users: FC = () => {
       const res = await api.admin.adminResetPassword(user.id!)
 
       modals.openModal({
-        title: `为 ${user.userName} 重置密码`,
+        title: t('admin.content.users.reset.title', {
+          name: user.userName,
+        }),
 
         children: (
           <Stack>
             <Text>
-              用户密码已重置，
-              <Text span fw={700}>
-                此密码只会显示一次
-              </Text>
-              。
+              <Trans i18nKey="admin.content.users.reset.content" />
             </Text>
             <Text fw={700} align="center" ff={theme.fontFamilyMonospace}>
               {res.data}
@@ -153,13 +151,13 @@ const Users: FC = () => {
               onClick={() => {
                 clipboard.copy(res.data)
                 showNotification({
-                  message: '密码已复制到剪贴板',
+                  message: t('admin.notification.users.password_copied'),
                   color: 'teal',
                   icon: <Icon path={mdiCheck} size={1} />,
                 })
               }}
             >
-              复制到剪贴板
+              {t('admin.button.copy')}
             </Button>
           </Stack>
         ),
@@ -178,7 +176,9 @@ const Users: FC = () => {
 
       await api.admin.adminDeleteUser(user.id)
       showNotification({
-        message: `${user.userName} 已删除`,
+        message: t('admin.notification.users.deleted', {
+          name: user.userName,
+        }),
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
       })
@@ -200,7 +200,7 @@ const Users: FC = () => {
           <TextInput
             w="30%"
             icon={<Icon path={mdiMagnify} size={1} />}
-            placeholder="搜索用户ID/用户名/邮箱/学号/姓名"
+            placeholder={t('admin.placeholder.users.search')}
             value={hint}
             onChange={setHint}
             onKeyDown={(e) => {
@@ -209,7 +209,15 @@ const Users: FC = () => {
           />
           <Group position="right">
             <Text fw="bold" size="sm">
-              已显示 <Code>{current}</Code> / <Code>{total}</Code> 用户
+              <Trans
+                i18nKey="admin.content.users.stats"
+                values={{
+                  current,
+                  total,
+                }}
+              >
+                _<Code>_</Code>_
+              </Trans>
             </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
@@ -233,12 +241,12 @@ const Users: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th style={{ width: '1.8rem' }}>激活</th>
-                <th>用户</th>
-                <th>邮箱</th>
-                <th>用户 IP</th>
-                <th>真实姓名</th>
-                <th>学号</th>
+                <th style={{ width: '1.8rem' }}>{t('admin.label.users.active')}</th>
+                <th>{t('common.label.user')}</th>
+                <th>{t('account.label.email')}</th>
+                <th>{t('common.label.ip')}</th>
+                <th>{t('account.label.real_name')}</th>
+                <th>{t('account.label.student_id')}</th>
                 <th />
               </tr>
             </thead>
@@ -278,10 +286,10 @@ const Users: FC = () => {
                         {user.ip}
                       </Text>
                     </td>
-                    <td>{!user.realName ? '用户未填写' : user.realName}</td>
+                    <td>{user.realName ?? t('admin.placeholder.users.real_name')}</td>
                     <td>
                       <Text size="sm" ff={theme.fontFamilyMonospace}>
-                        {!user.stdNumber ? '00000000' : user.stdNumber}
+                        {!user.stdNumber ?? t('admin.placeholder.users.student_id')}
                       </Text>
                     </td>
                     <td align="right">
@@ -290,7 +298,7 @@ const Users: FC = () => {
                           color="blue"
                           onClick={() => {
                             setActiveUser(user)
-                            setIsEditModalOpen(true)
+                            setEditModalOpened(true)
                           }}
                         >
                           <Icon path={mdiPencilOutline} size={1} />
@@ -298,14 +306,18 @@ const Users: FC = () => {
                         <ActionIconWithConfirm
                           iconPath={mdiLockReset}
                           color="orange"
-                          message={`确定重置用户\n “${user.userName}” 的密码吗？`}
+                          message={t('admin.content.users.reset.message', {
+                            name: user.userName,
+                          })}
                           disabled={disabled}
                           onClick={() => onResetPassword(user)}
                         />
                         <ActionIconWithConfirm
                           iconPath={mdiDeleteOutline}
                           color="alert"
-                          message={`确定要删除用户\n “${user.userName}” 吗？`}
+                          message={t('admin.content.users.delete', {
+                            name: user.userName,
+                          })}
                           disabled={disabled || user.id === currentUser?.userId}
                           onClick={() => onDelete(user)}
                         />
@@ -318,10 +330,10 @@ const Users: FC = () => {
         </ScrollArea>
         <UserEditModal
           size="35%"
-          title="编辑用户"
+          title={t('admin.button.users.edit')}
           user={activeUser}
-          opened={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
+          opened={editModalOpened}
+          onClose={() => setEditModalOpened(false)}
           mutateUser={(user: UserInfoModel) => {
             updateUsers(
               [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) =>

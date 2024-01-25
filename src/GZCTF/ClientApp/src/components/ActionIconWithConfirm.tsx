@@ -69,7 +69,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
                 })
               }}
             >
-              确定
+              {t('common.modal.confirm')}
             </Button>
             <Button
               size="xs"
@@ -78,7 +78,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
               disabled={props.disabled}
               onClick={() => setOpened(false)}
             >
-              取消
+              {t('common.modal.cancel')}
             </Button>
           </Group>
         </Stack>

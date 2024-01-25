@@ -16,17 +16,39 @@
   },
   "label": {
     "logs": {
-      "ip": "IP",
       "status": "状态",
       "message": "信息"
+    },
+    "games": {
+      "public": "公开",
+      "summary": "简介"
+    },
+    "teams": {
+      "members": "队员",
+      "bio": "签名"
+    },
+    "users": {
+      "active": "激活",
+      "role": "用户角色",
+      "last_visit": "最后访问时间"
     }
   },
   "button": {
     "back": "返回上级",
     "save": "保存更改",
+    "copy": "复制到剪贴板",
+    "teams": {
+      "edit": "编辑队伍",
+      "do_lock": "锁定",
+      "do_unlock": "解锁"
+    },
+    "users": {
+      "edit": "编辑用户"
+    },
     "games": {
       "delete": "删除比赛",
-      "copy_public_key": "复制公钥"
+      "copy_public_key": "复制公钥",
+      "new": "新建比赛"
     },
     "notices": {
       "new": "新建公告",
@@ -59,7 +81,24 @@
     }
   },
   "content": {
+    "teams": {
+      "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 队伍",
+      "locked": "已锁定",
+      "unlocked": "已解锁",
+      "lock": "确定要{{action}}队伍\n{{name}} 吗？",
+      "delete": "你确定要删除队伍 {{name}} 吗？"
+    },
+    "users": {
+      "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 用户",
+      "reset": {
+        "title": "为 {{name}} 重置密码",
+        "message": "你确定重置用户<br/> {{user}} 的密码吗？",
+        "content": "用户密码已重置，<strong>此密码只会显示一次</strong>，请妥善保存。"
+      },
+      "delete": "你确定要删除用户 {{name}} 吗？"
+    },
     "games": {
+      "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 比赛",
       "info": {
         "title": {
           "label": "比赛标题",
@@ -278,6 +317,14 @@
         "team": "（无名队伍）"
       }
     },
+    "teams": {
+      "search": "搜索队伍名称"
+    },
+    "users": {
+      "search": "搜索用户ID/用户名/邮箱/学号/姓名",
+      "real_name": "用户未填写",
+      "student_id": "00000000"
+    },
     "settings": {
       "footer": "`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)",
       "email_domain_list": "不限制注册域名"
@@ -288,6 +335,11 @@
       "realtime": {
         "connected": "实时日志连接成功"
       }
+    },
+    "users": {
+      "password_copied": "密码已复制到剪贴板",
+      "deleted": "{{name}} 已删除",
+      "updated": "用户信息已更新"
     },
     "games": {
       "info": {

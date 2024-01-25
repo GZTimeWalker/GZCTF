@@ -207,7 +207,7 @@ const Logs: FC = () => {
             <thead>
               <tr>
                 <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
-                <th style={{ width: '10rem' }}>{t('admin.label.logs.ip')}</th>
+                <th style={{ width: '10rem' }}>{t('common.label.ip')}</th>
                 <th style={{ width: '6rem' }}>{t('common.label.user')}</th>
                 <th>{t('admin.label.logs.message')}</th>
                 <th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</th>

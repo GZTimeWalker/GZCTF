@@ -58,6 +58,8 @@
     "user": "用户",
     "team": "队伍",
     "flag": "flag",
+    "game": "比赛",
+    "ip": "IP",
     "challenge": "题目"
   },
   "avatar": {
