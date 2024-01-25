@@ -1,8 +1,8 @@
 {
   "tag": {
-    "web": "Web",
-    "pwn": "Pwn",
     "ppc": "Programming",
+    "pwn": "Pwn",
+    "web": "Web",
     "misc": "Miscellaneous",
     "crypto": "Password",
     "mobile": "Mobile Security",
@@ -11,36 +11,36 @@
     "forensics": "Forensics",
     "blockchain": "blockchain"
   },
-  "file_type": {
-    "none": "None",
-    "remote": "Remote Url",
-    "local": "Self hosted"
+  "type": {
+    "static_container": {
+      "desrc": "Shared containers, any flag can be submitted",
+      "label": "Static Container"
+    },
+    "dynamic_container": {
+      "desrc": "Auto-generate settlement flag, unique to each team",
+      "label": "Dynamic Container"
+    },
+    "static_attachment": {
+      "desrc": "Commit attachments, any flag can be submitted",
+      "label": "Static Attachments"
+    },
+    "dynamic_attachment": {
+      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams",
+      "label": "Dynamic Attachments"
+    }
   },
   "bonus": {
     "first_blood": "First Blood",
-    "second_blood": "Second blood",
-    "third_blood": "Third Blood"
-  },
-  "type": {
-    "static_container": {
-      "label": "Static Container",
-      "desrc": "Shared containers, any flag can be submitted"
-    },
-    "static_attachment": {
-      "label": "Static Attachments",
-      "desrc": "Commit attachments, any flag can be submitted"
-    },
-    "dynamic_container": {
-      "label": "Dynamic Container",
-      "desrc": "Auto-generate settlement flag, unique to each team"
-    },
-    "dynamic_attachment": {
-      "label": "Dynamic Attachments",
-      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams"
-    }
+    "third_blood": "Third Blood",
+    "second_blood": "Second blood"
   },
   "button": {
     "submit_flag": "Submit flag",
     "download_attachment": "Download Attachment"
+  },
+  "file_type": {
+    "none": "None",
+    "local": "Self hosted",
+    "remote": "Remote Url"
   }
 }

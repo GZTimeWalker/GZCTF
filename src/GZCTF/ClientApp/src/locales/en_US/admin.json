@@ -1,261 +1,312 @@
 {
+  "tab": {
+    "logs": "Logs",
+    "games": {
+      "info": "Information",
+      "index": "Games",
+      "review": "Teams",
+      "notices": "Notices",
+      "writeups": "Writeups",
+      "challenges": "Challenges"
+    },
+    "teams": "Teams",
+    "users": "Users",
+    "settings": "Settings",
+    "instances": "Instances"
+  },
+  "label": {
+    "logs": {
+      "status": "Status",
+      "message": "Information"
+    },
+    "games": {
+      "public": "Public",
+      "summary": "Introduction"
+    },
+    "teams": {
+      "members": "Crew",
+      "bio": "Signature"
+    },
+    "users": {
+      "active": "Activate",
+      "role": "User Roles",
+      "last_visit": "Last Access Time"
+    }
+  },
   "button": {
     "back": "Go back",
+    "save": "Save changes",
+    "copy": "Copy to clipboard",
+    "teams": {
+      "edit": "Edit Team",
+      "do_lock": "Locked",
+      "do_unlock": "Unlock"
+    },
+    "users": {
+      "edit": "Edit User"
+    },
+    "games": {
+      "delete": "Delete game",
+      "copy_public_key": "Copy public key",
+      "new": "New Match"
+    },
+    "notices": {
+      "new": "New notice",
+      "edit": "Edit notice",
+      "delete": "Delete notice"
+    },
+    "writeups": {
+      "download_all": "Download all writeups"
+    },
     "challenges": {
-      "attachment": {
-        "save_url": "Save link",
-        "upload": "Upload attachment",
-        "uploading": "Uploading..."
-      },
-      "bonus": "Triple Blood Bonus",
-      "delete": "Delete challenge",
+      "new": "New challenge",
       "edit": "Edit challenge",
-      "edit_more": "Edit flags",
       "flag": {
         "add": "Add flag",
         "save": "Save flag template"
       },
-      "new": "New challenge",
+      "bonus": "Triple Blood Bonus",
+      "delete": "Delete challenge",
       "preview": "Preview",
+      "edit_more": "Edit flags",
+      "attachment": {
+        "upload": "Upload attachment",
+        "save_url": "Save link",
+        "uploading": "Uploading..."
+      },
       "test_container": {
         "create": "Create test container",
         "destroy": "Destroy test container"
       }
-    },
-    "games": {
-      "copy_public_key": "Copy public key",
-      "delete": "Delete game"
-    },
-    "notices": {
-      "delete": "Delete notice",
-      "edit": "Edit notice",
-      "new": "New notice"
-    },
-    "save": "Save changes",
-    "writeups": {
-      "download_all": "Download all writeups"
     }
   },
   "content": {
-    "games": {
-      "challenges": {
-        "attachment": {
-          "clear": {
-            "description": "Are you sure you want to clear the attachment to this question?",
-            "title": "Clear attachment"
-          },
-          "link": "Attachment link",
-          "title": "Attachment management",
-          "type": "Attachment type"
-        },
-        "attachment_name": {
-          "description": "All dynamic attachments will be downloaded under this filename",
-          "label": "Global Attachment Name"
-        },
-        "bonus": {
-          "description": "Triple Blood Bonus is a score prize that each team can receive when a topic has been removed from the first three teams. Tri-blood prizes are based on the current score of the issue and are added to the score of that team in a fixed percentage form.",
-          "first_blood": "Blood Reward (%)",
-          "second_blood": "Second Blood Reward (%)",
-          "third_blood": "Third Blood Reward (%)"
-        },
-        "container_image": "Container Image",
-        "cpu_limit": {
-          "description": "Multiplication of 0.1 CPU core",
-          "label": "CPU Limit (0.1 CPUs)"
-        },
-        "delete": "Are you sure you want to delete challenge {{name}}?",
-        "description": "Description",
-        "difficulty": "Difficulty factor",
-        "empty": {
-          "description": "Click the top right to create the first problem",
-          "title": "Ouch! This match has no problem yet"
-        },
-        "flag": {
-          "create": "Create flag,multiple flag split by line, one per line.<br />can own multiple flags per topic, score any flag for each title.",
-          "empty": {
-            "description": "Please add flag via top right corner",
-            "title": "The flag list is empty"
-          },
-          "instructions": {
-            "both": "If you need to enable leet flag with <1>[TEAM_HASH]</1>, add the <2>[LEET]</2> tag <strong> before </strong> the flag template string. The entropy of the flag template string will not be checked.",
-            "description": "Please enter flag template string, leave blank to generate random GUID as flag",
-            "example": "Examples",
-            "guid": "Specify <1>[GUID]</1> to replace only placeholder here with random GUID",
-            "leave_empty": "Leave blank",
-            "leet": "Leet String will be enabled if no <1>[TEAM_HASH]</1> is not specified and will change strings in parentheses based on the template, making sure that flag template string is sufficiently high",
-            "team_hash": "If <1>[TEAM_HASH]</1> it will be automatically replaced with the hash generated by team token and match information",
-            "will_generate": "Will generate"
-          },
-          "template": "flag template",
-          "title": "flag management"
-        },
-        "hints": "Question tips",
-        "memory_limit": {
-          "description": "RAM for restricted containers",
-          "label": "Memory Limit (MB)"
-        },
-        "min_score_radio": {
-          "description": "Min score: {{min_score}}pts",
-          "label": "Minimum Score Ratio"
-        },
-        "original_score": "Question score value",
-        "service_port": {
-          "description": "Port number of services in the container",
-          "label": "Service Port"
-        },
-        "storage_limit": {
-          "description": "Limit storage space with mirror size",
-          "label": "Storage Limit (MB)"
-        },
-        "tag": "Title Label",
-        "title": "Title",
-        "traffic_capture": {
-          "description": "Capture team puzzle traffic. Platform proxy is required",
-          "label": "Enable traffic capture"
-        },
-        "type": {
-          "description": "Can not change after creation",
-          "label": "Question Type"
-        }
+    "teams": {
+      "stats": "<1>{{current}}</1>/<1>{{total}}</1> teams displayed",
+      "locked": "Locked",
+      "unlocked": "Unlocked",
+      "lock": "Are you sure you want to lock team{{action}}\n{{name}} ?",
+      "delete": "Are you sure you want to delete team {{name}} ?"
+    },
+    "users": {
+      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed",
+      "reset": {
+        "title": "Reset password for {{name}}",
+        "message": "Are you sure you want to reset the password for user<br/> {{user}} ?",
+        "content": "The user password has been reset,<strong>this password will only show up once a</strong>, please save it properly."
       },
+      "delete": "Are you sure you want to delete user {{name}} ?"
+    },
+    "games": {
+      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> games displayed",
       "info": {
-        "accept_without_review": {
-          "description": "Accept directly after team registration",
-          "label": "Accept without review"
+        "title": {
+          "label": "Game Title",
+          "description": "Too long to show effect"
         },
-        "container_limit": {
-          "description": "Containers shared by one team (0 = unlimited)",
-          "label": "Team Container Limit"
-        },
-        "content": "Game Details",
         "delete": "Are you sure you want to delete game {{name}}?",
+        "poster": "Game poster",
+        "content": "Game Details",
+        "summary": {
+          "label": "Game Overview",
+          "description": "Will be displayed in the game list"
+        },
         "end_date": "End date",
         "end_time": "End Time",
+        "start_date": "Start date",
+        "start_time": "Start Time",
         "invite_code": {
-          "description": "Leave empty for no invitation code",
-          "label": "Invitation Code"
+          "label": "Invitation Code",
+          "description": "Leave empty for no invitation code"
         },
         "member_limit": {
-          "description": "0 means unlimited number of teams",
-          "label": "Team Number Limit"
+          "label": "Team Number Limit",
+          "description": "0 means unlimited number of teams"
         },
         "organizations": {
           "add": "+ Add organization \"{{org}}\"",
-          "description": "Add your organization to enable group scoreboard",
-          "label": "Candidate Organization List"
+          "label": "Candidate Organization List",
+          "description": "Add your organization to enable group scoreboard"
         },
-        "poster": "Game poster",
         "practice_mode": {
-          "description": "View challenges after the game ends",
-          "label": "Practice Mode"
+          "label": "Practice Mode",
+          "description": "View challenges after the game ends"
         },
-        "start_date": "Start date",
-        "start_time": "Start Time",
-        "summary": {
-          "description": "Will be displayed in the game list",
-          "label": "Game Overview"
-        },
-        "title": {
-          "description": "Too long to show effect",
-          "label": "Game Title"
+        "container_limit": {
+          "label": "Team Container Limit",
+          "description": "Containers shared by one team (0 = unlimited)"
         },
         "writeup_deadline": {
-          "description": "Hours allowed to submit Writeup after game ends",
-          "label": "Writeup Submission Time"
+          "label": "Writeup Submission Time",
+          "description": "Hours allowed to submit Writeup after game ends"
+        },
+        "writeup_required": {
+          "label": "Writeup required",
+          "description": "Enable Writeup submission"
         },
         "writeup_instruction": "Writeup Submission Instructions",
-        "writeup_required": {
-          "description": "Enable Writeup submission",
-          "label": "Writeup required"
-        }
-      },
-      "notices": {
-        "delete": "Are you sure you want to delete this notification?",
-        "empty": {
-          "description": "Click on the top right button to create a new notice",
-          "title": "No notice yet"
+        "accept_without_review": {
+          "label": "Accept without review",
+          "description": "Accept directly after team registration"
         }
       },
       "review": {
         "empty": {
-          "description": "……on the road is not so!",
-          "title": "Ouch! No teams have yet registered for this match"
+          "title": "Ouch! No teams have yet registered for this match",
+          "description": "……on the road is not so!"
         },
         "participation": {
+          "stats": "{{count}}/{{total}} joined",
           "joined": "Signed up",
-          "not_joined": "Not signed up",
-          "stats": "{{count}}/{{total}} joined"
+          "not_joined": "Not signed up"
         }
+      },
+      "notices": {
+        "empty": {
+          "title": "No notice yet",
+          "description": "Click on the top right button to create a new notice"
+        },
+        "delete": "Are you sure you want to delete this notification?"
       },
       "writeups": {
         "empty": {
-          "description": "New submissions will appear here",
-          "title": "Ouch! No team submissions yet"
+          "title": "Ouch! No team submissions yet",
+          "description": "New submissions will appear here"
         },
         "pdf_fallback": "Failed to load PDF"
-      }
-    },
-    "markdown_inline_support": "Support inline markdown syntax",
-    "markdown_support": "Support markdown syntax",
-    "nothing_found": "Nothing found",
-    "show_all": "Show All"
-  },
-  "label": {
-    "logs": {
-      "message": "Information",
-      "ip": "IP",
-      "status": "Status"
-    }
-  },
-  "notification": {
-    "logs": {
-      "realtime": {
-        "connected": "Realtime log connection successful"
-      }
-    },
-    "games": {
+      },
       "challenges": {
-        "attachment": {
-          "updated": "Attachment updated"
-        },
-        "created": "Title created",
-        "deleted": "Title deleted",
+        "tag": "Title Label",
         "flag": {
-          "created": "flag created",
-          "deleted": "flag deleted"
+          "empty": {
+            "title": "The flag list is empty",
+            "description": "Please add flag via top right corner"
+          },
+          "title": "flag management",
+          "create": "Create flag,multiple flag split by line, one per line.<br />can own multiple flags per topic, score any flag for each title.",
+          "template": "flag template",
+          "instructions": {
+            "both": "If you need to enable leet flag with <1>[TEAM_HASH]</1>, add the <2>[LEET]</2> tag <strong> before </strong> the flag template string. The entropy of the flag template string will not be checked.",
+            "guid": "Specify <1>[GUID]</1> to replace only placeholder here with random GUID",
+            "leet": "Leet String will be enabled if no <1>[TEAM_HASH]</1> is not specified and will change strings in parentheses based on the template, making sure that flag template string is sufficiently high",
+            "example": "Examples",
+            "team_hash": "If <1>[TEAM_HASH]</1> it will be automatically replaced with the hash generated by team token and match information",
+            "description": "Please enter flag template string, leave blank to generate random GUID as flag",
+            "leave_empty": "Leave blank",
+            "will_generate": "Will generate"
+          }
         },
-        "flag_template": {
-          "updated": "flag template updated"
+        "type": {
+          "label": "Question Type",
+          "description": "Can not change after creation"
         },
-        "preview": {
-          "attachment_downloaded": "Predicted attachments have been downloaded!",
-          "flag_submitted": "Flag seems to have been correctly submitted!"
+        "bonus": {
+          "description": "Triple Blood Bonus is a score prize that each team can receive when a topic has been removed from the first three teams. Tri-blood prizes are based on the current score of the issue and are added to the score of that team in a fixed percentage form.",
+          "first_blood": "Blood Reward (%)",
+          "third_blood": "Third Blood Reward (%)",
+          "second_blood": "Second Blood Reward (%)"
         },
-        "updated": "Title updated"
-      },
-      "info": {
-        "deleted": "Game deleted",
-        "info_updated": "Game information updated",
-        "poster": {
-          "upload_failed": "Post upload failed",
-          "uploaded": "Poster successfully uploaded",
-          "uploading": "Uploading poster..."
+        "empty": {
+          "title": "Ouch! This match has no problem yet",
+          "description": "Click the top right to create the first problem"
         },
-        "public_key_copied": "Public key copied to clipboard"
-      },
-      "instances": {
-        "created": "Instance created",
-        "deleted": "Instances destroyed"
-      },
-      "notices": {
-        "created": "Notice created",
-        "deleted": "Notice deleted",
-        "updated": "Notice updated"
-      },
-      "participation": {
-        "updated": "Team Review Status Updated"
+        "hints": "Question tips",
+        "title": "Title",
+        "delete": "Are you sure you want to delete challenge {{name}}?",
+        "cpu_limit": {
+          "label": "CPU Limit (0.1 CPUs)",
+          "description": "Multiplication of 0.1 CPU core"
+        },
+        "attachment": {
+          "link": "Attachment link",
+          "type": "Attachment type",
+          "clear": {
+            "title": "Clear attachment",
+            "description": "Are you sure you want to clear the attachment to this question?"
+          },
+          "title": "Attachment management"
+        },
+        "difficulty": "Difficulty factor",
+        "description": "Description",
+        "memory_limit": {
+          "label": "Memory Limit (MB)",
+          "description": "RAM for restricted containers"
+        },
+        "service_port": {
+          "label": "Service Port",
+          "description": "Port number of services in the container"
+        },
+        "storage_limit": {
+          "label": "Storage Limit (MB)",
+          "description": "Limit storage space with mirror size"
+        },
+        "original_score": "Question score value",
+        "attachment_name": {
+          "label": "Global Attachment Name",
+          "description": "All dynamic attachments will be downloaded under this filename"
+        },
+        "container_image": "Container Image",
+        "min_score_radio": {
+          "label": "Minimum Score Ratio",
+          "description": "Min score: {{min_score}}pts"
+        },
+        "traffic_capture": {
+          "label": "Enable traffic capture",
+          "description": "Capture team puzzle traffic. Platform proxy is required"
+        }
       }
-    }
+    },
+    "settings": {
+      "game": {
+        "title": "Match Policy",
+        "auto_destroy": {
+          "label": "Auto-destroy old instances",
+          "description": "Whether to automatically destroy the old instance when the user opens the question instance but reaches the maximum limit"
+        }
+      },
+      "account": {
+        "title": "Account Policy",
+        "auto_active": {
+          "label": "Auto-activate after registration",
+          "description": "Whether to auto-activate accounts after new users are registered"
+        },
+        "use_captcha": {
+          "label": "Enable Captcha",
+          "description": "Whether to verify when logged in, register, and retrieving"
+        },
+        "allow_register": {
+          "label": "Allow new users to register",
+          "description": "Allow users to register new accounts"
+        },
+        "email_domain_list": {
+          "label": "Email domain whitelist",
+          "description": "List of allowed email domains to register. Separate multiple domains with commas, leave empty without restriction"
+        },
+        "email_confirmation_required": {
+          "label": "Email verification required",
+          "description": "Whether user verification email is required"
+        }
+      },
+      "platform": {
+        "name": {
+          "label": "Platform name",
+          "description": "Platform name displayed with :CTF field"
+        },
+        "title": "Platform settings",
+        "footer": {
+          "label": "Footer additional information",
+          "description": "Additional information displayed at the bottom of the web page, supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device"
+        },
+        "slogan": {
+          "label": "Platform Tag",
+          "description": "Platform logo will be displayed at the top of the page and about pages"
+        }
+      }
+    },
+    "show_all": "Show All",
+    "nothing_found": "Nothing found",
+    "markdown_support": "Support markdown syntax",
+    "markdown_inline_support": "Support inline markdown syntax"
   },
   "placeholder": {
     "empty": "Not filled",
@@ -265,21 +316,73 @@
         "bio": "(no profile)",
         "team": "(unknown team)"
       }
+    },
+    "teams": {
+      "search": "Search team name"
+    },
+    "users": {
+      "search": "Search for user ID/username/email/student/name",
+      "real_name": "User is not filled",
+      "student_id": "00000000"
+    },
+    "settings": {
+      "footer": "`Test` <mbr/> [IPC XXXXXX - X] (http://beian.miit.gov.cn/)",
+      "email_domain_list": "Not limited to registered domain"
     }
   },
-  "tab": {
-    "games": {
-      "challenges": "Challenges",
-      "index": "Games",
-      "info": "Information",
-      "notices": "Notices",
-      "review": "Teams",
-      "writeups": "Writeups"
+  "notification": {
+    "logs": {
+      "realtime": {
+        "connected": "Realtime log connection successful"
+      }
     },
-    "instances": "Instances",
-    "logs": "Logs",
-    "settings": "Settings",
-    "teams": "Teams",
-    "users": "Users"
+    "users": {
+      "password_copied": "Password copied to clipboard",
+      "deleted": "{{name}} has been deleted",
+      "updated": "User information updated"
+    },
+    "games": {
+      "info": {
+        "poster": {
+          "uploaded": "Poster successfully uploaded",
+          "uploading": "Uploading poster...",
+          "upload_failed": "Post upload failed"
+        },
+        "deleted": "Game deleted",
+        "info_updated": "Game information updated",
+        "public_key_copied": "Public key copied to clipboard"
+      },
+      "notices": {
+        "created": "Notice created",
+        "deleted": "Notice deleted",
+        "updated": "Notice updated"
+      },
+      "instances": {
+        "created": "Instance created",
+        "deleted": "Instances destroyed"
+      },
+      "challenges": {
+        "flag": {
+          "created": "flag created",
+          "deleted": "flag deleted"
+        },
+        "created": "Title created",
+        "deleted": "Title deleted",
+        "preview": {
+          "flag_submitted": "Flag seems to have been correctly submitted!",
+          "attachment_downloaded": "Predicted attachments have been downloaded!"
+        },
+        "updated": "Title updated",
+        "attachment": {
+          "updated": "Attachment updated"
+        },
+        "flag_template": {
+          "updated": "flag template updated"
+        }
+      },
+      "participation": {
+        "updated": "Team Review Status Updated"
+      }
+    }
   }
 }

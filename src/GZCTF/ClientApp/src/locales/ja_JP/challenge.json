@@ -1,8 +1,8 @@
 {
   "tag": {
-    "web": "Web",
-    "pwn": "Pwn",
     "ppc": "プログラミング",
+    "pwn": "Pwn",
+    "web": "Web",
     "misc": "その他",
     "crypto": "暗号学",
     "mobile": "モバイルセキュリティ",
@@ -11,36 +11,36 @@
     "forensics": "フォレンジック",
     "blockchain": "ブロックチェーン"
   },
-  "file_type": {
-    "none": "アタッチメントがありません",
-    "remote": "リモートアタッチメント",
-    "local": "ローカルアタッチメント"
+  "type": {
+    "static_container": {
+      "desrc": "コンテナが共有され、任意のフラグを提出できます",
+      "label": "静的コンテナ"
+    },
+    "dynamic_container": {
+      "desrc": "自動生成したフラッグが配布され、各チームのフラッグは一意です",
+      "label": "動的コンテナ"
+    },
+    "static_attachment": {
+      "desrc": "アタッチメントが共有され、任意のフラグを提出できます",
+      "label": "静的アタッチメント"
+    },
+    "dynamic_attachment": {
+      "desrc": "チームごとにアタッチメントを配布するので、アタッチメントの数はチームの数よりも多くする必要があります",
+      "label": "動的アタッチメント"
+    }
   },
   "bonus": {
     "first_blood": "ファーストブラッド",
-    "second_blood": "セコンドブラッド",
-    "third_blood": "サードブラッド"
-  },
-  "type": {
-    "static_container": {
-      "label": "静的コンテナ",
-      "desrc": "コンテナが共有され、任意のフラグを提出できます"
-    },
-    "static_attachment": {
-      "label": "静的アタッチメント",
-      "desrc": "アタッチメントが共有され、任意のフラグを提出できます"
-    },
-    "dynamic_container": {
-      "label": "動的コンテナ",
-      "desrc": "自動生成したフラッグが配布され、各チームのフラッグは一意です"
-    },
-    "dynamic_attachment": {
-      "label": "動的アタッチメント",
-      "desrc": "チームごとにアタッチメントを配布するので、アタッチメントの数はチームの数よりも多くする必要があります"
-    }
+    "third_blood": "サードブラッド",
+    "second_blood": "セコンドブラッド"
   },
   "button": {
     "submit_flag": "フラッグを提出",
     "download_attachment": "アタッチメントをダウンロード"
+  },
+  "file_type": {
+    "none": "アタッチメントがありません",
+    "local": "ローカルアタッチメント",
+    "remote": "リモートアタッチメント"
   }
 }

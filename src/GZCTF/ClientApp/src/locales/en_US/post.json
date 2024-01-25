@@ -1,26 +1,26 @@
 {
+  "label": {
+    "tag": "Post tags",
+    "title": "Post title",
+    "add_tag": "+ Add tag \"{{query}}\"",
+    "content": "Post content",
+    "summary": "Post summary"
+  },
+  "title": {
+    "index": "Posts"
+  },
   "button": {
-    "delete": "Delete post",
+    "new": "New post",
     "edit": "Edit post",
     "goto": "Go to post",
-    "new": "New post",
-    "save": "Save post"
+    "save": "Save post",
+    "delete": "Delete post"
   },
   "content": {
     "metadata": "{{author}} published on {{date}}"
   },
-  "label": {
-    "add_tag": "+ Add tag \"{{query}}\"",
-    "content": "Post content",
-    "summary": "Post summary",
-    "tag": "Post tags",
-    "title": "Post title"
-  },
   "notification": {
-    "created": "Post has been created",
-    "saved": "Post has been saved"
-  },
-  "title": {
-    "index": "Posts"
+    "saved": "Post has been saved",
+    "created": "Post has been created"
   }
 }

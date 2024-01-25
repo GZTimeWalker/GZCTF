@@ -29,14 +29,13 @@
     }
   },
   "error": {
+    "empty": "内容を入力してください。",
+    "unknown": "不明なエラー",
     "try_later": "後で再度お試し下さい",
+    "no_change": "変更がないようです",
     "check_input": "入力内容を確認する",
     "encountered": "エラーが発生しました",
     "param_error": "パラメータが間違っています。確認してください",
-    "unknown": "不明なエラー",
-    "empty": "内容を入力してください。",
-    "no_change": "変更がないようです",
-    "request_too_frequent": "リクエストが頻繁すぎます",
     "file_invalid": {
       "title": "ファイルの読み込みに失敗しました",
       "message": "ファイル形式とサイズを確認してください"
@@ -44,6 +43,7 @@
     "param_invalid": "無効なパラメータ",
     "param_missing": "パラメータが不足しています",
     "param_unknown": "不明なパラメータ",
+    "request_too_frequent": "リクエストが頻繁すぎます",
     "invalid_username_or_password": "ユーザー名またはパスワードが正しくありません"
   },
   "modal": {
@@ -53,18 +53,20 @@
     "confirm_delete": "削除の確認",
     "confirm_update": "変更"
   },
-  "avatar": {
-    "save": "アイコンを保存する",
-    "uploaded": "アイコンが更新されました",
-    "uploading": "アイコンをアップロードしています",
-    "upload_failed": "アイコンを更新できませんでした"
-  },
   "label": {
     "time": "時間",
     "user": "ユーザー",
     "team": "チーム",
     "flag": "フラッグ",
+    "game": "レース",
+    "ip": "IP",
     "challenge": "チャレンジ"
+  },
+  "avatar": {
+    "save": "アイコンを保存する",
+    "uploaded": "アイコンが更新されました",
+    "uploading": "アイコンをアップロードしています",
+    "upload_failed": "アイコンを更新できませんでした"
   },
   "content": {
     "404": {
@@ -82,8 +84,8 @@
         "avatar": "アイコン",
         "poster": "ポスター"
       },
-      "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください",
-      "limit": "3MB以下の画像を選択してください"
+      "limit": "3MB以下の画像を選択してください",
+      "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください"
     }
   }
 }

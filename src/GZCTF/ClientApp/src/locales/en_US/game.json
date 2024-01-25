@@ -1,76 +1,24 @@
 {
-  "button": {
-    "challenges": "Enter game",
-    "download_all_traffic": "Download all listed traffic",
-    "download_submissionsheet": "Download all submissions",
-    "finished": "Game ended",
-    "hide_solved": "Hide solved",
-    "join": "Join game",
-    "leave": "Leave game",
-    "login_required": "Please login",
-    "scoreboard": "Scoreboard",
-    "submit_writeup": "Submit writeup"
+  "tab": {
+    "monitor": {
+      "index": "Game monitoring",
+      "events": "Event Monitor",
+      "traffic": "Traffic Capture",
+      "cheatinfo": "Cheats",
+      "submissions": "Commits"
+    },
+    "challenge": "Game problem",
+    "scoreboard": "Leaderboard"
   },
-  "content": {
-    "all_solved": {
-      "comment": "Perhaps more difficult challenges are waiting for you in……",
-      "title": "All topics were untouched!"
-    },
-    "end_time": "End Time",
-    "game_ended": "The game has ended",
-    "game_lasts_long": "Match will also be an employee",
-    "hide_container_events": {
-      "description": "Hide container starting/destruction events",
-      "label": "Hide container events"
-    },
-    "join": {
-      "confirm": "Confirm Registration",
-      "content": [
-        "Are you sure you want to register for this game?",
-        "Once you sign up for and approve the match, the team will be locked and will no longer be able to make changes to people,<strong>invites and kicks the team.</strong> The team will be unlocked after the match ends or when the request is denied.",
-        "The number of players requires that the number of members of the team be selected, and<strong>whether or not the team participates in the match in that capacity.</strong>"
-      ],
-      "invite_code": {
-        "description": "This match opens the invitation match. Enrollment needs to provide an invitation code.",
-        "label": "Please enter the invitation code"
-      },
-      "organization": {
-        "description": "This match has more than one participant. Please select your organization",
-        "label": "Select Organization"
-      },
-      "team": {
-        "description": "Please select a team to participate in a match that cannot be changed after selection",
-        "label": "Select team to compete"
-      },
-      "title": "Completion Registration Information"
-    },
-    "joined_status": "<strong>{{count}}</strong> teams have already registered",
-    "leave": {
-      "confirm": "Confirm Cancel Registration",
-      "content": [
-        "Are you sure you want to exit this match?",
-        "The team participation information will be deleted after exiting if the number of people is empty."
-      ]
-    },
-    "no_challenge": "Ouch! No topics available for this match with……",
-    "no_cheat": {
-      "comment": "It seems to be true for all",
-      "title": "No team cheats yet"
-    },
-    "no_notice": "No notifications",
-    "no_traffic": {
-      "comment": "Requires both platform configuration and title to be enabled",
-      "title": "No data captures enabled"
-    },
-    "scoreboard_note": "Note：is ranked in time",
-    "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
-    "start_time": "Start Time",
-    "team_view": {
-      "description": "Use team view to display cheats",
-      "label": "Team View"
-    }
+  "tag": {
+    "hidden": "Hidden",
+    "limited": "{{count}} players",
+    "individual": "Personal",
+    "mutiplayer": "Team"
   },
   "label": {
+    "score": "Score",
+    "traffic": "Traffic File",
     "cheat_info": {
       "owned_team": "Raw Team",
       "submit_team": "Submit Team",
@@ -78,94 +26,146 @@
     },
     "notice_type": {
       "all": "All",
-      "challenge": "Challenge",
+      "game": "Announcements",
       "events": "Dynamic",
-      "game": "Announcements"
+      "challenge": "Challenge"
     },
-    "score": "Score",
-    "score_formatter": "{value} pts",
     "score_table": {
-      "rank_organization": "Rank",
-      "rank_total": "Total Rankings",
+      "team": "Team",
       "score": "Score",
+      "rank_total": "Total Rankings",
       "score_total": "Score",
       "solved_count": "Solved",
-      "team": "Team"
+      "rank_organization": "Rank"
     },
-    "traffic": "Traffic File"
-  },
-  "notification": {
-    "ended": "Match has ended",
-    "event_connection_succeed": "Real-Time Event Connection Successful",
-    "event_fetch_failed": "Failed to get event",
-    "joined": "Registration successful",
-    "left": "Cancellation successful",
-    "no_invite_code": "Invitation code cannot be empty",
-    "no_organization": "Please select the organization",
-    "no_team": "Please select the team to join",
-    "not_started": "Game not yet started",
-    "notice_fetch_failed": "Failed to get notification",
-    "select_chal_and_part": "Please select topics and teams first",
-    "submission_connection_succeed": "Connection submitted in real time",
-    "submission_fetch_failed": "Failed to get submission",
-    "suspended": "You have been banned"
-  },
-  "participation": {
-    "actions": {
-      "accepted": "Approve",
-      "pending": "Awaiting Review",
-      "rejected": "Re-Sign Up",
-      "suspended": "Banning",
-      "unsubmitted": "Enrollment"
-    },
-    "alert": {
-      "not_started": {
-        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
-        "mobile": "Please use computer to play and see the details of the match.",
-        "title": "Game not yet started"
-      },
-      "pending": {
-        "content": "Please wait for review results",
-        "title": "You have successfully registered as a member of team {{team}}"
-      },
-      "rejected": {
-        "content": "Please make sure you are eligible to re-register after you meet your requirements",
-        "title": "Your entry request was not approved"
-      },
-      "suspended": {
-        "content": "If you hear any objection, please contact the administrator to make an appeal",
-        "title": "Your team {{team} } has been suspended"
-      },
-      "team_required": {
-        "content": "You didn't join any team, please create and join a team on the <1> Team Management </1> page.",
-        "title": "Unable to register at this time"
-      }
-    },
-    "status": {
-      "accepted": "Approve",
-      "pending": "Pending approval",
-      "rejected": "Review not approved",
-      "suspended": "Banning"
-    }
-  },
-  "tab": {
-    "challenge": "Game problem",
-    "monitor": {
-      "cheatinfo": "Cheats",
-      "events": "Event Monitor",
-      "index": "Game monitoring",
-      "submissions": "Commits",
-      "traffic": "Traffic Capture"
-    },
-    "scoreboard": "Leaderboard"
-  },
-  "tag": {
-    "hidden": "Hidden",
-    "individual": "Personal",
-    "limited": "{{count}} players",
-    "mutiplayer": "Team"
+    "score_formatter": "{value} pts"
   },
   "title": {
     "index": "Games"
+  },
+  "button": {
+    "join": "Join game",
+    "leave": "Leave game",
+    "finished": "Game ended",
+    "challenges": "Enter game",
+    "scoreboard": "Scoreboard",
+    "hide_solved": "Hide solved",
+    "login_required": "Please login",
+    "submit_writeup": "Submit writeup",
+    "download_all_traffic": "Download all listed traffic",
+    "download_submissionsheet": "Download all submissions"
+  },
+  "content": {
+    "join": {
+      "team": {
+        "label": "Select team to compete",
+        "description": "Please select a team to participate in a match that cannot be changed after selection"
+      },
+      "title": "Completion Registration Information",
+      "confirm": "Confirm Registration",
+      "content": [
+        "Are you sure you want to register for this game?",
+        "Once you sign up for and approve the match, the team will be locked and will no longer be able to make changes to people,<strong>invites and kicks the team.</strong> The team will be unlocked after the match ends or when the request is denied.",
+        "The number of players requires that the number of members of the team be selected, and<strong>whether or not the team participates in the match in that capacity.</strong>"
+      ],
+      "invite_code": {
+        "label": "Please enter the invitation code",
+        "description": "This match opens the invitation match. Enrollment needs to provide an invitation code."
+      },
+      "organization": {
+        "label": "Select Organization",
+        "description": "This match has more than one participant. Please select your organization"
+      }
+    },
+    "leave": {
+      "confirm": "Confirm Cancel Registration",
+      "content": [
+        "Are you sure you want to exit this match?",
+        "The team participation information will be deleted after exiting if the number of people is empty."
+      ]
+    },
+    "end_time": "End Time",
+    "no_cheat": {
+      "title": "No team cheats yet",
+      "comment": "It seems to be true for all"
+    },
+    "no_notice": "No notifications",
+    "team_view": {
+      "label": "Team View",
+      "description": "Use team view to display cheats"
+    },
+    "all_solved": {
+      "title": "All topics were untouched!",
+      "comment": "Perhaps more difficult challenges are waiting for you in……"
+    },
+    "game_ended": "The game has ended",
+    "no_traffic": {
+      "title": "No data captures enabled",
+      "comment": "Requires both platform configuration and title to be enabled"
+    },
+    "start_time": "Start Time",
+    "no_challenge": "Ouch! No topics available for this match with……",
+    "joined_status": "<strong>{{count}}</strong> teams have already registered",
+    "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
+    "game_lasts_long": "Match will also be an employee",
+    "scoreboard_note": "Note：is ranked in time",
+    "hide_container_events": {
+      "label": "Hide container events",
+      "description": "Hide container starting/destruction events"
+    }
+  },
+  "notification": {
+    "left": "Cancellation successful",
+    "ended": "Match has ended",
+    "joined": "Registration successful",
+    "no_team": "Please select the team to join",
+    "suspended": "You have been banned",
+    "not_started": "Game not yet started",
+    "no_invite_code": "Invitation code cannot be empty",
+    "no_organization": "Please select the organization",
+    "event_fetch_failed": "Failed to get event",
+    "notice_fetch_failed": "Failed to get notification",
+    "select_chal_and_part": "Please select topics and teams first",
+    "submission_fetch_failed": "Failed to get submission",
+    "event_connection_succeed": "Real-Time Event Connection Successful",
+    "submission_connection_succeed": "Connection submitted in real time"
+  },
+  "participation": {
+    "alert": {
+      "pending": {
+        "title": "You have successfully registered as a member of team {{team}}",
+        "content": "Please wait for review results"
+      },
+      "rejected": {
+        "title": "Your entry request was not approved",
+        "content": "Please make sure you are eligible to re-register after you meet your requirements"
+      },
+      "suspended": {
+        "title": "Your team {{team} } has been suspended",
+        "content": "If you hear any objection, please contact the administrator to make an appeal"
+      },
+      "not_started": {
+        "title": "Game not yet started",
+        "mobile": "Please use computer to play and see the details of the match.",
+        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start."
+      },
+      "team_required": {
+        "title": "Unable to register at this time",
+        "content": "You didn't join any team, please create and join a team on the <1> Team Management </1> page."
+      }
+    },
+    "status": {
+      "pending": "Pending approval",
+      "accepted": "Approve",
+      "rejected": "Review not approved",
+      "suspended": "Banning"
+    },
+    "actions": {
+      "pending": "Awaiting Review",
+      "accepted": "Approve",
+      "rejected": "Re-Sign Up",
+      "suspended": "Banning",
+      "unsubmitted": "Enrollment"
+    }
   }
 }

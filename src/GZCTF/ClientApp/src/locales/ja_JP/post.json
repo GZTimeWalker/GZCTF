@@ -1,26 +1,26 @@
 {
+  "label": {
+    "tag": "記事タグ",
+    "title": "記事タイトル",
+    "add_tag": "+ タグ「{{query}}」を追加する",
+    "content": "記事内容",
+    "summary": "記事要約"
+  },
+  "title": {
+    "index": "記事"
+  },
   "button": {
-    "delete": "記事を削除",
+    "new": "新規記事",
     "edit": "記事の編集",
     "goto": "記事に移動",
-    "new": "新規記事",
-    "save": "記事を保存"
+    "save": "記事を保存",
+    "delete": "記事を削除"
   },
   "content": {
     "metadata": "{{author}} が {{date}} に公開されました"
   },
-  "label": {
-    "add_tag": "+ タグ「{{query}}」を追加する",
-    "content": "記事内容",
-    "summary": "記事要約",
-    "tag": "記事タグ",
-    "title": "記事タイトル"
-  },
   "notification": {
-    "created": "記事が作成されました",
-    "saved": "記事が保存されました"
-  },
-  "title": {
-    "index": "記事"
+    "saved": "記事が保存されました",
+    "created": "記事が作成されました"
   }
 }

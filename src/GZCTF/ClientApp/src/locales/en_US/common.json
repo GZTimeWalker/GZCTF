@@ -29,14 +29,13 @@
     }
   },
   "error": {
+    "empty": "Content can't be empty",
+    "unknown": "Unknown error",
     "try_later": "Please try again later",
+    "no_change": "There seems to be no change",
     "check_input": "Please check input",
     "encountered": "Problems encountered",
     "param_error": "Parameter error, please check",
-    "unknown": "Unknown error",
-    "empty": "Content can't be empty",
-    "no_change": "There seems to be no change",
-    "request_too_frequent": "Too often requests",
     "file_invalid": {
       "title": "File loading failed",
       "message": "Please check file format and size"
@@ -44,6 +43,7 @@
     "param_invalid": "Invalid argument",
     "param_missing": "Missing parameter",
     "param_unknown": "Unknown parameter",
+    "request_too_frequent": "Too often requests",
     "invalid_username_or_password": "Wrong username or password"
   },
   "modal": {
@@ -53,18 +53,20 @@
     "confirm_delete": "Confirm delete",
     "confirm_update": "Confirm modification"
   },
-  "avatar": {
-    "save": "Save Avatar",
-    "uploaded": "Avatar updated",
-    "uploading": "Uploading avatar",
-    "upload_failed": "Avatar update failed"
-  },
   "label": {
     "time": "Time",
     "user": "User",
     "team": "Team",
     "flag": "flag",
+    "game": "Match",
+    "ip": "IP",
     "challenge": "Challenge"
+  },
+  "avatar": {
+    "save": "Save Avatar",
+    "uploaded": "Avatar updated",
+    "uploading": "Uploading avatar",
+    "upload_failed": "Avatar update failed"
   },
   "content": {
     "404": {
@@ -82,8 +84,8 @@
         "avatar": "avatar",
         "poster": "poster"
       },
-      "content": "Drag and drop an image or click here to select {{type}}",
-      "limit": "Please select an image less than 3MB"
+      "limit": "Please select an image less than 3MB",
+      "content": "Drag and drop an image or click here to select {{type}}"
     }
   }
 }
