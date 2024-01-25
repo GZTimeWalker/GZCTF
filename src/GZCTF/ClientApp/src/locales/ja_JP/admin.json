@@ -5,9 +5,9 @@
       "info": "情報編集",
       "index": "ゲーム管理",
       "review": "チーム承認",
-      "notices": "ゲームお知らせ",
+      "notices": "お知らせ",
       "writeups": "記事",
-      "challenges": "チャレンジ管理"
+      "challenges": "チャレンジ"
     },
     "teams": "チーム管理",
     "users": "ユーザー管理",
@@ -21,15 +21,15 @@
     },
     "games": {
       "public": "公開",
-      "summary": "はじめに"
+      "summary": "概要"
     },
     "teams": {
       "members": "メンバー",
-      "bio": "署名"
+      "bio": "一言"
     },
     "users": {
       "active": "有効",
-      "role": "ユーザーの役割",
+      "role": "ユーザー権限",
       "last_visit": "最終アクセス日時"
     }
   },
@@ -48,7 +48,7 @@
     "games": {
       "delete": "ゲームを削除",
       "copy_public_key": "公開鍵をコピー",
-      "new": "新しいレース"
+      "new": "新規ゲーム"
     },
     "notices": {
       "new": "新規お知らせ",
@@ -268,23 +268,23 @@
         "title": "アカウントポリシー",
         "auto_active": {
           "label": "登録後に自動で有効化する",
-          "description": "新規ユーザーとして自動有効"
+          "description": "アカウント新規登録後自動的にアクティブにします"
         },
         "use_captcha": {
-          "label": "キャプチャ(CAPTCHA)を利用可とする場合チェック",
-          "description": "ログイン、登録、復元時にキャンパステストがあるかどうかを確認しますか？"
+          "label": "キャプチャ検証を使用",
+          "description": "ログイン、登録、パスワードの再設定時にキャプチャ検証を行います"
         },
         "allow_register": {
           "label": "新しいユーザー登録を許可",
-          "description": "ユーザによる新規アカウントの登録を許可"
+          "description": "アカウントの新規登録を許可します"
         },
         "email_domain_list": {
           "label": "メールドメインのホワイトリスト",
           "description": "登録を許可するメールドメインの複数ドメインリスト。空白の場合は空のままにします。"
         },
         "email_confirmation_required": {
-          "label": "電子メールによる検証が必要です。",
-          "description": "メールアドレスを確認"
+          "label": "メール認証を要求",
+          "description": "アカウント新規登録するときメールの認証を要求します"
         }
       },
       "platform": {
