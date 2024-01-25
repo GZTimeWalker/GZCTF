@@ -269,11 +269,11 @@ const Submissions: FC = () => {
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
                 </th>
-                <th style={{ width: '8rem' }}>{t('game.label.time')}</th>
-                <th style={{ minWidth: '5rem' }}>{t('game.label.team')}</th>
-                <th style={{ minWidth: '5rem' }}>{t('game.label.user')}</th>
-                <th style={{ minWidth: '3rem' }}>{t('game.label.challenge')}</th>
-                <th className={cx(classes.mono)}>{t('game.label.flag')}</th>
+                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
+                <th style={{ minWidth: '5rem' }}>{t('common.label.team')}</th>
+                <th style={{ minWidth: '5rem' }}>{t('common.label.user')}</th>
+                <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
+                <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>

@@ -435,17 +435,18 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             variant="outline"
             onClick={() => {
               modals.openConfirmModal({
-                title: t(
-                  isCaptain
-                    ? 'team.content.disband.confirm.title'
-                    : 'team.content.leave.confirm.title'
-                ),
-
+                title: isCaptain
+                  ? t('team.content.disband.confirm.title')
+                  : t('team.content.leave.confirm.title'),
                 children: (
                   <Text size="sm">
-                    {t(isCaptain ? 'team.content.disband.confirm' : 'team.content.leave.confirm', {
-                      team: teamInfo?.name,
-                    })}
+                    {isCaptain
+                      ? t('team.content.disband.confirm.message', {
+                          team: teamInfo?.name,
+                        })
+                      : t('team.content.leave.confirm.message', {
+                          team: teamInfo?.name,
+                        })}
                   </Text>
                 ),
                 onConfirm: isCaptain ? onConfirmDisbandTeam : onConfirmLeaveTeam,
@@ -455,7 +456,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
               })
             }}
           >
-            {t(isCaptain ? 'team.button.disband' : 'team.button.leave')}
+            {isCaptain ? t('team.button.disband') : t('team.button.leave')}
           </Button>
           <Button fullWidth disabled={!isCaptain} onClick={onSaveChange}>
             {t('team.button.save')}

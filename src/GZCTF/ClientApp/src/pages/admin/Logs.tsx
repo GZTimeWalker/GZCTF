@@ -101,7 +101,7 @@ const Logs: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '实时日志连接成功',
+          message: t('admin.notification.logs.realtime.connected'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
@@ -206,11 +206,11 @@ const Logs: FC = () => {
           <Table className={cx(classes.table, noPaddingClasses.table)}>
             <thead>
               <tr>
-                <th style={{ width: '8rem' }}>时间</th>
-                <th style={{ width: '10rem' }}>IP</th>
-                <th style={{ width: '6rem' }}>用户名</th>
-                <th>信息</th>
-                <th style={{ width: '3rem' }}>状态</th>
+                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
+                <th style={{ width: '10rem' }}>{t('admin.label.logs.ip')}</th>
+                <th style={{ width: '6rem' }}>{t('common.label.user')}</th>
+                <th>{t('admin.label.logs.message')}</th>
+                <th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>

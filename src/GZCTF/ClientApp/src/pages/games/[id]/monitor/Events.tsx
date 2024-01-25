@@ -156,8 +156,8 @@ const Events: FC = () => {
       <Group position="apart" w="100%">
         <Switch
           label={SwitchLabel(
-            t('game.button.hide_container_events.title'),
-            t('game.button.hide_container_events.desrc')
+            t('game.content.hide_container_events.label'),
+            t('game.content.hide_container_events.description')
           )}
           checked={hideContainerEvents}
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}

@@ -67,7 +67,7 @@ const Traffic: FC = () => {
       showNotification({
         color: 'red',
         title: t('common.error.encountered'),
-        message: t('game.notification.no_chal_or_part'),
+        message: t('game.notification.select_chal_and_part'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -103,7 +103,7 @@ const Traffic: FC = () => {
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
                 <Text size="md" weight={700}>
-                  {t('game.label.challenge')}
+                  {t('common.label.challenge')}
                 </Text>
               </Group>
               <Divider size="sm" />
@@ -118,7 +118,7 @@ const Traffic: FC = () => {
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
                 <Text size="md" weight={700}>
-                  {t('game.label.team')}
+                  {t('common.label.team')}
                 </Text>
               </Group>
               <Divider size="sm" />

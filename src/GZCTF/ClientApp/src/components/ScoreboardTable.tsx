@@ -134,7 +134,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
         {[
           t('game.label.score_table.rank_total'),
           t('game.label.score_table.rank_organization'),
-          t('game.label.score_table.team'),
+          t('common.label.team'),
           t('game.label.score_table.solved_count'),
           t('game.label.score_table.score_total'),
         ].map((header, idx) => (
@@ -310,12 +310,12 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
             <Select
               defaultValue="all"
               data={[
-                { value: 'all', label: t('game.label.score_table.rank_all_organization') },
+                { value: 'all', label: t('game.label.score_table.rank_total') },
                 ...Object.keys(scoreboard.timeLines)
                   .filter((k) => k !== 'all')
                   .map((o) => ({
                     value: o,
-                    label: o === 'all' ? t('game.label.score_table.rank_all_organization') : o,
+                    label: o === 'all' ? t('game.label.score_table.rank_total') : o,
                   })),
               ]}
               value={organization}
@@ -371,7 +371,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                     {iconMap.get(type)}
                     <Text size="sm">{bloodData.get(type)?.name}</Text>
                     <Text size="xs" c="dimmed">
-                      {bloodData.get(type)?.desrc}
+                      {bloodData.get(type)?.descr}
                     </Text>
                   </Group>
                 ))}

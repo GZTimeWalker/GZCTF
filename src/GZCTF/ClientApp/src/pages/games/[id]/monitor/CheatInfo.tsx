@@ -373,13 +373,13 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
         <Table className={classes.table}>
           <thead>
             <tr>
-              <th style={{ width: '8rem' }}>{t('game.label.time')}</th>
+              <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
               <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.owned_team')}</th>
               <th />
               <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_team')}</th>
               <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_user')}</th>
-              <th style={{ minWidth: '3rem' }}>{t('game.label.challenge')}</th>
-              <th className={cx(classes.mono)}>{t('game.label.flag')}</th>
+              <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
+              <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
@@ -438,7 +438,10 @@ const CheatInfo: FC = () => {
     <WithGameMonitorTab>
       <Group position="apart" w="100%">
         <Switch
-          label={SwitchLabel(t('game.button.team_view.title'), t('game.button.team_view.desrc'))}
+          label={SwitchLabel(
+            t('game.content.team_view.label'),
+            t('game.content.team_view.description')
+          )}
           checked={teamView}
           onChange={(e) => setTeamView(e.currentTarget.checked)}
         />

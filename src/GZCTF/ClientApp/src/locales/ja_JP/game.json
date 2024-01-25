@@ -106,7 +106,7 @@
     "event_fetch_failed": "イベントを取得できませんでした",
     "joined": "申し込み成功",
     "left": "申し込みをキャンセルしました",
-    "no_chal_or_part": "先にチャレンジとチームを選んでください",
+    "select_chal_and_part": "先にチャレンジとチームを選んでください",
     "no_invite_code": "招待コードは空にできません",
     "no_organization": "参加する組織を選択してください",
     "no_team": "参加するチームを選択してください",

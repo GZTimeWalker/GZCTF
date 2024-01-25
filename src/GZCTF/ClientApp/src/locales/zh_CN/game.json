@@ -4,20 +4,12 @@
     "download_all_traffic": "下载全部列出流量",
     "download_submissionsheet": "下载全部提交",
     "finished": "比赛结束",
-    "hide_container_events": {
-      "desrc": "隐藏容器启动/销毁事件",
-      "title": "隐藏容器事件"
-    },
     "hide_solved": "隐藏已解出",
     "join": "报名参赛",
     "leave": "取消报名",
     "login_required": "请先登录",
     "scoreboard": "查看榜单",
-    "submit_writeup": "提交 Writeup",
-    "team_view": {
-      "desrc": "使用队伍视图展示作弊信息",
-      "title": "队伍视图"
-    }
+    "submit_writeup": "提交 Writeup"
   },
   "content": {
     "all_solved": {
@@ -27,6 +19,10 @@
     "end_time": "结束时间",
     "game_ended": "比赛已结束",
     "game_lasts_long": "比赛还会很久",
+    "hide_container_events": {
+      "description": "隐藏容器启动/销毁事件",
+      "label": "隐藏容器事件"
+    },
     "join": {
       "confirm": "确认报名",
       "content": [
@@ -65,16 +61,18 @@
     },
     "scoreboard_note": "注：同分队伍以得分时间先后排名",
     "scoreboard_tip": "Tip: 可以按左右方向键滚动题目列表哦~",
-    "start_time": "开始时间"
+    "start_time": "开始时间",
+    "team_view": {
+      "description": "使用队伍视图展示作弊信息",
+      "label": "队伍视图"
+    }
   },
   "label": {
-    "challenge": "题目",
     "cheat_info": {
       "owned_team": "原始队伍",
       "submit_team": "提交队伍",
       "submit_user": "提交用户"
     },
-    "flag": "flag",
     "notice_type": {
       "all": "全部",
       "challenge": "题目",
@@ -84,7 +82,6 @@
     "score": "分数",
     "score_formatter": "{value} 分",
     "score_table": {
-      "rank_all_organization": "总排行",
       "rank_organization": "排名",
       "rank_total": "总排名",
       "score": "得分",
@@ -92,10 +89,7 @@
       "solved_count": "解题数量",
       "team": "战队"
     },
-    "team": "队伍",
-    "time": "时间",
-    "traffic": "流量文件",
-    "user": "用户"
+    "traffic": "流量文件"
   },
   "notification": {
     "ended": "比赛已经结束",
@@ -103,12 +97,12 @@
     "event_fetch_failed": "获取事件失败",
     "joined": "报名成功",
     "left": "取消报名成功",
-    "no_chal_or_part": "请先选择题目和队伍",
     "no_invite_code": "邀请码不能为空",
     "no_organization": "请选择参赛组织",
     "no_team": "请选择参赛队伍",
     "not_started": "比赛尚未开始",
     "notice_fetch_failed": "获取通知失败",
+    "select_chal_and_part": "请先选择题目和队伍",
     "submission_connection_succeed": "实时提交连接成功",
     "submission_fetch_failed": "获取提交失败",
     "suspended": "您已被禁赛"

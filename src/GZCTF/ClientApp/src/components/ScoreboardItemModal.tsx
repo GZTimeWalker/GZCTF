@@ -159,7 +159,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                               chal.type &&
                               BloodsTypes.includes(chal.type) && (
                                 <Text span c="dimmed" className={classes.mono}>
-                                  {` (${bloodBonusMap.get(chal.type)?.desrc})`}
+                                  {` (${bloodBonusMap.get(chal.type)?.descr})`}
                                 </Text>
                               )}
                           </td>

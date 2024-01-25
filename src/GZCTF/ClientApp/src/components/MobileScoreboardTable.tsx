@@ -100,12 +100,12 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
           <Select
             defaultValue="all"
             data={[
-              { value: 'all', label: t('game.label.score_table.rank_all_organization') },
+              { value: 'all', label: t('game.label.score_table.rank_total') },
               ...Object.keys(scoreboard.timeLines)
                 .filter((k) => k !== 'all')
                 .map((o) => ({
                   value: o,
-                  label: o === 'all' ? t('game.label.score_table.rank_all_organization') : o,
+                  label: o === 'all' ? t('game.label.score_table.rank_total') : o,
                 })),
             ]}
             value={organization}

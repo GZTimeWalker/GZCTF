@@ -200,7 +200,19 @@
     "nothing_found": "什么都没有找到",
     "show_all": "显示全部"
   },
+  "label": {
+    "logs": {
+      "message": "信息",
+      "ip": "IP",
+      "status": "状态"
+    }
+  },
   "notification": {
+    "logs": {
+      "realtime": {
+        "connected": "实时日志连接成功"
+      }
+    },
     "games": {
       "challenges": {
         "attachment": {

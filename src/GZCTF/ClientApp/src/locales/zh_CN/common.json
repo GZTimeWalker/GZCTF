@@ -59,6 +59,13 @@
     "uploading": "正在上传头像",
     "upload_failed": "头像更新失败"
   },
+  "label": {
+    "time": "时间",
+    "user": "用户",
+    "team": "队伍",
+    "flag": "flag",
+    "challenge": "题目"
+  },
   "content": {
     "404": {
       "text": "一处荒芜，为何于此驻足",

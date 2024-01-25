@@ -106,7 +106,7 @@
     "event_fetch_failed": "Failed to get event",
     "joined": "Registration successful",
     "left": "Cancellation successful",
-    "no_chal_or_part": "Please select topics and teams first",
+    "select_chal_and_part": "Please select topics and teams first",
     "no_invite_code": "Invitation code cannot be empty",
     "no_organization": "Please select the organization",
     "no_team": "Please select the team to join",

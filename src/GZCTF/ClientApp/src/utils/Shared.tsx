@@ -325,7 +325,7 @@ export const useParticipationStatusMap = () => {
 
 export interface BonusLabel {
   name: string
-  desrc: string
+  descr: string
 }
 
 export class BloodBonus {
@@ -381,7 +381,7 @@ export const useBonusLabels = (bonus: BloodBonus) => {
         type,
         {
           name: BonusLabelNameMap.get(type),
-          desrc: `+${bonus_value / (BloodBonus.base / 100)}%`,
+          descr: `+${bonus_value / (BloodBonus.base / 100)}%`,
         } as BonusLabel,
       ]
     })
