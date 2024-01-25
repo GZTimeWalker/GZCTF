@@ -1,73 +1,24 @@
 {
-  "button": {
-    "challenges": "进入比赛",
-    "download_all_traffic": "下载全部列出流量",
-    "download_submissionsheet": "下载全部提交",
-    "finished": "比赛结束",
-    "hide_solved": "隐藏已解出",
-    "join": "报名参赛",
-    "leave": "取消报名",
-    "login_required": "请先登录",
-    "scoreboard": "查看榜单",
-    "submit_writeup": "提交 Writeup"
+  "tab": {
+    "monitor": {
+      "index": "比赛监控",
+      "events": "事件监控",
+      "traffic": "流量捕获",
+      "cheatinfo": "作弊信息",
+      "submissions": "提交记录"
+    },
+    "challenge": "比赛题目",
+    "scoreboard": "积分总榜"
   },
-  "content": {
-    "all_solved": {
-      "comment": "或许还有更难的挑战在等着你……",
-      "title": "题目都被解出啦！"
-    },
-    "end_time": "结束时间",
-    "game_ended": "比赛已结束",
-    "game_lasts_long": "比赛还会很久",
-    "hide_container_events": {
-      "description": "隐藏容器启动/销毁事件",
-      "label": "隐藏容器事件"
-    },
-    "join": {
-      "confirm": "确认报名",
-      "content": [
-        "你确定要报名此比赛吗？",
-        "报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动，<strong>即邀请、踢出队员。</strong> 队伍将在比赛结束后或驳回请求时解锁。",
-        "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
-      ],
-      "invite_code": {
-        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码",
-        "label": "请输入邀请码"
-      },
-      "organization": {
-        "description": "本场比赛具有多个参赛组织，请选择你的参赛组织",
-        "label": "选择参赛组织"
-      },
-      "team": {
-        "description": "请选择一个队伍参与比赛，选定后不可更改",
-        "label": "选择参赛队伍"
-      },
-      "title": "补全报名信息"
-    },
-    "joined_status": "<strong>{{count}}</strong>支队伍已报名",
-    "leave": {
-      "confirm": "确认取消报名",
-      "content": ["你确定要退出此比赛吗？", "退出后如果队伍报名人数为空，队伍参与信息将被删除。"]
-    },
-    "no_challenge": "Ouch! 这个比赛还没有可用题目呢……",
-    "no_cheat": {
-      "comment": "看起来大家都很老实呢",
-      "title": "暂时没有队伍作弊信息"
-    },
-    "no_notice": "暂无通知",
-    "no_traffic": {
-      "comment": "需要平台配置和题目双重启用",
-      "title": "暂时没有启用流量捕获的题目"
-    },
-    "scoreboard_note": "注：同分队伍以得分时间先后排名",
-    "scoreboard_tip": "Tip: 可以按左右方向键滚动题目列表哦~",
-    "start_time": "开始时间",
-    "team_view": {
-      "description": "使用队伍视图展示作弊信息",
-      "label": "队伍视图"
-    }
+  "tag": {
+    "hidden": "比赛已隐藏",
+    "limited": "{{count}}人赛",
+    "individual": "个人赛",
+    "mutiplayer": "团队赛"
   },
   "label": {
+    "score": "分数",
+    "traffic": "流量文件",
     "cheat_info": {
       "owned_team": "原始队伍",
       "submit_team": "提交队伍",
@@ -75,94 +26,143 @@
     },
     "notice_type": {
       "all": "全部",
-      "challenge": "题目",
+      "game": "通知",
       "events": "动态",
-      "game": "通知"
+      "challenge": "题目"
     },
-    "score": "分数",
-    "score_formatter": "{value} 分",
     "score_table": {
-      "rank_organization": "排名",
-      "rank_total": "总排名",
+      "team": "战队",
       "score": "得分",
+      "rank_total": "总排名",
       "score_total": "总分",
       "solved_count": "解题数量",
-      "team": "战队"
+      "rank_organization": "排名"
     },
-    "traffic": "流量文件"
-  },
-  "notification": {
-    "ended": "比赛已经结束",
-    "event_connection_succeed": "实时事件连接成功",
-    "event_fetch_failed": "获取事件失败",
-    "joined": "报名成功",
-    "left": "取消报名成功",
-    "no_invite_code": "邀请码不能为空",
-    "no_organization": "请选择参赛组织",
-    "no_team": "请选择参赛队伍",
-    "not_started": "比赛尚未开始",
-    "notice_fetch_failed": "获取通知失败",
-    "select_chal_and_part": "请先选择题目和队伍",
-    "submission_connection_succeed": "实时提交连接成功",
-    "submission_fetch_failed": "获取提交失败",
-    "suspended": "您已被禁赛"
-  },
-  "participation": {
-    "actions": {
-      "accepted": "审核通过",
-      "pending": "等待审核",
-      "rejected": "重新报名",
-      "suspended": "禁赛中",
-      "unsubmitted": "报名参赛"
-    },
-    "alert": {
-      "not_started": {
-        "content": "你已经以队伍 {{team}} 成员身份成功报名并通过审核，请在比赛开始后进入比赛页面。",
-        "mobile": "请使用电脑端参与比赛及查看比赛详情。",
-        "title": "比赛尚未开始"
-      },
-      "pending": {
-        "content": "请耐心等待审核结果",
-        "title": "你已经以队伍 {{team}} 成员身份成功报名"
-      },
-      "rejected": {
-        "content": "请确保具备参赛资格和满足参赛要求后重新报名",
-        "title": "你的参赛申请未通过"
-      },
-      "suspended": {
-        "content": "如有异议，请联系管理员进行申诉",
-        "title": "您的队伍 {{team} 已被禁赛"
-      },
-      "team_required": {
-        "content": "你没有加入任何队伍，请在<1>队伍管理</1>页面创建、加入队伍。",
-        "title": "当前无法报名"
-      }
-    },
-    "status": {
-      "accepted": "审核通过",
-      "pending": "待审核",
-      "rejected": "审核未通过",
-      "suspended": "禁赛中"
-    }
-  },
-  "tab": {
-    "challenge": "比赛题目",
-    "monitor": {
-      "cheatinfo": "作弊信息",
-      "events": "事件监控",
-      "index": "比赛监控",
-      "submissions": "提交记录",
-      "traffic": "流量捕获"
-    },
-    "scoreboard": "积分总榜"
-  },
-  "tag": {
-    "hidden": "比赛已隐藏",
-    "individual": "个人赛",
-    "limited": "{{count}}人赛",
-    "mutiplayer": "团队赛"
+    "score_formatter": "{value} 分"
   },
   "title": {
     "index": "赛事"
+  },
+  "button": {
+    "join": "报名参赛",
+    "leave": "取消报名",
+    "finished": "比赛结束",
+    "challenges": "进入比赛",
+    "scoreboard": "查看榜单",
+    "hide_solved": "隐藏已解出",
+    "login_required": "请先登录",
+    "submit_writeup": "提交 Writeup",
+    "download_all_traffic": "下载全部列出流量",
+    "download_submissionsheet": "下载全部提交"
+  },
+  "content": {
+    "join": {
+      "team": {
+        "label": "选择参赛队伍",
+        "description": "请选择一个队伍参与比赛，选定后不可更改"
+      },
+      "title": "补全报名信息",
+      "confirm": "确认报名",
+      "content": [
+        "你确定要报名此比赛吗？",
+        "报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动，<strong>即邀请、踢出队员。</strong> 队伍将在比赛结束后或驳回请求时解锁。",
+        "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
+      ],
+      "invite_code": {
+        "label": "请输入邀请码",
+        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码"
+      },
+      "organization": {
+        "label": "选择参赛组织",
+        "description": "本场比赛具有多个参赛组织，请选择你的参赛组织"
+      }
+    },
+    "leave": {
+      "confirm": "确认取消报名",
+      "content": ["你确定要退出此比赛吗？", "退出后如果队伍报名人数为空，队伍参与信息将被删除。"]
+    },
+    "end_time": "结束时间",
+    "no_cheat": {
+      "title": "暂时没有队伍作弊信息",
+      "comment": "看起来大家都很老实呢"
+    },
+    "no_notice": "暂无通知",
+    "team_view": {
+      "label": "队伍视图",
+      "description": "使用队伍视图展示作弊信息"
+    },
+    "all_solved": {
+      "title": "题目都被解出啦！",
+      "comment": "或许还有更难的挑战在等着你……"
+    },
+    "game_ended": "比赛已结束",
+    "no_traffic": {
+      "title": "暂时没有启用流量捕获的题目",
+      "comment": "需要平台配置和题目双重启用"
+    },
+    "start_time": "开始时间",
+    "no_challenge": "Ouch! 这个比赛还没有可用题目呢……",
+    "joined_status": "<strong>{{count}}</strong>支队伍已报名",
+    "scoreboard_tip": "Tip: 可以按左右方向键滚动题目列表哦~",
+    "game_lasts_long": "比赛还会很久",
+    "scoreboard_note": "注：同分队伍以得分时间先后排名",
+    "hide_container_events": {
+      "label": "隐藏容器事件",
+      "description": "隐藏容器启动/销毁事件"
+    }
+  },
+  "notification": {
+    "left": "取消报名成功",
+    "ended": "比赛已经结束",
+    "joined": "报名成功",
+    "no_team": "请选择参赛队伍",
+    "suspended": "您已被禁赛",
+    "not_started": "比赛尚未开始",
+    "no_invite_code": "邀请码不能为空",
+    "no_organization": "请选择参赛组织",
+    "event_fetch_failed": "获取事件失败",
+    "notice_fetch_failed": "获取通知失败",
+    "select_chal_and_part": "请先选择题目和队伍",
+    "submission_fetch_failed": "获取提交失败",
+    "event_connection_succeed": "实时事件连接成功",
+    "submission_connection_succeed": "实时提交连接成功"
+  },
+  "participation": {
+    "alert": {
+      "pending": {
+        "title": "你已经以队伍 {{team}} 成员身份成功报名",
+        "content": "请耐心等待审核结果"
+      },
+      "rejected": {
+        "title": "你的参赛申请未通过",
+        "content": "请确保具备参赛资格和满足参赛要求后重新报名"
+      },
+      "suspended": {
+        "title": "您的队伍 {{team} 已被禁赛",
+        "content": "如有异议，请联系管理员进行申诉"
+      },
+      "not_started": {
+        "title": "比赛尚未开始",
+        "mobile": "请使用电脑端参与比赛及查看比赛详情。",
+        "content": "你已经以队伍 {{team}} 成员身份成功报名并通过审核，请在比赛开始后进入比赛页面。"
+      },
+      "team_required": {
+        "title": "当前无法报名",
+        "content": "你没有加入任何队伍，请在<1>队伍管理</1>页面创建、加入队伍。"
+      }
+    },
+    "status": {
+      "pending": "待审核",
+      "accepted": "审核通过",
+      "rejected": "审核未通过",
+      "suspended": "禁赛中"
+    },
+    "actions": {
+      "pending": "等待审核",
+      "accepted": "审核通过",
+      "rejected": "重新报名",
+      "suspended": "禁赛中",
+      "unsubmitted": "报名参赛"
+    }
   }
 }

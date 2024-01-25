@@ -30,6 +30,7 @@ export const useLanguage = () => {
     if (supportedLanguages.includes(lang)) {
       setLanguageInner(lang)
     } else {
+      console.warn(`Language ${lang} is not supported, fallback to zh_CN`)
       setLanguageInner('zh_CN')
     }
   }

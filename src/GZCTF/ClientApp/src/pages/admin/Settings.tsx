@@ -64,17 +64,17 @@ const Configs: FC = () => {
         }}
         disabled={!saved}
       >
-        保存配置
+        {t('admin.button.back')}
       </Button>
       <Stack w="100%" spacing="xl">
         <Stack>
-          <Title order={2}>平台设置</Title>
+          <Title order={2}>{t('admin.content.settings.platform.title')}</Title>
           <Divider />
           <Grid columns={4}>
             <Grid.Col span={1}>
               <TextInput
-                label="平台名称"
-                description="平台名称显示后跟 ::CTF 字段"
+                label={t('admin.content.settings.platform.name.label')}
+                description={t('admin.content.settings.platform.name.description')}
                 placeholder="GZ"
                 value={globalConfig?.title ?? ''}
                 onChange={(e) => {
@@ -84,8 +84,8 @@ const Configs: FC = () => {
             </Grid.Col>
             <Grid.Col span={1}>
               <TextInput
-                label="平台标语"
-                description="平台标语将显示在页面顶部和关于页面"
+                label={t('admin.content.settings.platform.slogan.label')}
+                description={t('admin.content.settings.platform.slogan.description')}
                 placeholder="Hack for fun not for profit"
                 value={globalConfig?.slogan ?? ''}
                 onChange={(e) => {
@@ -95,9 +95,9 @@ const Configs: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <TextInput
-                label="页脚附加信息"
-                description="显示在网页底部的附加信息，支持 Markdown 语法, <mbr/> 会在移动设备中替换为 <br/>"
-                placeholder="`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)"
+                label={t('admin.content.settings.platform.footer.label')}
+                description={t('admin.content.settings.platform.footer.description')}
+                placeholder={t('admin.placeholder.settings.footer')}
                 value={globalConfig?.footerInfo ?? ''}
                 onChange={(e) => {
                   setGlobalConfig({ ...(globalConfig ?? {}), footerInfo: e.currentTarget.value })
@@ -108,13 +108,16 @@ const Configs: FC = () => {
         </Stack>
 
         <Stack>
-          <Title order={2}>账户策略</Title>
+          <Title order={2}>{t('admin.content.settings.account.title')}</Title>
           <Divider />
           <SimpleGrid cols={4}>
             <Switch
               checked={accountPolicy?.allowRegister ?? true}
               disabled={disabled}
-              label={SwitchLabel('允许新用户注册', '是否允许用户注册新账户')}
+              label={SwitchLabel(
+                t('admin.content.settings.account.allow_register.label'),
+                t('admin.content.settings.account.allow_register.description')
+              )}
               onChange={(e) =>
                 setAccountPolicy({
                   ...(accountPolicy ?? {}),
@@ -125,7 +128,10 @@ const Configs: FC = () => {
             <Switch
               checked={accountPolicy?.emailConfirmationRequired ?? false}
               disabled={disabled}
-              label={SwitchLabel('需要邮箱确认', '用户是否需要邮件确认身份')}
+              label={SwitchLabel(
+                t('admin.content.settings.account.email_confirmation_required.label'),
+                t('admin.content.settings.account.email_confirmation_required.description')
+              )}
               onChange={(e) =>
                 setAccountPolicy({
                   ...(accountPolicy ?? {}),
@@ -136,7 +142,10 @@ const Configs: FC = () => {
             <Switch
               checked={accountPolicy?.activeOnRegister ?? true}
               disabled={disabled}
-              label={SwitchLabel('注册后自动激活', '是否在新用户注册后自动激活账户')}
+              label={SwitchLabel(
+                t('admin.content.settings.account.auto_active.label'),
+                t('admin.content.settings.account.auto_active.description')
+              )}
               onChange={(e) =>
                 setAccountPolicy({
                   ...(accountPolicy ?? {}),
@@ -147,7 +156,10 @@ const Configs: FC = () => {
             <Switch
               checked={accountPolicy?.useCaptcha ?? false}
               disabled={disabled}
-              label={SwitchLabel('启用验证码', '是否在登陆、注册和找回时进行校验')}
+              label={SwitchLabel(
+                t('admin.content.settings.account.use_captcha.label'),
+                t('admin.content.settings.account.use_captcha.description')
+              )}
               onChange={(e) =>
                 setAccountPolicy({
                   ...(accountPolicy ?? {}),
@@ -157,9 +169,9 @@ const Configs: FC = () => {
             />
           </SimpleGrid>
           <TextInput
-            label="可用邮箱域名列表"
-            description="允许注册的邮箱域名列表，多个域名用逗号分隔，留空则不限制"
-            placeholder="不限制注册域名"
+            label={t('admin.content.settings.account.email_domain_list.label')}
+            description={t('admin.content.settings.account.email_domain_list.description')}
+            placeholder={t('admin.placeholder.settings.email_domain_list')}
             value={accountPolicy?.emailDomainList ?? ''}
             onChange={(e) => {
               setAccountPolicy({ ...(accountPolicy ?? {}), emailDomainList: e.currentTarget.value })
@@ -168,15 +180,15 @@ const Configs: FC = () => {
         </Stack>
 
         <Stack>
-          <Title order={2}>比赛策略</Title>
+          <Title order={2}>{t('admin.content.settings.game.title')}</Title>
           <Divider />
           <SimpleGrid cols={2}>
             <Switch
               checked={containerPolicy?.autoDestroyOnLimitReached ?? true}
               disabled={disabled}
               label={SwitchLabel(
-                '自动销毁旧实例',
-                '是否在用户开启题目实例但达到上限时自动销毁旧实例'
+                t('admin.content.settings.game.auto_destroy.label'),
+                t('admin.content.settings.game.auto_destroy.description')
               )}
               onChange={(e) =>
                 setContainerPolicy({

@@ -1,8 +1,8 @@
 {
   "tag": {
-    "web": "Web",
-    "pwn": "Pwn",
     "ppc": "编程",
+    "pwn": "Pwn",
+    "web": "Web",
     "misc": "杂项",
     "crypto": "密码学",
     "mobile": "移动安全",
@@ -11,36 +11,36 @@
     "forensics": "取证",
     "blockchain": "区块链"
   },
-  "file_type": {
-    "none": "无附件",
-    "remote": "远程附件",
-    "local": "本地附件"
+  "type": {
+    "static_container": {
+      "desrc": "共用容器，任意 flag 均可提交",
+      "label": "静态容器"
+    },
+    "dynamic_container": {
+      "desrc": "自动生成下发 flag，每队均唯一",
+      "label": "动态容器"
+    },
+    "static_attachment": {
+      "desrc": "共用附件，任意 flag 均可提交",
+      "label": "静态附件"
+    },
+    "dynamic_attachment": {
+      "desrc": "按照队伍分发附件，需保证附件数量大于队伍数",
+      "label": "动态附件"
+    }
   },
   "bonus": {
     "first_blood": "一血",
-    "second_blood": "二血",
-    "third_blood": "三血"
-  },
-  "type": {
-    "static_container": {
-      "label": "静态容器",
-      "desrc": "共用容器，任意 flag 均可提交"
-    },
-    "static_attachment": {
-      "label": "静态附件",
-      "desrc": "共用附件，任意 flag 均可提交"
-    },
-    "dynamic_container": {
-      "label": "动态容器",
-      "desrc": "自动生成下发 flag，每队均唯一"
-    },
-    "dynamic_attachment": {
-      "label": "动态附件",
-      "desrc": "按照队伍分发附件，需保证附件数量大于队伍数"
-    }
+    "third_blood": "三血",
+    "second_blood": "二血"
   },
   "button": {
     "submit_flag": "提交 flag",
     "download_attachment": "下载附件"
+  },
+  "file_type": {
+    "none": "无附件",
+    "local": "本地附件",
+    "remote": "远程附件"
   }
 }

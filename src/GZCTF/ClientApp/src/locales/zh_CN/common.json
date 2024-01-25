@@ -29,14 +29,13 @@
     }
   },
   "error": {
+    "empty": "内容不能为空",
+    "unknown": "未知错误",
     "try_later": "请稍后再试",
+    "no_change": "似乎没有修改",
     "check_input": "请检查输入",
     "encountered": "遇到了问题",
     "param_error": "参数错误，请检查",
-    "unknown": "未知错误",
-    "empty": "内容不能为空",
-    "no_change": "似乎没有修改",
-    "request_too_frequent": "请求过于频繁",
     "file_invalid": {
       "title": "文件加载失败",
       "message": "请检查文件格式和大小"
@@ -44,6 +43,7 @@
     "param_invalid": "参数无效",
     "param_missing": "缺少参数",
     "param_unknown": "未知参数",
+    "request_too_frequent": "请求过于频繁",
     "invalid_username_or_password": "用户名或密码错误"
   },
   "modal": {
@@ -53,18 +53,18 @@
     "confirm_delete": "确认删除",
     "confirm_update": "确认修改"
   },
-  "avatar": {
-    "save": "保存头像",
-    "uploaded": "头像已更新",
-    "uploading": "正在上传头像",
-    "upload_failed": "头像更新失败"
-  },
   "label": {
     "time": "时间",
     "user": "用户",
     "team": "队伍",
     "flag": "flag",
     "challenge": "题目"
+  },
+  "avatar": {
+    "save": "保存头像",
+    "uploaded": "头像已更新",
+    "uploading": "正在上传头像",
+    "upload_failed": "头像更新失败"
   },
   "content": {
     "404": {
@@ -82,8 +82,8 @@
         "avatar": "头像",
         "poster": "海报"
       },
-      "content": "拖放图片或点击此处以选择{{type}}",
-      "limit": "请选择小于 3MB 的图片"
+      "limit": "请选择小于 3MB 的图片",
+      "content": "拖放图片或点击此处以选择{{type}}"
     }
   }
 }
