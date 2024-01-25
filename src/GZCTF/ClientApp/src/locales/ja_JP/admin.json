@@ -51,7 +51,7 @@
       "new": "新しいレース"
     },
     "notices": {
-      "new": "お知らせを作成",
+      "new": "新規お知らせ",
       "edit": "お知らせを編集",
       "delete": "お知らせを削除"
     },
@@ -59,7 +59,7 @@
       "download_all": "すべての記事をダウンロード"
     },
     "challenges": {
-      "new": "チャレンジを作成",
+      "new": "新規チャレンジ",
       "edit": "チャレンジを編集",
       "flag": {
         "add": "フラッグを追加",
@@ -75,7 +75,7 @@
         "uploading": "アップロード中……"
       },
       "test_container": {
-        "create": "テストコンテナーを作成",
+        "create": "新規テストコンテナー",
         "destroy": "テストコンテナーを破棄"
       }
     }
@@ -85,7 +85,7 @@
       "stats": "既に <1>{{current}}</1>/<1>{{total}}</1> チーム",
       "locked": "ロックされています",
       "unlocked": "アンロック済み",
-      "lock": "确定要{{action}}队伍\n{{name}} 吗？",
+      "lock": "チーム {{name}} を{{action}} してもよろしいですか？",
       "delete": "本当にチーム {{name}} を削除してもよろしいですか？"
     },
     "users": {
@@ -101,14 +101,14 @@
       "stats": "表示済み <1>{{current}}</1>/<1>{{total}}</1> 試合",
       "info": {
         "title": {
-          "label": "ゲームタイトル",
+          "label": "タイトル",
           "description": "長すぎると表示効果に影響を与えます"
         },
         "delete": "ゲーム {{name}} を削除してもよろしいですか？",
-        "poster": "ゲームポスター",
-        "content": "ゲーム詳細",
+        "poster": "ポスター",
+        "content": "詳細",
         "summary": {
-          "label": "ゲーム概要",
+          "label": "概要",
           "description": "ゲームリストに表示されます"
         },
         "end_date": "終了日",
@@ -144,7 +144,7 @@
           "label": "記事を要求",
           "description": "ゲームの記事提出機能を有効にしますか"
         },
-        "writeup_instruction": "記事の提交説明",
+        "writeup_instruction": "記事の提交指示",
         "accept_without_review": {
           "label": "参加承認不要",
           "description": "チームの参加申込があったら自動的に受け入れます"
