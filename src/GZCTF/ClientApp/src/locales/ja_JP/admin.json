@@ -121,7 +121,7 @@
         },
         "member_limit": {
           "label": "チーム人数制限",
-          "description": "0 は人数無制限チームを表します"
+          "description": "無制限の場合は 0 を記入してください"
         },
         "organizations": {
           "add": "+ 組織「{{org}} 」を追加する",
@@ -144,7 +144,7 @@
           "label": "記事を要求",
           "description": "ゲームの記事提出機能を有効にしますか"
         },
-        "writeup_instruction": "記事の提交指示",
+        "writeup_instruction": "記事の提出説明",
         "accept_without_review": {
           "label": "参加承認不要",
           "description": "チームの参加申込があったら自動的に受け入れます"
