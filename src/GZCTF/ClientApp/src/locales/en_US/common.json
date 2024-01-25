@@ -59,6 +59,13 @@
     "uploading": "Uploading avatar",
     "upload_failed": "Avatar update failed"
   },
+  "label": {
+    "time": "Time",
+    "user": "User",
+    "team": "Team",
+    "flag": "flag",
+    "challenge": "Challenge"
+  },
   "content": {
     "404": {
       "text": "A desolation, why is it here",
