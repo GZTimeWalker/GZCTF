@@ -1,0 +1,345 @@
+import { Callout } from "nextra-theme-docs";
+
+# Deployment with K8s Only
+
+<Callout type="info">
+
+This guide is intended for users who are familiar with **Kubernetes**. It does not cover how to set up a Kubernetes cluster or provide tutorials on using `kubectl`. Additionally, this guide may include some advanced Kubernetes terminology, so a certain level of familiarity is required for reading.
+
+This article focuses on deploying GZCTF in a Kubernetes cluster. For configuration instructions specific to GZCTF itself, please refer to the [Quick Start](/quick-start) guide.
+
+</Callout>
+
+## Deployment Notes
+
+1. GZCTF supports multi-instance deployment, but based on testing, currently the most stable deployment method is a single-instance deployment with the database on the same node. Therefore, this article will focus on single-instance deployment as an example.
+2. For multi-instance deployment, all instances need to mount the shared storage as Persistent Volumes (PV) to ensure file consistency. Additionally, Redis needs to be deployed to ensure cache consistency among multiple instances.
+3. For multi-instance deployment, the load balancer needs to be configured with sticky sessions to enable real-time data retrieval using websockets.
+4. **If you prefer a simpler deployment, go for a single-instance deployment!**
+
+## Deploying GZCTF
+
+1. Create namespaces and configuration files
+
+   ```yaml
+   apiVersion: v1
+   kind: Namespace
+   metadata:
+     name: gzctf-server
+   ---
+   apiVersion: v1
+   kind: ConfigMap
+   metadata:
+     name: gzctf-config
+     namespace: gzctf-server
+   data:
+     appsettings.json: |
+       { ... } # appsettings.json 中的内容
+   ---
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: gzctf-kube-config
+     namespace: gzctf-server
+   type: Opaque
+   data:
+     kube-config: ... # base64 encoded k8s connection configuration 
+   ---
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: gzctf-tls
+     namespace: gzctf-server
+   type: kubernetes.io/tls
+   data:
+     tls.crt: ... # base64 encoded TLS certificate
+     tls.key: ... # base64 encoded TLS private key
+   ```
+
+2. Create local PV (if you need to share storage among multiple instances, please change the configuration yourself)
+
+   ```yaml
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: gzctf-files-pv
+     namespace: gzctf-server
+   spec:
+     capacity:
+       storage: 2Gi
+     accessModes:
+       - ReadWriteOnce # Please change to ReadWriteMany when deploying multiple instances
+     hostPath:
+       path: /mnt/path/to/gzctf/files # local path
+   ---
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: gzctf-db-pv
+     namespace: gzctf-server
+   spec:
+     capacity:
+       storage: 1Gi
+     accessModes:
+       - ReadWriteOnce
+     hostPath:
+       path: /mnt/path/to/gzctf/db # local path
+   apiVersion: v1
+   ---
+   kind: PersistentVolumeClaim
+   metadata:
+     name: gzctf-files
+     namespace: gzctf-server
+   spec:
+     accessModes:
+       - ReadWriteOnce # Please change to ReadWriteMany when deploying multiple instances
+     resources:
+       requests:
+         storage: 2Gi
+     volumeName: gzctf-files-pv
+   ---
+   apiVersion: v1
+   kind: PersistentVolumeClaim
+   metadata:
+     name: gzctf-db
+     namespace: gzctf-server
+   spec:
+     accessModes:
+       - ReadWriteOnce
+     resources:
+       requests:
+         storage: 1Gi
+     volumeName: gzctf-db-pv
+   ```
+
+3. 创建 GZCTF 的 Deployment
+
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: gzctf
+     namespace: gzctf-server
+     labels:
+       app: gzctf
+   spec:
+     replicas: 1
+     strategy:
+       type: RollingUpdate
+     selector:
+       matchLabels:
+         app: gzctf
+     template:
+       metadata:
+         labels:
+           app: gzctf
+       spec:
+         nodeSelector:
+             kubernetes.io/hostname: xxx # Specify the deployment node, forcing it to be on the same node as the database
+         containers:
+           - name: gzctf
+             image: gztime/gzctf:latest
+             imagePullPolicy: Always
+             env:
+               - name: GZCTF_ADMIN_PASSWORD
+                 value: xxx # Admin password
+             ports:
+               - containerPort: 80
+                 name: http
+             volumeMounts:
+               - name: gzctf-files
+                 mountPath: /app/files
+               - name: gzctf-config
+                 mountPath: /app/appsettings.json
+                 subPath: appsettings.json
+               - name: gzctf-kube-config
+                 mountPath: /app/kube-config.yaml
+                 subPath: kube-config
+                 # If you need to persist log files (.log)
+                 # Please mount an additional volume to /app/log for each GZCTF instance
+                 # GZCTF will automatically handle log files and perform automatic rotation and compression
+             resources:
+               requests:
+                 cpu: 1000m
+                 memory: 384Mi
+         volumes:
+           - name: gzctf-files
+             persistentVolumeClaim:
+               claimName: gzctf-files
+           - name: gzctf-config
+             configMap:
+               name: gzctf-config
+           - name: gzctf-kube-config
+             secret:
+               secretName: gzctf-kube-config
+   ---
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: gzctf-redis
+     namespace: gzctf-server
+     labels:
+       app: gzctf-redis
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: gzctf-redis
+     template:
+       metadata:
+         labels:
+           app: gzctf-redis
+       spec:
+         containers:
+           - name: gzctf-redis
+             image: redis:alpine
+             imagePullPolicy: Always
+             ports:
+               - containerPort: 6379
+                 name: redis
+             resources:
+               requests:
+                 cpu: 10m
+                 memory: 64Mi
+   ---
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: gzctf-db
+     namespace: gzctf-server
+     labels:
+       app: gzctf-db
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: gzctf-db
+     template:
+       metadata:
+         labels:
+           app: gzctf-db
+       spec:
+         nodeSelector:
+           kubernetes.io/hostname: xxx # 指定部署节点，强制和 GZCTF 位于同一节点
+         containers:
+           - name: gzctf-db
+             image: postgres:alpine
+             imagePullPolicy: Always
+             ports:
+               - containerPort: 5432
+                 name: postgres
+             env:
+               - name: POSTGRES_PASSWORD
+                 value: xxx # 数据库密码，需要和 appsettings.json 中的数据库密码一致
+             volumeMounts:
+               - name: gzctf-db
+                 mountPath: /var/lib/postgresql/data
+             resources:
+               requests:
+                 cpu: 500m
+                 memory: 512Mi
+         volumes:
+           - name: gzctf-db
+             persistentVolumeClaim:
+               claimName: gzctf-db
+   ```
+
+4. 创建 Service 和 Ingress
+
+   ```yaml
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: gzctf
+     namespace: gzctf-server
+     annotations: # 开启 Traefik 的 Sticky Session
+       traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+       traefik.ingress.kubernetes.io/service.sticky.cookie.name: "LB_Session"
+       traefik.ingress.kubernetes.io/service.sticky.cookie.httponly: "true"
+   spec:
+     selector:
+       app: gzctf
+     ports:
+       - protocol: TCP
+         port: 80
+         targetPort: 80
+   ---
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: gzctf-db
+     namespace: gzctf-server
+   spec:
+     selector:
+       app: gzctf-db
+     ports:
+       - protocol: TCP
+         port: 5432
+         targetPort: 5432
+   ---
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: gzctf-redis
+     namespace: gzctf-server
+   spec:
+     selector:
+       app: gzctf-redis
+     ports:
+       - protocol: TCP
+         port: 6379
+         targetPort: 6379
+   ---
+   apiVersion: networking.k8s.io/v1
+   kind: Ingress
+   metadata:
+     name: gzctf
+     namespace: gzctf-server
+     annotations: # 一些 Traefik 的 TLS 设置，可以根据自己的需求修改
+       kubernetes.io/ingress.class: "traefik"
+       traefik.ingress.kubernetes.io/router.tls: "true"
+       ingress.kubernetes.io/force-ssl-redirect: "true"
+   spec:
+     tls:
+       - hosts:
+           - ctf.example.com # 域名
+         secretName: gzctf-tls # 证书名称，需要自行创建对应的 Secret
+     rules:
+       - host: ctf.example.com # 域名
+         http:
+           paths:
+             - path: /
+               pathType: Prefix
+               backend:
+                 service:
+                   name: gzctf
+                   port:
+                     number: 80
+   ```
+
+5. Traefik 的额外配置
+
+   为了让 GZCTF 能够正常通过 XFF 获取用户真实 IP，需要让 Traefik 能够正确地添加 XFF 头。请注意如下内容不一定总是具有时效性和适用于所有版本的 Traefik，此处举例为 helm values，请自行查找最新的配置方法。
+
+   ```yaml
+   service:
+     spec:
+     externalTrafficPolicy: Local # 为了让 XFF 能够正常工作，需要将 externalTrafficPolicy 设置为 Local
+   deployment:
+     kind: DaemonSet
+   ports:
+     web:
+     redirectTo: websecure # 重定向 HTTP 到 HTTPS
+   additionalArguments:
+     - "--entryPoints.web.proxyProtocol.insecure"
+     - "--entryPoints.web.forwardedHeaders.insecure"
+     - "--entryPoints.websecure.proxyProtocol.insecure"
+     - "--entryPoints.websecure.forwardedHeaders.insecure"
+   ```
+
+## 部署提示
+
+1. 如果需要让 GZCTF 在初始化时自动创建管理员账户请注意传递 `GZCTF_ADMIN_PASSWORD` 环境变量，否则需要手动创建管理员账户。
+2. 请在系统日志界面调试并参考是否能够正常获取用户真实 IP，如果不能请检查 Traefik 的配置是否正确。
+3. 如有监控需求，请自行部署 Prometheus 和 Grafana，并打开 Traefik 的 Prometheus 支持，并且你可以通过 node exporter 监控题目容器的资源使用情况。
+4. 如果需要根据配置文件更改自动更新 GZCTF 的部署，请参考 [Reloader](https://github.com/stakater/Reloader)。
