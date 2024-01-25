@@ -200,7 +200,19 @@
     "nothing_found": "Nothing found",
     "show_all": "Show All"
   },
+  "label": {
+    "logs": {
+      "message": "Information",
+      "ip": "IP",
+      "status": "Status"
+    }
+  },
   "notification": {
+    "logs": {
+      "realtime": {
+        "connected": "Realtime log connection successful"
+      }
+    },
     "games": {
       "challenges": {
         "attachment": {

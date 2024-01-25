@@ -4,20 +4,12 @@
     "download_all_traffic": "表示されたトラフィックをすべてダウンロード",
     "download_submissionsheet": "サブミッションをすべてダウンロード",
     "finished": "ゲーム終了",
-    "hide_container_events": {
-      "desrc": "コンテナ開始/破棄イベントを非表示にする",
-      "title": "コンテナイベントを非表示にする"
-    },
     "hide_solved": "解いたものを非表示にする",
     "join": "ゲームに参加",
     "leave": "参加申込みをキャンセル",
     "login_required": "先にログインしてください",
     "scoreboard": "ランキングを見る",
-    "submit_writeup": "記事を提出",
-    "team_view": {
-      "desrc": "チームビューでの不正行為情報を表示",
-      "title": "チームビュー"
-    }
+    "submit_writeup": "記事を提出"
   },
   "content": {
     "all_solved": {
@@ -27,6 +19,10 @@
     "end_time": "終了日時",
     "game_ended": "ゲームは終了しました",
     "game_lasts_long": "ゲームはまだ長く続くでしょう",
+    "hide_container_events": {
+      "description": "コンテナ開始/破棄イベントを非表示にする",
+      "label": "コンテナイベントを非表示にする"
+    },
     "join": {
       "confirm": "申込確認",
       "content": [
@@ -68,16 +64,18 @@
     },
     "scoreboard_note": "注：同じスコアのあるチームは時間順にランク付けされます",
     "scoreboard_tip": "Tip: 左矢印キーと右矢印キーを使ってチャレンジ一覧をスクロールできます",
-    "start_time": "開始日時"
+    "start_time": "開始日時",
+    "team_view": {
+      "description": "チームビューでの不正行為情報を表示",
+      "label": "チームビュー"
+    }
   },
   "label": {
-    "challenge": "チャレンジ",
     "cheat_info": {
       "owned_team": "フラッグを持っているチーム",
       "submit_team": "フラッグを提出したチーム",
       "submit_user": "フラッグを提出したユーザー"
     },
-    "flag": "フラッグ",
     "notice_type": {
       "all": "すべて",
       "challenge": "チャレンジ",
@@ -87,7 +85,6 @@
     "score": "スコア",
     "score_formatter": "{value} 点",
     "score_table": {
-      "rank_all_organization": "総合ランキング",
       "rank_organization": "順位",
       "rank_total": "総合ランキング",
       "score": "得点",
@@ -95,10 +92,7 @@
       "solved_count": "解問題数",
       "team": "チーム"
     },
-    "team": "チーム",
-    "time": "時間",
-    "traffic": "トラフィックファイル",
-    "user": "ユーザー"
+    "traffic": "トラフィックファイル"
   },
   "notification": {
     "ended": "ゲームは終了しました",
@@ -106,12 +100,12 @@
     "event_fetch_failed": "イベントを取得できませんでした",
     "joined": "申し込み成功",
     "left": "申し込みをキャンセルしました",
-    "select_chal_and_part": "先にチャレンジとチームを選んでください",
     "no_invite_code": "招待コードは空にできません",
     "no_organization": "参加する組織を選択してください",
     "no_team": "参加するチームを選択してください",
     "not_started": "ゲームはまだ開始されていません",
     "notice_fetch_failed": "通知を取得できませんでした",
+    "select_chal_and_part": "先にチャレンジとチームを選んでください",
     "submission_connection_succeed": "リアルタイムサブミッションの接続に成功しました",
     "submission_fetch_failed": "サブミッションの取得に失敗しました",
     "suspended": "あなたはブロックされました"
