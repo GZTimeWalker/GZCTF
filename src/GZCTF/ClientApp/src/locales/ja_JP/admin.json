@@ -65,6 +65,8 @@
     "challenges": {
       "new": "新規チャレンジ",
       "edit": "チャレンジを編集",
+      "enable": "启用题目",
+      "disable": "禁用题目",
       "flag": {
         "add": {
           "normal": "フラッグを追加",
@@ -232,6 +234,8 @@
         "hints": "ヒント",
         "title": "タイトル",
         "delete": "チャレンジ {{name}} を削除してもよろしいですか？",
+        "enable": "你确定要启用题目 {{name}} 吗？",
+        "disable": "你确定要禁用题目 {{name}} 吗？",
         "cpu_limit": {
           "label": "CPU 制限 (0.1 CPUs)",
           "description": "0.1を掛けると、CPUのコア数になります"
@@ -362,9 +366,11 @@
   },
   "notification": {
     "logs": {
-      "realtime": {
-        "connected": "ライブログの接続に成功しました"
-      }
+      "connected": "实时日志连接成功",
+      "fetch_failed": "获取日志失败"
+    },
+    "teams": {
+      "deleted": "{{name}} 已删除"
     },
     "instances": {
       "destroyed": "インスタンスは破棄されました",
@@ -380,6 +386,8 @@
       "updated": "ユーザ情報が更新されました。"
     },
     "games": {
+      "no_title_time": "请输入标题和时间信息",
+      "created": "比赛已创建",
       "info": {
         "poster": {
           "uploaded": "ポスターは正常にアップロードされました。",
