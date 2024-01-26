@@ -56,8 +56,15 @@
     "hide_solved": "解いたものを非表示にする",
     "login_required": "先にログインしてください",
     "submit_writeup": "記事を提出",
-    "download_all_traffic": "表示されたトラフィックをすべてダウンロード",
-    "download_submissionsheet": "サブミッションをすべてダウンロード"
+    "download": {
+      "all_traffic": "表示されたトラフィックをすべてダウンロード",
+      "submissionsheet": "サブミッションをすべてダウンロード",
+      "scoreboard": "下载积分榜"
+    },
+    "writeup": {
+      "upload": "上传 Writeup",
+      "uploading": "正在上传"
+    }
   },
   "content": {
     "join": {
@@ -80,6 +87,21 @@
         "label": "参加組織を選択",
         "description": "このゲームは複数の組織によって開催されていますので、参加組織を選択してください"
       }
+    },
+    "writeup": {
+      "title": "管理 Writeup",
+      "submitted": "已成功提交",
+      "unsubmitted": "尚未提交",
+      "instructions": {
+        "title": "提交说明",
+        "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
+        "deadline": "请在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。",
+        "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
+        "additional": "附加说明"
+      },
+      "current": "当前提交",
+      "unsubmitted_note": "你的队伍尚未提交 Writeup",
+      "deadline_exceeded": "提出期限が過ぎました"
     },
     "leave": {
       "confirm": "参加申込みをキャンセル",
@@ -108,7 +130,7 @@
       "comment": "プラットフォームの設定とチャレンジの両方から有効にしなければなりません"
     },
     "start_time": "開始日時",
-    "duration": "{{hours}} 小时",
+    "duration": "{{hours}} 時間",
     "no_challenge": "あかん！このゲームにはまだチャレンジがありません……",
     "joined_status": "<strong>{{count}}</strong>のチームが参加登録しました",
     "scoreboard_tip": "Tip: 左矢印キーと右矢印キーを使ってチャレンジ一覧をスクロールできます",
@@ -121,9 +143,9 @@
     "start_at": "開始日時",
     "end_at": "終了",
     "remaining_time": "残り時間",
-    "remaining_duration": "剩余 {{hours}} 小时",
+    "remaining_duration": "残り {{hours}} 時間",
     "total_time": "期間",
-    "total_duration": "共 {{hours}} 小时"
+    "total_duration": "合計 {{hours}} 時間"
   },
   "notification": {
     "left": "申し込みをキャンセルしました",
@@ -134,12 +156,19 @@
     "not_started": "ゲームはまだ開始されていません",
     "no_invite_code": "招待コードは空にできません",
     "no_organization": "参加する組織を選択してください",
-    "fetch_failed.event": "イベントを取得できませんでした",
-    "fetch_failed.notice": "通知を取得できませんでした",
     "select_chal_and_part": "先にチャレンジとチームを選んでください",
-    "fetch_failed.submission": "サブミッションの取得に失敗しました",
-    "connected.event": "リアルタイムイベントの接続に成功しました",
-    "connected.submission": "リアルタイムサブミッションの接続に成功しました"
+    "connected": {
+      "event": "リアルタイムイベントの接続に成功しました",
+      "submission": "リアルタイムサブミッションの接続に成功しました"
+    },
+    "fetch_failed": {
+      "event": "获取事件失败",
+      "submission": "サブミッションの取得に失敗しました",
+      "notice": "获取通知失败"
+    },
+    "writeup": {
+      "submitted": "Writeup 已成功提交"
+    }
   },
   "participation": {
     "alert": {
