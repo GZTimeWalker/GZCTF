@@ -17,11 +17,11 @@
     "mutiplayer": "チーム戦"
   },
   "placeholder": {
-    "no_solved": "Ouch! 这支队伍还没有解出题目呢……"
+    "no_solved": "Ouch! このチームはまだ……"
   },
   "label": {
     "score": "スコア",
-    "traffic": "流量",
+    "traffic": "トラフィック",
     "cheat_info": {
       "owned_team": "フラッグを持っているチーム",
       "submit_team": "フラッグを提出したチーム",
@@ -36,7 +36,7 @@
     "score_table": {
       "team": "チーム",
       "score": "得点",
-      "type": "类型",
+      "type": "タイプ",
       "rank_total": "総合ランキング",
       "score_total": "合計得点",
       "solved_count": "解答数",
@@ -118,11 +118,11 @@
       "label": "コンテナイベントを非表示にする",
       "description": "コンテナ開始/破棄イベントを非表示にする"
     },
-    "start_at": "开始于",
-    "end_at": "结束于",
-    "remaining_time": "剩余时间",
+    "start_at": "開始日時",
+    "end_at": "終了",
+    "remaining_time": "残り時間",
     "remaining_duration": "剩余 {{hours}} 小时",
-    "total_time": "持续时间",
+    "total_time": "期間",
     "total_duration": "共 {{hours}} 小时"
   },
   "notification": {
