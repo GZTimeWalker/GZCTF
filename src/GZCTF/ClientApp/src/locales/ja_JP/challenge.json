@@ -8,35 +8,35 @@
     "download_attachment": "アタッチメントをダウンロード",
     "submit_flag": "フラッグを提出",
     "instance": {
-      "create": "创建实例",
-      "prolong": "延长时间",
-      "destroy": "销毁实例"
+      "create": "インスタンスを作成",
+      "prolong": "拡張子",
+      "destroy": "インスタンスを破棄する"
     }
   },
   "content": {
-    "solved": "{{solved}} <1>支队伍攻克</1>",
+    "solved": "{{solved}} <1>チーム攻克</1>",
     "instance": {
       "test": {
-        "no_container": "测试容器未开启"
+        "no_container": "テストコンテナを起動できませんでした"
       },
       "entry": {
-        "label": "实例入口",
+        "label": "インスタンス入口",
         "description": {
-          "proxy": "平台已启用 tcp over ws 代理模式。",
-          "anchor": "获取客户端"
+          "proxy": "プラットフォームが tp over ws エージェントが有効化されました。",
+          "anchor": "クライアントを起動"
         }
       },
       "open": {
-        "client": "在客户端中打开",
-        "web": "作为网页打开"
+        "client": "PCアプリで開く",
+        "web": "Web で開く"
       },
       "no_container": {
-        "message": "本题为容器题目，解题需开启容器实例",
-        "note": "容器默认有效期为 120 分钟"
+        "message": "この問題はコンテナ問題の課題です。コンテナインスタンスを開かなければなりません",
+        "note": "デフォルトでは 120 分まで有効です"
       },
       "actions": {
-        "count_down": "剩余时间：",
-        "note": "你可以在到期前 10 分钟内延长时间"
+        "count_down": "残り：",
+        "note": "期限まで10分間延長できます"
       }
     }
   },
@@ -48,20 +48,20 @@
   "notification": {
     "instance": {
       "copied": {
-        "entry": "实例入口已复制到剪贴板",
+        "entry": "インスタンスのエントリをクリップボードにコピーしました",
         "url": {
-          "message": "请使用客户端进行访问",
-          "title": "实例入口已复制到剪贴板"
+          "message": "クライアントを使用してアクセスしてください。",
+          "title": "インスタンスのエントリをクリップボードにコピーしました"
         }
       },
       "prolong": {
         "note": {
-          "message": "请及时延长时间或销毁实例",
-          "title": "实例即将到期"
+          "message": "長くインスタンスを強制もしくは破棄する",
+          "title": "インスタンスの期限が近い順"
         },
         "success": {
-          "message": "请注意实例到期时间",
-          "title": "实例时间已延长"
+          "message": "インスタンスが期限切れになるまでの時間",
+          "title": "インスタンスを延長しました"
         }
       }
     }
