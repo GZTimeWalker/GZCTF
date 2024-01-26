@@ -6,7 +6,7 @@
   },
   "button": {
     "download": {
-      "attachment": "下载附件"
+      "attachment": "Download attachment"
     },
     "submit_flag": "Submit flag",
     "instance": {
@@ -17,7 +17,7 @@
   },
   "content": {
     "solved": "<1>{{solved}}</1> solves",
-    "already_solved": "该题目已被解出",
+    "already_solved": "This challenge has been solved",
     "instance": {
       "test": {
         "no_container": "Test container is not enabled"
@@ -116,29 +116,29 @@
         }
       },
       "created": {
-        "message": "请注意实例到期时间",
-        "title": "实例已创建"
+        "message": "Please note the expiration time",
+        "title": "Instance created"
       },
       "destroyed": {
-        "message": "你可以重新创建实例",
-        "title": "实例已销毁"
+        "message": "You can recreate the instance",
+        "title": "Instance has been destroyed"
       }
     },
     "flag": {
-      "empty": "flag 不能为空",
+      "empty": "The flag cannot be empty",
       "accepted": {
-        "title": "flag 正确",
-        "message": "排行榜将稍后更新……",
-        "ended": "比赛已结束，本次提交不会被计分"
+        "title": "flag correct",
+        "message": "The scoreboard will be updated later.",
+        "ended": "The game has ended, submissions will not be scored"
       },
-      "wrong": "flag 错误",
+      "wrong": "flag wrong",
       "unknown": {
-        "title": "flag 状态未知",
-        "message": "请联系管理员确认提交：{{id}}"
+        "title": "flag status unknown",
+        "message": "Please contact the admin to confirm the submission: {{id}}"
       },
       "submitted": {
-        "title": "flag 已提交",
-        "message": "请等待 flag 检查……"
+        "title": "flag submitted",
+        "message": "Please wait for flag check..."
       }
     }
   },
