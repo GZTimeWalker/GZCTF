@@ -1,20 +1,87 @@
 {
+  "bonus": {
+    "first_blood": "First Blood",
+    "second_blood": "Second blood",
+    "third_blood": "Third Blood"
+  },
+  "button": {
+    "download_attachment": "Download Attachment",
+    "submit_flag": "Submit flag",
+    "instance": {
+      "create": "创建实例",
+      "prolong": "延长时间",
+      "destroy": "销毁实例"
+    }
+  },
+  "content": {
+    "solved": "{{solved}} <1>支队伍攻克</1>",
+    "instance": {
+      "test": {
+        "no_container": "测试容器未开启"
+      },
+      "entry": {
+        "label": "实例入口",
+        "description": {
+          "proxy": "平台已启用 tcp over ws 代理模式。",
+          "anchor": "获取客户端"
+        }
+      },
+      "open": {
+        "client": "在客户端中打开",
+        "web": "作为网页打开"
+      },
+      "no_container": {
+        "message": "本题为容器题目，解题需开启容器实例",
+        "note": "容器默认有效期为 120 分钟"
+      },
+      "actions": {
+        "count_down": "剩余时间：",
+        "note": "你可以在到期前 10 分钟内延长时间"
+      }
+    }
+  },
+  "file_type": {
+    "local": "Self hosted",
+    "none": "None",
+    "remote": "Remote Url"
+  },
+  "notification": {
+    "instance": {
+      "copied": {
+        "entry": "实例入口已复制到剪贴板",
+        "url": {
+          "message": "请使用客户端进行访问",
+          "title": "实例入口已复制到剪贴板"
+        }
+      },
+      "prolong": {
+        "note": {
+          "message": "请及时延长时间或销毁实例",
+          "title": "实例即将到期"
+        },
+        "success": {
+          "message": "请注意实例到期时间",
+          "title": "实例时间已延长"
+        }
+      }
+    }
+  },
   "tag": {
+    "blockchain": "blockchain",
+    "crypto": "Password",
+    "forensics": "Forensics",
+    "hardware": "Hardware",
+    "misc": "Miscellaneous",
+    "mobile": "Mobile Security",
     "ppc": "Programming",
     "pwn": "Pwn",
-    "web": "Web",
-    "misc": "Miscellaneous",
-    "crypto": "Password",
-    "mobile": "Mobile Security",
     "reverse": "Reverse",
-    "hardware": "Hardware",
-    "forensics": "Forensics",
-    "blockchain": "blockchain"
+    "web": "Web"
   },
   "type": {
-    "static_container": {
-      "desrc": "Shared containers, any flag can be submitted",
-      "label": "Static Container"
+    "dynamic_attachment": {
+      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams",
+      "label": "Dynamic Attachments"
     },
     "dynamic_container": {
       "desrc": "Auto-generate settlement flag, unique to each team",
@@ -24,23 +91,9 @@
       "desrc": "Commit attachments, any flag can be submitted",
       "label": "Static Attachments"
     },
-    "dynamic_attachment": {
-      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams",
-      "label": "Dynamic Attachments"
+    "static_container": {
+      "desrc": "Shared containers, any flag can be submitted",
+      "label": "Static Container"
     }
-  },
-  "bonus": {
-    "first_blood": "First Blood",
-    "third_blood": "Third Blood",
-    "second_blood": "Second blood"
-  },
-  "button": {
-    "submit_flag": "Submit flag",
-    "download_attachment": "Download Attachment"
-  },
-  "file_type": {
-    "none": "None",
-    "local": "Self hosted",
-    "remote": "Remote Url"
   }
 }
