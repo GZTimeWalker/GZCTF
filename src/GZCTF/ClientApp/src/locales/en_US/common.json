@@ -22,6 +22,9 @@
     "404": "The Nowhere",
     "about": "About"
   },
+  "button": {
+    "copy": "复制到剪贴板"
+  },
   "email": {
     "sent": {
       "title": "Email Sent",
@@ -86,6 +89,11 @@
       },
       "limit": "Please select an image less than 3MB",
       "content": "Drag and drop an image or click here to select {{type}}"
+    },
+    "no_data": "没有数据",
+    "wider": {
+      "text": "请使用更宽的设备浏览本页面",
+      "title": "页面宽度不足"
     }
   }
 }
