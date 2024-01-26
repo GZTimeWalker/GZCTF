@@ -1093,7 +1093,11 @@ public class GameController(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)])));
 
         if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUtc < DateTimeOffset.UtcNow)
-            return res.WithResult(BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_End)])));
+            return res.WithResult(new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_End)]))
+            {
+                // for client to handle this properly
+                StatusCode = StatusCodes.Status410Gone
+            });
 
         if (challengeId > 0)
         {
