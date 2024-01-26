@@ -19,7 +19,7 @@
   "content": {
     "metadata": "{{author}} が {{date}} に公開されました",
     "pinned": "[置顶]",
-    "details": "查看详情"
+    "details": "詳細を表示"
   },
   "notification": {
     "saved": "記事が保存されました",
