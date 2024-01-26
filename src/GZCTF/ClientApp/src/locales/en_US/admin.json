@@ -21,16 +21,16 @@
     },
     "games": {
       "public": "Public",
-      "summary": "Introduction"
+      "summary": "Summary"
     },
     "teams": {
-      "members": "Crew",
-      "bio": "Signature"
+      "members": "Members",
+      "bio": "Bio"
     },
     "users": {
       "active": "Activate",
       "role": "User Roles",
-      "last_visit": "Last Access Time"
+      "last_visit": "Last visit time"
     },
     "instances": {
       "life_cycle": "Lifecycle",
@@ -52,7 +52,7 @@
     "games": {
       "delete": "Delete game",
       "copy_public_key": "Copy public key",
-      "new": "New Match"
+      "new": "New game"
     },
     "notices": {
       "new": "New notice",
@@ -386,8 +386,8 @@
       "updated": "User information updated"
     },
     "games": {
-      "no_title_time": "请输入标题和时间信息",
-      "created": "比赛已创建",
+      "no_title_time": "Please enter title and time of the game",
+      "created": "The game has been created",
       "info": {
         "poster": {
           "uploaded": "Poster successfully uploaded",
