@@ -19,7 +19,12 @@
   "content": {
     "metadata": "{{author}} が {{date}} に公開されました",
     "pinned": "[置顶]",
-    "details": "詳細を表示"
+    "details": "詳細を表示",
+    "delete": "你确定要删除文章 “{{title}}” 吗？",
+    "updated": {
+      "title": "文章已更改",
+      "content": "文章内容已更改，是否保存？"
+    }
   },
   "notification": {
     "saved": "記事が保存されました",
