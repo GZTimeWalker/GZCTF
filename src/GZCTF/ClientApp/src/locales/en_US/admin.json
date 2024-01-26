@@ -99,7 +99,7 @@
       "stats": "<1>{{current}}</1>/<1>{{total}}</1> teams displayed",
       "locked": "Locked",
       "unlocked": "Unlocked",
-      "lock": "Are you sure you want to lock team{{action}}\n{{name}} ?",
+      "lock": "Are you sure you want to {{action}} team {{name}} ?",
       "delete": "Are you sure you want to delete team {{name}} ?"
     },
     "users": {
