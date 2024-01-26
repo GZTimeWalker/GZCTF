@@ -95,12 +95,12 @@
       "instructions": {
         "title": "提出説明",
         "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
-        "deadline": "请在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。",
-        "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
-        "additional": "附加说明"
+        "deadline": "記事を<1>{{datetime}}</1>まで提出してください。期限を過ぎたり提出しなかった場合は、ゲームの参加を放棄したものとみなされます。",
+        "file_format": "すべての解答を<1>20MB未満の標準PDFファイル</1>にまとめてください。",
+        "additional": "追加説明"
       },
-      "current": "当前提交",
-      "unsubmitted_note": "你的队伍尚未提交 Writeup",
+      "current": "現在の提出物",
+      "unsubmitted_note": "あなたのチームはまだ記事を提出していません",
       "deadline_exceeded": "提出期限が過ぎました"
     },
     "leave": {
@@ -162,12 +162,12 @@
       "submission": "リアルタイムサブミッションの接続に成功しました"
     },
     "fetch_failed": {
-      "event": "获取事件失败",
+      "event": "イベントの取得に失敗しました",
       "submission": "サブミッションの取得に失敗しました",
-      "notice": "获取通知失败"
+      "notice": "通知の取得に失敗しました"
     },
     "writeup": {
-      "submitted": "Writeup 已成功提交"
+      "submitted": "記事が正常に提出されました"
     }
   },
   "participation": {
