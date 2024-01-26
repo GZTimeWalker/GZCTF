@@ -17,11 +17,11 @@
     "mutiplayer": "Team"
   },
   "placeholder": {
-    "no_solved": "Ouch! 这支队伍还没有解出题目呢……"
+    "no_solved": "Ouch! This team has not uncovered the topic……"
   },
   "label": {
     "score": "Score",
-    "traffic": "流量",
+    "traffic": "Traffic",
     "cheat_info": {
       "owned_team": "Raw Team",
       "submit_team": "Submit Team",
@@ -36,7 +36,7 @@
     "score_table": {
       "team": "Team",
       "score": "Score",
-      "type": "类型",
+      "type": "Type",
       "rank_total": "Total Rankings",
       "score_total": "Score",
       "solved_count": "Solved",
@@ -118,11 +118,11 @@
       "label": "Hide container events",
       "description": "Hide container starting/destruction events"
     },
-    "start_at": "开始于",
-    "end_at": "结束于",
-    "remaining_time": "剩余时间",
+    "start_at": "Starts on",
+    "end_at": "Ends on",
+    "remaining_time": "Remaining time",
     "remaining_duration": "剩余 {{hours}} 小时",
-    "total_time": "持续时间",
+    "total_time": "Duration",
     "total_duration": "共 {{hours}} 小时"
   },
   "notification": {
