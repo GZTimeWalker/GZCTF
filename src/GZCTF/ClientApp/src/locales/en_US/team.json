@@ -8,7 +8,8 @@
     "kick": "Kick Team",
     "members": "Team members",
     "transfer": "Transfer Teams",
-    "invite_code": "Invitation Code"
+    "invite_code": "Invitation Code",
+    "role": "个人身份"
   },
   "button": {
     "join": "Join Team",
@@ -20,6 +21,10 @@
   },
   "content": {
     "join": "Please get the team invitation code from the team creator, enter the invitation code to join the team.",
+    "role": {
+      "captain": "Captain",
+      "member": "Crew"
+    },
     "kick": {
       "confirm": {
         "title": "Confirm Kick User",
