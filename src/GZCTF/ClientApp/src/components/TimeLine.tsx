@@ -98,7 +98,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
         },
         xAxis: {
           type: 'time',
-          name: t('game.label.time'),
+          name: t('common.label.time'),
           min: dayjs(game?.start).toDate(),
           max: dayjs(game?.end).toDate(),
           splitLine: {

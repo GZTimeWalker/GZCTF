@@ -1,6 +1,7 @@
 import {
   Box,
   Card,
+  Code,
   createStyles,
   Divider,
   Group,
@@ -86,7 +87,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
             {challenge.score}&nbsp;pts
           </Text>
           <Stack spacing="xs">
-            <Title order={6} align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
+            <Title order={6} c="dimmed" align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
               <Trans
                 i18nKey={'challenge.content.solved'}
                 values={{
@@ -94,9 +95,9 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                 }}
               >
                 _
-                <Text c="dimmed" size="xs" inherit span>
+                <Code fz="sm" fw="bold" bg="transparent">
                   _
-                </Text>
+                </Code>
                 _
               </Trans>
             </Title>

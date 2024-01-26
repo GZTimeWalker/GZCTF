@@ -1,14 +1,14 @@
 {
   "tab": {
     "monitor": {
-      "index": "Game monitoring",
-      "events": "Event Monitor",
-      "traffic": "Traffic Capture",
+      "index": "Monitoring",
+      "events": "Events",
+      "traffic": "Traffics",
       "cheatinfo": "Cheats",
-      "submissions": "Commits"
+      "submissions": "Submissions"
     },
-    "challenge": "Game problem",
-    "scoreboard": "Leaderboard"
+    "challenge": "Challenges",
+    "scoreboard": "Scoreboard"
   },
   "tag": {
     "hidden": "Hidden",
@@ -29,7 +29,7 @@
     },
     "notice_type": {
       "all": "All",
-      "game": "Announcements",
+      "game": "Notice",
       "events": "Dynamic",
       "challenge": "Challenge"
     },
@@ -37,7 +37,7 @@
       "team": "Team",
       "score": "Score",
       "type": "Type",
-      "rank_total": "Total Rankings",
+      "rank_total": "Overall",
       "score_total": "Score",
       "solved_count": "Solved",
       "rank_organization": "Rank"
@@ -93,7 +93,7 @@
       "title": "No team cheats yet",
       "comment": "It seems to be true for all"
     },
-    "no_notice": "No notifications",
+    "no_notice": "No notice",
     "team_view": {
       "label": "Team View",
       "description": "Use team view to display cheats"
@@ -102,28 +102,28 @@
       "title": "All topics were untouched!",
       "comment": "Perhaps more difficult challenges are waiting for you in……"
     },
-    "game_ended": "The game has ended",
+    "game_ended": "Ended",
     "no_traffic": {
       "title": "No data captures enabled",
       "comment": "Requires both platform configuration and title to be enabled"
     },
     "start_time": "Start Time",
-    "duration": "{{hours}} 小时",
+    "duration": "{{hours}} hours",
     "no_challenge": "Ouch! No topics available for this match with……",
     "joined_status": "<strong>{{count}}</strong> teams have already registered",
     "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
     "game_lasts_long": "Match will also be an employee",
-    "scoreboard_note": "Note：is ranked in time",
+    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "hide_container_events": {
       "label": "Hide container events",
       "description": "Hide container starting/destruction events"
     },
-    "start_at": "Starts on",
-    "end_at": "Ends on",
+    "start_at": "Starts at",
+    "end_at": "Ends at",
     "remaining_time": "Remaining time",
-    "remaining_duration": "剩余 {{hours}} 小时",
+    "remaining_duration": "{{hours}}h left",
     "total_time": "Duration",
-    "total_duration": "共 {{hours}} 小时"
+    "total_duration": "{{hours}}h in total"
   },
   "notification": {
     "left": "Cancellation successful",

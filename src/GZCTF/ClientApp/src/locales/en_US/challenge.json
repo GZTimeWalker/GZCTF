@@ -1,8 +1,8 @@
 {
   "bonus": {
-    "first_blood": "First Blood",
-    "second_blood": "Second blood",
-    "third_blood": "Third Blood"
+    "first_blood": "1st blood",
+    "second_blood": "2nd blood",
+    "third_blood": "3rd blood"
   },
   "button": {
     "download_attachment": "Download Attachment",
@@ -14,7 +14,7 @@
     }
   },
   "content": {
-    "solved": "<1>Solved by</1>&nbsp;{{solved}}&nbsp;<1>teams</1>",
+    "solved": "<1>{{solved}}</1> solves",
     "instance": {
       "test": {
         "no_container": "Test container is not enabled"

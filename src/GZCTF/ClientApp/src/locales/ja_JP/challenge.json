@@ -14,7 +14,7 @@
     }
   },
   "content": {
-    "solved": "{{solved}} <1>チーム攻克</1>",
+    "solved": "<1>{{solved}}</1> チーム攻克",
     "instance": {
       "test": {
         "no_container": "テストコンテナを起動できませんでした"

@@ -14,7 +14,7 @@
     }
   },
   "content": {
-    "solved": "{{solved}} <1>支队伍攻克</1>",
+    "solved": "<1>{{solved}}</1> 支队伍攻克",
     "instance": {
       "test": {
         "no_container": "测试容器未开启"

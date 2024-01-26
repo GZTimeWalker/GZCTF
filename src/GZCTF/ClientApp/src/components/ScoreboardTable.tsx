@@ -70,7 +70,7 @@ export const useScoreboardStyles = createStyles((theme) => ({
   },
 }))
 
-const Lefts = [0, 55, 95, 275, 345, 400]
+const Lefts = [0, 55, 110, 280, 350, 410]
 const Widths = Array(5).fill(0)
 Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
