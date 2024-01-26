@@ -8,35 +8,35 @@
     "download_attachment": "Download Attachment",
     "submit_flag": "Submit flag",
     "instance": {
-      "create": "创建实例",
-      "prolong": "延长时间",
-      "destroy": "销毁实例"
+      "create": "Create instance",
+      "prolong": "Extended hours",
+      "destroy": "Destroy instance"
     }
   },
   "content": {
-    "solved": "{{solved}} <1>支队伍攻克</1>",
+    "solved": "<1>Solved by</1>&nbsp;{{solved}}&nbsp;<1>teams</1>",
     "instance": {
       "test": {
-        "no_container": "测试容器未开启"
+        "no_container": "Test container is not enabled"
       },
       "entry": {
-        "label": "实例入口",
+        "label": "Instance Entry",
         "description": {
-          "proxy": "平台已启用 tcp over ws 代理模式。",
-          "anchor": "获取客户端"
+          "proxy": "Platform enabled tcp over laws proxy mode.",
+          "anchor": "Get clients"
         }
       },
       "open": {
-        "client": "在客户端中打开",
-        "web": "作为网页打开"
+        "client": "Open in client",
+        "web": "Open as Web"
       },
       "no_container": {
-        "message": "本题为容器题目，解题需开启容器实例",
-        "note": "容器默认有效期为 120 分钟"
+        "message": "This title is the container title. The question needs to be opened with the container instance",
+        "note": "Container default validity is 120 minutes"
       },
       "actions": {
-        "count_down": "剩余时间：",
-        "note": "你可以在到期前 10 分钟内延长时间"
+        "count_down": "Remaining：",
+        "note": "You can extend the time within 10 minutes before expiry"
       }
     }
   },
@@ -48,20 +48,20 @@
   "notification": {
     "instance": {
       "copied": {
-        "entry": "实例入口已复制到剪贴板",
+        "entry": "Instance entry copied to clipboard",
         "url": {
-          "message": "请使用客户端进行访问",
-          "title": "实例入口已复制到剪贴板"
+          "message": "Please use client to access",
+          "title": "Instance entry copied to clipboard"
         }
       },
       "prolong": {
         "note": {
-          "message": "请及时延长时间或销毁实例",
-          "title": "实例即将到期"
+          "message": "Please extend the time or destroy instance in time",
+          "title": "Instances are due"
         },
         "success": {
-          "message": "请注意实例到期时间",
-          "title": "实例时间已延长"
+          "message": "Please note the instance expiration time",
+          "title": "Instance time has been extended"
         }
       }
     }
