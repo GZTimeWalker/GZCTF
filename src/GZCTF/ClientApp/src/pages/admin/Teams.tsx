@@ -108,7 +108,9 @@ const Teams: FC = () => {
       await api.admin.adminDeleteTeam(team.id)
 
       showNotification({
-        message: `${team.name} 已删除`,
+        message: t('admin.notification.teams.deleted', {
+          name: team.name,
+        }),
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
       })
@@ -133,7 +135,7 @@ const Teams: FC = () => {
 
       showNotification({
         color: 'teal',
-        message: '队伍信息已更新',
+        message: t('team.notification.updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
 

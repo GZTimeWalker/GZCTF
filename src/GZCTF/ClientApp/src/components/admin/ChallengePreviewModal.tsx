@@ -20,7 +20,6 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FlagPlaceholders } from '@Components/ChallengeDetailModal'
 import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { ChallengeTagItemProps } from '@Utils/Shared'
@@ -80,8 +79,12 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
     setFlag('')
   }
 
+  const placeholders = t('challenge.content.flag_placeholders', {
+    returnObjects: true,
+  }) as string[]
+
   useEffect(() => {
-    setPlaceholder(FlagPlaceholders[Math.floor(Math.random() * FlagPlaceholders.length)])
+    setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
   const isDynamic =

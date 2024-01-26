@@ -362,9 +362,11 @@
   },
   "notification": {
     "logs": {
-      "realtime": {
-        "connected": "实时日志连接成功"
-      }
+      "connected": "实时日志连接成功",
+      "fetch_failed": "获取日志失败"
+    },
+    "teams": {
+      "deleted": "{{name}} 已删除"
     },
     "instances": {
       "destroyed": "实例已销毁",
@@ -380,6 +382,8 @@
       "updated": "用户信息已更新"
     },
     "games": {
+      "no_title_time": "请输入标题和时间信息",
+      "created": "比赛已创建",
       "info": {
         "poster": {
           "uploaded": "海报上传成功",

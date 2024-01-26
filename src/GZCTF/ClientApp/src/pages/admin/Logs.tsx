@@ -70,7 +70,7 @@ const Logs: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: '获取日志失败',
+          title: t('admin.notification.logs.fetch_failed'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -101,7 +101,7 @@ const Logs: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: t('admin.notification.logs.realtime.connected'),
+          message: t('admin.notification.logs.connected'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
