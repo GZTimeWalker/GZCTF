@@ -33,9 +33,9 @@
       "last_visit": "最終アクセス日時"
     },
     "instances": {
-      "life_cycle": "生命周期",
-      "container_id": "容器 ID",
-      "entry": "访问入口"
+      "life_cycle": "ライフサイクル",
+      "container_id": "コンテナーID",
+      "entry": "エントリーへのアクセス"
     }
   },
   "button": {
@@ -68,11 +68,11 @@
       "flag": {
         "add": {
           "normal": "フラッグを追加",
-          "remote": "添加远程附件",
-          "dynamic": "上传动态附件"
+          "remote": "リモート添付ファイルを追加",
+          "dynamic": "動的添付ファイルをアップロードする"
         },
         "save": "フラッグテンプレートを保存",
-        "delete": "删除 flag"
+        "delete": "フラグを削除"
       },
       "bonus": "ブラッドボーナス",
       "delete": "チャレンジを削除",
@@ -88,7 +88,7 @@
         "destroy": "テストコンテナーを破棄"
       },
       "hint": {
-        "add": "添加提示"
+        "add": "ヒントを追加"
       }
     }
   },
@@ -110,9 +110,9 @@
       "delete": "ユーザー {{name}} を削除してもよろしいですか？"
     },
     "instances": {
-      "stats": "共计 <1>{{count}}</1> 个已分发容器实例",
-      "destroy": "你确定要销毁容器实例 {{name}} 吗？",
-      "note": "注：容器实例统计不包括管理员测试容器、已销毁的容器"
+      "stats": "合計計 <1>{{count}}</1>が コンテナを提供しています",
+      "destroy": "本当に コンテナーインスタンスの {{name}} を破棄しますか?",
+      "note": "：コンテナでのラベル付けは管理者試験コンテナや破壊されたコンテナではありません"
     },
     "games": {
       "stats": "表示済み <1>{{current}}</1>/<1>{{total}}</1> 試合",
@@ -176,7 +176,7 @@
           "stats": "{{count}}/{{total}} 参加済み",
           "joined": "申込済み",
           "not_joined": "未申込",
-          "update": "确定要设为 \"{{status}}\" 吗？"
+          "update": "{{status}}に設定してもよろしいですか?"
         }
       },
       "notices": {
@@ -202,7 +202,7 @@
           },
           "title": "フラッグ管理",
           "create": "フラッグを作成します。複数のフラグは行で区切られ、1行に1つのフラッグにしてください。<br />各チャレンジには複数のフラッグを持つことができ、どのフラグを奪取しても得点がもらえます。",
-          "delete": "确定删除此 flag 吗？",
+          "delete": "この flag を削除しますか?",
           "template": "フラッグテンプレート",
           "instructions": {
             "both": "<1>[TEAM_HASH]</1> を指定するときにリート文字列を有効にする必要がある場合は、フラッグ テンプレート文字列の <strong>前に</strong><2>[LEET]</2> を追加してください。その時、フラッグ テンプレート文字列のエントロピーはチェックされません。",
@@ -247,7 +247,7 @@
         },
         "difficulty": "難易度",
         "description": "チャレンジ説明",
-        "solve_count": "解出次数",
+        "solve_count": "解出回数",
         "memory_limit": {
           "label": "メモリ制限 (MB)",
           "description": "コンテナのメモリ制限"
@@ -351,12 +351,12 @@
     },
     "instances": {
       "teams": {
-        "select": "所有队伍",
-        "not_found": "未找到队伍"
+        "select": "全チーム",
+        "not_found": "チームが見つかりません"
       },
       "challenges": {
-        "select": "所有题目",
-        "not_found": "未找到题目"
+        "select": "すべての課題",
+        "not_found": "課題が見つかりません"
       }
     }
   },
@@ -369,10 +369,10 @@
     "instances": {
       "destroyed": "インスタンスは破棄されました",
       "url_copied": {
-        "title": "代理 URL 已复制到剪贴板",
-        "message": "请使用客户端进行访问"
+        "title": "プロキシのURLがクリップボードにコピーされました",
+        "message": "クライアントを使用してアクセスしてください。"
       },
-      "entry_copied": "访问入口已复制到剪贴板"
+      "entry_copied": "エントリーをクリップボードにコピーしました"
     },
     "users": {
       "password_copied": "パスワードをクリップボードにコピーしました",
