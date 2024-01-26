@@ -186,10 +186,8 @@ const PostEdit: FC = () => {
                     variant="outline"
                     onClick={() =>
                       modals.openConfirmModal({
-                        title: '删除文章',
-                        children: (
-                          <Text size="sm">你确定要删除文章 &quot;{post.title}&quot; 吗？</Text>
-                        ),
+                        title: t('post.button.delete'),
+                        children: <Text size="sm">{t('post.content.delete')}</Text>,
                         onConfirm: onDelete,
                         confirmProps: { color: 'red' },
                       })
@@ -203,8 +201,8 @@ const PostEdit: FC = () => {
                     onClick={() => {
                       if (isChanged()) {
                         modals.openConfirmModal({
-                          title: '文章已更改',
-                          children: <Text size="sm">文章内容已更改，是否保存？</Text>,
+                          title: t('post.content.updated.title'),
+                          children: <Text size="sm">{t('post.content.updated.content')}</Text>,
                           onConfirm: () => {
                             onUpdate()
                             navigate(`/posts/${postId}`)

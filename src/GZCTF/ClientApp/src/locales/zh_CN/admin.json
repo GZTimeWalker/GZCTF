@@ -65,6 +65,8 @@
     "challenges": {
       "new": "新建题目",
       "edit": "编辑题目",
+      "enable": "启用题目",
+      "disable": "禁用题目",
       "flag": {
         "add": {
           "normal": "添加 flag",
@@ -232,6 +234,8 @@
         "hints": "题目提示",
         "title": "题目标题",
         "delete": "你确定要删除题目 {{name}} 吗？",
+        "enable": "你确定要启用题目 {{name}} 吗？",
+        "disable": "你确定要禁用题目 {{name}} 吗？",
         "cpu_limit": {
           "label": "CPU 限制 (0.1 CPUs)",
           "description": "乘以 0.1 即为 CPU 核心数"

@@ -64,7 +64,7 @@ const Configs: FC = () => {
         }}
         disabled={!saved}
       >
-        {t('admin.button.back')}
+        {t('admin.button.save')}
       </Button>
       <Stack w="100%" spacing="xl">
         <Stack>

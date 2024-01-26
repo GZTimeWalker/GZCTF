@@ -48,12 +48,15 @@ const GameChallengeEdit: FC = () => {
     challenge: ChallengeInfoModel,
     setDisabled: Dispatch<SetStateAction<boolean>>
   ) => {
-    const op = challenge.isEnabled ? '禁用' : '启用'
     modals.openConfirmModal({
-      title: `${op}题目`,
+      title: challenge.isEnabled
+        ? t('admin.button.challenges.disable')
+        : t('admin.button.challenges.enable'),
       children: (
         <Text size="sm">
-          你确定要{op}题目 "{challenge.title}" 吗？
+          {challenge.isEnabled
+            ? t('admin.content.games.challenges.disable')
+            : t('admin.content.games.challenges.enable')}
         </Text>
       ),
       onConfirm: () => onConfirmToggle(challenge, setDisabled),

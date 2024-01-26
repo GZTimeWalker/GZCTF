@@ -19,7 +19,12 @@
   "content": {
     "metadata": "{{author}} 发布于 {{date}}",
     "pinned": "[置顶]",
-    "details": "查看详情"
+    "details": "查看详情",
+    "delete": "你确定要删除文章 “{{title}}” 吗？",
+    "updated": {
+      "title": "文章已更改",
+      "content": "文章内容已更改，是否保存？"
+    }
   },
   "notification": {
     "saved": "文章已保存",
