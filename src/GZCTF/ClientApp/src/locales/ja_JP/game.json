@@ -7,7 +7,7 @@
       "cheatinfo": "不正行為",
       "submissions": "提出物"
     },
-    "challenge": "ゲームのチャレンジ",
+    "challenge": "チャレンジ",
     "scoreboard": "ランキング"
   },
   "tag": {
@@ -16,9 +16,12 @@
     "individual": "ソロ戦",
     "mutiplayer": "チーム戦"
   },
+  "placeholder": {
+    "no_solved": "Ouch! このチームはまだ……"
+  },
   "label": {
     "score": "スコア",
-    "traffic": "トラフィックファイル",
+    "traffic": "トラフィック",
     "cheat_info": {
       "owned_team": "フラッグを持っているチーム",
       "submit_team": "フラッグを提出したチーム",
@@ -33,6 +36,7 @@
     "score_table": {
       "team": "チーム",
       "score": "得点",
+      "type": "タイプ",
       "rank_total": "総合ランキング",
       "score_total": "合計得点",
       "solved_count": "解答数",
@@ -104,6 +108,7 @@
       "comment": "プラットフォームの設定とチャレンジの両方から有効にしなければなりません"
     },
     "start_time": "開始日時",
+    "duration": "{{hours}} 小时",
     "no_challenge": "あかん！このゲームにはまだチャレンジがありません……",
     "joined_status": "<strong>{{count}}</strong>のチームが参加登録しました",
     "scoreboard_tip": "Tip: 左矢印キーと右矢印キーを使ってチャレンジ一覧をスクロールできます",
@@ -112,7 +117,13 @@
     "hide_container_events": {
       "label": "コンテナイベントを非表示にする",
       "description": "コンテナ開始/破棄イベントを非表示にする"
-    }
+    },
+    "start_at": "開始日時",
+    "end_at": "終了",
+    "remaining_time": "残り時間",
+    "remaining_duration": "剩余 {{hours}} 小时",
+    "total_time": "期間",
+    "total_duration": "共 {{hours}} 小时"
   },
   "notification": {
     "left": "申し込みをキャンセルしました",

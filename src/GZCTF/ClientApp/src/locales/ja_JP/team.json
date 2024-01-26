@@ -8,18 +8,23 @@
     "kick": "チームから追放する",
     "members": "チームメンバー",
     "transfer": "チームを譲る",
-    "invite_code": "招待コード"
+    "invite_code": "招待コード",
+    "role": "個人的に識別"
   },
   "button": {
     "join": "チームに参加",
     "edit": "チーム詳細",
-    "save": "更新情報",
+    "save": "変更を保存",
     "leave": "チームから離脱",
     "create": "チームを作成",
     "disband": "チームを解散"
   },
   "content": {
     "join": "招待コードをチームの作成者から取得し、招待コードを入力してチームに参加してください。",
+    "role": {
+      "captain": "リーダー",
+      "member": "メンバー"
+    },
     "kick": {
       "confirm": {
         "title": "追放を確認",

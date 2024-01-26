@@ -22,6 +22,9 @@
     "404": "The Nowhere",
     "about": "About"
   },
+  "button": {
+    "copy": "Copy to clipboard"
+  },
   "email": {
     "sent": {
       "title": "Email Sent",
@@ -86,6 +89,11 @@
       },
       "limit": "Please select an image less than 3MB",
       "content": "Drag and drop an image or click here to select {{type}}"
+    },
+    "no_data": "No data",
+    "wider": {
+      "text": "Please use a broader device to browse this page",
+      "title": "Insufficient Page Width"
     }
   }
 }

@@ -1,20 +1,87 @@
 {
+  "bonus": {
+    "first_blood": "First Blood",
+    "second_blood": "Second blood",
+    "third_blood": "Third Blood"
+  },
+  "button": {
+    "download_attachment": "Download Attachment",
+    "submit_flag": "Submit flag",
+    "instance": {
+      "create": "Create instance",
+      "prolong": "Extended hours",
+      "destroy": "Destroy instance"
+    }
+  },
+  "content": {
+    "solved": "<1>Solved by</1>&nbsp;{{solved}}&nbsp;<1>teams</1>",
+    "instance": {
+      "test": {
+        "no_container": "Test container is not enabled"
+      },
+      "entry": {
+        "label": "Instance Entry",
+        "description": {
+          "proxy": "Platform enabled tcp over laws proxy mode.",
+          "anchor": "Get clients"
+        }
+      },
+      "open": {
+        "client": "Open in client",
+        "web": "Open as Web"
+      },
+      "no_container": {
+        "message": "This title is the container title. The question needs to be opened with the container instance",
+        "note": "Container default validity is 120 minutes"
+      },
+      "actions": {
+        "count_down": "Remaining：",
+        "note": "You can extend the time within 10 minutes before expiry"
+      }
+    }
+  },
+  "file_type": {
+    "local": "Self hosted",
+    "none": "None",
+    "remote": "Remote Url"
+  },
+  "notification": {
+    "instance": {
+      "copied": {
+        "entry": "Instance entry copied to clipboard",
+        "url": {
+          "message": "Please use client to access",
+          "title": "Instance entry copied to clipboard"
+        }
+      },
+      "prolong": {
+        "note": {
+          "message": "Please extend the time or destroy instance in time",
+          "title": "Instances are due"
+        },
+        "success": {
+          "message": "Please note the instance expiration time",
+          "title": "Instance time has been extended"
+        }
+      }
+    }
+  },
   "tag": {
+    "blockchain": "blockchain",
+    "crypto": "Password",
+    "forensics": "Forensics",
+    "hardware": "Hardware",
+    "misc": "Miscellaneous",
+    "mobile": "Mobile Security",
     "ppc": "Programming",
     "pwn": "Pwn",
-    "web": "Web",
-    "misc": "Miscellaneous",
-    "crypto": "Password",
-    "mobile": "Mobile Security",
     "reverse": "Reverse",
-    "hardware": "Hardware",
-    "forensics": "Forensics",
-    "blockchain": "blockchain"
+    "web": "Web"
   },
   "type": {
-    "static_container": {
-      "desrc": "Shared containers, any flag can be submitted",
-      "label": "Static Container"
+    "dynamic_attachment": {
+      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams",
+      "label": "Dynamic Attachments"
     },
     "dynamic_container": {
       "desrc": "Auto-generate settlement flag, unique to each team",
@@ -24,23 +91,9 @@
       "desrc": "Commit attachments, any flag can be submitted",
       "label": "Static Attachments"
     },
-    "dynamic_attachment": {
-      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams",
-      "label": "Dynamic Attachments"
+    "static_container": {
+      "desrc": "Shared containers, any flag can be submitted",
+      "label": "Static Container"
     }
-  },
-  "bonus": {
-    "first_blood": "First Blood",
-    "third_blood": "Third Blood",
-    "second_blood": "Second blood"
-  },
-  "button": {
-    "submit_flag": "Submit flag",
-    "download_attachment": "Download Attachment"
-  },
-  "file_type": {
-    "none": "None",
-    "local": "Self hosted",
-    "remote": "Remote Url"
   }
 }

@@ -16,9 +16,12 @@
     "individual": "Personal",
     "mutiplayer": "Team"
   },
+  "placeholder": {
+    "no_solved": "Ouch! This team has not uncovered the topic……"
+  },
   "label": {
     "score": "Score",
-    "traffic": "Traffic File",
+    "traffic": "Traffic",
     "cheat_info": {
       "owned_team": "Raw Team",
       "submit_team": "Submit Team",
@@ -33,6 +36,7 @@
     "score_table": {
       "team": "Team",
       "score": "Score",
+      "type": "Type",
       "rank_total": "Total Rankings",
       "score_total": "Score",
       "solved_count": "Solved",
@@ -104,6 +108,7 @@
       "comment": "Requires both platform configuration and title to be enabled"
     },
     "start_time": "Start Time",
+    "duration": "{{hours}} 小时",
     "no_challenge": "Ouch! No topics available for this match with……",
     "joined_status": "<strong>{{count}}</strong> teams have already registered",
     "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
@@ -112,7 +117,13 @@
     "hide_container_events": {
       "label": "Hide container events",
       "description": "Hide container starting/destruction events"
-    }
+    },
+    "start_at": "Starts on",
+    "end_at": "Ends on",
+    "remaining_time": "Remaining time",
+    "remaining_duration": "剩余 {{hours}} 小时",
+    "total_time": "Duration",
+    "total_duration": "共 {{hours}} 小时"
   },
   "notification": {
     "left": "Cancellation successful",

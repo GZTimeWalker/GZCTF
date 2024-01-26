@@ -17,7 +17,9 @@
     "delete": "記事を削除"
   },
   "content": {
-    "metadata": "{{author}} が {{date}} に公開されました"
+    "metadata": "{{author}} が {{date}} に公開されました",
+    "pinned": "[置顶]",
+    "details": "詳細を表示"
   },
   "notification": {
     "saved": "記事が保存されました",
