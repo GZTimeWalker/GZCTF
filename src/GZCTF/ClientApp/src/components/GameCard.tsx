@@ -72,10 +72,16 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
               <Stack spacing={2}>
                 <Group noWrap spacing="xs">
                   <Badge size="xs" color={color}>
-                    {limit === 0 ? '多' : limit === 1 ? '个' : limit}人赛
+                    {limit === 0
+                      ? t('game.tag.mutiplayer')
+                      : limit === 1
+                        ? t('game.tag.individual')
+                        : t('game.tag.limited', { count: limit })}
                   </Badge>
                   <Badge size="xs" color={color}>
-                    {`${duration} 小时`}
+                    {t('game.content.duration', {
+                      hours: duration,
+                    })}
                   </Badge>
                 </Group>
                 <Title order={2} align="left">

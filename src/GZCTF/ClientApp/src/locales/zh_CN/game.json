@@ -16,9 +16,12 @@
     "individual": "个人赛",
     "mutiplayer": "团队赛"
   },
+  "placeholder": {
+    "no_solved": "Ouch! 这支队伍还没有解出题目呢……"
+  },
   "label": {
     "score": "分数",
-    "traffic": "流量文件",
+    "traffic": "流量",
     "cheat_info": {
       "owned_team": "原始队伍",
       "submit_team": "提交队伍",
@@ -33,6 +36,7 @@
     "score_table": {
       "team": "战队",
       "score": "得分",
+      "type": "类型",
       "rank_total": "总排名",
       "score_total": "总分",
       "solved_count": "解题数量",
@@ -101,6 +105,7 @@
       "comment": "需要平台配置和题目双重启用"
     },
     "start_time": "开始时间",
+    "duration": "{{hours}} 小时",
     "no_challenge": "Ouch! 这个比赛还没有可用题目呢……",
     "joined_status": "<strong>{{count}}</strong>支队伍已报名",
     "scoreboard_tip": "Tip: 可以按左右方向键滚动题目列表哦~",
@@ -109,7 +114,13 @@
     "hide_container_events": {
       "label": "隐藏容器事件",
       "description": "隐藏容器启动/销毁事件"
-    }
+    },
+    "start_at": "开始于",
+    "end_at": "结束于",
+    "remaining_time": "剩余时间",
+    "remaining_duration": "剩余 {{hours}} 小时",
+    "total_time": "持续时间",
+    "total_duration": "共 {{hours}} 小时"
   },
   "notification": {
     "left": "取消报名成功",

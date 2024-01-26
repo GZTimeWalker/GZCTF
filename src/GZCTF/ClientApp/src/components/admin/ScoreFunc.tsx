@@ -45,10 +45,10 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
           backgroundColor: 'transparent',
         },
         xAxis: {
-          name: '解出次数',
+          name: t('admin.content.games.challenges.solve_count'),
         },
         yAxis: {
-          name: '题目分值',
+          name: t('admin.content.games.challenges.score'),
           min: 0,
           max: Math.ceil((originalScore * 1.2) / 100) * 100,
         },

@@ -157,7 +157,7 @@ const Users: FC = () => {
                 })
               }}
             >
-              {t('admin.button.copy')}
+              {t('common.button.copy')}
             </Button>
           </Stack>
         ),

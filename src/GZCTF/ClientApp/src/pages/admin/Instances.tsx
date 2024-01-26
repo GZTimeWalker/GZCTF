@@ -24,7 +24,7 @@ import {
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, forwardRef, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
@@ -134,7 +134,7 @@ const Instances: FC = () => {
 
       showNotification({
         color: 'teal',
-        message: '容器已销毁',
+        message: t('admin.notification.instances.destroyed'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
 
@@ -161,7 +161,7 @@ const Instances: FC = () => {
               w="48%"
               searchable
               clearable
-              placeholder="所有队伍"
+              placeholder={t('admin.placeholder.instances.teams.select')}
               value={selectedTeamId}
               onChange={(id) => setSelectedTeamId(id)}
               icon={<Icon path={mdiAccountGroupOutline} size={1} />}
@@ -170,14 +170,13 @@ const Instances: FC = () => {
                 teams?.map((team) => ({ value: String(team.id), label: team.name, ...team })) ?? []
               }
               filter={(query, team) => team.name.includes(query) || team.value.includes(query)}
-              nothingFound="没有找到队伍"
+              nothingFound={t('admin.placeholder.instances.teams.not_found')}
             />
             <Select
               w="48%"
               searchable
               clearable
-              placeholder="所有题目"
-              value={selectedChallengeId}
+              placeholder={t('admin.placeholder.instances.challenges.select')}
               onChange={(id) => setSelectedChallengeId(id)}
               icon={<Icon path={mdiPuzzleOutline} size={1} />}
               itemComponent={SelectChallengeItem}
@@ -191,13 +190,15 @@ const Instances: FC = () => {
               filter={(query, challenge) =>
                 challenge.title.includes(query) || challenge.value.includes(query)
               }
-              nothingFound="没有找到题目"
+              nothingFound={t('admin.placeholder.instances.challenges.not_found')}
             />
           </Group>
 
           <Group position="right">
             <Text fw="bold" size="sm">
-              共计 <Code>{instances?.length}</Code> 个已分发容器实例
+              <Trans i18nKey="admin.content.instances.stats" values={{ count: instances?.length }}>
+                _<Code>_</Code>_
+              </Trans>
             </Text>
           </Group>
         </>
@@ -208,11 +209,11 @@ const Instances: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th>队伍</th>
-                <th>题目</th>
-                <th>生命周期</th>
-                <th>容器 Id</th>
-                <th>访问入口</th>
+                <th>{t('common.label.team')}</th>
+                <th>{t('common.label.challenge')}</th>
+                <th>{t('admin.label.instances.life_cycle')}</th>
+                <th>{t('admin.label.instances.container_id')}</th>
+                <th>{t('admin.label.instances.entry')}</th>
                 <th />
               </tr>
             </thead>
@@ -252,7 +253,7 @@ const Instances: FC = () => {
                       <td>
                         <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
                           <Tooltip
-                            label="复制 URL"
+                            label={t('common.button.copy')}
                             withArrow
                             position="left"
                             classNames={tooltipClasses}
@@ -271,8 +272,8 @@ const Instances: FC = () => {
                                 )
                                 showNotification({
                                   color: 'teal',
-                                  title: '代理 URL 已复制到剪贴板',
-                                  message: '请使用客户端进行访问',
+                                  title: t('admin.notification.instances.url_copied.title'),
+                                  message: t('admin.notification.instances.url_copied.message'),
                                   icon: <Icon path={mdiCheck} size={1} />,
                                 })
                               }}
@@ -284,7 +285,7 @@ const Instances: FC = () => {
                       </td>
                       <td>
                         <Tooltip
-                          label="点击复制"
+                          label={t('common.button.copy')}
                           withArrow
                           position="left"
                           classNames={tooltipClasses}
@@ -302,7 +303,7 @@ const Instances: FC = () => {
                               clipBoard.copy(`${inst.ip ?? ''}:${inst.port ?? ''}`)
                               showNotification({
                                 color: 'teal',
-                                message: '访问入口已复制到剪贴板',
+                                message: t('admin.notification.instances.entry_copied'),
                                 icon: <Icon path={mdiCheck} size={1} />,
                               })
                             }}
@@ -319,7 +320,9 @@ const Instances: FC = () => {
                           <ActionIconWithConfirm
                             iconPath={mdiPackageVariantClosedRemove}
                             color="alert"
-                            message={`确定销毁容器：${inst.containerGuid?.substring(0, 8)}?`}
+                            message={t('admin.content.instances.destroy', {
+                              name: inst.containerGuid?.slice(0, 8),
+                            })}
                             disabled={disabled}
                             onClick={() => onDelete(inst.containerGuid)}
                           />
@@ -332,7 +335,7 @@ const Instances: FC = () => {
           </Table>
         </ScrollArea>
         <Text size="xs" c="dimmed">
-          注：容器实例统计不包括管理员测试容器、已销毁的容器
+          {t('admin.content.instances.note')}
         </Text>
       </Paper>
     </AdminPage>

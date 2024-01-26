@@ -283,7 +283,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           </Button>
         ) : (
           <Button disabled={disabled} w="122px" onClick={() => setFlagCreateModalOpen(true)}>
-            {t('admin.button.challenges.flag.add')}
+            {t('admin.button.challenges.flag.add.normal')}
           </Button>
         )}
       </Group>
@@ -375,7 +375,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         </ScrollArea>
       )}
       <FlagCreateModal
-        title={t('admin.button.challenges.flag.add')}
+        title={t('admin.button.challenges.flag.add.normal')}
         opened={flagCreateModalOpen}
         onClose={() => setFlagCreateModalOpen(false)}
       />
@@ -399,10 +399,14 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
   return (
     <Stack>
       <Group position="apart" mt={20}>
-        <Title order={2}>flag 管理</Title>
+        <Title order={2}>{t('admin.content.games.challenges.flag.title')}</Title>
         <Group position="right">
-          <Button onClick={() => setRemoteAttachmentModalOpened(true)}>添加远程附件</Button>
-          <Button onClick={() => setAttachmentUploadModalOpened(true)}>上传动态附件</Button>
+          <Button onClick={() => setRemoteAttachmentModalOpened(true)}>
+            {t('admin.button.challenges.flag.add.remote')}
+          </Button>
+          <Button onClick={() => setAttachmentUploadModalOpened(true)}>
+            {t('admin.button.challenges.flag.add.dynamic')}
+          </Button>
         </Group>
       </Group>
       <Divider />
@@ -412,8 +416,8 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
             <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
             <Center h="calc(100vh - 250px)">
               <Stack spacing={0}>
-                <Title order={2}>flag 列表为空</Title>
-                <Text>请通过右上角添加 flag</Text>
+                <Title order={2}>{t('admin.content.games.challenges.flag.empty.title')}</Title>
+                <Text>{t('admin.content.games.challenges.flag.empty.description')}</Text>
               </Stack>
             </Center>
           </>
@@ -421,13 +425,13 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
         <FlagEditPanel flags={challenge?.flags} onDelete={onDelete} />
       </ScrollArea>
       <AttachmentUploadModal
-        title="批量添加动态附件"
+        title={t('admin.button.challenges.flag.add.dynamic')}
         size="40%"
         opened={attachmentUploadModalOpened}
         onClose={() => setAttachmentUploadModalOpened(false)}
       />
       <AttachmentRemoteEditModal
-        title="批量添加远程附件"
+        title={t('admin.button.challenges.flag.add.remote')}
         size="40%"
         opened={remoteAttachmentModalOpened}
         onClose={() => setRemoteAttachmentModalOpened(false)}
@@ -450,11 +454,11 @@ const GameChallengeEdit: FC = () => {
 
   const onDeleteFlag = (flag: FlagInfoModel) => {
     modals.openConfirmModal({
-      title: '删除 flag',
+      title: t('admin.button.challenges.flag.delete'),
       size: '35%',
       children: (
         <Stack>
-          <Text>确定删除下列 flag 吗？</Text>
+          <Text>{t('admin.content.games.challenges.flag.delete')}</Text>
           <Text ff={theme.fontFamilyMonospace}>{flag.flag}</Text>
         </Stack>
       ),
@@ -469,7 +473,7 @@ const GameChallengeEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: 'flag 已删除',
+          message: t('admin.notification.games.challenges.flag.deleted'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         challenge &&
@@ -492,7 +496,7 @@ const GameChallengeEdit: FC = () => {
               leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
               onClick={() => navigate(`/admin/games/${id}/challenges`)}
             >
-              返回上级
+              {t('admin.button.back')}
             </Button>
             <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
               # {challenge?.title}
@@ -503,7 +507,7 @@ const GameChallengeEdit: FC = () => {
               leftIcon={<Icon path={mdiPuzzleEditOutline} size={1} />}
               onClick={() => navigate(`/admin/games/${id}/challenges/${numCId}`)}
             >
-              编辑题目信息
+              {t('admin.button.challenges.edit')}
             </Button>
           </Group>
         </>

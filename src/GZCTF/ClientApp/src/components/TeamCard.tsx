@@ -69,21 +69,21 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Stack spacing="xs">
             <Group spacing="xs" position="apart">
               <Text transform="uppercase" c="dimmed">
-                个人身份:
+                {t('team.label.role')}
               </Text>
               {isCaptain ? (
                 <Badge color="yellow" size="lg">
-                  队长
+                  {t('team.content.role.captain')}
                 </Badge>
               ) : (
                 <Badge color="gray" size="lg">
-                  普通队员
+                  {t('team.content.role.member')}
                 </Badge>
               )}
             </Group>
             <Group spacing="xs">
               <Text transform="uppercase" c="dimmed">
-                队员列表:
+                {t('team.label.members')}
               </Text>
               <Box style={{ flexGrow: 1 }} />
               {team.locked && (

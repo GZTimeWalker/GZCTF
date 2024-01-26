@@ -31,12 +31,16 @@
       "active": "激活",
       "role": "用户角色",
       "last_visit": "最后访问时间"
+    },
+    "instances": {
+      "life_cycle": "生命周期",
+      "container_id": "容器 ID",
+      "entry": "访问入口"
     }
   },
   "button": {
     "back": "返回上级",
     "save": "保存更改",
-    "copy": "复制到剪贴板",
     "teams": {
       "edit": "编辑队伍",
       "do_lock": "锁定",
@@ -62,8 +66,13 @@
       "new": "新建题目",
       "edit": "编辑题目",
       "flag": {
-        "add": "添加 flag",
-        "save": "保存 flag 模版"
+        "add": {
+          "normal": "添加 flag",
+          "remote": "添加远程附件",
+          "dynamic": "上传动态附件"
+        },
+        "save": "保存 flag 模版",
+        "delete": "删除 flag"
       },
       "bonus": "三血奖励",
       "delete": "删除题目",
@@ -77,6 +86,9 @@
       "test_container": {
         "create": "创建测试容器",
         "destroy": "销毁测试容器"
+      },
+      "hint": {
+        "add": "添加提示"
       }
     }
   },
@@ -85,17 +97,22 @@
       "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 队伍",
       "locked": "已锁定",
       "unlocked": "已解锁",
-      "lock": "确定要{{action}}队伍\n{{name}} 吗？",
+      "lock": "确定要{{action}}队伍 {{name}} 吗？",
       "delete": "你确定要删除队伍 {{name}} 吗？"
     },
     "users": {
       "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 用户",
       "reset": {
         "title": "为 {{name}} 重置密码",
-        "message": "你确定重置用户<br/> {{user}} 的密码吗？",
+        "message": "你确定重置用户 {{user}} 的密码吗？",
         "content": "用户密码已重置，<strong>此密码只会显示一次</strong>，请妥善保存。"
       },
       "delete": "你确定要删除用户 {{name}} 吗？"
+    },
+    "instances": {
+      "stats": "共计 <1>{{count}}</1> 个已分发容器实例",
+      "destroy": "你确定要销毁容器实例 {{name}} 吗？",
+      "note": "注：容器实例统计不包括管理员测试容器、已销毁的容器"
     },
     "games": {
       "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 比赛",
@@ -158,7 +175,8 @@
         "participation": {
           "stats": "{{count}}/{{total}} 已报名",
           "joined": "已报名",
-          "not_joined": "未报名"
+          "not_joined": "未报名",
+          "update": "确定要设为 \"{{status}}\" 吗？"
         }
       },
       "notices": {
@@ -184,6 +202,7 @@
           },
           "title": "flag 管理",
           "create": "创建 flag，多个 flag 按行分割，每行一个。<br />每道题目可以拥有多个 flag，获取任意 flag 均可得分。",
+          "delete": "确定删除此 flag 吗？",
           "template": "flag 模版",
           "instructions": {
             "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情况下启用 Leet 字符串功能，请在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 标记，此时不会检查 flag 模版字符串的熵",
@@ -228,6 +247,7 @@
         },
         "difficulty": "难度系数",
         "description": "题目描述",
+        "solve_count": "解出次数",
         "memory_limit": {
           "label": "内存限制 (MB)",
           "description": "限制容器使用的 RAM"
@@ -240,7 +260,7 @@
           "label": "存储限制 (MB)",
           "description": "限制存储空间，含镜像大小"
         },
-        "original_score": "题目分值",
+        "score": "题目分值",
         "attachment_name": {
           "label": "全局附件名",
           "description": "所有动态附件均会以此文件名下载"
@@ -328,6 +348,16 @@
     "settings": {
       "footer": "`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)",
       "email_domain_list": "不限制注册域名"
+    },
+    "instances": {
+      "teams": {
+        "select": "所有队伍",
+        "not_found": "未找到队伍"
+      },
+      "challenges": {
+        "select": "所有题目",
+        "not_found": "未找到题目"
+      }
     }
   },
   "notification": {
@@ -335,6 +365,14 @@
       "realtime": {
         "connected": "实时日志连接成功"
       }
+    },
+    "instances": {
+      "destroyed": "实例已销毁",
+      "url_copied": {
+        "title": "代理 URL 已复制到剪贴板",
+        "message": "请使用客户端进行访问"
+      },
+      "entry_copied": "访问入口已复制到剪贴板"
     },
     "users": {
       "password_copied": "密码已复制到剪贴板",

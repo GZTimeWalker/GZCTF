@@ -37,7 +37,9 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
             size={size}
             iconPath={s.iconPath}
             color={s.color}
-            message={`确定要设为“${s.title}”吗？`}
+            message={t('admin.content.games.review.participation.update', {
+              status: s.title,
+            })}
             disabled={disabled}
             onClick={() => setParticipationStatus(participateId, value)}
           />

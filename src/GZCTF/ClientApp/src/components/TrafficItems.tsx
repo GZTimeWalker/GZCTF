@@ -41,7 +41,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 
         <Group position="right" spacing={2} noWrap>
           <Text color="dimmed" size="xs" lineClamp={1}>
-            {item.count}&nbsp;队伍
+            {item.count}&nbsp;{t('common.label.team')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
         </Group>
@@ -76,7 +76,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
 
         <Group position="right" spacing={2} noWrap>
           <Text color="dimmed" size="xs" lineClamp={1}>
-            {item.count}&nbsp;流量
+            {item.count}&nbsp;{t('game.label.traffic')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
         </Group>

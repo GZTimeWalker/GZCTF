@@ -1,20 +1,87 @@
 {
+  "bonus": {
+    "first_blood": "一血",
+    "second_blood": "二血",
+    "third_blood": "三血"
+  },
+  "button": {
+    "download_attachment": "下载附件",
+    "submit_flag": "提交 flag",
+    "instance": {
+      "create": "创建实例",
+      "prolong": "延长时间",
+      "destroy": "销毁实例"
+    }
+  },
+  "content": {
+    "solved": "{{solved}} <1>支队伍攻克</1>",
+    "instance": {
+      "test": {
+        "no_container": "测试容器未开启"
+      },
+      "entry": {
+        "label": "实例入口",
+        "description": {
+          "proxy": "平台已启用 tcp over ws 代理模式。",
+          "anchor": "获取客户端"
+        }
+      },
+      "open": {
+        "client": "在客户端中打开",
+        "web": "作为网页打开"
+      },
+      "no_container": {
+        "message": "本题为容器题目，解题需开启容器实例",
+        "note": "容器默认有效期为 120 分钟"
+      },
+      "actions": {
+        "count_down": "剩余时间：",
+        "note": "你可以在到期前 10 分钟内延长时间"
+      }
+    }
+  },
+  "file_type": {
+    "local": "本地附件",
+    "none": "无附件",
+    "remote": "远程附件"
+  },
+  "notification": {
+    "instance": {
+      "copied": {
+        "entry": "实例入口已复制到剪贴板",
+        "url": {
+          "message": "请使用客户端进行访问",
+          "title": "实例入口已复制到剪贴板"
+        }
+      },
+      "prolong": {
+        "note": {
+          "message": "请及时延长时间或销毁实例",
+          "title": "实例即将到期"
+        },
+        "success": {
+          "message": "请注意实例到期时间",
+          "title": "实例时间已延长"
+        }
+      }
+    }
+  },
   "tag": {
+    "blockchain": "区块链",
+    "crypto": "密码学",
+    "forensics": "取证",
+    "hardware": "硬件",
+    "misc": "杂项",
+    "mobile": "移动安全",
     "ppc": "编程",
     "pwn": "Pwn",
-    "web": "Web",
-    "misc": "杂项",
-    "crypto": "密码学",
-    "mobile": "移动安全",
     "reverse": "逆向",
-    "hardware": "硬件",
-    "forensics": "取证",
-    "blockchain": "区块链"
+    "web": "Web"
   },
   "type": {
-    "static_container": {
-      "desrc": "共用容器，任意 flag 均可提交",
-      "label": "静态容器"
+    "dynamic_attachment": {
+      "desrc": "按照队伍分发附件，需保证附件数量大于队伍数",
+      "label": "动态附件"
     },
     "dynamic_container": {
       "desrc": "自动生成下发 flag，每队均唯一",
@@ -24,23 +91,9 @@
       "desrc": "共用附件，任意 flag 均可提交",
       "label": "静态附件"
     },
-    "dynamic_attachment": {
-      "desrc": "按照队伍分发附件，需保证附件数量大于队伍数",
-      "label": "动态附件"
+    "static_container": {
+      "desrc": "共用容器，任意 flag 均可提交",
+      "label": "静态容器"
     }
-  },
-  "bonus": {
-    "first_blood": "一血",
-    "third_blood": "三血",
-    "second_blood": "二血"
-  },
-  "button": {
-    "submit_flag": "提交 flag",
-    "download_attachment": "下载附件"
-  },
-  "file_type": {
-    "none": "无附件",
-    "local": "本地附件",
-    "remote": "远程附件"
   }
 }

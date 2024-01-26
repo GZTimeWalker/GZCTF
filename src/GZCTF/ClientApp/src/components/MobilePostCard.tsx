@@ -24,7 +24,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
         <Box onClick={() => navigate(`/posts/${post.id}`)}>
           <Title order={3} pb={4}>
             <Text span c="brand">
-              {post.isPinned ? '[置顶] ' : '>>> '}
+              {post.isPinned ? `${t('post.content.pinned')} ` : '>>> '}
             </Text>
             {post.title}
           </Title>
@@ -62,7 +62,10 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             {post.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text fw={500} size="sm">
-            {post.authorName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
+            {t('post.content.metadata', {
+              author: post.authorName ?? 'Anonym',
+              date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
+            })}
           </Text>
         </Group>
       </Stack>

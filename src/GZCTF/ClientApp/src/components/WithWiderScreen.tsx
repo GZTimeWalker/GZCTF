@@ -19,9 +19,9 @@ const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 1080 }
     <Stack spacing={0} align="center" justify="center" h="calc(100vh - 32px)">
       <IconWiderScreenRequired />
       <Title order={1} color="#00bfa5" fw="lighter">
-        页面宽度不足
+        {t('common.content.wider.title')}
       </Title>
-      <Text fw="bold">请使用更宽的设备浏览本页面</Text>
+      <Text fw="bold">{t('common.content.wider.text')}</Text>
     </Stack>
   ) : (
     <>{children}</>

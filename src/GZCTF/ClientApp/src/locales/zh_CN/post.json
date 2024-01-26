@@ -17,7 +17,9 @@
     "delete": "删除文章"
   },
   "content": {
-    "metadata": "{{author}} 发布于 {{date}}"
+    "metadata": "{{author}} 发布于 {{date}}",
+    "pinned": "[置顶]",
+    "details": "查看详情"
   },
   "notification": {
     "saved": "文章已保存",

@@ -14,7 +14,7 @@ import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import { BloodsTypes, useChallengeTagLabelMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'
@@ -39,12 +39,7 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
     width: '70%',
     height: '200%',
     zIndex: 91,
-    animation: `${keyframes`0% {
-                              opacity: .3;
-                            }
-                              100% {
-                                opacity: 1;
-                              }`} 2s linear 0s infinite alternate`,
+    animation: `${keyframes`0% { opacity: .3; } 100% { opacity: 1; }`} 2s linear 0s infinite alternate`,
   },
   blood1: {
     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,
@@ -64,8 +59,6 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { classes, cx, theme } = useStyles(props)
   const { classes: tooltipClasses } = useTooltipStyles()
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
-
-  const { t } = useTranslation()
 
   return (
     <Card
@@ -94,10 +87,18 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           </Text>
           <Stack spacing="xs">
             <Title order={6} align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
-              {`${challenge.solved} `}
-              <Text c="dimmed" size="xs" inherit span>
-                支队伍攻克
-              </Text>
+              <Trans
+                i18nKey={'challenge.content.solved'}
+                values={{
+                  solved: challenge.solved,
+                }}
+              >
+                _
+                <Text c="dimmed" size="xs" inherit span>
+                  _
+                </Text>
+                _
+              </Trans>
             </Title>
             <Group position="center" spacing="md" h={20} noWrap>
               {challenge.bloods &&

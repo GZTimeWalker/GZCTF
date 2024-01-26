@@ -61,7 +61,7 @@ export const HintList: FC<HintListProps> = (props) => {
             />
           ))}
           <Button mr={4} leftIcon={<Icon path={mdiPlus} size={1} />} onClick={handleAdd}>
-            添加提示
+            {t('admin.button.challenges.hint.add')}
           </Button>
         </Stack>
       </ScrollArea>

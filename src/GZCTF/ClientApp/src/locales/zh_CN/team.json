@@ -8,7 +8,8 @@
     "kick": "踢出队伍",
     "members": "队伍成员",
     "transfer": "转让队伍",
-    "invite_code": "邀请码"
+    "invite_code": "邀请码",
+    "role": "个人身份"
   },
   "button": {
     "join": "加入队伍",
@@ -20,6 +21,10 @@
   },
   "content": {
     "join": "请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。",
+    "role": {
+      "captain": "队长",
+      "member": "队员"
+    },
     "kick": {
       "confirm": {
         "title": "确认踢出队员",

@@ -240,7 +240,7 @@
           "label": "ストレージ上限 (MB)",
           "description": "ストレージ容量の制限、イメージサイズを含む"
         },
-        "original_score": "チャレンジの点数",
+        "score": "チャレンジの点数",
         "attachment_name": {
           "label": "グローバルアタッチメント名",
           "description": "全ての動的アタッチメントはこのファイル名でダウンロードされます"

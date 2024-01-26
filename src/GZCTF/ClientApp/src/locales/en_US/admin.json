@@ -240,7 +240,7 @@
           "label": "Storage Limit (MB)",
           "description": "Limit storage space with mirror size"
         },
-        "original_score": "Question score value",
+        "score": "Question score value",
         "attachment_name": {
           "label": "Global Attachment Name",
           "description": "All dynamic attachments will be downloaded under this filename"

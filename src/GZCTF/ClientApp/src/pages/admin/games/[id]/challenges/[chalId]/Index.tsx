@@ -339,7 +339,7 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Stack spacing="sm">
               <NumberInput
-                label={t('admin.content.games.challenges.original_score')}
+                label={t('admin.content.games.challenges.score')}
                 min={0}
                 required
                 disabled={disabled}
