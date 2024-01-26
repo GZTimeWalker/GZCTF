@@ -19,7 +19,7 @@
   "content": {
     "metadata": "{{author}} published on {{date}}",
     "pinned": "[置顶]",
-    "details": "查看详情"
+    "details": "View Details"
   },
   "notification": {
     "saved": "Post has been saved",
