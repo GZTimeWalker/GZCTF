@@ -38,56 +38,6 @@ interface ChallengeDetailModalProps extends ModalProps {
   solved?: boolean
 }
 
-export const FlagPlaceholders: string[] = [
-  '横看成岭侧成峰，flag 高低各不同',
-  'flag 当关，万夫莫开',
-  '寻寻觅觅，冷冷清清，flag 惨惨戚戚',
-  '问君能有几多愁？恰似一江 flag 向东流',
-  '人生得意须尽欢，莫使 flag 空对月',
-  '汉皇重色思 flag，御宇多年求不得',
-  'flag 几时有？把酒问青天',
-  '羽扇纶巾，谈笑间，flag 灰飞烟灭',
-  '浊酒一杯家万里，flag 未勒归无计',
-  '孤帆远影碧空尽，唯见 flag 天际流',
-  '安得 flag 千万间，大庇天下 ctfer 俱欢颜！',
-  '两个黄鹂鸣翠柳，一行 flag 上青天',
-  'flag 一场大梦，人生几度秋凉？',
-  '剪不断，理还乱，是 flag',
-  '蓦然回首，flag 却在，灯火阑珊处',
-  '稻花香里说丰年，听取 flag 一片',
-  '采菊东篱下，悠然见 flag',
-  '不畏 flag 遮望眼，自缘身在最高层',
-  '便纵有千种 flag，更与何人说？',
-  '人生自古谁无死？留取 flag 照汗青',
-  '借问 flag 何处有？牧童遥指杏花村',
-]
-
-export const WrongFlagHints: string[] = [
-  '饮水思源，重新审题吧。',
-  '诗云：路漫漫其修远兮，再接再厉吧。',
-  '沉着冷静，可能会有意想不到的收获。',
-  '失败乃成功之母，回去再琢磨琢磨。',
-  '非也非也，不是这个 flag。',
-  '望眼欲穿，flag 却不在这里。',
-  '不要浮躁，仔细再思考思考。',
-  '翻遍天涯，也不是这个答案。',
-  '走马观花，可找不到 flag。',
-  '反复推敲，答案应该就在你手边。',
-  '深谋远虑，flag 不是那么简单。',
-  '山高水远，flag 藏得真是深啊！',
-  '时运不济，碾过你的难道是寂寞？',
-  '兴奋过头，还需要学会更加冷静的思考。',
-  '碰壁了，难道是你已经到了巅峰？',
-  '岁月静好，flag 却已然远去。',
-  '浅水已涸，flag 不可复得。',
-  '白雪纷纷何所似，似此 flag 被错过。',
-  '旧事追思，往事如烟。flag 已然消逝。',
-  '桃花潭水深千尺，不及 flag 不见了踪迹。',
-  '万籁俱寂，唯有 flag 的错误提示在耳边响起。',
-  '陌上花开，可缓缓归矣。flag 未得而返。',
-  '风萧萧兮易水寒，无奈 flag 仍未到彼岸。',
-]
-
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { gameId, gameEnded, challengeId, tagData, title, score, solved, ...modalProps } = props
   const { classes: tooltipClasses } = useTooltipStyles()
@@ -98,10 +48,20 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     OnceSWRConfig
   )
 
+  const { t } = useTranslation()
+
+  const placeholders = t('challenge.content.flag_placeholders', {
+    returnObjects: true,
+  }) as string[]
+
+  const wrong_flag_hints = t('challenge.content.wrong_flag_hints', {
+    returnObjects: true,
+  }) as string[]
+
   const [placeholder, setPlaceholder] = useState('')
 
   useEffect(() => {
-    setPlaceholder(FlagPlaceholders[Math.floor(Math.random() * FlagPlaceholders.length)])
+    setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challengeId])
 
   const isDynamic =
@@ -113,8 +73,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const [onSubmitting, setOnSubmitting] = useState(false)
   const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
-
-  const { t } = useTranslation()
 
   const onCreateContainer = () => {
     if (!challengeId) return
@@ -132,8 +90,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         })
         showNotification({
           color: 'teal',
-          title: '实例已创建',
-          message: '请注意实例到期时间',
+          title: t('challenge.notification.instance.created.title'),
+          message: t('challenge.notification.instance.created.message'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
@@ -157,8 +115,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         })
         showNotification({
           color: 'teal',
-          title: '实例已销毁',
-          message: '你可以重新创建实例',
+          title: t('challenge.notification.instance.destroyed.title'),
+          message: t('challenge.notification.instance.destroyed.message'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
@@ -190,7 +148,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
     if (!challengeId || !flag) {
       showNotification({
         color: 'red',
-        message: '不能提交空 flag',
+        message: t('challenge.notification.flag.empty'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -207,8 +165,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         showNotification({
           id: 'flag-submitted',
           color: 'orange',
-          title: 'flag 已提交',
-          message: '请等待 flag 检查……',
+          title: t('challenge.notification.flag.submitted.title'),
+          message: t('challenge.notification.flag.submitted.message'),
           loading: true,
           autoClose: false,
         })
@@ -248,8 +206,10 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       updateNotification({
         id: 'flag-submitted',
         color: 'teal',
-        title: 'flag 正确',
-        message: gameEnded ? '比赛已结束，本次提交不会被计分' : '排行榜将稍后更新……',
+        title: t('challenge.notification.flag.accepted.title'),
+        message: gameEnded
+          ? t('challenge.notification.flag.accepted.ended')
+          : t('challenge.notification.flag.accepted.message'),
         icon: <Icon path={mdiCheck} size={1} />,
         autoClose: 8000,
       })
@@ -260,8 +220,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       updateNotification({
         id: 'flag-submitted',
         color: 'red',
-        title: 'flag 错误',
-        message: WrongFlagHints[Math.floor(Math.random() * WrongFlagHints.length)],
+        title: t('challenge.notification.flag.wrong'),
+        message: wrong_flag_hints[Math.floor(Math.random() * wrong_flag_hints.length)],
         icon: <Icon path={mdiClose} size={1} />,
         autoClose: 8000,
       })
@@ -269,8 +229,10 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       updateNotification({
         id: 'flag-submitted',
         color: 'yellow',
-        title: 'flag 状态未知',
-        message: `请联系管理员确认提交：${id}`,
+        title: t('challenge.notification.flag.unknown.title'),
+        message: t('challenge.notification.flag.unknown.message', {
+          id,
+        }),
         icon: <Icon path={mdiLoading} size={1} />,
         autoClose: false,
         withCloseButton: true,
@@ -316,7 +278,11 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} mih="4rem">
               {challenge?.context?.url && (
-                <Tooltip label="下载附件" position="left" classNames={tooltipClasses}>
+                <Tooltip
+                  label={t('challenge.button.download.attachment')}
+                  position="left"
+                  classNames={tooltipClasses}
+                >
                   <ActionIcon
                     component="a"
                     href={challenge.context?.url ?? '#'}
@@ -374,7 +340,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         <Divider />
         {solved ? (
           <Text align="center" fw={700}>
-            该题目已被解出
+            {t('challenge.content.already_solved')}
           </Text>
         ) : (
           <form onSubmit={onSubmit}>
@@ -393,7 +359,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               }}
               rightSection={
                 <Button type="submit" onClick={onSubmit} disabled={onSubmitting}>
-                  提交 flag
+                  {t('challenge.button.submit_flag')}
                 </Button>
               }
               rightSectionWidth="6rem"

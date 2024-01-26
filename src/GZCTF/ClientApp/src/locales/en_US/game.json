@@ -134,12 +134,12 @@
     "not_started": "Game not yet started",
     "no_invite_code": "Invitation code cannot be empty",
     "no_organization": "Please select the organization",
-    "event_fetch_failed": "Failed to get event",
-    "notice_fetch_failed": "Failed to get notification",
+    "fetch_failed.event": "Failed to get event",
+    "fetch_failed.notice": "Failed to get notification",
     "select_chal_and_part": "Please select topics and teams first",
-    "submission_fetch_failed": "Failed to get submission",
-    "event_connection_succeed": "Real-Time Event Connection Successful",
-    "submission_connection_succeed": "Connection submitted in real time"
+    "fetch_failed.submission": "Failed to get submission",
+    "connected.event": "Real-Time Event Connection Successful",
+    "connected.submission": "Connection submitted in real time"
   },
   "participation": {
     "alert": {

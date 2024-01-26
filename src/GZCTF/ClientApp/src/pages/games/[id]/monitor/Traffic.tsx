@@ -136,7 +136,7 @@ const Traffic: FC = () => {
                   {t('game.label.traffic')}
                 </Text>
                 <Tooltip
-                  label={t('game.button.download_all_traffic')}
+                  label={t('game.button.download.all_traffic')}
                   position="left"
                   classNames={tooltipClasses}
                 >

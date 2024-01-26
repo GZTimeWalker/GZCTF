@@ -134,12 +134,12 @@
     "not_started": "ゲームはまだ開始されていません",
     "no_invite_code": "招待コードは空にできません",
     "no_organization": "参加する組織を選択してください",
-    "event_fetch_failed": "イベントを取得できませんでした",
-    "notice_fetch_failed": "通知を取得できませんでした",
+    "fetch_failed.event": "イベントを取得できませんでした",
+    "fetch_failed.notice": "通知を取得できませんでした",
     "select_chal_and_part": "先にチャレンジとチームを選んでください",
-    "submission_fetch_failed": "サブミッションの取得に失敗しました",
-    "event_connection_succeed": "リアルタイムイベントの接続に成功しました",
-    "submission_connection_succeed": "リアルタイムサブミッションの接続に成功しました"
+    "fetch_failed.submission": "サブミッションの取得に失敗しました",
+    "connected.event": "リアルタイムイベントの接続に成功しました",
+    "connected.submission": "リアルタイムサブミッションの接続に成功しました"
   },
   "participation": {
     "alert": {

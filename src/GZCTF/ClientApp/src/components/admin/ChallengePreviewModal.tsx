@@ -127,7 +127,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
             <Box className={classes.root} mih="4rem">
               {attachmentType !== FileType.None && (
                 <Tooltip
-                  label={t('challenge.button.download_attachment')}
+                  label={t('challenge.button.download.attachment')}
                   position="left"
                   classNames={tooltipClasses}
                 >

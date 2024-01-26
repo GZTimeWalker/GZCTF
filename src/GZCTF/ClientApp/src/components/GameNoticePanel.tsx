@@ -62,7 +62,7 @@ const GameNoticePanel: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: t('game.notification.notice_fetch_failed'),
+          title: t('game.notification.fetch_failed.notice'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })

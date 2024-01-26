@@ -56,8 +56,15 @@
     "hide_solved": "隐藏已解出",
     "login_required": "请先登录",
     "submit_writeup": "提交 Writeup",
-    "download_all_traffic": "下载全部列出流量",
-    "download_submissionsheet": "下载全部提交"
+    "download": {
+      "all_traffic": "下载全部列出流量",
+      "submissionsheet": "下载全部提交",
+      "scoreboard": "下载积分榜"
+    },
+    "writeup": {
+      "upload": "上传 Writeup",
+      "uploading": "正在上传"
+    }
   },
   "content": {
     "join": {
@@ -80,6 +87,21 @@
         "label": "选择参赛组织",
         "description": "本场比赛具有多个参赛组织，请选择你的参赛组织"
       }
+    },
+    "writeup": {
+      "title": "管理 Writeup",
+      "submitted": "已成功提交",
+      "unsubmitted": "尚未提交",
+      "instructions": {
+        "title": "提交说明",
+        "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
+        "deadline": "请在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。",
+        "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
+        "additional": "附加说明"
+      },
+      "current": "当前提交",
+      "unsubmitted_note": "你的队伍尚未提交 Writeup",
+      "deadline_exceeded": "提交截止时间已过"
     },
     "leave": {
       "confirm": "确认取消报名",
@@ -131,12 +153,19 @@
     "not_started": "比赛尚未开始",
     "no_invite_code": "邀请码不能为空",
     "no_organization": "请选择参赛组织",
-    "event_fetch_failed": "获取事件失败",
-    "notice_fetch_failed": "获取通知失败",
     "select_chal_and_part": "请先选择题目和队伍",
-    "submission_fetch_failed": "获取提交失败",
-    "event_connection_succeed": "实时事件连接成功",
-    "submission_connection_succeed": "实时提交连接成功"
+    "connected": {
+      "event": "实时事件连接成功",
+      "submission": "实时提交连接成功"
+    },
+    "fetch_failed": {
+      "event": "获取事件失败",
+      "submission": "获取提交失败",
+      "notice": "获取通知失败"
+    },
+    "writeup": {
+      "submitted": "Writeup 已成功提交"
+    }
   },
   "participation": {
     "alert": {

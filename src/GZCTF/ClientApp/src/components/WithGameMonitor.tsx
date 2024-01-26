@@ -59,7 +59,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                 leftIcon={<Icon path={mdiFileTableOutline} size={1} />}
                 onClick={() => window.open(`/api/game/${numId}/scoreboardsheet`, '_blank')}
               >
-                下载积分榜
+                {t('game.button.download.scoreboard')}
               </Button>
               <Tabs
                 orientation="vertical"

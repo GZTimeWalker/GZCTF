@@ -97,7 +97,7 @@ const Events: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: t('game.notification.event_fetch_failed'),
+          title: t('game.notification.fetch_failed.event'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -129,7 +129,7 @@ const Events: FC = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            message: t('game.notification.event_connection_succeed'),
+            message: t('game.notification.connected.event'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
         })

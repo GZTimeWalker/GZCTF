@@ -47,8 +47,7 @@ const TeamRank: FC<PaperProps> = (props) => {
   const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
 
   useEffect(() => {
-    // FIXME: Rely on server message
-    if (error?.title?.includes('已结束')) {
+    if (error?.status === 410) {
       navigate(`/games/${numId}`)
       showNotification({
         color: 'yellow',
@@ -117,7 +116,7 @@ const TeamRank: FC<PaperProps> = (props) => {
               clipboard.copy(data?.teamToken)
               showNotification({
                 color: 'teal',
-                message: '队伍Token已复制到剪贴板',
+                message: t('team.notification.token.copied'),
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}

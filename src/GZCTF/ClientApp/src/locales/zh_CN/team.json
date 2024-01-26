@@ -76,6 +76,9 @@
       }
     },
     "updated": "队伍信息已更新",
+    "token": {
+      "copied": "队伍 Token 已复制到剪贴板"
+    },
     "disband": {
       "success": "解散队伍成功"
     },

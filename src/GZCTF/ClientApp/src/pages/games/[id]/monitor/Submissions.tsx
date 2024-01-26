@@ -103,7 +103,7 @@ const Submissions: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: t('game.notification.submission_fetch_failed'),
+          title: t('game.notification.fetch_failed.submission'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -135,7 +135,7 @@ const Submissions: FC = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            message: t('game.notification.submission_connection_succeed'),
+            message: t('game.notification.connected.submission'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
         })
@@ -236,7 +236,7 @@ const Submissions: FC = () => {
         />
         <Group position="right">
           <Tooltip
-            label={t('game.button.download_submissionsheet')}
+            label={t('game.button.download.submissionsheet')}
             position="left"
             classNames={tooltipClasses}
           >
