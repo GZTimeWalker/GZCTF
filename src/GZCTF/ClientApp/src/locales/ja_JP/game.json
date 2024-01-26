@@ -59,11 +59,11 @@
     "download": {
       "all_traffic": "表示されたトラフィックをすべてダウンロード",
       "submissionsheet": "サブミッションをすべてダウンロード",
-      "scoreboard": "下载积分榜"
+      "scoreboard": "ランキングのダウンロード"
     },
     "writeup": {
-      "upload": "上传 Writeup",
-      "uploading": "正在上传"
+      "upload": "記事を提出",
+      "uploading": "アップロード中"
     }
   },
   "content": {
@@ -89,11 +89,11 @@
       }
     },
     "writeup": {
-      "title": "管理 Writeup",
-      "submitted": "已成功提交",
-      "unsubmitted": "尚未提交",
+      "title": "記事管理",
+      "submitted": "提出完了",
+      "unsubmitted": "未提出",
       "instructions": {
-        "title": "提交说明",
+        "title": "提出説明",
         "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
         "deadline": "请在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。",
         "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
