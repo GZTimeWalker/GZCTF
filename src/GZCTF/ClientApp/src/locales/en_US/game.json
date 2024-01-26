@@ -59,11 +59,11 @@
     "download": {
       "all_traffic": "Download all listed traffic",
       "submissionsheet": "Download all submissions",
-      "scoreboard": "下载积分榜"
+      "scoreboard": "Download Scoreboard"
     },
     "writeup": {
-      "upload": "上传 Writeup",
-      "uploading": "正在上传"
+      "upload": "Submit writeup",
+      "uploading": "Uploading..."
     }
   },
   "content": {
@@ -89,13 +89,13 @@
       }
     },
     "writeup": {
-      "title": "管理 Writeup",
-      "submitted": "已成功提交",
-      "unsubmitted": "尚未提交",
+      "title": "Writeup manage",
+      "submitted": "Successfully submitted",
+      "unsubmitted": "Not submitted",
       "instructions": {
-        "title": "提交说明",
-        "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
-        "deadline": "请在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。",
+        "title": "Submission instructions",
+        "datetime_format": "DD/MM/YYYY HH:mm:ss",
+        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, late submission or non-submission will be considered a waiver of game score.",
         "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
         "additional": "附加说明"
       },

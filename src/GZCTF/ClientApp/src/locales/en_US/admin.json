@@ -21,16 +21,16 @@
     },
     "games": {
       "public": "Public",
-      "summary": "Introduction"
+      "summary": "Summary"
     },
     "teams": {
-      "members": "Crew",
-      "bio": "Signature"
+      "members": "Members",
+      "bio": "Bio"
     },
     "users": {
       "active": "Activate",
       "role": "User Roles",
-      "last_visit": "Last Access Time"
+      "last_visit": "Last visit time"
     },
     "instances": {
       "life_cycle": "Lifecycle",
@@ -52,7 +52,7 @@
     "games": {
       "delete": "Delete game",
       "copy_public_key": "Copy public key",
-      "new": "New Match"
+      "new": "New game"
     },
     "notices": {
       "new": "New notice",
@@ -65,8 +65,8 @@
     "challenges": {
       "new": "New challenge",
       "edit": "Edit challenge",
-      "enable": "启用题目",
-      "disable": "禁用题目",
+      "enable": "Enable challenge",
+      "disable": "Disable challenge",
       "flag": {
         "add": {
           "normal": "Add flag",
@@ -99,7 +99,7 @@
       "stats": "<1>{{current}}</1>/<1>{{total}}</1> teams displayed",
       "locked": "Locked",
       "unlocked": "Unlocked",
-      "lock": "Are you sure you want to lock team{{action}}\n{{name}} ?",
+      "lock": "Are you sure you want to {{action}} team {{name}} ?",
       "delete": "Are you sure you want to delete team {{name}} ?"
     },
     "users": {
@@ -234,8 +234,8 @@
         "hints": "Question tips",
         "title": "Title",
         "delete": "Are you sure you want to delete challenge {{name}}?",
-        "enable": "你确定要启用题目 {{name}} 吗？",
-        "disable": "你确定要禁用题目 {{name}} 吗？",
+        "enable": "Are you sure you want to enable challenge {{name}}?",
+        "disable": "Are you sure you want to disable challenge {{name}}?",
         "cpu_limit": {
           "label": "CPU Limit (0.1 CPUs)",
           "description": "Multiplication of 0.1 CPU core"
@@ -366,11 +366,11 @@
   },
   "notification": {
     "logs": {
-      "connected": "实时日志连接成功",
-      "fetch_failed": "获取日志失败"
+      "connected": "Realtime log connected",
+      "fetch_failed": "Failed to fetch logs"
     },
     "teams": {
-      "deleted": "{{name}} 已删除"
+      "deleted": "{{name}} has been deleted"
     },
     "instances": {
       "destroyed": "Instances destroyed",
@@ -386,8 +386,8 @@
       "updated": "User information updated"
     },
     "games": {
-      "no_title_time": "请输入标题和时间信息",
-      "created": "比赛已创建",
+      "no_title_time": "Please enter title and time of the game",
+      "created": "The game has been created",
       "info": {
         "poster": {
           "uploaded": "Poster successfully uploaded",

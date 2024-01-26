@@ -77,7 +77,7 @@
     },
     "updated": "Team information updated",
     "token": {
-      "copied": "队伍 Token 已复制到剪贴板"
+      "copied": "Team token copied to clipboard"
     },
     "disband": {
       "success": "Teams successfully dissolved."

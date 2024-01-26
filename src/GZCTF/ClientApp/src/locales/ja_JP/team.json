@@ -77,7 +77,7 @@
     },
     "updated": "チーム情報を更新しました",
     "token": {
-      "copied": "队伍 Token 已复制到剪贴板"
+      "copied": "チームトークンがコピーされました"
     },
     "disband": {
       "success": "チームを解散しました"
