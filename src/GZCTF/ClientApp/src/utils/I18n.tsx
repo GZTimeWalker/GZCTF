@@ -21,7 +21,6 @@ export const useLanguage = () => {
   const { i18n } = useTranslation()
 
   useEffect(() => {
-    console.log(`Switching language to ${language}`)
     i18n.changeLanguage(language)
   }, [language])
 
