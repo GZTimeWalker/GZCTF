@@ -17,7 +17,9 @@
     "delete": "Delete post"
   },
   "content": {
-    "metadata": "{{author}} published on {{date}}"
+    "metadata": "{{author}} published on {{date}}",
+    "pinned": "[置顶]",
+    "details": "查看详情"
   },
   "notification": {
     "saved": "Post has been saved",
