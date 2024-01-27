@@ -69,17 +69,17 @@ const MemberItem: FC<MemberItemProps> = (props) => {
             </Group>
             <Group noWrap spacing="xs">
               <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
-              <Text>{!user.stdNumber ? '未填写' : user.stdNumber}</Text>
+              <Text>{!user.stdNumber ? t('admin.placeholder.empty') : user.stdNumber}</Text>
             </Group>
           </Stack>
           <Stack spacing={2}>
             <Group noWrap spacing="xs">
               <Icon path={mdiEmailOutline} {...iconProps} />
-              <Text>{!user.email ? '未填写' : user.email}</Text>
+              <Text>{!user.email ? t('admin.placeholder.empty') : user.email}</Text>
             </Group>
             <Group noWrap spacing="xs">
               <Icon path={mdiPhoneOutline} {...iconProps} />
-              <Text>{!user.phone ? '未填写' : user.phone}</Text>
+              <Text>{!user.phone ? t('admin.placeholder.empty') : user.phone}</Text>
             </Group>
           </Stack>
         </Group>
@@ -89,7 +89,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
           <Group spacing={0}>
             <Icon path={mdiStar} color={theme.colors.yellow[4]} size={0.9} />
             <Text size="sm" fw={500} c="yellow">
-              队长
+              {t('team.content.role.captain')}
             </Text>
           </Group>
         )}

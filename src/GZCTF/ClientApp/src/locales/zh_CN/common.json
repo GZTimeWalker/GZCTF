@@ -1,99 +1,101 @@
 {
-  "tab": {
-    "game": "赛事",
-    "home": "主页",
-    "post": "文章",
-    "team": "战队",
-    "about": "关于",
-    "theme": {
-      "dark": "深色",
-      "light": "浅色",
-      "switch_to": "切换到{{theme}}主题"
-    },
-    "admin": "管理",
-    "account": {
-      "login": "登录",
-      "logout": "登出",
-      "profile": "用户信息",
-      "clean_cache": "清除缓存"
-    }
-  },
-  "title": {
-    "404": "The Nowhere",
-    "about": "关于"
-  },
-  "button": {
-    "copy": "复制到剪贴板"
-  },
-  "email": {
-    "sent": {
-      "title": "邮件已发送",
-      "message": "请检查你的邮箱及垃圾邮件~"
-    }
-  },
-  "error": {
-    "empty": "内容不能为空",
-    "unknown": "未知错误",
-    "try_later": "请稍后再试",
-    "no_change": "似乎没有修改",
-    "check_input": "请检查输入",
-    "encountered": "遇到了问题",
-    "param_error": "参数错误，请检查",
-    "file_invalid": {
-      "title": "文件加载失败",
-      "message": "请检查文件格式和大小"
-    },
-    "param_invalid": "参数无效",
-    "param_missing": "缺少参数",
-    "param_unknown": "未知参数",
-    "request_too_frequent": "请求过于频繁",
-    "invalid_username_or_password": "用户名或密码错误"
-  },
-  "modal": {
-    "cancel": "取消",
-    "delete": "删除",
-    "confirm": "确认",
-    "confirm_delete": "确认删除",
-    "confirm_update": "确认修改"
-  },
-  "label": {
-    "time": "时间",
-    "user": "用户",
-    "team": "队伍",
-    "flag": "flag",
-    "game": "比赛",
-    "ip": "IP",
-    "challenge": "题目"
-  },
   "avatar": {
     "save": "保存头像",
+    "upload_failed": "头像更新失败",
     "uploaded": "头像已更新",
-    "uploading": "正在上传头像",
-    "upload_failed": "头像更新失败"
+    "uploading": "正在上传头像"
+  },
+  "button": {
+    "copy": "复制到剪贴板",
+    "select_file": "选择文件",
+    "uploading": "上传中"
   },
   "content": {
     "404": {
       "text": "一处荒芜，为何于此驻足",
       "title": "页面不存在"
     },
-    "home": {
-      "recent_games": "近期比赛"
-    },
     "about": {
       "slogan": "Hack for fun not for profit"
     },
     "drop_zone": {
+      "content": "拖放图片或点击此处以选择{{type}}",
+      "limit": "请选择小于 3MB 的图片",
       "type": {
         "avatar": "头像",
         "poster": "海报"
-      },
-      "limit": "请选择小于 3MB 的图片",
-      "content": "拖放图片或点击此处以选择{{type}}"
+      }
+    },
+    "home": {
+      "recent_games": "近期比赛"
     },
     "no_data": "没有数据",
     "wider": {
       "text": "请使用更宽的设备浏览本页面",
       "title": "页面宽度不足"
     }
+  },
+  "email": {
+    "sent": {
+      "message": "请检查你的邮箱及垃圾邮件~",
+      "title": "邮件已发送"
+    }
+  },
+  "error": {
+    "check_input": "请检查输入",
+    "empty": "内容不能为空",
+    "encountered": "遇到了问题",
+    "file_invalid": {
+      "message": "请检查文件格式和大小",
+      "title": "文件加载失败"
+    },
+    "invalid_username_or_password": "用户名或密码错误",
+    "no_change": "似乎没有修改",
+    "param_error": "参数错误，请检查",
+    "param_invalid": "参数无效",
+    "param_missing": "缺少参数",
+    "param_unknown": "未知参数",
+    "request_too_frequent": "请求过于频繁",
+    "try_later": "请稍后再试",
+    "unknown": "未知错误"
+  },
+  "label": {
+    "challenge": "题目",
+    "flag": "flag",
+    "game": "比赛",
+    "ip": "IP",
+    "team": "队伍",
+    "time": "时间",
+    "user": "用户"
+  },
+  "modal": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "confirm_delete": "确认删除",
+    "confirm_update": "确认修改",
+    "delete": "删除"
+  },
+  "tab": {
+    "about": "关于",
+    "account": {
+      "clean_cache": "清除缓存",
+      "login": "登录",
+      "logout": "登出",
+      "profile": "用户信息"
+    },
+    "admin": "管理",
+    "game": "赛事",
+    "home": "主页",
+    "post": "文章",
+    "team": "战队",
+    "theme": {
+      "dark": "深色",
+      "light": "浅色",
+      "switch_to": "切换到{{theme}}主题"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "关于"
   }
 }

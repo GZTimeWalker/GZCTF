@@ -15,7 +15,7 @@ export const useLanguage = () => {
   const [language, setLanguageInner] = useLocalStorage({
     key: 'language',
     defaultValue: 'zh_CN',
-    getInitialValueInEffect: false
+    getInitialValueInEffect: false,
   })
 
   const { i18n } = useTranslation()
