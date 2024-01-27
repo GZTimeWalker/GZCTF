@@ -7,8 +7,8 @@
   },
   "button": {
     "copy": "クリップボードにコピー",
-    "select_file": "选择文件",
-    "uploading": "上传中"
+    "select_file": "ファイルを選択",
+    "uploading": "アップロード中"
   },
   "content": {
     "404": {
