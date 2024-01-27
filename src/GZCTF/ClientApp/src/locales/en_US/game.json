@@ -81,11 +81,11 @@
       ],
       "invite_code": {
         "label": "Please enter the invitation code",
-        "description": "This match opens the invitation match. Enrollment needs to provide an invitation code."
+        "description": "This game requires invitation, provide an invitation code to join."
       },
       "organization": {
         "label": "Select Organization",
-        "description": "This match has more than one participant. Please select your organization"
+        "description": "This game has more than one organization. Please select your organization."
       }
     },
     "writeup": {
@@ -106,7 +106,7 @@
     "leave": {
       "confirm": "Confirm Cancel Registration",
       "content": [
-        "Are you sure you want to exit this match?",
+        "Are you sure you want to quit this game?",
         "The team participation information will be deleted after exiting if the number of people is empty."
       ]
     },
@@ -131,10 +131,10 @@
     },
     "start_time": "Start Time",
     "duration": "{{hours}} hour(s)",
-    "no_challenge": "Ouch! No topics available for this match with……",
+    "no_challenge": "Ouch! No challenges available for this game.",
     "joined_status": "<strong>{{count}}</strong> teams have already registered",
     "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
-    "game_lasts_long": "Match will also be an employee",
+    "game_lasts_long": "The game will last for a long time",
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "hide_container_events": {
       "label": "Hide container events",
@@ -149,7 +149,7 @@
   },
   "notification": {
     "left": "Cancellation successful",
-    "ended": "Match has ended",
+    "ended": "The game has ended",
     "joined": "Registration successful",
     "no_team": "Please select the team to join",
     "suspended": "You have been banned",
@@ -186,7 +186,7 @@
       },
       "not_started": {
         "title": "Game not yet started",
-        "mobile": "Please use computer to play and see the details of the match.",
+        "mobile": "Please use computer to see the details of the game.",
         "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start."
       },
       "team_required": {
