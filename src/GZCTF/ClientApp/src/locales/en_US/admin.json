@@ -104,7 +104,7 @@
         "disable": "Are you sure you want to disable challenge {{name}}?",
         "empty": {
           "description": "Click the top right to create the first problem",
-          "title": "Ouch! This match has no problem yet"
+          "title": "Ouch! This game has no challenge yet."
         },
         "enable": "Are you sure you want to enable challenge {{name}}?",
         "flag": {
@@ -166,7 +166,7 @@
           "description": "Containers shared by one team (0 = unlimited)",
           "label": "Team Container Limit"
         },
-        "content": "Game Details",
+        "content": "Game details",
         "delete": "Are you sure you want to delete game {{name}}?",
         "end_date": "End date",
         "end_time": "End Time",
@@ -192,14 +192,14 @@
         "start_time": "Start Time",
         "summary": {
           "description": "Will be displayed in the game list",
-          "label": "Game Overview"
+          "label": "Game Overvieo"
         },
         "title": {
           "description": "Too long to show effect",
           "label": "Game Title"
         },
         "writeup_deadline": {
-          "description": "Hours allowed to submit Writeup after game ends",
+          "description": "",
           "label": "Writeup Submission Time"
         },
         "writeup_instruction": "Writeup Submission Instructions",
@@ -273,7 +273,7 @@
           "description": "Whether to automatically destroy the old instance when the user opens the question instance but reaches the maximum limit",
           "label": "Auto-destroy old instances"
         },
-        "title": "Match Policy"
+        "title": "Game Policy"
       },
       "platform": {
         "footer": {
