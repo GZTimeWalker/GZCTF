@@ -16,7 +16,7 @@
     }
   },
   "content": {
-    "solved": "<1>{{solved}}</1> チーム攻克",
+    "solved": "<1>{{solved}}</1> チームが",
     "already_solved": "このチャレンジはすでに解かれています",
     "instance": {
       "test": {

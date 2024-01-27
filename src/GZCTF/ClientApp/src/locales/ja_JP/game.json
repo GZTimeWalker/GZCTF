@@ -37,10 +37,10 @@
       "team": "チーム",
       "score": "得点",
       "type": "タイプ",
-      "rank_total": "総合ランキング",
+      "rank_total": "総合順位",
       "score_total": "合計得点",
       "solved_count": "解答数",
-      "rank_organization": "順位"
+      "rank_organization": "組織内順位"
     },
     "score_formatter": "{value} 点"
   },
@@ -59,7 +59,7 @@
     "download": {
       "all_traffic": "表示されたトラフィックをすべてダウンロード",
       "submissionsheet": "サブミッションをすべてダウンロード",
-      "scoreboard": "ランキングのダウンロード"
+      "scoreboard": "ランキングをダウンロード"
     },
     "writeup": {
       "upload": "記事を提出",
@@ -135,7 +135,7 @@
     "joined_status": "<strong>{{count}}</strong>のチームが参加登録しました",
     "scoreboard_tip": "Tip: 左矢印キーと右矢印キーを使ってチャレンジ一覧をスクロールできます",
     "game_lasts_long": "ゲームはまだ長く続くでしょう",
-    "scoreboard_note": "注：同じスコアのあるチームは時間順にランク付けされます",
+    "scoreboard_note": "注：同じスコアのあるチームは時間順に順位つけされます",
     "hide_container_events": {
       "label": "コンテナイベントを非表示にする",
       "description": "コンテナ開始/破棄イベントを非表示にする"
