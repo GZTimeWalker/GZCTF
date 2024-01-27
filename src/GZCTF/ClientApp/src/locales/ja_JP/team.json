@@ -47,7 +47,7 @@
     "transfer": {
       "confirm": {
         "title": "チームを譲る",
-        "message": "「{{team}}」のチームを「{{user}}」に譲渡しますか？"
+        "message": "チーム「{{team}}」を「{{user}}」に譲渡しますか？"
       }
     },
     "no_create": {
