@@ -1387,7 +1387,7 @@
     <comment/>
   </data>
   <data name="Game_WriteupNotNeeded" xml:space="preserve">
-    <value>This match cannot be submitted</value>
+    <value>Writeup is disabled for this game.</value>
   </data>
   <data name="Signature_Invalid" xml:space="preserve">
     <value>Invalid signature</value>
