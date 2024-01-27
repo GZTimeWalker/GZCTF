@@ -1,99 +1,101 @@
 {
-  "tab": {
-    "game": "ゲーム",
-    "home": "ホーム",
-    "post": "記事",
-    "team": "チーム",
-    "about": "プラットフォーム情報",
-    "theme": {
-      "dark": "ダーク",
-      "light": "ライト",
-      "switch_to": "テーマを{{theme}}に切り替える"
-    },
-    "admin": "管理",
-    "account": {
-      "login": "ログイン",
-      "logout": "ログアウト",
-      "profile": "ユーザー情報",
-      "clean_cache": "キャッシュを消去"
-    }
-  },
-  "title": {
-    "404": "The Nowhere",
-    "about": "プラットフォーム情報"
-  },
-  "button": {
-    "copy": "クリップボードにコピー"
-  },
-  "email": {
-    "sent": {
-      "title": "メールが送信されました",
-      "message": "メールアドレスと迷惑メールをご確認ください"
-    }
-  },
-  "error": {
-    "empty": "内容を入力してください。",
-    "unknown": "不明なエラー",
-    "try_later": "後で再度お試し下さい",
-    "no_change": "変更がないようです",
-    "check_input": "入力内容を確認する",
-    "encountered": "エラーが発生しました",
-    "param_error": "パラメータが間違っています。確認してください",
-    "file_invalid": {
-      "title": "ファイルの読み込みに失敗しました",
-      "message": "ファイル形式とサイズを確認してください"
-    },
-    "param_invalid": "無効なパラメータ",
-    "param_missing": "パラメータが不足しています",
-    "param_unknown": "不明なパラメータ",
-    "request_too_frequent": "リクエストが頻繁すぎます",
-    "invalid_username_or_password": "ユーザー名またはパスワードが正しくありません"
-  },
-  "modal": {
-    "cancel": "キャンセル",
-    "delete": "削除",
-    "confirm": "確認",
-    "confirm_delete": "削除の確認",
-    "confirm_update": "変更"
-  },
-  "label": {
-    "time": "時間",
-    "user": "ユーザー",
-    "team": "チーム",
-    "flag": "フラッグ",
-    "game": "ゲーム",
-    "ip": "IP",
-    "challenge": "チャレンジ"
-  },
   "avatar": {
     "save": "アイコンを保存する",
+    "upload_failed": "アイコンを更新できませんでした",
     "uploaded": "アイコンが更新されました",
-    "uploading": "アイコンをアップロードしています",
-    "upload_failed": "アイコンを更新できませんでした"
+    "uploading": "アイコンをアップロードしています"
+  },
+  "button": {
+    "copy": "クリップボードにコピー",
+    "select_file": "选择文件",
+    "uploading": "上传中"
   },
   "content": {
     "404": {
       "text": "どこでもしまい、なぜここに？",
       "title": "ページが存在しません"
     },
-    "home": {
-      "recent_games": "最近のゲーム"
-    },
     "about": {
       "slogan": "Hack for fun not for profit"
     },
     "drop_zone": {
+      "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください",
+      "limit": "3MB以下の画像を選択してください",
       "type": {
         "avatar": "アイコン",
         "poster": "ポスター"
-      },
-      "limit": "3MB以下の画像を選択してください",
-      "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください"
+      }
+    },
+    "home": {
+      "recent_games": "最近のゲーム"
     },
     "no_data": "データがありません",
     "wider": {
       "text": "このページにアクセスするには、より広いデバイスを使用します。",
       "title": "ページの幅が足りません"
     }
+  },
+  "email": {
+    "sent": {
+      "message": "メールアドレスと迷惑メールをご確認ください",
+      "title": "メールが送信されました"
+    }
+  },
+  "error": {
+    "check_input": "入力内容を確認する",
+    "empty": "内容を入力してください。",
+    "encountered": "エラーが発生しました",
+    "file_invalid": {
+      "message": "ファイル形式とサイズを確認してください",
+      "title": "ファイルの読み込みに失敗しました"
+    },
+    "invalid_username_or_password": "ユーザー名またはパスワードが正しくありません",
+    "no_change": "変更がないようです",
+    "param_error": "パラメータが間違っています。確認してください",
+    "param_invalid": "無効なパラメータ",
+    "param_missing": "パラメータが不足しています",
+    "param_unknown": "不明なパラメータ",
+    "request_too_frequent": "リクエストが頻繁すぎます",
+    "try_later": "後で再度お試し下さい",
+    "unknown": "不明なエラー"
+  },
+  "label": {
+    "challenge": "チャレンジ",
+    "flag": "フラッグ",
+    "game": "ゲーム",
+    "ip": "IP",
+    "team": "チーム",
+    "time": "時間",
+    "user": "ユーザー"
+  },
+  "modal": {
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "confirm_delete": "削除の確認",
+    "confirm_update": "変更",
+    "delete": "削除"
+  },
+  "tab": {
+    "about": "プラットフォーム情報",
+    "account": {
+      "clean_cache": "キャッシュを消去",
+      "login": "ログイン",
+      "logout": "ログアウト",
+      "profile": "ユーザー情報"
+    },
+    "admin": "管理",
+    "game": "ゲーム",
+    "home": "ホーム",
+    "post": "記事",
+    "team": "チーム",
+    "theme": {
+      "dark": "ダーク",
+      "light": "ライト",
+      "switch_to": "テーマを{{theme}}に切り替える"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "プラットフォーム情報"
   }
 }
