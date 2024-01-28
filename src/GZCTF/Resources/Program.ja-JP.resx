@@ -1350,9 +1350,9 @@
     <comment/>
   </data>
   <data name="Game_WriteupNotNeeded" xml:space="preserve">
-    <value>このゲームは記事を提出することができません</value>
+      <value>このゲームは記事を提出することができません</value>
   </data>
   <data name="Signature_Invalid" xml:space="preserve">
-    <value>無効な署名</value>
+      <value>無効な署名</value>
   </data>
 </root>
