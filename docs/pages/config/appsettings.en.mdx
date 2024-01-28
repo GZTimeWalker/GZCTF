@@ -227,7 +227,7 @@ Configure the Google Recaptcha v3 related information, optional.
 
 Here we can configure the reverse proxy, which is used to get the real IP address, optional.
 
-- **ForwardedHeaders:** Enum for ForwardedHeaders in reverse proxy, please use `5` as the default value. For more details, see [ForwardedHeaders Enum](https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders?view=aspnetcore-7.0)
+- **ForwardedHeaders:** Enum for ForwardedHeaders in reverse proxy, please use `5` as the default value. For more details, see [ForwardedHeaders Enum](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders)
 - **ForwardLimit:** Limit the number of proxy hops allowed, the default is `1`
 - **ForwardedForHeaderName:** The name of the reverse proxy IP address header
 - **TrustedNetworks:** List of trusted networks for reverse proxy, represented by CIDR.
@@ -239,10 +239,10 @@ If you want to ignore the trust list of reverse proxies and allow any IP address
 
 </Callout>
 
-For other fields, please refer to the official documentation: [Configure ASP.NET Core to work with proxy servers and load balancers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0) and [ForwardedHeadersOptions class](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.forwardedheadersoptions?view=aspnetcore-7.0)
+For other fields, please refer to the official documentation: [Configure ASP.NET Core to work with proxy servers and load balancers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) and [ForwardedHeadersOptions class](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.forwardedheadersoptions)
 
 ### Kestrel
 
 Kestrel is the built-in web server used by GZCTF. With this configuration, you can control the behavior of Kestrel, such as specifying the HTTP protocol, modifying the request size limit, and more.
 
-For specific configurable fields, please refer to the properties of the `KestrelServerOptions` class in the official documentation: [KestrelServerOptions class](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions?view=aspnetcore-7.0)
+For specific configurable fields, please refer to the properties of the `KestrelServerOptions` class in the official documentation: [KestrelServerOptions class](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions)

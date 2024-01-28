@@ -15,7 +15,7 @@
 GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
 > [!IMPORTANT]
-> **To save your effort, please read the documentation carefully before using: [https://docs.ctf.gzti.me/](https://docs.ctf.gzti.me/)**
+> **To save your effort, please read the documentation carefully before using: [https://docs.ctf.gzti.me/en](https://docs.ctf.gzti.me/en)**
 
 > [!WARNING]
 > Since 01/01/2024, the database structure of the `develop` image is no longer compatible with previous versions. If you prefer to use it, please go to `v0.17`.
