@@ -18,9 +18,9 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType } from '@Api'
@@ -44,7 +44,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
     if (files.length <= 0) {
       showNotification({
         color: 'red',
-        message: '请选择至少一个文件',
+        message: t('admin.notification.games.challenges.attachment.no_selected'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -82,7 +82,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               setProgress(0)
               showNotification({
                 color: 'teal',
-                message: '附件已更新',
+                message: t('admin.notification.games.challenges.attachment.updated'),
                 icon: <Icon path={mdiCheck} size={1} />,
               })
               setFiles([])
@@ -105,14 +105,14 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
     <Modal {...props}>
       <Stack>
         <Text>
-          批量上传动态附件，所有附件上传后将会以统一的文件名进行下发。
+          {t('admin.content.games.challenges.attachment.instruction.dynamic.content')}
           <br />
           <Text fw="bold" span>
-            请以每个 flag 作为对应附件的文件名。
+            {t('admin.content.games.challenges.attachment.instruction.dynamic.format')}
           </Text>
           <br />
           <Text fw="bold" c="orange" span>
-            建议上传预期参赛队伍数量的两倍的动态附件。
+            {t('admin.content.games.challenges.attachment.instruction.amount_double')}
           </Text>
           <br />
         </Text>
@@ -122,8 +122,12 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
               <Center h="calc(40vh - 20px)">
                 <Stack spacing={0}>
-                  <Title order={2}>你还没有选择任何文件</Title>
-                  <Text>你选择的文件将会显示在这里</Text>
+                  <Title order={2}>
+                    {t('admin.placeholder.games.challenges.attachment.no_file_selected.title')}
+                  </Title>
+                  <Text>
+                    {t('admin.placeholder.games.challenges.attachment.no_file_selected.comment')}
+                  </Text>
                 </Stack>
               </Center>
             </>
@@ -148,7 +152,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
           <FileButton multiple onChange={setFiles}>
             {(props) => (
               <Button {...props} disabled={disabled}>
-                选择文件
+                {t('common.button.select_file')}
               </Button>
             )}
           </FileButton>
@@ -158,7 +162,11 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
             onClick={onUpload}
             color={progress !== 0 ? 'cyan' : theme.primaryColor}
           >
-            <div className={classes.uploadLabel}>{progress !== 0 ? '上传中' : '上传动态附件'}</div>
+            <div className={classes.uploadLabel}>
+              {progress !== 0
+                ? t('common.button.uploading')
+                : t('admin.button.challenges.flag.add.dynamic')}
+            </div>
             {progress !== 0 && (
               <Progress
                 value={progress}

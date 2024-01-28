@@ -1,0 +1,33 @@
+{
+  "label": {
+    "tag": "Post tags",
+    "title": "Post title",
+    "add_tag": "+ Add tag \"{{query}}\"",
+    "content": "Post content",
+    "summary": "Post summary"
+  },
+  "title": {
+    "index": "Posts"
+  },
+  "button": {
+    "new": "New post",
+    "edit": "Edit post",
+    "goto": "Go to post",
+    "save": "Save post",
+    "delete": "Delete post"
+  },
+  "content": {
+    "metadata": "{{author}} published on {{date}}",
+    "pinned": "[置顶]",
+    "details": "View Details",
+    "delete": "你确定要删除文章 “{{title}}” 吗？",
+    "updated": {
+      "title": "文章已更改",
+      "content": "文章内容已更改，是否保存？"
+    }
+  },
+  "notification": {
+    "saved": "Post has been saved",
+    "created": "Post has been created"
+  }
+}

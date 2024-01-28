@@ -13,6 +13,7 @@ import {
 import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
 
@@ -31,6 +32,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
   const members = team.members?.filter((m) => !m?.captain)
 
   const { classes: tooltipClasses, theme } = useTooltipStyles()
+
+  const { t } = useTranslation()
 
   return (
     <Card
@@ -66,21 +69,21 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Stack spacing="xs">
             <Group spacing="xs" position="apart">
               <Text transform="uppercase" c="dimmed">
-                个人身份:
+                {t('team.label.role')}
               </Text>
               {isCaptain ? (
                 <Badge color="yellow" size="lg">
-                  队长
+                  {t('team.content.role.captain')}
                 </Badge>
               ) : (
                 <Badge color="gray" size="lg">
-                  普通队员
+                  {t('team.content.role.member')}
                 </Badge>
               )}
             </Group>
             <Group spacing="xs">
               <Text transform="uppercase" c="dimmed">
-                队员列表:
+                {t('team.label.members')}
               </Text>
               <Box style={{ flexGrow: 1 }} />
               {team.locked && (

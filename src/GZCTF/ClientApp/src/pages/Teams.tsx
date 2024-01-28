@@ -15,6 +15,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import LogoHeader from '@Components/LogoHeader'
 import TeamCard from '@Components/TeamCard'
 import TeamCreateModal from '@Components/TeamCreateModal'
@@ -22,7 +23,6 @@ import TeamEditModal from '@Components/TeamEditModal'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
@@ -59,8 +59,8 @@ const Teams: FC = () => {
     if (!codePartten.test(joinTeamCode)) {
       showNotification({
         color: 'red',
-        title: t('Error_Encountered'),
-        message: t('Team_InvalidInvitationCodeFormat'),
+        title: t('common.error.encountered'),
+        message: t('team.notification.join.wrong_invite_code'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -71,8 +71,8 @@ const Teams: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: t('Team_Joined'),
-          message: t('Team_Updated'),
+          title: t('team.notification.join.success'),
+          message: t('team.notification.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutateTeams()
@@ -84,7 +84,7 @@ const Teams: FC = () => {
       })
   }
 
-  usePageTitle('队伍管理')
+  usePageTitle(t('team.title.index'))
 
   const btns = (
     <>
@@ -93,14 +93,14 @@ const Teams: FC = () => {
         variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
         onClick={() => setJoinOpened(true)}
       >
-        加入队伍
+        {t('team.button.join')}
       </Button>
       <Button
         leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
         variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
         onClick={() => setCreateOpened(true)}
       >
-        创建队伍
+        {t('team.button.create')}
       </Button>
     </>
   )
@@ -161,11 +161,15 @@ const Teams: FC = () => {
           )}
         </Stack>
 
-        <Modal opened={joinOpened} title="加入已有队伍" onClose={() => setJoinOpened(false)}>
+        <Modal
+          opened={joinOpened}
+          title={t('team.button.join')}
+          onClose={() => setJoinOpened(false)}
+        >
           <Stack>
-            <Text size="sm">请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。</Text>
+            <Text size="sm">{t('team.content.join')}</Text>
             <TextInput
-              label="邀请码"
+              label={t('team.label.invite_code')}
               type="text"
               placeholder="team:0:01234567890123456789012345678901"
               w="100%"
@@ -173,14 +177,14 @@ const Teams: FC = () => {
               onChange={(event) => setJoinTeamCode(event.currentTarget.value)}
             />
             <Button fullWidth variant="outline" onClick={onJoinTeam}>
-              加入队伍
+              {t('team.button.join')}
             </Button>
           </Stack>
         </Modal>
 
         <TeamCreateModal
           opened={createOpened}
-          title="创建新队伍"
+          title={t('team.button.create')}
           isOwnTeam={ownTeam ?? false}
           onClose={() => setCreateOpened(false)}
           mutate={mutateTeams}
@@ -188,7 +192,7 @@ const Teams: FC = () => {
 
         <TeamEditModal
           opened={editOpened}
-          title="队伍详情"
+          title={t('team.button.edit')}
           onClose={() => setEditOpened(false)}
           team={editTeam}
           isCaptain={editTeam?.members?.some((m) => m?.captain && m.id === user?.userId) ?? false}

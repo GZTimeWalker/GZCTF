@@ -16,6 +16,7 @@ import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import AdminPage from '@Components/admin/AdminPage'
 import { TaskStatusColorMap } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
@@ -54,6 +55,8 @@ const Logs: FC = () => {
   const newLogs = useRef<LogMessageModel[]>([])
   const [logs, setLogs] = useState<LogMessageModel[]>()
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     api.admin
       .adminLogs({
@@ -67,7 +70,7 @@ const Logs: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: '获取日志失败',
+          title: t('admin.notification.logs.fetch_failed'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -98,7 +101,7 @@ const Logs: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '实时日志连接成功',
+          message: t('admin.notification.logs.connected'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
@@ -203,11 +206,11 @@ const Logs: FC = () => {
           <Table className={cx(classes.table, noPaddingClasses.table)}>
             <thead>
               <tr>
-                <th style={{ width: '8rem' }}>时间</th>
-                <th style={{ width: '10rem' }}>IP</th>
-                <th style={{ width: '6rem' }}>用户名</th>
-                <th>信息</th>
-                <th style={{ width: '3rem' }}>状态</th>
+                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
+                <th style={{ width: '10rem' }}>{t('common.label.ip')}</th>
+                <th style={{ width: '6rem' }}>{t('common.label.user')}</th>
+                <th>{t('admin.label.logs.message')}</th>
+                <th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>

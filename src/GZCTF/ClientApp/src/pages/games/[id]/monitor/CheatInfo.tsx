@@ -21,14 +21,14 @@ import { mdiCheck, mdiKeyAlert, mdiTarget } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { RequireRole } from '@Components/WithRole'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
-import { ParticipationStatusMap } from '@Utils/Shared'
+import { useParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
@@ -189,7 +189,9 @@ interface CheatInfoItemProps {
 const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
   const { cheatTeamInfo, disabled, userRole, setParticipationStatus } = props
   const theme = useMantineTheme()
-  const part = ParticipationStatusMap.get(cheatTeamInfo.status!)!
+  const part = useParticipationStatusMap().get(cheatTeamInfo.status!)!
+
+  const { t } = useTranslation()
 
   return (
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
@@ -203,7 +205,9 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
               <Stack spacing={0}>
                 <Group spacing={4}>
                   <Title order={4} lineClamp={1} fw="bold">
-                    {!cheatTeamInfo.name ? '（无名队伍）' : cheatTeamInfo.name}
+                    {!cheatTeamInfo.name
+                      ? t('admin.placeholder.games.participation.team')
+                      : cheatTeamInfo.name}
                   </Title>
                   {cheatTeamInfo?.organization && (
                     <Badge size="sm" variant="outline">
@@ -259,14 +263,16 @@ const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
   const { classes } = useAccordionStyles()
   const { cheatTeamInfo, disabled, setParticipationStatus } = props
 
+  const { t } = useTranslation()
+
   return (
     <ScrollArea offsetScrollbars h="calc(100vh - 180px)">
       <Stack spacing="xs" w="100%">
         {!cheatTeamInfo || cheatTeamInfo?.size === 0 ? (
           <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
-              <Title order={2}>暂时没有队伍作弊信息</Title>
-              <Text>看起来大家都很老实呢</Text>
+              <Title order={2}>{t('game.content.no_cheat.title')}</Title>
+              <Text>{t('game.content.no_cheat.comment')}</Text>
             </Stack>
           </Center>
         ) : (
@@ -301,6 +307,8 @@ interface CheatInfoTableViewProps {
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const { classes, cx, theme } = useTableStyles()
+
+  const { t } = useTranslation()
 
   const rows = props.cheatInfo
     .sort(
@@ -365,13 +373,13 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
         <Table className={classes.table}>
           <thead>
             <tr>
-              <th style={{ width: '8rem' }}>时间</th>
-              <th style={{ minWidth: '5rem' }}>原始队伍</th>
+              <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
+              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.owned_team')}</th>
               <th />
-              <th style={{ minWidth: '5rem' }}>提交队伍</th>
-              <th style={{ minWidth: '5rem' }}>提交用户</th>
-              <th style={{ minWidth: '3rem' }}>题目</th>
-              <th className={cx(classes.mono)}>flag</th>
+              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_team')}</th>
+              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_user')}</th>
+              <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
+              <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
@@ -416,8 +424,7 @@ const CheatInfo: FC = () => {
         )
       showNotification({
         color: 'teal',
-        title: '操作成功',
-        message: '参与状态已更新',
+        message: t('admin.notification.games.participation.updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
@@ -431,7 +438,10 @@ const CheatInfo: FC = () => {
     <WithGameMonitorTab>
       <Group position="apart" w="100%">
         <Switch
-          label={SwitchLabel('队伍视图', '使用队伍视图展示作弊信息')}
+          label={SwitchLabel(
+            t('game.content.team_view.label'),
+            t('game.content.team_view.description')
+          )}
           checked={teamView}
           onChange={(e) => setTeamView(e.currentTarget.checked)}
         />

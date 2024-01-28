@@ -26,11 +26,11 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import TeamEditModal from '@Components/admin/TeamEditModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
@@ -108,7 +108,9 @@ const Teams: FC = () => {
       await api.admin.adminDeleteTeam(team.id)
 
       showNotification({
-        message: `${team.name} 已删除`,
+        message: t('admin.notification.teams.deleted', {
+          name: team.name,
+        }),
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
       })
@@ -133,7 +135,7 @@ const Teams: FC = () => {
 
       showNotification({
         color: 'teal',
-        message: '队伍信息已更新',
+        message: t('team.notification.updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
 
@@ -158,7 +160,7 @@ const Teams: FC = () => {
           <TextInput
             w="30%"
             icon={<Icon path={mdiMagnify} size={1} />}
-            placeholder="搜索队伍名称"
+            placeholder={t('admin.placeholder.teams.search')}
             value={hint}
             onChange={setHint}
             onKeyDown={(e) => {
@@ -167,7 +169,15 @@ const Teams: FC = () => {
           />
           <Group position="right">
             <Text fw="bold" size="sm">
-              已显示 <Code>{current}</Code> / <Code>{total}</Code> 队伍
+              <Trans
+                i18nKey="admin.content.teams.stats"
+                values={{
+                  current,
+                  total,
+                }}
+              >
+                _<Code>_</Code>_
+              </Trans>
             </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
@@ -191,9 +201,9 @@ const Teams: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th style={{ width: '23rem' }}>队伍</th>
-                <th>队员</th>
-                <th>签名</th>
+                <th style={{ width: '23rem' }}>{t('common.label.team')}</th>
+                <th>{t('admin.label.teams.members')}</th>
+                <th>{t('admin.label.teams.bio')}</th>
                 <th />
               </tr>
             </thead>
@@ -228,7 +238,9 @@ const Teams: FC = () => {
                           </Group>
 
                           <Badge size="sm" color={team.locked ? 'yellow' : 'gray'}>
-                            {team.locked ? '已锁定' : '未锁定'}
+                            {team.locked
+                              ? t('admin.content.teams.locked')
+                              : t('admin.content.teams.unlocked')}
                           </Badge>
                         </Group>
                       </td>
@@ -267,7 +279,7 @@ const Teams: FC = () => {
                       </td>
                       <td>
                         <Text lineClamp={1} truncate>
-                          {team.bio ?? '这个队伍很懒，什么都没有写'}
+                          {team.bio ?? t('team.placeholder.bio')}
                         </Text>
                       </td>
                       <td align="right">
@@ -285,9 +297,12 @@ const Teams: FC = () => {
                           <ActionIconWithConfirm
                             iconPath={team.locked ? mdiLockOpenVariantOutline : mdiLockOutline}
                             color={team.locked ? 'gray' : 'yellow'}
-                            message={`确定要${team.locked ? '解锁' : '锁定'}队伍\n“${
-                              team.name
-                            }” 吗？`}
+                            message={t('admin.content.teams.lock', {
+                              teamName: team.name,
+                              action: team.locked
+                                ? t('admin.button.teams.do_unlock')
+                                : t('admin.button.teams.do_lock'),
+                            })}
                             disabled={disabled}
                             onClick={() => onToggleLock(team)}
                           />
@@ -295,7 +310,9 @@ const Teams: FC = () => {
                           <ActionIconWithConfirm
                             iconPath={mdiDeleteOutline}
                             color="alert"
-                            message={`确定要删除队伍\n“${team.name}” 吗？`}
+                            message={t('admin.content.teams.delete', {
+                              name: team.name,
+                            })}
                             disabled={disabled}
                             onClick={() => onDelete(team)}
                           />
@@ -309,7 +326,7 @@ const Teams: FC = () => {
         </ScrollArea>
         <TeamEditModal
           size="35%"
-          title="编辑队伍"
+          title={t('admin.button.teams.edit')}
           team={activeTeam}
           opened={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}

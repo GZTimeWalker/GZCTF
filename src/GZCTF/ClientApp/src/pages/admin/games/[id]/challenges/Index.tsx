@@ -14,14 +14,14 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiHexagonSlice6, mdiKeyboardBackspace, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import BloodBonusModel from '@Components/admin/BloodBonusModel'
 import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
-import { ChallengeTagItem, ChallengeTagLabelMap } from '@Utils/Shared'
+import { ChallengeTagItem, useChallengeTagLabelMap } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
 
@@ -33,6 +33,7 @@ const GameChallengeEdit: FC = () => {
   const [createOpened, setCreateOpened] = useState(false)
   const [bonusOpened, setBonusOpened] = useState(false)
   const [category, setCategory] = useState<ChallengeTag | null>(null)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const { t } = useTranslation()
 
@@ -47,12 +48,15 @@ const GameChallengeEdit: FC = () => {
     challenge: ChallengeInfoModel,
     setDisabled: Dispatch<SetStateAction<boolean>>
   ) => {
-    const op = challenge.isEnabled ? '禁用' : '启用'
     modals.openConfirmModal({
-      title: `${op}题目`,
+      title: challenge.isEnabled
+        ? t('admin.button.challenges.disable')
+        : t('admin.button.challenges.enable'),
       children: (
         <Text size="sm">
-          你确定要{op}题目 "{challenge.title}" 吗？
+          {challenge.isEnabled
+            ? t('admin.content.games.challenges.disable')
+            : t('admin.content.games.challenges.enable')}
         </Text>
       ),
       onConfirm: () => onConfirmToggle(challenge, setDisabled),
@@ -73,7 +77,7 @@ const GameChallengeEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '题目状态已更新',
+          message: t('admin.notification.games.challenges.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutate(
@@ -98,19 +102,19 @@ const GameChallengeEdit: FC = () => {
             leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate('/admin/games')}
           >
-            返回上级
+            {t('admin.button.back')}
           </Button>
           <Group w="calc(100% - 9rem)" position="apart">
             <Select
-              placeholder="全部题目"
+              placeholder={t('admin.content.show_all')}
               clearable
               searchable
-              nothingFound="没有找到标签"
+              nothingFound={t('admin.content.nothing_found')}
               value={category}
               onChange={(value: ChallengeTag) => setCategory(value)}
               itemComponent={ChallengeTagItem}
               data={Object.entries(ChallengeTag).map((tag) => {
-                const data = ChallengeTagLabelMap.get(tag[1])
+                const data = challengeTagLabelMap.get(tag[1])
                 return { value: tag[1], ...data }
               })}
             />
@@ -119,14 +123,14 @@ const GameChallengeEdit: FC = () => {
                 leftIcon={<Icon path={mdiHexagonSlice6} size={1} />}
                 onClick={() => setBonusOpened(true)}
               >
-                三血奖励
+                {t('admin.button.challenges.bonus')}
               </Button>
               <Button
                 mr="18px"
                 leftIcon={<Icon path={mdiPlus} size={1} />}
                 onClick={() => setCreateOpened(true)}
               >
-                新建题目
+                {t('admin.button.challenges.new')}
               </Button>
             </Group>
           </Group>
@@ -137,8 +141,8 @@ const GameChallengeEdit: FC = () => {
         {!filteredChallenges || filteredChallenges.length === 0 ? (
           <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
-              <Title order={2}>Ouch! 这个比赛还没有题目</Title>
-              <Text>点击右上角创建第一个题目</Text>
+              <Title order={2}>{t('admin.content.games.challenges.empty.title')}</Title>
+              <Text>{t('admin.content.games.challenges.empty.description')}</Text>
             </Stack>
           </Center>
         ) : (
@@ -158,14 +162,14 @@ const GameChallengeEdit: FC = () => {
         )}
       </ScrollArea>
       <ChallengeCreateModal
-        title="新建题目"
+        title={t('admin.button.challenges.new')}
         size="30%"
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
         onAddChallenge={(challenge) => mutate([challenge, ...(challenges ?? [])])}
       />
       <BloodBonusModel
-        title="三血奖励"
+        title={t('admin.button.challenges.bonus')}
         size="30%"
         opened={bonusOpened}
         onClose={() => setBonusOpened(false)}

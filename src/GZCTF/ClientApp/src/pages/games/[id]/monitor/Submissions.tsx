@@ -27,6 +27,7 @@ import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
@@ -87,6 +88,8 @@ const Submissions: FC = () => {
   const { classes, cx, theme } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     api.game
       .gameSubmissions(numId, {
@@ -100,7 +103,7 @@ const Submissions: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: '获取提交失败',
+          title: t('game.notification.fetch_failed.submission'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -132,7 +135,7 @@ const Submissions: FC = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            message: '实时提交连接成功',
+            message: t('game.notification.connected.submission'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
         })
@@ -232,7 +235,11 @@ const Submissions: FC = () => {
           ]}
         />
         <Group position="right">
-          <Tooltip label="下载全部提交" position="left" classNames={tooltipClasses}>
+          <Tooltip
+            label={t('game.button.download.submissionsheet')}
+            position="left"
+            classNames={tooltipClasses}
+          >
             <ActionIcon
               size="lg"
               onClick={() => window.open(`/api/game/${numId}/submissionsheet`, '_blank')}
@@ -262,11 +269,11 @@ const Submissions: FC = () => {
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
                 </th>
-                <th style={{ width: '8rem' }}>时间</th>
-                <th style={{ minWidth: '5rem' }}>队伍</th>
-                <th style={{ minWidth: '5rem' }}>用户</th>
-                <th style={{ minWidth: '3rem' }}>题目</th>
-                <th className={cx(classes.mono)}>flag</th>
+                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
+                <th style={{ minWidth: '5rem' }}>{t('common.label.team')}</th>
+                <th style={{ minWidth: '5rem' }}>{t('common.label.user')}</th>
+                <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
+                <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>

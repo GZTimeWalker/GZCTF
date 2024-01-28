@@ -2,13 +2,13 @@ import { Button, Pagination, Stack } from '@mantine/core'
 import { mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import PostCard from '@Components/PostCard'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
@@ -30,7 +30,7 @@ const Posts: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle('文章')
+  usePageTitle(t('post.title.index'))
 
   const onTogglePinned = (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
     setDisabled(true)
@@ -86,7 +86,7 @@ const Posts: FC = () => {
           leftIcon={<Icon path={mdiPlus} size={1} />}
           onClick={() => navigate('/posts/new/edit')}
         >
-          新建文章
+          {t('post.button.new')}
         </Button>
       )}
     </WithNavBar>

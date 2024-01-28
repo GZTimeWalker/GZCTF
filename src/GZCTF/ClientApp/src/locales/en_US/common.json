@@ -1,0 +1,101 @@
+{
+  "avatar": {
+    "save": "Save Avatar",
+    "upload_failed": "Avatar update failed",
+    "uploaded": "Avatar updated",
+    "uploading": "Uploading avatar"
+  },
+  "button": {
+    "copy": "Copy to clipboard",
+    "select_file": "选择文件",
+    "uploading": "上传中"
+  },
+  "content": {
+    "404": {
+      "text": "A desolation, why is it here",
+      "title": "Page does not exist"
+    },
+    "about": {
+      "slogan": "Hack for un not for profit"
+    },
+    "drop_zone": {
+      "content": "Drag and drop an image or click here to select {{type}}",
+      "limit": "Please select an image less than 3MB",
+      "type": {
+        "avatar": "avatar",
+        "poster": "poster"
+      }
+    },
+    "home": {
+      "recent_games": "Recent Games"
+    },
+    "no_data": "No data",
+    "wider": {
+      "text": "Please use a broader device to browse this page",
+      "title": "Insufficient Page Width"
+    }
+  },
+  "email": {
+    "sent": {
+      "message": "Please check your email and spam mail!",
+      "title": "Email Sent"
+    }
+  },
+  "error": {
+    "check_input": "Please check input",
+    "empty": "Content can't be empty",
+    "encountered": "Problems encountered",
+    "file_invalid": {
+      "message": "Please check file format and size",
+      "title": "File loading failed"
+    },
+    "invalid_username_or_password": "Wrong username or password",
+    "no_change": "There seems to be no change",
+    "param_error": "Parameter error, please check",
+    "param_invalid": "Invalid argument",
+    "param_missing": "Missing parameter",
+    "param_unknown": "Unknown parameter",
+    "request_too_frequent": "Too often requests",
+    "try_later": "Please try again later",
+    "unknown": "Unknown error"
+  },
+  "label": {
+    "challenge": "Challenge",
+    "flag": "flag",
+    "game": "Game",
+    "ip": "IP",
+    "team": "Team",
+    "time": "Time",
+    "user": "User"
+  },
+  "modal": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "confirm_delete": "Confirm delete",
+    "confirm_update": "Confirm modification",
+    "delete": "Delete"
+  },
+  "tab": {
+    "about": "About",
+    "account": {
+      "clean_cache": "Clear Cache",
+      "login": "Sign in",
+      "logout": "Logout",
+      "profile": "User Information"
+    },
+    "admin": "Admin",
+    "game": "Games",
+    "home": "Home",
+    "post": "Posts",
+    "team": "Team",
+    "theme": {
+      "dark": "dark mode",
+      "light": "light mode",
+      "switch_to": "Switch to {{theme}}"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "About"
+  }
+}

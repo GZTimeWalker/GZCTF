@@ -25,6 +25,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import HintList from '@Components/HintList'
 import InstanceEntry from '@Components/InstanceEntry'
@@ -33,12 +34,11 @@ import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import {
   ChallengeTagItem,
-  ChallengeTagLabelMap,
+  useChallengeTagLabelMap,
   ChallengeTypeItem,
-  ChallengeTypeLabelMap,
+  useChallengeTypeLabelMap,
 } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useEditChallenge } from '@Utils/useEdit'
@@ -66,6 +66,8 @@ const GameChallengeEdit: FC = () => {
   const [previewOpend, setPreviewOpend] = useState(false)
 
   const modals = useModals()
+  const challengeTypeLabelMap = useChallengeTypeLabelMap()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const { t } = useTranslation()
 
@@ -92,7 +94,7 @@ const GameChallengeEdit: FC = () => {
         if (!noFeedback) {
           showNotification({
             color: 'teal',
-            message: '题目已更新',
+            message: t('admin.notification.games.challenges.updated'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
         }
@@ -113,10 +115,13 @@ const GameChallengeEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '题目已删除',
+          message: t('admin.notification.games.challenges.deleted'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        mutateChals(chals?.filter((chal) => chal.id !== numCId), { revalidate: false })
+        mutateChals(
+          chals?.filter((chal) => chal.id !== numCId),
+          { revalidate: false }
+        )
         navigate(`/admin/games/${id}/challenges`)
       })
       .catch((e) => showErrorNotification(e, t))
@@ -131,7 +136,7 @@ const GameChallengeEdit: FC = () => {
       .then((res) => {
         showNotification({
           color: 'teal',
-          message: '实例已创建',
+          message: t('admin.notification.games.instances.created'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         if (challenge) mutate({ ...challenge, testContainer: res.data })
@@ -148,7 +153,7 @@ const GameChallengeEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '实例已销毁',
+          message: t('admin.notification.games.instances.deleted'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         if (challenge) mutate({ ...challenge, testContainer: undefined })
@@ -184,7 +189,7 @@ const GameChallengeEdit: FC = () => {
               leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
               onClick={() => navigate(`/admin/games/${id}/challenges`)}
             >
-              返回上级
+              {t('admin.button.back')}
             </Button>
             <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
               # {challengeInfo?.title}
@@ -198,28 +203,34 @@ const GameChallengeEdit: FC = () => {
               variant="outline"
               onClick={() =>
                 modals.openConfirmModal({
-                  title: `删除题目`,
-                  children: <Text size="sm">你确定要删除题目 "{challengeInfo.title}" 吗？</Text>,
+                  title: t('admin.button.challenges.delete'),
+                  children: (
+                    <Text size="sm">
+                      {t('admin.content.games.challenges.delete', {
+                        name: challengeInfo?.title,
+                      })}
+                    </Text>
+                  ),
                   onConfirm: () => onConfirmDelete(),
                   confirmProps: { color: 'red' },
                 })
               }
             >
-              删除题目
+              {t('admin.button.challenges.delete')}
             </Button>
             <Button
               disabled={disabled}
               leftIcon={<Icon path={mdiEyeOutline} size={1} />}
               onClick={() => setPreviewOpend(true)}
             >
-              题目预览
+              {t('admin.button.challenges.preview')}
             </Button>
             <Button
               disabled={disabled}
               leftIcon={<Icon path={mdiDatabaseEditOutline} size={1} />}
               onClick={() => navigate(`/admin/games/${numId}/challenges/${numCId}/flags`)}
             >
-              编辑附件及 flag
+              {t('admin.button.challenges.edit_more')}
             </Button>
             <Button
               disabled={disabled}
@@ -232,7 +243,7 @@ const GameChallengeEdit: FC = () => {
                 })
               }
             >
-              保存更改
+              {t('admin.button.save')}
             </Button>
           </Group>
         </>
@@ -242,7 +253,7 @@ const GameChallengeEdit: FC = () => {
         <Grid columns={3}>
           <Grid.Col span={1}>
             <TextInput
-              label="题目标题"
+              label={t('admin.content.games.challenges.title')}
               disabled={disabled}
               value={challengeInfo.title ?? ''}
               required
@@ -253,9 +264,9 @@ const GameChallengeEdit: FC = () => {
             <Select
               label={
                 <Group spacing="sm">
-                  <Text size="sm">题目类型</Text>
+                  <Text size="sm">{t('admin.content.games.challenges.type.label')}</Text>
                   <Text size="xs" c="dimmed">
-                    创建后不可更改
+                    {t('admin.content.games.challenges.type.description')}
                   </Text>
                 </Group>
               }
@@ -265,7 +276,7 @@ const GameChallengeEdit: FC = () => {
               readOnly
               itemComponent={ChallengeTypeItem}
               data={Object.entries(ChallengeType).map((type) => {
-                const data = ChallengeTypeLabelMap.get(type[1])
+                const data = challengeTypeLabelMap.get(type[1])
                 return { value: type[1], ...data }
               })}
             />
@@ -273,7 +284,7 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Select
               required
-              label="题目标签"
+              label={t('admin.content.games.challenges.tag')}
               placeholder="Tag"
               value={tag}
               disabled={disabled}
@@ -283,7 +294,7 @@ const GameChallengeEdit: FC = () => {
               }}
               itemComponent={ChallengeTagItem}
               data={Object.entries(ChallengeTag).map((tag) => {
-                const data = ChallengeTagLabelMap.get(tag[1])
+                const data = challengeTagLabelMap.get(tag[1])
                 return { value: tag[1], ...data }
               })}
             />
@@ -293,9 +304,9 @@ const GameChallengeEdit: FC = () => {
               w="100%"
               label={
                 <Group spacing="sm">
-                  <Text size="sm">题目描述</Text>
+                  <Text size="sm">{t('admin.content.games.challenges.description')}</Text>
                   <Text size="xs" c="dimmed">
-                    支持 Markdown 语法
+                    {t('admin.content.markdown_support')}
                   </Text>
                 </Group>
               }
@@ -312,9 +323,9 @@ const GameChallengeEdit: FC = () => {
               <HintList
                 label={
                   <Group spacing="sm">
-                    <Text size="sm">题目提示</Text>
+                    <Text size="sm">{t('admin.content.games.challenges.hints')}</Text>
                     <Text size="xs" c="dimmed">
-                      支持 Inline Markdown 语法
+                      {t('admin.content.markdown_inline_support')}
                     </Text>
                   </Group>
                 }
@@ -328,7 +339,7 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Stack spacing="sm">
               <NumberInput
-                label="题目分值"
+                label={t('admin.content.games.challenges.score')}
                 min={0}
                 required
                 disabled={disabled}
@@ -340,7 +351,7 @@ const GameChallengeEdit: FC = () => {
                 }
               />
               <NumberInput
-                label="难度系数"
+                label={t('admin.content.games.challenges.difficulty')}
                 precision={1}
                 step={0.2}
                 min={0.1}
@@ -351,12 +362,15 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, difficulty: e })}
               />
-              <Input.Wrapper label="题目最低分值比例" required>
+              <Input.Wrapper
+                label={t('admin.content.games.challenges.min_score_radio.label')}
+                required
+              >
                 <Slider
                   label={(value) =>
-                    `最低分值: ${((value / 100) * (challengeInfo?.originalScore ?? 500)).toFixed(
-                      0
-                    )}pts`
+                    t('admin.content.games.challenges.min_score_radio.description', {
+                      min_score: ((value / 100) * (challengeInfo?.originalScore ?? 500)).toFixed(0),
+                    })
                   }
                   disabled={disabled}
                   value={minRate}
@@ -387,8 +401,8 @@ const GameChallengeEdit: FC = () => {
         </Grid>
         {type === ChallengeType.DynamicAttachment && (
           <TextInput
-            label="全局附件名"
-            description="所有动态附件均会以此文件名下载"
+            label={t('admin.content.games.challenges.attachment_name.label')}
+            description={t('admin.content.games.challenges.attachment_name.description')}
             disabled={disabled}
             value={challengeInfo.fileName ?? 'attachment'}
             onChange={(e) => setChallengeInfo({ ...challengeInfo, fileName: e.target.value })}
@@ -398,7 +412,7 @@ const GameChallengeEdit: FC = () => {
           <Grid columns={12}>
             <Grid.Col span={8}>
               <TextInput
-                label="容器镜像"
+                label={t('admin.content.games.challenges.container_image')}
                 disabled={disabled}
                 value={challengeInfo.containerImage ?? ''}
                 required
@@ -409,7 +423,9 @@ const GameChallengeEdit: FC = () => {
                     disabled={disabled}
                     onClick={onToggleTestContainer}
                   >
-                    {challenge?.testContainer ? '关闭' : '开启'}测试容器
+                    {challenge?.testContainer
+                      ? t('admin.button.challenges.test_container.destroy')
+                      : t('admin.button.challenges.test_container.create')}
                   </Button>
                 }
                 onChange={(e) =>
@@ -429,8 +445,8 @@ const GameChallengeEdit: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <NumberInput
-                label="服务端口"
-                description="容器内服务暴露的端口"
+                label={t('admin.content.games.challenges.service_port.label')}
+                description={t('admin.content.games.challenges.service_port.description')}
                 min={1}
                 max={65535}
                 required
@@ -445,8 +461,8 @@ const GameChallengeEdit: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <NumberInput
-                label="CPU 限制 (0.1 CPUs)"
-                description="乘以 0.1 即为 CPU 核心数"
+                label={t('admin.content.games.challenges.cpu_limit.label')}
+                description={t('admin.content.games.challenges.cpu_limit.description')}
                 min={1}
                 max={1024}
                 required
@@ -459,8 +475,8 @@ const GameChallengeEdit: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <NumberInput
-                label="内存限制 (MB)"
-                description="限制容器使用的 RAM"
+                label={t('admin.content.games.challenges.memory_limit.label')}
+                description={t('admin.content.games.challenges.memory_limit.description')}
                 min={32}
                 max={1048576}
                 required
@@ -473,8 +489,8 @@ const GameChallengeEdit: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <NumberInput
-                label="存储限制 (MB)"
-                description="限制存储空间，含镜像大小"
+                label={t('admin.content.games.challenges.storage_limit.label')}
+                description={t('admin.content.games.challenges.storage_limit.description')}
                 min={128}
                 max={1048576}
                 required
@@ -491,7 +507,10 @@ const GameChallengeEdit: FC = () => {
               <Switch
                 disabled={disabled}
                 checked={challengeInfo.enableTrafficCapture ?? false}
-                label={SwitchLabel('开启流量捕获', '捕获队伍解题流量，需要开启平台代理')}
+                label={SwitchLabel(
+                  t('admin.content.games.challenges.traffic_capture.label'),
+                  t('admin.content.games.challenges.traffic_capture.description')
+                )}
                 onChange={(e) =>
                   setChallengeInfo({ ...challengeInfo, enableTrafficCapture: e.target.checked })
                 }
@@ -508,7 +527,7 @@ const GameChallengeEdit: FC = () => {
         size="40%"
         type={challenge?.type ?? ChallengeType.StaticAttachment}
         tagData={
-          ChallengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
+          challengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
         }
         attachmentType={challenge?.attachment?.type ?? FileType.None}
       />

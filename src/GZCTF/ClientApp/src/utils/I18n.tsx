@@ -1,48 +1,40 @@
-import translation_en_US from '@Resources/strings.en-US.json'
-import translation_ja_JP from '@Resources/strings.ja-JP.json'
-import sources from '@Resources/strings.json'
-import { Namespace, TOptions } from 'i18next'
-import {
-  useTranslation as useI18nTranslation,
-  Trans as I18nTrans,
-  TransProps as I18nTransProps,
-} from 'react-i18next'
-import { _DefaultNamespace } from 'react-i18next/TransWithoutContext'
+import { useLocalStorage } from '@mantine/hooks'
+import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import resources from 'virtual:i18next-loader'
 
-export type I18nKey = keyof typeof sources
-type Language = {
-  translation: {
-    [K in I18nKey]: string
+export const LanguageMap = {
+  zh_CN: '简体中文',
+  en_US: 'English',
+  ja_JP: '日本語',
+}
+
+export type SupportedLanguages = keyof typeof LanguageMap
+
+export const useLanguage = () => {
+  const [language, setLanguageInner] = useLocalStorage({
+    key: 'language',
+    defaultValue: 'zh_CN',
+    getInitialValueInEffect: false,
+  })
+
+  const { i18n } = useTranslation()
+
+  useEffect(() => {
+    i18n.changeLanguage(language)
+  }, [language])
+
+  const supportedLanguages = Object.keys(resources) as SupportedLanguages[]
+
+  const setLanguage = (lang: SupportedLanguages) => {
+    // check if language is supported
+    if (supportedLanguages.includes(lang)) {
+      setLanguageInner(lang)
+    } else {
+      console.warn(`Language ${lang} is not supported, fallback to zh_CN`)
+      setLanguageInner('zh_CN')
+    }
   }
-}
-type Resource = { [K in string]: Language }
 
-export const resources: Resource = {
-  'zh-CN': {
-    translation: sources,
-  },
-  en: {
-    translation: translation_en_US,
-  },
-  ja: {
-    translation: translation_ja_JP,
-  },
-}
-
-export const useTranslation = () => {
-  const ret = useI18nTranslation()
-  return {
-    t: (key: I18nKey) => ret.t(key),
-    i18n: ret.i18n,
-    ready: ret.ready,
-  }
-}
-
-export function Trans<
-  Ns extends Namespace = _DefaultNamespace,
-  TOpt extends TOptions = any,
-  KPrefix = undefined,
-  E = React.HTMLProps<HTMLDivElement>,
->(props: I18nTransProps<I18nKey, Ns, TOpt, KPrefix, E>) {
-  return <I18nTrans {...props} />
+  return { language, setLanguage, supportedLanguages }
 }

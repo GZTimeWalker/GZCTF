@@ -26,6 +26,7 @@ import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
@@ -81,6 +82,8 @@ const Events: FC = () => {
   const iconMap = EventTypeIconMap(1.15)
   const { classes } = useTableStyles()
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     api.game
       .gameEvents(numId, {
@@ -94,7 +97,7 @@ const Events: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: '获取提交失败',
+          title: t('game.notification.fetch_failed.event'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -126,7 +129,7 @@ const Events: FC = () => {
         .then(() => {
           showNotification({
             color: 'teal',
-            message: '实时事件连接成功',
+            message: t('game.notification.connected.event'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
         })
@@ -152,7 +155,10 @@ const Events: FC = () => {
     <WithGameMonitorTab>
       <Group position="apart" w="100%">
         <Switch
-          label={SwitchLabel('隐藏容器事件', '隐藏容器启动/销毁事件')}
+          label={SwitchLabel(
+            t('game.content.hide_container_events.label'),
+            t('game.content.hide_container_events.description')
+          )}
           checked={hideContainerEvents}
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
         />

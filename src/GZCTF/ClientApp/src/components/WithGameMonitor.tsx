@@ -8,24 +8,16 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { Role } from '@Api'
 
-const pages = [
-  { icon: mdiLightningBolt, title: '事件监控', path: 'events' },
-  { icon: mdiFlag, title: '提交记录', path: 'submissions' },
-  { icon: mdiExclamationThick, title: '作弊信息', path: 'cheatinfo' },
-  { icon: mdiPackageVariant, title: '流量捕获', path: 'traffic' },
-]
-
 interface WithGameMonitorProps extends React.PropsWithChildren {
   isLoading?: boolean
 }
-
-const getTab = (path: string) => pages.find((page) => path.endsWith(page.path))
 
 const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const { id } = useParams()
@@ -34,6 +26,18 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const theme = useMantineTheme()
+
+  const { t } = useTranslation()
+
+  const pages = [
+    { icon: mdiLightningBolt, title: t('game.tab.monitor.events'), path: 'events' },
+    { icon: mdiFlag, title: t('game.tab.monitor.submissions'), path: 'submissions' },
+    { icon: mdiExclamationThick, title: t('game.tab.monitor.cheatinfo'), path: 'cheatinfo' },
+    { icon: mdiPackageVariant, title: t('game.tab.monitor.traffic'), path: 'traffic' },
+  ]
+
+  const getTab = (path: string) => pages.find((page) => path.endsWith(page.path))
+
   const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
 
   useEffect(() => {
@@ -55,7 +59,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                 leftIcon={<Icon path={mdiFileTableOutline} size={1} />}
                 onClick={() => window.open(`/api/game/${numId}/scoreboardsheet`, '_blank')}
               >
-                下载积分榜
+                {t('game.button.download.scoreboard')}
               </Button>
               <Tabs
                 orientation="vertical"

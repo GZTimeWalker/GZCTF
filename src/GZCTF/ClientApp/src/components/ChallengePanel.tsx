@@ -18,12 +18,13 @@ import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import React, { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ChallengeCard from '@Components/ChallengeCard'
 import ChallengeDetailModal from '@Components/ChallengeDetailModal'
 import Empty from '@Components/Empty'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
-import { ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
+import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame } from '@Utils/useGame'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 
@@ -71,6 +72,8 @@ const ChallengePanel: FC = () => {
   const [detailOpened, setDetailOpened] = useState(false)
   const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
   const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const { t } = useTranslation()
 
   // skeleton for loading
   if (!challenges) {
@@ -130,7 +133,7 @@ const ChallengePanel: FC = () => {
       <Center miw="calc(100% - 20rem)" h="calc(100vh - 100px)">
         <Empty
           bordered
-          description="Ouch! 这个比赛还没有可用题目呢……"
+          description={t('game.content.no_challenge')}
           fontSize="xl"
           mdiPath={mdiFlagOutline}
           iconSize={8}
@@ -148,7 +151,7 @@ const ChallengePanel: FC = () => {
               leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
               onClick={() => setWriteupSubmitOpened(true)}
             >
-              提交 Writeup
+              {t('game.button.submit_writeup')}
             </Button>
             <Divider />
           </>
@@ -158,7 +161,7 @@ const ChallengePanel: FC = () => {
           onChange={(e) => setHideSolved(e.target.checked)}
           label={
             <Text size="md" fw={700}>
-              隐藏已解出
+              {t('game.button.hide_solved')}
             </Text>
           }
         />
@@ -187,7 +190,7 @@ const ChallengePanel: FC = () => {
               </Group>
             </Tabs.Tab>
             {tags.map((tab) => {
-              const data = ChallengeTagLabelMap.get(tab as ChallengeTag)!
+              const data = challengeTagLabelMap.get(tab as ChallengeTag)!
               return (
                 <Tabs.Tab
                   key={tab}
@@ -235,8 +238,8 @@ const ChallengePanel: FC = () => {
           </SimpleGrid>
         ) : (
           <Stack spacing={0} pt="20vh" w="20em" m="auto">
-            <Title order={2}>题目都被解出啦！</Title>
-            <Text>或许还有更难的挑战在等着你……</Text>
+            <Title order={2}>{t('game.content.all_solved.title')}</Title>
+            <Text>{t('game.content.all_solved.comment')}</Text>
           </Stack>
         )}
       </ScrollArea>
@@ -263,7 +266,7 @@ const ChallengePanel: FC = () => {
             data.rank?.challenges?.find((c) => c.id === challenge?.id)?.type !==
               SubmissionType.Unaccepted
           }
-          tagData={ChallengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
+          tagData={challengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
           title={challenge?.title ?? ''}
           score={challenge?.score ?? 0}
           challengeId={challenge.id}

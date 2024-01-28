@@ -12,8 +12,9 @@ import {
 import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ChallengeTagLabelMap } from '@Utils/Shared'
+import { useChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfoModel, ChallengeTag } from '@Api'
 
 interface ChallengeEditCardProps {
@@ -22,13 +23,16 @@ interface ChallengeEditCardProps {
 }
 
 const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) => {
-  const data = ChallengeTagLabelMap.get(challenge.tag as ChallengeTag)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const data = challengeTagLabelMap.get(challenge.tag as ChallengeTag)
   const theme = useMantineTheme()
   const navigate = useNavigate()
   const { id } = useParams()
 
   const colors = theme.colors[data?.color ?? 'brand']
   const [disabled, setDisabled] = useState(false)
+
+  const { t } = useTranslation()
 
   const [min, cur, tot] = [
     challenge.minScore ?? 0,
@@ -78,7 +82,13 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             </Badge>
           </Group>
         </Group>
-        <Tooltip label="编辑题目信息" position="left" width={120} offset={10} styles={tooltipStyle}>
+        <Tooltip
+          label={t('admin.button.challenges.edit')}
+          position="left"
+          width={120}
+          offset={10}
+          styles={tooltipStyle}
+        >
           <ActionIcon
             onClick={() => {
               navigate(`/admin/games/${id}/challenges/${challenge.id}`)
@@ -88,7 +98,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           </ActionIcon>
         </Tooltip>
         <Tooltip
-          label="编辑附件及 flag"
+          label={t('admin.button.challenges.edit_more')}
           position="left"
           width={120}
           offset={54}

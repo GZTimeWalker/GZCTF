@@ -4,10 +4,10 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import api from '@Api'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {
@@ -23,8 +23,8 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
     if (!pwd || !retypedPwd) {
       showNotification({
         color: 'red',
-        title: '密码不能为空',
-        message: '请检查你的输入',
+        title: t('account.password.empty'),
+        message: t('common.error.check_input'),
         icon: <Icon path={mdiClose} size={1} />,
       })
     } else if (pwd === retypedPwd) {
@@ -36,7 +36,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
         .then(() => {
           showNotification({
             color: 'teal',
-            message: '密码已修改，请重新登录',
+            message: t('account.notification.profile.password_updated'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
           props.onClose()
@@ -47,8 +47,8 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
     } else {
       showNotification({
         color: 'red',
-        title: '密码不一致',
-        message: '请检查你的输入',
+        title: t('account.password.not_match'),
+        message: t('common.error.check_input'),
         icon: <Icon path={mdiClose} size={1} />,
       })
     }
@@ -59,7 +59,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
       <Stack>
         <PasswordInput
           required
-          label="原密码"
+          label={t('account.label.password_old')}
           placeholder="P4ssW@rd"
           w="100%"
           value={oldPwd}
@@ -68,7 +68,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
         <StrengthPasswordInput value={pwd} onChange={setPwd} />
         <PasswordInput
           required
-          label="确认密码"
+          label={t('account.label.password_retype')}
           placeholder="P4ssW@rd"
           w="100%"
           value={retypedPwd}
@@ -85,10 +85,10 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
               props.onClose()
             }}
           >
-            取消
+            {t('common.modal.cancel')}
           </Button>
           <Button color="orange" onClick={onChangePwd}>
-            确认修改
+            {t('common.modal.confirm_update')}
           </Button>
         </Group>
       </Stack>

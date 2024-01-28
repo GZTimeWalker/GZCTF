@@ -3,9 +3,9 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType, FlagCreateModel } from '@Api'
 
@@ -48,7 +48,7 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '附件已更新',
+          message: t('admin.notification.games.challenges.attachment.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setText('')
@@ -65,14 +65,14 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
     <Modal {...props}>
       <Stack>
         <Text>
-          批量设置远程附件及对应 flag，每行一组。
+          {t('admin.content.games.challenges.attachment.instruction.remote.content')}
           <br />
           <Text fw="bold" span>
-            请将 flag 字符串与 url 以空格隔开。
+            {t('admin.content.games.challenges.attachment.instruction.remote.format')}
           </Text>
           <br />
           <Text fw="bold" c="orange" span>
-            建议上传预期参赛队伍数量的两倍的动态附件。
+            {t('admin.content.games.challenges.attachment.instruction.amount_double')}
           </Text>
           <br />
         </Text>
@@ -92,7 +92,7 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
           required
         />
         <Button fullWidth disabled={disabled} onClick={onUpload}>
-          批量添加
+          {t('admin.button.games.challenges.attachment.batch_add')}
         </Button>
       </Stack>
     </Modal>

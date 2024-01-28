@@ -1,5 +1,6 @@
 import { Stack } from '@mantine/core'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import GameCard from '@Components/GameCard'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
@@ -8,6 +9,8 @@ import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
 const Games: FC = () => {
+  const { t } = useTranslation()
+
   const { data: allGames } = api.game.useGameGamesAll(OnceSWRConfig)
 
   allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
@@ -18,7 +21,7 @@ const Games: FC = () => {
     ...(allGames?.filter((g) => now >= new Date(g.end ?? '')).reverse() ?? []),
   ]
 
-  usePageTitle('赛事')
+  usePageTitle(t('game.title.index'))
 
   return (
     <WithNavBar>

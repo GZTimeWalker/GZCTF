@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import Empty from '@Components/Empty'
 import { InlineMarkdownRender } from '@Components/MarkdownRender'
@@ -50,6 +51,8 @@ const GameNoticePanel: FC = () => {
   const [filter, setFilter] = useState<NoticeFilter>(NoticeFilter.All)
   const iconMap = NoticTypeIconMap(0.8)
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     api.game
       .gameNotices(numId)
@@ -59,7 +62,7 @@ const GameNoticePanel: FC = () => {
       .catch((err) => {
         showNotification({
           color: 'red',
-          title: '获取通知失败',
+          title: t('game.notification.fetch_failed.notice'),
           message: err.response.data.title,
           icon: <Icon path={mdiClose} size={1} />,
         })
@@ -137,10 +140,10 @@ const GameNoticePanel: FC = () => {
           }}
           onChange={(value: NoticeFilter) => setFilter(value)}
           data={[
-            { value: NoticeFilter.All, label: '全部' },
-            { value: NoticeFilter.Game, label: '通知' },
-            { value: NoticeFilter.Events, label: '动态' },
-            { value: NoticeFilter.Challenge, label: '题目' },
+            { value: NoticeFilter.All, label: t('game.label.notice_type.all') },
+            { value: NoticeFilter.Game, label: t('game.label.notice_type.game') },
+            { value: NoticeFilter.Events, label: t('game.label.notice_type.events') },
+            { value: NoticeFilter.Challenge, label: t('game.label.notice_type.challenge') },
           ]}
         />
         {filteredNotices.length ? (
@@ -169,7 +172,7 @@ const GameNoticePanel: FC = () => {
           </ScrollArea>
         ) : (
           <Stack justify="center" h="calc(100vh - 25rem)">
-            <Empty description="暂无通知" />
+            <Empty description={t('game.content.no_notice')} />
           </Stack>
         )}
       </Stack>

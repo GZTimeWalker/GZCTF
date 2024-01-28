@@ -2,8 +2,9 @@ import { Avatar, Badge, Group, rem, Stack, Text, useMantineTheme } from '@mantin
 import { mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
+import { useTranslation } from 'react-i18next'
 import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
-import { ChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
+import { useChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
 import {
   ChallengeTag,
   ChallengeTrafficModel,
@@ -16,9 +17,12 @@ const itemHeight = rem(60)
 
 export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
-  const data = ChallengeTagLabelMap.get(item.tag as ChallengeTag)!
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const data = challengeTagLabelMap.get(item.tag as ChallengeTag)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
+
+  const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
@@ -37,7 +41,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 
         <Group position="right" spacing={2} noWrap>
           <Text color="dimmed" size="xs" lineClamp={1}>
-            {item.count}&nbsp;队伍
+            {item.count}&nbsp;{t('common.label.team')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
         </Group>
@@ -48,6 +52,8 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 
 export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
+
+  const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
@@ -70,7 +76,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
 
         <Group position="right" spacing={2} noWrap>
           <Text color="dimmed" size="xs" lineClamp={1}>
-            {item.count}&nbsp;流量
+            {item.count}&nbsp;{t('game.label.traffic')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
         </Group>

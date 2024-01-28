@@ -19,14 +19,17 @@ import {
   mdiInformationOutline,
   mdiLogout,
   mdiNoteTextOutline,
+  mdiTranslate,
   mdiWeatherNight,
   mdiWeatherSunny,
   mdiWrenchOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
+import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { useLocalStorageCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
@@ -87,18 +90,9 @@ interface NavbarItem {
   admin?: boolean
 }
 
-const items: NavbarItem[] = [
-  { icon: mdiHomeVariantOutline, label: '主页', link: '/' },
-  { icon: mdiNoteTextOutline, label: '文章', link: '/posts' },
-  { icon: mdiFlagOutline, label: '赛事', link: '/games' },
-  { icon: mdiAccountGroupOutline, label: '队伍', link: '/teams' },
-  { icon: mdiInformationOutline, label: '关于', link: '/about' },
-  { icon: mdiWrenchOutline, label: '管理', link: '/admin/games', admin: true },
-]
-
 export interface NavbarLinkProps {
   icon: string
-  label?: string
+  label: string
   link?: string
   onClick?: () => void
   isActive?: boolean
@@ -106,9 +100,10 @@ export interface NavbarLinkProps {
 
 const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { classes, cx } = useStyles()
+  const { t } = useTranslation()
 
   return (
-    <Tooltip label={props.label} classNames={{ tooltip: classes.tooltipBody }} position="right">
+    <Tooltip label={t(props.label)} classNames={{ tooltip: classes.tooltipBody }} position="right">
       <ActionIcon
         onClick={props.onClick}
         component={Link}
@@ -121,26 +116,37 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   )
 }
 
-const getLabel = (path: string) =>
-  items.find((item) =>
-    item.link === '/'
-      ? path === '/'
-      : item.link.startsWith('/admin')
-        ? path.startsWith('/admin')
-        : path.startsWith(item.link)
-  )?.label
-
 const AppNavbar: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { classes } = useStyles()
-
-  const [active, setActive] = useState(getLabel(location.pathname) ?? '')
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const logout = useLoginOut()
   const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
+  const { t } = useTranslation()
+  const { setLanguage, supportedLanguages } = useLanguage()
+
+  const items: NavbarItem[] = [
+    { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
+    { icon: mdiNoteTextOutline, label: 'common.tab.post', link: '/posts' },
+    { icon: mdiFlagOutline, label: 'common.tab.game', link: '/games' },
+    { icon: mdiAccountGroupOutline, label: 'common.tab.team', link: '/teams' },
+    { icon: mdiInformationOutline, label: 'common.tab.about', link: '/about' },
+    { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/games', admin: true },
+  ]
+
+  const getLabel = (path: string) =>
+    items.find((item) =>
+      item.link === '/'
+        ? path === '/'
+        : item.link.startsWith('/admin')
+          ? path.startsWith('/admin')
+          : path.startsWith(item.link)
+    )?.label
+
+  const [active, setActive] = useState(getLabel(location.pathname) ?? '')
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -179,9 +185,29 @@ const AppNavbar: FC = () => {
         style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
       >
         <Stack align="center" spacing={5}>
+          {/* Language */}
+          <Menu position="right-end" offset={24} width={160}>
+            <Menu.Target>
+              <ActionIcon className={classes.link}>
+                <Icon path={mdiTranslate} size={1} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {supportedLanguages.map((lang: SupportedLanguages) => (
+                <Menu.Item key={lang} onClick={() => setLanguage(lang)}>
+                  {LanguageMap[lang] ?? lang}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+
           {/* Color Mode */}
           <Tooltip
-            label={'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
+            label={t('common.tab.theme.switch_to', {
+              theme:
+                colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
+            })}
             classNames={{ tooltip: classes.tooltipBody }}
             position="right"
           >
@@ -216,18 +242,22 @@ const AppNavbar: FC = () => {
                   to="/account/profile"
                   icon={<Icon path={mdiAccountCircleOutline} size={1} />}
                 >
-                  用户信息
+                  {t('common.tab.account.profile')}
                 </Menu.Item>
                 <Menu.Item onClick={clearLocalCache} icon={<Icon path={mdiCached} size={1} />}>
-                  清除缓存
+                  {t('common.tab.account.clean_cache')}
                 </Menu.Item>
                 <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
-                  登出
+                  {t('common.tab.account.logout')}
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           ) : (
-            <Tooltip label="登录" classNames={{ tooltip: classes.tooltipBody }} position="right">
+            <Tooltip
+              label={t('common.tab.account.login')}
+              classNames={{ tooltip: classes.tooltipBody }}
+              position="right"
+            >
               <ActionIcon
                 component={Link}
                 to={`/account/login?from=${location.pathname}`}

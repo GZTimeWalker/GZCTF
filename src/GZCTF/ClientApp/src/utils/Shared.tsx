@@ -24,6 +24,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ChallengeTag,
   ChallengeType,
@@ -33,15 +34,40 @@ import {
   TaskStatus,
 } from '@Api'
 
-export const ChallengeTypeLabelMap = new Map<ChallengeType, ChallengeTypeItemProps>([
-  [ChallengeType.StaticAttachment, { label: '静态附件', desrc: '共用附件，任意 flag 均可提交' }],
-  [ChallengeType.StaticContainer, { label: '静态容器', desrc: '共用容器，任意 flag 均可提交' }],
-  [
-    ChallengeType.DynamicAttachment,
-    { label: '动态附件', desrc: '按照队伍分发附件，需保证附件数量大于队伍数' },
-  ],
-  [ChallengeType.DynamicContainer, { label: '动态容器', desrc: '自动生成下发 flag，每队均唯一' }],
-])
+export const useChallengeTypeLabelMap = () => {
+  const { t } = useTranslation()
+
+  return new Map<ChallengeType, ChallengeTypeItemProps>([
+    [
+      ChallengeType.StaticAttachment,
+      {
+        label: t('challenge.type.static_attachment.label'),
+        desrc: t('challenge.type.static_attachment.desrc'),
+      },
+    ],
+    [
+      ChallengeType.StaticContainer,
+      {
+        label: t('challenge.type.static_container.label'),
+        desrc: t('challenge.type.static_container.desrc'),
+      },
+    ],
+    [
+      ChallengeType.DynamicAttachment,
+      {
+        label: t('challenge.type.dynamic_attachment.label'),
+        desrc: t('challenge.type.dynamic_attachment.desrc'),
+      },
+    ],
+    [
+      ChallengeType.DynamicContainer,
+      {
+        label: t('challenge.type.dynamic_container.label'),
+        desrc: t('challenge.type.dynamic_container.desrc'),
+      },
+    ],
+  ])
+}
 
 export interface ChallengeTypeItemProps extends React.ComponentPropsWithoutRef<'div'> {
   label: string
@@ -59,39 +85,92 @@ export const ChallengeTypeItem = forwardRef<HTMLDivElement, ChallengeTypeItemPro
   }
 )
 
-export const ChallengeTagLabelMap = new Map<ChallengeTag, ChallengeTagItemProps>([
-  [
-    ChallengeTag.Misc,
-    { desrc: '杂项', icon: mdiGamepadVariantOutline, label: ChallengeTag.Misc, color: 'teal' },
-  ],
-  [
-    ChallengeTag.Crypto,
-    { desrc: '密码学', icon: mdiMatrix, label: ChallengeTag.Crypto, color: 'indigo' },
-  ],
-  [ChallengeTag.Pwn, { desrc: 'Pwn', icon: mdiBomb, label: ChallengeTag.Pwn, color: 'red' }],
-  [ChallengeTag.Web, { desrc: 'Web', icon: mdiWeb, label: ChallengeTag.Web, color: 'blue' }],
-  [
-    ChallengeTag.Reverse,
-    { desrc: '逆向工程', icon: mdiChevronTripleLeft, label: ChallengeTag.Reverse, color: 'yellow' },
-  ],
-  [
-    ChallengeTag.Blockchain,
-    { desrc: '区块链', icon: mdiEthereum, label: ChallengeTag.Blockchain, color: 'lime' },
-  ],
-  [
-    ChallengeTag.Forensics,
-    { desrc: '取证', icon: mdiFingerprint, label: ChallengeTag.Forensics, color: 'cyan' },
-  ],
-  [
-    ChallengeTag.Hardware,
-    { desrc: '硬件', icon: mdiChip, label: ChallengeTag.Hardware, color: 'violet' },
-  ],
-  [
-    ChallengeTag.Mobile,
-    { desrc: '移动设备', icon: mdiCellphoneCog, label: ChallengeTag.Mobile, color: 'pink' },
-  ],
-  [ChallengeTag.PPC, { desrc: '编程', icon: mdiConsole, label: ChallengeTag.PPC, color: 'orange' }],
-])
+export const useChallengeTagLabelMap = () => {
+  const { t } = useTranslation()
+
+  return new Map<ChallengeTag, ChallengeTagItemProps>([
+    [
+      ChallengeTag.Misc,
+      {
+        desrc: t('challenge.tag.misc'),
+        icon: mdiGamepadVariantOutline,
+        label: ChallengeTag.Misc,
+        color: 'teal',
+      },
+    ],
+    [
+      ChallengeTag.Crypto,
+      {
+        desrc: t('challenge.tag.crypto'),
+        icon: mdiMatrix,
+        label: ChallengeTag.Crypto,
+        color: 'indigo',
+      },
+    ],
+    [
+      ChallengeTag.Pwn,
+      { desrc: t('challenge.tag.pwn'), icon: mdiBomb, label: ChallengeTag.Pwn, color: 'red' },
+    ],
+    [
+      ChallengeTag.Web,
+      { desrc: t('challenge.tag.web'), icon: mdiWeb, label: ChallengeTag.Web, color: 'blue' },
+    ],
+    [
+      ChallengeTag.Reverse,
+      {
+        desrc: t('challenge.tag.reverse'),
+        icon: mdiChevronTripleLeft,
+        label: ChallengeTag.Reverse,
+        color: 'yellow',
+      },
+    ],
+    [
+      ChallengeTag.Blockchain,
+      {
+        desrc: t('challenge.tag.blockchain'),
+        icon: mdiEthereum,
+        label: ChallengeTag.Blockchain,
+        color: 'lime',
+      },
+    ],
+    [
+      ChallengeTag.Forensics,
+      {
+        desrc: t('challenge.tag.forensics'),
+        icon: mdiFingerprint,
+        label: ChallengeTag.Forensics,
+        color: 'cyan',
+      },
+    ],
+    [
+      ChallengeTag.Hardware,
+      {
+        desrc: t('challenge.tag.hardware'),
+        icon: mdiChip,
+        label: ChallengeTag.Hardware,
+        color: 'violet',
+      },
+    ],
+    [
+      ChallengeTag.Mobile,
+      {
+        desrc: t('challenge.tag.mobile'),
+        icon: mdiCellphoneCog,
+        label: ChallengeTag.Mobile,
+        color: 'pink',
+      },
+    ],
+    [
+      ChallengeTag.PPC,
+      {
+        desrc: t('challenge.tag.ppc'),
+        icon: mdiConsole,
+        label: ChallengeTag.PPC,
+        color: 'orange',
+      },
+    ],
+  ])
+}
 
 export interface ChallengeTagItemProps extends React.ComponentPropsWithoutRef<'div'> {
   label: ChallengeTag
@@ -201,55 +280,58 @@ export const NoticTypeIconMap = (size: number) => {
   ])
 }
 
-export const ParticipationStatusMap = new Map([
-  [
-    ParticipationStatus.Pending,
-    {
-      title: '待审核',
-      color: 'yellow',
-      iconPath: mdiHelpCircleOutline,
-      transformTo: [ParticipationStatus.Accepted, ParticipationStatus.Rejected],
-    },
-  ],
-  [
-    ParticipationStatus.Accepted,
-    {
-      title: '审核通过',
-      color: 'green',
-      iconPath: mdiCheck,
-      transformTo: [ParticipationStatus.Suspended],
-    },
-  ],
-  [
-    ParticipationStatus.Rejected,
-    { title: '审核不通过', color: 'red', iconPath: mdiClose, transformTo: [] },
-  ],
-  [
-    ParticipationStatus.Suspended,
-    {
-      title: '禁赛',
-      color: 'alert',
-      iconPath: mdiCancel,
-      transformTo: [ParticipationStatus.Accepted],
-    },
-  ],
-])
+export const useParticipationStatusMap = () => {
+  const { t } = useTranslation()
+
+  return new Map([
+    [
+      ParticipationStatus.Pending,
+      {
+        title: t('game.participation.status.pending'),
+        color: 'yellow',
+        iconPath: mdiHelpCircleOutline,
+        transformTo: [ParticipationStatus.Accepted, ParticipationStatus.Rejected],
+      },
+    ],
+    [
+      ParticipationStatus.Accepted,
+      {
+        title: t('game.participation.status.accepted'),
+        color: 'green',
+        iconPath: mdiCheck,
+        transformTo: [ParticipationStatus.Suspended],
+      },
+    ],
+    [
+      ParticipationStatus.Rejected,
+      {
+        title: t('game.participation.status.rejected'),
+        color: 'red',
+        iconPath: mdiClose,
+        transformTo: [],
+      },
+    ],
+    [
+      ParticipationStatus.Suspended,
+      {
+        title: t('game.participation.status.suspended'),
+        color: 'alert',
+        iconPath: mdiCancel,
+        transformTo: [ParticipationStatus.Accepted],
+      },
+    ],
+  ])
+}
 
 export interface BonusLabel {
   name: string
-  desrc: string
+  descr: string
 }
-
-const BonusLabelNameMap = new Map([
-  [SubmissionType.FirstBlood, '一血'],
-  [SubmissionType.SecondBlood, '二血'],
-  [SubmissionType.ThirdBlood, '三血'],
-])
 
 export class BloodBonus {
   static default = new BloodBonus()
-  private static mask = 0x3ff
-  private static base = 1000
+  static base = 1000
+  static mask = 0x3ff
   private val: number = (50 << 20) + (30 << 10) + 10
 
   constructor(val?: number) {
@@ -281,21 +363,29 @@ export class BloodBonus {
 
     return num / BloodBonus.base
   }
+}
 
-  getBonusLabels() {
-    return new Map(
-      BloodsTypes.map((type) => {
-        const bonus = this.getBonusNum(type)
-        return [
-          type,
-          {
-            name: BonusLabelNameMap.get(type),
-            desrc: `+${bonus / (BloodBonus.base / 100)}%`,
-          } as BonusLabel,
-        ]
-      })
-    )
-  }
+export const useBonusLabels = (bonus: BloodBonus) => {
+  const { t } = useTranslation()
+
+  const BonusLabelNameMap = new Map([
+    [SubmissionType.FirstBlood, t('challenge.bonus.first_blood')],
+    [SubmissionType.SecondBlood, t('challenge.bonus.second_blood')],
+    [SubmissionType.ThirdBlood, t('challenge.bonus.third_blood')],
+  ])
+
+  return new Map(
+    BloodsTypes.map((type) => {
+      const bonus_value = bonus.getBonusNum(type)
+      return [
+        type,
+        {
+          name: BonusLabelNameMap.get(type),
+          descr: `+${bonus_value / (BloodBonus.base / 100)}%`,
+        } as BonusLabel,
+      ]
+    })
+  )
 }
 
 export const TaskStatusColorMap = new Map<TaskStatus | null, string>([

@@ -1,6 +1,7 @@
 import { Badge, createStyles, Group, Paper, Stack, Title } from '@mantine/core'
 import dayjs from 'dayjs'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
@@ -30,6 +31,8 @@ const useStyles = createStyles((theme) => ({
 const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
   const { classes } = useStyles()
 
+  const { t } = useTranslation()
+
   const { title, poster } = game
 
   const { startTime, endTime, status } = getGameStatus(game)
@@ -53,10 +56,16 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       <Stack h="100%" spacing={2} justify="space-between">
         <Group spacing={4}>
           <Badge size="sm" variant="filled">
-            {game?.limit === 0 ? '多' : game?.limit === 1 ? '个' : game?.limit}人赛
+            {game.limit === 0
+              ? t('game.tag.mutiplayer')
+              : game.limit === 1
+                ? t('game.tag.individual')
+                : t('game.tag.limited', { count: game.limit })}
           </Badge>
           <Badge size="sm" variant="filled" color={color}>
-            {`${status === GameStatus.OnGoing ? '剩余' : '共'} ${duration} 小时`}
+            {status === GameStatus.OnGoing
+              ? t('game.content.remaining_duration', { hours: duration })
+              : t('game.content.total_duration', { hours: duration })}
           </Badge>
         </Group>
         <Title pb={10} order={3} lineClamp={1} className={classes.title}>

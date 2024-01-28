@@ -3,6 +3,7 @@ import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import MarkdownRender from '@Components/MarkdownRender'
 import { PostCardProps } from '@Components/PostCard'
@@ -15,13 +16,15 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const { role } = useUserRole()
   const [disabled, setDisabled] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <Card shadow="sm" p="sm">
       <Stack spacing="xs">
         <Box onClick={() => navigate(`/posts/${post.id}`)}>
           <Title order={3} pb={4}>
             <Text span c="brand">
-              {post.isPinned ? '[置顶] ' : '>>> '}
+              {post.isPinned ? `${t('post.content.pinned')} ` : '>>> '}
             </Text>
             {post.title}
           </Title>
@@ -59,7 +62,10 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             {post.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text fw={500} size="sm">
-            {post.authorName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
+            {t('post.content.metadata', {
+              author: post.authorName ?? 'Anonym',
+              date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
+            })}
           </Text>
         </Group>
       </Stack>

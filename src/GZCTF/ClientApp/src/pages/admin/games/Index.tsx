@@ -21,12 +21,12 @@ import {
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { GameColorMap } from '@Components/GameCard'
 import AdminPage from '@Components/admin/AdminPage'
 import GameCreateModal from '@Components/admin/GameCreateModal'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { getGameStatus } from '@Utils/useGame'
@@ -85,11 +85,19 @@ const Games: FC = () => {
       head={
         <>
           <Button leftIcon={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
-            新建比赛
+            {t('admin.button.games.new')}
           </Button>
           <Group w="calc(100% - 9rem)" position="right">
             <Text fw="bold" size="sm">
-              已显示 <Code>{current}</Code> / <Code>{total}</Code> 比赛
+              <Trans
+                i18nKey="admin.content.games.stats"
+                values={{
+                  current,
+                  total,
+                }}
+              >
+                _<Code>_</Code>_
+              </Trans>
             </Text>
             <ActionIcon size="lg" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
@@ -113,10 +121,10 @@ const Games: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th>公开</th>
-                <th>比赛</th>
-                <th>比赛时间</th>
-                <th>简介</th>
+                <th>{t('admin.label.games.public')}</th>
+                <th>{t('common.label.game')}</th>
+                <th>{t('common.label.time')}</th>
+                <th>{t('admin.label.games.summary')}</th>
                 <th />
               </tr>
             </thead>

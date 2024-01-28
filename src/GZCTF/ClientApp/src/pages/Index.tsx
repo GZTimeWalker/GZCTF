@@ -2,6 +2,7 @@ import { createStyles, Group, Stack, Title } from '@mantine/core'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import MobilePostCard from '@Components/MobilePostCard'
 import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
@@ -9,7 +10,6 @@ import RecentGameCarousel from '@Components/RecentGameCarousel'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { Trans, useTranslation } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { PostInfoModel } from '@Api'
@@ -121,7 +121,7 @@ const Home: FC = () => {
                   <Group>
                     <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
                     <Title order={3}>
-                      <Trans i18nKey={'Game_Recent'}></Trans>
+                      <Trans i18nKey="common.content.home.recent_games" />
                     </Title>
                   </Group>
                   {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}

@@ -1,6 +1,7 @@
 import { useMantineTheme } from '@mantine/core'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface ScoreFuncProps {
   originalScore: number
@@ -28,6 +29,8 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
   const theme = useMantineTheme()
   const plotData = [...Array(100).keys()].map((x) => [toX(x), func(toX(x))])
 
+  const { t } = useTranslation()
+
   return (
     <ReactEcharts
       theme={theme.colorScheme}
@@ -42,10 +45,10 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
           backgroundColor: 'transparent',
         },
         xAxis: {
-          name: '解出次数',
+          name: t('admin.content.games.challenges.solve_count'),
         },
         yAxis: {
-          name: '题目分值',
+          name: t('admin.content.games.challenges.score'),
           min: 0,
           max: Math.ceil((originalScore * 1.2) / 100) * 100,
         },

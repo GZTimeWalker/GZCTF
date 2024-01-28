@@ -9,6 +9,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import LogoHeader from '@Components/LogoHeader'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -39,6 +40,8 @@ const AppHeader: FC = () => {
   const logout = useLoginOut()
   const isMobile = useIsMobile()
 
+  const { t } = useTranslation()
+
   return (
     <Header fixed hidden={!isMobile} height={isMobile ? 60 : 0} className={headerClasses.header}>
       <Group h="100%" p="0 1rem" position="apart" noWrap>
@@ -55,20 +58,20 @@ const AppHeader: FC = () => {
                   to="/teams"
                   icon={<Icon path={mdiAccountGroupOutline} size={1} />}
                 >
-                  队伍管理
+                  {t('common.tab.team')}
                 </Menu.Item>
                 <Menu.Item
                   component={Link}
                   to="/account/profile"
                   icon={<Icon path={mdiAccountCircleOutline} size={1} />}
                 >
-                  用户信息
+                  {t('common.tab.account.profile')}
                 </Menu.Item>
                 <Menu.Item onClick={clearLocalCache} icon={<Icon path={mdiCached} size={1} />}>
-                  清除缓存
+                  {t('common.tab.account.clean_cache')}
                 </Menu.Item>
                 <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
-                  登出
+                  {t('common.tab.account.logout')}
                 </Menu.Item>
               </>
             ) : (
@@ -77,7 +80,7 @@ const AppHeader: FC = () => {
                 to={`/account/login?from=${location.pathname}`}
                 icon={<Icon path={mdiAccountCircleOutline} size={1} />}
               >
-                登录
+                t('common.tab.account.login')
               </Menu.Item>
             )}
             <Menu.Divider />
@@ -91,7 +94,10 @@ const AppHeader: FC = () => {
               }
               onClick={() => toggleColorScheme()}
             >
-              {'切换至' + (colorScheme === 'dark' ? '浅色' : '深色') + '主题'}
+              {t('common.tab.theme.switch_to', {
+                theme:
+                  colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
+              })}
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

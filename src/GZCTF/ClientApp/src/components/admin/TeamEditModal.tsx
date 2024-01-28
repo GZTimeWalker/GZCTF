@@ -17,8 +17,8 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiLockOutline, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import api, { AdminTeamModel, TeamInfoModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
@@ -48,7 +48,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '队伍信息已更新',
+          message: t('team.notification.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutateTeam({
@@ -74,7 +74,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             <TextInput
               label={
                 <Group position="left" spacing="xs">
-                  <Text size="sm">队伍名称</Text>
+                  <Text size="sm">{t('team.label.name')}</Text>
                 </Group>
               }
               type="text"
@@ -94,8 +94,8 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         </Grid>
 
         <Textarea
-          label="队伍签名"
-          value={teamInfo.bio ?? ''}
+          label={t('team.label.bio')}
+          value={teamInfo.bio ?? t('team.placeholder.bio')}
           w="100%"
           disabled={disabled}
           autosize
@@ -105,7 +105,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         />
 
         <Group position="left">
-          <Text size="sm">队员列表</Text>
+          <Text size="sm">{t('team.label.members')}</Text>
           {team.locked && <Icon path={mdiLockOutline} size={0.8} color={theme.colors.yellow[6]} />}
         </Group>
         <ScrollArea h={165} offsetScrollbars>
@@ -131,7 +131,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onChangeTeamInfo}>
-            保存信息
+            {t('admin.button.save')}
           </Button>
         </Group>
       </Stack>

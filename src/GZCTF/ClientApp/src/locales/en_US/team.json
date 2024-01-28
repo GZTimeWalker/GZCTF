@@ -1,0 +1,93 @@
+{
+  "title": {
+    "index": "Team management"
+  },
+  "label": {
+    "bio": "Team Bio",
+    "name": "Team Name",
+    "kick": "Kick Team",
+    "members": "Team members",
+    "transfer": "Transfer Teams",
+    "invite_code": "Invitation Code",
+    "role": "National Police"
+  },
+  "button": {
+    "join": "Join Team",
+    "edit": "Team Details",
+    "save": "Update Info",
+    "leave": "Quit Team",
+    "create": "Create Team",
+    "disband": "Dissolve Team"
+  },
+  "content": {
+    "join": "Please get the team invitation code from the team creator, enter the invitation code to join the team.",
+    "role": {
+      "captain": "Captain",
+      "member": "Crew"
+    },
+    "kick": {
+      "confirm": {
+        "title": "Confirm Kick User",
+        "message": "Are you sure you want to kick out team member \"{{user}}\"?"
+      }
+    },
+    "leave": {
+      "confirm": {
+        "title": "Confirm Quit",
+        "message": "Are you sure you want to leave the team \"{{team}}\"?"
+      }
+    },
+    "create": "Create a team and you can organize a team and invite others to join. Everyone can only have one team.",
+    "disband": {
+      "confirm": {
+        "title": "Confirm Dissolve Team",
+        "message": "Are you sure you want to disband team \"{{team}}\"?"
+      }
+    },
+    "transfer": {
+      "confirm": {
+        "title": "Confirmation of transfer teams",
+        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?"
+      }
+    },
+    "no_create": {
+      "title": "You have created a team",
+      "content": "Everyone can only have one team<br/>you can delete the team and recreate it"
+    }
+  },
+  "placeholder": {
+    "bio": "This team is lazy, nothing written"
+  },
+  "notification": {
+    "join": {
+      "success": "Successfully joined team",
+      "wrong_invite_code": "Incorrect team invitation code"
+    },
+    "kick": {
+      "success": "Kick member successful"
+    },
+    "leave": {
+      "success": "Quit team successfully"
+    },
+    "create": {
+      "success": {
+        "title": "Team created",
+        "message": "{{team}} has been created, invite your teammates now!"
+      }
+    },
+    "updated": "Team information updated",
+    "token": {
+      "copied": "Team token copied to clipboard"
+    },
+    "disband": {
+      "success": "Teams successfully dissolved."
+    },
+    "transfer": {
+      "success": "Transfer team successful"
+    },
+    "invite_code": {
+      "copied": "Invitation code copied to clipboard",
+      "updated": "Team Invitation Code updated"
+    }
+  }
+}

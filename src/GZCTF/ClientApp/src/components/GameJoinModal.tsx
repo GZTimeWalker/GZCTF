@@ -3,6 +3,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useGame } from '@Utils/useGame'
 import { useTeams } from '@Utils/useUser'
@@ -24,6 +25,8 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const [team, setTeam] = useState('')
   const [disabled, setDisabled] = useState(false)
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (teams && teams.length === 1) {
       setTeam(teams[0].id!.toString())
@@ -36,7 +39,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     if (!team) {
       showNotification({
         color: 'orange',
-        message: '请选择参赛队伍',
+        message: t('game.notification.no_team'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       setDisabled(false)
@@ -46,7 +49,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     if (game?.inviteCodeRequired && !inviteCode) {
       showNotification({
         color: 'orange',
-        message: '邀请码不能为空',
+        message: t('game.notification.no_invite_code'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       setDisabled(false)
@@ -56,7 +59,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     if (game?.organizations && game.organizations.length > 0 && !organization) {
       showNotification({
         color: 'orange',
-        message: '请选择参赛组织',
+        message: t('game.notification.no_organization'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       setDisabled(false)
@@ -81,8 +84,8 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
         <Select
           required
           withinPortal
-          label="选择你的参赛队伍"
-          description="请选择一个队伍参与比赛，选定后不可更改"
+          label={t('game.content.join.team.label')}
+          description={t('game.content.join.team.description')}
           data={teams?.map((t) => ({ label: t.name!, value: t.id!.toString() })) ?? []}
           disabled={disabled}
           value={team}
@@ -91,8 +94,8 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
         {game?.inviteCodeRequired && (
           <TextInput
             required
-            label="请输入邀请码"
-            description="本场比赛开启了邀请参赛，报名参赛需提供邀请码"
+            label={t('game.content.join.invite_code.label')}
+            description={t('game.content.join.invite_code.description')}
             value={inviteCode}
             onChange={(e) => setInviteCode(e.target.value)}
             disabled={disabled}
@@ -102,8 +105,8 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
           <Select
             required
             withinPortal
-            label="选择你的参赛组织"
-            description="本场比赛具有多个参赛组织，请选择你的参赛组织"
+            label={t('game.content.join.organization.label')}
+            description={t('game.content.join.organization.description')}
             data={game.organizations}
             disabled={disabled}
             value={organization}
@@ -111,7 +114,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
           />
         )}
         <Button disabled={disabled} onClick={onJoinGame}>
-          报名参赛
+          {t('game.button.join')}
         </Button>
       </Stack>
     </Modal>

@@ -32,11 +32,11 @@ import {
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
@@ -72,7 +72,7 @@ const GameInfoEdit: FC = () => {
     if (numId < 0) {
       showNotification({
         color: 'red',
-        message: `比赛 Id 错误：${id}`,
+        message: t('common.error.param_error'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       navigate('/admin/games')
@@ -98,7 +98,7 @@ const GameInfoEdit: FC = () => {
     showNotification({
       id: 'upload-poster',
       color: 'orange',
-      message: '正在上传海报',
+      message: t('admin.notification.games.info.poster.uploading'),
       loading: true,
       autoClose: false,
     })
@@ -109,7 +109,7 @@ const GameInfoEdit: FC = () => {
         updateNotification({
           id: 'upload-poster',
           color: 'teal',
-          message: '比赛海报已更新',
+          message: t('admin.notification.games.info.poster.uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
         })
@@ -119,7 +119,7 @@ const GameInfoEdit: FC = () => {
         updateNotification({
           id: 'upload-poster',
           color: 'red',
-          title: '比赛海报更新失败',
+          title: t('admin.notification.games.info.poster.upload_failed'),
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
@@ -145,7 +145,7 @@ const GameInfoEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '比赛信息已更新',
+          message: t('admin.notification.games.info.info_updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutate()
@@ -164,7 +164,7 @@ const GameInfoEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '比赛已删除',
+          message: t('admin.notification.games.info.deleted'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         navigate('/admin/games')
@@ -176,7 +176,7 @@ const GameInfoEdit: FC = () => {
     clipboard.copy(game?.publicKey || '')
     showNotification({
       color: 'teal',
-      message: '公钥已复制到剪贴板',
+      message: t('admin.notification.games.info.public_key_copied'),
       icon: <Icon path={mdiCheck} size={1} />,
     })
   }
@@ -191,7 +191,7 @@ const GameInfoEdit: FC = () => {
             leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate('/admin/games')}
           >
-            返回上级
+            {t('admin.button.back')}
           </Button>
           <Group position="right">
             <Button
@@ -201,29 +201,32 @@ const GameInfoEdit: FC = () => {
               variant="outline"
               onClick={() =>
                 modals.openConfirmModal({
-                  title: `删除比赛`,
-                  children: <Text size="sm">你确定要删除比赛 "{game?.title}" 吗？</Text>,
+                  title: t('admin.button.games.delete'),
+                  children: (
+                    <Text size="sm">
+                      {t('admin.content.games.info.delete', { name: game?.title })}
+                    </Text>
+                  ),
                   onConfirm: () => onConfirmDelete(),
-
                   confirmProps: { color: 'red' },
                 })
               }
             >
-              删除比赛
+              {t('admin.button.games.delete')}
             </Button>
             <Button
               leftIcon={<Icon path={mdiClipboard} size={1} />}
               disabled={disabled}
               onClick={onCopyPublicKey}
             >
-              复制公钥
+              {t('admin.button.games.copy_public_key')}
             </Button>
             <Button
               leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
               disabled={disabled}
               onClick={onUpdateInfo}
             >
-              保存更改
+              {t('admin.button.save')}
             </Button>
           </Group>
         </>
@@ -231,16 +234,16 @@ const GameInfoEdit: FC = () => {
     >
       <SimpleGrid cols={4}>
         <TextInput
-          label="比赛标题"
-          description="过长会影响显示效果"
+          label={t('admin.content.games.info.title.label')}
+          description={t('admin.content.games.info.title.description')}
           disabled={disabled}
           value={game?.title}
           required
           onChange={(e) => game && setGame({ ...game, title: e.target.value })}
         />
         <NumberInput
-          label="队伍人数限制"
-          description="0 表示不限制队伍人数"
+          label={t('admin.content.games.info.member_limit.label')}
+          description={t('admin.content.games.info.member_limit.description')}
           disabled={disabled}
           min={0}
           required
@@ -248,8 +251,8 @@ const GameInfoEdit: FC = () => {
           onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: Number(e) })}
         />
         <NumberInput
-          label="队伍容器数量上限"
-          description="队伍共享的容器数量 (0 表示不限制)"
+          label={t('admin.content.games.info.container_limit.label')}
+          description={t('admin.content.games.info.container_limit.description')}
           disabled={disabled}
           min={0}
           required
@@ -258,8 +261,8 @@ const GameInfoEdit: FC = () => {
         />
 
         <TextInput
-          label="邀请码"
-          description="留空则不启用邀请码报名"
+          label={t('admin.content.games.info.invite_code.label')}
+          description={t('admin.content.games.info.invite_code.description')}
           value={game?.inviteCode || ''}
           disabled={disabled}
           onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
@@ -272,7 +275,7 @@ const GameInfoEdit: FC = () => {
           }
         />
         <DatePickerInput
-          label="开始日期"
+          label={t('admin.content.games.info.start_date')}
           value={start.toDate()}
           disabled={disabled}
           clearable={false}
@@ -289,7 +292,7 @@ const GameInfoEdit: FC = () => {
           required
         />
         <TimeInput
-          label="开始时间"
+          label={t('admin.content.games.info.start_time')}
           disabled={disabled}
           value={start.format('HH:mm:ss')}
           onChange={(e) => {
@@ -308,7 +311,7 @@ const GameInfoEdit: FC = () => {
           required
         />
         <DatePickerInput
-          label="结束日期"
+          label={t('admin.content.games.info.end_date')}
           disabled={disabled}
           minDate={start.toDate()}
           value={end.toDate()}
@@ -321,7 +324,7 @@ const GameInfoEdit: FC = () => {
           required
         />
         <TimeInput
-          label="结束时间"
+          label={t('admin.content.games.info.end_time')}
           disabled={disabled}
           value={end.format('HH:mm:ss')}
           onChange={(e) => {
@@ -341,8 +344,8 @@ const GameInfoEdit: FC = () => {
       <Grid>
         <Grid.Col span={6}>
           <Textarea
-            label="比赛简介"
-            description="将会显示在比赛列表中"
+            label={t('admin.content.games.info.summary.label')}
+            description={t('admin.content.games.info.summary.description')}
             value={game?.summary}
             w="100%"
             autosize
@@ -353,17 +356,24 @@ const GameInfoEdit: FC = () => {
           />
         </Grid.Col>
         <Grid.Col span={3}>
-          <Stack spacing="xs">
+          <Stack spacing="xs" h="100%" justify="space-between">
             <Switch
+              pt="1.5em"
               disabled={disabled}
               checked={game?.writeupRequired ?? false}
-              label={SwitchLabel('需要 Writeup', '是否启用比赛的 Writeup 提交功能')}
+              label={SwitchLabel(
+                t('admin.content.games.info.writeup_required.label'),
+                t('admin.content.games.info.writeup_required.description')
+              )}
               onChange={(e) => game && setGame({ ...game, writeupRequired: e.target.checked })}
             />
             <Switch
               disabled={disabled}
               checked={game?.acceptWithoutReview ?? false}
-              label={SwitchLabel('队伍报名免审核', '队伍报名后直接设置为 Accept 状态')}
+              label={SwitchLabel(
+                t('admin.content.games.info.accept_without_review.label'),
+                t('admin.content.games.info.accept_without_review.description')
+              )}
               onChange={(e) => game && setGame({ ...game, acceptWithoutReview: e.target.checked })}
             />
           </Stack>
@@ -371,8 +381,8 @@ const GameInfoEdit: FC = () => {
         <Grid.Col span={3}>
           <Stack spacing="xs">
             <NumberInput
-              label="Writeup 提交时限"
-              description="比赛结束后允许提交 Writeup 的小时数"
+              label={t('admin.content.games.info.writeup_deadline.label')}
+              description={t('admin.content.games.info.writeup_deadline.description')}
               disabled={disabled}
               min={0}
               required
@@ -382,7 +392,10 @@ const GameInfoEdit: FC = () => {
             <Switch
               disabled={disabled}
               checked={game?.practiceMode ?? true}
-              label={SwitchLabel('练习模式', '比赛结束后仍然可以查看题目和提交')}
+              label={SwitchLabel(
+                t('admin.content.games.info.practice_mode.label'),
+                t('admin.content.games.info.practice_mode.description')
+              )}
               onChange={(e) => game && setGame({ ...game, practiceMode: e.target.checked })}
             />
           </Stack>
@@ -392,9 +405,9 @@ const GameInfoEdit: FC = () => {
         <Textarea
           label={
             <Group spacing="sm">
-              <Text size="sm">Writeup 附加说明</Text>
+              <Text size="sm">{t('admin.content.games.info.writeup_instruction')}</Text>
               <Text size="xs" c="dimmed">
-                支持 Markdown 语法
+                {t('admin.content.markdown_support')}
               </Text>
             </Group>
           }
@@ -409,16 +422,16 @@ const GameInfoEdit: FC = () => {
         <MultiSelect
           label={
             <Group spacing="sm">
-              <Text size="sm">参赛可选组织列表</Text>
+              <Text size="sm"> {t('admin.content.games.info.organizations.label')}</Text>
               <Text size="xs" c="dimmed">
-                添加参赛组织以开启分组榜单
+                {t('admin.content.games.info.organizations.description')}
               </Text>
             </Group>
           }
           searchable
           creatable
           disabled={disabled}
-          placeholder="无指定可选参赛组织，将允许无组织队伍参赛"
+          placeholder={t('admin.placeholder.games.organizations')}
           maxDropdownHeight={300}
           value={game?.organizations ?? []}
           styles={{
@@ -429,7 +442,9 @@ const GameInfoEdit: FC = () => {
           }}
           onChange={(e) => game && setGame({ ...game, organizations: e })}
           data={organizations.map((o) => ({ value: o, label: o })) || []}
-          getCreateLabel={(query) => `+ 添加组织 "${query}"`}
+          getCreateLabel={(query) =>
+            t('admin.content.games.info.organizations.add', { org: query })
+          }
           onCreate={(query) => {
             const item = { value: query, label: query }
             setOrganizations([...organizations, query])
@@ -442,9 +457,9 @@ const GameInfoEdit: FC = () => {
           <Textarea
             label={
               <Group spacing="sm">
-                <Text size="sm">比赛详情</Text>
+                <Text size="sm">{t('admin.content.games.info.content')}</Text>
                 <Text size="xs" c="dimmed">
-                  支持 Markdown 语法
+                  {t('admin.content.markdown_support')}
                 </Text>
               </Group>
             }
@@ -458,14 +473,14 @@ const GameInfoEdit: FC = () => {
           />
         </Grid.Col>
         <Grid.Col span={4}>
-          <Input.Wrapper label="比赛海报">
+          <Input.Wrapper label={t('admin.content.games.info.poster')}>
             <Dropzone
               onDrop={(files) => onUpdatePoster(files[0])}
               onReject={() => {
                 showNotification({
                   color: 'red',
-                  title: '文件获取失败',
-                  message: '请检查文件格式和大小',
+                  title: t('common.error.file_invalid.title'),
+                  message: t('common.error.file_invalid.message'),
                   icon: <Icon path={mdiClose} size={1} />,
                 })
               }}
@@ -486,10 +501,12 @@ const GameInfoEdit: FC = () => {
                   <Center h="160px">
                     <Stack spacing={0}>
                       <Text size="xl" inline>
-                        拖放图片或点击此处以选择海报
+                        {t('common.content.drop_zone.content', {
+                          type: t('common.content.drop_zone.type.poster'),
+                        })}
                       </Text>
                       <Text size="sm" c="dimmed" inline mt={7}>
-                        请选择小于 3MB 的图片
+                        {t('common.content.drop_zone.limit')}
                       </Text>
                     </Stack>
                   </Center>

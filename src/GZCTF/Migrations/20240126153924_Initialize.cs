@@ -638,8 +638,8 @@ namespace GZCTF.Migrations
                     Flag = table.Column<string>(type: "text", nullable: false),
                     IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
                     AttachmentId = table.Column<int>(type: "integer", nullable: true),
-                    ChallengeId = table.Column<int>(type: "integer", nullable: false),
-                    ExerciseId = table.Column<int>(type: "integer", nullable: false)
+                    ChallengeId = table.Column<int>(type: "integer", nullable: true),
+                    ExerciseId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -654,14 +654,12 @@ namespace GZCTF.Migrations
                         name: "FK_FlagContexts_ExerciseChallenges_ExerciseId",
                         column: x => x.ExerciseId,
                         principalTable: "ExerciseChallenges",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_FlagContexts_GameChallenges_ChallengeId",
                         column: x => x.ChallengeId,
                         principalTable: "GameChallenges",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

@@ -4,14 +4,14 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import {
   ChallengeTagItem,
-  ChallengeTagLabelMap,
+  useChallengeTagLabelMap,
   ChallengeTypeItem,
-  ChallengeTypeLabelMap,
+  useChallengeTypeLabelMap,
 } from '@Utils/Shared'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
 
@@ -24,6 +24,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { onAddChallenge, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeTypeLabelMap = useChallengeTypeLabelMap()
 
   const [title, setTitle] = useInputState('')
   const [tag, setTag] = useState<string | null>(null)
@@ -46,7 +48,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
       .then((data) => {
         showNotification({
           color: 'teal',
-          message: '比赛题目已添加',
+          message: t('admin.notification.games.challenges.created'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         onAddChallenge(data.data)
@@ -62,7 +64,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
     <Modal {...modalProps}>
       <Stack>
         <TextInput
-          label="题目标题"
+          label={t('admin.content.games.challenges.title')}
           type="text"
           required
           placeholder="Title"
@@ -71,33 +73,33 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
         />
         <Select
           required
-          label="题目类型"
-          description="创建后不可更改"
+          label={t('admin.content.games.challenges.type.label')}
+          description={t('admin.content.games.challenges.type.description')}
           placeholder="Type"
           value={type}
           onChange={setType}
           itemComponent={ChallengeTypeItem}
           withinPortal
           data={Object.entries(ChallengeType).map((type) => {
-            const data = ChallengeTypeLabelMap.get(type[1])
+            const data = challengeTypeLabelMap.get(type[1])
             return { value: type[1], ...data }
           })}
         />
         <Select
           required
-          label="题目标签"
+          label={t('admin.content.games.challenges.tag')}
           placeholder="Tag"
           value={tag}
           onChange={setTag}
           itemComponent={ChallengeTagItem}
           withinPortal
           data={Object.entries(ChallengeTag).map((tag) => {
-            const data = ChallengeTagLabelMap.get(tag[1])
+            const data = challengeTagLabelMap.get(tag[1])
             return { value: tag[1], ...data }
           })}
         />
         <Button fullWidth disabled={disabled} onClick={onCreate}>
-          创建题目
+          {t('admin.button.challenges.new')}
         </Button>
       </Stack>
     </Modal>

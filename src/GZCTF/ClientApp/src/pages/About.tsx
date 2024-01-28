@@ -13,7 +13,7 @@ const About: FC = () => {
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
   const { t } = useTranslation()
 
-  usePageTitle(t('About'))
+  usePageTitle(t('common.title.about'))
 
   return (
     <WithNavBar>
@@ -23,7 +23,7 @@ const About: FC = () => {
             GZ::CTF
           </Title>
           <Text className={classes.bio}>
-            &gt; {config?.slogan ?? 'Hack for fun not for profit'}
+            &gt; {config?.slogan ?? t('common.content.about.slogan')}
             <Text span className={classes.blink}>
               _
             </Text>

@@ -16,9 +16,16 @@ import {
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ScoreboardItemModal from '@Components/ScoreboardItemModal'
-import { BloodBonus, BloodsTypes, ChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
+import {
+  BloodBonus,
+  BloodsTypes,
+  useChallengeTagLabelMap,
+  SubmissionTypeIconMap,
+  useBonusLabels,
+} from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
@@ -63,7 +70,7 @@ export const useScoreboardStyles = createStyles((theme) => ({
   },
 }))
 
-const Lefts = [0, 55, 95, 275, 345, 400]
+const Lefts = [0, 55, 110, 280, 350, 410]
 const Widths = Array(5).fill(0)
 Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
@@ -71,6 +78,9 @@ Lefts.forEach((val, idx) => {
 
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const { classes, cx, theme } = useScoreboardStyles()
+
+  const { t } = useTranslation()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const hiddenCol = [...Array(5).keys()].map((i) => (
     <th
@@ -88,7 +98,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       <tr>
         {hiddenCol}
         {Object.keys(table).map((key) => {
-          const tag = ChallengeTagLabelMap.get(key as ChallengeTag)!
+          const tag = challengeTagLabelMap.get(key as ChallengeTag)!
           return (
             <th
               key={key}
@@ -121,7 +131,13 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       </tr>
       {/* Headers & Score */}
       <tr>
-        {['总排名', '排名', '战队', '解题数量', '总分'].map((header, idx) => (
+        {[
+          t('game.label.score_table.rank_total'),
+          t('game.label.score_table.rank_organization'),
+          t('common.label.team'),
+          t('game.label.score_table.solved_count'),
+          t('game.label.score_table.score_total'),
+        ].map((header, idx) => (
           <th
             key={idx}
             className={cx(classes.theadFixLeft, classes.theadHeader)}
@@ -152,7 +168,9 @@ const TableRow: FC<{
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
   const { classes, cx, theme } = useScoreboardStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
+
   return (
     <tr>
       <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
@@ -212,7 +230,7 @@ const TableRow: FC<{
 
             if (!icon) return <td key={item.id} className={classes.theadMono} />
 
-            const tag = ChallengeTagLabelMap.get(item.tag as ChallengeTag)!
+            const tag = challengeTagLabelMap.get(item.tag as ChallengeTag)!
             const textStyle = {
               fontSize: '0.9em',
               fontFamily: theme.fontFamilyMonospace,
@@ -274,13 +292,15 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (scoreboard) {
       setBloodBonus(new BloodBonus(scoreboard.bloodBonus))
     }
   }, [scoreboard])
 
-  const BloodData = bloodBonus.getBonusLabels()
+  const bloodData = useBonusLabels(bloodBonus)
 
   return (
     <Paper shadow="md" p="md">
@@ -290,12 +310,12 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
             <Select
               defaultValue="all"
               data={[
-                { value: 'all', label: '总排行' },
+                { value: 'all', label: t('game.label.score_table.rank_total') },
                 ...Object.keys(scoreboard.timeLines)
                   .filter((k) => k !== 'all')
                   .map((o) => ({
                     value: o,
-                    label: o === 'all' ? '总排行' : o,
+                    label: o === 'all' ? t('game.label.score_table.rank_total') : o,
                   })),
               ]}
               value={organization}
@@ -349,22 +369,22 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                 {BloodsTypes.map((type, idx) => (
                   <Group key={idx} position="left" spacing={2}>
                     {iconMap.get(type)}
-                    <Text size="sm">{BloodData.get(type)?.name}</Text>
+                    <Text size="sm">{bloodData.get(type)?.name}</Text>
                     <Text size="xs" c="dimmed">
-                      {BloodData.get(type)?.desrc}
+                      {bloodData.get(type)?.descr}
                     </Text>
                   </Group>
                 ))}
               </Group>
               <Text size="sm" c="dimmed">
-                注：同分队伍以得分时间先后排名
+                {t('game.content.scoreboard_note')}
               </Text>
             </Stack>
           </Box>
         </Box>
         <Group position="apart">
           <Text size="sm" c="dimmed">
-            Tip: 可以按左右方向键滚动题目列表哦~
+            {t('game.content.scoreboard_tip')}
           </Text>
 
           <Pagination
@@ -378,7 +398,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
       </Stack>
       <ScoreboardItemModal
         challenges={scoreboard?.challenges}
-        bloodBonusMap={BloodData}
+        bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}
         size="45rem"

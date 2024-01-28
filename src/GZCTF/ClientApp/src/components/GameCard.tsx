@@ -13,6 +13,7 @@ import {
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
@@ -35,6 +36,8 @@ interface GameCardProps {
 
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
+
+  const { t } = useTranslation()
 
   const { summary, title, poster, limit } = game
   const { startTime, endTime, status } = getGameStatus(game)
@@ -69,10 +72,16 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
               <Stack spacing={2}>
                 <Group noWrap spacing="xs">
                   <Badge size="xs" color={color}>
-                    {limit === 0 ? '多' : limit === 1 ? '个' : limit}人赛
+                    {limit === 0
+                      ? t('game.tag.mutiplayer')
+                      : limit === 1
+                        ? t('game.tag.individual')
+                        : t('game.tag.limited', { count: limit })}
                   </Badge>
                   <Badge size="xs" color={color}>
-                    {`${duration} 小时`}
+                    {t('game.content.duration', {
+                      hours: duration,
+                    })}
                   </Badge>
                 </Group>
                 <Title order={2} align="left">

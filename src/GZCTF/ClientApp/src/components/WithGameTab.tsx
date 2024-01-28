@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CustomProgress from '@Components/CustomProgress'
 import IconTabs from '@Components/IconTabs'
@@ -14,42 +15,14 @@ import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
 
-const pages = [
-  {
-    icon: mdiFlagOutline,
-    title: '比赛题目',
-    path: 'challenges',
-    link: 'challenges',
-    color: 'blue',
-    requireJoin: true,
-    requireRole: Role.User,
-  },
-  {
-    icon: mdiChartLine,
-    title: '积分总榜',
-    path: 'scoreboard',
-    link: 'scoreboard',
-    color: 'yellow',
-    requireJoin: false,
-    requireRole: Role.User,
-  },
-  {
-    icon: mdiMonitorEye,
-    title: '比赛监控',
-    path: 'monitor',
-    link: 'monitor/events',
-    color: 'green',
-    requireJoin: false,
-    requireRole: Role.Monitor,
-  },
-]
-
 dayjs.extend(duration)
 
 const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   const { endTime, progress } = getGameStatus(game)
 
   const [now, setNow] = useState(dayjs())
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (!game || dayjs() > dayjs(game.end)) return
@@ -70,10 +43,10 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
     >
       <Text fw={700} lineClamp={1}>
         {countdown.asHours() > 999
-          ? '比赛还会很久'
+          ? t('game.content.game_lasts_long')
           : countdown.asSeconds() > 0
             ? `${Math.floor(countdown.asHours())} : ${countdown.format('mm : ss')}`
-            : '比赛已结束'}
+            : t('game.content.game_ended')}
       </Text>
       <Card.Section mt={4}>
         <CustomProgress percentage={progress} py={0} />
@@ -91,8 +64,40 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const theme = useMantineTheme()
   const { role } = useUserRole()
   const { game, status } = useGame(numId)
+  const { t } = useTranslation()
 
   const finished = dayjs() > dayjs(game?.end ?? new Date())
+
+  const pages = [
+    {
+      icon: mdiFlagOutline,
+      title: t('game.tab.challenge'),
+      path: 'challenges',
+      link: 'challenges',
+      color: 'blue',
+      requireJoin: true,
+      requireRole: Role.User,
+    },
+    {
+      icon: mdiChartLine,
+      title: t('game.tab.scoreboard'),
+      path: 'scoreboard',
+      link: 'scoreboard',
+      color: 'yellow',
+      requireJoin: false,
+      requireRole: Role.User,
+    },
+    {
+      icon: mdiMonitorEye,
+      title: t('game.tab.monitor.index'),
+      path: 'monitor',
+      link: 'monitor/events',
+      color: 'green',
+      requireJoin: false,
+      requireRole: Role.Monitor,
+    },
+  ]
+
   const filteredPages = pages
     .filter((p) => RequireRole(p.requireRole, role))
     .filter((p) => !p.requireJoin || game?.status === ParticipationStatus.Accepted)
@@ -130,7 +135,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         showNotification({
           id: 'no-access',
           color: 'yellow',
-          message: '比赛尚未开始',
+          message: t('game.notification.not_started'),
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       } else if (
@@ -142,7 +147,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         showNotification({
           id: 'no-access',
           color: 'yellow',
-          message: '您已被禁赛',
+          message: t('game.notification.suspended'),
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       } else if (
@@ -155,7 +160,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         showNotification({
           id: 'no-access',
           color: 'yellow',
-          message: '比赛已经结束',
+          message: t('game.notification.ended'),
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
       }

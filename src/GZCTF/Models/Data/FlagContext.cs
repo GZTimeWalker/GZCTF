@@ -35,7 +35,7 @@ public class FlagContext
     /// <summary>
     /// 赛题Id
     /// </summary>
-    public int ChallengeId { get; set; }
+    public int? ChallengeId { get; set; }
 
     /// <summary>
     /// 赛题
@@ -45,7 +45,7 @@ public class FlagContext
     /// <summary>
     /// 练习题Id
     /// </summary>
-    public int ExerciseId { get; set; }
+    public int? ExerciseId { get; set; }
 
     /// <summary>
     /// 练习题

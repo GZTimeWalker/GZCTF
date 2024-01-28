@@ -10,10 +10,10 @@ import { useLocalStorage } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { FC, Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRoutes } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import routes from '~react-pages'
-import { useTranslation } from '@Utils/I18n'
 import { ThemeOverride } from '@Utils/ThemeOverride'
 import { useBanner, useLocalStorageCache } from '@Utils/useConfig'
 import { fetcher } from '@Api'
@@ -38,7 +38,9 @@ export const App: FC = () => {
       <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
         <Notifications zIndex={5000} />
         {StyledGlobal}
-        <ModalsProvider labels={{ confirm: t('Modal_Confirm'), cancel: t('Modal_Cancel') }}>
+        <ModalsProvider
+          labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
+        >
           <SWRConfig
             value={{
               refreshInterval: 10000,

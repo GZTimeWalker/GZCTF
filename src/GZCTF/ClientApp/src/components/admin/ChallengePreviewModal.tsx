@@ -19,7 +19,7 @@ import { mdiCheck, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
-import { FlagPlaceholders } from '@Components/ChallengeDetailModal'
+import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { ChallengeTagItemProps } from '@Utils/Shared'
@@ -51,6 +51,8 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
     instanceEntry: null,
   })
 
+  const { t } = useTranslation()
+
   const onCreate = () => {
     setContext({
       closeTime: dayjs().add(10, 'm').add(10, 's').toJSON(),
@@ -70,15 +72,19 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
 
     showNotification({
       color: 'teal',
-      title: 'flag 似乎被正确提交了！',
+      title: t('admin.notification.games.challenges.preview.flag_submitted'),
       message: flag,
       icon: <Icon path={mdiCheck} size={1} />,
     })
     setFlag('')
   }
 
+  const placeholders = t('challenge.content.flag_placeholders', {
+    returnObjects: true,
+  }) as string[]
+
   useEffect(() => {
-    setPlaceholder(FlagPlaceholders[Math.floor(Math.random() * FlagPlaceholders.length)])
+    setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
   const isDynamic =
@@ -123,7 +129,11 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
           <Group grow noWrap position="right" align="flex-start" spacing={2}>
             <Box className={classes.root} mih="4rem">
               {attachmentType !== FileType.None && (
-                <Tooltip label="下载附件" position="left" classNames={tooltipClasses}>
+                <Tooltip
+                  label={t('challenge.button.download.attachment')}
+                  position="left"
+                  classNames={tooltipClasses}
+                >
                   <ActionIcon
                     variant="filled"
                     size="lg"
@@ -134,7 +144,9 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
                     onClick={() =>
                       showNotification({
                         color: 'teal',
-                        message: '假装附件已经下载了！',
+                        message: t(
+                          'admin.notification.games.challenges.preview.attachment_downloaded'
+                        ),
                         icon: <Icon path={mdiCheck} size={1} />,
                       })
                     }
@@ -195,7 +207,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
                 fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
               },
             }}
-            rightSection={<Button type="submit">提交 flag</Button>}
+            rightSection={<Button type="submit">{t('challenge.button.submit_flag')}</Button>}
             rightSectionWidth="6rem"
           />
         </form>

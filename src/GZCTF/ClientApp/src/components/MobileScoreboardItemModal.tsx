@@ -16,6 +16,7 @@ import {
 } from '@mantine/core'
 import dayjs from 'dayjs'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import TeamRadarMap from '@Components/TeamRadarMap'
 import { BonusLabel } from '@Utils/Shared'
 import { useTableStyles } from '@Utils/ThemeOverride'
@@ -30,6 +31,8 @@ interface MobileScoreboardItemModalProps extends ModalProps {
 const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) => {
   const { item, challenges, ...modalProps } = props
   const { classes } = useTableStyles()
+
+  const { t } = useTranslation()
 
   const challengeIdMap =
     challenges &&
@@ -82,7 +85,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
               )}
             </Group>
             <Text truncate size="sm" lineClamp={1}>
-              {item?.bio || '这只队伍很懒，什么都没留下'}
+              {item?.bio || t('team.placeholder.bio')}
             </Text>
           </Stack>
         </Group>
@@ -101,27 +104,27 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
               <Text fw={700} size="sm" className={classes.mono}>
                 {item?.rank}
               </Text>
-              <Text size="xs">总排名</Text>
+              <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
             {item?.organization && (
               <Stack spacing={1}>
                 <Text fw={700} size="sm" className={classes.mono}>
                   {item?.organizationRank}
                 </Text>
-                <Text size="xs">排名</Text>
+                <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
               </Stack>
             )}
             <Stack spacing={1}>
               <Text fw={700} size="sm" className={classes.mono}>
                 {item?.score}
               </Text>
-              <Text size="xs">得分</Text>
+              <Text size="xs">{t('game.label.score_table.score')}</Text>
             </Stack>
             <Stack spacing={1}>
               <Text fw={700} size="sm" className={classes.mono}>
                 {item?.solvedCount}
               </Text>
-              <Text size="xs">攻克数量</Text>
+              <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
             </Stack>
           </Group>
           <Progress value={solved * 100} size="sm" />
@@ -136,9 +139,9 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
             >
               <thead>
                 <tr>
-                  <th style={{ minWidth: '3rem' }}>题目</th>
-                  <th style={{ minWidth: '3rem' }}>得分</th>
-                  <th style={{ minWidth: '3rem' }}>时间</th>
+                  <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
+                  <th style={{ minWidth: '3rem' }}>{t('game.label.score_table.score')}</th>
+                  <th style={{ minWidth: '3rem' }}>{t('common.label.time')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,7 +189,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
           </ScrollArea>
         ) : (
           <Text py="1rem" fw={700}>
-            Ouch! 这支队伍还没有解出题目呢……
+            {t('game.placeholder.no_solved')}
           </Text>
         )}
       </Stack>

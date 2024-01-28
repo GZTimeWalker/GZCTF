@@ -18,9 +18,9 @@ import { mdiCheck, mdiExclamationThick, mdiFileDocumentOutline, mdiFileHidden } 
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import MarkdownRender from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
@@ -72,7 +72,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         setProgress(100)
         showNotification({
           color: 'teal',
-          message: 'Writeup 已成功提交',
+          message: t('game.notification.writeup.submitted'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutate()
@@ -89,7 +89,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
     <Modal
       title={
         <Group w="100%" position="apart">
-          <Title order={4}>管理 Writeup</Title>
+          <Title order={4}>{t('game.content.writeup.title')}</Title>
           <Group spacing={4}>
             <Icon
               path={data?.submitted ? mdiCheck : mdiExclamationThick}
@@ -97,7 +97,9 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
               color={noteColor}
             />
             <Text fw={600} size="md" c={noteColor}>
-              {data?.submitted ? '已成功提交' : '尚未提交'}
+              {data?.submitted
+                ? t('game.content.writeup.submitted')
+                : t('game.content.writeup.unsubmitted')}
             </Text>
           </Group>
         </Group>
@@ -116,7 +118,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
     >
       <Stack spacing="xs" mt={0}>
         <Divider />
-        <Title order={5}>提交说明</Title>
+        <Title order={5}>{t('game.content.writeup.instructions.title')}</Title>
         <List
           styles={{
             itemWrapper: {
@@ -126,29 +128,39 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         >
           <List.Item>
             <Text>
-              请在
-              <Text mx={5} span fw={600} c="yellow">
-                {ddl.format(' YYYY 年 MM 月 DD 日 HH:mm:ss ')}
-              </Text>
-              前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。
+              <Trans
+                i18nKey="game.content.writeup.instructions.deadline"
+                values={{
+                  datetime: ddl.format(t('game.content.writeup.instructions.datetime_format')),
+                }}
+              >
+                _
+                <Text mx={5} span fw={600} c="yellow">
+                  _
+                </Text>
+                _
+              </Trans>
             </Text>
           </List.Item>
           <List.Item>
             <Text>
-              请将全部解出题目整理为
-              <Text mx={5} fw={600} span c="yellow">
-                一份小于 20MB 的标准 PDF 文档
-              </Text>
+              <Trans i18nKey="game.content.writeup.instructions.file_format">
+                _
+                <Text mx={5} fw={600} span c="yellow">
+                  _
+                </Text>
+                _
+              </Trans>
             </Text>
           </List.Item>
         </List>
         {data?.note && (
           <>
-            <Title order={5}>附加说明</Title>
+            <Title order={5}>{t('game.content.writeup.instructions.additional')}</Title>
             <MarkdownRender source={data.note} />
           </>
         )}
-        <Title order={5}>当前提交</Title>
+        <Title order={5}>{t('game.content.writeup.current')}</Title>
         <Card>
           {data && data.submitted ? (
             <Group>
@@ -167,7 +179,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
               <Icon path={mdiFileHidden} size={1.5} />
               <Stack spacing={0}>
                 <Text fw={600} size="md">
-                  你的队伍尚未提交 Writeup
+                  {t('game.content.writeup.unsubmitted_note')}
                 </Text>
               </Stack>
             </Group>
@@ -184,10 +196,10 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
             >
               <div className={classes.uploadLabel}>
                 {dayjs().isAfter(ddl)
-                  ? '提交截止时间已过'
+                  ? t('game.content.writeup.deadline_exceeded')
                   : progress !== 0
-                    ? '上传中'
-                    : '上传 Writeup'}
+                    ? t('game.button.writeup.uploading')
+                    : t('game.button.writeup.upload')}
               </div>
               {progress !== 0 && (
                 <Progress

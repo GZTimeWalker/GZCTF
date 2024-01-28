@@ -8,16 +8,9 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import AdminPage from '@Components/admin/AdminPage'
-
-const pages = [
-  { icon: mdiTextBoxOutline, title: '信息编辑', path: 'info' },
-  { icon: mdiBullhornOutline, title: '比赛通知', path: 'notices' },
-  { icon: mdiFlagOutline, title: '题目编辑', path: 'challenges' },
-  { icon: mdiAccountGroupOutline, title: '队伍审核', path: 'review' },
-  { icon: mdiFileDocumentCheckOutline, title: 'Writeups', path: 'writeups' },
-]
 
 interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
@@ -25,13 +18,23 @@ interface GameEditTabProps extends React.PropsWithChildren {
   isLoading?: boolean
 }
 
-const getTab = (path: string) => pages.find((page) => path.includes(page.path))
-
 const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
   const theme = useMantineTheme()
+  const { t } = useTranslation()
+
+  const pages = [
+    { icon: mdiTextBoxOutline, title: t('admin.tab.games.info'), path: 'info' },
+    { icon: mdiBullhornOutline, title: t('admin.tab.games.notices'), path: 'notices' },
+    { icon: mdiFlagOutline, title: t('admin.tab.games.challenges'), path: 'challenges' },
+    { icon: mdiAccountGroupOutline, title: t('admin.tab.games.review'), path: 'review' },
+    { icon: mdiFileDocumentCheckOutline, title: t('admin.tab.games.writeups'), path: 'writeups' },
+  ]
+
+  const getTab = (path: string) => pages.find((page) => path.includes(page.path))
+
   const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
 
   useEffect(() => {
@@ -72,6 +75,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
               theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
             }
           />
+
           {children}
         </Stack>
       </Group>

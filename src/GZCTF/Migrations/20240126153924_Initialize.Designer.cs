@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231231230859_Initialize")]
+    [Migration("20240126153924_Initialize")]
     partial class Initialize
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace GZCTF.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -297,10 +297,10 @@ namespace GZCTF.Migrations
                     b.Property<int?>("AttachmentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ChallengeId")
+                    b.Property<int?>("ChallengeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ExerciseId")
+                    b.Property<int?>("ExerciseId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Flag")
@@ -1260,15 +1260,11 @@ namespace GZCTF.Migrations
 
                     b.HasOne("GZCTF.Models.Data.GameChallenge", "Challenge")
                         .WithMany("Flags")
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ChallengeId");
 
                     b.HasOne("GZCTF.Models.Data.ExerciseChallenge", "Exercise")
                         .WithMany("Flags")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ExerciseId");
 
                     b.Navigation("Attachment");
 

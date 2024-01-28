@@ -1,9 +1,10 @@
 import { Avatar, Box, Group, Input, Pagination, Paper, Select, Stack, Table } from '@mantine/core'
 import React, { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import MobileScoreboardItemModal from '@Components/MobileScoreboardItemModal'
 import { ScoreboardProps, useScoreboardStyles } from '@Components/ScoreboardTable'
-import { BloodBonus } from '@Utils/Shared'
+import { BloodBonus, useBonusLabels } from '@Utils/Shared'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ScoreboardItem, SubmissionType } from '@Api'
 
@@ -82,13 +83,15 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (scoreboard) {
       setBloodBonus(new BloodBonus(scoreboard.bloodBonus))
     }
   }, [scoreboard])
 
-  const BloodData = bloodBonus.getBonusLabels()
+  const bloodData = useBonusLabels(bloodBonus)
 
   return (
     <Paper shadow="xs" p="sm">
@@ -97,12 +100,12 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
           <Select
             defaultValue="all"
             data={[
-              { value: 'all', label: '总排行' },
+              { value: 'all', label: t('game.label.score_table.rank_total') },
               ...Object.keys(scoreboard.timeLines)
                 .filter((k) => k !== 'all')
                 .map((o) => ({
                   value: o,
-                  label: o === 'all' ? '总排行' : o,
+                  label: o === 'all' ? t('game.label.score_table.rank_total') : o,
                 })),
             ]}
             value={organization}
@@ -125,7 +128,11 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             <Table className={classes.table}>
               <thead className={classes.thead}>
                 <tr>
-                  {['总排名', '战队', '总分'].map((header, idx) => (
+                  {[
+                    t('game.label.score_table.rank_total'),
+                    t('game.label.score_table.team'),
+                    t('game.label.score_table.score_total'),
+                  ].map((header, idx) => (
                     <th key={idx} className={cx(classes.theadFixLeft, classes.theadHeader)}>
                       {header}
                     </th>
@@ -161,7 +168,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
       </Stack>
       <MobileScoreboardItemModal
         challenges={scoreboard?.challenges}
-        bloodBonusMap={BloodData}
+        bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}
         size="40rem"

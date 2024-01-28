@@ -10,3 +10,9 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+declare module 'virtual:i18next-loader' {
+  declare const resources: import('i18next').Resource
+
+  export default resources
+}

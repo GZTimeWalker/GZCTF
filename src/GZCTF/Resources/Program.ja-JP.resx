@@ -461,15 +461,15 @@
     <value>Docker が正常に初期化されました ({0})</value>
     <comment/>
   </data>
-    <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
+  <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
     <value>K8s 構成ファイルをロードできませんでした、設定ファイルが存在していますでしょうか：{0}</value>
     <comment/>
   </data>
-    <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
+  <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
     <value>K8s が正常に初期化されました ({0})</value>
     <comment/>
   </data>
-    <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
+  <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s の初期化に失敗しました、構成が正しいかどうかを確認してください ({0})</value>
     <comment/>
   </data>
@@ -562,15 +562,15 @@
     <comment/>
   </data>
   <data name="FlagsChecker_Recheck" xml:space="preserve">
-    <value>{0} flag を再度チェックします</value>
+    <value>{0} のフラッグを再度チェックします</value>
     <comment/>
   </data>
   <data name="FlagsChecker_Started" xml:space="preserve">
-    <value>Flag チェッカーが起動されました</value>
+    <value>フラッグチェッカーが起動されました</value>
     <comment/>
   </data>
   <data name="FlagsChecker_Stopped" xml:space="preserve">
-    <value>Flag チェッカーが停止されました</value>
+    <value>フラッグチェッカーが停止されました</value>
     <comment/>
   </data>
   <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
@@ -610,7 +610,7 @@
     <comment/>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
-    <value>参加審査通過後はゲームから抜けられません</value>
+    <value>参加承認後はゲームから抜けられません</value>
     <comment/>
   </data>
   <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
@@ -706,7 +706,7 @@
     <comment/>
   </data>
   <data name="Game_ParticipationNotAccepted" xml:space="preserve">
-    <value>あなたはまだ参加申請の審査に通過されていませんか、または参加禁止されています。</value>
+    <value>あなたの参加申請はまだ承認されていませんか、または参加制限が課さられています。</value>
     <comment/>
   </data>
   <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
@@ -726,7 +726,7 @@
     <comment/>
   </data>
   <data name="Game_WriteupSubmitted" xml:space="preserve">
-    <value>{0} は {1} の Writeup を正常に提出しました</value>
+    <value>{0} は {1} の記事を正常に提出しました</value>
     <comment/>
   </data>
   <data name="Header_Captain" xml:space="preserve">
@@ -1010,11 +1010,11 @@
     <comment/>
   </data>
   <data name="Model_FlagRequired" xml:space="preserve">
-    <value>flag は必須です</value>
+    <value>フラッグは必須です</value>
     <comment/>
   </data>
   <data name="Model_FlagTooLong" xml:space="preserve">
-    <value>flag 文字列が長すぎます</value>
+    <value>フラッグ文字列が長すぎます</value>
     <comment/>
   </data>
   <data name="Model_InvitationCodeTooLong" xml:space="preserve">
@@ -1186,7 +1186,7 @@
     <comment/>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>flag の複雑性は不十分です。チームハッシュを追加するか長さを増やすことを検討してください。</value>
+    <value>フラッグの複雑性は不十分です。チームハッシュを追加するか長さを増やすことを検討してください。</value>
     <comment/>
   </data>
   <data name="Challenge_HintUpdated" xml:space="preserve">
@@ -1194,7 +1194,7 @@
     <comment/>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
-    <value>チャレンジは flag がないため使用できません</value>
+    <value>チャレンジは フラッグがないため使用できません</value>
     <comment/>
   </data>
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
@@ -1350,9 +1350,9 @@
     <comment/>
   </data>
   <data name="Game_WriteupNotNeeded" xml:space="preserve">
-      <value>本次比赛不可提交 Writeup</value>
+    <value>このゲームは記事を提出することができません</value>
   </data>
-    <data name="Signature_Invalid" xml:space="preserve">
-      <value>无效的签名</value>
+  <data name="Signature_Invalid" xml:space="preserve">
+    <value>無効な署名</value>
   </data>
 </root>

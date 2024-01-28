@@ -1,9 +1,9 @@
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useSWRConfig } from 'swr'
-import { useTranslation } from '@Utils/I18n'
 import api from '@Api'
 
 export const useUser = () => {
@@ -24,7 +24,7 @@ export const useUser = () => {
           navigate('/')
           showNotification({
             color: 'red',
-            message: t('Account_Disabled'),
+            message: t('account.notification.login.banned'),
             icon: <Icon path={mdiClose} size={1} />,
           })
         })
@@ -81,7 +81,7 @@ export const useLoginOut = () => {
         mutateProfile(undefined, { revalidate: false })
         showNotification({
           color: 'teal',
-          message: t('Account_SignedOut'),
+          message: t('account.notification.logout'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })

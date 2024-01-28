@@ -14,6 +14,7 @@ import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import MarkdownRender from '@Components/MarkdownRender'
 import { RequireRole } from '@Components/WithRole'
@@ -31,6 +32,8 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const { role } = useUserRole()
   const [disabled, setDisabled] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <Card shadow="sm" p="xs">
       <Blockquote
@@ -42,13 +45,16 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
                 {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
               <Text fw={700}>
-                {post.authorName ?? 'Anonym'} 发布于 {dayjs(post.time).format('HH:mm, YY/MM/DD')}
+                {t('post.content.metadata', {
+                  author: post.authorName ?? 'Anonym',
+                  date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
+                })}
               </Text>
             </Group>
             <Text align="right">
               <Anchor component={Link} to={`/posts/${post.id}`}>
                 <Text span fw={500} size="sm">
-                  查看详情 &gt;&gt;&gt;
+                  {t('post.content.details')} &gt;&gt;&gt;
                 </Text>
               </Anchor>
             </Text>
@@ -61,7 +67,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               <Title order={3}>
                 {post.isPinned && (
                   <Text span c="brand">
-                    {'[置顶] '}
+                    {`${t('post.content.pinned')} `}
                   </Text>
                 )}
                 {post.title}
@@ -85,7 +91,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             <Title order={3}>
               {post.isPinned && (
                 <Text span c="brand">
-                  {'[置顶] '}
+                  {`${t('post.content.pinned')} `}
                 </Text>
               )}
               {post.title}

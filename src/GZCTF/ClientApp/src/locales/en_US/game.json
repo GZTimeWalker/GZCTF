@@ -1,0 +1,211 @@
+{
+  "tab": {
+    "monitor": {
+      "index": "Monitoring",
+      "events": "Events",
+      "traffic": "Traffics",
+      "cheatinfo": "Cheats",
+      "submissions": "Submissions"
+    },
+    "challenge": "Challenges",
+    "scoreboard": "Scoreboard"
+  },
+  "tag": {
+    "hidden": "Hidden",
+    "limited": "{{count}} players",
+    "individual": "Personal",
+    "mutiplayer": "Team"
+  },
+  "placeholder": {
+    "no_solved": "Ouch! This team has not uncovered the topic……"
+  },
+  "label": {
+    "score": "Score",
+    "traffic": "Traffic",
+    "cheat_info": {
+      "owned_team": "Raw Team",
+      "submit_team": "Submit Team",
+      "submit_user": "Submit User"
+    },
+    "notice_type": {
+      "all": "All",
+      "game": "Notice",
+      "events": "Dynamic",
+      "challenge": "Challenge"
+    },
+    "score_table": {
+      "team": "Team",
+      "score": "Score",
+      "type": "Type",
+      "rank_total": "Overall",
+      "score_total": "Score",
+      "solved_count": "Solved",
+      "rank_organization": "Rank"
+    },
+    "score_formatter": "{value} pts"
+  },
+  "title": {
+    "index": "Games"
+  },
+  "button": {
+    "join": "Join game",
+    "leave": "Leave game",
+    "finished": "Game ended",
+    "challenges": "Enter game",
+    "scoreboard": "Scoreboard",
+    "hide_solved": "Hide solved",
+    "login_required": "Please login",
+    "submit_writeup": "Submit writeup",
+    "download": {
+      "all_traffic": "Download all listed traffic",
+      "submissionsheet": "Download all submissions",
+      "scoreboard": "Download Scoreboard"
+    },
+    "writeup": {
+      "upload": "Submit writeup",
+      "uploading": "Uploading..."
+    }
+  },
+  "content": {
+    "join": {
+      "team": {
+        "label": "Select team to compete",
+        "description": "Please select a team to participate in a match that cannot be changed after selection"
+      },
+      "title": "Completion Registration Information",
+      "confirm": "Confirm Registration",
+      "content": [
+        "Are you sure you want to register for this game?",
+        "Once you sign up for and approve the match, the team will be locked and will no longer be able to make changes to people,<strong>invites and kicks the team.</strong> The team will be unlocked after the match ends or when the request is denied.",
+        "The number of players requires that the number of members of the team be selected, and<strong>whether or not the team participates in the match in that capacity.</strong>"
+      ],
+      "invite_code": {
+        "label": "Please enter the invitation code",
+        "description": "This game requires invitation, provide an invitation code to join."
+      },
+      "organization": {
+        "label": "Select Organization",
+        "description": "This game has more than one organization. Please select your organization."
+      }
+    },
+    "writeup": {
+      "title": "Writeup manage",
+      "submitted": "Successfully submitted",
+      "unsubmitted": "Not submitted",
+      "instructions": {
+        "title": "Submission instructions",
+        "datetime_format": "DD/MM/YYYY HH:mm:ss",
+        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, late submission or non-submission will be considered a waiver of game score.",
+        "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
+        "additional": "附加说明"
+      },
+      "current": "当前提交",
+      "unsubmitted_note": "你的队伍尚未提交 Writeup",
+      "deadline_exceeded": "提交截止时间已过"
+    },
+    "leave": {
+      "confirm": "Confirm Cancel Registration",
+      "content": [
+        "Are you sure you want to quit this game?",
+        "The team participation information will be deleted after exiting if the number of people is empty."
+      ]
+    },
+    "end_time": "End Time",
+    "no_cheat": {
+      "title": "No team cheats yet",
+      "comment": "It seems to be true for all"
+    },
+    "no_notice": "No notice",
+    "team_view": {
+      "label": "Team View",
+      "description": "Use team view to display cheats"
+    },
+    "all_solved": {
+      "title": "All topics were untouched!",
+      "comment": "Perhaps more difficult challenges are waiting for you in……"
+    },
+    "game_ended": "Ended",
+    "no_traffic": {
+      "title": "No data captures enabled",
+      "comment": "Requires both platform configuration and title to be enabled"
+    },
+    "start_time": "Start Time",
+    "duration": "{{hours}} hour(s)",
+    "no_challenge": "Ouch! No challenges available for this game.",
+    "joined_status": "<strong>{{count}}</strong> teams have already registered",
+    "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
+    "game_lasts_long": "The game will last for a long time",
+    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
+    "hide_container_events": {
+      "label": "Hide container events",
+      "description": "Hide container starting/destruction events"
+    },
+    "start_at": "Starts at",
+    "end_at": "Ends at",
+    "remaining_time": "Remaining time",
+    "remaining_duration": "{{hours}}h left",
+    "total_time": "Duration",
+    "total_duration": "{{hours}}h in total"
+  },
+  "notification": {
+    "left": "Cancellation successful",
+    "ended": "The game has ended",
+    "joined": "Registration successful",
+    "no_team": "Please select the team to join",
+    "suspended": "You have been banned",
+    "not_started": "Game not yet started",
+    "no_invite_code": "Invitation code cannot be empty",
+    "no_organization": "Please select the organization",
+    "select_chal_and_part": "Please select topics and teams first",
+    "connected": {
+      "event": "实时事件连接成功",
+      "submission": "实时提交连接成功"
+    },
+    "fetch_failed": {
+      "event": "获取事件失败",
+      "submission": "获取提交失败",
+      "notice": "获取通知失败"
+    },
+    "writeup": {
+      "submitted": "Writeup 已成功提交"
+    }
+  },
+  "participation": {
+    "alert": {
+      "pending": {
+        "title": "You have successfully registered as a member of team {{team}}",
+        "content": "Please wait for review results"
+      },
+      "rejected": {
+        "title": "Your entry request was not approved",
+        "content": "Please make sure you are eligible to re-register after you meet your requirements"
+      },
+      "suspended": {
+        "title": "Your team {{team} } has been suspended",
+        "content": "If you hear any objection, please contact the administrator to make an appeal"
+      },
+      "not_started": {
+        "title": "Game not yet started",
+        "mobile": "Please use computer to see the details of the game.",
+        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start."
+      },
+      "team_required": {
+        "title": "Unable to register at this time",
+        "content": "You didn't join any team, please create and join a team on the <1> Team Management </1> page."
+      }
+    },
+    "status": {
+      "pending": "Pending approval",
+      "accepted": "Approve",
+      "rejected": "Review not approved",
+      "suspended": "Banning"
+    },
+    "actions": {
+      "pending": "Awaiting Review",
+      "accepted": "Approve",
+      "rejected": "Re-Sign Up",
+      "suspended": "Banning",
+      "unsubmitted": "Enrollment"
+    }
+  }
+}

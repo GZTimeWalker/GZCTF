@@ -10,6 +10,7 @@ import {
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export interface ActionIconWithConfirmProps {
   iconPath: string
@@ -23,6 +24,8 @@ export interface ActionIconWithConfirmProps {
 export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => {
   const [opened, setOpened] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const { t } = useTranslation()
 
   return (
     <Popover shadow="md" width="max-content" position="top" opened={opened} onChange={setOpened}>
@@ -66,7 +69,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
                 })
               }}
             >
-              确定
+              {t('common.modal.confirm')}
             </Button>
             <Button
               size="xs"
@@ -75,7 +78,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
               disabled={props.disabled}
               onClick={() => setOpened(false)}
             >
-              取消
+              {t('common.modal.cancel')}
             </Button>
           </Group>
         </Stack>

@@ -3,6 +3,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import { usePageTitle } from '@Utils/usePageTitle'
@@ -16,7 +17,9 @@ const Verify: FC = () => {
   const email = sp.get('email')
   const [disabled, setDisabled] = useState(false)
 
-  usePageTitle('账户验证')
+  const { t } = useTranslation()
+
+  usePageTitle(t('account.title.verify'))
 
   const verify = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -24,8 +27,8 @@ const Verify: FC = () => {
     if (!token || !email) {
       showNotification({
         color: 'red',
-        title: '账户验证失败',
-        message: '参数缺失，请检查',
+        title: t('account.notification.verify.failed'),
+        message: t('common.error.param_missing'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -37,7 +40,7 @@ const Verify: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '账户已验证，请登录',
+          title: t('account.notification.verify.success'),
           message: window.atob(email),
           icon: <Icon path={mdiCheck} size={1} />,
         })
@@ -46,8 +49,8 @@ const Verify: FC = () => {
       .catch(() => {
         showNotification({
           color: 'red',
-          title: '账户验证失败',
-          message: '参数错误，请检查',
+          title: t('account.notification.verify.failed'),
+          message: t('common.error.param_error'),
           icon: <Icon path={mdiClose} size={1} />,
         })
       })
@@ -61,22 +64,22 @@ const Verify: FC = () => {
       {email && token ? (
         <>
           <Text size="md" fw={500}>
-            {window.atob(email)} 你好👋
+            {t('account.content.welcome', { decodeEmail: window.atob(email) })}
           </Text>
           <Text size="md" fw={500}>
-            请点击下方按钮验证账户
+            {t('account.content.verify.message')}
           </Text>
           <Button mt="lg" type="submit" w="50%" disabled={disabled}>
-            验证账户
+            {t('account.button.verify_account')}
           </Button>
         </>
       ) : (
         <>
           <Text size="md" fw={500}>
-            Ouch! 你的链接好像有问题
+            {t('account.content.link_invalid')}
           </Text>
           <Text size="md" fw={500}>
-            请检查链接是否正确后再次访问
+            {t('account.content.link_check')}
           </Text>
         </>
       )}

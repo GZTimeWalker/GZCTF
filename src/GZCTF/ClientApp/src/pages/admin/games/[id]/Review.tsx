@@ -26,12 +26,12 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
-import { ParticipationStatusMap } from '@Utils/Shared'
+import { useParticipationStatusMap } from '@Utils/Shared'
 import { useAccordionStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 
@@ -50,6 +50,8 @@ const MemberItem: FC<MemberItemProps> = (props) => {
   const { user, isCaptain, isRegistered } = props
   const theme = useMantineTheme()
 
+  const { t } = useTranslation()
+
   return (
     <Group spacing="xl" position="apart">
       <Group w="calc(100% - 10rem)">
@@ -67,17 +69,17 @@ const MemberItem: FC<MemberItemProps> = (props) => {
             </Group>
             <Group noWrap spacing="xs">
               <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
-              <Text>{!user.stdNumber ? '未填写' : user.stdNumber}</Text>
+              <Text>{!user.stdNumber ? t('admin.placeholder.empty') : user.stdNumber}</Text>
             </Group>
           </Stack>
           <Stack spacing={2}>
             <Group noWrap spacing="xs">
               <Icon path={mdiEmailOutline} {...iconProps} />
-              <Text>{!user.email ? '未填写' : user.email}</Text>
+              <Text>{!user.email ? t('admin.placeholder.empty') : user.email}</Text>
             </Group>
             <Group noWrap spacing="xs">
               <Icon path={mdiPhoneOutline} {...iconProps} />
-              <Text>{!user.phone ? '未填写' : user.phone}</Text>
+              <Text>{!user.phone ? t('admin.placeholder.empty') : user.phone}</Text>
             </Group>
           </Stack>
         </Group>
@@ -87,12 +89,14 @@ const MemberItem: FC<MemberItemProps> = (props) => {
           <Group spacing={0}>
             <Icon path={mdiStar} color={theme.colors.yellow[4]} size={0.9} />
             <Text size="sm" fw={500} c="yellow">
-              队长
+              {t('team.content.role.captain')}
             </Text>
           </Group>
         )}
         <Text size="sm" fw={700} c={isRegistered ? 'teal' : 'orange'}>
-          {isRegistered ? '已报名' : '未报名'}
+          {isRegistered
+            ? t('admin.content.games.review.participation.joined')
+            : t('admin.content.games.review.participation.not_joined')}
         </Text>
       </Group>
     </Group>
@@ -107,7 +111,9 @@ interface ParticipationItemProps {
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   const { participation, disabled, setParticipationStatus } = props
-  const part = ParticipationStatusMap.get(participation.status!)!
+  const part = useParticipationStatusMap().get(participation.status!)!
+
+  const { t } = useTranslation()
 
   return (
     <Accordion.Item value={participation.id!.toString()}>
@@ -120,10 +126,14 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               </Avatar>
               <Box>
                 <Text truncate fw={500}>
-                  {!participation.team?.name ? '（无名队伍）' : participation.team.name}
+                  {!participation.team?.name
+                    ? t('admin.placeholder.games.participation.team')
+                    : participation.team.name}
                 </Text>
                 <Text truncate size="sm" c="dimmed">
-                  {!participation.team?.bio ? '（未设置签名）' : participation.team.bio}
+                  {!participation.team?.bio
+                    ? t('admin.placeholder.games.participation.bio')
+                    : participation.team.bio}
                 </Text>
               </Box>
             </Group>
@@ -131,8 +141,10 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               <Box>
                 <Text>{participation.organization}</Text>
                 <Text size="sm" c="dimmed" fw={700}>
-                  {participation.registeredMembers?.length ?? 0}/
-                  {participation.team?.members?.length ?? 0} 已报名
+                  {t('admin.content.games.review.participation.stats', {
+                    count: participation.registeredMembers?.length ?? 0,
+                    total: participation.team?.members?.length ?? 0,
+                  })}
                 </Text>
               </Box>
               <Box w="6em">
@@ -174,6 +186,7 @@ const GameTeamReview: FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
   const { classes } = useAccordionStyles()
+  const participationStatusMap = useParticipationStatusMap()
 
   const { t } = useTranslation()
 
@@ -186,8 +199,7 @@ const GameTeamReview: FC = () => {
       )
       showNotification({
         color: 'teal',
-        title: '操作成功',
-        message: '参与状态已更新',
+        message: t('admin.notification.games.participation.updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
@@ -201,7 +213,7 @@ const GameTeamReview: FC = () => {
     if (numId < 0) {
       showNotification({
         color: 'red',
-        message: `比赛 Id 错误：${id}`,
+        message: t('common.error.param_error'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       navigate('/admin/games')
@@ -223,13 +235,13 @@ const GameTeamReview: FC = () => {
             leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate('/admin/games')}
           >
-            返回上级
+            {t('admin.button.back')}
           </Button>
           <Group w="calc(100% - 9rem)" position="left">
             <Select
-              placeholder="全部显示"
+              placeholder={t('admin.content.show_all')}
               clearable
-              data={Array.from(ParticipationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
+              data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
               value={selectedStatus}
               onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
             />
@@ -241,8 +253,8 @@ const GameTeamReview: FC = () => {
         {!participations || participations.length === 0 ? (
           <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
-              <Title order={2}>Ouch! 还没有队伍报名这个比赛</Title>
-              <Text>在路上了……别急！</Text>
+              <Title order={2}>{t('admin.content.games.review.empty.title')}</Title>
+              <Text>{t('admin.content.games.review.empty.description')}</Text>
             </Stack>
           </Center>
         ) : (

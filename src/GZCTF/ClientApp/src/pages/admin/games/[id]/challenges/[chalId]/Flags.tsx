@@ -22,6 +22,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
 import AttachmentUploadModal from '@Components/admin/AttachmentUploadModal'
@@ -29,16 +30,9 @@ import FlagCreateModal from '@Components/admin/FlagCreateModal'
 import FlagEditPanel from '@Components/admin/FlagEditPanel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
-
-const FileTypeDesrcMap = new Map<FileType, string>([
-  [FileType.None, '无附件'],
-  [FileType.Remote, '远程文件'],
-  [FileType.Local, '平台附件'],
-])
 
 interface FlagEditProps {
   onDelete: (flag: FlagInfoModel) => void
@@ -74,7 +68,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '附件已更新',
+          message: t('admin.notification.games.challenges.attachment.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         setType(FileType.None)
@@ -93,6 +87,11 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const { classes, theme } = useUploadStyles()
   const [progress, setProgress] = useState(0)
   const [flagCreateModalOpen, setFlagCreateModalOpen] = useState(false)
+  const FileTypeDesrcMap = new Map<FileType, string>([
+    [FileType.None, t('challenge.file_type.none')],
+    [FileType.Remote, t('challenge.file_type.remote')],
+    [FileType.Local, t('challenge.file_type.local')],
+  ])
 
   const onUpload = (file: File) => {
     setProgress(0)
@@ -125,7 +124,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               mutate()
               showNotification({
                 color: 'teal',
-                message: '附件已更新',
+                message: t('admin.notification.games.challenges.attachment.updated'),
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             })
@@ -152,7 +151,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: '附件已更新',
+          message: t('admin.notification.games.challenges.attachment.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
       })
@@ -172,7 +171,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: 'flag 模板已更新',
+          message: t('admin.notification.games.challenges.flag_template.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
@@ -183,10 +182,13 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       })
   }
 
+  const will_gererate =
+    ' ' + t('admin.content.games.challenges.flag.instructions.will_generate') + ' '
+
   return (
     <Stack>
       <Group position="apart">
-        <Title order={2}>附件管理</Title>
+        <Title order={2}>{t('admin.content.games.challenges.attachment.title')}</Title>
         {type !== FileType.Remote ? (
           <FileButton onChange={onUpload}>
             {(props) => (
@@ -199,7 +201,11 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 mt="24px"
                 color={progress !== 0 ? 'cyan' : theme.primaryColor}
               >
-                <div className={classes.uploadLabel}>{progress !== 0 ? '上传中' : '上传附件'}</div>
+                <div className={classes.uploadLabel}>
+                  {progress !== 0
+                    ? t('admin.button.challenges.attachment.uploading')
+                    : t('admin.button.challenges.attachment.upload')}
+                </div>
                 {progress !== 0 && (
                   <Progress
                     value={progress}
@@ -213,20 +219,24 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           </FileButton>
         ) : (
           <Button disabled={disabled} w="122px" mt="24px" onClick={onRemote}>
-            保存链接
+            {t('admin.button.challenges.attachment.save_url')}
           </Button>
         )}
       </Group>
       <Divider />
       <Group position="apart">
-        <Input.Wrapper label="附件类型" required>
+        <Input.Wrapper label={t('admin.content.games.challenges.attachment.type')} required>
           <Chip.Group
             value={type}
             onChange={(e) => {
               if (e === FileType.None) {
                 modals.openConfirmModal({
-                  title: '清除附件',
-                  children: <Text size="sm">你确定要清除本题的附件吗？</Text>,
+                  title: t('admin.content.games.challenges.attachment.clear.title'),
+                  children: (
+                    <Text size="sm">
+                      {t('admin.content.games.challenges.attachment.clear.description')}
+                    </Text>
+                  ),
                   onConfirm: onConfirmClear,
                   confirmProps: { color: 'orange' },
                 })
@@ -246,34 +256,34 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         </Input.Wrapper>
         {type !== FileType.Remote ? (
           <TextInput
-            label="附件链接"
+            label={t('admin.content.games.challenges.attachment.link')}
             readOnly
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
-            w="calc(100% - 320px)"
+            w="calc(100% - 400px)"
             onClick={() =>
               challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')
             }
           />
         ) : (
           <TextInput
-            label="附件链接"
+            label={t('admin.content.games.challenges.attachment.link')}
             disabled={disabled}
             value={remoteUrl}
-            w="calc(100% - 320px)"
+            w="calc(100% - 400px)"
             onChange={(e) => setRemoteUrl(e.target.value)}
           />
         )}
       </Group>
       <Group position="apart" mt={20}>
-        <Title order={2}>flag 管理</Title>
+        <Title order={2}>{t('admin.content.games.challenges.flag.title')}</Title>
         {challenge?.type === ChallengeType.DynamicContainer ? (
           <Button disabled={disabled} onClick={onChangeFlagTemplate}>
-            保存 flag 模版
+            {t('admin.button.challenges.flag.save')}
           </Button>
         ) : (
           <Button disabled={disabled} w="122px" onClick={() => setFlagCreateModalOpen(true)}>
-            添加 flag
+            {t('admin.button.challenges.flag.add.normal')}
           </Button>
         )}
       </Group>
@@ -281,7 +291,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       {challenge?.type === ChallengeType.DynamicContainer ? (
         <Stack>
           <TextInput
-            label="flag 模板"
+            label={t('admin.content.games.challenges.flag.template')}
             size="sm"
             value={flagTemplate}
             placeholder="flag{[GUID]}"
@@ -293,42 +303,52 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             }}
           />
           <Stack spacing={6} pb={8}>
-            <Text size="sm">请输入 flag 模版字符串，留空以生成随机 GUID 作为 flag</Text>
             <Text size="sm">
-              指定 <Code>[GUID]</Code>则会仅替换此处的占位符为随机 GUID
+              {t('admin.content.games.challenges.flag.instructions.description')}
             </Text>
             <Text size="sm">
-              若指定 <Code>[TEAM_HASH]</Code> 则它将会被自动替换为队伍 Token
-              与相关信息所生成的哈希值
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.guid">
+                _<Code>_</Code>_
+              </Trans>
             </Text>
             <Text size="sm">
-              若未指定 <Code>[TEAM_HASH]</Code> 则将启用 Leet
-              字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.team_hash">
+                _<Code>_</Code>_
+              </Trans>
             </Text>
             <Text size="sm">
-              若需要在指定 <Code>[TEAM_HASH]</Code> 的情况下启用 Leet 字符串功能，请在 flag
-              模版字符串
-              <Text span fw={700}>
-                之前
-              </Text>
-              添加 <Code>[LEET]</Code> 标记，此时不会检查 flag 模版字符串的熵
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.leet">
+                _<Code>_</Code>_
+              </Trans>
+            </Text>
+            <Text size="sm">
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.both">
+                _<Code>_</Code>
+                <Code>_</Code>_
+              </Trans>
             </Text>
             <Text size="sm" fw="bold">
-              flag 模板编写示例
+              {t('admin.content.games.challenges.flag.instructions.example')}
             </Text>
             <List size="sm" spacing={6}>
               <List.Item>
-                留空会得到 <Code>{`flag{1bab71b8-117f-4dea-a047-340b72101d7b}`}</Code>
+                {t('admin.content.games.challenges.flag.instructions.leave_empty')}
+                {will_gererate}
+                <Code>{`flag{1bab71b8-117f-4dea-a047-340b72101d7b}`}</Code>
               </List.Item>
               <List.Item>
-                <Code>{`flag{hello world}`}</Code> 会得到 <Code>{`flag{He1lo_w0r1d}`}</Code>
+                <Code>{`flag{hello world}`}</Code>
+                {will_gererate}
+                <Code>{`flag{He1lo_w0r1d}`}</Code>
               </List.Item>
               <List.Item>
-                <Code>{`flag{hello_world_[TEAM_HASH]}`}</Code> 会得到{' '}
+                <Code>{`flag{hello_world_[TEAM_HASH]}`}</Code>
+                {will_gererate}
                 <Code>{`flag{hello_world_5418ce4d815c}`}</Code>
               </List.Item>
               <List.Item>
-                <Code>{`[LEET]flag{hello world [TEAM_HASH]}`}</Code> 会得到{' '}
+                <Code>{`[LEET]flag{hello world [TEAM_HASH]}`}</Code>
+                {will_gererate}
                 <Code>{`flag{He1lo_w0r1d_5418ce4d815c}`}</Code>
               </List.Item>
             </List>
@@ -341,8 +361,8 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
               <Center h="calc(100vh - 430px)">
                 <Stack spacing={0}>
-                  <Title order={2}>flag 列表为空</Title>
-                  <Text>请通过右上角添加 flag</Text>
+                  <Title order={2}>{t('admin.content.games.challenges.flag.empty.title')}</Title>
+                  <Text>{t('admin.content.games.challenges.flag.empty.description')}</Text>
                 </Stack>
               </Center>
             </>
@@ -355,7 +375,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         </ScrollArea>
       )}
       <FlagCreateModal
-        title="添加 flag"
+        title={t('admin.button.challenges.flag.add.normal')}
         opened={flagCreateModalOpen}
         onClose={() => setFlagCreateModalOpen(false)}
       />
@@ -374,13 +394,19 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
   const [attachmentUploadModalOpened, setAttachmentUploadModalOpened] = useState(false)
   const [remoteAttachmentModalOpened, setRemoteAttachmentModalOpened] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <Stack>
       <Group position="apart" mt={20}>
-        <Title order={2}>flag 管理</Title>
+        <Title order={2}>{t('admin.content.games.challenges.flag.title')}</Title>
         <Group position="right">
-          <Button onClick={() => setRemoteAttachmentModalOpened(true)}>添加远程附件</Button>
-          <Button onClick={() => setAttachmentUploadModalOpened(true)}>上传动态附件</Button>
+          <Button onClick={() => setRemoteAttachmentModalOpened(true)}>
+            {t('admin.button.challenges.flag.add.remote')}
+          </Button>
+          <Button onClick={() => setAttachmentUploadModalOpened(true)}>
+            {t('admin.button.challenges.flag.add.dynamic')}
+          </Button>
         </Group>
       </Group>
       <Divider />
@@ -390,8 +416,8 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
             <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
             <Center h="calc(100vh - 250px)">
               <Stack spacing={0}>
-                <Title order={2}>flag 列表为空</Title>
-                <Text>请通过右上角添加 flag</Text>
+                <Title order={2}>{t('admin.content.games.challenges.flag.empty.title')}</Title>
+                <Text>{t('admin.content.games.challenges.flag.empty.description')}</Text>
               </Stack>
             </Center>
           </>
@@ -399,13 +425,13 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
         <FlagEditPanel flags={challenge?.flags} onDelete={onDelete} />
       </ScrollArea>
       <AttachmentUploadModal
-        title="批量添加动态附件"
+        title={t('admin.button.challenges.flag.add.dynamic')}
         size="40%"
         opened={attachmentUploadModalOpened}
         onClose={() => setAttachmentUploadModalOpened(false)}
       />
       <AttachmentRemoteEditModal
-        title="批量添加远程附件"
+        title={t('admin.button.challenges.flag.add.remote')}
         size="40%"
         opened={remoteAttachmentModalOpened}
         onClose={() => setRemoteAttachmentModalOpened(false)}
@@ -428,11 +454,11 @@ const GameChallengeEdit: FC = () => {
 
   const onDeleteFlag = (flag: FlagInfoModel) => {
     modals.openConfirmModal({
-      title: '删除 flag',
+      title: t('admin.button.challenges.flag.delete'),
       size: '35%',
       children: (
         <Stack>
-          <Text>确定删除下列 flag 吗？</Text>
+          <Text>{t('admin.content.games.challenges.flag.delete')}</Text>
           <Text ff={theme.fontFamilyMonospace}>{flag.flag}</Text>
         </Stack>
       ),
@@ -447,7 +473,7 @@ const GameChallengeEdit: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          message: 'flag 已删除',
+          message: t('admin.notification.games.challenges.flag.deleted'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         challenge &&
@@ -470,7 +496,7 @@ const GameChallengeEdit: FC = () => {
               leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
               onClick={() => navigate(`/admin/games/${id}/challenges`)}
             >
-              返回上级
+              {t('admin.button.back')}
             </Button>
             <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
               # {challenge?.title}
@@ -481,7 +507,7 @@ const GameChallengeEdit: FC = () => {
               leftIcon={<Icon path={mdiPuzzleEditOutline} size={1} />}
               onClick={() => navigate(`/admin/games/${id}/challenges/${numCId}`)}
             >
-              编辑题目信息
+              {t('admin.button.challenges.edit')}
             </Button>
           </Group>
         </>

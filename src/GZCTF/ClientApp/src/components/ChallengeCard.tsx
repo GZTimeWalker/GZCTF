@@ -1,6 +1,7 @@
 import {
   Box,
   Card,
+  Code,
   createStyles,
   Divider,
   Group,
@@ -14,7 +15,8 @@ import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { BloodsTypes, ChallengeTagLabelMap } from '@Utils/Shared'
+import { Trans } from 'react-i18next'
+import { BloodsTypes, useChallengeTagLabelMap } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'
 
@@ -38,12 +40,7 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
     width: '70%',
     height: '200%',
     zIndex: 91,
-    animation: `${keyframes`0% {
-                              opacity: .3;
-                            }
-                              100% {
-                                opacity: 1;
-                              }`} 2s linear 0s infinite alternate`,
+    animation: `${keyframes`0% { opacity: .3; } 100% { opacity: 1; }`} 2s linear 0s infinite alternate`,
   },
   blood1: {
     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,
@@ -58,8 +55,8 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { challenge, solved, onClick, iconMap, teamId } = props
-
-  const tagData = ChallengeTagLabelMap.get(challenge.tag!)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const tagData = challengeTagLabelMap.get(challenge.tag!)
   const { classes, cx, theme } = useStyles(props)
   const { classes: tooltipClasses } = useTooltipStyles()
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
@@ -90,11 +87,19 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
             {challenge.score}&nbsp;pts
           </Text>
           <Stack spacing="xs">
-            <Title order={6} align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
-              {`${challenge.solved} `}
-              <Text c="dimmed" size="xs" inherit span>
-                支队伍攻克
-              </Text>
+            <Title order={6} c="dimmed" align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
+              <Trans
+                i18nKey={'challenge.content.solved'}
+                values={{
+                  solved: challenge.solved,
+                }}
+              >
+                _
+                <Code fz="sm" fw="bold" bg="transparent">
+                  _
+                </Code>
+                _
+              </Trans>
             </Title>
             <Group position="center" spacing="md" h={20} noWrap>
               {challenge.bloods &&

@@ -4,6 +4,7 @@ import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import Captcha, { useCaptchaRef } from '@Components/Captcha'
@@ -15,7 +16,9 @@ const Recovery: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const { captchaRef, getToken } = useCaptchaRef()
 
-  usePageTitle('找回账号')
+  const { t } = useTranslation()
+
+  usePageTitle(t('account.title.recovery'))
 
   const onRecovery = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -25,8 +28,8 @@ const Recovery: FC = () => {
     if (!valid) {
       showNotification({
         color: 'orange',
-        title: '请等待验证码……',
-        message: '请稍后重试',
+        title: t('account.notification.captcha.not_valid'),
+        message: t('common.error.try_later'),
         loading: true,
       })
       return
@@ -37,8 +40,8 @@ const Recovery: FC = () => {
     showNotification({
       color: 'orange',
       id: 'recovery-status',
-      title: '请求已发送……',
-      message: '等待服务器验证',
+      title: t('account.notification.captcha.request_sent.title'),
+      message: t('account.notification.captcha.request_sent.message'),
       loading: true,
       autoClose: false,
     })
@@ -52,15 +55,15 @@ const Recovery: FC = () => {
       updateNotification({
         id: 'recovery-status',
         color: 'teal',
-        title: '一封恢复邮件已发送',
-        message: '请检查你的邮箱及垃圾邮件~',
+        title: t('common.email.sent.title'),
+        message: t('common.email.sent.message'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
       updateNotification({
         id: 'recovery-status',
         color: 'red',
-        title: '遇到了问题',
+        title: t('common.error.encountered'),
         message: `${err.response.data.title}`,
         icon: <Icon path={mdiClose} size={1} />,
       })
@@ -73,7 +76,7 @@ const Recovery: FC = () => {
     <AccountView onSubmit={onRecovery}>
       <TextInput
         required
-        label="邮箱"
+        label={t('account.label.email')}
         placeholder="ctf@example.com"
         type="email"
         w="100%"
@@ -90,10 +93,10 @@ const Recovery: FC = () => {
         component={Link}
         to="/account/login"
       >
-        准备好登录？
+        {t('account.anchor.login')}
       </Anchor>
       <Button disabled={disabled} fullWidth onClick={onRecovery}>
-        发送重置邮件
+        {t('account.button.recovery')}
       </Button>
     </AccountView>
   )

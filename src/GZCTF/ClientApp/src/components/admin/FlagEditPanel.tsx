@@ -13,6 +13,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Attachment, FlagInfoModel } from '@Api'
 
 interface FlagCardProps {
@@ -27,6 +28,8 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
   const attachment = unifiedAttachment ?? flag.attachment
   const shortURL = attachment?.url?.split('/').slice(-2)[0].slice(0, 8)
 
+  const { t } = useTranslation()
+
   return (
     <Card>
       <Group noWrap position="apart" spacing={3}>
@@ -39,7 +42,7 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
             onClick={() => {
               clipboard.copy(flag.flag)
               showNotification({
-                message: 'flag 已复制到剪贴板',
+                message: t('flag 已复制到剪贴板'),
                 color: 'teal',
                 icon: <Icon path={mdiCheck} size={1} />,
               })

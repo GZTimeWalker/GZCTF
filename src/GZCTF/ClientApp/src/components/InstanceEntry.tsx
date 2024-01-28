@@ -23,6 +23,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getProxyUrl } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ClientFlagContext } from '@Api'
@@ -84,13 +85,15 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const [canProlong, setCanProlong] = useState(false)
 
+  const { t } = useTranslation()
+
   const prolongNotice = () => {
     if (canProlong) return
 
     showNotification({
       color: 'orange',
-      title: '实例即将到期',
-      message: '请及时延长时间或销毁实例',
+      title: t('challenge.notification.instance.prolong.note.title'),
+      message: t('challenge.notification.instance.prolong.note.message'),
       icon: <Icon path={mdiExclamation} size={1} />,
     })
 
@@ -111,8 +114,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
     showNotification({
       color: 'teal',
-      title: '实例时间已延长',
-      message: '请注意实例到期时间',
+      title: t('challenge.notification.instance.prolong.success.title'),
+      message: t('challenge.notification.instance.prolong.success.message'),
       icon: <Icon path={mdiCheck} size={1} />,
     })
   }
@@ -121,8 +124,10 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     clipBoard.copy(copyEntry)
     showNotification({
       color: 'teal',
-      title: isPlatformProxy ? '实例入口已复制到剪贴板' : undefined,
-      message: isPlatformProxy ? '请使用客户端进行访问' : '实例入口已复制到剪贴板',
+      title: isPlatformProxy ? t('challenge.notification.instance.copied.url.title') : undefined,
+      message: isPlatformProxy
+        ? t('challenge.notification.instance.copied.url.message')
+        : t('challenge.notification.instance.copied.entry'),
       icon: <Icon path={mdiCheck} size={1} />,
     })
   }
@@ -138,21 +143,21 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   if (!withContainer) {
     return test ? (
       <Text size="md" color="dimmed" fw={600} pt={30}>
-        测试容器未开启
+        {t('challenge.content.instance.test.no_container')}
       </Text>
     ) : (
       <Group position="apart" pt="xs" noWrap>
         <Stack align="left" spacing={0}>
           <Text size="sm" fw={600}>
-            本题为容器题目，解题需开启容器实例
+            {t('challenge.content.instance.no_container.message')}
           </Text>
           <Text size="xs" color="dimmed" fw={600}>
-            容器默认有效期为 120 分钟
+            {t('challenge.content.instance.no_container.note')}
           </Text>
         </Stack>
 
         <Button onClick={onCreate} disabled={disabled} loading={disabled}>
-          开启实例
+          {t('challenge.button.instance.create')}
         </Button>
       </Group>
     )
@@ -161,18 +166,18 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   return (
     <Stack spacing={2} w="100%">
       <TextInput
-        label={<Text fw={600}>实例入口</Text>}
+        label={<Text fw={600}>{t('challenge.content.instance.entry.label')}</Text>}
         description={
           isPlatformProxy &&
           !test && (
             <Text>
-              平台已启用代理模式，建议使用专用客户端。
+              {t('challenge.content.instance.entry.description.proxy')}
               <Anchor
                 href="https://github.com/XDSEC/WebSocketReflectorX/releases"
                 target="_blank"
                 rel="noreferrer"
               >
-                获取客户端
+                {t('challenge.content.instance.entry.description.anchor')}
               </Anchor>
             </Text>
           )
@@ -188,13 +193,17 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         rightSection={
           <Group spacing={2}>
             <Divider orientation="vertical" pr={4} />
-            <Tooltip label="复制到剪贴板" withArrow classNames={tooltipClasses}>
+            <Tooltip label={t('common.button.copy')} withArrow classNames={tooltipClasses}>
               <ActionIcon onClick={onCopyEntry}>
                 <Icon path={mdiContentCopy} size={1} />
               </ActionIcon>
             </Tooltip>
             <Tooltip
-              label={isPlatformProxy ? '在客户端中打开' : '作为网页打开'}
+              label={
+                isPlatformProxy
+                  ? t('challenge.content.instance.open.client')
+                  : t('challenge.content.instance.open.web')
+              }
               withArrow
               classNames={tooltipClasses}
             >
@@ -215,20 +224,20 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         <Group position="apart" pt="xs" noWrap>
           <Stack align="left" spacing={0}>
             <Text size="sm" fw={600}>
-              剩余时间：
+              {t('challenge.content.instance.actions.count_down')}
               <Countdown time={context.closeTime ?? '0'} prolongNotice={prolongNotice} />
             </Text>
             <Text size="xs" color="dimmed" fw={600}>
-              你可以在到期前 10 分钟内延长时间
+              {t('challenge.content.instance.actions.note')}
             </Text>
           </Stack>
 
           <Group position="right" noWrap spacing="xs">
             <Button color="orange" onClick={onProlong} disabled={!canProlong}>
-              延长时间
+              {t('challenge.button.instance.prolong')}
             </Button>
             <Button color="red" onClick={onDestroy} disabled={disabled}>
-              销毁实例
+              {t('challenge.button.instance.destroy')}
             </Button>
           </Group>
         </Group>

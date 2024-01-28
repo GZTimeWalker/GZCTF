@@ -4,11 +4,11 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 
@@ -24,14 +24,14 @@ const Reset: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle('重置密码')
+  usePageTitle(t('account.title.reset'))
 
   const onReset = () => {
     if (pwd !== retypedPwd) {
       showNotification({
         color: 'red',
-        title: '请检查输入',
-        message: '重复密码有误',
+        title: t('common.error.check_input'),
+        message: t('account.password.not_match'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -40,8 +40,7 @@ const Reset: FC = () => {
     if (!(token && email)) {
       showNotification({
         color: 'red',
-        title: '密码重设失败',
-        message: '参数错误，请检查',
+        message: t('common.error.param_error'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -57,8 +56,8 @@ const Reset: FC = () => {
       .then(() => {
         showNotification({
           color: 'teal',
-          title: '密码已重置',
-          message: '请重新登录',
+          title: t('account.notification.reset.success.title'),
+          message: t('account.notification.reset.success.message'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         navigate('/account/login')
@@ -76,7 +75,7 @@ const Reset: FC = () => {
       <StrengthPasswordInput
         value={pwd}
         onChange={(event) => setPwd(event.currentTarget.value)}
-        label="新密码"
+        label={t('account.label.password')}
         disabled={disabled}
         onKeyDown={enterHandler}
       />
@@ -84,14 +83,14 @@ const Reset: FC = () => {
         required
         value={retypedPwd}
         onChange={(event) => setRetypedPwd(event.currentTarget.value)}
-        label="重复密码"
+        label={t('account.label.password_retype')}
         w="100%"
         disabled={disabled}
         error={pwd !== retypedPwd}
         onKeyDown={enterHandler}
       />
       <Button fullWidth onClick={onReset} disabled={disabled}>
-        重置密码
+        {t('account.button.reset')}
       </Button>
     </AccountView>
   )

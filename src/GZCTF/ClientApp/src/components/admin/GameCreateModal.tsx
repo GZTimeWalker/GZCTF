@@ -6,9 +6,9 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiErrorHandler'
-import { useTranslation } from '@Utils/I18n'
 import api, { GameInfoModel } from '@Api'
 
 interface GameCreateModalProps extends ModalProps {
@@ -29,8 +29,8 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
     if (!title || end < start) {
       showNotification({
         color: 'red',
-        title: '输入不合法',
-        message: '请输入标题和时间信息',
+        title: t('common.error.param_invalid'),
+        message: t('admin.notification.games.no_title_time'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       return
@@ -46,7 +46,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
       .then((data) => {
         showNotification({
           color: 'teal',
-          message: '比赛已创建',
+          message: t('admin.notification.games.created'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
         onAddGame(data.data)
@@ -59,13 +59,12 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
   }
 
   return (
-    <Modal size="30%" title="新建比赛" {...modalProps}>
+    <Modal size="30%" title={t('admin.button.games.new')} {...modalProps}>
       <Stack>
         <TextInput
-          label="比赛标题"
+          label={t('admin.content.games.info.title.label')}
           type="text"
           required
-          placeholder="Title"
           w="100%"
           value={title}
           onChange={setTitle}
@@ -73,7 +72,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
 
         <Group grow position="apart">
           <DatePickerInput
-            label="开始日期"
+            label={t('admin.content.games.info.start_date')}
             value={start.toDate()}
             clearable={false}
             onChange={(e) => {
@@ -89,7 +88,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             required
           />
           <TimeInput
-            label="开始时间"
+            label={t('admin.content.games.info.start_time')}
             value={start.format('HH:mm:ss')}
             onChange={(e) => {
               const newTime = e.target.value.split(':')
@@ -109,7 +108,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
 
         <Group grow position="apart">
           <DatePickerInput
-            label="结束日期"
+            label={t('admin.content.games.info.end_date')}
             minDate={start.toDate()}
             value={end.toDate()}
             clearable={false}
@@ -121,7 +120,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             required
           />
           <TimeInput
-            label="结束时间"
+            label={t('admin.content.games.info.end_time')}
             value={end.format('HH:mm:ss')}
             onChange={(e) => {
               const newTime = e.target.value.split(':')
@@ -138,7 +137,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
         </Group>
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onCreate}>
-            创建比赛
+            {t('admin.button.games.new')}
           </Button>
         </Group>
       </Stack>
