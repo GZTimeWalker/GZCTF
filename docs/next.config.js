@@ -9,6 +9,6 @@ module.exports = withNextra({
   i18n: {
     locales: ["zh", "ja"],
     defaultLocale: "zh",
-    localeDetection: true,
+    localeDetection: false,
   },
 });
