@@ -1,0 +1,33 @@
+# ポート範囲の設定
+
+以下の方法はすべて経験に基づいており、システム環境によって異なる場合があります。正常に動作しない場合は、関連する資料を自分で探し、解決策を見つけてください。
+
+## Docker のデプロイ
+
+- `sudo nano /etc/sysctl.conf`
+- 以下の内容を追加し、`ip_local_port_range` を指定します:
+
+```
+net.ipv4.ip_local_port_range = 20000 50000
+```
+
+- `sudo sysctl -p` を実行して設定を有効にします
+- Docker サービスを再起動します
+
+## K3s のデプロイ
+
+- `sudo nano /etc/systemd/system/k3s.service`
+- 以下の設定の `ExecStart` を編集し、`service-node-port-range` を指定します：
+
+```
+ExecStart=/usr/local/bin/k3s \
+    server \
+    --kube-apiserver-arg service-node-port-range=20000-50000
+```
+
+- `sudo systemctl daemon-reload`
+- `sudo systemctl restart k3s`
+
+## K8s と Docker Swarm のデプロイ
+
+私はまだ試していませんが、成功した方はぜひ PR を提出して補足してください。

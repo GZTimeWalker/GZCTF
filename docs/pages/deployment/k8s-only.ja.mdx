@@ -1,0 +1,345 @@
+import { Callout } from "nextra-theme-docs";
+
+# K8sのみでのデプロイ
+
+<Callout type="info">
+
+このガイドは、**すでにK8sを使用した経験がある**ユーザー向けです。この記事では、K8sクラスタの構築方法や`kubectl`などのコマンドの使い方については**紹介していません**。また、記事中にはK8sの専門用語が含まれている可能性があり、一定の基礎知識が必要です。
+
+この記事では、K8sクラスタ内でGZCTFをデプロイする方法に焦点を当てています。GZCTF自体の設定チュートリアルについては、[クイックスタート](/quick-start)を参照してください。
+
+</Callout>
+
+## デプロイに関する注意事項
+
+1. GZCTFは複数のインスタンスをデプロイすることをサポートしていますが、テストの結果、現時点では最も安定しているのは、単一のインスタンスをデプロイし、データベースが同一のノードに存在するデプロイ方法です。そのため、この記事では単一インスタンスのデプロイを例に説明します。
+2. 複数のインスタンスをデプロイする場合、すべてのインスタンスに共有ストレージをPVとしてマウントする必要があります。そうしないと、ファイルの一貫性を保証することができません。また、Redisをデプロイすることで、複数のインスタンスのキャッシュの一貫性を保証する必要があります。
+3. 複数のインスタンスをデプロイする場合、ロードバランサーはsticky sessionを設定する必要があります。そうしないと、websocketを使用してリアルタイムデータを取得することができません。
+4. **もし面倒なら、単一インスタンスをデプロイしましょう！**
+
+## GZCTFのデプロイ
+
+1. ネームスペースと設定ファイルの作成
+
+   ```yaml
+   apiVersion: v1
+   kind: Namespace
+   metadata:
+     name: gzctf-server
+   ---
+   apiVersion: v1
+   kind: ConfigMap
+   metadata:
+     name: gzctf-config
+     namespace: gzctf-server
+   data:
+     appsettings.json: |
+       { ... } # appsettings.json の内容
+   ---
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: gzctf-kube-config
+     namespace: gzctf-server
+   type: Opaque
+   data:
+     kube-config: ... # base64 でエンコードした k8s 接続ファイル
+   ---
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: gzctf-tls
+     namespace: gzctf-server
+   type: kubernetes.io/tls
+   data:
+     tls.crt: ... # base64 でエンコードした TLS 証明書
+     tls.key: ... # base64 でエンコードした TLS 秘密鍵
+   ```
+
+2. ローカルPVの作成（複数のインスタンスで共有ストレージが必要な場合は、設定を自分で変更してください）
+
+   ```yaml
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: gzctf-files-pv
+     namespace: gzctf-server
+   spec:
+     capacity:
+       storage: 2Gi
+     accessModes:
+       - ReadWriteOnce # 複数のインスタンスをデプロイする場合は、ReadWriteMany に変更してください
+     hostPath:
+       path: /mnt/path/to/gzctf/files # ローカルのパス
+   ---
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: gzctf-db-pv
+     namespace: gzctf-server
+   spec:
+     capacity:
+       storage: 1Gi
+     accessModes:
+       - ReadWriteOnce
+     hostPath:
+       path: /mnt/path/to/gzctf/db # ローカルのパス
+   apiVersion: v1
+   ---
+   kind: PersistentVolumeClaim
+   metadata:
+     name: gzctf-files
+     namespace: gzctf-server
+   spec:
+     accessModes:
+       - ReadWriteOnce # 複数のインスタンスをデプロイする場合は、ReadWriteMany に変更してください
+     resources:
+       requests:
+         storage: 2Gi
+     volumeName: gzctf-files-pv
+   ---
+   apiVersion: v1
+   kind: PersistentVolumeClaim
+   metadata:
+     name: gzctf-db
+     namespace: gzctf-server
+   spec:
+     accessModes:
+       - ReadWriteOnce
+     resources:
+       requests:
+         storage: 1Gi
+     volumeName: gzctf-db-pv
+   ```
+
+3. GZCTFのDeploymentを作成
+
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: gzctf
+     namespace: gzctf-server
+     labels:
+       app: gzctf
+   spec:
+     replicas: 1
+     strategy:
+       type: RollingUpdate
+     selector:
+       matchLabels:
+         app: gzctf
+     template:
+       metadata:
+         labels:
+           app: gzctf
+       spec:
+         nodeSelector:
+           kubernetes.io/hostname: xxx # デプロイノードを指定し、データベースと同じノードに強制します
+         containers:
+           - name: gzctf
+             image: gztime/gzctf:latest
+             imagePullPolicy: Always
+             env:
+               - name: GZCTF_ADMIN_PASSWORD
+                 value: xxx # 管理者パスワード
+             ports:
+               - containerPort: 80
+                 name: http
+             volumeMounts:
+               - name: gzctf-files
+                 mountPath: /app/files
+               - name: gzctf-config
+                 mountPath: /app/appsettings.json
+                 subPath: appsettings.json
+               - name: gzctf-kube-config
+                 mountPath: /app/kube-config.yaml
+                 subPath: kube-config
+               # .log ファイルの永続化ストレージが必要な場合
+               # 各 GZCTF インスタンスに /app/log に追加のボリュームをマウントしてください
+               # GZCTF は自動的にログファイルを処理し、自動的に rotate と compress を行います
+             resources:
+               requests:
+                 cpu: 1000m
+                 memory: 384Mi
+         volumes:
+           - name: gzctf-files
+             persistentVolumeClaim:
+               claimName: gzctf-files
+           - name: gzctf-config
+             configMap:
+               name: gzctf-config
+           - name: gzctf-kube-config
+             secret:
+               secretName: gzctf-kube-config
+   ---
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: gzctf-redis
+     namespace: gzctf-server
+     labels:
+       app: gzctf-redis
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: gzctf-redis
+     template:
+       metadata:
+         labels:
+           app: gzctf-redis
+       spec:
+         containers:
+           - name: gzctf-redis
+             image: redis:alpine
+             imagePullPolicy: Always
+             ports:
+               - containerPort: 6379
+                 name: redis
+             resources:
+               requests:
+                 cpu: 10m
+                 memory: 64Mi
+   ---
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: gzctf-db
+     namespace: gzctf-server
+     labels:
+       app: gzctf-db
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: gzctf-db
+     template:
+       metadata:
+         labels:
+           app: gzctf-db
+       spec:
+         nodeSelector:
+           kubernetes.io/hostname: xxx # デプロイノードを指定し、GZCTFと同じノードに強制します
+         containers:
+           - name: gzctf-db
+             image: postgres:alpine
+             imagePullPolicy: Always
+             ports:
+               - containerPort: 5432
+                 name: postgres
+             env:
+               - name: POSTGRES_PASSWORD
+                 value: xxx # データベースのパスワード。appsettings.json のデータベースのパスワードと一致する必要があります
+             volumeMounts:
+               - name: gzctf-db
+                 mountPath: /var/lib/postgresql/data
+             resources:
+               requests:
+                 cpu: 500m
+                 memory: 512Mi
+         volumes:
+           - name: gzctf-db
+             persistentVolumeClaim:
+               claimName: gzctf-db
+   ```
+
+4. ServiceとIngressの作成
+
+   ```yaml
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: gzctf
+     namespace: gzctf-server
+     annotations: # TraefikのSticky Sessionを有効にする
+       traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+       traefik.ingress.kubernetes.io/service.sticky.cookie.name: "LB_Session"
+       traefik.ingress.kubernetes.io/service.sticky.cookie.httponly: "true"
+   spec:
+     selector:
+       app: gzctf
+     ports:
+       - protocol: TCP
+         port: 80
+         targetPort: 80
+   ---
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: gzctf-db
+     namespace: gzctf-server
+   spec:
+     selector:
+       app: gzctf-db
+     ports:
+       - protocol: TCP
+         port: 5432
+         targetPort: 5432
+   ---
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: gzctf-redis
+     namespace: gzctf-server
+   spec:
+     selector:
+       app: gzctf-redis
+     ports:
+       - protocol: TCP
+         port: 6379
+         targetPort: 6379
+   ---
+   apiVersion: networking.k8s.io/v1
+   kind: Ingress
+   metadata:
+     name: gzctf
+     namespace: gzctf-server
+     annotations: # いくつかのTraefikのTLS設定、必要に応じて変更できます
+       kubernetes.io/ingress.class: "traefik"
+       traefik.ingress.kubernetes.io/router.tls: "true"
+       ingress.kubernetes.io/force-ssl-redirect: "true"
+   spec:
+     tls:
+       - hosts:
+           - ctf.example.com # ドメイン名
+         secretName: gzctf-tls # 証明書の名前、対応するSecretを自分で作成する必要があります
+     rules:
+       - host: ctf.example.com # ドメイン名
+         http:
+           paths:
+             - path: /
+               pathType: Prefix
+               backend:
+                 service:
+                   name: gzctf
+                   port:
+                     number: 80
+   ```
+
+5. Traefikの追加設定
+
+   GZCTFがXFFを通じてユーザーの実際のIPを正常に取得できるようにするためには、Traefikが正確にXFFヘッダーを追加できるようにする必要があります。以下の内容は必ずしも最新であり、すべてのバージョンのTraefikに適用できるわけではないことに注意してください。ここではhelm valuesの例を示していますが、最新の設定方法を自分で調べてください。
+
+   ```yaml
+   service:
+     spec:
+     externalTrafficPolicy: Local # XFFが正常に動作するようにするため、externalTrafficPolicyをLocalに設定する必要があります
+   deployment:
+     kind: DaemonSet
+   ports:
+     web:
+     redirectTo: websecure # HTTPをHTTPSにリダイレクト
+   additionalArguments:
+     - "--entryPoints.web.proxyProtocol.insecure"
+     - "--entryPoints.web.forwardedHeaders.insecure"
+     - "--entryPoints.websecure.proxyProtocol.insecure"
+     - "--entryPoints.websecure.forwardedHeaders.insecure"
+   ```
+
+## デプロイのヒント
+
+1. GZCTFが初期化時に自動的に管理者アカウントを作成するようにするには、`GZCTF_ADMIN_PASSWORD`環境変数を渡すことを忘れないでください。そうしないと、管理者アカウントを手動で作成する必要があります。
+2. システムログ画面でデバッグし、ユーザーの実際のIPを正常に取得できるかどうかを確認してください。できない場合は、Traefikの設定が正しいかどうかを確認してください。
+3. モニタリングが必要な場合は、PrometheusとGrafanaを自分でデプロイし、TraefikのPrometheusサポートを有効にしてください。また、node exporterを使用してチャレンジコンテナのリソース使用状況を監視することができます。
+4. 設定ファイルの変更に基づいてGZCTFのデプロイを自動更新する必要がある場合は、[Reloader](https://github.com/stakater/Reloader)を参照してください。
