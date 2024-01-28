@@ -17,7 +17,7 @@
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 > [!IMPORTANT]
-> **为了避免不必要的时间浪费，使用前请详细阅读使用文档：[https://docs.ctf.gzti.me/](https://docs.ctf.gzti.me/)**
+> **为了避免不必要的时间浪费，使用前请详细阅读使用文档：[https://docs.ctf.gzti.me/zh](https://docs.ctf.gzti.me/zh)**
 
 > [!WARNING]
 > 2024/01/01 起，`develop` 镜像的数据库结构不再与之前的版本兼容，如果继续使用请转至 `v0.17`。
