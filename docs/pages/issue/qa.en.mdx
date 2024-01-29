@@ -50,7 +50,6 @@ When writing challenge description on GZCTF, please pay attention to adding spac
 
 ### Suggestions for Deployment?
 
-对于拥有多机集群及其部署需求的用户，建议使用 K3s 作为 K8s 的发行版，其能提供所需的全部功能，且易于安装部署。
 For users who want deploy to multi-node cluster, we recommend using K3s as the distribution of K8s, which can provide all the required features for deployment and is easy to install.
 
 The most convenient deployment method in general is Docker + K3s separate deployment. You only need to execute `docker-compose` to complete the deployment of the GZCTF platform, and the deployment of K3s only requires exporting the kubeconfig after installation and mounting it to GZCTF.
