@@ -55,7 +55,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 
         var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
 
-        _kubernetesMetadata.HostIp = config.Host[(config.Host.LastIndexOf('/') + 1)..config.Host.LastIndexOf(':')];
+        _kubernetesMetadata.HostIp = new System.Uri(config.Host).Host;
 
         _kubernetesClient = new Kubernetes(config);
 
