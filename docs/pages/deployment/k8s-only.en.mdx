@@ -34,7 +34,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
      namespace: gzctf-server
    data:
      appsettings.json: |
-       { ... } # appsettings.json 中的内容
+       { ... } # content of appsettings.json 
    ---
    apiVersion: v1
    kind: Secret
@@ -317,7 +317,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
                      number: 80
    ```
 
-5. Traefik 的额外配置
+5. Additional Configuration for Traefik
 
   In order to make GZCTF able to obtain the real IP address of users through XFF, Traefik needs to be able to add the XFF header correctly. Please note that the following content may not always be up-to-date and applicable to all versions of Traefik. This is an example of helm values, please search for the latest configuration method yourself.
 
