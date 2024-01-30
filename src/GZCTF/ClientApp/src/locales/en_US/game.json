@@ -30,7 +30,7 @@
     "notice_type": {
       "all": "All",
       "game": "Notice",
-      "events": "Dynamic",
+      "events": "News",
       "challenge": "Challenge"
     },
     "score_table": {
@@ -198,13 +198,13 @@
       "pending": "Pending",
       "accepted": "Approve",
       "rejected": "Rejected",
-      "suspended": "Banning"
+      "suspended": "Banned"
     },
     "actions": {
       "pending": "Pending review",
       "accepted": "Approve",
       "rejected": "Re-Sign Up",
-      "suspended": "Banning",
+      "suspended": "Banned",
       "unsubmitted": "Join game"
     }
   }

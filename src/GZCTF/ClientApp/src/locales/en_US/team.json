@@ -3,7 +3,7 @@
     "index": "Team management"
   },
   "label": {
-    "bio": "Bio",
+    "bio": "Biography",
     "name": "Team Name",
     "kick": "Kick out",
     "members": "Members",
@@ -87,7 +87,7 @@
     },
     "invite_code": {
       "copied": "Invitation code copied to clipboard",
-      "updated": "Team Invitation Code updated"
+      "updated": "Team invitation token updated"
     }
   }
 }

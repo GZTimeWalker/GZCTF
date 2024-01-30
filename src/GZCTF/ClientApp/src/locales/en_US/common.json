@@ -32,7 +32,7 @@
     "no_data": "No data",
     "wider": {
       "text": "Please use a broader device to browse this page",
-      "title": "Insufficient Page Width"
+      "title": "Not wide enough"
     }
   },
   "email": {
@@ -52,7 +52,7 @@
     "invalid_username_or_password": "Wrong username or password",
     "no_change": "There seems to be no change",
     "param_error": "Parameter error, please check",
-    "param_invalid": "Invalid argument",
+    "param_invalid": "Invalid parameter",
     "param_missing": "Missing parameter",
     "param_unknown": "Unknown parameter",
     "request_too_frequent": "Too often requests",
@@ -72,14 +72,14 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm changes",
+    "confirm_update": "Confirm update",
     "delete": "Delete"
   },
   "tab": {
     "about": "About",
     "account": {
       "clean_cache": "Clear Cache",
-      "login": "Sign in",
+      "login": "Login",
       "logout": "Logout",
       "profile": "Profile"
     },

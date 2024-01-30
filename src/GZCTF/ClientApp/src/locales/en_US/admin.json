@@ -89,7 +89,7 @@
         },
         "bonus": {
           "description": "Triple Blood Bonus is a score prize that each team can receive when a topic has been removed from the first three teams. Tri-blood prizes are based on the current score of the issue and are added to the score of that team in a fixed percentage form.",
-          "first_blood": "Blood Reward (%)",
+          "first_blood": "First Blood Reward (%)",
           "second_blood": "Second Blood Reward (%)",
           "third_blood": "Third Blood Reward (%)"
         },
@@ -353,7 +353,7 @@
           "attachment_downloaded": "Predicted attachments have been downloaded!",
           "flag_submitted": "Flag submitted!"
         },
-        "updated": "Title updated"
+        "updated": "Challenge updated"
       },
       "created": "Game created",
       "info": {
