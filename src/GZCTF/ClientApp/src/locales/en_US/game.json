@@ -59,7 +59,7 @@
     "download": {
       "all_traffic": "Download all listed traffic",
       "submissionsheet": "Download submissions",
-      "scoreboard": "Download Scoreboard"
+      "scoreboard": "Scoreboard"
     },
     "writeup": {
       "upload": "Submit writeup",
@@ -132,7 +132,7 @@
     "start_time": "Start Time",
     "duration": "{{hours}} hour(s)",
     "no_challenge": "Ouch! No challenges available for this game.",
-    "joined_status": "<strong>{{count}}</strong> teams have already registered",
+    "joined_status": "<strong>{{count}}</strong> teams have already joined",
     "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
     "game_lasts_long": "The game will last for a long time",
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
@@ -197,7 +197,7 @@
     "status": {
       "pending": "Pending",
       "accepted": "Approve",
-      "rejected": "Unapproved",
+      "rejected": "Rejected",
       "suspended": "Banning"
     },
     "actions": {
