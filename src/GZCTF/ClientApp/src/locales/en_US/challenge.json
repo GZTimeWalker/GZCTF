@@ -11,7 +11,7 @@
     "submit_flag": "Submit flag",
     "instance": {
       "create": "Create",
-      "prolong": "Prolong",
+      "prolong": "Renew",
       "destroy": "Destroy"
     }
   },
@@ -39,7 +39,7 @@
       },
       "actions": {
         "count_down": "Remaining: ",
-        "note": "You can prolong the container 10 minutes before expiry"
+        "note": "You can renew the container 10 minutes before expiry"
       }
     },
     "wrong_flag_hints": [
