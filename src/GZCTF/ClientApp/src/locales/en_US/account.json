@@ -34,7 +34,7 @@
     "update_email": "Change Email",
     "confirm_email": "Confirm Email",
     "verify_account": "Verify Account",
-    "change_password": "Change password"
+    "change_password": "Change Password"
   },
   "content": {
     "verify": {
@@ -67,7 +67,7 @@
       "banned": "User is disabled",
       "invalid": "Wrong username or password",
       "success": {
-        "title": "Login successful",
+        "title": "Login succeeded",
         "message": "Redirect to the previous page before login"
       }
     },
@@ -77,7 +77,7 @@
         "message": "Please login again"
       }
     },
-    "logout": "Logout successful",
+    "logout": "Logout succeeded",
     "verify": {
       "failed": "Account verification failed",
       "success": "Account verified, please login"
