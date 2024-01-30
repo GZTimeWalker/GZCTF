@@ -1,10 +1,10 @@
 import { Button, Center, Group, ScrollArea, Stack, Text, Title } from '@mantine/core'
-import { mdiFolderDownloadOutline, mdiKeyboardBackspace } from '@mdi/js'
+import { mdiFolderDownloadOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import PDFViewer from '@Components/admin/PDFViewer'
 import TeamWriteupCard from '@Components/admin/TeamWriteupCard'
 import WithGameTab from '@Components/admin/WithGameEditTab'
@@ -15,7 +15,6 @@ import api, { WriteupInfoModel } from '@Api'
 const GameWriteups: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const navigate = useNavigate()
   const [selected, setSelected] = useState<WriteupInfoModel>()
 
   const { data: writeups } = api.admin.useAdminWriteups(numId, OnceSWRConfig)
@@ -30,25 +29,16 @@ const GameWriteups: FC = () => {
   return (
     <WithGameTab
       headProps={{ position: 'apart' }}
+      contentPos="right"
       head={
-        <>
-          <Button
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-            onClick={() => navigate('/admin/games')}
-          >
-            {t('admin.button.back')}
-          </Button>
-
-          <Group grow miw="15rem" maw="15rem" position="apart">
-            <Button
-              fullWidth
-              leftIcon={<Icon path={mdiFolderDownloadOutline} size={1} />}
-              onClick={() => window.open(`/api/admin/writeups/${id}/all`, '_blank')}
-            >
-              {t('admin.button.writeups.download_all')}
-            </Button>
-          </Group>
-        </>
+        <Button
+          fullWidth
+          w="15rem"
+          leftIcon={<Icon path={mdiFolderDownloadOutline} size={1} />}
+          onClick={() => window.open(`/api/admin/writeups/${id}/all`, '_blank')}
+        >
+          {t('admin.button.writeups.download_all')}
+        </Button>
       }
     >
       {!writeups?.length || !selected ? (

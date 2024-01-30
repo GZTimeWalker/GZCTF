@@ -1,11 +1,11 @@
-import { Button, Center, Group, ScrollArea, Stack, Text, Title } from '@mantine/core'
+import { Button, Center, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiKeyboardBackspace, mdiPlus } from '@mdi/js'
+import { mdiCheck, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
@@ -47,31 +47,20 @@ const GameNoticeEdit: FC = () => {
       .catch((e) => showErrorNotification(e, t))
   }
 
-  const navigate = useNavigate()
   return (
     <WithGameTab
       headProps={{ position: 'apart' }}
+      contentPos="right"
       head={
-        <>
-          <Button
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-            onClick={() => navigate('/admin/games')}
-          >
-            {t('admin.button.back')}
-          </Button>
-
-          <Group position="right">
-            <Button
-              leftIcon={<Icon path={mdiPlus} size={1} />}
-              onClick={() => {
-                setActiveGameNotice(null)
-                setIsEditModalOpen(true)
-              }}
-            >
-              {t('admin.button.notices.new')}
-            </Button>
-          </Group>
-        </>
+        <Button
+          leftIcon={<Icon path={mdiPlus} size={1} />}
+          onClick={() => {
+            setActiveGameNotice(null)
+            setIsEditModalOpen(true)
+          }}
+        >
+          {t('admin.button.notices.new')}
+        </Button>
       }
     >
       <ScrollArea pos="relative" h="calc(100vh - 180px)" offsetScrollbars>

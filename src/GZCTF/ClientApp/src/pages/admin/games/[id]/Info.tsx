@@ -26,7 +26,6 @@ import {
   mdiClose,
   mdiContentSaveOutline,
   mdiDeleteOutline,
-  mdiKeyboardBackspace,
   mdiRefresh,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -184,51 +183,44 @@ const GameInfoEdit: FC = () => {
   return (
     <WithGameEditTab
       headProps={{ position: 'apart' }}
+      contentPos="right"
       isLoading={!game}
       head={
         <>
           <Button
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-            onClick={() => navigate('/admin/games')}
+            disabled={disabled}
+            color="red"
+            leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+            variant="outline"
+            onClick={() =>
+              modals.openConfirmModal({
+                title: t('admin.button.games.delete'),
+                children: (
+                  <Text size="sm">
+                    {t('admin.content.games.info.delete', { name: game?.title })}
+                  </Text>
+                ),
+                onConfirm: () => onConfirmDelete(),
+                confirmProps: { color: 'red' },
+              })
+            }
           >
-            {t('admin.button.back')}
+            {t('admin.button.games.delete')}
           </Button>
-          <Group position="right">
-            <Button
-              disabled={disabled}
-              color="red"
-              leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
-              variant="outline"
-              onClick={() =>
-                modals.openConfirmModal({
-                  title: t('admin.button.games.delete'),
-                  children: (
-                    <Text size="sm">
-                      {t('admin.content.games.info.delete', { name: game?.title })}
-                    </Text>
-                  ),
-                  onConfirm: () => onConfirmDelete(),
-                  confirmProps: { color: 'red' },
-                })
-              }
-            >
-              {t('admin.button.games.delete')}
-            </Button>
-            <Button
-              leftIcon={<Icon path={mdiClipboard} size={1} />}
-              disabled={disabled}
-              onClick={onCopyPublicKey}
-            >
-              {t('admin.button.games.copy_public_key')}
-            </Button>
-            <Button
-              leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
-              disabled={disabled}
-              onClick={onUpdateInfo}
-            >
-              {t('admin.button.save')}
-            </Button>
-          </Group>
+          <Button
+            leftIcon={<Icon path={mdiClipboard} size={1} />}
+            disabled={disabled}
+            onClick={onCopyPublicKey}
+          >
+            {t('admin.button.games.copy_public_key')}
+          </Button>
+          <Button
+            leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+            disabled={disabled}
+            onClick={onUpdateInfo}
+          >
+            {t('admin.button.save')}
+          </Button>
         </>
       }
     >

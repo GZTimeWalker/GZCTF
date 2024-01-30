@@ -11,11 +11,11 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiHexagonSlice6, mdiKeyboardBackspace, mdiPlus } from '@mdi/js'
+import { mdiCheck, mdiHexagonSlice6, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import BloodBonusModel from '@Components/admin/BloodBonusModel'
 import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
@@ -29,7 +29,6 @@ const GameChallengeEdit: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const navigate = useNavigate()
   const [createOpened, setCreateOpened] = useState(false)
   const [bonusOpened, setBonusOpened] = useState(false)
   const [category, setCategory] = useState<ChallengeTag | null>(null)
@@ -98,41 +97,33 @@ const GameChallengeEdit: FC = () => {
       isLoading={!challenges}
       head={
         <>
-          <Button
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-            onClick={() => navigate('/admin/games')}
-          >
-            {t('admin.button.back')}
-          </Button>
-          <Group w="calc(100% - 9rem)" position="apart">
-            <Select
-              placeholder={t('admin.content.show_all')}
-              clearable
-              searchable
-              nothingFound={t('admin.content.nothing_found')}
-              value={category}
-              onChange={(value: ChallengeTag) => setCategory(value)}
-              itemComponent={ChallengeTagItem}
-              data={Object.entries(ChallengeTag).map((tag) => {
-                const data = challengeTagLabelMap.get(tag[1])
-                return { value: tag[1], ...data }
-              })}
-            />
-            <Group position="right">
-              <Button
-                leftIcon={<Icon path={mdiHexagonSlice6} size={1} />}
-                onClick={() => setBonusOpened(true)}
-              >
-                {t('admin.button.challenges.bonus')}
-              </Button>
-              <Button
-                mr="18px"
-                leftIcon={<Icon path={mdiPlus} size={1} />}
-                onClick={() => setCreateOpened(true)}
-              >
-                {t('admin.button.challenges.new')}
-              </Button>
-            </Group>
+          <Select
+            placeholder={t('admin.content.show_all')}
+            clearable
+            searchable
+            nothingFound={t('admin.content.nothing_found')}
+            value={category}
+            onChange={(value: ChallengeTag) => setCategory(value)}
+            itemComponent={ChallengeTagItem}
+            data={Object.entries(ChallengeTag).map((tag) => {
+              const data = challengeTagLabelMap.get(tag[1])
+              return { value: tag[1], ...data }
+            })}
+          />
+          <Group position="right">
+            <Button
+              leftIcon={<Icon path={mdiHexagonSlice6} size={1} />}
+              onClick={() => setBonusOpened(true)}
+            >
+              {t('admin.button.challenges.bonus')}
+            </Button>
+            <Button
+              mr="18px"
+              leftIcon={<Icon path={mdiPlus} size={1} />}
+              onClick={() => setCreateOpened(true)}
+            >
+              {t('admin.button.challenges.new')}
+            </Button>
           </Group>
         </>
       }

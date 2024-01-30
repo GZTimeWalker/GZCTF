@@ -21,7 +21,6 @@ import {
   mdiDatabaseEditOutline,
   mdiDeleteOutline,
   mdiEyeOutline,
-  mdiKeyboardBackspace,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
@@ -182,19 +181,12 @@ const GameChallengeEdit: FC = () => {
     <WithGameEditTab
       isLoading={!challenge}
       headProps={{ position: 'apart' }}
+      backUrl={`/admin/games/${id}/challenges`}
       head={
         <>
-          <Group noWrap position="left">
-            <Button
-              leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-              onClick={() => navigate(`/admin/games/${id}/challenges`)}
-            >
-              {t('admin.button.back')}
-            </Button>
-            <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
-              # {challengeInfo?.title}
-            </Title>
-          </Group>
+          <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
+            # {challengeInfo?.title}
+          </Title>
           <Group noWrap position="right">
             <Button
               disabled={disabled}

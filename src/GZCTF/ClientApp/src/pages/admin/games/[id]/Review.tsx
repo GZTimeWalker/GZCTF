@@ -3,7 +3,6 @@ import {
   Avatar,
   Badge,
   Box,
-  Button,
   Center,
   Group,
   ScrollArea,
@@ -20,7 +19,6 @@ import {
   mdiCheck,
   mdiClose,
   mdiEmailOutline,
-  mdiKeyboardBackspace,
   mdiPhoneOutline,
   mdiStar,
 } from '@mdi/js'
@@ -230,23 +228,13 @@ const GameTeamReview: FC = () => {
       headProps={{ position: 'apart' }}
       isLoading={!participations}
       head={
-        <>
-          <Button
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-            onClick={() => navigate('/admin/games')}
-          >
-            {t('admin.button.back')}
-          </Button>
-          <Group w="calc(100% - 9rem)" position="left">
-            <Select
-              placeholder={t('admin.content.show_all')}
-              clearable
-              data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
-              value={selectedStatus}
-              onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
-            />
-          </Group>
-        </>
+        <Select
+          placeholder={t('admin.content.show_all')}
+          clearable
+          data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
+          value={selectedStatus}
+          onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
+        />
       }
     >
       <ScrollArea type="auto" pos="relative" h="calc(100vh - 180px)" offsetScrollbars>

@@ -1,9 +1,19 @@
-import { Group, GroupProps, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
+import {
+  Button,
+  Group,
+  GroupPosition,
+  GroupProps,
+  LoadingOverlay,
+  Stack,
+  Tabs,
+  useMantineTheme,
+} from '@mantine/core'
 import {
   mdiAccountGroupOutline,
   mdiBullhornOutline,
   mdiFileDocumentCheckOutline,
   mdiFlagOutline,
+  mdiKeyboardBackspace,
   mdiTextBoxOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -15,10 +25,19 @@ import AdminPage from '@Components/admin/AdminPage'
 interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
   headProps?: GroupProps
+  contentPos?: GroupPosition
   isLoading?: boolean
+  backUrl?: string
 }
 
-const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others }) => {
+const WithGameEditTab: FC<GameEditTabProps> = ({
+  children,
+  isLoading,
+  contentPos,
+  head,
+  backUrl,
+  ...others
+}) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
@@ -47,7 +66,24 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
   }, [location])
 
   return (
-    <AdminPage {...others}>
+    <AdminPage
+      {...others}
+      head={
+        <>
+          <Button
+            w="9rem"
+            styles={{ inner: { justifyContent: 'space-between' } }}
+            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
+            onClick={() => navigate(backUrl ?? '/admin/games')}
+          >
+            {t('admin.button.back')}
+          </Button>
+          <Group position={contentPos ?? 'apart'} w="calc(100% - 10rem)">
+            {head}
+          </Group>
+        </>
+      }
+    >
       <Group noWrap position="apart" align="flex-start" w="100%">
         <Tabs
           orientation="vertical"
@@ -55,7 +91,10 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
           onTabChange={(value) => navigate(`/admin/games/${id}/${value}`)}
           styles={{
             root: {
-              width: '8rem',
+              width: '9rem',
+            },
+            tabsList: {
+              width: '9rem',
             },
           }}
         >
@@ -67,7 +106,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({ children, isLoading, ...others 
             ))}
           </Tabs.List>
         </Tabs>
-        <Stack w="calc(100% - 9rem)" pos="relative">
+        <Stack w="calc(100% - 10rem)" pos="relative">
           <LoadingOverlay
             visible={isLoading ?? false}
             overlayOpacity={1}

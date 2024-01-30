@@ -19,7 +19,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiKeyboardBackspace, mdiPuzzleEditOutline } from '@mdi/js'
+import { mdiCheck, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
@@ -489,19 +489,12 @@ const GameChallengeEdit: FC = () => {
     <WithGameEditTab
       isLoading={!challenge}
       headProps={{ position: 'apart' }}
+      backUrl={`/admin/games/${id}/challenges`}
       head={
         <>
-          <Group noWrap position="left">
-            <Button
-              leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
-              onClick={() => navigate(`/admin/games/${id}/challenges`)}
-            >
-              {t('admin.button.back')}
-            </Button>
-            <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
-              # {challenge?.title}
-            </Title>
-          </Group>
+          <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
+            # {challenge?.title}
+          </Title>
           <Group noWrap position="right">
             <Button
               leftIcon={<Icon path={mdiPuzzleEditOutline} size={1} />}
