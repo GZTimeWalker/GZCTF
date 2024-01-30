@@ -101,7 +101,7 @@
       },
       "current": "当前提交",
       "unsubmitted_note": "你的队伍尚未提交 Writeup",
-      "deadline_exceeded": "提交截止时间已过"
+      "deadline_exceeded": "Submission due date has passed"
     },
     "leave": {
       "confirm": "Confirm Cancel Registration",
