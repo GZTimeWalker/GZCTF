@@ -40,7 +40,7 @@
       "rank_total": "総合順位",
       "score_total": "合計得点",
       "solved_count": "解答数",
-      "rank_organization": "組織内順位"
+      "rank_organization": "順位"
     },
     "score_formatter": "{value} 点"
   },
@@ -124,7 +124,7 @@
       "title": "チャレンジはすべて解かれました！",
       "comment": "より困難な挑戦があなたを待っているかもしれません……"
     },
-    "game_ended": "ゲームは終了しました",
+    "game_ended": "ゲーム終了",
     "no_traffic": {
       "title": "トラフィックキャプチャーを有効しているチャレンジはまだありません",
       "comment": "プラットフォームの設定とチャレンジの両方から有効にしなければなりません"
@@ -197,7 +197,7 @@
     "status": {
       "pending": "承認待ち",
       "accepted": "承認済み",
-      "rejected": "承認されませんでした",
+      "rejected": "承認却下",
       "suspended": "制限中"
     },
     "actions": {
