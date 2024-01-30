@@ -145,9 +145,9 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                   })}
                 </Text>
               </Box>
-              <Box w="6em">
+              <Center w="6em">
                 <Badge color={part.color}>{part.title}</Badge>
-              </Box>
+              </Center>
             </Group>
           </Group>
         </Accordion.Control>

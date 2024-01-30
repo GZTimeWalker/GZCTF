@@ -56,6 +56,8 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
           <Group position="apart" align="flex-start">
             <Stack>
               <Button
+                w="9rem"
+                styles={{ inner: { justifyContent: 'space-between' } }}
                 leftIcon={<Icon path={mdiFileTableOutline} size={1} />}
                 onClick={() => window.open(`/api/game/${numId}/scoreboardsheet`, '_blank')}
               >
@@ -87,7 +89,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                 </Tabs.List>
               </Tabs>
             </Stack>
-            <Stack w="calc(100% - 11rem)" pos="relative">
+            <Stack w="calc(100% - 10rem)" pos="relative">
               <LoadingOverlay
                 visible={isLoading ?? false}
                 overlayOpacity={1}
