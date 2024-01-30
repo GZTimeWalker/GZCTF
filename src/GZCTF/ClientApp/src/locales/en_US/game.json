@@ -23,7 +23,7 @@
     "score": "Score",
     "traffic": "Traffic",
     "cheat_info": {
-      "owned_team": "Raw Team",
+      "owned_team": "Source Team",
       "submit_team": "Submit Team",
       "submit_user": "Submit User"
     },
@@ -58,7 +58,7 @@
     "submit_writeup": "Submit writeup",
     "download": {
       "all_traffic": "Download all listed traffic",
-      "submissionsheet": "Download all submissions",
+      "submissionsheet": "Download submissions",
       "scoreboard": "Download Scoreboard"
     },
     "writeup": {
@@ -96,15 +96,15 @@
         "title": "Submission instructions",
         "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Please submit the writeup before <1>{{datetime}}</1>, late submission or non-submission will be considered a waiver of game score.",
-        "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
-        "additional": "附加说明"
+        "file_format": "Please make all solved challenges into <1>a standard PDF document that is less than 20MB in size</1>.",
+        "additional": "Additional notes"
       },
-      "current": "当前提交",
-      "unsubmitted_note": "你的队伍尚未提交 Writeup",
-      "deadline_exceeded": "Submission due date has passed"
+      "current": "Current writeup",
+      "unsubmitted_note": "Your team has not submitted yet",
+      "deadline_exceeded": "Submission deadline has passed"
     },
     "leave": {
-      "confirm": "Confirm Cancel Registration",
+      "confirm": "Confirm quit game",
       "content": [
         "Are you sure you want to quit this game?",
         "The team participation information will be deleted after exiting if the number of people is empty."
@@ -121,8 +121,8 @@
       "description": "Use team view to display cheats"
     },
     "all_solved": {
-      "title": "All topics were untouched!",
-      "comment": "Perhaps more difficult challenges are waiting for you in……"
+      "title": "All challenges were solved!",
+      "comment": "Perhaps more difficult challenges are waiting for you..."
     },
     "game_ended": "Ended",
     "no_traffic": {
@@ -158,16 +158,16 @@
     "no_organization": "Please select the organization",
     "select_chal_and_part": "Please select topics and teams first",
     "connected": {
-      "event": "实时事件连接成功",
-      "submission": "实时提交连接成功"
+      "event": "Real-time event connected",
+      "submission": "Real-time submission connected"
     },
     "fetch_failed": {
-      "event": "获取事件失败",
-      "submission": "获取提交失败",
-      "notice": "获取通知失败"
+      "event": "Failed to fetch events",
+      "submission": "Failed to fetch submissions",
+      "notice": "Failed to fetch notifications"
     },
     "writeup": {
-      "submitted": "Writeup 已成功提交"
+      "submitted": "Writeup was successfully submitted"
     }
   },
   "participation": {
@@ -195,17 +195,17 @@
       }
     },
     "status": {
-      "pending": "Pending approval",
+      "pending": "Pending",
       "accepted": "Approve",
-      "rejected": "Review not approved",
+      "rejected": "Unapproved",
       "suspended": "Banning"
     },
     "actions": {
-      "pending": "Awaiting Review",
+      "pending": "Pending review",
       "accepted": "Approve",
       "rejected": "Re-Sign Up",
       "suspended": "Banning",
-      "unsubmitted": "Enrollment"
+      "unsubmitted": "Join game"
     }
   }
 }
