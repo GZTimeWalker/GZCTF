@@ -29,7 +29,7 @@ INSTALL_K3S_EXEC="--docker"
 そして、以下の形式でk3sをインストールします。詳細は[k3sのインストール設定](https://docs.k3s.io/installation/configuration)を参照してください：
 
 ```bash
-curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXEC="..." sh -
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="..." sh -
 ```
 
 しかし、この方法は推奨されていません。Dockerをコンテナバックエンドとして使用すると、一部の機能が利用できなくなる可能性があります。
