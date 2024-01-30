@@ -34,12 +34,12 @@
         "web": "Open as web page"
       },
       "no_container": {
-        "message": "This challenge requires creating a instance",
+        "message": "This challenge requires creating an instance",
         "note": "Instance is valid for 2 hours"
       },
       "actions": {
         "count_down": "Remaining: ",
-        "note": "You can prolong the container within 10 minutes before expiry"
+        "note": "You can prolong the container 10 minutes before expiry"
       }
     },
     "wrong_flag_hints": [
@@ -107,7 +107,7 @@
       },
       "prolong": {
         "note": {
-          "message": "Please extend the time or destroy instance in time",
+          "message": "Please prolong or destroy instance in time",
           "title": "Instance is due"
         },
         "success": {
