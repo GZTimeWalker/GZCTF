@@ -7,7 +7,7 @@
     "username": "Username",
     "email_new": "New Email",
     "real_name": "Real Name",
-    "student_id": "School Number",
+    "student_id": "Student ID",
     "password_old": "Original password",
     "password_retype": "Confirm password",
     "username_or_email": "Username or Email"
