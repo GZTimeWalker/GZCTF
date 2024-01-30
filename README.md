@@ -8,6 +8,7 @@
 [![publish](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml/badge.svg)](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml)
 ![version](https://img.shields.io/github/v/release/GZTimeWalker/GZCTF?include_prereleases&label=version)
 ![license](https://img.shields.io/github/license/GZTimeWalker/GZCTF?color=FF5531)
+[![Crowdin](https://badges.crowdin.net/gzctf/localized.svg)](https://crowdin.com/project/gzctf)
 
 [![Telegram Group](https://img.shields.io/endpoint?color=blue&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fgzctf)](https://telegram.dog/gzctf)
 [![QQ Group](https://img.shields.io/badge/QQ%20Group-903244818-blue)](https://jq.qq.com/?_wv=1027&k=muSqhF9x)
@@ -35,19 +36,19 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
     - Dynamic Container: Automatically generate and issue flags through container environment variables, and flag of each team is unique.
 
   - Dynamic Scores
-    
+
     - Curve of scores:
 
       $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
 
       Where $S$ is the original score, $r$ is the minimum score ratio, $d$ is the difficulty coefficient, and $x$ is the number of submissions. The first three parameters can be customized to satisfy most of the dynamic score requirements.
 
-    - Bonus for first three solves: 
+    - Bonus for first three solves:
       The platform rewards 5%, 3%, and 1% of the current score for the first three solves respectively.
 
   - Disable or enable challenges during the competition, and release new challenges at any time.
   - Dynamic flag sharing detection, optional flag template, leet flag
-  
+
 
 - **Teams** score timeline, scoreboard. Teams can be grouped
 - Dynamic container distribution, management, and multiple port mapping methods based on **Docker or K8s**
@@ -77,7 +78,7 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
 ## About i18n 🌐
 
-Localization support is in progress, please refer to [#156](https://github.com/GZTimeWalker/GZCTF/issues/156) to learn more or participate in the translation work.
+Localization support is in progress, please refer to [translate.ctf.gzti.me](https://translate.ctf.gzti.me) to learn more or participate in the translation work.
 
 ## Contributors 👋
 

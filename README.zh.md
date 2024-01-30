@@ -8,6 +8,7 @@
 [![publish](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml/badge.svg)](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml)
 ![version](https://img.shields.io/github/v/release/GZTimeWalker/GZCTF?include_prereleases&label=version)
 ![license](https://img.shields.io/github/license/GZTimeWalker/GZCTF?color=FF5531)
+[![Crowdin](https://badges.crowdin.net/gzctf/localized.svg)](https://crowdin.com/project/gzctf)
 
 [![Telegram Group](https://img.shields.io/endpoint?color=blue&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fgzctf)](https://telegram.dog/gzctf)
 [![QQ Group](https://img.shields.io/badge/QQ%20Group-903244818-blue)](https://jq.qq.com/?_wv=1027&k=muSqhF9x)
@@ -76,7 +77,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 ## 关于 i18n 🌐
 
-目前多语言适配工作正在进行中，请在[#156](https://github.com/GZTimeWalker/GZCTF/issues/156)中了解详情或参与翻译工作。
+目前多语言适配工作正在进行中，请在 [translate.ctf.gzti.me](https://translate.ctf.gzti.me) 中了解详情或参与翻译工作。
 
 ## 贡献者 👋
 

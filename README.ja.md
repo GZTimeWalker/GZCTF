@@ -8,6 +8,7 @@
 [![publish](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml/badge.svg)](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml)
 ![version](https://img.shields.io/github/v/release/GZTimeWalker/GZCTF?include_prereleases&label=version)
 ![license](https://img.shields.io/github/license/GZTimeWalker/GZCTF?color=FF5531)
+[![Crowdin](https://badges.crowdin.net/gzctf/localized.svg)](https://crowdin.com/project/gzctf)
 
 [![Telegram Group](https://img.shields.io/endpoint?color=blue&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fgzctf)](https://telegram.dog/gzctf)
 [![QQ Group](https://img.shields.io/badge/QQ%20Group-903244818-blue)](https://jq.qq.com/?_wv=1027&k=muSqhF9x)
@@ -26,7 +27,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 
 ## 機能 🛠️
 
-- 高度カスタマイズ可能なチャレンジを作れる 
+- 高度カスタマイズ可能なチャレンジを作れる
 
   - チャレンジ種類：静的アタッチメント、動的アタッチメント、静的コンテイナー、動的コンテイナー
     - 静的アタッチメント：アタッチメントは共有され、追加されたフラッグのどれも提出可能となります。
@@ -49,7 +50,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
   - 動的フラッグのチャレンジに対する不正検出機能、オプションのフラッグテンプレートとリートフラッグ機能
 
 - **組織ごとにグループされたチーム**のスコアタイムライン、組織順位表
-- **Docker または K8S** に基づいた動的なコンテナの分散、管理、および複数のポート マッピング方法のサポート 
+- **Docker または K8S** に基づいた動的なコンテナの分散、管理、および複数のポート マッピング方法のサポート
 - SignalR に基づいた**リアルタイム**ゲーム通知、ゲームイベントとフラッグ送信とログの監視
 - SMTPメール検証機能、Google ReCaptchav3による悪意のある登録防止
 - ユーザーのブロックおよび権限管理
@@ -76,7 +77,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 
 ## i18n について 🌐
 
-多言語対応についてはいま取り込んでいます、詳細や翻訳を提供するなどは [#156](https://github.com/GZTimeWalker/GZCTF/issues/156) まで参照してください。
+多言語対応についてはいま取り込んでいます、詳細や翻訳を提供するなどは [translate.ctf.gzti.me](https://translate.ctf.gzti.me) まで参照してください。
 
 ## 貢献者 👋
 
@@ -113,7 +114,7 @@ _順番は順位との関係はありません。追加ための PR は大歓迎
 
 ## 特別感謝 ❤️‍🔥
 
-THUCTF 2022 の主催者である NanoApe によるスポンサーシップと、Alibaba Cloud パブリックネットワークでのストレステストのおかげで、数千の同時実行と 3 分間の 134 万のリクエストのプレッシャーの下で GZCTF 単一マシンインスタンス (16c90g) のサービスの安定性を検証することができました。ここで心から感謝申し上げます。 
+THUCTF 2022 の主催者である NanoApe によるスポンサーシップと、Alibaba Cloud パブリックネットワークでのストレステストのおかげで、数千の同時実行と 3 分間の 134 万のリクエストのプレッシャーの下で GZCTF 単一マシンインスタンス (16c90g) のサービスの安定性を検証することができました。ここで心から感謝申し上げます。
 
 ## Stars ✨
 
