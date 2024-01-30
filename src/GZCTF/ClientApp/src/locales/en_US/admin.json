@@ -28,8 +28,8 @@
       "new": "New challenge",
       "preview": "Preview",
       "test_container": {
-        "create": "Create test container",
-        "destroy": "Destroy test container"
+        "create": "Create",
+        "destroy": "Destroy"
       }
     },
     "games": {
@@ -138,12 +138,12 @@
         },
         "score": "Score",
         "service_port": {
-          "description": "Port number of services in the container",
+          "description": "Port of container services",
           "label": "Service Port"
         },
         "solve_count": "Solves",
         "storage_limit": {
-          "description": "Limit storage space with mirror size",
+          "description": "Storage limit (with mirror)",
           "label": "Storage Limit (MB)"
         },
         "tag": "Tag",
@@ -199,7 +199,7 @@
           "label": "Title"
         },
         "writeup_deadline": {
-          "description": "Hours allowed to submit writeups after the game ends",
+          "description": "Hours to submit writeups after game ends",
           "label": "Writeup Deadline"
         },
         "writeup_instruction": "Writeup Instructions",
@@ -264,8 +264,8 @@
         },
         "title": "Account Policy",
         "use_captcha": {
-          "description": "Whether to verify when logged in, register, and retrieving",
-          "label": "Enable Captcha"
+          "description": "Whether to use CAPTCHA",
+          "label": "Enable CAPTCHA"
         }
       },
       "game": {
@@ -277,7 +277,7 @@
       },
       "platform": {
         "footer": {
-          "description": "Additional information displayed at the bottom of the web page, supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
+          "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
         },
         "name": {
@@ -285,7 +285,7 @@
           "label": "Platform name"
         },
         "slogan": {
-          "description": "Platform slogan will be displayed at the top of the page and about page",
+          "description": "Will be displayed at the top of the page",
           "label": "Platform Slogan"
         },
         "title": "Platform Settings"
@@ -296,7 +296,7 @@
       "delete": "Are you sure you want to delete team {{name}} ?",
       "lock": "Are you sure you want to {{action}} team {{name}} ?",
       "locked": "Locked",
-      "stats": "<1>{{current}}</1>/<1>{{total}}</1> teams displayed",
+      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> teams displayed",
       "unlocked": "Unlocked"
     },
     "users": {
@@ -320,7 +320,7 @@
       "life_cycle": "Lifecycle"
     },
     "logs": {
-      "message": "Information",
+      "message": "Message",
       "status": "Status"
     },
     "teams": {
