@@ -199,7 +199,7 @@
           "label": "Game Title"
         },
         "writeup_deadline": {
-          "description": "",
+          "description": "比赛结束后允许提交 Writeup 的小时数",
           "label": "Writeup Submission Time"
         },
         "writeup_instruction": "Writeup Submission Instructions",
