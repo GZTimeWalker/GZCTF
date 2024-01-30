@@ -3,13 +3,13 @@
     "index": "Team management"
   },
   "label": {
-    "bio": "Team Bio",
+    "bio": "Bio",
     "name": "Team Name",
-    "kick": "Kick Team",
-    "members": "Team members",
-    "transfer": "Transfer Teams",
+    "kick": "Kick out",
+    "members": "Members",
+    "transfer": "Transfer",
     "invite_code": "Invitation Code",
-    "role": "National Police"
+    "role": "Role"
   },
   "button": {
     "join": "Join Team",
@@ -17,10 +17,10 @@
     "save": "Update Info",
     "leave": "Quit Team",
     "create": "Create Team",
-    "disband": "Dissolve Team"
+    "disband": "Disband Team"
   },
   "content": {
-    "join": "Please get the team invitation code from the team creator, enter the invitation code to join the team.",
+    "join": "Please get the invitation code from the team creator, use it to join the team.",
     "role": {
       "captain": "Captain",
       "member": "Crew"
@@ -37,22 +37,22 @@
         "message": "Are you sure you want to leave the team \"{{team}}\"?"
       }
     },
-    "create": "Create a team and you can organize a team and invite others to join. Everyone can only have one team.",
+    "create": "Create a team and you can invite others to join. Everyone can only create one team.",
     "disband": {
       "confirm": {
-        "title": "Confirm Dissolve Team",
+        "title": "Confirm Disband Team",
         "message": "Are you sure you want to disband team \"{{team}}\"?"
       }
     },
     "transfer": {
       "confirm": {
-        "title": "Confirmation of transfer teams",
+        "title": "Confirm Transfer",
         "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?"
       }
     },
     "no_create": {
-      "title": "You have created a team",
-      "content": "Everyone can only have one team<br/>you can delete the team and recreate it"
+      "title": "You've created a team",
+      "content": "Everyone can only create one team.<br/>You can disband the existed team and create a new one."
     }
   },
   "placeholder": {
@@ -80,7 +80,7 @@
       "copied": "Team token copied to clipboard"
     },
     "disband": {
-      "success": "Teams successfully dissolved."
+      "success": "Team successfully disbanded"
     },
     "transfer": {
       "success": "Transfer team successful"

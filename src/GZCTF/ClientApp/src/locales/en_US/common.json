@@ -7,8 +7,8 @@
   },
   "button": {
     "copy": "Copy to clipboard",
-    "select_file": "选择文件",
-    "uploading": "上传中"
+    "select_file": "Select File",
+    "uploading": "Uploading"
   },
   "content": {
     "404": {
@@ -72,7 +72,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm modification",
+    "confirm_update": "Confirm changes",
     "delete": "Delete"
   },
   "tab": {
@@ -81,7 +81,7 @@
       "clean_cache": "Clear Cache",
       "login": "Sign in",
       "logout": "Logout",
-      "profile": "User Information"
+      "profile": "Profile"
     },
     "admin": "Admin",
     "game": "Games",
