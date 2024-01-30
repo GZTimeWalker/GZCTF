@@ -10,9 +10,9 @@
     },
     "submit_flag": "Submit flag",
     "instance": {
-      "create": "Create instance",
-      "prolong": "Extended hours",
-      "destroy": "Destroy instance"
+      "create": "Create",
+      "prolong": "Prolong",
+      "destroy": "Destroy"
     }
   },
   "content": {
@@ -20,26 +20,26 @@
     "already_solved": "This challenge has been solved",
     "instance": {
       "test": {
-        "no_container": "Test container is not enabled"
+        "no_container": "Test container is not running"
       },
       "entry": {
         "label": "Instance Entry",
         "description": {
-          "proxy": "Platform enabled tcp over laws proxy mode.",
+          "proxy": "Platform enabled proxy mode.",
           "anchor": "Get clients"
         }
       },
       "open": {
         "client": "Open in client",
-        "web": "Open as Web"
+        "web": "Open as web page"
       },
       "no_container": {
-        "message": "This title is the container title. The question needs to be opened with the container instance",
-        "note": "Container default validity is 120 minutes"
+        "message": "This challenge requires creating a instance",
+        "note": "Instance is valid for 2 hours"
       },
       "actions": {
-        "count_down": "Remaining：",
-        "note": "You can extend the time within 10 minutes before expiry"
+        "count_down": "Remaining: ",
+        "note": "You can prolong the container within 10 minutes before expiry"
       }
     },
     "wrong_flag_hints": [
@@ -108,7 +108,7 @@
       "prolong": {
         "note": {
           "message": "Please extend the time or destroy instance in time",
-          "title": "Instances are due"
+          "title": "Instance is due"
         },
         "success": {
           "message": "Please note the instance expiration time",
@@ -116,7 +116,7 @@
         }
       },
       "created": {
-        "message": "Please note the expiration time",
+        "message": "Please note the instance expiration time",
         "title": "Instance created"
       },
       "destroyed": {
@@ -144,27 +144,27 @@
   },
   "tag": {
     "blockchain": "blockchain",
-    "crypto": "Password",
+    "crypto": "Crypto",
     "forensics": "Forensics",
     "hardware": "Hardware",
-    "misc": "Miscellaneous",
-    "mobile": "Mobile Security",
-    "ppc": "Programming",
+    "misc": "Misc",
+    "mobile": "Mobile",
+    "ppc": "PPC",
     "pwn": "Pwn",
     "reverse": "Reverse",
     "web": "Web"
   },
   "type": {
     "dynamic_attachment": {
-      "desrc": "Distribution of annexes by team requires that the number of attachments is greater than the number of teams",
+      "desrc": "Distribute attachments by team, ensuring that the number of attachments is greater than the number of teams",
       "label": "Dynamic Attachments"
     },
     "dynamic_container": {
-      "desrc": "Auto-generate settlement flag, unique to each team",
+      "desrc": "Automatic flag generation, unique for each team",
       "label": "Dynamic Container"
     },
     "static_attachment": {
-      "desrc": "Commit attachments, any flag can be submitted",
+      "desrc": "Shared attachments, any flag can be submitted",
       "label": "Static Attachments"
     },
     "static_container": {
