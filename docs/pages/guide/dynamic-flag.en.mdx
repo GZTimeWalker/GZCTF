@@ -1,0 +1,136 @@
+import { Callout } from "nextra-theme-docs";
+
+# Dynamic Flag
+
+GZCTF comes with built-in support for dynamic flag distribution, which will be injected using the `GZCTF_FLAG` environment variable when the container is started.
+
+<Callout type="info">
+
+The main reason for using this environment variable is to prevent commercial abuse of GZCTF, so customizing this feature will not be available in the short term.
+
+</Callout>
+
+## Configure Dynamic Flag
+
+In dynmaic challenge's flag and attachment management page, the flag template will be used to generate dynamic flag with the following rules:
+
+1. Leave it blank to generate a random `GUID` as the flag
+2. If `[GUID]` placeholder is specified, only this placeholder will be replaced with a random GUID.
+3. If `[TEAM_HASH]` placeholder is specified, it will be replaced with the hash value generated from the team token and related information.
+4. If `[TEAM_HASH]` placeholder is not specified, Leet string functionality will be enabled, and the string inside the curly braces will be transformed based on the template. Make sure that the entropy of the flag template string is high enough.
+5. If you want to enable Leet string functionality when specifying `[TEAM_HASH]`, add the `[LEET]` marker before the flag template string. In this case, the entropy of the flag template string will not be checked.
+
+## Examples
+
+1. Leave it blank to generate `flag{1bab71b8-117f-4dea-a047-340b72101d7b}`
+2. Set the flag to `MyCTF{[GUID]}` can get `MyCTF{1bab71b8-117f-4dea-a047-340b72101d7b}`
+3. Set the flag to `flag{hello world}` will generate flag with Leet and get `flag{He1lo_w0r1d}`
+4. Set the flag to `flag{hello_world_[TEAM_HASH]}` will generate flag with team hash like `flag{hello_world_5418ce4d815c}`
+5. Enable Leet with team hash as the same time with `[LEET]flag{hello world [TEAM_HASH]}` can generate `flag{He1lo_w0r1d_5418ce4d815c}`
+
+## Leet String
+
+Leet String is a method of replacing characters in a string with numbers or symbols. For example, replacing `a` with `4`, `e` with `3`, and so on. GZCTF follows the following Leet String rules:
+
+| Characters | Replaced with | Characters | Replaced with | Characters | Replaced with | Characters | Replaced with |
+| :--: | :----- | :--: | :----- | :--: | :----- | :--: | :----- |
+| `A`  | `Aa4`  | `B`  | `Bb68` | `C`  | `Cc`   | `D`  | `Dd`   |
+| `E`  | `Ee3`  | `F`  | `Ff1`  | `G`  | `Gg69` | `H`  | `Hh`   |
+| `I`  | `Ii1l` | `J`  | `Jj`   | `K`  | `Kk`   | `L`  | `Ll1I` |
+| `M`  | `Mm`   | `N`  | `Nn`   | `O`  | `Oo0`  | `P`  | `Pp`   |
+| `Q`  | `Qq9`  | `R`  | `Rr`   | `S`  | `Ss5`  | `T`  | `Tt7`  |
+| `U`  | `Uu`   | `V`  | `Vv`   | `W`  | `Ww`   | `X`  | `Xx`   |
+| `Y`  | `Yy`   | `Z`  | `Zz2`  | `0`  | `0oO`  | `1`  | `1lI`  |
+| `2`  | `2zZ`  | `3`  | `3eE`  | `4`  | `4aA`  | `5`  | `5Ss`  |
+| `6`  | `6Gb`  | `7`  | `7T`   | `8`  | `8bB`  | `9`  | `9g`   |
+
+<Callout type="info">
+
+In earlier versions of GZCTF, the Leet String rules included some special characters such as `$`, `@`, `!`, etc. However, these characters caused various character injection issues in the actual challenge environment. Therefore, we have removed these characters.
+
+</Callout>
+
+### Security
+
+The security level of Leet String depends on the entropy of the flag template string. For each character in the flag template, it can be replaced with multiple characters. We calculate the entropy of the Leet String by taking the logarithm base 2 of the length of the variable character set for each variable character and summing them up.
+
+$$
+\begin{aligned}
+H &= \sum_{i=1}^{n} \log_2{m_i} \\
+m_i &= \begin{cases}
+    \text{len}(\text{LeetMap}[c_i]) & \text{if } c_i \text{ is in LeetMap} \\
+    0 & \text{otherwise}
+\end{cases}
+\end{aligned}
+$$
+
+In GZCTF, this metric is restricted to be no less than 32, otherwise it will result in a decrease in the security of the flag.
+
+## Team Hash
+
+Team hash is a method of hashing the team token with related information. It will be used for generating dynamic flags to ensure that each team has a unique flag.
+
+In GZCTF, the team hash is the middle 12 characters of the SHA256 hash, for example `5418ce4d815c`. It will be used to replace the `[TEAM_HASH]` placeholder in the flag template.
+
+The calculation of the team hash involves three parameters:
+
+- Team Token: A system-generated and signed ed25519 signature issued during team registration, which can be verified with a public key.
+- Challenge ID: The unique identifier of the challenge.
+- Team Hash Salt: The SHA256 hash of the encrypted competition signing private key after adding salt.
+
+The Python code for generating the Team Hash is as follows:
+
+```python
+from hashlib import sha256
+
+str_sha256 = lambda s: sha256(s.encode()).hexdigest()
+
+encrypted_game_pk = "...some base64..."
+chal_id = 114
+team_token = "114:...some base64..."
+
+salt = str_sha256(f"GZCTF@{encrypted_game_pk}@PK")
+team_hash = str_sha256(f"{team_token}::{salt}::{chal_id}")[12:24]
+```
+
+The team hash salt `salt` can be obtained by accessing the `/api/edit/games/{id}/teamhashsalt` endpoint with administrator privileges. If you need to use it, please ensure its confidentiality.
+
+### How to use Team Hash properly
+
+One main use case of team hash is for external challenges (challenges where the final container accessed by the players which is not instanced by GZCTF). For example, in cases where deploying and managing complicate web challenges is difficult and complex, there might be only one external instance of the challenge instead of a separate instance for each team.
+In this case, we can verify the team token and generate a dynamic flag based on the team token, ensuring that each team has a unique dynamic flag.
+
+### Team Signature Verification
+
+The competition public key can be obtained directly from the competition management page. It is an ed25519 public key encoded in Base64, for example:
+
+```
+s2r5WQUClYNsldJrRKanrKivBUtyN+3MjeOiKNL3znI=
+```
+
+The team token is an ed25519 signature encoded in Base64. Its format is:
+
+```
+1201:HCdjp352NcQoL/4gS8RP3xRt5B9xX2V4m2UeoqfM2dxcLrI5FiYQ7HC9pqreG+tudWjYJf0atzQhhAKyYDKsCg==
+```
+
+You can use the following code to verify the team token, where `base64` and `nacl` are Python libraries:
+
+```python
+from base64 import b64decode
+from nacl.signing import VerifyKey
+
+token = "1201:HCdjp352NcQoL/4gS8RP3xRt5B9xX2V4m2UeoqfM2dxcLrI5FiYQ7HC9pqreG+tudWjYJf0atzQhhAKyYDKsCg=="
+verify_key = VerifyKey(b64decode("s2r5WQUClYNsldJrRKanrKivBUtyN+3MjeOiKNL3znI="))
+
+data = f"GZCTF_TEAM_{token.split(':')[0]}".encode()
+
+try:
+    verify_key.verify(data, b64decode(token.split(':')[1]))
+except:
+    print("Invalid token")
+```
+
+PyNaCl is a Python wrapper for libsodium, which is likely pre-installed on common systems. For more details, refer to: [PyNaCl](https://pynacl.readthedocs.io/en/latest/).
+
+You can also use any other language's ed25519 signature verification library to verify if the team token is a valid signature issued by the platform and provide cryptographic assurance for the security of flag distribution.
