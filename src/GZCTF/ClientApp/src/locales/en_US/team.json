@@ -27,7 +27,7 @@
     },
     "kick": {
       "confirm": {
-        "title": "Confirm Kick User",
+        "title": "Confirm kicking out user.",
         "message": "Are you sure you want to kick out team member \"{{user}}\"?"
       }
     },
@@ -37,7 +37,7 @@
         "message": "Are you sure you want to leave the team \"{{team}}\"?"
       }
     },
-    "create": "Create a team and you can invite others to join. Everyone can only create one team.",
+    "create": "You can create a team and invite others to join. Each player can only create one team.",
     "disband": {
       "confirm": {
         "title": "Confirm Disband Team",
@@ -52,7 +52,7 @@
     },
     "no_create": {
       "title": "You've created a team",
-      "content": "Everyone can only create one team.<br/>You can disband the existed team and create a new one."
+      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one."
     }
   },
   "placeholder": {
@@ -86,7 +86,7 @@
       "success": "Transfer team successful"
     },
     "invite_code": {
-      "copied": "Invitation code copied to clipboard",
+      "copied": "Invitation code is copied to clipboard",
       "updated": "Team invitation token updated"
     }
   }
