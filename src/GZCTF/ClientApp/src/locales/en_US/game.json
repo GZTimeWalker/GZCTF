@@ -17,7 +17,7 @@
     "mutiplayer": "Team"
   },
   "placeholder": {
-    "no_solved": "Ouch! This team has not uncovered the topic……"
+    "no_solved": "Ouch! This team has not solved any challenges……"
   },
   "label": {
     "score": "Score",
