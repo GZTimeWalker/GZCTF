@@ -11,7 +11,7 @@
     "submit_flag": "Submit flag",
     "instance": {
       "create": "Create",
-      "prolong": "Renew",
+      "prolong": "Extend",
       "destroy": "Destroy"
     }
   },
@@ -25,7 +25,7 @@
       "entry": {
         "label": "Instance Entry",
         "description": {
-          "proxy": "Platform enabled proxy mode.",
+          "proxy": "Proxy mode has been enabled for the platform.",
           "anchor": "Get clients"
         }
       },
@@ -35,11 +35,11 @@
       },
       "no_container": {
         "message": "This challenge requires creating an instance",
-        "note": "Instance is valid for 2 hours"
+        "note": "Instance will live for 2 hours."
       },
       "actions": {
         "count_down": "Remaining: ",
-        "note": "You can renew the container 10 minutes before expiry"
+        "note": "You can extend the usage time of the container 10 minutes before it expires."
       }
     },
     "wrong_flag_hints": [
