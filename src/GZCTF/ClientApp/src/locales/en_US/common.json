@@ -55,7 +55,7 @@
     "param_invalid": "Invalid parameter",
     "param_missing": "Missing parameter",
     "param_unknown": "Unknown parameter",
-    "request_too_frequent": "Too often requests",
+    "request_too_frequent": "Too many requests",
     "try_later": "Please try again later",
     "unknown": "Unknown error"
   },
