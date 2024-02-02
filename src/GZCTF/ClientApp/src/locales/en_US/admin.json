@@ -143,7 +143,7 @@
         },
         "solve_count": "Solves",
         "storage_limit": {
-          "description": "Storage limit (including image)",
+          "description": "Storage (including image)",
           "label": "Storage Limit (MB)"
         },
         "tag": "Tag",
@@ -176,11 +176,11 @@
         },
         "member_limit": {
           "description": "0 means unlimited members of team",
-          "label": "Team Member Limit"
+          "label": "Maximum Team Member"
         },
         "organizations": {
-          "add": "+ Add organization \"{{org}}\"",
-          "description": "Add your organization to enable grouped scoreboard",
+          "add": "+ Add group \"{{org}}\"",
+          "description": "Add categories to enable grouped scoreboard",
           "label": "Candidate Organizations"
         },
         "poster": "Poster",
@@ -195,7 +195,7 @@
           "label": "Summary"
         },
         "title": {
-          "description": "Too long will affect frontend effect",
+          "description": "Excessive length may affect the display effect",
           "label": "Title"
         },
         "writeup_deadline": {
@@ -412,7 +412,7 @@
           }
         }
       },
-      "organizations": "No selected organizations have been specified",
+      "organizations": "No categories specified; teams can join without selecting a category.",
       "participation": {
         "bio": "(no bio)",
         "team": "(no name)"
