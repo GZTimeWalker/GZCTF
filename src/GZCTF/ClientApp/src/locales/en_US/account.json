@@ -42,7 +42,7 @@
     },
     "welcome": "Hello, {{decodeEmail}}👋",
     "confirm": {
-      "message": "Please click the following button to verify your email."
+      "message": "Please click the button below to verify your email."
     },
     "profile": {
       "update_email_note": "After changing your email, you will no longer be able to log in using your original email.<br/>An email will be sent to your new email address, click on the link in it to complete the verification."
@@ -77,7 +77,7 @@
         "message": "Please login again"
       }
     },
-    "logout": "Logout succeeded",
+    "logout": "Logout successfully",
     "verify": {
       "failed": "Account verification failed",
       "success": "Account verified, please login"
@@ -86,16 +86,16 @@
       "not_valid": "Please wait for captcha...",
       "request_sent": {
         "title": "Request sent...",
-        "message": "Waiting for server validation"
+        "message": "Waiting for server verification"
       }
     },
     "confirm": {
-      "failed": "Email verification failed",
+      "failed": "Failed to verify email",
       "success": "Email verified"
     },
     "profile": {
       "profile_updated": "Profile updated",
-      "password_updated": "Password modified, please login again"
+      "password_updated": "Password has been changed, please login again"
     },
     "register": {
       "logged_in": "Successfully registered",
