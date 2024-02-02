@@ -134,7 +134,7 @@ public class Container
     /// <summary>
     /// 比赛题目实例对象 ID
     /// </summary>
-    public int GameInstanceId { get; set; }
+    public int? GameInstanceId { get; set; }
 
     /// <summary>
     /// 练习题目实例对象
@@ -144,7 +144,7 @@ public class Container
     /// <summary>
     /// 练习题目实例对象 ID
     /// </summary>
-    public int ExerciseInstanceId { get; set; }
+    public int? ExerciseInstanceId { get; set; }
 
     #endregion Db Relationship
 }

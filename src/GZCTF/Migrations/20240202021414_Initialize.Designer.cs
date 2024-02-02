@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240126153924_Initialize")]
+    [Migration("20240202021414_Initialize")]
     partial class Initialize
     {
         /// <inheritdoc />
@@ -100,13 +100,13 @@ namespace GZCTF.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ExerciseInstanceId")
+                    b.Property<int?>("ExerciseInstanceId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("ExpectStopAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("GameInstanceId")
+                    b.Property<int?>("GameInstanceId")
                         .HasColumnType("integer");
 
                     b.Property<string>("IP")

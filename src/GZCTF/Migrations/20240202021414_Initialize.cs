@@ -88,8 +88,8 @@ namespace GZCTF.Migrations
                     Port = table.Column<int>(type: "integer", nullable: false),
                     PublicIP = table.Column<string>(type: "text", nullable: true),
                     PublicPort = table.Column<int>(type: "integer", nullable: true),
-                    GameInstanceId = table.Column<int>(type: "integer", nullable: false),
-                    ExerciseInstanceId = table.Column<int>(type: "integer", nullable: false)
+                    GameInstanceId = table.Column<int>(type: "integer", nullable: true),
+                    ExerciseInstanceId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {

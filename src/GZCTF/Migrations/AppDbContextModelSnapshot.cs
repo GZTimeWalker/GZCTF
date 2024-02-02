@@ -97,13 +97,13 @@ namespace GZCTF.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ExerciseInstanceId")
+                    b.Property<int?>("ExerciseInstanceId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("ExpectStopAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("GameInstanceId")
+                    b.Property<int?>("GameInstanceId")
                         .HasColumnType("integer");
 
                     b.Property<string>("IP")
