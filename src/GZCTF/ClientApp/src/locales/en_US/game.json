@@ -69,14 +69,14 @@
   "content": {
     "join": {
       "team": {
-        "label": "Select team to compete",
-        "description": "Please select a team to participate in a match that cannot be changed after selection"
+        "label": "Select your team",
+        "description": "Please select a team you want to participate with in this competition. This cannot be changed after successfully enrolling."
       },
       "title": "Completion Registration Information",
       "confirm": "Confirm Registration",
       "content": [
         "Are you sure you want to register for this game?",
-        "Once you sign up for and approve the match, the team will be locked and will no longer be able to make changes to people,<strong>invites and kicks the team.</strong> The team will be unlocked after the match ends or when the request is denied.",
+        "After successfully registering for the competition and passing the review, the team will be locked and you will no longer be able to change your team member, <strong>e.g. invites new member or remove member from the team.</strong> The team will be unlocked after the match ends or when the participation request is denied.",
         "The number of players requires that the number of members of the team be selected, and<strong>whether or not the team participates in the match in that capacity.</strong>"
       ],
       "invite_code": {
@@ -191,7 +191,7 @@
       },
       "team_required": {
         "title": "Unable to register at this time",
-        "content": "You didn't join any team, please create and join a team on the <1> Team Management </1> page."
+        "content": "You didn't join any team, please create or join a team on the <1> Team Management </1> page."
       }
     },
     "status": {
