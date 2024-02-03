@@ -244,7 +244,7 @@
     <value>存在しないファイル [{0}] {1} を取得しようとしています</value>
   </data>
   <data name="Assets_UpdateFile" xml:space="preserve">
-    <value>更新文件 [{0}] {1} @ {2} bytes</value>
+    <value>ファイルを更新します [{0}] {1} @ {2} bytes</value>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
     <value>アクセスが拒否されました</value>
