@@ -92,7 +92,7 @@ GZCTF の使用をすぐに開始するには、Docker と docker-compose をイ
        environment:
          - "GZCTF_ADMIN_PASSWORD=<Your GZCTF_ADMIN_PASSWORD>"
        ports:
-         - "80:80"
+         - "80:8080"
        volumes:
          - "./data/files:/app/files"
          - "./appsettings.json:/app/appsettings.json:ro"

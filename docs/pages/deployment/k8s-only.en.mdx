@@ -34,7 +34,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
      namespace: gzctf-server
    data:
      appsettings.json: |
-       { ... } # content of appsettings.json 
+       { ... } # content of appsettings.json
    ---
    apiVersion: v1
    kind: Secret
@@ -43,7 +43,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
      namespace: gzctf-server
    type: Opaque
    data:
-     kube-config: ... # base64 encoded k8s connection configuration 
+     kube-config: ... # base64 encoded k8s connection configuration
    ---
    apiVersion: v1
    kind: Secret
@@ -144,7 +144,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
                - name: GZCTF_ADMIN_PASSWORD
                  value: xxx # Admin password
              ports:
-               - containerPort: 80
+               - containerPort: 8080
                  name: http
              volumeMounts:
                - name: gzctf-files

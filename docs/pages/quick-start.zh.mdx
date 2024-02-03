@@ -92,7 +92,7 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
        environment:
          - "GZCTF_ADMIN_PASSWORD=<Your GZCTF_ADMIN_PASSWORD>"
        ports:
-         - "80:80"
+         - "80:8080"
        volumes:
          - "./data/files:/app/files"
          - "./appsettings.json:/app/appsettings.json:ro"
