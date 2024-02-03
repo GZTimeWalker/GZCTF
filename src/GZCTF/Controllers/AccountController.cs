@@ -527,7 +527,8 @@ public class AccountController(
         if (result != IdentityResult.Success)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserUpdateFailed)]));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_AvatarUpdated)], user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_AvatarUpdated), avatar.Hash[..8]], user,
+            TaskStatus.Success);
 
         return Ok(avatar.Url());
     }
