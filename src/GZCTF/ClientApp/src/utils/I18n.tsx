@@ -22,6 +22,7 @@ export const useLanguage = () => {
 
   useEffect(() => {
     i18n.changeLanguage(language)
+    currentLanguage = language
   }, [language])
 
   const supportedLanguages = Object.keys(resources) as SupportedLanguages[]
@@ -38,3 +39,5 @@ export const useLanguage = () => {
 
   return { language, setLanguage, supportedLanguages }
 }
+
+export let currentLanguage: string = 'zh-CN';

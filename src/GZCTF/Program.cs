@@ -2,6 +2,7 @@ global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using GZCTF.Extensions;
@@ -38,11 +39,6 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
         options.ApplyCurrentCultureToResponseHeaders = true;
     });
-
-#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
-GZCTF.Program.StaticLocalizer =
-    builder.Services.BuildServiceProvider().GetRequiredService<IStringLocalizer<GZCTF.Program>>();
-#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -346,7 +342,7 @@ namespace GZCTF
     {
         public static bool IsTesting { get; set; }
 
-        internal static IStringLocalizer<Program> StaticLocalizer { get; set; } = default!;
+        internal static IStringLocalizer<Program> StaticLocalizer { get; } = new CulturedLocalizer<GZCTF.Program>(new CultureInfo("en-US"));
 
         internal static void Banner()
         {
@@ -393,8 +389,8 @@ namespace GZCTF
                         : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
-                where val.Errors.Count > 0
-                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                      where val.Errors.Count > 0
+                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is [_, ..]
                 ? errors

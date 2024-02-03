@@ -1742,6 +1742,7 @@ export interface SignatureVerifyModel {
 import type {AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType} from "axios";
 import axios from "axios";
 import useSWR, {mutate, MutatorOptions, SWRConfiguration} from "swr";
+import {currentLanguage} from "@Utils/I18n";
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -1862,6 +1863,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(requestParams.headers || {}),
         ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
+        ...({ "Accept-Language": currentLanguage.replace("_", "-") })
       },
       params: query,
       responseType: responseFormat,
