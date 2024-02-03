@@ -7,9 +7,9 @@
     "name": "チーム名",
     "kick": "チームから追放する",
     "members": "チームメンバー",
-    "transfer": "チームを譲る",
+    "transfer": "チーム譲渡",
     "invite_code": "招待コード",
-    "role": "個人的に識別"
+    "role": "役割"
   },
   "button": {
     "join": "チームに参加",
@@ -27,26 +27,26 @@
     },
     "kick": {
       "confirm": {
-        "title": "追放を確認",
+        "title": "追放確認",
         "message": "チームメンバー「{{user}}」を追放しますか？"
       }
     },
     "leave": {
       "confirm": {
-        "title": "チームから離脱する",
+        "title": "チームから離脱",
         "message": "チーム「{{team}}」から離脱しますか？"
       }
     },
     "create": "チームを作成する。他の人を招待することができます。1つのチームしか所有できません。",
     "disband": {
       "confirm": {
-        "title": "チームの解散を確認",
+        "title": "チーム解散確認",
         "message": "チーム \"{{team}}\" を解散しますか？"
       }
     },
     "transfer": {
       "confirm": {
-        "title": "チームを譲る",
+        "title": "チーム譲渡確認",
         "message": "チーム「{{team}}」を「{{user}}」に譲渡しますか？"
       }
     },
@@ -72,7 +72,7 @@
     "create": {
       "success": {
         "title": "チームが作成されました",
-        "message": "{{team}}が作成されました。チームメイトを今すぐ招待しましょう！"
+        "message": "{{team}}が作成されました。チームメンバーを今すぐ招待しましょう！"
       }
     },
     "updated": "チーム情報を更新しました",

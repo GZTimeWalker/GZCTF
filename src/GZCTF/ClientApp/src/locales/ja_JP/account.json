@@ -1,23 +1,23 @@
 {
   "label": {
-    "bio": "説明",
+    "bio": "一言",
     "email": "メール",
     "phone": "電話番号",
     "password": "パスワード",
     "username": "ユーザー名",
-    "email_new": "新しいメール",
+    "email_new": "新メール",
     "real_name": "氏名",
     "student_id": "学生/職員番号",
     "password_old": "現在のパスワード",
     "password_retype": "パスワード再確認",
-    "username_or_email": "ユーザー名またはEメール"
+    "username_or_email": "ユーザー名またはメール"
   },
   "title": {
     "login": "ログイン",
-    "reset": "パスワードをリセット",
+    "reset": "パスワードリセット",
     "verify": "アカウント認証",
-    "confirm": "メールで認証",
-    "profile": "プロフィール",
+    "confirm": "メールによる認証",
+    "profile": "個人情報",
     "register": "新規登録",
     "recovery": "アカウント回復"
   },
@@ -30,7 +30,7 @@
     "reset": "パスワードをリセット",
     "recovery": "確認メールを送信",
     "register": "新規登録",
-    "save_profile": "プロファイルを保存",
+    "save_profile": "個人情報を保存",
     "update_email": "メールを変更",
     "confirm_email": "メールを確認",
     "verify_account": "アカウントを認証",
@@ -45,13 +45,13 @@
       "message": "次のボタンをクリックしてメールの変更を確認してください。"
     },
     "profile": {
-      "update_email_note": "メールアドレスを変更すると、元のメールアドレスでログインできなくなります。<br/>新しいメールアドレスに確認用のリンクが含まれたメールが送信されますので、そこから確認を完了してください。"
+      "update_email_note": "メールアドレスを変更すると、元のメールアドレスがログインできなくなります。<br/>新メールアドレスに確認用のリンクが含まれたメールが送信されますので、そこから確認を完了してください。"
     },
     "link_check": "リンクを確認して再アクセスしてください",
-    "link_invalid": "あかん! リンクは無効です"
+    "link_invalid": "あかん! リンクは無効のようです"
   },
   "password": {
-    "empty": "パスワードは空欄にできません",
+    "empty": "パスワードは空にできません",
     "not_match": "パスワードが一致しません",
     "min_length": "最低 6 文字",
     "include_number": "数字が含まれています",
@@ -90,11 +90,11 @@
       }
     },
     "confirm": {
-      "failed": "メールの検証に失敗しました",
+      "failed": "メールの認証に失敗しました",
       "success": "メールの認証が完了しました"
     },
     "profile": {
-      "profile_updated": "アカウント情報が更新されました。",
+      "profile_updated": "個人情報が更新されました。",
       "password_updated": "パスワードが変更されましたためログインし直してください。"
     },
     "register": {

@@ -18,7 +18,7 @@
   },
   "content": {
     "metadata": "{{author}} が {{date}} に公開されました",
-    "pinned": "[置顶]",
+    "pinned": "[固定]",
     "details": "詳細を表示",
     "delete": "記事「{{title}}」を削除してもよろしいですか？",
     "updated": {
