@@ -31,19 +31,19 @@
     },
     "no_data": "データがありません",
     "wider": {
-      "text": "このページにアクセスするには、より広いデバイスを使用します。",
+      "text": "このページにアクセスするには、より広いデバイスを使用してください",
       "title": "ページの幅が足りません"
     }
   },
   "email": {
     "sent": {
-      "message": "メールアドレスと迷惑メールをご確認ください",
+      "message": "迷惑メールを含めてメールをご確認ください",
       "title": "メールが送信されました"
     }
   },
   "error": {
-    "check_input": "入力内容を確認する",
-    "empty": "内容を入力してください。",
+    "check_input": "入力内容を確認してください",
+    "empty": "内容は空にできません",
     "encountered": "エラーが発生しました",
     "file_invalid": {
       "message": "ファイル形式とサイズを確認してください",
@@ -56,7 +56,7 @@
     "param_missing": "パラメータが不足しています",
     "param_unknown": "不明なパラメータ",
     "request_too_frequent": "リクエストが頻繁すぎます",
-    "try_later": "後で再度お試し下さい",
+    "try_later": "しばらくしてからもう一度お試しください",
     "unknown": "不明なエラー"
   },
   "label": {
@@ -71,14 +71,14 @@
   "modal": {
     "cancel": "キャンセル",
     "confirm": "確認",
-    "confirm_delete": "削除の確認",
-    "confirm_update": "変更",
+    "confirm_delete": "削除確認",
+    "confirm_update": "変更確認",
     "delete": "削除"
   },
   "tab": {
     "about": "プラットフォーム情報",
     "account": {
-      "clean_cache": "キャッシュを消去",
+      "clean_cache": "キャッシュを削除",
       "login": "ログイン",
       "logout": "ログアウト",
       "profile": "ユーザー情報"
@@ -95,7 +95,7 @@
     }
   },
   "title": {
-    "404": "The Nowhere",
+    "404": "どこにもない",
     "about": "プラットフォーム情報"
   }
 }
