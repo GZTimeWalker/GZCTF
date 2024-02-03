@@ -22,7 +22,7 @@
     "details": "View Details",
     "delete": "Are you sure you want to delete post {{title}}?",
     "updated": {
-      "title": "Post changed",
+      "title": "Post has been changed",
       "content": "The post has been changed. Save it?"
     }
   },

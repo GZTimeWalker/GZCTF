@@ -11,7 +11,7 @@
     "submit_flag": "Submit flag",
     "instance": {
       "create": "Create",
-      "prolong": "Renew",
+      "prolong": "Extend",
       "destroy": "Destroy"
     }
   },
@@ -25,7 +25,7 @@
       "entry": {
         "label": "Instance Entry",
         "description": {
-          "proxy": "Platform enabled proxy mode.",
+          "proxy": "Proxy mode has been enabled for the platform.",
           "anchor": "Get clients"
         }
       },
@@ -35,18 +35,18 @@
       },
       "no_container": {
         "message": "This challenge requires creating an instance",
-        "note": "Instance is valid for 2 hours"
+        "note": "Instance will live for 2 hours."
       },
       "actions": {
         "count_down": "Remaining: ",
-        "note": "You can renew the container 10 minutes before expiry"
+        "note": "You can extend the usage time of the container 10 minutes before it expires."
       }
     },
     "wrong_flag_hints": [
-      "饮水思源，重新审题吧。",
-      "诗云：路漫漫其修远兮，再接再厉吧。",
-      "沉着冷静，可能会有意想不到的收获。",
-      "失败乃成功之母，回去再琢磨琢磨。",
+      "Where there's a will, there's a flag.",
+      "To be, or not to be, that is not the flag.",
+      "Pride hurts, flag benefits.",
+      "Failure teaches flags.",
       "非也非也，不是这个 flag。",
       "望眼欲穿，flag 却不在这里。",
       "不要浮躁，仔细再思考思考。",
