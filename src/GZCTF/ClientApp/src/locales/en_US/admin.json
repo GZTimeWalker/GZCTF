@@ -179,9 +179,9 @@
           "label": "Maximum Team Member"
         },
         "organizations": {
-          "add": "+ Add group \"{{org}}\"",
-          "description": "Add categories to enable grouped scoreboard",
-          "label": "Candidate Organizations"
+          "add": "+ Add division \"{{org}}\"",
+          "description": "Add divisions to enable grouped scoreboard",
+          "label": "List of Participating Divisions"
         },
         "poster": "Poster",
         "practice_mode": {
@@ -412,7 +412,7 @@
           }
         }
       },
-      "organizations": "No categories specified; teams can join without selecting a category.",
+      "organizations": "No divisions specified; teams can join without selecting a division.",
       "participation": {
         "bio": "(no bio)",
         "team": "(no name)"
