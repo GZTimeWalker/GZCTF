@@ -126,7 +126,7 @@ export class HttpClient<SecurityDataType = unknown> {
             headers: {
                 ...(requestParams.headers || {}),
                 ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
-                         ...({ "Accept-Language": currentLanguage.replace("_", "-") })
+                ...({ "Accept-Language": currentLanguage.replace("_", "-") })
             },
             params: query,
             responseType: responseFormat,
