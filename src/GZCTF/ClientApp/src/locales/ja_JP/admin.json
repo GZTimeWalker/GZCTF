@@ -430,7 +430,7 @@
     },
     "settings": {
       "email_domain_list": "ドメインの登録を制限しない",
-      "footer": "`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)"
+      "footer": "`テスト` <mbr/> [某大学ホームページ](...)"
     },
     "teams": {
       "search": "チーム名を探す"
