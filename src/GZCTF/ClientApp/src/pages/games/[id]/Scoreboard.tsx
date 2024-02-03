@@ -24,7 +24,7 @@ const Scoreboard: FC = () => {
   return (
     <WithNavBar width="90%" minWidth={0}>
       {isMobile ? (
-        <Stack pb="md">
+        <Stack pt="md">
           {data && !error && <TeamRank />}
           {isVertical ? (
             <MobileScoreboardTable

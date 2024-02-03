@@ -158,7 +158,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
         <Group position="center">
           <Pagination
             noWrap
-            size="sm"
+            size="md"
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}

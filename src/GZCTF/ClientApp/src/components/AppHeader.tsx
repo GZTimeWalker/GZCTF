@@ -80,7 +80,7 @@ const AppHeader: FC = () => {
                 to={`/account/login?from=${location.pathname}`}
                 icon={<Icon path={mdiAccountCircleOutline} size={1} />}
               >
-                t('common.tab.account.login')
+                {t('common.tab.account.login')}
               </Menu.Item>
             )}
             <Menu.Divider />
