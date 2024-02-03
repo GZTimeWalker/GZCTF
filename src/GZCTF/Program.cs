@@ -32,7 +32,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     {
         string[] supportedCultures = ["en-US", "zh-CN", "ja-JP"];
 
-        options.SetDefaultCulture(supportedCultures[0])
+        options
             .AddSupportedCultures(supportedCultures)
             .AddSupportedUICultures(supportedCultures);
 
