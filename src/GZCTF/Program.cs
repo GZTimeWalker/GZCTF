@@ -28,7 +28,18 @@ using StackExchange.Redis;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
+    .Configure<RequestLocalizationOptions>(options =>
+    {
+        options.ApplyCurrentCultureToResponseHeaders = true;
+        options.SupportedUICultures = options.SupportedCultures = [new CultureInfo("zh-CN"), new CultureInfo("en-US"), new CultureInfo("ja-JP")];
+        var defaultCulture = Environment.GetEnvironmentVariable("GZCTF_DEFAULT_CULTURE");
+        if (!string.IsNullOrWhiteSpace(defaultCulture))
+        {
+            var culture = new CultureInfo(defaultCulture);
+            options.DefaultRequestCulture = new(culture, culture);
+        }
+    });
 
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 GZCTF.Program.StaticLocalizer =
@@ -267,12 +278,7 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 
 WebApplication app = builder.Build();
 
-app.UseRequestLocalization(options =>
-{
-    options.ApplyCurrentCultureToResponseHeaders = true;
-    options.SupportedCultures = [new CultureInfo("zh-CN"), new CultureInfo("en-US"), new CultureInfo("ja-JP")];
-    options.SupportedUICultures = options.SupportedUICultures;
-});
+app.UseRequestLocalization();
 
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
