@@ -4,7 +4,6 @@ using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
-using Microsoft.Extensions.Localization;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
 namespace GZCTF.Services.Container.Manager;
@@ -12,19 +11,16 @@ namespace GZCTF.Services.Container.Manager;
 public class SwarmManager : IContainerManager
 {
     readonly DockerClient _client;
-    readonly IStringLocalizer<Program> _localizer;
     readonly ILogger<SwarmManager> _logger;
     readonly DockerMetadata _meta;
 
-    public SwarmManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<SwarmManager> logger,
-        IStringLocalizer<Program> localizer)
+    public SwarmManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<SwarmManager> logger)
     {
         _logger = logger;
-        _localizer = localizer;
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_SwarmMode)], TaskStatus.Success,
+        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_SwarmMode)], TaskStatus.Success,
             LogLevel.Debug);
     }
 
@@ -37,7 +33,7 @@ public class SwarmManager : IContainerManager
         catch (DockerContainerNotFoundException)
         {
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
@@ -45,17 +41,17 @@ public class SwarmManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
                     TaskStatus.Success, LogLevel.Debug);
             }
             else
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
                         container.ContainerId,
                         e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
                         container.ContainerId,
                         e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
                 return;
@@ -64,7 +60,7 @@ public class SwarmManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
             return;
         }
 
@@ -87,7 +83,7 @@ public class SwarmManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.Conflict && retry < 3)
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerExisted), parameters.Service.Name],
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerExisted), parameters.Service.Name],
                     TaskStatus.Duplicate,
                     LogLevel.Warning);
                 await _client.Swarm.RemoveServiceAsync(parameters.Service.Name, token);
@@ -96,11 +92,11 @@ public class SwarmManager : IContainerManager
             }
 
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus),
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus),
                     parameters.Service.Name,
                     e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse),
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse),
                     parameters.Service.Name,
                     e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
             return null;
@@ -108,7 +104,7 @@ public class SwarmManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                     parameters.Service.Name]);
             return null;
         }
@@ -124,7 +120,7 @@ public class SwarmManager : IContainerManager
             if (retry == 3)
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerPortNotExposed),
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerPortNotExposed),
                         container.ContainerId],
                     TaskStatus.Failed,
                     LogLevel.Warning);

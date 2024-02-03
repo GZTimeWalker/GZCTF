@@ -4,7 +4,6 @@ using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Services.Interface;
-using Microsoft.Extensions.Localization;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
 namespace GZCTF.Services.Container.Manager;
@@ -12,15 +11,12 @@ namespace GZCTF.Services.Container.Manager;
 public class DockerManager : IContainerManager
 {
     readonly DockerClient _client;
-    readonly IStringLocalizer<Program> _localizer;
     readonly ILogger<DockerManager> _logger;
     readonly DockerMetadata _meta;
 
-    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger,
-        IStringLocalizer<Program> localizer)
+    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
     {
         _logger = logger;
-        _localizer = localizer;
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
@@ -38,7 +34,7 @@ public class DockerManager : IContainerManager
         catch (DockerContainerNotFoundException)
         {
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
@@ -46,17 +42,17 @@ public class DockerManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
                     TaskStatus.Success, LogLevel.Debug);
             }
             else
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
                         container.ContainerId,
                         e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
                         container.ContainerId,
                         e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
                 return;
@@ -65,7 +61,7 @@ public class DockerManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
             return;
         }
 
@@ -90,7 +86,7 @@ public class DockerManager : IContainerManager
         }
         catch (DockerImageNotFoundException)
         {
-            _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
+            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
                 TaskStatus.Pending, LogLevel.Information);
 
             await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, _meta.Auth,
@@ -102,7 +98,7 @@ public class DockerManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), parameters.Name]);
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), parameters.Name]);
             return null;
         }
 
@@ -113,7 +109,7 @@ public class DockerManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), parameters.Name]);
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), parameters.Name]);
             return null;
         }
 
@@ -129,7 +125,7 @@ public class DockerManager : IContainerManager
             if (retry == 3)
             {
                 _logger.SystemLog(
-                    _localizer[nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed),
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed),
                         container.ContainerId[..12],
                         config.Image.Split("/").LastOrDefault() ?? ""],
                     TaskStatus.Failed, LogLevel.Warning);
@@ -151,7 +147,7 @@ public class DockerManager : IContainerManager
         if (container.Status != ContainerStatus.Running)
         {
             _logger.SystemLog(
-                _localizer[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
                     config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
@@ -173,7 +169,7 @@ public class DockerManager : IContainerManager
         if (int.TryParse(port, out var numPort))
             container.PublicPort = numPort;
         else
-            _logger.SystemLog(_localizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
+            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
                 TaskStatus.Failed,
                 LogLevel.Warning);
 
