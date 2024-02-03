@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using Namotion.Reflection;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -41,19 +40,27 @@ public class DatabaseSink : ILogEventSink, IDisposable
         if (logEvent.Level < LogEventLevel.Information)
             return;
 
-        LogModel logModel = new()
+        _logBuffer.Enqueue(ToLogModel(logEvent));
+    }
+
+    static LogModel ToLogModel(LogEvent logEvent)
+    {
+        logEvent.Properties.TryGetValue("UserName", out LogEventPropertyValue? userName);
+        logEvent.Properties.TryGetValue("SourceContext", out LogEventPropertyValue? sourceContext);
+        logEvent.Properties.TryGetValue("IP", out LogEventPropertyValue? ip);
+        logEvent.Properties.TryGetValue("Status", out LogEventPropertyValue? status);
+
+        return new LogModel
         {
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
             Message = logEvent.RenderMessage(),
-            UserName = logEvent.TryGetPropertyValue<string>("UserName")?[1..^1],
-            Logger = logEvent.TryGetPropertyValue<string>("SourceContext")?[1..^1] ?? "",
-            RemoteIP = logEvent.TryGetPropertyValue<string>("IP")?[1..^1],
-            Status = logEvent.TryGetPropertyValue<TaskStatus>("Status").ToString(),
+            UserName = userName?.ToString()[1..^1] ?? "Anonymous",
+            Logger = sourceContext?.ToString()[1..^1] ?? "Unknown",
+            RemoteIP = ip?.ToString()[1..^1] ?? "",
+            Status = status?.ToString() ?? "",
             Exception = logEvent.Exception?.ToString()
         };
-
-        _logBuffer.Enqueue(logModel);
     }
 
     async Task WriteToDatabase(CancellationToken token = default)
