@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.17.7",
+  "version": "0.18.0-preview.0",
   "private": true,
   "type": "module",
   "scripts": {
