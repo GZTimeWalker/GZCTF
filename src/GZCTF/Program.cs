@@ -2,7 +2,6 @@ global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
-using System.Globalization;
 using System.Reflection;
 using System.Text;
 using GZCTF.Extensions;
@@ -31,14 +30,13 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
+        string[] supportedCultures = ["en-US", "zh-CN", "ja-JP"];
+
+        options.SetDefaultCulture(supportedCultures[0])
+            .AddSupportedCultures(supportedCultures)
+            .AddSupportedUICultures(supportedCultures);
+
         options.ApplyCurrentCultureToResponseHeaders = true;
-        options.SupportedUICultures = options.SupportedCultures = [new CultureInfo("zh-CN"), new CultureInfo("en-US"), new CultureInfo("ja-JP")];
-        var defaultCulture = Environment.GetEnvironmentVariable("GZCTF_DEFAULT_CULTURE");
-        if (!string.IsNullOrWhiteSpace(defaultCulture))
-        {
-            var culture = new CultureInfo(defaultCulture);
-            options.DefaultRequestCulture = new(culture, culture);
-        }
     });
 
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
@@ -48,16 +46,7 @@ GZCTF.Program.StaticLocalizer =
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    IConfigurationSection? kestrelSection = builder.Configuration.GetSection("Kestrel");
-    options.Configure(kestrelSection);
-    kestrelSection.Bind(options);
-});
-
-builder.WebHost.ConfigureKestrel(options =>
-{
-    IConfigurationSection? kestrelSection = builder.Configuration.GetSection("Kestrel");
-    options.Configure(kestrelSection);
-    kestrelSection.Bind(options);
+    options.Configure(builder.Configuration.GetSection("Kestrel"));
 });
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -96,11 +85,11 @@ else
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
                 o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-            if (builder.Environment.IsDevelopment())
-            {
-                options.EnableSensitiveDataLogging();
-                options.EnableDetailedErrors();
-            }
+
+            if (!builder.Environment.IsDevelopment()) return;
+
+            options.EnableSensitiveDataLogging();
+            options.EnableDetailedErrors();
         }
     );
 }
