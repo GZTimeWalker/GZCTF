@@ -28,6 +28,14 @@ using StackExchange.Redis;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+GZCTF.Program.Banner();
+
+FilePath.EnsureDirs();
+
+#region Host
+
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
@@ -45,21 +53,13 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Configure(builder.Configuration.GetSection("Kestrel"));
 });
 
-Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-GZCTF.Program.Banner();
-
-FilePath.EnsureDirs();
-
-#region Logging
-
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseSerilog(dispose: true);
 builder.Configuration.AddEnvironmentVariables("GZCTF_");
 Log.Logger = LogHelper.GetInitLogger();
 
-#endregion Logging
+#endregion Host
 
 #region AppDbContext
 
