@@ -342,7 +342,8 @@ namespace GZCTF
     {
         public static bool IsTesting { get; set; }
 
-        internal static IStringLocalizer<Program> StaticLocalizer { get; } = new CulturedLocalizer<GZCTF.Program>(new CultureInfo("en-US"));
+        internal static IStringLocalizer<Program> StaticLocalizer { get; } =
+            new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);
 
         internal static void Banner()
         {
@@ -389,8 +390,8 @@ namespace GZCTF
                         : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
-                      where val.Errors.Count > 0
-                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                where val.Errors.Count > 0
+                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is [_, ..]
                 ? errors
