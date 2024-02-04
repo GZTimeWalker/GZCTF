@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Serilog;
 
 namespace GZCTF.Middlewares;
 
@@ -20,6 +21,8 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
         var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
         var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
+        var diagnosticContext = context.HttpContext.RequestServices.GetRequiredService<IDiagnosticContext>();
+
         var id = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         UserInfo? user = null;
@@ -34,6 +37,10 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
                 StatusCodes.Status401Unauthorized);
             return;
         }
+
+        diagnosticContext.Set("UserId", user.Id);
+        diagnosticContext.Set("UserName", user.UserName);
+        diagnosticContext.Set("IP", context.HttpContext.Connection.RemoteIpAddress);
 
         if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
         {

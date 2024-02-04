@@ -2,6 +2,7 @@
 using System.Net;
 using GZCTF.Extensions;
 using Serilog;
+using Serilog.Context;
 using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.File.Archive;
@@ -16,7 +17,7 @@ public static class LogHelper
     const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
                                "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
                                "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
-                               "{#if Length(IP) > 0}@{IP}{#end}{#end}\n{@x}";
+                               "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
 
     const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
@@ -83,7 +84,9 @@ public static class LogHelper
     public static void Log<T>(this ILogger<T> logger, string msg, string uname, string ip, TaskStatus status,
         LogLevel? level = null)
     {
-        using (logger.BeginScope("{UserName}{Status}{IP}", uname, status, ip))
+        using (LogContext.PushProperty("UserName", uname))
+        using (LogContext.PushProperty("IP", ip))
+        using (LogContext.PushProperty("Status", status.ToString()))
         {
             logger.Log(level ?? LogLevel.Information, "{msg:l}", msg);
         }
@@ -93,7 +96,7 @@ public static class LogHelper
         app.UseSerilogRequestLogging(options =>
         {
             options.MessageTemplate =
-                "[{StatusCode}] {Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath} @ {RemoteIP}";
+                "[{StatusCode}] {Elapsed,8:####0.00}ms HTTP {RequestMethod,-6} {RequestPath} @ {IP}";
             options.GetLevel = (context, time, ex) =>
                 context.Response.StatusCode == 204 ? LogEventLevel.Verbose :
                 time > 10000 && context.Response.StatusCode != 101 ? LogEventLevel.Warning :
@@ -101,7 +104,7 @@ public static class LogHelper
 
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
-                diagnosticContext.Set("RemoteIP", httpContext.Connection.RemoteIpAddress);
+                diagnosticContext.Set("IP", httpContext.Connection.RemoteIpAddress);
             };
         });
 
