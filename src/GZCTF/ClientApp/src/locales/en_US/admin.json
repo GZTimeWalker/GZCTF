@@ -16,7 +16,7 @@
       "flag": {
         "add": {
           "dynamic": "Upload Attachments",
-          "normal": "Add flag",
+          "normal": "Add Flag",
           "remote": "Add Remote"
         },
         "delete": "Delete",
@@ -38,14 +38,14 @@
           "batch_add": "Batch Add"
         }
       },
-      "copy_public_key": "Copy public key",
+      "copy_public_key": "Copy Public Key",
       "delete": "Delete",
-      "new": "New game"
+      "new": "New Game"
     },
     "notices": {
       "delete": "Delete",
-      "edit": "Edit notice",
-      "new": "New notice"
+      "edit": "Edit Notice",
+      "new": "New Notice"
     },
     "save": "Save changes",
     "teams": {
