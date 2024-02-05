@@ -10,11 +10,11 @@
     "index": "Posts"
   },
   "button": {
-    "new": "New post",
-    "edit": "Edit post",
-    "goto": "Go to post",
-    "save": "Save post",
-    "delete": "Delete post"
+    "new": "New Post",
+    "edit": "Edit Post",
+    "goto": "Go to Post",
+    "save": "Save Post",
+    "delete": "Delete Post"
   },
   "content": {
     "metadata": "{{author}} published on {{date}}",

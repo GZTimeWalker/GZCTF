@@ -1,17 +1,17 @@
 {
   "button": {
-    "back": "Go back",
+    "back": "Go Back",
     "challenges": {
       "attachment": {
-        "save_url": "Save link",
+        "save_url": "Save Link",
         "upload": "Upload",
         "uploading": "Uploading..."
       },
       "bonus": "Triple Blood Bonus",
       "delete": "Delete",
       "disable": "Disable",
-      "edit": "Edit challenge",
-      "edit_more": "Edit flags",
+      "edit": "Edit Challenge",
+      "edit_more": "Edit Flags",
       "enable": "Enable",
       "flag": {
         "add": {
@@ -20,12 +20,12 @@
           "remote": "Add Remote"
         },
         "delete": "Delete",
-        "save": "Save template"
+        "save": "Save Template"
       },
       "hint": {
         "add": "Add Hint"
       },
-      "new": "New challenge",
+      "new": "New Challenge",
       "preview": "Preview",
       "test_container": {
         "create": "Create",

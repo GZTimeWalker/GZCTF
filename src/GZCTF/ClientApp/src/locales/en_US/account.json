@@ -27,8 +27,8 @@
   },
   "button": {
     "login": "Login",
-    "reset": "Reset password",
-    "recovery": "Send reset email",
+    "reset": "Reset Password",
+    "recovery": "Send Reset Email",
     "register": "Register",
     "save_profile": "Save Profile",
     "update_email": "Change Email",

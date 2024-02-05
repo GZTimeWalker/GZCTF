@@ -48,21 +48,21 @@
     "index": "Games"
   },
   "button": {
-    "join": "Join game",
-    "leave": "Leave game",
-    "finished": "Game ended",
-    "challenges": "Enter game",
+    "join": "Join Game",
+    "leave": "Leave Game",
+    "finished": "Game Ended",
+    "challenges": "Enter Game",
     "scoreboard": "Scoreboard",
-    "hide_solved": "Hide solved",
-    "login_required": "Please login",
-    "submit_writeup": "Submit writeup",
+    "hide_solved": "Hide Solved",
+    "login_required": "Please Login",
+    "submit_writeup": "Submit Writeup",
     "download": {
       "all_traffic": "Download all listed traffic",
-      "submissionsheet": "Download submissions",
+      "submissionsheet": "Submissions",
       "scoreboard": "Scoreboard"
     },
     "writeup": {
-      "upload": "Submit writeup",
+      "upload": "Submit Writeup",
       "uploading": "Uploading..."
     }
   },
