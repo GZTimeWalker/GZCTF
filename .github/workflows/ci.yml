@@ -87,7 +87,7 @@ jobs:
           push: true
 
       - name: Prune old packages
-        uses: vlaurin/action-ghcr-prune@v0.5.0
+        uses: vlaurin/action-ghcr-prune@v0.6.0
         with:
           dry-run: false
           token: ${{ secrets.PACKAGE_TOKEN }}
