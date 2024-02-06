@@ -86,7 +86,7 @@ public static class LogHelper
     {
         using (LogContext.PushProperty("UserName", uname))
         using (LogContext.PushProperty("IP", ip))
-        using (LogContext.PushProperty("Status", status.ToString()))
+        using (LogContext.PushProperty("Status", status))
         {
             logger.Log(level ?? LogLevel.Information, "{msg:l}", msg);
         }
