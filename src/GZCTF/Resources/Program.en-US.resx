@@ -439,13 +439,13 @@
     <value>[WA] Team [{0}] submitted answer [{2}] for challenge [{1}]</value>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
-    <value>[作弊检查] Team [{0}] suspected violation [{1}], related team [{2}]</value>
+    <value>[CHEAT] Team [{0}] used team [{2}]'s flag in challenge [{1}]</value>
   </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
-    <value>[数据库并发] Failed to update commit #{0}</value>
+    <value>[CONCURRENCY] Failed to update the status of submission #{0}</value>
   </data>
   <data name="FlagChecker_UnknownInstance" xml:space="preserve">
-    <value>[实例未知] No instance found for team [{0}] submission [{1}]</value>
+    <value>[UNKNOWN] No instance found for team [{0}] in challenge [{1}]</value>
   </data>
   <data name="FlagsChecker_Recheck" xml:space="preserve">
     <value>Recheck {0} flags</value>
