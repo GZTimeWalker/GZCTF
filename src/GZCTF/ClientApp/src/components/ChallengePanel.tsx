@@ -237,10 +237,12 @@ const ChallengePanel: FC = () => {
             ))}
           </SimpleGrid>
         ) : (
-          <Stack spacing={0} pt="20vh" w="20em" m="auto">
-            <Title order={2}>{t('game.content.all_solved.title')}</Title>
-            <Text>{t('game.content.all_solved.comment')}</Text>
-          </Stack>
+          <Center h="calc(100vh - 10rem)">
+            <Stack spacing={0}>
+              <Title order={2}>{t('game.content.all_solved.title')}</Title>
+              <Text>{t('game.content.all_solved.comment')}</Text>
+            </Stack>
+          </Center>
         )}
       </ScrollArea>
       {game?.writeupRequired && (
