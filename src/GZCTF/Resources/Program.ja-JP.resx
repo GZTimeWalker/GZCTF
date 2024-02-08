@@ -441,9 +441,6 @@
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
     <value>[不正検知] チーム [{0}] はルール [{1}] に違反の疑いがあります、関連チーム [{2}]</value>
   </data>
-  <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
-    <value>チャレンジ [{0}] はルール違反の疑いがあります、関連チーム [{1}] と [{2}]</value>
-  </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
     <value>[データベースの同時実行性] サブミッション #{0} のステータスを更新できませんでした</value>
   </data>
@@ -510,9 +507,6 @@
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} はチャレンジ {1} のコンテナインスタンス [{2}] を破棄しました</value>
   </data>
-  <data name="Game_ContainerDeletedEvent" xml:space="preserve">
-    <value>{0}#{1} はコンテナインスタンスを破棄しました</value>
-  </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
     <value>チャレンジのコンテナを削除できませんでした</value>
   </data>
@@ -566,9 +560,6 @@
   </data>
   <data name="Game_SubmissionNotFound" xml:space="preserve">
     <value>提出は見つかりませんでした</value>
-  </data>
-  <data name="Game_SubmissionNotice" xml:space="preserve">
-    <value>{0} が "{1}" の {2} を獲得しました。おめでとうございます！</value>
   </data>
   <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
     <value>チームの参加者数が制限を超えています</value>
@@ -713,9 +704,6 @@
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
     <value>{0} はチャレンジ {1} のコンテナインスタンス [{2}] を起動しました</value>
-  </data>
-  <data name="InstanceRepository_ContainerCreationEvent" xml:space="preserve">
-    <value>{0}#{1} はコンテナインスタンスを起動しました</value>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
     <value>チャレンジ {0} のコンテナインスタンスを起動できませんでした</value>
@@ -912,17 +900,11 @@
   <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
     <value>トラフィックキャプチャを使用できるのはコンテナチャレンジのみです</value>
   </data>
-  <data name="Challenge_Created" xml:space="preserve">
-    <value>新しいチャレンジ [{0}] が追加されました</value>
-  </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
     <value>動的添付名は空にはできません</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
     <value>フラッグの複雑性は不十分です。チームハッシュを追加するか長さを増やすことを検討してください。</value>
-  </data>
-  <data name="Challenge_HintUpdated" xml:space="preserve">
-    <value>[{0}]のヒントが更新されました</value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>チャレンジは フラッグがないため使用できません</value>
