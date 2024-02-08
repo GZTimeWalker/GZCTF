@@ -516,7 +516,7 @@
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
     <value>チャレンジのコンテナを削除できませんでした</value>
   </data>
-    <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
+  <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
     <value>コンテナの有効時間を延長できません</value>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">
