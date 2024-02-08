@@ -64,7 +64,7 @@
   },
   "notification": {
     "login": {
-      "banned": "User is disabled",
+      "banned": "User has been banned",
       "invalid": "Wrong username or password",
       "success": {
         "title": "Login succeeded",
@@ -79,7 +79,7 @@
     },
     "logout": "Logout successfully",
     "verify": {
-      "failed": "Account verification failed",
+      "failed": "Failed to verify the account",
       "success": "Account verified, please login"
     },
     "captcha": {
@@ -101,7 +101,7 @@
       "logged_in": "Successfully registered",
       "request_sent": {
         "title": "Registration request sent",
-        "message": "Please wait for admin review to activate!"
+        "message": "Please wait for administrator's approval for activation~"
       }
     }
   }
