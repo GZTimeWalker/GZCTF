@@ -207,5 +207,25 @@
       "suspended": "制限中",
       "unsubmitted": "ゲームに参加"
     }
+  },
+  "notice": {
+    "new_hint": "题目 [{{title}}#{{id}}] 更新了提示",
+    "blood": "恭喜 {{team}} 获得 [{{chal}}] {{blood}}",
+    "new_challenge": "题目 [{{title}}#{{id}}] 已开放"
+  },
+  "event": {
+    "container": {
+      "start": "{{chal}}#{{id}} 开启题目实例",
+      "destroy": "{{chal}}#{{id}} 销毁题目实例"
+    },
+    "cheat_detected": "题目 [{{chal}}] 疑似发生违规，队伍 [{{team}] 使用了 [{{steam}}] 的答案",
+    "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]",
+    "answer": {
+      "accepted": "回答正解",
+      "wrong": "間違い回答",
+      "cheat": "作弊行为",
+      "submitted": "提出完了",
+      "not_found": "未知实例"
+    }
   }
 }
