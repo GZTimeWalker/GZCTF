@@ -188,7 +188,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               context={context}
               disabled={false}
               onCreate={onCreate}
-              onProlong={onCreate}
+              onExtend={onCreate}
               onDestroy={onDestroy}
             />
           )}

@@ -4,7 +4,7 @@ const { apiConfig, generateResponses, config } = it;
 
 import type { AxiosInstance, AxiosRequestConfig, HeadersDefaults, ResponseType, AxiosResponse } from "axios";
 import axios from "axios";
-import { currentLanguage } from "@Utils/I18n";
+import { apiLanguage } from "@Utils/I18n";
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -126,7 +126,7 @@ export class HttpClient<SecurityDataType = unknown> {
             headers: {
                 ...(requestParams.headers || {}),
                 ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
-                ...({ "Accept-Language": currentLanguage.replace("_", "-") })
+                ...{ "Accept-Language": apiLanguage }
             },
             params: query,
             responseType: responseFormat,

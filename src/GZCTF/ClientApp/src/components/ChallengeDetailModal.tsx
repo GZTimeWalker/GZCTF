@@ -124,11 +124,11 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       .finally(() => setDisabled(false))
   }
 
-  const onProlongContainer = () => {
+  const onExtendContainer = () => {
     if (!challengeId) return
     setDisabled(true)
     api.game
-      .gameProlongContainer(gameId, challengeId)
+      .gameExtendContainerLifetime(gameId, challengeId)
       .then((res) => {
         mutate({
           ...challenge,
@@ -331,7 +331,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
             <InstanceEntry
               context={challenge.context}
               onCreate={onCreateContainer}
-              onProlong={onProlongContainer}
+              onExtend={onExtendContainer}
               onDestroy={onDestroyContainer}
               disabled={disabled}
             />

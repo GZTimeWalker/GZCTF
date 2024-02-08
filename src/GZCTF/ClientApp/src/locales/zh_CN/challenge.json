@@ -11,7 +11,7 @@
     "submit_flag": "提交 flag",
     "instance": {
       "create": "创建实例",
-      "prolong": "延长时间",
+      "extend": "延长时间",
       "destroy": "销毁实例"
     }
   },
@@ -105,7 +105,7 @@
           "title": "实例入口已复制到剪贴板"
         }
       },
-      "prolong": {
+      "extend": {
         "note": {
           "message": "请及时延长时间或销毁实例",
           "title": "实例即将到期"

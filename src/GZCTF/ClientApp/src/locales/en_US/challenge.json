@@ -11,7 +11,7 @@
     "submit_flag": "Submit Flag",
     "instance": {
       "create": "Create",
-      "prolong": "Extend",
+      "extend": "Extend",
       "destroy": "Destroy"
     }
   },
@@ -105,7 +105,7 @@
           "title": "Instance entry copied to clipboard"
         }
       },
-      "prolong": {
+      "extend": {
         "note": {
           "message": "Please extend lifetime or destroy instance in time",
           "title": "Instance is due"

@@ -33,7 +33,7 @@ interface InstanceEntryProps {
   context: ClientFlagContext
   disabled: boolean
   onCreate?: () => void
-  onProlong?: () => void
+  onExtend?: () => void
   onDestroy?: () => void
 }
 
@@ -41,10 +41,10 @@ dayjs.extend(duration)
 
 interface CountdownProps {
   time: string
-  prolongNotice: () => void
+  extendNotice: () => void
 }
 
-const Countdown: FC<CountdownProps> = ({ time, prolongNotice }) => {
+const Countdown: FC<CountdownProps> = ({ time, extendNotice }) => {
   const [now, setNow] = useState(dayjs())
   const end = dayjs(time)
   const countdown = dayjs.duration(end.diff(now))
@@ -60,7 +60,7 @@ const Countdown: FC<CountdownProps> = ({ time, prolongNotice }) => {
     if (countdown.asSeconds() <= 0) return
 
     if (countdown.asMinutes() < 10 && !haveNoticed) {
-      prolongNotice()
+      extendNotice()
       setHaveNoticed(true)
     } else if (countdown.asMinutes() > 10) {
       setHaveNoticed(false)
@@ -83,39 +83,39 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
   const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry, test) : instanceEntry
 
-  const [canProlong, setCanProlong] = useState(false)
+  const [canExtend, setCanExtend] = useState(false)
 
   const { t } = useTranslation()
 
-  const prolongNotice = () => {
-    if (canProlong) return
+  const extendNotice = () => {
+    if (canExtend) return
 
     showNotification({
       color: 'orange',
-      title: t('challenge.notification.instance.prolong.note.title'),
-      message: t('challenge.notification.instance.prolong.note.message'),
+      title: t('challenge.notification.instance.extend.note.title'),
+      message: t('challenge.notification.instance.extend.note.message'),
       icon: <Icon path={mdiExclamation} size={1} />,
     })
 
-    setCanProlong(true)
+    setCanExtend(true)
   }
 
   useEffect(() => {
     setWithContainer(!!context.instanceEntry)
     const countdown = dayjs.duration(dayjs(context.closeTime ?? 0).diff(dayjs()))
-    setCanProlong(countdown.asMinutes() < 10)
+    setCanExtend(countdown.asMinutes() < 10)
   }, [context])
 
-  const onProlong = () => {
-    if (!canProlong || !props.onProlong) return
+  const onExtend = () => {
+    if (!canExtend || !props.onExtend) return
 
-    props.onProlong()
-    setCanProlong(false)
+    props.onExtend()
+    setCanExtend(false)
 
     showNotification({
       color: 'teal',
-      title: t('challenge.notification.instance.prolong.success.title'),
-      message: t('challenge.notification.instance.prolong.success.message'),
+      title: t('challenge.notification.instance.extend.success.title'),
+      message: t('challenge.notification.instance.extend.success.message'),
       icon: <Icon path={mdiCheck} size={1} />,
     })
   }
@@ -225,7 +225,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
           <Stack align="left" spacing={0}>
             <Text size="sm" fw={600}>
               {t('challenge.content.instance.actions.count_down')}
-              <Countdown time={context.closeTime ?? '0'} prolongNotice={prolongNotice} />
+              <Countdown time={context.closeTime ?? '0'} extendNotice={extendNotice} />
             </Text>
             <Text size="xs" color="dimmed" fw={600}>
               {t('challenge.content.instance.actions.note')}
@@ -233,8 +233,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
           </Stack>
 
           <Group position="right" noWrap spacing="xs">
-            <Button color="orange" onClick={onProlong} disabled={!canProlong}>
-              {t('challenge.button.instance.prolong')}
+            <Button color="orange" onClick={onExtend} disabled={!canExtend}>
+              {t('challenge.button.instance.extend')}
             </Button>
             <Button color="red" onClick={onDestroy} disabled={disabled}>
               {t('challenge.button.instance.destroy')}

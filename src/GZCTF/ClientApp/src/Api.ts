@@ -1739,10 +1739,9 @@ export interface SignatureVerifyModel {
   publicKey: string;
 }
 
-import type {AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType} from "axios";
+import { apiLanguage } from "@Utils/I18n";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
-import useSWR, {mutate, MutatorOptions, SWRConfiguration} from "swr";
-import {currentLanguage} from "@Utils/I18n";
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -1863,7 +1862,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(requestParams.headers || {}),
         ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
-        ...({ "Accept-Language": currentLanguage.replace("_", "-") })
+        ...{ "Accept-Language": apiLanguage },
       },
       params: query,
       responseType: responseFormat,
@@ -1872,6 +1871,8 @@ export class HttpClient<SecurityDataType = unknown> {
     });
   };
 }
+
+import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 
 /**
  * @title GZCTF Server API
@@ -3654,6 +3655,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),
 
     /**
+     * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
+     *
+     * @tags Game
+     * @name GameExtendContainerLifetime
+     * @summary 延长容器时间
+     * @request POST:/api/game/{id}/container/{challengeId}/extend
+     */
+    gameExtendContainerLifetime: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<ContainerInfoModel, RequestResponse>({
+        path: `/api/game/${id}/container/${challengeId}/extend`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 获取比赛的详细信息
      *
      * @tags Game
@@ -4123,22 +4140,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
       options?: MutatorOptions,
     ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
-
-    /**
-     * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
-     *
-     * @tags Game
-     * @name GameProlongContainer
-     * @summary 延长容器时间
-     * @request POST:/api/game/{id}/container/{challengeId}/prolong
-     */
-    gameProlongContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}/prolong`,
-        method: "POST",
-        format: "json",
-        ...params,
-      }),
 
     /**
      * @description 获取积分榜数据
