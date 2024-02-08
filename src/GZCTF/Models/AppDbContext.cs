@@ -33,12 +33,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
-    internal static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = false };
+    internal static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
-            v => JsonSerializer.Serialize(v ?? new(), _jsonOptions),
-            v => JsonSerializer.Deserialize<T>(v, _jsonOptions)
+            v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
+            v => JsonSerializer.Deserialize<T>(v, JsonOptions)
         );
 
     static ValueComparer<TList> GetEnumerableComparer<TList, T>()
@@ -317,9 +317,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.Navigation(e => e.LocalFile).AutoInclude();
         });
+        
+        builder.Entity<GameNotice>(entity =>
+        {
+            entity.Property(e => e.Values)
+                .HasConversion(listConverter)
+                .Metadata
+                .SetValueComparer(listComparer);
+        });
 
         builder.Entity<GameEvent>(entity =>
         {
+            entity.Property(e => e.Values)
+                .HasConversion(listConverter)
+                .Metadata
+                .SetValueComparer(listComparer);
+            
             entity.HasOne(e => e.Team)
                 .WithMany()
                 .HasForeignKey(e => e.TeamId);

@@ -197,9 +197,7 @@ public class GameInstanceRepository(
                 GameId = gameInstance.Challenge.GameId,
                 TeamId = gameInstance.Participation.TeamId,
                 UserId = user.Id,
-                Content = localizer[nameof(Resources.Program.InstanceRepository_ContainerCreationEvent),
-                    gameInstance.Challenge.Title,
-                    gameInstance.Challenge.Id]
+                Values = [gameInstance.Challenge.Id.ToString(), gameInstance.Challenge.Title]
             }, token);
 
         return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);

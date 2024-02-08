@@ -4,6 +4,7 @@ import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
+import { TFunction } from 'i18next'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
@@ -38,6 +39,43 @@ const ApplyFilter = (notices: GameNotice[], filter: NoticeFilter) => {
       return notices.filter((notice) => notice.type === NoticeType.Normal)
     default:
       return notices
+  }
+}
+
+const formatNotice = (t: TFunction, notice: GameNotice) => {
+  switch (notice.type) {
+    case NoticeType.Normal:
+      return notice.values.at(-1) || ''
+    case NoticeType.NewChallenge:
+      return t('game.notice.new_challenge', {
+        title: notice.values.at(0),
+        id: notice.values.at(1),
+      })
+    case NoticeType.NewHint:
+      return t('game.notice.new_hint', {
+        title: notice.values.at(0),
+        id: notice.values.at(1),
+      })
+    case NoticeType.FirstBlood:
+      return t('game.notice.blood', {
+        team: notice.values.at(0),
+        chal: notice.values.at(1),
+        blood: t('challenge.bonus.first_blood'),
+      })
+    case NoticeType.SecondBlood:
+      return t('game.notice.blood', {
+        team: notice.values.at(0),
+        chal: notice.values.at(1),
+        blood: t('challenge.bonus.second_blood'),
+      })
+    case NoticeType.ThirdBlood:
+      return t('game.notice.blood', {
+        team: notice.values.at(0),
+        chal: notice.values.at(1),
+        blood: t('challenge.bonus.third_blood'),
+      })
+    default:
+      return notice.values.at(-1) || ''
   }
 }
 
@@ -91,7 +129,7 @@ const GameNoticePanel: FC = () => {
         if (message.type === NoticeType.NewChallenge || message.type === NoticeType.NewHint) {
           showNotification({
             color: 'yellow',
-            message: message.content,
+            message: formatNotice(t, message),
             autoClose: 5000,
           })
         }
@@ -99,7 +137,7 @@ const GameNoticePanel: FC = () => {
         if (message.type === NoticeType.Normal) {
           showNotification({
             color: 'brand',
-            message: message.content,
+            message: formatNotice(t, message),
             autoClose: 5000,
           })
         }
@@ -164,7 +202,7 @@ const GameNoticePanel: FC = () => {
                     <Text size="xs" fw={700} c="dimmed">
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
                     </Text>
-                    <InlineMarkdownRender source={notice.content} />
+                    <InlineMarkdownRender source={formatNotice(t, notice)} />
                   </Stack>
                 </List.Item>
               ))}

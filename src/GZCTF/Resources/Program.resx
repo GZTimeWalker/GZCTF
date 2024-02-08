@@ -441,9 +441,6 @@
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
     <value>[作弊检查] 队伍 [{0}] 疑似违规 [{1}]，相关队伍 [{2}]</value>
   </data>
-  <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
-    <value>题目 [{0}] 疑似发生违规，相关队伍 [{1}] 和 [{2}]</value>
-  </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
     <value>[数据库并发] 未能更新提交 #{0} 的状态</value>
   </data>
@@ -510,9 +507,6 @@
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} 销毁题目 {1} 的容器实例 [{2}]</value>
   </data>
-  <data name="Game_ContainerDeletedEvent" xml:space="preserve">
-    <value>{0}#{1} 销毁容器实例</value>
-  </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
     <value>题目删除容器失败</value>
   </data>
@@ -566,9 +560,6 @@
   </data>
   <data name="Game_SubmissionNotFound" xml:space="preserve">
     <value>提交未找到</value>
-  </data>
-  <data name="Game_SubmissionNotice" xml:space="preserve">
-    <value>恭喜 {0} 获得 [{1}] 的 {2}</value>
   </data>
   <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
     <value>队伍参与人数超过比赛限制</value>
@@ -706,16 +697,13 @@
     <value>一个开源的CTF比赛平台</value>
   </data>
   <data name="Init_PostTitle" xml:space="preserve">
-    <value>Welcome to GZ::CTF!</value>
+    <value>欢迎使用 GZ::CTF</value>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} 自动销毁题目 {1} 的容器实例 [{2}]</value>
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
     <value>{0} 启动题目 {1} 的容器实例 [{2}]</value>
-  </data>
-  <data name="InstanceRepository_ContainerCreationEvent" xml:space="preserve">
-    <value>{0}#{1} 启动容器实例</value>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
     <value>无法为题目 {0} 启动容器实例</value>
@@ -912,17 +900,11 @@
   <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
     <value>只有容器题目可以进行流量捕获</value>
   </data>
-  <data name="Challenge_Created" xml:space="preserve">
-    <value>新增了题目 [{0}]</value>
-  </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
     <value>动态附件名不可为空</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
     <value>flag 复杂度不足，请考虑添加队伍哈希或增加长度</value>
-  </data>
-  <data name="Challenge_HintUpdated" xml:space="preserve">
-    <value>[{0}] 更新了提示</value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>题目无 flag，不可启用</value>

@@ -90,6 +90,7 @@ GZCTF の使用をすぐに開始するには、Docker と docker-compose をイ
        image: gztime/gzctf:latest
        restart: always
        environment:
+         - "LANG=ja_JP.UTF-8" # choose your backend language `en_US` / `zh_CN` / `ja_JP`
          - "GZCTF_ADMIN_PASSWORD=<Your GZCTF_ADMIN_PASSWORD>"
        ports:
          - "80:8080"
