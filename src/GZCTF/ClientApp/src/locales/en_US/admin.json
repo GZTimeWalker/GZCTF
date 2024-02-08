@@ -75,7 +75,7 @@
               "format": "Please use each flag as the file name for the corresponding attachment."
             },
             "remote": {
-              "content": "Batch set remote attachments and flags for each row.",
+              "content": "Batch set remote attachments and corresponding flags, with one group per line.",
               "format": "Please separate the flag and the URL with a space."
             }
           },
