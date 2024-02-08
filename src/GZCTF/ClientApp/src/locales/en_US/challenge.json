@@ -39,7 +39,7 @@
       },
       "actions": {
         "count_down": "Remaining: ",
-        "note": "You can extend the usage time of the container 10 minutes before it expires."
+        "note": "You can extend the instance's lifetime 10 mins before it expires."
       }
     },
     "wrong_flag_hints": [
@@ -107,12 +107,12 @@
       },
       "prolong": {
         "note": {
-          "message": "Please prolong or destroy instance in time",
+          "message": "Please extend lifetime or destroy instance in time",
           "title": "Instance is due"
         },
         "success": {
           "message": "Please note the instance expiration time",
-          "title": "Instance time has been extended"
+          "title": "Instance’s lifetime has been extended"
         }
       },
       "created": {
