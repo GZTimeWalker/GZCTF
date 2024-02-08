@@ -17,7 +17,7 @@
     "mutiplayer": "Team"
   },
   "placeholder": {
-    "no_solved": "Ouch! This team has not solved any challenges……"
+    "no_solved": "Ouch! This team has not solved any challenges..."
   },
   "label": {
     "score": "Score",
@@ -70,9 +70,9 @@
     "join": {
       "team": {
         "label": "Select your team",
-        "description": "Please select a team you want to participate with in this competition. This cannot be changed after successfully enrolling."
+        "description": "Please select a team you want to participate with in this game. This cannot be changed after approved."
       },
-      "title": "Completion Registration Information",
+      "title": "Registration Information",
       "confirm": "Confirm Registration",
       "content": [
         "Are you sure you want to register for this game?",
@@ -85,7 +85,7 @@
       },
       "organization": {
         "label": "Select Organization",
-        "description": "This game has more than one organization. Please select your organization."
+        "description": "This game has more than one organization available. Please select one."
       }
     },
     "writeup": {
@@ -97,9 +97,9 @@
         "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Please submit the writeup before <1>{{datetime}}</1>, late submission or non-submission will be considered a waiver of game score.",
         "file_format": "Please make all solved challenges into <1>a standard PDF document that is less than 20MB in size</1>.",
-        "additional": "Additional notes"
+        "additional": "Additional Notes"
       },
-      "current": "Current writeup",
+      "current": "Current Writeup",
       "unsubmitted_note": "Your team has not submitted yet",
       "deadline_exceeded": "Submission deadline has passed"
     },
