@@ -18,12 +18,12 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   const numId = parseInt(id ?? '-1')
   const { gameNotice, mutateGameNotice, ...modalProps } = props
 
-  const [content, setContent] = useState<string>(gameNotice?.content || '')
+  const [content, setContent] = useState<string>(gameNotice?.values.at(-1) || '')
   const [disabled, setDisabled] = useState(false)
   const { t } = useTranslation()
 
   useEffect(() => {
-    setContent(gameNotice?.content || '')
+    setContent(gameNotice?.values.at(-1) || '')
   }, [gameNotice])
 
   const onConfirm = () => {
@@ -35,7 +35,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
       })
       return
     }
-    if (content === gameNotice?.content) {
+    if (content === gameNotice?.values.at(-1)) {
       showNotification({
         color: 'orange',
         message: t('common.error.no_change'),
