@@ -25,6 +25,7 @@ import {
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
+import { TFunction } from 'i18next'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
@@ -32,7 +33,7 @@ import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useTableStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
-import api, { EventType, GameEvent } from '@Api'
+import api, { AnswerResult, EventType, GameEvent } from '@Api'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -59,6 +60,55 @@ const EventTypeIconMap = (size: number) => {
       <Icon path={mdiLightningBolt} size={size} color={theme.colors.white[colorIdx]} />,
     ],
   ])
+}
+
+const formatAnswer = (t: TFunction, res: AnswerResult) => {
+  switch (res) {
+    case AnswerResult.Accepted:
+      return t('game.event.answer.accepted')
+    case AnswerResult.WrongAnswer:
+      return t('game.event.answer.wrong')
+    case AnswerResult.CheatDetected:
+      return t('game.event.answer.cheat')
+    case AnswerResult.FlagSubmitted:
+      return t('game.event.answer.submitted')
+    case AnswerResult.NotFound:
+      return t('game.event.answer.not_found')
+    default:
+      return ''
+  }
+}
+
+const formatEvent = (t: TFunction, event: GameEvent) => {
+  switch (event.type) {
+    case EventType.Normal:
+      return event.values.at(-1) || ''
+    case EventType.FlagSubmit:
+      return t('game.event.flag_submit', {
+        status: formatAnswer(t, event.values.at(0) as AnswerResult),
+        flag: event.values.at(1),
+        chal: event.values.at(2),
+        id: event.values.at(3),
+      })
+    case EventType.CheatDetected:
+      return t('game.event.cheat_detected', {
+        chal: event.values.at(0),
+        team: event.values.at(1),
+        steam: event.values.at(2),
+      })
+    case EventType.ContainerStart:
+      return t('game.event.container.start', {
+        id: event.values.at(0),
+        chal: event.values.at(1),
+      })
+    case EventType.ContainerDestroy:
+      return t('game.event.container.destroy', {
+        id: event.values.at(0),
+        chal: event.values.at(1),
+      })
+    default:
+      return event.values.at(-1) || ''
+  }
 }
 
 const Events: FC = () => {
@@ -192,7 +242,7 @@ const Events: FC = () => {
                 <Stack spacing={2} w="100%">
                   <Input
                     variant="unstyled"
-                    value={event.content}
+                    value={formatEvent(t, event)}
                     readOnly
                     sx={(theme) => ({
                       wrapper: {
