@@ -42,7 +42,7 @@ public class ContainerRepository(
         return Context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
     }
 
-    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default)
+    public Task ExtendLifetime(Container container, TimeSpan time, CancellationToken token = default)
     {
         container.ExpectStopAt += time;
         return SaveAsync(token);

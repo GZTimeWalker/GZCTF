@@ -516,7 +516,7 @@
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
     <value>题目删除容器失败</value>
   </data>
-  <data name="Game_ContainerExpireExtensionNotAllowed" xml:space="preserve">
+    <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
     <value>容器时间尚不可延长</value>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">

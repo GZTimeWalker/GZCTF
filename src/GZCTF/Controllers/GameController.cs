@@ -855,10 +855,10 @@ public class GameController(
             return context.Result;
 
         Game game = context.Game!;
-        
+
         if (!game.WriteupRequired)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_WriteupNotNeeded)]));
-        
+
         Participation part = context.Participation!;
         Team team = part.Team;
 
@@ -958,12 +958,12 @@ public class GameController(
     /// <response code="404">题目未找到</response>
     /// <response code="400">容器未创建或无法延期</response>
     [RequireUser]
-    [HttpPost("{id:int}/Container/{challengeId:int}/Prolong")]
+    [HttpPost("{id:int}/Container/{challengeId:int}/Extend")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ProlongContainer([FromRoute] int id, [FromRoute] int challengeId,
+    public async Task<IActionResult> ExtendContainerLifetime([FromRoute] int id, [FromRoute] int challengeId,
         CancellationToken token)
     {
         ContextInfo context = await GetContextInfo(id, token: token);
@@ -986,9 +986,9 @@ public class GameController(
 
         if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(10))
             return BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExpireExtensionNotAllowed)]));
+                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExtensionNotAvailable)]));
 
-        await containerRepository.ProlongContainer(instance.Container, TimeSpan.FromHours(2), token);
+        await containerRepository.ExtendLifetime(instance.Container, TimeSpan.FromHours(2), token);
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }

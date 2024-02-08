@@ -56,7 +56,7 @@ public interface IContainerRepository : IRepository
     /// <param name="time">延长时间</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task ProlongContainer(Container container, TimeSpan time, CancellationToken token = default);
+    public Task ExtendLifetime(Container container, TimeSpan time, CancellationToken token = default);
 
     /// <summary>
     /// 创建容器
