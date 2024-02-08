@@ -50,7 +50,9 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.Configure(builder.Configuration.GetSection("Kestrel"));
+    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    options.Configure(kestrelSection);
+    kestrelSection.Bind(options);
 });
 
 builder.Logging.ClearProviders();
@@ -131,13 +133,9 @@ builder.Services.AddOpenApiDocument(settings =>
 
 #endregion OpenApiDocument
 
-#region SignalR
+#region SignalR & Cache
 
 ISignalRServerBuilder signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
-
-#endregion SignalR
-
-#region Cache
 
 var redisConStr = builder.Configuration.GetConnectionString("RedisCache");
 if (string.IsNullOrWhiteSpace(redisConStr))
@@ -157,7 +155,7 @@ else
     });
 }
 
-#endregion Cache
+#endregion SignalR & Cache
 
 #region Identity
 
@@ -243,8 +241,6 @@ builder.Services.AddHostedService<CacheMaker>();
 builder.Services.AddHostedService<FlagChecker>();
 builder.Services.AddHostedService<CronJobService>();
 
-#endregion Services and Repositories
-
 builder.Services.AddHealthChecks();
 builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
 builder.Services.AddResponseCompression(options =>
@@ -261,13 +257,17 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     options.InvalidModelStateResponseFactory = GZCTF.Program.InvalidModelStateHandler;
 });
 
-WebApplication app = builder.Build();
+#endregion Services and Repositories
 
-app.UseRequestLocalization();
+#region Middlewares
+
+WebApplication app = builder.Build();
 
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
 await app.RunPrelaunchWork();
+
+app.UseRequestLocalization();
 
 app.UseResponseCompression();
 
@@ -314,6 +314,8 @@ app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
 
 app.MapFallbackToFile("index.html");
+
+#endregion Middlewares
 
 await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<GZCTF.Program>>();
