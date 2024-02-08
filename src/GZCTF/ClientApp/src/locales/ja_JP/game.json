@@ -218,7 +218,7 @@
       "start": "{{chal}}#{{id}} 开启题目实例",
       "destroy": "{{chal}}#{{id}} 销毁题目实例"
     },
-    "cheat_detected": "题目 [{{chal}}] 疑似发生违规，队伍 [{{team}] 使用了 [{{steam}}] 的答案",
+    "cheat_detected": "题目 [{{chal}}] 疑似发生违规，队伍 [{{team}}] 使用了 [{{steam}}] 的答案",
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]",
     "answer": {
       "accepted": "回答正解",
