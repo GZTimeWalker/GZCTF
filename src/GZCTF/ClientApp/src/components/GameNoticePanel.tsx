@@ -49,12 +49,10 @@ const formatNotice = (t: TFunction, notice: GameNotice) => {
     case NoticeType.NewChallenge:
       return t('game.notice.new_challenge', {
         title: notice.values.at(0),
-        id: notice.values.at(1),
       })
     case NoticeType.NewHint:
       return t('game.notice.new_hint', {
         title: notice.values.at(0),
-        id: notice.values.at(1),
       })
     case NoticeType.FirstBlood:
       return t('game.notice.blood', {

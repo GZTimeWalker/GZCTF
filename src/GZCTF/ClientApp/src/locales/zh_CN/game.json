@@ -206,9 +206,9 @@
     }
   },
   "notice": {
-    "new_hint": "题目 [{{title}}#{{id}}] 更新了提示",
+    "new_hint": "题目 [{{title}}] 更新了提示",
     "blood": "恭喜 {{team}} 获得 [{{chal}}] {{blood}}",
-    "new_challenge": "题目 [{{title}}#{{id}}] 已开放"
+    "new_challenge": "题目 [{{title}}] 已开放"
   },
   "event": {
     "container": {

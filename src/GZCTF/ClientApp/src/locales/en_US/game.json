@@ -209,9 +209,9 @@
     }
   },
   "notice": {
-    "new_hint": "[{{title}}#{{id}}] has updated the hints",
+    "new_hint": "[{{title}}] has updated the hints",
     "blood": "Congratulations to {{team}} for obtaining the {{blood}} in {{chal}}.",
-    "new_challenge": "New challenge [{{title}}#{{id}}] has been released"
+    "new_challenge": "New challenge [{{title}}] has been released"
   },
   "event": {
     "container": {
