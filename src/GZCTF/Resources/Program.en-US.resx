@@ -517,7 +517,7 @@
     <value>Problem deleting container failed</value>
   </data>
   <data name="Game_ContainerExpireExtensionNotAllowed" xml:space="preserve">
-    <value>Container time cannot be extended yet</value>
+    <value>Container's lifetime cannot be extended yet</value>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">
     <value>No container created for the problem</value>
