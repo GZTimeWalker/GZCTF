@@ -346,7 +346,7 @@ public class EditController(
         GameNotice res = await gameNoticeRepository.AddNotice(
             new()
             {
-                Content = model.Content,
+                Values = [model.Content],
                 GameId = game.Id,
                 Type = NoticeType.Normal,
                 PublishTimeUtc = DateTimeOffset.UtcNow
@@ -404,7 +404,7 @@ public class EditController(
         if (notice.Type != NoticeType.Normal)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Notification_SystemNotEditable)]));
 
-        notice.Content = model.Content;
+        notice.Values = [model.Content];
         return Ok(await gameNoticeRepository.UpdateNotice(notice, token));
     }
 
@@ -571,7 +571,7 @@ public class EditController(
                     {
                         Game = game,
                         Type = NoticeType.NewChallenge,
-                        Content = localizer[nameof(Resources.Program.Challenge_Created), res.Title]
+                        Values = [res.Title]
                     }, token);
         }
         else
@@ -585,7 +585,7 @@ public class EditController(
                 {
                     Game = game,
                     Type = NoticeType.NewHint,
-                    Content = localizer[nameof(Resources.Program.Challenge_HintUpdated), res.Title]
+                    Values = [res.Title]
                 },
                 token);
 

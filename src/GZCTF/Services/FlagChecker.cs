@@ -113,14 +113,12 @@ public class FlagChecker(
                                     item.GameChallenge.Title,
                                     result.SourceTeamName ?? ""],
                                 item.User, TaskStatus.Success, LogLevel.Information);
+                            
                             await eventRepository.AddEvent(
                                 new()
                                 {
                                     Type = EventType.CheatDetected,
-                                    Content =
-                                        Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetectedEvent),
-                                            item.GameChallenge.Title, item.Team.Name,
-                                            result.SourceTeamName ?? ""],
+                                    Values = [item.GameChallenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
                                     TeamId = item.TeamId,
                                     UserId = item.UserId,
                                     GameId = item.GameId

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using GZCTF.Models.Internal;
 using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Models.Data;
@@ -8,23 +9,11 @@ namespace GZCTF.Models.Data;
 /// 比赛事件，记录但不会发往客户端。
 /// 信息涵盖Flag提交信息、容器启动关闭信息、作弊信息、题目分数变更信息
 /// </summary>
-public class GameEvent
+public class GameEvent : FormattableData<EventType>
 {
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
-
-    /// <summary>
-    /// 事件类型
-    /// </summary>
-    [Required]
-    public EventType Type { get; set; } = EventType.Normal;
-
-    /// <summary>
-    /// 事件内容
-    /// </summary>
-    [Required]
-    public string Content { get; set; } = string.Empty;
 
     /// <summary>
     /// 发布时间
@@ -71,7 +60,6 @@ public class GameEvent
             UserId = submission.UserId,
             GameId = submission.GameId,
             Type = EventType.FlagSubmit,
-            Content =
-                $"[{ans.ToShortString(localizer)}] {submission.Answer}  {submission.GameChallenge.Title}#{submission.ChallengeId}"
+            Values = [ans.ToString(), submission.Answer, submission.GameChallenge.Title, submission.ChallengeId.ToString()]
         };
 }

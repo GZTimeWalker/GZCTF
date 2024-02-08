@@ -1051,8 +1051,7 @@ public class GameController(
                 GameId = context.Game!.Id,
                 TeamId = context.Participation!.TeamId,
                 UserId = context.User!.Id,
-                Content = localizer[nameof(Resources.Program.Game_ContainerDeletedEvent), instance.Challenge.Title,
-                    instance.Challenge.Id]
+                Values = [instance.Challenge.Id.ToString(), instance.Challenge.Title]
             }, token);
 
         logger.Log(

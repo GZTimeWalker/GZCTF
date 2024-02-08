@@ -441,9 +441,6 @@
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
     <value>[作弊检查] Team [{0}] suspected violation [{1}], related team [{2}]</value>
   </data>
-  <data name="FlagChecker_CheatDetectedEvent" xml:space="preserve">
-    <value>Challenge [{0}] cheating detected, associated team [{1}] and [{2}]</value>
-  </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
     <value>[数据库并发] Failed to update commit #{0}</value>
   </data>
@@ -510,9 +507,6 @@
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} destroyed container instance of problem {1} [{2}]</value>
   </data>
-  <data name="Game_ContainerDeletedEvent" xml:space="preserve">
-    <value>{0}#{1} destroy container instance</value>
-  </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
     <value>Problem deleting container failed</value>
   </data>
@@ -566,9 +560,6 @@
   </data>
   <data name="Game_SubmissionNotFound" xml:space="preserve">
     <value>The submission was not found</value>
-  </data>
-  <data name="Game_SubmissionNotice" xml:space="preserve">
-    <value>恭喜 {0} 获得 [{1}] 的{2}</value>
   </data>
   <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
     <value>The number of participants in the team exceeds the limit</value>
@@ -713,9 +704,6 @@
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
     <value>{0} launches container instance of problem {1} [{2}]</value>
-  </data>
-  <data name="InstanceRepository_ContainerCreationEvent" xml:space="preserve">
-    <value>{0}#{1} Launch Container Instance</value>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
     <value>Could not start container instance for problem {0}</value>
@@ -949,17 +937,11 @@
   <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
     <value>Enable traffic capture only for challenge with containers</value>
   </data>
-  <data name="Challenge_Created" xml:space="preserve">
-    <value>Added challenge [{0}]</value>
-  </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
     <value>Dynamic attachment name cannot be empty</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
     <value>Flag is not sufficiently complicated, please consider adding team hash or adding length</value>
-  </data>
-  <data name="Challenge_HintUpdated" xml:space="preserve">
-    <value>[{0}] updated the hints</value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>The challenge has no flag and cannot be enabled</value>

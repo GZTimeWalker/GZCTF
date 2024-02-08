@@ -793,22 +793,23 @@ export interface ArrayResponseOfGameInfoModel {
  * 比赛通知，会发往客户端。
  * 信息涵盖一二三血通知、提示发布通知、题目开启通知等
  */
-export interface GameNotice {
+export type GameNotice = FormattableDataOfNoticeType & {
   /** @format int32 */
   id: number;
-  /** 通知类型 */
-  type: NoticeType;
-  /**
-   * 通知内容
-   * @minLength 1
-   */
-  content: string;
   /**
    * 发布时间
    * @format date-time
    * @minLength 1
    */
   time: string;
+};
+
+/** 格式化数据 */
+export interface FormattableDataOfNoticeType {
+  /** 数据类型 */
+  type: NoticeType;
+  /** 格式化值列表 */
+  values: string[];
 }
 
 /** 比赛公告类型 */
@@ -1376,14 +1377,7 @@ export interface Blood {
  * 比赛事件，记录但不会发往客户端。
  * 信息涵盖Flag提交信息、容器启动关闭信息、作弊信息、题目分数变更信息
  */
-export interface GameEvent {
-  /** 事件类型 */
-  type: EventType;
-  /**
-   * 事件内容
-   * @minLength 1
-   */
-  content: string;
+export type GameEvent = FormattableDataOfEventType & {
   /**
    * 发布时间
    * @format date-time
@@ -1394,6 +1388,14 @@ export interface GameEvent {
   user?: string;
   /** 相关队伍名 */
   team?: string;
+};
+
+/** 格式化数据 */
+export interface FormattableDataOfEventType {
+  /** 数据类型 */
+  type: EventType;
+  /** 格式化值列表 */
+  values: string[];
 }
 
 /** 比赛事件类型 */

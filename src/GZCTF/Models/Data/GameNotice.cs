@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using GZCTF.Models.Internal;
 using MemoryPack;
 using Microsoft.Extensions.Localization;
 
@@ -10,23 +11,11 @@ namespace GZCTF.Models.Data;
 /// 信息涵盖一二三血通知、提示发布通知、题目开启通知等
 /// </summary>
 [MemoryPackable]
-public partial class GameNotice
+public partial class GameNotice : FormattableData<NoticeType>
 {
     [Key]
     [Required]
     public int Id { get; set; }
-
-    /// <summary>
-    /// 通知类型
-    /// </summary>
-    [Required]
-    public NoticeType Type { get; set; } = NoticeType.Normal;
-
-    /// <summary>
-    /// 通知内容
-    /// </summary>
-    [Required]
-    public string Content { get; set; } = string.Empty;
 
     /// <summary>
     /// 发布时间
@@ -55,8 +44,6 @@ public partial class GameNotice
                 _ => NoticeType.Normal
             },
             GameId = submission.GameId,
-            Content = localizer[nameof(Resources.Program.Game_SubmissionNotice), submission.Team.Name,
-                submission.GameChallenge.Title,
-                type.ToBloodString(localizer)]
+            Values = [submission.Team.Name, submission.GameChallenge.Title, type.ToBloodString(localizer)]
         };
 }
