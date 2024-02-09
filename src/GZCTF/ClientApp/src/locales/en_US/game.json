@@ -70,33 +70,33 @@
     "join": {
       "team": {
         "label": "Select your team",
-        "description": "Please select a team you want to participate with in this game. This cannot be changed after approved."
+        "description": "Please select a team you want to participate with in this game. This cannot be changed after approval."
       },
       "title": "Registration Information",
       "confirm": "Confirm Registration",
       "content": [
         "Are you sure you want to register for this game?",
         "After successfully registering for the competition and passing the review, the team will be locked and you will no longer be able to change your team member, <strong>e.g. invites new member or remove member from the team.</strong> The team will be unlocked after the match ends or when the participation request is denied.",
-        "The number of players requires that the number of members of the team be selected, and<strong>whether or not the team participates in the match in that capacity.</strong>"
+        "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
       ],
       "invite_code": {
         "label": "Please enter the invitation code",
-        "description": "This game requires invitation, provide an invitation code to join."
+        "description": "This game is invitation-only. To participate in, please enter an invitation code."
       },
       "organization": {
-        "label": "Select Organization",
-        "description": "This game has more than one organization available. Please select one."
+        "label": "Select Division",
+        "description": "This game has multiple division available. Please select your division."
       }
     },
     "writeup": {
-      "title": "Writeup manage",
+      "title": "Writeup management",
       "submitted": "Successfully submitted",
-      "unsubmitted": "Not submitted",
+      "unsubmitted": "Not yet submitted",
       "instructions": {
         "title": "Submission instructions",
         "datetime_format": "DD/MM/YYYY HH:mm:ss",
-        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, late submission or non-submission will be considered a waiver of game score.",
-        "file_format": "Please make all solved challenges into <1>a standard PDF document that is less than 20MB in size</1>.",
+        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
+        "file_format": "Please organize solved challenges into <1>a standard PDF document less than 20MB</1>.",
         "additional": "Additional Notes"
       },
       "current": "Current Writeup",
@@ -104,10 +104,10 @@
       "deadline_exceeded": "Submission deadline has passed"
     },
     "leave": {
-      "confirm": "Confirm quit game",
+      "confirm": "Confirm quitting",
       "content": [
         "Are you sure you want to quit this game?",
-        "The team participation information will be deleted after exiting if the number of people is empty."
+        "If the number of team members is zero after you quit, the team participation data will be deleted."
       ]
     },
     "end_time": "End Time",
