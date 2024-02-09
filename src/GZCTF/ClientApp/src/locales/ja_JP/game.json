@@ -215,17 +215,17 @@
   },
   "event": {
     "container": {
-      "start": "{{chal}}#{{id}} 开启题目实例",
-      "destroy": "{{chal}}#{{id}} 销毁题目实例"
+      "start": "{{chal}}#{{id}} チャレンジインスタントが起動されました",
+      "destroy": "{{chal}}#{{id}} チャレンジインスタントが破棄されました"
     },
-    "cheat_detected": "题目 [{{chal}}] 疑似发生违规，队伍 [{{team}}] 使用了 [{{steam}}] 的答案",
+    "cheat_detected": "チャレンジ「{{chal}}」に不正行為が検出しました。チーム「{{team}」は「{{steam}}」の答えを提出しました。",
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]",
     "answer": {
       "accepted": "回答正解",
       "wrong": "間違い回答",
-      "cheat": "作弊行为",
+      "cheat": "不正行為",
       "submitted": "提出完了",
-      "not_found": "未知实例"
+      "not_found": "不明なインスタンス"
     }
   }
 }
