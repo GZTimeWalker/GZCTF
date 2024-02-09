@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import LogoHeader from '@Components/LogoHeader'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { useLocalStorageCache } from '@Utils/useConfig'
+import { clearLocalCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 
 const useHeaderStyles = createStyles((theme) => ({
@@ -34,7 +34,6 @@ const AppHeader: FC = () => {
   const navigate = useNavigate()
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
-  const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
 
   const logout = useLoginOut()

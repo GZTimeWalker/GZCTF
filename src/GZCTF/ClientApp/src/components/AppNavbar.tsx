@@ -30,7 +30,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
-import { useLocalStorageCache } from '@Utils/useConfig'
+import { clearLocalCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
 
@@ -123,7 +123,6 @@ const AppNavbar: FC = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const logout = useLoginOut()
-  const { clearLocalCache } = useLocalStorageCache()
   const { user, error } = useUser()
   const { t } = useTranslation()
   const { setLanguage, supportedLanguages } = useLanguage()

@@ -102,28 +102,24 @@ export const useBanner = () => {
   }, [])
 }
 
-export const useLocalStorageCache = () => {
-  const cacheKey = 'gzctf-cache'
+const cacheKey = 'gzctf-cache'
+const cacheMap = new Map(
+  JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]')
+)
 
-  const mapRef = useRef(
-    new Map(JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]'))
-  )
+const saveCache = () => {
+  const appCache = LZString.compress(JSON.stringify(Array.from(cacheMap.entries())))
+  localStorage.setItem(cacheKey, appCache)
+}
 
-  const saveCache = () => {
-    const appCache = LZString.compress(JSON.stringify(Array.from(mapRef.current.entries())))
-    localStorage.setItem(cacheKey, appCache)
-  }
+export const localCacheProvider = () => {
+  window.addEventListener('beforeunload', saveCache, true)
+  return cacheMap as Cache
+}
 
-  const localCacheProvider = () => {
-    window.addEventListener('beforeunload', saveCache)
-    return mapRef.current as Cache
-  }
-
-  const clearLocalCache = () => {
-    window.removeEventListener('beforeunload', saveCache)
-    localStorage.removeItem('gzctf-cache')
-    window.location.reload()
-  }
-
-  return { localCacheProvider, clearLocalCache }
+export const clearLocalCache = () => {
+  window.removeEventListener('beforeunload', saveCache, true)
+  localStorage.removeItem('gzctf-cache')
+  cacheMap.clear()
+  window.location.reload()
 }

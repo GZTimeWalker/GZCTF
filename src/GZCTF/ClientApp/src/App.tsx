@@ -15,7 +15,7 @@ import { useRoutes } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import routes from '~react-pages'
 import { ThemeOverride } from '@Utils/ThemeOverride'
-import { useBanner, useLocalStorageCache } from '@Utils/useConfig'
+import { useBanner, localCacheProvider } from '@Utils/useConfig'
 import { fetcher } from '@Api'
 
 export const App: FC = () => {
@@ -31,7 +31,6 @@ export const App: FC = () => {
   useBanner()
 
   const { t } = useTranslation()
-  const { localCacheProvider } = useLocalStorageCache()
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
