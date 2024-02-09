@@ -119,7 +119,7 @@ export const localCacheProvider = () => {
 
 export const clearLocalCache = () => {
   window.removeEventListener('beforeunload', saveCache, true)
-  localStorage.removeItem('gzctf-cache')
+  localStorage.removeItem(cacheKey)
   cacheMap.clear()
   window.location.reload()
 }
