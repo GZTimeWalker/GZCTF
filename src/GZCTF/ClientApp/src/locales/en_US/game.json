@@ -112,13 +112,13 @@
     },
     "end_time": "End Time",
     "no_cheat": {
-      "title": "No team cheats yet",
-      "comment": "It seems to be true for all"
+      "title": "No cheating detected yet",
+      "comment": "It looks like everyone played fair!"
     },
     "no_notice": "No notice",
     "team_view": {
       "label": "Team View",
-      "description": "Use team view to display cheats"
+      "description": "Use team view to display cheating information"
     },
     "all_solved": {
       "title": "All challenges were solved!",
@@ -127,13 +127,13 @@
     "game_ended": "Ended",
     "no_traffic": {
       "title": "No data captures enabled",
-      "comment": "Requires both platform configuration and title to be enabled"
+      "comment": "Requires both platform and challenge to be set up to enable capture"
     },
     "start_time": "Start Time",
     "duration": "{{hours}} hour(s)",
     "no_challenge": "Ouch! No challenges available for this game.",
     "joined_status": "<strong>{{count}}</strong> teams have already joined",
-    "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
+    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
     "game_lasts_long": "The game will last for a long time",
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "hide_container_events": {
@@ -148,15 +148,15 @@
     "total_duration": "{{hours}}h in total"
   },
   "notification": {
-    "left": "Cancellation successful",
+    "left": "Successfully cancel",
     "ended": "The game has ended",
     "joined": "Registration successful",
-    "no_team": "Please select the team to join",
+    "no_team": "Please select the team to participate with",
     "suspended": "You have been banned",
     "not_started": "Game not yet started",
     "no_invite_code": "Invitation code cannot be empty",
-    "no_organization": "Please select the organization",
-    "select_chal_and_part": "Please select topics and teams first",
+    "no_organization": "Please select the division",
+    "select_chal_and_part": "Please select challenges and teams first",
     "connected": {
       "event": "Real-time event connected",
       "submission": "Real-time submission connected"
@@ -177,16 +177,16 @@
         "content": "Please wait for review results"
       },
       "rejected": {
-        "title": "Your entry request was not approved",
-        "content": "Please make sure you are eligible to re-register after you meet your requirements"
+        "title": "Your participating request was rejected",
+        "content": "Please make sure you are eligible to register in the game and re-register after you meet the requirements"
       },
       "suspended": {
         "title": "Your team {{team} } has been suspended",
-        "content": "If you hear any objection, please contact the administrator to make an appeal"
+        "content": "If you have any objections, please contact the administrator to appeal."
       },
       "not_started": {
         "title": "Game not yet started",
-        "mobile": "Please use computer to see the details of the game.",
+        "mobile": "Please use desktop site to see the details of the game.",
         "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start."
       },
       "team_required": {
@@ -209,7 +209,7 @@
     }
   },
   "notice": {
-    "new_hint": "[{{title}}] has updated the hints",
+    "new_hint": "New hints to [{{title}}]",
     "blood": "Congratulations to {{team}} for obtaining the {{blood}} in {{chal}}.",
     "new_challenge": "New challenge [{{title}}] has been released"
   },
@@ -218,11 +218,11 @@
       "start": "Created challenge instance for {{chal}}#{{id}}",
       "destroy": "Destroyed challenge instance for {{chal}}#{{id}}"
     },
-    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s answer.",
+    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]",
     "answer": {
-      "accepted": "Answer accepted",
-      "wrong": "Answer incorrect",
+      "accepted": "Correct flag",
+      "wrong": "Incorrect flag",
       "cheat": "Cheating",
       "submitted": "Successfully submitted",
       "not_found": "Unknown"
