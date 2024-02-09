@@ -1,4 +1,4 @@
-import { Card, List, ScrollArea, SegmentedControl, Stack, Text } from '@mantine/core'
+import { Card, Center, List, ScrollArea, SegmentedControl, Stack, Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -207,9 +207,9 @@ const GameNoticePanel: FC = () => {
             </List>
           </ScrollArea>
         ) : (
-          <Stack justify="center" h="calc(100vh - 25rem)">
+          <Center h="calc(100vh - 25rem)">
             <Empty description={t('game.content.no_notice')} />
-          </Stack>
+          </Center>
         )}
       </Stack>
     </Card>
