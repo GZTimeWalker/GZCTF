@@ -178,7 +178,7 @@
     <value>Captcha failed</value>
   </data>
   <data name="Account_UserDisabled" xml:space="preserve">
-    <value>User is disabled</value>
+    <value>User is banned</value>
   </data>
   <data name="Account_UserExisting" xml:space="preserve">
     <value>This account already exists</value>
