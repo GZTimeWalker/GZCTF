@@ -221,7 +221,7 @@
     "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]",
     "answer": {
-      "accepted": "Correct flag",
+      "accepted": "Flag accepted",
       "wrong": "Incorrect flag",
       "cheat": "Cheating",
       "submitted": "Successfully submitted",
