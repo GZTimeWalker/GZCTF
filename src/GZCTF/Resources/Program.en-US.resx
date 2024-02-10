@@ -905,7 +905,7 @@
     <value>Server exited unexpectedly due to exceptions</value>
   </data>
   <data name="Submission_Accepted" xml:space="preserve">
-    <value>Answer accepted</value>
+    <value>ACCEPTED</value>
   </data>
   <data name="Submission_CheatDetected" xml:space="preserve">
     <value>Cheat detection</value>
