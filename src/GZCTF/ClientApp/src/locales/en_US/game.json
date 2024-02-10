@@ -89,7 +89,7 @@
       }
     },
     "writeup": {
-      "title": "Writeup management",
+      "title": "Writeup Management",
       "submitted": "Successfully submitted",
       "unsubmitted": "Not yet submitted",
       "instructions": {
@@ -115,7 +115,7 @@
       "title": "No cheating detected yet",
       "comment": "It looks like everyone played fair!"
     },
-    "no_notice": "No notice",
+    "no_notice": "Nothing here.",
     "team_view": {
       "label": "Team View",
       "description": "Use team view to display cheating information"
