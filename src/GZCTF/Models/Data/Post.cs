@@ -61,7 +61,7 @@ public partial class Post
         // update IsPinned should not change other fields
         if (model.IsPinned != IsPinned)
         {
-            model.IsPinned = IsPinned;
+            IsPinned = model.IsPinned;
             return this;
         }
 
