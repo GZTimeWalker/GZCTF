@@ -553,7 +553,7 @@
     <value>Container operation too often</value>
   </data>
   <data name="Game_ParticipationNotAccepted" xml:space="preserve">
-    <value>Your entry request has not been passed or banned</value>
+    <value>Your registration has been rejected or banned</value>
   </data>
   <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
     <value>Failed to download scoreboard</value>
@@ -929,7 +929,7 @@
     <value>Unknown instance</value>
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
-    <value>Answer incorrect</value>
+    <value>WRONG</value>
   </data>
   <data name="Game_CreationFailed" xml:space="preserve">
     <value>Failed to create game</value>
