@@ -257,7 +257,6 @@ const ChallengePanel: FC = () => {
       )}
       {challenge?.id && (
         <ChallengeDetailModal
-          size="40%"
           gameId={numId}
           opened={detailOpened}
           withCloseButton={false}

@@ -1,4 +1,4 @@
-import { Button, Center, ScrollArea, Stack, Text, Title } from '@mantine/core'
+import { Button, Center, Divider, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiPlus } from '@mdi/js'
@@ -6,6 +6,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
+import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
@@ -28,7 +29,13 @@ const GameNoticeEdit: FC = () => {
   const onDeleteGameNotice = (gameNotice: GameNotice) => {
     modals.openConfirmModal({
       title: t('admin.button.notices.delete'),
-      children: <Text> {t('admin.content.games.notices.delete')}</Text>,
+      children: (
+        <Stack>
+          <Text> {t('admin.content.games.notices.delete')}</Text>
+          <Divider />
+          <InlineMarkdownRender source={gameNotice.values.at(-1) || ''} />
+        </Stack>
+      ),
       onConfirm: () => onConfirmDelete(gameNotice),
       confirmProps: { color: 'red' },
     })

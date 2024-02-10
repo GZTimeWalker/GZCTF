@@ -403,27 +403,28 @@ const GameChallengeEdit: FC = () => {
         {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
           <Grid columns={12}>
             <Grid.Col span={8}>
-              <TextInput
-                label={t('admin.content.games.challenges.container_image')}
-                disabled={disabled}
-                value={challengeInfo.containerImage ?? ''}
-                required
-                rightSectionWidth={122}
-                rightSection={
-                  <Button
-                    color={challenge?.testContainer ? 'orange' : 'brand'}
-                    disabled={disabled}
-                    onClick={onToggleTestContainer}
-                  >
-                    {challenge?.testContainer
-                      ? t('admin.button.challenges.test_container.destroy')
-                      : t('admin.button.challenges.test_container.create')}
-                  </Button>
-                }
-                onChange={(e) =>
-                  setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })
-                }
-              />
+              <Group position="apart" align="flex-end">
+                <TextInput
+                  label={t('admin.content.games.challenges.container_image')}
+                  disabled={disabled}
+                  value={challengeInfo.containerImage ?? ''}
+                  required
+                  onChange={(e) =>
+                    setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })
+                  }
+                  styles={{ root: { flexGrow: 1 } }}
+                />
+                <Button
+                  miw="8rem"
+                  color={challenge?.testContainer ? 'orange' : 'brand'}
+                  disabled={disabled}
+                  onClick={onToggleTestContainer}
+                >
+                  {challenge?.testContainer
+                    ? t('admin.button.challenges.test_container.destroy')
+                    : t('admin.button.challenges.test_container.create')}
+                </Button>
+              </Group>
             </Grid.Col>
             <Grid.Col span={4}>
               <InstanceEntry
@@ -515,8 +516,6 @@ const GameChallengeEdit: FC = () => {
         challenge={challengeInfo}
         opened={previewOpend}
         onClose={() => setPreviewOpend(false)}
-        withCloseButton={false}
-        size="40%"
         type={challenge?.type ?? ChallengeType.StaticAttachment}
         tagData={
           challengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!

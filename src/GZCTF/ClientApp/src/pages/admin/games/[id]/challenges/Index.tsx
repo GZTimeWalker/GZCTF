@@ -54,8 +54,8 @@ const GameChallengeEdit: FC = () => {
       children: (
         <Text size="sm">
           {challenge.isEnabled
-            ? t('admin.content.games.challenges.disable')
-            : t('admin.content.games.challenges.enable')}
+            ? t('admin.content.games.challenges.disable', { name: challenge.title })
+            : t('admin.content.games.challenges.enable', { name: challenge.title })}
         </Text>
       ),
       onConfirm: () => onConfirmToggle(challenge, setDisabled),

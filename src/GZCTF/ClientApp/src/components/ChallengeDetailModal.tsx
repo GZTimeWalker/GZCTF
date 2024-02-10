@@ -242,6 +242,8 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
 
   return (
     <Modal
+      size="45%"
+      withCloseButton={false}
       {...modalProps}
       onClose={() => {
         setFlag('')
@@ -344,26 +346,23 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           </Text>
         ) : (
           <form onSubmit={onSubmit}>
-            <TextInput
-              placeholder={placeholder}
-              value={flag}
-              disabled={disabled}
-              onChange={setFlag}
-              styles={{
-                rightSection: {
-                  width: 'auto',
-                },
-                input: {
-                  fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
-                },
-              }}
-              rightSection={
-                <Button type="submit" onClick={onSubmit} disabled={onSubmitting}>
-                  {t('challenge.button.submit_flag')}
-                </Button>
-              }
-              rightSectionWidth="6rem"
-            />
+            <Group position="apart" spacing="sm" align="flex-end">
+              <TextInput
+                placeholder={placeholder}
+                value={flag}
+                disabled={disabled}
+                onChange={setFlag}
+                style={{ flexGrow: 1 }}
+                styles={{
+                  input: {
+                    fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
+                  },
+                }}
+              />
+              <Button miw="6rem" type="submit" disabled={onSubmitting}>
+                {t('challenge.button.submit_flag')}
+              </Button>
+            </Group>
           </form>
         )}
       </Stack>

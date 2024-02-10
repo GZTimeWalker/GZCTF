@@ -93,6 +93,8 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
 
   return (
     <Modal
+      size="45%"
+      withCloseButton={false}
       {...modalProps}
       onClose={() => {
         setFlag('')
@@ -195,21 +197,22 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
         </Stack>
         <Divider />
         <form onSubmit={onSubmit}>
-          <TextInput
-            placeholder={placeholder}
-            value={flag}
-            onChange={setFlag}
-            styles={{
-              rightSection: {
-                width: 'auto',
-              },
-              input: {
-                fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
-              },
-            }}
-            rightSection={<Button type="submit">{t('challenge.button.submit_flag')}</Button>}
-            rightSectionWidth="6rem"
-          />
+          <Group position="apart" spacing="sm" align="flex-end">
+            <TextInput
+              placeholder={placeholder}
+              value={flag}
+              onChange={setFlag}
+              style={{ flexGrow: 1 }}
+              styles={{
+                input: {
+                  fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
+                },
+              }}
+            />
+            <Button miw="6rem" type="submit">
+              {t('challenge.button.submit_flag')}
+            </Button>
+          </Group>
         </form>
       </Stack>
     </Modal>

@@ -38,11 +38,11 @@ type SelectChallengeItemProps = ChallengeModel & React.ComponentPropsWithoutRef<
 const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
   ({ name, id, ...others }: SelectTeamItemProps, ref) => (
     <Stack ref={ref} {...others} spacing={0}>
-      <Text lineClamp={1} size="sm">
+      <Text lineClamp={1}>
+        <Text span c="dimmed">
+          {`#${id} `}
+        </Text>
         {name}
-      </Text>
-      <Text size="xs" c="dimmed">
-        {`#${id}`}
       </Text>
     </Stack>
   )
@@ -55,16 +55,14 @@ const SelectChallengeItem = forwardRef<HTMLDivElement, SelectChallengeItemProps>
     const theme = useMantineTheme()
 
     return (
-      <Group ref={ref} {...others}>
+      <Group ref={ref} {...others} spacing="sm">
         <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
-        <Stack spacing={0}>
-          <Text lineClamp={1} size="sm">
-            {title}
+        <Text lineClamp={1}>
+          <Text span c="dimmed">
+            {`#${id} `}
           </Text>
-          <Text size="xs" c="dimmed">
-            {`#${id}`}
-          </Text>
-        </Stack>
+          {title}
+        </Text>
       </Group>
     )
   }
