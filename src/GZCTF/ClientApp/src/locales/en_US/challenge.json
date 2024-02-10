@@ -39,7 +39,7 @@
       },
       "actions": {
         "count_down": "Remaining: ",
-        "note": "You can extend the instance's lifetime 10 mins before it expires."
+        "note": "You can extend it 10 mins before it expires."
       }
     },
     "wrong_flag_hints": [
