@@ -69,10 +69,11 @@ jobs:
         id: meta
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/gzctf/gzctf
+            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/gzctf
             gztime/gzctf
+          flavor: |
+            latest=${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
           tags: |
-            latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
             type=ref,event=branch
             type=semver,pattern={{raw}}
             type=sha,enable=true,priority=100,prefix=,suffix=,format=short
@@ -91,8 +92,8 @@ jobs:
         with:
           dry-run: false
           token: ${{ secrets.PACKAGE_TOKEN }}
-          container: "gzctf/gzctf"
-          keep-tags-regexes: ^v(.)*
+          container: ${{ github.event.repository.name }}/gzctf
+          keep-tags-regexes: ^v\d+\.\d+\.\d+$
           prune-tags-regexes: ^[0-9a-f]{6,40}
           keep-tags: |
             latest
