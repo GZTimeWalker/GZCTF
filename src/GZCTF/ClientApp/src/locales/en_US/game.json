@@ -70,33 +70,33 @@
     "join": {
       "team": {
         "label": "Select your team",
-        "description": "Please select a team you want to participate with in this game. This cannot be changed after approved."
+        "description": "Please select a team you want to participate with in this game. This cannot be changed after approval."
       },
       "title": "Registration Information",
       "confirm": "Confirm Registration",
       "content": [
         "Are you sure you want to register for this game?",
         "After successfully registering for the competition and passing the review, the team will be locked and you will no longer be able to change your team member, <strong>e.g. invites new member or remove member from the team.</strong> The team will be unlocked after the match ends or when the participation request is denied.",
-        "The number of players requires that the number of members of the team be selected, and<strong>whether or not the team participates in the match in that capacity.</strong>"
+        "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
       ],
       "invite_code": {
         "label": "Please enter the invitation code",
-        "description": "This game requires invitation, provide an invitation code to join."
+        "description": "This game is invitation-only. To participate in, please enter an invitation code."
       },
       "organization": {
-        "label": "Select Organization",
-        "description": "This game has more than one organization available. Please select one."
+        "label": "Select Division",
+        "description": "This game has multiple division available. Please select your division."
       }
     },
     "writeup": {
-      "title": "Writeup manage",
+      "title": "Writeup Management",
       "submitted": "Successfully submitted",
-      "unsubmitted": "Not submitted",
+      "unsubmitted": "Not yet submitted",
       "instructions": {
         "title": "Submission instructions",
         "datetime_format": "DD/MM/YYYY HH:mm:ss",
-        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, late submission or non-submission will be considered a waiver of game score.",
-        "file_format": "Please make all solved challenges into <1>a standard PDF document that is less than 20MB in size</1>.",
+        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
+        "file_format": "Please organize solved challenges into <1>a standard PDF document less than 20MB</1>.",
         "additional": "Additional Notes"
       },
       "current": "Current Writeup",
@@ -104,21 +104,21 @@
       "deadline_exceeded": "Submission deadline has passed"
     },
     "leave": {
-      "confirm": "Confirm quit game",
+      "confirm": "Confirm quitting",
       "content": [
         "Are you sure you want to quit this game?",
-        "The team participation information will be deleted after exiting if the number of people is empty."
+        "If the number of team members is zero after you quit, the team participation data will be deleted."
       ]
     },
     "end_time": "End Time",
     "no_cheat": {
-      "title": "No team cheats yet",
-      "comment": "It seems to be true for all"
+      "title": "No cheating detected yet",
+      "comment": "It looks like everyone played fair!"
     },
-    "no_notice": "No notice",
+    "no_notice": "Nothing here.",
     "team_view": {
       "label": "Team View",
-      "description": "Use team view to display cheats"
+      "description": "Use team view to display cheating information"
     },
     "all_solved": {
       "title": "All challenges were solved!",
@@ -127,13 +127,13 @@
     "game_ended": "Ended",
     "no_traffic": {
       "title": "No data captures enabled",
-      "comment": "Requires both platform configuration and title to be enabled"
+      "comment": "Requires both platform and challenge to be set up to enable capture"
     },
     "start_time": "Start Time",
     "duration": "{{hours}} hour(s)",
     "no_challenge": "Ouch! No challenges available for this game.",
     "joined_status": "<strong>{{count}}</strong> teams have already joined",
-    "scoreboard_tip": "Tip: Scroll the list of topics by left and right arrow!",
+    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
     "game_lasts_long": "The game will last for a long time",
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "hide_container_events": {
@@ -148,15 +148,15 @@
     "total_duration": "{{hours}}h in total"
   },
   "notification": {
-    "left": "Cancellation successful",
+    "left": "Successfully cancel",
     "ended": "The game has ended",
     "joined": "Registration successful",
-    "no_team": "Please select the team to join",
+    "no_team": "Please select the team to participate with",
     "suspended": "You have been banned",
     "not_started": "Game not yet started",
     "no_invite_code": "Invitation code cannot be empty",
-    "no_organization": "Please select the organization",
-    "select_chal_and_part": "Please select topics and teams first",
+    "no_organization": "Please select the division",
+    "select_chal_and_part": "Please select challenges and teams first",
     "connected": {
       "event": "Real-time event connected",
       "submission": "Real-time submission connected"
@@ -177,16 +177,16 @@
         "content": "Please wait for review results"
       },
       "rejected": {
-        "title": "Your entry request was not approved",
-        "content": "Please make sure you are eligible to re-register after you meet your requirements"
+        "title": "Your participating request was rejected",
+        "content": "Please make sure you are eligible to register in the game and re-register after you meet the requirements"
       },
       "suspended": {
         "title": "Your team {{team} } has been suspended",
-        "content": "If you hear any objection, please contact the administrator to make an appeal"
+        "content": "If you have any objections, please contact the administrator to appeal."
       },
       "not_started": {
         "title": "Game not yet started",
-        "mobile": "Please use computer to see the details of the game.",
+        "mobile": "Please use desktop site to see the details of the game.",
         "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start."
       },
       "team_required": {
@@ -209,7 +209,7 @@
     }
   },
   "notice": {
-    "new_hint": "[{{title}}] has updated the hints",
+    "new_hint": "New hints to [{{title}}]",
     "blood": "Congratulations to {{team}} for obtaining the {{blood}} in {{chal}}.",
     "new_challenge": "New challenge [{{title}}] has been released"
   },
@@ -218,11 +218,11 @@
       "start": "Created challenge instance for {{chal}}#{{id}}",
       "destroy": "Destroyed challenge instance for {{chal}}#{{id}}"
     },
-    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s answer.",
+    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]",
     "answer": {
-      "accepted": "Answer accepted",
-      "wrong": "Answer incorrect",
+      "accepted": "Flag accepted",
+      "wrong": "Incorrect flag",
       "cheat": "Cheating",
       "submitted": "Successfully submitted",
       "not_found": "Unknown"

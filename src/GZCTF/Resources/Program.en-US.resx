@@ -178,7 +178,7 @@
     <value>Captcha failed</value>
   </data>
   <data name="Account_UserDisabled" xml:space="preserve">
-    <value>User is disabled</value>
+    <value>User is banned</value>
   </data>
   <data name="Account_UserExisting" xml:space="preserve">
     <value>This account already exists</value>
@@ -553,7 +553,7 @@
     <value>Container operation too often</value>
   </data>
   <data name="Game_ParticipationNotAccepted" xml:space="preserve">
-    <value>Your entry request has not been passed or banned</value>
+    <value>Your registration has been rejected or banned</value>
   </data>
   <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
     <value>Failed to download scoreboard</value>
@@ -905,7 +905,7 @@
     <value>Server exited unexpectedly due to exceptions</value>
   </data>
   <data name="Submission_Accepted" xml:space="preserve">
-    <value>Answer accepted</value>
+    <value>ACCEPTED</value>
   </data>
   <data name="Submission_CheatDetected" xml:space="preserve">
     <value>Cheat detection</value>
@@ -929,7 +929,7 @@
     <value>Unknown instance</value>
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
-    <value>Answer incorrect</value>
+    <value>WRONG</value>
   </data>
   <data name="Game_CreationFailed" xml:space="preserve">
     <value>Failed to create game</value>

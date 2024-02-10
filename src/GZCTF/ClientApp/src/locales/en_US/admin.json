@@ -125,7 +125,7 @@
             "will_generate": "will generate"
           },
           "template": "flag template",
-          "title": "flag management"
+          "title": "Flag management"
         },
         "hints": "Hints",
         "memory_limit": {
@@ -224,7 +224,7 @@
           "joined": "Joined",
           "not_joined": "Not Registered",
           "stats": "{{count}}/{{total}} joined",
-          "update": "Are you sure you want to set this team to \"{{status}}\"?"
+          "update": "Set this team to status: \"{{status}}\"?"
         }
       },
       "stats": "<1>{{current}}</1> out of <1>{{total}}</1> games displayed",
