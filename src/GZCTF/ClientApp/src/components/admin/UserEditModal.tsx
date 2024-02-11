@@ -130,7 +130,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           />
           <TextInput
             label={t('account.label.student_id')}
-            type="number"
+            type="text"
             w="100%"
             value={profile.stdNumber ?? ''}
             disabled={disabled}
