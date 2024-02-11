@@ -298,7 +298,7 @@ const Teams: FC = () => {
                             iconPath={team.locked ? mdiLockOpenVariantOutline : mdiLockOutline}
                             color={team.locked ? 'gray' : 'yellow'}
                             message={t('admin.content.teams.lock', {
-                              teamName: team.name,
+                              name: team.name,
                               action: team.locked
                                 ? t('admin.button.teams.do_unlock')
                                 : t('admin.button.teams.do_lock'),
