@@ -159,7 +159,8 @@ public class DockerManager : IContainerManager
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
-        if (!_meta.ExposePort) return container;
+        if (!_meta.ExposePort)
+            return container;
 
         var port = info.NetworkSettings.Ports
             .FirstOrDefault(p =>

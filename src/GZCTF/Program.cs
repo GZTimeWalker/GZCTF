@@ -84,7 +84,8 @@ else
             options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
                 o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 
-            if (!builder.Environment.IsDevelopment()) return;
+            if (!builder.Environment.IsDevelopment())
+                return;
 
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
@@ -389,15 +390,17 @@ namespace GZCTF
                 return new JsonResult(
                     new RequestResponse(errors is [_, ..]
                         ? errors
-                        : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
+                        : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
+                { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
-                where val.Errors.Count > 0
-                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                      where val.Errors.Count > 0
+                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is [_, ..]
                 ? errors
-                : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
+                : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
+            { StatusCode = 400 };
         }
     }
 }

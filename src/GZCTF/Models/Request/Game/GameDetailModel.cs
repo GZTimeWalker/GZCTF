@@ -27,7 +27,7 @@ public class GameDetailModel
     /// </summary>
     [Required]
     public bool WriteupRequired { get; set; } = false;
-    
+
     /// <summary>
     /// Writeup 提交截止时间
     /// </summary>

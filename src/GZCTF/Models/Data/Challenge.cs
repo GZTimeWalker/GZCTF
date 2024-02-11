@@ -128,7 +128,7 @@ public class Challenge
     /// <summary>
     /// 题目对应的 Flag 列表
     /// </summary>
-    public List<FlagContext> Flags { get; set; } = new();
+    public List<FlagContext> Flags { get; set; } = [];
 
     /// <summary>
     /// 为参赛对象生成动态 Flag
@@ -191,10 +191,7 @@ public class Challenge
         if (FlagTemplate.Contains("[GUID]"))
             return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
 
-        if (FlagTemplate.StartsWith("[LEET]"))
-            return Codec.Leet.LeetFlag(FlagTemplate[6..]);
-
-        return Codec.Leet.LeetFlag(FlagTemplate);
+        return Codec.Leet.LeetFlag(FlagTemplate.StartsWith("[LEET]") ? FlagTemplate[6..] : FlagTemplate);
     }
 
     #endregion

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Localization;
-using System.Globalization;
+﻿using System.Globalization;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Utils;
 

@@ -13,7 +13,7 @@ public abstract class FormattableData<T> where T : Enum
     /// </summary>
     [Required]
     public T Type { get; set; } = default!;
-    
+
     /// <summary>
     /// 格式化值列表
     /// </summary>

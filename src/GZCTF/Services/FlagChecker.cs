@@ -113,7 +113,7 @@ public class FlagChecker(
                                     item.GameChallenge.Title,
                                     result.SourceTeamName ?? ""],
                                 item.User, TaskStatus.Success, LogLevel.Information);
-                            
+
                             await eventRepository.AddEvent(
                                 new()
                                 {

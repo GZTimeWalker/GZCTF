@@ -43,7 +43,7 @@ public class GameInfoModel
     /// 是否需要提交 Writeup
     /// </summary>
     public bool WriteupRequired { get; set; }
-    
+
     /// <summary>
     /// 比赛邀请码
     /// </summary>

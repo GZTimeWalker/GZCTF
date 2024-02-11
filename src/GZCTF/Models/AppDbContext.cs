@@ -317,7 +317,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.Navigation(e => e.LocalFile).AutoInclude();
         });
-        
+
         builder.Entity<GameNotice>(entity =>
         {
             entity.Property(e => e.Values)
@@ -332,7 +332,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion(listConverter)
                 .Metadata
                 .SetValueComparer(listComparer);
-            
+
             entity.HasOne(e => e.Team)
                 .WithMany()
                 .HasForeignKey(e => e.TeamId);

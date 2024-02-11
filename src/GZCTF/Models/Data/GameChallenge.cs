@@ -72,17 +72,17 @@ public class GameChallenge : Challenge
     /// <summary>
     /// 提交
     /// </summary>
-    public List<Submission> Submissions { get; set; } = new();
+    public List<Submission> Submissions { get; set; } = [];
 
     /// <summary>
     /// 赛题实例
     /// </summary>
-    public List<GameInstance> Instances { get; set; } = new();
+    public List<GameInstance> Instances { get; set; } = [];
 
     /// <summary>
     /// 激活赛题的队伍
     /// </summary>
-    public HashSet<Participation> Teams { get; set; } = new();
+    public HashSet<Participation> Teams { get; set; } = [];
 
     /// <summary>
     /// 比赛 Id

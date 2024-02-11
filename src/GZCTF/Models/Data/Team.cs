@@ -79,7 +79,7 @@ public class Team
     /// <summary>
     /// 比赛参与对象
     /// </summary>
-    public List<Participation> Participations { get; set; } = new();
+    public List<Participation> Participations { get; set; } = [];
 
     /// <summary>
     /// 比赛对象
@@ -89,7 +89,7 @@ public class Team
     /// <summary>
     /// 队员
     /// </summary>
-    public HashSet<UserInfo> Members { get; set; } = new();
+    public HashSet<UserInfo> Members { get; set; } = [];
 
     #endregion Db Relationship
 }

@@ -73,7 +73,7 @@ public class SwarmManager : IContainerManager
         ServiceCreateParameters parameters = GetServiceCreateParameters(config);
         var retry = 0;
         ServiceCreateResponse? serviceRes;
-        CreateContainer:
+    CreateContainer:
         try
         {
             serviceRes = await _client.Swarm.CreateServiceAsync(parameters, token);
@@ -159,7 +159,8 @@ public class SwarmManager : IContainerManager
                 Labels =
                     new Dictionary<string, string>
                     {
-                        ["TeamId"] = config.TeamId, ["UserId"] = config.UserId.ToString()
+                        ["TeamId"] = config.TeamId,
+                        ["UserId"] = config.UserId.ToString()
                     },
                 Mode = new() { Replicated = new() { Replicas = 1 } },
                 TaskTemplate = new()
@@ -189,7 +190,8 @@ public class SwarmManager : IContainerManager
                     [
                         new()
                         {
-                            PublishMode = _meta.ExposePort ? "global" : "vip", TargetPort = (uint)config.ExposedPort
+                            PublishMode = _meta.ExposePort ? "global" : "vip",
+                            TargetPort = (uint)config.ExposedPort
                         }
                     ]
                 }

@@ -45,7 +45,7 @@ public class DetailedGameInfoModel
     /// 是否需要提交 Writeup
     /// </summary>
     public bool WriteupRequired { get; set; }
-    
+
     /// <summary>
     /// 比赛头图
     /// </summary>

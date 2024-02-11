@@ -3,7 +3,6 @@ using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
 using k8s;
 using k8s.Models;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using static GZCTF.Program;
 
@@ -33,10 +32,9 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
     readonly KubernetesMetadata _kubernetesMetadata;
 
     readonly Kubernetes _kubernetesClient;
-    readonly IStringLocalizer<Program> _localizer;
 
     public KubernetesProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> options,
-        ILogger<KubernetesProvider> logger, IStringLocalizer<Program> localizer)
+        ILogger<KubernetesProvider> logger)
     {
         _kubernetesMetadata = new()
         {
@@ -44,7 +42,6 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
             PortMappingType = options.Value.PortMappingType,
             PublicEntry = options.Value.PublicEntry
         };
-        _localizer = localizer;
 
         if (!File.Exists(_kubernetesMetadata.Config.KubeConfig))
         {
@@ -55,7 +52,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 
         var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
 
-        _kubernetesMetadata.HostIp = new System.Uri(config.Host).Host;
+        _kubernetesMetadata.HostIp = new Uri(config.Host).Host;
 
         _kubernetesClient = new Kubernetes(config);
 
@@ -118,7 +115,8 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
                                 {
                                     IpBlock = new()
                                     {
-                                        Cidr = "0.0.0.0/0", Except = _kubernetesMetadata.Config.AllowCidr
+                                        Cidr = "0.0.0.0/0",
+                                        Except = _kubernetesMetadata.Config.AllowCidr
                                     }
                                 }
                             ]
@@ -127,7 +125,8 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
                 }
             }, _kubernetesMetadata.Config.Namespace);
 
-        if (!withAuth || registry?.ServerAddress is null) return;
+        if (!withAuth || registry?.ServerAddress is null)
+            return;
 
         var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
         var dockerJsonObj = new

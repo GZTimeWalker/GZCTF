@@ -43,22 +43,22 @@ public class Participation
     /// <summary>
     /// 队伍参与的队员
     /// </summary>
-    public HashSet<UserParticipation> Members { get; set; } = new();
+    public HashSet<UserParticipation> Members { get; set; } = [];
 
     /// <summary>
     /// 队伍激活的题目
     /// </summary>
-    public HashSet<GameChallenge> Challenges { get; set; } = new();
+    public HashSet<GameChallenge> Challenges { get; set; } = [];
 
     /// <summary>
     /// 赛题实例
     /// </summary>
-    public List<GameInstance> Instances { get; set; } = new();
+    public List<GameInstance> Instances { get; set; } = [];
 
     /// <summary>
     /// 提交
     /// </summary>
-    public List<Submission> Submissions { get; set; } = new();
+    public List<Submission> Submissions { get; set; } = [];
 
     [Required]
     public int GameId { get; set; }

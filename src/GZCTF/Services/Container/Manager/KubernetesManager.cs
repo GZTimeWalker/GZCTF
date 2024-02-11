@@ -86,7 +86,8 @@ public class KubernetesManager : IContainerManager
                             },
                             Requests = new Dictionary<string, ResourceQuantity>
                             {
-                                ["cpu"] = new("10m"), ["memory"] = new("32Mi")
+                                ["cpu"] = new("10m"),
+                                ["memory"] = new("32Mi")
                             }
                         }
                     }
@@ -195,7 +196,8 @@ public class KubernetesManager : IContainerManager
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
-        if (!_meta.ExposePort) return container;
+        if (!_meta.ExposePort)
+            return container;
 
         container.PublicIP = _meta.PublicEntry;
         container.PublicPort = service.Spec.Ports[0].NodePort;

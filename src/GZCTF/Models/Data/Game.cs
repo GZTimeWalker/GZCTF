@@ -195,31 +195,31 @@ public class Game
     /// 比赛事件
     /// </summary>
     [JsonIgnore]
-    public List<GameEvent> GameEvents { get; set; } = new();
+    public List<GameEvent> GameEvents { get; set; } = [];
 
     /// <summary>
     /// 比赛通知
     /// </summary>
     [JsonIgnore]
-    public List<GameNotice> GameNotices { get; set; } = new();
+    public List<GameNotice> GameNotices { get; set; } = [];
 
     /// <summary>
     /// 比赛题目
     /// </summary>
     [JsonIgnore]
-    public List<GameChallenge> Challenges { get; set; } = new();
+    public List<GameChallenge> Challenges { get; set; } = [];
 
     /// <summary>
     /// 比赛提交
     /// </summary>
     [JsonIgnore]
-    public List<Submission> Submissions { get; set; } = new();
+    public List<Submission> Submissions { get; set; } = [];
 
     /// <summary>
     /// 比赛队伍参赛对象
     /// </summary>
     [JsonIgnore]
-    public HashSet<Participation> Participations { get; set; } = new();
+    public HashSet<Participation> Participations { get; set; } = [];
 
     /// <summary>
     /// 比赛队伍

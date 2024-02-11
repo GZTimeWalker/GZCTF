@@ -125,13 +125,13 @@ public partial class UserInfo : IdentityUser<Guid>
     /// 个人提交记录
     /// </summary>
     [MemoryPackIgnore]
-    public List<Submission> Submissions { get; set; } = new();
+    public List<Submission> Submissions { get; set; } = [];
 
     /// <summary>
     /// 参与的队伍
     /// </summary>
     [MemoryPackIgnore]
-    public List<Team> Teams { get; set; } = new();
+    public List<Team> Teams { get; set; } = [];
 
     #endregion
 }

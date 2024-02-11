@@ -28,7 +28,7 @@ public class LocalFile
     /// 文件大小
     /// </summary>
     [JsonIgnore]
-    public long FileSize { get; set; } = 0;
+    public long FileSize { get; set; }
 
     /// <summary>
     /// 文件名

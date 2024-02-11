@@ -15,14 +15,14 @@ public class ExerciseChallenge : Challenge
     /// <summary>
     /// 练习题目附加标签
     /// </summary>
-    public List<string>? Tags { get; set; } = new();
+    public List<string>? Tags { get; set; } = [];
 
     #region Db Relationship
 
     /// <summary>
     /// 依赖的练习题目
     /// </summary>
-    public List<ExerciseChallenge> Dependencies { get; set; } = new();
+    public List<ExerciseChallenge> Dependencies { get; set; } = [];
 
     #endregion
 }

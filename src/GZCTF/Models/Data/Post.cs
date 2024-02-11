@@ -38,7 +38,7 @@ public partial class Post
     /// <summary>
     /// 文章标签
     /// </summary>
-    public List<string>? Tags { get; set; } = new();
+    public List<string>? Tags { get; set; } = [];
 
     /// <summary>
     /// 作者信息

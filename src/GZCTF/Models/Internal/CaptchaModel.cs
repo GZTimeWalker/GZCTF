@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
+// ReSharper disable UnusedMember.Global
 // ReSharper disable ClassNeverInstantiated.Global
 
 namespace GZCTF.Models.Internal;
@@ -19,7 +20,7 @@ public class RecaptchaResponseModel
     public string Action { get; set; } = string.Empty;
 
     [JsonPropertyName("error-codes")]
-    public List<string> ErrorCodes { get; set; } = new();
+    public List<string> ErrorCodes { get; set; } = [];
 }
 
 /// <summary>
@@ -59,5 +60,5 @@ public class TurnstileResponseModel
     public string Action { get; set; } = string.Empty;
 
     [JsonPropertyName("error-codes")]
-    public List<string> ErrorCodes { get; set; } = new();
+    public List<string> ErrorCodes { get; set; } = [];
 }
