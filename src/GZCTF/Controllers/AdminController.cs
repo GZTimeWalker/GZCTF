@@ -294,6 +294,22 @@ public class AdminController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
                 StatusCodes.Status404NotFound));
 
+        if (model.UserName is not null && model.UserName != user.UserName)
+        {
+            var result = await userManager.SetUserNameAsync(user, model.UserName);
+
+            if (!result.Succeeded)
+                return HandleIdentityError(result.Errors);
+        }
+
+        if (model.Email is not null && model.Email != user.Email)
+        {
+            var result = await userManager.SetEmailAsync(user, model.Email);
+
+            if (!result.Succeeded)
+                return HandleIdentityError(result.Errors);
+        }
+
         user.UpdateUserInfo(model);
         await userManager.UpdateAsync(user);
 
@@ -566,4 +582,8 @@ public class AdminController(
     public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0,
         CancellationToken token = default) =>
         Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
+
+    IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
+        BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
+                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
 }

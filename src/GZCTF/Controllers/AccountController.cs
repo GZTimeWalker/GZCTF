@@ -68,8 +68,7 @@ public class AccountController(
             UserInfo? current = await userManager.FindByEmailAsync(model.Email);
 
             if (current is null)
-                return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                      localizer[nameof(Resources.Program.Identity_UnknownError)]));
+                return HandleIdentityError(result.Errors);
 
             if (await userManager.IsEmailConfirmedAsync(current))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserExisting)]));
@@ -207,8 +206,7 @@ public class AccountController(
             await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
+            return HandleIdentityError(result.Errors);
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordReset)], user, TaskStatus.Success);
 
@@ -253,8 +251,7 @@ public class AccountController(
         result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
+            return HandleIdentityError(result.Errors);
 
         return Ok();
     }
@@ -343,18 +340,25 @@ public class AccountController(
     public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
     {
         UserInfo? user = await userManager.GetUserAsync(User);
-        var oldName = user!.UserName;
 
-        user.UpdateUserInfo(model);
-        IdentityResult result = await userManager.UpdateAsync(user);
+        if (model.UserName is not null && model.UserName != user!.UserName)
+        {
+            var oldName = user.UserName;
+
+            var unameRes = await userManager.SetUserNameAsync(user, model.UserName);
+
+            if (!unameRes.Succeeded)
+                return HandleIdentityError(unameRes.Errors);
+
+            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
+                    user, TaskStatus.Success);
+        }
+
+        user!.UpdateUserInfo(model);
+        var result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
-
-        if (oldName != user.UserName)
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
-                user, TaskStatus.Success);
+            return HandleIdentityError(result.Errors);
 
         return Ok();
     }
@@ -379,8 +383,7 @@ public class AccountController(
         IdentityResult result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
 
         if (!result.Succeeded)
-            return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
+            return HandleIdentityError(result.Errors);
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordChanged)], user,
             TaskStatus.Success);
@@ -536,4 +539,8 @@ public class AccountController(
     string GetEmailLink(string action, string token, string? email)
         => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/account/{action}?" +
            $"token={token}&email={Codec.Base64.Encode(email)}";
+
+    IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
+        BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
+                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
 }

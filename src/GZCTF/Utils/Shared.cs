@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Channels;
+using Microsoft.AspNetCore.Identity;
 
 namespace GZCTF.Utils;
 

@@ -181,7 +181,11 @@ builder.Services.AddIdentityCore<UserInfo>(options =>
         options.User.RequireUniqueEmail = true;
         options.Password.RequireNonAlphanumeric = false;
         options.SignIn.RequireConfirmedEmail = true;
-    }).AddSignInManager<SignInManager<UserInfo>>()
+
+        // Allow all characters in username
+        options.User.AllowedUserNameCharacters = string.Empty;
+    })
+    .AddSignInManager<SignInManager<UserInfo>>()
     .AddUserManager<UserManager<UserInfo>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddErrorDescriber<TranslatedIdentityErrorDescriber>()

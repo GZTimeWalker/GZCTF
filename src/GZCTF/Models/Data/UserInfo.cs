@@ -85,8 +85,7 @@ public partial class UserInfo : IdentityUser<Guid>
 
     internal void UpdateUserInfo(AdminUserInfoModel model)
     {
-        UserName = model.UserName ?? UserName;
-        Email = model.Email ?? Email;
+        // use SetUserNameAsync and SetEmailAsync to update UserName and Email
         Bio = model.Bio ?? Bio;
         Role = model.Role ?? Role;
         StdNumber = model.StdNumber ?? StdNumber;
@@ -95,6 +94,11 @@ public partial class UserInfo : IdentityUser<Guid>
         EmailConfirmed = model.EmailConfirmed ?? EmailConfirmed;
     }
 
+    /// <summary>
+    /// Update user info by UserCreateModel
+    /// for batch creation
+    /// </summary>
+    /// <param name="model"></param>
     internal void UpdateUserInfo(UserCreateModel model)
     {
         UserName = model.UserName;
@@ -106,7 +110,7 @@ public partial class UserInfo : IdentityUser<Guid>
 
     internal void UpdateUserInfo(ProfileUpdateModel model)
     {
-        UserName = model.UserName ?? UserName;
+        // use SetUserNameAsync to update UserName
         Bio = model.Bio ?? Bio;
         PhoneNumber = model.Phone ?? PhoneNumber;
         RealName = model.RealName ?? RealName;
