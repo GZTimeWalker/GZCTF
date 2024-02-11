@@ -11,8 +11,7 @@ public class ChallengeUpdateModel
     /// <summary>
     /// 题目名称
     /// </summary>
-    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort))]
     public string? Title { get; set; }
 
     /// <summary>
@@ -23,8 +22,7 @@ public class ChallengeUpdateModel
     /// <summary>
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
     /// </summary>
-    [MaxLength(120, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(120, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong))]
     public string? FlagTemplate { get; set; }
 
     /// <summary>
@@ -80,22 +78,19 @@ public class ChallengeUpdateModel
     /// <summary>
     /// 运行内存限制 (MB)
     /// </summary>
-    [Range(32, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [Range(32, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange))]
     public int? MemoryLimit { get; set; }
 
     /// <summary>
     /// CPU 限制 (0.1 CPUs)
     /// </summary>
-    [Range(1, 1024, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [Range(1, 1024, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange))]
     public int? CPUCount { get; set; }
 
     /// <summary>
     /// 存储限制 (MB)
     /// </summary>
-    [Range(128, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [Range(128, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange))]
     public int? StorageLimit { get; set; }
 
     /// <summary>

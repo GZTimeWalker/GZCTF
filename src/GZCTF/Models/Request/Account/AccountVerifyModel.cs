@@ -10,14 +10,12 @@ public class AccountVerifyModel
     /// <summary>
     /// 邮箱接收到的Base64格式Token
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TokenRequired),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TokenRequired))]
     public string? Token { get; set; }
 
     /// <summary>
     /// 用户邮箱的Base64格式
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired))]
     public string? Email { get; set; }
 }

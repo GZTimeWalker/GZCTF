@@ -10,7 +10,6 @@ public class GameNoticeModel
     /// <summary>
     /// 通知内容
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired),
-        ErrorMessageResourceType = typeof(Resources.Program))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired))]
     public string Content { get; set; } = string.Empty;
 }

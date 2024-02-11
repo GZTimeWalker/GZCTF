@@ -256,6 +256,10 @@ builder.Services.AddResponseCompression(options =>
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
 {
     options.InvalidModelStateResponseFactory = GZCTF.Program.InvalidModelStateHandler;
+}).AddDataAnnotationsLocalization(options =>
+{
+    options.DataAnnotationLocalizerProvider = (_, factory) =>
+        factory.Create(typeof(GZCTF.Resources.Program));
 });
 
 #endregion Services and Repositories
