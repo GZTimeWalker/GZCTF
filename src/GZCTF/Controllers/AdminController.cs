@@ -146,8 +146,7 @@ public class AdminController(
                 if (userInfo is null)
                 {
                     await trans.RollbackAsync(token);
-                    return BadRequest(new RequestResponse(result.Errors.FirstOrDefault()?.Description ??
-                                                          localizer[nameof(Resources.Program.Identity_UnknownError)]));
+                    return HandleIdentityError(result.Errors);
                 }
 
                 userInfo.UpdateUserInfo(user);

@@ -19,7 +19,6 @@ public class UserCreateModel
     /// 密码
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired))]
-    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordTooShort))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
