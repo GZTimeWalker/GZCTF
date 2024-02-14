@@ -210,7 +210,7 @@
   },
   "notice": {
     "new_hint": "New hints to [{{title}}]",
-    "blood": "Congratulations to {{team}} for obtaining the {{blood}} in {{chal}}.",
+    "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
     "new_challenge": "New challenge [{{title}}] has been released"
   },
   "event": {
