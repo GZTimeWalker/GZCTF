@@ -79,7 +79,7 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
         />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onCreate}>
-            {t('admin.button.challenges.flag.add')}
+            {t('admin.button.challenges.flag.add.normal')}
           </Button>
         </Group>
       </Stack>
