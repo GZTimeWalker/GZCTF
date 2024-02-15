@@ -329,7 +329,7 @@
     },
     "users": {
       "active": "Activate",
-      "last_visit": "Last visit time",
+      "last_visit": "Last Visit",
       "role": "User Roles"
     }
   },
@@ -429,7 +429,7 @@
       }
     },
     "settings": {
-      "email_domain_list": "Not limited to registered domain",
+      "email_domain_list": "No restrictions",
       "footer": "`Test` <mbr/> Something..."
     },
     "teams": {
