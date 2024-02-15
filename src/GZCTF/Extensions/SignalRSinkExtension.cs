@@ -27,6 +27,10 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
 
         _hubContext ??= serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
+        logEvent.Properties.TryGetValue("UserName", out LogEventPropertyValue? userName);
+        logEvent.Properties.TryGetValue("IP", out LogEventPropertyValue? ip);
+        logEvent.Properties.TryGetValue("Status", out LogEventPropertyValue? status);
+
         try
         {
             _hubContext.Clients.All.ReceivedLog(
@@ -34,10 +38,10 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
                 {
                     Time = logEvent.Timestamp,
                     Level = logEvent.Level.ToString(),
-                    UserName = logEvent.Properties["UserName"].ToString()[1..^1],
-                    IP = logEvent.Properties["IP"].ToString()[1..^1],
                     Msg = logEvent.RenderMessage(),
-                    Status = logEvent.Properties["Status"].ToString()
+                    UserName = LogHelper.GetStringValue(userName, "Anonymous"),
+                    IP = LogHelper.GetStringValue(ip),
+                    Status = LogHelper.GetStringValue(status),
                 }).Wait();
         }
         catch

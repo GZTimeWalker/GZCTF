@@ -151,4 +151,11 @@ public static class LogHelper
             .WriteTo.Database(serviceProvider)
             .WriteTo.SignalR(serviceProvider)
             .CreateLogger();
+
+    public static string GetStringValue(LogEventPropertyValue? value, string defaultValue = "")
+    {
+        if (value is ScalarValue { Value: string rawValue })
+            return rawValue;
+        return value?.ToString() ?? defaultValue;
+    }
 }

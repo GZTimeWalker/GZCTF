@@ -55,21 +55,13 @@ public class DatabaseSink : ILogEventSink, IDisposable
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
             Message = logEvent.RenderMessage(),
-            UserName = GetStringValue(userName, "Anonymous"),
-            Logger = GetStringValue(sourceContext, "Unknown"),
-            RemoteIP = GetStringValue(ip),
-            Status = GetStringValue(status),
+            UserName = LogHelper.GetStringValue(userName, "Anonymous"),
+            Logger = LogHelper.GetStringValue(sourceContext, "Unknown"),
+            RemoteIP = LogHelper.GetStringValue(ip),
+            Status = LogHelper.GetStringValue(status),
             Exception = logEvent.Exception?.ToString()
         };
     }
-
-    static string GetStringValue(LogEventPropertyValue? value, string defaultValue = "")
-    {
-        if (value is ScalarValue { Value: string rawValue })
-            return rawValue;
-        return value?.ToString() ?? defaultValue;
-    }
-
 
     async Task WriteToDatabase(CancellationToken token = default)
     {
