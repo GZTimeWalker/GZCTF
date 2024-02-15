@@ -42,7 +42,7 @@
     }
   },
   "error": {
-    "check_input": "Please check input",
+    "check_input": "Please check your input",
     "empty": "Content can't be empty",
     "encountered": "Problems encountered",
     "file_invalid": {
@@ -72,7 +72,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm update",
+    "confirm_update": "Confirm Update",
     "delete": "Delete"
   },
   "tab": {
