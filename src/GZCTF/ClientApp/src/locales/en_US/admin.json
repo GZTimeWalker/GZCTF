@@ -160,15 +160,15 @@
       "info": {
         "accept_without_review": {
           "description": "Accept directly after team registration",
-          "label": "Accept without review"
+          "label": "Accept Without Review"
         },
         "container_limit": {
           "description": "Containers shared by one team (0 = unlimited)",
           "label": "Team Container Limit"
         },
-        "content": "Game details",
+        "content": "Game Details",
         "delete": "Are you sure you want to delete game {{name}}?",
-        "end_date": "End date",
+        "end_date": "End Date",
         "end_time": "End Time",
         "invite_code": {
           "description": "Leave empty for no invitation code",
@@ -188,7 +188,7 @@
           "description": "View challenges after the game ends",
           "label": "Practice Mode"
         },
-        "start_date": "Start date",
+        "start_date": "Start Date",
         "start_time": "Start Time",
         "summary": {
           "description": "Will be displayed in the game list",
@@ -204,8 +204,8 @@
         },
         "writeup_instruction": "Writeup Instructions",
         "writeup_required": {
-          "description": "Enable Writeup submission",
-          "label": "Writeup required"
+          "description": "Enable writeup submission",
+          "label": "Writeup Required"
         }
       },
       "notices": {
@@ -242,7 +242,7 @@
       "stats": " <1>{{count}}</1> distributed instances in total"
     },
     "markdown_inline_support": "Support inline markdown syntax",
-    "markdown_support": "Support markdown syntax",
+    "markdown_support": "Styling with Markdown is supported",
     "nothing_found": "Nothing found",
     "settings": {
       "account": {
