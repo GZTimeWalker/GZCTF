@@ -14,7 +14,7 @@
     "hidden": "Hidden",
     "limited": "{{count}} players",
     "individual": "Personal",
-    "mutiplayer": "Team"
+    "multiplayer": "Team"
   },
   "placeholder": {
     "no_solved": "Ouch! This team has not solved any challenges..."

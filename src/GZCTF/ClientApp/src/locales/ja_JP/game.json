@@ -14,7 +14,7 @@
     "hidden": "ゲームは非表示になっています",
     "limited": "{{count}}人戦",
     "individual": "ソロ戦",
-    "mutiplayer": "チーム戦"
+    "multiplayer": "チーム戦"
   },
   "placeholder": {
     "no_solved": "あかん！このチームはまだ何のチャレンジも解いていません……"

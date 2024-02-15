@@ -57,7 +57,7 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
         <Group spacing={4}>
           <Badge size="sm" variant="filled">
             {game.limit === 0
-              ? t('game.tag.mutiplayer')
+              ? t('game.tag.multiplayer')
               : game.limit === 1
                 ? t('game.tag.individual')
                 : t('game.tag.limited', { count: game.limit })}

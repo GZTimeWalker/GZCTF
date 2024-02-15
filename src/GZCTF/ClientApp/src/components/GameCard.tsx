@@ -73,7 +73,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
                 <Group noWrap spacing="xs">
                   <Badge size="xs" color={color}>
                     {limit === 0
-                      ? t('game.tag.mutiplayer')
+                      ? t('game.tag.multiplayer')
                       : limit === 1
                         ? t('game.tag.individual')
                         : t('game.tag.limited', { count: limit })}

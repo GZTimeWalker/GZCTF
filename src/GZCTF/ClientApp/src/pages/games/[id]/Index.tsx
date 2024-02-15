@@ -235,7 +235,7 @@ const GameDetail: FC = () => {
             <Group>
               <Badge variant="outline">
                 {!game || game.limit === 0
-                  ? t('game.tag.mutiplayer')
+                  ? t('game.tag.multiplayer')
                   : game.limit === 1
                     ? t('game.tag.individual')
                     : t('game.tag.limited', { count: game.limit })}
