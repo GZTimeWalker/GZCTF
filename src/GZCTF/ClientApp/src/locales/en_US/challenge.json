@@ -6,7 +6,7 @@
   },
   "button": {
     "download": {
-      "attachment": "Download attachment"
+      "attachment": "Download Attachment"
     },
     "submit_flag": "Submit Flag",
     "instance": {
@@ -26,7 +26,7 @@
         "label": "Instance Entry",
         "description": {
           "proxy": "Proxy mode has been enabled for the platform.",
-          "anchor": "Get clients"
+          "anchor": "Get client"
         }
       },
       "open": {
@@ -92,7 +92,7 @@
     ]
   },
   "file_type": {
-    "local": "Self hosted",
+    "local": "Self Hosted",
     "none": "None",
     "remote": "Remote Url"
   },

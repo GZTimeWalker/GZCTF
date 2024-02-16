@@ -93,7 +93,7 @@
       "submitted": "Successfully submitted",
       "unsubmitted": "Not yet submitted",
       "instructions": {
-        "title": "Submission instructions",
+        "title": "Submission Instructions",
         "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
         "file_format": "Please organize solved challenges into <1>a standard PDF document less than 20MB</1>.",
@@ -181,7 +181,7 @@
         "content": "Please make sure you are eligible to register in the game and re-register after you meet the requirements"
       },
       "suspended": {
-        "title": "Your team {{team} } has been suspended",
+        "title": "Your team {{team}} has been suspended",
         "content": "If you have any objections, please contact the administrator to appeal."
       },
       "not_started": {
@@ -210,7 +210,7 @@
   },
   "notice": {
     "new_hint": "New hints to [{{title}}]",
-    "blood": "Congratulations to {{team}} for obtaining the {{blood}} in {{chal}}.",
+    "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
     "new_challenge": "New challenge [{{title}}] has been released"
   },
   "event": {
