@@ -22,7 +22,7 @@
     "recovery": "Recover account"
   },
   "anchor": {
-    "login": "Ready to login?",
+    "login": "Already have account?",
     "recovery": "Forgot password?"
   },
   "button": {
