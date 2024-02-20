@@ -138,7 +138,7 @@
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "hide_container_events": {
       "label": "Hide container events",
-      "description": "Hide container starting/destruction events"
+      "description": "Hide container launching/destroying events"
     },
     "start_at": "Starts at",
     "end_at": "Ends at",
