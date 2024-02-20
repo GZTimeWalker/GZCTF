@@ -126,8 +126,8 @@
     },
     "game_ended": "Ended",
     "no_traffic": {
-      "title": "No data captures enabled",
-      "comment": "Requires both platform and challenge to be set up to enable capture"
+      "title": "No challenge has traffic capture enabled",
+      "comment": "Both platform and challenge need to be set up to enable capture"
     },
     "start_time": "Start Time",
     "duration": "{{hours}} hour(s)",
