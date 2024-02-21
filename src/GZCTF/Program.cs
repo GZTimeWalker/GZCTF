@@ -238,6 +238,8 @@ builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
 builder.Services.AddScoped<IExerciseInstanceRepository, ExerciseInstanceRepository>();
 builder.Services.AddScoped<IExerciseChallengeRepository, ExerciseChallengeRepository>();
 
+builder.Services.AddScoped<ExcelHelper>();
+
 builder.Services.AddChannel<Submission>();
 builder.Services.AddChannel<CacheRequest>();
 builder.Services.AddSingleton<CacheHelper>();
