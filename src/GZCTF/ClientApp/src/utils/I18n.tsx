@@ -12,13 +12,13 @@ export const LanguageMap = {
 export type SupportedLanguages = keyof typeof LanguageMap
 
 export const useLanguage = () => {
+  const { i18n } = useTranslation()
+
   const [language, setLanguageInner] = useLocalStorage({
     key: 'language',
-    defaultValue: 'zh_CN',
+    defaultValue: i18n.language,
     getInitialValueInEffect: false,
   })
-
-  const { i18n } = useTranslation()
 
   useEffect(() => {
     i18n.changeLanguage(language)
