@@ -703,10 +703,10 @@
     <value>{0} Auto-destroy container instance of problem {1} [{2}]</value>
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
-    <value>{0} launches container instance of problem {1} [{2}]</value>
+    <value>{0} launches container instance of challenge {1} [{2}]</value>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
-    <value>Could not start container instance for problem {0}</value>
+    <value>Could not start container instance for challenge {0}</value>
   </data>
   <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
     <value>Destroy container [{0}] ({1}): {2}</value>

@@ -117,8 +117,8 @@
     },
     "no_notice": "Nothing here.",
     "team_view": {
-      "label": "Team View",
-      "description": "Use team view to display cheating information"
+      "label": "View as Team",
+      "description": "Display cheating information by teams"
     },
     "all_solved": {
       "title": "All challenges were solved!",
