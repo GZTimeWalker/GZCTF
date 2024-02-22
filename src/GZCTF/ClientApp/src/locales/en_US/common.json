@@ -36,9 +36,9 @@
     }
   },
   "download": {
-    "failed": "下载失败",
-    "started": "正在下载",
-    "success": "下载成功"
+    "failed": "Failed to download",
+    "started": "Downloading",
+    "success": "Downloaded"
   },
   "email": {
     "sent": {
