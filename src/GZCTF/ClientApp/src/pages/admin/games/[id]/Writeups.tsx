@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom'
 import PDFViewer from '@Components/admin/PDFViewer'
 import TeamWriteupCard from '@Components/admin/TeamWriteupCard'
 import WithGameTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { WriteupInfoModel } from '@Api'
 

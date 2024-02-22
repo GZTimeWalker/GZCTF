@@ -21,7 +21,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import { useUser } from '@Utils/useUser'
 import api, { AdminUserInfoModel, Role, UserInfoModel } from '@Api'
 

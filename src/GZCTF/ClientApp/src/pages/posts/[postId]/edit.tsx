@@ -19,7 +19,7 @@ import { useNavigate, useParams } from 'react-router'
 import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api, { PostEditModel, Role } from '@Api'
 

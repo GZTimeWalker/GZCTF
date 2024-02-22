@@ -6,7 +6,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeTagItem,
   useChallengeTagLabelMap,

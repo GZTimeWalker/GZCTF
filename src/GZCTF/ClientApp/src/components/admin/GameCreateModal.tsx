@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import api, { GameInfoModel } from '@Api'
 
 interface GameCreateModalProps extends ModalProps {

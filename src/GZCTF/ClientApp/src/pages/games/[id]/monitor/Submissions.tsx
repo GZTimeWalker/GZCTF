@@ -25,14 +25,13 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
-import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { downloadBlob } from '@Utils/ApiHelper'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
-import { handleAxiosBlobError, openAxiosBlobResponse } from '@Utils/blob'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
 
@@ -209,28 +208,8 @@ const Submissions: FC = () => {
     )
   )
 
-  const onDownloadSubmissionSheet = () => {
-    setDisabled(true)
-    showNotification({
-      color: 'teal',
-      message: t('game.notification.download.started'),
-      icon: <Icon path={mdiCheck} size={1} />,
-    })
-    api.game
-      .gameSubmissionSheet(numId, { format: 'blob' })
-      .then(openAxiosBlobResponse)
-      .catch(async (err: AxiosError) => {
-        showNotification({
-          color: 'red',
-          title: t('game.notification.download.failed'),
-          message: await handleAxiosBlobError(err),
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
-      .finally(() => {
-        setDisabled(false)
-      })
-  }
+  const onDownloadSubmissionSheet = () =>
+    downloadBlob(api.game.gameSubmissionSheet(numId, { format: 'blob' }), setDisabled, t)
 
   return (
     <WithGameMonitorTab>

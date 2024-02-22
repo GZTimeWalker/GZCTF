@@ -1,8 +1,5 @@
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
-import { showNotification } from '@mantine/notifications'
 import {
-  mdiCheck,
-  mdiClose,
   mdiExclamationThick,
   mdiFileTableOutline,
   mdiFlag,
@@ -10,14 +7,13 @@ import {
   mdiPackageVariant,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { AxiosError } from 'axios'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
-import { handleAxiosBlobError, openAxiosBlobResponse } from '@Utils/blob'
+import { downloadBlob } from '@Utils/ApiHelper'
 import api, { Role } from '@Api'
 
 interface WithGameMonitorProps extends React.PropsWithChildren {
@@ -55,28 +51,8 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
     }
   }, [location])
 
-  const onDownloadScoreboardSheet = () => {
-    setDisabled(true)
-    showNotification({
-      color: 'teal',
-      message: t('game.notification.download.started'),
-      icon: <Icon path={mdiCheck} size={1} />,
-    })
-    api.game
-      .gameScoreboardSheet(numId, { format: 'blob' })
-      .then(openAxiosBlobResponse)
-      .catch(async (err: AxiosError) => {
-        showNotification({
-          color: 'red',
-          title: t('game.notification.download.failed'),
-          message: await handleAxiosBlobError(err),
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
-      .finally(() => {
-        setDisabled(false)
-      })
-  }
+  const onDownloadScoreboardSheet = () =>
+    downloadBlob(api.game.gameScoreboardSheet(numId, { format: 'blob' }), setDisabled, t)
 
   return (
     <WithNavBar width="90%">

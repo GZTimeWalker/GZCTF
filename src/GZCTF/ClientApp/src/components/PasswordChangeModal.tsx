@@ -7,7 +7,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import api from '@Api'
 
 const PasswordChangeModal: FC<ModalProps> = (props) => {

@@ -35,6 +35,11 @@
       "title": "页面宽度不足"
     }
   },
+  "download": {
+    "failed": "下载失败",
+    "started": "正在下载",
+    "success": "下载成功"
+  },
   "email": {
     "sent": {
       "message": "请检查你的邮箱及垃圾邮件~",

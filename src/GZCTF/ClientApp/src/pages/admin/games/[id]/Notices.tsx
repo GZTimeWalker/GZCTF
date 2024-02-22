@@ -10,7 +10,7 @@ import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameNotice } from '@Api'
 

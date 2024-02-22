@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AccountView from '@Components/AccountView'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 

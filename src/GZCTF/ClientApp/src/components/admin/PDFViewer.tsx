@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.js',

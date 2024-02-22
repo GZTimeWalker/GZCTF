@@ -32,7 +32,7 @@ import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeTagItem,
   useChallengeTagLabelMap,

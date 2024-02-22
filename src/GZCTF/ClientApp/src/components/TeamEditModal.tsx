@@ -26,7 +26,7 @@ import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiErrorHandler'
+import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
 import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 

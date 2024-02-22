@@ -15,7 +15,7 @@ import { mdiCheck, mdiCloseCircle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { showErrorNotification } from '@Utils/ApiErrorHandler'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import api, { TeamUpdateModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
