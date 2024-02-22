@@ -36,9 +36,9 @@
     }
   },
   "download": {
-    "failed": "下载失败",
-    "started": "正在下载",
-    "success": "下载成功"
+    "failed": "ダウンロードに失敗しました",
+    "started": "ダウンロード中",
+    "success": "ダウンロードが完了しました"
   },
   "email": {
     "sent": {
