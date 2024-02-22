@@ -574,34 +574,34 @@
     <value>Challenge</value>
   </data>
   <data name="Header_Email" xml:space="preserve">
-    <value>User email</value>
+    <value>Email</value>
   </data>
   <data name="Header_Member" xml:space="preserve">
     <value>Crew</value>
   </data>
   <data name="Header_PhoneNumber" xml:space="preserve">
-    <value>Phone number</value>
+    <value>Phone</value>
   </data>
   <data name="Header_Ranking" xml:space="preserve">
     <value>Rank</value>
   </data>
   <data name="Header_ScoringTime" xml:space="preserve">
-    <value>Scoring time</value>
+    <value>Time</value>
   </data>
   <data name="Header_SolvedNumber" xml:space="preserve">
     <value>Solved</value>
   </data>
   <data name="Header_StdNumber" xml:space="preserve">
-    <value>Student number</value>
+    <value>Student Number</value>
   </data>
   <data name="Header_SubmitContent" xml:space="preserve">
-    <value>Submission content</value>
+    <value>Submission</value>
   </data>
   <data name="Header_SubmitStatus" xml:space="preserve">
-    <value>Submission status</value>
+    <value>Status</value>
   </data>
   <data name="Header_SubmitTime" xml:space="preserve">
-    <value>Submitted time</value>
+    <value>Time</value>
   </data>
   <data name="Header_Team" xml:space="preserve">
     <value>Team</value>

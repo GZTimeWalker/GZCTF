@@ -35,6 +35,11 @@
       "title": "Not wide enough"
     }
   },
+  "download": {
+    "failed": "Failed to download",
+    "started": "Downloading",
+    "success": "Downloaded"
+  },
   "email": {
     "sent": {
       "message": "Please check your email and spam mail!",
