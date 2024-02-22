@@ -25,12 +25,14 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
+import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
+import { handleAxiosBlobError, openAxiosBlobResponse } from '@Utils/blob'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
 
@@ -206,6 +208,20 @@ const Submissions: FC = () => {
     )
   )
 
+  const onDownloadSubmissionSheet = () => {
+    api.game
+      .gameSubmissionSheet(numId, { format: 'blob' })
+      .then(openAxiosBlobResponse)
+      .catch(async (err: AxiosError) => {
+        showNotification({
+          color: 'red',
+          title: t('game.notification.fetch_failed.sheet'),
+          message: await handleAxiosBlobError(err),
+          icon: <Icon path={mdiClose} size={1} />,
+        })
+      })
+  }
+
   return (
     <WithGameMonitorTab>
       <Group position="apart" w="100%">
@@ -240,10 +256,7 @@ const Submissions: FC = () => {
             position="left"
             classNames={tooltipClasses}
           >
-            <ActionIcon
-              size="lg"
-              onClick={() => window.open(`/api/game/${numId}/submissionsheet`, '_blank')}
-            >
+            <ActionIcon size="lg" onClick={onDownloadSubmissionSheet}>
               <Icon path={mdiDownload} size={1} />
             </ActionIcon>
           </Tooltip>

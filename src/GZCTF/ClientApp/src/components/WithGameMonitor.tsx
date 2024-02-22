@@ -1,5 +1,7 @@
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
 import {
+  mdiClose,
   mdiExclamationThick,
   mdiFileTableOutline,
   mdiFlag,
@@ -7,13 +9,15 @@ import {
   mdiPackageVariant,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { AxiosError } from 'axios'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
-import { Role } from '@Api'
+import { handleAxiosBlobError, openAxiosBlobResponse } from '@Utils/blob'
+import api, { Role } from '@Api'
 
 interface WithGameMonitorProps extends React.PropsWithChildren {
   isLoading?: boolean
@@ -49,6 +53,20 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
     }
   }, [location])
 
+  const onDownloadScoreboardSheet = () => {
+    api.game
+      .gameScoreboardSheet(numId, { format: 'blob' })
+      .then(openAxiosBlobResponse)
+      .catch(async (err: AxiosError) => {
+        showNotification({
+          color: 'red',
+          title: t('game.notification.fetch_failed.sheet'),
+          message: await handleAxiosBlobError(err),
+          icon: <Icon path={mdiClose} size={1} />,
+        })
+      })
+  }
+
   return (
     <WithNavBar width="90%">
       <WithRole requiredRole={Role.Monitor}>
@@ -59,7 +77,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                 w="9rem"
                 styles={{ inner: { justifyContent: 'space-between' } }}
                 leftIcon={<Icon path={mdiFileTableOutline} size={1} />}
-                onClick={() => window.open(`/api/game/${numId}/scoreboardsheet`, '_blank')}
+                onClick={onDownloadScoreboardSheet}
               >
                 {t('game.button.download.scoreboard')}
               </Button>
