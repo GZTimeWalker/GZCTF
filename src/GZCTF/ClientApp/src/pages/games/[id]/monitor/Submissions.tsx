@@ -83,6 +83,7 @@ const Submissions: FC = () => {
   const newSubmissions = useRef<Submission[]>([])
   const [submissions, setSubmissions] = useState<Submission[]>()
   const [type, setType] = useState<AnswerResult | 'All'>('All')
+  const [disabled, setDisabled] = useState(false)
 
   const { game } = useGame(numId)
 
@@ -209,16 +210,25 @@ const Submissions: FC = () => {
   )
 
   const onDownloadSubmissionSheet = () => {
+    setDisabled(true)
+    showNotification({
+      color: 'teal',
+      message: t('game.notification.download.started'),
+      icon: <Icon path={mdiCheck} size={1} />,
+    })
     api.game
       .gameSubmissionSheet(numId, { format: 'blob' })
       .then(openAxiosBlobResponse)
       .catch(async (err: AxiosError) => {
         showNotification({
           color: 'red',
-          title: t('game.notification.fetch_failed.sheet'),
+          title: t('game.notification.download.failed'),
           message: await handleAxiosBlobError(err),
           icon: <Icon path={mdiClose} size={1} />,
         })
+      })
+      .finally(() => {
+        setDisabled(false)
       })
   }
 
@@ -256,7 +266,7 @@ const Submissions: FC = () => {
             position="left"
             classNames={tooltipClasses}
           >
-            <ActionIcon size="lg" onClick={onDownloadSubmissionSheet}>
+            <ActionIcon disabled={disabled} size="lg" onClick={onDownloadSubmissionSheet}>
               <Icon path={mdiDownload} size={1} />
             </ActionIcon>
           </Tooltip>

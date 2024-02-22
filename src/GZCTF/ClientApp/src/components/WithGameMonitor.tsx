@@ -1,6 +1,7 @@
 import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiCheck,
   mdiClose,
   mdiExclamationThick,
   mdiFileTableOutline,
@@ -43,6 +44,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const getTab = (path: string) => pages.find((page) => path.endsWith(page.path))
 
   const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
+  const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
     const tab = getTab(location.pathname)
@@ -54,16 +56,25 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   }, [location])
 
   const onDownloadScoreboardSheet = () => {
+    setDisabled(true)
+    showNotification({
+      color: 'teal',
+      message: t('game.notification.download.started'),
+      icon: <Icon path={mdiCheck} size={1} />,
+    })
     api.game
       .gameScoreboardSheet(numId, { format: 'blob' })
       .then(openAxiosBlobResponse)
       .catch(async (err: AxiosError) => {
         showNotification({
           color: 'red',
-          title: t('game.notification.fetch_failed.sheet'),
+          title: t('game.notification.download.failed'),
           message: await handleAxiosBlobError(err),
           icon: <Icon path={mdiClose} size={1} />,
         })
+      })
+      .finally(() => {
+        setDisabled(false)
       })
   }
 
@@ -74,6 +85,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
           <Group position="apart" align="flex-start">
             <Stack>
               <Button
+                disabled={disabled}
                 w="9rem"
                 styles={{ inner: { justifyContent: 'space-between' } }}
                 leftIcon={<Icon path={mdiFileTableOutline} size={1} />}
