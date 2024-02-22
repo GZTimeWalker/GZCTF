@@ -35,6 +35,11 @@
       "title": "Not wide enough"
     }
   },
+  "download": {
+    "failed": "下载失败",
+    "started": "正在下载",
+    "success": "下载成功"
+  },
   "email": {
     "sent": {
       "message": "Please check your email and spam mail!",
