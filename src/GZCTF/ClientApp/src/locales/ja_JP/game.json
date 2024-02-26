@@ -222,7 +222,7 @@
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]",
     "answer": {
       "accepted": "回答正解",
-      "wrong": "間違い回答",
+      "wrong": "間違った回答",
       "cheat": "不正行為",
       "submitted": "提出完了",
       "not_found": "不明なインスタンス"
