@@ -303,7 +303,7 @@
       "delete": "你确定要删除用户 {{name}} 吗？",
       "reset": {
         "content": "用户密码已重置，<strong>此密码只会显示一次</strong>，请妥善保存。",
-        "message": "你确定重置用户 {{user}} 的密码吗？",
+        "message": "你确定重置用户 {{name}} 的密码吗？",
         "title": "为 {{name}} 重置密码"
       },
       "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 用户"
