@@ -211,7 +211,7 @@ public class GameRepository(
                 Title = c.Key.Title,
                 Tag = c.Key.Tag,
                 Score = c.Key.CurrentScore,
-                SolvedCount = c.Key.AcceptedCount, // Concurrence!
+                SolvedCount = c.Key.AcceptedCount,
                 Bloods = bloods[c.Key.Id]
             }).GroupBy(c => c.Tag)
             .OrderBy(i => i.Key)
@@ -295,18 +295,18 @@ public class GameRepository(
             {
                 j.Rank = i + 1;
 
-                if (j.Organization is not null)
+                if (j.Organization is null)
+                    return j;
+                
+                if (ranks.TryGetValue(j.Organization, out var rank))
                 {
-                    if (ranks.TryGetValue(j.Organization, out var rank))
-                    {
-                        j.OrganizationRank = rank + 1;
-                        ranks[j.Organization]++;
-                    }
-                    else
-                    {
-                        j.OrganizationRank = 1;
-                        ranks[j.Organization] = 1;
-                    }
+                    j.OrganizationRank = rank + 1;
+                    ranks[j.Organization]++;
+                }
+                else
+                {
+                    j.OrganizationRank = 1;
+                    ranks[j.Organization] = 1;
                 }
 
                 return j;

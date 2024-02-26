@@ -55,11 +55,6 @@ public static class CacheKey
     public static string GameNotice(int id) => $"_GameNotice_{id}";
 
     /// <summary>
-    /// 比赛通知缓存
-    /// </summary>
-    public static string GameNotice(string id) => $"_ScoreBoard_{id}";
-
-    /// <summary>
     /// 容器连接数缓存
     /// </summary>
     public static string ConnectionCount(Guid id) => $"_Container_Conn_{id}";
