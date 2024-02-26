@@ -18,7 +18,7 @@
         <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
         <Configurations>Debug;Release</Configurations>
-        <ReleaseVersion>0.18.0-preview</ReleaseVersion>
+        <ReleaseVersion>0.18.0</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
