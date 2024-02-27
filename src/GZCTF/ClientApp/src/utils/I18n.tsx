@@ -9,6 +9,8 @@ export const LanguageMap = {
   ja_JP: '日本語',
 }
 
+export const defaultLanguage = 'zh_CN'
+
 export type SupportedLanguages = keyof typeof LanguageMap
 
 export const useLanguage = () => {
@@ -32,12 +34,12 @@ export const useLanguage = () => {
     if (supportedLanguages.includes(lang)) {
       setLanguageInner(lang)
     } else {
-      console.warn(`Language ${lang} is not supported, fallback to zh_CN`)
-      setLanguageInner('zh_CN')
+      console.warn(`Language ${lang} is not supported, fallback to ${defaultLanguage}`)
+      setLanguageInner(defaultLanguage)
     }
   }
 
   return { language, setLanguage, supportedLanguages }
 }
 
-export let apiLanguage: string = 'zh-CN'
+export let apiLanguage: string = defaultLanguage
