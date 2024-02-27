@@ -4,6 +4,7 @@ import ReactEcharts from 'echarts-for-react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
+import { normalizeLanguage, useLanguage } from '@Utils/I18n'
 import { getGameStatus, useGame, useGameScoreboard } from '@Utils/useGame'
 
 interface TimeLineProps {
@@ -32,6 +33,8 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
   const [chartData, setChartData] = useState<any>()
 
   const { t } = useTranslation()
+  const { language } = useLanguage()
+  const locale = normalizeLanguage(language)
 
   useEffect(() => {
     if (!scoreboard?.timeLines || !game) return
@@ -179,6 +182,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
       }}
       opts={{
         renderer: 'svg',
+        locale,
       }}
       style={{
         width: '100%',

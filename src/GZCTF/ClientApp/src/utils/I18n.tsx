@@ -9,7 +9,8 @@ export const LanguageMap = {
   ja_JP: '日本語',
 }
 
-export const defaultLanguage = 'zh_CN'
+export const defaultLanguage = 'en_US'
+export let apiLanguage: string = defaultLanguage
 
 export type SupportedLanguages = keyof typeof LanguageMap
 
@@ -42,4 +43,17 @@ export const useLanguage = () => {
   return { language, setLanguage, supportedLanguages }
 }
 
-export let apiLanguage: string = defaultLanguage
+export const normalizeLanguage = (language: string) => language.toUpperCase().replace(/[_-].*/, '')
+
+export const convertLanguage = (language: string): SupportedLanguages => {
+  const normalizedLanguage = normalizeLanguage(language)
+
+  const matchedLanguage = Object.keys(LanguageMap).filter(
+    (lang) => normalizeLanguage(lang) === normalizedLanguage
+  )
+  if (matchedLanguage.length > 0) {
+    return matchedLanguage.at(0) as SupportedLanguages
+  }
+
+  return defaultLanguage
+}
