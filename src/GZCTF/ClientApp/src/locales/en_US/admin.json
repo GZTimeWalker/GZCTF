@@ -340,8 +340,8 @@
           "no_selected": "Please select at least one file",
           "updated": "Attachment updated"
         },
-        "created": "Title created",
-        "deleted": "Title deleted",
+        "created": "Challenge created",
+        "deleted": "Challenge deleted",
         "flag": {
           "created": "Flag created",
           "deleted": "Flag deleted"
