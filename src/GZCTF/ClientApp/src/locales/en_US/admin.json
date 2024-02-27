@@ -303,7 +303,7 @@
       "delete": "Are you sure you want to delete user {{name}} ?",
       "reset": {
         "content": "The user password has been reset, <strong>this password will only show up once</strong>, please save it properly.",
-        "message": "Are you sure you want to reset the password for user<br/> {{name}} ?",
+        "message": "Are you sure you want to reset the password for {{name}}?",
         "title": "Reset password for {{name}}"
       },
       "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed"
@@ -340,8 +340,8 @@
           "no_selected": "Please select at least one file",
           "updated": "Attachment updated"
         },
-        "created": "Title created",
-        "deleted": "Title deleted",
+        "created": "Challenge created",
+        "deleted": "Challenge deleted",
         "flag": {
           "created": "Flag created",
           "deleted": "Flag deleted"

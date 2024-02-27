@@ -196,13 +196,13 @@
     },
     "status": {
       "pending": "Pending",
-      "accepted": "Approve",
+      "accepted": "Approved",
       "rejected": "Rejected",
       "suspended": "Banned"
     },
     "actions": {
       "pending": "Pending review",
-      "accepted": "Approve",
+      "accepted": "Approved",
       "rejected": "Re-Sign Up",
       "suspended": "Banned",
       "unsubmitted": "Join game"
