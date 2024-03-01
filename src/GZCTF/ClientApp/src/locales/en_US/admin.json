@@ -65,13 +65,13 @@
       "challenges": {
         "attachment": {
           "clear": {
-            "description": "Are you sure you want to clear the attachment to this challenge?",
+            "description": "Are you sure you want to remove the attachment of this challenge?",
             "title": "Clear Attachment"
           },
           "instruction": {
             "amount_double": "It is recommended to upload dynamic attachments that are twice the expected number of participating teams.",
             "dynamic": {
-              "content": "Bulk upload dynamic attachments, all of which will be distributed as a unified name.",
+              "content": "Batch upload dynamic attachments, all of which will be distributed with the same file name.",
               "format": "Please use each flag as the file name for the corresponding attachment."
             },
             "remote": {
@@ -103,7 +103,7 @@
         "difficulty": "Difficulty Factor",
         "disable": "Are you sure you want to disable challenge {{name}}?",
         "empty": {
-          "description": "Click the top right to create the first problem",
+          "description": "Click the top right to create the first challenge",
           "title": "Ouch! This game has no challenge yet."
         },
         "enable": "Are you sure you want to enable challenge {{name}}?",
