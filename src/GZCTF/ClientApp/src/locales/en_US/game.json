@@ -48,7 +48,7 @@
     "index": "Games"
   },
   "button": {
-    "join": "Join Game",
+    "join": "Join",
     "leave": "Leave Game",
     "finished": "Game Ended",
     "challenges": "Enter Game",
@@ -57,7 +57,7 @@
     "login_required": "Please Login",
     "submit_writeup": "Submit Writeup",
     "download": {
-      "all_traffic": "Download all listed traffic",
+      "all_traffic": "Download all captured traffic",
       "submissionsheet": "Submissions",
       "scoreboard": "Scoreboard"
     },
@@ -70,7 +70,7 @@
     "join": {
       "team": {
         "label": "Select your team",
-        "description": "Please select a team you want to participate with in this game. This cannot be changed after approval."
+        "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval."
       },
       "title": "Registration Information",
       "confirm": "Confirm Registration",
@@ -96,7 +96,7 @@
         "title": "Submission Instructions",
         "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
-        "file_format": "Please organize solved challenges into <1>a standard PDF document less than 20MB</1>.",
+        "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
         "additional": "Additional Notes"
       },
       "current": "Current Writeup",
@@ -107,7 +107,7 @@
       "confirm": "Confirm quitting",
       "content": [
         "Are you sure you want to quit this game?",
-        "If the number of team members is zero after you quit, the team participation data will be deleted."
+        "If the number of team members is zero after you quit, the team's participation data will be deleted."
       ]
     },
     "end_time": "End Time",
