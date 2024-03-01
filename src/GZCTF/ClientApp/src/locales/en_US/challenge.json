@@ -23,7 +23,7 @@
         "no_container": "Test container is not running"
       },
       "entry": {
-        "label": "Instance Entry",
+        "label": "Instance Info",
         "description": {
           "proxy": "Proxy mode has been enabled for the platform.",
           "anchor": "Get client"
