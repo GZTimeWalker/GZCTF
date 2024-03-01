@@ -23,11 +23,11 @@
     "join": "Please get the invitation code from the team creator, use it to join the team.",
     "role": {
       "captain": "Captain",
-      "member": "Crew"
+      "member": "Member"
     },
     "kick": {
       "confirm": {
-        "title": "Confirm kicking out user.",
+        "title": "Confirm removing member.",
         "message": "Are you sure you want to kick out team member \"{{user}}\"?"
       }
     },
@@ -64,26 +64,26 @@
       "wrong_invite_code": "Incorrect team invitation code"
     },
     "kick": {
-      "success": "Kick member successful"
+      "success": "Successfully removed member"
     },
     "leave": {
-      "success": "Quit team successfully"
+      "success": "Successfully quit"
     },
     "create": {
       "success": {
-        "title": "Team created",
+        "title": "Successfully created team",
         "message": "{{team}} has been created, invite your teammates now!"
       }
     },
-    "updated": "Team information updated",
+    "updated": "Team information has been updated",
     "token": {
       "copied": "Team token copied to clipboard"
     },
     "disband": {
-      "success": "Team successfully disbanded"
+      "success": "Successfully disbanded team"
     },
     "transfer": {
-      "success": "Transfer team successful"
+      "success": "Successfully transferred team"
     },
     "invite_code": {
       "copied": "Invitation code is copied to clipboard",
