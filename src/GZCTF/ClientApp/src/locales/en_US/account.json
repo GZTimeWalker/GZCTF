@@ -15,8 +15,8 @@
   "title": {
     "login": "Login",
     "reset": "Reset password",
-    "verify": "Account Validation",
-    "confirm": "Email Validation",
+    "verify": "Account Verification",
+    "confirm": "Email Verification",
     "profile": "Profile",
     "register": "Register",
     "recovery": "Recover account"
@@ -80,7 +80,7 @@
     "logout": "Logout successfully",
     "verify": {
       "failed": "Failed to verify the account",
-      "success": "Account verified, please login"
+      "success": "Account has been verified, please login"
     },
     "captcha": {
       "not_valid": "Please wait for captcha...",
@@ -91,7 +91,7 @@
     },
     "confirm": {
       "failed": "Failed to verify email",
-      "success": "Email verified"
+      "success": "Email has been verified"
     },
     "profile": {
       "profile_updated": "Profile updated",
