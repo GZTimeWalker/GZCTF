@@ -187,7 +187,13 @@ const PostEdit: FC = () => {
                     onClick={() =>
                       modals.openConfirmModal({
                         title: t('post.button.delete'),
-                        children: <Text size="sm">{t('post.content.delete')}</Text>,
+                        children: (
+                          <Text size="sm">
+                            {t('post.content.delete', {
+                              title: curPost?.title,
+                            })}
+                          </Text>
+                        ),
                         onConfirm: onDelete,
                         confirmProps: { color: 'red' },
                       })
