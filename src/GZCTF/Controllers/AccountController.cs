@@ -540,7 +540,7 @@ public class AccountController(
         => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/account/{action}?" +
            $"token={token}&email={Codec.Base64.Encode(email)}";
 
-    IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
+    BadRequestObjectResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
                                                   localizer[nameof(Resources.Program.Identity_UnknownError)]));
 }
