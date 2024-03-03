@@ -3,6 +3,19 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.18.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.0..v0.18.1) - 2024-03-03
+
+### ⛰️ Features
+
+- **(mail)** add platform name - ([dd0c61](https://github.com/GZTimeWalker/GZCTF/commit/dd0c61)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(i18n)** convertLanguage - ([6b4f3a](https://github.com/GZTimeWalker/GZCTF/commit/6b4f3a)) by **GZTime**
+- i18n language detection - ([f1fed1](https://github.com/GZTimeWalker/GZCTF/commit/f1fed1)) by **Steven He**
+- wrong i18n var key - ([a9a0bf](https://github.com/GZTimeWalker/GZCTF/commit/a9a0bf)) by **GZTime**
+
+---
 ## [0.18.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.0-preview.1..v0.18.0) - 2024-02-26
 
 ### ⛰️ Features
