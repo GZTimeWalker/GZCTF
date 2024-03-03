@@ -69,6 +69,7 @@ public class MailSender(
             .Replace("{userName}", content.UserName)
             .Replace("{url}", content.Url)
             .Replace("{nowtime}", content.Time)
+            .Replace("{platform}", $"{globalConfig.Value.Title}::CTF")
             .ToString();
 
         if (!await SendEmailAsync(content.Title, emailContent, content.Email))
