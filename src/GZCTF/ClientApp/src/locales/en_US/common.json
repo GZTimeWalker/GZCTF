@@ -1,7 +1,7 @@
 {
   "avatar": {
     "save": "Save Avatar",
-    "upload_failed": "Avatar update failed",
+    "upload_failed": "Failed to update avatar",
     "uploaded": "Avatar updated",
     "uploading": "Uploading avatar"
   },
@@ -16,7 +16,7 @@
       "title": "Page does not exist"
     },
     "about": {
-      "slogan": "Hack for un not for profit"
+      "slogan": "Hack for fun not for profit"
     },
     "drop_zone": {
       "content": "Drag and drop an image or click here to select {{type}}",
@@ -49,14 +49,14 @@
   "error": {
     "check_input": "Please check your input",
     "empty": "Content can't be empty",
-    "encountered": "Problems encountered",
+    "encountered": "An error has occurred",
     "file_invalid": {
       "message": "Please check file format and size",
-      "title": "File loading failed"
+      "title": "Failed to load file"
     },
-    "invalid_username_or_password": "Wrong username or password",
+    "invalid_username_or_password": "Incorrect username or password",
     "no_change": "There seems to be no change",
-    "param_error": "Parameter error, please check",
+    "param_error": "Incorrect parameter, please check",
     "param_invalid": "Invalid parameter",
     "param_missing": "Missing parameter",
     "param_unknown": "Unknown parameter",
