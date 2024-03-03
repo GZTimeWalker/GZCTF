@@ -57,7 +57,7 @@
     "login_required": "Please Login",
     "submit_writeup": "Submit Writeup",
     "download": {
-      "all_traffic": "Download all captured traffic",
+      "all_traffic": "Download all listed traffic",
       "submissionsheet": "Submissions",
       "scoreboard": "Scoreboard"
     },
