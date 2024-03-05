@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 
 ARG TIMESTAMP
 ARG GIT_SHA
@@ -13,15 +13,15 @@ RUN apt update && apt install -y wget gnupg2 libpcap0.8 && \
 
 RUN npm i -g pnpm
 
-COPY ["GZCTF", "/src/GZCTF/"]
+COPY [".", "/src"]
+
 WORKDIR "/src/GZCTF"
-RUN dotnet restore "GZCTF.csproj"
-RUN dotnet build "GZCTF.csproj" -c Release -o /app/build --no-restore
+RUN dotnet build "GZCTF.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "GZCTF.csproj" -c Release -o /app/publish -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS final
 WORKDIR /app
 EXPOSE 8080
 
