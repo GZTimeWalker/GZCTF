@@ -107,7 +107,7 @@
       "submitted": "提出完了",
       "wrong": "間違った回答"
     },
-    "cheat_detected": "チャレンジ「{{chal}}」に不正行為が検出しました。チーム「{{team}」は「{{steam}}」の答えを提出しました。",
+    "cheat_detected": "チャレンジ「{{chal}}」に不正行為が検出しました。チーム「{{team}}」は「{{steam}}」の答えを提出しました。",
     "container": {
       "destroy": "{{chal}}#{{id}} チャレンジインスタントが破棄されました",
       "start": "{{chal}}#{{id}} チャレンジインスタントが起動されました"
