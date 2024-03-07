@@ -10,8 +10,8 @@ public class PostEditModel
     /// <summary>
     /// 通知标题
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired), ErrorMessageResourceType = typeof(Resources.Program))]
-    [MaxLength(50, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired))]
+    [MaxLength(50, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooLong))]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
