@@ -11,21 +11,21 @@ public class RegisterModel : ModelWithCaptcha
     /// <summary>
     /// 用户名
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameRequired))]
-    [MinLength(3, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort))]
-    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(3, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string UserName { get; set; } = string.Empty;
 
     /// <summary>
     /// 密码
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
     /// 邮箱
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired))]
-    [EmailAddress(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailMalformed))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [EmailAddress(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailMalformed), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Email { get; set; } = string.Empty;
 }

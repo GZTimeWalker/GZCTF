@@ -47,7 +47,7 @@ public class GameInfoModel
     /// <summary>
     /// 比赛邀请码
     /// </summary>
-    [MaxLength(32, ErrorMessageResourceName = nameof(Resources.Program.Model_InvitationCodeTooLong))]
+    [MaxLength(32, ErrorMessageResourceName = nameof(Resources.Program.Model_InvitationCodeTooLong), ErrorMessageResourceType = typeof(Resources.Program))]
     public string? InviteCode { get; set; }
 
     /// <summary>

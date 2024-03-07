@@ -12,14 +12,14 @@ public class Challenge
     /// <summary>
     /// 题目名称
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired))]
-    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired), ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// 题目内容
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired), ErrorMessageResourceType = typeof(Resources.Program))]
     public string Content { get; set; } = string.Empty;
 
     /// <summary>

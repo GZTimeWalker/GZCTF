@@ -294,7 +294,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseForwardedHeaders();
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
