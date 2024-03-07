@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Controllers;
 
 [ApiController]
 [Route("/error")]
-public class ErrorController : ControllerBase
+public class ErrorController(IStringLocalizer<Program> localizer) : ControllerBase
 {
-    [HttpGet]
-    [HttpPost]
-    [HttpPut]
-    [HttpDelete]
+    private readonly IStringLocalizer<Program> _localizer = localizer;
+
     [Route("500")]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status500InternalServerError)]
-    public Task<IActionResult> InternalServerError(CancellationToken cancellationToken) => Task.FromResult<IActionResult>(StatusCode(500, new RequestResponse(GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Identity_DefaultError)], StatusCodes.Status500InternalServerError)));
+    public Task<IActionResult> InternalServerError(CancellationToken cancellationToken) => Task.FromResult<IActionResult>(StatusCode(500, new RequestResponse(_localizer[nameof(Resources.Program.Identity_DefaultError)], StatusCodes.Status500InternalServerError)));
 }

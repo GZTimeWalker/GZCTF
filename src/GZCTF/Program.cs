@@ -294,7 +294,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseForwardedHeaders();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
@@ -397,12 +397,12 @@ namespace GZCTF
         public static IActionResult InvalidModelStateHandler(ActionContext context)
         {
             string? errors = null;
-
+            var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(
                     new RequestResponse(errors is [_, ..]
                         ? errors
-                        : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
+                        : localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
                 where val.Errors.Count > 0
@@ -410,7 +410,7 @@ namespace GZCTF
 
             return new JsonResult(new RequestResponse(errors is [_, ..]
                 ? errors
-                : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
+                : localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
         }
     }
 }
