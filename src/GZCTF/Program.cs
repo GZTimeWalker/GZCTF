@@ -3,8 +3,10 @@ global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
+using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Middlewares;
@@ -300,7 +302,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/error/500");
     app.UseHsts();
 }
 
@@ -400,17 +402,15 @@ namespace GZCTF
                 return new JsonResult(
                     new RequestResponse(errors is [_, ..]
                         ? errors
-                        : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
-                { StatusCode = 400 };
+                        : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
-                      where val.Errors.Count > 0
-                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                where val.Errors.Count > 0
+                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is [_, ..]
                 ? errors
-                : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)]))
-            { StatusCode = 400 };
+                : StaticLocalizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
         }
     }
 }
