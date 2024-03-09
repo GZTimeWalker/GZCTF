@@ -1026,4 +1026,7 @@
   <data name="Signature_Invalid" xml:space="preserve">
     <value>无效的签名</value>
   </data>
+  <data name="Error_InternalServerError" xml:space="preserve">
+      <value>服务器发生内部错误</value>
+  </data>
 </root>
