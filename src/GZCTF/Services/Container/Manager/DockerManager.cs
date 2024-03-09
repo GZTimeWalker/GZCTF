@@ -34,7 +34,8 @@ public class DockerManager : IContainerManager
         catch (DockerContainerNotFoundException)
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
+                    container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
@@ -42,7 +43,8 @@ public class DockerManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed), container.ContainerId],
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
+                        container.ContainerId],
                     TaskStatus.Success, LogLevel.Debug);
             }
             else
@@ -61,7 +63,8 @@ public class DockerManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed), container.ContainerId]);
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
+                    container.ContainerId]);
             return;
         }
 
@@ -86,7 +89,8 @@ public class DockerManager : IContainerManager
         }
         catch (DockerImageNotFoundException)
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
                 TaskStatus.Pending, LogLevel.Information);
 
             await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, _meta.Auth,
@@ -98,7 +102,8 @@ public class DockerManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), parameters.Name]);
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
+                    parameters.Name]);
             return null;
         }
 
@@ -109,7 +114,8 @@ public class DockerManager : IContainerManager
         catch (Exception e)
         {
             _logger.LogError(e,
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), parameters.Name]);
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
+                    parameters.Name]);
             return null;
         }
 
@@ -147,7 +153,8 @@ public class DockerManager : IContainerManager
         if (container.Status != ContainerStatus.Running)
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
+                Program.StaticLocalizer[
+                    nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
                     config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
@@ -170,7 +177,8 @@ public class DockerManager : IContainerManager
         if (int.TryParse(port, out var numPort))
             container.PublicPort = numPort;
         else
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
                 TaskStatus.Failed,
                 LogLevel.Warning);
 

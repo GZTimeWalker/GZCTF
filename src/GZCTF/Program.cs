@@ -3,10 +3,8 @@ global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
-using System.Net;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Middlewares;
@@ -297,7 +295,10 @@ app.UseForwardedHeaders();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseOpenApi(options => options.PostProcess += (document, _) => document.Servers.Clear());
+    app.UseOpenApi(options =>
+    {
+        options.PostProcess += (document, _) => document.Servers.Clear();
+    });
     app.UseSwaggerUi();
 }
 else

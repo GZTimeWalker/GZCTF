@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Channels;
-using Microsoft.AspNetCore.Identity;
 
 namespace GZCTF.Utils;
 
@@ -127,9 +126,7 @@ public class FileRecord
 
     internal static FileRecord FromFileInfo(FileInfo info) => new()
     {
-        FileName = info.Name,
-        UpdateTime = info.LastWriteTimeUtc,
-        Size = info.Length
+        FileName = info.Name, UpdateTime = info.LastWriteTimeUtc, Size = info.Length
     };
 }
 

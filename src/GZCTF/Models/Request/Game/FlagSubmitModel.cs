@@ -11,7 +11,9 @@ public class FlagSubmitModel
     /// flag 内容
     /// fix: 防止前端的意外提交 (number/float/null) 可能被错误转换
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_FlagRequired))]
-    [MaxLength(126, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_FlagRequired),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(126, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public string Flag { get; set; } = string.Empty;
 }

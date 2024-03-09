@@ -351,7 +351,7 @@ public class AccountController(
                 return HandleIdentityError(unameRes.Errors);
 
             logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
-                    user, TaskStatus.Success);
+                user, TaskStatus.Success);
         }
 
         user!.UpdateUserInfo(model);
@@ -542,5 +542,5 @@ public class AccountController(
 
     BadRequestObjectResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
-                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
+                                       localizer[nameof(Resources.Program.Identity_UnknownError)]));
 }

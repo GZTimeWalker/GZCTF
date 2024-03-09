@@ -23,5 +23,6 @@ internal class CulturedLocalizer<T>(CultureInfo cultureInfo) : IStringLocalizer<
         }
     }
 
-    public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) => throw new NotImplementedException();
+    public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) =>
+        throw new NotImplementedException();
 }

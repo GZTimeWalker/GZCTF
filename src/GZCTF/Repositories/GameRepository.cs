@@ -297,7 +297,7 @@ public class GameRepository(
 
                 if (j.Organization is null)
                     return j;
-                
+
                 if (ranks.TryGetValue(j.Organization, out var rank))
                 {
                     j.OrganizationRank = rank + 1;
@@ -342,8 +342,7 @@ public class GameRepository(
                 score += i.Score;
                 return new TimeLine
                 {
-                    Score = score,
-                    Time = i.SubmitTimeUtc!.Value // 此处不为 null
+                    Score = score, Time = i.SubmitTimeUtc!.Value // 此处不为 null
                 };
             });
     }

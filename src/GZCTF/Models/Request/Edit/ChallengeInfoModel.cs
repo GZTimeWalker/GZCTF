@@ -15,8 +15,10 @@ public class ChallengeInfoModel
     /// <summary>
     /// 题目名称
     /// </summary>
-    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired))]
-    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort))]
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>

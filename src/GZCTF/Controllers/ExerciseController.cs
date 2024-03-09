@@ -1,7 +1,5 @@
 using GZCTF.Middlewares;
-using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Controllers;
 

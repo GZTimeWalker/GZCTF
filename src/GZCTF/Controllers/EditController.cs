@@ -567,12 +567,7 @@ public class EditController(
 
             if (game.IsActive)
                 await gameNoticeRepository.AddNotice(
-                    new()
-                    {
-                        Game = game,
-                        Type = NoticeType.NewChallenge,
-                        Values = [res.Title]
-                    }, token);
+                    new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] }, token);
         }
         else
         {
@@ -581,12 +576,7 @@ public class EditController(
 
         if (game.IsActive && res.IsEnabled && hintUpdated)
             await gameNoticeRepository.AddNotice(
-                new()
-                {
-                    Game = game,
-                    Type = NoticeType.NewHint,
-                    Values = [res.Title]
-                },
+                new() { Game = game, Type = NoticeType.NewHint, Values = [res.Title] },
                 token);
 
         // always flush scoreboard

@@ -165,7 +165,7 @@ public class AdminController(
                 Team? team = teams.Find(team => team.Name == teamName);
                 if (team is null)
                 {
-                    team = await teamRepository.CreateTeam(new(teamName), user, token);
+                    team = await teamRepository.CreateTeam(new() { Name = teamName }, user, token);
                     teams.Add(team);
                 }
                 else
@@ -584,5 +584,5 @@ public class AdminController(
 
     IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
-                                                  localizer[nameof(Resources.Program.Identity_UnknownError)]));
+                                       localizer[nameof(Resources.Program.Identity_UnknownError)]));
 }
