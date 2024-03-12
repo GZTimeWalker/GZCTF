@@ -5,7 +5,7 @@
   <ItemGroup>
     <PackageVersion Include="Aigamo.ResXGenerator" Version="4.2.0" />
     <PackageVersion Include="Docker.DotNet" Version="3.125.15" />
-    <PackageVersion Include="KubernetesClient" Version="13.0.11" />
+    <PackageVersion Include="KubernetesClient" Version="13.0.26" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.2" />
