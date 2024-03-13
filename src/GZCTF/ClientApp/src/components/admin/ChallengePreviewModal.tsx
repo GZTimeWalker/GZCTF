@@ -111,14 +111,16 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
         },
       }}
       title={
-        <Group w="100%" position="apart">
-          <Group>
+        <Group noWrap w="100%" position="apart" spacing="sm">
+          <Group noWrap spacing="sm">
             {tagData && (
               <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />
             )}
-            <Title order={4}>{challenge?.title ?? ''}</Title>
+            <Title w="calc(100% - 1.5rem)" order={4} lineClamp={1}>
+              {challenge?.title ?? ''}
+            </Title>
           </Group>
-          <Text fw={700} ff={theme.fontFamilyMonospace}>
+          <Text miw="5em" fw={700} ff={theme.fontFamilyMonospace}>
             {challenge?.originalScore ?? 500} pts
           </Text>
         </Group>

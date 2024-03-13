@@ -78,7 +78,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
           >
             {t('admin.button.back')}
           </Button>
-          <Group position={contentPos ?? 'apart'} w="calc(100% - 10rem)">
+          <Group noWrap position={contentPos ?? 'apart'} w="calc(100% - 10rem)">
             {head}
           </Group>
         </>
