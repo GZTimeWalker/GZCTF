@@ -450,7 +450,6 @@ public partial class TeamController(
             await participationRepository.RemoveUserParticipations(user!, team, token);
 
             await teamRepository.SaveAsync(token);
-            await participationRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
             logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_UserLeft), team.Name], user,
