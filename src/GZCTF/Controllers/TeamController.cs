@@ -447,6 +447,7 @@ public partial class TeamController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));
 
             team.Members.Remove(user!);
+            await participationRepository.RemoveUserParticipations(user!, team, token);
 
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
