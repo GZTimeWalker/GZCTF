@@ -3,26 +3,23 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.18.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1.2..v0.18.2) - 2024-03-09
-
-### 🐛 Bug Fixes
-
-- model validation attribute need ErrorMessageResourceType - ([383d03](https://github.com/GZTimeWalker/GZCTF/commit/383d03)) by **GZTime**
-- Error Handling (#246) - ([3c6968](https://github.com/GZTimeWalker/GZCTF/commit/3c6968)) by **Kengwang**
-
----
-## [0.18.1.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1.1..v0.18.1.2) - 2024-03-05
-
-### ⚙️ Miscellaneous Tasks
-
-- **(trans)** update strings - ([9c5b9a](https://github.com/GZTimeWalker/GZCTF/commit/9c5b9a)) by **GZTime**
-
----
-## [0.18.1.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1..v0.18.1.1) - 2024-03-03
+## [0.18.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1..v0.18.2) - 2024-03-17
 
 ### 🐛 Bug Fixes
 
 - **(post)** i18n without value - ([12c7bb](https://github.com/GZTimeWalker/GZCTF/commit/12c7bb)) by **GZTime**
+- remove user participation when leaving team (#250) - ([8822e6](https://github.com/GZTimeWalker/GZCTF/commit/8822e6)) by **Kengwang**
+- model validation attribute need ErrorMessageResourceType - ([383d03](https://github.com/GZTimeWalker/GZCTF/commit/383d03)) by **GZTime**
+- Error Handling (#246) - ([3c6968](https://github.com/GZTimeWalker/GZCTF/commit/3c6968)) by **Kengwang**
+
+### 🎨 Styling
+
+- add missing `noWrap` for some titles - ([ec19c5](https://github.com/GZTimeWalker/GZCTF/commit/ec19c5)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- **(trans)** update strings - ([9c5b9a](https://github.com/GZTimeWalker/GZCTF/commit/9c5b9a)) by **GZTime**
+- update ci - ([a841cb](https://github.com/GZTimeWalker/GZCTF/commit/a841cb)) by **GZTime**
 
 ---
 ## [0.18.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.0..v0.18.1) - 2024-03-03
