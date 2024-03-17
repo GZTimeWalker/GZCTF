@@ -75,7 +75,8 @@ jobs:
             latest=${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{raw}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
             type=sha,enable=true,priority=100,prefix=,suffix=,format=short
 
       - name: Publish images
