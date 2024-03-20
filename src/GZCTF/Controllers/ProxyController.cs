@@ -129,7 +129,7 @@ public class ProxyController(
 
         Container? container = await containerRepository.GetContainerById(id, token);
 
-        if (container is null || container.GameInstanceId != 0 || !container.IsProxy)
+        if (container is null || container.GameInstanceId is not null || !container.IsProxy)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
                 StatusCodes.Status404NotFound));
 
