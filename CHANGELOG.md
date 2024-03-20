@@ -3,11 +3,12 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.18.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1..v0.18.2) - 2024-03-17
+## [0.18.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1..v0.18.2) - 2024-03-20
 
 ### 🐛 Bug Fixes
 
 - **(post)** i18n without value - ([12c7bb](https://github.com/GZTimeWalker/GZCTF/commit/12c7bb)) by **GZTime**
+- **(proxy)** can not proxy with test container - ([ea4bcd](https://github.com/GZTimeWalker/GZCTF/commit/ea4bcd)) by **GZTime**
 - remove user participation when leaving team (#250) - ([8822e6](https://github.com/GZTimeWalker/GZCTF/commit/8822e6)) by **Kengwang**
 - model validation attribute need ErrorMessageResourceType - ([383d03](https://github.com/GZTimeWalker/GZCTF/commit/383d03)) by **GZTime**
 - Error Handling (#246) - ([3c6968](https://github.com/GZTimeWalker/GZCTF/commit/3c6968)) by **Kengwang**
