@@ -5,6 +5,7 @@ namespace GZCTF.Controllers;
 
 [ApiController]
 [Route("/error")]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class ErrorController(IStringLocalizer<Program> localizer) : ControllerBase
 {
     [Route("500")]

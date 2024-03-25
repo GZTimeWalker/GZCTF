@@ -20,6 +20,7 @@ import {
   mdiLightbulbOnOutline,
   mdiMatrix,
   mdiPlus,
+  mdiRobotLoveOutline,
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -169,6 +170,15 @@ export const useChallengeTagLabelMap = () => {
         color: 'orange',
       },
     ],
+    [
+      ChallengeTag.AI,
+      {
+        desrc: t('challenge.tag.ai'),
+        icon: mdiRobotLoveOutline,
+        label: ChallengeTag.AI,
+        color: 'green',
+      },
+    ]
   ])
 }
 

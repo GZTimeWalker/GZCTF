@@ -143,6 +143,7 @@
     }
   },
   "tag": {
+    "ai": "AI",
     "blockchain": "区块链",
     "crypto": "密码学",
     "forensics": "取证",

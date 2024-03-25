@@ -344,7 +344,8 @@ public enum ChallengeTag : byte
     Forensics = 6,
     Hardware = 7,
     Mobile = 8,
-    PPC = 9
+    PPC = 9,
+    AI = 10,
 }
 
 /// <summary>

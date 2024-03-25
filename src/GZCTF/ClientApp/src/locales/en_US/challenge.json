@@ -143,6 +143,7 @@
     }
   },
   "tag": {
+    "ai": "AI",
     "blockchain": "Blockchain",
     "crypto": "Crypto",
     "forensics": "Forensics",

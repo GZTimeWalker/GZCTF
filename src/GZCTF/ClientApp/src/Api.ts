@@ -50,7 +50,7 @@ export type RegisterModel = ModelWithCaptcha & {
   userName: string;
   /**
    * 密码
-   * @minLength 6
+   * @minLength 1
    */
   password: string;
   /**
@@ -80,7 +80,7 @@ export type RecoveryModel = ModelWithCaptcha & {
 export interface PasswordResetModel {
   /**
    * 密码
-   * @minLength 6
+   * @minLength 1
    */
   password: string;
   /**
@@ -118,7 +118,7 @@ export type LoginModel = ModelWithCaptcha & {
   userName: string;
   /**
    * 密码
-   * @minLength 6
+   * @minLength 1
    */
   password: string;
 };
@@ -335,7 +335,7 @@ export interface UserCreateModel {
   userName: string;
   /**
    * 密码
-   * @minLength 6
+   * @minLength 1
    */
   password: string;
   /**
@@ -605,6 +605,7 @@ export enum ChallengeTag {
   Hardware = "Hardware",
   Mobile = "Mobile",
   PPC = "PPC",
+  AI = "AI",
 }
 
 /** 列表响应 */
