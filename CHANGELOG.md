@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.18.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.2..v0.18.3) - 2024-03-25
+
+### ⛰️ Features
+
+- **(tag)** add tag for AI - ([73831d](https://github.com/GZTimeWalker/GZCTF/commit/73831d)) by **GZTime**
+
+---
 ## [0.18.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1..v0.18.2) - 2024-03-20
 
 ### 🐛 Bug Fixes
