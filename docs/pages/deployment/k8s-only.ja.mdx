@@ -6,7 +6,7 @@ import { Callout } from "nextra-theme-docs";
 
 このガイドは、**すでにK8sを使用した経験がある**ユーザー向けです。この記事では、K8sクラスタの構築方法や`kubectl`などのコマンドの使い方については**紹介していません**。また、記事中にはK8sの専門用語が含まれている可能性があり、一定の基礎知識が必要です。
 
-この記事では、K8sクラスタ内でGZCTFをデプロイする方法に焦点を当てています。GZCTF自体の設定チュートリアルについては、[クイックスタート](/quick-start)を参照してください。
+この記事では、K8sクラスタ内でGZCTFをデプロイする方法に焦点を当てています。GZCTF自体の設定チュートリアルについては、[クイックスタート](/ja/quick-start)を参照してください。
 
 </Callout>
 
@@ -141,6 +141,8 @@ import { Callout } from "nextra-theme-docs";
              image: gztime/gzctf:latest
              imagePullPolicy: Always
              env:
+               - name: LANG
+                 value: ja_JP # choose your backend language `en_US` / `zh_CN` / `ja_JP`
                - name: GZCTF_ADMIN_PASSWORD
                  value: xxx # 管理者パスワード
              ports:

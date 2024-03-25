@@ -2,7 +2,7 @@ import { Callout } from "nextra-theme-docs";
 
 # 快速上手
 
-GZCTF 通过 Docker 镜像的方式提供，你可以通过 docker-compose 的方式快速部署一个功能完善的 CTF 平台。请注意，这并不是唯一的部署方式，我们更推荐使用 Kubernetes 的方式部署。相关的部署方式请参考 [部署](/deployment)。
+GZCTF 通过 Docker 镜像的方式提供，你可以通过 docker-compose 的方式快速部署一个功能完善的 CTF 平台。请注意，这并不是唯一的部署方式，我们更推荐使用 Kubernetes 的方式部署。相关的部署方式请参考 [部署](/zh/zh/deployment)。
 
 <Callout type="warning">
 
@@ -27,7 +27,7 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
    - `XOR_KEY`: 用于加密比赛私钥的随机字符串，需要配置在 `appsettings.json` 中。
    - `PUBLIC_ENTRY`: 外部访问地址，可以是 IP 或域名，需要配置在 `appsettings.json` 中，用于提供给选手访问题目容器的地址。
 
-2. 将以下内容保存为 `appsettings.json` 文件，**并替换为你的初始化参数**，具体配置说明请参考 [`appsettings.json` 配置](/config/appsettings)。
+2. 将以下内容保存为 `appsettings.json` 文件，**并替换为你的初始化参数**，具体配置说明请参考 [`appsettings.json` 配置](/zh/zh/config/appsettings)。
 
    ```json
    {

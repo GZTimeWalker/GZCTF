@@ -6,7 +6,7 @@ import { Callout } from "nextra-theme-docs";
 
 本篇指南仅适用于**接触过 K8s** 的用户。此篇文章**不会介绍**如何搭建 K8s 集群，也不会含有如何使用 `kubectl` 等命令的教程，同时文中可能出现一些 K8s 的专业术语，需要一定的基础进行阅读。
 
-本文将着重介绍如何在 K8s 集群中部署 GZCTF，GZCTF 自身的配置教程请参考 [快速上手](/quick-start)。
+本文将着重介绍如何在 K8s 集群中部署 GZCTF，GZCTF 自身的配置教程请参考 [快速上手](/zh/quick-start)。
 
 </Callout>
 
@@ -141,6 +141,8 @@ import { Callout } from "nextra-theme-docs";
              image: gztime/gzctf:latest
              imagePullPolicy: Always
              env:
+               - name: LANG
+                 value: zh_CN # choose your backend language `en_US` / `zh_CN` / `ja_JP`
                - name: GZCTF_ADMIN_PASSWORD
                  value: xxx # 管理员密码
              ports:

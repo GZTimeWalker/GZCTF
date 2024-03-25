@@ -141,6 +141,8 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
              image: gztime/gzctf:latest
              imagePullPolicy: Always
              env:
+               - name: LANG
+                 value: en_US # choose your backend language `en_US` / `zh_CN` / `ja_JP`
                - name: GZCTF_ADMIN_PASSWORD
                  value: xxx # Admin password
              ports:
