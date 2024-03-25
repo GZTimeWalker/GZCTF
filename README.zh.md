@@ -109,6 +109,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - **南阳师范学院招新赛 NYNUCTF S4**
 - **商丘师范学院首届网络安全新生挑战赛**
 - **苏州市职业大学 2023 年冬季新生赛 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
+- **北京经济管理职业学院 首届BIEM“信安杯”CTF竞赛** 
 
 _排名不分先后，欢迎提交 PR 进行补充。_
 
