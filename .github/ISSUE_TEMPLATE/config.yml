@@ -1,0 +1,7 @@
+contact_links:
+  - name: Read the docs 阅读文档
+    url: https://docs.ctf.gzti.me/
+    about: If you haven't read the docs yet, please check it out first. 如果你还没有阅读过文档，请先查阅。
+  - name: Community support 社区支持
+    url: https://github.com/GZTimeWalker/GZCTF/discussions
+    about: Please ask and answer questions in the user group or GitHub Discussions. 请在用户群或 GitHub Discussions 中提问交流。
