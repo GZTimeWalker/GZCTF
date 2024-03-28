@@ -16,8 +16,8 @@
     </PackageVersion>
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageVersion Include="NPOI" Version="2.7.0" />
-    <PackageVersion Include="NSwag.AspNetCore" Version="14.0.4" />
-    <PackageVersion Include="NSwag.MSBuild" Version="14.0.4">
+    <PackageVersion Include="NSwag.AspNetCore" Version="14.0.7" />
+    <PackageVersion Include="NSwag.MSBuild" Version="14.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
