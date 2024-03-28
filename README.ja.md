@@ -118,4 +118,4 @@ THUCTF 2022 の主催者である NanoApe によるスポンサーシップと�
 
 ## Stars ✨
 
-[![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg)](https://starchart.cc/GZTimeWalker/GZCTF)
+[![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg?variant=adaptive)](https://starchart.cc/GZTimeWalker/GZCTF)
