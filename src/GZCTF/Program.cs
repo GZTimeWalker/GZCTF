@@ -362,11 +362,10 @@ namespace GZCTF
         public static bool IsTesting { get; set; }
 
         internal static readonly Version? CurrentVersion = typeof(Program).Assembly.GetName().Version;
-        internal static Version? LatestVersion { get; set; }
-        internal static bool IsUpdateAvailable => LatestVersion is not null && CurrentVersion is not null &&
-                                                  LatestVersion > CurrentVersion;
+        internal static bool IsUpdateAvailable => LatestInformation?.AssemblyVersion is not null && CurrentVersion is not null &&
+                                                  LatestInformation.AssemblyVersion > CurrentVersion;
         [MemberNotNullWhen(true, nameof(IsUpdateAvailable))]
-        internal static UpdateInformation? UpdateInformation { get; set; }
+        internal static UpdateInformation? LatestInformation { get; set; }
 
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
             new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);

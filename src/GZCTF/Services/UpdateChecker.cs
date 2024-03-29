@@ -1,20 +1,21 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services;
 
-public class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecker> logger, IOptions<UpdateCheckerOptions> options) : IHostedService
+public partial class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecker> logger, IOptions<UpdateCheckerOptions> options) : IHostedService
 {
     private static readonly HttpClient _httpClient = new()
     {
         DefaultRequestHeaders =
         {
             UserAgent = { ProductInfoHeaderValue.Parse("request") },
-            Accept = { MediaTypeWithQualityHeaderValue.Parse("application/json") }
+            Accept = { MediaTypeWithQualityHeaderValue.Parse("application/json"), MediaTypeWithQualityHeaderValue.Parse("text/html") }
         }
     };
 
@@ -49,8 +50,7 @@ public class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecker> logge
 
                 if (lastCheck is not null && DateTime.UtcNow - lastCheck.LastCheckTime < interval)
                 {
-                    Program.UpdateInformation = lastCheck;
-                    Program.LatestVersion = ParseVersion(lastCheck.Version);
+                    Program.LatestInformation = lastCheck;
                     continue;
                 }
 
@@ -64,10 +64,11 @@ public class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecker> logge
                 }
 
                 updateInfo.LastCheckTime = DateTime.UtcNow;
+                updateInfo.AssemblyVersion = await FetchVersionAsync(updateInfo.TagName);
+
                 await cache.SetAsync("GZCTF_UPDATE", MemoryPackSerializer.Serialize(updateInfo), new() { AbsoluteExpirationRelativeToNow = interval }, cancellationToken);
 
-                Program.UpdateInformation = updateInfo;
-                Program.LatestVersion = ParseVersion(updateInfo.Version);
+                Program.LatestInformation = updateInfo;
             }
             catch (Exception e)
             {
@@ -77,15 +78,6 @@ public class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecker> logge
             {
                 await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
             }
-        }
-
-        static Version ParseVersion(ReadOnlySpan<char> versionStr)
-        {
-            var version = Version.Parse(versionStr.TrimStart('v'));
-            return new Version(version.Major is -1 ? 0 : version.Major,
-                version.Minor is -1 ? 0 : version.Minor,
-                version.Build is -1 ? 0 : version.Build,
-                version.Revision is -1 ? 0 : version.Revision);
         }
     }
 
@@ -101,13 +93,32 @@ public class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecker> logge
         _cts.Cancel();
         return Task.CompletedTask;
     }
+
+    private static async Task<Version?> FetchVersionAsync(string tagName)
+    {
+        var projectContent = await _httpClient.GetStringAsync($"https://raw.githubusercontent.com/GZTimeWalker/GZCTF/{tagName}/src/GZCTF/GZCTF.csproj");
+        var versionMatch = AssemblyVersionRegex().Match(projectContent);
+        if (versionMatch.Success && versionMatch.Groups is [_, Group { Captures: [Capture { Value: var versionStr }] }])
+        {
+            var version = Version.Parse(versionStr);
+            return new Version(version.Major is -1 ? 0 : version.Major,
+                version.Minor is -1 ? 0 : version.Minor,
+                version.Build is -1 ? 0 : version.Build,
+                version.Revision is -1 ? 0 : version.Revision);
+        }
+
+        return null;
+    }
+
+    [GeneratedRegex("<AssemblyVersion>(.*?)</AssemblyVersion>", RegexOptions.CultureInvariant)]
+    private static partial Regex AssemblyVersionRegex();
 }
 
 [MemoryPackable]
 public partial class UpdateInformation
 {
     [JsonPropertyName("tag_name")]
-    public string Version { get; set; } = string.Empty;
+    public string TagName { get; set; } = string.Empty;
 
     [JsonPropertyName("html_url")]
     public string Uri { get; set; } = string.Empty;
@@ -120,6 +131,9 @@ public partial class UpdateInformation
 
     [JsonPropertyName("published_at")]
     public DateTime ReleaseTime { get; set; }
+
+    [JsonIgnore]
+    public Version? AssemblyVersion { get; set; }
 
     [JsonIgnore]
     public DateTime LastCheckTime { get; set; }
