@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using GZCTF.Extensions;
 using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -39,52 +40,34 @@ public partial class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecke
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            try
+            if (await cache.GetOrCreateAsync(logger, "GZCTF_UPDATE", async options =>
             {
-                UpdateInformation? lastCheck = null;
+                options.AbsoluteExpirationRelativeToNow = interval;
 
-                if (await cache.GetAsync("GZCTF_UPDATE", cancellationToken) is [..] data)
+                try
                 {
-                    try
+                    var updateInfo = await JsonSerializer.DeserializeAsync<UpdateInformation>(
+                            await _httpClient.GetStreamAsync("https://api.github.com/repos/GZTimeWalker/GZCTF/releases/latest", cancellationToken), cancellationToken: cancellationToken);
+
+                    if (updateInfo is not null)
                     {
-                        lastCheck = MemoryPackSerializer.Deserialize<UpdateInformation>(data);
+                        updateInfo.AssemblyVersion = await FetchVersionAsync(updateInfo.TagName);
                     }
-                    catch
-                    {
-                        await cache.RemoveAsync("GZCTF_UPDATE", cancellationToken);
-                    }
-                }
 
-                if (lastCheck is not null && DateTime.UtcNow - lastCheck.LastCheckTime < interval)
+                    return updateInfo;
+                }
+                catch (Exception e)
                 {
-                    LatestInformation = lastCheck;
-                    continue;
+                    logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.Update_CheckFailed)]);
                 }
 
-                var updateInfo = await JsonSerializer.DeserializeAsync<UpdateInformation>(
-                    await _httpClient.GetStreamAsync("https://api.github.com/repos/GZTimeWalker/GZCTF/releases/latest",
-                        cancellationToken), cancellationToken: cancellationToken);
-
-                if (updateInfo is null)
-                {
-                    continue;
-                }
-
-                updateInfo.LastCheckTime = DateTime.UtcNow;
-                updateInfo.AssemblyVersion = await FetchVersionAsync(updateInfo.TagName);
-
-                await cache.SetAsync("GZCTF_UPDATE", MemoryPackSerializer.Serialize(updateInfo), new() { AbsoluteExpirationRelativeToNow = interval }, cancellationToken);
-
+                return null;
+            }, cancellationToken) is UpdateInformation updateInfo)
+            {
                 LatestInformation = updateInfo;
             }
-            catch (Exception e)
-            {
-                logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.Update_CheckFailed)]);
-            }
-            finally
-            {
-                await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
-            }
+
+            await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -141,9 +124,6 @@ public partial class UpdateInformation
 
     [JsonIgnore]
     public Version? AssemblyVersion { get; set; }
-
-    [JsonIgnore]
-    public DateTime LastCheckTime { get; set; }
 }
 
 public class UpdateCheckerOptions
