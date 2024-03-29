@@ -2,7 +2,6 @@ global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -362,10 +361,6 @@ namespace GZCTF
         public static bool IsTesting { get; set; }
 
         internal static readonly Version? CurrentVersion = typeof(Program).Assembly.GetName().Version;
-        internal static bool IsUpdateAvailable => LatestInformation?.AssemblyVersion is not null && CurrentVersion is not null &&
-                                                  LatestInformation.AssemblyVersion > CurrentVersion;
-        [MemberNotNullWhen(true, nameof(IsUpdateAvailable))]
-        internal static UpdateInformation? LatestInformation { get; set; }
 
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
             new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);

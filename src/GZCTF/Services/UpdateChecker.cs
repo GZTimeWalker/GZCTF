@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -10,6 +11,12 @@ namespace GZCTF.Services;
 
 public partial class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecker> logger, IOptions<UpdateCheckerOptions> options) : IHostedService
 {
+    [MemberNotNullWhen(true, nameof(LatestInformation))]
+    internal static bool IsUpdateAvailable => LatestInformation?.AssemblyVersion is not null && Program.CurrentVersion is not null &&
+                                              LatestInformation.AssemblyVersion > Program.CurrentVersion;
+
+    internal static UpdateInformation? LatestInformation { get; private set; }
+
     private static readonly HttpClient _httpClient = new()
     {
         DefaultRequestHeaders =
@@ -50,7 +57,7 @@ public partial class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecke
 
                 if (lastCheck is not null && DateTime.UtcNow - lastCheck.LastCheckTime < interval)
                 {
-                    Program.LatestInformation = lastCheck;
+                    LatestInformation = lastCheck;
                     continue;
                 }
 
@@ -68,7 +75,7 @@ public partial class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecke
 
                 await cache.SetAsync("GZCTF_UPDATE", MemoryPackSerializer.Serialize(updateInfo), new() { AbsoluteExpirationRelativeToNow = interval }, cancellationToken);
 
-                Program.LatestInformation = updateInfo;
+                LatestInformation = updateInfo;
             }
             catch (Exception e)
             {
