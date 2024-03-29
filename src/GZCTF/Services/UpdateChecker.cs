@@ -67,14 +67,14 @@ public partial class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecke
                 LatestInformation = updateInfo;
             }
 
-            await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(interval, cancellationToken);
         }
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        await Task.Factory.StartNew(_ => UpdateCheckWorker(_cts.Token), null, cancellationToken);
+        await Task.Factory.StartNew(_ => UpdateCheckWorker(_cts.Token), null, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
