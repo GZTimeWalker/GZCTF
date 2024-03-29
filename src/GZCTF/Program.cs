@@ -2,6 +2,7 @@ global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -247,6 +248,8 @@ builder.Services.AddSingleton<CacheHelper>();
 builder.Services.AddHostedService<CacheMaker>();
 builder.Services.AddHostedService<FlagChecker>();
 builder.Services.AddHostedService<CronJobService>();
+builder.Services.AddHostedService<UpdateChecker>()
+    .Configure<UpdateCheckerOptions>(options => builder.Configuration.GetSection("UpdateChecker").Bind(options));
 
 builder.Services.AddHealthChecks();
 builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
@@ -358,6 +361,13 @@ namespace GZCTF
     {
         public static bool IsTesting { get; set; }
 
+        internal static readonly Version? CurrentVersion = typeof(Program).Assembly.GetName().Version;
+        internal static Version? LatestVersion { get; set; }
+        internal static bool IsUpdateAvailable => LatestVersion is not null && CurrentVersion is not null &&
+                                                  LatestVersion > CurrentVersion;
+        [MemberNotNullWhen(true, nameof(IsUpdateAvailable))]
+        internal static UpdateInformation? UpdateInformation { get; set; }
+
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
             new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);
 
@@ -380,9 +390,8 @@ namespace GZCTF
             Console.WriteLine(banner);
 
             var versionStr = "";
-            Version? version = typeof(Program).Assembly.GetName().Version;
-            if (version is not null)
-                versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
+            if (CurrentVersion is not null)
+                versionStr = $"Version: {CurrentVersion.Major}.{CurrentVersion.Minor}.{CurrentVersion.Build}";
 
             // ReSharper disable once LocalizableElement
             Console.WriteLine($"GZCTF © 2022-present GZTimeWalker {versionStr,33}\n");

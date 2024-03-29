@@ -108,6 +108,10 @@ import { Callout } from "nextra-theme-docs";
     "AllowAlternateSchemes": false,
     "DisableStringReuse": false,
     "ConfigurationLoader": null
+  },
+  "UpdateChecker": {
+    "Enable": true,
+    "Interval": 6
   }
 }
 ```
@@ -246,3 +250,10 @@ Google Recaptcha v3の関連情報を設定します。オプションです。
 KestrelはGZCTFが内蔵して使用しているWebサーバーです。この設定を利用すると、HTTPプロトコルを指定したり、リクエストのサイズ上限を変更したりと、Kestrelの動作を自由に制御することができます。
 
 具体的な設定フィールドについては、公式ドキュメントの`KestrelServerOptions`クラスの属性を参照してください：[KestrelServerOptions クラス](https://learn.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions)。
+
+### UpdateChecker
+
+アップデートを自動的にチェックすることができます。
+
+- **Enable:** アップデートチェックの有効化
+- **Interval:** アップデートをチェックする期間（時間単位）

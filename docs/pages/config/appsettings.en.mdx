@@ -108,6 +108,10 @@ Here is a complete example of configuration:
     "AllowAlternateSchemes": false,
     "DisableStringReuse": false,
     "ConfigurationLoader": null
+  },
+  "UpdateChecker": {
+    "Enable": true,
+    "Interval": 6
   }
 }
 ```
@@ -246,3 +250,10 @@ For other fields, please refer to the official documentation: [Configure ASP.NET
 Kestrel is the built-in web server used by GZCTF. With this configuration, you can control the behavior of Kestrel, such as specifying the HTTP protocol, modifying the request size limit, and more.
 
 For specific configurable fields, please refer to the properties of the `KestrelServerOptions` class in the official documentation: [KestrelServerOptions class](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions)
+
+### UpdateChecker
+
+Automatically check for updates.
+
+- **Enable:** Enable update check
+- **Interval:** Period to check for updates (in hours)
