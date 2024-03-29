@@ -47,7 +47,7 @@ public partial class UpdateChecker(IDistributedCache cache, ILogger<UpdateChecke
                 try
                 {
                     var updateInfo = await JsonSerializer.DeserializeAsync<UpdateInformation>(
-                            await _httpClient.GetStreamAsync("https://api.github.com/repos/GZTimeWalker/GZCTF/releases/latest", cancellationToken), cancellationToken: cancellationToken);
+                        await _httpClient.GetStreamAsync("https://api.github.com/repos/GZTimeWalker/GZCTF/releases/latest", cancellationToken), cancellationToken: cancellationToken);
 
                     if (updateInfo is not null)
                     {
