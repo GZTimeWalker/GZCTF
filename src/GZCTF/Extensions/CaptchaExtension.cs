@@ -99,7 +99,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 public static class CaptchaServiceExtension
 {
     internal static IServiceCollection AddCaptchaService(this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
         CaptchaConfig config = configuration.GetSection(nameof(CaptchaConfig)).Get<CaptchaConfig>() ?? new();
 

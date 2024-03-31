@@ -115,7 +115,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
                                 {
                                     IpBlock = new()
                                     {
-                                        Cidr = "0.0.0.0/0", Except = _kubernetesMetadata.Config.AllowCidr
+                                        Cidr = "0.0.0.0/0", Except = _kubernetesMetadata.Config.AllowCidr ?? ["10.0.0.0/8"]
                                     }
                                 }
                             ]

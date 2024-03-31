@@ -28,7 +28,7 @@ public class ContainerProviderMetadata
 public static class ContainerServiceExtension
 {
     internal static IServiceCollection AddContainerService(this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
         ContainerProvider config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ??
                                    new();

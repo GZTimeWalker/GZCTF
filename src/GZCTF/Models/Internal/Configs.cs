@@ -142,12 +142,8 @@ public class KubernetesConfig
 {
     public string Namespace { get; set; } = "gzctf-challenges";
     public string KubeConfig { get; set; } = "kube-config.yaml";
-
-    [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
-    public List<string> AllowCidr { get; set; } = ["10.0.0.0/8"];
-
-    [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
-    public List<string> Dns { get; set; } = ["8.8.8.8", "223.5.5.5", "114.114.114.114"];
+    public string[]? AllowCidr { get; set; }
+    public string[]? Dns { get; set; }
 }
 
 public class RegistryConfig
