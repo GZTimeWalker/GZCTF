@@ -3,6 +3,26 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.18.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.3..v0.18.4) - 2024-03-31
+
+### ⛰️ Features
+
+- use Dictionary for scoreboard item cache - ([332356](https://github.com/GZTimeWalker/GZCTF/commit/332356)) by **GZTime**
+- enhance searching and use string.Contains - ([43d215](https://github.com/GZTimeWalker/GZCTF/commit/43d215)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- cidr and dns config not being overwritten - ([37d9cb](https://github.com/GZTimeWalker/GZCTF/commit/37d9cb)) by **Steven He**
+
+### 🎨 Styling
+
+- pointer cursor when hover to link - ([7928fb](https://github.com/GZTimeWalker/GZCTF/commit/7928fb)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- customize the GitHub Issues creation (#258) - ([039beb](https://github.com/GZTimeWalker/GZCTF/commit/039beb)) by **Aether Chen**
+
+---
 ## [0.18.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.2..v0.18.3) - 2024-03-25
 
 ### ⛰️ Features
