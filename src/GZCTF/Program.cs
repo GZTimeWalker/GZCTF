@@ -403,15 +403,17 @@ namespace GZCTF
                 return new JsonResult(
                     new RequestResponse(errors is [_, ..]
                         ? errors
-                        : localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
+                        : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
+                { StatusCode = 400 };
 
             errors = (from val in context.ModelState.Values
-                where val.Errors.Count > 0
-                select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+                      where val.Errors.Count > 0
+                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(errors is [_, ..]
                 ? errors
-                : localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
+                : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
+            { StatusCode = 400 };
         }
     }
 }

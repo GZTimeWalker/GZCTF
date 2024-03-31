@@ -68,7 +68,7 @@ public class GameRepository(
         // In most cases, we can get the scoreboard from the cache
         ScoreboardModel scoreboard = await GetScoreboard(game, token);
 
-        foreach (ScoreboardItem item in scoreboard.Items)
+        foreach (ScoreboardItem item in scoreboard.Items.Values)
             item.TeamInfo = await teamRepository.GetTeamById(item.Id, token);
 
         return scoreboard;
@@ -148,13 +148,13 @@ public class GameRepository(
     public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
     {
         Data[] data = await FetchData(game, token);
-        IDictionary<int, Blood?[]> bloods = GenBloods(data);
-        ScoreboardItem[] items = GenScoreboardItems(data, game, bloods);
+        Dictionary<int, Blood?[]> bloods = GenBloods(data);
+        Dictionary<int, ScoreboardItem> items = GenScoreboardItems(data, game, bloods);
         return new()
         {
             Challenges = GenChallenges(data, bloods),
             Items = items,
-            TimeLines = GenTopTimeLines(items, game),
+            TimeLines = GenTopTimeLines(items.Values, game),
             BloodBonusValue = game.BloodBonus.Val
         };
     }
@@ -176,7 +176,7 @@ public class GameRepository(
                 (j, s) => new Data(j.Instance, s)
             ).AsSplitQuery().ToArrayAsync(token);
 
-    static IDictionary<int, Blood?[]> GenBloods(Data[] data) =>
+    static Dictionary<int, Blood?[]> GenBloods(Data[] data) =>
         data.GroupBy(j => j.GameInstance.Challenge).Select(g => new
         {
             g.Key,
@@ -203,7 +203,7 @@ public class GameRepository(
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
     static Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data,
-        IDictionary<int, Blood?[]> bloods) =>
+        Dictionary<int, Blood?[]> bloods) =>
         data.GroupBy(g => g.GameInstance.Challenge)
             .Select(c => new ChallengeInfo
             {
@@ -217,7 +217,7 @@ public class GameRepository(
             .OrderBy(i => i.Key)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
-    static ScoreboardItem[] GenScoreboardItems(Data[] data, Game game, IDictionary<int, Blood?[]> bloods)
+    static Dictionary<int, ScoreboardItem> GenScoreboardItems(Data[] data, Game game, Dictionary<int, Blood?[]> bloods)
     {
         Dictionary<string, int> ranks = [];
         return data.GroupBy(j => j.GameInstance.Participation)
@@ -310,7 +310,7 @@ public class GameRepository(
                 }
 
                 return j;
-            }).ToArray();
+            }).ToDictionary(d => d.Id);
     }
 
     static Dictionary<string, IEnumerable<TopTimeLine>> GenTopTimeLines(IEnumerable<ScoreboardItem> items, Game game)
@@ -342,7 +342,8 @@ public class GameRepository(
                 score += i.Score;
                 return new TimeLine
                 {
-                    Score = score, Time = i.SubmitTimeUtc!.Value // 此处不为 null
+                    Score = score,
+                    Time = i.SubmitTimeUtc!.Value // 此处不为 null
                 };
             });
     }

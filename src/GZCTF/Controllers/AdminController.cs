@@ -204,7 +204,7 @@ public class AdminController(
     {
         var loweredHint = hint.ToLower();
         return Ok((await userManager.Users.Where(item =>
-                    item.UserName!.ToLower().Contains(loweredHint) || 
+                    item.UserName!.ToLower().Contains(loweredHint) ||
                     item.StdNumber.ToLower().Contains(loweredHint) ||
                     item.Email!.ToLower().Contains(loweredHint) ||
                     item.PhoneNumber!.ToLower().Contains(loweredHint) ||

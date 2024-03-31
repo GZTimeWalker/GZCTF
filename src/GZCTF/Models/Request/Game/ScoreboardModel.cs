@@ -31,7 +31,15 @@ public partial class ScoreboardModel
     /// <summary>
     /// 队伍信息
     /// </summary>
-    public IEnumerable<ScoreboardItem> Items { get; set; } = default!;
+    [JsonIgnore]
+    public Dictionary<int, ScoreboardItem> Items { get; set; } = default!;
+
+    /// <summary>
+    /// 队伍信息列表
+    /// </summary>
+    [MemoryPackIgnore]
+    [JsonPropertyName("items")]
+    public IEnumerable<ScoreboardItem> ItemList => Items.Values;
 
     /// <summary>
     /// 题目信息

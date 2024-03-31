@@ -43,7 +43,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             try
             {
                 await Task.Delay(source.PollingInterval, token);
-                IDictionary<string, string?> actualData = await GetDataAsync(token);
+                Dictionary<string, string?> actualData = await GetDataAsync(token);
 
                 var computedHash = ConfigHash(actualData);
                 if (!computedHash.SequenceEqual(_lastHash))
@@ -69,7 +69,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         return new AppDbContext(builder.Options);
     }
 
-    async Task<IDictionary<string, string?>> GetDataAsync(CancellationToken token = default)
+    async Task<Dictionary<string, string?>> GetDataAsync(CancellationToken token = default)
     {
         AppDbContext context = CreateAppDbContext();
         return await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value,
