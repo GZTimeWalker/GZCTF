@@ -178,7 +178,7 @@ export const useChallengeTagLabelMap = () => {
         label: ChallengeTag.AI,
         color: 'green',
       },
-    ]
+    ],
   ])
 }
 

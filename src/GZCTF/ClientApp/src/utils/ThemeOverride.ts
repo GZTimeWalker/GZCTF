@@ -272,6 +272,12 @@ export const useUploadStyles = createStyles(() => ({
     position: 'relative',
     zIndex: 1,
   },
+
+  hoverButton: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
 }))
 
 export const useAccordionStyles = createStyles((theme) => ({
