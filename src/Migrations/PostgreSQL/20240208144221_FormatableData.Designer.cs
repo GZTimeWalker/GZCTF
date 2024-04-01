@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GZCTF.Migrations
+namespace GZCTF.Migrations.PostgreSQL
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20240208144221_FormatableData")]

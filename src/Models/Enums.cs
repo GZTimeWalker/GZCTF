@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using Microsoft.Extensions.Localization;
 
-namespace GZCTF.Utils;
+namespace GZCTF.Models;
 
 /// <summary>
 /// 用户权限枚举
@@ -171,18 +170,6 @@ public enum NoticeType : byte
     /// 发布新的题目
     /// </summary>
     NewChallenge = 5
-}
-
-public static class SubmissionTypeExtensions
-{
-    public static string ToBloodString(this SubmissionType type, IStringLocalizer<Program> localizer) =>
-        type switch
-        {
-            SubmissionType.FirstBlood => localizer[nameof(Resources.Program.Submission_FirstBlood)],
-            SubmissionType.SecondBlood => localizer[nameof(Resources.Program.Submission_SecondBlood)],
-            SubmissionType.ThirdBlood => localizer[nameof(Resources.Program.Submission_ThirdBlood)],
-            _ => throw new ArgumentException(type.ToString(), nameof(type))
-        };
 }
 
 /// <summary>
@@ -394,18 +381,4 @@ public enum AnswerResult : sbyte
     /// 提交的题目实例未找到
     /// </summary>
     NotFound = -1
-}
-
-public static class AnswerResultExtensions
-{
-    public static string ToShortString(this AnswerResult result, IStringLocalizer<Program> localizer) =>
-        result switch
-        {
-            AnswerResult.FlagSubmitted => localizer[nameof(Resources.Program.Submission_FlagSubmitted)],
-            AnswerResult.Accepted => localizer[nameof(Resources.Program.Submission_Accepted)],
-            AnswerResult.WrongAnswer => localizer[nameof(Resources.Program.Submission_WrongAnswer)],
-            AnswerResult.CheatDetected => localizer[nameof(Resources.Program.Submission_CheatDetected)],
-            AnswerResult.NotFound => localizer[nameof(Resources.Program.Submission_UnknownInstance)],
-            _ => "??"
-        };
 }

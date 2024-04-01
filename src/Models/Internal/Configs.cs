@@ -104,6 +104,13 @@ public class GlobalConfig
     public const string DefaultEmailTemplate = "default";
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum DatabaseProviderType
+{
+    PostgreSQL,
+    SQLite,
+}
+
 #region Mail Config
 
 public class SmtpConfig

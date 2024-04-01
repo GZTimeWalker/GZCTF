@@ -92,7 +92,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         AppDbContext context = CreateAppDbContext();
 
-        if (!context.Database.IsInMemory() && context.Database.GetMigrations().Any())
+        if (context.Database.GetMigrations().Any())
             context.Database.Migrate();
 
         context.Database.EnsureCreated();

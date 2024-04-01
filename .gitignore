@@ -254,3 +254,5 @@ _Pvt_Extensions
 **/files/**
 **/uploads/**
 **/.DS_Store
+
+src/GZCTF/Migrations

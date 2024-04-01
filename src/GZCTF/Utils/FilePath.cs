@@ -4,7 +4,8 @@ enum DirType : byte
 {
     Logs,
     Uploads,
-    Capture
+    Capture,
+    SQLite,
 }
 
 static class FilePath
@@ -14,6 +15,7 @@ static class FilePath
     internal static readonly string Logs = GetDir(DirType.Logs);
     internal static readonly string Uploads = GetDir(DirType.Uploads);
     internal static readonly string Capture = GetDir(DirType.Capture);
+    internal static readonly string SQLite = GetDir(DirType.SQLite);
 
     internal static bool AllowBaseCreate(IHostEnvironment environment)
     {
@@ -46,7 +48,7 @@ static class FilePath
 
         foreach (DirType type in Enum.GetValues<DirType>())
         {
-            var path = Path.Combine(_base, type.ToString().ToLower());
+            var path = GetDir(type);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }
@@ -57,7 +59,11 @@ static class FilePath
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    static string GetDir(DirType type) => Path.Combine(_base, type.ToString().ToLower());
+    static string GetDir(DirType type) => type switch
+    {
+        DirType.SQLite => Path.Combine(_base, "db"),
+        var x => Path.Combine(_base, x.ToString().ToLower())
+    };
 
     /// <summary>
     /// 获取文件夹内容

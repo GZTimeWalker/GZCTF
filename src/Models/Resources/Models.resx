@@ -1032,4 +1032,7 @@
   <data name="Error_InternalServerError" xml:space="preserve">
     <value>Internal server error</value>
   </data>
+  <data name="Database_UsingProvider" xml:space="preserve">
+      <value>Using the database type: {0}</value>
+  </data>
 </root>
