@@ -188,7 +188,6 @@ const Configs: FC = () => {
             }}
           />
         </Stack>
-
         <Stack>
           <Title order={2}>{t('admin.content.settings.container.title')}</Title>
           <Divider />
@@ -199,6 +198,7 @@ const Configs: FC = () => {
               placeholder="120"
               min={1}
               max={7200}
+              disabled={disabled}
               value={containerPolicy?.defaultLifetime ?? 120}
               onChange={(e) => {
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
@@ -211,6 +211,7 @@ const Configs: FC = () => {
               placeholder="120"
               min={1}
               max={7200}
+              disabled={disabled}
               value={containerPolicy?.extensionDuration ?? 120}
               onChange={(e) => {
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
@@ -223,6 +224,7 @@ const Configs: FC = () => {
               placeholder="10"
               min={1}
               max={360}
+              disabled={disabled}
               value={containerPolicy?.renewalWindow ?? 10}
               onChange={(e) => {
                 const num = e ? Math.min(Math.max(e, 1), 360) : 10
