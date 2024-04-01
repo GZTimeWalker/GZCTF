@@ -82,7 +82,7 @@ public static class RateLimiter
 
             context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);
             await context.HttpContext.Response.WriteAsJsonAsync(
-                new RequestResponse(localizer[nameof(Resources.Program.RateLimit_TooManyRequests)],
+                new RequestResponse(localizer[nameof(Resources.Program.RateLimit_TooManyRequests), afterSec],
                     StatusCodes.Status429TooManyRequests
                 ), cancellationToken);
         };

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
@@ -51,6 +52,27 @@ public class ContainerPolicy
     /// 用户容器数量限制，用于限制练习题目的容器数量
     /// </summary>
     public int MaxExerciseContainerCountPerUser { get; set; } = 1;
+
+    /// <summary>
+    /// 容器的默认生命周期，以分钟计
+    /// </summary>
+    [Range(1, 7200, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    public int DefaultLifetime { get; set; } = 120;
+
+    /// <summary>
+    /// 容器每次续期的时长，以分钟计
+    /// </summary>
+    [Range(1, 7200, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    public int ExtensionDuration { get; set; } = 120;
+
+    /// <summary>
+    /// 容器停止前的可续期时间段，以分钟计
+    /// </summary>
+    [Range(1, 360, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    public int RenewalWindow { get; set; } = 10;
 }
 
 /// <summary>
@@ -142,12 +164,8 @@ public class KubernetesConfig
 {
     public string Namespace { get; set; } = "gzctf-challenges";
     public string KubeConfig { get; set; } = "kube-config.yaml";
-
-    [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
-    public List<string> AllowCidr { get; set; } = ["10.0.0.0/8"];
-
-    [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)]
-    public List<string> Dns { get; set; } = ["8.8.8.8", "223.5.5.5", "114.114.114.114"];
+    public string[]? AllowCidr { get; set; }
+    public string[]? Dns { get; set; }
 }
 
 public class RegistryConfig

@@ -33,7 +33,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
     public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
     {
-        if (scoreboard.Items.FirstOrDefault()?.TeamInfo is null)
+        if (scoreboard.Items.Values.FirstOrDefault()?.TeamInfo is null)
             throw new ArgumentException(localizer[nameof(Resources.Program.Scoreboard_TeamNotLoaded)]);
 
         var workbook = new XSSFWorkbook();
@@ -128,13 +128,13 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
 
         foreach (KeyValuePair<ChallengeTag, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
-        foreach (ChallengeInfo chall in type.Value)
-        {
-            ICell? cell = row.CreateCell(colIndex++);
-            cell.SetCellValue(chall.Title);
-            cell.CellStyle = style;
-            challIds.Add(chall.Id);
-        }
+            foreach (ChallengeInfo chall in type.Value)
+            {
+                ICell? cell = row.CreateCell(colIndex++);
+                cell.SetCellValue(chall.Title);
+                cell.CellStyle = style;
+                challIds.Add(chall.Id);
+            }
 
         return challIds.ToArray();
     }
@@ -144,7 +144,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var rowIndex = 1;
         var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
 
-        foreach (ScoreboardItem item in scoreboard.Items)
+        foreach (ScoreboardItem item in scoreboard.Items.Values)
         {
             var colIndex = 0;
             IRow? row = sheet.CreateRow(rowIndex);

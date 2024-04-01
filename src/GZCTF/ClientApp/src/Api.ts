@@ -268,6 +268,27 @@ export interface ContainerPolicy {
    * @format int32
    */
   maxExerciseContainerCountPerUser?: number;
+  /**
+   * 容器的默认生命周期，以分钟计
+   * @format int32
+   * @min 1
+   * @max 7200
+   */
+  defaultLifetime?: number;
+  /**
+   * 容器每次续期的时长，以分钟计
+   * @format int32
+   * @min 1
+   * @max 7200
+   */
+  extensionDuration?: number;
+  /**
+   * 容器停止前的可续期时间段，以分钟计
+   * @format int32
+   * @min 1
+   * @max 360
+   */
+  renewalWindow?: number;
 }
 
 /** 列表响应 */
@@ -1226,7 +1247,7 @@ export interface ScoreboardModel {
   bloodBonus: number;
   /** 前十名的时间线 */
   timeLines?: Record<string, TopTimeLine[]>;
-  /** 队伍信息 */
+  /** 队伍信息列表 */
   items?: ScoreboardItem[];
   /** 题目信息 */
   challenges?: Record<string, ChallengeInfo[]>;

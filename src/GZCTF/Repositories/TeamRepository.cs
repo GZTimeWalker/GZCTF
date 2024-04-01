@@ -59,9 +59,15 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
         Context.Teams.Where(t => t.Members.Any(u => u.Id == user.Id))
             .Include(t => t.Members).ToArrayAsync(token);
 
-    public Task<Team[]> SearchTeams(string hint, CancellationToken token = default) =>
-        Context.Teams.Include(t => t.Members).Where(item => EF.Functions.Like(item.Name, $"%{hint}%"))
-            .OrderBy(t => t.Id).Take(30).ToArrayAsync(token);
+    public Task<Team[]> SearchTeams(string hint, CancellationToken token = default)
+    {
+        var loweredHint = hint.ToLower();
+        var query = int.TryParse(hint, out int id)
+            ? Context.Teams.Include(t => t.Members).Where(item => item.Name.ToLower().Contains(loweredHint) || item.Id == id)
+            : Context.Teams.Include(t => t.Members).Where(item => item.Name.ToLower().Contains(loweredHint));
+
+        return query.OrderBy(t => t.Id).Take(30).ToArrayAsync(token);
+    }
 
     public Task Transfer(Team team, UserInfo user, CancellationToken token = default)
     {

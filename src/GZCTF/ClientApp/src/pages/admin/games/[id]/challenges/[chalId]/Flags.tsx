@@ -261,6 +261,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
             w="calc(100% - 400px)"
+            classNames={{ input: classes.hoverButton }}
             onClick={() =>
               challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')
             }
@@ -271,6 +272,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             disabled={disabled}
             value={remoteUrl}
             w="calc(100% - 400px)"
+            classNames={{ input: classes.hoverButton }}
             onChange={(e) => setRemoteUrl(e.target.value)}
           />
         )}

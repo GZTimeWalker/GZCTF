@@ -200,17 +200,21 @@ public class AdminController(
     /// <response code="403">禁止访问</response>
     [HttpPost("Users/Search")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default) =>
-        Ok((await userManager.Users.Where(item =>
-                    EF.Functions.Like(item.UserName!, $"%{hint}%") ||
-                    EF.Functions.Like(item.StdNumber, $"%{hint}%") ||
-                    EF.Functions.Like(item.Email!, $"%{hint}%") ||
-                    EF.Functions.Like(item.Id.ToString(), $"%{hint}%") ||
-                    EF.Functions.Like(item.RealName, $"%{hint}%")
+    public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
+    {
+        var loweredHint = hint.ToLower();
+        return Ok((await userManager.Users.Where(item =>
+                    item.UserName!.ToLower().Contains(loweredHint) ||
+                    item.StdNumber.ToLower().Contains(loweredHint) ||
+                    item.Email!.ToLower().Contains(loweredHint) ||
+                    item.PhoneNumber!.ToLower().Contains(loweredHint) ||
+                    item.Id.ToString().ToLower().Contains(loweredHint) ||
+                    item.RealName.ToLower().Contains(loweredHint)
                 )
                 .OrderBy(e => e.Id).Take(30).ToArrayAsync(token))
             .Select(UserInfoModel.FromUserInfo)
             .ToResponse());
+    }
 
     /// <summary>
     /// 获取全部队伍信息

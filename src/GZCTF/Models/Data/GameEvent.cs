@@ -62,7 +62,10 @@ public class GameEvent : FormattableData<EventType>
             Type = EventType.FlagSubmit,
             Values =
             [
-                ans.ToString(), submission.Answer, submission.GameChallenge.Title, submission.ChallengeId.ToString()
+                ans.ToString(),
+                submission.Answer,
+                submission.GameChallenge.Title,
+                submission.ChallengeId.ToString()
             ]
         };
 }

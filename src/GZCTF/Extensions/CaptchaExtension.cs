@@ -84,7 +84,9 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
         TurnstileRequestModel req = new()
         {
-            Secret = Config.SecretKey, Response = model.Challenge, RemoteIp = ip.ToString()
+            Secret = Config.SecretKey,
+            Response = model.Challenge,
+            RemoteIp = ip.ToString()
         };
 
         const string api = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
@@ -99,7 +101,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 public static class CaptchaServiceExtension
 {
     internal static IServiceCollection AddCaptchaService(this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
         CaptchaConfig config = configuration.GetSection(nameof(CaptchaConfig)).Get<CaptchaConfig>() ?? new();
 

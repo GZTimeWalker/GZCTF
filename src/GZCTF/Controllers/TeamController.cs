@@ -144,7 +144,8 @@ public partial class TeamController(
 
         if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
 
         team.UpdateInfo(model);
 
@@ -183,7 +184,8 @@ public partial class TeamController(
 
         if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));
@@ -231,7 +233,8 @@ public partial class TeamController(
 
         if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
 
         return Ok(team.InviteCode);
     }
@@ -264,7 +267,8 @@ public partial class TeamController(
 
         if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
 
         team.UpdateInviteToken();
 
@@ -302,7 +306,8 @@ public partial class TeamController(
 
         if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
 
         IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(token);
 
@@ -489,7 +494,8 @@ public partial class TeamController(
 
         if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
 
         if (file.Length == 0)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
@@ -541,7 +547,8 @@ public partial class TeamController(
 
         if (team.CaptainId != user!.Id)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden)) { StatusCode = StatusCodes.Status403Forbidden };
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));

@@ -120,4 +120,4 @@ Thanks to NanoApe, the organizer of THUCTF 2022, for providing sponsorship and c
 
 ## Stars ✨
 
-[![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg)](https://starchart.cc/GZTimeWalker/GZCTF)
+[![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg?variant=adaptive)](https://starchart.cc/GZTimeWalker/GZCTF)

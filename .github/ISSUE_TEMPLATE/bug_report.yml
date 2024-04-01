@@ -1,0 +1,62 @@
+name: Report an issue 报告问题
+description: Use this template to report platform issues. To ask questions or to suggest new features, use GitHub discussions instead.
+
+body:
+  - type: checkboxes
+    id: dependencies
+    attributes:
+      label: Before submitting / 提交之前
+      description: Before submitting an issue please make sure that you use latest version and search for similar issues in the repository. / 提交问题之前，请确保您使用的是最新版本，并确保仓库中没有类似的问题。
+      options:
+        - label: I have verified that I use latest version and no similar issues were found. / 我已验证我使用的是最新版本，并且没有找到类似的问题。
+          required: true
+
+  - type: input
+    id: version
+    attributes:
+      placeholder: 0.0.0
+      label: What version of GZCTF are you using? / 您使用的 GZCTF 版本是什么？
+    validations:
+      required: true
+
+  - type: input
+    id: commit
+    attributes:
+      placeholder: 2b3c4d5
+      label: What is the commit hash for your build? (in About page and backend logs) / 您所使用的构建的提交哈希是什么？（在关于页面和后端日志中）
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: In which browsers you can reproduce the issue? / 您在哪些浏览器中可以重现此问题？
+      options:
+        - "All"
+        - "Chrome"
+        - "Safari"
+        - "Firefox"
+        - "Other, I will specify in the bug description"
+        - "Not applicable – issue is not related to the browser"
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug / 描述 bug
+      placeholder: A clear and concise description of what the bug is and how to reproduce it. / 清晰简洁地描述 bug 以及如何重现它。
+    validations:
+      required: true
+
+  - type: textarea
+    id: expectedBehavior
+    attributes:
+      label: Expected behavior / 期望行为
+      placeholder: A clear and concise description of what you expected to happen. / 清晰简洁地描述您期望的行为。
+    validations:
+      required: true
+
+  - type: textarea
+    id: possibleFix
+    attributes:
+      label: Possible fix / 可能的修复
+      description: If you have suggestions on how to fix the bug, please describe them here. / 如果您有关于如何修复 bug 的建议，请在此处描述。

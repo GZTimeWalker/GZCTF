@@ -63,7 +63,7 @@ public class KubernetesManager : IContainerManager
                         ? Array.Empty<V1LocalObjectReference>()
                         : new List<V1LocalObjectReference> { new() { Name = authSecretName } },
                 DnsPolicy = "None",
-                DnsConfig = new() { Nameservers = options.Dns },
+                DnsConfig = new() { Nameservers = options.Dns ?? ["8.8.8.8", "223.5.5.5", "114.114.114.114"] },
                 EnableServiceLinks = false,
                 Containers =
                 [
@@ -87,7 +87,8 @@ public class KubernetesManager : IContainerManager
                             },
                             Requests = new Dictionary<string, ResourceQuantity>
                             {
-                                ["cpu"] = new("10m"), ["memory"] = new("32Mi")
+                                ["cpu"] = new("10m"),
+                                ["memory"] = new("32Mi")
                             }
                         }
                     }

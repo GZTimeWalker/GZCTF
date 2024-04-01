@@ -3,6 +3,50 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.18.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.4..v0.18.5) - 2024-04-01
+
+### ⛰️ Features
+
+- custom container lifetime - ([906598](https://github.com/GZTimeWalker/GZCTF/commit/906598)) by **GZTime**
+- check that the data path is configured correctly - ([26cfac](https://github.com/GZTimeWalker/GZCTF/commit/26cfac)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(docs)** cannot get theme config - ([40ae61](https://github.com/GZTimeWalker/GZCTF/commit/40ae61)) by **GZTime**
+- write test file to base - ([0810ef](https://github.com/GZTimeWalker/GZCTF/commit/0810ef)) by **GZTime**
+- disable experimental features - ([204551](https://github.com/GZTimeWalker/GZCTF/commit/204551)) by **Steven He**
+- write version instead - ([314cd1](https://github.com/GZTimeWalker/GZCTF/commit/314cd1)) by **Steven He**
+- rw check and fix service init orders - ([93dfdc](https://github.com/GZTimeWalker/GZCTF/commit/93dfdc)) by **Steven He**
+
+---
+## [0.18.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.3..v0.18.4) - 2024-04-01
+
+### ⛰️ Features
+
+- use Dictionary for scoreboard item cache - ([332356](https://github.com/GZTimeWalker/GZCTF/commit/332356)) by **GZTime**
+- enhance searching and use string.Contains - ([43d215](https://github.com/GZTimeWalker/GZCTF/commit/43d215)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- response message & try get value - ([133c3d](https://github.com/GZTimeWalker/GZCTF/commit/133c3d)) by **GZTime**
+- cidr and dns config not being overwritten - ([37d9cb](https://github.com/GZTimeWalker/GZCTF/commit/37d9cb)) by **Steven He**
+
+### 🎨 Styling
+
+- pointer cursor when hover to link - ([7928fb](https://github.com/GZTimeWalker/GZCTF/commit/7928fb)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- customize the GitHub Issues creation (#258) - ([039beb](https://github.com/GZTimeWalker/GZCTF/commit/039beb)) by **Aether Chen**
+
+---
+## [0.18.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.2..v0.18.3) - 2024-03-25
+
+### ⛰️ Features
+
+- **(tag)** add tag for AI - ([73831d](https://github.com/GZTimeWalker/GZCTF/commit/73831d)) by **GZTime**
+
+---
 ## [0.18.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.1..v0.18.2) - 2024-03-20
 
 ### 🐛 Bug Fixes

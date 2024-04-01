@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Channels;
 using GZCTF.Middlewares;
+using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace GZCTF.Controllers;
 
@@ -32,13 +34,14 @@ public class GameController(
     ITeamRepository teamRepository,
     IGameEventRepository eventRepository,
     IGameNoticeRepository noticeRepository,
-    IGameInstanceRepository gameInstanceRepository,
     ICheatInfoRepository cheatInfoRepository,
-    IGameChallengeRepository challengeRepository,
     IContainerRepository containerRepository,
     IGameEventRepository gameEventRepository,
     ISubmissionRepository submissionRepository,
+    IGameChallengeRepository challengeRepository,
+    IGameInstanceRepository gameInstanceRepository,
     IParticipationRepository participationRepository,
+    IOptionsSnapshot<ContainerPolicy> containerPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
@@ -533,10 +536,7 @@ public class GameController(
 
         ScoreboardModel scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
-        ScoreboardItem? boardItem = scoreboard.Items.FirstOrDefault(i => i.Id == context.Participation!.TeamId);
-
-        // make sure team info is not null
-        boardItem ??= new ScoreboardItem
+        ScoreboardItem boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item) ? item : new()
         {
             Avatar = context.Participation!.Team.AvatarUrl,
             SolvedCount = 0,
@@ -921,7 +921,8 @@ public class GameController(
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
+                StatusCodes.Status429TooManyRequests))
+            { StatusCode = StatusCodes.Status429TooManyRequests };
 
         if (instance.Container is not null)
         {
@@ -934,15 +935,15 @@ public class GameController(
 
         return await gameInstanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!,
                 context.Game!.ContainerCountLimit, token) switch
-            {
-                null or (TaskStatus.Failed, null) => BadRequest(
-                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
-                (TaskStatus.Denied, null) => BadRequest(
-                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
-                        context.Game.ContainerCountLimit])),
-                (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
-                _ => throw new UnreachableException()
-            };
+        {
+            null or (TaskStatus.Failed, null) => BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
+            (TaskStatus.Denied, null) => BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
+                    context.Game.ContainerCountLimit])),
+            (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
+            _ => throw new UnreachableException()
+        };
     }
 
     /// <summary>
@@ -984,11 +985,11 @@ public class GameController(
         if (instance.Container is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
-        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(10))
+        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(containerPolicy.Value.RenewalWindow))
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExtensionNotAvailable)]));
 
-        await containerRepository.ExtendLifetime(instance.Container, TimeSpan.FromHours(2), token);
+        await containerRepository.ExtendLifetime(instance.Container, TimeSpan.FromMinutes(containerPolicy.Value.ExtensionDuration), token);
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }
@@ -1035,7 +1036,8 @@ public class GameController(
 
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
+                StatusCodes.Status429TooManyRequests))
+            { StatusCode = StatusCodes.Status429TooManyRequests };
 
         var destroyId = instance.Container.ContainerId;
 
@@ -1068,7 +1070,8 @@ public class GameController(
     {
         ContextInfo res = new()
         {
-            User = await userManager.GetUserAsync(User), Game = await gameRepository.GetGameById(id, token)
+            User = await userManager.GetUserAsync(User),
+            Game = await gameRepository.GetGameById(id, token)
         };
 
         if (res.Game is null)
