@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Channels;
 using GZCTF.Middlewares;
+using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace GZCTF.Controllers;
 
@@ -32,13 +34,14 @@ public class GameController(
     ITeamRepository teamRepository,
     IGameEventRepository eventRepository,
     IGameNoticeRepository noticeRepository,
-    IGameInstanceRepository gameInstanceRepository,
     ICheatInfoRepository cheatInfoRepository,
-    IGameChallengeRepository challengeRepository,
     IContainerRepository containerRepository,
     IGameEventRepository gameEventRepository,
     ISubmissionRepository submissionRepository,
+    IGameChallengeRepository challengeRepository,
+    IGameInstanceRepository gameInstanceRepository,
     IParticipationRepository participationRepository,
+    IOptionsSnapshot<ContainerPolicy> containerPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
@@ -982,11 +985,11 @@ public class GameController(
         if (instance.Container is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
-        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(10))
+        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(containerPolicy.Value.RenewalWindow))
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExtensionNotAvailable)]));
 
-        await containerRepository.ExtendLifetime(instance.Container, TimeSpan.FromHours(2), token);
+        await containerRepository.ExtendLifetime(instance.Container, TimeSpan.FromMinutes(containerPolicy.Value.ExtensionDuration), token);
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }

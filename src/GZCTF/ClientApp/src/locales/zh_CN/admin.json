@@ -268,12 +268,24 @@
           "label": "启用验证码"
         }
       },
-      "game": {
+      "container": {
         "auto_destroy": {
-          "description": "是否在用户开启题目实例但达到上限时自动销毁旧实例",
+          "description": "是否在用户实例达到上限时自动销毁旧实例",
           "label": "自动销毁旧实例"
         },
-        "title": "比赛策略"
+        "default_lifetime": {
+          "description": "容器默认生命周期",
+          "label": "默认有效期（分钟）"
+        },
+        "extension_duration": {
+          "description": "容器每次续期的时长",
+          "label": "续期时长（分钟）"
+        },
+        "renewal_window": {
+          "description": "容器到期前多少分钟内可以续期",
+          "label": "续期窗口（分钟）"
+        },
+        "title": "容器策略"
       },
       "platform": {
         "footer": {

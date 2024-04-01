@@ -1,4 +1,14 @@
-import { Button, Divider, Grid, SimpleGrid, Stack, Switch, TextInput, Title } from '@mantine/core'
+import {
+  Button,
+  Divider,
+  Grid,
+  NumberInput,
+  SimpleGrid,
+  Stack,
+  Switch,
+  TextInput,
+  Title,
+} from '@mantine/core'
 import { mdiCheck, mdiContentSaveOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
@@ -180,15 +190,51 @@ const Configs: FC = () => {
         </Stack>
 
         <Stack>
-          <Title order={2}>{t('admin.content.settings.game.title')}</Title>
+          <Title order={2}>{t('admin.content.settings.container.title')}</Title>
           <Divider />
-          <SimpleGrid cols={2}>
+          <SimpleGrid cols={4} style={{ alignItems: 'center' }}>
+            <NumberInput
+              label={t('admin.content.settings.container.default_lifetime.label')}
+              description={t('admin.content.settings.container.default_lifetime.description')}
+              placeholder="120"
+              min={1}
+              max={7200}
+              value={containerPolicy?.defaultLifetime ?? 120}
+              onChange={(e) => {
+                const num = e ? Math.min(Math.max(e, 1), 7200) : 120
+                setContainerPolicy({ ...(containerPolicy ?? {}), defaultLifetime: num })
+              }}
+            />
+            <NumberInput
+              label={t('admin.content.settings.container.extension_duration.label')}
+              description={t('admin.content.settings.container.extension_duration.description')}
+              placeholder="120"
+              min={1}
+              max={7200}
+              value={containerPolicy?.extensionDuration ?? 120}
+              onChange={(e) => {
+                const num = e ? Math.min(Math.max(e, 1), 7200) : 120
+                setContainerPolicy({ ...(containerPolicy ?? {}), extensionDuration: num })
+              }}
+            />
+            <NumberInput
+              label={t('admin.content.settings.container.renewal_window.label')}
+              description={t('admin.content.settings.container.renewal_window.description')}
+              placeholder="10"
+              min={1}
+              max={360}
+              value={containerPolicy?.renewalWindow ?? 10}
+              onChange={(e) => {
+                const num = e ? Math.min(Math.max(e, 1), 360) : 10
+                setContainerPolicy({ ...(containerPolicy ?? {}), renewalWindow: num })
+              }}
+            />
             <Switch
               checked={containerPolicy?.autoDestroyOnLimitReached ?? true}
               disabled={disabled}
               label={SwitchLabel(
-                t('admin.content.settings.game.auto_destroy.label'),
-                t('admin.content.settings.game.auto_destroy.description')
+                t('admin.content.settings.container.auto_destroy.label'),
+                t('admin.content.settings.container.auto_destroy.description')
               )}
               onChange={(e) =>
                 setContainerPolicy({

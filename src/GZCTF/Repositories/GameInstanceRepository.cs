@@ -42,9 +42,9 @@ public class GameInstanceRepository(
             return instance;
         }
 
-        GameChallenge? challenge = instance.Challenge;
+        GameChallenge challenge = instance.Challenge;
 
-        if (challenge is null || !challenge.IsEnabled)
+        if (!challenge.IsEnabled)
         {
             await transaction.CommitAsync(token);
             return null;
@@ -180,6 +180,9 @@ public class GameInstanceRepository(
             return new TaskResult<Container>(TaskStatus.Failed);
         }
 
+        // update the ExpectStopAt with config
+        container.ExpectStopAt = container.StartedAt.AddMinutes(containerPolicy.Value.DefaultLifetime);
+
         gameInstance.Container = container;
         gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
 
@@ -219,20 +222,20 @@ public class GameInstanceRepository(
 
         foreach (GameInstance instance in instances)
         {
-            if (instance.FlagContext?.Flag == submission.Answer)
-            {
-                Submission updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+            if (instance.FlagContext?.Flag != submission.Answer)
+                continue;
 
-                CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
+            Submission updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
 
-                checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
+            CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
 
-                updateSub.Status = AnswerResult.CheatDetected;
+            checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
 
-                await SaveAsync(token);
+            updateSub.Status = AnswerResult.CheatDetected;
 
-                return checkInfo;
-            }
+            await SaveAsync(token);
+
+            return checkInfo;
         }
 
         return checkInfo;

@@ -268,12 +268,24 @@
           "label": "Enable CAPTCHA"
         }
       },
-      "game": {
+      "container": {
         "auto_destroy": {
-          "description": "Whether to auto-destroy the old instance when the creates new instance but meets the limit",
+          "description": "Whether to auto-destroy the old instance when meets the limit",
           "label": "Auto-destroy Old Instances"
         },
-        "title": "Game Policy"
+        "default_lifetime": {
+          "description": "The default lifetime of the container",
+          "label": "Default Lifetime (min)"
+        },
+        "extension_duration": {
+          "description": "The duration of each renewal of the container",
+          "label": "Renewal Duration (min)"
+        },
+        "renewal_window": {
+          "description": "The time window before the container expires to renew",
+          "label": "Renewal Window (min)"
+        },
+        "title": "Container Policy"
       },
       "platform": {
         "footer": {

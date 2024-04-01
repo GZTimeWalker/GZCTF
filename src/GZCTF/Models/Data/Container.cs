@@ -39,6 +39,9 @@ public class Container
     /// <summary>
     /// 容器期望终止时间
     /// </summary>
+    /// <remarks>
+    /// 此处设置 2 小时避免创建后立即被销毁，实际销毁时间由容器管理器决定
+    /// </remarks>
     [Required]
     public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
 
