@@ -20,10 +20,7 @@
         <Configurations>Debug;Release</Configurations>
         <ReleaseVersion>0.18.4</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
-        <LangVersion>preview</LangVersion>
-        <EnablePreviewFeatures>True</EnablePreviewFeatures>
         <ServerGarbageCollection>true</ServerGarbageCollection>
-        <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
     </PropertyGroup>
 
     <ItemGroup>
