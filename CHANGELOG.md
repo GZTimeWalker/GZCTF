@@ -3,7 +3,23 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.18.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.3..v0.18.4) - 2024-03-31
+## [0.18.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.4..v0.18.5) - 2024-04-01
+
+### ⛰️ Features
+
+- custom container lifetime - ([906598](https://github.com/GZTimeWalker/GZCTF/commit/906598)) by **GZTime**
+- check that the data path is configured correctly - ([26cfac](https://github.com/GZTimeWalker/GZCTF/commit/26cfac)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(docs)** cannot get theme config - ([40ae61](https://github.com/GZTimeWalker/GZCTF/commit/40ae61)) by **GZTime**
+- write test file to base - ([0810ef](https://github.com/GZTimeWalker/GZCTF/commit/0810ef)) by **GZTime**
+- disable experimental features - ([204551](https://github.com/GZTimeWalker/GZCTF/commit/204551)) by **Steven He**
+- write version instead - ([314cd1](https://github.com/GZTimeWalker/GZCTF/commit/314cd1)) by **Steven He**
+- rw check and fix service init orders - ([93dfdc](https://github.com/GZTimeWalker/GZCTF/commit/93dfdc)) by **Steven He**
+
+---
+## [0.18.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.3..v0.18.4) - 2024-04-01
 
 ### ⛰️ Features
 
@@ -12,6 +28,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### 🐛 Bug Fixes
 
+- response message & try get value - ([133c3d](https://github.com/GZTimeWalker/GZCTF/commit/133c3d)) by **GZTime**
 - cidr and dns config not being overwritten - ([37d9cb](https://github.com/GZTimeWalker/GZCTF/commit/37d9cb)) by **Steven He**
 
 ### 🎨 Styling
