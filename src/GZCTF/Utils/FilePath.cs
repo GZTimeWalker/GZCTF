@@ -38,10 +38,10 @@ static class FilePath
                     Program.StaticLocalizer[nameof(Resources.Program.Init_NoFilesDir), Path.GetFullPath(Base)]);
         }
 
-        await using (var productFile = File.Open("product.name", FileMode.Create))
-        await using (var writer = new StreamWriter(productFile))
+        await using (var versionFile = File.Open("version.txt", FileMode.Create))
+        await using (var writer = new StreamWriter(versionFile))
         {
-            await writer.WriteLineAsync("GZCTF");
+            await writer.WriteLineAsync(typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown");
         }
 
         foreach (DirType type in Enum.GetValues<DirType>())
