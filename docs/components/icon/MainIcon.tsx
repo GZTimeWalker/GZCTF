@@ -1,5 +1,5 @@
+import { useTheme } from "nextra-theme-docs";
 import { SVGProps, FC } from "react";
-import { useTheme } from "next-themes";
 
 interface MainIconProps extends SVGProps<SVGSVGElement> {
   ignoreTheme?: boolean;
@@ -9,8 +9,9 @@ const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
   const { ignoreTheme, ...svgProps } = props;
 
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const color = isDark ? "#fff" : "#414141";
+  const color = resolvedTheme === "dark" ? "#fff" : "#414141";
+
+  console.log("color", color, resolvedTheme);
 
   return (
     <svg width="480" height="480" viewBox="0 0 4800 4800" {...svgProps}>
