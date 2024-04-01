@@ -533,10 +533,7 @@ public class GameController(
 
         ScoreboardModel scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
-        ScoreboardItem? boardItem = scoreboard.Items[context.Participation!.TeamId];
-
-        // make sure team info is not null
-        boardItem ??= new ScoreboardItem
+        ScoreboardItem boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item) ? item : new()
         {
             Avatar = context.Participation!.Team.AvatarUrl,
             SolvedCount = 0,
