@@ -268,12 +268,24 @@
           "label": "キャプチャ認証を使用"
         }
       },
-      "game": {
+      "container": {
         "auto_destroy": {
-          "description": "ユーザーがチャレンジインスタンスを開いて上限に達したときに、古いインスタンスを自動的に破棄するか",
-          "label": "古いインスタンスを自動的に破棄する"
+          "description": "ユーザーインスタンスが上限を超える場合は古いインスタンスを自動的に破棄する",
+          "label": "古いインスタンスの自動破棄"
         },
-        "title": "ゲームポリシー"
+        "default_lifetime": {
+          "description": "コンテナの既定の有効期限",
+          "label": "既定の有効期限（分）"
+        },
+        "extension_duration": {
+          "description": "コンテナが毎回延長される期間",
+          "label": "延長される期間（分）"
+        },
+        "renewal_window": {
+          "description": "コンテナの有効期限が切れるまでの延長が許可される期間",
+          "label": "許可される期間（分）"
+        },
+        "title": "コンテナーポリシー"
       },
       "platform": {
         "footer": {
