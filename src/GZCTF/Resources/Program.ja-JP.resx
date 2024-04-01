@@ -684,6 +684,9 @@
   <data name="Init_AdminCreationFailed" xml:space="preserve">
     <value>管理者のアカウント作成に失敗しました。エラー：{0}</value>
   </data>
+  <data name="Init_NoFilesDir" xml:space="preserve">
+    <value>データディレクトリ {0} がマウントされていません、ファイルが失われる可能性があります、データ永続化ディレクトリを正しく設定してください！</value>
+  </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>プラットフォームプロキシを利用していない時にトラフィックのキャプチャを行うことができません！</value>
   </data>
@@ -1027,6 +1030,6 @@
     <value>無効な署名</value>
   </data>
   <data name="Error_InternalServerError" xml:space="preserve">
-    <value>サーバーで内部エラーが発生しました</value>
+      <value>サーバーで内部エラーが発生しました</value>
   </data>
 </root>
