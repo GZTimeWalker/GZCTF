@@ -15,8 +15,30 @@ static class FilePath
     internal static string Uploads => GetDir(DirType.Uploads);
     internal static string Capture => GetDir(DirType.Capture);
 
+    internal static bool AllowBaseCreate()
+    {
+        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        if (env == "Development")
+            return true;
+
+        var know = Environment.GetEnvironmentVariable("YES_I_KNOW_FILES_ARE_NOT_PERSISTED_GO_AHEAD_PLEASE");
+        if (know is not null)
+            return true;
+
+        return false;
+    }
+
     internal static void EnsureDirs()
     {
+        if (!Directory.Exists(Base))
+        {
+            if (AllowBaseCreate())
+                Directory.CreateDirectory(Base);
+            else
+                Program.ExitWithFatalMessage(
+                    Program.StaticLocalizer[nameof(Resources.Program.Init_NoFilesDir), Path.GetFullPath(Base)]);
+        }
+
         foreach (DirType type in Enum.GetValues<DirType>())
         {
             var path = Path.Combine(Base, type.ToString().ToLower());
