@@ -157,9 +157,6 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
                - name: gzctf-kube-config
                  mountPath: /app/kube-config.yaml
                  subPath: kube-config
-                 # If you need to persist log files (.log)
-                 # Please mount an additional volume to /app/log for each GZCTF instance
-                 # GZCTF will automatically handle log files and perform automatic rotation and compression
              resources:
                requests:
                  cpu: 1000m
@@ -263,8 +260,8 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
        app: gzctf
      ports:
        - protocol: TCP
-         port: 80
-         targetPort: 80
+         port: 8080
+         targetPort: 8080
    ---
    apiVersion: v1
    kind: Service
@@ -316,7 +313,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
                  service:
                    name: gzctf
                    port:
-                     number: 80
+                     number: 8080
    ```
 
 5. Additional Configuration for Traefik
