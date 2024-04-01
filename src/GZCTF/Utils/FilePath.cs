@@ -11,14 +11,13 @@ static class FilePath
 {
     const string Base = "files";
 
-    internal static string Logs => GetDir(DirType.Logs);
-    internal static string Uploads => GetDir(DirType.Uploads);
-    internal static string Capture => GetDir(DirType.Capture);
+    internal static readonly string Logs = GetDir(DirType.Logs);
+    internal static readonly string Uploads = GetDir(DirType.Uploads);
+    internal static readonly string Capture = GetDir(DirType.Capture);
 
-    internal static bool AllowBaseCreate()
+    internal static bool AllowBaseCreate(IHostEnvironment environment)
     {
-        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if (env == "Development")
+        if (environment.IsDevelopment())
             return true;
 
         var know = Environment.GetEnvironmentVariable("YES_I_KNOW_FILES_ARE_NOT_PERSISTED_GO_AHEAD_PLEASE");
@@ -28,15 +27,21 @@ static class FilePath
         return false;
     }
 
-    internal static void EnsureDirs()
+    internal static async Task EnsureDirsAsync(IHostEnvironment environment)
     {
         if (!Directory.Exists(Base))
         {
-            if (AllowBaseCreate())
+            if (AllowBaseCreate(environment))
                 Directory.CreateDirectory(Base);
             else
                 Program.ExitWithFatalMessage(
                     Program.StaticLocalizer[nameof(Resources.Program.Init_NoFilesDir), Path.GetFullPath(Base)]);
+        }
+
+        await using (var productFile = File.Open("product.name", FileMode.Create))
+        await using (var writer = new StreamWriter(productFile))
+        {
+            await writer.WriteLineAsync("GZCTF");
         }
 
         foreach (DirType type in Enum.GetValues<DirType>())

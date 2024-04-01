@@ -32,8 +32,6 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 GZCTF.Program.Banner();
 
-FilePath.EnsureDirs();
-
 #region Host
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
@@ -60,6 +58,8 @@ builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseSerilog(dispose: true);
 builder.Configuration.AddEnvironmentVariables("GZCTF_");
 Log.Logger = LogHelper.GetInitLogger();
+
+await FilePath.EnsureDirsAsync(builder.Environment);
 
 #endregion Host
 
