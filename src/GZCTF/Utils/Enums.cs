@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GZCTF.Models;
+namespace GZCTF.Utils;
 
 /// <summary>
 /// 用户权限枚举

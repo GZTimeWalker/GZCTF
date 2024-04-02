@@ -1,7 +1,7 @@
 global using GZCTF.Models.Data;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using GZCTF.Utils;
-global using TaskStatus = GZCTF.Models.TaskStatus;
+global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
 using System.Reflection;
 using System.Text;

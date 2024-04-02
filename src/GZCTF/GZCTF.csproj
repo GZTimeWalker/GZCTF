@@ -30,12 +30,15 @@
         </PackageReference>
         <PackageReference Include="Docker.DotNet" />
         <PackageReference Include="KubernetesClient" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="NPOI" />
         <PackageReference Include="NSwag.AspNetCore" />
         <PackageReference Include="NSwag.MSBuild">
@@ -49,6 +52,8 @@
         <PackageReference Include="Serilog.Sinks.File" />
         <PackageReference Include="Serilog.Sinks.File.Archive" />
         <PackageReference Include="MailKit" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
         <PackageReference Include="MemoryPack" />
@@ -62,9 +67,6 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="GZCTF.Test" />
-        <ProjectReference Include="..\Models\GZCTF.Models.csproj" />
-        <ProjectReference Include="..\Migrations\SQLite\GZCTF.Migrations.SQLite.csproj" />
-        <ProjectReference Include="..\Migrations\PostgreSQL\GZCTF.Migrations.PostgreSQL.csproj" />
     </ItemGroup>
 
     <ItemGroup>
