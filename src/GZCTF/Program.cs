@@ -1,5 +1,5 @@
 global using GZCTF.Models.Data;
-global using AppDbContext = GZCTF.Models.AppDbContext;
+global using AppDbContext = GZCTF.Models.Context.AppDbContext;
 global using GZCTF.Utils;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Serilog;
 using StackExchange.Redis;

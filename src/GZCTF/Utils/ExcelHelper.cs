@@ -1,4 +1,5 @@
-﻿using GZCTF.Models.Request.Game;
+﻿using GZCTF.Extensions;
+using GZCTF.Models.Request.Game;
 using Microsoft.Extensions.Localization;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;

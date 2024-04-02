@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace GZCTF.Models;
+namespace GZCTF.Models.Context;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) :
+public class AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration) :
     IdentityDbContext<UserInfo, IdentityRole<Guid>, Guid>(options), IDataProtectionKeyContext
 {
     public DbSet<Post> Posts { get; set; } = default!;
@@ -47,6 +47,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         new(
             (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+        => options.UseNpgsql(configuration.GetConnectionString("Database"));
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

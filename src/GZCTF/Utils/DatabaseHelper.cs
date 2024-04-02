@@ -1,7 +1,8 @@
 using GZCTF.Extensions;
+using GZCTF.Models.Context;
 using GZCTF.Models.Internal;
+using GZCTF.Providers;
 using Microsoft.EntityFrameworkCore;
-using Namotion.Reflection;
 using Serilog;
 
 namespace GZCTF.Utils;
@@ -17,17 +18,8 @@ public static class DatabaseHelper
             Program.ExitWithFatalMessage(
                 Program.StaticLocalizer[nameof(Resources.Program.Database_NoConnectionString)]);
 
-        Log.Logger.Debug(Program.StaticLocalizer[nameof(Resources.Program.Database_UsingProvider), dbType]);
-
         var optionsAction = new Action<DbContextOptionsBuilder>(options =>
         {
-            if (dbType == DatabaseProviderType.SQLite)
-                options.UseSqlite($"Data Source={FilePath.SQLite}/GZCTF.db",
-                    x => x.MigrationsAssembly("GZCTF.Migrations.SQLite"));
-            else
-                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
-                    x => x.MigrationsAssembly("GZCTF.Migrations.PostgreSQL"));
-
             if (!builder.Environment.IsDevelopment())
                 return;
 
@@ -35,11 +27,14 @@ public static class DatabaseHelper
             options.EnableDetailedErrors();
         });
 
-        builder.Services.AddDbContext<AppDbContext>(optionsAction);
+        if (dbType == DatabaseProviderType.SQLite)
+            builder.Services.AddDbContext<AppDbContext, SqliteDbContext>(optionsAction);
+        else
+            builder.Services.AddDbContext<AppDbContext>(optionsAction);
 
         try
         {
-            builder.Configuration.AddEntityConfiguration(optionsAction);
+            builder.Configuration.AddEntityConfiguration(new(builder.Services.BuildServiceProvider().GetRequiredService<AppDbContext>));
         }
         catch (Exception e)
         {

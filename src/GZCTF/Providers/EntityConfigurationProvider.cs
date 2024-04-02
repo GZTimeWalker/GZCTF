@@ -7,7 +7,8 @@ using Serilog;
 
 namespace GZCTF.Providers;
 
-public class EntityConfigurationProvider(EntityConfigurationSource source) : ConfigurationProvider, IDisposable
+public class EntityConfigurationProvider(EntityConfigurationSource source)
+    : ConfigurationProvider, IDisposable
 {
     readonly CancellationTokenSource _cancellationTokenSource = new();
     Task? _databaseWatcher;
@@ -61,20 +62,9 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         }
     }
 
-    AppDbContext CreateAppDbContext()
-    {
-        var builder = new DbContextOptionsBuilder<AppDbContext>();
-        source.OptionsAction(builder);
-
-        return new AppDbContext(builder.Options);
-    }
-
-    async Task<Dictionary<string, string?>> GetDataAsync(CancellationToken token = default)
-    {
-        AppDbContext context = CreateAppDbContext();
-        return await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value,
+    Task<Dictionary<string, string?>> GetDataAsync(CancellationToken token = default)
+        => source.GetContext().Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value,
             StringComparer.OrdinalIgnoreCase, token);
-    }
 
     static byte[] ConfigHash(IDictionary<string, string?> configs) =>
         SHA256.HashData(Encoding.UTF8.GetBytes(
@@ -90,7 +80,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             return;
         }
 
-        AppDbContext context = CreateAppDbContext();
+        AppDbContext context = source.GetContext();
 
         if (context.Database.GetMigrations().Any())
             context.Database.Migrate();
