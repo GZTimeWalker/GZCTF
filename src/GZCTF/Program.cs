@@ -8,6 +8,7 @@ using System.Text;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Middlewares;
+using GZCTF.Migrations;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
@@ -22,7 +23,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Localization;
+using MySqlConnector;
 using Serilog;
 using StackExchange.Redis;
 
@@ -65,24 +68,78 @@ await FilePath.EnsureDirsAsync(builder.Environment);
 
 #region AppDbContext
 
+var connectionStringExists = false;
+string? connectionString = null;
+var databaseProvider = DatabaseProvider.PostgreSQL;
+
 if (GZCTF.Program.IsTesting || (builder.Environment.IsDevelopment() &&
                                 !builder.Configuration.GetSection("ConnectionStrings").Exists()))
 {
-    builder.Services.AddDbContext<AppDbContext>(
-        options => options.UseInMemoryDatabase("TestDb")
-    );
+    databaseProvider = DatabaseProvider.InMemory;
+    connectionStringExists = true;
+    connectionString = "TestDb";
 }
 else
 {
-    if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
+    var connectionStrings = builder.Configuration.GetSection("ConnectionStrings");
+
+    if (connectionStrings.Exists())
+    {
+        databaseProvider = builder.Configuration.GetSection("DatabaseProvider") is IConfigurationSection provider && provider.Exists()
+            ? provider.Get<DatabaseProvider>()
+            : DatabaseProvider.PostgreSQL;
+
+        var databaseProviderStr = databaseProvider.ToString();
+        connectionStringExists = connectionStrings.GetSection(databaseProviderStr).Exists();
+        connectionString = builder.Configuration.GetConnectionString(databaseProviderStr);
+
+        if (!connectionStringExists
+            && connectionStrings.GetSection("Database").Exists())
+        {
+            connectionStringExists = true;
+            connectionString = builder.Configuration.GetConnectionString("Database");
+        }
+    }
+
+    if (!connectionStringExists)
+    {
         GZCTF.Program.ExitWithFatalMessage(
             GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_NoConnectionString)]);
+    }
 
-    builder.Services.AddDbContext<AppDbContext>(
-        options =>
+    Log.Logger.Information(GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_CurrentProvider), databaseProvider.ToString()]);
+
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.ReplaceService<IMigrationsAssembly, MultiDatabaseMigrationsAssembly>();
+        try
         {
-            options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
-                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+            switch (databaseProvider)
+            {
+                case DatabaseProvider.PostgreSQL:
+                    options
+                        .UseNpgsql(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                        .UseMigrationNamespace(new PostgreSQLMigrationNamespace());
+                    break;
+                case DatabaseProvider.SQLServer:
+                    options
+                        .UseSqlServer(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                        .UseMigrationNamespace(new SQLServerMigrationNamespace());
+                    break;
+                case DatabaseProvider.MySQL:
+                    var mysqlConnection = new MySqlConnection(connectionString);
+                    options
+                        .UseMySql(mysqlConnection, ServerVersion.AutoDetect(mysqlConnection), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                        .UseMigrationNamespace(new MySQLMigrationNamespace());
+                    break;
+                case DatabaseProvider.SQLite:
+                    options.UseSqlite(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                        .UseMigrationNamespace(new SQLiteMigrationNamespace());
+                    break;
+                case DatabaseProvider.InMemory:
+                    options.UseInMemoryDatabase(connectionString!);
+                    break;
+            }
 
             if (!builder.Environment.IsDevelopment())
                 return;
@@ -90,35 +147,16 @@ else
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
         }
-    );
+        catch (Exception ex)
+        {
+            Log.Logger.Error(GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_CurrentConnectionString), connectionString ?? string.Empty]);
+            GZCTF.Program.ExitWithFatalMessage(
+                GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), ex.Message]);
+        }
+    });
 }
 
 #endregion AppDbContext
-
-#region Configuration
-
-if (!GZCTF.Program.IsTesting)
-    try
-    {
-        builder.Configuration.AddEntityConfiguration(options =>
-        {
-            if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
-            else
-                options.UseInMemoryDatabase("TestDb");
-        });
-    }
-    catch (Exception e)
-    {
-        if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-            Log.Logger.Error(GZCTF.Program.StaticLocalizer[
-                nameof(GZCTF.Resources.Program.Database_CurrentConnectionString),
-                builder.Configuration.GetConnectionString("Database") ?? "null"]);
-        GZCTF.Program.ExitWithFatalMessage(
-            GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
-    }
-
-#endregion Configuration
 
 #region OpenApiDocument
 
@@ -350,6 +388,11 @@ finally
     logger.SystemLog(GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Server_Exited)], TaskStatus.Exit,
         LogLevel.Debug);
     Log.CloseAndFlush();
+}
+
+enum DatabaseProvider
+{
+    PostgreSQL, SQLServer, MySQL, SQLite, InMemory
 }
 
 namespace GZCTF

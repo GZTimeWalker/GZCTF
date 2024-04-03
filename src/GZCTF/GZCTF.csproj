@@ -11,10 +11,10 @@
         <IsPackable>false</IsPackable>
         <SpaRoot>ClientApp\</SpaRoot>
         <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-        <UserSecretsId>291cc810-6142-49a5-8134-1175254665a9</UserSecretsId>
+        <UserSecretsId>{291cc810-6142-49a5-8134-1175254665a9}</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>$(NoWarn);1591</NoWarn>
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
         <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
         <Configurations>Debug;Release</Configurations>
@@ -34,6 +34,11 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -45,6 +50,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Expressions" />
         <PackageReference Include="Serilog.Extensions.Logging" />

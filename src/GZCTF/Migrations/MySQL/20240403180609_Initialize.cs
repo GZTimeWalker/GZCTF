@@ -1,10 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GZCTF.Migrations
+namespace GZCTF.Migrations.MySQL
 {
     /// <inheritdoc />
     public partial class Initialize : Migration
@@ -12,181 +12,236 @@ namespace GZCTF.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    NormalizedName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Role = table.Column<int>(type: "integer", nullable: false),
-                    IP = table.Column<string>(type: "text", nullable: false),
-                    LastSignedInUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastVisitedUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    RegisterTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Bio = table.Column<string>(type: "character varying(63)", maxLength: 63, nullable: false),
-                    RealName = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false),
-                    StdNumber = table.Column<string>(type: "character varying(31)", maxLength: 31, nullable: false),
-                    ExerciseVisible = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    AvatarHash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    UserName = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    IP = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastSignedInUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    LastVisitedUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    RegisterTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    Bio = table.Column<string>(type: "varchar(63)", maxLength: 63, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RealName = table.Column<string>(type: "varchar(7)", maxLength: 7, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StdNumber = table.Column<string>(type: "varchar(31)", maxLength: 31, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ExerciseVisible = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true),
+                    AvatarHash = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserName = table.Column<string>(type: "varchar(16)", maxLength: 16, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    NormalizedEmail = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SecurityStamp = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Configs",
                 columns: table => new
                 {
-                    ConfigKey = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true)
+                    ConfigKey = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Value = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Configs", x => x.ConfigKey);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Containers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Image = table.Column<string>(type: "text", nullable: false),
-                    ContainerId = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<byte>(type: "smallint", nullable: false),
-                    StartedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ExpectStopAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    IsProxy = table.Column<bool>(type: "boolean", nullable: false),
-                    IP = table.Column<string>(type: "text", nullable: false),
-                    Port = table.Column<int>(type: "integer", nullable: false),
-                    PublicIP = table.Column<string>(type: "text", nullable: true),
-                    PublicPort = table.Column<int>(type: "integer", nullable: true),
-                    GameInstanceId = table.Column<int>(type: "integer", nullable: true),
-                    ExerciseInstanceId = table.Column<int>(type: "integer", nullable: true)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Image = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ContainerId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    StartedAt = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    ExpectStopAt = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    IsProxy = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IP = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Port = table.Column<int>(type: "int", nullable: false),
+                    PublicIP = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PublicPort = table.Column<int>(type: "int", nullable: true),
+                    GameInstanceId = table.Column<int>(type: "int", nullable: true),
+                    ExerciseInstanceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Containers", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "DataProtectionKeys",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FriendlyName = table.Column<string>(type: "text", nullable: true),
-                    Xml = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    FriendlyName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Xml = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DataProtectionKeys", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Files",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Hash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    UploadTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Hash = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UploadTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    ReferenceCount = table.Column<long>(type: "bigint", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ReferenceCount = table.Column<uint>(type: "int unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    PublicKey = table.Column<string>(type: "character varying(63)", maxLength: 63, nullable: false),
-                    PrivateKey = table.Column<string>(type: "character varying(63)", maxLength: 63, nullable: false),
-                    Hidden = table.Column<bool>(type: "boolean", nullable: false),
-                    PosterHash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    Summary = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    AcceptWithoutReview = table.Column<bool>(type: "boolean", nullable: false),
-                    WriteupRequired = table.Column<bool>(type: "boolean", nullable: false),
-                    InviteCode = table.Column<string>(type: "text", nullable: true),
-                    Organizations = table.Column<string>(type: "text", nullable: true),
-                    TeamMemberCountLimit = table.Column<int>(type: "integer", nullable: false),
-                    ContainerCountLimit = table.Column<int>(type: "integer", nullable: false),
-                    StartTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    EndTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    WriteupDeadline = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    WriteupNote = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PublicKey = table.Column<string>(type: "varchar(63)", maxLength: 63, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PrivateKey = table.Column<string>(type: "varchar(63)", maxLength: 63, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Hidden = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    PosterHash = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Summary = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AcceptWithoutReview = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    WriteupRequired = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    InviteCode = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Organizations = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TeamMemberCountLimit = table.Column<int>(type: "int", nullable: false),
+                    ContainerCountLimit = table.Column<int>(type: "int", nullable: false),
+                    StartTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    EndTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    WriteupDeadline = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    WriteupNote = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     BloodBonus = table.Column<long>(type: "bigint", nullable: false),
-                    PracticeMode = table.Column<bool>(type: "boolean", nullable: false)
+                    PracticeMode = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Games", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Logs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Level = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Logger = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    RemoteIP = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
-                    UserName = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
-                    Message = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Exception = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    TimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    Level = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Logger = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RemoteIP = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserName = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Message = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Exception = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Logs", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ClaimType = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClaimValue = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -197,17 +252,20 @@ namespace GZCTF.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ClaimType = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClaimValue = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -218,16 +276,20 @@ namespace GZCTF.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    ProviderKey = table.Column<string>(type: "text", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    LoginProvider = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProviderKey = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProviderDisplayName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -238,14 +300,15 @@ namespace GZCTF.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    RoleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -262,16 +325,20 @@ namespace GZCTF.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true)
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    LoginProvider = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Value = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -282,20 +349,26 @@ namespace GZCTF.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Summary = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    IsPinned = table.Column<bool>(type: "boolean", nullable: false),
-                    Tags = table.Column<string>(type: "text", nullable: true),
-                    AuthorId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdateTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    Id = table.Column<string>(type: "varchar(8)", maxLength: 8, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Title = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Summary = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsPinned = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Tags = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AuthorId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    UpdateTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -306,20 +379,25 @@ namespace GZCTF.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Teams",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
-                    Bio = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
-                    AvatarHash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    Locked = table.Column<bool>(type: "boolean", nullable: false),
-                    InviteToken = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    CaptainId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(16)", maxLength: 16, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Bio = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AvatarHash = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Locked = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    InviteToken = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CaptainId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -330,17 +408,19 @@ namespace GZCTF.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Attachments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Type = table.Column<byte>(type: "smallint", nullable: false),
-                    RemoteUrl = table.Column<string>(type: "text", nullable: true),
-                    LocalFileId = table.Column<int>(type: "integer", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Type = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    RemoteUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LocalFileId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -351,18 +431,20 @@ namespace GZCTF.Migrations
                         principalTable: "Files",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "GameNotices",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Type = table.Column<byte>(type: "smallint", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    PublishTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    PublishTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Values = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -373,20 +455,22 @@ namespace GZCTF.Migrations
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "GameEvents",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Type = table.Column<byte>(type: "smallint", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    PublishTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
-                    TeamId = table.Column<int>(type: "integer", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    PublishTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Values = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -408,20 +492,23 @@ namespace GZCTF.Migrations
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Participations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Token = table.Column<string>(type: "text", nullable: false),
-                    Organization = table.Column<string>(type: "text", nullable: true),
-                    WriteupId = table.Column<int>(type: "integer", nullable: true),
-                    GameId = table.Column<int>(type: "integer", nullable: false),
-                    TeamId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Token = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Organization = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    WriteupId = table.Column<int>(type: "int", nullable: true),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    TeamId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -443,14 +530,15 @@ namespace GZCTF.Migrations
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "TeamUserInfo",
                 columns: table => new
                 {
-                    MembersId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TeamsId = table.Column<int>(type: "integer", nullable: false)
+                    MembersId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    TeamsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -467,35 +555,43 @@ namespace GZCTF.Migrations
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ExerciseChallenges",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Credit = table.Column<bool>(type: "boolean", nullable: false),
-                    Difficulty = table.Column<byte>(type: "smallint", nullable: false),
-                    Tags = table.Column<string>(type: "text", nullable: true),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    Tag = table.Column<byte>(type: "smallint", nullable: false),
-                    Type = table.Column<byte>(type: "smallint", nullable: false),
-                    Hints = table.Column<string>(type: "text", nullable: true),
-                    IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AcceptedCount = table.Column<int>(type: "integer", nullable: false),
-                    SubmissionCount = table.Column<int>(type: "integer", nullable: false),
-                    ContainerImage = table.Column<string>(type: "text", nullable: true),
-                    MemoryLimit = table.Column<int>(type: "integer", nullable: true),
-                    StorageLimit = table.Column<int>(type: "integer", nullable: true),
-                    CPUCount = table.Column<int>(type: "integer", nullable: true),
-                    ContainerExposePort = table.Column<int>(type: "integer", nullable: true),
-                    FileName = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<Guid>(type: "uuid", nullable: false),
-                    FlagTemplate = table.Column<string>(type: "text", nullable: true),
-                    AttachmentId = table.Column<int>(type: "integer", nullable: true),
-                    TestContainerId = table.Column<Guid>(type: "uuid", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Credit = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Difficulty = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Tags = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Title = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Tag = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Type = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Hints = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AcceptedCount = table.Column<int>(type: "int", nullable: false),
+                    SubmissionCount = table.Column<int>(type: "int", nullable: false),
+                    ContainerImage = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MemoryLimit = table.Column<int>(type: "int", nullable: true),
+                    StorageLimit = table.Column<int>(type: "int", nullable: true),
+                    CPUCount = table.Column<int>(type: "int", nullable: true),
+                    ContainerExposePort = table.Column<int>(type: "int", nullable: true),
+                    FileName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConcurrencyStamp = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FlagTemplate = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AttachmentId = table.Column<int>(type: "int", nullable: true),
+                    TestContainerId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -512,37 +608,44 @@ namespace GZCTF.Migrations
                         principalTable: "Containers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "GameChallenges",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EnableTrafficCapture = table.Column<bool>(type: "boolean", nullable: false),
-                    OriginalScore = table.Column<int>(type: "integer", nullable: false),
-                    MinScoreRate = table.Column<double>(type: "double precision", nullable: false),
-                    Difficulty = table.Column<double>(type: "double precision", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    Tag = table.Column<byte>(type: "smallint", nullable: false),
-                    Type = table.Column<byte>(type: "smallint", nullable: false),
-                    Hints = table.Column<string>(type: "text", nullable: true),
-                    IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AcceptedCount = table.Column<int>(type: "integer", nullable: false),
-                    SubmissionCount = table.Column<int>(type: "integer", nullable: false),
-                    ContainerImage = table.Column<string>(type: "text", nullable: true),
-                    MemoryLimit = table.Column<int>(type: "integer", nullable: true),
-                    StorageLimit = table.Column<int>(type: "integer", nullable: true),
-                    CPUCount = table.Column<int>(type: "integer", nullable: true),
-                    ContainerExposePort = table.Column<int>(type: "integer", nullable: true),
-                    FileName = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<Guid>(type: "uuid", nullable: false),
-                    FlagTemplate = table.Column<string>(type: "text", nullable: true),
-                    AttachmentId = table.Column<int>(type: "integer", nullable: true),
-                    TestContainerId = table.Column<Guid>(type: "uuid", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    EnableTrafficCapture = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    OriginalScore = table.Column<int>(type: "int", nullable: false),
+                    MinScoreRate = table.Column<double>(type: "double", nullable: false),
+                    Difficulty = table.Column<double>(type: "double", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Tag = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Type = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Hints = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AcceptedCount = table.Column<int>(type: "int", nullable: false),
+                    SubmissionCount = table.Column<int>(type: "int", nullable: false),
+                    ContainerImage = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MemoryLimit = table.Column<int>(type: "int", nullable: true),
+                    StorageLimit = table.Column<int>(type: "int", nullable: true),
+                    CPUCount = table.Column<int>(type: "int", nullable: true),
+                    ContainerExposePort = table.Column<int>(type: "int", nullable: true),
+                    FileName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConcurrencyStamp = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FlagTemplate = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AttachmentId = table.Column<int>(type: "int", nullable: true),
+                    TestContainerId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -565,16 +668,17 @@ namespace GZCTF.Migrations
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "UserParticipations",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TeamId = table.Column<int>(type: "integer", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false),
-                    ParticipationId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    ParticipationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -603,14 +707,15 @@ namespace GZCTF.Migrations
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ExerciseDependencies",
                 columns: table => new
                 {
-                    SourceId = table.Column<int>(type: "integer", nullable: false),
-                    TargetId = table.Column<int>(type: "integer", nullable: false)
+                    SourceId = table.Column<int>(type: "int", nullable: false),
+                    TargetId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -627,19 +732,21 @@ namespace GZCTF.Migrations
                         principalTable: "ExerciseChallenges",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "FlagContexts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Flag = table.Column<string>(type: "text", nullable: false),
-                    IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
-                    AttachmentId = table.Column<int>(type: "integer", nullable: true),
-                    ChallengeId = table.Column<int>(type: "integer", nullable: true),
-                    ExerciseId = table.Column<int>(type: "integer", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Flag = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsOccupied = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AttachmentId = table.Column<int>(type: "int", nullable: true),
+                    ChallengeId = table.Column<int>(type: "int", nullable: true),
+                    ExerciseId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -660,22 +767,25 @@ namespace GZCTF.Migrations
                         column: x => x.ChallengeId,
                         principalTable: "GameChallenges",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Submissions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Answer = table.Column<string>(type: "character varying(127)", maxLength: 127, nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    SubmitTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
-                    TeamId = table.Column<int>(type: "integer", nullable: false),
-                    ParticipationId = table.Column<int>(type: "integer", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false),
-                    ChallengeId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Answer = table.Column<string>(type: "varchar(127)", maxLength: 127, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SubmitTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
+                    ParticipationId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    ChallengeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -710,20 +820,21 @@ namespace GZCTF.Migrations
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ExerciseInstances",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExerciseId = table.Column<int>(type: "integer", nullable: false),
-                    SolveTimeUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    IsSolved = table.Column<bool>(type: "boolean", nullable: false),
-                    IsLoaded = table.Column<bool>(type: "boolean", nullable: false),
-                    LastContainerOperation = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    FlagId = table.Column<int>(type: "integer", nullable: true),
-                    ContainerId = table.Column<Guid>(type: "uuid", nullable: true)
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ExerciseId = table.Column<int>(type: "int", nullable: false),
+                    SolveTimeUtc = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    IsSolved = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsLoaded = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    LastContainerOperation = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    FlagId = table.Column<int>(type: "int", nullable: true),
+                    ContainerId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -752,19 +863,20 @@ namespace GZCTF.Migrations
                         principalTable: "FlagContexts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "GameInstances",
                 columns: table => new
                 {
-                    ChallengeId = table.Column<int>(type: "integer", nullable: false),
-                    ParticipationId = table.Column<int>(type: "integer", nullable: false),
-                    IsSolved = table.Column<bool>(type: "boolean", nullable: false),
-                    IsLoaded = table.Column<bool>(type: "boolean", nullable: false),
-                    LastContainerOperation = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    FlagId = table.Column<int>(type: "integer", nullable: true),
-                    ContainerId = table.Column<Guid>(type: "uuid", nullable: true)
+                    ChallengeId = table.Column<int>(type: "int", nullable: false),
+                    ParticipationId = table.Column<int>(type: "int", nullable: false),
+                    IsSolved = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsLoaded = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    LastContainerOperation = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    FlagId = table.Column<int>(type: "int", nullable: true),
+                    ContainerId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -793,16 +905,17 @@ namespace GZCTF.Migrations
                         principalTable: "Participations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "CheatInfo",
                 columns: table => new
                 {
-                    SubmissionId = table.Column<int>(type: "integer", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: false),
-                    SubmitTeamId = table.Column<int>(type: "integer", nullable: false),
-                    SourceTeamId = table.Column<int>(type: "integer", nullable: false)
+                    SubmissionId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    SubmitTeamId = table.Column<int>(type: "int", nullable: false),
+                    SourceTeamId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -831,7 +944,8 @@ namespace GZCTF.Migrations
                         principalTable: "Submissions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
