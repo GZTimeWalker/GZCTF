@@ -62,6 +62,7 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 - Challenges traffic forwarding based on **TCP over WebSocket proxy**, configurable traffic capture
 - Cluster cache based on Redis, database storage backend based on PGSQL
 - Customizable global configuration, platform title, record information
+- Support metrics and distributed tracing
 - And more...
 
 ## Demo 🗿

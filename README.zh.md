@@ -61,6 +61,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - 题目流量 **TCP over WebSocket 代理转发**、可配置流量捕获
 - 基于 Redis 的集群缓存、基于 PGSQL 的数据库存储后端
 - 全局配置项自定义、平台标题、备案信息
+- 支持测量和分布式追踪
 - 以及更多……
 
 ## Demo 🗿
