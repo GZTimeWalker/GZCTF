@@ -5,6 +5,7 @@ global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Middlewares;
@@ -23,6 +24,12 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Npgsql;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
 using StackExchange.Redis;
 
@@ -197,6 +204,53 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #endregion Identity
 
+#region Telemetry
+
+var telemetryOptions = builder.Configuration.GetSection("Telemetry");
+var otel = builder.Services.AddOpenTelemetry();
+
+otel.ConfigureResource(resource => resource.AddService("GZCTF"));
+
+var azmoOptions = telemetryOptions.GetSection("AzureMonitor");
+var azureMonitorEnabled = azmoOptions.Exists() && azmoOptions.GetSection("Enable").Get<bool>();
+var otelOptions = telemetryOptions.GetSection("OpenTelemetry");
+var otelEnabled = otelOptions.Exists() && otelOptions.GetSection("Enable").Get<bool>();
+var consoleOptions = telemetryOptions.GetSection("Console");
+var consoleEnabled = consoleOptions.Exists() && consoleOptions.GetSection("Enable").Get<bool>();
+
+otel.WithMetrics(metrics =>
+{
+    metrics.AddAspNetCoreInstrumentation();
+    metrics.AddHttpClientInstrumentation();
+    metrics.AddPrometheusExporter();
+});
+
+otel.WithTracing(tracing =>
+{
+    tracing.AddAspNetCoreInstrumentation();
+    tracing.AddHttpClientInstrumentation();
+    tracing.AddNpgsql();
+    if (consoleEnabled)
+    {
+        tracing.AddConsoleExporter();
+    }
+});
+
+if (azureMonitorEnabled)
+{
+    otel.UseAzureMonitor(
+        options => options.ConnectionString = azmoOptions.GetSection("ConnectionString").Get<string>());
+}
+
+if (otelEnabled)
+{
+    otel.UseOtlpExporter(
+        otelOptions.GetRequiredSection("Protocol").Get<OtlpExportProtocol>(),
+        new(otelOptions.GetRequiredSection("EndpointUri").Get<string>()!));
+}
+
+#endregion
+
 #region Services and Repositories
 
 builder.Services.AddTransient<IMailSender, MailSender>()
@@ -326,6 +380,8 @@ app.MapControllers();
 app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
+
+app.MapPrometheusScrapingEndpoint();
 
 app.MapFallbackToFile("index.html");
 

@@ -29,6 +29,20 @@ import { Callout } from "nextra-theme-docs";
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
+  "Telemetry": {
+    "OpenTelemetry": {
+      "Enable": true,
+      "Protocol": "Grpc",
+      "EndpointUri": "http://localhost:4317"
+    },
+    "AzureMonitor": {
+      "Enable": false,
+      "ConnectionString": "InstrumentationKey=12345678-abcd-abcd-abcd-12345678..."
+    },
+    "Console": {
+      "Enable": false
+    }
+  },
   "EmailConfig": {
     "SendMailAddress": "a@a.com",
     "UserName": "",
@@ -125,6 +139,26 @@ GZCTF 使用 PostgreSQL 作为后端数据库和数据持久化，使用 Redis �
 GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库。请在配置文件中填写正确的数据库连接字符串。
 
 </Callout>
+
+### Telemetry
+
+GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供商。
+
+- **OpenTelemetry**：将测量和追踪数据导出到 OpenTelemetry。
+
+  - **Enable**：是否启用。
+  - **Protocol**：`Grpc` 或 `HttpProtobuf`。
+  - **EndpointUri**：导出到的地址。
+
+- **AzureMonitor**：将测量和追踪数据导出到 ApplicationInsights。
+
+  - **Enable**：是否启用。
+  - **ConnectionString**：连接字符串。
+
+- **Console**：将追踪数据导出到控制台。
+
+  - **Enable**：是否启用。
+
 
 ### EmailConfig
 

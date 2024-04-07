@@ -29,6 +29,20 @@ import { Callout } from "nextra-theme-docs";
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
+  "Telemetry": {
+    "OpenTelemetry": {
+      "Enable": true,
+      "Protocol": "Grpc",
+      "EndpointUri": "http://localhost:4317"
+    },
+    "AzureMonitor": {
+      "Enable": false,
+      "ConnectionString": "InstrumentationKey=12345678-abcd-abcd-abcd-12345678..."
+    },
+    "Console": {
+      "Enable": false
+    }
+  },
   "EmailConfig": {
     "SendMailAddress": "a@a.com",
     "UserName": "",
@@ -125,6 +139,25 @@ GZCTFはPostgreSQLをバックエンドデータベースおよびデータ永�
 GZCTFはデータベースとしてPostgreSQLのみをサポートしており、MySQLなどの他のデータベースはサポートしていません。設定ファイルに正しいデータベース接続文字列を記入してください。
 
 </Callout>
+
+### Telemetry
+
+GZCTFはメトリクスと分散トレーシングをサポートしています。使用するプロバイダーを設定できます。
+
+- **OpenTelemetry**: メトリクスとトレーシングデータを OpenTelemetry にエクスポートします。
+
+  - **Enable**: 有効にするかどうか。
+  - **Protocol**: `Grpc` または `HttpProtobuf`。
+  - **EndpointUri**: エクスポートするエンドポイント。
+
+- **AzureMonitor**: メトリクスとトレーシングデータを ApplicationInsights にエクスポートします。
+
+  - **Enable**: 有効にするかどうか。
+  - **ConnectionString**: 接続文字列。
+
+- **Console**: トレーシングデータをコンソールにエクスポートします。
+
+  - **Enable**: 有効にするかどうか。
 
 ### EmailConfig
 

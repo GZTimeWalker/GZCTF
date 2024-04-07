@@ -29,6 +29,20 @@ Here is a complete example of configuration:
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
+  "Telemetry": {
+    "OpenTelemetry": {
+      "Enable": true,
+      "Protocol": "Grpc",
+      "EndpointUri": "http://localhost:4317"
+    },
+    "AzureMonitor": {
+      "Enable": false,
+      "ConnectionString": "InstrumentationKey=12345678-abcd-abcd-abcd-12345678..."
+    },
+    "Console": {
+      "Enable": false
+    }
+  },
   "EmailConfig": {
     "SendMailAddress": "a@a.com",
     "UserName": "",
@@ -125,6 +139,25 @@ GZCTF uses PostgreSQL as the backend database and data persistence, and Redis as
 GZCTF only supports PostgreSQL as the database, and does not support MySQL and other databases. Please fill in the correct database connection settings in the configuration file.
 
 </Callout>
+
+### Telemetry
+
+GZCTF supports metrics and distributed tracing. You can configure the providers you want to use.
+
+- **OpenTelemetry**: Exporting metrics and tracing data to OpenTelemetry.
+
+  - **Enable**: Enable it or not.
+  - **Protocol**: `Grpc` or `HttpProtobuf`.
+  - **EndpointUri**: The endpoint to export.
+
+- **AzureMonitor**: Exporting metrics and tracing data to ApplicationInsights.
+
+  - **Enable**: Enable it or not.
+  - **ConnectionString**: The connection string.
+
+- **Console**: Exporting tracing data to console.
+
+  - **Enable**: Enable it or not.
 
 ### EmailConfig
 
