@@ -3,6 +3,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
+using MemoryPack;
 using OpenTelemetry.Exporter;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
@@ -108,7 +109,8 @@ public class GlobalConfig
 /// <summary>
 /// 客户端配置
 /// </summary>
-public class ClientConfig
+[MemoryPackable]
+public partial class ClientConfig
 {
     /// <summary>
     /// 平台前缀名称
@@ -185,7 +187,7 @@ public enum ContainerPortMappingType
     // Use default to map the container port to a random port on the host
     Default,
 
-    // Use platform proxy to map the container tcp to wss 
+    // Use platform proxy to map the container tcp to wss
     PlatformProxy
 }
 
