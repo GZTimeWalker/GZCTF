@@ -12,71 +12,68 @@ public static class TelemetryExtension
 {
     public static void AddTelemetry(this IServiceCollection services, TelemetryConfig? config)
     {
-        if (config is { Enable: true })
+        if (config is not { Enable: true })
+            return;
+
+        var otl = services.AddOpenTelemetry();
+
+        otl.ConfigureResource(resource => resource.AddService("GZCTF"));
+
+        otl.WithMetrics(metrics =>
         {
-            var otel = services.AddOpenTelemetry();
+            metrics.AddAspNetCoreInstrumentation();
+            metrics.AddHttpClientInstrumentation();
+            metrics.AddRuntimeInstrumentation();
+            metrics.AddProcessInstrumentation();
 
-            otel.ConfigureResource(resource => resource.AddService("GZCTF"));
-
-            otel.WithMetrics(metrics =>
+            if (config.Prometheus.Enable)
             {
-                metrics.AddAspNetCoreInstrumentation();
-                metrics.AddHttpClientInstrumentation();
-                metrics.AddRuntimeInstrumentation();
-                metrics.AddProcessInstrumentation();
-
-                if (config.Prometheus.Enable)
+                metrics.AddPrometheusExporter(options =>
                 {
-                    metrics.AddPrometheusExporter(options =>
-                    {
-                        options.DisableTotalNameSuffixForCounters = true;
-                    });
-                }
-
-                if (config.Console.Enable)
-                {
-                    metrics.AddConsoleExporter();
-                }
-            });
-
-            otel.WithTracing(tracing =>
-            {
-                tracing.AddAspNetCoreInstrumentation();
-                tracing.AddHttpClientInstrumentation();
-                tracing.AddEntityFrameworkCoreInstrumentation();
-                tracing.AddRedisInstrumentation();
-                tracing.AddNpgsql();
-                if (config.Console.Enable)
-                {
-                    tracing.AddConsoleExporter();
-                }
-            });
-
-            if (config.AzureMonitor.Enable)
-            {
-                otel.UseAzureMonitor(
-                    options => options.ConnectionString = config.AzureMonitor.ConnectionString);
+                    options.DisableTotalNameSuffixForCounters = true;
+                });
             }
 
-            if (config.OpenTelemetry.Enable)
+            if (config.Console.Enable)
             {
-                otel.UseOtlpExporter(config.OpenTelemetry.Protocol, new(config.OpenTelemetry.EndpointUri ?? "http://localhost:4317"));
+                metrics.AddConsoleExporter();
             }
+        });
+
+        otl.WithTracing(tracing =>
+        {
+            tracing.AddAspNetCoreInstrumentation();
+            tracing.AddHttpClientInstrumentation();
+            tracing.AddEntityFrameworkCoreInstrumentation();
+            tracing.AddRedisInstrumentation();
+            tracing.AddNpgsql();
+            if (config.Console.Enable)
+            {
+                tracing.AddConsoleExporter();
+            }
+        });
+
+        if (config.AzureMonitor.Enable)
+        {
+            otl.UseAzureMonitor(
+                options => options.ConnectionString = config.AzureMonitor.ConnectionString);
+        }
+
+        if (config.OpenTelemetry.Enable)
+        {
+            otl.UseOtlpExporter(config.OpenTelemetry.Protocol, new(config.OpenTelemetry.EndpointUri ?? "http://localhost:4317"));
         }
     }
 
     public static void UseTelemetry(this IApplicationBuilder app, TelemetryConfig? config)
     {
-        if (config is { Enable: true, Prometheus.Enable: true })
-        {
-            if (config.Prometheus.Port is ushort port)
-            {
-                app.UseOpenTelemetryPrometheusScrapingEndpoint(context => context.Connection.LocalPort == port);
-            }
-            else
-            {
-                app.UseOpenTelemetryPrometheusScrapingEndpoint();
-            }
-        }
+        if (config is not { Enable: true, Prometheus.Enable: true })
+            return;
+
+
+        if (config.Prometheus.Port is ushort port)
+            app.UseOpenTelemetryPrometheusScrapingEndpoint(context => context.Connection.LocalPort == port);
+        else
+            app.UseOpenTelemetryPrometheusScrapingEndpoint();
     }
 }
