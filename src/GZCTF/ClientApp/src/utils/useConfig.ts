@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import LZString from 'lz-string'
 import { useEffect, useRef } from 'react'
 import { Cache, SWRConfiguration } from 'swr'
-import api, { GlobalConfig } from '@Api'
+import api, { ClientConfig } from '@Api'
 
 export const OnceSWRConfig: SWRConfiguration = {
   refreshInterval: 0,
@@ -23,7 +23,7 @@ export const useConfig = () => {
     data: config,
     error,
     mutate,
-  } = api.info.useInfoGetGlobalConfig({
+  } = api.info.useInfoGetClientConfig({
     refreshInterval: 0,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -32,22 +32,25 @@ export const useConfig = () => {
     refreshWhenOffline: false,
   })
 
-  const [globalConfig, setGlobalConfig] = useLocalStorage({
-    key: 'global-config',
+  const [clientConfig, setClientConfig] = useLocalStorage({
+    key: 'client-config',
     defaultValue: {
       title: 'GZ',
       slogan: 'Hack for fun not for profit',
-      beianInfo: null,
-    } as GlobalConfig,
+      footerInfo: null,
+      defaultLifetime: 120,
+      extensionDuration: 120,
+      renewalWindow: 10,
+    } as ClientConfig,
   })
 
   useEffect(() => {
     if (config) {
-      setGlobalConfig(config)
+      setClientConfig(config)
     }
   }, [config])
 
-  return { config: config ?? globalConfig, error, mutate }
+  return { config: config ?? clientConfig, error, mutate }
 }
 
 export const ValidatedRepoMeta = () => {

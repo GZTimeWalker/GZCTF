@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services;
 
 public class ConfigService(
     AppDbContext context,
+    IDistributedCache cache,
     ILogger<ConfigService> logger,
     IConfiguration configuration) : IConfigService
 {
@@ -39,7 +42,7 @@ public class ConfigService(
 
     static HashSet<Config> GetConfigs(Type type, object? value)
     {
-        HashSet<Config> configs = new();
+        HashSet<Config> configs = [];
 
         foreach (PropertyInfo item in type.GetProperties())
             MapConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
@@ -85,6 +88,7 @@ public class ConfigService(
         }
 
         await context.SaveChangesAsync(token);
+        await cache.RemoveAsync(CacheKey.ClientConfig, token);
         _configuration?.Reload();
     }
 

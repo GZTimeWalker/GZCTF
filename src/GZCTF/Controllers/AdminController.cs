@@ -8,11 +8,13 @@ using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -82,8 +84,11 @@ public class AdminController(
         foreach (PropertyInfo prop in typeof(ConfigEditModel).GetProperties())
         {
             var value = prop.GetValue(model);
-            if (value is not null)
-                await configService.SaveConfig(prop.PropertyType, value, token);
+
+            if (value is null)
+                continue;
+
+            await configService.SaveConfig(prop.PropertyType, value, token);
         }
 
         return Ok();
@@ -203,17 +208,16 @@ public class AdminController(
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
     {
         var loweredHint = hint.ToLower();
-        return Ok((await userManager.Users.Where(item =>
-                    item.UserName!.ToLower().Contains(loweredHint) ||
-                    item.StdNumber.ToLower().Contains(loweredHint) ||
-                    item.Email!.ToLower().Contains(loweredHint) ||
-                    item.PhoneNumber!.ToLower().Contains(loweredHint) ||
-                    item.Id.ToString().ToLower().Contains(loweredHint) ||
-                    item.RealName.ToLower().Contains(loweredHint)
-                )
-                .OrderBy(e => e.Id).Take(30).ToArrayAsync(token))
-            .Select(UserInfoModel.FromUserInfo)
-            .ToResponse());
+        var data = await userManager.Users.Where(item =>
+            item.UserName!.ToLower().Contains(loweredHint) ||
+            item.StdNumber.ToLower().Contains(loweredHint) ||
+            item.Email!.ToLower().Contains(loweredHint) ||
+            item.PhoneNumber!.ToLower().Contains(loweredHint) ||
+            item.Id.ToString().ToLower().Contains(loweredHint) ||
+            item.RealName.ToLower().Contains(loweredHint)
+        ).OrderBy(e => e.Id).Take(30).ToArrayAsync(token);
+
+        return Ok(data.Select(UserInfoModel.FromUserInfo).ToResponse());
     }
 
     /// <summary>

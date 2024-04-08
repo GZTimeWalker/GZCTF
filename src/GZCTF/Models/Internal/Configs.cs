@@ -105,6 +105,53 @@ public class GlobalConfig
     public const string DefaultEmailTemplate = "default";
 }
 
+/// <summary>
+/// 客户端配置
+/// </summary>
+public class ClientConfig
+{
+    /// <summary>
+    /// 平台前缀名称
+    /// </summary>
+    public string Title { get; set; } = "GZ";
+
+    /// <summary>
+    /// 平台标语
+    /// </summary>
+    public string Slogan { get; set; } = "Hack for fun not for profit";
+
+    /// <summary>
+    /// 页脚显示的信息
+    /// </summary>
+    public string? FooterInfo { get; set; }
+
+    /// <summary>
+    /// 容器的默认生命周期，以分钟计
+    /// </summary>
+    public int DefaultLifetime { get; set; } = 120;
+
+    /// <summary>
+    /// 容器每次续期的时长，以分钟计
+    /// </summary>
+    public int ExtensionDuration { get; set; } = 120;
+
+    /// <summary>
+    /// 容器停止前的可续期时间段，以分钟计
+    /// </summary>
+    public int RenewalWindow { get; set; } = 10;
+
+    public static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy) =>
+        new()
+        {
+            Title = globalConfig.Title,
+            Slogan = globalConfig.Slogan,
+            FooterInfo = globalConfig.FooterInfo,
+            DefaultLifetime = containerPolicy.DefaultLifetime,
+            ExtensionDuration = containerPolicy.ExtensionDuration,
+            RenewalWindow = containerPolicy.RenewalWindow
+        };
+}
+
 #region Mail Config
 
 public class SmtpConfig

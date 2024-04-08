@@ -35,6 +35,16 @@ public static class CacheKey
     public const string ExerciseAvailable = "_ExerciseAvailable";
 
     /// <summary>
+    /// 客户端配置
+    /// </summary>
+    public const string ClientConfig = "_ClientConfig";
+
+    /// <summary>
+    /// 验证码配置
+    /// </summary>
+    public const string CaptchaConfig = "_CaptchaConfig";
+
+    /// <summary>
     /// 缓存更新锁
     /// </summary>
     public static string UpdateLock(string key) => $"_CacheUpdateLock_{key}";
