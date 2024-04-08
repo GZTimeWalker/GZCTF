@@ -28,6 +28,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
         <PackageReference Include="Docker.DotNet" />
         <PackageReference Include="KubernetesClient" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
@@ -39,12 +40,23 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="Npgsql.OpenTelemetry" />
         <PackageReference Include="NPOI" />
         <PackageReference Include="NSwag.AspNetCore" />
         <PackageReference Include="NSwag.MSBuild">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="OpenTelemetry.Exporter.Console" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+        <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Process" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Expressions" />
         <PackageReference Include="Serilog.Extensions.Logging" />

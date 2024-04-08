@@ -197,6 +197,13 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #endregion Identity
 
+#region Telemetry
+
+var telemetryOptions = builder.Configuration.GetSection("Telemetry").Get<TelemetryConfig>();
+builder.Services.AddTelemetry(telemetryOptions);
+
+#endregion
+
 #region Services and Repositories
 
 builder.Services.AddTransient<IMailSender, MailSender>()
@@ -319,6 +326,8 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Request
     app.UseRequestLogging();
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
+
+app.UseTelemetry(telemetryOptions);
 
 app.MapHealthChecks("/healthz");
 app.MapControllers();

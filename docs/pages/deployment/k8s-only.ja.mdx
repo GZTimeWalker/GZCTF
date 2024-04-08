@@ -157,9 +157,6 @@ import { Callout } from "nextra-theme-docs";
                - name: gzctf-kube-config
                  mountPath: /app/kube-config.yaml
                  subPath: kube-config
-               # .log ファイルの永続化ストレージが必要な場合
-               # 各 GZCTF インスタンスに /app/log に追加のボリュームをマウントしてください
-               # GZCTF は自動的にログファイルを処理し、自動的に rotate と compress を行います
              resources:
                requests:
                  cpu: 1000m
@@ -263,8 +260,8 @@ import { Callout } from "nextra-theme-docs";
        app: gzctf
      ports:
        - protocol: TCP
-         port: 80
-         targetPort: 80
+         port: 8080
+         targetPort: 8080
    ---
    apiVersion: v1
    kind: Service
@@ -316,7 +313,7 @@ import { Callout } from "nextra-theme-docs";
                  service:
                    name: gzctf
                    port:
-                     number: 80
+                     number: 8080
    ```
 
 5. Traefikの追加設定

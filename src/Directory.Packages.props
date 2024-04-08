@@ -4,23 +4,29 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Aigamo.ResXGenerator" Version="4.2.0" />
+    <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.0" />
     <PackageVersion Include="Docker.DotNet" Version="3.125.15" />
     <PackageVersion Include="KubernetesClient" Version="13.0.26" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.2" />
     <PackageVersion Include="NPOI" Version="2.7.0" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.0.7" />
-    <PackageVersion Include="NSwag.MSBuild" Version="14.0.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
+    <PackageVersion Include="NSwag.MSBuild" Version="14.0.7" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.8.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.8.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.8.0-rc.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.11" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.8.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.5" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.8.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.0.0-rc9.14" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageVersion Include="Serilog.Expressions" Version="4.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
@@ -43,21 +49,9 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="xunit" Version="2.7.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
-    <PackageVersion Include="xunit.runner.console" Version="2.7.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
-    <PackageVersion Include="coverlet.collector" Version="6.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
+    <PackageVersion Include="xunit.runner.console" Version="2.7.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
   </ItemGroup>
 </Project>

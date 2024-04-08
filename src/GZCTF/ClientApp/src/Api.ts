@@ -1712,6 +1712,31 @@ export interface PostInfoModel {
   time: string;
 }
 
+/** 客户端配置 */
+export interface ClientConfig {
+  /** 平台前缀名称 */
+  title?: string;
+  /** 平台标语 */
+  slogan?: string;
+  /** 页脚显示的信息 */
+  footerInfo?: string | null;
+  /**
+   * 容器的默认生命周期，以分钟计
+   * @format int32
+   */
+  defaultLifetime?: number;
+  /**
+   * 容器每次续期的时长，以分钟计
+   * @format int32
+   */
+  extensionDuration?: number;
+  /**
+   * 容器停止前的可续期时间段，以分钟计
+   * @format int32
+   */
+  renewalWindow?: number;
+}
+
 /** 验证码配置 */
 export interface ClientCaptchaInfoModel {
   /** 验证码类型 */
@@ -4455,41 +4480,41 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ClientCaptchaInfoModel>(`/api/captcha`, data, options),
 
     /**
-     * @description 获取全局设置
+     * @description 获取客户端设置
      *
      * @tags Info
-     * @name InfoGetGlobalConfig
-     * @summary 获取全局设置
+     * @name InfoGetClientConfig
+     * @summary 获取客户端设置
      * @request GET:/api/config
      */
-    infoGetGlobalConfig: (params: RequestParams = {}) =>
-      this.request<GlobalConfig, any>({
+    infoGetClientConfig: (params: RequestParams = {}) =>
+      this.request<ClientConfig, any>({
         path: `/api/config`,
         method: "GET",
         format: "json",
         ...params,
       }),
     /**
-     * @description 获取全局设置
+     * @description 获取客户端设置
      *
      * @tags Info
-     * @name InfoGetGlobalConfig
-     * @summary 获取全局设置
+     * @name InfoGetClientConfig
+     * @summary 获取客户端设置
      * @request GET:/api/config
      */
-    useInfoGetGlobalConfig: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<GlobalConfig, any>(doFetch ? `/api/config` : null, options),
+    useInfoGetClientConfig: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ClientConfig, any>(doFetch ? `/api/config` : null, options),
 
     /**
-     * @description 获取全局设置
+     * @description 获取客户端设置
      *
      * @tags Info
-     * @name InfoGetGlobalConfig
-     * @summary 获取全局设置
+     * @name InfoGetClientConfig
+     * @summary 获取客户端设置
      * @request GET:/api/config
      */
-    mutateInfoGetGlobalConfig: (data?: GlobalConfig | Promise<GlobalConfig>, options?: MutatorOptions) =>
-      mutate<GlobalConfig>(`/api/config`, data, options),
+    mutateInfoGetClientConfig: (data?: ClientConfig | Promise<ClientConfig>, options?: MutatorOptions) =>
+      mutate<ClientConfig>(`/api/config`, data, options),
 
     /**
      * @description 获取最新文章

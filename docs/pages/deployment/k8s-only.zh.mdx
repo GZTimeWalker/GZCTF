@@ -157,9 +157,6 @@ import { Callout } from "nextra-theme-docs";
                - name: gzctf-kube-config
                  mountPath: /app/kube-config.yaml
                  subPath: kube-config
-               # 若需要持久化存储日志 .log 文件
-               # 请为每个 GZCTF 实例额外挂载一个卷至 /app/log
-               # GZCTF 会自动处理日志文件，并会自动 rotate 和 compress
              resources:
                requests:
                  cpu: 1000m
@@ -263,8 +260,8 @@ import { Callout } from "nextra-theme-docs";
        app: gzctf
      ports:
        - protocol: TCP
-         port: 80
-         targetPort: 80
+         port: 8080
+         targetPort: 8080
    ---
    apiVersion: v1
    kind: Service
@@ -316,7 +313,7 @@ import { Callout } from "nextra-theme-docs";
                  service:
                    name: gzctf
                    port:
-                     number: 80
+                     number: 8080
    ```
 
 5. Traefik 的额外配置

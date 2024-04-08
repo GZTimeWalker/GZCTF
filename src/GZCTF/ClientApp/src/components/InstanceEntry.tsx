@@ -26,6 +26,7 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getProxyUrl } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
+import { useConfig } from '@Utils/useConfig'
 import { ClientFlagContext } from '@Api'
 
 interface InstanceEntryProps {
@@ -73,6 +74,7 @@ const Countdown: FC<CountdownProps> = ({ time, extendNotice }) => {
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const { test, context, disabled, onCreate, onDestroy } = props
 
+  const { config } = useConfig()
   const clipBoard = useClipboard()
 
   const [withContainer, setWithContainer] = useState(!!context.instanceEntry)
@@ -152,7 +154,9 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             {t('challenge.content.instance.no_container.message')}
           </Text>
           <Text size="xs" color="dimmed" fw={600}>
-            {t('challenge.content.instance.no_container.note')}
+            {t('challenge.content.instance.no_container.note', {
+              min: config.defaultLifetime,
+            })}
           </Text>
         </Stack>
 
@@ -228,7 +232,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               <Countdown time={context.closeTime ?? '0'} extendNotice={extendNotice} />
             </Text>
             <Text size="xs" color="dimmed" fw={600}>
-              {t('challenge.content.instance.actions.note')}
+              {t('challenge.content.instance.actions.note', { min: config.renewalWindow })}
             </Text>
           </Stack>
 
