@@ -93,7 +93,8 @@ public class KubernetesManager : IContainerManager
                         }
                     }
                 ],
-                RestartPolicy = "Never"
+                RestartPolicy = "Never",
+                AutomountServiceAccountToken = false
             }
         };
 
@@ -131,9 +132,6 @@ public class KubernetesManager : IContainerManager
         }
 
         // Service is needed for port mapping
-        var container =
-            new Models.Data.Container { ContainerId = name, Image = config.Image, Port = config.ExposedPort };
-
         var service = new V1Service("v1", "Service")
         {
             Metadata = new V1ObjectMeta
@@ -194,11 +192,14 @@ public class KubernetesManager : IContainerManager
             return null;
         }
 
-        container.StartedAt = DateTimeOffset.UtcNow;
-        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.IP = service.Spec.ClusterIP;
-        container.Port = config.ExposedPort;
-        container.IsProxy = !_meta.ExposePort;
+        var container = new Models.Data.Container
+        {
+            ContainerId = name,
+            Image = config.Image,
+            Port = config.ExposedPort,
+            IP = service.Spec.ClusterIP,
+            IsProxy = !_meta.ExposePort
+        };
 
         if (!_meta.ExposePort)
             return container;
