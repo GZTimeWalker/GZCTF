@@ -22,9 +22,20 @@ public static class TelemetryExtension
             {
                 metrics.AddAspNetCoreInstrumentation();
                 metrics.AddHttpClientInstrumentation();
+                metrics.AddRuntimeInstrumentation();
+                metrics.AddProcessInstrumentation();
+
                 if (config.Prometheus.Enable)
                 {
-                    metrics.AddPrometheusExporter();
+                    metrics.AddPrometheusExporter(options =>
+                    {
+                        options.DisableTotalNameSuffixForCounters = true;
+                    });
+                }
+
+                if (config.Console.Enable)
+                {
+                    metrics.AddConsoleExporter();
                 }
             });
 
@@ -32,6 +43,8 @@ public static class TelemetryExtension
             {
                 tracing.AddAspNetCoreInstrumentation();
                 tracing.AddHttpClientInstrumentation();
+                tracing.AddEntityFrameworkCoreInstrumentation();
+                tracing.AddRedisInstrumentation();
                 tracing.AddNpgsql();
                 if (config.Console.Enable)
                 {
