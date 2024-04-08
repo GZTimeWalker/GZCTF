@@ -207,46 +207,51 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 #region Telemetry
 
 var telemetryOptions = builder.Configuration.GetSection("Telemetry");
-var otel = builder.Services.AddOpenTelemetry();
+var telemetryEnabled = telemetryOptions.Exists() && telemetryOptions.GetSection("Enable").Get<bool>();
 
-otel.ConfigureResource(resource => resource.AddService("GZCTF"));
-
-var azmoOptions = telemetryOptions.GetSection("AzureMonitor");
-var azureMonitorEnabled = azmoOptions.Exists() && azmoOptions.GetSection("Enable").Get<bool>();
-var otelOptions = telemetryOptions.GetSection("OpenTelemetry");
-var otelEnabled = otelOptions.Exists() && otelOptions.GetSection("Enable").Get<bool>();
-var consoleOptions = telemetryOptions.GetSection("Console");
-var consoleEnabled = consoleOptions.Exists() && consoleOptions.GetSection("Enable").Get<bool>();
-
-otel.WithMetrics(metrics =>
+if (telemetryEnabled)
 {
-    metrics.AddAspNetCoreInstrumentation();
-    metrics.AddHttpClientInstrumentation();
-    metrics.AddPrometheusExporter();
-});
+    var otel = builder.Services.AddOpenTelemetry();
 
-otel.WithTracing(tracing =>
-{
-    tracing.AddAspNetCoreInstrumentation();
-    tracing.AddHttpClientInstrumentation();
-    tracing.AddNpgsql();
-    if (consoleEnabled)
+    otel.ConfigureResource(resource => resource.AddService("GZCTF"));
+
+    var azmoOptions = telemetryOptions.GetSection("AzureMonitor");
+    var azureMonitorEnabled = azmoOptions.Exists() && azmoOptions.GetSection("Enable").Get<bool>();
+    var otelOptions = telemetryOptions.GetSection("OpenTelemetry");
+    var otelEnabled = otelOptions.Exists() && otelOptions.GetSection("Enable").Get<bool>();
+    var consoleOptions = telemetryOptions.GetSection("Console");
+    var consoleEnabled = consoleOptions.Exists() && consoleOptions.GetSection("Enable").Get<bool>();
+
+    otel.WithMetrics(metrics =>
     {
-        tracing.AddConsoleExporter();
+        metrics.AddAspNetCoreInstrumentation();
+        metrics.AddHttpClientInstrumentation();
+        metrics.AddPrometheusExporter();
+    });
+
+    otel.WithTracing(tracing =>
+    {
+        tracing.AddAspNetCoreInstrumentation();
+        tracing.AddHttpClientInstrumentation();
+        tracing.AddNpgsql();
+        if (consoleEnabled)
+        {
+            tracing.AddConsoleExporter();
+        }
+    });
+
+    if (azureMonitorEnabled)
+    {
+        otel.UseAzureMonitor(
+            options => options.ConnectionString = azmoOptions.GetSection("ConnectionString").Get<string>());
     }
-});
 
-if (azureMonitorEnabled)
-{
-    otel.UseAzureMonitor(
-        options => options.ConnectionString = azmoOptions.GetSection("ConnectionString").Get<string>());
-}
-
-if (otelEnabled)
-{
-    otel.UseOtlpExporter(
-        otelOptions.GetRequiredSection("Protocol").Get<OtlpExportProtocol>(),
-        new(otelOptions.GetRequiredSection("EndpointUri").Get<string>()!));
+    if (otelEnabled)
+    {
+        otel.UseOtlpExporter(
+            otelOptions.GetRequiredSection("Protocol").Get<OtlpExportProtocol>(),
+            new(otelOptions.GetRequiredSection("EndpointUri").Get<string>()!));
+    }
 }
 
 #endregion
@@ -381,7 +386,10 @@ app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
 
-app.MapPrometheusScrapingEndpoint();
+if (telemetryEnabled)
+{
+    app.MapPrometheusScrapingEndpoint();
+}
 
 app.MapFallbackToFile("index.html");
 

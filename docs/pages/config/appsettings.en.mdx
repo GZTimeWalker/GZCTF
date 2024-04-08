@@ -30,6 +30,7 @@ Here is a complete example of configuration:
     }
   },
   "Telemetry": {
+    "Enable": true,
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
@@ -143,6 +144,8 @@ GZCTF only supports PostgreSQL as the database, and does not support MySQL and o
 ### Telemetry
 
 GZCTF supports metrics and distributed tracing. You can configure the providers you want to use.
+
+- **Enable**: Enable telemetry support or not.
 
 - **OpenTelemetry**: Exporting metrics and tracing data to OpenTelemetry.
 

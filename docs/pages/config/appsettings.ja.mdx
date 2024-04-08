@@ -30,6 +30,7 @@ import { Callout } from "nextra-theme-docs";
     }
   },
   "Telemetry": {
+    "Enable": true,
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
@@ -143,6 +144,8 @@ GZCTFはデータベースとしてPostgreSQLのみをサポートしており�
 ### Telemetry
 
 GZCTFはメトリクスと分散トレーシングをサポートしています。使用するプロバイダーを設定できます。
+
+- **Enable**: テレメトリーを有効化するかどうか。
 
 - **OpenTelemetry**: メトリクスとトレーシングデータを OpenTelemetry にエクスポートします。
 
