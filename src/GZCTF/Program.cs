@@ -206,53 +206,8 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #region Telemetry
 
-var telemetryOptions = builder.Configuration.GetSection("Telemetry");
-var telemetryEnabled = telemetryOptions.Exists() && telemetryOptions.GetSection("Enable").Get<bool>();
-
-if (telemetryEnabled)
-{
-    var otel = builder.Services.AddOpenTelemetry();
-
-    otel.ConfigureResource(resource => resource.AddService("GZCTF"));
-
-    var azmoOptions = telemetryOptions.GetSection("AzureMonitor");
-    var azureMonitorEnabled = azmoOptions.Exists() && azmoOptions.GetSection("Enable").Get<bool>();
-    var otelOptions = telemetryOptions.GetSection("OpenTelemetry");
-    var otelEnabled = otelOptions.Exists() && otelOptions.GetSection("Enable").Get<bool>();
-    var consoleOptions = telemetryOptions.GetSection("Console");
-    var consoleEnabled = consoleOptions.Exists() && consoleOptions.GetSection("Enable").Get<bool>();
-
-    otel.WithMetrics(metrics =>
-    {
-        metrics.AddAspNetCoreInstrumentation();
-        metrics.AddHttpClientInstrumentation();
-        metrics.AddPrometheusExporter();
-    });
-
-    otel.WithTracing(tracing =>
-    {
-        tracing.AddAspNetCoreInstrumentation();
-        tracing.AddHttpClientInstrumentation();
-        tracing.AddNpgsql();
-        if (consoleEnabled)
-        {
-            tracing.AddConsoleExporter();
-        }
-    });
-
-    if (azureMonitorEnabled)
-    {
-        otel.UseAzureMonitor(
-            options => options.ConnectionString = azmoOptions.GetSection("ConnectionString").Get<string>());
-    }
-
-    if (otelEnabled)
-    {
-        otel.UseOtlpExporter(
-            otelOptions.GetRequiredSection("Protocol").Get<OtlpExportProtocol>(),
-            new(otelOptions.GetRequiredSection("EndpointUri").Get<string>()!));
-    }
-}
+var telemetryOptions = builder.Configuration.GetSection("Telemetry").Get<TelemetryConfig>();
+builder.Services.AddTelemetry(telemetryOptions);
 
 #endregion
 
@@ -379,17 +334,14 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Request
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
 
+app.UseTelemetry(telemetryOptions);
+
 app.MapHealthChecks("/healthz");
 app.MapControllers();
 
 app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
-
-if (telemetryEnabled)
-{
-    app.MapPrometheusScrapingEndpoint();
-}
 
 app.MapFallbackToFile("index.html");
 

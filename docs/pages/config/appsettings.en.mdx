@@ -31,6 +31,10 @@ Here is a complete example of configuration:
   },
   "Telemetry": {
     "Enable": true,
+    "Prometheus": {
+      "Enable": true,
+      "Port": 3000
+    },
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
@@ -105,6 +109,15 @@ Here is a complete example of configuration:
     "TrustedProxies": ["10.0.0.1"]
   },
   "Kestrel": {
+    "Endpoints": {
+      "MyHttpEndpoint": {
+        "Url": "http://localhost:8080"
+      },
+      "MyHttpEndpoint2": {
+        "Url": "https://localhost:18080"
+      }
+      // ...
+    },
     "Limits": {
       "MaxResponseBufferSize": 2048,
       "MaxRequestBufferSize": 1048576,
@@ -146,6 +159,11 @@ GZCTF only supports PostgreSQL as the database, and does not support MySQL and o
 GZCTF supports metrics and distributed tracing. You can configure the providers you want to use.
 
 - **Enable**: Enable telemetry support or not.
+
+- **Prometheus**: Prometheus endpoint support.
+
+  - **Enable**: Enable it or not.
+  - **Port**: Optional. Set the port that Prometheus endpoint listens on. If this is configured, additional manual configuration of `Kestrel.Endpoints` is required to make the server listen to the specified port normally.
 
 - **OpenTelemetry**: Exporting metrics and tracing data to OpenTelemetry.
 
@@ -281,4 +299,5 @@ For other fields, please refer to the official documentation: [Configure ASP.NET
 
 Kestrel is the built-in web server used by GZCTF. With this configuration, you can control the behavior of Kestrel, such as specifying the HTTP protocol, modifying the request size limit, and more.
 
-For specific configurable fields, please refer to the properties of the `KestrelServerOptions` class in the official documentation: [KestrelServerOptions class](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions)
+- **Endpoints**: Configure the URL that the web server listens on.
+- For other configurable fields, please refer to the properties of the `KestrelServerOptions` class in the official documentation: [KestrelServerOptions class](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions)

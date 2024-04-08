@@ -31,6 +31,10 @@ import { Callout } from "nextra-theme-docs";
   },
   "Telemetry": {
     "Enable": true,
+    "Prometheus": {
+      "Enable": true,
+      "Port": 3000
+    },
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
@@ -105,6 +109,15 @@ import { Callout } from "nextra-theme-docs";
     "TrustedProxies": ["10.0.0.1"]
   },
   "Kestrel": {
+    "Endpoints": {
+      "MyHttpEndpoint": {
+        "Url": "http://localhost:8080"
+      },
+      "MyHttpEndpoint2": {
+        "Url": "https://localhost:18080"
+      }
+      // ...
+    },
     "Limits": {
       "MaxResponseBufferSize": 2048,
       "MaxRequestBufferSize": 1048576,
@@ -146,6 +159,11 @@ GZCTFはデータベースとしてPostgreSQLのみをサポートしており�
 GZCTFはメトリクスと分散トレーシングをサポートしています。使用するプロバイダーを設定できます。
 
 - **Enable**: テレメトリーを有効化するかどうか。
+
+- **Prometheus**: Prometheus エンドポイント。
+
+  - **Enable**: 有効にするかどうか。
+  - **Port**: 任意。Prometheus エンドポイントがリッスンするポート。これが設定されている場合、サーバーが指定されたポートを正常にリッスンするようにするには、`Kestrel.Endpoints` を手動で追加設定する必要があります。
 
 - **OpenTelemetry**: メトリクスとトレーシングデータを OpenTelemetry にエクスポートします。
 
@@ -281,4 +299,5 @@ Google Recaptcha v3の関連情報を設定します。オプションです。
 
 KestrelはGZCTFが内蔵して使用しているWebサーバーです。この設定を利用すると、HTTPプロトコルを指定したり、リクエストのサイズ上限を変更したりと、Kestrelの動作を自由に制御することができます。
 
-具体的な設定フィールドについては、公式ドキュメントの`KestrelServerOptions`クラスの属性を参照してください：[KestrelServerOptions クラス](https://learn.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions)。
+- **Endpoints**: Web サーバーがリッスンする URL。環境変数または起動パラメータを通じて設定することもできます。詳細については、[ASP.NET Core Kestrel Web サーバーのエンドポイントを構成する] (https://learn.microsoft.com/ja-jp/aspnet/core/fundamentals/servers/kestrel/endpoints) を参照してください。
+- 他の設定フィールドについては、公式ドキュメントの`KestrelServerOptions`クラスの属性を参照してください：[KestrelServerOptions クラス](https://learn.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserveroptions)。

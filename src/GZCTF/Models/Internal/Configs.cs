@@ -3,6 +3,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
+using OpenTelemetry.Exporter;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace GZCTF.Models.Internal;
@@ -200,6 +201,43 @@ public class GoogleRecaptchaConfig
 {
     public string VerifyApiAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
     public float RecaptchaThreshold { get; set; } = 0.5f;
+}
+
+#endregion
+
+#region Telemetry
+
+public class TelemetryConfig
+{
+    public bool Enable { get; set; }
+    public PrometheusConfig Prometheus { get; set; } = new();
+    public OpenTelemetryConfig OpenTelemetry { get; set; } = new();
+    public AzureMonitorConfig AzureMonitor { get; set; } = new();
+    public ConsoleConfig Console { get; set; } = new();
+}
+
+public class PrometheusConfig
+{
+    public bool Enable { get; set; }
+    public ushort? Port { get; set; }
+}
+
+public class OpenTelemetryConfig
+{
+    public bool Enable { get; set; }
+    public OtlpExportProtocol Protocol { get; set; }
+    public string? EndpointUri { get; set; }
+}
+
+public class AzureMonitorConfig
+{
+    public bool Enable { get; set; }
+    public string? ConnectionString { get; set; }
+}
+
+public class ConsoleConfig
+{
+    public bool Enable { get; set; }
 }
 
 #endregion
