@@ -38,7 +38,7 @@ import { Callout } from "nextra-theme-docs";
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
-      "EndpointUri": "http://localhost:4317"
+      "EndpointUri": "http://jaeger-collector:4317"
     },
     "AzureMonitor": {
       "Enable": false,
@@ -110,13 +110,12 @@ import { Callout } from "nextra-theme-docs";
   },
   "Kestrel": {
     "Endpoints": {
-      "MyHttpEndpoint": {
+      "Web": {
         "Url": "http://*:8080"
       },
-      "MyHttpEndpoint2": {
-        "Url": "https://*:18080"
+      "Prometheus": {
+        "Url": "http://*:3000"
       }
-      // ...
     },
     "Limits": {
       "MaxResponseBufferSize": 2048,

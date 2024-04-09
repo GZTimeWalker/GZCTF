@@ -1,6 +1,6 @@
 import { Callout } from "nextra-theme-docs";
 
-# Configuration of appsettings.json 
+# Configuration of appsettings.json
 
 `appsettings.json` is the core configuration file of GZCTF, which is configured by mounting into the container. This document will introduce the meaning of each field in the configuration file.
 
@@ -12,7 +12,7 @@ You need to restart the GZCTF service every time you update `appsettings.json` t
 
 ## Structure of the configuration file
 
-Here is a complete example of configuration: 
+Here is a complete example of configuration:
 
 ```json
 {
@@ -38,7 +38,7 @@ Here is a complete example of configuration:
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
-      "EndpointUri": "http://localhost:4317"
+      "EndpointUri": "http://jaeger-collector:4317"
     },
     "AzureMonitor": {
       "Enable": false,
@@ -110,13 +110,12 @@ Here is a complete example of configuration:
   },
   "Kestrel": {
     "Endpoints": {
-      "MyHttpEndpoint": {
+      "Web": {
         "Url": "http://*:8080"
       },
-      "MyHttpEndpoint2": {
-        "Url": "https://*:18080"
+      "Prometheus": {
+        "Url": "http://*:3000"
       }
-      // ...
     },
     "Limits": {
       "MaxResponseBufferSize": 2048,
@@ -230,7 +229,7 @@ Heer we can configure the container backend which is required for creating conta
 - **Namespace:** Kubernetes namespace, used to create the namespace of the challenge instance, the default is `gzctf-challenges`
 - **ConfigPath:** Kubernetes configuration file path, used to connect to the cluster, default value is `kube-config.yaml`
 - **AllowCIDR:** White list of CIDR that can access the Pod
-- **DNS:** custom DNS server list 
+- **DNS:** custom DNS server list
 
 To use the default behavior, please put the cluster connection configuration into the `kube-config.yaml` file and mount it to the `/app` directory. Do not change it if you don't understand the behavior of the experimental function.
 
