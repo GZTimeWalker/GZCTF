@@ -163,13 +163,13 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
 - **Prometheus**: Prometheus 支持。
 
   - **Enable**: 是否启用。
-  - **Port**: 可选。Prometheus 的监听端口。如果配置了此项，需要额外手动配置 `Kestrel.Endpoints` 以使得服务器正常监听指定的端口。
+  - **Port**: 可选。Prometheus `/metrics` 的监听端口。如果配置了此项，需要额外手动配置 `Kestrel.Endpoints` 以使得服务器正常监听指定的端口。
 
 - **OpenTelemetry**：将测量和追踪数据导出到 OpenTelemetry。
 
   - **Enable**：是否启用。
   - **Protocol**：`Grpc` 或 `HttpProtobuf`。
-  - **EndpointUri**：导出到的地址。
+  - **EndpointUri**：将数据推送到的 OpenTelemetry 地址。
 
 - **AzureMonitor**：将测量和追踪数据导出到 ApplicationInsights。
 

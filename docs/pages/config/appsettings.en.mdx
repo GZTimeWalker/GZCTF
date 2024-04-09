@@ -163,13 +163,13 @@ GZCTF supports metrics and distributed tracing. You can configure the providers 
 - **Prometheus**: Prometheus endpoint support.
 
   - **Enable**: Enable it or not.
-  - **Port**: Optional. Set the port that Prometheus endpoint listens on. If this is configured, additional manual configuration of `Kestrel.Endpoints` is required to make the server listen to the specified port normally.
+  - **Port**: Optional. Set the port that Prometheus `/metrics` endpoint listens on. If this is configured, additional manual configuration of `Kestrel.Endpoints` is required to make the server listen to the specified port normally.
 
 - **OpenTelemetry**: Exporting metrics and tracing data to OpenTelemetry.
 
   - **Enable**: Enable it or not.
   - **Protocol**: `Grpc` or `HttpProtobuf`.
-  - **EndpointUri**: The endpoint to export.
+  - **EndpointUri**: The OpenTelemetry endpoint URI to push telemetry data.
 
 - **AzureMonitor**: Exporting metrics and tracing data to ApplicationInsights.
 

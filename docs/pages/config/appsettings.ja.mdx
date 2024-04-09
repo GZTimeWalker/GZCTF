@@ -163,13 +163,13 @@ GZCTFはメトリクスと分散トレーシングをサポートしています
 - **Prometheus**: Prometheus エンドポイント。
 
   - **Enable**: 有効にするかどうか。
-  - **Port**: 任意。Prometheus エンドポイントがリッスンするポート。これが設定されている場合、サーバーが指定されたポートを正常にリッスンするようにするには、`Kestrel.Endpoints` を手動で追加設定する必要があります。
+  - **Port**: 任意。Prometheus の  `/metrics` エンドポイントがリッスンするポート。これが設定されている場合、サーバーが指定されたポートを正常にリッスンするようにするには、`Kestrel.Endpoints` を手動で追加設定する必要があります。
 
 - **OpenTelemetry**: メトリクスとトレーシングデータを OpenTelemetry にエクスポートします。
 
   - **Enable**: 有効にするかどうか。
   - **Protocol**: `Grpc` または `HttpProtobuf`。
-  - **EndpointUri**: エクスポートするエンドポイント。
+  - **EndpointUri**: テレメトリーデーターがプッシュされる OpenTelemetry エンドポイント URI。
 
 - **AzureMonitor**: メトリクスとトレーシングデータを ApplicationInsights にエクスポートします。
 
