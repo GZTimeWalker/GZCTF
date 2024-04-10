@@ -69,7 +69,7 @@ public class CacheMaker(
         {
             await foreach (CacheRequest item in channelReader.ReadAllAsync(token))
             {
-                if (!_cacheHandlers.ContainsKey(item.Key))
+                if (!_cacheHandlers.TryGetValue(item.Key, out ICacheRequestHandler? handler))
                 {
                     logger.SystemLog(
                         Program.StaticLocalizer[nameof(Resources.Program.Cache_NoMatchingRequest), item.Key],
@@ -78,7 +78,6 @@ public class CacheMaker(
                     continue;
                 }
 
-                ICacheRequestHandler handler = _cacheHandlers[item.Key];
                 var key = handler.CacheKey(item);
 
                 if (key is null)

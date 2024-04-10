@@ -15,7 +15,7 @@ public class ParticipationRepository(
         GameChallenge[] challenges =
             await Context.GameChallenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
 
-        // requery instead of Entry
+        // re-query instead of Entry
         part = await Context.Participations.Include(p => p.Challenges).SingleAsync(p => p.Id == part.Id, token);
 
         var update = challenges.Aggregate(false,

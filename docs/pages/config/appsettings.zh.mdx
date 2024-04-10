@@ -240,6 +240,12 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
 
 </Callout>
 
+<Callout type="info" emoji="👾">
+
+为了满足网络策略，GZCTF 会在题目的 Namespace 下创建名为 `gzctf-policy` 的 NetworkPolicy，以限制访问。GZCTF 会自动检测此 NetworkPolicy 是否已经存在，若存在则不会再次创建，因此你可以通过创建或编辑此 NetworkPolicy 来自定义网络策略。
+
+</Callout>
+
 ### RequestLogging
 
 此处配置是否开启请求日志记录，若开启，将会在日志中输出每个请求的详细信息。此处输出不包括静态文件的请求。

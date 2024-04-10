@@ -239,6 +239,12 @@ Please note that you need to change the `server` field in the `kube-config.yaml`
 
 </Callout>
 
+<Callout type="info" emoji="👾">
+
+In order to meet the network policy, GZCTF will create a NetworkPolicy named `gzctf-policy` in the Namespace of the challenge to restrict access. GZCTF will automatically detect whether this NetworkPolicy already exists. If it exists, it will not be created again, so you can customize the network policy by creating or editing this NetworkPolicy.
+
+</Callout>
+
 ### RequestLogging
 
 Enable/Disable request logging, if enabled, detailed information of each request will be appended to the log. Static file requests are not included in the output here.

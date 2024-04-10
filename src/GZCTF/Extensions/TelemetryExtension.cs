@@ -61,7 +61,8 @@ public static class TelemetryExtension
 
         if (config.OpenTelemetry.Enable)
         {
-            otl.UseOtlpExporter(config.OpenTelemetry.Protocol, new(config.OpenTelemetry.EndpointUri ?? "http://localhost:4317"));
+            otl.UseOtlpExporter(config.OpenTelemetry.Protocol,
+                new(config.OpenTelemetry.EndpointUri ?? "http://localhost:4317"));
         }
     }
 
@@ -71,7 +72,7 @@ public static class TelemetryExtension
             return;
 
 
-        if (config.Prometheus.Port is ushort port)
+        if (config.Prometheus.Port is { } port)
             app.UseOpenTelemetryPrometheusScrapingEndpoint(context => context.Connection.LocalPort == port);
         else
             app.UseOpenTelemetryPrometheusScrapingEndpoint();

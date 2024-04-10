@@ -14,14 +14,14 @@ public class MonitorHub : Hub<IMonitorClient>
         if (context is null
             || !await HubHelper.HasMonitor(context)
             || !context.Request.Query.TryGetValue("game", out StringValues gameId)
-            || !int.TryParse(gameId, out var gameNumId))
+            || !int.TryParse(gameId, out var gId))
         {
             Context.Abort();
             return;
         }
 
         var gameRepository = context.RequestServices.GetRequiredService<IGameRepository>();
-        Game? game = await gameRepository.GetGameById(gameNumId);
+        Game? game = await gameRepository.GetGameById(gId);
 
         if (game is null)
         {
@@ -31,6 +31,6 @@ public class MonitorHub : Hub<IMonitorClient>
 
         await base.OnConnectedAsync();
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"Game_{gameNumId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"Game_{gId}");
     }
 }
