@@ -27,6 +27,23 @@ import { Callout } from "nextra-theme-docs";
       "Default": "Information",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
+    },
+    "Loki": {
+      "Enable": true,
+      "EndpointUri": "http://loki:3100",
+      "Labels": [
+        {
+          "Key": "app",
+          "Value": "gzctf"
+        }
+      ],
+      "PropertiesAsLabels": [ "app" ],
+      "Credentials": {
+        "Login": "login",
+        "Password": "password"
+      },
+      "Tenant": "my-tenant",
+      "MinimumLevel": "Trace"
     }
   },
   "Telemetry": {
@@ -152,6 +169,23 @@ GZCTF 使用 PostgreSQL 作为后端数据库和数据持久化，使用 Redis �
 GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库。请在配置文件中填写正确的数据库连接字符串。
 
 </Callout>
+
+### Logging
+
+此处可以配置日志级别和范围，此外，GZCTF 还支持将日志发送到 Loki 服务器。
+
+- **LogLevel**：每个命名空间的最小日志级别。
+- **Loki**：Loki 服务器的配置。
+
+  - **Enable**：是否启用。
+  - **EndpointUri**：Loki 服务器的 URI。
+  - **Labels**：可选。全局日志事件标签。
+  - **PropertiesAsLabels**：可选。应映射为 Loki 标签的属性列表。
+  - **Credentials**：可选。将用于基本身份验证的凭据。
+  - **Tenant**：可选。用于向 Loki 服务器发送日志的租户 ID。
+  - **MinimumLevel**：可选。最小日志级别。
+
+可用的日志级别：Trace, Debug, Information, Warning, Error, Critical, None。
 
 ### Telemetry
 
