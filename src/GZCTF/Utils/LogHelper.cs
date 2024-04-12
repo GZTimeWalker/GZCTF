@@ -1,11 +1,13 @@
 ﻿using System.IO.Compression;
 using System.Net;
 using GZCTF.Extensions;
+using GZCTF.Models.Internal;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.File.Archive;
+using Serilog.Sinks.Grafana.Loki;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
 using ILogger = Serilog.ILogger;
@@ -121,8 +123,9 @@ public static class LogHelper
             ))
             .CreateBootstrapLogger();
 
-    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider) =>
-        new LoggerConfiguration()
+    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
+    {
+        var loggerConfig = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
@@ -149,8 +152,24 @@ public static class LogHelper
                 hooks: new ArchiveHooks(CompressionLevel.Optimal, $"{FilePath.Logs}/archive/{{UtcDate:yyyy-MM}}")
             ))
             .WriteTo.Database(serviceProvider)
-            .WriteTo.SignalR(serviceProvider)
-            .CreateLogger();
+            .WriteTo.SignalR(serviceProvider);
+
+        if (configuration.GetSection("Logging").GetSection("Loki") is { } lokiSection && lokiSection.Exists())
+        {
+            if (lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
+            {
+                loggerConfig = loggerConfig.WriteTo.GrafanaLoki(
+                    lokiOptions.EndpointUri,
+                    lokiOptions.Labels ?? [new() { Key = "app", Value = "gzctf" }],
+                    lokiOptions.PropertiesAsLabels,
+                    lokiOptions.Credentials,
+                    lokiOptions.Tenant,
+                    lokiOptions.RestrictedToMinimumLevel ?? LogEventLevel.Debug);
+            }
+        }
+
+        return loggerConfig.CreateLogger();
+    }
 
     public static string GetStringValue(LogEventPropertyValue? value, string defaultValue = "")
     {
