@@ -555,7 +555,7 @@ public partial class TeamController(
 
         await teamRepository.DeleteTeam(team, token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Deleted)], user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Deleted), team.Name], user, TaskStatus.Success);
 
         return Ok();
     }
