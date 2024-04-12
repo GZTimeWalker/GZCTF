@@ -219,7 +219,7 @@ const Teams: FC = () => {
                     <tr key={team.id}>
                       <td>
                         <Group position="apart" spacing={0} noWrap>
-                          <Group position="left" noWrap w="calc(100% - 6rem)">
+                          <Group position="left" noWrap w="calc(100% - 7rem)">
                             <Avatar alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
@@ -230,7 +230,7 @@ const Teams: FC = () => {
                               styles={{
                                 wrapper: {
                                   flexGrow: 1,
-                                  width: 'calc(100% - 2rem)',
+                                  width: 'calc(100% - 3rem)',
                                 },
                                 input: {
                                   userSelect: 'none',
@@ -241,7 +241,7 @@ const Teams: FC = () => {
                             />
                           </Group>
 
-                          <Badge p={0} size="md" color={team.locked ? 'yellow' : 'gray'}>
+                          <Badge size="md" color={team.locked ? 'yellow' : 'gray'}>
                             {team.locked
                               ? t('admin.content.teams.locked')
                               : t('admin.content.teams.unlocked')}
