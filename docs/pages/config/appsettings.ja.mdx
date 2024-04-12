@@ -27,6 +27,23 @@ import { Callout } from "nextra-theme-docs";
       "Default": "Information",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
+    },
+    "Loki": {
+      "Enable": true,
+      "EndpointUri": "http://loki:3100",
+      "Labels": [
+        {
+          "Key": "app",
+          "Value": "gzctf"
+        }
+      ],
+      "PropertiesAsLabels": [ "app" ],
+      "Credentials": {
+        "Login": "login",
+        "Password": "password"
+      },
+      "Tenant": "my-tenant",
+      "MinimumLevel": "Trace"
     }
   },
   "Telemetry": {
@@ -152,6 +169,23 @@ GZCTFはPostgreSQLをバックエンドデータベースおよびデータ永�
 GZCTFはデータベースとしてPostgreSQLのみをサポートしており、MySQLなどの他のデータベースはサポートしていません。設定ファイルに正しいデータベース接続文字列を記入してください。
 
 </Callout>
+
+### Logging
+
+ロギングレベルとスコープを設定することができます。さらに、GZCTF は Loki サーバーへのログ送信もサポートしています。
+
+- **LogLevel**: 名前空間ごとの最小ロギングレベル。
+- **Loki**: Lokiサーバーの設定。
+
+  - **Enable**: 有効にするかどうか。
+  - **EndpointUri**: Loki サーバーの URI。
+  - **Labels**: 任意。グローバルログイベントラベル。
+  - **PropertiesAsLabels**: 任意。Loki のラベルにマップするべきプロパティのリスト。
+  - **Credentials**: 任意。基本認証に使用される資格情報。
+  - **Tenant**: 任意。Loki サーバーへのログ送信に使用されるテナント ID。
+  - **MinimumLevel**: 任意。最小ロギングレベル。
+
+利用可能なロギングレベル: Trace, Debug, Information, Warning, Error, Critical, None。
 
 ### Telemetry
 

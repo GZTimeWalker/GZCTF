@@ -27,6 +27,23 @@ Here is a complete example of configuration:
       "Default": "Information",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
+    },
+    "Loki": {
+      "Enable": true,
+      "EndpointUri": "http://loki:3100",
+      "Labels": [
+        {
+          "Key": "app",
+          "Value": "gzctf"
+        }
+      ],
+      "PropertiesAsLabels": [ "app" ],
+      "Credentials": {
+        "Login": "login",
+        "Password": "password"
+      },
+      "Tenant": "my-tenant",
+      "MinimumLevel": "Trace"
     }
   },
   "Telemetry": {
@@ -152,6 +169,23 @@ GZCTF uses PostgreSQL as the backend database and data persistence, and Redis as
 GZCTF only supports PostgreSQL as the database, and does not support MySQL and other databases. Please fill in the correct database connection settings in the configuration file.
 
 </Callout>
+
+### Logging
+
+You can configure the logging level and scopes, besides, GZCTF also supports sending logs to Loki server.
+
+- **LogLevel**: The minimal logging level per namespace. 
+- **Loki**: The configuration of Loki server.
+
+  - **Enable**: Enable it or not.
+  - **EndpointUri**: The URI of Loki server.
+  - **Labels**: Optional. The global log event labels.
+  - **PropertiesAsLabels**: Optional. The list of properties, which should be mapped to Loki labels.
+  - **Credentials**: Optional. Credentials, which will be used for basic auth
+  - **Tenant**: Optional. The Tenant ID used for sending logs to Loki server.
+  - **MinimumLevel**: Optional. Minimal logging level. 
+
+Available logging levels: Trace, Debug, Information, Warning, Error, Critical, None.
 
 ### Telemetry
 
