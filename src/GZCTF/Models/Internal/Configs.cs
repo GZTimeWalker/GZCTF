@@ -5,6 +5,8 @@ using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using MemoryPack;
 using OpenTelemetry.Exporter;
+using Serilog.Events;
+using Serilog.Sinks.Grafana.Loki;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace GZCTF.Models.Internal;
@@ -290,6 +292,17 @@ public class ConsoleConfig
 }
 
 #endregion
+
+public class GrafanaLokiOptions
+{
+    public bool Enable { get; set; }
+    public string? EndpointUri { get; set; }
+    public LokiLabel[]? Labels { get; set; }
+    public string[]? PropertiesAsLabels { get; set; }
+    public LokiCredentials? Credentials { get; set; }
+    public string? Tenant { get; set; }
+    public LogEventLevel? RestrictedToMinimumLevel { get; set; }
+}
 
 public class ForwardedOptions : ForwardedHeadersOptions
 {

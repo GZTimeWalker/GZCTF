@@ -72,6 +72,7 @@
         <PackageReference Include="MemoryPack" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="Serilog.Sinks.Grafana.Loki" />
         <PackageReference Include="SixLabors.ImageSharp" />
         <PackageReference Include="BouncyCastle.Cryptography" />
         <PackageReference Include="PacketDotNet" />
