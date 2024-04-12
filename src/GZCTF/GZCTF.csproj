@@ -21,6 +21,7 @@
         <ReleaseVersion>0.18.5</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <ServerGarbageCollection>true</ServerGarbageCollection>
+        <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
     </PropertyGroup>
 
     <ItemGroup>
