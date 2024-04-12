@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using MemoryPack;
 using OpenTelemetry.Exporter;
-using Serilog.Events;
 using Serilog.Sinks.Grafana.Loki;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
@@ -301,7 +300,7 @@ public class GrafanaLokiOptions
     public string[]? PropertiesAsLabels { get; set; }
     public LokiCredentials? Credentials { get; set; }
     public string? Tenant { get; set; }
-    public LogEventLevel? RestrictedToMinimumLevel { get; set; }
+    public LogLevel? MinimumLevel { get; set; }
 }
 
 public class ForwardedOptions : ForwardedHeadersOptions

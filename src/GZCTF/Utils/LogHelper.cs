@@ -164,7 +164,7 @@ public static class LogHelper
                     lokiOptions.PropertiesAsLabels,
                     lokiOptions.Credentials,
                     lokiOptions.Tenant,
-                    lokiOptions.RestrictedToMinimumLevel ?? LogEventLevel.Debug);
+                    (LogEventLevel)(lokiOptions.MinimumLevel ?? LogLevel.Trace));
             }
         }
 
