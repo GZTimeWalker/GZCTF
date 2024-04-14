@@ -82,7 +82,9 @@ public sealed class MailSender : IMailSender, IDisposable
             .Replace("{platform}", $"{content.GlobalConfig.Title}::CTF")
             .ToString();
 
-        if (!await SendEmailAsync(content.Title, emailContent, content.Email))
+        var title = $"{content.Title} - {content.GlobalConfig.Title}::CTF";
+
+        if (!await SendEmailAsync(title, emailContent, content.Email))
             _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)],
                 TaskStatus.Failed);
     }

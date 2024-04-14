@@ -16,12 +16,12 @@ namespace GZCTF.Utils;
 
 public static class LogHelper
 {
-    const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
-                               "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
-                               "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
-                               "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
+    const string _logTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
+                                "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
+                                "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
+                                "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
 
-    const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
+    const string _initLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
     /// <summary>
     /// 记录一条系统日志（无用户信息，默认Info）
@@ -118,7 +118,7 @@ public static class LogHelper
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
-                new ExpressionTemplate(InitLogTemplate, theme: TemplateTheme.Literate),
+                new ExpressionTemplate(_initLogTemplate, theme: TemplateTheme.Literate),
                 LogEventLevel.Debug
             ))
             .CreateBootstrapLogger();
@@ -139,11 +139,11 @@ public static class LogHelper
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
-                new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+                new ExpressionTemplate(_logTemplate, theme: TemplateTheme.Literate),
                 LogEventLevel.Debug))
             .WriteTo.Async(t => t.File(
                 path: $"{FilePath.Logs}/log_.log",
-                formatter: new ExpressionTemplate(LogTemplate),
+                formatter: new ExpressionTemplate(_logTemplate),
                 rollingInterval: RollingInterval.Day,
                 fileSizeLimitBytes: 10 * 1024 * 1024,
                 restrictedToMinimumLevel: LogEventLevel.Debug,
