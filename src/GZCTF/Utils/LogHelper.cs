@@ -129,7 +129,8 @@ public static class LogHelper
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
-                    "/healthz".Equals(v, StringComparison.OrdinalIgnoreCase) ||
+                    v.TrimEnd('/').Equals("/healthz", StringComparison.OrdinalIgnoreCase) ||
+                    v.TrimEnd('/').Equals("/metrics", StringComparison.OrdinalIgnoreCase) ||
                     v.StartsWith("/assets", StringComparison.OrdinalIgnoreCase)))
             .Filter.ByExcluding(logEvent =>
                 logEvent.Exception != null &&
