@@ -1,9 +1,17 @@
 ﻿namespace GZCTF.Utils;
 
+/// <summary>
+/// Asynchronous manual reset event
+/// This class is similar to <see cref="ManualResetEvent"/> but asynchronous and non-blocking
+/// </summary>
 public sealed class AsyncManualResetEvent
 {
     private volatile TaskCompletionSource<bool> _tcs = new();
 
+    /// <summary>
+    /// Wait for the event to be signaled
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token</param>
     public async Task WaitAsync(CancellationToken cancellationToken = default)
     {
         var tcs = _tcs;
@@ -21,6 +29,12 @@ public sealed class AsyncManualResetEvent
         return false;
     }
 
+    /// <summary>
+    /// Wait for the event to be signaled
+    /// </summary>
+    /// <param name="milliseconds">Timeout</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Returns false if timeout</returns>
     public async Task<bool> WaitAsync(int milliseconds, CancellationToken cancellationToken = default)
     {
         var tcs = _tcs;
@@ -32,6 +46,9 @@ public sealed class AsyncManualResetEvent
         return await await Task.WhenAny(tcs.Task, cancelTcs.Task, Delay(milliseconds));
     }
 
+    /// <summary>
+    /// Set the event to signaled
+    /// </summary>
     public void Set()
     {
         var tcs = _tcs;
@@ -40,6 +57,9 @@ public sealed class AsyncManualResetEvent
         tcs.Task.Wait();
     }
 
+    /// <summary>
+    /// Reset the event to non-signaled
+    /// </summary>
     public void Reset()
     {
         var newTcs = new TaskCompletionSource<bool>();
