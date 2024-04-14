@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using GZCTF.Models.Internal;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Interface;
 
@@ -26,8 +28,9 @@ public interface IMailSender
     /// <param name="email">用户新注册的Email</param>
     /// <param name="confirmLink">确认链接</param>
     /// <param name="localizer">本地化</param>
+    /// <param name="options">全局配置</param>
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink,
-        IStringLocalizer<Program> localizer);
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options);
 
     /// <summary>
     /// 发送邮箱重置邮件
@@ -36,8 +39,9 @@ public interface IMailSender
     /// <param name="email">用户的电子邮件</param>
     /// <param name="resetLink">重置链接</param>
     /// <param name="localizer">本地化</param>
+    /// <param name="options">全局配置</param>
     public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink,
-        IStringLocalizer<Program> localizer);
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options);
 
     /// <summary>
     /// 发送密码重置邮件
@@ -46,6 +50,7 @@ public interface IMailSender
     /// <param name="email">用户的电子邮件</param>
     /// <param name="resetLink">重置链接</param>
     /// <param name="localizer">本地化</param>
+    /// <param name="options">全局配置</param>
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink,
-        IStringLocalizer<Program> localizer);
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options);
 }

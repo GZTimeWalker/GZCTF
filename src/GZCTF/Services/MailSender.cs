@@ -14,7 +14,6 @@ public sealed class MailSender : IMailSender, IDisposable
 {
     private readonly ConcurrentQueue<MailContent> _mailQueue = new();
     private readonly EmailConfig? _options;
-    private readonly IOptions<GlobalConfig> _globalConfig;
     private readonly ILogger<MailSender> _logger;
     private readonly SmtpClient? _smtpClient;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
@@ -24,10 +23,8 @@ public sealed class MailSender : IMailSender, IDisposable
 
     public MailSender(
         IOptions<EmailConfig> options,
-        IOptions<GlobalConfig> globalConfig,
         ILogger<MailSender> logger)
     {
-        _globalConfig = globalConfig;
         _logger = logger;
         _options = options.Value;
         _cancellationToken = _cancellationTokenSource.Token;
@@ -66,10 +63,10 @@ public sealed class MailSender : IMailSender, IDisposable
 
     public async Task SendUrlAsync(MailContent content)
     {
-        var template = _globalConfig.Value.EmailTemplate switch
+        var template = content.GlobalConfig.EmailTemplate switch
         {
             GlobalConfig.DefaultEmailTemplate => content.Localizer[nameof(Resources.Program.MailSender_Template)],
-            _ => _globalConfig.Value.EmailTemplate
+            _ => content.GlobalConfig.EmailTemplate
         };
 
         // TODO: use a string formatter library
@@ -82,7 +79,7 @@ public sealed class MailSender : IMailSender, IDisposable
             .Replace("{userName}", content.UserName)
             .Replace("{url}", content.Url)
             .Replace("{nowtime}", content.Time)
-            .Replace("{platform}", $"{_globalConfig.Value.Title}::CTF")
+            .Replace("{platform}", $"{content.GlobalConfig.Title}::CTF")
             .ToString();
 
         if (!await SendEmailAsync(content.Title, emailContent, content.Email))
@@ -134,19 +131,19 @@ public sealed class MailSender : IMailSender, IDisposable
     }
 
     public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink,
-        IStringLocalizer<Program> localizer) =>
-        SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail, localizer);
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
+        SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail, localizer, options);
 
     public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink,
-        IStringLocalizer<Program> localizer) =>
-        SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail, localizer);
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
+        SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail, localizer, options);
 
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink,
-        IStringLocalizer<Program> localizer) =>
-        SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword, localizer);
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
+        SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword, localizer, options);
 
     bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type,
-        IStringLocalizer<Program> localizer)
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options)
     {
         if (_smtpClient is null)
             return false;
@@ -158,7 +155,7 @@ public sealed class MailSender : IMailSender, IDisposable
             return false;
         }
 
-        var content = new MailContent(userName, email, resetLink, type, localizer);
+        var content = new MailContent(userName, email, resetLink, type, localizer, options);
 
         _mailQueue.Enqueue(content);
         _resetEvent.Set();
@@ -198,7 +195,8 @@ public class MailContent(
     string email,
     string resetLink,
     MailType type,
-    IStringLocalizer<Program> localizer)
+    IStringLocalizer<Program> localizer,
+    IOptionsSnapshot<GlobalConfig> globalConfig)
 {
     /// <summary>
     /// 邮件标题
@@ -254,4 +252,6 @@ public class MailContent(
     public string Time { get; set; } = DateTimeOffset.UtcNow.ToString("u");
 
     public IStringLocalizer<Program> Localizer => localizer;
+
+    public GlobalConfig GlobalConfig => globalConfig.Value;
 }
