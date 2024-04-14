@@ -21,12 +21,13 @@ RUN dotnet build "GZCTF.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "GZCTF.csproj" -c Release -o /app/publish -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
+
 WORKDIR /app
 EXPOSE 8080
 
 COPY --from=publish /app/publish .
-RUN apt update && apt install -y wget libpcap0.8 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache wget libpcap
 
 HEALTHCHECK --interval=5m --timeout=3s --start-period=10s --retries=1 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1
