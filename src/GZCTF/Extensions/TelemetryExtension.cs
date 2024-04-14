@@ -17,7 +17,9 @@ public static class TelemetryExtension
 
         var otl = services.AddOpenTelemetry();
 
-        otl.ConfigureResource(resource => resource.AddService("GZCTF"));
+        otl.ConfigureResource(resource =>
+            resource.AddService("GZCTF",
+                serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString(3)));
 
         otl.WithMetrics(metrics =>
         {
