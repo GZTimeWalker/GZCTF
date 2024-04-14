@@ -133,8 +133,7 @@ public static class LogHelper
                     v.TrimEnd('/').Equals("/metrics", StringComparison.OrdinalIgnoreCase) ||
                     v.StartsWith("/assets", StringComparison.OrdinalIgnoreCase)))
             .Filter.ByExcluding(logEvent =>
-                logEvent.Exception != null &&
-                logEvent.Exception.GetType() == typeof(OperationCanceledException))
+                logEvent.Exception is OperationCanceledException)
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
