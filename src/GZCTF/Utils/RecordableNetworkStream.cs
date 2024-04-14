@@ -41,6 +41,8 @@ public sealed class RecordableNetworkStream : NetworkStream
     readonly IPEndPoint _host = new(0, 65535);
     readonly RecordableNetworkStreamOptions _options;
 
+    bool _disposed;
+
     public RecordableNetworkStream(Socket socket, byte[]? metadata, RecordableNetworkStreamOptions options) :
         base(socket)
     {
@@ -104,6 +106,19 @@ public sealed class RecordableNetworkStream : NetworkStream
         udp.UpdateUdpChecksum();
 
         _device?.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            base.Dispose(disposing);
+
+            Close();
+            _device?.Dispose();
+        }
+
+        _disposed = true;
     }
 
     public override void Close()
