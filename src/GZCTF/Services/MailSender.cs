@@ -14,7 +14,7 @@ public sealed class MailSender : IMailSender, IDisposable
 {
     private readonly ConcurrentQueue<MailContent> _mailQueue = new();
     private readonly EmailConfig? _options;
-    private readonly IOptionsSnapshot<GlobalConfig> _globalConfig;
+    private readonly IOptions<GlobalConfig> _globalConfig;
     private readonly ILogger<MailSender> _logger;
     private readonly SmtpClient? _smtpClient;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
@@ -24,7 +24,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
     public MailSender(
         IOptions<EmailConfig> options,
-        IOptionsSnapshot<GlobalConfig> globalConfig,
+        IOptions<GlobalConfig> globalConfig,
         ILogger<MailSender> logger)
     {
         _globalConfig = globalConfig;
@@ -36,7 +36,8 @@ public sealed class MailSender : IMailSender, IDisposable
         {
             _smtpClient = new();
             _smtpClient.AuthenticationMechanisms.Remove("XOAUTH2");
-            Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
         }
     }
 
@@ -103,12 +104,14 @@ public sealed class MailSender : IMailSender, IDisposable
             {
                 if (!_smtpClient.IsConnected)
                 {
-                    await _smtpClient.ConnectAsync(_options!.Smtp!.Host, _options.Smtp.Port!.Value, cancellationToken: _cancellationToken);
+                    await _smtpClient.ConnectAsync(_options!.Smtp!.Host, _options.Smtp.Port!.Value,
+                        cancellationToken: _cancellationToken);
                 }
 
                 if (!_smtpClient.IsAuthenticated)
                 {
-                    await _smtpClient.AuthenticateAsync(_options!.UserName, _options.Password, cancellationToken: _cancellationToken);
+                    await _smtpClient.AuthenticateAsync(_options!.UserName, _options.Password,
+                        cancellationToken: _cancellationToken);
                 }
 
                 while (_mailQueue.TryDequeue(out var content))
@@ -130,16 +133,20 @@ public sealed class MailSender : IMailSender, IDisposable
         }
     }
 
-    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink, IStringLocalizer<Program> localizer) =>
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink,
+        IStringLocalizer<Program> localizer) =>
         SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail, localizer);
 
-    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink, IStringLocalizer<Program> localizer) =>
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink,
+        IStringLocalizer<Program> localizer) =>
         SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail, localizer);
 
-    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink, IStringLocalizer<Program> localizer) =>
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink,
+        IStringLocalizer<Program> localizer) =>
         SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword, localizer);
 
-    bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type, IStringLocalizer<Program> localizer)
+    bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type,
+        IStringLocalizer<Program> localizer)
     {
         if (_smtpClient is null)
             return false;
