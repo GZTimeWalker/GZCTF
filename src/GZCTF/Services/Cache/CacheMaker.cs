@@ -32,7 +32,7 @@ public class CacheMaker(
     readonly Dictionary<string, ICacheRequestHandler> _cacheHandlers = new();
     CancellationTokenSource TokenSource { get; set; } = new();
 
-    public Task StartAsync(CancellationToken token)
+    public async Task StartAsync(CancellationToken token)
     {
         TokenSource = new CancellationTokenSource();
 
@@ -42,9 +42,7 @@ public class CacheMaker(
 
         #endregion
 
-        _ = Maker(TokenSource.Token);
-
-        return Task.CompletedTask;
+        await Task.Factory.StartNew(() => Maker(TokenSource.Token), token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
 
     public Task StopAsync(CancellationToken token)
