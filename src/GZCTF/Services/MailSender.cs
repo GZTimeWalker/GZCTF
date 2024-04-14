@@ -16,7 +16,6 @@ public sealed class MailSender : IMailSender, IDisposable
     private readonly EmailConfig? _options;
     private readonly IOptionsSnapshot<GlobalConfig> _globalConfig;
     private readonly ILogger<MailSender> _logger;
-    private readonly IStringLocalizer<Program> _localizer;
     private readonly SmtpClient? _smtpClient;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
     private readonly CancellationToken _cancellationToken;
@@ -26,12 +25,10 @@ public sealed class MailSender : IMailSender, IDisposable
     public MailSender(
         IOptions<EmailConfig> options,
         IOptionsSnapshot<GlobalConfig> globalConfig,
-        ILogger<MailSender> logger,
-        IStringLocalizer<Program> localizer)
+        ILogger<MailSender> logger)
     {
         _globalConfig = globalConfig;
         _logger = logger;
-        _localizer = localizer;
         _options = options.Value;
         _cancellationToken = _cancellationTokenSource.Token;
 
@@ -70,7 +67,7 @@ public sealed class MailSender : IMailSender, IDisposable
     {
         var template = _globalConfig.Value.EmailTemplate switch
         {
-            GlobalConfig.DefaultEmailTemplate => _localizer[nameof(Resources.Program.MailSender_Template)],
+            GlobalConfig.DefaultEmailTemplate => content.Localizer[nameof(Resources.Program.MailSender_Template)],
             _ => _globalConfig.Value.EmailTemplate
         };
 
@@ -133,16 +130,16 @@ public sealed class MailSender : IMailSender, IDisposable
         }
     }
 
-    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink) =>
-        SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail);
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink, IStringLocalizer<Program> localizer) =>
+        SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail, localizer);
 
-    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail);
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink, IStringLocalizer<Program> localizer) =>
+        SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail, localizer);
 
-    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink) =>
-        SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword);
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink, IStringLocalizer<Program> localizer) =>
+        SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword, localizer);
 
-    bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type)
+    bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type, IStringLocalizer<Program> localizer)
     {
         if (_smtpClient is null)
             return false;
@@ -154,7 +151,7 @@ public sealed class MailSender : IMailSender, IDisposable
             return false;
         }
 
-        var content = new MailContent(userName, email, resetLink, type, _localizer);
+        var content = new MailContent(userName, email, resetLink, type, localizer);
 
         _mailQueue.Enqueue(content);
         _resetEvent.Set();
@@ -248,4 +245,6 @@ public class MailContent(
     /// 发信时间
     /// </summary>
     public string Time { get; set; } = DateTimeOffset.UtcNow.ToString("u");
+
+    public IStringLocalizer<Program> Localizer => localizer;
 }

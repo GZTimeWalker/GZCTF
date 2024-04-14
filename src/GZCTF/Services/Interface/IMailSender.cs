@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Services.Interface;
+﻿using Microsoft.Extensions.Localization;
+
+namespace GZCTF.Services.Interface;
 
 public interface IMailSender
 {
@@ -23,7 +25,8 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">用户新注册的Email</param>
     /// <param name="confirmLink">确认链接</param>
-    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink);
+    /// <param name="localizer">本地化</param>
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink, IStringLocalizer<Program> localizer);
 
     /// <summary>
     /// 发送邮箱重置邮件
@@ -31,7 +34,8 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">用户的电子邮件</param>
     /// <param name="resetLink">重置链接</param>
-    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink);
+    /// <param name="localizer">本地化</param>
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink, IStringLocalizer<Program> localizer);
 
     /// <summary>
     /// 发送密码重置邮件
@@ -39,5 +43,6 @@ public interface IMailSender
     /// <param name="userName">用户名</param>
     /// <param name="email">用户的电子邮件</param>
     /// <param name="resetLink">重置链接</param>
-    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink);
+    /// <param name="localizer">本地化</param>
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink, IStringLocalizer<Program> localizer);
 }
