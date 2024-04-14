@@ -96,6 +96,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
             _kubernetesClient.CoreV1.CreateNamespace(
                 new() { Metadata = new() { Name = _kubernetesMetadata.Config.Namespace } });
 
+        // skip if policy exists, which can be configured by admin outside GZCTF
         if (_kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(_kubernetesMetadata.Config.Namespace).Items
             .All(np => np.Metadata.Name != NetworkPolicy))
             _kubernetesClient.NetworkingV1.CreateNamespacedNetworkPolicy(new()

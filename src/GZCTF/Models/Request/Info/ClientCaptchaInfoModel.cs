@@ -1,12 +1,15 @@
 ﻿using GZCTF.Models.Internal;
+using MemoryPack;
 
 namespace GZCTF.Models.Request.Info;
 
 /// <summary>
 /// 验证码配置
 /// </summary>
-public class ClientCaptchaInfoModel
+[MemoryPackable]
+public partial class ClientCaptchaInfoModel
 {
+    [MemoryPackConstructor]
     public ClientCaptchaInfoModel() { }
 
     public ClientCaptchaInfoModel(CaptchaConfig? config)

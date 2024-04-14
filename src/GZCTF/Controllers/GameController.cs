@@ -536,14 +536,16 @@ public class GameController(
 
         ScoreboardModel scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
-        ScoreboardItem boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item) ? item : new()
-        {
-            Avatar = context.Participation!.Team.AvatarUrl,
-            SolvedCount = 0,
-            Rank = 0,
-            Name = context.Participation!.Team.Name,
-            Id = context.Participation!.TeamId
-        };
+        ScoreboardItem boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item)
+            ? item
+            : new()
+            {
+                Avatar = context.Participation!.Team.AvatarUrl,
+                SolvedCount = 0,
+                Rank = 0,
+                Name = context.Participation!.Team.Name,
+                Id = context.Participation!.TeamId
+            };
 
         return Ok(new GameDetailModel
         {
@@ -985,11 +987,13 @@ public class GameController(
         if (instance.Container is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
-        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow > TimeSpan.FromMinutes(containerPolicy.Value.RenewalWindow))
+        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow >
+            TimeSpan.FromMinutes(containerPolicy.Value.RenewalWindow))
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExtensionNotAvailable)]));
 
-        await containerRepository.ExtendLifetime(instance.Container, TimeSpan.FromMinutes(containerPolicy.Value.ExtensionDuration), token);
+        await containerRepository.ExtendLifetime(instance.Container,
+            TimeSpan.FromMinutes(containerPolicy.Value.ExtensionDuration), token);
 
         return Ok(ContainerInfoModel.FromContainer(instance.Container));
     }

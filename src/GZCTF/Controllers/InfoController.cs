@@ -111,7 +111,9 @@ public class InfoController(
             entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
-                return Task.FromResult(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
+                return Task.FromResult(accountPolicy.Value.UseCaptcha
+                    ? captcha.ClientInfo()
+                    : new ClientCaptchaInfoModel());
             }, token);
 
         return Ok(data);

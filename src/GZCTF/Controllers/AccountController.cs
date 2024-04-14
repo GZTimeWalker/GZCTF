@@ -26,6 +26,7 @@ public class AccountController(
     IHostEnvironment environment,
     ICaptchaExtension captcha,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
+    IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
     ILogger<AccountController> logger,
@@ -110,7 +111,7 @@ public class AccountController(
         }
         else
         {
-            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email, link))
+            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email, link, localizer, globalConfig))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
@@ -174,7 +175,7 @@ public class AccountController(
         }
         else
         {
-            if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email, link))
+            if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email, link, localizer, globalConfig))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
@@ -434,7 +435,7 @@ public class AccountController(
         }
         else
         {
-            if (!mailSender.SendChangeEmailUrl(user!.UserName, model.NewMail, link))
+            if (!mailSender.SendChangeEmailUrl(user!.UserName, model.NewMail, link, localizer, globalConfig))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 

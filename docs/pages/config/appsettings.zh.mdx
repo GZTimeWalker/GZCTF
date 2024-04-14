@@ -27,6 +27,23 @@ import { Callout } from "nextra-theme-docs";
       "Default": "Information",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
+    },
+    "Loki": {
+      "Enable": true,
+      "EndpointUri": "http://loki:3100",
+      "Labels": [
+        {
+          "Key": "app",
+          "Value": "gzctf"
+        }
+      ],
+      "PropertiesAsLabels": [ "app" ],
+      "Credentials": {
+        "Login": "login",
+        "Password": "password"
+      },
+      "Tenant": "my-tenant",
+      "MinimumLevel": "Trace"
     }
   },
   "Telemetry": {
@@ -38,7 +55,7 @@ import { Callout } from "nextra-theme-docs";
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
-      "EndpointUri": "http://localhost:4317"
+      "EndpointUri": "http://jaeger-collector:4317"
     },
     "AzureMonitor": {
       "Enable": false,
@@ -110,13 +127,12 @@ import { Callout } from "nextra-theme-docs";
   },
   "Kestrel": {
     "Endpoints": {
-      "MyHttpEndpoint": {
-        "Url": "http://localhost:8080"
+      "Web": {
+        "Url": "http://*:8080"
       },
-      "MyHttpEndpoint2": {
-        "Url": "https://localhost:18080"
+      "Prometheus": {
+        "Url": "http://*:3000"
       }
-      // ...
     },
     "Limits": {
       "MaxResponseBufferSize": 2048,
@@ -154,6 +170,23 @@ GZCTF 仅支持 PostgreSQL 作为数据库，不支持 MySQL 等其他数据库�
 
 </Callout>
 
+### Logging
+
+此处可以配置日志级别和范围，此外，GZCTF 还支持将日志发送到 Loki 服务器。
+
+- **LogLevel**：每个命名空间的最小日志级别。
+- **Loki**：Loki 服务器的配置。
+
+  - **Enable**：是否启用。
+  - **EndpointUri**：Loki 服务器的 URI。
+  - **Labels**：可选。全局日志事件标签。
+  - **PropertiesAsLabels**：可选。应映射为 Loki 标签的属性列表。
+  - **Credentials**：可选。将用于基本身份验证的凭据。
+  - **Tenant**：可选。用于向 Loki 服务器发送日志的租户 ID。
+  - **MinimumLevel**：可选。最小日志级别。
+
+可用的日志级别：Trace, Debug, Information, Warning, Error, Critical, None。
+
 ### Telemetry
 
 GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供商。
@@ -163,13 +196,13 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
 - **Prometheus**: Prometheus 支持。
 
   - **Enable**: 是否启用。
-  - **Port**: 可选。Prometheus 的监听端口。如果配置了此项，需要额外手动配置 `Kestrel.Endpoints` 以使得服务器正常监听指定的端口。
+  - **Port**: 可选。Prometheus `/metrics` 的监听端口。如果配置了此项，需要额外手动配置 `Kestrel.Endpoints` 以使得服务器正常监听指定的端口。
 
 - **OpenTelemetry**：将测量和追踪数据导出到 OpenTelemetry。
 
   - **Enable**：是否启用。
   - **Protocol**：`Grpc` 或 `HttpProtobuf`。
-  - **EndpointUri**：导出到的地址。
+  - **EndpointUri**：将数据推送到的 OpenTelemetry 地址。
 
 - **AzureMonitor**：将测量和追踪数据导出到 ApplicationInsights。
 
@@ -238,6 +271,12 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
 <Callout type="info">
 
 请注意更改 `kube-config.yaml` 文件中的 `server` 字段，将其指向集群的 API Server 地址。集群默认地址一般为 `https://127.0.0.1:6443`，需要更改为集群实际地址。
+
+</Callout>
+
+<Callout type="info" emoji="👾">
+
+为了满足网络策略，GZCTF 会在题目的 Namespace 下创建名为 `gzctf-policy` 的 NetworkPolicy，以限制访问。GZCTF 会自动检测此 NetworkPolicy 是否已经存在，若存在则不会再次创建，因此你可以通过创建或编辑此 NetworkPolicy 来自定义网络策略。
 
 </Callout>
 

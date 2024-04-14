@@ -27,6 +27,23 @@ import { Callout } from "nextra-theme-docs";
       "Default": "Information",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
+    },
+    "Loki": {
+      "Enable": true,
+      "EndpointUri": "http://loki:3100",
+      "Labels": [
+        {
+          "Key": "app",
+          "Value": "gzctf"
+        }
+      ],
+      "PropertiesAsLabels": [ "app" ],
+      "Credentials": {
+        "Login": "login",
+        "Password": "password"
+      },
+      "Tenant": "my-tenant",
+      "MinimumLevel": "Trace"
     }
   },
   "Telemetry": {
@@ -38,7 +55,7 @@ import { Callout } from "nextra-theme-docs";
     "OpenTelemetry": {
       "Enable": true,
       "Protocol": "Grpc",
-      "EndpointUri": "http://localhost:4317"
+      "EndpointUri": "http://jaeger-collector:4317"
     },
     "AzureMonitor": {
       "Enable": false,
@@ -110,13 +127,12 @@ import { Callout } from "nextra-theme-docs";
   },
   "Kestrel": {
     "Endpoints": {
-      "MyHttpEndpoint": {
-        "Url": "http://localhost:8080"
+      "Web": {
+        "Url": "http://*:8080"
       },
-      "MyHttpEndpoint2": {
-        "Url": "https://localhost:18080"
+      "Prometheus": {
+        "Url": "http://*:3000"
       }
-      // ...
     },
     "Limits": {
       "MaxResponseBufferSize": 2048,
@@ -154,6 +170,23 @@ GZCTFはデータベースとしてPostgreSQLのみをサポートしており�
 
 </Callout>
 
+### Logging
+
+ロギングレベルとスコープを設定することができます。さらに、GZCTF は Loki サーバーへのログ送信もサポートしています。
+
+- **LogLevel**: 名前空間ごとの最小ロギングレベル。
+- **Loki**: Lokiサーバーの設定。
+
+  - **Enable**: 有効にするかどうか。
+  - **EndpointUri**: Loki サーバーの URI。
+  - **Labels**: 任意。グローバルログイベントラベル。
+  - **PropertiesAsLabels**: 任意。Loki のラベルにマップするべきプロパティのリスト。
+  - **Credentials**: 任意。基本認証に使用される資格情報。
+  - **Tenant**: 任意。Loki サーバーへのログ送信に使用されるテナント ID。
+  - **MinimumLevel**: 任意。最小ロギングレベル。
+
+利用可能なロギングレベル: Trace, Debug, Information, Warning, Error, Critical, None。
+
 ### Telemetry
 
 GZCTFはメトリクスと分散トレーシングをサポートしています。使用するプロバイダーを設定できます。
@@ -163,13 +196,13 @@ GZCTFはメトリクスと分散トレーシングをサポートしています
 - **Prometheus**: Prometheus エンドポイント。
 
   - **Enable**: 有効にするかどうか。
-  - **Port**: 任意。Prometheus エンドポイントがリッスンするポート。これが設定されている場合、サーバーが指定されたポートを正常にリッスンするようにするには、`Kestrel.Endpoints` を手動で追加設定する必要があります。
+  - **Port**: 任意。Prometheus の  `/metrics` エンドポイントがリッスンするポート。これが設定されている場合、サーバーが指定されたポートを正常にリッスンするようにするには、`Kestrel.Endpoints` を手動で追加設定する必要があります。
 
 - **OpenTelemetry**: メトリクスとトレーシングデータを OpenTelemetry にエクスポートします。
 
   - **Enable**: 有効にするかどうか。
   - **Protocol**: `Grpc` または `HttpProtobuf`。
-  - **EndpointUri**: エクスポートするエンドポイント。
+  - **EndpointUri**: テレメトリーデーターがプッシュされる OpenTelemetry エンドポイント URI。
 
 - **AzureMonitor**: メトリクスとトレーシングデータを ApplicationInsights にエクスポートします。
 
@@ -237,6 +270,12 @@ GZCTFはメトリクスと分散トレーシングをサポートしています
 <Callout type="info">
 
 `kube-config.yaml`ファイルの`server`フィールドを変更し、クラスタのAPI Serverアドレスを指定することに注意してください。クラスタのデフォルトアドレスは通常`https://127.0.0.1:6443`で、クラスタの実際のアドレスに変更する必要があります。
+
+</Callout>
+
+<Callout type="info" emoji="👾">
+
+ネットワークポリシーを満たすために、GZCTFはチャレンジのNamespaceに`gzctf-policy`という名前のNetworkPolicyを作成してアクセスを制限します。GZCTFはこのNetworkPolicyが既に存在するかどうかを自動的に検出し、存在する場合は再作成しません。そのため、ネットワークポリシーをカスタマイズするには、このNetworkPolicyを作成または編集してください。
 
 </Callout>
 

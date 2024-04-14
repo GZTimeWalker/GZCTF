@@ -201,7 +201,7 @@ const Teams: FC = () => {
           <Table className={classes.table}>
             <thead>
               <tr>
-                <th style={{ width: '23rem' }}>{t('common.label.team')}</th>
+                <th style={{ width: '35vw', minWidth: '400px' }}>{t('common.label.team')}</th>
                 <th>{t('admin.label.teams.members')}</th>
                 <th>{t('admin.label.teams.bio')}</th>
                 <th />
@@ -218,8 +218,8 @@ const Teams: FC = () => {
                   return (
                     <tr key={team.id}>
                       <td>
-                        <Group position="apart" spacing={0}>
-                          <Group position="left">
+                        <Group position="apart" spacing={0} noWrap>
+                          <Group position="left" noWrap w="calc(100% - 7rem)">
                             <Avatar alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
@@ -227,17 +227,21 @@ const Teams: FC = () => {
                               variant="unstyled"
                               value={team.name ?? 'team'}
                               readOnly
-                              sx={() => ({
+                              styles={{
+                                wrapper: {
+                                  flexGrow: 1,
+                                  width: 'calc(100% - 3rem)',
+                                },
                                 input: {
                                   userSelect: 'none',
                                   fontWeight: 'bold',
-                                  width: '14rem',
+                                  width: '100%',
                                 },
-                              })}
+                              }}
                             />
                           </Group>
 
-                          <Badge size="sm" color={team.locked ? 'yellow' : 'gray'}>
+                          <Badge size="md" color={team.locked ? 'yellow' : 'gray'}>
                             {team.locked
                               ? t('admin.content.teams.locked')
                               : t('admin.content.teams.unlocked')}

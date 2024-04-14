@@ -251,9 +251,8 @@ public class EditController(
         return await gameRepository.DeleteGame(game, token) switch
         {
             TaskStatus.Success => Ok(),
-            TaskStatus.Failed => BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Game_DeletionFailed)])),
-            _ => throw new NotImplementedException()
+            _ => BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Game_DeletionFailed)]))
         };
     }
 

@@ -1,11 +1,13 @@
 ﻿using System.IO.Compression;
 using System.Net;
 using GZCTF.Extensions;
+using GZCTF.Models.Internal;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.File.Archive;
+using Serilog.Sinks.Grafana.Loki;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
 using ILogger = Serilog.ILogger;
@@ -14,12 +16,12 @@ namespace GZCTF.Utils;
 
 public static class LogHelper
 {
-    const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
-                               "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
-                               "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
-                               "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
+    const string _logTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
+                                "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
+                                "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
+                                "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
 
-    const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
+    const string _initLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
     /// <summary>
     /// 记录一条系统日志（无用户信息，默认Info）
@@ -116,31 +118,32 @@ public static class LogHelper
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
-                new ExpressionTemplate(InitLogTemplate, theme: TemplateTheme.Literate),
+                new ExpressionTemplate(_initLogTemplate, theme: TemplateTheme.Literate),
                 LogEventLevel.Debug
             ))
             .CreateBootstrapLogger();
 
-    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider) =>
-        new LoggerConfiguration()
+    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
+    {
+        var loggerConfig = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
-                    "/healthz".Equals(v, StringComparison.OrdinalIgnoreCase) ||
+                    v.TrimEnd('/').Equals("/healthz", StringComparison.OrdinalIgnoreCase) ||
+                    v.TrimEnd('/').Equals("/metrics", StringComparison.OrdinalIgnoreCase) ||
                     v.StartsWith("/assets", StringComparison.OrdinalIgnoreCase)))
             .Filter.ByExcluding(logEvent =>
-                logEvent.Exception != null &&
-                logEvent.Exception.GetType() == typeof(OperationCanceledException))
+                logEvent.Exception is OperationCanceledException)
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
             .WriteTo.Async(t => t.Console(
-                new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+                new ExpressionTemplate(_logTemplate, theme: TemplateTheme.Literate),
                 LogEventLevel.Debug))
             .WriteTo.Async(t => t.File(
                 path: $"{FilePath.Logs}/log_.log",
-                formatter: new ExpressionTemplate(LogTemplate),
+                formatter: new ExpressionTemplate(_logTemplate),
                 rollingInterval: RollingInterval.Day,
                 fileSizeLimitBytes: 10 * 1024 * 1024,
                 restrictedToMinimumLevel: LogEventLevel.Debug,
@@ -149,8 +152,24 @@ public static class LogHelper
                 hooks: new ArchiveHooks(CompressionLevel.Optimal, $"{FilePath.Logs}/archive/{{UtcDate:yyyy-MM}}")
             ))
             .WriteTo.Database(serviceProvider)
-            .WriteTo.SignalR(serviceProvider)
-            .CreateLogger();
+            .WriteTo.SignalR(serviceProvider);
+
+        if (configuration.GetSection("Logging").GetSection("Loki") is { } lokiSection && lokiSection.Exists())
+        {
+            if (lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
+            {
+                loggerConfig = loggerConfig.WriteTo.GrafanaLoki(
+                    lokiOptions.EndpointUri,
+                    lokiOptions.Labels ?? [new() { Key = "app", Value = "gzctf" }],
+                    lokiOptions.PropertiesAsLabels,
+                    lokiOptions.Credentials,
+                    lokiOptions.Tenant,
+                    (LogEventLevel)(lokiOptions.MinimumLevel ?? LogLevel.Trace));
+            }
+        }
+
+        return loggerConfig.CreateLogger();
+    }
 
     public static string GetStringValue(LogEventPropertyValue? value, string defaultValue = "")
     {

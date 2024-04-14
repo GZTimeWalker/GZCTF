@@ -206,7 +206,7 @@ builder.Services.AddTelemetry(telemetryOptions);
 
 #region Services and Repositories
 
-builder.Services.AddTransient<IMailSender, MailSender>()
+builder.Services.AddSingleton<IMailSender, MailSender>()
     .Configure<EmailConfig>(builder.Configuration.GetSection(nameof(EmailConfig)));
 
 builder.Services.Configure<RegistryConfig>(builder.Configuration.GetSection(nameof(RegistryConfig)));

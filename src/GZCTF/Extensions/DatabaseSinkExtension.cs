@@ -20,6 +20,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
     DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
     readonly CancellationTokenSource _tokenSource = new();
     readonly ConcurrentQueue<LogModel> _logBuffer = [];
+    readonly AsyncManualResetEvent _resetEvent = new();
 
     public DatabaseSink(IServiceProvider serviceProvider)
     {
@@ -41,6 +42,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
             return;
 
         _logBuffer.Enqueue(ToLogModel(logEvent));
+        _resetEvent.Set();
     }
 
     static LogModel ToLogModel(LogEvent logEvent)
@@ -71,6 +73,9 @@ public class DatabaseSink : ILogEventSink, IDisposable
         {
             while (!token.IsCancellationRequested)
             {
+                await _resetEvent.WaitAsync(token);
+                _resetEvent.Reset();
+
                 while (_logBuffer.TryDequeue(out LogModel? logModel))
                     lockedLogBuffer.Add(logModel);
 
@@ -91,8 +96,6 @@ public class DatabaseSink : ILogEventSink, IDisposable
                         _lastFlushTime = DateTimeOffset.Now;
                     }
                 }
-
-                await Task.Delay(TimeSpan.FromSeconds(1), token);
             }
         }
         catch (TaskCanceledException) { }

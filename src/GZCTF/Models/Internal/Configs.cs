@@ -3,7 +3,9 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
+using MemoryPack;
 using OpenTelemetry.Exporter;
+using Serilog.Sinks.Grafana.Loki;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace GZCTF.Models.Internal;
@@ -108,7 +110,8 @@ public class GlobalConfig
 /// <summary>
 /// 客户端配置
 /// </summary>
-public class ClientConfig
+[MemoryPackable]
+public partial class ClientConfig
 {
     /// <summary>
     /// 平台前缀名称
@@ -185,7 +188,7 @@ public enum ContainerPortMappingType
     // Use default to map the container port to a random port on the host
     Default,
 
-    // Use platform proxy to map the container tcp to wss 
+    // Use platform proxy to map the container tcp to wss
     PlatformProxy
 }
 
@@ -288,6 +291,17 @@ public class ConsoleConfig
 }
 
 #endregion
+
+public class GrafanaLokiOptions
+{
+    public bool Enable { get; set; }
+    public string? EndpointUri { get; set; }
+    public LokiLabel[]? Labels { get; set; }
+    public string[]? PropertiesAsLabels { get; set; }
+    public LokiCredentials? Credentials { get; set; }
+    public string? Tenant { get; set; }
+    public LogLevel? MinimumLevel { get; set; }
+}
 
 public class ForwardedOptions : ForwardedHeadersOptions
 {

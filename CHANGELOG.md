@@ -3,6 +3,45 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.18.6](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.5..v0.18.6) - 2024-04-14
+
+### ⛰️ Features
+
+- Map LogLevel to LogEventLevel - ([644eff](https://github.com/GZTimeWalker/GZCTF/commit/644eff)) by **Steven He**
+- Loki logging server support - ([54aa5c](https://github.com/GZTimeWalker/GZCTF/commit/54aa5c)) by **Steven He**
+- Enable dynamic adaptive GC - ([18567d](https://github.com/GZTimeWalker/GZCTF/commit/18567d)) by **Steve**
+- config cache & client message - ([c17708](https://github.com/GZTimeWalker/GZCTF/commit/c17708)) by **GZTime**
+- adding more instruments - ([91691e](https://github.com/GZTimeWalker/GZCTF/commit/91691e)) by **Steven He**
+- custom Prometheus settings - ([f06a09](https://github.com/GZTimeWalker/GZCTF/commit/f06a09)) by **Steven He**
+- control enabling of telemetry - ([93b00d](https://github.com/GZTimeWalker/GZCTF/commit/93b00d)) by **Steven He**
+- metrics and distributed tracing - ([4d807c](https://github.com/GZTimeWalker/GZCTF/commit/4d807c)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- **(frontend)** disable when update - ([a09af6](https://github.com/GZTimeWalker/GZCTF/commit/a09af6)) by **GZTime**
+- **(style)** team unlock badge - ([e3a697](https://github.com/GZTimeWalker/GZCTF/commit/e3a697)) by **GZTime**
+- Add workaround for prometheus - ([5364a8](https://github.com/GZTimeWalker/GZCTF/commit/5364a8)) by **Steven He**
+- GlobalConfig scope - ([d1f5c5](https://github.com/GZTimeWalker/GZCTF/commit/d1f5c5)) by **Steven He**
+- Make MailSender singleton - ([133284](https://github.com/GZTimeWalker/GZCTF/commit/133284)) by **Steven He**
+- Refactor MailSender to use a queue - ([b72f99](https://github.com/GZTimeWalker/GZCTF/commit/b72f99)) by **Steven He**
+- Missing args in team localization - ([9913f3](https://github.com/GZTimeWalker/GZCTF/commit/9913f3)) by **Steven He**
+- `ClientCaptchaInfoModel` is not MemoryPackable - ([a9c3d0](https://github.com/GZTimeWalker/GZCTF/commit/a9c3d0)) by **GZTime**
+- `ClientConfig` is not registered for MemoryPack - ([7fed35](https://github.com/GZTimeWalker/GZCTF/commit/7fed35)) by **GZTime**
+- disable `AutomountServiceAccountToken` for pods - ([1e139f](https://github.com/GZTimeWalker/GZCTF/commit/1e139f)) by **GZTime**
+
+### 🎨 Styling
+
+- fix Badge padding - ([6e5e53](https://github.com/GZTimeWalker/GZCTF/commit/6e5e53)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- add platform in mail title - ([817232](https://github.com/GZTimeWalker/GZCTF/commit/817232)) by **GZTime**
+- tidy up - ([82d624](https://github.com/GZTimeWalker/GZCTF/commit/82d624)) by **GZTime**
+- Adding comments for AsyncManualResetEvent - ([d51382](https://github.com/GZTimeWalker/GZCTF/commit/d51382)) by **Steven He**
+- bump dependencies - ([130632](https://github.com/GZTimeWalker/GZCTF/commit/130632)) by **Steven He**
+- tidy up - ([ccf056](https://github.com/GZTimeWalker/GZCTF/commit/ccf056)) by **GZTime**
+
+---
 ## [0.18.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.4..v0.18.5) - 2024-04-01
 
 ### ⛰️ Features

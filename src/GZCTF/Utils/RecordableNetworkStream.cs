@@ -41,6 +41,8 @@ public sealed class RecordableNetworkStream : NetworkStream
     readonly IPEndPoint _host = new(0, 65535);
     readonly RecordableNetworkStreamOptions _options;
 
+    bool _disposed;
+
     public RecordableNetworkStream(Socket socket, byte[]? metadata, RecordableNetworkStreamOptions options) :
         base(socket)
     {
@@ -106,9 +108,14 @@ public sealed class RecordableNetworkStream : NetworkStream
         _device?.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
     }
 
-    public override void Close()
+    protected override void Dispose(bool disposing)
     {
-        base.Close();
-        _device?.Close();
+        if (!_disposed)
+        {
+            base.Dispose(disposing);
+            _device?.Dispose();
+        }
+
+        _disposed = true;
     }
 }
