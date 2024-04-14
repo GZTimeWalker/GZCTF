@@ -113,17 +113,9 @@ public sealed class RecordableNetworkStream : NetworkStream
         if (!_disposed)
         {
             base.Dispose(disposing);
-
-            Close();
             _device?.Dispose();
         }
 
         _disposed = true;
-    }
-
-    public override void Close()
-    {
-        base.Close();
-        _device?.Close();
     }
 }
