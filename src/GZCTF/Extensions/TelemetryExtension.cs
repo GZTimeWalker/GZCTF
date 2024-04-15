@@ -32,7 +32,7 @@ public static class TelemetryExtension
             {
                 metrics.AddPrometheusExporter(options =>
                 {
-                    options.DisableTotalNameSuffixForCounters = true;
+                    options.DisableTotalNameSuffixForCounters = !config.Prometheus.TotalNameSuffixForCounters;
                 });
             }
 

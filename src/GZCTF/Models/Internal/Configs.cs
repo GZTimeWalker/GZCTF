@@ -269,6 +269,7 @@ public class TelemetryConfig
 public class PrometheusConfig
 {
     public bool Enable { get; set; }
+    public bool TotalNameSuffixForCounters { get; set; }
     public ushort? Port { get; set; }
 }
 
