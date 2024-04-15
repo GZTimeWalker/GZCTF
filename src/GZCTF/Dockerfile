@@ -6,8 +6,7 @@ RUN cp -r /build/${TARGETPLATFORM} /publish
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
-    LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8
+    LC_ALL=en_US.UTF-8
 
 WORKDIR /app
 EXPOSE 8080
