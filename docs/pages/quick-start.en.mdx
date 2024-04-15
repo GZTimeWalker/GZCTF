@@ -90,8 +90,9 @@ You will need to install Docker and docker-compose to get started with GZCTF. Yo
        image: gztime/gzctf:latest
        restart: always
        environment:
-         - "LANG=en_US.UTF-8" # choose your backend language `en_US` / `zh_CN` / `ja_JP`
          - "GZCTF_ADMIN_PASSWORD=<Your GZCTF_ADMIN_PASSWORD>"
+         # choose your backend language `en_US` / `zh_CN` / `ja_JP`
+         - "LC_ALL=en_US.UTF-8"
        ports:
          - "80:8080"
        volumes:

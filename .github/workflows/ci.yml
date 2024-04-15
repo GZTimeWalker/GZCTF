@@ -2,7 +2,7 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: ["develop", "ci-test*", "v*"]
+    branches: ["develop", "ci/*", "v*"]
     tags: ["v*"]
     paths: ["src/GZCTF/**"]
   workflow_dispatch:

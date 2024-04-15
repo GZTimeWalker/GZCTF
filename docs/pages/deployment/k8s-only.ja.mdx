@@ -141,10 +141,11 @@ import { Callout } from "nextra-theme-docs";
              image: gztime/gzctf:latest
              imagePullPolicy: Always
              env:
-               - name: LANG
-                 value: ja_JP # choose your backend language `en_US` / `zh_CN` / `ja_JP`
                - name: GZCTF_ADMIN_PASSWORD
                  value: xxx # 管理者パスワード
+               # choose your backend language `en_US` / `zh_CN` / `ja_JP`
+               - name: LC_ALL
+                 value: ja_JP.UTF-8
              ports:
                - containerPort: 8080
                  name: http
