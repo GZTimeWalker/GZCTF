@@ -50,7 +50,8 @@ Here is a complete example of configuration:
     "Enable": true,
     "Prometheus": {
       "Enable": true,
-      "Port": 3000
+      "Port": 3000,
+      "TotalNameSuffixForCounters": false
     },
     "OpenTelemetry": {
       "Enable": true,
@@ -197,6 +198,7 @@ GZCTF supports metrics and distributed tracing. You can configure the providers 
 
   - **Enable**: Enable it or not.
   - **Port**: Optional. Set the port that Prometheus `/metrics` endpoint listens on. If this is configured, additional manual configuration of `Kestrel.Endpoints` is required to make the server listen to the specified port normally.
+  - **TotalNameSuffixForCounters**: Optional. Whether to include `_total` suffix in counters or not.
 
 - **OpenTelemetry**: Exporting metrics and tracing data to OpenTelemetry.
 

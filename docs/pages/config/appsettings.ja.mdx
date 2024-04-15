@@ -50,7 +50,8 @@ import { Callout } from "nextra-theme-docs";
     "Enable": true,
     "Prometheus": {
       "Enable": true,
-      "Port": 3000
+      "Port": 3000,
+      "TotalNameSuffixForCounters": false
     },
     "OpenTelemetry": {
       "Enable": true,
@@ -197,6 +198,7 @@ GZCTFはメトリクスと分散トレーシングをサポートしています
 
   - **Enable**: 有効にするかどうか。
   - **Port**: 任意。Prometheus の  `/metrics` エンドポイントがリッスンするポート。これが設定されている場合、サーバーが指定されたポートを正常にリッスンするようにするには、`Kestrel.Endpoints` を手動で追加設定する必要があります。
+  - **TotalNameSuffixForCounters**: 任意。カウンタに `_total` サフィックスを含めるかどうか。
 
 - **OpenTelemetry**: メトリクスとトレーシングデータを OpenTelemetry にエクスポートします。
 
