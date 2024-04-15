@@ -355,6 +355,7 @@
         "created": "题目已创建",
         "deleted": "题目已删除",
         "flag": {
+          "copied": "flag 已复制到剪贴板",
           "created": "flag 已创建",
           "deleted": "flag 已删除"
         },
