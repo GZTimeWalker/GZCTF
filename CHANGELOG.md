@@ -21,6 +21,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 ### 🐛 Bug Fixes
 
 - **(frontend)** disable when update - ([a09af6](https://github.com/GZTimeWalker/GZCTF/commit/a09af6)) by **GZTime**
+- **(i18n)** missing translate - ([2fe800](https://github.com/GZTimeWalker/GZCTF/commit/2fe800)) by **GZTime**
 - **(style)** team unlock badge - ([e3a697](https://github.com/GZTimeWalker/GZCTF/commit/e3a697)) by **GZTime**
 - Stack overflow while disposing stream - ([9a0a87](https://github.com/GZTimeWalker/GZCTF/commit/9a0a87)) by **Steven He**
 - Run Tasks with LongRunning options - ([bb8815](https://github.com/GZTimeWalker/GZCTF/commit/bb8815)) by **Steven He**
