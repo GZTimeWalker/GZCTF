@@ -51,8 +51,8 @@ const MemberItem: FC<MemberItemProps> = (props) => {
   const { t } = useTranslation()
 
   return (
-    <Group spacing="xl" position="apart">
-      <Group w="calc(100% - 10rem)">
+    <Group noWrap spacing="xl" position="apart">
+      <Group noWrap w="calc(100% - 16rem)" miw="500px">
         <Avatar alt="avatar" src={user.avatar}>
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
@@ -82,7 +82,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
           </Stack>
         </Group>
       </Group>
-      <Group position="right">
+      <Group noWrap position="right">
         {isCaptain && (
           <Group spacing={0}>
             <Icon path={mdiStar} color={theme.colors.yellow[4]} size={0.9} />
