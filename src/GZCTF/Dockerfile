@@ -10,11 +10,12 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
 
 WORKDIR /app
 EXPOSE 8080
-RUN apk add --no-cache wget libpcap icu-data-full icu-libs
+RUN apk add --no-cache wget libpcap icu-data-full icu-libs ca-certificates && \
+    update-ca-certificates
 
 COPY --from=build /publish .
 
 HEALTHCHECK --interval=5m --timeout=3s --start-period=10s --retries=1 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1
 
 ENTRYPOINT ["dotnet", "GZCTF.dll"]
