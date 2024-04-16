@@ -50,7 +50,8 @@ import { Callout } from "nextra-theme-docs";
     "Enable": true,
     "Prometheus": {
       "Enable": true,
-      "Port": 3000
+      "Port": 3000,
+      "TotalNameSuffixForCounters": false
     },
     "OpenTelemetry": {
       "Enable": true,
@@ -197,6 +198,7 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
 
   - **Enable**: 是否启用。
   - **Port**: 可选。Prometheus `/metrics` 的监听端口。如果配置了此项，需要额外手动配置 `Kestrel.Endpoints` 以使得服务器正常监听指定的端口。
+  - **TotalNameSuffixForCounters**: 可选。是否在计数器中包含 `_total` 后缀。
 
 - **OpenTelemetry**：将测量和追踪数据导出到 OpenTelemetry。
 

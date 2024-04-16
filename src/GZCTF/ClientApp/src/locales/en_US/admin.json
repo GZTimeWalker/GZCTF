@@ -355,6 +355,7 @@
         "created": "Challenge created",
         "deleted": "Challenge deleted",
         "flag": {
+          "copied": "Flag copied to clipboard",
           "created": "Flag created",
           "deleted": "Flag deleted"
         },

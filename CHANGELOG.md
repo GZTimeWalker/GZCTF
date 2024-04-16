@@ -3,10 +3,12 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.18.6](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.5..v0.18.6) - 2024-04-14
+## [0.19.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.5..v0.19.0) - 2024-04-15
 
 ### ⛰️ Features
 
+- Allow customize total suffix for Prometheus - ([468b47](https://github.com/GZTimeWalker/GZCTF/commit/468b47)) by **Steven He**
+- Add version info to opentelemetry - ([e24950](https://github.com/GZTimeWalker/GZCTF/commit/e24950)) by **Steven He**
 - Map LogLevel to LogEventLevel - ([644eff](https://github.com/GZTimeWalker/GZCTF/commit/644eff)) by **Steven He**
 - Loki logging server support - ([54aa5c](https://github.com/GZTimeWalker/GZCTF/commit/54aa5c)) by **Steven He**
 - Enable dynamic adaptive GC - ([18567d](https://github.com/GZTimeWalker/GZCTF/commit/18567d)) by **Steve**
@@ -19,7 +21,14 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 ### 🐛 Bug Fixes
 
 - **(frontend)** disable when update - ([a09af6](https://github.com/GZTimeWalker/GZCTF/commit/a09af6)) by **GZTime**
+- **(i18n)** missing translate - ([2fe800](https://github.com/GZTimeWalker/GZCTF/commit/2fe800)) by **GZTime**
 - **(style)** team unlock badge - ([e3a697](https://github.com/GZTimeWalker/GZCTF/commit/e3a697)) by **GZTime**
+- Stack overflow while disposing stream - ([9a0a87](https://github.com/GZTimeWalker/GZCTF/commit/9a0a87)) by **Steven He**
+- Run Tasks with LongRunning options - ([bb8815](https://github.com/GZTimeWalker/GZCTF/commit/bb8815)) by **Steven He**
+- Properly dispose stream - ([4dfd1d](https://github.com/GZTimeWalker/GZCTF/commit/4dfd1d)) by **Steven He**
+- Exclude any exception due to cancellation - ([3d6dab](https://github.com/GZTimeWalker/GZCTF/commit/3d6dab)) by **Steven He**
+- Exclude /metrics from log - ([be3fa7](https://github.com/GZTimeWalker/GZCTF/commit/be3fa7)) by **Steven He**
+- prometheus endpoint mapping - ([8eabce](https://github.com/GZTimeWalker/GZCTF/commit/8eabce)) by **Steven He**
 - Add workaround for prometheus - ([5364a8](https://github.com/GZTimeWalker/GZCTF/commit/5364a8)) by **Steven He**
 - GlobalConfig scope - ([d1f5c5](https://github.com/GZTimeWalker/GZCTF/commit/d1f5c5)) by **Steven He**
 - Make MailSender singleton - ([133284](https://github.com/GZTimeWalker/GZCTF/commit/133284)) by **Steven He**
@@ -40,6 +49,10 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - Adding comments for AsyncManualResetEvent - ([d51382](https://github.com/GZTimeWalker/GZCTF/commit/d51382)) by **Steven He**
 - bump dependencies - ([130632](https://github.com/GZTimeWalker/GZCTF/commit/130632)) by **Steven He**
 - tidy up - ([ccf056](https://github.com/GZTimeWalker/GZCTF/commit/ccf056)) by **GZTime**
+
+### 📦 Other Changes
+
+- use alpine as base (#268) - ([4810c0](https://github.com/GZTimeWalker/GZCTF/commit/4810c0)) by **GZTime**
 
 ---
 ## [0.18.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.4..v0.18.5) - 2024-04-01

@@ -1030,6 +1030,6 @@
     <value>無効な署名</value>
   </data>
   <data name="Error_InternalServerError" xml:space="preserve">
-    <value>サーバーで内部エラーが発生しました</value>
+      <value>サーバーで内部エラーが発生しました</value>
   </data>
 </root>
