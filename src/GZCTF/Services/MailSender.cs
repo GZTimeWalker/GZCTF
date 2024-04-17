@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Net.Security;
 using System.Text;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Interface;
@@ -33,6 +34,18 @@ public sealed class MailSender : IMailSender, IDisposable
         {
             _smtpClient = new();
             _smtpClient.AuthenticationMechanisms.Remove("XOAUTH2");
+            if (!OperatingSystem.IsWindows())
+            {
+                // Some systems may not enable old (non-recommend) ciphers in SSL configuration and lead to failures when
+                // connecting to some SMTP servers, override the default policy to include all ciphers except MD5, SHA1, and NULL
+                _smtpClient.SslCipherSuitesPolicy = new CipherSuitesPolicy(Enum.GetValues<TlsCipherSuite>()
+                    .Where(cipher =>
+                    {
+                        var cipherName = cipher.ToString();
+                        // Exclude MD5, SHA1, and NULL ciphers for security reasons
+                        return !cipherName.EndsWith("MD5") && !cipherName.EndsWith("SHA") && !cipherName.EndsWith("NULL");
+                    }));
+            }
             Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
                 TaskScheduler.Default);
         }
