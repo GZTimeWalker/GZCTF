@@ -166,7 +166,7 @@
     <value>登録機能は無効になっています</value>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>パスワードをリセットするには管理者の管理者にお問い合わせください。</value>
+    <value>メールによる認証は有効化していません、パスワードをリセットするには管理者の管理者にお問い合わせください。</value>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
     <value>メールアドレスの更新メールを送信します</value>
@@ -1030,6 +1030,6 @@
     <value>無効な署名</value>
   </data>
   <data name="Error_InternalServerError" xml:space="preserve">
-      <value>サーバーで内部エラーが発生しました</value>
+    <value>サーバーで内部エラーが発生しました</value>
   </data>
 </root>
