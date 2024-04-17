@@ -124,7 +124,7 @@
     <value>アバターを変更しました：[{0}]</value>
   </data>
   <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
-    <value>メールアドレスを変更するには管理者にお問い合わせください。</value>
+    <value>メールによる認証は有効化していません、メールアドレスを変更するには管理者にお問い合わせください。</value>
   </data>
   <data name="Account_EmailChanged" xml:space="preserve">
     <value>メールを正常に変更しました</value>
