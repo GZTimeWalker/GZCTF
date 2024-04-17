@@ -3,7 +3,15 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.19.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.5..v0.19.0) - 2024-04-15
+## [0.19.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.0..v0.19.1) - 2024-04-17
+
+### 🐛 Bug Fixes
+
+- **(style)** member info is not wide enough - ([399fd8](https://github.com/GZTimeWalker/GZCTF/commit/399fd8)) by **GZTime**
+- Override system default cipher list - ([240dfb](https://github.com/GZTimeWalker/GZCTF/commit/240dfb)) by **Steven He**
+
+---
+## [0.19.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.18.5..v0.19.0) - 2024-04-16
 
 ### ⛰️ Features
 
@@ -23,6 +31,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - **(frontend)** disable when update - ([a09af6](https://github.com/GZTimeWalker/GZCTF/commit/a09af6)) by **GZTime**
 - **(i18n)** missing translate - ([2fe800](https://github.com/GZTimeWalker/GZCTF/commit/2fe800)) by **GZTime**
 - **(style)** team unlock badge - ([e3a697](https://github.com/GZTimeWalker/GZCTF/commit/e3a697)) by **GZTime**
+- add ca-certificates for alpine (#269) - ([99d4ca](https://github.com/GZTimeWalker/GZCTF/commit/99d4ca)) by **GZTime**
 - Stack overflow while disposing stream - ([9a0a87](https://github.com/GZTimeWalker/GZCTF/commit/9a0a87)) by **Steven He**
 - Run Tasks with LongRunning options - ([bb8815](https://github.com/GZTimeWalker/GZCTF/commit/bb8815)) by **Steven He**
 - Properly dispose stream - ([4dfd1d](https://github.com/GZTimeWalker/GZCTF/commit/4dfd1d)) by **Steven He**
@@ -44,6 +53,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### ⚙️ Miscellaneous Tasks
 
+- update CHANGELOG - ([d9c119](https://github.com/GZTimeWalker/GZCTF/commit/d9c119)) by **GZTime**
 - add platform in mail title - ([817232](https://github.com/GZTimeWalker/GZCTF/commit/817232)) by **GZTime**
 - tidy up - ([82d624](https://github.com/GZTimeWalker/GZCTF/commit/82d624)) by **GZTime**
 - Adding comments for AsyncManualResetEvent - ([d51382](https://github.com/GZTimeWalker/GZCTF/commit/d51382)) by **Steven He**
