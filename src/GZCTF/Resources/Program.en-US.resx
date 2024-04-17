@@ -166,7 +166,7 @@
     <value>Registration has been disabled</value>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>Email verification is not enabled, please contact the administrator to reset the password</value>
+    <value>Please contact the administrator to reset the password</value>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
     <value>Send email to user for email change</value>
@@ -1030,6 +1030,6 @@
     <value>Invalid signature</value>
   </data>
   <data name="Error_InternalServerError" xml:space="preserve">
-    <value>Internal server error</value>
+      <value>Internal server error</value>
   </data>
 </root>
