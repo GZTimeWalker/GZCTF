@@ -101,7 +101,7 @@ const Watermark: React.FC<React.PropsWithChildren<WatermarkProps>> = ({
   text,
   textColor = '#cccccc',
   textSize = 24,
-  fontFamily = 'Arial, Helvetica, sans-serif',
+  fontFamily = '"JetBrains Mono", "Ubuntu Mono", Courier, Consolas, monospace',
   opacity = 0.2,
   lineHeight = '1.2rem',
   multiline = false,
