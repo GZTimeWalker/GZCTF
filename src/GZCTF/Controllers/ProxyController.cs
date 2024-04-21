@@ -171,7 +171,8 @@ public class ProxyController(
             catch (SocketException e)
             {
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog), e.SocketErrorCode,
+                    Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog),
+                        e.SocketErrorCode,
                         $"{target.Address}:{target.Port}"],
                     TaskStatus.Failed, LogLevel.Debug);
                 return new JsonResult(new RequestResponse(

@@ -19,7 +19,8 @@ public class FlagChecker(
         TokenSource = new CancellationTokenSource();
 
         for (var i = 0; i < 2; ++i)
-            await Task.Factory.StartNew(() => Checker(i, TokenSource.Token), cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            await Task.Factory.StartNew(() => Checker(i, TokenSource.Token), cancellationToken,
+                TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
 

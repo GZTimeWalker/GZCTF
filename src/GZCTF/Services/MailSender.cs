@@ -43,9 +43,11 @@ public sealed class MailSender : IMailSender, IDisposable
                     {
                         var cipherName = cipher.ToString();
                         // Exclude MD5, SHA1, and NULL ciphers for security reasons
-                        return !cipherName.EndsWith("MD5") && !cipherName.EndsWith("SHA") && !cipherName.EndsWith("NULL");
+                        return !cipherName.EndsWith("MD5") && !cipherName.EndsWith("SHA") &&
+                               !cipherName.EndsWith("NULL");
                     }));
             }
+
             Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
                 TaskScheduler.Default);
         }

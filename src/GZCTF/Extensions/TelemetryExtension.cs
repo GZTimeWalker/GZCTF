@@ -93,9 +93,9 @@ public static class TelemetryExtension
             app.UseOpenTelemetryPrometheusScrapingEndpoint(context =>
             {
                 if (string.Equals(
-                    context.Request.Path.ToString().TrimEnd('/'),
-                    "/metrics",
-                    StringComparison.OrdinalIgnoreCase))
+                        context.Request.Path.ToString().TrimEnd('/'),
+                        "/metrics",
+                        StringComparison.OrdinalIgnoreCase))
                 {
                     // FIXME: workaround for prometheus
                     context.Request.Headers.Accept = "application/openmetrics-text";
