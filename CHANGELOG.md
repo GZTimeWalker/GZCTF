@@ -3,6 +3,17 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.19.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.1..v0.19.2) - 2024-04-21
+
+### 🐛 Bug Fixes
+
+- **(backedn)** add NPOI lib - ([c4b20e](https://github.com/GZTimeWalker/GZCTF/commit/c4b20e)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- adjust watermark - ([2d046b](https://github.com/GZTimeWalker/GZCTF/commit/2d046b)) by **GZTime**
+
+---
 ## [0.19.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.0..v0.19.1) - 2024-04-17
 
 ### 🐛 Bug Fixes
