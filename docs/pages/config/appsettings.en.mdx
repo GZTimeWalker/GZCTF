@@ -47,14 +47,14 @@ Here is a complete example of configuration:
     }
   },
   "Telemetry": {
-    "Enable": true,
+    "Enable": false,
     "Prometheus": {
-      "Enable": true,
+      "Enable": false,
       "Port": 3000,
       "TotalNameSuffixForCounters": false
     },
     "OpenTelemetry": {
-      "Enable": true,
+      "Enable": false,
       "Protocol": "Grpc",
       "EndpointUri": "http://jaeger-collector:4317"
     },
@@ -175,7 +175,7 @@ GZCTF only supports PostgreSQL as the database, and does not support MySQL and o
 
 You can configure the logging level and scopes, besides, GZCTF also supports sending logs to Loki server.
 
-- **LogLevel**: The minimal logging level per namespace. 
+- **LogLevel**: The minimal logging level per namespace.
 - **Loki**: The configuration of Loki server.
 
   - **Enable**: Enable it or not.
@@ -184,7 +184,7 @@ You can configure the logging level and scopes, besides, GZCTF also supports sen
   - **PropertiesAsLabels**: Optional. The list of properties, which should be mapped to Loki labels.
   - **Credentials**: Optional. Credentials, which will be used for basic auth
   - **Tenant**: Optional. The Tenant ID used for sending logs to Loki server.
-  - **MinimumLevel**: Optional. Minimal logging level. 
+  - **MinimumLevel**: Optional. Minimal logging level.
 
 Available logging levels: Trace, Debug, Information, Warning, Error, Critical, None.
 
