@@ -3591,6 +3591,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 删除某队伍的流量包文件，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameDeleteAllTeamTraffic
+     * @summary 删除某队伍的全部流量包文件
+     * @request DELETE:/api/game/captures/{challengeId}/{partId}/all
+     */
+    gameDeleteAllTeamTraffic: (challengeId: number, partId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}/all`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
      * @description 删除，需要User权限
      *
      * @tags Game
@@ -3601,6 +3616,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     gameDeleteContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/game/${id}/container/${challengeId}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * @description 删除流量包文件，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameDeleteTeamTraffic
+     * @summary 删除流量包文件
+     * @request DELETE:/api/game/captures/{challengeId}/{partId}/{filename}
+     */
+    gameDeleteTeamTraffic: (challengeId: number, partId: number, filename: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}/${filename}`,
         method: "DELETE",
         ...params,
       }),
@@ -3797,6 +3827,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
 
     /**
+     * @description 获取流量包文件，需要Monitor权限
+     *
+     * @tags Game
+     * @name GameGetAllTeamTraffic
+     * @summary 获取流量包文件压缩包
+     * @request GET:/api/game/captures/{challengeId}/{partId}/all
+     */
+    gameGetAllTeamTraffic: (challengeId: number, partId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}/all`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
      * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
      *
      * @tags Game
@@ -3979,21 +4024,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: FileRecord[] | Promise<FileRecord[]>,
       options?: MutatorOptions,
     ) => mutate<FileRecord[]>(`/api/game/captures/${challengeId}/${partId}`, data, options),
-
-    /**
-     * @description 获取流量包文件，需要Monitor权限
-     *
-     * @tags Game
-     * @name GameGetTeamTrafficZip
-     * @summary 获取流量包文件压缩包
-     * @request GET:/api/game/captures/{challengeId}/{partId}/all
-     */
-    gameGetTeamTrafficZip: (challengeId: number, partId: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/captures/${challengeId}/${partId}/all`,
-        method: "GET",
-        ...params,
-      }),
 
     /**
      * @description 获取赛后题解提交情况，需要User权限

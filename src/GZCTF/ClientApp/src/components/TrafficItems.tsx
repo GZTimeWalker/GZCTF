@@ -1,9 +1,15 @@
 import { Avatar, Badge, Group, rem, Stack, Text, useMantineTheme } from '@mantine/core'
-import { mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
+import { mdiDeleteOutline, mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
+import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SelectableItem, SelectableItemComponent } from '@Components/ScrollSelect'
+import {
+  PropsWithItem,
+  SelectableItem,
+  SelectableItemComponent,
+  SelectableItemProps,
+} from '@Components/ScrollSelect'
 import { useChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
 import {
   ChallengeTag,
@@ -12,6 +18,7 @@ import {
   FileRecord,
   TeamTrafficModel,
 } from '@Api'
+import { ActionIconWithConfirm } from './ActionIconWithConfirm'
 
 const itemHeight = rem(60)
 
@@ -85,28 +92,52 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
   )
 }
 
-export const FileItem: SelectableItemComponent<FileRecord> = (itemProps) => {
-  const { item, ...props } = itemProps
+export interface FileItemProps extends SelectableItemProps {
+  t: (key: string) => string
+  disabled: boolean
+  onDownload: (file: FileRecord) => void
+  onDelete: (file: FileRecord) => Promise<void>
+}
+
+export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps) => {
+  const { item, onDownload, onDelete, disabled, t, ...props } = itemProps
 
   return (
-    <SelectableItem h={itemHeight} {...props}>
-      <Group position="apart" spacing={0} w="100%" noWrap>
-        <Group position="left" spacing="sm" noWrap>
-          <Icon path={mdiFileDownloadOutline} size={1.2} />
+    <SelectableItem h={itemHeight} active={false} {...props}>
+      <Group position="apart" spacing={0} noWrap w="100%">
+        <Group
+          position="apart"
+          spacing={0}
+          noWrap
+          w="calc(100% - 2.5rem)"
+          onClick={() => onDownload(item)}
+        >
+          <Group position="left" spacing="sm" noWrap>
+            <Icon path={mdiFileDownloadOutline} size={1.2} />
 
-          <Stack spacing={0} align="flex-start">
-            <Text truncate fw={500} w="calc(50vw - 22rem)">
-              {item.fileName}
-            </Text>
-            <Badge size="sm" color="indigo">
-              {dayjs(item.updateTime).format('MM/DD HH:mm:ss')}
-            </Badge>
-          </Stack>
+            <Stack spacing={0} align="flex-start">
+              <Text truncate fw={500}>
+                {item.fileName}
+              </Text>
+              <Badge size="sm" color="indigo">
+                {dayjs(item.updateTime).format('MM/DD HH:mm:ss')}
+              </Badge>
+            </Stack>
+          </Group>
+
+          <Text fw={500} size="sm">
+            {HunamizeSize(item.size ?? 0)}
+          </Text>
         </Group>
-
-        <Text fw={500} size="sm">
-          {HunamizeSize(item.size ?? 0)}
-        </Text>
+        <Group position="right" spacing="sm" noWrap w="2.5rem">
+          <ActionIconWithConfirm
+            iconPath={mdiDeleteOutline}
+            color="red"
+            message={t('game.content.traffic.delete_confirm')}
+            disabled={disabled}
+            onClick={() => onDelete(item)}
+          />
+        </Group>
       </Group>
     </SelectableItem>
   )
