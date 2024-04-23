@@ -6,6 +6,9 @@
       "scoreboard": "下载积分榜",
       "submissionsheet": "下载全部提交"
     },
+    "delete": {
+      "all_traffic": "删除全部列出流量"
+    },
     "finished": "比赛结束",
     "hide_solved": "隐藏已解出",
     "join": "报名参赛",
@@ -80,6 +83,10 @@
     },
     "total_duration": "共 {{hours}} 小时",
     "total_time": "持续时间",
+    "traffic": {
+      "delete_confirm": "确认删除此流量文件？",
+      "deleted_all_confirm": "确认删除全部列出流量？"
+    },
     "writeup": {
       "current": "当前提交",
       "deadline_exceeded": "提交截止时间已过",
@@ -160,6 +167,9 @@
     "not_started": "比赛尚未开始",
     "select_chal_and_part": "请先选择题目和队伍",
     "suspended": "您已被禁赛",
+    "traffic": {
+      "deleted": "流量文件已删除"
+    },
     "writeup": {
       "submitted": "Writeup 已成功提交"
     }
