@@ -32,7 +32,7 @@
     "game_ended": "Ended",
     "game_lasts_long": "The game will last for a long time",
     "hide_container_events": {
-      "description": "Hide container launching/destroying events",
+      "description": "Hide container creation/destroying events",
       "label": "Hide container events"
     },
     "join": {
