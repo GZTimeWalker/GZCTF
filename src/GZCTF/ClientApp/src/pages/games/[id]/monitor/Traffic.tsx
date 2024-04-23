@@ -84,7 +84,7 @@ const Traffic: FC = () => {
 
     setDisabled(true)
 
-    api.game
+    return api.game
       .gameDeleteTeamTraffic(challengeId, participationId, item.fileName)
       .then(() => {
         showNotification({
@@ -115,7 +115,7 @@ const Traffic: FC = () => {
         })
       })
       .finally(() => {
-        mutateTeam()
+        mutateTeam([], false)
         mutate()
         setDisabled(false)
       })
