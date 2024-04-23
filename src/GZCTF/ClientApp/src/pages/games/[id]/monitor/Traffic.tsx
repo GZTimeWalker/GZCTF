@@ -43,16 +43,14 @@ const Traffic: FC = () => {
   const { t } = useTranslation()
   const modals = useModals()
 
-  const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(
-    gameId,
-    SWROptions
-  )
-  const { data: teamTraffic, mutate } = api.game.useGameGetChallengeTraffic(
+  const { data: challengeTraffic, mutate: mutateChallenges } =
+    api.game.useGameGetChallengesWithTrafficCapturing(gameId, SWROptions)
+  const { data: teamTraffic, mutate: mutateTeams } = api.game.useGameGetChallengeTraffic(
     challengeId ?? 0,
     SWROptions,
     !!challengeId
   )
-  const { data: fileRecords, mutate: mutateTeam } = api.game.useGameGetTeamTrafficAll(
+  const { data: fileRecords, mutate: mutateTraffic } = api.game.useGameGetTeamTrafficAll(
     challengeId ?? 0,
     participationId ?? 0,
     SWROptions,
@@ -94,8 +92,8 @@ const Traffic: FC = () => {
         })
       })
       .finally(() => {
-        mutateTeam()
-        mutate()
+        mutateTeams()
+        mutateTraffic()
         setDisabled(false)
       })
   }
@@ -115,8 +113,9 @@ const Traffic: FC = () => {
         })
       })
       .finally(() => {
-        mutateTeam([], false)
-        mutate()
+        mutateTraffic([], false)
+        mutateTeams()
+        mutateChallenges()
         setDisabled(false)
       })
   }
