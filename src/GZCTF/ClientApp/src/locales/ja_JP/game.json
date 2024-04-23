@@ -6,6 +6,9 @@
       "scoreboard": "ランキングをダウンロード",
       "submissionsheet": "提出物をすべてダウンロード"
     },
+    "delete": {
+      "all_traffic": "すべてのトラフィックを削除する"
+    },
     "finished": "ゲーム終了",
     "hide_solved": "解いたものを非表示にする",
     "join": "ゲームに参加",
@@ -83,6 +86,10 @@
     },
     "total_duration": "合計 {{hours}} 時間",
     "total_time": "期限",
+    "traffic": {
+      "delete_confirm": "このトラフィックファイルを削除しますか？",
+      "deleted_all_confirm": "すべてのトラフィックを削除しますか？"
+    },
     "writeup": {
       "current": "現在の提出物",
       "deadline_exceeded": "提出期限が過ぎました",
@@ -163,6 +170,9 @@
     "not_started": "ゲームはまだ開始されていません",
     "select_chal_and_part": "まずチャレンジとチームを選んでください",
     "suspended": "あなたの参加は禁止されています",
+    "traffic": {
+      "deleted": "トラフィックファイルは削除されました"
+    },
     "writeup": {
       "submitted": "記事が正常に提出されました"
     }
