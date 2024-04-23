@@ -6,6 +6,9 @@
       "scoreboard": "Scoreboard",
       "submissionsheet": "Submissions"
     },
+    "delete": {
+      "all_traffic": "Delete all listed traffic"
+    },
     "finished": "Game Ended",
     "hide_solved": "Hide Solved",
     "join": "Join",
@@ -83,6 +86,10 @@
     },
     "total_duration": "{{hours}}h in total",
     "total_time": "Duration",
+    "traffic": {
+      "delete_confirm": "Delete this traffic file?",
+      "deleted_all_confirm": "Delete all listed traffic?"
+    },
     "writeup": {
       "current": "Current Writeup",
       "deadline_exceeded": "Submission deadline has passed",
@@ -163,6 +170,9 @@
     "not_started": "Game not yet started",
     "select_chal_and_part": "Please select challenges and teams first",
     "suspended": "You have been banned",
+    "traffic": {
+      "deleted": "Traffic file(s) has been deleted"
+    },
     "writeup": {
       "submitted": "Writeup was successfully submitted"
     }
