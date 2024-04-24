@@ -12,7 +12,7 @@ public class PasswordChangeModel
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_OldPasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_OldPasswordTooShort),
+    [MinLength(Limits.MinPasswordLength, ErrorMessageResourceName = nameof(Resources.Program.Model_OldPasswordTooShort),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Old { get; set; } = string.Empty;
 
@@ -21,7 +21,7 @@ public class PasswordChangeModel
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_NewPasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MinLength(6, ErrorMessageResourceName = nameof(Resources.Program.Model_NewPasswordTooShort),
+    [MinLength(Limits.MinPasswordLength, ErrorMessageResourceName = nameof(Resources.Program.Model_NewPasswordTooShort),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string New { get; set; } = string.Empty;
 }

@@ -13,7 +13,7 @@ public class FlagSubmitModel
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_FlagRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MaxLength(126, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
+    [MaxLength(Limits.MaxFlagLength, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Flag { get; set; } = string.Empty;
 }

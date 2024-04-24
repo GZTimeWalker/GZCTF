@@ -14,19 +14,19 @@ public class Team
     /// 队伍名称
     /// </summary>
     [Required]
-    [MaxLength(16)]
+    [MaxLength(Limits.MaxTeamNameLength)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// 队伍 Bio
     /// </summary>
-    [MaxLength(32)]
+    [MaxLength(Limits.MaxTeamBioLength)]
     public string? Bio { get; set; } = string.Empty;
 
     /// <summary>
     /// 头像哈希
     /// </summary>
-    [MaxLength(64)]
+    [MaxLength(Limits.FileHashLength)]
     public string? AvatarHash { get; set; }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class Team
     /// <summary>
     /// 邀请 Token
     /// </summary>
-    [MaxLength(32)]
+    [MaxLength(Limits.InviteTokenLength)]
     public string InviteToken { get; set; } = Guid.NewGuid().ToString("N");
 
     /// <summary>

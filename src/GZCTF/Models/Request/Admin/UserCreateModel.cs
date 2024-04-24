@@ -12,9 +12,9 @@ public class UserCreateModel
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MinLength(3, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort),
+    [MinLength(Limits.MinUserNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong),
+    [MaxLength(Limits.MaxUserNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string UserName { get; set; } = string.Empty;
 
@@ -37,14 +37,14 @@ public class UserCreateModel
     /// <summary>
     /// 真实姓名
     /// </summary>
-    [MaxLength(7, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong),
+    [MaxLength(Limits.MaxUserDataLength, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? RealName { get; set; }
 
     /// <summary>
     /// 学号
     /// </summary>
-    [MaxLength(24, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
+    [MaxLength(Limits.MaxStdNumberLength, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? StdNumber { get; set; }
 
@@ -58,7 +58,7 @@ public class UserCreateModel
     /// <summary>
     /// 用户加入的队伍
     /// </summary>
-    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong),
+    [MaxLength(Limits.MaxUserNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? TeamName { get; set; }
 

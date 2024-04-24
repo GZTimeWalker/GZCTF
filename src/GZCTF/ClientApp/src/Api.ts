@@ -133,7 +133,7 @@ export interface ProfileUpdateModel {
   userName?: string | null;
   /**
    * 描述
-   * @maxLength 55
+   * @maxLength 128
    */
   bio?: string | null;
   /**
@@ -143,12 +143,12 @@ export interface ProfileUpdateModel {
   phone?: string | null;
   /**
    * 真实姓名
-   * @maxLength 7
+   * @maxLength 128
    */
   realName?: string | null;
   /**
    * 学工号
-   * @maxLength 24
+   * @maxLength 64
    */
   stdNumber?: string | null;
 }
@@ -367,12 +367,12 @@ export interface UserCreateModel {
   email: string;
   /**
    * 真实姓名
-   * @maxLength 7
+   * @maxLength 128
    */
   realName?: string | null;
   /**
    * 学号
-   * @maxLength 24
+   * @maxLength 64
    */
   stdNumber?: string | null;
   /**
@@ -443,12 +443,12 @@ export interface TeamUserInfoModel {
 export interface AdminTeamModel {
   /**
    * 队伍名称
-   * @maxLength 15
+   * @maxLength 20
    */
   name?: string | null;
   /**
    * 队伍签名
-   * @maxLength 31
+   * @maxLength 72
    */
   bio?: string | null;
   /** 是否锁定 */
@@ -470,7 +470,7 @@ export interface AdminUserInfoModel {
   email?: string | null;
   /**
    * 签名
-   * @maxLength 50
+   * @maxLength 128
    */
   bio?: string | null;
   /**
@@ -480,12 +480,12 @@ export interface AdminUserInfoModel {
   phone?: string | null;
   /**
    * 真实姓名
-   * @maxLength 7
+   * @maxLength 128
    */
   realName?: string | null;
   /**
    * 学工号
-   * @maxLength 24
+   * @maxLength 64
    */
   stdNumber?: string | null;
   /** 用户是否通过邮箱验证（可登录） */
@@ -671,7 +671,7 @@ export interface ProblemDetails {
 /** 文章对象（Edit） */
 export interface PostEditModel {
   /**
-   * 通知标题
+   * 文章标题
    * @minLength 1
    * @maxLength 50
    */
@@ -681,7 +681,7 @@ export interface PostEditModel {
   /** 文章内容 */
   content?: string;
   /** 文章标签 */
-  tags?: string[];
+  tags?: string[] | null;
   /** 是否置顶 */
   isPinned?: boolean;
 }
@@ -873,7 +873,10 @@ export interface ChallengeEditDetailModel {
   type: ChallengeType;
   /** 题目提示 */
   hints?: string[];
-  /** Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag */
+  /**
+   * Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+   * @maxLength 120
+   */
   flagTemplate?: string | null;
   /** 是否启用题目 */
   isEnabled: boolean;
@@ -1121,7 +1124,7 @@ export interface FlagCreateModel {
   /**
    * Flag文本
    * @minLength 1
-   * @maxLength 125
+   * @maxLength 127
    */
   flag: string;
   /** 附件类型 */
@@ -1659,7 +1662,7 @@ export interface FlagSubmitModel {
    * flag 内容
    * fix: 防止前端的意外提交 (number/float/null) 可能被错误转换
    * @minLength 1
-   * @maxLength 126
+   * @maxLength 127
    */
   flag: string;
 }
@@ -1755,12 +1758,12 @@ export enum CaptchaProvider {
 export interface TeamUpdateModel {
   /**
    * 队伍名称
-   * @maxLength 15
+   * @maxLength 20
    */
   name?: string | null;
   /**
    * 队伍签名
-   * @maxLength 31
+   * @maxLength 72
    */
   bio?: string | null;
 }

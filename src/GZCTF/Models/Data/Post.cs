@@ -15,6 +15,7 @@ public partial class Post
     /// 文章标题
     /// </summary>
     [Required]
+    [MaxLength(MaxTitleLength)]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -69,13 +70,22 @@ public partial class Post
         Summary = model.Summary;
         Content = model.Content;
         IsPinned = model.IsPinned;
-        Tags = model.Tags.ToList();
+        Tags = model.Tags;
         Author = user;
         AuthorId = user.Id;
         UpdateTimeUtc = DateTimeOffset.UtcNow;
 
         return this;
     }
+
+    #region Limitations
+
+    /// <summary>
+    /// 最大标题长度
+    /// </summary>
+    public const int MaxTitleLength = 50;
+
+    #endregion
 
     internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUtc:s}:{Guid.NewGuid()}".ToSHA256String()[4..12];
 }
