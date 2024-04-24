@@ -4,21 +4,29 @@ import {
   Badge,
   Box,
   Center,
+  Grid,
   Group,
+  Input,
+  Pagination,
   ScrollArea,
   Select,
   Stack,
   Text,
+  TextInput,
   Title,
+  createStyles,
   useMantineTheme,
 } from '@mantine/core'
+import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiAccountGroupOutline,
   mdiAccountOutline,
   mdiBadgeAccountHorizontalOutline,
   mdiCheck,
   mdiClose,
   mdiEmailOutline,
+  mdiIdentifier,
   mdiPhoneOutline,
   mdiStar,
 } from '@mdi/js'
@@ -44,11 +52,37 @@ const iconProps = {
   color: 'gray',
 }
 
+const useGridStyles = createStyles((theme) => ({
+  root: {
+    flexDirection: 'row',
+    flexGrow: 1,
+    gap: 0,
+  },
+
+  col: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: theme.spacing.xs,
+    boxSizing: 'border-box',
+    padding: `0 ${theme.spacing.xs}`,
+    height: '1.5rem',
+  },
+
+  input: {
+    userSelect: 'none',
+    lineHeight: 1,
+    fontSize: '1rem',
+  },
+}))
+
 const MemberItem: FC<MemberItemProps> = (props) => {
   const { user, isCaptain, isRegistered } = props
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
+  const { classes } = useGridStyles()
 
   return (
     <Group noWrap spacing="xl" position="apart">
@@ -56,31 +90,38 @@ const MemberItem: FC<MemberItemProps> = (props) => {
         <Avatar alt="avatar" src={user.avatar}>
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
-        <Group noWrap>
-          <Stack spacing={2} w="15rem">
-            <Group noWrap spacing="xs">
-              <Icon path={mdiAccountOutline} {...iconProps} />
-              <Group noWrap>
-                <Text fw={700}>{user.userName}</Text>
-                <Text>{!user.realName ? '' : user.realName}</Text>
-              </Group>
-            </Group>
-            <Group noWrap spacing="xs">
-              <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
-              <Text>{!user.stdNumber ? t('admin.placeholder.empty') : user.stdNumber}</Text>
-            </Group>
-          </Stack>
-          <Stack spacing={2}>
-            <Group noWrap spacing="xs">
-              <Icon path={mdiEmailOutline} {...iconProps} />
-              <Text>{!user.email ? t('admin.placeholder.empty') : user.email}</Text>
-            </Group>
-            <Group noWrap spacing="xs">
-              <Icon path={mdiPhoneOutline} {...iconProps} />
-              <Text>{!user.phone ? t('admin.placeholder.empty') : user.phone}</Text>
-            </Group>
-          </Stack>
-        </Group>
+        <Grid className={classes.root}>
+          <Grid.Col span={3} className={classes.col}>
+            <Icon path={mdiIdentifier} {...iconProps} />
+            <Text fw={700}>{user.userName}</Text>
+          </Grid.Col>
+          <Grid.Col span={3} className={classes.col}>
+            <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
+            <Input
+              variant="unstyled"
+              value={user.stdNumber || t('admin.placeholder.empty')}
+              readOnly
+              classNames={{ input: classes.input }}
+            />
+          </Grid.Col>
+          <Grid.Col span={6} className={classes.col}>
+            <Icon path={mdiEmailOutline} {...iconProps} />
+            <Text>{user.email || t('admin.placeholder.empty')}</Text>
+          </Grid.Col>
+          <Grid.Col span={6} className={classes.col}>
+            <Icon path={mdiAccountOutline} {...iconProps} />
+            <Input
+              variant="unstyled"
+              value={user.realName || t('admin.placeholder.empty')}
+              readOnly
+              classNames={{ input: classes.input }}
+            />
+          </Grid.Col>
+          <Grid.Col span={6} className={classes.col}>
+            <Icon path={mdiPhoneOutline} {...iconProps} />
+            <Text>{user.phone || t('admin.placeholder.empty')}</Text>
+          </Grid.Col>
+        </Grid>
       </Group>
       <Group noWrap position="right">
         {isCaptain && (
@@ -176,17 +217,22 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
   )
 }
 
+const PART_NUM_PER_PAGE = 10
+
 const GameTeamReview: FC = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const [disabled, setDisabled] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
+  const [selectedOrg, setSelectedOrg] = useState<string | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
+  const [search, setSearch] = useInputState('')
   const { classes } = useAccordionStyles()
   const participationStatusMap = useParticipationStatusMap()
 
   const { t } = useTranslation()
+  const [activePage, setPage] = useState(1)
 
   const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
     setDisabled(true)
@@ -208,6 +254,10 @@ const GameTeamReview: FC = () => {
   }
 
   useEffect(() => {
+    setPage(1)
+  }, [selectedStatus, selectedOrg, search])
+
+  useEffect(() => {
     if (numId < 0) {
       showNotification({
         color: 'red',
@@ -223,21 +273,57 @@ const GameTeamReview: FC = () => {
     })
   }, [])
 
+  const orgs = Array.from(new Set(participations?.map((p) => p.organization ?? '') ?? [])).filter(
+    (org) => !!org
+  )
+
+  const filteredParticipations = participations?.filter(
+    (participation) =>
+      (selectedStatus === null || participation.status === selectedStatus) &&
+      (selectedOrg === null || participation.organization === selectedOrg) &&
+      (search === '' || participation.team?.name?.toLowerCase().includes(search.toLowerCase()))
+  )
+
+  const pagedParticipations = filteredParticipations?.slice(
+    (activePage - 1) * PART_NUM_PER_PAGE,
+    activePage * PART_NUM_PER_PAGE
+  )
+
   return (
     <WithGameEditTab
       headProps={{ position: 'apart' }}
       isLoading={!participations}
       head={
-        <Select
-          placeholder={t('admin.content.show_all')}
-          clearable
-          data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
-          value={selectedStatus}
-          onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
-        />
+        <Group position="apart" noWrap w="100%">
+          <TextInput
+            w="20rem"
+            placeholder={t('admin.placeholder.teams.search')}
+            value={search}
+            onChange={setSearch}
+            rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
+          />
+          <Group position="right" noWrap>
+            {orgs.length && (
+              <Select
+                placeholder={t('admin.content.show_all')}
+                clearable
+                data={orgs.map((org) => ({ value: org, label: org }))}
+                value={selectedOrg}
+                onChange={(value: string) => setSelectedOrg(value)}
+              />
+            )}
+            <Select
+              placeholder={t('admin.content.show_all')}
+              clearable
+              data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
+              value={selectedStatus}
+              onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
+            />
+          </Group>
+        </Group>
       }
     >
-      <ScrollArea type="auto" pos="relative" h="calc(100vh - 180px)" offsetScrollbars>
+      <ScrollArea type="never" pos="relative" h="calc(100vh - 250px)">
         {!participations || participations.length === 0 ? (
           <Center h="calc(100vh - 200px)">
             <Stack spacing={0}>
@@ -252,20 +338,23 @@ const GameTeamReview: FC = () => {
             classNames={classes}
             className={classes.root}
           >
-            {participations?.map(
-              (participation) =>
-                (selectedStatus === null || participation.status === selectedStatus) && (
-                  <ParticipationItem
-                    key={participation.id}
-                    participation={participation}
-                    disabled={disabled}
-                    setParticipationStatus={setParticipationStatus}
-                  />
-                )
-            )}
+            {pagedParticipations?.map((participation) => (
+              <ParticipationItem
+                key={participation.id}
+                participation={participation}
+                disabled={disabled}
+                setParticipationStatus={setParticipationStatus}
+              />
+            ))}
           </Accordion>
         )}
       </ScrollArea>
+      <Pagination
+        position="right"
+        value={activePage}
+        onChange={setPage}
+        total={(filteredParticipations?.length ?? 0) / PART_NUM_PER_PAGE + 1}
+      />
     </WithGameEditTab>
   )
 }

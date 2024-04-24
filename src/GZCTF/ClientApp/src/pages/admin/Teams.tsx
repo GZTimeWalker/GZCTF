@@ -15,6 +15,7 @@ import {
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiAccountGroupOutline,
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiCheck,
@@ -166,6 +167,7 @@ const Teams: FC = () => {
             onKeyDown={(e) => {
               !searching && e.key === 'Enter' && onSearch()
             }}
+            rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
           <Group position="right">
             <Text fw="bold" size="sm">
