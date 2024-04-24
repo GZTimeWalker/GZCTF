@@ -1,4 +1,4 @@
-import { Avatar, Badge, Group, rem, Stack, Text, useMantineTheme } from '@mantine/core'
+import { Avatar, Badge, Group, Input, rem, Stack, Text, useMantineTheme } from '@mantine/core'
 import { mdiDeleteOutline, mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -37,16 +37,26 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
         <Group position="left" spacing="xs" noWrap>
           <Icon path={data.icon} color={theme.colors[data.color ?? 'brand'][5]} size={1} />
           <Stack spacing={0} align="flex-start">
-            <Text truncate fw={700} w="calc(25vw - 15rem)">
-              {item.title}
-            </Text>
+            <Input
+              variant="unstyled"
+              value={item.title ?? 'Team'}
+              readOnly
+              sx={() => ({
+                input: {
+                  userSelect: 'none',
+                  lineHeight: 1,
+                  fontWeight: 700,
+                  height: '1.5rem',
+                },
+              })}
+            />
             <Badge color={data.color} size="xs" variant="dot">
               {type}
             </Badge>
           </Stack>
         </Group>
 
-        <Group position="right" spacing={2} noWrap>
+        <Group position="right" spacing={2} noWrap w="6rem">
           <Text color="dimmed" size="xs" lineClamp={1}>
             {item.count}&nbsp;{t('common.label.team')}
           </Text>
@@ -70,9 +80,19 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack spacing={0} align="flex-start">
-            <Text truncate fw={700} w="calc(25vw - 15rem)">
-              {item.name ?? 'Team'}
-            </Text>
+            <Input
+              variant="unstyled"
+              value={item.name ?? 'Team'}
+              readOnly
+              sx={() => ({
+                input: {
+                  userSelect: 'none',
+                  lineHeight: 1,
+                  fontWeight: 700,
+                  height: '1.5rem',
+                },
+              })}
+            />
             {item.organization && (
               <Badge size="xs" variant="outline">
                 {item.organization}
@@ -81,7 +101,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
           </Stack>
         </Group>
 
-        <Group position="right" spacing={2} noWrap>
+        <Group position="right" spacing={2} noWrap w="6rem">
           <Text color="dimmed" size="xs" lineClamp={1}>
             {item.count}&nbsp;{t('game.label.traffic')}
           </Text>

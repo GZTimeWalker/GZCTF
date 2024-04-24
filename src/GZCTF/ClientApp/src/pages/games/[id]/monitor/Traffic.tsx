@@ -22,6 +22,7 @@ import { useParams } from 'react-router-dom'
 import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { HunamizeSize } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { FileRecord } from '@Api'
 
@@ -120,6 +121,8 @@ const Traffic: FC = () => {
       })
   }
 
+  const totalFileSize = fileRecords?.reduce((acc, cur) => acc + (cur?.size ?? 0), 0) ?? 0
+
   const orderedFileRecords =
     fileRecords?.sort((a, b) => dayjs(b.updateTime).diff(dayjs(a.updateTime))) ?? []
 
@@ -178,6 +181,9 @@ const Traffic: FC = () => {
               <Group h={headerHeight} pb="3px" px="xs" position="apart" noWrap>
                 <Text size="md" weight={700}>
                   {t('game.label.traffic')}
+                  <Text span px="md" fw="bold" size="sm" color="dimmed">
+                    {HunamizeSize(totalFileSize ?? 0)}
+                  </Text>
                 </Text>
                 <Group position="right" spacing="sm" noWrap>
                   <Tooltip

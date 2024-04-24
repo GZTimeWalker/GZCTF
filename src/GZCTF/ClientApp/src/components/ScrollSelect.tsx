@@ -33,7 +33,6 @@ const useItemStyle = createStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
-    width: '100%',
     padding: `${rem(8)} ${theme.spacing.sm}`,
     userSelect: 'none',
 
