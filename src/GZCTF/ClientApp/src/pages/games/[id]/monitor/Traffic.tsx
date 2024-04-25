@@ -11,8 +11,9 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core'
+import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiClose, mdiDownloadMultiple } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiDeleteForeverOutline, mdiDownloadMultiple } from '@mdi/js'
 import Icon from '@mdi/react'
 import dayjs from 'dayjs'
 import { CSSProperties, FC, useState } from 'react'
@@ -21,6 +22,7 @@ import { useParams } from 'react-router-dom'
 import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { HunamizeSize } from '@Utils/Shared'
 import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { FileRecord } from '@Api'
 
@@ -36,20 +38,20 @@ const Traffic: FC = () => {
 
   const [challengeId, setChallengeId] = useState<number | null>(null)
   const [participationId, setParticipationId] = useState<number | null>(null)
+  const [disabled, setDisabled] = useState(false)
   const { classes: tooltipClasses, theme } = useTooltipStyles()
 
   const { t } = useTranslation()
+  const modals = useModals()
 
-  const { data: challengeTraffic } = api.game.useGameGetChallengesWithTrafficCapturing(
-    gameId,
-    SWROptions
-  )
-  const { data: teamTraffic } = api.game.useGameGetChallengeTraffic(
+  const { data: challengeTraffic, mutate: mutateChallenges } =
+    api.game.useGameGetChallengesWithTrafficCapturing(gameId, SWROptions)
+  const { data: teamTraffic, mutate: mutateTeams } = api.game.useGameGetChallengeTraffic(
     challengeId ?? 0,
     SWROptions,
     !!challengeId
   )
-  const { data: fileRecords } = api.game.useGameGetTeamTrafficAll(
+  const { data: fileRecords, mutate: mutateTraffic } = api.game.useGameGetTeamTrafficAll(
     challengeId ?? 0,
     participationId ?? 0,
     SWROptions,
@@ -76,6 +78,51 @@ const Traffic: FC = () => {
     window.open(`/api/game/captures/${challengeId}/${participationId}/all`, '_blank')
   }
 
+  const onDelete = (item: FileRecord) => {
+    if (!challengeId || !participationId || !item.fileName) return
+
+    setDisabled(true)
+
+    return api.game
+      .gameDeleteTeamTraffic(challengeId, participationId, item.fileName)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: t('game.notification.traffic.deleted'),
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .finally(() => {
+        mutateTeams()
+        mutateTraffic()
+        setDisabled(false)
+      })
+  }
+
+  const onDeleteAll = () => {
+    if (!challengeId || !participationId) return
+
+    setDisabled(true)
+
+    api.game
+      .gameDeleteAllTeamTraffic(challengeId, participationId)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: t('game.notification.traffic.deleted'),
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .finally(() => {
+        mutateTraffic([], false)
+        mutateTeams()
+        mutateChallenges()
+        setDisabled(false)
+      })
+  }
+
+  const totalFileSize = fileRecords?.reduce((acc, cur) => acc + (cur?.size ?? 0), 0) ?? 0
+
   const orderedFileRecords =
     fileRecords?.sort((a, b) => dayjs(b.updateTime).diff(dayjs(a.updateTime))) ?? []
 
@@ -99,7 +146,7 @@ const Traffic: FC = () => {
         </Center>
       ) : (
         <Paper shadow="md" p="md">
-          <Grid gutter={0} h="calc(100vh - 142px)" grow>
+          <Grid gutter={0} h="calc(100vh - 142px)">
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
                 <Text size="md" weight={700}>
@@ -111,7 +158,7 @@ const Traffic: FC = () => {
                 itemComponent={ChallengeItem}
                 items={challengeTraffic}
                 selectedId={challengeId}
-                onSelectId={setChallengeId}
+                onSelect={setChallengeId}
                 h={srollHeight}
               />
             </Grid.Col>
@@ -126,31 +173,56 @@ const Traffic: FC = () => {
                 itemComponent={TeamItem}
                 items={teamTraffic}
                 selectedId={participationId}
-                onSelectId={setParticipationId}
+                onSelect={setParticipationId}
                 h={srollHeight}
               />
             </Grid.Col>
             <Grid.Col span={6}>
-              <Group h={headerHeight} pb="3px" px="xs" position="apart">
+              <Group h={headerHeight} pb="3px" px="xs" position="apart" noWrap>
                 <Text size="md" weight={700}>
                   {t('game.label.traffic')}
+                  <Text span px="md" fw="bold" size="sm" color="dimmed">
+                    {HunamizeSize(totalFileSize ?? 0)}
+                  </Text>
                 </Text>
-                <Tooltip
-                  label={t('game.button.download.all_traffic')}
-                  position="left"
-                  classNames={tooltipClasses}
-                >
-                  <ActionIcon size="md" onClick={onDownloadAll}>
-                    <Icon path={mdiDownloadMultiple} size={1} />
-                  </ActionIcon>
-                </Tooltip>
+                <Group position="right" spacing="sm" noWrap>
+                  <Tooltip
+                    label={t('game.button.delete.all_traffic')}
+                    position="left"
+                    classNames={tooltipClasses}
+                  >
+                    <ActionIcon
+                      size="md"
+                      onClick={() =>
+                        modals.openConfirmModal({
+                          title: t('game.button.delete.all_traffic'),
+                          children: (
+                            <Text size="sm">{t('game.content.traffic.deleted_all_confirm')}</Text>
+                          ),
+                          onConfirm: onDeleteAll,
+                          confirmProps: { color: 'red' },
+                        })
+                      }
+                    >
+                      <Icon path={mdiDeleteForeverOutline} size={1} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip
+                    label={t('game.button.download.all_traffic')}
+                    position="left"
+                    classNames={tooltipClasses}
+                  >
+                    <ActionIcon size="md" onClick={onDownloadAll}>
+                      <Icon path={mdiDownloadMultiple} size={1} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
               </Group>
               <Divider size="sm" />
               <ScrollSelect
                 itemComponent={FileItem}
+                itemComponentProps={{ onDownload, onDelete, disabled, t }}
                 items={orderedFileRecords}
-                customClick
-                onSelectId={onDownload}
                 h={srollHeight}
               />
             </Grid.Col>

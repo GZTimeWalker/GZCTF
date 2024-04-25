@@ -60,7 +60,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return stream;
     }
 
-    ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
+    static ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
     {
         ICellStyle? style = workbook.CreateCellStyle();
         IFont? boldFontStyle = workbook.CreateFont();
@@ -139,7 +139,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return challIds.ToArray();
     }
 
-    void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
+    static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
     {
         var rowIndex = 1;
         var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
@@ -154,11 +154,13 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             if (withOrg)
                 row.CreateCell(colIndex++).SetCellValue(item.Organization);
 
-            row.CreateCell(colIndex++).SetCellValue(item.TeamInfo!.Captain!.RealName);
-            row.CreateCell(colIndex++).SetCellValue(string.Join("/", item.TeamInfo!.Members.Select(m => m.RealName)));
-            row.CreateCell(colIndex++).SetCellValue(string.Join("/", item.TeamInfo!.Members.Select(m => m.StdNumber)));
+            row.CreateCell(colIndex++).SetCellValue(item.TeamInfo?.Captain?.RealName ?? string.Empty);
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join("/", item.TeamInfo!.Members.Select(m => m.PhoneNumber)));
+                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.RealName) ?? []));
+            row.CreateCell(colIndex++)
+                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.StdNumber) ?? []));
+            row.CreateCell(colIndex++)
+                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.PhoneNumber) ?? []));
 
             row.CreateCell(colIndex++).SetCellValue(item.SolvedCount);
             row.CreateCell(colIndex++).SetCellValue(item.LastSubmissionTime.ToString("u"));
@@ -166,8 +168,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
             foreach (var challId in challIds)
             {
-                ChallengeItem chall = item.Challenges.Single(c => c.Id == challId);
-                row.CreateCell(colIndex++).SetCellValue(chall.Score);
+                ChallengeItem? chall = item.Challenges.SingleOrDefault(c => c.Id == challId);
+                row.CreateCell(colIndex++).SetCellValue(chall?.Score ?? 0);
             }
 
             rowIndex++;

@@ -13,6 +13,7 @@ public class FlagContext
     /// Flag 内容
     /// </summary>
     [Required]
+    [MaxLength(Limits.MaxFlagLength)]
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>

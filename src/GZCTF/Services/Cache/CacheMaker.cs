@@ -42,7 +42,8 @@ public class CacheMaker(
 
         #endregion
 
-        await Task.Factory.StartNew(() => Maker(TokenSource.Token), token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        await Task.Factory.StartNew(() => Maker(TokenSource.Token), token, TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
     }
 
     public Task StopAsync(CancellationToken token)

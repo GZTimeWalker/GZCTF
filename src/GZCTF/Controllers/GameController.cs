@@ -404,7 +404,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetChallengeTraffic([FromRoute] int challengeId, CancellationToken token)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId}";
+        var filePath = Path.Combine(FilePath.Capture, $"{challengeId}");
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
@@ -437,13 +437,13 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public IActionResult GetTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
+        var filePath = Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}");
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
                 StatusCodes.Status404NotFound));
 
-        return Ok(FilePath.GetFileRecords(filePath, out var _));
+        return Ok(FilePath.GetFileRecords(filePath, out _));
     }
 
     /// <summary>
@@ -454,17 +454,17 @@ public class GameController(
     /// </remarks>
     /// <param name="challengeId">题目 Id</param>
     /// <param name="partId">队伍参与 Id</param>
-    /// <param name="token">队伍参与 Id</param>
+    /// <param name="token">token</param>
     /// <response code="200">成功获取文件</response>
     /// <response code="404">未找到相关捕获信息</response>
     [RequireMonitor]
     [HttpGet("Captures/{challengeId:int}/{partId:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetTeamTrafficZip([FromRoute] int challengeId, [FromRoute] int partId,
+    public async Task<IActionResult> GetAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
         CancellationToken token)
     {
-        var filePath = $"{FilePath.Capture}/{challengeId}/{partId}";
+        var filePath = Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}");
 
         if (!Path.Exists(filePath))
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
@@ -475,6 +475,33 @@ public class GameController(
         stream.Seek(0, SeekOrigin.Begin);
 
         return File(stream, "application/zip", $"{filename}.zip");
+    }
+
+    /// <summary>
+    /// 删除某队伍的全部流量包文件
+    /// </summary>
+    /// <remarks>
+    /// 删除某队伍的流量包文件，需要Monitor权限
+    /// </remarks>
+    /// <param name="challengeId">题目 Id</param>
+    /// <param name="partId">队伍参与 Id</param>
+    /// <response code="200">成功获取文件</response>
+    /// <response code="404">未找到相关捕获信息</response>
+    [RequireMonitor]
+    [HttpDelete("Captures/{challengeId:int}/{partId:int}/All")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public IActionResult DeleteAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId)
+    {
+        var filePath = Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}");
+
+        if (!Path.Exists(filePath))
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
+                StatusCodes.Status404NotFound));
+
+        Directory.Delete(filePath, true);
+
+        return Ok();
     }
 
     /// <summary>
@@ -498,12 +525,48 @@ public class GameController(
         try
         {
             var file = Path.GetFileName(filename);
-            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId}/{partId}", file));
+            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}", file));
 
             if (Path.GetExtension(file) != ".pcap" || !Path.Exists(path))
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
 
             return new PhysicalFileResult(path, MediaTypeNames.Application.Octet) { FileDownloadName = file };
+        }
+        catch
+        {
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
+        }
+    }
+
+    /// <summary>
+    /// 删除流量包文件
+    /// </summary>
+    /// <remarks>
+    /// 删除流量包文件，需要Monitor权限
+    /// </remarks>
+    /// <param name="challengeId">题目 Id</param>
+    /// <param name="partId">队伍参与 Id</param>
+    /// <param name="filename">流量包文件名</param>
+    /// <response code="200">成功获取文件</response>
+    /// <response code="404">未找到相关捕获信息</response>
+    [RequireMonitor]
+    [HttpDelete("Captures/{challengeId:int}/{partId:int}/{filename}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public IActionResult DeleteTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
+        [FromRoute] string filename)
+    {
+        try
+        {
+            var file = Path.GetFileName(filename);
+            var path = Path.GetFullPath(Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}", file));
+
+            if (Path.GetExtension(file) != ".pcap" || !Path.Exists(path))
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
+
+            System.IO.File.Delete(path);
+
+            return Ok();
         }
         catch
         {

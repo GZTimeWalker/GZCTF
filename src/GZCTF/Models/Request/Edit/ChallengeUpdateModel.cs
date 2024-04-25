@@ -23,7 +23,7 @@ public class ChallengeUpdateModel
     /// <summary>
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
     /// </summary>
-    [MaxLength(120, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
+    [MaxLength(Limits.MaxFlagTemplateLength, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? FlagTemplate { get; set; }
 

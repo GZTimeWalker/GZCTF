@@ -21,7 +21,7 @@ public class LogModel
     [MaxLength(40)]
     public string? RemoteIP { get; set; }
 
-    [MaxLength(25)]
+    [MaxLength(Limits.MaxUserNameLength)]
     public string? UserName { get; set; }
 
     public string Message { get; set; } = string.Empty;

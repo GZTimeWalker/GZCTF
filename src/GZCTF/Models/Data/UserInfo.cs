@@ -41,20 +41,20 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// 个性签名
     /// </summary>
-    [MaxLength(63)]
+    [MaxLength(Limits.MaxUserDataLength)]
     public string Bio { get; set; } = string.Empty;
 
     /// <summary>
     /// 真实姓名
     /// </summary>
-    [MaxLength(7)]
+    [MaxLength(Limits.MaxUserDataLength)]
     [ProtectedPersonalData]
     public string RealName { get; set; } = string.Empty;
 
     /// <summary>
     /// 学工号
     /// </summary>
-    [MaxLength(31)]
+    [MaxLength(Limits.MaxStdNumberLength)]
     [ProtectedPersonalData]
     public string StdNumber { get; set; } = string.Empty;
 
@@ -122,7 +122,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// 头像哈希
     /// </summary>
-    [MaxLength(64)]
+    [MaxLength(Limits.FileHashLength)]
     public string? AvatarHash { get; set; }
 
     /// <summary>

@@ -13,9 +13,9 @@ public class RegisterModel : ModelWithCaptcha
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MinLength(3, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort),
+    [MinLength(Limits.MinUserNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooShort),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MaxLength(15, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong),
+    [MaxLength(Limits.MaxUserNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string UserName { get; set; } = string.Empty;
 

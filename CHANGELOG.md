@@ -3,6 +3,27 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.19.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.2..v0.19.3) - 2024-04-22
+
+### 🐛 Bug Fixes
+
+- **(excel)** deal with `Single` exceptions - ([5947ee](https://github.com/GZTimeWalker/GZCTF/commit/5947ee)) by **GZTime**
+- **(frontend)** unable to renew as expected - ([daa9a5](https://github.com/GZTimeWalker/GZCTF/commit/daa9a5)) by **GZTime**
+- **(mail)** DO NOT use `IStringLocalizer` after construction - ([fe589a](https://github.com/GZTimeWalker/GZCTF/commit/fe589a)) by **GZTime**
+
+---
+## [0.19.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.1..v0.19.2) - 2024-04-21
+
+### 🐛 Bug Fixes
+
+- **(backedn)** add NPOI lib - ([c4b20e](https://github.com/GZTimeWalker/GZCTF/commit/c4b20e)) by **GZTime**
+- **(deps)** route not works - ([b37720](https://github.com/GZTimeWalker/GZCTF/commit/b37720)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- adjust watermark - ([2d046b](https://github.com/GZTimeWalker/GZCTF/commit/2d046b)) by **GZTime**
+
+---
 ## [0.19.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.0..v0.19.1) - 2024-04-17
 
 ### 🐛 Bug Fixes

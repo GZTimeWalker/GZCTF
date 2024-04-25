@@ -29,11 +29,10 @@ const WithNavBar: FC<WithNavBarProps> = ({
       <Watermark
         text={user?.userId ?? ''}
         textColor={theme.colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[7]}
-        rotate={-9}
-        textSize={15}
-        gutter={20}
-        opacity={theme.colorScheme === 'dark' ? 0.012 : 0.024}
-        fontFamily="JetBrains Mono"
+        rotate={-12}
+        textSize={14}
+        gutter={22}
+        opacity={theme.colorScheme === 'dark' ? 0.016 : 0.024}
       >
         <AppShell
           padding={0}

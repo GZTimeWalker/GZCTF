@@ -30,25 +30,28 @@ public sealed class MailSender : IMailSender, IDisposable
         _options = options.Value;
         _cancellationToken = _cancellationTokenSource.Token;
 
-        if (_options is { SendMailAddress: not null, Smtp.Host: not null, Smtp.Port: not null })
+        if (_options is not { SendMailAddress: not null, Smtp.Host: not null, Smtp.Port: not null })
+            return;
+
+        _smtpClient = new();
+        _smtpClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+        if (!OperatingSystem.IsWindows())
         {
-            _smtpClient = new();
-            _smtpClient.AuthenticationMechanisms.Remove("XOAUTH2");
-            if (!OperatingSystem.IsWindows())
-            {
-                // Some systems may not enable old (non-recommend) ciphers in SSL configuration and lead to failures when
-                // connecting to some SMTP servers, override the default policy to include all ciphers except MD5, SHA1, and NULL
-                _smtpClient.SslCipherSuitesPolicy = new CipherSuitesPolicy(Enum.GetValues<TlsCipherSuite>()
-                    .Where(cipher =>
-                    {
-                        var cipherName = cipher.ToString();
-                        // Exclude MD5, SHA1, and NULL ciphers for security reasons
-                        return !cipherName.EndsWith("MD5") && !cipherName.EndsWith("SHA") && !cipherName.EndsWith("NULL");
-                    }));
-            }
-            Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
-                TaskScheduler.Default);
+            // Some systems may not enable old (non-recommend) ciphers in TLS configuration and lead to failures when
+            // connecting to some SMTP servers, override the default policy to include all ciphers except MD5, SHA1, and NULL
+            _smtpClient.SslCipherSuitesPolicy = new CipherSuitesPolicy(Enum.GetValues<TlsCipherSuite>()
+                .Where(cipher =>
+                {
+                    var cipherName = cipher.ToString();
+                    // Exclude MD5, SHA1, and NULL ciphers for security reasons
+                    return !cipherName.EndsWith("MD5") && !cipherName.EndsWith("SHA") &&
+                           !cipherName.EndsWith("NULL");
+                }));
         }
+
+        Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
     }
 
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
@@ -76,15 +79,10 @@ public sealed class MailSender : IMailSender, IDisposable
 
     public async Task SendUrlAsync(MailContent content)
     {
-        var template = content.GlobalConfig.EmailTemplate switch
-        {
-            GlobalConfig.DefaultEmailTemplate => content.Localizer[nameof(Resources.Program.MailSender_Template)],
-            _ => content.GlobalConfig.EmailTemplate
-        };
-
+        // TODO: use GlobalConfig.DefaultEmailTemplate
         // TODO: use a string formatter library
         // TODO: update default template with new names
-        var emailContent = new StringBuilder(template)
+        var emailContent = new StringBuilder(content.Template)
             .Replace("{title}", content.Title)
             .Replace("{information}", content.Information)
             .Replace("{btnmsg}", content.ButtonMessage)
@@ -92,10 +90,10 @@ public sealed class MailSender : IMailSender, IDisposable
             .Replace("{userName}", content.UserName)
             .Replace("{url}", content.Url)
             .Replace("{nowtime}", content.Time)
-            .Replace("{platform}", $"{content.GlobalConfig.Title}::CTF")
+            .Replace("{platform}", content.Platform)
             .ToString();
 
-        var title = $"{content.Title} - {content.GlobalConfig.Title}::CTF";
+        var title = $"{content.Title} - {content.Platform}";
 
         if (!await SendEmailAsync(title, emailContent, content.Email))
             _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)],
@@ -182,13 +180,13 @@ public sealed class MailSender : IMailSender, IDisposable
 
     public void Dispose()
     {
-        if (!_disposed)
-        {
-            _disposed = true;
-            _cancellationTokenSource.Cancel();
-            _smtpClient?.Dispose();
-            GC.SuppressFinalize(this);
-        }
+        if (_disposed)
+            return;
+
+        _disposed = true;
+        _cancellationTokenSource.Cancel();
+        _smtpClient?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
 
@@ -210,13 +208,19 @@ public class MailContent(
     string email,
     string resetLink,
     MailType type,
+    // DO NOT use IStringLocalizer<Program> after construction
     IStringLocalizer<Program> localizer,
     IOptionsSnapshot<GlobalConfig> globalConfig)
 {
     /// <summary>
+    /// 邮件模板
+    /// </summary>
+    public string Template { get; } = localizer[nameof(Resources.Program.MailSender_Template)];
+
+    /// <summary>
     /// 邮件标题
     /// </summary>
-    public string Title { get; set; } = type switch
+    public string Title { get; } = type switch
     {
         MailType.ConfirmEmail => localizer[nameof(Resources.Program.MailSender_VerifyEmailTitle)],
         MailType.ChangeEmail => localizer[nameof(Resources.Program.MailSender_ChangeEmailTitle)],
@@ -227,7 +231,7 @@ public class MailContent(
     /// <summary>
     /// 邮件信息
     /// </summary>
-    public string Information { get; set; } = type switch
+    public string Information { get; } = type switch
     {
         MailType.ConfirmEmail => localizer[nameof(Resources.Program.MailSender_VerifyEmailContent), email],
         MailType.ChangeEmail => localizer[nameof(Resources.Program.MailSender_ChangeEmailContent)],
@@ -238,7 +242,7 @@ public class MailContent(
     /// <summary>
     /// 邮件按钮显示内容
     /// </summary>
-    public string ButtonMessage { get; set; } = type switch
+    public string ButtonMessage { get; } = type switch
     {
         MailType.ConfirmEmail => localizer[nameof(Resources.Program.MailSender_VerifyEmailButton)],
         MailType.ChangeEmail => localizer[nameof(Resources.Program.MailSender_ChangeEmailButton)],
@@ -249,24 +253,25 @@ public class MailContent(
     /// <summary>
     /// 用户名
     /// </summary>
-    public string UserName { get; set; } = userName;
+    public string UserName { get; } = userName;
 
     /// <summary>
     /// 用户邮箱
     /// </summary>
-    public string Email { get; set; } = email;
+    public string Email { get; } = email;
 
     /// <summary>
     /// 邮件链接
     /// </summary>
-    public string Url { get; set; } = resetLink;
+    public string Url { get; } = resetLink;
 
     /// <summary>
     /// 发信时间
     /// </summary>
-    public string Time { get; set; } = DateTimeOffset.UtcNow.ToString("u");
+    public string Time { get; } = DateTimeOffset.UtcNow.ToString("u");
 
-    public IStringLocalizer<Program> Localizer => localizer;
-
-    public GlobalConfig GlobalConfig => globalConfig.Value;
+    /// <summary>
+    /// 平台名称
+    /// </summary>
+    public string Platform { get; } = $"{globalConfig.Value.Title}::CTF";
 }

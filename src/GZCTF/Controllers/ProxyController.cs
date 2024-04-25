@@ -171,7 +171,8 @@ public class ProxyController(
             catch (SocketException e)
             {
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog), e.SocketErrorCode,
+                    Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog),
+                        e.SocketErrorCode,
                         $"{target.Address}:{target.Port}"],
                     TaskStatus.Failed, LogLevel.Debug);
                 return new JsonResult(new RequestResponse(
@@ -185,8 +186,7 @@ public class ProxyController(
             try
             {
                 var (tx, rx) = await RunProxy(stream, ws, token);
-                logger.SystemLog($"[{id}] {client.Address} -> {target.Address}:{target.Port}, tx {tx}, rx {rx}",
-                    TaskStatus.Success, LogLevel.Debug);
+                LogProxyResult(id, client, target, tx, rx);
             }
             catch (Exception e)
             {
@@ -203,6 +203,16 @@ public class ProxyController(
         {
             stream?.Dispose();
         }
+    }
+
+    void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
+    {
+        var shortId = id.ToString("N")[..8];
+        var clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
+        var targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
+
+        logger.SystemLog($"[{shortId}] {clientAddress} -> {targetAddress}:{target.Port}, tx {tx}, rx {rx}",
+            TaskStatus.Success, LogLevel.Debug);
     }
 
     /// <summary>

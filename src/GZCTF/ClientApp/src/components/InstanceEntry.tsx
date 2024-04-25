@@ -105,7 +105,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   useEffect(() => {
     setWithContainer(!!context.instanceEntry)
     const countdown = dayjs.duration(dayjs(context.closeTime ?? 0).diff(dayjs()))
-    setCanExtend(countdown.asMinutes() < 10)
+    setCanExtend(countdown.asMinutes() < (config.renewalWindow ?? 10))
   }, [context])
 
   const onExtend = () => {

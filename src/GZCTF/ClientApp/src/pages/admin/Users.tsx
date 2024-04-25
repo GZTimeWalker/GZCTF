@@ -17,6 +17,7 @@ import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiAccountOutline,
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiCheck,
@@ -206,6 +207,7 @@ const Users: FC = () => {
             onKeyDown={(e) => {
               !searching && e.key === 'Enter' && onSearch()
             }}
+            rightSection={<Icon path={mdiAccountOutline} size={1} />}
           />
           <Group position="right">
             <Text fw="bold" size="sm">

@@ -58,6 +58,15 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
             <Button
               size="xs"
               py={2}
+              variant="outline"
+              disabled={props.disabled}
+              onClick={() => setOpened(false)}
+            >
+              {t('common.modal.cancel')}
+            </Button>
+            <Button
+              size="xs"
+              py={2}
               color={props.color}
               disabled={props.disabled && !loading}
               loading={loading}
@@ -70,15 +79,6 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
               }}
             >
               {t('common.modal.confirm')}
-            </Button>
-            <Button
-              size="xs"
-              py={2}
-              variant="outline"
-              disabled={props.disabled}
-              onClick={() => setOpened(false)}
-            >
-              {t('common.modal.cancel')}
             </Button>
           </Group>
         </Stack>

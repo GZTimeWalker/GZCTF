@@ -1,6 +1,6 @@
 {
   "name": "gzctf-docs",
-  "version": "0.19.1",
+  "version": "0.19.3",
   "private": true,
   "scripts": {
     "dev": "next",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.2.2",
-    "next": "^14.1.4",
+    "next": "^14.2.2",
     "nextra": "^2.13.4",
     "nextra-theme-docs": "^2.13.4",
     "react": "^18.2.0",
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
-    "@types/react": "^18.2.75",
+    "@types/react": "^18.2.79",
     "typescript": "^5.4.5"
   }
 }

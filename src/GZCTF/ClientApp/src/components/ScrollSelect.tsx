@@ -21,18 +21,18 @@ export type SelectableItemComponent<I = object> = FC<PropsWithItem<SelectableIte
 
 interface ScrollSelectProps extends ScrollAreaProps {
   itemComponent: React.FC<any>
+  itemComponentProps?: any
   emptyPlaceholder?: React.ReactNode
   items?: any[]
   customClick?: boolean
   selectedId?: number | null
-  onSelectId: (item: any | null) => void
+  onSelect?: (item: any | null) => void
 }
 
 const useItemStyle = createStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
-    width: '100%',
     padding: `${rem(8)} ${theme.spacing.sm}`,
     userSelect: 'none',
 
@@ -76,37 +76,29 @@ export const SelectableItem = forwardRef<HTMLButtonElement, SelectableItemProps>
 const ScrollSelect: FC<ScrollSelectProps> = (props) => {
   const {
     itemComponent: ItemComponent,
+    itemComponentProps,
     emptyPlaceholder,
     items,
     selectedId,
-    onSelectId,
-    customClick,
+    onSelect,
     ...ScrollAreaProps
   } = props
 
   return (
-    <ScrollArea type="auto" {...ScrollAreaProps}>
+    <ScrollArea type="never" {...ScrollAreaProps}>
       {!items || items.length === 0 ? (
         <Center h="100%">{emptyPlaceholder}</Center>
       ) : (
         <Stack spacing={2} w="100%">
-          {customClick
-            ? items.map((item) => (
-                <ItemComponent
-                  key={item.id}
-                  onClick={() => onSelectId(item)}
-                  active={false}
-                  item={item}
-                />
-              ))
-            : items.map((item) => (
-                <ItemComponent
-                  key={item.id}
-                  onClick={() => onSelectId(item.id)}
-                  active={selectedId === item.id}
-                  item={item}
-                />
-              ))}
+          {items.map((item) => (
+            <ItemComponent
+              key={item.id}
+              onClick={onSelect && (() => onSelect(item.id))}
+              active={selectedId && selectedId === item.id}
+              item={item}
+              {...itemComponentProps}
+            />
+          ))}
         </Stack>
       )}
     </ScrollArea>

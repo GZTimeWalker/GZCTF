@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS build
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS build
 ARG TARGETPLATFORM
 COPY publish /build
 RUN cp -r /build/${TARGETPLATFORM} /publish
@@ -10,7 +10,7 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
 
 WORKDIR /app
 EXPOSE 8080
-RUN apk add --no-cache wget libpcap icu-data-full icu-libs ca-certificates && \
+RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs ca-certificates libgdiplus && \
     update-ca-certificates
 
 COPY --from=build /publish .
