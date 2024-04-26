@@ -135,6 +135,9 @@ const Traffic: FC = () => {
   const srollHeight = 'calc(100vh - 174px)'
   const headerHeight = rem(32)
 
+  challengeTraffic?.sort((a, b) => a.tag?.localeCompare(b.tag ?? '') ?? 0)
+  teamTraffic?.sort((a, b) => (a.teamId ?? 0) - (b.teamId ?? 0))
+
   return (
     <WithGameMonitorTab>
       {!challengeTraffic || challengeTraffic?.length === 0 ? (
