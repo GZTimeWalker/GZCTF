@@ -9,9 +9,6 @@
       "scoreboard": "Scoreboard",
       "submissionsheet": "Submissions"
     },
-    "delete": {
-      "all_traffic": "Delete all listed traffic"
-    },
     "finished": "Game Ended",
     "hide_solved": "Hide Solved",
     "join": "Join",
