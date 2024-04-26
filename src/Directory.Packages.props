@@ -6,7 +6,7 @@
     <PackageVersion Include="Aigamo.ResXGenerator" Version="4.2.0" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.0" />
     <PackageVersion Include="Docker.DotNet" Version="3.125.15" />
-    <PackageVersion Include="KubernetesClient" Version="13.0.26" />
+    <PackageVersion Include="KubernetesClient" Version="13.0.37" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.4" />
@@ -20,7 +20,7 @@
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.8.1" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.8.1" />
     <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.8.0-rc.1" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.11" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1" />
