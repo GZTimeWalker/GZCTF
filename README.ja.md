@@ -66,15 +66,19 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 
 ## Demo 🗿
 
-![](assets/demo-1.png)
-![](assets/demo-2.png)
-![](assets/demo-3.png)
-![](assets/demo-4.png)
-![](assets/demo-5.png)
-![](assets/demo-6.png)
-![](assets/demo-7.png)
-![](assets/demo-8.png)
-![](assets/demo-9.png)
+![index.png](docs/public/images/index.png)
+![game.challenges.png](docs/public/images/game.challenges.png)
+![game.scoreboard.png](docs/public/images/game.scoreboard.png)
+![admin.settings.png](docs/public/images/admin.settings.png)
+![admin.challenges.png](docs/public/images/admin.challenges.png)
+![admin.challenge.info.png](docs/public/images/admin.challenge.info.png)
+![admin.challenge.flags.png](docs/public/images/admin.challenge.flags.png)
+![admin.game.info.png](docs/public/images/admin.game.info.png)
+![admin.game.review.png](docs/public/images/admin.game.review.png)
+![admin.teams.png](docs/public/images/admin.teams.png)
+![admin.instances.png](docs/public/images/admin.instances.png)
+![monitor.game.events.png](docs/public/images/monitor.game.events.png)
+![monitor.game.submissions.png](docs/public/images/monitor.game.submissions.png)
 
 ## i18n について 🌐
 
