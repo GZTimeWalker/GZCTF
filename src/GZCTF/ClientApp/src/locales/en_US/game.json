@@ -1,13 +1,13 @@
 {
   "button": {
     "challenges": "Challenges",
-    "delete": {
-      "all_traffic": "Delete all listed traffic"
-    },
     "download": {
       "all_traffic": "Download all listed traffic",
       "scoreboard": "Scoreboard",
       "submissionsheet": "Submissions"
+    },
+    "delete": {
+      "all_traffic": "Delete all listed traffic"
     },
     "finished": "Game Ended",
     "hide_solved": "Hide Solved",
