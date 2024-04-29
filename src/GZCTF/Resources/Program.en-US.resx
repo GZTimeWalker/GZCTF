@@ -1032,4 +1032,7 @@
   <data name="Error_InternalServerError" xml:space="preserve">
     <value>Internal server error</value>
   </data>
+  <data name="Game_ChallengeDisabled" xml:space="preserve">
+      <value>Problem creating container failed</value>
+  </data>
 </root>

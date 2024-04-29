@@ -1032,4 +1032,7 @@
   <data name="Error_InternalServerError" xml:space="preserve">
     <value>服务器发生内部错误</value>
   </data>
+  <data name="Game_ChallengeDisabled" xml:space="preserve">
+      <value>题目创建容器失败</value>
+  </data>
 </root>

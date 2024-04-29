@@ -984,6 +984,10 @@ public class GameController(
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
+        if (!instance.Challenge.IsEnabled)
+            return BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeDisabled)]));
+        
         if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
                 StatusCodes.Status429TooManyRequests))

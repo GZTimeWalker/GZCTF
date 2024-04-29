@@ -1032,4 +1032,7 @@
   <data name="Error_InternalServerError" xml:space="preserve">
     <value>サーバーで内部エラーが発生しました</value>
   </data>
+  <data name="Game_ChallengeDisabled" xml:space="preserve">
+      <value>チャレンジのコンテナを作成できませんでした</value>
+  </data>
 </root>
