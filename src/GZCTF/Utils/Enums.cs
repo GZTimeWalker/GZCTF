@@ -409,3 +409,19 @@ public static class AnswerResultExtensions
             _ => "??"
         };
 }
+
+/// <summary>
+/// 系统错误信息，从 10000 开始
+/// </summary>
+public static class ErrorCodes
+{
+    /// <summary>
+    /// 比赛未开始
+    /// </summary>
+    public const int GameNotStarted = 10001;
+
+    /// <summary>
+    /// 比赛已结束
+    /// </summary>
+    public const int GameEnded = 10002;
+}

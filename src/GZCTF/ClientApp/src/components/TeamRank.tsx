@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api from '@Api'
+import { ErrorCodes } from '@Utils/Shared'
 
 const useStyle = createStyles((theme) => ({
   number: {
@@ -47,7 +48,7 @@ const TeamRank: FC<PaperProps> = (props) => {
   const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
 
   useEffect(() => {
-    if (error?.status === 204) {
+    if (error?.status === ErrorCodes.GameEnded) {
       navigate(`/games/${numId}`)
       showNotification({
         color: 'yellow',
