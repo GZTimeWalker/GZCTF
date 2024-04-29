@@ -1006,13 +1006,13 @@ public class GameController(
         }
 
         return await gameInstanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!,
-                context.Game!.ContainerCountLimit, token) switch
+                context.Game!, token) switch
         {
             null or (TaskStatus.Failed, null) => BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
             (TaskStatus.Denied, null) => BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
-                    context.Game.ContainerCountLimit])),
+                    context.Game!.ContainerCountLimit])),
             (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
             _ => throw new UnreachableException()
         };

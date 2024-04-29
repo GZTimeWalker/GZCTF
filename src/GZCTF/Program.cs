@@ -117,7 +117,7 @@ if (!GZCTF.Program.IsTesting)
                 builder.Configuration.GetConnectionString("Database") ?? "null"]);
         GZCTF.Program.ExitWithFatalMessage(
             GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
-    }    
+    }
 }
 
 #endregion Configuration
@@ -416,7 +416,7 @@ namespace GZCTF
 
             var error = context.ModelState.Values.Where(v => v.Errors.Count > 0)
                 .Select(v => v.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
-            
+
             return new JsonResult(new RequestResponse(error is [_, ..]
                 ? error
                 : localizer[nameof(Resources.Program.Model_ValidationFailed)]))

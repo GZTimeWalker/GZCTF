@@ -32,14 +32,14 @@ public interface IGameInstanceRepository : IRepository
     /// <summary>
     /// 创建容器实例
     /// </summary>
-    /// <param name="gameInstance">实例对象</param>
     /// <param name="team">队伍信息</param>
-    /// <param name="containerLimit">容器数量限制</param>
+    /// <param name="game">比赛对象</param>
     /// <param name="user">用户对象</param>
+    /// <param name="gameInstance">实例对象</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
-        int containerLimit = 3, CancellationToken token = default);
+        Game game, CancellationToken token = default);
 
     /// <summary>
     /// 销毁全部题目实例

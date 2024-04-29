@@ -112,7 +112,7 @@ public class GameInstanceRepository(
     }
 
     public async Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
-        int containerLimit = 3, CancellationToken token = default)
+        Game game, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(gameInstance.Challenge.ContainerImage) ||
             gameInstance.Challenge.ContainerExposePort is null)
@@ -125,7 +125,7 @@ public class GameInstanceRepository(
         }
 
         // containerLimit == 0 means unlimited
-        if (containerLimit > 0)
+        if (game.ContainerCountLimit > 0)
         {
             if (containerPolicy.Value.AutoDestroyOnLimitReached)
             {
@@ -134,7 +134,7 @@ public class GameInstanceRepository(
                     .OrderBy(i => i.Container!.StartedAt).ToListAsync(token);
 
                 GameInstance? first = running.FirstOrDefault();
-                if (running.Count >= containerLimit && first is not null)
+                if (running.Count >= game.ContainerCountLimit && first is not null)
                 {
                     logger.Log(
                         Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
@@ -150,7 +150,7 @@ public class GameInstanceRepository(
                     i => i.Participation == gameInstance.Participation &&
                          i.Container != null, token);
 
-                if (count >= containerLimit)
+                if (count >= game.ContainerCountLimit)
                     return new TaskResult<Container>(TaskStatus.Denied);
             }
         }
@@ -168,7 +168,7 @@ public class GameInstanceRepository(
             CPUCount = gameInstance.Challenge.CPUCount ?? 1,
             MemoryLimit = gameInstance.Challenge.MemoryLimit ?? 64,
             StorageLimit = gameInstance.Challenge.StorageLimit ?? 256,
-            EnableTrafficCapture = gameInstance.Challenge.EnableTrafficCapture,
+            EnableTrafficCapture = gameInstance.Challenge.EnableTrafficCapture && game.IsActive,
             ExposedPort = gameInstance.Challenge.ContainerExposePort ??
                           throw new ArgumentException(
                               localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
