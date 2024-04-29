@@ -22,14 +22,6 @@ public interface IGameInstanceRepository : IRepository
     public Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default);
 
     /// <summary>
-    /// 获取题目实例
-    /// </summary>
-    /// <param name="challenge">当前题目</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<GameInstance[]> GetInstances(GameChallenge challenge, CancellationToken token = default);
-
-    /// <summary>
     /// 检查抄袭行为
     /// </summary>
     /// <param name="submission">当前提交</param>
@@ -48,4 +40,12 @@ public interface IGameInstanceRepository : IRepository
     /// <returns></returns>
     public Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
         int containerLimit = 3, CancellationToken token = default);
+
+    /// <summary>
+    /// 销毁全部题目实例
+    /// </summary>
+    /// <param name="challenge">当前题目</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task DestroyAllInstances(GameChallenge challenge, CancellationToken token = default);
 }

@@ -606,7 +606,7 @@ public class GameController(
 
         ScoreboardModel scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
 
-        ScoreboardItem boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item)
+        ScoreboardItem boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out ScoreboardItem? item)
             ? item
             : new()
             {
@@ -983,7 +983,7 @@ public class GameController(
 
         GameInstance? instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
-        if (instance is null)
+        if (instance is null || !instance.Challenge.IsEnabled)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
@@ -1046,7 +1046,7 @@ public class GameController(
 
         GameInstance? instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
-        if (instance is null)
+        if (instance is null || !instance.Challenge.IsEnabled)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
@@ -1097,7 +1097,7 @@ public class GameController(
 
         GameInstance? instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
-        if (instance is null)
+        if (instance is null || !instance.Challenge.IsEnabled)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
@@ -1169,23 +1169,19 @@ public class GameController(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)])));
 
         if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUtc < DateTimeOffset.UtcNow)
-            return res.WithResult(new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_End)]))
-            {
-                // for client to handle this properly
-                StatusCode = StatusCodes.Status410Gone
-            });
+            return res.WithResult(new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_End)])));
 
-        if (challengeId > 0)
-        {
-            GameChallenge? challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
+        if (challengeId <= 0)
+            return res;
 
-            if (challenge is null)
-                return res.WithResult(NotFound(new RequestResponse(
-                    localizer[nameof(Resources.Program.Challenge_NotFound)],
-                    StatusCodes.Status404NotFound)));
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
 
-            res.Challenge = challenge;
-        }
+        if (challenge is null)
+            return res.WithResult(NotFound(new RequestResponse(
+                localizer[nameof(Resources.Program.Challenge_NotFound)],
+                StatusCodes.Status404NotFound)));
+
+        res.Challenge = challenge;
 
         return res;
     }
