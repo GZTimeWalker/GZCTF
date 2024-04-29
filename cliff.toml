@@ -61,7 +61,7 @@ commit_parsers = [
   { message = "^feat|Feat", group = "<!-- 0 -->⛰️ Features" },
   { message = "^fix", group = "<!-- 1 -->🐛 Bug Fixes" },
   { message = "^style", group = "<!-- 2 -->🎨 Styling" },
-  { message = "^chore\\(release\\): prepare for", skip = true },
+  { message = "^chore\\(release\\):", skip = true },
   { message = "^chore\\(deps\\)|deps", skip = true },
   { message = "^chore\\(pr\\)", skip = true },
   { message = "^chore\\(pull\\)", skip = true },

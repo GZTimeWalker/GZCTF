@@ -522,7 +522,7 @@
   <data name="Game_DeadlineExpired" xml:space="preserve">
     <value>提出期限が過ぎました</value>
   </data>
-  <data name="Game_End" xml:space="preserve">
+  <data name="Game_Ended" xml:space="preserve">
     <value>ゲームは終了しました</value>
   </data>
   <data name="Game_InOtherTeam" xml:space="preserve">

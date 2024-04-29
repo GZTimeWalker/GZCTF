@@ -110,7 +110,7 @@ public class GameController(
                 StatusCodes.Status404NotFound));
 
         if (!game.PracticeMode && game.EndTimeUtc < DateTimeOffset.UtcNow)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_End)]));
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded));
 
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
@@ -1170,7 +1170,7 @@ public class GameController(
 
         if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUtc < DateTimeOffset.UtcNow)
             return res.WithResult(
-                    BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_End)], ErrorCodes.GameEnded)));
+                    BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded)));
 
         if (challengeId <= 0)
             return res;

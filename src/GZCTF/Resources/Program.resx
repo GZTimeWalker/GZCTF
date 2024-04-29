@@ -522,7 +522,7 @@
   <data name="Game_DeadlineExpired" xml:space="preserve">
     <value>提交截止时间已过</value>
   </data>
-  <data name="Game_End" xml:space="preserve">
+  <data name="Game_Ended" xml:space="preserve">
     <value>比赛已结束</value>
   </data>
   <data name="Game_InOtherTeam" xml:space="preserve">
