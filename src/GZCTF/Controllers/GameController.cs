@@ -493,15 +493,22 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public IActionResult DeleteAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId)
     {
-        var filePath = Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}");
+        try
+        {
+            var filePath = Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}");
 
-        if (!Path.Exists(filePath))
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
-                StatusCodes.Status404NotFound));
+            if (!Path.Exists(filePath))
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
+                    StatusCodes.Status404NotFound));
 
-        Directory.Delete(filePath, true);
+            Directory.Delete(filePath, true);
 
-        return Ok();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new RequestResponse(e.Message));
+        }
     }
 
     /// <summary>
