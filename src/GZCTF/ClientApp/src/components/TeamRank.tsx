@@ -47,7 +47,7 @@ const TeamRank: FC<PaperProps> = (props) => {
   const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
 
   useEffect(() => {
-    if (error?.status === 410) {
+    if (error?.status === 204) {
       navigate(`/games/${numId}`)
       showNotification({
         color: 'yellow',

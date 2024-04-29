@@ -1169,7 +1169,11 @@ public class GameController(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)])));
 
         if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUtc < DateTimeOffset.UtcNow)
-            return res.WithResult(new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_End)])));
+            return res.WithResult(new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_End)]))
+            {
+                // use 204 to indicate the game has ended
+                StatusCode = StatusCodes.Status204NoContent
+            });
 
         if (challengeId <= 0)
             return res;
