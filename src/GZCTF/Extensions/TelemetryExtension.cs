@@ -66,33 +66,29 @@ public static class TelemetryExtension
         if (config.Prometheus.Port is { } port)
             app.UseOpenTelemetryPrometheusScrapingEndpoint(context =>
             {
-                if (context.Connection.LocalPort == port
-                    && string.Equals(
+                if (context.Connection.LocalPort != port
+                    || !string.Equals(
                         context.Request.Path.ToString().TrimEnd('/'),
                         "/metrics",
                         StringComparison.OrdinalIgnoreCase))
-                {
-                    // FIXME: workaround for prometheus
-                    context.Request.Headers.Accept = "application/openmetrics-text";
-                    return true;
-                }
+                    return false;
 
-                return false;
+                // FIXME: workaround for prometheus
+                context.Request.Headers.Accept = "application/openmetrics-text";
+                return true;
             });
         else
             app.UseOpenTelemetryPrometheusScrapingEndpoint(context =>
             {
-                if (string.Equals(
+                if (!string.Equals(
                         context.Request.Path.ToString().TrimEnd('/'),
                         "/metrics",
                         StringComparison.OrdinalIgnoreCase))
-                {
-                    // FIXME: workaround for prometheus
-                    context.Request.Headers.Accept = "application/openmetrics-text";
-                    return true;
-                }
+                    return false;
 
-                return false;
+                // FIXME: workaround for prometheus
+                context.Request.Headers.Accept = "application/openmetrics-text";
+                return true;
             });
     }
 }
