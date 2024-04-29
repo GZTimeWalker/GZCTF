@@ -17,6 +17,7 @@ import api, { PostInfoModel } from '@Api'
 const useStyles = createStyles((theme) => ({
   posts: {
     width: '75%',
+    minWidth: 'calc(100% - 320px)',
 
     [theme.fn.smallerThan(900)]: {
       width: '100%',
@@ -40,6 +41,7 @@ const useStyles = createStyles((theme) => ({
     paddingBottom: theme.spacing.xl,
     paddingLeft: theme.spacing.md,
     width: '18vw',
+    maxWidth: '320px',
     minWidth: '230px',
     display: 'flex',
     flexDirection: 'column',
@@ -115,19 +117,21 @@ const Home: FC = () => {
                     <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
                   ))}
             </Stack>
-            <nav className={classes.wrapper}>
-              <div className={classes.inner}>
-                <Stack>
-                  <Group>
-                    <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
-                    <Title order={3}>
-                      <Trans i18nKey="common.content.home.recent_games" />
-                    </Title>
-                  </Group>
-                  {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}
-                </Stack>
-              </div>
-            </nav>
+            {!isMobile && (
+              <nav className={classes.wrapper}>
+                <div className={classes.inner}>
+                  <Stack>
+                    <Group>
+                      <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors.brand[4]} />
+                      <Title order={3}>
+                        <Trans i18nKey="common.content.home.recent_games" />
+                      </Title>
+                    </Group>
+                    {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}
+                  </Stack>
+                </div>
+              </nav>
+            )}
           </Group>
         </Stack>
       </Stack>

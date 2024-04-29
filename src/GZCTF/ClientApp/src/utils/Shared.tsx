@@ -426,3 +426,16 @@ export const HunamizeSize = (size: number) => {
     return `${(size / 1024 / 1024 / 1024).toFixed(2)} GiB`
   }
 }
+
+/** 系统错误信息 */
+export const enum ErrorCodes {
+  /**
+   * 比赛未开始
+   */
+  GameNotStarted = 10001,
+
+  /**
+   * 比赛已结束
+   */
+  GameEnded = 10002,
+}

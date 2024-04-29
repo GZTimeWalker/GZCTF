@@ -1,6 +1,6 @@
 {
   "name": "gzctf-docs",
-  "version": "0.19.3",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next",
