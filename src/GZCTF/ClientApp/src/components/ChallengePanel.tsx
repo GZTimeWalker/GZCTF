@@ -148,6 +148,7 @@ const ChallengePanel: FC = () => {
         {game?.writeupRequired && (
           <>
             <Button
+              px="sm"
               leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
               onClick={() => setWriteupSubmitOpened(true)}
             >
@@ -159,6 +160,7 @@ const ChallengePanel: FC = () => {
         <Switch
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}
+          maw="10rem"
           label={
             <Text size="md" fw={700}>
               {t('game.button.hide_solved')}
