@@ -346,7 +346,7 @@ public class AccountController(
         {
             var oldName = user.UserName;
 
-            var unameRes = await userManager.SetUserNameAsync(user, model.UserName);
+            IdentityResult unameRes = await userManager.SetUserNameAsync(user, model.UserName);
 
             if (!unameRes.Succeeded)
                 return HandleIdentityError(unameRes.Errors);
@@ -356,7 +356,7 @@ public class AccountController(
         }
 
         user!.UpdateUserInfo(model);
-        var result = await userManager.UpdateAsync(user);
+        IdentityResult result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);

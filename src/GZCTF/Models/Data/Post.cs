@@ -7,6 +7,15 @@ namespace GZCTF.Models.Data;
 [MemoryPackable]
 public partial class Post
 {
+    #region Limitations
+
+    /// <summary>
+    /// 最大标题长度
+    /// </summary>
+    public const int MaxTitleLength = 50;
+
+    #endregion
+
     [Key]
     [MaxLength(8)]
     public string Id { get; set; } = Guid.NewGuid().ToString()[..8];
@@ -77,15 +86,6 @@ public partial class Post
 
         return this;
     }
-
-    #region Limitations
-
-    /// <summary>
-    /// 最大标题长度
-    /// </summary>
-    public const int MaxTitleLength = 50;
-
-    #endregion
 
     internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUtc:s}:{Guid.NewGuid()}".ToSHA256String()[4..12];
 }

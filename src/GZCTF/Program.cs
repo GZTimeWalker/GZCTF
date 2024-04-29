@@ -48,7 +48,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    IConfigurationSection kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
 });

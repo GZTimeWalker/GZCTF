@@ -29,9 +29,9 @@ public class KubernetesMetadata : ContainerProviderMetadata
 public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetadata>
 {
     const string NetworkPolicy = "gzctf-policy";
-    readonly KubernetesMetadata _kubernetesMetadata;
 
     readonly Kubernetes _kubernetesClient;
+    readonly KubernetesMetadata _kubernetesMetadata;
 
     public KubernetesProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> options,
         ILogger<KubernetesProvider> logger)

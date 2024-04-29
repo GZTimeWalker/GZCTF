@@ -141,7 +141,7 @@ public struct BloodBonus(long init = BloodBonus.DefaultValue)
     const int Mask = 0x3ff;
     const int Base = 1000;
 
-    public long Val { get; private set; } = init;
+    public long Val { get; } = init;
 
     public static BloodBonus FromValue(long value)
     {

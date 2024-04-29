@@ -86,7 +86,7 @@ public class InfoController(
     [ProducesResponseType(typeof(ClientConfig), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientConfig(CancellationToken token = default)
     {
-        var data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
+        ClientConfig data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
             entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
@@ -107,7 +107,7 @@ public class InfoController(
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientCaptchaInfo(CancellationToken token = default)
     {
-        var data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
+        ClientCaptchaInfoModel data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
             entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);

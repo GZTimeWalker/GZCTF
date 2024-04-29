@@ -28,8 +28,6 @@ public class ProxyController(
 {
     const int BufferSize = 1024 * 4;
     const uint ConnectionLimit = 64;
-    readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
-    readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
     static readonly JsonSerializerOptions _jsonOptions =
         new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
@@ -39,6 +37,9 @@ public class ProxyController(
 
     static readonly DistributedCacheEntryOptions _validOption =
         new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
+
+    readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
+    readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
     /// <summary>
     /// 采用 websocket 代理 TCP 流量
@@ -208,8 +209,8 @@ public class ProxyController(
     void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
     {
         var shortId = id.ToString("N")[..8];
-        var clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
-        var targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
+        IPAddress clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
+        IPAddress targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
 
         logger.SystemLog($"[{shortId}] {clientAddress} -> {targetAddress}:{target.Port}, tx {tx}, rx {rx}",
             TaskStatus.Success, LogLevel.Debug);

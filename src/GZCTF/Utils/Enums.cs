@@ -345,7 +345,7 @@ public enum ChallengeTag : byte
     Hardware = 7,
     Mobile = 8,
     PPC = 9,
-    AI = 10,
+    AI = 10
 }
 
 /// <summary>

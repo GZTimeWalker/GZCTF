@@ -29,17 +29,13 @@ public static class TelemetryExtension
             metrics.AddProcessInstrumentation();
 
             if (config.Prometheus.Enable)
-            {
                 metrics.AddPrometheusExporter(options =>
                 {
                     options.DisableTotalNameSuffixForCounters = !config.Prometheus.TotalNameSuffixForCounters;
                 });
-            }
 
             if (config.Console.Enable)
-            {
                 metrics.AddConsoleExporter();
-            }
         });
 
         otl.WithTracing(tracing =>
@@ -50,22 +46,16 @@ public static class TelemetryExtension
             tracing.AddRedisInstrumentation();
             tracing.AddNpgsql();
             if (config.Console.Enable)
-            {
                 tracing.AddConsoleExporter();
-            }
         });
 
         if (config.AzureMonitor.Enable)
-        {
             otl.UseAzureMonitor(
                 options => options.ConnectionString = config.AzureMonitor.ConnectionString);
-        }
 
         if (config.OpenTelemetry.Enable)
-        {
             otl.UseOtlpExporter(config.OpenTelemetry.Protocol,
                 new(config.OpenTelemetry.EndpointUri ?? "http://localhost:4317"));
-        }
     }
 
     public static void UseTelemetry(this IApplicationBuilder app, TelemetryConfig? config)

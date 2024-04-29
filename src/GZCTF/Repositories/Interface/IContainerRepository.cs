@@ -5,13 +5,6 @@ namespace GZCTF.Repositories.Interface;
 public interface IContainerRepository : IRepository
 {
     /// <summary>
-    /// 获取全部容器信息
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<List<Container>> GetContainers(CancellationToken token = default);
-
-    /// <summary>
     /// 根据容器数据库 ID 获取容器
     /// </summary>
     /// <param name="guid">容器数据库 ID</param>
@@ -59,7 +52,7 @@ public interface IContainerRepository : IRepository
     public Task ExtendLifetime(Container container, TimeSpan time, CancellationToken token = default);
 
     /// <summary>
-    /// 创建容器
+    /// 销毁容器
     /// </summary>
     /// <param name="container"></param>
     /// <param name="token"></param>

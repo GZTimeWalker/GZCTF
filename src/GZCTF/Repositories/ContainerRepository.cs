@@ -25,9 +25,6 @@ public class ContainerRepository(
             .Include(c => c.GameInstance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);
 
-    public Task<List<Container>> GetContainers(CancellationToken token = default) =>
-        Context.Containers.ToListAsync(token);
-
     public async Task<ContainerInstanceModel[]> GetContainerInstances(CancellationToken token = default) =>
         (await Context.Containers
             .Where(c => c.GameInstance != null)
@@ -77,4 +74,7 @@ public class ContainerRepository(
             return false;
         }
     }
+
+    public Task<List<Container>> GetContainers(CancellationToken token = default) =>
+        Context.Containers.ToListAsync(token);
 }
