@@ -83,6 +83,8 @@ public class ContainerPolicy
 /// </summary>
 public class GlobalConfig
 {
+    public const string DefaultEmailTemplate = "default";
+
     /// <summary>
     /// 平台前缀名称
     /// </summary>
@@ -103,8 +105,6 @@ public class GlobalConfig
     /// </summary>
     // TODO: email template validation for MailContent
     public string EmailTemplate { get; set; } = DefaultEmailTemplate;
-
-    public const string DefaultEmailTemplate = "default";
 }
 
 /// <summary>

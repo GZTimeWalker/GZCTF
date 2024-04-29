@@ -125,7 +125,7 @@ public static class LogHelper
 
     public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
     {
-        var loggerConfig = new LoggerConfiguration()
+        LoggerConfiguration loggerConfig = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
@@ -155,9 +155,7 @@ public static class LogHelper
             .WriteTo.SignalR(serviceProvider);
 
         if (configuration.GetSection("Logging").GetSection("Loki") is { } lokiSection && lokiSection.Exists())
-        {
             if (lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
-            {
                 loggerConfig = loggerConfig.WriteTo.GrafanaLoki(
                     lokiOptions.EndpointUri,
                     lokiOptions.Labels ?? [new() { Key = "app", Value = "gzctf" }],
@@ -165,8 +163,6 @@ public static class LogHelper
                     lokiOptions.Credentials,
                     lokiOptions.Tenant,
                     (LogEventLevel)(lokiOptions.MinimumLevel ?? LogLevel.Trace));
-            }
-        }
 
         return loggerConfig.CreateLogger();
     }

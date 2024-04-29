@@ -110,6 +110,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **南陽師範学院新人戦 NYNUCTF S4**
 - **商丘師範学院初回ネットワークセキュリティ新人戦**
 - **蘇州市職業大学 2023 年冬季新人戦 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
+- **北京航空航天大学 BUAACTF 2024**
 
 _順番は順位との関係はありません。追加ための PR は大歓迎。_
 

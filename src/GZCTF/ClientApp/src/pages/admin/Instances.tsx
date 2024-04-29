@@ -3,6 +3,7 @@ import {
   Box,
   Code,
   Group,
+  Input,
   Paper,
   ScrollArea,
   Select,
@@ -225,16 +226,36 @@ const Instances: FC = () => {
                     <tr key={inst.containerGuid}>
                       <td>
                         <Box w="100%" h="100%">
-                          <Text truncate size="sm" fw="bold" lineClamp={1}>
-                            {inst.team?.name}
-                          </Text>
+                          <Input
+                            variant="unstyled"
+                            value={inst.team?.name ?? 'Team'}
+                            readOnly
+                            sx={() => ({
+                              input: {
+                                userSelect: 'none',
+                                lineHeight: 1,
+                                fontWeight: 700,
+                                height: '1.5rem',
+                              },
+                            })}
+                          />
                         </Box>
                       </td>
                       <td>
                         <Box w="100%" h="100%">
-                          <Text truncate size="sm" fw="bold" lineClamp={1}>
-                            {inst.challenge?.title}
-                          </Text>
+                          <Input
+                            variant="unstyled"
+                            value={inst.challenge?.title ?? 'Challenge'}
+                            readOnly
+                            sx={() => ({
+                              input: {
+                                userSelect: 'none',
+                                lineHeight: 1,
+                                fontWeight: 700,
+                                height: '1.5rem',
+                              },
+                            })}
+                          />
                         </Box>
                       </td>
                       <td>

@@ -29,6 +29,7 @@ public class EditController(
     IPostRepository postRepository,
     IContainerRepository containerRepository,
     IGameChallengeRepository challengeRepository,
+    IGameInstanceRepository instanceRepository,
     IGameNoticeRepository gameNoticeRepository,
     IGameRepository gameRepository,
     IContainerManager containerService,
@@ -540,8 +541,8 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        // NOTE: IsEnabled can only be updated outside of the edit page
-        if (model.IsEnabled == true && !res.Flags.Any() && res.Type != ChallengeType.DynamicContainer)
+        // NOTE: IsEnabled can only be updated outside the edit page
+        if (model.IsEnabled == true && res.Flags.Count == 0 && res.Type != ChallengeType.DynamicContainer)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NoFlag)]));
 
         if (model.EnableTrafficCapture is true && !res.Type.IsContainer())
@@ -570,6 +571,9 @@ public class EditController(
         }
         else
         {
+            if (!res.Type.IsContainer())
+                await instanceRepository.DestroyAllInstances(res, token);
+
             await challengeRepository.SaveAsync(token);
         }
 

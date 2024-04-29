@@ -11,6 +11,7 @@ namespace GZCTF.Models;
 public class AppDbContext(DbContextOptions<AppDbContext> options) :
     IdentityDbContext<UserInfo, IdentityRole<Guid>, Guid>(options), IDataProtectionKeyContext
 {
+    internal static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
     public DbSet<Post> Posts { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;
     public DbSet<Team> Teams { get; set; } = default!;
@@ -32,8 +33,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
-
-    internal static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(

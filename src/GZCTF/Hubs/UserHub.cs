@@ -12,7 +12,6 @@ public class UserHub : Hub<IUserClient>
         HttpContext? context = Context.GetHttpContext();
 
         if (context is null
-            || !await HubHelper.HasUser(context)
             || !context.Request.Query.TryGetValue("game", out StringValues gameId)
             || !int.TryParse(gameId, out var gId))
         {

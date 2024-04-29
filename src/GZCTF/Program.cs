@@ -48,7 +48,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    IConfigurationSection kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
 });
@@ -98,6 +98,7 @@ else
 #region Configuration
 
 if (!GZCTF.Program.IsTesting)
+{
     try
     {
         builder.Configuration.AddEntityConfiguration(options =>
@@ -117,6 +118,7 @@ if (!GZCTF.Program.IsTesting)
         GZCTF.Program.ExitWithFatalMessage(
             GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
     }
+}
 
 #endregion Configuration
 
@@ -406,21 +408,17 @@ namespace GZCTF
 
         public static IActionResult InvalidModelStateHandler(ActionContext context)
         {
-            string? errors = null;
             var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             if (context.ModelState.ErrorCount <= 0)
-                return new JsonResult(
-                    new RequestResponse(errors is [_, ..]
-                        ? errors
-                        : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
+                return new JsonResult(new RequestResponse(
+                        localizer[nameof(Resources.Program.Model_ValidationFailed)]))
                 { StatusCode = 400 };
 
-            errors = (from val in context.ModelState.Values
-                      where val.Errors.Count > 0
-                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+            var error = context.ModelState.Values.Where(v => v.Errors.Count > 0)
+                .Select(v => v.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
-            return new JsonResult(new RequestResponse(errors is [_, ..]
-                ? errors
+            return new JsonResult(new RequestResponse(error is [_, ..]
+                ? error
                 : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
             { StatusCode = 400 };
         }

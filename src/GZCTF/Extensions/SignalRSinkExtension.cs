@@ -41,7 +41,7 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
                     Msg = logEvent.RenderMessage(),
                     UserName = LogHelper.GetStringValue(userName, "Anonymous"),
                     IP = LogHelper.GetStringValue(ip),
-                    Status = LogHelper.GetStringValue(status),
+                    Status = LogHelper.GetStringValue(status)
                 }).Wait();
         }
         catch

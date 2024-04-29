@@ -15,12 +15,12 @@ public static class DatabaseSinkExtension
 
 public class DatabaseSink : ILogEventSink, IDisposable
 {
-    readonly IServiceProvider _serviceProvider;
-
-    DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
-    readonly CancellationTokenSource _tokenSource = new();
     readonly ConcurrentQueue<LogModel> _logBuffer = [];
     readonly AsyncManualResetEvent _resetEvent = new();
+    readonly IServiceProvider _serviceProvider;
+    readonly CancellationTokenSource _tokenSource = new();
+
+    DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
 
     public DatabaseSink(IServiceProvider serviceProvider)
     {

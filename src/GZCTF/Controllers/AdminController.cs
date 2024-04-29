@@ -206,7 +206,7 @@ public class AdminController(
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
     {
         var loweredHint = hint.ToLower();
-        var data = await userManager.Users.Where(item =>
+        UserInfo[] data = await userManager.Users.Where(item =>
             item.UserName!.ToLower().Contains(loweredHint) ||
             item.StdNumber.ToLower().Contains(loweredHint) ||
             item.Email!.ToLower().Contains(loweredHint) ||
@@ -301,7 +301,7 @@ public class AdminController(
 
         if (model.UserName is not null && model.UserName != user.UserName)
         {
-            var result = await userManager.SetUserNameAsync(user, model.UserName);
+            IdentityResult result = await userManager.SetUserNameAsync(user, model.UserName);
 
             if (!result.Succeeded)
                 return HandleIdentityError(result.Errors);
@@ -309,7 +309,7 @@ public class AdminController(
 
         if (model.Email is not null && model.Email != user.Email)
         {
-            var result = await userManager.SetEmailAsync(user, model.Email);
+            IdentityResult result = await userManager.SetEmailAsync(user, model.Email);
 
             if (!result.Succeeded)
                 return HandleIdentityError(result.Errors);

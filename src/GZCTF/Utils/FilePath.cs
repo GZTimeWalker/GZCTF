@@ -38,7 +38,7 @@ static class FilePath
                     Program.StaticLocalizer[nameof(Resources.Program.Init_NoFilesDir), Path.GetFullPath(_base)]);
         }
 
-        await using (var versionFile = File.Open(Path.Combine(_base, "version.txt"), FileMode.Create))
+        await using (FileStream versionFile = File.Open(Path.Combine(_base, "version.txt"), FileMode.Create))
         await using (var writer = new StreamWriter(versionFile))
         {
             await writer.WriteLineAsync(typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown");

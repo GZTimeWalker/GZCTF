@@ -13,14 +13,14 @@ namespace GZCTF.Services;
 
 public sealed class MailSender : IMailSender, IDisposable
 {
-    private readonly ConcurrentQueue<MailContent> _mailQueue = new();
-    private readonly EmailConfig? _options;
-    private readonly ILogger<MailSender> _logger;
-    private readonly SmtpClient? _smtpClient;
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
-    private readonly CancellationToken _cancellationToken;
-    private readonly AsyncManualResetEvent _resetEvent = new();
-    private bool _disposed;
+    readonly CancellationToken _cancellationToken;
+    readonly CancellationTokenSource _cancellationTokenSource = new();
+    readonly ILogger<MailSender> _logger;
+    readonly ConcurrentQueue<MailContent> _mailQueue = new();
+    readonly EmailConfig? _options;
+    readonly AsyncManualResetEvent _resetEvent = new();
+    readonly SmtpClient? _smtpClient;
+    bool _disposed;
 
     public MailSender(
         IOptions<EmailConfig> options,
@@ -37,7 +37,6 @@ public sealed class MailSender : IMailSender, IDisposable
         _smtpClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
         if (!OperatingSystem.IsWindows())
-        {
             // Some systems may not enable old (non-recommend) ciphers in TLS configuration and lead to failures when
             // connecting to some SMTP servers, override the default policy to include all ciphers except MD5, SHA1, and NULL
             _smtpClient.SslCipherSuitesPolicy = new CipherSuitesPolicy(Enum.GetValues<TlsCipherSuite>()
@@ -48,10 +47,20 @@ public sealed class MailSender : IMailSender, IDisposable
                     return !cipherName.EndsWith("MD5") && !cipherName.EndsWith("SHA") &&
                            !cipherName.EndsWith("NULL");
                 }));
-        }
 
         Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+        _cancellationTokenSource.Cancel();
+        _smtpClient?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     public async Task<bool> SendEmailAsync(string subject, string content, string to)
@@ -64,7 +73,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
         try
         {
-            await _smtpClient!.SendAsync(msg, cancellationToken: _cancellationToken);
+            await _smtpClient!.SendAsync(msg, _cancellationToken);
 
             _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to],
                 TaskStatus.Success, LogLevel.Information);
@@ -100,7 +109,19 @@ public sealed class MailSender : IMailSender, IDisposable
                 TaskStatus.Failed);
     }
 
-    private async Task MailSenderWorker()
+    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink,
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
+        SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail, localizer, options);
+
+    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink,
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
+        SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail, localizer, options);
+
+    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink,
+        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
+        SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword, localizer, options);
+
+    async Task MailSenderWorker()
     {
         if (_smtpClient is null)
             return;
@@ -113,21 +134,15 @@ public sealed class MailSender : IMailSender, IDisposable
             try
             {
                 if (!_smtpClient.IsConnected)
-                {
                     await _smtpClient.ConnectAsync(_options!.Smtp!.Host, _options.Smtp.Port!.Value,
                         cancellationToken: _cancellationToken);
-                }
 
                 if (!_smtpClient.IsAuthenticated)
-                {
                     await _smtpClient.AuthenticateAsync(_options!.UserName, _options.Password,
-                        cancellationToken: _cancellationToken);
-                }
+                        _cancellationToken);
 
-                while (_mailQueue.TryDequeue(out var content))
-                {
+                while (_mailQueue.TryDequeue(out MailContent? content))
                     await SendUrlAsync(content);
-                }
             }
             catch (Exception e)
             {
@@ -138,22 +153,10 @@ public sealed class MailSender : IMailSender, IDisposable
             }
             finally
             {
-                await _smtpClient.DisconnectAsync(true, cancellationToken: _cancellationToken);
+                await _smtpClient.DisconnectAsync(true, _cancellationToken);
             }
         }
     }
-
-    public bool SendConfirmEmailUrl(string? userName, string? email, string? confirmLink,
-        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
-        SendUrlIfPossible(userName, email, confirmLink, MailType.ConfirmEmail, localizer, options);
-
-    public bool SendChangeEmailUrl(string? userName, string? email, string? resetLink,
-        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
-        SendUrlIfPossible(userName, email, resetLink, MailType.ChangeEmail, localizer, options);
-
-    public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink,
-        IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
-        SendUrlIfPossible(userName, email, resetLink, MailType.ResetPassword, localizer, options);
 
     bool SendUrlIfPossible(string? userName, string? email, string? resetLink, MailType type,
         IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options)
@@ -176,17 +179,9 @@ public sealed class MailSender : IMailSender, IDisposable
         return true;
     }
 
-    ~MailSender() => Dispose();
-
-    public void Dispose()
+    ~MailSender()
     {
-        if (_disposed)
-            return;
-
-        _disposed = true;
-        _cancellationTokenSource.Cancel();
-        _smtpClient?.Dispose();
-        GC.SuppressFinalize(this);
+        Dispose();
     }
 }
 
