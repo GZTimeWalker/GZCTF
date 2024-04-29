@@ -23,7 +23,7 @@ export interface RecentGameProps {
   game: BasicGameInfoModel
 }
 
-const POSTER_HEIGHT = '15vh'
+const POSTER_HEIGHT = '10rem'
 
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()

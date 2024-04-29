@@ -1,6 +1,6 @@
 import {
-  Box,
   Card,
+  Center,
   Code,
   createStyles,
   Divider,
@@ -75,11 +75,11 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
       })}
     >
       <Stack spacing="sm" pos="relative" style={{ zIndex: 99 }}>
-        <Group noWrap position="apart" spacing={2}>
+        <Group h="30px" noWrap position="apart" spacing={2}>
           <Text lineClamp={1} fw={700} size={theme.fontSizes.lg}>
             {challenge.title}
           </Text>
-          <Box miw="1.5em">{solved && <Icon path={mdiFlag} size={1} color={colorStr} />}</Box>
+          <Center miw="1.5em">{solved && <Icon path={mdiFlag} size={1} color={colorStr} />}</Center>
         </Group>
         <Divider />
         <Group noWrap position="apart" align="center" spacing={2}>
