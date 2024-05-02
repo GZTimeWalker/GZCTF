@@ -14,9 +14,9 @@ import {
   Text,
   TextInput,
   Title,
-  createStyles,
   useMantineTheme,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -291,7 +291,7 @@ const GameTeamReview: FC = () => {
 
   return (
     <WithGameEditTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       isLoading={!participations}
       head={
         <Group justify="space-between" wrap="nowrap" w="100%">
@@ -309,7 +309,8 @@ const GameTeamReview: FC = () => {
                 clearable
                 data={orgs.map((org) => ({ value: org, label: org }))}
                 value={selectedOrg}
-                onChange={(value: string) => setSelectedOrg(value)}
+                // TODO: fix select component
+                // onChange={(value: string) => setSelectedOrg(value)}
               />
             )}
             <Select
@@ -317,7 +318,8 @@ const GameTeamReview: FC = () => {
               clearable
               data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
               value={selectedStatus}
-              onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
+              // TODO: fix select component
+              // onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
             />
           </Group>
         </Group>
@@ -350,7 +352,8 @@ const GameTeamReview: FC = () => {
         )}
       </ScrollArea>
       <Pagination
-        justify="right"
+        // ="right"
+        // TODO: pagination alignment
         value={activePage}
         onChange={setPage}
         total={(filteredParticipations?.length ?? 0) / PART_NUM_PER_PAGE + 1}

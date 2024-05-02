@@ -1,17 +1,27 @@
-import { ActionIcon, Avatar, Card, Group, PaperProps, Stack, Text } from '@mantine/core'
+import {
+  ActionIcon,
+  Avatar,
+  Card,
+  Group,
+  CardProps,
+  Stack,
+  Text,
+  useMantineColorScheme,
+} from '@mantine/core'
 import { mdiDownload } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { WriteupInfoModel } from '@Api'
 
-interface TeamWriteupCardProps extends PaperProps {
+interface TeamWriteupCardProps extends CardProps {
   writeup: WriteupInfoModel
   selected?: boolean
   onClick: () => void
 }
 
 const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props }) => {
+  const { colorScheme } = useMantineColorScheme()
   return (
     <Card
       {...props}

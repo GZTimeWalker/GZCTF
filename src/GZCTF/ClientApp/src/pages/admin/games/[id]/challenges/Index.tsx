@@ -93,7 +93,7 @@ const GameChallengeEdit: FC = () => {
 
   return (
     <WithGameEditTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       isLoading={!challenges}
       head={
         <>
@@ -101,14 +101,15 @@ const GameChallengeEdit: FC = () => {
             placeholder={t('admin.content.show_all')}
             clearable
             searchable
-            nothingFound={t('admin.content.nothing_found')}
             value={category}
-            onChange={(value: ChallengeTag) => setCategory(value)}
-            itemComponent={ChallengeTagItem}
-            data={Object.entries(ChallengeTag).map((tag) => {
-              const data = challengeTagLabelMap.get(tag[1])
-              return { value: tag[1], ...data }
-            })}
+            // TODO: fix select component
+            // nothingFound={t('admin.content.nothing_found')}
+            // onChange={(value: ChallengeTag) => setCategory(value)}
+            // itemComponent={ChallengeTagItem}
+            // data={Object.entries(ChallengeTag).map((tag) => {
+            //   const data = challengeTagLabelMap.get(tag[1])
+            //   return { value: tag[1], ...data }
+            // })}
           />
           <Group justify="right">
             <Button
@@ -138,12 +139,15 @@ const GameChallengeEdit: FC = () => {
           </Center>
         ) : (
           <SimpleGrid
-            cols={2}
+            // cols={2}
             pr={6}
-            breakpoints={[
-              { maxWidth: 3600, cols: 2, spacing: 'sm' },
-              { maxWidth: 1800, cols: 1, spacing: 'sm' },
-            ]}
+            // breakpoints={[
+            //   { maxWidth: 3600, cols: 2, spacing: 'sm' },
+            //   { maxWidth: 1800, cols: 1, spacing: 'sm' },
+            // ]}
+
+            cols={{ base: 1, lg: 2 }}
+            spacing="sm"
           >
             {filteredChallenges &&
               filteredChallenges.map((challenge) => (

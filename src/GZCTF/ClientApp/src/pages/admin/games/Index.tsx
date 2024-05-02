@@ -81,7 +81,7 @@ const Games: FC = () => {
   return (
     <AdminPage
       isLoading={!games}
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       head={
         <>
           <Button

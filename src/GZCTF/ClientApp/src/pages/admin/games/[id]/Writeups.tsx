@@ -28,7 +28,7 @@ const GameWriteups: FC = () => {
 
   return (
     <WithGameTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       contentPos="right"
       head={
         <Button

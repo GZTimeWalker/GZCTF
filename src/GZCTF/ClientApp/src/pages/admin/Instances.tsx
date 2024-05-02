@@ -163,13 +163,14 @@ const Instances: FC = () => {
               placeholder={t('admin.placeholder.instances.teams.select')}
               value={selectedTeamId}
               onChange={(id) => setSelectedTeamId(id)}
-              icon={<Icon path={mdiAccountGroupOutline} size={1} />}
-              itemComponent={SelectTeamItem}
-              data={
-                teams?.map((team) => ({ value: String(team.id), label: team.name, ...team })) ?? []
-              }
-              filter={(query, team) => team.name.includes(query) || team.value.includes(query)}
-              nothingFound={t('admin.placeholder.instances.teams.not_found')}
+              // TODO: fix select component
+              // icon={<Icon path={mdiAccountGroupOutline} size={1} />}
+              // itemComponent={SelectTeamItem}
+              // data={
+              //   teams?.map((team) => ({ value: String(team.id), label: team.name, ...team })) ?? []
+              // }
+              // filter={(query, team) => team.name.includes(query) || team.value.includes(query)}
+              // nothingFound={t('admin.placeholder.instances.teams.not_found')}
             />
             <Select
               w="48%"
@@ -177,19 +178,20 @@ const Instances: FC = () => {
               clearable
               placeholder={t('admin.placeholder.instances.challenges.select')}
               onChange={(id) => setSelectedChallengeId(id)}
-              icon={<Icon path={mdiPuzzleOutline} size={1} />}
-              itemComponent={SelectChallengeItem}
-              data={
-                challenge?.map((challenge) => ({
-                  value: String(challenge.id),
-                  label: challenge.title,
-                  ...challenge,
-                })) ?? []
-              }
-              filter={(query, challenge) =>
-                challenge.title.includes(query) || challenge.value.includes(query)
-              }
-              nothingFound={t('admin.placeholder.instances.challenges.not_found')}
+              // TODO: fix select component
+              // icon={<Icon path={mdiPuzzleOutline} size={1} />}
+              // itemComponent={SelectChallengeItem}
+              // data={
+              //   challenge?.map((challenge) => ({
+              //     value: String(challenge.id),
+              //     label: challenge.title,
+              //     ...challenge,
+              //   })) ?? []
+              // }
+              // filter={(query, challenge) =>
+              //   challenge.title.includes(query) || challenge.value.includes(query)
+              // }
+              // nothingFound={t('admin.placeholder.instances.challenges.not_found')}
             />
           </Group>
 

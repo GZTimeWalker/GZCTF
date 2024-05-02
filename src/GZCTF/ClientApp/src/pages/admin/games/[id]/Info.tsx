@@ -182,7 +182,7 @@ const GameInfoEdit: FC = () => {
 
   return (
     <WithGameEditTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       contentPos="right"
       isLoading={!game}
       head={
@@ -420,8 +420,6 @@ const GameInfoEdit: FC = () => {
               </Text>
             </Group>
           }
-          searchable
-          creatable
           disabled={disabled}
           placeholder={t('admin.placeholder.games.organizations')}
           maxDropdownHeight={300}
@@ -432,16 +430,19 @@ const GameInfoEdit: FC = () => {
               maxHeight: 88,
             },
           }}
-          onChange={(e) => game && setGame({ ...game, organizations: e })}
-          data={organizations.map((o) => ({ value: o, label: o })) || []}
-          getCreateLabel={(query) =>
-            t('admin.content.games.info.organizations.add', { org: query })
-          }
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            setOrganizations([...organizations, query])
-            return item
-          }}
+          // TODO: use tags select
+          // searchable
+          // creatable
+          // onChange={(e) => game && setGame({ ...game, organizations: e })}
+          // data={organizations.map((o) => ({ value: o, label: o })) || []}
+          // getCreateLabel={(query) =>
+          //   t('admin.content.games.info.organizations.add', { org: query })
+          // }
+          // onCreate={(query) => {
+          //   const item = { value: query, label: query }
+          //   setOrganizations([...organizations, query])
+          //   return item
+          // }}
         />
       </Group>
       <Grid grow>

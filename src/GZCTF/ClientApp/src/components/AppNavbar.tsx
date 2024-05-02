@@ -108,7 +108,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { t } = useTranslation()
 
   return (
-    <Tooltip label={t(props.label)} classNames={{ tooltip: classes.tooltipBody }} justify="right">
+    <Tooltip label={t(props.label)} classNames={{ tooltip: classes.tooltipBody }} position="right">
       <ActionIcon
         onClick={props.onClick}
         component={Link}
@@ -215,7 +215,7 @@ const AppNavbar: FC = () => {
                 colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
             })}
             classNames={{ tooltip: classes.tooltipBody }}
-            justify="right"
+            position="right"
           >
             <ActionIcon onClick={() => toggleColorScheme()} className={classes.link}>
               {colorScheme === 'dark' ? (
@@ -269,7 +269,7 @@ const AppNavbar: FC = () => {
             <Tooltip
               label={t('common.tab.account.login')}
               classNames={{ tooltip: classes.tooltipBody }}
-              justify="right"
+              position="right"
             >
               <ActionIcon
                 component={Link}

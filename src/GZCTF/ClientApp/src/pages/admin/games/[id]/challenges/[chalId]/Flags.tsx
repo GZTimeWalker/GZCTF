@@ -490,7 +490,7 @@ const GameChallengeEdit: FC = () => {
   return (
     <WithGameEditTab
       isLoading={!challenge}
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       backUrl={`/admin/games/${id}/challenges`}
       head={
         <>

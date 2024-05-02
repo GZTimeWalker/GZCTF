@@ -180,7 +180,7 @@ const GameChallengeEdit: FC = () => {
   return (
     <WithGameEditTab
       isLoading={!challenge}
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       backUrl={`/admin/games/${id}/challenges`}
       head={
         <>
@@ -448,7 +448,8 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.containerExposePort ?? 1}
                 onChange={(e) =>
-                  e !== '' && setChallengeInfo({ ...challengeInfo, containerExposePort: e })
+                  typeof e !== 'string' &&
+                  setChallengeInfo({ ...challengeInfo, containerExposePort: e })
                 }
               />
             </Grid.Col>
@@ -463,7 +464,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.cpuCount ?? 1}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, cpuCount: e })}
+                onChange={(e) =>
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, cpuCount: e })
+                }
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -477,7 +480,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.memoryLimit ?? 32}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
+                onChange={(e) =>
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })
+                }
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -492,7 +497,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.storageLimit ?? 128}
                 onChange={(e) =>
-                  e !== '' && setChallengeInfo({ ...challengeInfo, storageLimit: e })
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, storageLimit: e })
                 }
               />
             </Grid.Col>
