@@ -10,6 +10,7 @@ import {
   Text,
   Title,
   Tooltip,
+  useMantineColorScheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -42,6 +43,7 @@ const Traffic: FC = () => {
   const { classes: tooltipClasses, theme } = useTooltipStyles()
 
   const { t } = useTranslation()
+  const { colorScheme } = useMantineColorScheme()
   const modals = useModals()
 
   const { data: challengeTraffic, mutate: mutateChallenges } =
@@ -152,7 +154,7 @@ const Traffic: FC = () => {
           <Grid gutter={0} h="calc(100vh - 142px)">
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
-                <Text size="md" weight={700}>
+                <Text size="md" fw={700}>
                   {t('common.label.challenge')}
                 </Text>
               </Group>
@@ -167,7 +169,7 @@ const Traffic: FC = () => {
             </Grid.Col>
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
-                <Text size="md" weight={700}>
+                <Text size="md" fw={700}>
                   {t('common.label.team')}
                 </Text>
               </Group>
@@ -182,7 +184,7 @@ const Traffic: FC = () => {
             </Grid.Col>
             <Grid.Col span={6}>
               <Group h={headerHeight} pb="3px" px="xs" justify="space-between" wrap="nowrap">
-                <Text size="md" weight={700}>
+                <Text size="md" fw={700}>
                   {t('game.label.traffic')}
                   <Text span px="md" fw="bold" size="sm" color="dimmed">
                     {HunamizeSize(totalFileSize ?? 0)}
@@ -191,7 +193,7 @@ const Traffic: FC = () => {
                 <Group justify="right" gap="sm" wrap="nowrap">
                   <Tooltip
                     label={t('game.button.delete.all_traffic')}
-                    justify="left"
+                    position="left"
                     classNames={tooltipClasses}
                   >
                     <ActionIcon
@@ -212,7 +214,7 @@ const Traffic: FC = () => {
                   </Tooltip>
                   <Tooltip
                     label={t('game.button.download.all_traffic')}
-                    justify="left"
+                    position="left"
                     classNames={tooltipClasses}
                   >
                     <ActionIcon size="md" onClick={onDownloadAll}>

@@ -1,4 +1,4 @@
-import { ActionIcon, Card, Group, PaperProps, Stack, Text } from '@mantine/core'
+import { ActionIcon, Card, Group, CardProps, Stack, Text } from '@mantine/core'
 import { mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -6,7 +6,7 @@ import { FC } from 'react'
 import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { GameNotice } from '@Api'
 
-interface GameNoticeEditCardProps extends PaperProps {
+interface GameNoticeEditCardProps extends CardProps {
   gameNotice: GameNotice
   onDelete: () => void
   onEdit: () => void

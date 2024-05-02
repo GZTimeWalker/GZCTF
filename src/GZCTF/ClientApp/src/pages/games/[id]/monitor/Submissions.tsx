@@ -9,6 +9,7 @@ import {
   Table,
   Text,
   Tooltip,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -46,6 +47,8 @@ const AnswerResultMap = new Map([
 
 const AnswerResultIconMap = (size: number) => {
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
+
   const colorIdx = colorScheme === 'dark' ? 4 : 7
 
   return new Map([
@@ -222,8 +225,8 @@ const Submissions: FC = () => {
               background: 'transparent',
             },
           }}
-          onChange={(value: AnswerResult | 'All') => {
-            setType(value)
+          onChange={(value) => {
+            setType(value as AnswerResult | 'All')
             setPage(1)
           }}
           data={[
@@ -242,7 +245,7 @@ const Submissions: FC = () => {
         <Group justify="right">
           <Tooltip
             label={t('game.button.download.submissionsheet')}
-            justify="left"
+            position="left"
             classNames={tooltipClasses}
           >
             <ActionIcon disabled={disabled} size="lg" onClick={onDownloadSubmissionSheet}>

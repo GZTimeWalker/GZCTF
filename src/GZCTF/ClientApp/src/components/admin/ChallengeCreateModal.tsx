@@ -7,12 +7,12 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import {
-  ChallengeTagItem,
-  useChallengeTagLabelMap,
-  ChallengeTypeItem,
-  useChallengeTypeLabelMap,
-} from '@Utils/Shared'
+// import {
+//   ChallengeTagItem,
+//   useChallengeTagLabelMap,
+//   ChallengeTypeItem,
+//   useChallengeTypeLabelMap,
+// } from '@Utils/Shared'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
 
 interface ChallengeCreateModalProps extends ModalProps {
@@ -24,8 +24,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { onAddChallenge, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
-  const challengeTagLabelMap = useChallengeTagLabelMap()
-  const challengeTypeLabelMap = useChallengeTypeLabelMap()
+  // const challengeTagLabelMap = useChallengeTagLabelMap()
+  // const challengeTypeLabelMap = useChallengeTypeLabelMap()
 
   const [title, setTitle] = useInputState('')
   const [tag, setTag] = useState<string | null>(null)
@@ -78,12 +78,13 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           placeholder="Type"
           value={type}
           onChange={setType}
-          itemComponent={ChallengeTypeItem}
-          withinPortal
-          data={Object.entries(ChallengeType).map((type) => {
-            const data = challengeTypeLabelMap.get(type[1])
-            return { value: type[1], ...data }
-          })}
+          // TODO: fix select component
+          // withinPortal
+          // itemComponent={ChallengeTypeItem}
+          // data={Object.entries(ChallengeType).map((type) => {
+          //   const data = challengeTypeLabelMap.get(type[1])
+          //   return { value: type[1], ...data }
+          // })}
         />
         <Select
           required
@@ -91,12 +92,13 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           placeholder="Tag"
           value={tag}
           onChange={setTag}
-          itemComponent={ChallengeTagItem}
-          withinPortal
-          data={Object.entries(ChallengeTag).map((tag) => {
-            const data = challengeTagLabelMap.get(tag[1])
-            return { value: tag[1], ...data }
-          })}
+          // TODO: fix select component
+          // itemComponent={ChallengeTagItem}
+          // withinPortal
+          // data={Object.entries(ChallengeTag).map((tag) => {
+          //   const data = challengeTagLabelMap.get(tag[1])
+          //   return { value: tag[1], ...data }
+          // })}
         />
         <Button fullWidth disabled={disabled} onClick={onCreate}>
           {t('admin.button.challenges.new')}

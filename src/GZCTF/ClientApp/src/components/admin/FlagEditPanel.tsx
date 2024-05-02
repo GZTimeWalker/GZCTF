@@ -79,14 +79,7 @@ interface FladEditPanelProps {
 const FladEditPanel: FC<FladEditPanelProps> = ({ flags, onDelete, unifiedAttachment }) => {
   return (
     <Stack>
-      <SimpleGrid
-        cols={2}
-        breakpoints={[
-          { maxWidth: 3600, cols: 4, spacing: 'sm' },
-          { maxWidth: 2700, cols: 3, spacing: 'sm' },
-          { maxWidth: 1800, cols: 2, spacing: 'sm' },
-        ]}
-      >
+      <SimpleGrid spacing="sm" cols={{ base: 2, md: 3, lg: 4 }}>
         {flags &&
           flags.map((flag, i) => (
             <FlagCard

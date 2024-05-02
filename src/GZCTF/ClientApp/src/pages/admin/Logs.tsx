@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Badge,
-  createStyles,
   Group,
   Input,
   Paper,
@@ -10,6 +9,7 @@ import {
   Table,
   Text,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { showNotification } from '@mantine/notifications'
 import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -190,7 +190,7 @@ const Logs: FC = () => {
                 background: 'transparent',
               },
             }}
-            onChange={(value: LogLevel) => setLevel(value)}
+            onChange={(value) => setLevel(value as LogLevel)}
             data={Object.entries(LogLevel).map((role) => ({
               value: role[1],
               label: role[0],

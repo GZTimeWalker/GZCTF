@@ -274,7 +274,7 @@ const Instances: FC = () => {
                           <Tooltip
                             label={t('common.button.copy')}
                             withArrow
-                            justify="left"
+                            position="left"
                             classNames={tooltipClasses}
                           >
                             <Text
@@ -306,7 +306,7 @@ const Instances: FC = () => {
                         <Tooltip
                           label={t('common.button.copy')}
                           withArrow
-                          justify="left"
+                          position="left"
                           classNames={tooltipClasses}
                         >
                           <Text

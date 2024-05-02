@@ -135,7 +135,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               {attachmentType !== FileType.None && (
                 <Tooltip
                   label={t('challenge.button.download.attachment')}
-                  justify="left"
+                  position="left"
                   classNames={tooltipClasses}
                 >
                   <ActionIcon

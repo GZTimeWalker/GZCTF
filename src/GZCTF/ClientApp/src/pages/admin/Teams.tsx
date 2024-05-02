@@ -160,7 +160,7 @@ const Teams: FC = () => {
         <>
           <TextInput
             w="30%"
-            icon={<Icon path={mdiMagnify} size={1} />}
+            leftSection={<Icon path={mdiMagnify} size={1} />}
             placeholder={t('admin.placeholder.teams.search')}
             value={hint}
             onChange={setHint}
@@ -253,7 +253,7 @@ const Teams: FC = () => {
                       <td>
                         <Tooltip.Group openDelay={300} closeDelay={100}>
                           <Avatar.Group
-                            gap="md"
+                            spacing="md"
                             styles={{
                               child: {
                                 border: 'none',

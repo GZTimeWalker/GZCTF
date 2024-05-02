@@ -7,6 +7,7 @@ import {
   Stack,
   Switch,
   Text,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
@@ -39,6 +40,7 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const EventTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
   const colorIdx = colorScheme === 'dark' ? 5 : 7
 
   return new Map([

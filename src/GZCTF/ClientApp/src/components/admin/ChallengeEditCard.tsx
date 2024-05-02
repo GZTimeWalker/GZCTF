@@ -7,6 +7,7 @@ import {
   Switch,
   Text,
   Tooltip,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
@@ -33,6 +34,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
   const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
+  const { colorScheme } = useMantineColorScheme()
 
   const [min, cur, tot] = [
     challenge.minScore ?? 0,
@@ -63,15 +65,14 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
             {challenge.title}
           </Text>
 
-          <Progress
-            size="xl"
-            w="calc(100% - 25rem)"
-            radius="xl"
-            sections={[
-              { value: minRate, color: colors[9], label: `${challenge.minScore}` },
-              { value: curRate - minRate, color: colors[7], label: `${challenge.score}` },
-            ]}
-          />
+          <Progress.Root size="xl" w="calc(100% - 25rem)" radius="xl">
+            <Progress.Section value={minRate} color={colors[9]}>
+              <Progress.Label>{challenge.minScore}</Progress.Label>
+            </Progress.Section>
+            <Progress.Section value={curRate - minRate} color={colors[7]}>
+              <Progress.Label>{challenge.score}</Progress.Label>
+            </Progress.Section>
+          </Progress.Root>
 
           <Text size="xs" fw={700} w="2.5rem">
             {challenge.originalScore}pts
@@ -84,8 +85,8 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         </Group>
         <Tooltip
           label={t('admin.button.challenges.edit')}
-          justify="left"
-          width={120}
+          position="left"
+          w={120}
           offset={10}
           styles={tooltipStyle}
         >
@@ -99,8 +100,8 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         </Tooltip>
         <Tooltip
           label={t('admin.button.challenges.edit_more')}
-          justify="left"
-          width={120}
+          position="left"
+          w={120}
           offset={54}
           styles={tooltipStyle}
         >

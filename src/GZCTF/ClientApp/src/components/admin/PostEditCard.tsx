@@ -2,8 +2,8 @@ import {
   ActionIcon,
   Badge,
   Card,
+  CardProps,
   Group,
-  PaperProps,
   Stack,
   Title,
   useMantineTheme,
@@ -14,7 +14,7 @@ import { FC } from 'react'
 import MarkdownRender from '@Components/MarkdownRender'
 import { PostInfoModel } from '@Api'
 
-interface PostEditCardProps extends PaperProps {
+interface PostEditCardProps extends CardProps {
   post: PostInfoModel
   onDelete: () => void
   onEdit: () => void

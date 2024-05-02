@@ -1,4 +1,5 @@
-import { createStyles, Paper, ScrollArea, Stack } from '@mantine/core'
+import { Paper, ScrollArea, Stack } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Document, Page, pdfjs } from 'react-pdf'
@@ -16,13 +17,13 @@ interface PDFViewerProps {
   height?: number | string
 }
 
-const useStyles = createStyles((theme, { height }: PDFViewerProps) => ({
+const useStyles = createStyles((theme, { height }: PDFViewerProps, u) => ({
   layout: {
     marginLeft: theme.spacing.md,
     marginRight: theme.spacing.md,
     borderRadius: theme.radius.sm,
 
-    [theme.fn.largerThan(`calc(1100 + ${theme.spacing.md} * 2`)]: {
+    [u.largerThan(`calc(1100 + ${theme.spacing.md} * 2`)]: {
       maxWidth: 900,
       marginLeft: 'auto',
       marginRight: 'auto',

@@ -201,6 +201,8 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.defaultLifetime ?? 120}
               onChange={(e) => {
+                if (typeof e === 'string') return
+
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
                 setContainerPolicy({ ...(containerPolicy ?? {}), defaultLifetime: num })
               }}
@@ -214,6 +216,8 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.extensionDuration ?? 120}
               onChange={(e) => {
+                if (typeof e === 'string') return
+
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
                 setContainerPolicy({ ...(containerPolicy ?? {}), extensionDuration: num })
               }}
@@ -227,6 +231,8 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.renewalWindow ?? 10}
               onChange={(e) => {
+                if (typeof e === 'string') return
+
                 const num = e ? Math.min(Math.max(e, 1), 360) : 10
                 setContainerPolicy({ ...(containerPolicy ?? {}), renewalWindow: num })
               }}
