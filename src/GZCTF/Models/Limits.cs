@@ -61,4 +61,29 @@ public static class Limits
     /// 邀请 Token 长度
     /// </summary>
     public const int InviteTokenLength = 32;
+
+    /// <summary>
+    /// 最大 IP 长度
+    /// </summary>
+    public const int MaxIPLength = 40;
+
+    /// <summary>
+    /// 最大标题长度
+    /// </summary>
+    public const int MaxPostTitleLength = 50;
+
+    /// <summary>
+    /// 最大日志等级长度
+    /// </summary>
+    public const int MaxLogLevelLength = 15;
+
+    /// <summary>
+    /// 最大日志记录源长度
+    /// </summary>
+    public const int MaxLoggerLength = 250;
+
+    /// <summary>
+    /// 最大日志状态长度
+    /// </summary>
+    public const int MaxLogStatusLength = 10;
 }

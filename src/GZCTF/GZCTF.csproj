@@ -77,6 +77,8 @@
         <PackageReference Include="BouncyCastle.Cryptography" />
         <PackageReference Include="PacketDotNet" />
         <PackageReference Include="SharpPcap" />
+        <PackageReference Include="Tomlyn" />
+        <PackageReference Include="Ulid" />
     </ItemGroup>
 
     <ItemGroup>
