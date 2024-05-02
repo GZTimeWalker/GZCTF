@@ -18,7 +18,7 @@ const TableRow: FC<{
     <tr>
       <td className={cx(classes.theadMono, classes.theadFixLeft)}>{item.rank}</td>
       <td className={cx(classes.theadFixLeft)}>
-        <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
+        <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
             alt="avatar"
             src={item.avatar}
@@ -95,7 +95,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
 
   return (
     <Paper shadow="xs" p="sm">
-      <Stack spacing="xs">
+      <Stack gap="xs">
         {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
           <Select
             defaultValue="all"
@@ -157,7 +157,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
         </Box>
         <Group position="center">
           <Pagination
-            noWrap
+            wrap="nowrap"
             size="md"
             value={activePage}
             onChange={setPage}

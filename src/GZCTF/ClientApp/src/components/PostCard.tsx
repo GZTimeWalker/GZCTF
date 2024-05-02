@@ -37,10 +37,10 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   return (
     <Card shadow="sm" p="xs">
       <Blockquote
-        color={theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]}
+        color={colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]}
         cite={
-          <Group position="apart" m="auto" fs="normal">
-            <Group spacing={5} position="right">
+          <Group justify="space-between" m="auto" fs="normal">
+            <Group gap={5} justify="right">
               <Avatar alt="avatar" src={post.authorAvatar} size="sm">
                 {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
@@ -61,9 +61,9 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           </Group>
         }
       >
-        <Stack spacing="xs">
+        <Stack gap="xs">
           {RequireRole(Role.Admin, role) ? (
-            <Group position="apart">
+            <Group justify="space-between">
               <Title order={3}>
                 {post.isPinned && (
                   <Text span c="brand">
@@ -72,7 +72,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
                 )}
                 {post.title}
               </Title>
-              <Group position="right">
+              <Group justify="right">
                 {onTogglePinned && (
                   <ActionIcon disabled={disabled} onClick={() => onTogglePinned(post, setDisabled)}>
                     {post.isPinned ? (

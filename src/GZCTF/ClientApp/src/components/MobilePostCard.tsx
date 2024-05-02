@@ -20,7 +20,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
 
   return (
     <Card shadow="sm" p="sm">
-      <Stack spacing="xs">
+      <Stack gap="xs">
         <Box onClick={() => navigate(`/posts/${post.id}`)}>
           <Title order={3} pb={4}>
             <Text span c="brand">
@@ -30,9 +30,9 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           </Title>
           <MarkdownRender source={post.summary} />
         </Box>
-        <Group position="apart">
+        <Group justify="space-between">
           {post.tags && (
-            <Group position="left">
+            <Group justify="left">
               {post.tags.map((tag, idx) => (
                 <Text key={idx} size="sm" fw={700} span c="brand">
                   {`#${tag}`}
@@ -41,7 +41,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             </Group>
           )}
           {RequireRole(Role.Admin, role) && (
-            <Group position="right">
+            <Group justify="right">
               {onTogglePinned && (
                 <ActionIcon disabled={disabled} onClick={() => onTogglePinned(post, setDisabled)}>
                   {post.isPinned ? (
@@ -57,7 +57,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             </Group>
           )}
         </Group>
-        <Group spacing={5} position="left">
+        <Group gap={5} justify="left">
           <Avatar alt="avatar" src={post.authorAvatar} size="sm">
             {post.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>

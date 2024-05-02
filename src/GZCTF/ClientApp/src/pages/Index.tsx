@@ -1,4 +1,5 @@
-import { createStyles, Group, Stack, Title } from '@mantine/core'
+import { Group, Stack, Title } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
@@ -14,12 +15,12 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { PostInfoModel } from '@Api'
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles((theme, _, u) => ({
   posts: {
     width: '75%',
     minWidth: 'calc(100% - 320px)',
 
-    [theme.fn.smallerThan(900)]: {
+    [u.smallerThan(900)]: {
       width: '100%',
     },
   },
@@ -32,7 +33,7 @@ const useStyles = createStyles((theme) => ({
     paddingTop: 10,
     flex: `0 0`,
 
-    [theme.fn.smallerThan(900)]: {
+    [u.smallerThan(900)]: {
       display: 'none',
     },
   },
@@ -107,7 +108,7 @@ const Home: FC = () => {
           <RecentGameCarousel games={recentGames} />
         )}
         <Stack align="center">
-          <Group noWrap spacing={4} position="apart" align="flex-start" w="100%">
+          <Group wrap="nowrap" gap={4} justify="space-between" align="flex-start" w="100%">
             <Stack className={classes.posts}>
               {isMobile
                 ? posts?.map((post) => (

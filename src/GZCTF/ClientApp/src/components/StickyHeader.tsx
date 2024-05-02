@@ -34,7 +34,7 @@ const useStyles = createStyles((theme) => ({
   },
   subtitle: {
     fontFamily: theme.fontFamilyMonospace,
-    color: theme.colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.dark[4],
+    color: colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.dark[4],
 
     [theme.fn.smallerThan(900)]: {
       display: 'none',
@@ -47,7 +47,7 @@ const StickyHeader: FC = () => {
   const { config } = useConfig()
 
   return (
-    <Group position="apart" align="flex-end" className={classes.group}>
+    <Group justify="space-between" align="flex-end" className={classes.group}>
       <LogoHeader />
       <Title className={classes.subtitle} order={3}>
         &gt; {config?.slogan ?? 'Hack for fun not for profit'}

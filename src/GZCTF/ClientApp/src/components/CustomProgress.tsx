@@ -10,10 +10,9 @@ export interface CustomProgressProps extends BoxProps {
 
 export const useStyles = createStyles(
   (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps) => {
-    const _color =
-      percentage < 100 ? (theme.colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'gray'
-    const spikeColor = theme.fn.rgba(theme.colors[_color][5], 0.75)
-    const barColor = theme.colorScheme === 'dark' ? theme.colors.white[9] : theme.colors[_color][2]
+    const _color = percentage < 100 ? (colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'gray'
+    const spikeColor = alpha(theme.colors[_color][5], 0.75)
+    const barColor = colorScheme === 'dark' ? theme.colors.white[9] : theme.colors[_color][2]
     const spikeLengthStr = `${spikeLength}%`
     const negSpikeLengthStr = `-${spikeLength}%`
     const pulsing = percentage < 100
@@ -24,8 +23,7 @@ export const useStyles = createStyles(
         position: 'relative',
         height: '100%',
         aspectRatio: '1 / 1',
-        backgroundColor:
-          theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[_color][5],
+        backgroundColor: colorScheme === 'dark' ? theme.colors.white[0] : theme.colors[_color][5],
 
         '& div': {
           animation: `${keyframes`0% {
@@ -64,15 +62,15 @@ export const useStyles = createStyles(
         height: '100%',
         width: `${percentage}%`,
         minWidth: thickness,
-        backgroundColor: theme.fn.rgba(barColor, 0.7),
+        backgroundColor: alpha(barColor, 0.7),
       },
       progressBackground: {
         display: 'flex',
         alignItems: 'center',
         height: thickness,
         width: '100%',
-        backgroundColor: theme.fn.rgba(
-          theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[4],
+        backgroundColor: alpha(
+          colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[4],
           0.8
         ),
       },
@@ -119,7 +117,7 @@ const CustomProgress: FC<CustomProgressProps> = (props: CustomProgressProps) => 
   return (
     <Center py={(thickness * spikeLength) / 100} {...others}>
       <div className={classes.progressBackground}>
-        <Group position="right" className={classes.progressBar}>
+        <Group justify="right" className={classes.progressBar}>
           <div className={classes.progressPulseContainer}>
             <div />
           </div>

@@ -19,17 +19,17 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
       shadow="sm"
       sx={(theme) => ({
         border: `2px solid ${
-          selected ? theme.colors.brand[theme.colorScheme === 'dark' ? 8 : 6] : 'transparent'
+          selected ? theme.colors.brand[colorScheme === 'dark' ? 8 : 6] : 'transparent'
         }`,
         cursor: 'pointer',
       })}
     >
-      <Group noWrap spacing={3} position="apart">
-        <Group noWrap position="apart">
+      <Group wrap="nowrap" gap={3} justify="space-between">
+        <Group wrap="nowrap" justify="space-between">
           <Avatar alt="avatar" src={writeup.team?.avatar} size="md">
             {writeup.team?.name?.slice(0, 1)}
           </Avatar>
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <Text lineClamp={1} fw={600}>
               {writeup.team?.name}
             </Text>

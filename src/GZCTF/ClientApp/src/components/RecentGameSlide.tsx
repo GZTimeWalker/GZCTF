@@ -53,8 +53,8 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       sx={{ backgroundImage: `url(${poster})` }}
       className={classes.card}
     >
-      <Stack h="100%" spacing={2} justify="space-between">
-        <Group spacing={4}>
+      <Stack h="100%" gap={2} justify="space-between">
+        <Group gap={4}>
           <Badge size="sm" variant="filled">
             {game.limit === 0
               ? t('game.tag.multiplayer')

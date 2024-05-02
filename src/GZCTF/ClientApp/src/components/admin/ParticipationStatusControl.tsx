@@ -23,7 +23,7 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
 
   return (
     <Group
-      noWrap
+      wrap="nowrap"
       position="center"
       miw={`calc(${theme.spacing.xl} * 3)`}
       m={`0 ${theme.spacing.xs}`}

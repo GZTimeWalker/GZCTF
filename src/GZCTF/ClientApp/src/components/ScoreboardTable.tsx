@@ -48,7 +48,7 @@ export const useScoreboardStyles = createStyles((theme) => ({
   },
   theadFixLeft: {
     position: 'sticky',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    backgroundColor: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
   },
   theadHeader: {
     fontWeight: 'bold',
@@ -104,17 +104,17 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
               key={key}
               colSpan={table[key].length}
               style={{
-                backgroundColor: theme.fn.rgba(
-                  theme.colors[tag.color][theme.colorScheme === 'dark' ? 8 : 6],
-                  theme.colorScheme === 'dark' ? 0.15 : 0.2
+                backgroundColor: alpha(
+                  theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6],
+                  colorScheme === 'dark' ? 0.15 : 0.2
                 ),
               }}
             >
-              <Group spacing={4} noWrap position="center" w="100%">
+              <Group gap={4} wrap="nowrap" position="center" w="100%">
                 <Icon
                   path={tag.icon}
                   size={1}
-                  color={theme.colors[tag.color][theme.colorScheme === 'dark' ? 8 : 6]}
+                  color={theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6]}
                 />
                 <Text c={tag.color}>{key}</Text>
               </Group>
@@ -180,7 +180,7 @@ const TableRow: FC<{
         {allRank ? item.rank : item.organizationRank ?? tableRank}
       </td>
       <td className={cx(classes.theadFixLeft)} style={{ left: Lefts[2] }}>
-        <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
+        <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
             alt="avatar"
             src={item.avatar}
@@ -243,7 +243,7 @@ const TableRow: FC<{
                   classNames={tooltipClasses}
                   transitionProps={{ transition: 'pop' }}
                   label={
-                    <Stack align="flex-start" spacing={0} maw="20rem">
+                    <Stack align="flex-start" gap={0} maw="20rem">
                       <Text lineClamp={3}>{item.title}</Text>
                       <Text c={tag.color} style={textStyle}>
                         + {chal?.score} pts
@@ -304,7 +304,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
 
   return (
     <Paper shadow="md" p="md">
-      <Stack spacing="xs">
+      <Stack gap="xs">
         {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
           <Group>
             <Select
@@ -364,10 +364,10 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           </Box>
 
           <Box className={classes.legend}>
-            <Stack spacing="xs">
-              <Group spacing="lg">
+            <Stack gap="xs">
+              <Group gap="lg">
                 {BloodsTypes.map((type, idx) => (
-                  <Group key={idx} position="left" spacing={2}>
+                  <Group key={idx} justify="left" gap={2}>
                     {iconMap.get(type)}
                     <Text size="sm">{bloodData.get(type)?.name}</Text>
                     <Text size="xs" c="dimmed">
@@ -382,13 +382,13 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
             </Stack>
           </Box>
         </Box>
-        <Group position="apart">
+        <Group justify="space-between">
           <Text size="sm" c="dimmed">
             {t('game.content.scoreboard_tip')}
           </Text>
 
           <Pagination
-            noWrap
+            wrap="nowrap"
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}

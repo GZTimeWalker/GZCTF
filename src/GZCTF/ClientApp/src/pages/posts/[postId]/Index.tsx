@@ -1,4 +1,14 @@
-import { Avatar, Button, Container, Divider, Group, Stack, Text, Title } from '@mantine/core'
+import {
+  Avatar,
+  Button,
+  Container,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  Title,
+  useMantineColorScheme,
+} from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -50,6 +60,7 @@ const Post: FC = () => {
   })
 
   const { role } = useUserRole()
+  const { colorScheme } = useMantineColorScheme()
 
   usePageTitle(post?.title ?? 'Post')
 
@@ -57,7 +68,7 @@ const Post: FC = () => {
     <WithNavBar width="100%" isLoading={!post} minWidth={0} withFooter>
       <div ref={targetRef} className={classes.root}>
         <Stack
-          spacing={6}
+          gap={6}
           align="center"
           w="100%"
           p={`0 ${theme.spacing.xs}`}
@@ -70,8 +81,8 @@ const Post: FC = () => {
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text fw={700}>{post?.authorName ?? 'Anonym'}</Text>
-          <Stack spacing={2}>
-            <Divider color={theme.colorScheme === 'dark' ? 'white' : 'gray'} />
+          <Stack gap={2}>
+            <Divider color={colorScheme === 'dark' ? 'white' : 'gray'} />
             <Text fw={500}>{dayjs(post?.time).format('LLL')}</Text>
           </Stack>
         </Stack>
@@ -79,7 +90,7 @@ const Post: FC = () => {
       <Container className={classes.content}>
         <MarkdownRender source={post?.content ?? ''} />
         {post?.tags && post.tags.length > 0 && (
-          <Group position="right">
+          <Group justify="right">
             {post.tags.map((tag, idx) => (
               <Text key={idx} fw={700} span c="brand">
                 {`#${tag}`}
@@ -87,7 +98,7 @@ const Post: FC = () => {
             ))}
           </Group>
         )}
-        <Group spacing={5} mb={100} position="right">
+        <Group gap={5} mb={100} justify="right">
           <Avatar alt="avatar" src={post?.authorAvatar} size="sm">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
@@ -105,7 +116,7 @@ const Post: FC = () => {
           variant="filled"
           radius="xl"
           size="md"
-          leftIcon={<Icon path={mdiPencilOutline} size={1} />}
+          leftSection={<Icon path={mdiPencilOutline} size={1} />}
           onClick={() => navigate(`/posts/${postId}/edit`)}
         >
           {t('post.button.edit')}

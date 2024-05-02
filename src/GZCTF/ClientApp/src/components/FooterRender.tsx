@@ -5,7 +5,7 @@ import { MarkdownProps } from '@Components/MarkdownRender'
 import { useIsMobile } from '@Utils/ThemeOverride'
 
 const useFooterStyles = createStyles((theme) => {
-  const sc = (dark: any, light: any) => (theme.colorScheme === 'dark' ? dark : light)
+  const sc = (dark: any, light: any) => (colorScheme === 'dark' ? dark : light)
   const cs = theme.colors
 
   return {

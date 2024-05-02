@@ -1,12 +1,14 @@
 import {
+  alpha,
   Button,
   Group,
-  MultiSelect,
   Stack,
+  TagsInput,
   Text,
   Textarea,
   TextInput,
   Title,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
@@ -60,6 +62,7 @@ const PostEdit: FC = () => {
   const modals = useModals()
 
   const isMobile = useIsMobile()
+  const { colorScheme } = useMantineColorScheme()
 
   const onUpdate = () => {
     if (postId === 'new') {
@@ -141,20 +144,13 @@ const PostEdit: FC = () => {
         value={post.title}
         onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
       />
-      <MultiSelect
+      <TagsInput
         label={t('post.label.tag')}
         data={tags.map((o) => ({ value: o, label: o })) || []}
-        getCreateLabel={(query) => t('post.label.add_tag', { query })}
-        maxSelectedValues={5}
+        placeholder={t('post.label.add_tag')}
         value={post?.tags ?? []}
         onChange={(values) => setPost({ ...post, tags: values })}
-        onCreate={(query) => {
-          const item = { value: query, label: query }
-          setTags([...tags, query])
-          return item
-        }}
-        searchable
-        creatable
+        clearable
       />
     </>
   )
@@ -164,25 +160,25 @@ const PostEdit: FC = () => {
       <WithRole requiredRole={Role.Admin}>
         <StickyHeader />
         <Stack mt={isMobile ? 5 : 30}>
-          <Group position={isMobile ? 'right' : 'apart'}>
+          <Group justify={isMobile ? 'right' : 'space-between'}>
             {!isMobile && (
               <Title
                 order={1}
-                color={theme.fn.rgba(
-                  theme.colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
+                c={alpha(
+                  colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
                   0.5
                 )}
               >
                 {`> ${postId === 'new' ? t('post.button.new') : t('post.button.edit')}`}
               </Title>
             )}
-            <Group position="right">
+            <Group justify="right">
               {postId?.length === 8 && (
                 <>
                   <Button
                     disabled={disabled}
                     color="red"
-                    leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+                    leftSection={<Icon path={mdiDeleteOutline} size={1} />}
                     variant="outline"
                     onClick={() =>
                       modals.openConfirmModal({
@@ -203,7 +199,7 @@ const PostEdit: FC = () => {
                   </Button>
                   <Button
                     disabled={disabled}
-                    leftIcon={<Icon path={mdiFileCheckOutline} size={1} />}
+                    leftSection={<Icon path={mdiFileCheckOutline} size={1} />}
                     onClick={() => {
                       if (isChanged()) {
                         modals.openConfirmModal({
@@ -225,7 +221,7 @@ const PostEdit: FC = () => {
               )}
               <Button
                 disabled={disabled}
-                leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+                leftSection={<Icon path={mdiContentSaveOutline} size={1} />}
                 onClick={onUpdate}
               >
                 {postId === 'new' ? t('post.button.new') : t('post.button.save')}
@@ -235,7 +231,7 @@ const PostEdit: FC = () => {
           {isMobile ? titlePart : <Group grow>{titlePart}</Group>}
           <Textarea
             label={
-              <Group spacing="sm">
+              <Group gap="sm">
                 <Text size="sm">{t('post.label.summary')}</Text>
                 <Text size="xs" c="dimmed">
                   {t('admin.content.markdown_support')}
@@ -249,7 +245,7 @@ const PostEdit: FC = () => {
           />
           <Textarea
             label={
-              <Group spacing="sm">
+              <Group gap="sm">
                 <Text size="sm">{t('post.label.content')}</Text>
                 <Text size="xs" c="dimmed">
                   {t('admin.content.markdown_support')}

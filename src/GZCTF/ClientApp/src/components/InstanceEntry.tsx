@@ -148,8 +148,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         {t('challenge.content.instance.test.no_container')}
       </Text>
     ) : (
-      <Group position="apart" pt="xs" noWrap>
-        <Stack align="left" spacing={0}>
+      <Group justify="space-between" pt="xs" wrap="nowrap">
+        <Stack align="left" gap={0}>
           <Text size="sm" fw={600}>
             {t('challenge.content.instance.no_container.message')}
           </Text>
@@ -168,7 +168,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   }
 
   return (
-    <Stack spacing={2} w="100%">
+    <Stack gap={2} w="100%">
       <TextInput
         label={<Text fw={600}>{t('challenge.content.instance.entry.label')}</Text>}
         description={
@@ -195,7 +195,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
           },
         }}
         rightSection={
-          <Group spacing={2}>
+          <Group gap={2}>
             <Divider orientation="vertical" pr={4} />
             <Tooltip label={t('common.button.copy')} withArrow classNames={tooltipClasses}>
               <ActionIcon onClick={onCopyEntry}>
@@ -225,8 +225,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         rightSectionWidth="5rem"
       />
       {!test && (
-        <Group position="apart" pt="xs" noWrap>
-          <Stack align="left" spacing={0}>
+        <Group justify="space-between" pt="xs" wrap="nowrap">
+          <Stack align="left" gap={0}>
             <Text size="sm" fw={600}>
               {t('challenge.content.instance.actions.count_down')}
               <Countdown time={context.closeTime ?? '0'} extendNotice={extendNotice} />
@@ -236,7 +236,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             </Text>
           </Stack>
 
-          <Group position="right" noWrap spacing="xs">
+          <Group justify="right" wrap="nowrap" gap="xs">
             <Button color="orange" onClick={onExtend} disabled={!canExtend}>
               {t('challenge.button.instance.extend')}
             </Button>

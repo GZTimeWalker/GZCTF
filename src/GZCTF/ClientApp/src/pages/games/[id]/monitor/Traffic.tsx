@@ -128,7 +128,7 @@ const Traffic: FC = () => {
 
   const innerStyle: CSSProperties = {
     borderRight: `${rem(2)} solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
+      colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
     }`,
   }
 
@@ -142,7 +142,7 @@ const Traffic: FC = () => {
     <WithGameMonitorTab>
       {!challengeTraffic || challengeTraffic?.length === 0 ? (
         <Center h="calc(100vh - 140px)">
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <Title order={2}>{t('game.content.no_traffic.title')}</Title>
             <Text>{t('game.content.no_traffic.comment')}</Text>
           </Stack>
@@ -181,17 +181,17 @@ const Traffic: FC = () => {
               />
             </Grid.Col>
             <Grid.Col span={6}>
-              <Group h={headerHeight} pb="3px" px="xs" position="apart" noWrap>
+              <Group h={headerHeight} pb="3px" px="xs" justify="space-between" wrap="nowrap">
                 <Text size="md" weight={700}>
                   {t('game.label.traffic')}
                   <Text span px="md" fw="bold" size="sm" color="dimmed">
                     {HunamizeSize(totalFileSize ?? 0)}
                   </Text>
                 </Text>
-                <Group position="right" spacing="sm" noWrap>
+                <Group justify="right" gap="sm" wrap="nowrap">
                   <Tooltip
                     label={t('game.button.delete.all_traffic')}
-                    position="left"
+                    justify="left"
                     classNames={tooltipClasses}
                   >
                     <ActionIcon
@@ -212,7 +212,7 @@ const Traffic: FC = () => {
                   </Tooltip>
                   <Tooltip
                     label={t('game.button.download.all_traffic')}
-                    position="left"
+                    justify="left"
                     classNames={tooltipClasses}
                   >
                     <ActionIcon size="md" onClick={onDownloadAll}>

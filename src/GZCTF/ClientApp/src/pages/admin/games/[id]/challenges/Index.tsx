@@ -110,16 +110,16 @@ const GameChallengeEdit: FC = () => {
               return { value: tag[1], ...data }
             })}
           />
-          <Group position="right">
+          <Group justify="right">
             <Button
-              leftIcon={<Icon path={mdiHexagonSlice6} size={1} />}
+              leftSection={<Icon path={mdiHexagonSlice6} size={1} />}
               onClick={() => setBonusOpened(true)}
             >
               {t('admin.button.challenges.bonus')}
             </Button>
             <Button
               mr="18px"
-              leftIcon={<Icon path={mdiPlus} size={1} />}
+              leftSection={<Icon path={mdiPlus} size={1} />}
               onClick={() => setCreateOpened(true)}
             >
               {t('admin.button.challenges.new')}
@@ -131,7 +131,7 @@ const GameChallengeEdit: FC = () => {
       <ScrollArea h="calc(100vh - 180px)" pos="relative" offsetScrollbars type="auto">
         {!filteredChallenges || filteredChallenges.length === 0 ? (
           <Center h="calc(100vh - 200px)">
-            <Stack spacing={0}>
+            <Stack gap={0}>
               <Title order={2}>{t('admin.content.games.challenges.empty.title')}</Title>
               <Text>{t('admin.content.games.challenges.empty.description')}</Text>
             </Stack>

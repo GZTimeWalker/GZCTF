@@ -58,13 +58,13 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
     <WithNavBar width="90%">
       <WithRole requiredRole={Role.Monitor}>
         <WithGameTab>
-          <Group position="apart" align="flex-start">
+          <Group justify="space-between" align="flex-start">
             <Stack>
               <Button
                 disabled={disabled}
                 w="9rem"
                 styles={{ inner: { justifyContent: 'space-between' } }}
-                leftIcon={<Icon path={mdiFileTableOutline} size={1} />}
+                leftSection={<Icon path={mdiFileTableOutline} size={1} />}
                 onClick={onDownloadScoreboardSheet}
               >
                 {t('game.button.download.scoreboard')}
@@ -99,9 +99,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
               <LoadingOverlay
                 visible={isLoading ?? false}
                 overlayOpacity={1}
-                overlayColor={
-                  theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
-                }
+                overlayColor={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
               />
               {children}
             </Stack>

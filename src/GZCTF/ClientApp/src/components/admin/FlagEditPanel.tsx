@@ -32,8 +32,8 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
 
   return (
     <Card>
-      <Group noWrap position="apart" spacing={3}>
-        <Stack align="flex-start" spacing={0} w="100%">
+      <Group wrap="nowrap" justify="space-between" gap={3}>
+        <Stack align="flex-start" gap={0} w="100%">
           <Input
             variant="unstyled"
             value={flag.flag}

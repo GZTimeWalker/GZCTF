@@ -45,7 +45,7 @@ export const HintList: FC<HintListProps> = (props) => {
   return (
     <Input.Wrapper {...rest}>
       <ScrollArea offsetScrollbars scrollbarSize={4} h={height}>
-        <Stack spacing="xs">
+        <Stack gap="xs">
           {hintdict.map((kv) => (
             <TextInput
               mr={4}
@@ -60,7 +60,7 @@ export const HintList: FC<HintListProps> = (props) => {
               }
             />
           ))}
-          <Button mr={4} leftIcon={<Icon path={mdiPlus} size={1} />} onClick={handleAdd}>
+          <Button mr={4} leftSection={<Icon path={mdiPlus} size={1} />} onClick={handleAdd}>
             {t('admin.button.challenges.hint.add')}
           </Button>
         </Stack>

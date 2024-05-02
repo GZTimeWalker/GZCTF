@@ -38,7 +38,7 @@ type SelectChallengeItemProps = ChallengeModel & React.ComponentPropsWithoutRef<
 
 const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
   ({ name, id, ...others }: SelectTeamItemProps, ref) => (
-    <Stack ref={ref} {...others} spacing={0}>
+    <Stack ref={ref} {...others} gap={0}>
       <Text lineClamp={1}>
         <Text span c="dimmed">
           {`#${id} `}
@@ -56,7 +56,7 @@ const SelectChallengeItem = forwardRef<HTMLDivElement, SelectChallengeItemProps>
     const theme = useMantineTheme()
 
     return (
-      <Group ref={ref} {...others} spacing="sm">
+      <Group ref={ref} {...others} gap="sm">
         <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
         <Text lineClamp={1}>
           <Text span c="dimmed">
@@ -155,7 +155,7 @@ const Instances: FC = () => {
       isLoading={!instances || !teams || !challenge}
       head={
         <>
-          <Group w="60%" position="left" spacing="md">
+          <Group w="60%" justify="left" gap="md">
             <Select
               w="48%"
               searchable
@@ -193,7 +193,7 @@ const Instances: FC = () => {
             />
           </Group>
 
-          <Group position="right">
+          <Group justify="right">
             <Text fw="bold" size="sm">
               <Trans i18nKey="admin.content.instances.stats" values={{ count: instances?.length }}>
                 _<Code>_</Code>_
@@ -259,7 +259,7 @@ const Instances: FC = () => {
                         </Box>
                       </td>
                       <td>
-                        <Group noWrap spacing="xs">
+                        <Group wrap="nowrap" gap="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(inst.startedAt).format('MM/DD HH:mm')}
                           </Badge>
@@ -274,7 +274,7 @@ const Instances: FC = () => {
                           <Tooltip
                             label={t('common.button.copy')}
                             withArrow
-                            position="left"
+                            justify="left"
                             classNames={tooltipClasses}
                           >
                             <Text
@@ -306,7 +306,7 @@ const Instances: FC = () => {
                         <Tooltip
                           label={t('common.button.copy')}
                           withArrow
-                          position="left"
+                          justify="left"
                           classNames={tooltipClasses}
                         >
                           <Text
@@ -335,7 +335,7 @@ const Instances: FC = () => {
                         </Tooltip>
                       </td>
                       <td align="right">
-                        <Group noWrap spacing="sm" position="right">
+                        <Group wrap="nowrap" gap="sm" justify="right">
                           <ActionIconWithConfirm
                             iconPath={mdiPackageVariantClosedRemove}
                             color="alert"

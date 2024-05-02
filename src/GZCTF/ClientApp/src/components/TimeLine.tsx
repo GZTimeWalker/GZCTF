@@ -57,8 +57,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
                   {
                     xAxis: last.toDate(),
                     lineStyle: {
-                      color:
-                        theme.colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6],
+                      color: colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6],
                       wight: 2,
                     },
                     label: {
@@ -88,7 +87,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
   return (
     <ReactEcharts
       key={now.toUTCString()}
-      theme={theme.colorScheme}
+      theme={colorScheme}
       option={{
         backgroundColor: 'transparent',
         toolbox: {
@@ -114,13 +113,13 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
           boundaryGap: [0, '100%'],
           axisLabel: {
             formatter: t('game.label.score_formatter'),
-            color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
           max: (value: any) => (Math.floor(value.max / 1000) + 1) * 1000,
           splitLine: {
             show: true,
             lineStyle: {
-              color: [theme.colorScheme === 'dark' ? theme.colors.gray[5] : theme.colors.gray[3]],
+              color: [colorScheme === 'dark' ? theme.colors.gray[5] : theme.colors.gray[3]],
               type: 'dashed',
             },
           },
@@ -130,17 +129,16 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
           borderWidth: 0,
           textStyle: {
             fontSize: 10,
-            color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
-          backgroundColor:
-            theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[1],
+          backgroundColor: colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[1],
         },
         legend: {
           orient: 'horizontal',
           bottom: 50,
           textStyle: {
             fontSize: 12,
-            color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
         },
         grid: {

@@ -187,11 +187,11 @@ const GameChallengeEdit: FC = () => {
           <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
             # {challengeInfo?.title}
           </Title>
-          <Group noWrap position="right">
+          <Group wrap="nowrap" justify="right">
             <Button
               disabled={disabled}
               color="red"
-              leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+              leftSection={<Icon path={mdiDeleteOutline} size={1} />}
               variant="outline"
               onClick={() =>
                 modals.openConfirmModal({
@@ -212,21 +212,21 @@ const GameChallengeEdit: FC = () => {
             </Button>
             <Button
               disabled={disabled}
-              leftIcon={<Icon path={mdiEyeOutline} size={1} />}
+              leftSection={<Icon path={mdiEyeOutline} size={1} />}
               onClick={() => setPreviewOpend(true)}
             >
               {t('admin.button.challenges.preview')}
             </Button>
             <Button
               disabled={disabled}
-              leftIcon={<Icon path={mdiDatabaseEditOutline} size={1} />}
+              leftSection={<Icon path={mdiDatabaseEditOutline} size={1} />}
               onClick={() => navigate(`/admin/games/${numId}/challenges/${numCId}/flags`)}
             >
               {t('admin.button.challenges.edit_more')}
             </Button>
             <Button
               disabled={disabled}
-              leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+              leftSection={<Icon path={mdiContentSaveOutline} size={1} />}
               onClick={() =>
                 onUpdate({
                   ...challengeInfo,
@@ -255,7 +255,7 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Select
               label={
-                <Group spacing="sm">
+                <Group gap="sm">
                   <Text size="sm">{t('admin.content.games.challenges.type.label')}</Text>
                   <Text size="xs" c="dimmed">
                     {t('admin.content.games.challenges.type.description')}
@@ -295,7 +295,7 @@ const GameChallengeEdit: FC = () => {
             <Textarea
               w="100%"
               label={
-                <Group spacing="sm">
+                <Group gap="sm">
                   <Text size="sm">{t('admin.content.games.challenges.description')}</Text>
                   <Text size="xs" c="dimmed">
                     {t('admin.content.markdown_support')}
@@ -311,10 +311,10 @@ const GameChallengeEdit: FC = () => {
             />
           </Grid.Col>
           <Grid.Col span={1}>
-            <Stack spacing="sm">
+            <Stack gap="sm">
               <HintList
                 label={
-                  <Group spacing="sm">
+                  <Group gap="sm">
                     <Text size="sm">{t('admin.content.games.challenges.hints')}</Text>
                     <Text size="xs" c="dimmed">
                       {t('admin.content.markdown_inline_support')}
@@ -329,7 +329,7 @@ const GameChallengeEdit: FC = () => {
             </Stack>
           </Grid.Col>
           <Grid.Col span={1}>
-            <Stack spacing="sm">
+            <Stack gap="sm">
               <NumberInput
                 label={t('admin.content.games.challenges.score')}
                 min={0}
@@ -375,7 +375,7 @@ const GameChallengeEdit: FC = () => {
                   styles={(theme) => ({
                     label: {
                       background:
-                        theme.colorScheme === 'dark' ? theme.colors.dark[4] : 'rgba(0, 0, 0, 0.8)',
+                        colorScheme === 'dark' ? theme.colors.dark[4] : 'rgba(0, 0, 0, 0.8)',
                     },
                   })}
                 />
@@ -403,7 +403,7 @@ const GameChallengeEdit: FC = () => {
         {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
           <Grid columns={12}>
             <Grid.Col span={8}>
-              <Group position="apart" align="flex-end">
+              <Group justify="space-between" align="flex-end">
                 <TextInput
                   label={t('admin.content.games.challenges.container_image')}
                   disabled={disabled}

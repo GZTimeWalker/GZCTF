@@ -13,7 +13,7 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
 
   return (
     <ReactEcharts
-      theme={theme.colorScheme}
+      theme={colorScheme}
       option={{
         animation: false,
         color: theme.colors.brand[5],
@@ -21,7 +21,7 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
         radar: {
           indicator,
           axisName: {
-            color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
           },
         },
         series: [
@@ -32,7 +32,7 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
                 value,
                 name,
                 areaStyle: {
-                  color: theme.fn.rgba(theme.colors.brand[4], 0.6),
+                  color: alpha(theme.colors.brand[4], 0.6),
                 },
               },
             ],

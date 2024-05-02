@@ -37,14 +37,13 @@ const useItemStyle = createStyles((theme) => ({
     userSelect: 'none',
 
     ...theme.fn.hover({
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
+      backgroundColor: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
     }),
 
     '&[data-active]': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
+      backgroundColor: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
       ...theme.fn.hover({
-        backgroundColor:
-          theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[3],
+        backgroundColor: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[3],
       }),
     },
 
@@ -89,7 +88,7 @@ const ScrollSelect: FC<ScrollSelectProps> = (props) => {
       {!items || items.length === 0 ? (
         <Center h="100%">{emptyPlaceholder}</Center>
       ) : (
-        <Stack spacing={2} w="100%">
+        <Stack gap={2} w="100%">
           {items.map((item) => (
             <ItemComponent
               key={item.id}

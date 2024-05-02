@@ -164,7 +164,7 @@ const GameDetail: FC = () => {
     modals.openConfirmModal({
       title: t('game.content.join.confirm'),
       children: (
-        <Stack spacing="xs">
+        <Stack gap="xs">
           <Text size="sm">{t('game.content.join.content.0')}</Text>
           <Text size="sm">
             <Trans i18nKey="game.content.join.content.1" />
@@ -182,7 +182,7 @@ const GameDetail: FC = () => {
     modals.openConfirmModal({
       title: t('game.content.leave.confirm'),
       children: (
-        <Stack spacing="xs">
+        <Stack gap="xs">
           <Text size="sm">{t('game.content.leave.content.0')}</Text>
           <Text size="sm">{t('game.content.leave.content.1')}</Text>
         </Stack>
@@ -225,13 +225,13 @@ const GameDetail: FC = () => {
     <WithNavBar width="100%" isLoading={!game} minWidth={0} withFooter>
       <div ref={targetRef} className={classes.root}>
         <Group
-          noWrap
-          position="apart"
+          wrap="nowrap"
+          justify="space-between"
           w="100%"
           p={`0 ${theme.spacing.md}`}
           className={classes.container}
         >
-          <Stack spacing={6} className={classes.flexGrowAtSm}>
+          <Stack gap={6} className={classes.flexGrowAtSm}>
             <Group>
               <Badge variant="outline">
                 {!game || game.limit === 0
@@ -242,7 +242,7 @@ const GameDetail: FC = () => {
               </Badge>
               {game?.hidden && <Badge variant="outline">{t('game.tag.hidden')}</Badge>}
             </Group>
-            <Stack spacing={2}>
+            <Stack gap={2}>
               <Title className={classes.title}>{game?.title}</Title>
               <Text size="sm" c="dimmed">
                 <Trans
@@ -251,8 +251,8 @@ const GameDetail: FC = () => {
                 />
               </Text>
             </Stack>
-            <Group position="apart">
-              <Stack spacing={0}>
+            <Group justify="space-between">
+              <Stack gap={0}>
                 <Text size="sm" className={classes.date}>
                   {t('game.content.start_time')}
                 </Text>
@@ -260,7 +260,7 @@ const GameDetail: FC = () => {
                   {startTime.format('HH:mm:ss, MMMM DD, YYYY')}
                 </Text>
               </Stack>
-              <Stack spacing={0}>
+              <Stack gap={0}>
                 <Text size="sm" className={classes.date}>
                   {t('game.content.end_time')}
                 </Text>
@@ -282,7 +282,7 @@ const GameDetail: FC = () => {
         </Group>
       </div>
       <Container className={classes.content}>
-        <Stack spacing="xs" pb={100}>
+        <Stack gap="xs" pb={100}>
           {GetAlert(status, game?.teamName ?? '')}
           {teamRequire && (
             <Alert

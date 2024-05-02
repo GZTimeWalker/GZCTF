@@ -166,7 +166,7 @@ const GameNoticePanel: FC = () => {
 
   return (
     <Card shadow="sm" w="20rem">
-      <Stack spacing="xs">
+      <Stack gap="xs">
         <SegmentedControl
           value={filter}
           styles={{
@@ -186,17 +186,17 @@ const GameNoticePanel: FC = () => {
           <ScrollArea offsetScrollbars scrollbarSize={0} h="calc(100vh - 25rem)">
             <List
               size="sm"
-              spacing={3}
+              gap={3}
               styles={(theme) => ({
                 item: {
                   fontWeight: 500,
-                  color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
+                  color: colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
                 },
               })}
             >
               {filteredNotices.map((notice) => (
                 <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
-                  <Stack spacing={1}>
+                  <Stack gap={1}>
                     <Text size="xs" fw={700} c="dimmed">
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
                     </Text>

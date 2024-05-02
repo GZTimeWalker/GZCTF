@@ -145,7 +145,7 @@ const Users: FC = () => {
             <Text>
               <Trans i18nKey="admin.content.users.reset.content" />
             </Text>
-            <Text fw={700} align="center" ff={theme.fontFamilyMonospace}>
+            <Text fw={700} ff={theme.fontFamilyMonospace}>
               {res.data}
             </Text>
             <Button
@@ -200,7 +200,7 @@ const Users: FC = () => {
         <>
           <TextInput
             w="30%"
-            icon={<Icon path={mdiMagnify} size={1} />}
+            leftSection={<Icon path={mdiMagnify} size={1} />}
             placeholder={t('admin.placeholder.users.search')}
             value={hint}
             onChange={setHint}
@@ -209,7 +209,7 @@ const Users: FC = () => {
             }}
             rightSection={<Icon path={mdiAccountOutline} size={1} />}
           />
-          <Group position="right">
+          <Group justify="right">
             <Text fw="bold" size="sm">
               <Trans
                 i18nKey="admin.content.users.stats"
@@ -264,8 +264,8 @@ const Users: FC = () => {
                       />
                     </td>
                     <td>
-                      <Group noWrap position="apart" spacing="xs">
-                        <Group noWrap position="left">
+                      <Group wrap="nowrap" justify="space-between" gap="xs">
+                        <Group wrap="nowrap" justify="left">
                           <Avatar alt="avatar" src={user.avatar} radius="xl">
                             {user.userName?.slice(0, 1) ?? 'U'}
                           </Avatar>
@@ -295,7 +295,7 @@ const Users: FC = () => {
                       </Text>
                     </td>
                     <td align="right">
-                      <Group noWrap spacing="sm" position="right">
+                      <Group wrap="nowrap" gap="sm" justify="right">
                         <ActionIcon
                           color="blue"
                           onClick={() => {

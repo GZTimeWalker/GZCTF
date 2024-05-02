@@ -33,7 +33,7 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
 
   return (
     <ReactEcharts
-      theme={theme.colorScheme}
+      theme={colorScheme}
       option={{
         animation: false,
         backgroundColor: 'transparent',

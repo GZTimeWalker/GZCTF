@@ -56,21 +56,21 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
         transition: 'filter .2s',
         width: '100%',
         '&:hover': {
-          filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
+          filter: colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
         },
       })}
     >
       <Card.Section>
-        <Group noWrap align="flex-start">
+        <Group wrap="nowrap" align="flex-start">
           <BackgroundImage src={poster ?? ''} h="10rem" maw="20rem" miw="20rem">
             <Center h="100%">
               {!poster && <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />}
             </Center>
           </BackgroundImage>
-          <Stack spacing="sm" p="md" w="100%">
-            <Group spacing={0} position="apart" align="flex-start">
-              <Stack spacing={2}>
-                <Group noWrap spacing="xs">
+          <Stack gap="sm" p="md" w="100%">
+            <Group gap={0} justify="space-between" align="flex-start">
+              <Stack gap={2}>
+                <Group wrap="nowrap" gap="xs">
                   <Badge size="xs" color={color}>
                     {limit === 0
                       ? t('game.tag.multiplayer')
@@ -88,7 +88,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
                   {title}
                 </Title>
               </Stack>
-              <Group mt={4} noWrap spacing={3}>
+              <Group mt={4} wrap="nowrap" gap={3}>
                 <Badge size="xs" color={color}>
                   {startTime.format('YYYY/MM/DD HH:mm:ss')}
                 </Badge>

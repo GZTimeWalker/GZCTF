@@ -1,4 +1,13 @@
-import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
+import {
+  Group,
+  MantineColor,
+  Stack,
+  Text,
+  darken,
+  lighten,
+  useMantineTheme,
+  useMantineColorScheme,
+} from '@mantine/core'
 import {
   mdiBomb,
   mdiBullhornOutline,
@@ -78,7 +87,7 @@ export interface ChallengeTypeItemProps extends React.ComponentPropsWithoutRef<'
 export const ChallengeTypeItem = forwardRef<HTMLDivElement, ChallengeTypeItemProps>(
   ({ label, desrc, ...others }: ChallengeTypeItemProps, ref) => {
     return (
-      <Stack spacing={0} ref={ref} {...others}>
+      <Stack gap={0} ref={ref} {...others}>
         <Text size="sm">{label}</Text>
         <Text size="xs">{desrc}</Text>
       </Stack>
@@ -193,7 +202,7 @@ export const ChallengeTagItem = forwardRef<HTMLDivElement, ChallengeTagItemProps
   ({ label, icon, color, ...others }: ChallengeTagItemProps, ref) => {
     const theme = useMantineTheme()
     return (
-      <Group ref={ref} noWrap {...others}>
+      <Group ref={ref} wrap="nowrap" {...others}>
         <Icon color={theme.colors[color][4]} path={icon} size={1} />
         <Text size="sm">{label}</Text>
       </Group>
@@ -209,21 +218,23 @@ export const BloodsTypes = [
 
 export const SubmissionTypeColorMap = () => {
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
+
   return new Map([
     [SubmissionType.Unaccepted, undefined],
-    [SubmissionType.Normal, theme.colors.brand[theme.colorScheme === 'dark' ? 8 : 6]],
+    [SubmissionType.Normal, theme.colors.brand[colorScheme === 'dark' ? 8 : 6]],
     [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
       SubmissionType.SecondBlood,
-      theme.colorScheme === 'dark'
-        ? theme.fn.lighten(theme.colors.gray[2], 0.3)
-        : theme.fn.darken(theme.colors.gray[1], 0.2),
+      colorScheme === 'dark'
+        ? lighten(theme.colors.gray[2], 0.3)
+        : darken(theme.colors.gray[1], 0.2),
     ],
     [
       SubmissionType.ThirdBlood,
-      theme.colorScheme === 'dark'
-        ? theme.fn.darken(theme.colors.orange[7], 0.25)
-        : theme.fn.lighten(theme.colors.orange[7], 0.2),
+      colorScheme === 'dark'
+        ? darken(theme.colors.orange[7], 0.25)
+        : lighten(theme.colors.orange[7], 0.2),
     ],
   ])
 }
@@ -269,7 +280,8 @@ export const SubmissionTypeIconMap = (size: number) => {
 export const NoticTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
   const { iconMap } = SubmissionTypeIconMap(size)
-  const colorIdx = theme.colorScheme === 'dark' ? 4 : 7
+  const { colorScheme } = useMantineColorScheme()
+  const colorIdx = colorScheme === 'dark' ? 4 : 7
 
   return new Map([
     [

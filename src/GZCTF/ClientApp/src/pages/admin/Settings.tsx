@@ -66,7 +66,7 @@ const Configs: FC = () => {
         variant="filled"
         radius="xl"
         size="md"
-        leftIcon={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
+        leftSection={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
         onClick={() => {
           updateConfig({ globalConfig, accountPolicy, containerPolicy })
           setSaved(false)
@@ -76,7 +76,7 @@ const Configs: FC = () => {
       >
         {t('admin.button.save')}
       </Button>
-      <Stack w="100%" spacing="xl">
+      <Stack w="100%" gap="xl">
         <Stack>
           <Title order={2}>{t('admin.content.settings.platform.title')}</Title>
           <Divider />

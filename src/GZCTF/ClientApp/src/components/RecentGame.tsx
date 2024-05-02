@@ -47,7 +47,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
       sx={(theme) => ({
         transition: 'filter .2s',
         '&:hover': {
-          filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
+          filter: colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
         },
       })}
     >
@@ -69,7 +69,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
           alignContent: 'flex-end',
         }}
       >
-        <Group noWrap spacing="xs" position="right">
+        <Group wrap="nowrap" gap="xs" justify="right">
           <Badge size="xs" color={color} variant="filled">
             {status}
           </Badge>
@@ -92,8 +92,8 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         </Title>
       </Card.Section>
 
-      <Stack spacing={0} mt={16}>
-        <Group noWrap spacing={0} position="apart">
+      <Stack gap={0} mt={16}>
+        <Group wrap="nowrap" gap={0} justify="space-between">
           <Text size="sm" fw={700}>
             {status === GameStatus.Coming ? t('game.content.start_at') : t('game.content.end_at')}
           </Text>
@@ -103,7 +103,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
               : dayjs(endTime).format('YY/MM/DD HH:mm')}
           </Badge>
         </Group>
-        <Group noWrap spacing={0} position="apart">
+        <Group wrap="nowrap" gap={0} justify="space-between">
           <Text size="sm" fw={700}>
             {status === GameStatus.OnGoing
               ? t('game.content.remaining_time')

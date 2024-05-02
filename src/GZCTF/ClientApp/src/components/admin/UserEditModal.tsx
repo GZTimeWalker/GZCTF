@@ -76,7 +76,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       {/* User Info */}
-      <Stack spacing="md" m="auto" mt={15}>
+      <Stack gap="md" m="auto" mt={15}>
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
@@ -156,8 +156,8 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
           onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
         />
 
-        <Stack spacing={2}>
-          <Group position="apart">
+        <Stack gap={2}>
+          <Group justify="space-between">
             <Text size="sm" fw={500}>
               {t('common.label.ip')}
             </Text>
@@ -165,7 +165,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
               {user.ip}
             </Text>
           </Group>
-          <Group position="apart">
+          <Group justify="space-between">
             <Text size="sm" fw={500}>
               {t('admin.label.users.last_visit')}
             </Text>

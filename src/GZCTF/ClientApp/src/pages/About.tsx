@@ -29,7 +29,7 @@ const About: FC = () => {
             </Text>
           </Text>
         </Center>
-        <Group position="right">
+        <Group justify="right">
           <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
             <HoverCard.Target>
               <Badge
@@ -47,7 +47,7 @@ const About: FC = () => {
               <Stack>
                 <Group>
                   <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
-                  <Stack spacing="xs">
+                  <Stack gap="xs">
                     <Title
                       style={{
                         marginLeft: '-20px',
@@ -81,7 +81,7 @@ const About: FC = () => {
                     </Group>
                   </Stack>
                 </Group>
-                <Group spacing="xs">
+                <Group gap="xs">
                   <Text size="xs" fw={500} color="dimmed" ff={theme.fontFamilyMonospace}>
                     {valid
                       ? `Built at ${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}`

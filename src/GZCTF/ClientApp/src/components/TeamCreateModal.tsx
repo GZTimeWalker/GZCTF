@@ -55,7 +55,7 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       {isOwnTeam ? (
-        <Stack spacing="lg" p={40} ta="center">
+        <Stack gap="lg" p={40} ta="center">
           <Center>
             <Icon color={theme.colors.red[7]} path={mdiCloseCircle} size={4} />
           </Center>

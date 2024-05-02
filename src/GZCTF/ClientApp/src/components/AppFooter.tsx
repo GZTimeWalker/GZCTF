@@ -33,8 +33,8 @@ const AppFooter: FC = () => {
       <div className={classes.spacer} />
       <div className={classes.wrapper}>
         <Center mx="auto" h="100%">
-          <Stack spacing="sm" w={isMobile ? '100%' : '80%'}>
-            <Stack w="100%" align="center" spacing={2}>
+          <Stack gap="sm" w={isMobile ? '100%' : '80%'}>
+            <Stack w="100%" align="center" gap={2}>
               <MainIcon style={{ maxWidth: isMobile ? 45 : 50, height: 'auto' }} />
 
               <Text fw="bold" size={isMobile ? 28 : 36}>

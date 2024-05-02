@@ -78,12 +78,18 @@ const ChallengePanel: FC = () => {
   // skeleton for loading
   if (!challenges) {
     return (
-      <Group spacing="sm" noWrap position="apart" align="flex-start" maw="calc(100% - 20rem)">
-        <Stack miw="10rem" spacing={6}>
+      <Group
+        gap="sm"
+        wrap="nowrap"
+        justify="space-between"
+        align="flex-start"
+        maw="calc(100% - 20rem)"
+      >
+        <Stack miw="10rem" gap={6}>
           {Array(8)
             .fill(null)
             .map((_v, i) => (
-              <Group key={i} noWrap p={10}>
+              <Group key={i} wrap="nowrap" p={10}>
                 <Skeleton height="1.5rem" width="1.5rem" />
                 <Skeleton height="1rem" />
               </Group>
@@ -91,7 +97,7 @@ const ChallengePanel: FC = () => {
         </Stack>
         <SimpleGrid
           cols={DEFAULT_COLS}
-          spacing="sm"
+          gap="sm"
           p="xs"
           style={{
             width: 'calc(100% - 9rem)',
@@ -104,16 +110,16 @@ const ChallengePanel: FC = () => {
             .fill(null)
             .map((_v, i) => (
               <Card key={i} radius="md" shadow="sm">
-                <Stack spacing="sm" pos="relative" style={{ zIndex: 99 }}>
+                <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
                   <Skeleton height="1.5rem" width="70%" mt={4} />
                   <Divider />
-                  <Group noWrap position="apart" align="start">
+                  <Group wrap="nowrap" justify="space-between" align="start">
                     <Center>
                       <Skeleton height="1.5rem" width="5rem" />
                     </Center>
-                    <Stack spacing="xs">
+                    <Stack gap="xs">
                       <Skeleton height="1rem" width="6rem" mt={5} />
-                      <Group position="center" spacing="md" h={20}>
+                      <Group position="center" gap="md" h={20}>
                         <Skeleton height="1.2rem" width="1.2rem" />
                         <Skeleton height="1.2rem" width="1.2rem" />
                         <Skeleton height="1.2rem" width="1.2rem" />
@@ -143,13 +149,19 @@ const ChallengePanel: FC = () => {
   }
 
   return (
-    <Group spacing="sm" noWrap position="apart" align="flex-start" miw="calc(100% - 20rem)">
+    <Group
+      gap="sm"
+      wrap="nowrap"
+      justify="space-between"
+      align="flex-start"
+      miw="calc(100% - 20rem)"
+    >
       <Stack miw="10rem">
         {game?.writeupRequired && (
           <>
             <Button
               px="sm"
-              leftIcon={<Icon path={mdiFileUploadOutline} size={1} />}
+              leftSection={<Icon path={mdiFileUploadOutline} size={1} />}
               onClick={() => setWriteupSubmitOpened(true)}
             >
               {t('game.button.submit_writeup')}
@@ -186,7 +198,7 @@ const ChallengePanel: FC = () => {
         >
           <Tabs.List>
             <Tabs.Tab value={'All'} icon={<Icon path={mdiPuzzle} size={1} />}>
-              <Group position="apart" noWrap spacing={2}>
+              <Group justify="space-between" wrap="nowrap" gap={2}>
                 <Text>All</Text>
                 <Text>{allChallenges.length}</Text>
               </Group>
@@ -200,7 +212,7 @@ const ChallengePanel: FC = () => {
                   icon={<Icon path={data?.icon} size={1} />}
                   color={data?.color}
                 >
-                  <Group position="apart" noWrap spacing={2}>
+                  <Group justify="space-between" wrap="nowrap" gap={2}>
                     <Text>{data?.label}</Text>
                     <Text>{challenges && challenges[tab].length}</Text>
                   </Group>
@@ -218,7 +230,7 @@ const ChallengePanel: FC = () => {
         scrollbarSize={4}
       >
         {currentChallenges && currentChallenges.length ? (
-          <SimpleGrid cols={DEFAULT_COLS} spacing="sm" p="xs" pt={0} breakpoints={GRID_BREAKPOINTS}>
+          <SimpleGrid cols={DEFAULT_COLS} gap="sm" p="xs" pt={0} breakpoints={GRID_BREAKPOINTS}>
             {currentChallenges?.map((chal) => (
               <ChallengeCard
                 key={chal.id}
@@ -240,7 +252,7 @@ const ChallengePanel: FC = () => {
           </SimpleGrid>
         ) : (
           <Center h="calc(100vh - 10rem)">
-            <Stack spacing={0}>
+            <Stack gap={0}>
               <Title order={2}>{t('game.content.all_solved.title')}</Title>
               <Text>{t('game.content.all_solved.comment')}</Text>
             </Stack>

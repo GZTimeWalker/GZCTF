@@ -84,10 +84,13 @@ const Games: FC = () => {
       headProps={{ position: 'apart' }}
       head={
         <>
-          <Button leftIcon={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
+          <Button
+            leftSection={<Icon path={mdiPlus} size={1} />}
+            onClick={() => setCreateOpened(true)}
+          >
             {t('admin.button.games.new')}
           </Button>
-          <Group w="calc(100% - 9rem)" position="right">
+          <Group w="calc(100% - 9rem)" justify="right">
             <Text fw="bold" size="sm">
               <Trans
                 i18nKey="admin.content.games.stats"
@@ -144,10 +147,10 @@ const Games: FC = () => {
                         />
                       </td>
                       <td>
-                        <Group noWrap position="apart">
+                        <Group wrap="nowrap" justify="space-between">
                           <Group
-                            noWrap
-                            position="left"
+                            wrap="nowrap"
+                            justify="left"
                             onClick={() => navigate(`/games/${game.id}`)}
                             sx={{ cursor: 'pointer' }}
                           >
@@ -162,7 +165,7 @@ const Games: FC = () => {
                         </Group>
                       </td>
                       <td>
-                        <Group noWrap spacing="xs">
+                        <Group wrap="nowrap" gap="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
                           </Badge>
@@ -178,7 +181,7 @@ const Games: FC = () => {
                         </Text>
                       </td>
                       <td>
-                        <Group position="right">
+                        <Group justify="right">
                           <ActionIcon
                             onClick={() => {
                               navigate(`/admin/games/${game.id}/info`)

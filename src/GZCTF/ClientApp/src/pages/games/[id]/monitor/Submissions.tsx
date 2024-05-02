@@ -46,7 +46,7 @@ const AnswerResultMap = new Map([
 
 const AnswerResultIconMap = (size: number) => {
   const theme = useMantineTheme()
-  const colorIdx = theme.colorScheme === 'dark' ? 4 : 7
+  const colorIdx = colorScheme === 'dark' ? 4 : 7
 
   return new Map([
     [
@@ -213,7 +213,7 @@ const Submissions: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" w="100%">
+      <Group justify="space-between" w="100%">
         <SegmentedControl
           color="brand"
           value={type}
@@ -239,10 +239,10 @@ const Submissions: FC = () => {
               .filter((role) => role.value !== AnswerResult.FlagSubmitted),
           ]}
         />
-        <Group position="right">
+        <Group justify="right">
           <Tooltip
             label={t('game.button.download.submissionsheet')}
-            position="left"
+            justify="left"
             classNames={tooltipClasses}
           >
             <ActionIcon disabled={disabled} size="lg" onClick={onDownloadSubmissionSheet}>

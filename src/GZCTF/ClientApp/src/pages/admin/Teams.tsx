@@ -169,7 +169,7 @@ const Teams: FC = () => {
             }}
             rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
-          <Group position="right">
+          <Group justify="right">
             <Text fw="bold" size="sm">
               <Trans
                 i18nKey="admin.content.teams.stats"
@@ -220,8 +220,8 @@ const Teams: FC = () => {
                   return (
                     <tr key={team.id}>
                       <td>
-                        <Group position="apart" spacing={0} noWrap>
-                          <Group position="left" noWrap w="calc(100% - 7rem)">
+                        <Group justify="space-between" gap={0} wrap="nowrap">
+                          <Group justify="left" wrap="nowrap" w="calc(100% - 7rem)">
                             <Avatar alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
@@ -253,7 +253,7 @@ const Teams: FC = () => {
                       <td>
                         <Tooltip.Group openDelay={300} closeDelay={100}>
                           <Avatar.Group
-                            spacing="md"
+                            gap="md"
                             styles={{
                               child: {
                                 border: 'none',
@@ -289,7 +289,7 @@ const Teams: FC = () => {
                         </Text>
                       </td>
                       <td align="right">
-                        <Group noWrap spacing="sm" position="right">
+                        <Group wrap="nowrap" gap="sm" justify="right">
                           <ActionIcon
                             color="blue"
                             onClick={() => {

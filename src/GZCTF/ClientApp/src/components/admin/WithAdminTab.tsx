@@ -62,7 +62,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   usePageTitle(pages[tabIndex].title)
 
   return (
-    <Stack spacing="xs" align="center" pt="md">
+    <Stack gap="xs" align="center" pt="md">
       <IconTabs
         withIcon
         active={activeTab}
@@ -75,14 +75,14 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
         }))}
       />
       {head && (
-        <Group noWrap position="apart" h="40px" w="100%" {...headProps}>
+        <Group wrap="nowrap" justify="space-between" h="40px" w="100%" {...headProps}>
           {head}
         </Group>
       )}
       <LoadingOverlay
         visible={isLoading ?? false}
         overlayOpacity={1}
-        overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+        overlayColor={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
       />
       {children}
     </Stack>

@@ -85,8 +85,8 @@ const MemberItem: FC<MemberItemProps> = (props) => {
   const { classes } = useGridStyles()
 
   return (
-    <Group noWrap spacing="xl" position="apart">
-      <Group noWrap w="calc(100% - 16rem)" miw="500px">
+    <Group wrap="nowrap" gap="xl" justify="space-between">
+      <Group wrap="nowrap" w="calc(100% - 16rem)" miw="500px">
         <Avatar alt="avatar" src={user.avatar}>
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
@@ -123,9 +123,9 @@ const MemberItem: FC<MemberItemProps> = (props) => {
           </Grid.Col>
         </Grid>
       </Group>
-      <Group noWrap position="right">
+      <Group wrap="nowrap" justify="right">
         {isCaptain && (
-          <Group spacing={0}>
+          <Group gap={0}>
             <Icon path={mdiStar} color={theme.colors.yellow[4]} size={0.9} />
             <Text size="sm" fw={500} c="yellow">
               {t('team.content.role.captain')}
@@ -158,7 +158,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
     <Accordion.Item value={participation.id!.toString()}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Accordion.Control>
-          <Group position="apart">
+          <Group justify="space-between">
             <Group>
               <Avatar alt="avatar" src={participation.team?.avatar}>
                 {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
@@ -176,7 +176,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
             </Group>
-            <Group position="apart" w="30%">
+            <Group justify="space-between" w="30%">
               <Box>
                 <Text>{participation.organization}</Text>
                 <Text size="sm" c="dimmed" fw={700}>
@@ -294,7 +294,7 @@ const GameTeamReview: FC = () => {
       headProps={{ position: 'apart' }}
       isLoading={!participations}
       head={
-        <Group position="apart" noWrap w="100%">
+        <Group justify="space-between" wrap="nowrap" w="100%">
           <TextInput
             w="20rem"
             placeholder={t('admin.placeholder.teams.search')}
@@ -302,7 +302,7 @@ const GameTeamReview: FC = () => {
             onChange={setSearch}
             rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
-          <Group position="right" noWrap>
+          <Group justify="right" wrap="nowrap">
             {orgs.length && (
               <Select
                 placeholder={t('admin.content.show_all')}
@@ -326,7 +326,7 @@ const GameTeamReview: FC = () => {
       <ScrollArea type="never" pos="relative" h="calc(100vh - 250px)">
         {!participations || participations.length === 0 ? (
           <Center h="calc(100vh - 200px)">
-            <Stack spacing={0}>
+            <Stack gap={0}>
               <Title order={2}>{t('admin.content.games.review.empty.title')}</Title>
               <Text>{t('admin.content.games.review.empty.description')}</Text>
             </Stack>
@@ -350,7 +350,7 @@ const GameTeamReview: FC = () => {
         )}
       </ScrollArea>
       <Pagination
-        position="right"
+        justify="right"
         value={activePage}
         onChange={setPage}
         total={(filteredParticipations?.length ?? 0) / PART_NUM_PER_PAGE + 1}

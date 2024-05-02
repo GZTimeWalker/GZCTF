@@ -44,21 +44,21 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
 
   const tooltipStyle = {
     tooltip: {
-      color: theme.colorScheme === 'dark' ? 'white' : 'black',
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : 'white',
+      color: colorScheme === 'dark' ? 'white' : 'black',
+      backgroundColor: colorScheme === 'dark' ? theme.colors.dark[6] : 'white',
     },
   }
 
   return (
     <Card shadow="sm">
-      <Group noWrap position="apart">
+      <Group wrap="nowrap" justify="space-between">
         <Switch
           disabled={disabled}
           checked={challenge.isEnabled}
           onChange={() => onToggle(challenge, setDisabled)}
         />
         <Icon path={data!.icon} color={theme.colors[data?.color ?? 'brand'][5]} size={1} />
-        <Group noWrap position="apart" spacing="sm" w="calc(100% - 100px)">
+        <Group wrap="nowrap" justify="space-between" gap="sm" w="calc(100% - 100px)">
           <Text truncate fw={700} w="14rem">
             {challenge.title}
           </Text>
@@ -76,7 +76,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           <Text size="xs" fw={700} w="2.5rem">
             {challenge.originalScore}pts
           </Text>
-          <Group position="right" w="8rem">
+          <Group justify="right" w="8rem">
             <Badge color={data?.color} variant="dot">
               {data?.label}
             </Badge>
@@ -84,7 +84,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         </Group>
         <Tooltip
           label={t('admin.button.challenges.edit')}
-          position="left"
+          justify="left"
           width={120}
           offset={10}
           styles={tooltipStyle}
@@ -99,7 +99,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         </Tooltip>
         <Tooltip
           label={t('admin.button.challenges.edit_more')}
-          position="left"
+          justify="left"
           width={120}
           offset={54}
           styles={tooltipStyle}

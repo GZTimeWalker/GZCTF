@@ -152,8 +152,8 @@ const Profile: FC = () => {
     <>
       <Title order={2}>{t('account.title.profile')}</Title>
       <Divider mt="xs" mb="md" />
-      <Stack spacing="md" m="auto">
-        <Group noWrap>
+      <Stack gap="md" m="auto">
+        <Group wrap="nowrap">
           <TextInput
             label={t('account.label.username')}
             type="text"
@@ -289,7 +289,7 @@ const Profile: FC = () => {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
-          <Group position="right">
+          <Group justify="right">
             <Button
               variant="default"
               onClick={() => {
@@ -327,7 +327,7 @@ const Profile: FC = () => {
           maxSize={3 * 1024 * 1024}
           accept={ACCEPT_IMAGE_MIME_TYPE}
         >
-          <Group position="center" spacing="xl" mih={240} style={{ pointerEvents: 'none' }}>
+          <Group position="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
             {avatarFile ? (
               <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
             ) : (

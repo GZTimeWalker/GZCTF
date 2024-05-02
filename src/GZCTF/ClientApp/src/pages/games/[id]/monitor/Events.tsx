@@ -39,7 +39,7 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const EventTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
-  const colorIdx = theme.colorScheme === 'dark' ? 5 : 7
+  const colorIdx = colorScheme === 'dark' ? 5 : 7
 
   return new Map([
     [EventType.FlagSubmit, <Icon path={mdiFlag} size={size} color={theme.colors.cyan[colorIdx]} />],
@@ -203,7 +203,7 @@ const Events: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" w="100%">
+      <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(
             t('game.content.hide_container_events.label'),
@@ -212,7 +212,7 @@ const Events: FC = () => {
           checked={hideContainerEvents}
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
         />
-        <Group position="right">
+        <Group justify="right">
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
             <Icon path={mdiArrowLeftBold} size={1} />
           </ActionIcon>
@@ -226,7 +226,7 @@ const Events: FC = () => {
         </Group>
       </Group>
       <ScrollArea offsetScrollbars h="calc(100vh - 160px)">
-        <Stack spacing="xs" pr={10} w="100%">
+        <Stack gap="xs" pr={10} w="100%">
           {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card
               shadow="sm"
@@ -237,9 +237,9 @@ const Events: FC = () => {
                 i === 0 && activePage === 1 && filteredEvents.length > 0 ? classes.fade : undefined
               }
             >
-              <Group noWrap align="flex-start" position="right" spacing="sm" w="100%">
+              <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">
                 {iconMap.get(event.type)}
-                <Stack spacing={2} w="100%">
+                <Stack gap={2} w="100%">
                   <Input
                     variant="unstyled"
                     value={formatEvent(t, event)}
@@ -258,7 +258,7 @@ const Events: FC = () => {
                       },
                     })}
                   />
-                  <Group noWrap position="apart">
+                  <Group wrap="nowrap" justify="space-between">
                     <Text size="sm" fw={500} c="dimmed">
                       {event.team}, {event.user}
                     </Text>

@@ -41,7 +41,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps) => {
     default: {
       transition: 'border-color 100ms ease, color 100ms ease, background 100ms ease',
       borderRadius: theme.radius.sm,
-      color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
+      color: colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
       fontSize: theme.fontSizes.sm,
       height: 'auto',
       padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
@@ -58,16 +58,16 @@ const useTabStyle = createStyles((theme, props: TabStyleProps) => {
 
       '&:disabled': {
         cursor: 'not-allowed',
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5],
+        color: colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5],
       },
 
       '&:hover': {
-        background: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+        background: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
       },
 
       [`&.${activeTab.ref}`]: {
-        color: theme.fn.themeColor(color as string, theme.colorScheme === 'dark' ? 4 : 6),
-        background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+        color: theme.fn.themeColor(color as string, colorScheme === 'dark' ? 4 : 6),
+        background: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
       },
     },
     tabInner: {
@@ -143,7 +143,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   ))
 
   return (
-    <Group spacing={0} position="apart" w="100%" noWrap>
+    <Group gap={0} justify="space-between" w="100%" wrap="nowrap">
       {aside}
       {withIcon && (
         <LogoHeader
@@ -155,9 +155,9 @@ const IconTabs: FC<IconTabsProps> = (props) => {
         />
       )}
       <Group
-        position="right"
-        noWrap
-        spacing={5}
+        justify="right"
+        wrap="nowrap"
+        gap={5}
         sx={(theme) => ({
           [theme.fn.smallerThan('xs')]: {
             width: '100%',

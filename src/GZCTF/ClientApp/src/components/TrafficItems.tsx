@@ -33,10 +33,10 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group position="apart" spacing={0} w="100%" noWrap>
-        <Group position="left" spacing="xs" noWrap>
+      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+        <Group justify="left" gap="xs" wrap="nowrap">
           <Icon path={data.icon} color={theme.colors[data.color ?? 'brand'][5]} size={1} />
-          <Stack spacing={0} align="flex-start">
+          <Stack gap={0} align="flex-start">
             <Input
               variant="unstyled"
               value={item.title ?? 'Team'}
@@ -56,7 +56,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
           </Stack>
         </Group>
 
-        <Group position="right" spacing={2} noWrap w="6rem">
+        <Group justify="right" gap={2} wrap="nowrap" w="6rem">
           <Text color="dimmed" size="xs" lineClamp={1}>
             {item.count}&nbsp;{t('common.label.team')}
           </Text>
@@ -74,12 +74,12 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group position="apart" spacing={0} w="100%" noWrap>
-        <Group position="left" spacing="xs" noWrap>
+      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+        <Group justify="left" gap="xs" wrap="nowrap">
           <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color="brand">
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Stack spacing={0} align="flex-start">
+          <Stack gap={0} align="flex-start">
             <Input
               variant="unstyled"
               value={item.name ?? 'Team'}
@@ -101,7 +101,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
           </Stack>
         </Group>
 
-        <Group position="right" spacing={2} noWrap w="6rem">
+        <Group justify="right" gap={2} wrap="nowrap" w="6rem">
           <Text color="dimmed" size="xs" lineClamp={1}>
             {item.count}&nbsp;{t('game.label.traffic')}
           </Text>
@@ -124,18 +124,18 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
 
   return (
     <SelectableItem h={itemHeight} active={false} {...props}>
-      <Group position="apart" spacing={0} noWrap w="100%">
+      <Group justify="space-between" gap={0} wrap="nowrap" w="100%">
         <Group
-          position="apart"
-          spacing={0}
-          noWrap
+          justify="space-between"
+          gap={0}
+          wrap="nowrap"
           w="calc(100% - 2.5rem)"
           onClick={() => onDownload(item)}
         >
-          <Group position="left" spacing="sm" noWrap>
+          <Group justify="left" gap="sm" wrap="nowrap">
             <Icon path={mdiFileDownloadOutline} size={1.2} />
 
-            <Stack spacing={0} align="flex-start">
+            <Stack gap={0} align="flex-start">
               <Text truncate fw={500}>
                 {item.fileName}
               </Text>
@@ -149,7 +149,7 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
             {HunamizeSize(item.size ?? 0)}
           </Text>
         </Group>
-        <Group position="right" spacing="sm" noWrap w="2.5rem">
+        <Group justify="right" gap="sm" wrap="nowrap" w="2.5rem">
           <ActionIconWithConfirm
             iconPath={mdiDeleteOutline}
             color="red"

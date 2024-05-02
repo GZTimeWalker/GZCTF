@@ -73,18 +73,18 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
           <Button
             w="9rem"
             styles={{ inner: { justifyContent: 'space-between' } }}
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
+            leftSection={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate(backUrl ?? '/admin/games')}
           >
             {t('admin.button.back')}
           </Button>
-          <Group noWrap position={contentPos ?? 'apart'} w="calc(100% - 10rem)">
+          <Group wrap="nowrap" position={contentPos ?? 'apart'} w="calc(100% - 10rem)">
             {head}
           </Group>
         </>
       }
     >
-      <Group noWrap position="apart" align="flex-start" w="100%">
+      <Group wrap="nowrap" justify="space-between" align="flex-start" w="100%">
         <Tabs
           orientation="vertical"
           value={activeTab}
@@ -110,9 +110,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
           <LoadingOverlay
             visible={isLoading ?? false}
             overlayOpacity={1}
-            overlayColor={
-              theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
-            }
+            overlayColor={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
           />
 
           {children}

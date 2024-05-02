@@ -69,7 +69,8 @@ const Posts: FC = () => {
         </Stack>
         {(posts?.length ?? 0) > ITEMS_PER_PAGE && (
           <Pagination
-            position="center"
+            // align="center"
+            // TODO: Fix align prop
             my={20}
             value={activePage}
             onChange={setPage}
@@ -83,7 +84,7 @@ const Posts: FC = () => {
           variant="filled"
           radius="xl"
           size="md"
-          leftIcon={<Icon path={mdiPlus} size={1} />}
+          leftSection={<Icon path={mdiPlus} size={1} />}
           onClick={() => navigate('/posts/new/edit')}
         >
           {t('post.button.new')}

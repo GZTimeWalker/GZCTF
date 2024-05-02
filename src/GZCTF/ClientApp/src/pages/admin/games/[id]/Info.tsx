@@ -190,7 +190,7 @@ const GameInfoEdit: FC = () => {
           <Button
             disabled={disabled}
             color="red"
-            leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+            leftSection={<Icon path={mdiDeleteOutline} size={1} />}
             variant="outline"
             onClick={() =>
               modals.openConfirmModal({
@@ -208,14 +208,14 @@ const GameInfoEdit: FC = () => {
             {t('admin.button.games.delete')}
           </Button>
           <Button
-            leftIcon={<Icon path={mdiClipboard} size={1} />}
+            leftSection={<Icon path={mdiClipboard} size={1} />}
             disabled={disabled}
             onClick={onCopyPublicKey}
           >
             {t('admin.button.games.copy_public_key')}
           </Button>
           <Button
-            leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+            leftSection={<Icon path={mdiContentSaveOutline} size={1} />}
             disabled={disabled}
             onClick={onUpdateInfo}
           >
@@ -348,7 +348,7 @@ const GameInfoEdit: FC = () => {
           />
         </Grid.Col>
         <Grid.Col span={3}>
-          <Stack spacing="xs" h="100%" justify="space-between">
+          <Stack gap="xs" h="100%" justify="space-between">
             <Switch
               pt="1.5em"
               disabled={disabled}
@@ -371,7 +371,7 @@ const GameInfoEdit: FC = () => {
           </Stack>
         </Grid.Col>
         <Grid.Col span={3}>
-          <Stack spacing="xs">
+          <Stack gap="xs">
             <NumberInput
               label={t('admin.content.games.info.writeup_deadline.label')}
               description={t('admin.content.games.info.writeup_deadline.description')}
@@ -393,10 +393,10 @@ const GameInfoEdit: FC = () => {
           </Stack>
         </Grid.Col>
       </Grid>
-      <Group grow position="apart">
+      <Group grow justify="space-between">
         <Textarea
           label={
-            <Group spacing="sm">
+            <Group gap="sm">
               <Text size="sm">{t('admin.content.games.info.writeup_instruction')}</Text>
               <Text size="xs" c="dimmed">
                 {t('admin.content.markdown_support')}
@@ -413,7 +413,7 @@ const GameInfoEdit: FC = () => {
         />
         <MultiSelect
           label={
-            <Group spacing="sm">
+            <Group gap="sm">
               <Text size="sm"> {t('admin.content.games.info.organizations.label')}</Text>
               <Text size="xs" c="dimmed">
                 {t('admin.content.games.info.organizations.description')}
@@ -448,7 +448,7 @@ const GameInfoEdit: FC = () => {
         <Grid.Col span={8}>
           <Textarea
             label={
-              <Group spacing="sm">
+              <Group gap="sm">
                 <Text size="sm">{t('admin.content.games.info.content')}</Text>
                 <Text size="xs" c="dimmed">
                   {t('admin.content.markdown_support')}
@@ -491,7 +491,7 @@ const GameInfoEdit: FC = () => {
                   <Image height="195px" fit="contain" src={game.poster} alt="poster" />
                 ) : (
                   <Center h="160px">
-                    <Stack spacing={0}>
+                    <Stack gap={0}>
                       <Text size="xl" inline>
                         {t('common.content.drop_zone.content', {
                           type: t('common.content.drop_zone.type.poster'),

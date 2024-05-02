@@ -196,7 +196,7 @@ const Logs: FC = () => {
               label: role[0],
             }))}
           />
-          <Group position="right">
+          <Group justify="right">
             <ActionIcon
               size="lg"
               disabled={activePage <= 1}

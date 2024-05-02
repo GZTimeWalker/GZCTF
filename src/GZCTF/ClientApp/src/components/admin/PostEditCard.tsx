@@ -26,12 +26,12 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
   return (
     <Card {...props} shadow="sm" p="lg">
       <Stack>
-        <Group position="apart">
-          <Group position="left">
+        <Group justify="space-between">
+          <Group justify="left">
             {post.isPinned && <Icon color={theme.colors.orange[4]} path={mdiPinOutline} size={1} />}
             <Title order={3}>{post.title}</Title>
           </Group>
-          <Group position="right">
+          <Group justify="right">
             <ActionIcon onClick={onPin}>
               {post.isPinned ? (
                 <Icon path={mdiPinOffOutline} size={1} />
@@ -48,7 +48,7 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
           </Group>
         </Group>
         <MarkdownRender source={post.summary} />
-        <Group position="right">
+        <Group justify="right">
           <Badge color="brand" variant="light">
             {new Date(post.time).toLocaleString()}
           </Badge>

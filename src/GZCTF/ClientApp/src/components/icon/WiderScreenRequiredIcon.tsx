@@ -3,7 +3,7 @@ import { FC } from 'react'
 
 const useStyles = createStyles((theme) => ({
   triangle: {
-    fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
+    fill: colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
   },
 }))
 

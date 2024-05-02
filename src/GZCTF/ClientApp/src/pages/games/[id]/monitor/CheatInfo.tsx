@@ -144,9 +144,9 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
   const type = CheatTypeMap.get(submissionInfo.cheatType)!
 
   return (
-    <Group position="apart" w="100%" spacing={0}>
-      <Group position="apart" w="60%" pr="2rem">
-        <Group position="left">
+    <Group justify="space-between" w="100%" gap={0}>
+      <Group justify="space-between" w="60%" pr="2rem">
+        <Group justify="left">
           <Icon path={type.iconPath} size={1} color={theme.colors[type.color][6]} />
           <Badge size="sm" color="indigo">
             {dayjs(submissionInfo.time).format('MM/DD HH:mm:ss')}
@@ -159,7 +159,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
           {submissionInfo.user}
         </Text>
       </Group>
-      <Stack spacing={0} w="40%">
+      <Stack gap={0} w="40%">
         <Text fw="bold" size="xs" lineClamp={1}>
           {submissionInfo.challenge}
         </Text>
@@ -197,13 +197,13 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Accordion.Control>
-          <Group position="apart">
-            <Group position="left">
+          <Group justify="space-between">
+            <Group justify="left">
               <Avatar alt="avatar" src={cheatTeamInfo.avatar}>
                 {!cheatTeamInfo.name ? 'T' : cheatTeamInfo.name.slice(0, 1)}
               </Avatar>
-              <Stack spacing={0}>
-                <Group spacing={4}>
+              <Stack gap={0}>
+                <Group gap={4}>
                   <Title order={4} lineClamp={1} fw="bold">
                     {!cheatTeamInfo.name
                       ? t('admin.placeholder.games.participation.team')
@@ -237,7 +237,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
         )}
       </Box>
       <Accordion.Panel>
-        <Stack spacing="sm">
+        <Stack gap="sm">
           {[...cheatTeamInfo.submissionInfo]
             .sort((a, b) => (b.time?.unix() ?? 0) - (a.time?.unix() ?? 0))
             .map((submissionInfo) => (
@@ -267,10 +267,10 @@ const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
 
   return (
     <ScrollArea offsetScrollbars h="calc(100vh - 180px)">
-      <Stack spacing="xs" w="100%">
+      <Stack gap="xs" w="100%">
         {!cheatTeamInfo || cheatTeamInfo?.size === 0 ? (
           <Center h="calc(100vh - 200px)">
-            <Stack spacing={0}>
+            <Stack gap={0}>
               <Title order={2}>{t('game.content.no_cheat.title')}</Title>
               <Text>{t('game.content.no_cheat.comment')}</Text>
             </Stack>
@@ -436,7 +436,7 @@ const CheatInfo: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" w="100%">
+      <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(
             t('game.content.team_view.label'),

@@ -20,7 +20,7 @@ const useHeaderStyles = createStyles((theme) => ({
   header: {
     width: '100%',
     zIndex: 150,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.white[0],
+    backgroundColor: colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.white[0],
     border: 'none',
     boxShadow: theme.shadows.md,
   },
@@ -43,7 +43,7 @@ const AppHeader: FC = () => {
 
   return (
     <Header fixed hidden={!isMobile} height={isMobile ? 60 : 0} className={headerClasses.header}>
-      <Group h="100%" p="0 1rem" position="apart" noWrap>
+      <Group h="100%" p="0 1rem" justify="space-between" wrap="nowrap">
         <LogoHeader onClick={() => navigate('/')} />
         <Menu shadow="md" opened={opened} onClose={() => setOpened(false)} width={200} offset={13}>
           <Menu.Target>

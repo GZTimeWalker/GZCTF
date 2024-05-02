@@ -43,19 +43,19 @@ const TeamCard: FC<TeamCardProps> = (props) => {
         cursor: 'pointer',
         transition: 'filter .2s',
         '&:hover': {
-          filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
+          filter: colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
         },
       })}
     >
       <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
         <Stack style={{ flexGrow: 1 }}>
-          <Group align="stretch" position="apart">
+          <Group align="stretch" justify="space-between">
             <Avatar alt="avatar" color="cyan" size="lg" radius="md" src={team.avatar}>
               {team.name?.slice(0, 1) ?? 'T'}
             </Avatar>
 
-            <Stack spacing={0} w="calc(100% - 72px)">
-              <Group w="100%" position="left">
+            <Stack gap={0} w="calc(100% - 72px)">
+              <Group w="100%" justify="left">
                 <Title order={2} align="left">
                   {team.name}
                 </Title>
@@ -66,8 +66,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             </Stack>
           </Group>
           <Divider my="xs" />
-          <Stack spacing="xs">
-            <Group spacing="xs" position="apart">
+          <Stack gap="xs">
+            <Group gap="xs" justify="space-between">
               <Text transform="uppercase" c="dimmed">
                 {t('team.label.role')}
               </Text>
@@ -81,7 +81,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 </Badge>
               )}
             </Group>
-            <Group spacing="xs">
+            <Group gap="xs">
               <Text transform="uppercase" c="dimmed">
                 {t('team.label.members')}
               </Text>
@@ -90,7 +90,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
               )}
               <Tooltip.Group openDelay={300} closeDelay={100}>
-                <Avatar.Group spacing="md">
+                <Avatar.Group gap="md">
                   <Tooltip label={captain?.userName} withArrow classNames={tooltipClasses}>
                     <Avatar
                       alt="avatar"

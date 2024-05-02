@@ -68,12 +68,12 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
     <Modal
       {...modalProps}
       title={
-        <Group position="left" spacing="md" noWrap>
+        <Group justify="left" gap="md" wrap="nowrap">
           <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" color="brand">
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Stack spacing={0}>
-            <Group spacing={4}>
+          <Stack gap={0}>
+            <Group gap={4}>
               <Title order={4} lineClamp={1} fw="bold">
                 {item?.name ?? 'Team'}
               </Title>
@@ -90,7 +90,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
         </Group>
       }
     >
-      <Stack align="center" spacing="xs">
+      <Stack align="center" gap="xs">
         <Stack w="60%" miw="20rem">
           <Center h="14rem">
             <LoadingOverlay visible={!indicator || !values} />
@@ -99,27 +99,27 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
             )}
           </Center>
           <Group grow ta="center">
-            <Stack spacing={2}>
+            <Stack gap={2}>
               <Text fw={700} size="sm" className={classes.mono}>
                 {item?.rank}
               </Text>
               <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
             {item?.organization && (
-              <Stack spacing={2}>
+              <Stack gap={2}>
                 <Text fw={700} size="sm" className={classes.mono}>
                   {item?.organizationRank}
                 </Text>
                 <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
               </Stack>
             )}
-            <Stack spacing={2}>
+            <Stack gap={2}>
               <Text fw={700} size="sm" className={classes.mono}>
                 {item?.score}
               </Text>
               <Text size="xs">{t('game.label.score_table.score')}</Text>
             </Stack>
-            <Stack spacing={2}>
+            <Stack gap={2}>
               <Text fw={700} size="sm" className={classes.mono}>
                 {item?.solvedCount}
               </Text>

@@ -88,9 +88,9 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
   return (
     <Modal
       title={
-        <Group w="100%" position="apart">
+        <Group w="100%" justify="space-between">
           <Title order={4}>{t('game.content.writeup.title')}</Title>
-          <Group spacing={4}>
+          <Group gap={4}>
             <Icon
               path={data?.submitted ? mdiCheck : mdiExclamationThick}
               size={0.9}
@@ -116,7 +116,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         },
       }}
     >
-      <Stack spacing="xs" mt={0}>
+      <Stack gap="xs" mt={0}>
         <Divider />
         <Title order={5}>{t('game.content.writeup.instructions.title')}</Title>
         <List
@@ -165,7 +165,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
           {data && data.submitted ? (
             <Group>
               <Icon path={mdiFileDocumentOutline} size={1.5} />
-              <Stack spacing={0}>
+              <Stack gap={0}>
                 <Text fw={600} size="md">
                   {data.name}
                 </Text>
@@ -177,7 +177,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
           ) : (
             <Group>
               <Icon path={mdiFileHidden} size={1.5} />
-              <Stack spacing={0}>
+              <Stack gap={0}>
                 <Text fw={600} size="md">
                   {t('game.content.writeup.unsubmitted_note')}
                 </Text>
@@ -205,7 +205,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
                 <Progress
                   value={progress}
                   className={classes.uploadProgress}
-                  color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
+                  color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
                   radius="sm"
                 />
               )}

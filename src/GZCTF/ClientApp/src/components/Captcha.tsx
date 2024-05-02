@@ -101,7 +101,7 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
         reCaptchaKey={info.siteKey}
         container={{
           parameters: {
-            theme: theme.colorScheme,
+            theme: colorScheme,
           },
         }}
       >
@@ -116,7 +116,7 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
         ref={turnstileRef}
         siteKey={info.siteKey}
         options={{
-          theme: theme.colorScheme,
+          theme: colorScheme,
           action,
         }}
       />

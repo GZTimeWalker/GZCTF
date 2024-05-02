@@ -8,7 +8,7 @@ const spinning = keyframes({
 
 const useStyles = createStyles((theme) => ({
   triangle: {
-    fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
+    fill: colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
   },
   rotator: {
     transformOrigin: '50% 50%',
