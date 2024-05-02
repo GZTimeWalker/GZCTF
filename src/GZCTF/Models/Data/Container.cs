@@ -10,7 +10,7 @@ namespace GZCTF.Models.Data;
 public class Container
 {
     [Key]
-    public Guid Id { get; set; } = Ulid.NewUlid().ToGuid();
+    public Guid Id { get; set; }
 
     /// <summary>
     /// 镜像名称
