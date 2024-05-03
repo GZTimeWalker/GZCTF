@@ -186,7 +186,7 @@ const Traffic: FC = () => {
               <Group h={headerHeight} pb="3px" px="xs" justify="space-between" wrap="nowrap">
                 <Text size="md" fw={700}>
                   {t('game.label.traffic')}
-                  <Text span px="md" fw="bold" size="sm" color="dimmed">
+                  <Text span px="md" fw="bold" size="sm" c="dimmed">
                     {HunamizeSize(totalFileSize ?? 0)}
                   </Text>
                 </Text>

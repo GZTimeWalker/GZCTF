@@ -272,7 +272,7 @@ const Instances: FC = () => {
                         </Group>
                       </td>
                       <td>
-                        <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
+                        <Text size="sm" ff="monospace" lineClamp={1}>
                           <Tooltip
                             label={t('common.button.copy')}
                             withArrow
@@ -281,7 +281,7 @@ const Instances: FC = () => {
                           >
                             <Text
                               size="sm"
-                              ff={theme.fontFamilyMonospace}
+                              ff="monospace"
                               style={{
                                 backgroundColor: 'transparent',
                                 fontSize: theme.fontSizes.sm,
@@ -313,8 +313,8 @@ const Instances: FC = () => {
                         >
                           <Text
                             size="sm"
-                            color="dimmed"
-                            ff={theme.fontFamilyMonospace}
+                            c="dimmed"
+                            ff="monospace"
                             style={{
                               backgroundColor: 'transparent',
                               fontSize: theme.fontSizes.sm,

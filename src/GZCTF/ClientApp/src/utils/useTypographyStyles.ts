@@ -42,10 +42,17 @@ export const useTypographyStyles = createStyles((theme, _, u) => {
       '& blockquote': {
         padding: `calc(${theme.spacing.xs} / 2) ${theme.spacing.md}`,
 
-        ...sc('color', alpha(cs.dark[0], 0.9), alpha(cs.gray[7], 0.9)),
-        ...sc('backgroundColor', alpha(theme.black, 0.1), alpha(theme.white, 0.05)),
+        [u.dark]: {
+          color: alpha(cs.dark[0], 0.9),
+          backgroundColor: alpha(cs.light[2], 0.03),
+          borderLeft: `4px solid ${cs.dark[0]}`,
+        },
 
-        ...sc('borderLeftColor', `4px solid ${cs.dark[0]}`, `4px solid ${cs.gray[5]}`),
+        [u.light]: {
+          color: alpha(cs.gray[7], 0.9),
+          backgroundColor: alpha(cs.dark[1], 0.1),
+          borderLeft: `4px solid ${cs.gray[5]}`,
+        },
 
         marginBottom: theme.spacing.md,
         fontSize: '1em',
@@ -55,7 +62,6 @@ export const useTypographyStyles = createStyles((theme, _, u) => {
         },
 
         '& pre': {
-          // backgroundColor: alpha(sc(cs.dark[6], cs.light[1]), 0.8),
           ...sc('backgroundColor', alpha(cs.dark[6], 0.8), alpha(cs.light[1], 0.8)),
         },
       },
@@ -65,7 +71,6 @@ export const useTypographyStyles = createStyles((theme, _, u) => {
         fontSize: '0.95em',
         padding: `1px calc(${theme.spacing.xs} / 2)`,
         border: 'none',
-        // backgroundColor: alpha(theme.black, sc(0.1, 0.05)),
 
         ...sc('backgroundColor', alpha(theme.black, 0.1), alpha(theme.white, 0.05)),
       },
@@ -89,10 +94,15 @@ export const useTypographyStyles = createStyles((theme, _, u) => {
         tabSize: 4,
         hyphens: 'none',
 
-        // backgroundColor: sc(cs.dark[6], cs.light[1]),
+        [u.dark]: {
+          color: cs.light[2],
+          backgroundColor: cs.dark[6],
+        },
 
-        ...sc('color', cs.light[2], cs.gray[7]),
-        ...sc('backgroundColor', cs.dark[6], cs.light[1]),
+        [u.light]: {
+          color: cs.gray[7],
+          backgroundColor: cs.light[1],
+        },
 
         '& .namespace': {
           opacity: 0.8,

@@ -467,7 +467,7 @@ const GameChallengeEdit: FC = () => {
       children: (
         <Stack>
           <Text>{t('admin.content.games.challenges.flag.delete')}</Text>
-          <Text ff={theme.fontFamilyMonospace}>{flag.flag}</Text>
+          <Text ff="monospace">{flag.flag}</Text>
         </Stack>
       ),
       onConfirm: () => flag.id && onConfirmDeleteFlag(flag.id),

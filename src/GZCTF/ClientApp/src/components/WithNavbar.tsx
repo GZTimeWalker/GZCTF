@@ -53,7 +53,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
           }}
           header={{ height: 60, collapsed: !isMobile }}
           navbar={{
-            width: 60,
+            width: 65,
             breakpoint: 'sm',
             collapsed: {
               mobile: true,

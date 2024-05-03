@@ -98,7 +98,7 @@ const Post: FC = () => {
             ))}
           </Group>
         )}
-        <Group gap={5} mb={100} justify="right">
+        <Group gap={5} my="lg" justify="right">
           <Avatar alt="avatar" src={post?.authorAvatar} size="sm">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>

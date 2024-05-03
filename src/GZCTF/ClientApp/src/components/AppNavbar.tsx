@@ -62,6 +62,8 @@ const useStyles = createStyles((theme, _, u) => {
 
     navbar: {
       backgroundColor: theme.colors.gray[8],
+      padding: theme.spacing.xs,
+      border: 'none',
 
       [u.smallerThan('xs')]: {
         display: 'none',
@@ -176,10 +178,17 @@ const AppNavbar: FC = () => {
       </AppShell.Section>
 
       {/* Common Nav */}
-      <AppShell.Section grow mb={20} mt={20} display="flex" style={{ alignItems: 'center' }}>
-        <Stack align="center" gap={5}>
-          {links}
-        </Stack>
+      <AppShell.Section
+        grow
+        display="flex"
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '5pt',
+        }}
+      >
+        {links}
       </AppShell.Section>
 
       <AppShell.Section
@@ -187,7 +196,7 @@ const AppNavbar: FC = () => {
         display="flex"
         style={{ flexDirection: 'column', justifyContent: 'end' }}
       >
-        <Stack align="center" gap={5}>
+        <Stack w="100%" align="center" justify="center" gap={5}>
           {/* Language */}
           <Menu position="right-end" offset={24} width={160}>
             <Menu.Target>
@@ -225,7 +234,7 @@ const AppNavbar: FC = () => {
 
           {/* User Info */}
           {user && !error ? (
-            <Menu position="right-end" offset={24} width={160}>
+            <Menu position="right-end" offset={24} width="100%">
               <Menu.Target>
                 <ActionIcon className={classes.link}>
                   {user?.avatar ? (

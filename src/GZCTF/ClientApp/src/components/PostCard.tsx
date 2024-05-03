@@ -11,7 +11,7 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
-import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
+import { mdiFormatQuoteOpen, mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
@@ -36,31 +36,13 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const { t } = useTranslation()
 
   return (
-    <Card shadow="sm" p="xs">
+    <Card shadow="sm" p="md" pb={0} pr={0}>
       <Blockquote
-        color={colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7]}
-        cite={
-          <Group justify="space-between" m="auto" fs="normal">
-            <Group gap={5} justify="right">
-              <Avatar alt="avatar" src={post.authorAvatar} size="sm">
-                {post.authorName?.slice(0, 1) ?? 'A'}
-              </Avatar>
-              <Text fw={700}>
-                {t('post.content.metadata', {
-                  author: post.authorName ?? 'Anonym',
-                  date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
-                })}
-              </Text>
-            </Group>
-            <Text ta="right">
-              <Anchor component={Link} to={`/posts/${post.id}`}>
-                <Text span fw={500} size="sm">
-                  {t('post.content.details')} &gt;&gt;&gt;
-                </Text>
-              </Anchor>
-            </Text>
-          </Group>
-        }
+        m="md"
+        py="md"
+        pr="md"
+        icon={<Icon path={mdiFormatQuoteOpen} size={1} />}
+        color={colorScheme === 'dark' ? 'light' : 'brand'}
       >
         <Stack gap="xs">
           {RequireRole(Role.Admin, role) ? (
@@ -108,6 +90,26 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               ))}
             </Group>
           )}
+          <Group pt="xs" w="100%" justify="space-between" m="auto" fs="normal">
+            <Group gap={5} justify="right">
+              <Avatar alt="avatar" src={post.authorAvatar} size="sm">
+                {post.authorName?.slice(0, 1) ?? 'A'}
+              </Avatar>
+              <Text fw={700}>
+                {t('post.content.metadata', {
+                  author: post.authorName ?? 'Anonym',
+                  date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
+                })}
+              </Text>
+            </Group>
+            <Text ta="right">
+              <Anchor component={Link} to={`/posts/${post.id}`}>
+                <Text span fw="bold" size="sm">
+                  {t('post.content.details')} &gt;&gt;&gt;
+                </Text>
+              </Anchor>
+            </Text>
+          </Group>
         </Stack>
       </Blockquote>
     </Card>

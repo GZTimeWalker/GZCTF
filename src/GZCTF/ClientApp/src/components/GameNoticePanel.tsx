@@ -1,4 +1,5 @@
 import { Card, Center, List, ScrollArea, SegmentedControl, Stack, Text } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -184,30 +185,23 @@ const GameNoticePanel: FC = () => {
         />
         {filteredNotices.length ? (
           <ScrollArea offsetScrollbars scrollbarSize={0} h="calc(100vh - 25rem)">
-            <List
-              size="sm"
-              spacing={3}
-              sx={(theme, u) => ({
-                item: {
-                  fontWeight: 500,
-
-                  [u.dark]: {
-                    color: theme.colors.dark[2],
-                  },
-
-                  [u.light]: {
-                    color: theme.colors.gray[6],
-                  },
-                },
-              })}
-            >
+            <List size="sm" spacing={3}>
               {filteredNotices.map((notice) => (
-                <List.Item key={notice.id} icon={iconMap.get(notice.type)}>
+                <List.Item
+                  key={notice.id}
+                  icon={iconMap.get(notice.type)}
+                  styles={{ itemWrapper: { alignItems: 'normal' } }}
+                >
                   <Stack gap={1}>
-                    <Text size="xs" fw={700} c="dimmed">
+                    <Text fz="xs" fw="bold" c="dimmed">
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
                     </Text>
-                    <InlineMarkdownRender source={formatNotice(t, notice)} />
+                    <InlineMarkdownRender
+                      fz="sm"
+                      fw="bold"
+                      c="dimmed"
+                      source={formatNotice(t, notice)}
+                    />
                   </Stack>
                 </List.Item>
               ))}

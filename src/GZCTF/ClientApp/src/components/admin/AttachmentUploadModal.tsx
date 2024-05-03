@@ -139,7 +139,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               {files.map((file) => (
                 <Card p={4}>
                   <Group justify="space-between">
-                    <Text lineClamp={1} ff={theme.fontFamilyMonospace}>
+                    <Text lineClamp={1} ff="monospace">
                       {file.name}
                     </Text>
                     <ActionIcon onClick={() => setFiles(files.filter((f) => f !== file))}>

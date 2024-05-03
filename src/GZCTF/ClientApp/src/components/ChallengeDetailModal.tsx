@@ -269,7 +269,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               {challenge?.title ?? title}
             </Title>
           </Group>
-          <Text miw="5em" fw={700} ff={theme.fontFamilyMonospace}>
+          <Text miw="5em" fw={700} ff="monospace">
             {challenge?.score ?? score} pts
           </Text>
         </Group>

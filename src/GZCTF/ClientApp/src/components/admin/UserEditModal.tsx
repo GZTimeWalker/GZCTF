@@ -83,7 +83,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
               label={t('account.label.username')}
               type="text"
               w="100%"
-              ff={theme.fontFamilyMonospace}
+              ff="monospace"
               value={profile.userName ?? 'ctfer'}
               disabled={disabled}
               onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
@@ -161,7 +161,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
             <Text size="sm" fw={500}>
               {t('common.label.ip')}
             </Text>
-            <Text size="sm" span fw={500} ff={theme.fontFamilyMonospace}>
+            <Text size="sm" span fw={500} ff="monospace">
               {user.ip}
             </Text>
           </Group>
@@ -169,7 +169,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
             <Text size="sm" fw={500}>
               {t('admin.label.users.last_visit')}
             </Text>
-            <Text size="sm" span fw={500} ff={theme.fontFamilyMonospace}>
+            <Text size="sm" span fw={500} ff="monospace">
               {dayjs(user.lastVisitedUtc).format('YYYY-MM-DD HH:mm:ss')}
             </Text>
           </Group>

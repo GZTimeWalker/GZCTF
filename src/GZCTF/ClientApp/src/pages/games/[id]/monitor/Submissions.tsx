@@ -180,7 +180,7 @@ const Submissions: FC = () => {
           </Text>
         </td>
         <td>
-          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold">
+          <Text ff="monospace" size="sm" fw="bold">
             {item.user ?? 'User'}
           </Text>
         </td>

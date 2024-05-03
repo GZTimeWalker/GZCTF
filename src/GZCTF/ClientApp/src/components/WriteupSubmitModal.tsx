@@ -172,7 +172,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
                 <Text fw={600} size="md">
                   {data.name}
                 </Text>
-                <Text fw={600} size="sm" c="dimmed" ff={theme.fontFamilyMonospace}>
+                <Text fw={600} size="sm" c="dimmed" ff="monospace">
                   {data.fileSize && HunamizeSize(data.fileSize)}
                 </Text>
               </Stack>

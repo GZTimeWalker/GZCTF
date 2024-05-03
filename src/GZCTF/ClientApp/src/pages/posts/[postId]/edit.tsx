@@ -2,6 +2,7 @@ import {
   alpha,
   Button,
   Group,
+  SimpleGrid,
   Stack,
   TagsInput,
   Text,
@@ -228,7 +229,7 @@ const PostEdit: FC = () => {
               </Button>
             </Group>
           </Group>
-          {isMobile ? titlePart : <Group grow>{titlePart}</Group>}
+          {isMobile ? titlePart : <SimpleGrid cols={2}>{titlePart}</SimpleGrid>}
           <Textarea
             label={
               <Group gap="sm">
@@ -238,6 +239,7 @@ const PostEdit: FC = () => {
                 </Text>
               </Group>
             }
+            autosize
             value={post.summary}
             onChange={(e) => setPost({ ...post, summary: e.currentTarget.value })}
             minRows={3}
@@ -252,6 +254,7 @@ const PostEdit: FC = () => {
                 </Text>
               </Group>
             }
+            autosize
             value={post.content}
             onChange={(e) => setPost({ ...post, content: e.currentTarget.value })}
             minRows={isMobile ? 14 : 16}

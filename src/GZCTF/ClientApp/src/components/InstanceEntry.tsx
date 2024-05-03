@@ -144,7 +144,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   if (!withContainer) {
     return test ? (
-      <Text size="md" color="dimmed" fw={600} pt={30}>
+      <Text size="md" c="dimmed" fw={600} pt={30}>
         {t('challenge.content.instance.test.no_container')}
       </Text>
     ) : (
@@ -153,7 +153,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
           <Text size="sm" fw={600}>
             {t('challenge.content.instance.no_container.message')}
           </Text>
-          <Text size="xs" color="dimmed" fw={600}>
+          <Text size="xs" c="dimmed" fw={600}>
             {t('challenge.content.instance.no_container.note', {
               min: config.defaultLifetime,
             })}
@@ -231,7 +231,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               {t('challenge.content.instance.actions.count_down')}
               <Countdown time={context.closeTime ?? '0'} extendNotice={extendNotice} />
             </Text>
-            <Text size="xs" color="dimmed" fw={600}>
+            <Text size="xs" c="dimmed" fw={600}>
               {t('challenge.content.instance.actions.note', { min: config.renewalWindow })}
             </Text>
           </Stack>

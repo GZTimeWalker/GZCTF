@@ -173,9 +173,14 @@ const ChallengePanel: FC = () => {
         <Switch
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}
-          maw="10rem"
+          w="10rem"
+          styles={{
+            body: {
+              justifyContent: 'space-between',
+            },
+          }}
           label={
-            <Text size="md" fw={700}>
+            <Text fz="md" fw="bold">
               {t('game.button.hide_solved')}
             </Text>
           }
@@ -186,11 +191,8 @@ const ChallengePanel: FC = () => {
           value={activeTab}
           onChange={(value) => setActiveTab(value as ChallengeTag)}
           styles={{
-            tabsList: {
+            list: {
               minWidth: '10rem',
-            },
-            tab: {
-              fontWeight: 700,
             },
             tabLabel: {
               width: '100%',
@@ -200,8 +202,12 @@ const ChallengePanel: FC = () => {
           <Tabs.List>
             <Tabs.Tab value={'All'} leftSection={<Icon path={mdiPuzzle} size={1} />}>
               <Group justify="space-between" wrap="nowrap" gap={2}>
-                <Text>All</Text>
-                <Text>{allChallenges.length}</Text>
+                <Text fz="sm" fw="bold">
+                  All
+                </Text>
+                <Text fz="sm" fw="bold">
+                  {allChallenges.length}
+                </Text>
               </Group>
             </Tabs.Tab>
             {tags.map((tab) => {
@@ -214,8 +220,12 @@ const ChallengePanel: FC = () => {
                   color={data?.color}
                 >
                   <Group justify="space-between" wrap="nowrap" gap={2}>
-                    <Text>{data?.label}</Text>
-                    <Text>{challenges && challenges[tab].length}</Text>
+                    <Text fz="sm" fw="bold">
+                      {data?.label}
+                    </Text>
+                    <Text fz="sm" fw="bold">
+                      {challenges && challenges[tab].length}
+                    </Text>
                   </Group>
                 </Tabs.Tab>
               )
@@ -225,7 +235,7 @@ const ChallengePanel: FC = () => {
       </Stack>
       <ScrollArea
         w="calc(100% - 9rem)"
-        h="calc(100vh - 100px)"
+        h="calc(100vh - 7rem)"
         pos="relative"
         offsetScrollbars
         scrollbarSize={4}

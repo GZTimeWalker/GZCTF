@@ -337,7 +337,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
           </Text>
         </td>
         <td>
-          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold">
+          <Text ff="monospace" size="sm" fw="bold">
             {item.submission?.user ?? 'User'}
           </Text>
         </td>

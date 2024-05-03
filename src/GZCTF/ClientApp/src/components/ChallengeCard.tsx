@@ -58,6 +58,21 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps, 
   blood3: {
     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.ThirdBlood)}, #fff0)`,
   },
+  card: {
+    transition: 'filter .1s',
+
+    '&:hover': {
+      cursor: 'pointer',
+
+      [u.dark]: {
+        filter: 'brightness(1.2)',
+      },
+
+      [u.light]: {
+        filter: 'brightness(.97)',
+      },
+    },
+  },
 }))
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
@@ -70,36 +85,17 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { colorScheme } = useMantineColorScheme()
 
   return (
-    <Card
-      onClick={onClick}
-      radius="md"
-      shadow="sm"
-      sx={(_, u) => ({
-        transition: 'filter .1s',
-
-        '&:hover': {
-          cursor: 'pointer',
-
-          [u.dark]: {
-            filter: 'brightness(1.2)',
-          },
-
-          [u.light]: {
-            filter: 'brightness(.97)',
-          },
-        },
-      })}
-    >
+    <Card onClick={onClick} radius="md" shadow="sm" className={classes.card}>
       <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
-          <Text lineClamp={1} fw={700} size={theme.fontSizes.lg}>
+          <Text lineClamp={1} fw="bold" truncate fz="lg">
             {challenge.title}
           </Text>
           <Center miw="1.5em">{solved && <Icon path={mdiFlag} size={1} color={colorStr} />}</Center>
         </Group>
         <Divider />
         <Group wrap="nowrap" justify="space-between" align="center" gap={2}>
-          <Text ta="center" fw={700} size="sm" ff={theme.fontFamilyMonospace}>
+          <Text ta="center" fw="bold" fz="lg" ff="monospace">
             {challenge.score}&nbsp;pts
           </Text>
           <Stack gap="xs">

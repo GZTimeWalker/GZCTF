@@ -60,7 +60,7 @@ const About: FC = () => {
                     <Group ml="-18px" mt="-5px">
                       <Anchor
                         href="https://github.com/GZTimeWalker"
-                        color="dimmed"
+                        c="dimmed"
                         size="sm"
                         fw={500}
                         lh={1}
@@ -82,7 +82,7 @@ const About: FC = () => {
                   </Stack>
                 </Group>
                 <Group gap="xs">
-                  <Text size="xs" fw={500} color="dimmed" ff={theme.fontFamilyMonospace}>
+                  <Text size="xs" fw={500} c="dimmed" ff="monospace">
                     {valid
                       ? `Built at ${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}`
                       : 'This release is not officially built'}

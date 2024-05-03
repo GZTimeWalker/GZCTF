@@ -58,7 +58,7 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
               },
             }}
           />
-          <Text c="dimmed" size="sm" ff={theme.fontFamilyMonospace}>
+          <Text c="dimmed" size="sm" ff="monospace">
             {attachment?.type} {shortURL}
           </Text>
         </Stack>

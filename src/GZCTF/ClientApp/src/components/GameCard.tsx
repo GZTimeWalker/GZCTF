@@ -53,13 +53,14 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
       shadow="sm"
       component={Link}
       to={`/games/${game.id}`}
-      sx={(theme) => ({
+      style={{
         transition: 'filter .2s',
         width: '100%',
-        '&:hover': {
+
+        ':hover': {
           filter: colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
         },
-      })}
+      }}
     >
       <Card.Section>
         <Group wrap="nowrap" align="flex-start">

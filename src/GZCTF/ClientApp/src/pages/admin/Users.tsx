@@ -145,7 +145,7 @@ const Users: FC = () => {
             <Text>
               <Trans i18nKey="admin.content.users.reset.content" />
             </Text>
-            <Text fw={700} ff={theme.fontFamilyMonospace}>
+            <Text fw={700} ff="monospace">
               {res.data}
             </Text>
             <Button
@@ -269,7 +269,7 @@ const Users: FC = () => {
                           <Avatar alt="avatar" src={user.avatar} radius="xl">
                             {user.userName?.slice(0, 1) ?? 'U'}
                           </Avatar>
-                          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold" lineClamp={1}>
+                          <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
                             {user.userName}
                           </Text>
                         </Group>
@@ -279,18 +279,18 @@ const Users: FC = () => {
                       </Group>
                     </td>
                     <td>
-                      <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
+                      <Text size="sm" ff="monospace" lineClamp={1}>
                         {user.email}
                       </Text>
                     </td>
                     <td>
-                      <Text lineClamp={1} size="sm" ff={theme.fontFamilyMonospace}>
+                      <Text lineClamp={1} size="sm" ff="monospace">
                         {user.ip}
                       </Text>
                     </td>
                     <td>{user.realName ?? t('admin.placeholder.users.real_name')}</td>
                     <td>
-                      <Text size="sm" ff={theme.fontFamilyMonospace}>
+                      <Text size="sm" ff="monospace">
                         {user.stdNumber ?? t('admin.placeholder.users.student_id')}
                       </Text>
                     </td>

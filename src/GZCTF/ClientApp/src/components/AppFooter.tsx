@@ -12,19 +12,19 @@ const AppFooter: FC = () => {
   const { classes: logoClasses } = useLogoStyles()
 
   const copyright = (
-    <Text size="xs" ta="center" fw={500} c="dimmed" ff={theme.fontFamilyMonospace}>
+    <Text size="xs" ta="center" fw={500} c="dimmed" ff="monospace">
       Copyright&nbsp;©&nbsp;2022-now&nbsp;
       {isMobile && <br />}
       <Anchor
         href="https://github.com/GZTimeWalker"
-        color="dimmed"
+        c="dimmed"
         size="sm"
         fw={500}
         sx={{ lineHeight: 1 }}
       >
         @GZTimeWalker
       </Anchor>
-      &nbsp;All&nbsp;Rights&nbsp;Reserved.
+      ,&nbsp;All&nbsp;Rights&nbsp;Reserved.
     </Text>
   )
 

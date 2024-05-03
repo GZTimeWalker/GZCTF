@@ -54,7 +54,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
     >
       <Card.Section pos="relative">
         {poster ? (
-          <Image src={poster} height={POSTER_HEIGHT} alt="poster" />
+          <Image src={poster} h={POSTER_HEIGHT} alt="poster" />
         ) : (
           <Center mih={POSTER_HEIGHT}>
             <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
