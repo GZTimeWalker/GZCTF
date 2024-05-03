@@ -44,7 +44,7 @@ const useItemStyle = createStyles((theme, _, u) => ({
     },
 
     [u.light]: {
-      backgroundColor: theme.colors.white[2],
+      backgroundColor: theme.colors.light[2],
     },
 
     '&[data-active]': {
@@ -53,7 +53,7 @@ const useItemStyle = createStyles((theme, _, u) => ({
       },
 
       [u.light]: {
-        backgroundColor: theme.colors.white[3],
+        backgroundColor: theme.colors.light[3],
       },
     },
 

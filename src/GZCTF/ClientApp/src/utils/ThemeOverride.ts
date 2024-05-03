@@ -265,7 +265,7 @@ export const useBannerStyles = createStyles((theme, _, u) => ({
     lineHeight: 1.1,
 
     [u.dark]: {
-      color: theme.colors.white[0],
+      color: theme.colors.light[0],
     },
 
     [u.light]: {
@@ -292,7 +292,7 @@ export const useBannerStyles = createStyles((theme, _, u) => ({
   },
   date: {
     [u.dark]: {
-      color: theme.colors.white[0],
+      color: theme.colors.light[0],
     },
 
     [u.light]: {
@@ -391,7 +391,7 @@ export const useFooterStyles = createStyles((theme, _, u) => ({
   },
 
   wrapper: {
-    // backgroundColor: colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.white[2],
+    // backgroundColor: colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.light[2],
     position: 'fixed',
     zIndex: 5,
     bottom: 0,
@@ -410,7 +410,7 @@ export const useFooterStyles = createStyles((theme, _, u) => ({
     },
 
     [u.light]: {
-      backgroundColor: theme.colors.white[2],
+      backgroundColor: theme.colors.light[2],
     },
   },
 }))
@@ -418,7 +418,7 @@ export const useFooterStyles = createStyles((theme, _, u) => ({
 export const useLogoStyles = createStyles((theme, _, u) => ({
   title: {
     [u.dark]: {
-      color: theme.colors.white[0],
+      color: theme.colors.light[0],
     },
 
     [u.light]: {

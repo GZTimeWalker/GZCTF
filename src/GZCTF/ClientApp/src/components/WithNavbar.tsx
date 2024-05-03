@@ -63,13 +63,13 @@ const WithNavBar: FC<WithNavBarProps> = ({
                 zIndex: 10,
                 boxShadow: theme.shadows.sm,
                 backgroundColor:
-                  colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
+                  colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
               }}
             >
               <LoadingOverlay
                 visible={isLoading ?? false}
                 opacity={1}
-                c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+                c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
               />
               <Box
                 sx={(_, u) => ({

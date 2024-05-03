@@ -29,7 +29,7 @@ const useHeaderStyles = createStyles((theme, _, u) => ({
     },
 
     [u.light]: {
-      backgroundColor: theme.colors.white[0],
+      backgroundColor: theme.colors.light[0],
     },
   },
 }))

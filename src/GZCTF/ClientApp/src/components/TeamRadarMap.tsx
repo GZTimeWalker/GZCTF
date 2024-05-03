@@ -22,7 +22,7 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
         radar: {
           indicator,
           axisName: {
-            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.light[1] : theme.colors.dark[5],
           },
         },
         series: [

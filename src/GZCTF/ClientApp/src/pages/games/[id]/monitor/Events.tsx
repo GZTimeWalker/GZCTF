@@ -59,7 +59,7 @@ const EventTypeIconMap = (size: number) => {
     ],
     [
       EventType.Normal,
-      <Icon path={mdiLightningBolt} size={size} color={theme.colors.white[colorIdx]} />,
+      <Icon path={mdiLightningBolt} size={size} color={theme.colors.light[colorIdx]} />,
     ],
   ])
 }

@@ -78,7 +78,7 @@ const useStyles = createStyles((theme, _, u) => {
 
       [u.light]: {
         backgroundColor: theme.colors[theme.primaryColor][6],
-        color: theme.colors.white[0],
+        color: theme.colors.light[0],
       },
     },
 

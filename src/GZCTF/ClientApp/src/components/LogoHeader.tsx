@@ -12,7 +12,7 @@ const useStyles = createStyles((theme) => ({
     display: 'inline-block',
   },
   title: {
-    color: colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+    color: colorScheme === 'dark' ? theme.colors.light[0] : theme.colors.gray[6],
     marginLeft: '-20px',
   },
 }))

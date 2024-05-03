@@ -114,7 +114,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
           boundaryGap: [0, '100%'],
           axisLabel: {
             formatter: t('game.label.score_formatter'),
-            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.light[1] : theme.colors.dark[5],
           },
           max: (value: any) => (Math.floor(value.max / 1000) + 1) * 1000,
           splitLine: {
@@ -130,16 +130,16 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
           borderWidth: 0,
           textStyle: {
             fontSize: 10,
-            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.light[1] : theme.colors.dark[5],
           },
-          backgroundColor: colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.white[1],
+          backgroundColor: colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.light[1],
         },
         legend: {
           orient: 'horizontal',
           bottom: 50,
           textStyle: {
             fontSize: 12,
-            color: colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.light[1] : theme.colors.dark[5],
           },
         },
         grid: {

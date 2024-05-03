@@ -55,8 +55,8 @@ export const useTypographyStyles = createStyles((theme, _, u) => {
         },
 
         '& pre': {
-          // backgroundColor: alpha(sc(cs.dark[6], cs.white[1]), 0.8),
-          ...sc('backgroundColor', alpha(cs.dark[6], 0.8), alpha(cs.white[1], 0.8)),
+          // backgroundColor: alpha(sc(cs.dark[6], cs.light[1]), 0.8),
+          ...sc('backgroundColor', alpha(cs.dark[6], 0.8), alpha(cs.light[1], 0.8)),
         },
       },
 
@@ -89,10 +89,10 @@ export const useTypographyStyles = createStyles((theme, _, u) => {
         tabSize: 4,
         hyphens: 'none',
 
-        // backgroundColor: sc(cs.dark[6], cs.white[1]),
+        // backgroundColor: sc(cs.dark[6], cs.light[1]),
 
-        ...sc('color', cs.white[2], cs.gray[7]),
-        ...sc('backgroundColor', cs.dark[6], cs.white[1]),
+        ...sc('color', cs.light[2], cs.gray[7]),
+        ...sc('backgroundColor', cs.dark[6], cs.light[1]),
 
         '& .namespace': {
           opacity: 0.8,

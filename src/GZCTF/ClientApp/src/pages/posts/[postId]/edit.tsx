@@ -165,7 +165,7 @@ const PostEdit: FC = () => {
               <Title
                 order={1}
                 c={alpha(
-                  colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
+                  colorScheme === 'dark' ? theme.colors.light[6] : theme.colors.gray[7],
                   0.5
                 )}
               >
