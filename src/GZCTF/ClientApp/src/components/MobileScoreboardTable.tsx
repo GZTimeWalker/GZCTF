@@ -25,11 +25,11 @@ const TableRow: FC<{
             radius="xl"
             size={30}
             color="brand"
-            sx={(theme) => ({
-              ...theme.fn.hover({
+            style={{
+              '&:hover': {
                 cursor: 'pointer',
-              }),
-            })}
+              },
+            }}
           >
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
@@ -38,7 +38,7 @@ const TableRow: FC<{
             value={item.name}
             readOnly
             size="sm"
-            sx={(theme) => ({
+            style={{
               wrapper: {
                 width: '100%',
               },
@@ -46,11 +46,11 @@ const TableRow: FC<{
               input: {
                 userSelect: 'none',
 
-                ...theme.fn.hover({
+                '&:hover': {
                   cursor: 'pointer',
-                }),
+                },
               },
-            })}
+            }}
           />
         </Group>
       </td>
@@ -155,9 +155,9 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             </Table>
           </Box>
         </Box>
-        <Group position="center">
+        <Group justify="center">
           <Pagination
-            wrap="nowrap"
+            // TODO: wrap="nowrap"
             size="md"
             value={activePage}
             onChange={setPage}

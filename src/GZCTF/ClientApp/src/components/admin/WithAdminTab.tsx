@@ -1,4 +1,11 @@
-import { Group, GroupProps, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
+import {
+  Group,
+  GroupProps,
+  LoadingOverlay,
+  Stack,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiAccountGroupOutline,
@@ -42,7 +49,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   ]
   const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
   const tabIndex = getTab(location.pathname)
-
+  const { colorScheme } = useMantineColorScheme()
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
   const onChange = (active: number, tabKey: string) => {
@@ -81,8 +88,8 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
       )}
       <LoadingOverlay
         visible={isLoading ?? false}
-        overlayOpacity={1}
-        overlayColor={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
+        opacity={1}
+        c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
       />
       {children}
     </Stack>

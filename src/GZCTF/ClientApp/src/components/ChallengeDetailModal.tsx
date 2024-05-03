@@ -284,7 +284,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               {challenge?.context?.url && (
                 <Tooltip
                   label={t('challenge.button.download.attachment')}
-                  justify="left"
+                  position="left"
                   classNames={tooltipClasses}
                 >
                   <ActionIcon
@@ -343,7 +343,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         </Stack>
         <Divider />
         {solved ? (
-          <Text align="center" fw={700}>
+          <Text ta="center" fw={700}>
             {t('challenge.content.already_solved')}
           </Text>
         ) : (

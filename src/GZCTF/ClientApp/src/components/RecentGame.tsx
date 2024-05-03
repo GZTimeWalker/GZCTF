@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
@@ -27,7 +28,7 @@ const POSTER_HEIGHT = '10rem'
 
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
-
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const { title, poster } = game
@@ -87,7 +88,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
           alignItems: 'center',
         }}
       >
-        <Title lineClamp={1} order={4} align="left" color={theme.colors.gray[0]}>
+        <Title lineClamp={1} order={4} ta="left" c={theme.colors.gray[0]}>
           &gt; {title}
         </Title>
       </Card.Section>

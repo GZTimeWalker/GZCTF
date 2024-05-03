@@ -9,6 +9,7 @@ import {
   Text,
   Title,
   Tooltip,
+  useMantineColorScheme,
 } from '@mantine/core'
 import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -33,6 +34,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
 
   const { classes: tooltipClasses, theme } = useTooltipStyles()
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   return (
@@ -56,7 +58,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
 
             <Stack gap={0} w="calc(100% - 72px)">
               <Group w="100%" justify="left">
-                <Title order={2} align="left">
+                <Title order={2} ta="left">
                   {team.name}
                 </Title>
               </Group>
@@ -68,7 +70,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
           <Divider my="xs" />
           <Stack gap="xs">
             <Group gap="xs" justify="space-between">
-              <Text transform="uppercase" c="dimmed">
+              <Text tt="uppercase" c="dimmed">
                 {t('team.label.role')}
               </Text>
               {isCaptain ? (
@@ -82,7 +84,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
               )}
             </Group>
             <Group gap="xs">
-              <Text transform="uppercase" c="dimmed">
+              <Text tt="uppercase" c="dimmed">
                 {t('team.label.members')}
               </Text>
               <Box style={{ flexGrow: 1 }} />
@@ -90,7 +92,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
               )}
               <Tooltip.Group openDelay={300} closeDelay={100}>
-                <Avatar.Group gap="md">
+                <Avatar.Group spacing="md">
                   <Tooltip label={captain?.userName} withArrow classNames={tooltipClasses}>
                     <Avatar
                       alt="avatar"

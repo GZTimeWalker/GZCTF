@@ -28,17 +28,6 @@ import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame } from '@Utils/useGame'
 import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 
-const DEFAULT_COLS = 8
-const GRID_BREAKPOINTS = [
-  { maxWidth: 3200, cols: 7 },
-  { maxWidth: 2900, cols: 6 },
-  { maxWidth: 2500, cols: 5 },
-  { maxWidth: 2100, cols: 4 },
-  { maxWidth: 1700, cols: 3 },
-  { maxWidth: 1350, cols: 2 },
-  { maxWidth: 900, cols: 1 },
-]
-
 const ChallengePanel: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
@@ -96,15 +85,27 @@ const ChallengePanel: FC = () => {
             ))}
         </Stack>
         <SimpleGrid
-          cols={DEFAULT_COLS}
-          gap="sm"
+          // cols={DEFAULT_COLS}
+          spacing="sm"
           p="xs"
           style={{
             width: 'calc(100% - 9rem)',
             position: 'relative',
             paddingTop: 0,
           }}
-          breakpoints={GRID_BREAKPOINTS}
+          // breakpoints={GRID_BREAKPOINTS}
+          // const DEFAULT_COLS = 8
+          // const GRID_BREAKPOINTS = [
+          //   { maxWidth: 3200, cols: 7 },
+          //   { maxWidth: 2900, cols: 6 },
+          //   { maxWidth: 2500, cols: 5 },
+          //   { maxWidth: 2100, cols: 4 },
+          //   { maxWidth: 1700, cols: 3 },
+          //   { maxWidth: 1350, cols: 2 },
+          //   { maxWidth: 900, cols: 1 },
+          // ]
+          // FIXME: how to support more breakpoints?
+          cols={{ base: 3, md: 1, lg: 2, xl: 3 }}
         >
           {Array(8)
             .fill(null)
@@ -119,7 +120,7 @@ const ChallengePanel: FC = () => {
                     </Center>
                     <Stack gap="xs">
                       <Skeleton height="1rem" width="6rem" mt={5} />
-                      <Group position="center" gap="md" h={20}>
+                      <Group justify="center" gap="md" h={20}>
                         <Skeleton height="1.2rem" width="1.2rem" />
                         <Skeleton height="1.2rem" width="1.2rem" />
                         <Skeleton height="1.2rem" width="1.2rem" />
@@ -183,7 +184,7 @@ const ChallengePanel: FC = () => {
           orientation="vertical"
           variant="pills"
           value={activeTab}
-          onTabChange={(value) => setActiveTab(value as ChallengeTag)}
+          onChange={(value) => setActiveTab(value as ChallengeTag)}
           styles={{
             tabsList: {
               minWidth: '10rem',
@@ -197,7 +198,7 @@ const ChallengePanel: FC = () => {
           }}
         >
           <Tabs.List>
-            <Tabs.Tab value={'All'} icon={<Icon path={mdiPuzzle} size={1} />}>
+            <Tabs.Tab value={'All'} leftSection={<Icon path={mdiPuzzle} size={1} />}>
               <Group justify="space-between" wrap="nowrap" gap={2}>
                 <Text>All</Text>
                 <Text>{allChallenges.length}</Text>
@@ -209,7 +210,7 @@ const ChallengePanel: FC = () => {
                 <Tabs.Tab
                   key={tab}
                   value={tab}
-                  icon={<Icon path={data?.icon} size={1} />}
+                  leftSection={<Icon path={data?.icon} size={1} />}
                   color={data?.color}
                 >
                   <Group justify="space-between" wrap="nowrap" gap={2}>
@@ -230,7 +231,14 @@ const ChallengePanel: FC = () => {
         scrollbarSize={4}
       >
         {currentChallenges && currentChallenges.length ? (
-          <SimpleGrid cols={DEFAULT_COLS} gap="sm" p="xs" pt={0} breakpoints={GRID_BREAKPOINTS}>
+          <SimpleGrid
+            // cols={DEFAULT_COLS}
+            spacing="sm"
+            p="xs"
+            pt={0}
+            // breakpoints={GRID_BREAKPOINTS}
+            cols={{ base: 3, md: 1, lg: 2, xl: 3 }}
+          >
             {currentChallenges?.map((chal) => (
               <ChallengeCard
                 key={chal.id}

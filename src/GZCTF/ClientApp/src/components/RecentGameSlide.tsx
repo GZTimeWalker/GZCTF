@@ -1,4 +1,5 @@
-import { Badge, createStyles, Group, Paper, Stack, Title } from '@mantine/core'
+import { Badge, Group, Paper, Stack, Title } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'

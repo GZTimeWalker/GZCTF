@@ -1,19 +1,31 @@
-import { createStyles, Group, GroupProps, Title } from '@mantine/core'
+import { Group, GroupProps, Title } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { forwardRef } from 'react'
 import MainIcon from '@Components/icon/MainIcon'
 import { useConfig } from '@Utils/useConfig'
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles((theme, _, u) => ({
   brand: {
-    color:
-      colorScheme === 'dark'
-        ? theme.colors[theme.primaryColor][4]
-        : theme.colors[theme.primaryColor][6],
     display: 'inline-block',
+
+    [u.dark]: {
+      color: theme.colors[theme.primaryColor][4],
+    },
+
+    [u.light]: {
+      color: theme.colors[theme.primaryColor][6],
+    },
   },
   title: {
-    color: colorScheme === 'dark' ? theme.colors.light[0] : theme.colors.gray[6],
     marginLeft: '-20px',
+
+    [u.dark]: {
+      color: theme.colors.light[0],
+    },
+
+    [u.light]: {
+      color: theme.colors.gray[6],
+    },
   },
 }))
 

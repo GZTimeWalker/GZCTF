@@ -1,8 +1,8 @@
 import {
+  alpha,
   Avatar,
   Box,
   Center,
-  createStyles,
   Group,
   Input,
   Pagination,
@@ -12,7 +12,9 @@ import {
   Table,
   Text,
   Tooltip,
+  useMantineColorScheme,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
@@ -30,7 +32,7 @@ import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 
-export const useScoreboardStyles = createStyles((theme) => ({
+export const useScoreboardStyles = createStyles((theme, _, u) => ({
   table: {
     tableLayout: 'fixed',
     width: 'auto',
@@ -48,7 +50,13 @@ export const useScoreboardStyles = createStyles((theme) => ({
   },
   theadFixLeft: {
     position: 'sticky',
-    backgroundColor: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    [u.dark]: {
+      backgroundColor: theme.colors.dark[7],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.white,
+    },
   },
   theadHeader: {
     fontWeight: 'bold',
@@ -79,6 +87,7 @@ Lefts.forEach((val, idx) => {
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const { classes, cx, theme } = useScoreboardStyles()
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
   const challengeTagLabelMap = useChallengeTagLabelMap()
 
@@ -110,7 +119,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
                 ),
               }}
             >
-              <Group gap={4} wrap="nowrap" position="center" w="100%">
+              <Group gap={4} wrap="nowrap" justify="center" w="100%">
                 <Icon
                   path={tag.icon}
                   size={1}
@@ -187,11 +196,11 @@ const TableRow: FC<{
             radius="xl"
             size={30}
             color="brand"
-            sx={(theme) => ({
-              ...theme.fn.hover({
+            style={{
+              '&:hover': {
                 cursor: 'pointer',
-              }),
-            })}
+              },
+            }}
           >
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
@@ -200,7 +209,7 @@ const TableRow: FC<{
             value={item.name}
             readOnly
             size="sm"
-            sx={(theme) => ({
+            style={{
               wrapper: {
                 width: '100%',
               },
@@ -208,11 +217,11 @@ const TableRow: FC<{
               input: {
                 userSelect: 'none',
 
-                ...theme.fn.hover({
+                '&:hover': {
                   cursor: 'pointer',
-                }),
+                },
               },
-            })}
+            }}
           />
         </Group>
       </td>
@@ -388,7 +397,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           </Text>
 
           <Pagination
-            wrap="nowrap"
+            // TODO: wrap="nowrap"
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}

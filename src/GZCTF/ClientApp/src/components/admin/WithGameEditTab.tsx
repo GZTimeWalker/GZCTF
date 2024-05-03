@@ -1,11 +1,11 @@
 import {
   Button,
   Group,
-  GroupPosition,
   GroupProps,
   LoadingOverlay,
   Stack,
   Tabs,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import {
@@ -25,7 +25,7 @@ import AdminPage from '@Components/admin/AdminPage'
 interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
   headProps?: GroupProps
-  contentPos?: GroupPosition
+  contentPos?: React.CSSProperties['justifyContent']
   isLoading?: boolean
   backUrl?: string
 }
@@ -42,6 +42,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
   const location = useLocation()
   const { id } = useParams()
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const pages = [
@@ -78,7 +79,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
           >
             {t('admin.button.back')}
           </Button>
-          <Group wrap="nowrap" position={contentPos ?? 'apart'} w="calc(100% - 10rem)">
+          <Group wrap="nowrap" justify={contentPos ?? 'apart'} w="calc(100% - 10rem)">
             {head}
           </Group>
         </>
@@ -88,7 +89,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
         <Tabs
           orientation="vertical"
           value={activeTab}
-          onTabChange={(value) => navigate(`/admin/games/${id}/${value}`)}
+          onChange={(value) => value && navigate(`/admin/games/${id}/${value}`)}
           styles={{
             root: {
               width: '9rem',
@@ -100,7 +101,11 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
         >
           <Tabs.List>
             {pages.map((page) => (
-              <Tabs.Tab key={page.path} icon={<Icon path={page.icon} size={1} />} value={page.path}>
+              <Tabs.Tab
+                key={page.path}
+                leftSection={<Icon path={page.icon} size={1} />}
+                value={page.path}
+              >
                 {page.title}
               </Tabs.Tab>
             ))}
@@ -109,8 +114,8 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
         <Stack w="calc(100% - 10rem)" pos="relative">
           <LoadingOverlay
             visible={isLoading ?? false}
-            overlayOpacity={1}
-            overlayColor={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
+            opacity={1}
+            c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
           />
 
           {children}

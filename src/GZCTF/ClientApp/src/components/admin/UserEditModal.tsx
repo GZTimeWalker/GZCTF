@@ -104,7 +104,7 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
             disabled={disabled}
             color={RoleColorMap.get(profile.role ?? Role.User)}
             value={profile.role ?? Role.User}
-            onChange={(value: Role) => setProfile({ ...profile, role: value })}
+            onChange={(value) => setProfile({ ...profile, role: value as Role })}
             data={Object.entries(Role).map((role) => ({
               value: role[1],
               label: role[0],
