@@ -4,7 +4,6 @@ import {
   Card,
   CardProps,
   Group,
-  PaperProps,
   PasswordInput,
   Progress,
   Skeleton,
@@ -22,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ErrorCodes } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import api from '@Api'
+import { useGameTeamInfo } from '@Utils/useGame'
 
 const useStyle = createStyles((theme) => ({
   number: {
@@ -35,9 +34,7 @@ const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
-  const { data, error } = api.game.useGameChallengesWithTeamInfo(numId, {
-    shouldRetryOnError: false,
-  })
+  const { teamInfo, error } = useGameTeamInfo(numId)
 
   const { classes, theme } = useStyle()
 
@@ -46,7 +43,7 @@ const TeamRank: FC<CardProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
+  const solved = (teamInfo?.rank?.solvedCount ?? 0) / (teamInfo?.rank?.challenges?.length ?? 1)
 
   useEffect(() => {
     if (error?.status === ErrorCodes.GameEnded) {
@@ -63,17 +60,17 @@ const TeamRank: FC<CardProps> = (props) => {
     <Card {...props} shadow="sm" p="md">
       <Stack gap={8}>
         <Group gap="sm" wrap="nowrap">
-          <Avatar alt="avatar" color="cyan" size={50} radius="md" src={data?.rank?.avatar}>
-            {data?.rank?.name?.slice(0, 1) ?? 'T'}
+          <Avatar alt="avatar" color="cyan" size={50} radius="md" src={teamInfo?.rank?.avatar}>
+            {teamInfo?.rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Skeleton visible={!data}>
+          <Skeleton visible={!teamInfo}>
             <Stack gap={2} align="flex-start">
               <Title order={3} lineClamp={1}>
-                {data?.rank?.name ?? 'Team'}
+                {teamInfo?.rank?.name ?? 'Team'}
               </Title>
-              {data?.rank?.organization && (
+              {teamInfo?.rank?.organization && (
                 <Badge size="xs" variant="outline">
-                  {data.rank.organization}
+                  {teamInfo.rank.organization}
                 </Badge>
               )}
             </Stack>
@@ -81,28 +78,28 @@ const TeamRank: FC<CardProps> = (props) => {
         </Group>
         <Group grow ta="center">
           <Stack gap={2}>
-            <Skeleton visible={!data}>
-              <Text className={classes.number}>{data?.rank?.rank ?? '0'}</Text>
+            <Skeleton visible={!teamInfo}>
+              <Text className={classes.number}>{teamInfo?.rank?.rank ?? '0'}</Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
           </Stack>
-          {data?.rank?.organization && (
+          {teamInfo?.rank?.organization && (
             <Stack gap={2}>
-              <Skeleton visible={!data}>
-                <Text className={classes.number}>{data?.rank?.organizationRank ?? '0'}</Text>
+              <Skeleton visible={!teamInfo}>
+                <Text className={classes.number}>{teamInfo?.rank?.organizationRank ?? '0'}</Text>
               </Skeleton>
               <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
             </Stack>
           )}
           <Stack gap={2}>
-            <Skeleton visible={!data}>
-              <Text className={classes.number}>{data?.rank?.score ?? '0'}</Text>
+            <Skeleton visible={!teamInfo}>
+              <Text className={classes.number}>{teamInfo?.rank?.score ?? '0'}</Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.score')}</Text>
           </Stack>
           <Stack gap={2}>
-            <Skeleton visible={!data}>
-              <Text className={classes.number}>{data?.rank?.solvedCount ?? '0'}</Text>
+            <Skeleton visible={!teamInfo}>
+              <Text className={classes.number}>{teamInfo?.rank?.solvedCount ?? '0'}</Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
           </Stack>
@@ -110,12 +107,12 @@ const TeamRank: FC<CardProps> = (props) => {
         <Progress value={solved * 100} />
         {!isMobile && (
           <PasswordInput
-            value={data?.teamToken}
+            value={teamInfo?.teamToken}
             readOnly
             leftSection={<Icon path={mdiKey} size={1} />}
             variant="unstyled"
             onClick={() => {
-              clipboard.copy(data?.teamToken)
+              clipboard.copy(teamInfo?.teamToken)
               showNotification({
                 color: 'teal',
                 message: t('team.notification.token.copied'),

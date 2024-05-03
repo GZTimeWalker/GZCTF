@@ -11,7 +11,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiHexagonSlice6, mdiPlus } from '@mdi/js'
+import { mdiCheck, mdiHexagonSlice6, mdiPlus, mdiRefresh } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -33,6 +33,7 @@ const GameChallengeEdit: FC = () => {
   const [bonusOpened, setBonusOpened] = useState(false)
   const [category, setCategory] = useState<ChallengeTag | null>(null)
   const challengeTagLabelMap = useChallengeTagLabelMap()
+  const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
 
@@ -91,6 +92,26 @@ const GameChallengeEdit: FC = () => {
       })
   }
 
+  const onUpdateAcceptCount = () => {
+    if (!numId) return
+
+    setDisabled(true)
+    api.edit
+      .editUpdateGameChallengesAcceptedCount(numId)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: t('admin.notification.games.info.accept_count_updated'),
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+        mutate()
+      })
+      .catch(() => showErrorNotification(t('common.error.try_later'), t))
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
+
   return (
     <WithGameEditTab
       headProps={{ justify: 'apart' }}
@@ -112,6 +133,13 @@ const GameChallengeEdit: FC = () => {
             // })}
           />
           <Group justify="right">
+            <Button
+              leftSection={<Icon path={mdiRefresh} size={1} />}
+              disabled={disabled}
+              onClick={onUpdateAcceptCount}
+            >
+              {t('admin.button.challenges.update_accept_count')}
+            </Button>
             <Button
               leftSection={<Icon path={mdiHexagonSlice6} size={1} />}
               onClick={() => setBonusOpened(true)}

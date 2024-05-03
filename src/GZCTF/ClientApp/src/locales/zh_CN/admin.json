@@ -30,7 +30,8 @@
       "test_container": {
         "create": "创建测试容器",
         "destroy": "销毁测试容器"
-      }
+      },
+      "update_accept_count": "更新解题计数"
     },
     "games": {
       "challenges": {
@@ -370,6 +371,7 @@
       },
       "created": "比赛已创建",
       "info": {
+        "accept_count_updated": "解题数量已刷新",
         "deleted": "比赛已删除",
         "info_updated": "比赛信息已更新",
         "poster": {
