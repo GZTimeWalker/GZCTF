@@ -15,6 +15,8 @@ import {
   Text,
   TextInput,
   Title,
+  alpha,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
@@ -51,6 +53,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const [flagTemplate, setFlagTemplate] = useState(challenge?.flagTemplate ?? '')
 
   const modals = useModals()
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -93,7 +96,9 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
     [FileType.Local, t('challenge.file_type.local')],
   ])
 
-  const onUpload = (file: File) => {
+  const onUpload = (file: File | null) => {
+    if (!file) return
+
     setProgress(0)
     setDisabled(true)
 
@@ -332,7 +337,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             <Text size="sm" fw="bold">
               {t('admin.content.games.challenges.flag.instructions.example')}
             </Text>
-            <List size="sm" gap={6}>
+            <List size="sm" spacing={6}>
               <List.Item>
                 {t('admin.content.games.challenges.flag.instructions.leave_empty')}
                 {will_generate}
@@ -396,6 +401,7 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
   const [attachmentUploadModalOpened, setAttachmentUploadModalOpened] = useState(false)
   const [remoteAttachmentModalOpened, setRemoteAttachmentModalOpened] = useState(false)
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   return (

@@ -18,7 +18,7 @@ const WithWiderScreen: FC<WithWiderScreenProps> = ({ children, minWidth = 1080 }
   return tooSmall ? (
     <Stack gap={0} align="center" justify="center" h="calc(100vh - 32px)">
       <IconWiderScreenRequired />
-      <Title order={1} color="#00bfa5" fw="lighter">
+      <Title order={1} c="brand" fw="lighter">
         {t('common.content.wider.title')}
       </Title>
       <Text fw="bold">{t('common.content.wider.text')}</Text>

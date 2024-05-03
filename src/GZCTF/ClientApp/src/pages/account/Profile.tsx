@@ -327,7 +327,7 @@ const Profile: FC = () => {
           maxSize={3 * 1024 * 1024}
           accept={ACCEPT_IMAGE_MIME_TYPE}
         >
-          <Group position="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
+          <Group justify="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
             {avatarFile ? (
               <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
             ) : (

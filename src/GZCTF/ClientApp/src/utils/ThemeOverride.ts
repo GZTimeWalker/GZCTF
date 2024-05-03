@@ -49,7 +49,7 @@ export const CustomTheme = createTheme({
       '#FC1414',
       '#FC0000',
     ],
-    white: [
+    light: [
       '#FFFFFF',
       '#F8F8F8',
       '#EFEFEF',

@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
   Title,
+  alpha,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -52,7 +53,9 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
     setDisabled(dayjs().isAfter(wpddl))
   }, [wpddl])
 
-  const onUpload = (file: File) => {
+  const onUpload = (file: File | null) => {
+    if (!file || disabled) return
+
     setProgress(0)
     setDisabled(true)
 

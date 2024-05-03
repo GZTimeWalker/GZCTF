@@ -1,4 +1,5 @@
-import { Burger, createStyles, Group, Header, Menu, useMantineColorScheme } from '@mantine/core'
+import { Burger, Group, Menu, useMantineColorScheme, AppShell } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -16,13 +17,20 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 import { clearLocalCache } from '@Utils/useConfig'
 import { useLoginOut, useUser } from '@Utils/useUser'
 
-const useHeaderStyles = createStyles((theme) => ({
+const useHeaderStyles = createStyles((theme, _, u) => ({
   header: {
     width: '100%',
     zIndex: 150,
-    backgroundColor: colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.white[0],
     border: 'none',
     boxShadow: theme.shadows.md,
+
+    [u.dark]: {
+      backgroundColor: theme.colors.gray[8],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.colors.white[0],
+    },
   },
 }))
 
@@ -42,7 +50,7 @@ const AppHeader: FC = () => {
   const { t } = useTranslation()
 
   return (
-    <Header fixed hidden={!isMobile} height={isMobile ? 60 : 0} className={headerClasses.header}>
+    <AppShell.Header hidden={!isMobile} h={isMobile ? 60 : 0} className={headerClasses.header}>
       <Group h="100%" p="0 1rem" justify="space-between" wrap="nowrap">
         <LogoHeader onClick={() => navigate('/')} />
         <Menu shadow="md" opened={opened} onClose={() => setOpened(false)} width={200} offset={13}>
@@ -55,21 +63,28 @@ const AppHeader: FC = () => {
                 <Menu.Item
                   component={Link}
                   to="/teams"
-                  icon={<Icon path={mdiAccountGroupOutline} size={1} />}
+                  leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}
                 >
                   {t('common.tab.team')}
                 </Menu.Item>
                 <Menu.Item
                   component={Link}
                   to="/account/profile"
-                  icon={<Icon path={mdiAccountCircleOutline} size={1} />}
+                  leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
                 >
                   {t('common.tab.account.profile')}
                 </Menu.Item>
-                <Menu.Item onClick={clearLocalCache} icon={<Icon path={mdiCached} size={1} />}>
+                <Menu.Item
+                  onClick={clearLocalCache}
+                  leftSection={<Icon path={mdiCached} size={1} />}
+                >
                   {t('common.tab.account.clean_cache')}
                 </Menu.Item>
-                <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
+                <Menu.Item
+                  color="red"
+                  onClick={logout}
+                  leftSection={<Icon path={mdiLogout} size={1} />}
+                >
                   {t('common.tab.account.logout')}
                 </Menu.Item>
               </>
@@ -77,14 +92,14 @@ const AppHeader: FC = () => {
               <Menu.Item
                 component={Link}
                 to={`/account/login?from=${location.pathname}`}
-                icon={<Icon path={mdiAccountCircleOutline} size={1} />}
+                leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
               >
                 {t('common.tab.account.login')}
               </Menu.Item>
             )}
             <Menu.Divider />
             <Menu.Item
-              icon={
+              leftSection={
                 colorScheme === 'dark' ? (
                   <Icon path={mdiWeatherSunny} size={1} />
                 ) : (
@@ -101,7 +116,7 @@ const AppHeader: FC = () => {
           </Menu.Dropdown>
         </Menu>
       </Group>
-    </Header>
+    </AppShell.Header>
   )
 }
 

@@ -12,6 +12,7 @@ import {
   Textarea,
   TextInput,
   Title,
+  useMantineColorScheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -68,6 +69,7 @@ const GameChallengeEdit: FC = () => {
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
   const challengeTagLabelMap = useChallengeTagLabelMap()
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -266,11 +268,12 @@ const GameChallengeEdit: FC = () => {
               value={type}
               disabled={disabled}
               readOnly
-              itemComponent={ChallengeTypeItem}
-              data={Object.entries(ChallengeType).map((type) => {
-                const data = challengeTypeLabelMap.get(type[1])
-                return { value: type[1], ...data }
-              })}
+              // TODO: fix select
+              // itemComponent={ChallengeTypeItem}
+              // data={Object.entries(ChallengeType).map((type) => {
+              //   const data = challengeTypeLabelMap.get(type[1])
+              //   return { value: type[1], ...data }
+              // })}
             />
           </Grid.Col>
           <Grid.Col span={1}>
@@ -284,11 +287,12 @@ const GameChallengeEdit: FC = () => {
                 setTag(e)
                 setChallengeInfo({ ...challengeInfo, tag: e as ChallengeTag })
               }}
-              itemComponent={ChallengeTagItem}
-              data={Object.entries(ChallengeTag).map((tag) => {
-                const data = challengeTagLabelMap.get(tag[1])
-                return { value: tag[1], ...data }
-              })}
+              // TODO: fix select
+              // itemComponent={ChallengeTagItem}
+              // data={Object.entries(ChallengeTag).map((tag) => {
+              //   const data = challengeTagLabelMap.get(tag[1])
+              //   return { value: tag[1], ...data }
+              // })}
             />
           </Grid.Col>
           <Grid.Col span={3}>
@@ -339,12 +343,13 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo?.originalScore ?? 500}
                 onChange={(e) =>
-                  e !== '' && setChallengeInfo({ ...challengeInfo, originalScore: e })
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, originalScore: e })
                 }
               />
               <NumberInput
                 label={t('admin.content.games.challenges.difficulty')}
-                precision={1}
+                decimalScale={2}
+                fixedDecimalScale
                 step={0.2}
                 min={0.1}
                 required
@@ -352,7 +357,9 @@ const GameChallengeEdit: FC = () => {
                 value={challengeInfo?.difficulty ?? 100}
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, difficulty: e })}
+                onChange={(e) =>
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })
+                }
               />
               <Input.Wrapper
                 label={t('admin.content.games.challenges.min_score_radio.label')}

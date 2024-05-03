@@ -1,4 +1,4 @@
-import { useMantineTheme } from '@mantine/core'
+import { alpha, useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
 
@@ -10,6 +10,7 @@ interface TeamRadarMapProps {
 
 const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
 
   return (
     <ReactEcharts

@@ -1,4 +1,11 @@
-import { AppShell, Box, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
+import {
+  AppShell,
+  Box,
+  LoadingOverlay,
+  Stack,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import React, { FC } from 'react'
 import AppFooter from '@Components/AppFooter'
 import AppHeader from '@Components/AppHeader'
@@ -22,6 +29,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
   withFooter = false,
 }) => {
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
   const { user } = useUser()
 
   return (
@@ -36,47 +44,48 @@ const WithNavBar: FC<WithNavBarProps> = ({
       >
         <AppShell
           padding={0}
-          fixed
-          navbar={<AppNavbar />}
-          header={<AppHeader />}
           styles={{
             body: {
               overflow: 'hidden',
             },
           }}
         >
-          <Stack
-            w="100%"
-            mih="100vh"
-            pb={withFooter ? 'xl' : 0}
-            pos="relative"
-            align="center"
-            style={{
-              zIndex: 10,
-              boxShadow: theme.shadows.sm,
-              backgroundColor:
-                colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
-            }}
-          >
-            <LoadingOverlay
-              visible={isLoading ?? false}
-              overlayOpacity={1}
-              overlayColor={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
-            />
-            <Box
-              sx={(theme) => ({
-                width: width ?? '80%',
-                zIndex: 20,
-
-                [theme.fn.smallerThan('xs')]: {
-                  width: '97%',
-                },
-              })}
+          <AppNavbar />
+          <AppHeader />
+          <AppShell.Main>
+            <Stack
+              w="100%"
+              mih="100vh"
+              pb={withFooter ? 'xl' : 0}
+              pos="relative"
+              align="center"
+              style={{
+                zIndex: 10,
+                boxShadow: theme.shadows.sm,
+                backgroundColor:
+                  colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
+              }}
             >
-              {children}
-            </Box>
-          </Stack>
-          {withFooter && <AppFooter />}
+              <LoadingOverlay
+                visible={isLoading ?? false}
+                opacity={1}
+                c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+              />
+              <Box
+                sx={(_, u) => ({
+                  width: width ?? '80%',
+                  zIndex: 20,
+
+                  [u.smallerThan('xs')]: {
+                    width: '97%',
+                  },
+                })}
+              >
+                {children}
+              </Box>
+            </Stack>
+            {withFooter && <AppFooter />}
+          </AppShell.Main>
         </AppShell>
       </Watermark>
     </WithWiderScreen>

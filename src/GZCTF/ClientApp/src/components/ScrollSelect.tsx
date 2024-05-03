@@ -1,6 +1,6 @@
 import {
   Center,
-  createStyles,
+  ElementProps,
   rem,
   ScrollArea,
   ScrollAreaProps,
@@ -8,9 +8,12 @@ import {
   UnstyledButton,
   UnstyledButtonProps,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { FC, forwardRef } from 'react'
 
-export interface SelectableItemProps extends UnstyledButtonProps {
+export interface SelectableItemProps
+  extends UnstyledButtonProps,
+    ElementProps<'button', keyof UnstyledButtonProps> {
   onClick: () => void
   active?: boolean
   disabled?: boolean
@@ -29,22 +32,29 @@ interface ScrollSelectProps extends ScrollAreaProps {
   onSelect?: (item: any | null) => void
 }
 
-const useItemStyle = createStyles((theme) => ({
+const useItemStyle = createStyles((theme, _, u) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
     padding: `${rem(8)} ${theme.spacing.sm}`,
     userSelect: 'none',
 
-    ...theme.fn.hover({
-      backgroundColor: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
-    }),
+    [u.dark]: {
+      backgroundColor: theme.colors.dark[6],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.colors.white[2],
+    },
 
     '&[data-active]': {
-      backgroundColor: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.white[2],
-      ...theme.fn.hover({
-        backgroundColor: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.white[3],
-      }),
+      [u.dark]: {
+        backgroundColor: theme.colors.dark[5],
+      },
+
+      [u.light]: {
+        backgroundColor: theme.colors.white[3],
+      },
     },
 
     '&[data-disabled]': {

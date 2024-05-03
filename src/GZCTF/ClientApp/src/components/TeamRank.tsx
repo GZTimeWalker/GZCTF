@@ -2,7 +2,7 @@ import {
   Avatar,
   Badge,
   Card,
-  createStyles,
+  CardProps,
   Group,
   PaperProps,
   PasswordInput,
@@ -12,6 +12,7 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
@@ -30,7 +31,7 @@ const useStyle = createStyles((theme) => ({
   },
 }))
 
-const TeamRank: FC<PaperProps> = (props) => {
+const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
@@ -111,7 +112,7 @@ const TeamRank: FC<PaperProps> = (props) => {
           <PasswordInput
             value={data?.teamToken}
             readOnly
-            icon={<Icon path={mdiKey} size={1} />}
+            leftSection={<Icon path={mdiKey} size={1} />}
             variant="unstyled"
             onClick={() => {
               clipboard.copy(data?.teamToken)

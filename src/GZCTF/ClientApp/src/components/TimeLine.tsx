@@ -1,4 +1,4 @@
-import { useMantineTheme } from '@mantine/core'
+import { useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import dayjs from 'dayjs'
 import ReactEcharts from 'echarts-for-react'
 import { FC, useEffect, useState } from 'react'
@@ -32,6 +32,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
   const [now, setNow] = useState<Date>(new Date())
   const [chartData, setChartData] = useState<any>()
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
   const { language } = useLanguage()
   const locale = normalizeLanguage(language)

@@ -24,7 +24,7 @@ const Error404: FC = () => {
     <WithNavBar minWidth={0}>
       <Stack gap={0} align="center" justify="center" h="calc(100vh - 32px)">
         <Icon404 />
-        <Title order={1} c="#00bfa5" fw="lighter">
+        <Title order={1} c="brand" fw="lighter">
           {t('common.content.404.title')}
         </Title>
         <Text fw="bold">{t('common.content.404.text')}</Text>

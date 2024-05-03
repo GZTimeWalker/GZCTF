@@ -1,4 +1,12 @@
-import { Button, Group, LoadingOverlay, Stack, Tabs, useMantineTheme } from '@mantine/core'
+import {
+  Button,
+  Group,
+  LoadingOverlay,
+  Stack,
+  Tabs,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import {
   mdiExclamationThick,
   mdiFileTableOutline,
@@ -28,6 +36,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   const location = useLocation()
   const theme = useMantineTheme()
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const pages = [
@@ -72,7 +81,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
               <Tabs
                 orientation="vertical"
                 value={activeTab}
-                onTabChange={(value) => navigate(`/games/${id}/monitor/${value}`)}
+                onChange={(value) => value && navigate(`/games/${id}/monitor/${value}`)}
                 styles={{
                   root: {
                     width: '9rem',
@@ -86,7 +95,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                   {pages.map((page) => (
                     <Tabs.Tab
                       key={page.path}
-                      icon={<Icon path={page.icon} size={1} />}
+                      leftSection={<Icon path={page.icon} size={1} />}
                       value={page.path}
                     >
                       {page.title}
@@ -98,8 +107,8 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
             <Stack w="calc(100% - 10rem)" pos="relative">
               <LoadingOverlay
                 visible={isLoading ?? false}
-                overlayOpacity={1}
-                overlayColor={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+                opacity={1}
+                c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
               />
               {children}
             </Stack>

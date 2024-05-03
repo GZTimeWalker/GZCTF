@@ -1,9 +1,10 @@
-import { createStyles, Group, keyframes, Text, Title } from '@mantine/core'
+import { Group, Text, Title } from '@mantine/core'
+import { createStyles, keyframes } from '@mantine/emotion'
 import { FC } from 'react'
 import LogoHeader from '@Components/LogoHeader'
 import { useConfig } from '@Utils/useConfig'
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles((theme, _, u) => ({
   group: {
     width: '100%',
     top: 16,
@@ -20,7 +21,7 @@ const useStyles = createStyles((theme) => ({
       paddingTop: 16,
     },
 
-    [theme.fn.smallerThan('xs')]: {
+    [u.smallerThan('xs')]: {
       display: 'none',
     },
   },
@@ -34,9 +35,16 @@ const useStyles = createStyles((theme) => ({
   },
   subtitle: {
     fontFamily: theme.fontFamilyMonospace,
-    color: colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.dark[4],
 
-    [theme.fn.smallerThan(900)]: {
+    [u.dark]: {
+      color: theme.colors.gray[4],
+    },
+
+    [u.light]: {
+      color: theme.colors.dark[4],
+    },
+
+    [u.smallerThan(900)]: {
       display: 'none',
     },
   },
