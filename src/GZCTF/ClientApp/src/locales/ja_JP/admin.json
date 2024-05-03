@@ -30,7 +30,8 @@
       "test_container": {
         "create": "テストコンテナを作成",
         "destroy": "テストコンテナを破棄"
-      }
+      },
+      "update_accept_count": "解答数を更新"
     },
     "games": {
       "challenges": {
@@ -370,6 +371,7 @@
       },
       "created": "ゲームが作成されました",
       "info": {
+        "accept_count_updated": "解答数が更新されました",
         "deleted": "ゲームが削除されました",
         "info_updated": "ゲーム情報が更新されました",
         "poster": {

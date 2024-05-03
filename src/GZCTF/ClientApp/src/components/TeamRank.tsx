@@ -19,9 +19,9 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
+import { ErrorCodes } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api from '@Api'
-import { ErrorCodes } from '@Utils/Shared'
 
 const useStyle = createStyles((theme) => ({
   number: {

@@ -86,11 +86,10 @@ public interface IGameChallengeRepository : IRepository
     public Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default);
 
     /// <summary>
-    /// 验证静态 Flag（可能多个答案）
+    /// 重新计算解题数量
     /// </summary>
-    /// <param name="challenge">题目对象</param>
-    /// <param name="flag">Flag 字符串</param>
+    /// <param name="game">比赛 id</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<bool> VerifyStaticAnswer(GameChallenge challenge, string flag, CancellationToken token = default);
+    public Task<bool> RecalculateAcceptedCount(Game game, CancellationToken token = default);
 }

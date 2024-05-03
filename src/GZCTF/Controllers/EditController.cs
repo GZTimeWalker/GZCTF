@@ -483,6 +483,32 @@ public class EditController(
         Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
+    /// 更新全部比赛题目解出数量
+    /// </summary>
+    /// <remarks>
+    /// 更新全部比赛题目解出数量，需要管理员权限
+    /// </remarks>
+    /// <param name="id">比赛Id</param>
+    /// <param name="token"></param>
+    /// <response code="200">成功获取比赛题目</response>
+    [HttpPost("Games/{id:int}/Challenges/UpdateAccepted")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateGameChallengesAcceptedCount([FromRoute] int id, CancellationToken token)
+    {
+        Game? game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        if (await challengeRepository.RecalculateAcceptedCount(game, token))
+            return Ok();
+
+        return BadRequest();
+    }
+
+
+    /// <summary>
     /// 获取比赛题目
     /// </summary>
     /// <remarks>
