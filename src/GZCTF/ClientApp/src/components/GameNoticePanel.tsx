@@ -1,5 +1,4 @@
 import { Card, Center, List, ScrollArea, SegmentedControl, Stack, Text } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'

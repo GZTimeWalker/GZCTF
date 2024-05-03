@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Anchor,
   Avatar,
-  Blockquote,
   Card,
   Group,
   Stack,
@@ -28,23 +27,22 @@ export interface PostCardProps {
 }
 
 const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
-  const theme = useMantineTheme()
   const navigate = useNavigate()
   const { role } = useUserRole()
   const [disabled, setDisabled] = useState(false)
-  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
+  const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
 
   return (
-    <Card shadow="sm" p="md" pb={0} pr={0}>
-      <Blockquote
-        m="md"
-        py="md"
-        pr="md"
-        icon={<Icon path={mdiFormatQuoteOpen} size={1} />}
-        color={colorScheme === 'dark' ? 'light' : 'brand'}
-      >
-        <Stack gap="xs">
+    <Card shadow="sm" p="md">
+      <Group px="sm" py="xs" wrap="nowrap" justify="space-between" align="flex-start">
+        <Icon
+          path={mdiFormatQuoteOpen}
+          size={1.5}
+          color={theme.colors[theme.primaryColor][colorScheme === 'dark' ? 7 : 5]}
+        />
+        <Stack gap="xs" w="calc(100% - 3rem)">
           {RequireRole(Role.Admin, role) ? (
             <Group justify="space-between">
               <Title order={3}>
@@ -84,7 +82,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           {post.tags && (
             <Group>
               {post.tags.map((tag, idx) => (
-                <Text key={idx} size="sm" fw={700} span c="brand">
+                <Text key={idx} size="sm" fw="bold" span c="brand">
                   {`#${tag}`}
                 </Text>
               ))}
@@ -95,7 +93,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               <Avatar alt="avatar" src={post.authorAvatar} size="sm">
                 {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
-              <Text fw={700}>
+              <Text size="sm" fw="bold" c="dimmed">
                 {t('post.content.metadata', {
                   author: post.authorName ?? 'Anonym',
                   date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
@@ -111,7 +109,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             </Text>
           </Group>
         </Stack>
-      </Blockquote>
+      </Group>
     </Card>
   )
 }

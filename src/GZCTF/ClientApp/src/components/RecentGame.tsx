@@ -24,7 +24,7 @@ export interface RecentGameProps {
   game: BasicGameInfoModel
 }
 
-const POSTER_HEIGHT = '10rem'
+const POSTER_HEIGHT = '9rem'
 
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
@@ -45,12 +45,13 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
       shadow="sm"
       component={Link}
       to={`/games/${game.id}`}
-      sx={(theme) => ({
+      style={{
         transition: 'filter .2s',
-        '&:hover': {
+
+        ':hover': {
           filter: colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
         },
-      })}
+      }}
     >
       <Card.Section pos="relative">
         {poster ? (

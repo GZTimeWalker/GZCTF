@@ -6,17 +6,17 @@ import {
   Group,
   Image,
   Input,
-  MultiSelect,
   NumberInput,
   SimpleGrid,
   Stack,
   Switch,
+  TagsInput,
   Text,
   Textarea,
   TextInput,
 } from '@mantine/core'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
-import { Dropzone } from '@mantine/dropzone'
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
@@ -36,7 +36,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
-import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
 
@@ -411,7 +410,7 @@ const GameInfoEdit: FC = () => {
           maxRows={3}
           onChange={(e) => game && setGame({ ...game, writeupNote: e.target.value })}
         />
-        <MultiSelect
+        <TagsInput
           label={
             <Group gap="sm">
               <Text size="sm"> {t('admin.content.games.info.organizations.label')}</Text>
@@ -430,6 +429,7 @@ const GameInfoEdit: FC = () => {
               maxHeight: 88,
             },
           }}
+          clearable
           // TODO: use tags select
           // searchable
           // creatable
@@ -478,7 +478,7 @@ const GameInfoEdit: FC = () => {
                 })
               }}
               maxSize={3 * 1024 * 1024}
-              accept={ACCEPT_IMAGE_MIME_TYPE}
+              accept={IMAGE_MIME_TYPE}
               disabled={disabled}
               styles={{
                 root: {

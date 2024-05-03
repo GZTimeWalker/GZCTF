@@ -37,14 +37,19 @@ const useItemStyle = createStyles((theme, _, u) => ({
     display: 'flex',
     alignItems: 'center',
     padding: `${rem(8)} ${theme.spacing.sm}`,
+    marginTop: '2pt',
     userSelect: 'none',
+    cursor: 'pointer',
+    borderRadius: theme.radius.md,
 
-    [u.dark]: {
-      backgroundColor: theme.colors.dark[6],
-    },
+    '&:hover': {
+      [u.dark]: {
+        backgroundColor: theme.colors.dark[6],
+      },
 
-    [u.light]: {
-      backgroundColor: theme.colors.light[2],
+      [u.light]: {
+        backgroundColor: theme.colors.light[2],
+      },
     },
 
     '&[data-active]': {

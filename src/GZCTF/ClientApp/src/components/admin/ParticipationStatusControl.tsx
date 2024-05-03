@@ -25,7 +25,7 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
     <Group
       wrap="nowrap"
       justify="center"
-      miw={`calc(${theme.spacing.xl} * 3)`}
+      miw={`calc(${theme.spacing.xl} * 2)`}
       m={`0 ${theme.spacing.xs}`}
       {...others}
     >

@@ -163,17 +163,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
         <Text fw="bold" size="xs" lineClamp={1}>
           {submissionInfo.challenge}
         </Text>
-        <Input
-          variant="unstyled"
-          value={submissionInfo.answer}
-          readOnly
-          size="xs"
-          sx={(theme) => ({
-            input: {
-              fontFamily: theme.fontFamilyMonospace,
-            },
-          })}
-        />
+        <Input variant="unstyled" value={submissionInfo.answer} readOnly size="xs" ff="monospace" />
       </Stack>
     </Group>
   )
@@ -220,21 +210,23 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                 </Text>
               </Stack>
             </Group>
-            <Box w="6em">
-              <Badge color={part.color}>{part.title}</Badge>
-            </Box>
+            <Group w="12rem" gap={0} justify="space-between" wrap="nowrap">
+              <Box w="6rem" ta="center">
+                <Badge color={part.color}>{part.title}</Badge>
+              </Box>
+              {RequireRole(Role.Admin, userRole) && (
+                <ParticipationStatusControl
+                  disabled={disabled}
+                  participateId={cheatTeamInfo.participateId!}
+                  status={cheatTeamInfo.status!}
+                  setParticipationStatus={setParticipationStatus}
+                  m={`0 ${theme.spacing.xl}`}
+                  miw={theme.spacing.xl}
+                />
+              )}
+            </Group>
           </Group>
         </Accordion.Control>
-        {RequireRole(Role.Admin, userRole) && (
-          <ParticipationStatusControl
-            disabled={disabled}
-            participateId={cheatTeamInfo.participateId!}
-            status={cheatTeamInfo.status!}
-            setParticipationStatus={setParticipationStatus}
-            m={`0 ${theme.spacing.xl}`}
-            miw={theme.spacing.xl}
-          />
-        )}
       </Box>
       <Accordion.Panel>
         <Stack gap="sm">
@@ -306,7 +298,7 @@ interface CheatInfoTableViewProps {
 }
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
-  const { classes, cx, theme } = useTableStyles()
+  const { classes, cx } = useTableStyles()
 
   const { t } = useTranslation()
 

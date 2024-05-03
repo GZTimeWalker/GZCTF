@@ -195,16 +195,6 @@ export const useIsMobile = (limit?: number) => {
   return isMobile
 }
 
-export const ACCEPT_IMAGE_MIME_TYPE = [
-  'image/png',
-  'image/gif',
-  'image/jpeg',
-  'image/gif',
-  'image/webp',
-  'image/bmp',
-  'image/tiff',
-]
-
 interface FixedButtonProps {
   right?: string
   bottom?: string
@@ -353,6 +343,18 @@ export const useUploadStyles = createStyles(() => ({
     },
   },
 }))
+
+export const useDisplayInputStyles = createStyles({
+  input: {
+    cursor: 'auto',
+    userSelect: 'none',
+    lineHeight: '1.5rem',
+    minHeight: '1rem',
+    maxHeight: '2rem',
+    fontWeight: 'bold',
+    height: '1.5rem',
+  },
+})
 
 export const useAccordionStyles = createStyles((theme, _, u) => ({
   root: {

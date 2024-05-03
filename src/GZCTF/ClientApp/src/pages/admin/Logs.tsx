@@ -48,7 +48,7 @@ const NoPaddingTable = createStyles(() => ({
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
-  const { classes, cx, theme } = useTableStyles()
+  const { classes, cx } = useTableStyles()
   const { classes: noPaddingClasses } = NoPaddingTable()
 
   const [, update] = useState(new Date())
@@ -56,7 +56,6 @@ const Logs: FC = () => {
   const [logs, setLogs] = useState<LogMessageModel[]>()
 
   const { t } = useTranslation()
-
   const viewport = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -127,7 +126,7 @@ const Logs: FC = () => {
   }, [])
 
   const rows = [...(activePage === 1 ? newLogs.current : []), ...(logs ?? [])]
-    .filter((item) => item.level === level)
+    .filter((item) => level === 'All' || item.level === level)
     .map((item, i) => (
       <Table.Tr
         key={`${item.time}@${i}`}
@@ -170,9 +169,11 @@ const Logs: FC = () => {
           />
         </td>
         <td className={cx(classes.mono)}>
-          <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
-            {item.status}
-          </Badge>
+          {item.status && (
+            <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
+              {item.status}
+            </Badge>
+          )}
         </td>
       </Table.Tr>
     ))

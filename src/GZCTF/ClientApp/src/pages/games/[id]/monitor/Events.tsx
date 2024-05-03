@@ -32,7 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import { useTableStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, EventType, GameEvent } from '@Api'
 
@@ -133,7 +133,7 @@ const Events: FC = () => {
 
   const iconMap = EventTypeIconMap(1.15)
   const { classes } = useTableStyles()
-
+  const { classes: inputClasses } = useDisplayInputStyles()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -246,19 +246,14 @@ const Events: FC = () => {
                     variant="unstyled"
                     value={formatEvent(t, event)}
                     readOnly
-                    sx={(theme) => ({
+                    size="md"
+                    fw={500}
+                    styles={{
                       wrapper: {
                         width: '100%',
                       },
-
-                      input: {
-                        userSelect: 'none',
-                        fontWeight: 500,
-                        fontSize: theme.fontSizes.md,
-                        lineHeight: '1em',
-                        height: '1em',
-                      },
-                    })}
+                    }}
+                    classNames={{ input: inputClasses.input }}
                   />
                   <Group wrap="nowrap" justify="space-between">
                     <Text size="sm" fw={500} c="dimmed">

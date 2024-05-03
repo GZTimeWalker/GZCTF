@@ -8,7 +8,7 @@ import { useConfig } from '@Utils/useConfig'
 const AppFooter: FC = () => {
   const { config } = useConfig()
   const isMobile = useIsMobile()
-  const { classes, theme } = useFooterStyles()
+  const { classes } = useFooterStyles()
   const { classes: logoClasses } = useLogoStyles()
 
   const copyright = (

@@ -90,7 +90,7 @@ const Submissions: FC = () => {
   const { game } = useGame(numId)
 
   const iconMap = AnswerResultIconMap(0.8)
-  const { classes, cx, theme } = useTableStyles()
+  const { classes, cx } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
 
   const { t } = useTranslation()
@@ -168,24 +168,24 @@ const Submissions: FC = () => {
           i === 0 && activePage === 1 && filteredSubs.length > 0 ? cx(classes.fade) : undefined
         }
       >
-        <td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</td>
-        <td className={cx(classes.mono)}>
+        <Table.Td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</Table.Td>
+        <Table.Td className={cx(classes.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text size="sm" fw="bold">
             {item.team ?? 'Team'}
           </Text>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text ff="monospace" size="sm" fw="bold">
             {item.user ?? 'User'}
           </Text>
-        </td>
-        <td>{item.challenge ?? 'Challenge'}</td>
-        <td
+        </Table.Td>
+        <Table.Td>{item.challenge ?? 'Challenge'}</Table.Td>
+        <Table.Td
           style={{
             width: '36vw',
             maxWidth: '100%',
@@ -197,16 +197,14 @@ const Submissions: FC = () => {
             value={item.answer}
             readOnly
             size="sm"
-            sx={(theme) => ({
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-              },
+            ff="monospace"
+            styles={{
               wrapper: {
                 width: '100%',
               },
-            })}
+            }}
           />
-        </td>
+        </Table.Td>
       </Table.Tr>
     )
   )

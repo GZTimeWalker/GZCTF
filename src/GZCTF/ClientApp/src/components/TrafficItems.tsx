@@ -11,6 +11,7 @@ import {
   SelectableItemProps,
 } from '@Components/ScrollSelect'
 import { useChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import {
   ChallengeTag,
   ChallengeTrafficModel,
@@ -28,7 +29,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
   const data = challengeTagLabelMap.get(item.tag as ChallengeTag)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
-
+  const { classes } = useDisplayInputStyles()
   const { t } = useTranslation()
 
   return (
@@ -41,14 +42,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
               variant="unstyled"
               value={item.title ?? 'Team'}
               readOnly
-              sx={() => ({
-                input: {
-                  userSelect: 'none',
-                  lineHeight: 1,
-                  fontWeight: 700,
-                  height: '1.5rem',
-                },
-              })}
+              classNames={{ input: classes.input }}
             />
             <Badge color={data.color} size="xs" variant="dot">
               {type}
@@ -70,6 +64,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
 
+  const { classes } = useDisplayInputStyles()
   const { t } = useTranslation()
 
   return (
@@ -84,14 +79,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
               variant="unstyled"
               value={item.name ?? 'Team'}
               readOnly
-              sx={() => ({
-                input: {
-                  userSelect: 'none',
-                  lineHeight: 1,
-                  fontWeight: 700,
-                  height: '1.5rem',
-                },
-              })}
+              classNames={{ input: classes.input }}
             />
             {item.organization && (
               <Badge size="xs" variant="outline">

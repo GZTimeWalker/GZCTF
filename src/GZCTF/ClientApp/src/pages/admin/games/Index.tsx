@@ -139,20 +139,20 @@ const Games: FC = () => {
 
                   return (
                     <Table.Tr key={game.id}>
-                      <td>
+                      <Table.Td>
                         <Switch
                           disabled={disabled}
                           checked={!game.hidden}
                           onChange={() => onToggleHidden(game)}
                         />
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Group wrap="nowrap" justify="space-between">
                           <Group
                             wrap="nowrap"
                             justify="left"
                             onClick={() => navigate(`/games/${game.id}`)}
-                            sx={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer' }}
                           >
                             <Avatar alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
@@ -163,8 +163,8 @@ const Games: FC = () => {
                           </Group>
                           <Badge color={color}>{status}</Badge>
                         </Group>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Group wrap="nowrap" gap="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
@@ -174,13 +174,13 @@ const Games: FC = () => {
                             {dayjs(endTime).format('YYYY-MM-DD HH:mm')}
                           </Badge>
                         </Group>
-                      </td>
-                      <td>
-                        <Text truncate maw="30rem">
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" truncate maw="20rem">
                           {game.summary}
                         </Text>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Group justify="right">
                           <ActionIcon
                             onClick={() => {
@@ -190,7 +190,7 @@ const Games: FC = () => {
                             <Icon path={mdiPencilOutline} size={1} />
                           </ActionIcon>
                         </Group>
-                      </td>
+                      </Table.Td>
                     </Table.Tr>
                   )
                 })}
