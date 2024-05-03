@@ -30,7 +30,8 @@
       "test_container": {
         "create": "Create",
         "destroy": "Destroy"
-      }
+      },
+      "update_accept_count": "Update AC Counter"
     },
     "games": {
       "challenges": {
@@ -370,6 +371,7 @@
       },
       "created": "Game created",
       "info": {
+        "accept_count_updated": "AC counter updated",
         "deleted": "Game deleted",
         "info_updated": "Game updated",
         "poster": {
