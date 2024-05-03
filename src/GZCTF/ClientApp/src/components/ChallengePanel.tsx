@@ -25,8 +25,8 @@ import ChallengeDetailModal from '@Components/ChallengeDetailModal'
 import Empty from '@Components/Empty'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
 import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
-import { useGame } from '@Utils/useGame'
-import api, { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
+import { useGame, useGameTeamInfo } from '@Utils/useGame'
+import { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 
 const DEFAULT_COLS = 8
 const GRID_BREAKPOINTS = [
@@ -43,10 +43,8 @@ const ChallengePanel: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const { data } = api.game.useGameChallengesWithTeamInfo(numId, {
-    shouldRetryOnError: false,
-  })
-  const challenges = data?.challenges
+  const { teamInfo } = useGameTeamInfo(numId)
+  const challenges = teamInfo?.challenges
 
   const { game } = useGame(numId)
 
@@ -64,8 +62,9 @@ const ChallengePanel: FC = () => {
     (activeTab !== 'All' ? challenges[activeTab] ?? [] : allChallenges).filter(
       (chal) =>
         !hideSolved ||
-        (data &&
-          data.rank?.challenges?.find((c) => c.id === chal.id)?.type === SubmissionType.Unaccepted)
+        (teamInfo &&
+          teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type ===
+            SubmissionType.Unaccepted)
     )
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
@@ -230,11 +229,11 @@ const ChallengePanel: FC = () => {
                   setDetailOpened(true)
                 }}
                 solved={
-                  data &&
-                  data.rank?.challenges?.find((c) => c.id === chal.id)?.type !==
+                  teamInfo &&
+                  teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type !==
                     SubmissionType.Unaccepted
                 }
-                teamId={data?.rank?.id}
+                teamId={teamInfo?.rank?.id}
               />
             ))}
           </SimpleGrid>
@@ -254,7 +253,7 @@ const ChallengePanel: FC = () => {
           withCloseButton={false}
           size="40%"
           gameId={numId}
-          writeupDeadline={data.writeupDeadline}
+          writeupDeadline={teamInfo.writeupDeadline}
         />
       )}
       {challenge?.id && (
@@ -265,8 +264,8 @@ const ChallengePanel: FC = () => {
           onClose={() => setDetailOpened(false)}
           gameEnded={dayjs(game?.end) < dayjs()}
           solved={
-            data &&
-            data.rank?.challenges?.find((c) => c.id === challenge?.id)?.type !==
+            teamInfo &&
+            teamInfo.rank?.challenges?.find((c) => c.id === challenge?.id)?.type !==
               SubmissionType.Unaccepted
           }
           tagData={challengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
