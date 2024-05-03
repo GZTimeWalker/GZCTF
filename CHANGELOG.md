@@ -3,6 +3,40 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.19.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.3..v0.19.4) - 2024-05-02
+
+### ⛰️ Features
+
+- **(db)** update string length limits - ([7a73a1](https://github.com/GZTimeWalker/GZCTF/commit/7a73a1)) by **GZTime**
+- **(deps)** use Ulid for key generation - ([bf2976](https://github.com/GZTimeWalker/GZCTF/commit/bf2976)) by **GZTime**
+- **(game)** use 204 to indicate the game has ended - ([f3c59b](https://github.com/GZTimeWalker/GZCTF/commit/f3c59b)) by **GZTime**
+- **(logs)** auto scroll to top & log filter - ([021a44](https://github.com/GZTimeWalker/GZCTF/commit/021a44)) by **GZTime**
+- **(proxy)** update traffic naming format - ([6c1533](https://github.com/GZTimeWalker/GZCTF/commit/6c1533)) by **GZTime**
+- **(review)** enhance team review page - ([cbb052](https://github.com/GZTimeWalker/GZCTF/commit/cbb052)) by **GZTime**
+- **(traffic)** sort challenge & teams - ([fe867b](https://github.com/GZTimeWalker/GZCTF/commit/fe867b)) by **GZTime**
+- **(traffic)** total size & no overflow - ([540793](https://github.com/GZTimeWalker/GZCTF/commit/540793)) by **GZTime**
+- **(traffic)** traffic file deletion - ([8374f0](https://github.com/GZTimeWalker/GZCTF/commit/8374f0)) by **GZTime**
+- use custom error codes in status - ([92999d](https://github.com/GZTimeWalker/GZCTF/commit/92999d)) by **GZTime**
+- capture traffic only when the game is active - ([46df11](https://github.com/GZTimeWalker/GZCTF/commit/46df11)) by **GZTime**
+- remove user role requirement for game notice signalr hub - ([108d75](https://github.com/GZTimeWalker/GZCTF/commit/108d75)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(style)** index page on widescreen - ([c8ce97](https://github.com/GZTimeWalker/GZCTF/commit/c8ce97)) by **GZTime**
+- **(style)** game challenge page - ([f8a62a](https://github.com/GZTimeWalker/GZCTF/commit/f8a62a)) by **GZTime**
+- **(traffic)** make deletion works as expected - ([c08607](https://github.com/GZTimeWalker/GZCTF/commit/c08607)) by **GZTime**
+- do not use Ulid for containers - ([bf4ad1](https://github.com/GZTimeWalker/GZCTF/commit/bf4ad1)) by **GZTime**
+- check isEnabled when creating the container - ([de747e](https://github.com/GZTimeWalker/GZCTF/commit/de747e)) by **GZTime**
+- handle deletion exceptions - ([d62554](https://github.com/GZTimeWalker/GZCTF/commit/d62554)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- rename i18n key `Game_End` to `Game_Ended` - ([9dace0](https://github.com/GZTimeWalker/GZCTF/commit/9dace0)) by **GZTime**
+- tidy up - ([b45443](https://github.com/GZTimeWalker/GZCTF/commit/b45443)) by **GZTime**
+- remove dup key by crowdin - ([a092a5](https://github.com/GZTimeWalker/GZCTF/commit/a092a5)) by **GZTime**
+- add mutate for challenges - ([b032ef](https://github.com/GZTimeWalker/GZCTF/commit/b032ef)) by **GZTime**
+
+---
 ## [0.19.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.2..v0.19.3) - 2024-04-22
 
 ### 🐛 Bug Fixes
