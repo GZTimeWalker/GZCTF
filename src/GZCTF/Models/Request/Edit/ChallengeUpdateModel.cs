@@ -48,31 +48,6 @@ public class ChallengeUpdateModel
     public string? FileName { get; set; }
 
     /// <summary>
-    /// 提示是否存在更新
-    /// </summary>
-    /// <param name="originalHash">原有哈希</param>
-    /// <returns></returns>
-    internal bool IsHintUpdated(int? originalHash) =>
-        Hints is not null && Hints.Count > 0 &&
-        Hints.GetSetHashCode() != originalHash;
-
-    /// <summary>
-    /// 是否为有效的 Flag 模板
-    /// </summary>
-    /// <returns></returns>
-    internal bool IsValidFlagTemplate()
-    {
-        if (string.IsNullOrWhiteSpace(FlagTemplate))
-            return false;
-
-        return FlagTemplate.Contains("[GUID]") ||
-               FlagTemplate.Contains("[TEAM_HASH]") ||
-               Codec.Leet.LeetEntropy(FlagTemplate) >= 32.0;
-    }
-
-    #region Container
-
-    /// <summary>
     /// 镜像名称与标签
     /// </summary>
     public string? ContainerImage { get; set; }
@@ -108,10 +83,6 @@ public class ChallengeUpdateModel
     /// </summary>
     public bool? EnableTrafficCapture { get; set; } = false;
 
-    #endregion Container
-
-    #region Score
-
     /// <summary>
     /// 初始分数
     /// </summary>
@@ -128,5 +99,25 @@ public class ChallengeUpdateModel
     /// </summary>
     public double? Difficulty { get; set; }
 
-    #endregion Score
+    /// <summary>
+    /// 提示是否存在更新
+    /// </summary>
+    /// <param name="originalHash">原有哈希</param>
+    /// <returns></returns>
+    internal bool IsHintUpdated(int? originalHash) =>
+        Hints is not null && Hints.GetSetHashCode() != originalHash;
+
+    /// <summary>
+    /// 是否为有效的 Flag 模板
+    /// </summary>
+    /// <returns></returns>
+    internal bool IsValidFlagTemplate()
+    {
+        if (string.IsNullOrWhiteSpace(FlagTemplate))
+            return false;
+
+        return FlagTemplate.Contains("[GUID]") ||
+               FlagTemplate.Contains("[TEAM_HASH]") ||
+               Codec.Leet.LeetEntropy(FlagTemplate) >= 32.0;
+    }
 }

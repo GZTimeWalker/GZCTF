@@ -177,7 +177,7 @@ public class Game
         PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
-        Organizations = model.Organizations ?? Organizations;
+        Organizations = model.Organizations?.ToHashSet() ?? Organizations;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
         TeamMemberCountLimit = model.TeamMemberCountLimit;

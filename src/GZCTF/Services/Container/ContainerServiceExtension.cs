@@ -44,7 +44,7 @@ public static class ContainerServiceExtension
                 .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
             ContainerProviderType.Kubernetes => services
                 .AddSingleton<IContainerProvider<Kubernetes, KubernetesMetadata>, KubernetesProvider>(),
-            _ => throw new NotImplementedException()
+            _ => services
         };
 
     static IServiceCollection AddManager(this IServiceCollection services, ContainerProvider config)

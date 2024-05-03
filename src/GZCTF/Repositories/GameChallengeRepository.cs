@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Repositories;
 
-public class GameChallengeRepository(AppDbContext context, 
+public class GameChallengeRepository(AppDbContext context,
     IFileRepository fileRepository,
     CacheHelper cacheHelper
     ) : RepositoryBase(context),
@@ -106,7 +106,7 @@ public class GameChallengeRepository(AppDbContext context,
                 var count = await Context.GameInstances
                     .IgnoreAutoIncludes()
                     .Include(i => i.Participation)
-                    .Where(i => i.ChallengeId == cId && i.IsSolved && 
+                    .Where(i => i.ChallengeId == cId && i.IsSolved &&
                                 i.Participation.Status == ParticipationStatus.Accepted)
                     .CountAsync(token);
 
@@ -120,7 +120,7 @@ public class GameChallengeRepository(AppDbContext context,
                 Context.Update(chal);
                 await SaveAsync(token);
             }
-            
+
             await cacheHelper.FlushScoreboardCache(game.Id, token);
             await trans.CommitAsync(token);
         }
