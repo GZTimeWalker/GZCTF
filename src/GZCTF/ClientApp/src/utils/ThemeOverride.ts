@@ -1,4 +1,6 @@
 import {
+  ActionIcon,
+  Badge,
   Loader,
   Modal,
   Popover,
@@ -111,6 +113,16 @@ export const CustomTheme = createTheme({
     Popover: Popover.extend({
       defaultProps: {
         withinPortal: true,
+      },
+    }),
+    ActionIcon: ActionIcon.extend({
+      defaultProps: {
+        variant: 'transparent',
+      },
+    }),
+    Badge: Badge.extend({
+      defaultProps: {
+        variant: 'outline',
       },
     }),
     // TODO: notifcation styles

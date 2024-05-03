@@ -137,14 +137,16 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                 fontSize: '0.85rem',
               }}
             >
-              <thead>
-                <tr>
-                  <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
-                  <th style={{ minWidth: '3rem' }}>{t('game.label.score_table.score')}</th>
-                  <th style={{ minWidth: '3rem' }}>{t('common.label.time')}</th>
-                </tr>
-              </thead>
-              <tbody>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+                  <Table.Th style={{ minWidth: '3rem' }}>
+                    {t('game.label.score_table.score')}
+                  </Table.Th>
+                  <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.time')}</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {item?.challenges &&
                   challengeIdMap &&
                   item.challenges
@@ -153,7 +155,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)
                       return (
-                        <tr key={chal.id}>
+                        <Table.Tr key={chal.id}>
                           <td>
                             <Input
                               variant="unstyled"
@@ -181,10 +183,10 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                           </td>
                           <td className={classes.mono}>{chal.score}</td>
                           <td className={classes.mono}>{dayjs(chal.time).format('MM/DD HH:mm')}</td>
-                        </tr>
+                        </Table.Tr>
                       )
                     })}
-              </tbody>
+              </Table.Tbody>
             </Table>
           </ScrollArea>
         ) : (

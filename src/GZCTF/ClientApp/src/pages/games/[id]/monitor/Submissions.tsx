@@ -162,7 +162,7 @@ const Submissions: FC = () => {
 
   const rows = [...(activePage === 1 ? filteredSubs : []), ...(submissions ?? [])].map(
     (item, i) => (
-      <tr
+      <Table.Tr
         key={`${item.time}@${i}`}
         className={
           i === 0 && activePage === 1 && filteredSubs.length > 0 ? cx(classes.fade) : undefined
@@ -207,7 +207,7 @@ const Submissions: FC = () => {
             })}
           />
         </td>
-      </tr>
+      </Table.Tr>
     )
   )
 
@@ -267,21 +267,21 @@ const Submissions: FC = () => {
       <Paper shadow="md" p="md">
         <ScrollArea offsetScrollbars h="calc(100vh - 200px)">
           <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th style={{ width: '0.6rem' }}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ width: '0.6rem' }}>
                   <Group align="center">
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
-                </th>
-                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
-                <th style={{ minWidth: '5rem' }}>{t('common.label.team')}</th>
-                <th style={{ minWidth: '5rem' }}>{t('common.label.user')}</th>
-                <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
-                <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
+                </Table.Th>
+                <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
+                <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.team')}</Table.Th>
+                <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.user')}</Table.Th>
+                <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+                <Table.Th className={cx(classes.mono)}>{t('common.label.flag')}</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </ScrollArea>
       </Paper>

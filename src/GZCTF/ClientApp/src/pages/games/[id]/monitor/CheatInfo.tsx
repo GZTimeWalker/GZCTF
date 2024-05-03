@@ -315,7 +315,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
       (a, b) => (dayjs(b.submission?.time).unix() ?? 0) - (dayjs(a.submission?.time).unix() ?? 0)
     )
     .map((item, i) => (
-      <tr key={`${item.submission?.time}@${i}`}>
+      <Table.Tr key={`${item.submission?.time}@${i}`}>
         <td className={cx(classes.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.submission?.time).format('MM/DD HH:mm:ss')}
@@ -364,25 +364,31 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
             })}
           />
         </td>
-      </tr>
+      </Table.Tr>
     ))
 
   return (
     <Paper shadow="md" p="md">
       <ScrollArea offsetScrollbars h="calc(100vh - 200px)">
         <Table className={classes.table}>
-          <thead>
-            <tr>
-              <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
-              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.owned_team')}</th>
-              <th />
-              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_team')}</th>
-              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_user')}</th>
-              <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
-              <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
+              <Table.Th style={{ minWidth: '5rem' }}>
+                {t('game.label.cheat_info.owned_team')}
+              </Table.Th>
+              <Table.Th />
+              <Table.Th style={{ minWidth: '5rem' }}>
+                {t('game.label.cheat_info.submit_team')}
+              </Table.Th>
+              <Table.Th style={{ minWidth: '5rem' }}>
+                {t('game.label.cheat_info.submit_user')}
+              </Table.Th>
+              <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+              <Table.Th className={cx(classes.mono)}>{t('common.label.flag')}</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </ScrollArea>
     </Paper>

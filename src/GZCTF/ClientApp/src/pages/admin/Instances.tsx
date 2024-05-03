@@ -208,24 +208,24 @@ const Instances: FC = () => {
       <Paper shadow="md" p="xs" w="100%">
         <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 205px)">
           <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th>{t('common.label.team')}</th>
-                <th>{t('common.label.challenge')}</th>
-                <th>{t('admin.label.instances.life_cycle')}</th>
-                <th>{t('admin.label.instances.container_id')}</th>
-                <th>{t('admin.label.instances.entry')}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>{t('common.label.team')}</Table.Th>
+                <Table.Th>{t('common.label.challenge')}</Table.Th>
+                <Table.Th>{t('admin.label.instances.life_cycle')}</Table.Th>
+                <Table.Th>{t('admin.label.instances.container_id')}</Table.Th>
+                <Table.Th>{t('admin.label.instances.entry')}</Table.Th>
+                <Table.Th />
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {filteredInstances &&
                 filteredInstances.map((inst) => {
                   const color = challengeTagLabelMap.get(
                     inst.challenge?.tag ?? ChallengeTag.Misc
                   )!.color
                   return (
-                    <tr key={inst.containerGuid}>
+                    <Table.Tr key={inst.containerGuid}>
                       <td>
                         <Box w="100%" h="100%">
                           <Input
@@ -349,10 +349,10 @@ const Instances: FC = () => {
                           />
                         </Group>
                       </td>
-                    </tr>
+                    </Table.Tr>
                   )
                 })}
-            </tbody>
+            </Table.Tbody>
           </Table>
         </ScrollArea>
         <Text size="xs" c="dimmed">

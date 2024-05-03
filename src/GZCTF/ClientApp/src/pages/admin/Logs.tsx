@@ -129,7 +129,7 @@ const Logs: FC = () => {
   const rows = [...(activePage === 1 ? newLogs.current : []), ...(logs ?? [])]
     .filter((item) => item.level === level)
     .map((item, i) => (
-      <tr
+      <Table.Tr
         key={`${item.time}@${i}`}
         className={
           i === 0 &&
@@ -174,7 +174,7 @@ const Logs: FC = () => {
             {item.status}
           </Badge>
         </td>
-      </tr>
+      </Table.Tr>
     ))
 
   return (
@@ -226,16 +226,16 @@ const Logs: FC = () => {
           h="calc(100vh - 190px)"
         >
           <Table className={cx(classes.table, noPaddingClasses.table)}>
-            <thead>
-              <tr>
-                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
-                <th style={{ width: '10rem' }}>{t('common.label.ip')}</th>
-                <th style={{ width: '6rem' }}>{t('common.label.user')}</th>
-                <th>{t('admin.label.logs.message')}</th>
-                <th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
+                <Table.Th style={{ width: '10rem' }}>{t('common.label.ip')}</Table.Th>
+                <Table.Th style={{ width: '6rem' }}>{t('common.label.user')}</Table.Th>
+                <Table.Th>{t('admin.label.logs.message')}</Table.Th>
+                <Table.Th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </ScrollArea>
       </Paper>

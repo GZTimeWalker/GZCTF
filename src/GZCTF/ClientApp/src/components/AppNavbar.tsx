@@ -81,10 +81,6 @@ const useStyles = createStyles((theme, _, u) => {
         color: theme.colors.light[0],
       },
     },
-
-    menuBody: {
-      left: 100,
-    },
   }
 })
 
@@ -167,7 +163,7 @@ const AppNavbar: FC = () => {
   return (
     // <AppShell.Navbar width={{ xs: 70, base: 0 }} p="md" className={classes.navbar}>
     // TODO: AppShell style
-    <AppShell.Navbar>
+    <AppShell.Navbar className={classes.navbar}>
       {/* Logo */}
       <AppShell.Section grow>
         <Center>
@@ -180,7 +176,7 @@ const AppNavbar: FC = () => {
       </AppShell.Section>
 
       {/* Common Nav */}
-      <AppShell.Section grow mb={20} mt={20} style={{ display: 'flex', alignItems: 'center' }}>
+      <AppShell.Section grow mb={20} mt={20} display="flex" style={{ alignItems: 'center' }}>
         <Stack align="center" gap={5}>
           {links}
         </Stack>
@@ -188,7 +184,8 @@ const AppNavbar: FC = () => {
 
       <AppShell.Section
         grow
-        style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
+        display="flex"
+        style={{ flexDirection: 'column', justifyContent: 'end' }}
       >
         <Stack align="center" gap={5}>
           {/* Language */}

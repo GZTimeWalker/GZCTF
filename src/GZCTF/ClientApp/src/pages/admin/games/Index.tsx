@@ -122,23 +122,23 @@ const Games: FC = () => {
       <Paper shadow="md" p="md" w="100%">
         <ScrollArea offsetScrollbars h="calc(100vh - 190px)">
           <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th>{t('admin.label.games.public')}</th>
-                <th>{t('common.label.game')}</th>
-                <th>{t('common.label.time')}</th>
-                <th>{t('admin.label.games.summary')}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>{t('admin.label.games.public')}</Table.Th>
+                <Table.Th>{t('common.label.game')}</Table.Th>
+                <Table.Th>{t('common.label.time')}</Table.Th>
+                <Table.Th>{t('admin.label.games.summary')}</Table.Th>
+                <Table.Th />
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {games &&
                 games.map((game) => {
                   const { startTime, endTime, status } = getGameStatus(game)
                   const color = GameColorMap.get(status)
 
                   return (
-                    <tr key={game.id}>
+                    <Table.Tr key={game.id}>
                       <td>
                         <Switch
                           disabled={disabled}
@@ -191,10 +191,10 @@ const Games: FC = () => {
                           </ActionIcon>
                         </Group>
                       </td>
-                    </tr>
+                    </Table.Tr>
                   )
                 })}
-            </tbody>
+            </Table.Tbody>
           </Table>
         </ScrollArea>
       </Paper>

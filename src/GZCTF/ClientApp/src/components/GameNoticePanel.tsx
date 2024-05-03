@@ -187,7 +187,7 @@ const GameNoticePanel: FC = () => {
             <List
               size="sm"
               spacing={3}
-              styles={(theme, _, u) => ({
+              sx={(theme, u) => ({
                 item: {
                   fontWeight: 500,
 

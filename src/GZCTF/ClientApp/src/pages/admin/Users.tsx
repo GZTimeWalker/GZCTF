@@ -241,21 +241,21 @@ const Users: FC = () => {
       <Paper shadow="md" p="xs" w="100%">
         <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
           <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th style={{ width: '1.8rem' }}>{t('admin.label.users.active')}</th>
-                <th>{t('common.label.user')}</th>
-                <th>{t('account.label.email')}</th>
-                <th>{t('common.label.ip')}</th>
-                <th>{t('account.label.real_name')}</th>
-                <th>{t('account.label.student_id')}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ width: '1.8rem' }}>{t('admin.label.users.active')}</Table.Th>
+                <Table.Th>{t('common.label.user')}</Table.Th>
+                <Table.Th>{t('account.label.email')}</Table.Th>
+                <Table.Th>{t('common.label.ip')}</Table.Th>
+                <Table.Th>{t('account.label.real_name')}</Table.Th>
+                <Table.Th>{t('account.label.student_id')}</Table.Th>
+                <Table.Th />
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {users &&
                 users.map((user) => (
-                  <tr key={user.id}>
+                  <Table.Tr key={user.id}>
                     <td>
                       <Switch
                         disabled={disabled}
@@ -325,9 +325,9 @@ const Users: FC = () => {
                         />
                       </Group>
                     </td>
-                  </tr>
+                  </Table.Tr>
                 ))}
-            </tbody>
+            </Table.Tbody>
           </Table>
         </ScrollArea>
         <UserEditModal

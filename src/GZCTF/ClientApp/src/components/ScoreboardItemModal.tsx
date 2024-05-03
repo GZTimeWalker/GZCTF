@@ -131,16 +131,16 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
         {item?.solvedCount && item?.solvedCount > 0 ? (
           <ScrollArea scrollbarSize={6} h="12rem" w="100%">
             <Table className={classes.table}>
-              <thead>
-                <tr>
-                  <th>{t('common.label.user')}</th>
-                  <th>{t('common.label.challenge')}</th>
-                  <th>{t('game.label.score_table.type')}</th>
-                  <th>{t('game.label.score_table.score')}</th>
-                  <th>{t('common.label.time')}</th>
-                </tr>
-              </thead>
-              <tbody>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>{t('common.label.user')}</Table.Th>
+                  <Table.Th>{t('common.label.challenge')}</Table.Th>
+                  <Table.Th>{t('game.label.score_table.type')}</Table.Th>
+                  <Table.Th>{t('game.label.score_table.score')}</Table.Th>
+                  <Table.Th>{t('common.label.time')}</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {item?.challenges &&
                   challengeIdMap &&
                   item.challenges
@@ -149,7 +149,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)
                       return (
-                        <tr key={chal.id}>
+                        <Table.Tr key={chal.id}>
                           <td style={{ fontWeight: 500 }}>{chal.userName}</td>
                           <td>{info?.title}</td>
                           <td className={classes.mono}>{info?.tag}</td>
@@ -166,10 +166,10 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                           <td className={classes.mono}>
                             {dayjs(chal.time).format('MM/DD HH:mm:ss')}
                           </td>
-                        </tr>
+                        </Table.Tr>
                       )
                     })}
-              </tbody>
+              </Table.Tbody>
             </Table>
           </ScrollArea>
         ) : (

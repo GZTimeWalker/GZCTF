@@ -73,8 +73,19 @@ export const useScoreboardStyles = createStyles((theme, _, u) => ({
     float: 'left',
     zIndex: 20,
   },
-  noBorder: {
-    border: 'none !important',
+  text: {
+    fontSize: '0.9em',
+    fontFamily: theme.fontFamilyMonospace,
+    fontWeight: 600,
+  },
+  inputWapper: {
+    width: '100%',
+  },
+  input: {
+    userSelect: 'none',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
 }))
 
@@ -92,26 +103,32 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const hiddenCol = [...Array(5).keys()].map((i) => (
-    <th
+    <Table.Th
       key={i}
-      className={cx(classes.theadFixLeft, classes.noBorder)}
-      style={{ left: Lefts[i], width: Widths[i], minWidth: Widths[i], maxWidth: Widths[i] }}
+      className={classes.theadFixLeft}
+      style={{
+        left: Lefts[i],
+        width: Widths[i],
+        minWidth: Widths[i],
+        maxWidth: Widths[i],
+      }}
     >
       &nbsp;
-    </th>
+    </Table.Th>
   ))
 
   return (
-    <thead className={classes.thead}>
+    <Table.Thead className={classes.thead}>
       {/* Challenge Tag */}
-      <tr>
+      <Table.Tr style={{ border: 'none' }}>
         {hiddenCol}
         {Object.keys(table).map((key) => {
           const tag = challengeTagLabelMap.get(key as ChallengeTag)!
           return (
-            <th
+            <Table.Th
               key={key}
               colSpan={table[key].length}
+              h="3rem"
               style={{
                 backgroundColor: alpha(
                   theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6],
@@ -125,21 +142,23 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
                   size={1}
                   color={theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6]}
                 />
-                <Text c={tag.color}>{key}</Text>
+                <Text c={tag.color} className={classes.text} fz="sm">
+                  {key}
+                </Text>
               </Group>
-            </th>
+            </Table.Th>
           )
         })}
-      </tr>
+      </Table.Tr>
       {/* Challenge Name */}
-      <tr>
+      <Table.Tr>
         {hiddenCol}
         {Object.keys(table).map((key) =>
-          table[key].map((item) => <th key={item.id}>{item.title}</th>)
+          table[key].map((item) => <Table.Th key={item.id}>{item.title}</Table.Th>)
         )}
-      </tr>
+      </Table.Tr>
       {/* Headers & Score */}
-      <tr>
+      <Table.Tr>
         {[
           t('game.label.score_table.rank_total'),
           t('game.label.score_table.rank_organization'),
@@ -147,23 +166,23 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
           t('game.label.score_table.solved_count'),
           t('game.label.score_table.score_total'),
         ].map((header, idx) => (
-          <th
+          <Table.Th
             key={idx}
             className={cx(classes.theadFixLeft, classes.theadHeader)}
             style={{ left: Lefts[idx] }}
           >
             {header}
-          </th>
+          </Table.Th>
         ))}
         {Object.keys(table).map((key) =>
           table[key].map((item) => (
-            <th key={item.id} className={classes.theadMono}>
+            <Table.Th key={item.id} className={classes.theadMono}>
               {item.score}
-            </th>
+            </Table.Th>
           ))
         )}
-      </tr>
-    </thead>
+      </Table.Tr>
+    </Table.Thead>
   )
 }
 
@@ -181,14 +200,14 @@ const TableRow: FC<{
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
 
   return (
-    <tr>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
+    <Table.Tr>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
         {item.rank}
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[1] }}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[1] }}>
         {allRank ? item.rank : item.organizationRank ?? tableRank}
-      </td>
-      <td className={cx(classes.theadFixLeft)} style={{ left: Lefts[2] }}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadFixLeft)} style={{ left: Lefts[2] }}>
         <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
             alt="avatar"
@@ -209,55 +228,40 @@ const TableRow: FC<{
             value={item.name}
             readOnly
             size="sm"
-            style={{
-              wrapper: {
-                width: '100%',
-              },
-
-              input: {
-                userSelect: 'none',
-
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-              },
-            }}
+            classNames={{ wrapper: classes.inputWapper, input: classes.input }}
           />
         </Group>
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
         {solved?.length}
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[4] }}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[4] }}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
-      </td>
+      </Table.Td>
       {challenges &&
         Object.keys(challenges).map((key) =>
           challenges[key].map((item) => {
             const chal = solved?.find((c) => c.id === item.id)
             const icon = iconMap.get(chal?.type ?? SubmissionType.Unaccepted)
 
-            if (!icon) return <td key={item.id} className={classes.theadMono} />
+            if (!icon) return <Table.Td key={item.id} className={classes.theadMono} />
 
             const tag = challengeTagLabelMap.get(item.tag as ChallengeTag)!
-            const textStyle = {
-              fontSize: '0.9em',
-              fontFamily: theme.fontFamilyMonospace,
-              fontWeight: 600,
-            }
 
             return (
-              <td key={item.id} className={classes.theadMono}>
+              <Table.Td key={item.id} className={classes.theadMono}>
                 <Tooltip
                   classNames={tooltipClasses}
                   transitionProps={{ transition: 'pop' }}
                   label={
                     <Stack align="flex-start" gap={0} maw="20rem">
-                      <Text lineClamp={3}>{item.title}</Text>
-                      <Text c={tag.color} style={textStyle}>
+                      <Text lineClamp={3} fz="xs" className={classes.text}>
+                        {item.title}
+                      </Text>
+                      <Text c={tag.color} fz="xs" className={classes.text}>
                         + {chal?.score} pts
                       </Text>
-                      <Text c="dimmed" style={textStyle}>
+                      <Text c="dimmed" fz="xs" className={classes.text}>
                         # {dayjs(chal?.time).format('MM/DD HH:mm:ss')}
                       </Text>
                     </Stack>
@@ -265,11 +269,11 @@ const TableRow: FC<{
                 >
                   <Center>{icon}</Center>
                 </Tooltip>
-              </td>
+              </Table.Td>
             )
           })
         )}
-    </tr>
+    </Table.Tr>
   )
 }
 
@@ -341,18 +345,10 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           </Group>
         )}
         <Box pos="relative">
-          <Box
-            maw="100%"
-            sx={{
-              overflow: 'scroll',
-              '::-webkit-scrollbar': {
-                height: 0,
-              },
-            }}
-          >
+          <Table.ScrollContainer minWidth="100%">
             <Table className={classes.table}>
               <TableHeader {...scoreboard?.challenges} />
-              <tbody>
+              <Table.Tbody>
                 {scoreboard &&
                   currentItems?.map((item, idx) => (
                     <TableRow
@@ -368,9 +364,9 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                       iconMap={iconMap}
                     />
                   ))}
-              </tbody>
+              </Table.Tbody>
             </Table>
-          </Box>
+          </Table.ScrollContainer>
 
           <Box className={classes.legend}>
             <Stack gap="xs">

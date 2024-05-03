@@ -12,6 +12,7 @@ import AppHeader from '@Components/AppHeader'
 import AppNavbar from '@Components/AppNavbar'
 import Watermark from '@Components/Watermark'
 import WithWiderScreen from '@Components/WithWiderScreen'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { useUser } from '@Utils/useUser'
 
 interface WithNavBarProps extends React.PropsWithChildren {
@@ -31,6 +32,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const { user } = useUser()
+  const isMobile = useIsMobile()
 
   return (
     <WithWiderScreen minWidth={minWidth}>
@@ -49,10 +51,18 @@ const WithNavBar: FC<WithNavBarProps> = ({
               overflow: 'hidden',
             },
           }}
+          header={{ height: 60, collapsed: !isMobile }}
+          navbar={{
+            width: 60,
+            breakpoint: 'sm',
+            collapsed: {
+              mobile: true,
+            },
+          }}
         >
-          <AppNavbar />
           <AppHeader />
-          <AppShell.Main>
+          <AppNavbar />
+          <AppShell.Main w="100%">
             <Stack
               w="100%"
               mih="100vh"
@@ -72,14 +82,10 @@ const WithNavBar: FC<WithNavBarProps> = ({
                 c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
               />
               <Box
-                sx={(_, u) => ({
-                  width: width ?? '80%',
+                w={width ?? (isMobile ? '97%' : '80%')}
+                style={{
                   zIndex: 20,
-
-                  [u.smallerThan('xs')]: {
-                    width: '97%',
-                  },
-                })}
+                }}
               >
                 {children}
               </Box>

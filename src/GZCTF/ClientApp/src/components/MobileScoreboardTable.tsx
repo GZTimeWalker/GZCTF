@@ -15,7 +15,7 @@ const TableRow: FC<{
   const { classes, cx } = useScoreboardStyles()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
-    <tr>
+    <Table.Tr>
       <td className={cx(classes.theadMono, classes.theadFixLeft)}>{item.rank}</td>
       <td className={cx(classes.theadFixLeft)}>
         <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
@@ -57,7 +57,7 @@ const TableRow: FC<{
       <td className={cx(classes.theadMono, classes.theadFixLeft)}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
       </td>
-    </tr>
+    </Table.Tr>
   )
 }
 
@@ -126,20 +126,20 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             }}
           >
             <Table className={classes.table}>
-              <thead className={classes.thead}>
-                <tr>
+              <Table.Thead className={classes.thead}>
+                <Table.Tr>
                   {[
                     t('game.label.score_table.rank_total'),
                     t('game.label.score_table.team'),
                     t('game.label.score_table.score_total'),
                   ].map((header, idx) => (
-                    <th key={idx} className={cx(classes.theadFixLeft, classes.theadHeader)}>
+                    <Table.Th key={idx} className={cx(classes.theadFixLeft, classes.theadHeader)}>
                       {header}
-                    </th>
+                    </Table.Th>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {scoreboard &&
                   currentItems?.map((item, idx) => (
                     <TableRow
@@ -151,7 +151,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
                       }}
                     />
                   ))}
-              </tbody>
+              </Table.Tbody>
             </Table>
           </Box>
         </Box>
