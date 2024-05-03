@@ -12,7 +12,7 @@ const AppFooter: FC = () => {
   const { classes: logoClasses } = useLogoStyles()
 
   const copyright = (
-    <Text size="xs" align="center" fw={500} color="dimmed" ff={theme.fontFamilyMonospace}>
+    <Text size="xs" ta="center" fw={500} c="dimmed" ff={theme.fontFamilyMonospace}>
       Copyright&nbsp;©&nbsp;2022-now&nbsp;
       {isMobile && <br />}
       <Anchor
@@ -37,7 +37,7 @@ const AppFooter: FC = () => {
             <Stack w="100%" align="center" gap={2}>
               <MainIcon style={{ maxWidth: isMobile ? 45 : 50, height: 'auto' }} />
 
-              <Text fw="bold" size={isMobile ? 28 : 36}>
+              <Text fw="bold" fs={isMobile ? '28pt' : '36pt'}>
                 GZ<span className={logoClasses.brand}>::</span>CTF
               </Text>
             </Stack>

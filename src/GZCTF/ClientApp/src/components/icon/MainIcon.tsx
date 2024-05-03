@@ -1,18 +1,12 @@
-import { createStyles } from '@mantine/core'
 import { FC, SVGProps } from 'react'
-
-const useStyles = createStyles((theme) => ({
-  triangle: {
-    fill: colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
-  },
-}))
+import { useIconStyles } from '@Utils/ThemeOverride'
 
 interface MainIconProps extends SVGProps<SVGSVGElement> {
   ignoreTheme?: boolean
 }
 
 const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
-  const { classes, cx } = useStyles()
+  const { classes, cx } = useIconStyles()
   const { ignoreTheme, ...svgProps } = props
 
   return (

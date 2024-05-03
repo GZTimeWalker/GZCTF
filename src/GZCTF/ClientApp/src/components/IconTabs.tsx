@@ -1,12 +1,5 @@
-import {
-  Box,
-  createStyles,
-  getStylesRef,
-  Group,
-  GroupPosition,
-  GroupProps,
-  MantineColor,
-} from '@mantine/core'
+import { Box, Group, GroupProps, MantineColor } from '@mantine/core'
+import { createStyles, getStylesRef } from '@mantine/emotion'
 import { clamp } from '@mantine/hooks'
 import React, { FC, useEffect, useState } from 'react'
 import LogoHeader from '@Components/LogoHeader'
@@ -23,7 +16,7 @@ interface TabProps {
 }
 
 interface IconTabsProps extends GroupProps {
-  position?: GroupPosition
+  position?: React.CSSProperties['justifyContent']
   tabs: TabProps[]
   grow?: boolean
   active?: number
@@ -32,16 +25,16 @@ interface IconTabsProps extends GroupProps {
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
-const useTabStyle = createStyles((theme, props: TabStyleProps) => {
+const useTabStyle = createStyles((theme, props: TabStyleProps, u) => {
   const activeTab = { ref: getStylesRef('activeTab') } as const
-  const color = props.color ?? 'brand'
+  const _color = props.color ?? 'brand'
 
   return {
     activeTab,
     default: {
       transition: 'border-color 100ms ease, color 100ms ease, background 100ms ease',
       borderRadius: theme.radius.sm,
-      color: colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
+      // color: colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
       fontSize: theme.fontSizes.sm,
       height: 'auto',
       padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
@@ -52,22 +45,56 @@ const useTabStyle = createStyles((theme, props: TabStyleProps) => {
       display: 'block',
       backgroundColor: 'transparent',
 
-      [theme.fn.smallerThan('xs')]: {
+      [u.smallerThan('xs')]: {
         padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+      },
+
+      [u.dark]: {
+        color: theme.colors.dark[1],
+      },
+
+      [u.light]: {
+        color: theme.colors.gray[7],
       },
 
       '&:disabled': {
         cursor: 'not-allowed',
-        color: colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5],
+        // color: colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5],
+
+        [u.dark]: {
+          color: theme.colors.dark[3],
+        },
+
+        [u.light]: {
+          color: theme.colors.gray[5],
+        },
       },
 
       '&:hover': {
-        background: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+        // background: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+
+        [u.dark]: {
+          backgroundColor: theme.colors.dark[6],
+        },
+
+        [u.light]: {
+          backgroundColor: theme.colors.gray[0],
+        },
       },
 
       [`&.${activeTab.ref}`]: {
-        color: theme.fn.themeColor(color as string, colorScheme === 'dark' ? 4 : 6),
-        background: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+        // color: theme.fn.themeColor(color as string, colorScheme === 'dark' ? 4 : 6),
+        // background: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+
+        [u.dark]: {
+          backgroundColor: theme.colors.dark[7],
+          color: theme.colors[_color][4],
+        },
+
+        [u.light]: {
+          backgroundColor: theme.white,
+          color: theme.colors[_color][6],
+        },
       },
     },
     tabInner: {
@@ -78,7 +105,7 @@ const useTabStyle = createStyles((theme, props: TabStyleProps) => {
       lineHeight: 1,
       height: '100%',
 
-      [theme.fn.smallerThan('xs')]: {
+      [u.smallerThan('xs')]: {
         flexDirection: 'column',
         gap: theme.spacing.md,
       },
@@ -147,8 +174,8 @@ const IconTabs: FC<IconTabsProps> = (props) => {
       {aside}
       {withIcon && (
         <LogoHeader
-          sx={(theme) => ({
-            [theme.fn.smallerThan('xs')]: {
+          sx={(_, u) => ({
+            [u.smallerThan('xs')]: {
               display: 'none',
             },
           })}
@@ -158,8 +185,8 @@ const IconTabs: FC<IconTabsProps> = (props) => {
         justify="right"
         wrap="nowrap"
         gap={5}
-        sx={(theme) => ({
-          [theme.fn.smallerThan('xs')]: {
+        sx={(_, u) => ({
+          [u.smallerThan('xs')]: {
             width: '100%',
             justifyContent: 'space-around',
           },

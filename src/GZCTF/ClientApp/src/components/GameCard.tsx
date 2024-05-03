@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
@@ -36,7 +37,7 @@ interface GameCardProps {
 
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
-
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const { summary, title, poster, limit } = game
@@ -84,7 +85,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
                     })}
                   </Badge>
                 </Group>
-                <Title order={2} align="left">
+                <Title order={2} ta="left">
                   {title}
                 </Title>
               </Stack>

@@ -2,17 +2,17 @@ import {
   ActionIcon,
   Button,
   Input,
+  InputWrapperProps,
   ScrollArea,
   Stack,
   TextInput,
-  TextInputProps,
 } from '@mantine/core'
 import { mdiClose, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 
-interface HintListProps extends TextInputProps {
+interface HintListProps extends InputWrapperProps {
   hints: string[]
   onChangeHint: (value: string[]) => void
   disabled?: boolean

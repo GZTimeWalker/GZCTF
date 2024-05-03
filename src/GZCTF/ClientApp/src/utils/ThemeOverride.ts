@@ -213,6 +213,18 @@ export const useFixedButtonStyles = createStyles((theme, { right, bottom }: Fixe
   },
 }))
 
+export const useIconStyles = createStyles((theme, _, u) => ({
+  triangle: {
+    [u.dark]: {
+      fill: theme.white,
+    },
+
+    [u.light]: {
+      fill: theme.colors.gray[6],
+    },
+  },
+}))
+
 export const useBannerStyles = createStyles((theme, _, u) => ({
   root: {
     position: 'relative',

@@ -133,7 +133,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
           <ScrollArea scrollbarSize={6} h="12rem" w="100%">
             <Table
               className={classes.table}
-              styles={{
+              style={{
                 fontSize: '0.85rem',
               }}
             >
@@ -160,7 +160,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                               value={info?.title}
                               readOnly
                               size="sm"
-                              sx={(theme) => ({
+                              sx={{
                                 wrapper: {
                                   width: '100%',
                                 },
@@ -172,11 +172,11 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                                   height: '0.9rem',
                                   fontWeight: 500,
 
-                                  ...theme.fn.hover({
-                                    cursor: 'pointer',
-                                  }),
+                                  '&:hover': {
+                                    textDecoration: 'underline',
+                                  },
                                 },
-                              })}
+                              }}
                             />
                           </td>
                           <td className={classes.mono}>{chal.score}</td>

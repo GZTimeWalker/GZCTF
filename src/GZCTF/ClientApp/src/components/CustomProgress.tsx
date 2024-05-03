@@ -1,4 +1,5 @@
-import { BoxProps, Center, createStyles, Group, keyframes, MantineColor } from '@mantine/core'
+import { BoxProps, Center, Group, MantineColor, alpha, useMantineColorScheme } from '@mantine/core'
+import { createStyles, keyframes } from '@mantine/emotion'
 import { FC } from 'react'
 
 export interface CustomProgressProps extends BoxProps {
@@ -9,10 +10,10 @@ export interface CustomProgressProps extends BoxProps {
 }
 
 export const useStyles = createStyles(
-  (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps) => {
+  (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps, u) => {
+    const { colorScheme } = useMantineColorScheme()
     const _color = percentage < 100 ? (colorScheme === 'dark' ? 'white' : color ?? 'brand') : 'gray'
     const spikeColor = alpha(theme.colors[_color][5], 0.75)
-    const barColor = colorScheme === 'dark' ? theme.colors.light[9] : theme.colors[_color][2]
     const spikeLengthStr = `${spikeLength}%`
     const negSpikeLengthStr = `-${spikeLength}%`
     const pulsing = percentage < 100
@@ -23,7 +24,6 @@ export const useStyles = createStyles(
         position: 'relative',
         height: '100%',
         aspectRatio: '1 / 1',
-        backgroundColor: colorScheme === 'dark' ? theme.colors.light[0] : theme.colors[_color][5],
 
         '& div': {
           animation: `${keyframes`0% {
@@ -32,6 +32,14 @@ export const useStyles = createStyles(
                                     100% {
                                       opacity: 1;
                                     }`} 2s linear 0s infinite alternate`,
+        },
+
+        [u.dark]: {
+          backgroundColor: theme.colors.light[0],
+        },
+
+        [u.light]: {
+          backgroundColor: theme.colors[_color][5],
         },
       },
       progressPulseContainer: {
@@ -62,17 +70,28 @@ export const useStyles = createStyles(
         height: '100%',
         width: `${percentage}%`,
         minWidth: thickness,
-        backgroundColor: alpha(barColor, 0.7),
+
+        [u.dark]: {
+          backgroundColor: alpha(theme.colors.light[9], 0.7),
+        },
+
+        [u.light]: {
+          backgroundColor: alpha(theme.colors[_color][2], 0.7),
+        },
       },
       progressBackground: {
         display: 'flex',
         alignItems: 'center',
         height: thickness,
         width: '100%',
-        backgroundColor: alpha(
-          colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.light[4],
-          0.8
-        ),
+
+        [u.dark]: {
+          backgroundColor: alpha(theme.colors.gray[6], 0.8),
+        },
+
+        [u.light]: {
+          backgroundColor: alpha(theme.colors.light[4], 0.8),
+        },
       },
       spike: {
         position: 'absolute',

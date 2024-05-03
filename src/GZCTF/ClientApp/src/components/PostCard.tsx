@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
@@ -31,7 +32,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const navigate = useNavigate()
   const { role } = useUserRole()
   const [disabled, setDisabled] = useState(false)
-
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   return (
@@ -51,7 +52,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
                 })}
               </Text>
             </Group>
-            <Text align="right">
+            <Text ta="right">
               <Anchor component={Link} to={`/posts/${post.id}`}>
                 <Text span fw={500} size="sm">
                   {t('post.content.details')} &gt;&gt;&gt;

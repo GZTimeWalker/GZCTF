@@ -174,7 +174,7 @@ const GameNoticePanel: FC = () => {
               background: 'transparent',
             },
           }}
-          onChange={(value: NoticeFilter) => setFilter(value)}
+          onChange={(value) => setFilter(value as NoticeFilter)}
           data={[
             { value: NoticeFilter.All, label: t('game.label.notice_type.all') },
             { value: NoticeFilter.Game, label: t('game.label.notice_type.game') },
@@ -186,11 +186,18 @@ const GameNoticePanel: FC = () => {
           <ScrollArea offsetScrollbars scrollbarSize={0} h="calc(100vh - 25rem)">
             <List
               size="sm"
-              gap={3}
-              styles={(theme) => ({
+              spacing={3}
+              styles={(theme, _, u) => ({
                 item: {
                   fontWeight: 500,
-                  color: colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
+
+                  [u.dark]: {
+                    color: theme.colors.dark[2],
+                  },
+
+                  [u.light]: {
+                    color: theme.colors.gray[6],
+                  },
                 },
               })}
             >

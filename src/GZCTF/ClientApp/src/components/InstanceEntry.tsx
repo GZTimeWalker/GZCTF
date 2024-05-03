@@ -186,7 +186,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             </Text>
           )
         }
-        icon={<Icon path={mdiServerNetwork} size={1} />}
+        leftSection={<Icon path={mdiServerNetwork} size={1} />}
         value={copyEntry}
         readOnly
         styles={{
