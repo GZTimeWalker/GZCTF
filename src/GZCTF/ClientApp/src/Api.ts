@@ -3439,6 +3439,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 更新全部比赛题目解出数量，需要管理员权限
+     *
+     * @tags Edit
+     * @name EditUpdateGameChallengesAcceptedCount
+     * @summary 更新全部比赛题目解出数量
+     * @request POST:/api/edit/games/{id}/challenges/updateaccepted
+     */
+    editUpdateGameChallengesAcceptedCount: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/updateaccepted`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
      * @description 更新比赛通知，需要管理员权限
      *
      * @tags Edit

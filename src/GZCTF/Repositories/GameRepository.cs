@@ -165,7 +165,8 @@ public class GameRepository(
             .Where(i => i.Challenge.Game == game
                         && i.Challenge.IsEnabled
                         && i.Participation.Status == ParticipationStatus.Accepted)
-            .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
+            .Include(i => i.Participation)
+            .ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
                 Context.Submissions.Where(s => s.Status == AnswerResult.Accepted
                                                && s.SubmitTimeUtc < game.EndTimeUtc),

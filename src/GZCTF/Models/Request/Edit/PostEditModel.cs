@@ -12,7 +12,7 @@ public class PostEditModel
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MaxLength(Post.MaxTitleLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooLong),
+    [MaxLength(Limits.MaxPostTitleLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 

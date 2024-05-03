@@ -41,7 +41,7 @@ public class KubernetesManager : IContainerManager
             return null;
         }
 
-        var name = $"{imageName.ToValidRFC1123String("chal")}-{Guid.NewGuid().ToString("N")[..16]}";
+        var name = $"{imageName.ToValidRFC1123String("chal")}-{Ulid.NewUlid().ToString().ToLowerInvariant()}";
 
         var pod = new V1Pod("v1", "Pod")
         {

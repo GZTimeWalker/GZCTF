@@ -12,6 +12,12 @@ namespace GZCTF.Models.Data;
 public partial class UserInfo : IdentityUser<Guid>
 {
     /// <summary>
+    /// Override Guid to use Ulid
+    /// </summary>
+    [PersonalData]
+    public override Guid Id { get; set; } = Ulid.NewUlid().ToGuid();
+
+    /// <summary>
     /// 用户角色
     /// </summary>
     [ProtectedPersonalData]
@@ -20,6 +26,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// 用户最近访问IP
     /// </summary>
+    [MaxLength(Limits.MaxIPLength)]
     [ProtectedPersonalData]
     public string IP { get; set; } = "0.0.0.0";
 
