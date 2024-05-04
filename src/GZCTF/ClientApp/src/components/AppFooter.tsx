@@ -20,7 +20,7 @@ const AppFooter: FC = () => {
         c="dimmed"
         size="sm"
         fw={500}
-        sx={{ lineHeight: 1 }}
+        style={{ lineHeight: 1 }}
       >
         @GZTimeWalker
       </Anchor>
@@ -35,9 +35,8 @@ const AppFooter: FC = () => {
         <Center mx="auto" h="100%">
           <Stack gap="sm" w={isMobile ? '100%' : '80%'}>
             <Stack w="100%" align="center" gap={2}>
-              <MainIcon style={{ maxWidth: isMobile ? 45 : 50, height: 'auto' }} />
-
-              <Text fw="bold" fs={isMobile ? '28pt' : '36pt'}>
+              <MainIcon style={{ maxWidth: isMobile ? '3rem' : '4rem', height: 'auto' }} />
+              <Text fw="bold" size={isMobile ? '2rem' : '2.5rem'}>
                 GZ<span className={logoClasses.brand}>::</span>CTF
               </Text>
             </Stack>

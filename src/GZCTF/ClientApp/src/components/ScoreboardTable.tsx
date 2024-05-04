@@ -345,7 +345,15 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           </Group>
         )}
         <Box pos="relative">
-          <Table.ScrollContainer minWidth="100%">
+          <Table.ScrollContainer
+            minWidth="100%"
+            styles={{
+              scrollContainer: {
+                // Hide scrollbar (type = "never" for ScrollArea)
+                '--scrollarea-scrollbar-size': '0pt',
+              },
+            }}
+          >
             <Table className={classes.table}>
               <TableHeader {...scoreboard?.challenges} />
               <Table.Tbody>

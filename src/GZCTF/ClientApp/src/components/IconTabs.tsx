@@ -34,7 +34,6 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, u) => {
     default: {
       transition: 'border-color 100ms ease, color 100ms ease, background 100ms ease',
       borderRadius: theme.radius.sm,
-      // color: colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
       fontSize: theme.fontSizes.sm,
       height: 'auto',
       padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
@@ -59,7 +58,6 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, u) => {
 
       '&:disabled': {
         cursor: 'not-allowed',
-        // color: colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5],
 
         [u.dark]: {
           color: theme.colors.dark[3],
@@ -71,8 +69,6 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, u) => {
       },
 
       '&:hover': {
-        // background: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-
         [u.dark]: {
           backgroundColor: theme.colors.dark[6],
         },
@@ -83,9 +79,6 @@ const useTabStyle = createStyles((theme, props: TabStyleProps, u) => {
       },
 
       [`&.${activeTab.ref}`]: {
-        // color: theme.fn.themeColor(color as string, colorScheme === 'dark' ? 4 : 6),
-        // background: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-
         [u.dark]: {
           backgroundColor: theme.colors.dark[7],
           color: theme.colors[_color][4],

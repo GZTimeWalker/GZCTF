@@ -382,7 +382,6 @@ export const useAccordionStyles = createStyles((theme, _, u) => ({
   },
 
   item: {
-    // backgroundColor: colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     border: '1px solid rgba(0,0,0,0.2)',
     position: 'relative',
 
@@ -446,15 +445,12 @@ export const useFooterStyles = createStyles((theme, _, u) => ({
   },
 
   wrapper: {
-    // backgroundColor: colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.light[2],
     position: 'fixed',
     zIndex: 5,
     bottom: 0,
     left: 0,
     right: 0,
     height: FOOTER_HEIGHT,
-    // paddingRight: `calc(${theme.spacing.xl} * 3)`,
-    // paddingLeft: `calc(var(--mantine-navbar-width) + ${theme.spacing.xl} * 3)`,
 
     [u.smallerThan('md')]: {
       padding: `calc(${theme.spacing.xl})`,
