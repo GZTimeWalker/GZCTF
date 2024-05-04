@@ -203,7 +203,7 @@ export const useTooltipStyles = createStyles((theme, _, u) => ({
 
 export const useIsMobile = (limit?: number) => {
   const theme = useMantineTheme()
-  const isMobile = useMediaQuery(`(max-width: ${limit ? `${limit}px` : theme.breakpoints.xs})`)
+  const isMobile = useMediaQuery(`(max-width: ${limit ? `${limit}px` : theme.breakpoints.sm})`)
   return isMobile
 }
 
@@ -212,7 +212,7 @@ interface FixedButtonProps {
   bottom?: string
 }
 
-export const useFixedButtonStyles = createStyles((theme, { right, bottom }: FixedButtonProps) => ({
+export const useFixedButtonStyles = createStyles((_, { right, bottom }: FixedButtonProps) => ({
   fixedButton: {
     position: 'fixed',
     bottom,

@@ -1,3 +1,4 @@
+import '@mantine/carousel/styles.css'
 import { Center, Loader, MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
 import { emotionTransform, MantineEmotionProvider } from '@mantine/emotion'

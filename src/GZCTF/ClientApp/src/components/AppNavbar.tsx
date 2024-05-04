@@ -163,8 +163,6 @@ const AppNavbar: FC = () => {
     .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />)
 
   return (
-    // <AppShell.Navbar width={{ xs: 70, base: 0 }} p="md" className={classes.navbar}>
-    // TODO: AppShell style
     <AppShell.Navbar className={classes.navbar}>
       {/* Logo */}
       <AppShell.Section grow>

@@ -19,7 +19,7 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import StickyHeader from '@Components/StickyHeader'
+import IconHeader from '@Components/IconHeader'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiHelper'
@@ -159,7 +159,7 @@ const PostEdit: FC = () => {
   return (
     <WithNavBar minWidth={0}>
       <WithRole requiredRole={Role.Admin}>
-        <StickyHeader />
+        <IconHeader />
         <Stack mt={isMobile ? 5 : 30}>
           <Group justify={isMobile ? 'right' : 'space-between'}>
             {!isMobile && (

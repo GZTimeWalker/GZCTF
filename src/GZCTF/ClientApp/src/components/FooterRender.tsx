@@ -7,15 +7,14 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 
 const useFooterStyles = createStyles((theme, _, u) => {
   const cs = theme.colors
-  // TODO: dimmed color
-  const dimmed = theme.colors.gray[6]
+  const gray = cs.gray[6]
 
   return {
     root: {
       overflowX: 'auto',
       textAlign: 'center',
       fontSize: theme.fontSizes.sm,
-      color: dimmed,
+      color: gray,
 
       '& p': {
         wordBreak: 'break-word',
@@ -25,7 +24,7 @@ const useFooterStyles = createStyles((theme, _, u) => {
       },
 
       '& :not(pre) > code': {
-        color: dimmed,
+        color: gray,
         whiteSpace: 'normal',
         fontSize: '0.95em',
         backgroundColor: 'transparent',
@@ -34,7 +33,6 @@ const useFooterStyles = createStyles((theme, _, u) => {
       },
 
       '& strong': {
-        // color: cs.brand[sc(6, 7)],
         [u.dark]: {
           color: cs.brand[6],
         },
@@ -45,7 +43,7 @@ const useFooterStyles = createStyles((theme, _, u) => {
       },
 
       '& a': {
-        color: dimmed,
+        color: gray,
         textDecoration: 'none',
         transition: 'all 0.2s ease-in-out',
       },

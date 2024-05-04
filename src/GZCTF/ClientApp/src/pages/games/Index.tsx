@@ -2,7 +2,7 @@ import { Stack } from '@mantine/core'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import GameCard from '@Components/GameCard'
-import StickyHeader from '@Components/StickyHeader'
+import IconHeader from '@Components/IconHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
@@ -25,7 +25,7 @@ const Games: FC = () => {
 
   return (
     <WithNavBar>
-      <StickyHeader />
+      <IconHeader sticky/>
       <Stack pt="md">
         {games.map((g) => (
           <GameCard key={g.id} game={g} />

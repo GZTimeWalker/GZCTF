@@ -1,29 +1,33 @@
-import { Group, Text, Title } from '@mantine/core'
+import { Box, Group, Text, Title } from '@mantine/core'
 import { createStyles, keyframes } from '@mantine/emotion'
 import { FC } from 'react'
 import LogoHeader from '@Components/LogoHeader'
 import { useConfig } from '@Utils/useConfig'
+import { useIsMobile } from '@Utils/ThemeOverride'
 
-const useStyles = createStyles((theme, _, u) => ({
+interface StickyHeaderProps {
+  sticky?: boolean
+}
+
+const useStyles = createStyles((theme, { sticky }: StickyHeaderProps, u) => ({
   group: {
     width: '100%',
     top: 16,
     paddingBottom: 8,
-    position: 'sticky',
+    position: sticky ? 'sticky' : 'relative',
     zIndex: 50,
 
-    '::before': {
-      content: '""',
-      position: 'absolute',
-      top: -16,
-      right: 0,
-      left: 0,
-      paddingTop: 16,
-    },
-
-    [u.smallerThan('xs')]: {
-      display: 'none',
-    },
+    // only show before on sticky
+    ...(sticky && {
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: -16,
+        right: 0,
+        left: 0,
+        paddingTop: 16,
+      },
+    }),
   },
   blink: {
     animation: `${keyframes`0%, 100% {
@@ -34,8 +38,6 @@ const useStyles = createStyles((theme, _, u) => ({
                               }`} 1s infinite steps(1,start)`,
   },
   subtitle: {
-    fontFamily: theme.fontFamilyMonospace,
-
     [u.dark]: {
       color: theme.colors.gray[4],
     },
@@ -43,23 +45,22 @@ const useStyles = createStyles((theme, _, u) => ({
     [u.light]: {
       color: theme.colors.dark[4],
     },
-
-    [u.smallerThan(900)]: {
-      display: 'none',
-    },
   },
 }))
 
-const StickyHeader: FC = () => {
-  const { classes } = useStyles()
+const IconHeader: FC<StickyHeaderProps> = (props) => {
+  const { classes } = useStyles(props)
   const { config } = useConfig()
+  const isMobile = useIsMobile()
 
-  return (
+  return isMobile ? (
+    <Box h={8} />
+  ) : (
     <Group justify="space-between" align="flex-end" className={classes.group}>
       <LogoHeader />
-      <Title className={classes.subtitle} order={3}>
+      <Title className={classes.subtitle} order={3} ff="monospace">
         &gt; {config?.slogan ?? 'Hack for fun not for profit'}
-        <Text span className={classes.blink}>
+        <Text span ff="monospace" fw="bold" className={classes.blink}>
           _
         </Text>
       </Title>
@@ -67,4 +68,4 @@ const StickyHeader: FC = () => {
   )
 }
 
-export default StickyHeader
+export default IconHeader

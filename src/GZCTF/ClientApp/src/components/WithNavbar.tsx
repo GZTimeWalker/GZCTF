@@ -34,6 +34,8 @@ const WithNavBar: FC<WithNavBarProps> = ({
   const { user } = useUser()
   const isMobile = useIsMobile()
 
+  console.log('WithNavBar', { colorScheme, isMobile })
+
   return (
     <WithWiderScreen minWidth={minWidth}>
       <Watermark

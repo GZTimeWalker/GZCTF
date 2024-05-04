@@ -8,7 +8,7 @@ import MobilePostCard from '@Components/MobilePostCard'
 import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
 import RecentGameCarousel from '@Components/RecentGameCarousel'
-import StickyHeader from '@Components/StickyHeader'
+import IconHeader from '@Components/IconHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -103,7 +103,7 @@ const Home: FC = () => {
   return (
     <WithNavBar minWidth={0} withFooter>
       <Stack justify="flex-start">
-        <StickyHeader />
+        <IconHeader />
         {isMobile && recentGames && recentGames.length > 0 && (
           <RecentGameCarousel games={recentGames} />
         )}

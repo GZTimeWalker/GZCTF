@@ -5,7 +5,7 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import PostCard from '@Components/PostCard'
-import StickyHeader from '@Components/StickyHeader'
+import IconHeader from '@Components/IconHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiHelper'
@@ -61,7 +61,7 @@ const Posts: FC = () => {
   return (
     <WithNavBar isLoading={!posts} minWidth={0}>
       <Stack justify="space-between" mb="3rem">
-        <StickyHeader />
+        <IconHeader sticky/>
         <Stack>
           {posts
             ?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE)
