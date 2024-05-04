@@ -21,7 +21,7 @@ export const App: FC = () => {
   useBanner()
 
   const { t } = useTranslation()
-  const { language } = useLanguage()
+  const { locale } = useLanguage()
 
   return (
     <MantineProvider
@@ -34,7 +34,7 @@ export const App: FC = () => {
         <MantineProvider theme={CustomTheme}>
           <Notifications zIndex={5000} />
 
-          <DatesProvider settings={{ locale: language.split('_')[0] }}>
+          <DatesProvider settings={{ locale }}>
             <ModalsProvider
               labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
             >
