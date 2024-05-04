@@ -150,10 +150,10 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                       const info = challengeIdMap.get(chal.id!)
                       return (
                         <Table.Tr key={chal.id}>
-                          <td style={{ fontWeight: 500 }}>{chal.userName}</td>
-                          <td>{info?.title}</td>
-                          <td className={classes.mono}>{info?.tag}</td>
-                          <td className={classes.mono}>
+                          <Table.Td style={{ fontWeight: 500 }}>{chal.userName}</Table.Td>
+                          <Table.Td>{info?.title}</Table.Td>
+                          <Table.Td className={classes.mono}>{info?.tag}</Table.Td>
+                          <Table.Td className={classes.mono}>
                             {chal.score}
                             {chal.score! > info?.score! &&
                               chal.type &&
@@ -162,10 +162,10 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                                   {` (${bloodBonusMap.get(chal.type)?.descr})`}
                                 </Text>
                               )}
-                          </td>
-                          <td className={classes.mono}>
+                          </Table.Td>
+                          <Table.Td className={classes.mono}>
                             {dayjs(chal.time).format('MM/DD HH:mm:ss')}
-                          </td>
+                          </Table.Td>
                         </Table.Tr>
                       )
                     })}

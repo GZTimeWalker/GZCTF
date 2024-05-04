@@ -156,7 +156,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                       const info = challengeIdMap.get(chal.id!)
                       return (
                         <Table.Tr key={chal.id}>
-                          <td>
+                          <Table.Td>
                             <Input
                               variant="unstyled"
                               value={info?.title}
@@ -180,9 +180,11 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                                 },
                               }}
                             />
-                          </td>
-                          <td className={classes.mono}>{chal.score}</td>
-                          <td className={classes.mono}>{dayjs(chal.time).format('MM/DD HH:mm')}</td>
+                          </Table.Td>
+                          <Table.Td className={classes.mono}>{chal.score}</Table.Td>
+                          <Table.Td className={classes.mono}>
+                            {dayjs(chal.time).format('MM/DD HH:mm')}
+                          </Table.Td>
                         </Table.Tr>
                       )
                     })}

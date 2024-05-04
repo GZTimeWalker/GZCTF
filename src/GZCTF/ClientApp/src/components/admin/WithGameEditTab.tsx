@@ -79,7 +79,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
           >
             {t('admin.button.back')}
           </Button>
-          <Group wrap="nowrap" justify={contentPos ?? 'apart'} w="calc(100% - 10rem)">
+          <Group wrap="nowrap" justify={contentPos ?? 'space-between'} w="calc(100% - 10rem)">
             {head}
           </Group>
         </>

@@ -88,7 +88,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
     <Card onClick={onClick} radius="md" shadow="sm" className={classes.card}>
       <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
-          <Text lineClamp={1} fw="bold" truncate fz="lg">
+          <Text fw="bold" truncate fz="lg">
             {challenge.title}
           </Text>
           <Center miw="1.5em">{solved && <Icon path={mdiFlag} size={1} color={colorStr} />}</Center>

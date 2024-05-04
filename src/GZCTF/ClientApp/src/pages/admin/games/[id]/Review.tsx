@@ -189,15 +189,15 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               <Center w="6em">
                 <Badge color={part.color}>{part.title}</Badge>
               </Center>
+              <ParticipationStatusControl
+                disabled={disabled}
+                participateId={participation.id!}
+                status={participation.status!}
+                setParticipationStatus={setParticipationStatus}
+              />
             </Group>
           </Group>
         </Accordion.Control>
-        <ParticipationStatusControl
-          disabled={disabled}
-          participateId={participation.id!}
-          status={participation.status!}
-          setParticipationStatus={setParticipationStatus}
-        />
       </Box>
       <Accordion.Panel>
         <Stack>
@@ -309,8 +309,7 @@ const GameTeamReview: FC = () => {
                 clearable
                 data={orgs.map((org) => ({ value: org, label: org }))}
                 value={selectedOrg}
-                // TODO: fix select component
-                // onChange={(value: string) => setSelectedOrg(value)}
+                onChange={(value) => setSelectedOrg(value)}
               />
             )}
             <Select
@@ -318,8 +317,7 @@ const GameTeamReview: FC = () => {
               clearable
               data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
               value={selectedStatus}
-              // TODO: fix select component
-              // onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
+              onChange={(value) => setSelectedStatus(value as ParticipationStatus | null)}
             />
           </Group>
         </Group>

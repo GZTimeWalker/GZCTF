@@ -308,33 +308,33 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
     )
     .map((item, i) => (
       <Table.Tr key={`${item.submission?.time}@${i}`}>
-        <td className={cx(classes.mono)}>
+        <Table.Td className={cx(classes.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.submission?.time).format('MM/DD HH:mm:ss')}
           </Badge>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text size="sm" fw="bold">
             {item.ownedTeam?.team?.name ?? 'Team'}
           </Text>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Badge size="sm" color="orange">
             {`>>>`}
           </Badge>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text size="sm" fw="bold">
             {item.submitTeam?.team?.name ?? 'Team'}
           </Text>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text ff="monospace" size="sm" fw="bold">
             {item.submission?.user ?? 'User'}
           </Text>
-        </td>
-        <td>{item.submission?.challenge ?? 'Challenge'}</td>
-        <td
+        </Table.Td>
+        <Table.Td>{item.submission?.challenge ?? 'Challenge'}</Table.Td>
+        <Table.Td
           style={{
             width: '36vw',
             maxWidth: '100%',
@@ -355,7 +355,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
               },
             })}
           />
-        </td>
+        </Table.Td>
       </Table.Tr>
     ))
 

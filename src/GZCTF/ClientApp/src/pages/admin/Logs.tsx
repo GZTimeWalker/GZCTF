@@ -139,22 +139,22 @@ const Logs: FC = () => {
             : undefined
         }
       >
-        <td className={cx(classes.mono)}>
+        <Table.Td className={cx(classes.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
-        </td>
-        <td className={cx(classes.mono)}>
+        </Table.Td>
+        <Table.Td className={cx(classes.mono)}>
           <Text ff="monospace" size="sm" fw={300}>
             {item.ip || 'localhost'}
           </Text>
-        </td>
-        <td className={cx(classes.mono)}>
+        </Table.Td>
+        <Table.Td className={cx(classes.mono)}>
           <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
             {item.name}
           </Text>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Input
             variant="unstyled"
             value={item.msg || ''}
@@ -167,14 +167,14 @@ const Logs: FC = () => {
               },
             })}
           />
-        </td>
-        <td className={cx(classes.mono)}>
+        </Table.Td>
+        <Table.Td className={cx(classes.mono)}>
           {item.status && (
             <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
               {item.status}
             </Badge>
           )}
-        </td>
+        </Table.Td>
       </Table.Tr>
     ))
 

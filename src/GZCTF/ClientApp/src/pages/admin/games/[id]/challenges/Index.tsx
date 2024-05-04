@@ -125,7 +125,7 @@ const GameChallengeEdit: FC = () => {
             value={category}
             // TODO: fix select component
             // nothingFound={t('admin.content.nothing_found')}
-            // onChange={(value: ChallengeTag) => setCategory(value)}
+            onChange={(value) => setCategory(value as ChallengeTag | null)}
             // itemComponent={ChallengeTagItem}
             // data={Object.entries(ChallengeTag).map((tag) => {
             //   const data = challengeTagLabelMap.get(tag[1])
@@ -174,7 +174,7 @@ const GameChallengeEdit: FC = () => {
             //   { maxWidth: 1800, cols: 1, spacing: 'sm' },
             // ]}
 
-            cols={{ base: 1, lg: 2 }}
+            cols={{ base: 2 }}
             spacing="sm"
           >
             {filteredChallenges &&

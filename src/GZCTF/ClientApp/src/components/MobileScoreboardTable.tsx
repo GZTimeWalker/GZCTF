@@ -16,8 +16,8 @@ const TableRow: FC<{
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
     <Table.Tr>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)}>{item.rank}</td>
-      <td className={cx(classes.theadFixLeft)}>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)}>{item.rank}</Table.Td>
+      <Table.Td className={cx(classes.theadFixLeft)}>
         <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
             alt="avatar"
@@ -53,10 +53,10 @@ const TableRow: FC<{
             }}
           />
         </Group>
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
-      </td>
+      </Table.Td>
     </Table.Tr>
   )
 }

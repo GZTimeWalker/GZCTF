@@ -226,7 +226,7 @@ const Instances: FC = () => {
                   )!.color
                   return (
                     <Table.Tr key={inst.containerGuid}>
-                      <td>
+                      <Table.Td>
                         <Box w="100%" h="100%">
                           <Input
                             variant="unstyled"
@@ -242,8 +242,8 @@ const Instances: FC = () => {
                             })}
                           />
                         </Box>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Box w="100%" h="100%">
                           <Input
                             variant="unstyled"
@@ -259,8 +259,8 @@ const Instances: FC = () => {
                             })}
                           />
                         </Box>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Group wrap="nowrap" gap="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(inst.startedAt).format('MM/DD HH:mm')}
@@ -270,8 +270,8 @@ const Instances: FC = () => {
                             {dayjs(inst.expectStopAt).format('MM/DD HH:mm')}
                           </Badge>
                         </Group>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Text size="sm" ff="monospace" lineClamp={1}>
                           <Tooltip
                             label={t('common.button.copy')}
@@ -303,8 +303,8 @@ const Instances: FC = () => {
                             </Text>
                           </Tooltip>
                         </Text>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Tooltip
                           label={t('common.button.copy')}
                           withArrow
@@ -335,8 +335,8 @@ const Instances: FC = () => {
                             </Text>
                           </Text>
                         </Tooltip>
-                      </td>
-                      <td align="right">
+                      </Table.Td>
+                      <Table.Td align="right">
                         <Group wrap="nowrap" gap="sm" justify="right">
                           <ActionIconWithConfirm
                             iconPath={mdiPackageVariantClosedRemove}
@@ -348,7 +348,7 @@ const Instances: FC = () => {
                             onClick={() => onDelete(inst.containerGuid)}
                           />
                         </Group>
-                      </td>
+                      </Table.Td>
                     </Table.Tr>
                   )
                 })}

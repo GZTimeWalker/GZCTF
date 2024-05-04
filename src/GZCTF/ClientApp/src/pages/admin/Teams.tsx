@@ -221,7 +221,7 @@ const Teams: FC = () => {
 
                   return (
                     <Table.Tr key={team.id}>
-                      <td>
+                      <Table.Td>
                         <Group justify="space-between" gap={0} wrap="nowrap">
                           <Group justify="left" wrap="nowrap" w="calc(100% - 7rem)">
                             <Avatar alt="avatar" src={team.avatar} radius="xl">
@@ -244,15 +244,14 @@ const Teams: FC = () => {
                               }}
                             />
                           </Group>
-
                           <Badge size="md" color={team.locked ? 'yellow' : 'gray'}>
                             {team.locked
                               ? t('admin.content.teams.locked')
                               : t('admin.content.teams.unlocked')}
                           </Badge>
                         </Group>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Tooltip.Group openDelay={300} closeDelay={100}>
                           <Avatar.Group
                             spacing="md"
@@ -284,13 +283,13 @@ const Teams: FC = () => {
                             )}
                           </Avatar.Group>
                         </Tooltip.Group>
-                      </td>
-                      <td>
-                        <Text lineClamp={1} truncate>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text lineClamp={1} truncate size="sm">
                           {team.bio ?? t('team.placeholder.bio')}
                         </Text>
-                      </td>
-                      <td align="right">
+                      </Table.Td>
+                      <Table.Td align="right">
                         <Group wrap="nowrap" gap="sm" justify="right">
                           <ActionIcon
                             color="blue"
@@ -325,7 +324,7 @@ const Teams: FC = () => {
                             onClick={() => onDelete(team)}
                           />
                         </Group>
-                      </td>
+                      </Table.Td>
                     </Table.Tr>
                   )
                 })}

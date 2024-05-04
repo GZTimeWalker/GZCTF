@@ -59,7 +59,7 @@ const Users: FC = () => {
   const modals = useModals()
   const { user: currentUser } = useUser()
   const clipboard = useClipboard()
-  const { classes, theme } = useTableStyles()
+  const { classes } = useTableStyles()
 
   const { t } = useTranslation()
 
@@ -243,7 +243,7 @@ const Users: FC = () => {
           <Table className={classes.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ width: '1.8rem' }}>{t('admin.label.users.active')}</Table.Th>
+                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.users.active')}</Table.Th>
                 <Table.Th>{t('common.label.user')}</Table.Th>
                 <Table.Th>{t('account.label.email')}</Table.Th>
                 <Table.Th>{t('common.label.ip')}</Table.Th>
@@ -256,14 +256,14 @@ const Users: FC = () => {
               {users &&
                 users.map((user) => (
                   <Table.Tr key={user.id}>
-                    <td>
+                    <Table.Td>
                       <Switch
                         disabled={disabled}
                         checked={user.emailConfirmed ?? false}
                         onChange={() => onToggleActive(user)}
                       />
-                    </td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>
                       <Group wrap="nowrap" justify="space-between" gap="xs">
                         <Group wrap="nowrap" justify="left">
                           <Avatar alt="avatar" src={user.avatar} radius="xl">
@@ -277,24 +277,24 @@ const Users: FC = () => {
                           {user.role}
                         </Badge>
                       </Group>
-                    </td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>
                       <Text size="sm" ff="monospace" lineClamp={1}>
                         {user.email}
                       </Text>
-                    </td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>
                       <Text lineClamp={1} size="sm" ff="monospace">
                         {user.ip}
                       </Text>
-                    </td>
-                    <td>{user.realName ?? t('admin.placeholder.users.real_name')}</td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>{user.realName ?? t('admin.placeholder.users.real_name')}</Table.Td>
+                    <Table.Td>
                       <Text size="sm" ff="monospace">
                         {user.stdNumber ?? t('admin.placeholder.users.student_id')}
                       </Text>
-                    </td>
-                    <td align="right">
+                    </Table.Td>
+                    <Table.Td align="right">
                       <Group wrap="nowrap" gap="sm" justify="right">
                         <ActionIcon
                           color="blue"
@@ -324,7 +324,7 @@ const Users: FC = () => {
                           onClick={() => onDelete(user)}
                         />
                       </Group>
-                    </td>
+                    </Table.Td>
                   </Table.Tr>
                 ))}
             </Table.Tbody>

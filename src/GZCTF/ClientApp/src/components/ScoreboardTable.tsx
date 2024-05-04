@@ -142,7 +142,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
                   size={1}
                   color={theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6]}
                 />
-                <Text c={tag.color} className={classes.text} fz="sm">
+                <Text c={tag.color} className={classes.text} ff="text" fz="sm">
                   {key}
                 </Text>
               </Group>
@@ -194,7 +194,7 @@ const TableRow: FC<{
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
-  const { classes, cx, theme } = useScoreboardStyles()
+  const { classes, cx } = useScoreboardStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)

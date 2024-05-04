@@ -425,24 +425,12 @@ const GameInfoEdit: FC = () => {
           value={game?.organizations ?? []}
           styles={{
             input: {
-              minHeight: 88,
-              maxHeight: 88,
+              minHeight: 79,
+              maxHeight: 79,
             },
           }}
-          clearable
-          // TODO: use tags select
-          // searchable
-          // creatable
-          // onChange={(e) => game && setGame({ ...game, organizations: e })}
-          // data={organizations.map((o) => ({ value: o, label: o })) || []}
-          // getCreateLabel={(query) =>
-          //   t('admin.content.games.info.organizations.add', { org: query })
-          // }
-          // onCreate={(query) => {
-          //   const item = { value: query, label: query }
-          //   setOrganizations([...organizations, query])
-          //   return item
-          // }}
+          onChange={(e) => game && setGame({ ...game, organizations: e })}
+          onClear={() => game && setGame({ ...game, organizations: [] })}
         />
       </Group>
       <Grid grow>
