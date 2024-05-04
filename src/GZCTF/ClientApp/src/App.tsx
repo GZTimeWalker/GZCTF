@@ -24,14 +24,10 @@ export const App: FC = () => {
   const { locale } = useLanguage()
 
   return (
-    <MantineProvider
-      stylesTransform={emotionTransform}
-      defaultColorScheme="dark"
-      theme={CustomTheme}
-    >
+    <MantineProvider stylesTransform={emotionTransform}>
       <MantineEmotionProvider>
         {/* TODO: wait for fix in next patch*/}
-        <MantineProvider theme={CustomTheme}>
+        <MantineProvider defaultColorScheme="dark" theme={CustomTheme}>
           <Notifications zIndex={5000} />
 
           <DatesProvider settings={{ locale }}>

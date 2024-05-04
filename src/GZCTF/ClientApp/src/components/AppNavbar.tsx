@@ -32,7 +32,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Utils/useConfig'
-import { useLoginOut, useUser } from '@Utils/useUser'
+import { useLogOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
 
 const useStyles = createStyles((theme, _, u) => {
@@ -125,7 +125,7 @@ const AppNavbar: FC = () => {
   const { classes } = useStyles()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
-  const logout = useLoginOut()
+  const logout = useLogOut()
   const { user, error } = useUser()
   const { t } = useTranslation()
   const { setLanguage, supportedLanguages } = useLanguage()

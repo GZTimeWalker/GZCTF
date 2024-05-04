@@ -64,7 +64,7 @@ export const useTeams = () => {
   return { teams, error, mutate }
 }
 
-export const useLoginOut = () => {
+export const useLogOut = () => {
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
   const { mutate: mutateProfile } = useUser()

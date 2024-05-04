@@ -15,7 +15,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import LogoHeader from '@Components/LogoHeader'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { clearLocalCache } from '@Utils/useConfig'
-import { useLoginOut, useUser } from '@Utils/useUser'
+import { useLogOut, useUser } from '@Utils/useUser'
 
 const useHeaderStyles = createStyles((theme, _, u) => ({
   header: {
@@ -44,7 +44,7 @@ const AppHeader: FC = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { user, error } = useUser()
 
-  const logout = useLoginOut()
+  const logout = useLogOut()
   const isMobile = useIsMobile()
 
   const { t } = useTranslation()
