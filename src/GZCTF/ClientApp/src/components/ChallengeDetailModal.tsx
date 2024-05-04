@@ -75,7 +75,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const [flag, setFlag] = useInputState('')
 
   const onCreateContainer = () => {
-    if (!challengeId) return
+    if (!challengeId || disabled) return
     setDisabled(true)
     api.game
       .gameCreateContainer(gameId, challengeId)
@@ -100,7 +100,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   }
 
   const onDestroyContainer = () => {
-    if (!challengeId) return
+    if (!challengeId || disabled) return
     setDisabled(true)
     api.game
       .gameDeleteContainer(gameId, challengeId)
@@ -125,7 +125,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   }
 
   const onExtendContainer = () => {
-    if (!challengeId) return
+    if (!challengeId || disabled) return
     setDisabled(true)
     api.game
       .gameExtendContainerLifetime(gameId, challengeId)

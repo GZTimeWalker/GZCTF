@@ -29,7 +29,7 @@ import { ParticipationStatusControl } from '@Components/admin/ParticipationStatu
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import { useAccordionStyles, useTableStyles } from '@Utils/ThemeOverride'
+import { useAccordionStyles, useDisplayInputStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
 import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
@@ -142,6 +142,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
   const { submissionInfo } = props
   const theme = useMantineTheme()
   const type = CheatTypeMap.get(submissionInfo.cheatType)!
+  const { classes } = useDisplayInputStyles({ ff: 'monospace' })
 
   return (
     <Group justify="space-between" w="100%" gap={0}>
@@ -163,7 +164,13 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
         <Text fw="bold" size="xs" lineClamp={1}>
           {submissionInfo.challenge}
         </Text>
-        <Input variant="unstyled" value={submissionInfo.answer} readOnly size="xs" ff="monospace" />
+        <Input
+          variant="unstyled"
+          value={submissionInfo.answer}
+          readOnly
+          size="xs"
+          classNames={classes}
+        />
       </Stack>
     </Group>
   )
@@ -299,6 +306,7 @@ interface CheatInfoTableViewProps {
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const { classes, cx } = useTableStyles()
+  const { classes: inputClasses } = useDisplayInputStyles({})
 
   const { t } = useTranslation()
 
@@ -346,14 +354,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
             value={item.submission?.answer}
             readOnly
             size="sm"
-            sx={(theme) => ({
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-              },
-              wrapper: {
-                width: '100%',
-              },
-            })}
+            classNames={inputClasses}
           />
         </Table.Td>
       </Table.Tr>

@@ -155,18 +155,7 @@ const Logs: FC = () => {
           </Text>
         </Table.Td>
         <Table.Td>
-          <Input
-            variant="unstyled"
-            value={item.msg || ''}
-            readOnly
-            size="sm"
-            sx={() => ({
-              input: {
-                userSelect: 'none',
-                lineHeight: 1,
-              },
-            })}
-          />
+          <Input variant="unstyled" value={item.msg || ''} readOnly size="sm" />
         </Table.Td>
         <Table.Td className={cx(classes.mono)}>
           {item.status && (

@@ -133,7 +133,7 @@ const Events: FC = () => {
 
   const iconMap = EventTypeIconMap(1.15)
   const { classes } = useTableStyles()
-  const { classes: inputClasses } = useDisplayInputStyles()
+  const { classes: inputClasses } = useDisplayInputStyles({ fw: 500 })
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -247,13 +247,7 @@ const Events: FC = () => {
                     value={formatEvent(t, event)}
                     readOnly
                     size="md"
-                    fw={500}
-                    styles={{
-                      wrapper: {
-                        width: '100%',
-                      },
-                    }}
-                    classNames={{ input: inputClasses.input }}
+                    classNames={inputClasses}
                   />
                   <Group wrap="nowrap" justify="space-between">
                     <Text size="sm" fw={500} c="dimmed">

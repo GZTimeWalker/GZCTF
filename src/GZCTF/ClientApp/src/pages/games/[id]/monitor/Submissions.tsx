@@ -32,7 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { downloadBlob } from '@Utils/ApiHelper'
-import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles, useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
 
@@ -92,6 +92,7 @@ const Submissions: FC = () => {
   const iconMap = AnswerResultIconMap(0.8)
   const { classes, cx } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
+  const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
 
   const { t } = useTranslation()
 
@@ -197,12 +198,7 @@ const Submissions: FC = () => {
             value={item.answer}
             readOnly
             size="sm"
-            ff="monospace"
-            styles={{
-              wrapper: {
-                width: '100%',
-              },
-            }}
+            classNames={inputClasses}
           />
         </Table.Td>
       </Table.Tr>

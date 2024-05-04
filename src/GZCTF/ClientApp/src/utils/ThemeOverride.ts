@@ -79,7 +79,8 @@ export const CustomTheme = createTheme({
   primaryColor: 'brand',
   fontFamily:
     "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif",
-  fontFamilyMonospace: "'JetBrains Mono', monospace, 'IBM Plex Sans', sans-serif",
+  fontFamilyMonospace:
+    "'JetBrains Mono', ui-monospace, SFMono-Regular, Monaco, Consolas, 'Courier New', monospace, 'IBM Plex Sans', sans-serif",
   headings: {
     fontFamily: "'IBM Plex Sans', sans-serif",
   },
@@ -356,17 +357,29 @@ export const useUploadStyles = createStyles(() => ({
   },
 }))
 
-export const useDisplayInputStyles = createStyles({
-  input: {
-    cursor: 'auto',
-    userSelect: 'none',
-    lineHeight: '1.5rem',
-    minHeight: '1rem',
-    maxHeight: '2rem',
-    fontWeight: 'bold',
-    height: '1.5rem',
-  },
-})
+interface UseDisplayInputStylesProps {
+  ff?: 'monospace' | 'text'
+  fw?: React.CSSProperties['fontWeight']
+  lh?: React.CSSProperties['lineHeight']
+}
+
+export const useDisplayInputStyles = createStyles(
+  (theme, { fw = 'normal', lh = '1.5rem', ff = 'text' }: UseDisplayInputStylesProps) => ({
+    wrapper: {
+      width: '100%',
+    },
+    input: {
+      fontWeight: fw,
+      fontFamily: ff === 'text' ? theme.fontFamily : theme.fontFamilyMonospace,
+      height: lh,
+      lineHeight: lh,
+      cursor: 'auto',
+      userSelect: 'none',
+      minHeight: '1rem',
+      maxHeight: '2rem',
+    },
+  })
+)
 
 export const useAccordionStyles = createStyles((theme, _, u) => ({
   root: {

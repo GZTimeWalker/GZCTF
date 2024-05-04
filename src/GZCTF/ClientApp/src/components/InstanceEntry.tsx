@@ -42,14 +42,17 @@ dayjs.extend(duration)
 
 interface CountdownProps {
   time: string
-  extendNotice: () => void
+  renewalWindow: number
+  onTimeout?: () => void
+  extendEnabled: boolean
+  enableExtend: () => void
 }
 
-const Countdown: FC<CountdownProps> = ({ time, extendNotice }) => {
+const Countdown: FC<CountdownProps> = (props) => {
+  const { time, renewalWindow, onTimeout, extendEnabled, enableExtend } = props
   const [now, setNow] = useState(dayjs())
   const end = dayjs(time)
   const countdown = dayjs.duration(end.diff(now))
-  const [haveNoticed, setHaveNoticed] = useState(countdown.asMinutes() < 10)
 
   useEffect(() => {
     if (dayjs() > end) return
@@ -58,17 +61,15 @@ const Countdown: FC<CountdownProps> = ({ time, extendNotice }) => {
   }, [])
 
   useEffect(() => {
-    if (countdown.asSeconds() <= 0) return
-
-    if (countdown.asMinutes() < 10 && !haveNoticed) {
-      extendNotice()
-      setHaveNoticed(true)
-    } else if (countdown.asMinutes() > 10) {
-      setHaveNoticed(false)
-    }
+    if (!extendEnabled && countdown.asMinutes() < renewalWindow) enableExtend()
+    if (onTimeout && countdown.asSeconds() <= 0) onTimeout()
   }, [countdown])
 
-  return <Text span>{countdown.asSeconds() > 0 ? countdown.format('HH:mm:ss') : '00:00:00'}</Text>
+  return (
+    <Text span fw="bold">
+      {countdown.asSeconds() > 0 ? countdown.format('HH:mm:ss') : '00:00:00'}
+    </Text>
+  )
 }
 
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
@@ -89,7 +90,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const extendNotice = () => {
+  const enableExtend = () => {
     if (canExtend) return
 
     showNotification({
@@ -233,7 +234,13 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
           <Stack align="left" gap={0}>
             <Text size="sm" fw={600}>
               {t('challenge.content.instance.actions.count_down')}
-              <Countdown time={context.closeTime ?? '0'} extendNotice={extendNotice} />
+              <Countdown
+                time={context.closeTime ?? '0'}
+                renewalWindow={config.renewalWindow ?? 10}
+                extendEnabled={canExtend}
+                enableExtend={enableExtend}
+                onTimeout={onDestroy}
+              />
             </Text>
             <Text size="xs" c="dimmed" fw={600}>
               {t('challenge.content.instance.actions.note', { min: config.renewalWindow })}

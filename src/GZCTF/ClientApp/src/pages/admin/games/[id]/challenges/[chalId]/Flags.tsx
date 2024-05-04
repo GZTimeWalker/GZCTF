@@ -449,7 +449,7 @@ const GameChallengeEdit: FC = () => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
   const modals = useModals()
-  const { classes } = useDisplayInputStyles()
+  const { classes } = useDisplayInputStyles({ fw: 'bold', ff: 'monospace' })
   const { challenge, mutate } = useEditChallenge(numId, numCId)
 
   const { t } = useTranslation()
@@ -467,7 +467,7 @@ const GameChallengeEdit: FC = () => {
             w="100%"
             size="md"
             readOnly
-            classNames={{ input: classes.input }}
+            classNames={classes}
           />
         </Stack>
       ),

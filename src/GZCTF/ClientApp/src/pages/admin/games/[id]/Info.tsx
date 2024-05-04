@@ -56,7 +56,6 @@ const GameInfoEdit: FC = () => {
   const navigate = useNavigate()
 
   const [disabled, setDisabled] = useState(false)
-  const [organizations, setOrganizations] = useState<string[]>([])
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
   const [wpddl, setWpddl] = useInputState(3)
@@ -81,7 +80,6 @@ const GameInfoEdit: FC = () => {
       setGame(gameSource)
       setStart(dayjs(gameSource.start))
       setEnd(dayjs(gameSource.end))
-      setOrganizations(gameSource.organizations || [])
 
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
@@ -448,8 +446,8 @@ const GameInfoEdit: FC = () => {
             w="100%"
             autosize
             disabled={disabled}
-            minRows={8}
-            maxRows={8}
+            minRows={9}
+            maxRows={9}
             onChange={(e) => game && setGame({ ...game, content: e.target.value })}
           />
         </Grid.Col>
@@ -470,16 +468,16 @@ const GameInfoEdit: FC = () => {
               disabled={disabled}
               styles={{
                 root: {
-                  height: '198px',
+                  height: '211px',
                   padding: game?.poster ? '0' : '16px',
                 },
               }}
             >
               <Center style={{ pointerEvents: 'none' }}>
                 {game?.poster ? (
-                  <Image height="195px" fit="contain" src={game.poster} alt="poster" />
+                  <Image height="209px" fit="contain" src={game.poster} alt="poster" />
                 ) : (
-                  <Center h="160px">
+                  <Center h="200px">
                     <Stack gap={0}>
                       <Text size="xl" inline>
                         {t('common.content.drop_zone.content', {

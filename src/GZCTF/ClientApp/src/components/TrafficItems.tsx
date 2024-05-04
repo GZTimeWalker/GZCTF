@@ -29,7 +29,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
   const data = challengeTagLabelMap.get(item.tag as ChallengeTag)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
-  const { classes } = useDisplayInputStyles()
+  const { classes } = useDisplayInputStyles({ fw: 'bold' })
   const { t } = useTranslation()
 
   return (
@@ -38,12 +38,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
         <Group justify="left" gap="xs" wrap="nowrap">
           <Icon path={data.icon} color={theme.colors[data.color ?? 'brand'][5]} size={1} />
           <Stack gap={0} align="flex-start">
-            <Input
-              variant="unstyled"
-              value={item.title ?? 'Team'}
-              readOnly
-              classNames={{ input: classes.input }}
-            />
+            <Input variant="unstyled" value={item.title ?? 'Team'} readOnly classNames={classes} />
             <Badge color={data.color} size="xs" variant="dot">
               {type}
             </Badge>
@@ -64,7 +59,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
 
-  const { classes } = useDisplayInputStyles()
+  const { classes } = useDisplayInputStyles({ fw: 'bold' })
   const { t } = useTranslation()
 
   return (
@@ -75,12 +70,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0} align="flex-start">
-            <Input
-              variant="unstyled"
-              value={item.name ?? 'Team'}
-              readOnly
-              classNames={{ input: classes.input }}
-            />
+            <Input variant="unstyled" value={item.name ?? 'Team'} readOnly classNames={classes} />
             {item.organization && (
               <Badge size="xs" variant="outline">
                 {item.organization}

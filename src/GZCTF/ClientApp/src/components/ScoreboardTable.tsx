@@ -83,6 +83,8 @@ export const useScoreboardStyles = createStyles((theme, _, u) => ({
   },
   input: {
     userSelect: 'none',
+    fontWeight: 500,
+
     '&:hover': {
       cursor: 'pointer',
     },

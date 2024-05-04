@@ -16,7 +16,6 @@ import {
   Textarea,
   TextInput,
   Tooltip,
-  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
@@ -98,7 +97,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
   const modals = useModals()
 
-  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -323,22 +321,9 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         {isCaptain && (
           <PasswordInput
             label={
-              <Group gap="xs">
+              <Group gap={3}>
                 <Text size="sm">{t('team.label.invite_code')}</Text>
-                <ActionIcon
-                  size="sm"
-                  onClick={onRefreshInviteCode}
-                  sx={(theme) => ({
-                    margin: '0 0 -0.1rem -0.5rem',
-                    '&:hover': {
-                      color:
-                        colorScheme === 'dark'
-                          ? theme.colors[theme.primaryColor][2]
-                          : theme.colors[theme.primaryColor][7],
-                      backgroundColor: colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-                    },
-                  })}
-                >
+                <ActionIcon size="sm" onClick={onRefreshInviteCode}>
                   <Icon path={mdiRefresh} size={1} />
                 </ActionIcon>
               </Group>
@@ -353,10 +338,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
+            ff="monospace"
             readOnly
           />
         )}
-
         <Textarea
           label={t('team.label.bio')}
           placeholder={teamInfo?.bio ?? t('team.placeholder.bio')}
@@ -368,7 +353,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           maxRows={4}
           onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
-
         <Text size="sm">{t('team.label.members')}</Text>
         <ScrollArea h={140} offsetScrollbars>
           <Stack gap="xs">
@@ -401,7 +385,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                         </Text>
                       ),
                       onConfirm: () => onTransferCaptain(user.id!),
-
                       confirmProps: { color: 'orange' },
                       zIndex: 10000,
                     })
@@ -409,7 +392,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   onKick={(user: TeamUserInfoModel) => {
                     modals.openConfirmModal({
                       title: t('team.content.kick.confirm.title'),
-
                       children: (
                         <Text size="sm">
                           {t('team.content.kick.confirm.message', {
@@ -418,7 +400,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                         </Text>
                       ),
                       onConfirm: () => onConfirmKickUser(user.id!),
-
                       confirmProps: { color: 'orange' },
                       zIndex: 10000,
                     })
@@ -450,7 +431,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   </Text>
                 ),
                 onConfirm: isCaptain ? onConfirmDisbandTeam : onConfirmLeaveTeam,
-
                 confirmProps: { color: 'red' },
                 zIndex: 10000,
               })
