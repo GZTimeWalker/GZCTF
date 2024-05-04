@@ -52,7 +52,12 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
   }, [location])
 
   const onDownloadScoreboardSheet = () =>
-    downloadBlob(api.game.gameScoreboardSheet(numId, { format: 'blob' }), setDisabled, t)
+    downloadBlob(
+      api.game.gameScoreboardSheet(numId, { format: 'blob' }),
+      `Scoreboard_${numId}_${Date.now()}.xlsx`,
+      setDisabled,
+      t
+    )
 
   return (
     <WithNavBar width="90%">
