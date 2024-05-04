@@ -135,6 +135,11 @@ const Events: FC = () => {
   const { classes } = useTableStyles()
   const { classes: inputClasses } = useDisplayInputStyles({ fw: 500 })
   const { t } = useTranslation()
+  const viewport = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [activePage, viewport])
 
   useEffect(() => {
     api.game
@@ -227,7 +232,7 @@ const Events: FC = () => {
           </ActionIcon>
         </Group>
       </Group>
-      <ScrollArea offsetScrollbars h="calc(100vh - 160px)">
+      <ScrollArea viewportRef={viewport} offsetScrollbars h="calc(100vh - 160px)">
         <Stack gap="xs" pr={10} w="100%">
           {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card

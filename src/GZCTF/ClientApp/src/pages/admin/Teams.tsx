@@ -26,7 +26,7 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
@@ -58,6 +58,11 @@ const Teams: FC = () => {
   const { classes: tooltipClasses } = useTooltipStyles()
 
   const { t } = useTranslation()
+  const viewport = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [page, viewport])
 
   useEffect(() => {
     api.admin
@@ -199,7 +204,12 @@ const Teams: FC = () => {
       }
     >
       <Paper shadow="md" p="md" w="100%">
-        <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
+        <ScrollArea
+          viewportRef={viewport}
+          offsetScrollbars
+          scrollbarSize={4}
+          h="calc(100vh - 190px)"
+        >
           <Table className={classes.table}>
             <Table.Thead>
               <Table.Tr>

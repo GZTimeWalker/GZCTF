@@ -95,6 +95,11 @@ const Submissions: FC = () => {
   const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
 
   const { t } = useTranslation()
+  const viewport = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [activePage, viewport])
 
   useEffect(() => {
     api.game
@@ -264,7 +269,7 @@ const Submissions: FC = () => {
         </Group>
       </Group>
       <Paper shadow="md" p="md">
-        <ScrollArea offsetScrollbars h="calc(100vh - 200px)">
+        <ScrollArea viewportRef={viewport} offsetScrollbars h="calc(100vh - 200px)">
           <Table className={classes.table}>
             <Table.Thead>
               <Table.Tr>
