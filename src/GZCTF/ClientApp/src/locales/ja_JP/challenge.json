@@ -92,9 +92,9 @@
     ]
   },
   "file_type": {
-    "local": "ローカルアタッチメント",
-    "none": "アタッチメントがありません",
-    "remote": "リモートアタッチメント"
+    "local": "自己ホスト型",
+    "none": "アタッチメントなし",
+    "remote": "URL"
   },
   "notification": {
     "flag": {

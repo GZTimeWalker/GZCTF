@@ -26,7 +26,7 @@ export const App: FC = () => {
     >
       <MantineEmotionProvider>
         {/* TODO: wait for fix in next patch*/}
-        <MantineProvider>
+        <MantineProvider theme={CustomTheme}>
           <Notifications zIndex={5000} />
 
           <ModalsProvider

@@ -19,7 +19,7 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
-import { Dropzone } from '@mantine/dropzone'
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
@@ -28,7 +28,6 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
-import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
@@ -487,7 +486,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           mih={220}
           disabled={disabled}
           maxSize={3 * 1024 * 1024}
-          accept={ACCEPT_IMAGE_MIME_TYPE}
+          accept={IMAGE_MIME_TYPE}
         >
           <Group justify="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
             {avatarFile ? (

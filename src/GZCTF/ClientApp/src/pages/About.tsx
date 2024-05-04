@@ -8,7 +8,7 @@ import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const About: FC = () => {
-  const { classes, theme } = useLogoStyles()
+  const { classes } = useLogoStyles()
   const { config } = useConfig()
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
   const { t } = useTranslation()

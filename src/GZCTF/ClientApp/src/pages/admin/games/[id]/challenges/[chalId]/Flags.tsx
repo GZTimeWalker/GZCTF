@@ -17,7 +17,6 @@ import {
   Title,
   alpha,
   useMantineColorScheme,
-  useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -32,7 +31,7 @@ import FlagCreateModal from '@Components/admin/FlagCreateModal'
 import FlagEditPanel from '@Components/admin/FlagEditPanel'
 import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useUploadStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles, useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 
@@ -229,7 +228,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         )}
       </Group>
       <Divider />
-      <Group justify="space-between">
+      <Group justify="space-between" wrap="nowrap">
         <Input.Wrapper label={t('admin.content.games.challenges.attachment.type')} required>
           <Chip.Group
             value={type}
@@ -250,7 +249,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               }
             }}
           >
-            <Group justify="left" gap="sm" h="2.25rem">
+            <Group justify="left" gap="sm" h="2.25rem" wrap="nowrap">
               {Object.entries(FileType).map((type) => (
                 <Chip key={type[0]} value={type[1]} size="sm">
                   {FileTypeDesrcMap.get(type[1])}
@@ -450,7 +449,7 @@ const GameChallengeEdit: FC = () => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
   const modals = useModals()
-
+  const { classes } = useDisplayInputStyles()
   const { challenge, mutate } = useEditChallenge(numId, numCId)
 
   const { t } = useTranslation()
@@ -462,7 +461,14 @@ const GameChallengeEdit: FC = () => {
       children: (
         <Stack>
           <Text>{t('admin.content.games.challenges.flag.delete')}</Text>
-          <Text ff="monospace">{flag.flag}</Text>
+          <Input
+            variant="unstyled"
+            value={flag.flag}
+            w="100%"
+            size="md"
+            readOnly
+            classNames={{ input: classes.input }}
+          />
         </Stack>
       ),
       onConfirm: () => flag.id && onConfirmDeleteFlag(flag.id),

@@ -1,19 +1,11 @@
-import {
-  ActionIcon,
-  Card,
-  Group,
-  Input,
-  SimpleGrid,
-  Stack,
-  Text,
-  useMantineTheme,
-} from '@mantine/core'
+import { ActionIcon, Card, Group, Input, SimpleGrid, Stack, Text } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { Attachment, FlagInfoModel } from '@Api'
 
 interface FlagCardProps {
@@ -23,20 +15,20 @@ interface FlagCardProps {
 }
 
 const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
-  const theme = useMantineTheme()
   const clipboard = useClipboard()
   const attachment = unifiedAttachment ?? flag.attachment
   const shortURL = attachment?.url?.split('/').slice(-2)[0].slice(0, 8)
-
+  const { classes } = useDisplayInputStyles()
   const { t } = useTranslation()
 
   return (
-    <Card>
+    <Card p="sm">
       <Group wrap="nowrap" justify="space-between" gap={3}>
         <Stack align="flex-start" gap={0} w="100%">
           <Input
             variant="unstyled"
             value={flag.flag}
+            w="100%"
             size="md"
             readOnly
             onClick={() => {
@@ -47,16 +39,8 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
-            styles={{
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-                lineHeight: '1em',
-                height: 'auto',
-              },
-              wrapper: {
-                width: '100%',
-              },
-            }}
+            classNames={{ input: classes.input }}
+            styles={{ input: { cursor: 'pointer' } }}
           />
           <Text c="dimmed" size="sm" ff="monospace">
             {attachment?.type} {shortURL}
@@ -79,7 +63,8 @@ interface FladEditPanelProps {
 const FladEditPanel: FC<FladEditPanelProps> = ({ flags, onDelete, unifiedAttachment }) => {
   return (
     <Stack>
-      <SimpleGrid spacing="sm" cols={{ base: 2, md: 3, lg: 4 }}>
+      {/* TODO: cols too small */}
+      <SimpleGrid spacing="sm" cols={{ base: 2 }}>
         {flags &&
           flags.map((flag, i) => (
             <FlagCard

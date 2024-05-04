@@ -8,14 +8,13 @@ import {
   Stack,
   Text,
   Title,
-  useMantineColorScheme,
-  useMantineTheme,
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { useHoverCardStyles } from '@Utils/ThemeOverride'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 
@@ -36,8 +35,7 @@ interface GameCardProps {
 }
 
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
-  const theme = useMantineTheme()
-  const { colorScheme } = useMantineColorScheme()
+  const { classes: cardClasses, theme } = useHoverCardStyles()
   const { t } = useTranslation()
 
   const { summary, title, poster, limit } = game
@@ -53,14 +51,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
       shadow="sm"
       component={Link}
       to={`/games/${game.id}`}
-      style={{
-        transition: 'filter .2s',
-        width: '100%',
-
-        ':hover': {
-          filter: colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
-        },
-      }}
+      className={cardClasses.card}
     >
       <Card.Section>
         <Group wrap="nowrap" align="flex-start">

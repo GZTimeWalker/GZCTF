@@ -1,15 +1,4 @@
-import {
-  Badge,
-  Card,
-  Center,
-  Group,
-  Image,
-  Stack,
-  Text,
-  Title,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core'
+import { Badge, Card, Center, Group, Image, Stack, Text, Title } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -17,6 +6,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
+import { useHoverCardStyles } from '@Utils/ThemeOverride'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 
@@ -27,12 +17,11 @@ export interface RecentGameProps {
 const POSTER_HEIGHT = '9rem'
 
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
-  const theme = useMantineTheme()
-  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const { title, poster } = game
   const { startTime, endTime, status } = getGameStatus(game)
+  const { classes: cardClasses, theme } = useHoverCardStyles()
 
   const color = GameColorMap.get(status)
 
@@ -45,13 +34,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
       shadow="sm"
       component={Link}
       to={`/games/${game.id}`}
-      style={{
-        transition: 'filter .2s',
-
-        ':hover': {
-          filter: colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
-        },
-      }}
+      className={cardClasses.card}
     >
       <Card.Section pos="relative">
         {poster ? (

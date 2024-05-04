@@ -74,7 +74,7 @@ const ChallengePanel: FC = () => {
         maw="calc(100% - 20rem)"
       >
         <Stack miw="10rem" gap={6}>
-          {Array(8)
+          {Array(10)
             .fill(null)
             .map((_v, i) => (
               <Group key={i} wrap="nowrap" p={10}>
@@ -84,27 +84,12 @@ const ChallengePanel: FC = () => {
             ))}
         </Stack>
         <SimpleGrid
-          // cols={DEFAULT_COLS}
-          spacing="sm"
           p="xs"
-          style={{
-            width: 'calc(100% - 9rem)',
-            position: 'relative',
-            paddingTop: 0,
-          }}
-          // breakpoints={GRID_BREAKPOINTS}
-          // const DEFAULT_COLS = 8
-          // const GRID_BREAKPOINTS = [
-          //   { maxWidth: 3200, cols: 7 },
-          //   { maxWidth: 2900, cols: 6 },
-          //   { maxWidth: 2500, cols: 5 },
-          //   { maxWidth: 2100, cols: 4 },
-          //   { maxWidth: 1700, cols: 3 },
-          //   { maxWidth: 1350, cols: 2 },
-          //   { maxWidth: 900, cols: 1 },
-          // ]
-          // FIXME: how to support more breakpoints?
-          cols={{ base: 3, md: 1, lg: 2, xl: 3 }}
+          pt={0}
+          spacing="sm"
+          pos="relative"
+          w="calc(100% - 9rem)"
+          cols={{ base: 3, w18: 4, w24: 6, w30: 8, w36: 10, w42: 12, w48: 14 }}
         >
           {Array(8)
             .fill(null)
@@ -241,12 +226,10 @@ const ChallengePanel: FC = () => {
       >
         {currentChallenges && currentChallenges.length ? (
           <SimpleGrid
-            // cols={DEFAULT_COLS}
-            spacing="sm"
             p="xs"
             pt={0}
-            // breakpoints={GRID_BREAKPOINTS}
-            cols={{ base: 3, md: 1, lg: 2, xl: 3 }}
+            spacing="sm"
+            cols={{ base: 3, w18: 4, w24: 6, w30: 8, w36: 10, w42: 12, w48: 14 }}
           >
             {currentChallenges?.map((chal) => (
               <ChallengeCard

@@ -83,7 +83,19 @@ export const CustomTheme = createTheme({
   headings: {
     fontFamily: "'IBM Plex Sans', sans-serif",
   },
-  // loader: 'bars',
+  breakpoints: {
+    xs: '30em',
+    sm: '48em',
+    md: '64em',
+    lg: '74em',
+    xl: '90em',
+    w18: '1800px',
+    w24: '2400px',
+    w30: '3000px',
+    w36: '3600px',
+    w42: '4200px',
+    w48: '4800px',
+  },
   components: {
     Loader: Loader.extend({
       defaultProps: {
@@ -405,6 +417,23 @@ export const useAccordionStyles = createStyles((theme, _, u) => ({
     '&:hover': {
       cursor: 'pointer',
       background: 'transparent',
+    },
+  },
+}))
+
+export const useHoverCardStyles = createStyles((theme, _, u) => ({
+  card: {
+    cursor: 'pointer',
+    transition: 'filter .2s',
+
+    '&:hover': {
+      [u.dark]: {
+        filter: 'brightness(1.2)',
+      },
+
+      [u.light]: {
+        filter: 'brightness(.97)',
+      },
     },
   },
 }))

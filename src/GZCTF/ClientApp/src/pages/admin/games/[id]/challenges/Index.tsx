@@ -167,14 +167,8 @@ const GameChallengeEdit: FC = () => {
           </Center>
         ) : (
           <SimpleGrid
-            // cols={2}
             pr={6}
-            // breakpoints={[
-            //   { maxWidth: 3600, cols: 2, spacing: 'sm' },
-            //   { maxWidth: 1800, cols: 1, spacing: 'sm' },
-            // ]}
-
-            cols={{ base: 2 }}
+            cols={{ base: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}
             spacing="sm"
           >
             {filteredChallenges &&

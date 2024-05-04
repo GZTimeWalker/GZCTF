@@ -350,11 +350,16 @@ const GameTeamReview: FC = () => {
         )}
       </ScrollArea>
       <Pagination
-        // ="right"
-        // TODO: pagination alignment
         value={activePage}
         onChange={setPage}
         total={(filteredParticipations?.length ?? 0) / PART_NUM_PER_PAGE + 1}
+        styles={{
+          root: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+          },
+        }}
       />
     </WithGameEditTab>
   )
