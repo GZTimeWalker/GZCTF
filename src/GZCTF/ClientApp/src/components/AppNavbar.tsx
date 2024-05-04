@@ -232,7 +232,7 @@ const AppNavbar: FC = () => {
 
           {/* User Info */}
           {user && !error ? (
-            <Menu position="right-end" offset={24} width="100%">
+            <Menu position="right-end" offset={24}>
               <Menu.Target>
                 <ActionIcon className={classes.link}>
                   {user?.avatar ? (
