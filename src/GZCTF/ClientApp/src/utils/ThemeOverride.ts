@@ -434,7 +434,7 @@ export const useAccordionStyles = createStyles((theme, _, u) => ({
 }))
 
 export const useHoverCardStyles = createStyles((theme, _, u) => ({
-  card: {
+  root: {
     cursor: 'pointer',
     transition: 'filter .2s',
 

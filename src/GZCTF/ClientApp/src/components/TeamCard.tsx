@@ -37,7 +37,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
   const { t } = useTranslation()
 
   return (
-    <Card shadow="sm" onClick={onEdit} className={cardClasses.card}>
+    <Card shadow="sm" onClick={onEdit} classNames={cardClasses}>
       <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
         <Stack style={{ flexGrow: 1 }}>
           <Group align="stretch" justify="space-between">

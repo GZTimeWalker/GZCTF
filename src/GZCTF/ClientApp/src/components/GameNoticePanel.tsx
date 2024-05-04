@@ -197,7 +197,7 @@ const GameNoticePanel: FC = () => {
                     </Text>
                     <InlineMarkdownRender
                       fz="sm"
-                      fw="bold"
+                      fw={500}
                       c="dimmed"
                       source={formatNotice(t, notice)}
                     />

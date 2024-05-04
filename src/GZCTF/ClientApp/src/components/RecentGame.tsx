@@ -34,7 +34,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
       shadow="sm"
       component={Link}
       to={`/games/${game.id}`}
-      className={cardClasses.card}
+      classNames={cardClasses}
     >
       <Card.Section pos="relative">
         {poster ? (

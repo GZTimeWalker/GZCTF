@@ -74,24 +74,17 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           <Text truncate fw="bold">
             {challenge.title}
           </Text>
-          {/* <Group wrap="nowrap" justify="space-between" gap={0}> */}
           <Text size="sm" fw="bold" ff="monospace" w="5rem">
             {challenge.score}
             <Text span fw="bold" c="dimmed">
               /{challenge.originalScore}pts
             </Text>
           </Text>
-
-          {/* <Badge color={data?.color} variant="dot">
-              {data?.label}
-            </Badge>
-          </Group> */}
         </Stack>
 
         <Tooltip
           label={t('admin.button.challenges.edit')}
           position="left"
-          w={120}
           offset={10}
           styles={tooltipStyle}
         >
@@ -106,8 +99,8 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         </Tooltip>
         <Tooltip
           label={t('admin.button.challenges.edit_more')}
+          ta="end"
           position="left"
-          w={120}
           offset={54}
           styles={tooltipStyle}
         >

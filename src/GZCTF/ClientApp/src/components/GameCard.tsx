@@ -51,7 +51,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
       shadow="sm"
       component={Link}
       to={`/games/${game.id}`}
-      className={cardClasses.card}
+      classNames={cardClasses}
     >
       <Card.Section>
         <Group wrap="nowrap" align="flex-start">

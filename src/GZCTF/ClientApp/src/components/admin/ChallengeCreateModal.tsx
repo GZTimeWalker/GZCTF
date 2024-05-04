@@ -73,6 +73,18 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
         />
         <Select
           required
+          label={t('admin.content.games.challenges.tag')}
+          placeholder="Tag"
+          value={tag}
+          onChange={setTag}
+          renderOption={ChallengeTagItem}
+          data={Object.entries(ChallengeTag).map((tag) => {
+            const data = challengeTagLabelMap.get(tag[1])
+            return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+          })}
+        />
+        <Select
+          required
           label={t('admin.content.games.challenges.type.label')}
           description={t('admin.content.games.challenges.type.description')}
           placeholder="Type"
@@ -82,18 +94,6 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           data={Object.entries(ChallengeType).map((type) => {
             const data = challengeTypeLabelMap.get(type[1])
             return { value: type[1], label: data?.name, ...data } as ComboboxItem
-          })}
-        />
-        <Select
-          required
-          label={t('admin.content.games.challenges.tag')}
-          placeholder="Tag"
-          value={tag}
-          onChange={setTag}
-          renderOption={ChallengeTagItem}
-          data={Object.entries(ChallengeTag).map((tag) => {
-            const data = challengeTagLabelMap.get(tag[1])
-            return { value: tag[1], label: data?.name, ...data } as ComboboxItem
           })}
         />
         <Button fullWidth disabled={disabled} onClick={onCreate}>

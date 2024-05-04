@@ -63,16 +63,14 @@ const GameWriteups: FC = () => {
             </ErrorBoundary>
           </Stack>
           <ScrollArea miw="15rem" maw="15rem" h="calc(100vh - 110px - 3rem)" type="never">
-            <Stack>
+            <Stack gap="sm">
               {writeups?.map((writeup) => (
                 <TeamWriteupCard
                   key={writeup.id}
                   writeup={writeup}
                   selected={selected?.id === writeup.id}
                   onClick={() => setSelected(writeup)}
-                >
-                  <Text>{writeup.team?.name}</Text>
-                </TeamWriteupCard>
+                />
               ))}
             </Stack>
           </ScrollArea>
