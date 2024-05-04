@@ -154,7 +154,7 @@ const Traffic: FC = () => {
           <Grid gutter={0} h="calc(100vh - 142px)">
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
-                <Text size="md" fw={700}>
+                <Text size="md" fw="bold">
                   {t('common.label.challenge')}
                 </Text>
               </Group>
@@ -169,7 +169,7 @@ const Traffic: FC = () => {
             </Grid.Col>
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
-                <Text size="md" fw={700}>
+                <Text size="md" fw="bold">
                   {t('common.label.team')}
                 </Text>
               </Group>
@@ -184,7 +184,7 @@ const Traffic: FC = () => {
             </Grid.Col>
             <Grid.Col span={6}>
               <Group h={headerHeight} pb="3px" px="xs" justify="space-between" wrap="nowrap">
-                <Text size="md" fw={700}>
+                <Text size="md" fw="bold">
                   {t('game.label.traffic')}
                   <Text span px="md" fw="bold" size="sm" c="dimmed">
                     {HunamizeSize(totalFileSize ?? 0)}

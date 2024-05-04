@@ -120,7 +120,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               {challenge?.title ?? ''}
             </Title>
           </Group>
-          <Text miw="5em" fw={700} ff="monospace">
+          <Text miw="5em" fw="bold" ff="monospace">
             {challenge?.originalScore ?? 500} pts
           </Text>
         </Group>

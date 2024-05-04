@@ -101,27 +101,27 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
           </Center>
           <Group grow ta="center">
             <Stack gap={1}>
-              <Text fw={700} size="sm" className={classes.mono}>
+              <Text fw="bold" size="sm" className={classes.mono}>
                 {item?.rank}
               </Text>
               <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
             {item?.organization && (
               <Stack gap={1}>
-                <Text fw={700} size="sm" className={classes.mono}>
+                <Text fw="bold" size="sm" className={classes.mono}>
                   {item?.organizationRank}
                 </Text>
                 <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
               </Stack>
             )}
             <Stack gap={1}>
-              <Text fw={700} size="sm" className={classes.mono}>
+              <Text fw="bold" size="sm" className={classes.mono}>
                 {item?.score}
               </Text>
               <Text size="xs">{t('game.label.score_table.score')}</Text>
             </Stack>
             <Stack gap={1}>
-              <Text fw={700} size="sm" className={classes.mono}>
+              <Text fw="bold" size="sm" className={classes.mono}>
                 {item?.solvedCount}
               </Text>
               <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
@@ -192,7 +192,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
             </Table>
           </ScrollArea>
         ) : (
-          <Text py="1rem" fw={700}>
+          <Text py="1rem" fw="bold">
             {t('game.placeholder.no_solved')}
           </Text>
         )}

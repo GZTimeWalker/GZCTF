@@ -145,7 +145,7 @@ const Users: FC = () => {
             <Text>
               <Trans i18nKey="admin.content.users.reset.content" />
             </Text>
-            <Text fw={700} ff="monospace">
+            <Text fw="bold" ff="monospace">
               {res.data}
             </Text>
             <Button

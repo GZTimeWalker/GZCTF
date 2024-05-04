@@ -157,7 +157,7 @@ const Games: FC = () => {
                             <Avatar alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
                             </Avatar>
-                            <Text fw={700} lineClamp={1} maw="calc(10vw)">
+                            <Text fw="bold" lineClamp={1} maw="calc(10vw)">
                               {game.title}
                             </Text>
                           </Group>

@@ -259,7 +259,7 @@ const GameDetail: FC = () => {
                 <Text size="sm" className={classes.date}>
                   {t('game.content.start_time')}
                 </Text>
-                <Text size="sm" fw={700} className={classes.date}>
+                <Text size="sm" fw="bold" className={classes.date}>
                   {startTime.locale(locale).format('LLL')}
                 </Text>
               </Stack>
@@ -267,7 +267,7 @@ const GameDetail: FC = () => {
                 <Text size="sm" className={classes.date}>
                   {t('game.content.end_time')}
                 </Text>
-                <Text size="sm" fw={700} className={classes.date}>
+                <Text size="sm" fw="bold" className={classes.date}>
                   {endTime.locale(locale).format('LLL')}
                 </Text>
               </Stack>

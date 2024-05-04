@@ -269,7 +269,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               {challenge?.title ?? title}
             </Title>
           </Group>
-          <Text miw="5em" fw={700} ff="monospace">
+          <Text miw="5em" fw="bold" ff="monospace">
             {challenge?.score ?? score} pts
           </Text>
         </Group>
@@ -343,7 +343,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         </Stack>
         <Divider />
         {solved ? (
-          <Text ta="center" fw={700}>
+          <Text ta="center" fw="bold">
             {t('challenge.content.already_solved')}
           </Text>
         ) : (

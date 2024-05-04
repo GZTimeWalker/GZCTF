@@ -49,7 +49,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
         overflow: 'visible',
       }}
     >
-      <Text fw={700} lineClamp={1}>
+      <Text fw="bold" lineClamp={1}>
         {countdown.asHours() > 999
           ? t('game.content.game_lasts_long')
           : countdown.asSeconds() > 0

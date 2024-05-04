@@ -34,7 +34,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           {post.tags && (
             <Group justify="left">
               {post.tags.map((tag, idx) => (
-                <Text key={idx} size="sm" fw={700} span c="brand">
+                <Text key={idx} size="sm" fw="bold" span c="brand">
                   {`#${tag}`}
                 </Text>
               ))}

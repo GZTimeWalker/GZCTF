@@ -79,7 +79,7 @@ const Post: FC = () => {
           <Avatar alt="avatar" src={post?.authorAvatar} color="brand" radius="xl" size="lg">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
-          <Text fw={700}>{post?.authorName ?? 'Anonym'}</Text>
+          <Text fw="bold">{post?.authorName ?? 'Anonym'}</Text>
           <Stack gap={2}>
             <Divider color={colorScheme === 'dark' ? 'white' : 'gray'} />
             <Text fw={500}>{dayjs(post?.time).locale(locale).format('lll')}</Text>
@@ -91,7 +91,7 @@ const Post: FC = () => {
         {post?.tags && post.tags.length > 0 && (
           <Group justify="right">
             {post.tags.map((tag, idx) => (
-              <Text key={idx} fw={700} span c="brand">
+              <Text key={idx} fw="bold" span c="brand">
                 {`#${tag}`}
               </Text>
             ))}
@@ -101,7 +101,7 @@ const Post: FC = () => {
           <Avatar alt="avatar" src={post?.authorAvatar} size="sm">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
-          <Text fw={700}>
+          <Text fw="bold">
             {t('post.content.metadata', {
               author: post?.authorName ?? 'Anonym',
               date: dayjs(post?.time).locale(locale).format('LLL'),

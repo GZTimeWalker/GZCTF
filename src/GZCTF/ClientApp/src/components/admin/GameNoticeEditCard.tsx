@@ -23,7 +23,7 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
       <Group justify="space-between" wrap="nowrap">
         <Stack gap={1}>
           <InlineMarkdownRender source={gameNotice.values.at(-1) || ''} />
-          <Text size="xs" fw={700} c="dimmed">
+          <Text size="xs" fw="bold" c="dimmed">
             {dayjs(gameNotice.time).format('#YY/MM/DD HH:mm:ss')}
           </Text>
         </Stack>

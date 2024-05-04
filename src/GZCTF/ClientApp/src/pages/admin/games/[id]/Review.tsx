@@ -93,7 +93,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
         <Grid className={classes.root}>
           <Grid.Col span={3} className={classes.col}>
             <Icon path={mdiIdentifier} {...iconProps} />
-            <Text fw={700}>{user.userName}</Text>
+            <Text fw="bold">{user.userName}</Text>
           </Grid.Col>
           <Grid.Col span={3} className={classes.col}>
             <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
@@ -132,7 +132,7 @@ const MemberItem: FC<MemberItemProps> = (props) => {
             </Text>
           </Group>
         )}
-        <Text size="sm" fw={700} c={isRegistered ? 'teal' : 'orange'}>
+        <Text size="sm" fw="bold" c={isRegistered ? 'teal' : 'orange'}>
           {isRegistered
             ? t('admin.content.games.review.participation.joined')
             : t('admin.content.games.review.participation.not_joined')}
@@ -179,7 +179,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             <Group justify="space-between" w="30%">
               <Box>
                 <Text>{participation.organization}</Text>
-                <Text size="sm" c="dimmed" fw={700}>
+                <Text size="sm" c="dimmed" fw="bold">
                   {t('admin.content.games.review.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
                     total: participation.team?.members?.length ?? 0,
