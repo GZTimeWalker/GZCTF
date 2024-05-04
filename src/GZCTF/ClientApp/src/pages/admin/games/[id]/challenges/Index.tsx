@@ -22,7 +22,7 @@ import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { ChallengeTagItem, useChallengeTagLabelMap } from '@Utils/Shared'
-import { OnceSWRConfig } from '@Utils/useConfig'
+import { useEditChallenges } from '@Utils/useEdit'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
 
 const GameChallengeEdit: FC = () => {
@@ -37,13 +37,13 @@ const GameChallengeEdit: FC = () => {
 
   const { t } = useTranslation()
 
-  const { data: challenges, mutate } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
+  const { challenges, mutate } = useEditChallenges(numId)
 
   const filteredChallenges =
     category && challenges ? challenges?.filter((c) => c.tag === category) : challenges
-  filteredChallenges?.sort((a, b) => ((a.tag ?? '') > (b.tag ?? '') ? -1 : 1))
 
   const modals = useModals()
+
   const onToggle = (
     challenge: ChallengeInfoModel,
     setDisabled: Dispatch<SetStateAction<boolean>>

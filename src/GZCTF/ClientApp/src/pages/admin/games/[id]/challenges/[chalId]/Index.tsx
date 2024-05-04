@@ -32,7 +32,7 @@ import InstanceEntry from '@Components/InstanceEntry'
 import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeTagItem,
@@ -40,8 +40,7 @@ import {
   ChallengeTypeItem,
   useChallengeTypeLabelMap,
 } from '@Utils/Shared'
-import { OnceSWRConfig } from '@Utils/useConfig'
-import { useEditChallenge } from '@Utils/useEdit'
+import { useEditChallenge, useEditChallenges } from '@Utils/useEdit'
 import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
 
 const GameChallengeEdit: FC = () => {
@@ -50,11 +49,7 @@ const GameChallengeEdit: FC = () => {
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
   const { challenge, mutate } = useEditChallenge(numId, numCId)
-
-  const { data: chals, mutate: mutateChals } = api.edit.useEditGetGameChallenges(
-    numId,
-    OnceSWRConfig
-  )
+  const { challenges, mutate: mutateChals } = useEditChallenges(numId)
 
   const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)
@@ -120,7 +115,7 @@ const GameChallengeEdit: FC = () => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutateChals(
-          chals?.filter((chal) => chal.id !== numCId),
+          challenges?.filter((chal) => chal.id !== numCId),
           { revalidate: false }
         )
         navigate(`/admin/games/${id}/challenges`)
@@ -180,7 +175,7 @@ const GameChallengeEdit: FC = () => {
   }
 
   return (
-    <WithGameEditTab
+    <WithChallengeEdit
       isLoading={!challenge}
       headProps={{ justify: 'apart' }}
       backUrl={`/admin/games/${id}/challenges`}
@@ -534,7 +529,7 @@ const GameChallengeEdit: FC = () => {
         }
         attachmentType={challenge?.attachment?.type ?? FileType.None}
       />
-    </WithGameEditTab>
+    </WithChallengeEdit>
   )
 }
 

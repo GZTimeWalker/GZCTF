@@ -30,7 +30,7 @@ import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditMod
 import AttachmentUploadModal from '@Components/admin/AttachmentUploadModal'
 import FlagCreateModal from '@Components/admin/FlagCreateModal'
 import FlagEditPanel from '@Components/admin/FlagEditPanel'
-import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
@@ -362,11 +362,11 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           </Stack>
         </Stack>
       ) : (
-        <ScrollArea h="calc(100vh - 430px)" pos="relative">
+        <ScrollArea h="calc(100vh - 32rem)" pos="relative">
           {!challenge?.flags.length && (
             <>
               <Overlay opacity={0.3} color={colorScheme === 'dark' ? 'black' : 'white'} />
-              <Center h="calc(100vh - 430px)">
+              <Center h="calc(100vh - 32rem)">
                 <Stack gap={0}>
                   <Title order={2}>{t('admin.content.games.challenges.flag.empty.title')}</Title>
                   <Text>{t('admin.content.games.challenges.flag.empty.description')}</Text>
@@ -393,9 +393,6 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
 const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
-
-  const theme = useMantineTheme()
-
   const { challenge } = useEditChallenge(numId, numCId)
 
   const [attachmentUploadModalOpened, setAttachmentUploadModalOpened] = useState(false)
@@ -418,11 +415,11 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
         </Group>
       </Group>
       <Divider />
-      <ScrollArea h="calc(100vh - 250px)" pos="relative">
+      <ScrollArea h="calc(100vh - 25rem)" pos="relative">
         {!challenge?.flags.length && (
           <>
             <Overlay opacity={0.3} color={colorScheme === 'dark' ? 'black' : 'white'} />
-            <Center h="calc(100vh - 250px)">
+            <Center h="calc(100vh - 25rem)">
               <Stack gap={0}>
                 <Title order={2}>{t('admin.content.games.challenges.flag.empty.title')}</Title>
                 <Text>{t('admin.content.games.challenges.flag.empty.description')}</Text>
@@ -452,8 +449,6 @@ const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
-
-  const theme = useMantineTheme()
   const modals = useModals()
 
   const { challenge, mutate } = useEditChallenge(numId, numCId)
@@ -494,7 +489,7 @@ const GameChallengeEdit: FC = () => {
   }
 
   return (
-    <WithGameEditTab
+    <WithChallengeEdit
       isLoading={!challenge}
       headProps={{ justify: 'apart' }}
       backUrl={`/admin/games/${id}/challenges`}
@@ -519,7 +514,7 @@ const GameChallengeEdit: FC = () => {
       ) : (
         <OneAttachmentWithFlags onDelete={onDeleteFlag} />
       )}
-    </WithGameEditTab>
+    </WithChallengeEdit>
   )
 }
 

@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import AdminPage from '@Components/admin/AdminPage'
 
-interface GameEditTabProps extends React.PropsWithChildren {
+export interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
   headProps?: GroupProps
   contentPos?: React.CSSProperties['justifyContent']
@@ -94,7 +94,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
             root: {
               width: '9rem',
             },
-            tabsList: {
+            list: {
               width: '9rem',
             },
           }}

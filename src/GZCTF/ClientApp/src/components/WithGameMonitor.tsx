@@ -86,7 +86,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                   root: {
                     width: '9rem',
                   },
-                  tabsList: {
+                  list: {
                     width: '9rem',
                   },
                 }}
