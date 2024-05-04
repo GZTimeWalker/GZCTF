@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import MarkdownRender from '@Components/MarkdownRender'
 import { RequireRole } from '@Components/WithRole'
+import { useLanguage } from '@Utils/I18n'
 import { useUserRole } from '@Utils/useUser'
 import { PostInfoModel, Role } from '@Api'
 
@@ -28,11 +29,13 @@ export interface PostCardProps {
 
 const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const navigate = useNavigate()
-  const { role } = useUserRole()
-  const [disabled, setDisabled] = useState(false)
-  const { t } = useTranslation()
   const theme = useMantineTheme()
+  const { role } = useUserRole()
+  const { t } = useTranslation()
   const { colorScheme } = useMantineColorScheme()
+  const [disabled, setDisabled] = useState(false)
+
+  const { locale } = useLanguage()
 
   return (
     <Card shadow="sm" p="md">
@@ -96,7 +99,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               <Text size="sm" fw="bold" c="dimmed">
                 {t('post.content.metadata', {
                   author: post.authorName ?? 'Anonym',
-                  date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
+                  date: dayjs(post.time).locale(locale).format('LLL'),
                 })}
               </Text>
             </Group>

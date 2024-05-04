@@ -24,6 +24,7 @@ import GameJoinModal from '@Components/GameJoinModal'
 import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { useLanguage } from '@Utils/I18n'
 import { useBannerStyles, useIsMobile } from '@Utils/ThemeOverride'
 import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
@@ -86,6 +87,8 @@ const GameDetail: FC = () => {
   const { classes, theme } = useBannerStyles()
 
   const { startTime, endTime, finished, started, progress } = getGameStatus(game)
+
+  const { locale } = useLanguage()
 
   const { user } = useUser()
   const { teams } = useTeams()
@@ -257,7 +260,7 @@ const GameDetail: FC = () => {
                   {t('game.content.start_time')}
                 </Text>
                 <Text size="sm" fw={700} className={classes.date}>
-                  {startTime.format('HH:mm:ss, MMMM DD, YYYY')}
+                  {startTime.locale(locale).format('LLL')}
                 </Text>
               </Stack>
               <Stack gap={0}>
@@ -265,7 +268,7 @@ const GameDetail: FC = () => {
                   {t('game.content.end_time')}
                 </Text>
                 <Text size="sm" fw={700} className={classes.date}>
-                  {endTime.format('HH:mm:ss, MMMM DD, YYYY')}
+                  {endTime.locale(locale).format('LLL')}
                 </Text>
               </Stack>
             </Group>

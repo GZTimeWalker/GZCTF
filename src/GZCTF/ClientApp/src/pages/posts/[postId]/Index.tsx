@@ -13,19 +13,17 @@ import { useScrollIntoView } from '@mantine/hooks'
 import { mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
+import { useLanguage } from '@Utils/I18n'
 import { useBannerStyles, useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { Role } from '@Api'
-
-dayjs.extend(LocalizedFormat)
 
 const Post: FC = () => {
   const { postId } = useParams()
@@ -61,6 +59,7 @@ const Post: FC = () => {
 
   const { role } = useUserRole()
   const { colorScheme } = useMantineColorScheme()
+  const { locale } = useLanguage()
 
   usePageTitle(post?.title ?? 'Post')
 
@@ -83,7 +82,7 @@ const Post: FC = () => {
           <Text fw={700}>{post?.authorName ?? 'Anonym'}</Text>
           <Stack gap={2}>
             <Divider color={colorScheme === 'dark' ? 'white' : 'gray'} />
-            <Text fw={500}>{dayjs(post?.time).format('LLL')}</Text>
+            <Text fw={500}>{dayjs(post?.time).locale(locale).format('lll')}</Text>
           </Stack>
         </Stack>
       </div>
@@ -105,7 +104,7 @@ const Post: FC = () => {
           <Text fw={700}>
             {t('post.content.metadata', {
               author: post?.authorName ?? 'Anonym',
-              date: dayjs(post?.time).format('HH:mm, YY/MM/DD'),
+              date: dayjs(post?.time).locale(locale).format('LLL'),
             })}
           </Text>
         </Group>
