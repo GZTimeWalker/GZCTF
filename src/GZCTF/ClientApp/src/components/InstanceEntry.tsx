@@ -144,16 +144,16 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   if (!withContainer) {
     return test ? (
-      <Text size="md" c="dimmed" fw={600} pt={30}>
+      <Text size="md" c="dimmed" fw="bold" pt={30}>
         {t('challenge.content.instance.test.no_container')}
       </Text>
     ) : (
       <Group justify="space-between" pt="xs" wrap="nowrap">
         <Stack align="left" gap={0}>
-          <Text size="sm" fw={600}>
+          <Text size="sm" fw="bold">
             {t('challenge.content.instance.no_container.message')}
           </Text>
-          <Text size="xs" c="dimmed" fw={600}>
+          <Text size="xs" c="dimmed" fw="bold">
             {t('challenge.content.instance.no_container.note', {
               min: config.defaultLifetime,
             })}
@@ -170,11 +170,15 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   return (
     <Stack gap={2} w="100%">
       <TextInput
-        label={<Text fw={600}>{t('challenge.content.instance.entry.label')}</Text>}
+        label={
+          <Text size="sm" fw="bold">
+            {t('challenge.content.instance.entry.label')}
+          </Text>
+        }
         description={
           isPlatformProxy &&
           !test && (
-            <Text>
+            <Text size="sm">
               {t('challenge.content.instance.entry.description.proxy')}
               <Anchor
                 href="https://github.com/XDSEC/WebSocketReflectorX/releases"

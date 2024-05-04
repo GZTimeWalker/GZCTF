@@ -205,7 +205,7 @@ const ChallengePanel: FC = () => {
                 >
                   <Group justify="space-between" wrap="nowrap" gap={2}>
                     <Text fz="sm" fw="bold">
-                      {data?.label}
+                      {data?.name}
                     </Text>
                     <Text fz="sm" fw="bold">
                       {challenges && challenges[tab].length}

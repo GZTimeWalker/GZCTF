@@ -2,11 +2,13 @@ import {
   Badge,
   Box,
   Code,
+  ComboboxItem,
   Group,
   Input,
   Paper,
   ScrollArea,
   Select,
+  SelectProps,
   Stack,
   Table,
   Text,
@@ -24,7 +26,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, forwardRef, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
@@ -33,13 +35,15 @@ import { useChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
 
-type SelectTeamItemProps = TeamModel & React.ComponentPropsWithoutRef<'div'>
-type SelectChallengeItemProps = ChallengeModel & React.ComponentPropsWithoutRef<'div'>
+type SelectTeamItemProps = TeamModel & ComboboxItem
+type SelectChallengeItemProps = ChallengeModel & ComboboxItem
 
-const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
-  ({ name, id, ...others }: SelectTeamItemProps, ref) => (
-    <Stack ref={ref} {...others} gap={0}>
-      <Text lineClamp={1}>
+const SelectTeamItem: SelectProps['renderOption'] = ({ option }) => {
+  const { name, id, ...others } = option as SelectTeamItemProps
+
+  return (
+    <Stack {...others} gap={0}>
+      <Text size="sm" lineClamp={1}>
         <Text span c="dimmed">
           {`#${id} `}
         </Text>
@@ -47,27 +51,26 @@ const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
       </Text>
     </Stack>
   )
-)
+}
 
-const SelectChallengeItem = forwardRef<HTMLDivElement, SelectChallengeItemProps>(
-  ({ title, id, tag, ...others }: SelectChallengeItemProps, ref) => {
-    const challengeTagLabelMap = useChallengeTagLabelMap()
-    const tagInfo = challengeTagLabelMap.get(tag ?? ChallengeTag.Misc)!
-    const theme = useMantineTheme()
+const SelectChallengeItem: SelectProps['renderOption'] = ({ option }) => {
+  const { title, id, tag } = option as SelectChallengeItemProps
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const tagInfo = challengeTagLabelMap.get(tag ?? ChallengeTag.Misc)!
+  const theme = useMantineTheme()
 
-    return (
-      <Group ref={ref} {...others} gap="sm">
-        <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
-        <Text lineClamp={1}>
-          <Text span c="dimmed">
-            {`#${id} `}
-          </Text>
-          {title}
+  return (
+    <Group gap="sm">
+      <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
+      <Text size="sm" lineClamp={1}>
+        <Text span c="dimmed">
+          {`#${id} `}
         </Text>
-      </Group>
-    )
-  }
-)
+        {title}
+      </Text>
+    </Group>
+  )
+}
 
 const Instances: FC = () => {
   const { data: instances, mutate } = api.admin.useAdminInstances({
@@ -165,12 +168,12 @@ const Instances: FC = () => {
               onChange={(id) => setSelectedTeamId(id)}
               leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}
               nothingFoundMessage={t('admin.placeholder.instances.teams.not_found')}
-              // TODO: fix select component
-              // itemComponent={SelectTeamItem}
-              // data={
-              //   teams?.map((team) => ({ value: String(team.id), label: team.name, ...team })) ?? []
-              // }
-              // filter={(query, team) => team.name.includes(query) || team.value.includes(query)}
+              renderOption={SelectTeamItem}
+              data={
+                teams?.map(
+                  (team) => ({ value: String(team.id), label: team.name, ...team }) as ComboboxItem
+                ) ?? []
+              }
             />
             <Select
               w="48%"
@@ -180,18 +183,17 @@ const Instances: FC = () => {
               onChange={(id) => setSelectedChallengeId(id)}
               leftSection={<Icon path={mdiPuzzleOutline} size={1} />}
               nothingFoundMessage={t('admin.placeholder.instances.challenges.not_found')}
-              // TODO: fix select component
-              // itemComponent={SelectChallengeItem}
-              // data={
-              //   challenge?.map((challenge) => ({
-              //     value: String(challenge.id),
-              //     label: challenge.title,
-              //     ...challenge,
-              //   })) ?? []
-              // }
-              // filter={(query, challenge) =>
-              //   challenge.title.includes(query) || challenge.value.includes(query)
-              // }
+              renderOption={SelectChallengeItem}
+              data={
+                challenge?.map(
+                  (challenge) =>
+                    ({
+                      value: String(challenge.id),
+                      label: challenge.title,
+                      ...challenge,
+                    }) as ComboboxItem
+                ) ?? []
+              }
             />
           </Group>
 

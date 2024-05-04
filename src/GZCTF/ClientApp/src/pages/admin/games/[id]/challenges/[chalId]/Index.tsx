@@ -1,5 +1,6 @@
 import {
   Button,
+  ComboboxItem,
   Grid,
   Group,
   Input,
@@ -263,12 +264,11 @@ const GameChallengeEdit: FC = () => {
               value={type}
               disabled={disabled}
               readOnly
-              // TODO: fix select
-              // itemComponent={ChallengeTypeItem}
-              // data={Object.entries(ChallengeType).map((type) => {
-              //   const data = challengeTypeLabelMap.get(type[1])
-              //   return { value: type[1], ...data }
-              // })}
+              renderOption={ChallengeTypeItem}
+              data={Object.entries(ChallengeType).map((type) => {
+                const data = challengeTypeLabelMap.get(type[1])
+                return { value: type[1], label: data?.name, ...data } as ComboboxItem
+              })}
             />
           </Grid.Col>
           <Grid.Col span={1}>
@@ -282,12 +282,11 @@ const GameChallengeEdit: FC = () => {
                 setTag(e)
                 setChallengeInfo({ ...challengeInfo, tag: e as ChallengeTag })
               }}
-              // TODO: fix select
-              // itemComponent={ChallengeTagItem}
-              // data={Object.entries(ChallengeTag).map((tag) => {
-              //   const data = challengeTagLabelMap.get(tag[1])
-              //   return { value: tag[1], ...data }
-              // })}
+              renderOption={ChallengeTagItem}
+              data={Object.entries(ChallengeTag).map((tag) => {
+                const data = challengeTagLabelMap.get(tag[1])
+                return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+              })}
             />
           </Grid.Col>
           <Grid.Col span={3}>

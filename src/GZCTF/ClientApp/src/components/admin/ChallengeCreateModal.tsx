@@ -1,4 +1,4 @@
-import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
+import { Button, ComboboxItem, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
@@ -7,12 +7,12 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiHelper'
-// import {
-//   ChallengeTagItem,
-//   useChallengeTagLabelMap,
-//   ChallengeTypeItem,
-//   useChallengeTypeLabelMap,
-// } from '@Utils/Shared'
+import {
+  ChallengeTagItem,
+  ChallengeTypeItem,
+  useChallengeTagLabelMap,
+  useChallengeTypeLabelMap,
+} from '@Utils/Shared'
 import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
 
 interface ChallengeCreateModalProps extends ModalProps {
@@ -24,8 +24,8 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { onAddChallenge, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
-  // const challengeTagLabelMap = useChallengeTagLabelMap()
-  // const challengeTypeLabelMap = useChallengeTypeLabelMap()
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeTypeLabelMap = useChallengeTypeLabelMap()
 
   const [title, setTitle] = useInputState('')
   const [tag, setTag] = useState<string | null>(null)
@@ -78,13 +78,11 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           placeholder="Type"
           value={type}
           onChange={setType}
-          // TODO: fix select component
-          // withinPortal
-          // itemComponent={ChallengeTypeItem}
-          // data={Object.entries(ChallengeType).map((type) => {
-          //   const data = challengeTypeLabelMap.get(type[1])
-          //   return { value: type[1], ...data }
-          // })}
+          renderOption={ChallengeTypeItem}
+          data={Object.entries(ChallengeType).map((type) => {
+            const data = challengeTypeLabelMap.get(type[1])
+            return { value: type[1], label: data?.name, ...data } as ComboboxItem
+          })}
         />
         <Select
           required
@@ -92,13 +90,11 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           placeholder="Tag"
           value={tag}
           onChange={setTag}
-          // TODO: fix select component
-          // itemComponent={ChallengeTagItem}
-          // withinPortal
-          // data={Object.entries(ChallengeTag).map((tag) => {
-          //   const data = challengeTagLabelMap.get(tag[1])
-          //   return { value: tag[1], ...data }
-          // })}
+          renderOption={ChallengeTagItem}
+          data={Object.entries(ChallengeTag).map((tag) => {
+            const data = challengeTagLabelMap.get(tag[1])
+            return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+          })}
         />
         <Button fullWidth disabled={disabled} onClick={onCreate}>
           {t('admin.button.challenges.new')}

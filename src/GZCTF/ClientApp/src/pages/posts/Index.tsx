@@ -69,12 +69,17 @@ const Posts: FC = () => {
         </Stack>
         {(posts?.length ?? 0) > ITEMS_PER_PAGE && (
           <Pagination
-            // align="center"
-            // TODO: Fix align prop
             my={20}
             value={activePage}
             onChange={setPage}
             total={Math.ceil((posts?.length ?? 0) / ITEMS_PER_PAGE)}
+            styles={{
+              root: {
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              },
+            }}
           />
         )}
       </Stack>

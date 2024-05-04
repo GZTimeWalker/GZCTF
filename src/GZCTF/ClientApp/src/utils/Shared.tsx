@@ -1,12 +1,14 @@
 import {
   Group,
-  MantineColor,
   Stack,
   Text,
   darken,
   lighten,
   useMantineTheme,
   useMantineColorScheme,
+  SelectProps,
+  ComboboxItem,
+  MantineColorsTuple,
 } from '@mantine/core'
 import {
   mdiBomb,
@@ -33,7 +35,6 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { forwardRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ChallengeTag,
@@ -51,52 +52,57 @@ export const useChallengeTypeLabelMap = () => {
     [
       ChallengeType.StaticAttachment,
       {
-        label: t('challenge.type.static_attachment.label'),
+        name: t('challenge.type.static_attachment.label'),
         desrc: t('challenge.type.static_attachment.desrc'),
       },
     ],
     [
       ChallengeType.StaticContainer,
       {
-        label: t('challenge.type.static_container.label'),
+        name: t('challenge.type.static_container.label'),
         desrc: t('challenge.type.static_container.desrc'),
       },
     ],
     [
       ChallengeType.DynamicAttachment,
       {
-        label: t('challenge.type.dynamic_attachment.label'),
+        name: t('challenge.type.dynamic_attachment.label'),
         desrc: t('challenge.type.dynamic_attachment.desrc'),
       },
     ],
     [
       ChallengeType.DynamicContainer,
       {
-        label: t('challenge.type.dynamic_container.label'),
+        name: t('challenge.type.dynamic_container.label'),
         desrc: t('challenge.type.dynamic_container.desrc'),
       },
     ],
   ])
 }
 
-export interface ChallengeTypeItemProps extends React.ComponentPropsWithoutRef<'div'> {
-  label: string
+export interface ChallengeTypeItemProps {
+  name: string
   desrc: string
 }
 
-export const ChallengeTypeItem = forwardRef<HTMLDivElement, ChallengeTypeItemProps>(
-  ({ label, desrc, ...others }: ChallengeTypeItemProps, ref) => {
-    return (
-      <Stack gap={0} ref={ref} {...others}>
-        <Text size="sm">{label}</Text>
-        <Text size="xs">{desrc}</Text>
-      </Stack>
-    )
-  }
-)
+type SelectChallengeTypeItemProps = ChallengeTypeItemProps & ComboboxItem
+
+export const ChallengeTypeItem: SelectProps['renderOption'] = ({ option }) => {
+  const { name, desrc } = option as SelectChallengeTypeItemProps
+
+  return (
+    <Stack gap={0}>
+      <Text size="sm" fw="bold">
+        {name}
+      </Text>
+      <Text size="xs">{desrc}</Text>
+    </Stack>
+  )
+}
 
 export const useChallengeTagLabelMap = () => {
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   return new Map<ChallengeTag, ChallengeTagItemProps>([
     [
@@ -104,8 +110,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.misc'),
         icon: mdiGamepadVariantOutline,
-        label: ChallengeTag.Misc,
+        name: ChallengeTag.Misc,
         color: 'teal',
+        colors: theme.colors['teal'],
       },
     ],
     [
@@ -113,25 +120,39 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.crypto'),
         icon: mdiMatrix,
-        label: ChallengeTag.Crypto,
+        name: ChallengeTag.Crypto,
         color: 'indigo',
+        colors: theme.colors['indigo'],
       },
     ],
     [
       ChallengeTag.Pwn,
-      { desrc: t('challenge.tag.pwn'), icon: mdiBomb, label: ChallengeTag.Pwn, color: 'red' },
+      {
+        desrc: t('challenge.tag.pwn'),
+        icon: mdiBomb,
+        name: ChallengeTag.Pwn,
+        color: 'red',
+        colors: theme.colors['red'],
+      },
     ],
     [
       ChallengeTag.Web,
-      { desrc: t('challenge.tag.web'), icon: mdiWeb, label: ChallengeTag.Web, color: 'blue' },
+      {
+        desrc: t('challenge.tag.web'),
+        icon: mdiWeb,
+        name: ChallengeTag.Web,
+        color: 'blue',
+        colors: theme.colors['blue'],
+      },
     ],
     [
       ChallengeTag.Reverse,
       {
         desrc: t('challenge.tag.reverse'),
         icon: mdiChevronTripleLeft,
-        label: ChallengeTag.Reverse,
+        name: ChallengeTag.Reverse,
         color: 'yellow',
+        colors: theme.colors['yellow'],
       },
     ],
     [
@@ -139,8 +160,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.blockchain'),
         icon: mdiEthereum,
-        label: ChallengeTag.Blockchain,
+        name: ChallengeTag.Blockchain,
         color: 'lime',
+        colors: theme.colors['lime'],
       },
     ],
     [
@@ -148,8 +170,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.forensics'),
         icon: mdiFingerprint,
-        label: ChallengeTag.Forensics,
+        name: ChallengeTag.Forensics,
         color: 'cyan',
+        colors: theme.colors['cyan'],
       },
     ],
     [
@@ -157,8 +180,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.hardware'),
         icon: mdiChip,
-        label: ChallengeTag.Hardware,
+        name: ChallengeTag.Hardware,
         color: 'violet',
+        colors: theme.colors['violet'],
       },
     ],
     [
@@ -166,8 +190,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.mobile'),
         icon: mdiCellphoneCog,
-        label: ChallengeTag.Mobile,
+        name: ChallengeTag.Mobile,
         color: 'pink',
+        colors: theme.colors['pink'],
       },
     ],
     [
@@ -175,8 +200,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.ppc'),
         icon: mdiConsole,
-        label: ChallengeTag.PPC,
+        name: ChallengeTag.PPC,
         color: 'orange',
+        colors: theme.colors['orange'],
       },
     ],
     [
@@ -184,31 +210,36 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.ai'),
         icon: mdiRobotLoveOutline,
-        label: ChallengeTag.AI,
+        name: ChallengeTag.AI,
         color: 'green',
+        colors: theme.colors['green'],
       },
     ],
   ])
 }
 
-export interface ChallengeTagItemProps extends React.ComponentPropsWithoutRef<'div'> {
-  label: ChallengeTag
+export interface ChallengeTagItemProps {
+  name: ChallengeTag
   desrc: string
   icon: string
-  color: MantineColor
+  color: string
+  colors: MantineColorsTuple
 }
 
-export const ChallengeTagItem = forwardRef<HTMLDivElement, ChallengeTagItemProps>(
-  ({ label, icon, color, ...others }: ChallengeTagItemProps, ref) => {
-    const theme = useMantineTheme()
-    return (
-      <Group ref={ref} wrap="nowrap" {...others}>
-        <Icon color={theme.colors[color][4]} path={icon} size={1} />
-        <Text size="sm">{label}</Text>
-      </Group>
-    )
-  }
-)
+type SelectChallengeTagItemProps = ChallengeTagItemProps & ComboboxItem
+
+export const ChallengeTagItem: SelectProps['renderOption'] = ({ option }) => {
+  const { colors, icon, name } = option as SelectChallengeTagItemProps
+
+  return (
+    <Group wrap="nowrap">
+      <Icon color={colors[4]} path={icon} size={1.2} />
+      <Text size="sm" fw="bold">
+        {name}
+      </Text>
+    </Group>
+  )
+}
 
 export const BloodsTypes = [
   SubmissionType.FirstBlood,

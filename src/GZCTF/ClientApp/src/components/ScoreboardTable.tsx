@@ -393,7 +393,6 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           </Text>
 
           <Pagination
-            // TODO: wrap="nowrap"
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}

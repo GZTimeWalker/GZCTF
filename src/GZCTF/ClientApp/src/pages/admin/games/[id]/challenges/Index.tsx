@@ -1,6 +1,7 @@
 import {
   Button,
   Center,
+  ComboboxItem,
   Group,
   ScrollArea,
   Select,
@@ -123,14 +124,13 @@ const GameChallengeEdit: FC = () => {
             clearable
             searchable
             value={category}
-            // TODO: fix select component
-            // nothingFound={t('admin.content.nothing_found')}
+            nothingFoundMessage={t('admin.content.nothing_found')}
             onChange={(value) => setCategory(value as ChallengeTag | null)}
-            // itemComponent={ChallengeTagItem}
-            // data={Object.entries(ChallengeTag).map((tag) => {
-            //   const data = challengeTagLabelMap.get(tag[1])
-            //   return { value: tag[1], ...data }
-            // })}
+            renderOption={ChallengeTagItem}
+            data={Object.entries(ChallengeTag).map((tag) => {
+              const data = challengeTagLabelMap.get(tag[1])
+              return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+            })}
           />
           <Group justify="right">
             <Button

@@ -157,7 +157,6 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
         </Box>
         <Group justify="center">
           <Pagination
-            // TODO: wrap="nowrap"
             size="md"
             value={activePage}
             onChange={setPage}
