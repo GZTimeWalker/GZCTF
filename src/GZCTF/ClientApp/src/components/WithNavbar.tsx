@@ -34,8 +34,6 @@ const WithNavBar: FC<WithNavBarProps> = ({
   const { user } = useUser()
   const isMobile = useIsMobile()
 
-  console.log('WithNavBar', { colorScheme, isMobile })
-
   return (
     <WithWiderScreen minWidth={minWidth}>
       <Watermark
@@ -67,7 +65,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
           <AppShell.Main w="100%">
             <Stack
               w="100%"
-              mih="100vh"
+              mih={isMobile ? 'calc(100vh - 60pt)' : '100vh'}
               pb={withFooter ? 'xl' : 0}
               pos="relative"
               align="center"

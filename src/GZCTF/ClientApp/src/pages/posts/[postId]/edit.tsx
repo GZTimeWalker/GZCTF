@@ -160,7 +160,7 @@ const PostEdit: FC = () => {
     <WithNavBar minWidth={0}>
       <WithRole requiredRole={Role.Admin}>
         <IconHeader />
-        <Stack mt={isMobile ? 5 : 30}>
+        <Stack mt={isMobile ? 25 : 30}>
           <Group justify={isMobile ? 'right' : 'space-between'}>
             {!isMobile && (
               <Title

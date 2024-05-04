@@ -140,7 +140,7 @@ const Teams: FC = () => {
                 TEAMS
               </Title>
               <SimpleGrid
-                cols={{ base: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}
+                cols={{ base: 1, lg: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}
                 spacing={{ base: 'sm', lg: 'md' }}
               >
                 {teams.map((t, i) => (

@@ -25,7 +25,7 @@ const Games: FC = () => {
 
   return (
     <WithNavBar>
-      <IconHeader sticky/>
+      <IconHeader sticky />
       <Stack pt="md">
         {games.map((g) => (
           <GameCard key={g.id} game={g} />

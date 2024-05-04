@@ -16,7 +16,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core'
-import { Dropzone } from '@mantine/dropzone'
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -25,7 +25,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
-import { ACCEPT_IMAGE_MIME_TYPE, useIsMobile } from '@Utils/ThemeOverride'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api, { ProfileUpdateModel } from '@Api'
@@ -256,7 +256,9 @@ const Profile: FC = () => {
   return (
     <WithNavBar minWidth={0}>
       {isMobile ? (
-        <Box mt="md">{context}</Box>
+        <Box mt="md" p="sm">
+          {context}
+        </Box>
       ) : (
         <Center h="100vh">
           <Paper w="55%" maw={600} shadow="sm" p="5%">
@@ -325,7 +327,7 @@ const Profile: FC = () => {
           miw={220}
           mih={220}
           maxSize={3 * 1024 * 1024}
-          accept={ACCEPT_IMAGE_MIME_TYPE}
+          accept={IMAGE_MIME_TYPE}
         >
           <Group justify="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
             {avatarFile ? (

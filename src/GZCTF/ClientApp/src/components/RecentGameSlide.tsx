@@ -51,7 +51,7 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       shadow="md"
       p="md"
       radius="md"
-      sx={{ backgroundImage: `url(${poster})` }}
+      style={{ backgroundImage: `url(${poster})` }}
       className={classes.card}
     >
       <Stack h="100%" gap={2} justify="space-between">

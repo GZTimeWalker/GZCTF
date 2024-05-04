@@ -2,8 +2,8 @@ import { Box, Group, Text, Title } from '@mantine/core'
 import { createStyles, keyframes } from '@mantine/emotion'
 import { FC } from 'react'
 import LogoHeader from '@Components/LogoHeader'
-import { useConfig } from '@Utils/useConfig'
 import { useIsMobile } from '@Utils/ThemeOverride'
+import { useConfig } from '@Utils/useConfig'
 
 interface StickyHeaderProps {
   sticky?: boolean
