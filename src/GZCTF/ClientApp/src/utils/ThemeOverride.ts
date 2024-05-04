@@ -451,9 +451,11 @@ export const useFooterStyles = createStyles((theme, _, u) => ({
     left: 0,
     right: 0,
     height: FOOTER_HEIGHT,
+    paddingLeft: `calc(var(--app-shell-navbar-offset, 0rem) + var(--mantine-spacing-xl) * 2)`,
+    paddingRight: `calc(var(--mantine-spacing-xl) * 2)`,
 
     [u.smallerThan('md')]: {
-      padding: `calc(${theme.spacing.xl})`,
+      padding: `var(--mantine-spacing-xl)`,
     },
 
     [u.dark]: {
