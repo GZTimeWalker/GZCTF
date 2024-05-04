@@ -207,7 +207,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               style={{ flexGrow: 1 }}
               styles={{
                 input: {
-                  fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
+                  fontFamily: theme.fontFamilyMonospace,
                 },
               }}
             />

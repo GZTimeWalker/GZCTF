@@ -195,7 +195,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         readOnly
         styles={{
           input: {
-            fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
+            fontFamily: theme.fontFamilyMonospace,
           },
         }}
         rightSection={

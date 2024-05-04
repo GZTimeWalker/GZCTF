@@ -79,7 +79,7 @@ export const CustomTheme = createTheme({
   primaryColor: 'brand',
   fontFamily:
     "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif",
-  fontFamilyMonospace: "'JetBrains Mono', monospace, sans-serif",
+  fontFamilyMonospace: "'JetBrains Mono', monospace, 'IBM Plex Sans', sans-serif",
   headings: {
     fontFamily: "'IBM Plex Sans', sans-serif",
   },
