@@ -4,18 +4,21 @@ import { Icon } from '@mdi/react'
 import { AxiosError, AxiosResponse } from 'axios'
 import { ContentType } from '@Api'
 
-type WindowOpenParameters =
-  Parameters<typeof window.open> extends [any?, ...infer Rest] ? Rest : never
-
-const openBlob = (blob: Blob, ...rest: WindowOpenParameters) => {
-  const blobURL = window.URL.createObjectURL(blob)
-  window.open(blobURL, ...rest)
-  window.URL.revokeObjectURL(blobURL)
-}
-
-const openAxiosBlobResponse = (res: AxiosResponse) => {
+const openAxiosBlobResponse = (res: AxiosResponse, downloadFilename?: string) => {
   if (res.data instanceof Blob) {
-    openBlob(res.data, '_blank')
+    const blobURL = window.URL.createObjectURL(res.data)
+    const anchor = document.createElement('a')
+    anchor.style.display = 'none'
+    anchor.href = blobURL
+    if (downloadFilename) {
+      anchor.download = downloadFilename
+    }
+    document.body.appendChild(anchor)
+    anchor.click()
+    window.setTimeout(() => {
+      anchor.remove()
+      window.URL.revokeObjectURL(blobURL)
+    })
   } else {
     throw new Error('Response data is not a Blob')
   }
@@ -40,7 +43,8 @@ const handleAxiosBlobError = async (err: AxiosError) => {
 }
 
 export const downloadBlob = (
-  promise: Promise<AxiosResponse<void, any>>,
+  promise: Promise<AxiosResponse>,
+  filename: string | undefined,
   setDisabled: (value: React.SetStateAction<boolean>) => void,
   t: (key: string) => string
 ) => {
@@ -62,7 +66,7 @@ export const downloadBlob = (
         message: t('common.download.success'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
-      openAxiosBlobResponse(res)
+      openAxiosBlobResponse(res, filename)
     })
     .catch(async (err: AxiosError) => {
       updateNotification({
