@@ -16,7 +16,7 @@ importers:
         version: 11.11.4(@types/react@18.3.1)(react@18.3.1)
       '@mantine/carousel':
         specifier: ^7.9.0
-        version: 7.9.0(@mantine/core@7.9.0(@mantine/hooks@7.9.0(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.0(react@18.3.1))(embla-carousel-react@8.0.2(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 7.9.0(@mantine/core@7.9.0(@mantine/hooks@7.9.0(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.0(react@18.3.1))(embla-carousel-react@8.0.4(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mantine/core':
         specifier: ^7.9.0
         version: 7.9.0(@mantine/hooks@7.9.0(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -63,14 +63,14 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2(echarts@5.5.0)(react@18.3.1)
       embla-carousel:
-        specifier: ^8.0.2
-        version: 8.0.2
+        specifier: ^8.0.4
+        version: 8.0.4
       embla-carousel-autoplay:
-        specifier: ^8.0.2
-        version: 8.0.2(embla-carousel@8.0.2)
+        specifier: ^8.0.4
+        version: 8.0.4(embla-carousel@8.0.4)
       embla-carousel-react:
-        specifier: ^8.0.2
-        version: 8.0.2(react@18.3.1)
+        specifier: ^8.0.4
+        version: 8.0.4(react@18.3.1)
       i18next:
         specifier: ^23.11.3
         version: 23.11.3
@@ -111,8 +111,8 @@ importers:
         specifier: ^14.1.1
         version: 14.1.1(i18next@23.11.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-pdf:
-        specifier: ^8.0.0
-        version: 8.0.0(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^8.0.2
+        version: 8.0.2(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router:
         specifier: ^6.23.0
         version: 6.23.0(react@18.3.1)
@@ -128,10 +128,10 @@ importers:
         version: 7.24.5(@babel/core@7.24.5)(eslint@8.57.0)
       '@kainstar/vite-plugin-i18next-loader':
         specifier: ^1.0.3
-        version: 1.0.3(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 1.0.3(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))
       '@nabla/vite-plugin-eslint':
         specifier: ^2.0.4
-        version: 2.0.4(eslint@8.57.0)(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 2.0.4(eslint@8.57.0)(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^4.3.0
         version: 4.3.0(prettier@3.2.5)
@@ -139,11 +139,11 @@ importers:
         specifier: ^0.16.7
         version: 0.16.7
       '@types/node':
-        specifier: 20.12.8
-        version: 20.12.8
+        specifier: 20.12.10
+        version: 20.12.10
       '@types/prismjs':
-        specifier: ^1.26.3
-        version: 1.26.3
+        specifier: ^1.26.4
+        version: 1.26.4
       '@types/react':
         specifier: ^18.3.1
         version: 18.3.1
@@ -158,7 +158,7 @@ importers:
         version: 7.8.0(eslint@8.57.0)(typescript@5.4.5)
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 4.2.1(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))
       axios:
         specifier: ^1.6.8
         version: 1.6.8
@@ -203,19 +203,19 @@ importers:
         version: 5.4.5
       vite:
         specifier: ^5.2.11
-        version: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
+        version: 5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))
       vite-plugin-pages:
         specifier: ^0.32.1
-        version: 0.32.1(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 0.32.1(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))
       vite-plugin-prismjs:
         specifier: ^0.0.11
         version: 0.0.11(prismjs@1.29.0)
       vite-plugin-webfont-dl:
         specifier: ^3.9.4
-        version: 3.9.4(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 3.9.4(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))
       vite-tsconfig-paths:
         specifier: ^4.3.2
-        version: 4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))
 
 packages:
 
@@ -875,14 +875,14 @@ packages:
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
 
-  '@types/node@20.12.8':
-    resolution: {integrity: sha512-NU0rJLJnshZWdE/097cdCBbyW1h4hEg0xpovcoAQYHl8dnEyp/NAOiE45pvc+Bd1Dt+2r94v2eGFpQJ4R7g+2w==}
+  '@types/node@20.12.10':
+    resolution: {integrity: sha512-Eem5pH9pmWBHoGAT8Dr5fdc5rYA+4NAovdM4EktRPVAAiJhmWWfQrA0cFhAbOsQdSfIHjAud6YdkbL69+zSKjw==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
 
-  '@types/prismjs@1.26.3':
-    resolution: {integrity: sha512-A0D0aTXvjlqJ5ZILMz3rNfDBOx9hHxLZYv2by47Sm/pqW35zzjusrZTryatjN/Rf8Us2gZrJD+KeHbUSTux1Cw==}
+  '@types/prismjs@1.26.4':
+    resolution: {integrity: sha512-rlAnzkW2sZOjbqZ743IHUhFcvzaGbqijwOu8QZnZCjfQzBqFE3s4lOTJEsxikImav9uzz/42I+O7YUs1mWgMlg==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -1267,23 +1267,23 @@ packages:
   electron-to-chromium@1.4.751:
     resolution: {integrity: sha512-2DEPi++qa89SMGRhufWTiLmzqyuGmNF3SK4+PQetW1JKiZdEpF4XQonJXJCzyuYSA6mauiMhbyVhqYAP45Hvfw==}
 
-  embla-carousel-autoplay@8.0.2:
-    resolution: {integrity: sha512-31lBigAkHeI4k1767uYcr9Gm2y12mzLpVsi+QRxIWQT8J4AtRoHLOhd8YJFiXf22DbI/j78+IaeJK4lZRlFxUw==}
+  embla-carousel-autoplay@8.0.4:
+    resolution: {integrity: sha512-Ilmgn+d09o2M23yvl4cYwfO8VnZi7YXQl9UGYIflLGhtFaZW9PKU67TaW8teRjaDhS3I+uz3osBFDO407YPjfQ==}
     peerDependencies:
-      embla-carousel: 8.0.2
+      embla-carousel: 8.0.4
 
-  embla-carousel-react@8.0.2:
-    resolution: {integrity: sha512-RHe1GKLulOW8EDN+cJgbFbVVfRXcaLT2/89dyVw3ONGgVpZjD19wB87I1LUZ1aCzOSrTccx0PFSQanK4OOfGPA==}
+  embla-carousel-react@8.0.4:
+    resolution: {integrity: sha512-3NlOmBmRhaGhtI0It9243yg9fz2wPRML5gGLDIE69Oyb/CuGsJnxpcgG74j905NQBDgReTEfFJwzOtIFAjeBfg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.1 || ^18.0.0
 
-  embla-carousel-reactive-utils@8.0.2:
-    resolution: {integrity: sha512-nLZqDkQdO0hvOP49/dUwjkkepMnUXgIzhyRuDjwGqswpB4Ibnc5M+w7rSQQAM+uMj0cPaXnYOTlv8XD7I/zVNw==}
+  embla-carousel-reactive-utils@8.0.4:
+    resolution: {integrity: sha512-7lWM+8hanIF2roTAjxwfqfr0+VTbr9rYVlAs0r5PwPOVpz1G3/+bRelgAYvwcfWVm5Vydo2pKXVfFOPQjznF7w==}
     peerDependencies:
-      embla-carousel: 8.0.2
+      embla-carousel: 8.0.4
 
-  embla-carousel@8.0.2:
-    resolution: {integrity: sha512-bogsDO8xosuh/l3PxIvA5AMl3+BnRVAse9sDW/60amzj4MbGS5re4WH5eVEXiuH8G1/3G7QUAX2QNr3Yx8z5rA==}
+  embla-carousel@8.0.4:
+    resolution: {integrity: sha512-INndmilrV9KY4Wnb4F2tI55DuQnFjf3GPOaPDT2LGYiKhIWVNUhv1nz/RI7CZ6WoIZ8MYHP4t6Qm/cqpcGHknA==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -2183,8 +2183,8 @@ packages:
       react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
       react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
 
-  react-pdf@8.0.0:
-    resolution: {integrity: sha512-0aAQjdXeiAFTCGa607reLwPCrjpwH3MM2t0Lpq5Eju6ss17tNDIdhYiyvw/sZg9/ZrmL9aC0I4ztGiFeWz3zOQ==}
+  react-pdf@8.0.2:
+    resolution: {integrity: sha512-C0PFC+j9vmEIZ82Iq0c85xUWkgsZTUS05syqOk8NC+7PAanyWlVi/ImYkGQe27zYAlBA6IidRYEt1DAAXKq1Ow==}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -3186,18 +3186,18 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@kainstar/vite-plugin-i18next-loader@1.0.3(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))':
+  '@kainstar/vite-plugin-i18next-loader@1.0.3(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))':
     dependencies:
       dot-prop: 8.0.2
       globby: 14.0.1
       js-yaml: 4.1.0
-      vite: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))
 
-  '@mantine/carousel@7.9.0(@mantine/core@7.9.0(@mantine/hooks@7.9.0(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.0(react@18.3.1))(embla-carousel-react@8.0.2(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@mantine/carousel@7.9.0(@mantine/core@7.9.0(@mantine/hooks@7.9.0(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.0(react@18.3.1))(embla-carousel-react@8.0.4(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@mantine/core': 7.9.0(@mantine/hooks@7.9.0(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mantine/hooks': 7.9.0(react@18.3.1)
-      embla-carousel-react: 8.0.2(react@18.3.1)
+      embla-carousel-react: 8.0.4(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
@@ -3315,13 +3315,13 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@nabla/vite-plugin-eslint@2.0.4(eslint@8.57.0)(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))':
+  '@nabla/vite-plugin-eslint@2.0.4(eslint@8.57.0)(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))':
     dependencies:
       '@types/eslint': 8.56.9
       chalk: 4.1.2
       debug: 4.3.4
       eslint: 8.57.0
-      vite: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - supports-color
 
@@ -3445,13 +3445,13 @@ snapshots:
 
   '@types/ms@0.7.34': {}
 
-  '@types/node@20.12.8':
+  '@types/node@20.12.10':
     dependencies:
       undici-types: 5.26.5
 
   '@types/parse-json@4.0.2': {}
 
-  '@types/prismjs@1.26.3': {}
+  '@types/prismjs@1.26.4': {}
 
   '@types/prop-types@15.7.12': {}
 
@@ -3556,14 +3556,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@4.2.1(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)))':
+  '@vitejs/plugin-react@4.2.1(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)))':
     dependencies:
       '@babel/core': 7.24.5
       '@babel/plugin-transform-react-jsx-self': 7.23.3(@babel/core@7.24.5)
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.24.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - supports-color
 
@@ -3892,21 +3892,21 @@ snapshots:
 
   electron-to-chromium@1.4.751: {}
 
-  embla-carousel-autoplay@8.0.2(embla-carousel@8.0.2):
+  embla-carousel-autoplay@8.0.4(embla-carousel@8.0.4):
     dependencies:
-      embla-carousel: 8.0.2
+      embla-carousel: 8.0.4
 
-  embla-carousel-react@8.0.2(react@18.3.1):
+  embla-carousel-react@8.0.4(react@18.3.1):
     dependencies:
-      embla-carousel: 8.0.2
-      embla-carousel-reactive-utils: 8.0.2(embla-carousel@8.0.2)
+      embla-carousel: 8.0.4
+      embla-carousel-reactive-utils: 8.0.4(embla-carousel@8.0.4)
       react: 18.3.1
 
-  embla-carousel-reactive-utils@8.0.2(embla-carousel@8.0.2):
+  embla-carousel-reactive-utils@8.0.4(embla-carousel@8.0.4):
     dependencies:
-      embla-carousel: 8.0.2
+      embla-carousel: 8.0.4
 
-  embla-carousel@8.0.2: {}
+  embla-carousel@8.0.4: {}
 
   emoji-regex@8.0.0: {}
 
@@ -4823,7 +4823,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-pdf@8.0.0(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-pdf@8.0.2(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       clsx: 2.1.1
       dequal: 2.0.3
@@ -5279,7 +5279,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite-plugin-pages@0.32.1(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))):
+  vite-plugin-pages@0.32.1(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       '@types/debug': 4.1.12
       debug: 4.3.4
@@ -5289,7 +5289,7 @@ snapshots:
       json5: 2.2.3
       local-pkg: 0.5.0
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))
       yaml: 2.4.1
     transitivePeerDependencies:
       - supports-color
@@ -5302,34 +5302,34 @@ snapshots:
       - prismjs
       - supports-color
 
-  vite-plugin-webfont-dl@3.9.4(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))):
+  vite-plugin-webfont-dl@3.9.4(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       axios: 1.6.8
       clean-css: 5.3.3
       flat-cache: 3.2.0
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - debug
 
-  vite-tsconfig-paths@4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))):
+  vite-tsconfig-paths@4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       debug: 4.3.4
       globrex: 0.1.2
       tsconfck: 3.0.3(typescript@5.4.5)
     optionalDependencies:
-      vite: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38)):
+  vite@5.2.11(@types/node@20.12.10)(sugarss@4.0.1(postcss@8.4.38)):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.17.2
     optionalDependencies:
-      '@types/node': 20.12.8
+      '@types/node': 20.12.10
       fsevents: 2.3.3
       sugarss: 4.0.1(postcss@8.4.38)
 
